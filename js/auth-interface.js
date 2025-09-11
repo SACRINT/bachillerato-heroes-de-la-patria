@@ -36,6 +36,29 @@ class AuthInterface {
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
+                            <!-- Google Sign-In Button -->
+                            <div class="text-center mb-4">
+                                <div id="g_id_onload"
+                                     data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                                     data-callback="handleGoogleCredentialResponse"
+                                     data-auto_prompt="false">
+                                </div>
+                                <div class="g_id_signin"
+                                     data-type="standard"
+                                     data-size="large"
+                                     data-theme="outline"
+                                     data-text="sign_in_with"
+                                     data-shape="rectangular"
+                                     data-logo_alignment="left">
+                                </div>
+                            </div>
+
+                            <div class="row align-items-center mb-3">
+                                <div class="col"><hr></div>
+                                <div class="col-auto"><small class="text-muted">o continúa con</small></div>
+                                <div class="col"><hr></div>
+                            </div>
+
                             <form id="loginForm">
                                 <div class="mb-3">
                                     <label for="loginEmail" class="form-label">
@@ -460,12 +483,152 @@ class AuthInterface {
     }
 }
 
+// ============================================
+// GOOGLE SIGN-IN INTEGRATION
+// ============================================
+
+/**
+ * Manejar respuesta de Google Sign-In
+ */
+window.handleGoogleCredentialResponse = async function(response) {
+    try {
+        console.log('🔐 Google Sign-In response received');
+        
+        if (!response.credential) {
+            throw new Error('No se recibió credencial de Google');
+        }
+
+        // Decodificar el JWT token de Google
+        const decoded = JSON.parse(atob(response.credential.split('.')[1]));
+        
+        // Extraer información del usuario
+        const googleUser = {
+            email: decoded.email,
+            nombre: decoded.given_name,
+            apellido_paterno: decoded.family_name,
+            foto: decoded.picture,
+            email_verificado: decoded.email_verified,
+            google_id: decoded.sub
+        };
+
+        console.log('📧 Usuario de Google:', googleUser.email);
+
+        // Autenticar con el backend usando Google token
+        if (window.apiClient) {
+            try {
+                const authResponse = await window.apiClient.loginWithGoogle(response.credential);
+                
+                if (authResponse.success && authResponse.user) {
+                    window.authInterface.currentUser = authResponse.user;
+                    window.authInterface.updateAuthInterface();
+                    window.authInterface.closeAuthModal();
+                    window.authInterface.showToast('success', '✅ Google Sign-In exitoso', `Bienvenido ${authResponse.user.nombre}`);
+                    
+                    console.log('✅ Autenticación con Google exitosa');
+                } else {
+                    throw new Error(authResponse.message || 'Error de autenticación con Google');
+                }
+                
+            } catch (apiError) {
+                console.warn('⚠️ Backend no disponible, usando autenticación local');
+                
+                // Fallback: autenticación local temporal
+                const localUser = {
+                    id: googleUser.google_id,
+                    email: googleUser.email,
+                    nombre: googleUser.nombre,
+                    apellido_paterno: googleUser.apellido_paterno,
+                    tipo_usuario: 'visitante_google',
+                    foto: googleUser.foto,
+                    ultimo_acceso: new Date().toISOString(),
+                    fecha_creacion: new Date().toISOString()
+                };
+                
+                window.authInterface.currentUser = localUser;
+                window.authInterface.updateAuthInterface();
+                window.authInterface.closeAuthModal();
+                window.authInterface.showToast('success', '✅ Acceso con Google', `Bienvenido ${localUser.nombre}`);
+                
+                // Guardar en sessionStorage
+                sessionStorage.setItem('google_user_session', JSON.stringify(localUser));
+            }
+        } else {
+            throw new Error('Sistema de autenticación no disponible');
+        }
+
+    } catch (error) {
+        console.error('❌ Error en Google Sign-In:', error);
+        window.authInterface.showToast('danger', '❌ Error de autenticación', error.message || 'No se pudo completar el acceso con Google');
+    }
+};
+
+/**
+ * Inicializar Google Sign-In
+ */
+function initializeGoogleSignIn() {
+    // Verificar si Google está configurado
+    if (!window.AppConfig.isEnabled('google')) {
+        console.log('⚠️ Google Sign-In no configurado, usando cliente demo');
+        
+        // Configurar cliente demo para desarrollo
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        script.onload = () => {
+            console.log('📱 Google Sign-In SDK cargado (modo demo)');
+            
+            // Actualizar el data-client_id con configuración demo o real
+            const clientId = window.AppConfig.google.clientId || 'demo-client-id';
+            const gOnloadElement = document.getElementById('g_id_onload');
+            if (gOnloadElement) {
+                gOnloadElement.setAttribute('data-client_id', clientId);
+            }
+        };
+        document.head.appendChild(script);
+        return;
+    }
+    
+    // Cargar Google Sign-In SDK
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+        console.log('📱 Google Sign-In SDK cargado');
+        
+        // Configurar con client ID real
+        const gOnloadElement = document.getElementById('g_id_onload');
+        if (gOnloadElement) {
+            gOnloadElement.setAttribute('data-client_id', window.AppConfig.google.clientId);
+        }
+    };
+    document.head.appendChild(script);
+}
+
 // Inicializar interfaz de autenticación cuando esté listo el DOM
 document.addEventListener('DOMContentLoaded', function() {
     // Esperar a que el API client esté disponible
     setTimeout(() => {
         window.authInterface = new AuthInterface();
         console.log('🔐 Interfaz de autenticación inicializada');
+        
+        // Inicializar Google Sign-In
+        initializeGoogleSignIn();
+        
+        // Verificar sesión de Google existente
+        const googleSession = sessionStorage.getItem('google_user_session');
+        if (googleSession && !window.authInterface.currentUser) {
+            try {
+                const user = JSON.parse(googleSession);
+                window.authInterface.currentUser = user;
+                window.authInterface.updateAuthInterface();
+                console.log('🔐 Sesión de Google restaurada:', user.email);
+            } catch (error) {
+                console.warn('⚠️ Error al restaurar sesión de Google:', error);
+                sessionStorage.removeItem('google_user_session');
+            }
+        }
     }, 100);
 });
 

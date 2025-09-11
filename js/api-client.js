@@ -221,6 +221,29 @@ class APIClient {
     }
 
     /**
+     * Iniciar sesión con Google
+     */
+    async loginWithGoogle(googleToken) {
+        try {
+            const response = await this.request('/auth/google', {
+                method: 'POST',
+                body: {
+                    credential: googleToken
+                }
+            });
+
+            if (response.success && response.token) {
+                this.setToken(response.token);
+                return response;
+            }
+
+            throw new Error(response.message || 'Login con Google falló');
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /**
      * Cerrar sesión
      */
     async logout() {
@@ -234,6 +257,8 @@ class APIClient {
             console.warn('Logout API falló:', error.message);
         } finally {
             this.removeToken();
+            // Limpiar sesión de Google también
+            sessionStorage.removeItem('google_user_session');
         }
     }
 
