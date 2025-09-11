@@ -626,6 +626,7 @@ class AdminDashboard {
             this.dashboardData.pendingRegistrations = localRegistrations;
             
             console.log(`📋 ${localRegistrations.length} solicitudes pendientes encontradas`);
+            this.updatePendingCounter(localRegistrations.length);
         } catch (error) {
             console.warn('⚠️ Error cargando solicitudes:', error);
             this.dashboardData.pendingRegistrations = [];
@@ -725,6 +726,7 @@ class AdminDashboard {
             this.removeRegistrationFromLocal(email);
             this.showToast('success', '✅ Solicitud marcada como aprobada', 'Contacta al usuario manualmente');
             this.displayPendingRegistrations();
+            this.updatePendingCounter(this.dashboardData.pendingRegistrations.length);
 
         } catch (error) {
             console.error('Error aprobando registro:', error);
@@ -756,6 +758,7 @@ class AdminDashboard {
             this.removeRegistrationFromLocal(email);
             this.showToast('info', '📝 Solicitud marcada como rechazada', 'Contacta al usuario manualmente');
             this.displayPendingRegistrations();
+            this.updatePendingCounter(this.dashboardData.pendingRegistrations.length);
 
         } catch (error) {
             console.error('Error rechazando registro:', error);
@@ -768,6 +771,30 @@ class AdminDashboard {
         const filtered = registrations.filter(r => r.email !== email);
         localStorage.setItem('pending_registrations', JSON.stringify(filtered));
         this.dashboardData.pendingRegistrations = filtered;
+    }
+
+    updatePendingCounter(count) {
+        const badge = document.getElementById('pending-count');
+        const counter = document.getElementById('pending-counter');
+        
+        if (count > 0) {
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = 'inline';
+            }
+            if (counter) {
+                counter.textContent = `${count} pendientes`;
+                counter.className = 'badge bg-warning me-2';
+            }
+        } else {
+            if (badge) {
+                badge.style.display = 'none';
+            }
+            if (counter) {
+                counter.textContent = 'Sin solicitudes';
+                counter.className = 'badge bg-success me-2';
+            }
+        }
     }
 
     showToast(type, title, message) {
