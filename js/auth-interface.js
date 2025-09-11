@@ -568,24 +568,24 @@ window.handleGoogleCredentialResponse = async function(response) {
 function initializeGoogleSignIn() {
     // Verificar si Google está configurado
     if (!window.AppConfig.isEnabled('google')) {
-        console.log('⚠️ Google Sign-In no configurado, usando cliente demo');
+        console.log('⚠️ Google Sign-In no configurado - ocultando botón');
         
-        // Configurar cliente demo para desarrollo
-        const script = document.createElement('script');
-        script.src = 'https://accounts.google.com/gsi/client';
-        script.async = true;
-        script.defer = true;
-        script.onload = () => {
-            console.log('📱 Google Sign-In SDK cargado (modo demo)');
+        // Ocultar sección de Google Sign-In si no está configurado
+        setTimeout(() => {
+            const googleSection = document.getElementById('g_id_onload')?.parentElement;
+            const separatorDiv = document.querySelector('.row.align-items-center.mb-3');
             
-            // Actualizar el data-client_id con configuración demo o real
-            const clientId = window.AppConfig.google.clientId || 'demo-client-id';
-            const gOnloadElement = document.getElementById('g_id_onload');
-            if (gOnloadElement) {
-                gOnloadElement.setAttribute('data-client_id', clientId);
+            if (googleSection) {
+                googleSection.style.display = 'none';
+                console.log('🔐 Botón de Google Sign-In ocultado');
             }
-        };
-        document.head.appendChild(script);
+            if (separatorDiv) {
+                separatorDiv.style.display = 'none';
+                console.log('🔐 Separador "o continúa con" ocultado');
+            }
+        }, 100);
+        
+        console.log('🔐 Usando solo autenticación tradicional');
         return;
     }
     
@@ -614,7 +614,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('🔐 Interfaz de autenticación inicializada');
         
         // Inicializar Google Sign-In
-        initializeGoogleSignIn();
+        setTimeout(() => {
+            initializeGoogleSignIn();
+        }, 500);
         
         // Verificar sesión de Google existente
         const googleSession = sessionStorage.getItem('google_user_session');
