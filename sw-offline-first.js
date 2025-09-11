@@ -5,7 +5,7 @@
  */
 
 // === CONFIGURATION ===
-const CACHE_NAME = 'heroes-patria-v3.0.0';
+const CACHE_NAME = 'heroes-patria-v4.0.0';
 const OFFLINE_PAGE = './offline.html';
 const API_CACHE_NAME = 'heroes-api-cache-v1';
 const IMAGES_CACHE_NAME = 'heroes-images-v1';
