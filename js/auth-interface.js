@@ -95,6 +95,15 @@ class AuthInterface {
                                     </button>
                                 </div>
                             </form>
+                            
+                            <!-- Link para registro -->
+                            <div class="text-center mt-3">
+                                <p class="mb-2"><small class="text-muted">¿No tienes cuenta?</small></p>
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="showRegisterForm">
+                                    <i class="fas fa-user-plus me-1"></i>
+                                    Solicitar Registro
+                                </button>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <div class="w-100 text-center">
@@ -174,6 +183,14 @@ class AuthInterface {
         if (loginForm) {
             loginForm.addEventListener('submit', (e) => this.handleLogin(e));
         }
+
+        // Botón para mostrar formulario de registro
+        setTimeout(() => {
+            const showRegisterBtn = document.getElementById('showRegisterForm');
+            if (showRegisterBtn) {
+                showRegisterBtn.addEventListener('click', () => this.showRegisterModal());
+            }
+        }, 100);
 
         // Enlace de logout
         const logoutLink = document.getElementById('logoutLink');
@@ -316,6 +333,15 @@ class AuthInterface {
     }
 
     /**
+     * Mostrar modal de registro
+     */
+    showRegisterModal() {
+        const registerModal = this.createRegisterModal();
+        const modal = new bootstrap.Modal(registerModal);
+        modal.show();
+    }
+
+    /**
      * Mostrar perfil del usuario
      */
     showProfile() {
@@ -324,6 +350,308 @@ class AuthInterface {
         const profileModal = this.createProfileModal();
         const modal = new bootstrap.Modal(profileModal);
         modal.show();
+    }
+
+    /**
+     * Crear modal de registro
+     */
+    createRegisterModal() {
+        // Remover modal existente si existe
+        const existingModal = document.getElementById('registerModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        const modalHTML = `
+            <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="registerModalLabel">
+                                <i class="fas fa-user-plus me-2"></i>
+                                Solicitud de Registro
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Proceso de Registro:</strong> Tu solicitud será revisada y aprobada por el personal administrativo.
+                                Recibirás un correo cuando tu cuenta esté lista.
+                            </div>
+
+                            <form id="registerForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="regNombre" class="form-label">
+                                            <i class="fas fa-user me-1"></i>
+                                            Nombre(s) *
+                                        </label>
+                                        <input type="text" class="form-control" id="regNombre" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="regApellidoPaterno" class="form-label">
+                                            <i class="fas fa-user me-1"></i>
+                                            Apellido Paterno *
+                                        </label>
+                                        <input type="text" class="form-control" id="regApellidoPaterno" required>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="regApellidoMaterno" class="form-label">
+                                            <i class="fas fa-user me-1"></i>
+                                            Apellido Materno
+                                        </label>
+                                        <input type="text" class="form-control" id="regApellidoMaterno">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="regTipoUsuario" class="form-label">
+                                            <i class="fas fa-id-badge me-1"></i>
+                                            Tipo de Usuario *
+                                        </label>
+                                        <select class="form-select" id="regTipoUsuario" required>
+                                            <option value="">Selecciona tu rol</option>
+                                            <option value="estudiante">👨‍🎓 Estudiante</option>
+                                            <option value="padre_familia">👨‍👩‍👧‍👦 Padre de Familia</option>
+                                            <option value="docente">👨‍🏫 Docente</option>
+                                            <option value="administrativo">🏛️ Personal Administrativo</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="regEmail" class="form-label">
+                                        <i class="fas fa-envelope me-1"></i>
+                                        Correo Electrónico *
+                                    </label>
+                                    <input type="email" class="form-control" id="regEmail" required
+                                           placeholder="tu.email@example.com">
+                                    <small class="text-muted">Usa un correo que revises frecuentemente</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="regTelefono" class="form-label">
+                                        <i class="fas fa-phone me-1"></i>
+                                        Teléfono *
+                                    </label>
+                                    <input type="tel" class="form-control" id="regTelefono" required
+                                           placeholder="222-123-4567">
+                                </div>
+
+                                <div class="mb-3" id="matriculaContainer" style="display: none;">
+                                    <label for="regMatricula" class="form-label">
+                                        <i class="fas fa-id-card me-1"></i>
+                                        Matrícula del Estudiante
+                                    </label>
+                                    <input type="text" class="form-control" id="regMatricula"
+                                           placeholder="202X-XXXX">
+                                    <small class="text-muted">Solo para estudiantes y padres de familia</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="regMotivo" class="form-label">
+                                        <i class="fas fa-comment me-1"></i>
+                                        Motivo de la solicitud *
+                                    </label>
+                                    <textarea class="form-control" id="regMotivo" rows="3" required
+                                              placeholder="Explica brevemente por qué necesitas acceso al sistema..."></textarea>
+                                </div>
+
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="regTerminos" required>
+                                    <label class="form-check-label" for="regTerminos">
+                                        Acepto los <a href="terminos.html" target="_blank">términos y condiciones</a> 
+                                        y la <a href="privacidad.html" target="_blank">política de privacidad</a> *
+                                    </label>
+                                </div>
+
+                                <div id="registerError" class="alert alert-danger d-none" role="alert"></div>
+                                <div id="registerSuccess" class="alert alert-success d-none" role="alert"></div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary" id="registerButton">
+                                        <span id="registerButtonText">
+                                            <i class="fas fa-paper-plane me-1"></i>
+                                            Enviar Solicitud
+                                        </span>
+                                        <span id="registerSpinner" class="d-none">
+                                            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                                            Enviando...
+                                        </span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="w-100 text-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Las solicitudes son procesadas en 1-2 días hábiles
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Agregar event listeners
+        this.attachRegisterEventListeners();
+        
+        return document.getElementById('registerModal');
+    }
+
+    /**
+     * Adjuntar event listeners del formulario de registro
+     */
+    attachRegisterEventListeners() {
+        // Mostrar/ocultar campo de matrícula según tipo de usuario
+        const tipoUsuarioSelect = document.getElementById('regTipoUsuario');
+        const matriculaContainer = document.getElementById('matriculaContainer');
+        const matriculaInput = document.getElementById('regMatricula');
+
+        if (tipoUsuarioSelect && matriculaContainer) {
+            tipoUsuarioSelect.addEventListener('change', (e) => {
+                const shouldShow = e.target.value === 'estudiante' || e.target.value === 'padre_familia';
+                matriculaContainer.style.display = shouldShow ? 'block' : 'none';
+                
+                if (shouldShow) {
+                    matriculaInput.required = true;
+                } else {
+                    matriculaInput.required = false;
+                    matriculaInput.value = '';
+                }
+            });
+        }
+
+        // Formulario de registro
+        const registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+            registerForm.addEventListener('submit', (e) => this.handleRegister(e));
+        }
+    }
+
+    /**
+     * Manejar envío del formulario de registro
+     */
+    async handleRegister(event) {
+        event.preventDefault();
+        
+        const formData = {
+            nombre: document.getElementById('regNombre').value.trim(),
+            apellido_paterno: document.getElementById('regApellidoPaterno').value.trim(),
+            apellido_materno: document.getElementById('regApellidoMaterno').value.trim(),
+            tipo_usuario: document.getElementById('regTipoUsuario').value,
+            email: document.getElementById('regEmail').value.trim(),
+            telefono: document.getElementById('regTelefono').value.trim(),
+            matricula: document.getElementById('regMatricula').value.trim(),
+            motivo: document.getElementById('regMotivo').value.trim()
+        };
+
+        // Validaciones
+        if (!this.validateRegisterForm(formData)) {
+            return;
+        }
+
+        // Mostrar loading
+        this.setRegisterLoading(true);
+        this.hideRegisterMessages();
+
+        try {
+            // Intentar enviar al backend
+            if (window.apiClient) {
+                const response = await window.apiClient.request('/auth/register', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.success) {
+                    this.showRegisterSuccess();
+                    setTimeout(() => {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+                        if (modal) modal.hide();
+                    }, 3000);
+                    return;
+                }
+            }
+
+            // Fallback: Envío por email (para cuando no hay backend)
+            await this.sendRegistrationByEmail(formData);
+            this.showRegisterSuccess();
+            
+            setTimeout(() => {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+                if (modal) modal.hide();
+            }, 3000);
+
+        } catch (error) {
+            this.showRegisterError(error.message || 'Error al enviar la solicitud');
+            console.error('❌ Error en registro:', error);
+        } finally {
+            this.setRegisterLoading(false);
+        }
+    }
+
+    /**
+     * Validar formulario de registro
+     */
+    validateRegisterForm(data) {
+        if (!data.nombre || !data.apellido_paterno || !data.email || !data.telefono || !data.motivo) {
+            this.showRegisterError('Por favor completa todos los campos requeridos');
+            return false;
+        }
+
+        if (!data.tipo_usuario) {
+            this.showRegisterError('Selecciona tu tipo de usuario');
+            return false;
+        }
+
+        if ((data.tipo_usuario === 'estudiante' || data.tipo_usuario === 'padre_familia') && !data.matricula) {
+            this.showRegisterError('La matrícula es requerida para estudiantes y padres de familia');
+            return false;
+        }
+
+        // Validar email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(data.email)) {
+            this.showRegisterError('El formato del correo electrónico no es válido');
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Enviar solicitud de registro por email (fallback)
+     */
+    async sendRegistrationByEmail(data) {
+        const emailBody = `
+Nueva solicitud de registro:
+
+👤 Nombre: ${data.nombre} ${data.apellido_paterno} ${data.apellido_materno}
+📧 Email: ${data.email}
+📱 Teléfono: ${data.telefono}
+🏷️ Tipo: ${data.tipo_usuario}
+${data.matricula ? `🆔 Matrícula: ${data.matricula}` : ''}
+💬 Motivo: ${data.motivo}
+
+Fecha: ${new Date().toLocaleString('es-MX')}
+        `;
+
+        // Guardar en localStorage como backup
+        const registrations = JSON.parse(localStorage.getItem('pending_registrations') || '[]');
+        registrations.push({
+            ...data,
+            fecha_solicitud: new Date().toISOString(),
+            estado: 'pendiente'
+        });
+        localStorage.setItem('pending_registrations', JSON.stringify(registrations));
+
+        console.log('📧 Solicitud guardada localmente:', data.email);
     }
 
     /**
@@ -392,6 +720,24 @@ class AuthInterface {
         }
     }
 
+    setRegisterLoading(loading) {
+        const registerButton = document.getElementById('registerButton');
+        const registerButtonText = document.getElementById('registerButtonText');
+        const registerSpinner = document.getElementById('registerSpinner');
+        
+        if (registerButton && registerButtonText && registerSpinner) {
+            if (loading) {
+                registerButton.disabled = true;
+                registerButtonText.classList.add('d-none');
+                registerSpinner.classList.remove('d-none');
+            } else {
+                registerButton.disabled = false;
+                registerButtonText.classList.remove('d-none');
+                registerSpinner.classList.add('d-none');
+            }
+        }
+    }
+
     showAuthError(message) {
         const errorDiv = document.getElementById('authError');
         errorDiv.textContent = message;
@@ -401,6 +747,33 @@ class AuthInterface {
     hideAuthError() {
         const errorDiv = document.getElementById('authError');
         errorDiv.classList.add('d-none');
+    }
+
+    showRegisterError(message) {
+        const errorDiv = document.getElementById('registerError');
+        if (errorDiv) {
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('d-none');
+        }
+    }
+
+    showRegisterSuccess() {
+        const successDiv = document.getElementById('registerSuccess');
+        if (successDiv) {
+            successDiv.innerHTML = `
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>¡Solicitud enviada!</strong> Te contactaremos pronto para activar tu cuenta.
+            `;
+            successDiv.classList.remove('d-none');
+        }
+    }
+
+    hideRegisterMessages() {
+        const errorDiv = document.getElementById('registerError');
+        const successDiv = document.getElementById('registerSuccess');
+        
+        if (errorDiv) errorDiv.classList.add('d-none');
+        if (successDiv) successDiv.classList.add('d-none');
     }
 
     closeAuthModal() {

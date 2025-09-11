@@ -21,6 +21,7 @@ class AdminDashboard {
         if (this.isLoggedIn && this.isAdmin()) {
             await this.loadDashboardData();
             this.showDashboard();
+            this.displayPendingRegistrations();
             this.startAutoRefresh();
         } else {
             this.showLoginPrompt();
@@ -47,6 +48,9 @@ class AdminDashboard {
     async loadDashboardData() {
         try {
             console.log('📊 Cargando datos del dashboard...');
+            
+            // Cargar solicitudes de registro pendientes
+            await this.loadPendingRegistrations();
             
             // Cargar datos principales en paralelo
             const [analytics, students, teachers] = await Promise.all([
@@ -599,6 +603,179 @@ class AdminDashboard {
         if (this.academicChart) {
             this.academicChart.destroy();
             this.academicChart = null;
+        }
+    }
+
+    // ============================================
+    // GESTIÓN DE SOLICITUDES DE REGISTRO
+    // ============================================
+
+    async loadPendingRegistrations() {
+        try {
+            // Intentar cargar desde API primero
+            if (window.apiClient) {
+                const response = await window.apiClient.request('/admin/pending-registrations');
+                if (response.success) {
+                    this.dashboardData.pendingRegistrations = response.data;
+                    return;
+                }
+            }
+
+            // Fallback: cargar desde localStorage
+            const localRegistrations = JSON.parse(localStorage.getItem('pending_registrations') || '[]');
+            this.dashboardData.pendingRegistrations = localRegistrations;
+            
+            console.log(`📋 ${localRegistrations.length} solicitudes pendientes encontradas`);
+        } catch (error) {
+            console.warn('⚠️ Error cargando solicitudes:', error);
+            this.dashboardData.pendingRegistrations = [];
+        }
+    }
+
+    displayPendingRegistrations() {
+        const container = document.getElementById('pending-registrations-container');
+        if (!container) return;
+
+        const registrations = this.dashboardData.pendingRegistrations || [];
+        
+        if (registrations.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No hay solicitudes pendientes</p>
+                </div>
+            `;
+            return;
+        }
+
+        const html = registrations.map(registration => `
+            <div class="card mb-3" data-registration-id="${registration.email}">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">
+                        <i class="fas fa-user me-2"></i>
+                        ${registration.nombre} ${registration.apellido_paterno}
+                    </h6>
+                    <span class="badge bg-warning">Pendiente</span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Email:</strong> ${registration.email}</p>
+                            <p class="mb-1"><strong>Teléfono:</strong> ${registration.telefono}</p>
+                            <p class="mb-1"><strong>Tipo:</strong> ${this.formatUserType(registration.tipo_usuario)}</p>
+                            ${registration.matricula ? `<p class="mb-1"><strong>Matrícula:</strong> ${registration.matricula}</p>` : ''}
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Fecha:</strong> ${new Date(registration.fecha_solicitud).toLocaleDateString('es-MX')}</p>
+                            <p class="mb-1"><strong>Motivo:</strong></p>
+                            <small class="text-muted">${registration.motivo}</small>
+                        </div>
+                    </div>
+                    <div class="mt-3 d-flex gap-2">
+                        <button class="btn btn-success btn-sm" onclick="adminDashboard.approveRegistration('${registration.email}')">
+                            <i class="fas fa-check me-1"></i>
+                            Aprobar
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="adminDashboard.rejectRegistration('${registration.email}')">
+                            <i class="fas fa-times me-1"></i>
+                            Rechazar
+                        </button>
+                        <button class="btn btn-info btn-sm" onclick="adminDashboard.viewRegistrationDetails('${registration.email}')">
+                            <i class="fas fa-eye me-1"></i>
+                            Ver Detalles
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        container.innerHTML = html;
+    }
+
+    formatUserType(tipo) {
+        const types = {
+            'estudiante': '👨‍🎓 Estudiante',
+            'padre_familia': '👨‍👩‍👧‍👦 Padre de Familia',
+            'docente': '👨‍🏫 Docente',
+            'administrativo': '🏛️ Personal Administrativo'
+        };
+        return types[tipo] || tipo;
+    }
+
+    async approveRegistration(email) {
+        if (!confirm('¿Estás seguro de aprobar esta solicitud?')) return;
+
+        try {
+            // Intentar aprobar via API
+            if (window.apiClient) {
+                const response = await window.apiClient.request('/admin/approve-registration', {
+                    method: 'POST',
+                    body: { email }
+                });
+
+                if (response.success) {
+                    this.showToast('success', '✅ Solicitud aprobada', 'Se ha enviado email al usuario');
+                    this.removeRegistrationFromLocal(email);
+                    this.displayPendingRegistrations();
+                    return;
+                }
+            }
+
+            // Fallback: proceso local
+            this.removeRegistrationFromLocal(email);
+            this.showToast('success', '✅ Solicitud marcada como aprobada', 'Contacta al usuario manualmente');
+            this.displayPendingRegistrations();
+
+        } catch (error) {
+            console.error('Error aprobando registro:', error);
+            this.showToast('danger', '❌ Error', 'No se pudo aprobar la solicitud');
+        }
+    }
+
+    async rejectRegistration(email) {
+        const reason = prompt('Motivo del rechazo (opcional):');
+        if (reason === null) return; // Usuario canceló
+
+        try {
+            // Intentar rechazar via API
+            if (window.apiClient) {
+                const response = await window.apiClient.request('/admin/reject-registration', {
+                    method: 'POST',
+                    body: { email, reason }
+                });
+
+                if (response.success) {
+                    this.showToast('info', '📧 Solicitud rechazada', 'Se ha enviado email al usuario');
+                    this.removeRegistrationFromLocal(email);
+                    this.displayPendingRegistrations();
+                    return;
+                }
+            }
+
+            // Fallback: proceso local
+            this.removeRegistrationFromLocal(email);
+            this.showToast('info', '📝 Solicitud marcada como rechazada', 'Contacta al usuario manualmente');
+            this.displayPendingRegistrations();
+
+        } catch (error) {
+            console.error('Error rechazando registro:', error);
+            this.showToast('danger', '❌ Error', 'No se pudo rechazar la solicitud');
+        }
+    }
+
+    removeRegistrationFromLocal(email) {
+        const registrations = JSON.parse(localStorage.getItem('pending_registrations') || '[]');
+        const filtered = registrations.filter(r => r.email !== email);
+        localStorage.setItem('pending_registrations', JSON.stringify(filtered));
+        this.dashboardData.pendingRegistrations = filtered;
+    }
+
+    showToast(type, title, message) {
+        // Reutilizar método de authInterface si está disponible
+        if (window.authInterface && window.authInterface.showToast) {
+            window.authInterface.showToast(type, title, message);
+        } else {
+            console.log(`${title}: ${message}`);
         }
     }
 
