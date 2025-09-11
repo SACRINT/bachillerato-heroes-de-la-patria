@@ -1,0 +1,511 @@
+---
+import { Layout } from '@heroes-patria/ui';
+import { siteConfig } from '@heroes-patria/config';
+---
+
+<Layout 
+  title="Conócenos"
+  description="Conoce la historia, misión, visión, valores e infraestructura del Bachillerato Héroes de la Patria (Héroes de Puebla). Más de 25 años formando líderes."
+  keywords={["historia", "mision", "vision", "valores", "infraestructura", "bachillerato", "heroes patria", "heroes puebla", "educacion integral"]}
+>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white py-24">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Cdefs%3E%3Cpattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"%3E%3Cpath d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100" height="100" fill="url(%23grid)"/%3E%3C/svg%3E')] opacity-30"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        
+        <div class="order-2 lg:order-1">
+          <!-- Breadcrumb -->
+          <nav class="mb-6" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2 text-sm">
+              <li><a href="/" class="text-gray-300 hover:text-white transition-colors duration-200">Inicio</a></li>
+              <li><i class="fas fa-chevron-right text-gray-400 mx-2"></i></li>
+              <li><span class="text-white font-semibold">Conócenos</span></li>
+            </ol>
+          </nav>
+          
+          <!-- Title -->
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            <i class="fas fa-users mr-4 text-secondary-400"></i>
+            Conócenos
+          </h1>
+          
+          <p class="text-xl text-gray-200 mb-8 leading-relaxed">
+            Descubre nuestra historia de más de 27 años, misión, valores y todo lo que nos hace únicos como institución educativa de excelencia.
+          </p>
+          
+          <!-- Navigation Badges -->
+          <div class="flex flex-wrap gap-3 mb-8">
+            <a href="#mision-vision" class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full transition-all duration-300 text-sm font-semibold">
+              <i class="fas fa-bullseye mr-2"></i>
+              Misión y Visión
+            </a>
+            <a href="#historia" class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full transition-all duration-300 text-sm font-semibold">
+              <i class="fas fa-history mr-2"></i>
+              Historia
+            </a>
+            <a href="#infraestructura" class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full transition-all duration-300 text-sm font-semibold">
+              <i class="fas fa-building mr-2"></i>
+              Infraestructura
+            </a>
+            <a href="#personal" class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full transition-all duration-300 text-sm font-semibold">
+              <i class="fas fa-user-tie mr-2"></i>
+              Personal
+            </a>
+          </div>
+        </div>
+        
+        <div class="order-1 lg:order-2 text-center">
+          <div class="relative group">
+            <div class="w-80 h-80 bg-gradient-to-br from-secondary-400 to-secondary-600 rounded-full mx-auto flex items-center justify-center shadow-2xl group-hover:scale-105 transition-transform duration-500">
+              <i class="fas fa-users text-8xl text-white opacity-90"></i>
+            </div>
+            <div class="absolute -bottom-4 -right-4 bg-secondary-500 text-primary-900 p-4 rounded-xl shadow-xl">
+              <div class="text-sm font-semibold">🏫 Desde</div>
+              <div class="text-2xl font-bold">1996</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Misión y Visión -->
+  <section id="mision-vision" class="py-20 bg-white dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">Nuestra Filosofía Institucional</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">Los principios que nos guían en la formación integral de nuestros estudiantes</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Misión -->
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+          <div class="text-center mb-6">
+            <div class="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-bullseye text-white text-2xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-blue-600 dark:text-blue-400">Nuestra Misión</h3>
+          </div>
+          <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed text-center">
+            Somos una institución de educación media superior comprometida con la <strong>formación integral de jóvenes competentes, críticos y emprendedores</strong>, mediante un modelo educativo basado en competencias que les proporcione los conocimientos, habilidades, actitudes y valores necesarios para su desarrollo personal y profesional, contribuyendo así al progreso de su comunidad, estado y país, con un enfoque de <strong>responsabilidad social y sustentabilidad</strong>.
+          </p>
+        </div>
+
+        <!-- Visión -->
+        <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+          <div class="text-center mb-6">
+            <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-eye text-white text-2xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-green-600 dark:text-green-400">Nuestra Visión</h3>
+          </div>
+          <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed text-center">
+            Ser una institución <strong>líder en educación media superior reconocida a nivel estatal y nacional</strong> por la excelencia académica, la innovación educativa y la formación integral de ciudadanos competentes que contribuyan al desarrollo económico, social, científico, tecnológico y cultural de México, siendo un <strong>referente de calidad educativa</strong> que inspire a otras instituciones del sistema educativo nacional.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Valores Institucionales -->
+  <section class="py-16 bg-gray-50 dark:bg-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Nuestros Valores</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300">Los pilares que sustentan nuestra labor educativa</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Valor 1: Excelencia -->
+        <div class="bg-white dark:bg-gray-700 rounded-xl p-6 text-center hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+          <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-star text-white text-xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Excelencia</h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">Búsqueda constante de la calidad en todos nuestros procesos educativos</p>
+        </div>
+
+        <!-- Valor 2: Integridad -->
+        <div class="bg-white dark:bg-gray-700 rounded-xl p-6 text-center hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+          <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-shield-alt text-white text-xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Integridad</h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">Actuar con honestidad, transparencia y ética en todas nuestras acciones</p>
+        </div>
+
+        <!-- Valor 3: Inclusión -->
+        <div class="bg-white dark:bg-gray-700 rounded-xl p-6 text-center hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+          <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-hands-helping text-white text-xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Inclusión</h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">Respeto a la diversidad y oportunidades educativas para todos</p>
+        </div>
+
+        <!-- Valor 4: Innovación -->
+        <div class="bg-white dark:bg-gray-700 rounded-xl p-6 text-center hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+          <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-lightbulb text-white text-xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Innovación</h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">Adopción de nuevas metodologías y tecnologías educativas</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Historia -->
+  <section id="historia" class="py-20 bg-white dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">Nuestra Historia</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">Más de tres décadas formando generaciones de estudiantes exitosos en Puebla</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+        <div class="order-2 lg:order-1">
+          <div class="bg-gray-100 dark:bg-gray-700 rounded-2xl p-2 shadow-lg">
+            <div class="aspect-w-16 aspect-h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+              <div class="text-center text-white">
+                <i class="fas fa-school text-6xl mb-4"></i>
+                <p class="text-lg font-semibold">Imagen histórica de la institución</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="order-1 lg:order-2">
+          <div class="space-y-8">
+            <!-- Timeline Item 1996 -->
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg">
+                <span class="text-white font-bold text-sm">1996</span>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Fundación Institucional</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-2">
+                  Se crea oficialmente el Bachillerato General Estatal "Héroes de la Patria" mediante decreto gubernamental, con la clave <strong>21EBH0200X</strong>, ubicado en Coronel Tito Hernández, Venustiano Carranza, Puebla.
+                </p>
+                <div class="inline-flex items-center text-blue-600 dark:text-blue-400 text-sm font-semibold">
+                  <i class="fas fa-star mr-2"></i>
+                  Primera generación de estudiantes
+                </div>
+              </div>
+            </div>
+
+            <!-- Timeline Item 1998 -->
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
+                <span class="text-white font-bold text-sm">1998</span>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Primera Generación de Egresados</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-2">
+                  Se gradúa la primera generación del bachillerato, marcando el inicio de nuestro legado educativo en la región. Establecimiento de vínculos con universidades locales.
+                </p>
+                <div class="inline-flex items-center text-green-600 dark:text-green-400 text-sm font-semibold">
+                  <i class="fas fa-graduation-cap mr-2"></i>
+                  85% continuaron estudios superiores
+                </div>
+              </div>
+            </div>
+
+            <!-- Timeline Item 2002 -->
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                <span class="text-white font-bold text-sm">2002</span>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Ampliación de Instalaciones</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-2">
+                  Construcción del edificio de laboratorios y talleres especializados. Implementación de las primeras especialidades de capacitación para el trabajo.
+                </p>
+                <div class="inline-flex items-center text-purple-600 dark:text-purple-400 text-sm font-semibold">
+                  <i class="fas fa-tools mr-2"></i>
+                  Informática y Preparación de Alimentos
+                </div>
+              </div>
+            </div>
+
+            <!-- Timeline Item 2010 -->
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
+                <span class="text-white font-bold text-sm">2010</span>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Modernización Tecnológica</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-2">
+                  Incorporación de tecnologías digitales en el aula. Implementación de laboratorio de cómputo actualizado y conexión a internet de alta velocidad.
+                </p>
+                <div class="inline-flex items-center text-orange-600 dark:text-orange-400 text-sm font-semibold">
+                  <i class="fas fa-laptop mr-2"></i>
+                  Era digital iniciada
+                </div>
+              </div>
+            </div>
+
+            <!-- Timeline Item 2024 -->
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center shadow-lg">
+                <span class="text-white font-bold text-sm">2024</span>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Excelencia Consolidada</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-2">
+                  Con más de 1,000 egresados exitosos y reconocimiento por proyectos CTIM ganadores, continuamos siendo referente educativo en la región.
+                </p>
+                <div class="inline-flex items-center text-red-600 dark:text-red-400 text-sm font-semibold">
+                  <i class="fas fa-trophy mr-2"></i>
+                  27+ años de trayectoria
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Infraestructura -->
+  <section id="infraestructura" class="py-20 bg-gray-50 dark:bg-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">Nuestra Infraestructura</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300">Instalaciones modernas diseñadas para el aprendizaje integral</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Aulas -->
+        <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="h-48 bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+            <i class="fas fa-chalkboard-teacher text-white text-4xl"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Aulas Equipadas</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">12 aulas con mobiliario ergonómico, proyectores digitales y sistemas de audio para una enseñanza interactiva.</p>
+            <div class="flex items-center text-blue-600 dark:text-blue-400 font-semibold text-sm">
+              <i class="fas fa-users mr-2"></i>
+              Capacidad para 40 estudiantes c/u
+            </div>
+          </div>
+        </div>
+
+        <!-- Laboratorios -->
+        <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="h-48 bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+            <i class="fas fa-flask text-white text-4xl"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Laboratorios Especializados</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">Laboratorios de Química, Física, Biología y Cómputo equipados con tecnología de vanguardia.</p>
+            <div class="flex items-center text-green-600 dark:text-green-400 font-semibold text-sm">
+              <i class="fas fa-microscope mr-2"></i>
+              4 laboratorios completamente equipados
+            </div>
+          </div>
+        </div>
+
+        <!-- Biblioteca -->
+        <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="h-48 bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+            <i class="fas fa-book text-white text-4xl"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Biblioteca Digital</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">Acervo bibliográfico de más de 5,000 títulos físicos y acceso a bibliotecas digitales.</p>
+            <div class="flex items-center text-purple-600 dark:text-purple-400 font-semibold text-sm">
+              <i class="fas fa-wifi mr-2"></i>
+              Internet gratuito y espacios de estudio
+            </div>
+          </div>
+        </div>
+
+        <!-- Talleres -->
+        <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="h-48 bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
+            <i class="fas fa-tools text-white text-4xl"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Talleres de Capacitación</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">Talleres especializados para las tres capacitaciones: Informática, Contabilidad y Electricidad.</p>
+            <div class="flex items-center text-orange-600 dark:text-orange-400 font-semibold text-sm">
+              <i class="fas fa-hard-hat mr-2"></i>
+              3 especialidades técnicas
+            </div>
+          </div>
+        </div>
+
+        <!-- Área Deportiva -->
+        <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="h-48 bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
+            <i class="fas fa-basketball-ball text-white text-4xl"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Instalaciones Deportivas</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">Cancha de usos múltiples para basquetbol, voleibol y eventos cívicos culturales.</p>
+            <div class="flex items-center text-red-600 dark:text-red-400 font-semibold text-sm">
+              <i class="fas fa-medal mr-2"></i>
+              Actividades deportivas regulares
+            </div>
+          </div>
+        </div>
+
+        <!-- Cafetería -->
+        <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="h-48 bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center">
+            <i class="fas fa-utensils text-white text-4xl"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Cafetería Escolar</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">Área de alimentos con opciones nutritivas y espacios cómodos para el descanso estudiantil.</p>
+            <div class="flex items-center text-yellow-600 dark:text-yellow-400 font-semibold text-sm">
+              <i class="fas fa-apple-alt mr-2"></i>
+              Alimentación balanceada y saludable
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Personal Directivo -->
+  <section id="personal" class="py-20 bg-white dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">Nuestro Equipo Directivo</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300">Líderes comprometidos con la excelencia educativa</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <!-- Director -->
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg">
+            <i class="fas fa-user-tie text-white text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Director General</h3>
+          <p class="text-blue-600 dark:text-blue-400 font-semibold mb-4">Liderazgo Institucional</p>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">
+            Responsable de la dirección estratégica y el desarrollo institucional del bachillerato.
+          </p>
+        </div>
+
+        <!-- Subdirector Académico -->
+        <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-green-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg">
+            <i class="fas fa-graduation-cap text-white text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Subdirección Académica</h3>
+          <p class="text-green-600 dark:text-green-400 font-semibold mb-4">Excelencia Educativa</p>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">
+            Coordinación de los programas académicos y seguimiento al rendimiento estudiantil.
+          </p>
+        </div>
+
+        <!-- Subdirector Administrativo -->
+        <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="w-24 h-24 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg">
+            <i class="fas fa-clipboard-list text-white text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Subdirección Administrativa</h3>
+          <p class="text-purple-600 dark:text-purple-400 font-semibold mb-4">Gestión Eficiente</p>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">
+            Administración de recursos y servicios de apoyo para la comunidad educativa.
+          </p>
+        </div>
+      </div>
+
+      <!-- Mensaje del Director -->
+      <div class="mt-16 bg-gradient-to-r from-primary-600 to-primary-800 rounded-2xl p-8 lg:p-12 text-white">
+        <div class="max-w-4xl mx-auto text-center">
+          <div class="w-20 h-20 bg-secondary-500 rounded-full mx-auto mb-6 flex items-center justify-center">
+            <i class="fas fa-quote-left text-primary-900 text-2xl"></i>
+          </div>
+          <h3 class="text-2xl md:text-3xl font-bold mb-6">Mensaje de la Dirección</h3>
+          <blockquote class="text-lg md:text-xl leading-relaxed italic mb-6">
+            "En el Bachillerato Héroes de la Patria, creemos firmemente que cada estudiante tiene el potencial de ser extraordinario. Nuestro compromiso es brindar una educación integral que no solo prepare académicamente, sino que también forme ciudadanos íntegros, críticos y comprometidos con el desarrollo de su comunidad."
+          </blockquote>
+          <div class="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
+            <i class="fas fa-signature mr-3 text-secondary-400"></i>
+            <span class="font-semibold">Equipo Directivo BGE "Héroes de la Patria"</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-16 bg-gradient-to-r from-secondary-500 to-secondary-600 text-primary-900">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold mb-4">¿Listo para ser parte de nuestra historia?</h2>
+      <p class="text-xl mb-8">Únete a más de 27 años de tradición educativa y excelencia académica</p>
+      
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/oferta-educativa" class="inline-flex items-center px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
+          <i class="fas fa-graduation-cap mr-3"></i>
+          Conoce nuestra oferta educativa
+        </a>
+        <a href="/contacto" class="inline-flex items-center px-8 py-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm font-semibold rounded-xl transition-all duration-300 transform hover:scale-105">
+          <i class="fas fa-phone mr-3"></i>
+          Contacta con nosotros
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Smooth scrolling for navigation badges
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href')!);
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add intersection observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fade-in-up');
+        }
+      });
+    }, observerOptions);
+
+    // Observe timeline items and cards
+    document.querySelectorAll('.timeline-item, .infrastructure-card').forEach(el => {
+      observer.observe(el);
+    });
+  });
+</script>
+
+<style>
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+</style>

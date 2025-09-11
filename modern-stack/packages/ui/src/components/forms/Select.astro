@@ -1,0 +1,257 @@
+---
+export interface SelectOption {
+  value: string | number;
+  label: string;
+  disabled?: boolean;
+}
+
+export interface Props {
+  name: string;
+  id?: string;
+  label?: string;
+  options: SelectOption[];
+  value?: string | number;
+  placeholder?: string;
+  required?: boolean;
+  disabled?: boolean;
+  error?: string;
+  helpText?: string;
+  size?: 'sm' | 'md' | 'lg';
+  variant?: 'default' | 'outlined' | 'filled';
+  class?: string;
+  'data-testid'?: string;
+}
+
+const {
+  name,
+  id = name,
+  label,
+  options = [],
+  value,
+  placeholder = 'Selecciona una opción',
+  required = false,
+  disabled = false,
+  error,
+  helpText,
+  size = 'md',
+  variant = 'default',
+  class: className = '',
+  'data-testid': testId,
+  ...rest
+} = Astro.props;
+
+// Base classes
+const baseClasses = [
+  'w-full',
+  'appearance-none',
+  'transition-all',
+  'duration-200',
+  'focus:outline-none',
+  'focus:ring-2',
+  'focus:ring-blue-500',
+  'focus:border-transparent',
+  'disabled:opacity-50',
+  'disabled:cursor-not-allowed',
+  'disabled:bg-gray-50',
+  'dark:disabled:bg-gray-800'
+];
+
+// Variant classes
+const variantClasses = {
+  default: [
+    'border',
+    'border-gray-300',
+    'dark:border-gray-600',
+    'bg-white',
+    'dark:bg-gray-800',
+    'text-gray-900',
+    'dark:text-gray-100'
+  ],
+  outlined: [
+    'border-2',
+    'border-gray-300',
+    'dark:border-gray-600',
+    'bg-transparent',
+    'text-gray-900',
+    'dark:text-gray-100',
+    'focus:border-blue-500'
+  ],
+  filled: [
+    'border-0',
+    'bg-gray-100',
+    'dark:bg-gray-700',
+    'text-gray-900',
+    'dark:text-gray-100',
+    'focus:bg-white',
+    'dark:focus:bg-gray-800'
+  ]
+};
+
+// Size classes
+const sizeClasses = {
+  sm: ['px-3', 'py-2', 'text-sm', 'rounded-md', 'pr-8'],
+  md: ['px-4', 'py-2.5', 'text-sm', 'rounded-lg', 'pr-10'],
+  lg: ['px-4', 'py-3', 'text-base', 'rounded-lg', 'pr-10']
+};
+
+// Error state classes
+const errorClasses = error ? [
+  'border-red-500',
+  'focus:ring-red-500',
+  'focus:border-red-500',
+  'text-red-900',
+  'dark:text-red-100'
+] : [];
+
+const classes = [
+  ...baseClasses,
+  ...variantClasses[variant],
+  ...sizeClasses[size],
+  ...errorClasses,
+  className
+].join(' ');
+
+const labelClasses = [
+  'block',
+  'text-sm',
+  'font-medium',
+  'mb-2',
+  error ? 'text-red-700 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'
+].join(' ');
+
+const iconSize = size === 'sm' ? 'w-4 h-4' : 'w-5 h-5';
+---
+
+<div class="w-full">
+  {label && (
+    <label 
+      for={id}
+      class={labelClasses}
+    >
+      {label}
+      {required && (
+        <span class="text-red-500 ml-1" aria-label="required">*</span>
+      )}
+    </label>
+  )}
+  
+  <div class="relative">
+    <select
+      name={name}
+      id={id}
+      class={classes}
+      required={required}
+      disabled={disabled}
+      data-testid={testId}
+      {...rest}
+    >
+      {placeholder && (
+        <option value="" disabled selected={!value}>
+          {placeholder}
+        </option>
+      )}
+      
+      {options.map((option) => (
+        <option 
+          value={option.value}
+          disabled={option.disabled}
+          selected={value === option.value}
+        >
+          {option.label}
+        </option>
+      ))}
+    </select>
+    
+    <!-- Custom dropdown arrow -->
+    <div class={`absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none ${error ? 'pr-8' : 'pr-3'}`}>
+      <svg 
+        class={`${iconSize} text-gray-400`} 
+        fill="none" 
+        stroke="currentColor" 
+        viewBox="0 0 24 24"
+      >
+        <path 
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          stroke-width="2" 
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </div>
+    
+    {error && (
+      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+        <i class="fas fa-exclamation-circle text-red-500" aria-hidden="true"></i>
+      </div>
+    )}
+  </div>
+  
+  {(error || helpText) && (
+    <div class="mt-2">
+      {error && (
+        <p class="text-sm text-red-600 dark:text-red-400" id={`${id}-error`}>
+          <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>
+          {error}
+        </p>
+      )}
+      
+      {!error && helpText && (
+        <p class="text-sm text-gray-500 dark:text-gray-400" id={`${id}-help`}>
+          {helpText}
+        </p>
+      )}
+    </div>
+  )}
+</div>
+
+<style>
+  /* Custom select styling */
+  select {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background-image: none; /* Remove default arrow */
+  }
+  
+  /* Focus ring animation */
+  select:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+  
+  /* Error state animation */
+  select.error:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  }
+  
+  /* Option styling */
+  select option {
+    background-color: white;
+    color: #1f2937;
+    padding: 0.5rem;
+  }
+  
+  .dark select option {
+    background-color: #1f2937;
+    color: #f9fafb;
+  }
+  
+  /* Disabled option styling */
+  select option:disabled {
+    color: #9ca3af;
+  }
+  
+  .dark select option:disabled {
+    color: #6b7280;
+  }
+  
+  /* Remove native styling in different browsers */
+  select::-ms-expand {
+    display: none;
+  }
+  
+  /* Firefox specific styling */
+  @-moz-document url-prefix() {
+    select {
+      text-indent: 0.01px;
+      text-overflow: '';
+    }
+  }
+</style>

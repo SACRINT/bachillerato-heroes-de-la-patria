@@ -1,0 +1,81 @@
+{
+  "name": "@heroes-patria/monorepo",
+  "version": "2.0.0",
+  "description": "Bachillerato Héroes de la Patria - Modern Stack",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:web\" \"npm run dev:api\"",
+    "dev:web": "npm run dev --workspace=@heroes-patria/web",
+    "dev:api": "npm run dev --workspace=@heroes-patria/api",
+    "build": "npm run build --workspaces",
+    "build:web": "npm run build --workspace=@heroes-patria/web",
+    "build:api": "npm run build --workspace=@heroes-patria/api",
+    "preview": "npm run preview --workspace=@heroes-patria/web",
+    "test": "npm run test --workspaces",
+    "test:e2e": "playwright test",
+    "lint": "eslint . --ext .js,.ts,.astro,.vue",
+    "lint:fix": "eslint . --ext .js,.ts,.astro,.vue --fix",
+    "format": "prettier --write \"**/*.{js,ts,astro,vue,json,md}\"",
+    "type-check": "tsc --noEmit",
+    "migration:run": "node tools/migrate-from-legacy.js",
+    "backup:create": "node tools/create-backup.js",
+    "backup:restore": "node tools/restore-backup.js",
+    "deploy:prod": "node scripts/deploy-prod.js",
+    "deploy:cdn": "node scripts/deploy-cdn.js",
+    "health-check": "node scripts/health-check.js",
+    "analyze": "npm run analyze --workspace=@heroes-patria/web",
+    "lighthouse": "lhci autorun",
+    "security-audit": "npm audit && npm run security:scan",
+    "security:scan": "echo \"Running security scans...\" && npm audit --audit-level=moderate",
+    "postinstall": "npm run build:packages",
+    "build:packages": "npm run build --workspaces --if-present",
+    "migrate:all": "node scripts/run-complete-migration.js",
+    "migrate:content": "node tools/content-migration.js",
+    "migrate:pwa": "node tools/pwa-migration.js",
+    "migrate:chatbot": "node tools/chatbot-migration.js",
+    "test:complete": "npm run test && npm run test:e2e && npm run lighthouse",
+    "test:e2e": "playwright test",
+    "monitor:performance": "node scripts/health-check.js",
+    "health-check:full": "npm run health-check && npm run lighthouse && npm run security-audit"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.1",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.54.0",
+    "eslint-plugin-astro": "^0.29.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.1.0",
+    "prettier": "^3.1.0",
+    "prettier-plugin-astro": "^0.12.2",
+    "typescript": "^5.3.2",
+    "@lhci/cli": "^0.12.0",
+    "chalk": "^5.3.0",
+    "web-vitals-reporter": "^1.0.0"
+  },
+  "lint-staged": {
+    "*.{js,ts,astro,vue}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test && npm run type-check"
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

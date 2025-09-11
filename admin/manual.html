@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración Manual - Bachillerato Héroes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .admin-container { background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin: 2rem 0; }
+        .header-admin { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 2rem; border-radius: 15px 15px 0 0; text-align: center; }
+        .admin-option { border: 2px solid #e9ecef; border-radius: 10px; padding: 1.5rem; margin: 1rem 0; transition: all 0.3s; }
+        .admin-option:hover { border-color: #2a5298; background: #f8f9fa; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .btn-admin { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.75rem 1.5rem; border-radius: 25px; color: white; text-decoration: none; transition: all 0.3s; }
+        .btn-admin:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); color: white; }
+        .instruction-box { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="admin-container">
+            <div class="header-admin">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1><i class="fas fa-cogs"></i> Panel de Administración</h1>
+                        <p>Bachillerato General Estatal "Héroes de la Patria"</p>
+                    </div>
+                    <div>
+                        <div class="session-info text-end mb-2">
+                            <small><i class="fas fa-user-shield me-1"></i>Sesión Administrativa Activa</small>
+                        </div>
+                        <button onclick="logoutAndClose()" class="btn btn-outline-light btn-sm">
+                            <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-4">
+                <div class="instruction-box">
+                    <h5><i class="fas fa-info-circle"></i> Sistema de Administración Manual</h5>
+                    <p><strong>✅ Configuración Completada</strong> - El sistema ha sido configurado para usar edición manual via GitHub. Los métodos automáticos (OAuth/CMS) han sido deshabilitados por problemas de compatibilidad.</p>
+                </div>
+
+                <!-- OPCIÓN 1: GitHub Direct -->
+                <div class="admin-option">
+                    <h4><i class="fab fa-github"></i> Opción 1: Editar directamente en GitHub <span class="badge bg-success">Recomendado</span></h4>
+                    <p>La forma más simple y directa de editar el contenido:</p>
+                    <ol>
+                        <li>Ve a tu repositorio: <code>SACRINT/heroes_de_la_patria_oficial</code></li>
+                        <li>Navega a la carpeta <code>data/</code></li>
+                        <li>Haz clic en el archivo que quieres editar (ej: <code>testimonios.json</code>)</li>
+                        <li>Haz clic en el ícono del lápiz <i class="fas fa-edit"></i> para editar</li>
+                        <li>Modifica el contenido en formato JSON</li>
+                        <li>Haz clic en "Commit changes"</li>
+                        <li>¡Los cambios aparecerán automáticamente en tu sitio web!</li>
+                    </ol>
+                    <a href="https://github.com/SACRINT/heroes_de_la_patria_oficial/tree/main/data" target="_blank" class="btn btn-admin">
+                        <i class="fab fa-github"></i> Ir a GitHub
+                    </a>
+                </div>
+
+                <!-- Seguridad del Sistema -->
+                <div class="admin-option">
+                    <h4><i class="fas fa-shield-alt"></i> Seguridad del Sistema</h4>
+                    <p><strong>🔒 Sistema Seguro:</strong> Solo el propietario del repositorio GitHub puede realizar cambios. No se requieren contraseñas adicionales ya que GitHub maneja toda la autenticación.</p>
+                    <ul>
+                        <li>✅ Solo tú puedes editar los archivos (autenticación GitHub)</li>
+                        <li>✅ Historial completo de cambios en GitHub</li>
+                        <li>✅ Posibilidad de revertir cambios si es necesario</li>
+                        <li>✅ Sin riesgos de seguridad adicionales</li>
+                    </ul>
+                </div>
+
+                <!-- OPCIÓN 2: Archivos que puedes editar -->
+                <div class="admin-option">
+                    <h4><i class="fas fa-file-code"></i> Archivos de Contenido</h4>
+                    <p>Estos son los archivos que puedes editar para cambiar el contenido:</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <strong>config.json</strong><br>
+                                    <small>Información general de la institución</small>
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>testimonios.json</strong><br>
+                                    <small>Experiencias de egresados</small>
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>noticias.json</strong><br>
+                                    <small>Comunicados y avisos</small>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <strong>docentes.json</strong><br>
+                                    <small>Información del personal</small>
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>eventos_calendario_pwa.json</strong><br>
+                                    <small>Eventos y fechas importantes</small>
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>avisos_pwa.json</strong><br>
+                                    <small>Avisos para la PWA</small>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OPCIÓN 3: GitHub Desktop -->
+                <div class="admin-option">
+                    <h4><i class="fab fa-github"></i> Opción 2: GitHub Desktop</h4>
+                    <p>Para una experiencia más cómoda:</p>
+                    <ol>
+                        <li>Descarga GitHub Desktop</li>
+                        <li>Clona tu repositorio</li>
+                        <li>Edita los archivos JSON con cualquier editor de texto</li>
+                        <li>Haz commit y push de los cambios</li>
+                    </ol>
+                    <a href="https://desktop.github.com/" target="_blank" class="btn btn-admin">
+                        <i class="fas fa-download"></i> Descargar GitHub Desktop
+                    </a>
+                </div>
+
+                <!-- OPCIÓN 4: Editor JSON Online -->
+                <div class="admin-option">
+                    <h4><i class="fas fa-code"></i> Opción 3: Editor JSON Online</h4>
+                    <p>Para editar JSON de forma más visual:</p>
+                    <ol>
+                        <li>Copia el contenido del archivo JSON desde GitHub</li>
+                        <li>Pégalo en un editor JSON online</li>
+                        <li>Edita visualmente</li>
+                        <li>Copia el resultado y pégalo de vuelta en GitHub</li>
+                    </ol>
+                    <a href="https://jsoneditoronline.org/" target="_blank" class="btn btn-admin">
+                        <i class="fas fa-external-link-alt"></i> Abrir Editor JSON
+                    </a>
+                </div>
+
+                <!-- Estado del Sitio -->
+                <div class="admin-option">
+                    <h4><i class="fas fa-chart-line"></i> Estado del Sitio</h4>
+                    <p>Enlaces útiles para monitorear tu sitio:</p>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <a href="https://SACRINT.github.io/heroes_de_la_patria_oficial/" target="_blank" class="btn btn-admin w-100 mb-2">
+                                <i class="fas fa-globe"></i> Ver Sitio Web
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="https://github.com/SACRINT/heroes_de_la_patria_oficial" target="_blank" class="btn btn-admin w-100 mb-2">
+                                <i class="fab fa-github"></i> Ver Repositorio
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="https://github.com/SACRINT/heroes_de_la_patria_oficial/commits/main" target="_blank" class="btn btn-admin w-100 mb-2">
+                                <i class="fas fa-history"></i> Ver Cambios
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script para cerrar sesión -->
+    <script>
+        // Función para cerrar sesión y cerrar ventana
+        function logoutAndClose() {
+            // Acceder al localStorage del parent (ventana principal)
+            if (window.opener) {
+                try {
+                    // Cerrar sesión en la ventana padre
+                    if (window.opener.logoutAdminPanel) {
+                        window.opener.logoutAdminPanel();
+                    } else {
+                        // Fallback: limpiar localStorage directamente
+                        window.opener.localStorage.removeItem('heroesPatria_adminPanelAuth');
+                    }
+                } catch (error) {
+                    console.warn('No se pudo acceder a la ventana padre:', error);
+                    // Limpiar el localStorage local como fallback
+                    localStorage.removeItem('heroesPatria_adminPanelAuth');
+                }
+            } else {
+                // No hay ventana padre, limpiar localStorage local
+                localStorage.removeItem('heroesPatria_adminPanelAuth');
+            }
+            
+            // Mostrar mensaje y cerrar ventana después de un delay
+            alert('Sesión cerrada correctamente. Esta ventana se cerrará.');
+            setTimeout(() => {
+                if (window.opener) {
+                    window.close();
+                } else {
+                    // Si no se puede cerrar la ventana, redirigir al inicio
+                    window.location.href = '../index.html';
+                }
+            }, 1000);
+        }
+        
+        // Verificar estado de sesión al cargar la página
+        function checkSessionStatus() {
+            let isAuthenticated = false;
+            
+            try {
+                // Intentar verificar en la ventana padre primero
+                if (window.opener && window.opener.localStorage) {
+                    const authData = window.opener.localStorage.getItem('heroesPatria_adminPanelAuth');
+                    if (authData) {
+                        const data = JSON.parse(authData);
+                        isAuthenticated = data.authenticated && Date.now() < data.expires;
+                    }
+                } else {
+                    // Verificar en localStorage local
+                    const authData = localStorage.getItem('heroesPatria_adminPanelAuth');
+                    if (authData) {
+                        const data = JSON.parse(authData);
+                        isAuthenticated = data.authenticated && Date.now() < data.expires;
+                    }
+                }
+            } catch (error) {
+                console.warn('Error verificando sesión:', error);
+                isAuthenticated = false;
+            }
+            
+            // Si no hay sesión activa, mostrar aviso y redirigir
+            if (!isAuthenticated) {
+                alert('Sesión expirada o no válida. Serás redirigido al inicio.');
+                setTimeout(() => {
+                    if (window.opener) {
+                        window.close();
+                    } else {
+                        window.location.href = '../index.html';
+                    }
+                }, 2000);
+            }
+        }
+        
+        // Verificar sesión cuando se carga la página
+        document.addEventListener('DOMContentLoaded', checkSessionStatus);
+        
+        // Verificar sesión periódicamente (cada 5 minutos)
+        setInterval(checkSessionStatus, 5 * 60 * 1000);
+    </script>
+</body>
+</html>

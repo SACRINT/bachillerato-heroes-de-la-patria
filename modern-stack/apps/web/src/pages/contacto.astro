@@ -1,0 +1,336 @@
+---
+import { Layout } from '@heroes-patria/ui';
+import { siteConfig } from '@heroes-patria/config';
+import ContactForm from '../components/ContactForm.astro';
+---
+
+<Layout 
+  title="Contacto"
+  description="Ponte en contacto con el Bachillerato Héroes de la Patria (Héroes de Puebla). Resolvemos tus dudas sobre admisiones, servicios educativos y orientación vocacional."
+  keywords={["contacto", "bachillerato heroes patria", "heroes puebla", "admisiones", "informacion", "telefono", "email", "direccion", "orientacion vocacional"]}
+>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white py-24">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Cdefs%3E%3Cpattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"%3E%3Cpath d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100" height="100" fill="url(%23grid)"/%3E%3C/svg%3E')] opacity-30"></div>
+    
+    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="mb-6">
+        <span class="inline-flex items-center px-4 py-2 bg-secondary-500/90 text-primary-900 rounded-full text-sm font-semibold">
+          <i class="fas fa-envelope mr-2"></i>
+          Estamos aquí para ayudarte
+        </span>
+      </div>
+      
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+        Contáctanos
+      </h1>
+      
+      <p class="text-xl text-gray-200 mb-8 max-w-3xl mx-auto leading-relaxed">
+        ¿Tienes preguntas sobre nuestro bachillerato? ¿Necesitas información sobre admisiones o servicios? 
+        Estamos disponibles para resolver todas tus dudas.
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-4 text-sm">
+        <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
+          <i class="fas fa-clock mr-2 text-secondary-400"></i>
+          <span>Respuesta en 24 horas</span>
+        </div>
+        <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
+          <i class="fas fa-shield-check mr-2 text-green-400"></i>
+          <span>Información confidencial</span>
+        </div>
+        <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
+          <i class="fas fa-users mr-2 text-blue-400"></i>
+          <span>Equipo especializado</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Contact Cards -->
+  <section class="py-16 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Formas de Contacto</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300">Elige la opción que más te convenga</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Phone Contact -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 p-6 text-center group">
+          <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-phone text-white text-xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Teléfono</h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-4">Llámanos directamente</p>
+          <a href="tel:+52-276-108-0200" class="inline-flex items-center text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-200 font-semibold transition-colors duration-200">
+            (276) 108-0200
+            <i class="fas fa-external-link-alt ml-2 text-sm"></i>
+          </a>
+        </div>
+
+        <!-- Email Contact -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 p-6 text-center group">
+          <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-envelope text-white text-xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Email</h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-4">Envíanos un correo</p>
+          <a href="mailto:21ebh0200x.sep@gmail.com" class="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-semibold transition-colors duration-200">
+            Escribir email
+            <i class="fas fa-external-link-alt ml-2 text-sm"></i>
+          </a>
+        </div>
+
+        <!-- Location -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 p-6 text-center group">
+          <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-map-marker-alt text-white text-xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Ubicación</h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-4">Visítanos en persona</p>
+          <a href="#mapa" class="inline-flex items-center text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 font-semibold transition-colors duration-200">
+            Ver mapa
+            <i class="fas fa-arrow-down ml-2 text-sm"></i>
+          </a>
+        </div>
+
+        <!-- Schedule -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 p-6 text-center group">
+          <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-calendar-alt text-white text-xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Horarios</h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-4">Lunes a Viernes</p>
+          <div class="text-purple-600 dark:text-purple-400 font-semibold">
+            <div>7:30 AM - 2:30 PM</div>
+            <div class="text-sm text-gray-500 mt-1">Horario administrativo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Form Section -->
+  <ContactForm 
+    title="Envíanos un Mensaje"
+    subtitle="Completa el formulario y te responderemos en las próximas 24 horas"
+    showComplaintForm={true}
+  />
+
+  <!-- FAQ Section -->
+  <section class="py-16 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Preguntas Frecuentes</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300">Las consultas más comunes de nuestros estudiantes y padres de familia</p>
+      </div>
+
+      <div class="space-y-6">
+        <!-- FAQ Item 1 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+          <button class="faq-button w-full text-left flex items-center justify-between" onclick="toggleFAQ('faq-1')">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">¿Cuáles son los requisitos de admisión?</h3>
+            <i class="fas fa-chevron-down text-gray-400 transition-transform duration-200" id="faq-1-icon"></i>
+          </button>
+          <div class="faq-content hidden mt-4" id="faq-1">
+            <p class="text-gray-600 dark:text-gray-300">
+              Para ser admitido necesitas: certificado de secundaria, acta de nacimiento, CURP, 6 fotografías tamaño infantil, 
+              y aprobar el examen de admisión. El proceso inicia en marzo para el ciclo escolar siguiente.
+            </p>
+            <a href="/oferta-educativa#admision" class="inline-flex items-center mt-3 text-blue-600 hover:text-blue-800 dark:text-blue-400 font-semibold text-sm">
+              Ver proceso completo <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+          <button class="faq-button w-full text-left flex items-center justify-between" onclick="toggleFAQ('faq-2')">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">¿Qué especialidades técnicas ofrecen?</h3>
+            <i class="fas fa-chevron-down text-gray-400 transition-transform duration-200" id="faq-2-icon"></i>
+          </button>
+          <div class="faq-content hidden mt-4" id="faq-2">
+            <p class="text-gray-600 dark:text-gray-300">
+              Ofrecemos tres especialidades: Informática, Contabilidad y Electricidad. Cada una incluye prácticas profesionales 
+              y certificación que te permite trabajar inmediatamente después del bachillerato.
+            </p>
+            <a href="/oferta-educativa#especialidades" class="inline-flex items-center mt-3 text-blue-600 hover:text-blue-800 dark:text-blue-400 font-semibold text-sm">
+              Conocer especialidades <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- FAQ Item 3 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+          <button class="faq-button w-full text-left flex items-center justify-between" onclick="toggleFAQ('faq-3')">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">¿Cuál es el costo de estudiar aquí?</h3>
+            <i class="fas fa-chevron-down text-gray-400 transition-transform duration-200" id="faq-3-icon"></i>
+          </button>
+          <div class="faq-content hidden mt-4" id="faq-3">
+            <p class="text-gray-600 dark:text-gray-300">
+              La educación es completamente gratuita. Solo se cobran cuotas voluntarias para actividades específicas. 
+              Además, automáticamente recibes la Beca Benito Juárez que te apoya económicamente durante tus estudios.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 4 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+          <button class="faq-button w-full text-left flex items-center justify-between" onclick="toggleFAQ('faq-4')">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">¿Cómo me preparo para el examen de admisión?</h3>
+            <i class="fas fa-chevron-down text-gray-400 transition-transform duration-200" id="faq-4-icon"></i>
+          </button>
+          <div class="faq-content hidden mt-4" id="faq-4">
+            <p class="text-gray-600 dark:text-gray-300">
+              El examen evalúa conocimientos de secundaria en matemáticas, español, ciencias y habilidades de razonamiento. 
+              Recomendamos repasar temarios de secundaria y practicar con exámenes de años anteriores.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Map Section -->
+  <section id="mapa" class="py-16 bg-white dark:bg-gray-800">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Nuestra Ubicación</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300">Fácil acceso desde cualquier punto de la región</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <!-- Map -->
+        <div class="bg-gray-100 dark:bg-gray-700 rounded-xl overflow-hidden shadow-lg h-96">
+          <div class="w-full h-full flex items-center justify-center text-gray-500 dark:text-gray-400">
+            <div class="text-center">
+              <i class="fas fa-map-marked-alt text-4xl mb-4"></i>
+              <p class="text-lg font-semibold">Mapa Interactivo</p>
+              <p class="text-sm">Se cargará el mapa de ubicación</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location Details -->
+        <div class="space-y-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+              <i class="fas fa-map-marker-alt text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Dirección Completa</h3>
+              <p class="text-gray-600 dark:text-gray-300">
+                Bachillerato General Estatal "Héroes de la Patria"<br/>
+                Coronel Tito Hernández<br/>
+                Venustiano Carranza, Puebla<br/>
+                C.P. 73556, México
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+              <i class="fas fa-bus text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Transporte Público</h3>
+              <p class="text-gray-600 dark:text-gray-300">
+                Accesible por diferentes rutas de transporte público desde Tehuacán y comunidades aledañas. 
+                Parada de autobuses a 2 cuadras de la institución.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+              <i class="fas fa-clock text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Horarios de Atención</h3>
+              <div class="text-gray-600 dark:text-gray-300">
+                <p><strong>Lunes a Viernes:</strong> 7:30 AM - 2:30 PM</p>
+                <p><strong>Dirección:</strong> 8:00 AM - 2:00 PM</p>
+                <p><strong>Servicios Escolares:</strong> 8:00 AM - 1:30 PM</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Call to Action -->
+          <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6">
+            <h4 class="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3">¿Necesitas direcciones?</h4>
+            <p class="text-blue-800 dark:text-blue-200 mb-4">Te ayudamos a llegar desde tu ubicación actual</p>
+            <a href="https://maps.google.com/?q=Bachillerato+General+Estatal+Heroes+de+la+Patria+Venustiano+Carranza+Puebla" 
+               target="_blank" rel="noopener noreferrer" 
+               class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200">
+              <i class="fas fa-directions mr-2"></i>
+              Abrir en Google Maps
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Emergency Contact Banner -->
+  <section class="py-12 bg-gradient-to-r from-red-600 to-red-800 text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="flex items-center justify-center mb-4">
+        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-4">
+          <i class="fas fa-exclamation-triangle text-2xl"></i>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold">Contacto de Emergencia</h3>
+          <p class="text-red-100">Para situaciones urgentes relacionadas con la institución</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="tel:+52-276-108-0200" class="inline-flex items-center px-6 py-3 bg-white/20 hover:bg-white/30 rounded-lg transition-all duration-200">
+          <i class="fas fa-phone mr-2"></i>
+          Teléfono Principal
+        </a>
+        <a href="mailto:21ebh0200x.sep@gmail.com" class="inline-flex items-center px-6 py-3 bg-white/20 hover:bg-white/30 rounded-lg transition-all duration-200">
+          <i class="fas fa-envelope mr-2"></i>
+          Email Emergencia
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // FAQ Toggle functionality
+  function toggleFAQ(faqId: string) {
+    const content = document.getElementById(faqId);
+    const icon = document.getElementById(`${faqId}-icon`);
+    
+    if (content && icon) {
+      if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        icon.classList.add('rotate-180');
+      } else {
+        content.classList.add('hidden');
+        icon.classList.remove('rotate-180');
+      }
+    }
+  }
+
+  // Make function globally available
+  (window as any).toggleFAQ = toggleFAQ;
+
+  // Smooth scrolling for internal links
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href')!);
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  });
+</script>

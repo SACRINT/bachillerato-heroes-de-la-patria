@@ -1,0 +1,516 @@
+---
+// ContactForm.astro - Modern contact form component with API integration
+export interface Props {
+  title?: string;
+  subtitle?: string;
+  showComplaintForm?: boolean;
+  className?: string;
+}
+
+const { 
+  title = "Contáctanos",
+  subtitle = "¿Tienes alguna pregunta? Estamos aquí para ayudarte",
+  showComplaintForm = false,
+  className = ""
+} = Astro.props;
+---
+
+<section class={`py-16 bg-white dark:bg-gray-900 ${className}`}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">{title}</h2>
+      <p class="text-xl text-gray-600 dark:text-gray-300">{subtitle}</p>
+    </div>
+
+    <!-- Contact Form Tabs -->
+    <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8 shadow-xl">
+      <div class="flex flex-wrap justify-center mb-8 border-b border-gray-200 dark:border-gray-700">
+        <button 
+          id="contact-tab" 
+          class="tab-button active px-6 py-3 text-sm font-semibold rounded-t-lg transition-all duration-200"
+          onclick="switchTab('contact')"
+        >
+          <i class="fas fa-envelope mr-2"></i>
+          Mensaje General
+        </button>
+        {showComplaintForm && (
+          <button 
+            id="complaint-tab" 
+            class="tab-button px-6 py-3 text-sm font-semibold rounded-t-lg ml-2 transition-all duration-200"
+            onclick="switchTab('complaint')"
+          >
+            <i class="fas fa-comments mr-2"></i>
+            Quejas y Sugerencias
+          </button>
+        )}
+      </div>
+
+      <!-- General Contact Form -->
+      <div id="contact-form" class="tab-content">
+        <form id="general-contact-form" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Name Field -->
+            <div>
+              <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Nombre completo *
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                minlength="2"
+                maxlength="50"
+                pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors duration-200"
+                placeholder="Tu nombre completo"
+              />
+              <p class="mt-1 text-sm text-red-600 hidden" id="name-error"></p>
+            </div>
+
+            <!-- Email Field -->
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Correo electrónico *
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                maxlength="100"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors duration-200"
+                placeholder="tu@email.com"
+              />
+              <p class="mt-1 text-sm text-red-600 hidden" id="email-error"></p>
+            </div>
+          </div>
+
+          <!-- Subject and Type -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Subject Field -->
+            <div>
+              <label for="subject" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Asunto
+              </label>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                minlength="5"
+                maxlength="100"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors duration-200"
+                placeholder="Breve descripción del tema"
+              />
+              <p class="mt-1 text-sm text-red-600 hidden" id="subject-error"></p>
+            </div>
+
+            <!-- Type Selection -->
+            <div>
+              <label for="type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Tipo de consulta
+              </label>
+              <select
+                id="type"
+                name="type"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors duration-200"
+              >
+                <option value="GENERAL">General</option>
+                <option value="ACADEMIC">Académico</option>
+                <option value="ADMINISTRATIVE">Administrativo</option>
+                <option value="TECHNICAL">Técnico</option>
+                <option value="ADMISSION">Admisiones</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Message Field -->
+          <div>
+            <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Mensaje *
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              rows="6"
+              required
+              minlength="10"
+              maxlength="1000"
+              class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors duration-200 resize-none"
+              placeholder="Describe tu consulta detalladamente..."
+            ></textarea>
+            <div class="mt-1 flex justify-between">
+              <p class="text-sm text-red-600 hidden" id="message-error"></p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                <span id="message-count">0</span>/1000 caracteres
+              </p>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="text-center">
+            <button
+              type="submit"
+              class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              id="contact-submit-btn"
+            >
+              <i class="fas fa-paper-plane mr-3"></i>
+              <span>Enviar Mensaje</span>
+              <div class="hidden ml-3" id="contact-spinner">
+                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </div>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Complaint/Suggestion Form -->
+      {showComplaintForm && (
+        <div id="complaint-form" class="tab-content hidden">
+          <form id="complaint-suggestion-form" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Name Field -->
+              <div>
+                <label for="complaint-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Nombre completo *
+                </label>
+                <input
+                  type="text"
+                  id="complaint-name"
+                  name="name"
+                  required
+                  minlength="2"
+                  maxlength="50"
+                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors duration-200"
+                  placeholder="Tu nombre completo"
+                />
+              </div>
+
+              <!-- Email Field -->
+              <div>
+                <label for="complaint-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Correo electrónico *
+                </label>
+                <input
+                  type="email"
+                  id="complaint-email"
+                  name="email"
+                  required
+                  maxlength="100"
+                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors duration-200"
+                  placeholder="tu@email.com"
+                />
+              </div>
+            </div>
+
+            <!-- Type Selection -->
+            <div>
+              <label for="complaint-type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Tipo *
+              </label>
+              <select
+                id="complaint-type"
+                name="type"
+                required
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors duration-200"
+              >
+                <option value="">Selecciona una opción</option>
+                <option value="COMPLAINT">Queja</option>
+                <option value="SUGGESTION">Sugerencia</option>
+                <option value="COMPLIMENT">Felicitación</option>
+              </select>
+            </div>
+
+            <!-- Description Field -->
+            <div>
+              <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Descripción *
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                rows="6"
+                required
+                minlength="10"
+                maxlength="1000"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors duration-200 resize-none"
+                placeholder="Describe detalladamente tu queja, sugerencia o felicitación..."
+              ></textarea>
+              <div class="mt-1 flex justify-between">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  <span id="description-count">0</span>/1000 caracteres
+                </p>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+              <button
+                type="submit"
+                class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                id="complaint-submit-btn"
+              >
+                <i class="fas fa-comment mr-3"></i>
+                <span>Enviar</span>
+                <div class="hidden ml-3" id="complaint-spinner">
+                  <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                </div>
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <!-- Success/Error Messages -->
+      <div id="form-messages" class="hidden mt-6">
+        <div id="success-message" class="hidden bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <i class="fas fa-check-circle text-green-400"></i>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-green-800 dark:text-green-200">
+                ¡Mensaje enviado exitosamente!
+              </h3>
+              <p class="mt-2 text-sm text-green-700 dark:text-green-300" id="success-text">
+                Te responderemos pronto.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div id="error-message" class="hidden bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <i class="fas fa-exclamation-circle text-red-400"></i>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800 dark:text-red-200">
+                Error al enviar el mensaje
+              </h3>
+              <p class="mt-2 text-sm text-red-700 dark:text-red-300" id="error-text">
+                Por favor intenta nuevamente.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Information -->
+    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+        <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-map-marker-alt text-white"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Dirección</h3>
+        <p class="text-gray-600 dark:text-gray-300 text-sm">
+          Coronel Tito Hernández<br/>
+          Venustiano Carranza, Puebla<br/>
+          C.P. 73556
+        </p>
+      </div>
+
+      <div class="text-center p-6 bg-green-50 dark:bg-green-900/20 rounded-xl">
+        <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-phone text-white"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Teléfono</h3>
+        <p class="text-gray-600 dark:text-gray-300 text-sm">
+          <a href="tel:+52-276-108-0200" class="hover:text-green-600 transition-colors duration-200">
+            (276) 108-0200
+          </a>
+        </p>
+      </div>
+
+      <div class="text-center p-6 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
+        <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-envelope text-white"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Email</h3>
+        <p class="text-gray-600 dark:text-gray-300 text-sm">
+          <a href="mailto:21ebh0200x.sep@gmail.com" class="hover:text-purple-600 transition-colors duration-200">
+            21ebh0200x.sep@gmail.com
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Contact form functionality
+  const API_BASE_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3001';
+
+  // Tab switching functionality
+  function switchTab(tabName: string) {
+    // Update tab buttons
+    document.querySelectorAll('.tab-button').forEach(btn => {
+      btn.classList.remove('active', 'bg-blue-500', 'text-white');
+      btn.classList.add('text-gray-600', 'hover:text-blue-600');
+    });
+    
+    const activeTab = document.getElementById(`${tabName}-tab`);
+    activeTab?.classList.add('active', 'bg-blue-500', 'text-white');
+    activeTab?.classList.remove('text-gray-600', 'hover:text-blue-600');
+
+    // Update tab content
+    document.querySelectorAll('.tab-content').forEach(content => {
+      content.classList.add('hidden');
+    });
+    
+    document.getElementById(`${tabName}-form`)?.classList.remove('hidden');
+  }
+
+  // Character counting
+  const messageTextarea = document.getElementById('message') as HTMLTextAreaElement;
+  const messageCounter = document.getElementById('message-count');
+  
+  messageTextarea?.addEventListener('input', () => {
+    if (messageCounter) {
+      messageCounter.textContent = messageTextarea.value.length.toString();
+    }
+  });
+
+  const descriptionTextarea = document.getElementById('description') as HTMLTextAreaElement;
+  const descriptionCounter = document.getElementById('description-count');
+  
+  descriptionTextarea?.addEventListener('input', () => {
+    if (descriptionCounter) {
+      descriptionCounter.textContent = descriptionTextarea.value.length.toString();
+    }
+  });
+
+  // Form submission handlers
+  document.getElementById('general-contact-form')?.addEventListener('submit', handleContactSubmit);
+  document.getElementById('complaint-suggestion-form')?.addEventListener('submit', handleComplaintSubmit);
+
+  async function handleContactSubmit(e: Event) {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      subject: formData.get('subject'),
+      message: formData.get('message'),
+      type: formData.get('type')
+    };
+
+    await submitForm('/api/contact', data, 'contact');
+  }
+
+  async function handleComplaintSubmit(e: Event) {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      type: formData.get('type'),
+      description: formData.get('description')
+    };
+
+    await submitForm('/api/contact/complaint', data, 'complaint');
+  }
+
+  async function submitForm(endpoint: string, data: any, formType: string) {
+    const submitBtn = document.getElementById(`${formType}-submit-btn`);
+    const spinner = document.getElementById(`${formType}-spinner`);
+    const messagesDiv = document.getElementById('form-messages');
+    const successDiv = document.getElementById('success-message');
+    const errorDiv = document.getElementById('error-message');
+    const successText = document.getElementById('success-text');
+    const errorText = document.getElementById('error-text');
+
+    // Show loading state
+    submitBtn?.setAttribute('disabled', 'true');
+    spinner?.classList.remove('hidden');
+    messagesDiv?.classList.add('hidden');
+    successDiv?.classList.add('hidden');
+    errorDiv?.classList.add('hidden');
+
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        // Show success message
+        if (successText) successText.textContent = result.message;
+        successDiv?.classList.remove('hidden');
+        messagesDiv?.classList.remove('hidden');
+        
+        // Reset form
+        (document.getElementById(`${formType === 'contact' ? 'general-contact-form' : 'complaint-suggestion-form'}`) as HTMLFormElement)?.reset();
+        
+        // Update character counters
+        if (messageCounter) messageCounter.textContent = '0';
+        if (descriptionCounter) descriptionCounter.textContent = '0';
+        
+      } else {
+        // Show error message
+        const errorMessage = result.error || 'Error desconocido';
+        if (errorText) errorText.textContent = errorMessage;
+        
+        // Show validation errors if any
+        if (result.details) {
+          const detailsText = result.details.map((d: any) => `${d.field}: ${d.message}`).join('\n');
+          if (errorText) errorText.textContent = `${errorMessage}\n${detailsText}`;
+        }
+        
+        errorDiv?.classList.remove('hidden');
+        messagesDiv?.classList.remove('hidden');
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      if (errorText) errorText.textContent = 'Error de conexión. Por favor verifica tu conexión a internet e intenta nuevamente.';
+      errorDiv?.classList.remove('hidden');
+      messagesDiv?.classList.remove('hidden');
+    } finally {
+      // Hide loading state
+      submitBtn?.removeAttribute('disabled');
+      spinner?.classList.add('hidden');
+      
+      // Auto-hide messages after 10 seconds
+      setTimeout(() => {
+        messagesDiv?.classList.add('hidden');
+      }, 10000);
+    }
+  }
+
+  // Make switchTab globally available
+  (window as any).switchTab = switchTab;
+</script>
+
+<style>
+  .tab-button.active {
+    @apply bg-blue-500 text-white;
+  }
+  
+  .tab-button:not(.active) {
+    @apply text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

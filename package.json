@@ -1,0 +1,20 @@
+{
+  "name": "03-bachilleratoheroesweb",
+  "version": "1.0.0",
+  "main": "sw-offline-first.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SACRINT/heroes_de_la_patria_oficial.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SACRINT/heroes_de_la_patria_oficial/issues"
+  },
+  "homepage": "https://github.com/SACRINT/heroes_de_la_patria_oficial#readme",
+  "description": ""
+}

@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(grep:*)",
+      "WebFetch(domain:www.conalep.edu.mx)",
+      "Bash(move css assets/)",
+      "Bash(move:*)",
+      "Bash(move images assets/)",
+      "Bash(move \"_partials\" partials)",
+      "Bash(for file in transparencia.html calendario.html admin-dashboard.html)",
+      "Bash(do)",
+      "Bash(echo:*)",
+      "Bash(tail:*)",
+      "Bash(done)",
+      "Bash(git remote set-url:*)",
+      "Bash(find:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(npm install)",
+      "Bash(node:*)",
+      "Bash(for file in convocatorias.html normatividad.html privacidad.html sitios-interes.html terminos.html transparencia.html)",
+      "Bash(sed:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

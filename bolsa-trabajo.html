@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bolsa de Trabajo - Bachillerato General Estatal "Héroes de la Patria"</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Portal de empleos para egresados del BGE Héroes de la Patria. Encuentra oportunidades laborales, publica tu CV y conecta con empleadores.">
+    <meta name="keywords" content="bolsa trabajo, empleos egresados, oportunidades laborales, CV, bachillerato, héroes patria">
+    <meta name="author" content="BGE Héroes de la Patria">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Bolsa de Trabajo - BGE Héroes de la Patria">
+    <meta property="og:description" content="Portal de empleos exclusivo para egresados. Encuentra tu próxima oportunidad laboral.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://heroesdelapatria.edu.mx/bolsa-trabajo.html">
+    <meta property="og:image" content="https://heroesdelapatria.edu.mx/images/hero/fachada1.webp">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Bolsa de Trabajo - BGE Héroes de la Patria">
+    <meta name="twitter:description" content="Portal de empleos para egresados del bachillerato">
+    
+    <!-- Preconnects -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Critical CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="images/logo-bachillerato-HDLP.webp" type="image/webp">
+    <meta name="theme-color" content="#1976D2">
+    
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Inicio",
+                "item": "https://heroesdelapatria.edu.mx/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Egresados",
+                "item": "https://heroesdelapatria.edu.mx/egresados.html"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Bolsa de Trabajo",
+                "item": "https://heroesdelapatria.edu.mx/bolsa-trabajo.html"
+            }
+        ]
+    }
+    </script>
+</head>
+<body>
+    <!-- Skip Links -->
+    <a href="#main-content" class="skip-link visually-hidden-focusable">Saltar al contenido principal</a>
+    
+    <!-- Header -->
+    <div id="main-header"></div>
+    
+    <!-- Main Content -->
+    <main id="main-content" class="main-content">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="index.html">
+                            <i class="fas fa-home" aria-hidden="true"></i>
+                            <span class="visually-hidden">Inicio</span>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="egresados.html">Egresados</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Bolsa de Trabajo</li>
+                </ol>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="hero" class="page-hero bg-gradient-success text-white py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="hero-title display-4 fw-bold mb-3">
+                            <i class="fas fa-briefcase me-3" aria-hidden="true"></i>
+                            Bolsa de Trabajo
+                        </h1>
+                        <p class="hero-subtitle lead mb-4">
+                            Portal exclusivo de empleos para egresados del Bachillerato Héroes de la Patria. 
+                            Conectamos talento con oportunidades laborales.
+                        </p>
+                        <div class="hero-badges d-flex flex-wrap gap-2 justify-content-start">
+                            <a href="#oportunidades-laborales" class="badge bg-light text-success fs-6 text-decoration-none">
+                                <i class="fas fa-search me-1" aria-hidden="true"></i>
+                                Oportunidades Laborales
+                            </a>
+                            <a href="#empleos-destacados" class="badge bg-light text-success fs-6 text-decoration-none">
+                                <i class="fas fa-star me-1" aria-hidden="true"></i>
+                                Empleos Destacados
+                            </a>
+                            <a href="#empresas-aliadas" class="badge bg-light text-success fs-6 text-decoration-none">
+                                <i class="fas fa-handshake me-1" aria-hidden="true"></i>
+                                Empresas Aliadas
+                            </a>
+                            <a href="#recursos-exito" class="badge bg-light text-success fs-6 text-decoration-none">
+                                <i class="fas fa-tools me-1" aria-hidden="true"></i>
+                                Recursos para el Éxito
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <div class="hero-icon display-1 text-white-50">
+                            <i class="fas fa-search-dollar" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Buscador de Empleos -->
+        <section id="oportunidades-laborales" class="py-4 bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-center mb-4">
+                                    <i class="fas fa-search text-primary me-2"></i>
+                                    Buscar Oportunidades Laborales
+                                </h5>
+                                <form id="jobSearchForm" class="row g-3">
+                                    <div class="col-md-4">
+                                        <label for="searchKeywords" class="form-label">Palabras clave</label>
+                                        <input type="text" class="form-control" id="searchKeywords" 
+                                               placeholder="Ej: vendedor, asistente, técnico...">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="jobCategory" class="form-label">Categoría</label>
+                                        <select class="form-select" id="jobCategory">
+                                            <option value="">Todas las categorías</option>
+                                            <option value="ventas">Ventas y Comercio</option>
+                                            <option value="administracion">Administración</option>
+                                            <option value="tecnologia">Tecnología</option>
+                                            <option value="servicio">Servicio al Cliente</option>
+                                            <option value="manufactura">Manufactura</option>
+                                            <option value="salud">Salud y Bienestar</option>
+                                            <option value="educacion">Educación</option>
+                                            <option value="turismo">Turismo y Hotelería</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="jobLocation" class="form-label">Ubicación</label>
+                                        <select class="form-select" id="jobLocation">
+                                            <option value="">Cualquier ubicación</option>
+                                            <option value="puebla">Puebla Capital</option>
+                                            <option value="cholula">Cholula</option>
+                                            <option value="tlaxcala">Tlaxcala</option>
+                                            <option value="remoto">Trabajo Remoto</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label d-block">&nbsp;</label>
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-search me-1"></i>
+                                            Buscar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Acciones Rápidas -->
+        <section class="py-4">
+            <div class="container">
+                <div class="row g-3">
+                    <div class="col-lg-3 col-sm-6">
+                        <button class="btn btn-outline-success w-100 p-3" onclick="showUploadCV()">
+                            <i class="fas fa-file-upload fa-2x mb-2 d-block"></i>
+                            <strong>Subir CV</strong>
+                            <small class="d-block text-muted">Crea tu perfil profesional</small>
+                        </button>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <button class="btn btn-outline-info w-100 p-3" onclick="showSavedJobs()">
+                            <i class="fas fa-bookmark fa-2x mb-2 d-block"></i>
+                            <strong>Empleos Guardados</strong>
+                            <small class="d-block text-muted">Ver mis favoritos</small>
+                        </button>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <button class="btn btn-outline-warning w-100 p-3" onclick="showApplications()">
+                            <i class="fas fa-paper-plane fa-2x mb-2 d-block"></i>
+                            <strong>Postulaciones</strong>
+                            <small class="d-block text-muted">Seguimiento de solicitudes</small>
+                        </button>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <button class="btn btn-outline-secondary w-100 p-3" onclick="showCareerTips()">
+                            <i class="fas fa-lightbulb fa-2x mb-2 d-block"></i>
+                            <strong>Consejos</strong>
+                            <small class="d-block text-muted">Tips para el éxito laboral</small>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Empleos Destacados -->
+        <section id="empleos-destacados" class="py-5">
+            <div class="container">
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-star text-warning me-3" aria-hidden="true"></i>
+                        Empleos Destacados
+                    </h2>
+                    <p class="section-subtitle text-muted">
+                        Las mejores oportunidades laborales para nuestros egresados
+                    </p>
+                </div>
+
+                <div class="row" id="featuredJobsContainer">
+                    <!-- Los empleos se cargarán dinámicamente -->
+                    <div class="col-12 text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando empleos...</span>
+                        </div>
+                        <p class="text-muted mt-2">Cargando oportunidades...</p>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button class="btn btn-outline-primary" onclick="showAllJobs()">
+                        Ver Todas las Ofertas
+                        <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Estadísticas del Portal -->
+        <section class="py-5 bg-light">
+            <div class="container">
+                <div class="row text-center g-4">
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="stat-card">
+                            <div class="stat-number text-primary display-4 fw-bold" id="totalJobs">0</div>
+                            <div class="stat-label text-muted">Empleos Activos</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="stat-card">
+                            <div class="stat-number text-success display-4 fw-bold" id="totalCompanies">0</div>
+                            <div class="stat-label text-muted">Empresas Aliadas</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="stat-card">
+                            <div class="stat-number text-warning display-4 fw-bold" id="totalApplications">0</div>
+                            <div class="stat-label text-muted">Postulaciones</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="stat-card">
+                            <div class="stat-number text-info display-4 fw-bold" id="successfulHires">0</div>
+                            <div class="stat-label text-muted">Contrataciones</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Empresas Aliadas -->
+        <section id="empresas-aliadas" class="py-5">
+            <div class="container">
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-handshake text-primary me-3" aria-hidden="true"></i>
+                        Empresas Aliadas
+                    </h2>
+                    <p class="section-subtitle text-muted">
+                        Organizaciones que confían en nuestros egresados
+                    </p>
+                </div>
+
+                <div class="row align-items-center" id="companiesContainer">
+                    <!-- Las empresas se cargarán dinámicamente -->
+                </div>
+
+                <div class="text-center mt-5">
+                    <div class="alert alert-info d-inline-block">
+                        <i class="fas fa-building me-2"></i>
+                        <strong>¿Tu empresa busca talento?</strong> 
+                        <a href="contacto.html" class="alert-link">Contáctanos</a> para formar parte de nuestra red
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Consejos y Recursos -->
+        <section id="recursos-exito" class="py-5 bg-light">
+            <div class="container">
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-graduation-cap text-success me-3" aria-hidden="true"></i>
+                        Recursos para el Éxito Laboral
+                    </h2>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-file-alt me-2"></i>
+                                    Preparación del CV
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Estructura clara y profesional</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Información de contacto actualizada</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Experiencia relevante</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Habilidades técnicas y blandas</li>
+                                    <li class="mb-0"><i class="fas fa-check text-success me-2"></i>Referencias profesionales</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-comments me-2"></i>
+                                    Entrevista de Trabajo
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Investigar sobre la empresa</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Preparar respuestas comunes</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Vestimenta apropiada</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Llegar puntual</li>
+                                    <li class="mb-0"><i class="fas fa-check text-success me-2"></i>Hacer preguntas inteligentes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-chart-line me-2"></i>
+                                    Desarrollo Profesional
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Educación continua</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Networking profesional</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Certificaciones relevantes</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Mentoría y coaching</li>
+                                    <li class="mb-0"><i class="fas fa-check text-success me-2"></i>Planificación de carrera</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Subir CV -->
+    <div class="modal fade" id="uploadCVModal" tabindex="-1" aria-labelledby="uploadCVModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="uploadCVModalLabel">
+                        <i class="fas fa-file-upload me-2"></i>
+                        Crear Perfil Profesional
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="lead mb-4">Completa tu perfil profesional para acceder a oportunidades laborales</p>
+                    
+                    <form id="cvUploadForm">
+                        <!-- Información Personal -->
+                        <div class="job-section">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-user me-2"></i>
+                                Información Personal
+                                <span class="requirement-badge ms-2">Requerido</span>
+                            </h5>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-step">
+                                        <label for="fullName" class="form-label fw-semibold">
+                                            <i class="fas fa-id-card text-primary me-2"></i>
+                                            Nombre completo *
+                                        </label>
+                                        <input type="text" class="form-control" id="fullName" required 
+                                               placeholder="Tu nombre completo como aparece en documentos oficiales">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-step">
+                                        <label for="email" class="form-label fw-semibold">
+                                            <i class="fas fa-envelope text-primary me-2"></i>
+                                            Correo electrónico *
+                                        </label>
+                                        <input type="email" class="form-control" id="email" required 
+                                               placeholder="email@ejemplo.com">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-step">
+                                        <label for="phone" class="form-label fw-semibold">
+                                            <i class="fas fa-phone text-primary me-2"></i>
+                                            Teléfono *
+                                        </label>
+                                        <input type="tel" class="form-control" id="phone" required 
+                                               placeholder="+52 XXX XXX XXXX">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-step">
+                                        <label for="graduationYear" class="form-label fw-semibold">
+                                            <i class="fas fa-graduation-cap text-primary me-2"></i>
+                                            Año de egreso *
+                                        </label>
+                                        <select class="form-select" id="graduationYear" required>
+                                            <option value="">Seleccionar año...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Información Profesional -->
+                        <div class="job-section">
+                            <h5 class="text-success mb-3">
+                                <i class="fas fa-briefcase me-2"></i>
+                                Perfil Profesional
+                                <span class="requirement-badge ms-2">Importante</span>
+                            </h5>
+                            
+                            <div class="job-item">
+                                <div class="d-flex align-items-start">
+                                    <span class="badge bg-success me-3 mt-1">
+                                        <i class="fas fa-user-tie"></i>
+                                    </span>
+                                    <div class="flex-grow-1">
+                                        <label for="professionalSummary" class="form-label fw-semibold">Resumen profesional</label>
+                                        <textarea class="form-control" id="professionalSummary" rows="3" 
+                                                  placeholder="Describe tu experiencia laboral, logros destacados y objetivos profesionales. Ej: Egresado en Comunicación Gráfica con experiencia en diseño digital y manejo de redes sociales..."></textarea>
+                                        <small class="text-muted">Recomendado: 50-150 palabras que destaquen tus fortalezas</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="job-item">
+                                <div class="d-flex align-items-start">
+                                    <span class="badge bg-success me-3 mt-1">
+                                        <i class="fas fa-tools"></i>
+                                    </span>
+                                    <div class="flex-grow-1">
+                                        <label for="skills" class="form-label fw-semibold">Habilidades y competencias</label>
+                                        <input type="text" class="form-control" id="skills" 
+                                               placeholder="Trabajo en equipo, Excel avanzado, Inglés intermedio, Atención al cliente, Photoshop, Redes sociales...">
+                                        <small class="text-muted">Separa cada habilidad con comas. Incluye tanto habilidades técnicas como personales</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Documentos -->
+                        <div class="job-section">
+                            <h5 class="text-warning mb-3">
+                                <i class="fas fa-file-upload me-2"></i>
+                                Documentación
+                                <span class="requirement-badge ms-2">Opcional</span>
+                            </h5>
+                            
+                            <div class="job-item">
+                                <div class="d-flex align-items-start">
+                                    <span class="badge bg-warning me-3 mt-1">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </span>
+                                    <div class="flex-grow-1">
+                                        <label for="cvFile" class="form-label fw-semibold">Curriculum Vitae</label>
+                                        <input type="file" class="form-control" id="cvFile" accept=".pdf" max-size="5242880">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            Formato PDF únicamente, máximo 5MB. Si no tienes CV, no te preocupes, crearemos uno con tu información.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Términos y Condiciones -->
+                        <div class="job-section">
+                            <h5 class="text-info mb-3">
+                                <i class="fas fa-shield-alt me-2"></i>
+                                Consentimiento y Privacidad
+                            </h5>
+                            
+                            <div class="job-item">
+                                <div class="form-check d-flex align-items-start">
+                                    <input class="form-check-input mt-1 me-3" type="checkbox" id="privacyConsent" required>
+                                    <div>
+                                        <label class="form-check-label fw-semibold" for="privacyConsent">
+                                            <i class="fas fa-handshake text-info me-2"></i>
+                                            Acepto compartir mi información con empleadores
+                                        </label>
+                                        <p class="small text-muted mb-0 mt-1">
+                                            Tu información será compartida únicamente con empresas que ofrezcan oportunidades relevantes a tu perfil. 
+                                            Puedes modificar o eliminar tu perfil en cualquier momento.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success" form="cvUploadForm">
+                        <i class="fas fa-save me-2"></i>
+                        Guardar Perfil
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detalle de Empleo -->
+    <div class="modal fade" id="jobDetailModal" tabindex="-1" aria-labelledby="jobDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="jobDetailModalLabel">
+                        <i class="fas fa-briefcase me-2"></i>
+                        Detalles del Empleo
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="jobDetailContent">
+                    <!-- El contenido se cargará dinámicamente -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-outline-warning" id="saveJobBtn">
+                        <i class="fas fa-bookmark me-2"></i>
+                        Guardar
+                    </button>
+                    <button type="button" class="btn btn-primary" id="applyJobBtn">
+                        <i class="fas fa-paper-plane me-2"></i>
+                        Postularme
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="main-footer"></div>
+
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <!-- Chat Bot Toggle Button -->
+    <button class="chatbot-toggle" id="chatbotToggle" aria-label="Abrir chat de ayuda">
+        <i class="fas fa-comments"></i>
+    </button>
+    
+    <!-- Chat Bot Container -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <div>
+                <strong>Asistente Virtual</strong>
+                <div style="font-size: 12px; opacity: 0.8;">Bolsa de Trabajo</div>
+            </div>
+            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+        </div>
+        
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="message bot">
+                ¡Hola! 👋 ¿Buscas empleo o necesitas ayuda con tu perfil profesional? Estoy aquí para apoyarte.
+            </div>
+        </div>
+        
+        <div class="chatbot-input">
+            <input type="text" id="chatInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Back to Top -->
+    <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none" 
+            style="bottom: 2rem; right: 2rem; width: 50px; height: 50px; z-index: 1000;"
+            aria-label="Volver arriba" title="Volver arriba">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="js/script.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/search-simple.js"></script>
+    <script src="js/job-portal.js"></script>
+
+    <!-- Dark Mode Styles & Script -->
+    <style>
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 6rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bs-primary);
+            color: white;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        body.dark-mode {
+            background-color: #1a1a1a !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .bg-light {
+            background-color: #2d2d2d !important;
+        }
+
+        body.dark-mode .card {
+            background-color: #2d2d2d !important;
+            border-color: #404040 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .text-muted {
+            color: #b0b0b0 !important;
+        }
+
+        body.dark-mode .text-dark {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .form-control,
+        body.dark-mode .form-select {
+            background-color: #404040 !important;
+            border-color: #505050 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .modal-content {
+            background-color: #2d2d2d !important;
+            border-color: #404040 !important;
+        }
+        
+        /* Modal Card Styles */
+        .job-item {
+            background: rgba(248, 249, 250, 0.6);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .job-item:hover {
+            background: rgba(248, 249, 250, 0.9);
+            border-left-color: var(--bs-primary);
+            transform: translateX(2px);
+        }
+        
+        .job-section {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .job-section:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .requirement-badge {
+            background: linear-gradient(45deg, #17a2b8, #007bff);
+            color: white;
+            border-radius: 20px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .form-step {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .form-step:hover {
+            border-left-color: var(--bs-success);
+            transform: translateX(3px);
+        }
+        
+        /* Dark mode support for job items */
+        body.dark-mode .job-item {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+            border-color: #404040 !important;
+        }
+        
+        body.dark-mode .job-item:hover {
+            background-color: #3d3d3d !important;
+        }
+        
+        body.dark-mode .job-section {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+            border-color: #404040 !important;
+        }
+        
+        body.dark-mode .form-step {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+            border-color: #404040 !important;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+            
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                body.classList.add('dark-mode');
+                updateDarkModeIcon(true);
+            }
+            
+            darkModeToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                body.classList.toggle('dark-mode');
+                
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('darkMode', 'enabled');
+                    updateDarkModeIcon(true);
+                } else {
+                    localStorage.setItem('darkMode', 'disabled');
+                    updateDarkModeIcon(false);
+                }
+            });
+            
+            function updateDarkModeIcon(isDark) {
+                if (darkModeToggle) {
+                    let icon = darkModeToggle.querySelector('i');
+                    if (icon) {
+                        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

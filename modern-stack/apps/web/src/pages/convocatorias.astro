@@ -1,0 +1,702 @@
+---
+import { Layout } from '@heroes-patria/ui';
+import { siteConfig } from '@heroes-patria/config';
+---
+
+<Layout 
+  title="Convocatorias"
+  description="Convocatorias vigentes del Bachillerato Héroes de la Patria (Héroes de Puebla). Encuentra oportunidades de ingreso, becas, intercambios, proyectos de investigación y concursos académicos."
+  keywords={["convocatorias", "admision", "becas", "concursos", "intercambios", "oportunidades", "heroes patria", "heroes puebla", "estudiantes"]}
+>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 text-white py-24">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Cdefs%3E%3Cpattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"%3E%3Cpath d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100" height="100" fill="url(%23grid)"/%3E%3C/svg%3E')] opacity-30"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <!-- Breadcrumb -->
+        <nav class="flex justify-center mb-8" aria-label="Breadcrumb">
+          <ol class="inline-flex items-center space-x-1 md:space-x-3">
+            <li class="inline-flex items-center">
+              <a href="/" class="text-purple-200 hover:text-white transition-colors">
+                <i class="fas fa-home mr-2"></i>Inicio
+              </a>
+            </li>
+            <li>
+              <div class="flex items-center">
+                <i class="fas fa-chevron-right text-purple-300 mx-3"></i>
+                <span class="text-purple-100">Convocatorias</span>
+              </div>
+            </li>
+          </ol>
+        </nav>
+
+        <!-- Title and Badge -->
+        <div class="mb-6">
+          <span class="inline-flex items-center px-4 py-2 bg-yellow-500/90 text-purple-900 rounded-full text-sm font-semibold mb-4">
+            <i class="fas fa-bullhorn mr-2"></i>
+            Oportunidades Disponibles
+          </span>
+        </div>
+        
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+          <span class="block">Convocatorias</span>
+          <span class="block text-yellow-400">Vigentes</span>
+        </h1>
+        
+        <p class="text-xl md:text-2xl text-purple-100 max-w-3xl mx-auto leading-relaxed">
+          Descubre las oportunidades disponibles para estudiantes, docentes y la comunidad educativa.
+          Tu futuro académico y profesional puede comenzar aquí.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Active Announcements Alert -->
+  <section class="py-6 px-6 bg-gradient-to-r from-green-500 to-green-600 text-white">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-center justify-center text-center">
+        <div class="flex items-center space-x-3">
+          <div class="animate-pulse">
+            <i class="fas fa-bell text-2xl"></i>
+          </div>
+          <div>
+            <span class="font-semibold text-lg">¡3 Convocatorias Activas!</span>
+            <span class="ml-2 text-green-100">Revisa las fechas límite</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter Section -->
+  <section class="py-8 px-6 bg-gray-50 border-b">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex flex-wrap gap-3">
+          <button class="filter-btn active" data-filter="all">
+            <i class="fas fa-th-large mr-2"></i>Todas
+          </button>
+          <button class="filter-btn" data-filter="admision">
+            <i class="fas fa-user-graduate mr-2"></i>Admisión
+          </button>
+          <button class="filter-btn" data-filter="becas">
+            <i class="fas fa-scholarship mr-2"></i>Becas
+          </button>
+          <button class="filter-btn" data-filter="concursos">
+            <i class="fas fa-trophy mr-2"></i>Concursos
+          </button>
+          <button class="filter-btn" data-filter="intercambios">
+            <i class="fas fa-globe mr-2"></i>Intercambios
+          </button>
+          <button class="filter-btn" data-filter="proyectos">
+            <i class="fas fa-lightbulb mr-2"></i>Proyectos
+          </button>
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <div class="flex items-center">
+            <i class="fas fa-sort text-gray-500 mr-2"></i>
+            <select id="sortSelect" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm">
+              <option value="fecha">Fecha límite</option>
+              <option value="titulo">Título</option>
+              <option value="categoria">Categoría</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Announcements -->
+  <section class="py-16 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div id="convocatoriasContainer" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+        <!-- Convocatorias will be loaded here by JavaScript -->
+      </div>
+
+      <!-- No Results -->
+      <div id="noResults" class="hidden text-center py-16">
+        <div class="text-gray-400 text-6xl mb-4">📋</div>
+        <h3 class="text-xl font-semibold text-gray-600 mb-2">No hay convocatorias disponibles</h3>
+        <p class="text-gray-500">Intenta cambiar los filtros o revisa más tarde</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Signup -->
+  <section class="py-16 px-6 bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-6">Mantente Informado</h2>
+      <p class="text-xl mb-8 text-purple-100">
+        Suscríbete para recibir notificaciones sobre nuevas convocatorias
+      </p>
+      
+      <div class="bg-white/10 backdrop-blur-md rounded-xl p-8 border border-white/20">
+        <form class="flex flex-col md:flex-row gap-4 max-w-md mx-auto">
+          <input 
+            type="email" 
+            placeholder="Tu correo electrónico"
+            class="flex-1 px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+          >
+          <button 
+            type="submit"
+            class="px-6 py-3 bg-yellow-500 hover:bg-yellow-400 text-purple-900 font-semibold rounded-lg transition-colors"
+          >
+            <i class="fas fa-bell mr-2"></i>Suscribir
+          </button>
+        </form>
+        <p class="text-sm text-purple-200 mt-4">
+          <i class="fas fa-shield-alt mr-1"></i>
+          No compartimos tu información. Cancela cuando quieras.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-16 px-6 bg-gray-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">
+        Preguntas Frecuentes
+      </h2>
+      
+      <div class="space-y-6">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <h3 class="font-semibold text-lg text-gray-900 mb-3">
+            <i class="fas fa-question-circle text-purple-600 mr-2"></i>
+            ¿Cómo puedo aplicar a una convocatoria?
+          </h3>
+          <p class="text-gray-600">
+            Cada convocatoria incluye un botón de "Ver Detalles" que te llevará a la información completa 
+            con requisitos, documentos necesarios y el proceso de aplicación específico.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <h3 class="font-semibold text-lg text-gray-900 mb-3">
+            <i class="fas fa-question-circle text-purple-600 mr-2"></i>
+            ¿Puedo aplicar a múltiples convocatorias?
+          </h3>
+          <p class="text-gray-600">
+            Sí, puedes aplicar a todas las convocatorias que cumplan con tu perfil académico y profesional, 
+            siempre y cuando cumplas con los requisitos específicos de cada una.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <h3 class="font-semibold text-lg text-gray-900 mb-3">
+            <i class="fas fa-question-circle text-purple-600 mr-2"></i>
+            ¿Qué pasa si pierdo la fecha límite?
+          </h3>
+          <p class="text-gray-600">
+            Las fechas límite son estrictas. Te recomendamos suscribirte a nuestras notificaciones 
+            para estar al tanto de nuevas oportunidades similares.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <h3 class="font-semibold text-lg text-gray-900 mb-3">
+            <i class="fas fa-question-circle text-purple-600 mr-2"></i>
+            ¿Hay apoyo para llenar las aplicaciones?
+          </h3>
+          <p class="text-gray-600">
+            Sí, nuestro departamento de orientación educativa ofrece asesoría gratuita. 
+            Agenda una cita a través del sistema de citas en línea.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+// Convocatorias data
+const convocatorias = [
+  {
+    id: 1,
+    titulo: "Convocatoria de Admisión 2025",
+    descripcion: "Proceso de admisión para nuevo ingreso ciclo escolar 2025-2026. Especialidades en Informática, Contabilidad y Electricidad.",
+    categoria: "admision",
+    fechaLimite: "2024-12-15",
+    fechaPublicacion: "2024-10-01",
+    vigente: true,
+    destacada: true,
+    requisitos: [
+      "Certificado de secundaria",
+      "Acta de nacimiento",
+      "CURP",
+      "Fotografías tamaño infantil"
+    ],
+    beneficios: [
+      "Educación tecnológica de calidad",
+      "Talleres especializados",
+      "Bolsa de trabajo",
+      "Vinculación empresarial"
+    ],
+    documentos: [
+      { nombre: "Convocatoria completa", url: "/documents/convocatoria-admision-2025.pdf" },
+      { nombre: "Ficha de inscripción", url: "/documents/ficha-inscripcion.pdf" }
+    ]
+  },
+  {
+    id: 2,
+    titulo: "Becas de Excelencia Académica",
+    descripcion: "Programa de becas para estudiantes con promedio mínimo de 9.0. Cubre hasta el 100% de gastos escolares.",
+    categoria: "becas",
+    fechaLimite: "2024-11-30",
+    fechaPublicacion: "2024-09-15",
+    vigente: true,
+    destacada: true,
+    requisitos: [
+      "Promedio mínimo 9.0",
+      "Constancia de ingresos familiares",
+      "Carta de motivos",
+      "Recomendación académica"
+    ],
+    beneficios: [
+      "Cobertura del 50% al 100% de gastos",
+      "Apoyo para materiales",
+      "Acceso a programas especiales",
+      "Mentoría académica"
+    ],
+    documentos: [
+      { nombre: "Bases de la convocatoria", url: "/documents/becas-excelencia-2024.pdf" },
+      { nombre: "Formato de solicitud", url: "/documents/solicitud-beca.pdf" }
+    ]
+  },
+  {
+    id: 3,
+    titulo: "Concurso Nacional de Proyectos Tecnológicos",
+    descripcion: "Participa con tu proyecto de innovación tecnológica a nivel nacional. Premios en efectivo hasta $50,000 pesos.",
+    categoria: "concursos",
+    fechaLimite: "2024-12-20",
+    fechaPublicacion: "2024-10-15",
+    vigente: true,
+    destacada: true,
+    requisitos: [
+      "Estudiante activo del plantel",
+      "Proyecto de innovación tecnológica",
+      "Prototipo funcional",
+      "Asesor académico asignado"
+    ],
+    beneficios: [
+      "Primer lugar: $50,000 pesos",
+      "Segundo lugar: $30,000 pesos",
+      "Tercer lugar: $20,000 pesos",
+      "Reconocimiento nacional"
+    ],
+    documentos: [
+      { nombre: "Convocatoria oficial", url: "/documents/concurso-tecnologico-2024.pdf" },
+      { nombre: "Guía de registro", url: "/documents/guia-registro-concurso.pdf" }
+    ]
+  },
+  {
+    id: 4,
+    titulo: "Programa de Intercambio con Canadá",
+    descripcion: "Oportunidad de intercambio académico de un semestre en institutos tecnológicos de Canadá.",
+    categoria: "intercambios",
+    fechaLimite: "2024-11-15",
+    fechaPublicacion: "2024-09-01",
+    vigente: true,
+    destacada: false,
+    requisitos: [
+      "Promedio mínimo 8.5",
+      "Nivel B2 de inglés",
+      "4to semestre en adelante",
+      "Carta de recomendación"
+    ],
+    beneficios: [
+      "Beca completa de manutención",
+      "Vuelos cubiertos",
+      "Experiencia internacional",
+      "Certificación internacional"
+    ],
+    documentos: [
+      { nombre: "Información del programa", url: "/documents/intercambio-canada-2024.pdf" },
+      { nombre: "Formato de aplicación", url: "/documents/aplicacion-intercambio.pdf" }
+    ]
+  },
+  {
+    id: 5,
+    titulo: "Jóvenes Emprendedores 2024",
+    descripcion: "Programa de incubación para proyectos de emprendimiento estudiantil. Financiamiento semilla disponible.",
+    categoria: "proyectos",
+    fechaLimite: "2024-12-10",
+    fechaPublicacion: "2024-10-05",
+    vigente: true,
+    destacada: false,
+    requisitos: [
+      "Equipo de 3-5 estudiantes",
+      "Proyecto de emprendimiento",
+      "Plan de negocios básico",
+      "Validación del mercado"
+    ],
+    beneficios: [
+      "Capacitación empresarial",
+      "Mentoría especializada",
+      "Financiamiento hasta $25,000",
+      "Networking empresarial"
+    ],
+    documentos: [
+      { nombre: "Bases del programa", url: "/documents/jovenes-emprendedores-2024.pdf" },
+      { nombre: "Plantilla plan de negocios", url: "/documents/plantilla-plan-negocios.xlsx" }
+    ]
+  },
+  {
+    id: 6,
+    titulo: "Olimpiada Estatal de Matemáticas",
+    descripcion: "Competencia estatal de matemáticas para estudiantes de educación media superior.",
+    categoria: "concursos",
+    fechaLimite: "2024-11-25",
+    fechaPublicacion: "2024-09-20",
+    vigente: true,
+    destacada: false,
+    requisitos: [
+      "Estudiante regular del plantel",
+      "Promedio mínimo en matemáticas: 9.0",
+      "Recomendación del profesor",
+      "Examen de selección interna"
+    ],
+    beneficios: [
+      "Representar al plantel",
+      "Premios y reconocimientos",
+      "Preparación universitaria",
+      "Certificado de participación"
+    ],
+    documentos: [
+      { nombre: "Temario de estudio", url: "/documents/temario-olimpiada-matematicas.pdf" },
+      { nombre: "Ejemplos de ejercicios", url: "/documents/ejercicios-olimpiada.pdf" }
+    ]
+  }
+];
+
+let filteredConvocatorias = [...convocatorias];
+
+// Utility functions
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('es-MX', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+}
+
+function calculateDaysRemaining(dateString) {
+  const today = new Date();
+  const deadline = new Date(dateString);
+  const diffTime = deadline - today;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+}
+
+function getCategoryInfo(categoria) {
+  const categories = {
+    admision: { color: 'bg-blue-100 text-blue-800', icon: 'fas fa-user-graduate', name: 'Admisión' },
+    becas: { color: 'bg-green-100 text-green-800', icon: 'fas fa-scholarship', name: 'Becas' },
+    concursos: { color: 'bg-yellow-100 text-yellow-800', icon: 'fas fa-trophy', name: 'Concursos' },
+    intercambios: { color: 'bg-purple-100 text-purple-800', icon: 'fas fa-globe', name: 'Intercambios' },
+    proyectos: { color: 'bg-orange-100 text-orange-800', icon: 'fas fa-lightbulb', name: 'Proyectos' }
+  };
+  return categories[categoria] || { color: 'bg-gray-100 text-gray-800', icon: 'fas fa-file-alt', name: 'General' };
+}
+
+function getUrgencyClass(daysRemaining) {
+  if (daysRemaining <= 7) return 'bg-red-500';
+  if (daysRemaining <= 15) return 'bg-yellow-500';
+  return 'bg-green-500';
+}
+
+// Render functions
+function renderConvocatoria(conv) {
+  const categoryInfo = getCategoryInfo(conv.categoria);
+  const daysRemaining = calculateDaysRemaining(conv.fechaLimite);
+  const urgencyClass = getUrgencyClass(daysRemaining);
+  
+  return `
+    <article class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 ${conv.destacada ? 'ring-2 ring-purple-300' : ''}">
+      ${conv.destacada ? `
+        <div class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 text-sm font-medium">
+          <i class="fas fa-star mr-2"></i>Destacada
+        </div>
+      ` : ''}
+      
+      <div class="p-6">
+        <!-- Header -->
+        <div class="flex items-start justify-between mb-4">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${categoryInfo.color}">
+            <i class="${categoryInfo.icon} mr-2"></i>${categoryInfo.name}
+          </span>
+          <div class="flex items-center text-sm text-gray-500">
+            <div class="w-2 h-2 ${urgencyClass} rounded-full mr-2"></div>
+            ${daysRemaining > 0 ? `${daysRemaining} días restantes` : 'Vencida'}
+          </div>
+        </div>
+        
+        <!-- Title and Description -->
+        <h3 class="text-xl font-bold text-gray-900 mb-3">${conv.titulo}</h3>
+        <p class="text-gray-600 text-sm mb-4 line-clamp-3">${conv.descripcion}</p>
+        
+        <!-- Date Info -->
+        <div class="space-y-2 mb-6">
+          <div class="flex items-center text-sm text-gray-500">
+            <i class="fas fa-calendar-alt mr-2 text-purple-600"></i>
+            <span>Fecha límite: ${formatDate(conv.fechaLimite)}</span>
+          </div>
+          <div class="flex items-center text-sm text-gray-500">
+            <i class="fas fa-clock mr-2 text-purple-600"></i>
+            <span>Publicado: ${formatDate(conv.fechaPublicacion)}</span>
+          </div>
+        </div>
+        
+        <!-- Quick Info -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <div class="text-center p-3 bg-gray-50 rounded-lg">
+            <div class="text-lg font-semibold text-purple-600">${conv.requisitos.length}</div>
+            <div class="text-xs text-gray-500">Requisitos</div>
+          </div>
+          <div class="text-center p-3 bg-gray-50 rounded-lg">
+            <div class="text-lg font-semibold text-green-600">${conv.beneficios.length}</div>
+            <div class="text-xs text-gray-500">Beneficios</div>
+          </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="flex gap-3">
+          <button onclick="showConvocatoriaDetails(${conv.id})" 
+                  class="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+            <i class="fas fa-eye mr-2"></i>Ver Detalles
+          </button>
+          <a href="${conv.documentos[0]?.url || '#'}" 
+             class="px-4 py-2 border border-purple-600 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors text-sm">
+            <i class="fas fa-download"></i>
+          </a>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderConvocatorias() {
+  const container = document.getElementById('convocatoriasContainer');
+  const noResults = document.getElementById('noResults');
+  
+  if (filteredConvocatorias.length === 0) {
+    container.innerHTML = '';
+    noResults.classList.remove('hidden');
+  } else {
+    container.innerHTML = filteredConvocatorias.map(conv => renderConvocatoria(conv)).join('');
+    noResults.classList.add('hidden');
+  }
+}
+
+// Filter functions
+function filterConvocatorias(categoria) {
+  if (categoria === 'all') {
+    filteredConvocatorias = [...convocatorias];
+  } else {
+    filteredConvocatorias = convocatorias.filter(conv => conv.categoria === categoria);
+  }
+  sortConvocatorias(document.getElementById('sortSelect').value);
+  renderConvocatorias();
+}
+
+function sortConvocatorias(criteria) {
+  switch (criteria) {
+    case 'fecha':
+      filteredConvocatorias.sort((a, b) => new Date(a.fechaLimite) - new Date(b.fechaLimite));
+      break;
+    case 'titulo':
+      filteredConvocatorias.sort((a, b) => a.titulo.localeCompare(b.titulo));
+      break;
+    case 'categoria':
+      filteredConvocatorias.sort((a, b) => a.categoria.localeCompare(b.categoria));
+      break;
+  }
+  renderConvocatorias();
+}
+
+// Modal functions
+function showConvocatoriaDetails(id) {
+  const conv = convocatorias.find(c => c.id === id);
+  if (!conv) return;
+  
+  const modalHTML = `
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onclick="closeModal(event)">
+      <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <div class="sticky top-0 bg-white border-b p-6 flex items-center justify-between">
+          <h2 class="text-2xl font-bold text-gray-900">${conv.titulo}</h2>
+          <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+        
+        <div class="p-6">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Content -->
+            <div class="lg:col-span-2">
+              <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-3">Descripción</h3>
+                <p class="text-gray-600">${conv.descripcion}</p>
+              </div>
+              
+              <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-3">Requisitos</h3>
+                <ul class="space-y-2">
+                  ${conv.requisitos.map(req => `
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                      <span class="text-gray-600">${req}</span>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+              
+              <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-3">Beneficios</h3>
+                <ul class="space-y-2">
+                  ${conv.beneficios.map(ben => `
+                    <li class="flex items-start">
+                      <i class="fas fa-star text-yellow-500 mr-3 mt-1"></i>
+                      <span class="text-gray-600">${ben}</span>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+              <div class="bg-gray-50 rounded-xl p-6 sticky top-24">
+                <h3 class="text-lg font-semibold mb-4">Información Importante</h3>
+                
+                <div class="space-y-4">
+                  <div>
+                    <label class="text-sm font-medium text-gray-500">Fecha Límite</label>
+                    <div class="text-lg font-semibold text-red-600">${formatDate(conv.fechaLimite)}</div>
+                  </div>
+                  
+                  <div>
+                    <label class="text-sm font-medium text-gray-500">Categoría</label>
+                    <div class="text-lg font-semibold text-gray-900">${getCategoryInfo(conv.categoria).name}</div>
+                  </div>
+                  
+                  <div>
+                    <label class="text-sm font-medium text-gray-500">Estado</label>
+                    <div class="text-lg font-semibold text-green-600">Vigente</div>
+                  </div>
+                </div>
+                
+                <hr class="my-6">
+                
+                <h4 class="text-md font-semibold mb-3">Documentos</h4>
+                <div class="space-y-2">
+                  ${conv.documentos.map(doc => `
+                    <a href="${doc.url}" class="flex items-center p-2 hover:bg-white rounded-lg transition-colors text-sm">
+                      <i class="fas fa-file-pdf text-red-500 mr-3"></i>
+                      <span class="text-gray-700">${doc.nombre}</span>
+                    </a>
+                  `).join('')}
+                </div>
+                
+                <div class="mt-6 space-y-3">
+                  <a href="/contacto" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg font-medium transition-colors text-center block">
+                    <i class="fas fa-question-circle mr-2"></i>Resolver Dudas
+                  </a>
+                  <button onclick="closeModal()" class="w-full border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-3 rounded-lg font-medium transition-colors">
+                    Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(event) {
+  if (event && event.target !== event.currentTarget) return;
+  const modal = document.querySelector('.fixed.inset-0');
+  if (modal) {
+    modal.remove();
+    document.body.style.overflow = 'auto';
+  }
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+  // Filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      // Update active state
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      
+      // Filter convocatorias
+      filterConvocatorias(this.dataset.filter);
+    });
+  });
+  
+  // Sort select
+  document.getElementById('sortSelect').addEventListener('change', function() {
+    sortConvocatorias(this.value);
+  });
+  
+  // Initial render
+  renderConvocatorias();
+});
+
+// Make functions globally available
+window.showConvocatoriaDetails = showConvocatoriaDetails;
+window.closeModal = closeModal;
+</script>
+
+<style>
+  /* Filter buttons */
+  .filter-btn {
+    @apply px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition-colors text-sm font-medium;
+  }
+  
+  .filter-btn.active {
+    @apply bg-purple-600 text-white border-purple-600 hover:bg-purple-700;
+  }
+
+  /* Line clamp utility */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Animation for pulse */
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: .5;
+    }
+  }
+
+  /* Custom transitions */
+  .transition-all {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Glassmorphism effect */
+  .backdrop-blur-md {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+</style>

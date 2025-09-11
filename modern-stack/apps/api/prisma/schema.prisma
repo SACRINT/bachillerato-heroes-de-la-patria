@@ -1,0 +1,178 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Modelo de Usuario para autenticación
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  role      UserRole @default(USER)
+  password  String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  contactMessages ContactMessage[]
+  sessions        UserSession[]
+
+  @@map("users")
+}
+
+model UserSession {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_sessions")
+}
+
+// Modelo para los mensajes de contacto
+model ContactMessage {
+  id        String            @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  type      ContactType       @default(GENERAL)
+  status    MessageStatus     @default(PENDING)
+  response  String?
+  userId    String?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("contact_messages")
+}
+
+// Modelo para quejas y sugerencias
+model ComplaintSuggestion {
+  id          String      @id @default(cuid())
+  name        String
+  email       String
+  type        ComplaintType
+  description String
+  status      MessageStatus @default(PENDING)
+  response    String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("complaints_suggestions")
+}
+
+// Modelo para noticias y eventos
+model News {
+  id          String    @id @default(cuid())
+  title       String
+  content     String
+  excerpt     String?
+  image       String?
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("news")
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  startDate   DateTime
+  endDate     DateTime?
+  location    String?
+  isPublic    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("events")
+}
+
+// Modelo para documentos descargables
+model Document {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  fileName    String
+  originalName String
+  fileSize    Int
+  mimeType    String
+  category    DocumentCategory
+  isPublic    Boolean      @default(true)
+  downloadCount Int        @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("documents")
+}
+
+// Modelo para configuraciones del sistema
+model SystemConfig {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+  type  ConfigType @default(STRING)
+  description String?
+  updatedAt   DateTime @updatedAt
+
+  @@map("system_config")
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  MODERATOR
+  USER
+}
+
+enum ContactType {
+  GENERAL
+  ACADEMIC
+  ADMINISTRATIVE
+  TECHNICAL
+  ADMISSION
+}
+
+enum ComplaintType {
+  COMPLAINT
+  SUGGESTION
+  COMPLIMENT
+}
+
+enum MessageStatus {
+  PENDING
+  IN_PROGRESS  
+  RESOLVED
+  CLOSED
+}
+
+enum DocumentCategory {
+  ACADEMIC
+  ADMINISTRATIVE
+  FORMS
+  MANUALS
+  REGULATIONS
+  OTHER
+}
+
+enum ConfigType {
+  STRING
+  NUMBER
+  BOOLEAN
+  JSON
+}

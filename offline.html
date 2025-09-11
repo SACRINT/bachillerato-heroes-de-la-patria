@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sin conexión - Bachillerato Héroes de la Patria</title>
+    
+    <!-- Inline critical styles for offline page -->
+    <style>
+        :root {
+            --bs-primary: #1976D2;
+            --bs-secondary: #0D47A1;
+            --bs-light: #f8f9fa;
+            --bs-dark: #212529;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .offline-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .offline-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(25, 118, 210, 0.05), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        .offline-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            color: var(--bs-primary);
+            animation: pulse 2s infinite;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .offline-title {
+            color: var(--bs-primary);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .offline-subtitle {
+            color: var(--bs-secondary);
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .offline-message {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .offline-features {
+            background: var(--bs-light);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .offline-features h3 {
+            color: var(--bs-primary);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            color: #555;
+        }
+        
+        .feature-list li::before {
+            content: '✓';
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(25, 118, 210, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--bs-primary);
+            border: 2px solid var(--bs-primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bs-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .connection-status {
+            margin-top: 2rem;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .status-offline {
+            background: #ffe6e6;
+            color: #d32f2f;
+            border: 1px solid #ffcdd2;
+        }
+        
+        .status-checking {
+            background: #fff3e0;
+            color: #f57c00;
+            border: 1px solid #ffcc02;
+        }
+        
+        .status-online {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .brand-info {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .brand-logo {
+            width: 60px;
+            height: 60px;
+            background: var(--bs-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .brand-text {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .offline-container > * {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        .offline-container > *:nth-child(2) { animation-delay: 0.1s; }
+        .offline-container > *:nth-child(3) { animation-delay: 0.2s; }
+        .offline-container > *:nth-child(4) { animation-delay: 0.3s; }
+        .offline-container > *:nth-child(5) { animation-delay: 0.4s; }
+        .offline-container > *:nth-child(6) { animation-delay: 0.5s; }
+        
+        @media (max-width: 768px) {
+            .offline-container {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+            
+            .offline-title {
+                font-size: 2rem;
+            }
+            
+            .offline-icon {
+                font-size: 4rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" href="images/logo-bachillerato-HDLP.webp" type="image/webp">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#1976D2">
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon" id="connectionIcon">📡</div>
+        
+        <h1 class="offline-title">Sin conexión a Internet</h1>
+        <h2 class="offline-subtitle">¡Pero no te preocupes!</h2>
+        
+        <p class="offline-message">
+            Aunque no tienes conexión a Internet en este momento, algunas funciones 
+            de nuestro sitio siguen disponibles gracias a nuestra tecnología PWA.
+        </p>
+        
+        <div class="offline-features">
+            <h3>🚀 Funciones disponibles sin conexión:</h3>
+            <ul class="feature-list">
+                <li>Navegar por páginas ya visitadas</li>
+                <li>Consultar información institucional</li>
+                <li>Usar el asistente virtual (respuestas básicas)</li>
+                <li>Ver contenido guardado en caché</li>
+                <li>Acceder a documentos descargados</li>
+            </ul>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn btn-primary" onclick="checkConnection()">
+                <span>🔄</span> Verificar conexión
+            </button>
+            <a href="/" class="btn btn-secondary">
+                <span>🏠</span> Ir al inicio
+            </a>
+        </div>
+        
+        <div class="connection-status status-offline" id="connectionStatus">
+            <strong>Estado:</strong> Sin conexión a Internet
+        </div>
+        
+        <div class="brand-info">
+            <div class="brand-logo">
+                BGE
+            </div>
+            <p class="brand-text">
+                <strong>Bachillerato General Estatal<br>"Héroes de la Patria"</strong><br>
+                Educación de calidad con valores sólidos<br>
+                Coronel Tito Hernández, Puebla
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Connection status checking
+        let isCheckingConnection = false;
+        
+        function updateConnectionIcon(isOnline) {
+            const icon = document.getElementById('connectionIcon');
+            const status = document.getElementById('connectionStatus');
+            
+            if (isOnline) {
+                icon.textContent = '✅';
+                status.className = 'connection-status status-online';
+                status.innerHTML = '<strong>Estado:</strong> ¡Conexión restaurada! Redirigiendo...';
+                
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                icon.textContent = '📡';
+                status.className = 'connection-status status-offline';
+                status.innerHTML = '<strong>Estado:</strong> Sin conexión a Internet';
+            }
+        }
+        
+        function checkConnection() {
+            if (isCheckingConnection) return;
+            
+            isCheckingConnection = true;
+            const icon = document.getElementById('connectionIcon');
+            const status = document.getElementById('connectionStatus');
+            const button = document.querySelector('.btn-primary');
+            
+            // Update UI to show checking state
+            icon.textContent = '🔄';
+            status.className = 'connection-status status-checking';
+            status.innerHTML = '<strong>Estado:</strong> Verificando conexión...';
+            button.disabled = true;
+            button.innerHTML = '<span>⏳</span> Verificando...';
+            
+            // Try to fetch a small resource to check connectivity
+            fetch('/', { 
+                method: 'HEAD', 
+                cache: 'no-cache',
+                mode: 'no-cors'
+            })
+            .then(() => {
+                updateConnectionIcon(true);
+            })
+            .catch(() => {
+                updateConnectionIcon(false);
+            })
+            .finally(() => {
+                isCheckingConnection = false;
+                button.disabled = false;
+                button.innerHTML = '<span>🔄</span> Verificar conexión';
+            });
+        }
+        
+        // Auto-check connection periodically
+        function startAutoCheck() {
+            setInterval(() => {
+                if (!isCheckingConnection) {
+                    fetch('/', { 
+                        method: 'HEAD', 
+                        cache: 'no-cache',
+                        mode: 'no-cors',
+                        signal: AbortSignal.timeout(5000)
+                    })
+                    .then(() => {
+                        updateConnectionIcon(true);
+                    })
+                    .catch(() => {
+                        // Still offline, do nothing
+                    });
+                }
+            }, 30000); // Check every 30 seconds
+        }
+        
+        // Listen for online/offline events
+        window.addEventListener('online', () => {
+            updateConnectionIcon(true);
+        });
+        
+        window.addEventListener('offline', () => {
+            updateConnectionIcon(false);
+        });
+        
+        // Start auto-checking after page load
+        window.addEventListener('load', () => {
+            startAutoCheck();
+            
+            // Initial check after a short delay
+            setTimeout(checkConnection, 2000);
+        });
+        
+        // Service Worker communication
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data && event.data.type === 'CACHE_UPDATED') {
+                    const status = document.getElementById('connectionStatus');
+                    status.className = 'connection-status status-online';
+                    status.innerHTML = '<strong>Actualización:</strong> Contenido actualizado en segundo plano';
+                }
+            });
+        }
+        
+        // PWA install prompt (if offline page is accessed as standalone)
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            
+            const installButton = document.createElement('button');
+            installButton.className = 'btn btn-secondary';
+            installButton.innerHTML = '<span>📱</span> Instalar App';
+            installButton.onclick = () => {
+                e.prompt();
+            };
+            
+            document.querySelector('.button-group').appendChild(installButton);
+        });
+    </script>
+</body>
+</html>

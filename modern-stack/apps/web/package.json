@@ -1,0 +1,40 @@
+{
+  "name": "@heroes-patria/web",
+  "type": "module",
+  "version": "2.0.0",
+  "scripts": {
+    "dev": "astro dev --port 4321",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "type-check": "astro check",
+    "lint": "echo \"Linting web app...\"",
+    "test": "echo \"Testing web app...\"",
+    "analyze": "npx vite-bundle-analyzer dist"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.3.1",
+    "@astrojs/node": "^7.0.1",
+    "@astrojs/tailwind": "^5.0.4",
+    "@astrojs/sitemap": "^3.0.3",
+    "@astrojs/partytown": "^2.0.3",
+    "astro": "^4.0.6",
+    "astro-compress": "^2.2.0",
+    "tailwindcss": "^3.3.6",
+    "@tailwindcss/typography": "^0.5.10",
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "astro-icon": "^0.8.2",
+    "@astrojs/image": "^0.18.2",
+    "sharp": "^0.33.0",
+    "@heroes-patria/ui": "workspace:*",
+    "@heroes-patria/config": "workspace:*",
+    "@heroes-patria/types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.2",
+    "@types/node": "^20.10.4",
+    "vite-bundle-analyzer": "^0.7.0"
+  }
+}

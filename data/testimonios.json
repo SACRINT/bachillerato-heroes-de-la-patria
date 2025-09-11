@@ -1,0 +1,32 @@
+﻿[
+    {
+        "nombre": "Ana Pérez",
+        "texto": "El Bachillerato Héroes de la Patria me dio las herramientas y la confianza para seguir mis estudios universitarios en Ingeniería. Los maestros siempre estuvieron ahí para apoyarnos.",
+        "imagen": "images/testimonios/ana_perez.jpeg", 
+        "infoExtra": "Generación 2019-2022, Estudiante de Ingeniería Civil"
+    },
+    {
+        "nombre": "Carlos López",
+        "texto": "Gracias a la capacitación en Preparación de Alimentos, pude iniciar mi propio pequeño negocio. Aprendí mucho sobre técnicas y también sobre emprendimiento.",
+        "imagen": "images/testimonios/carlos_lopez.jpeg",
+        "infoExtra": "Generación 2020-2023, Emprendedor Gastronómico"
+    },
+    {
+        "nombre": "Sofía Ramírez",
+        "texto": "Lo que más valoro de mi tiempo aquí fue el ambiente de compañerismo y el enfoque práctico de las clases. La formación en Comunicación Gráfica me abrió muchas puertas.",
+        "imagen": "images/testimonios/sofia_ramirez.jpeg",
+        "infoExtra": "Generación 2018-2021, Diseñadora Gráfica Jr."
+    },
+    {
+        "nombre": "Luis Hernández",
+        "texto": "Los proyectos CTIM fueron desafiantes pero increíblemente formativos. Recomiendo ampliamente este bachillerato.",
+        "imagen": "images/testimonios/luis_hernandez.jpeg",
+        "infoExtra": "Generación 2019-2022, Estudiante de Mecatrónica"
+    },
+    {
+        "nombre": "Elena Torres",
+        "texto": "El apoyo de los tutores y la calidad de la enseñanza me prepararon excelentemente para la universidad y la vida profesional.",
+        "imagen": "images/testimonios/elena_torres.jpeg",
+        "infoExtra": "Generación 2017-2020, Enfermera Profesional"
+    }
+]

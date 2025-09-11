@@ -1,0 +1,195 @@
+---
+import { Image } from 'astro:assets';
+
+export interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  quality?: number;
+  format?: 'avif' | 'webp' | 'jpeg' | 'png';
+  loading?: 'lazy' | 'eager';
+  decoding?: 'async' | 'sync' | 'auto';
+  class?: string;
+  sizes?: string;
+  densities?: number[];
+  widths?: number[];
+  aspectRatio?: string | number;
+  fit?: 'cover' | 'contain' | 'fill' | 'inside' | 'outside';
+  position?: string;
+  background?: string;
+  placeholder?: 'blur' | 'none';
+}
+
+const {
+  src,
+  alt,
+  width = 800,
+  height = 600,
+  quality = 85,
+  format = 'webp',
+  loading = 'lazy',
+  decoding = 'async',
+  class: className = '',
+  sizes,
+  densities = [1, 2],
+  widths,
+  aspectRatio,
+  fit = 'cover',
+  position = 'center',
+  background,
+  placeholder = 'blur',
+  ...rest
+} = Astro.props;
+
+// Generate responsive widths if not provided
+const responsiveWidths = widths || [
+  Math.round(width * 0.5),  // 50%
+  Math.round(width * 0.75), // 75%
+  width,                    // 100%
+  Math.round(width * 1.25), // 125%
+  Math.round(width * 1.5),  // 150%
+].filter((w, i, arr) => arr.indexOf(w) === i); // Remove duplicates
+
+// Generate sizes attribute if not provided
+const responsiveSizes = sizes || [
+  '(max-width: 640px) 100vw',
+  '(max-width: 768px) 75vw',
+  '(max-width: 1024px) 50vw',
+  '33vw'
+].join(', ');
+
+// Determine if this is a local or external image
+const isExternalImage = src.startsWith('http') || src.startsWith('//');
+
+// For external images, we'll use a regular img tag
+// For local images, we'll use Astro's Image component
+---
+
+{isExternalImage ? (
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    decoding={decoding}
+    class={`optimized-image ${className}`}
+    sizes={responsiveSizes}
+    {...rest}
+  />
+) : (
+  <Image
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    quality={quality}
+    format={format}
+    loading={loading}
+    decoding={decoding}
+    class={`optimized-image ${className}`}
+    sizes={responsiveSizes}
+    widths={responsiveWidths}
+    densities={densities}
+    aspectRatio={aspectRatio}
+    fit={fit}
+    position={position}
+    background={background}
+    {...rest}
+  />
+)}
+
+<style>
+  .optimized-image {
+    /* Prevent layout shift */
+    display: block;
+    max-width: 100%;
+    height: auto;
+    
+    /* Smooth loading transition */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .optimized-image[loading="lazy"] {
+    /* Add a subtle blur effect while loading */
+    filter: blur(0.5px);
+    transition: filter 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  }
+  
+  .optimized-image.loaded,
+  .optimized-image[loading="eager"] {
+    opacity: 1;
+    filter: none;
+  }
+  
+  /* Aspect ratio utility classes */
+  .aspect-square { aspect-ratio: 1 / 1; }
+  .aspect-video { aspect-ratio: 16 / 9; }
+  .aspect-4-3 { aspect-ratio: 4 / 3; }
+  .aspect-3-2 { aspect-ratio: 3 / 2; }
+  .aspect-golden { aspect-ratio: 1.618 / 1; }
+  
+  /* Object fit utilities */
+  .object-cover { object-fit: cover; }
+  .object-contain { object-fit: contain; }
+  .object-fill { object-fit: fill; }
+  .object-scale-down { object-fit: scale-down; }
+  .object-none { object-fit: none; }
+  
+  /* Object position utilities */
+  .object-center { object-position: center; }
+  .object-top { object-position: top; }
+  .object-bottom { object-position: bottom; }
+  .object-left { object-position: left; }
+  .object-right { object-position: right; }
+</style>
+
+<script>
+  // Intersection Observer for lazy loading animation
+  if ('IntersectionObserver' in window) {
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target as HTMLImageElement;
+          
+          // Add loaded class when image enters viewport
+          if (img.complete) {
+            img.classList.add('loaded');
+          } else {
+            img.addEventListener('load', () => {
+              img.classList.add('loaded');
+            });
+          }
+          
+          observer.unobserve(img);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '50px 0px'
+    });
+    
+    // Observe all optimized images
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.optimized-image[loading="lazy"]').forEach(img => {
+        imageObserver.observe(img);
+      });
+    });
+  }
+  
+  // Fallback for browsers without Intersection Observer
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.optimized-image').forEach(img => {
+      const image = img as HTMLImageElement;
+      if (image.complete || image.loading === 'eager') {
+        image.classList.add('loaded');
+      } else {
+        image.addEventListener('load', () => {
+          image.classList.add('loaded');
+        });
+      }
+    });
+  });
+</script>

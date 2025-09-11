@@ -1,0 +1,686 @@
+---
+import { Layout } from '@heroes-patria/ui';
+import { siteConfig } from '@heroes-patria/config';
+---
+
+<Layout 
+  title="Oferta Educativa"
+  description="Plan de estudios del Bachillerato Héroes de la Patria (Héroes de Puebla). 6 semestres con formación integral y especialidades técnicas en Informática, Contabilidad y Electricidad."
+  keywords={["plan de estudios", "bachillerato general", "educacion integral", "capacitacion trabajo", "informatica", "contabilidad", "electricidad", "admision", "heroes patria", "heroes puebla"]}
+>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white py-24">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Cdefs%3E%3Cpattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"%3E%3Cpath d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100" height="100" fill="url(%23grid)"/%3E%3C/svg%3E')] opacity-30"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        
+        <div class="order-2 lg:order-1">
+          <!-- Breadcrumb -->
+          <nav class="mb-6" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2 text-sm">
+              <li><a href="/" class="text-gray-300 hover:text-white transition-colors duration-200">Inicio</a></li>
+              <li><i class="fas fa-chevron-right text-gray-400 mx-2"></i></li>
+              <li><span class="text-white font-semibold">Oferta Educativa</span></li>
+            </ol>
+          </nav>
+          
+          <!-- Title -->
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            <i class="fas fa-graduation-cap mr-4 text-secondary-400"></i>
+            Oferta Educativa
+          </h1>
+          
+          <p class="text-xl text-gray-200 mb-8 leading-relaxed">
+            Bachillerato General Estatal con formación integral, modelo educativo por competencias y capacitación técnica especializada.
+          </p>
+          
+          <!-- Navigation Badges -->
+          <div class="flex flex-wrap gap-3 mb-8">
+            <a href="#modelo-educativo" class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full transition-all duration-300 text-sm font-semibold">
+              <i class="fas fa-lightbulb mr-2"></i>
+              Modelo Educativo
+            </a>
+            <a href="#plan-estudios" class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full transition-all duration-300 text-sm font-semibold">
+              <i class="fas fa-book mr-2"></i>
+              Plan de Estudios
+            </a>
+            <a href="#especialidades" class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full transition-all duration-300 text-sm font-semibold">
+              <i class="fas fa-tools mr-2"></i>
+              Especialidades
+            </a>
+            <a href="#admision" class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full transition-all duration-300 text-sm font-semibold">
+              <i class="fas fa-user-plus mr-2"></i>
+              Admisión
+            </a>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="grid grid-cols-3 gap-4">
+            <div class="text-center p-4 glass rounded-xl">
+              <h3 class="text-2xl font-bold text-secondary-400 mb-1">6</h3>
+              <p class="text-sm text-gray-300">Semestres</p>
+            </div>
+            <div class="text-center p-4 glass rounded-xl">
+              <h3 class="text-2xl font-bold text-secondary-400 mb-1">3</h3>
+              <p class="text-sm text-gray-300">Especialidades</p>
+            </div>
+            <div class="text-center p-4 glass rounded-xl">
+              <h3 class="text-2xl font-bold text-secondary-400 mb-1">100%</h3>
+              <p class="text-sm text-gray-300">Integral</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="order-1 lg:order-2 text-center">
+          <div class="relative group">
+            <div class="w-80 h-80 bg-gradient-to-br from-secondary-400 to-secondary-600 rounded-full mx-auto flex items-center justify-center shadow-2xl group-hover:scale-105 transition-transform duration-500">
+              <i class="fas fa-book-open text-8xl text-white opacity-90"></i>
+            </div>
+            <div class="absolute -bottom-4 -right-4 bg-secondary-500 text-primary-900 p-4 rounded-xl shadow-xl">
+              <div class="text-sm font-semibold">📚 Educación</div>
+              <div class="text-2xl font-bold">Integral</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modelo Educativo -->
+  <section id="modelo-educativo" class="py-20 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">Nuestro Modelo Educativo</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">Formación integral basada en competencias para el desarrollo del estudiante del siglo XXI</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+        <!-- Enfoque Pedagógico -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg">
+          <h3 class="text-2xl font-bold text-primary-600 dark:text-primary-400 mb-6 flex items-center">
+            <i class="fas fa-brain mr-3 text-3xl"></i>
+            Enfoque por Competencias
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300 text-lg mb-6 leading-relaxed">
+            Nuestro modelo educativo se fundamenta en el desarrollo de competencias genéricas, disciplinares y profesionales que preparan a los estudiantes para los retos del mundo actual.
+          </p>
+          <div class="space-y-4">
+            <div class="flex items-center">
+              <i class="fas fa-check-circle text-green-500 mr-3 text-xl"></i>
+              <span class="text-gray-700 dark:text-gray-300">Aprendizaje significativo y contextualizado</span>
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-check-circle text-green-500 mr-3 text-xl"></i>
+              <span class="text-gray-700 dark:text-gray-300">Desarrollo del pensamiento crítico</span>
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-check-circle text-green-500 mr-3 text-xl"></i>
+              <span class="text-gray-700 dark:text-gray-300">Formación en valores universales</span>
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-check-circle text-green-500 mr-3 text-xl"></i>
+              <span class="text-gray-700 dark:text-gray-300">Metodología activa y participativa</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metodología Activa -->
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 text-center">
+          <div class="w-24 h-24 bg-primary-500 rounded-full mx-auto mb-6 flex items-center justify-center">
+            <i class="fas fa-users-cog text-white text-3xl"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-primary-600 dark:text-primary-400 mb-4">Metodología Activa</h3>
+          <p class="text-gray-600 dark:text-gray-300 text-lg">
+            El estudiante es protagonista de su aprendizaje a través de proyectos, trabajo colaborativo y resolución de problemas reales.
+          </p>
+        </div>
+      </div>
+
+      <!-- Pilares del Modelo -->
+      <div class="mb-16">
+        <h3 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-12">Pilares de Nuestra Educación</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <!-- Excelencia Académica -->
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+            <div class="w-16 h-16 bg-blue-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <i class="fas fa-book text-white text-xl"></i>
+            </div>
+            <h4 class="text-lg font-bold text-blue-600 dark:text-blue-400 mb-3">Excelencia Académica</h4>
+            <p class="text-gray-600 dark:text-gray-300 text-sm">Formación rigurosa en las disciplinas fundamentales</p>
+          </div>
+
+          <!-- Formación en Valores -->
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+            <div class="w-16 h-16 bg-green-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <i class="fas fa-heart text-white text-xl"></i>
+            </div>
+            <h4 class="text-lg font-bold text-green-600 dark:text-green-400 mb-3">Formación en Valores</h4>
+            <p class="text-gray-600 dark:text-gray-300 text-sm">Desarrollo del carácter y la ética personal</p>
+          </div>
+
+          <!-- Capacitación Laboral -->
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+            <div class="w-16 h-16 bg-yellow-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <i class="fas fa-tools text-white text-xl"></i>
+            </div>
+            <h4 class="text-lg font-bold text-yellow-600 dark:text-yellow-400 mb-3">Capacitación Laboral</h4>
+            <p class="text-gray-600 dark:text-gray-300 text-sm">Preparación práctica para el mundo del trabajo</p>
+          </div>
+
+          <!-- Ciudadanía Global -->
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+            <div class="w-16 h-16 bg-cyan-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <i class="fas fa-globe text-white text-xl"></i>
+            </div>
+            <h4 class="text-lg font-bold text-cyan-600 dark:text-cyan-400 mb-3">Ciudadanía Global</h4>
+            <p class="text-gray-600 dark:text-gray-300 text-sm">Conciencia social y responsabilidad comunitaria</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Competencias Desarrolladas -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg">
+        <h3 class="text-2xl font-bold text-center text-primary-600 dark:text-primary-400 mb-8">
+          <i class="fas fa-medal mr-3"></i>
+          Competencias que Desarrollamos
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h4 class="text-lg font-bold text-green-600 dark:text-green-400 mb-4">Competencias Genéricas:</h4>
+            <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+              <li class="flex items-start"><i class="fas fa-check text-green-500 mr-2 mt-1"></i>Autodeterminación y cuidado de sí</li>
+              <li class="flex items-start"><i class="fas fa-check text-green-500 mr-2 mt-1"></i>Expresión y comunicación efectiva</li>
+              <li class="flex items-start"><i class="fas fa-check text-green-500 mr-2 mt-1"></i>Pensamiento crítico y creativo</li>
+              <li class="flex items-start"><i class="fas fa-check text-green-500 mr-2 mt-1"></i>Aprendizaje autónomo</li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-lg font-bold text-blue-600 dark:text-blue-400 mb-4">Competencias Disciplinares:</h4>
+            <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+              <li class="flex items-start"><i class="fas fa-check text-blue-500 mr-2 mt-1"></i>Matemáticas aplicadas</li>
+              <li class="flex items-start"><i class="fas fa-check text-blue-500 mr-2 mt-1"></i>Ciencias experimentales</li>
+              <li class="flex items-start"><i class="fas fa-check text-blue-500 mr-2 mt-1"></i>Ciencias sociales y humanidades</li>
+              <li class="flex items-start"><i class="fas fa-check text-blue-500 mr-2 mt-1"></i>Comunicación y lenguaje</li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-lg font-bold text-purple-600 dark:text-purple-400 mb-4">Competencias Profesionales:</h4>
+            <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+              <li class="flex items-start"><i class="fas fa-check text-purple-500 mr-2 mt-1"></i>Capacitación técnica especializada</li>
+              <li class="flex items-start"><i class="fas fa-check text-purple-500 mr-2 mt-1"></i>Habilidades laborales</li>
+              <li class="flex items-start"><i class="fas fa-check text-purple-500 mr-2 mt-1"></i>Emprendimiento e innovación</li>
+              <li class="flex items-start"><i class="fas fa-check text-purple-500 mr-2 mt-1"></i>Trabajo en equipo efectivo</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Plan de Estudios -->
+  <section id="plan-estudios" class="py-20 bg-white dark:bg-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">Plan de Estudios</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300">Estructura curricular de 6 semestres con formación básica y especializada</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+        <!-- Semestre 1 -->
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-600 rounded-2xl p-6 shadow-lg">
+          <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-blue-500 rounded-full mx-auto mb-4 flex items-center justify-content font-bold text-white text-xl">
+              1
+            </div>
+            <h3 class="text-xl font-bold text-blue-600 dark:text-blue-400">Primer Semestre</h3>
+          </div>
+          <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <li>• Matemáticas I</li>
+            <li>• Química I</li>
+            <li>• Ética I</li>
+            <li>• Metodología de la Investigación</li>
+            <li>• Taller de Lectura y Redacción I</li>
+            <li>• Lengua Adicional al Español I</li>
+            <li>• Informática I</li>
+          </ul>
+        </div>
+
+        <!-- Semestre 2 -->
+        <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-700 dark:to-gray-600 rounded-2xl p-6 shadow-lg">
+          <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-green-500 rounded-full mx-auto mb-4 flex items-center justify-content font-bold text-white text-xl">
+              2
+            </div>
+            <h3 class="text-xl font-bold text-green-600 dark:text-green-400">Segundo Semestre</h3>
+          </div>
+          <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <li>• Matemáticas II</li>
+            <li>• Química II</li>
+            <li>• Ética II</li>
+            <li>• Historia de México I</li>
+            <li>• Taller de Lectura y Redacción II</li>
+            <li>• Lengua Adicional al Español II</li>
+            <li>• Informática II</li>
+          </ul>
+        </div>
+
+        <!-- Semestre 3 -->
+        <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-gray-700 dark:to-gray-600 rounded-2xl p-6 shadow-lg">
+          <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-purple-500 rounded-full mx-auto mb-4 flex items-center justify-content font-bold text-white text-xl">
+              3
+            </div>
+            <h3 class="text-xl font-bold text-purple-600 dark:text-purple-400">Tercer Semestre</h3>
+          </div>
+          <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <li>• Matemáticas III</li>
+            <li>• Biología I</li>
+            <li>• Física I</li>
+            <li>• Historia de México II</li>
+            <li>• Literatura I</li>
+            <li>• Lengua Adicional al Español III</li>
+            <li>• <strong>Capacitación para el Trabajo I</strong></li>
+          </ul>
+        </div>
+
+        <!-- Semestre 4 -->
+        <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-gray-700 dark:to-gray-600 rounded-2xl p-6 shadow-lg">
+          <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-orange-500 rounded-full mx-auto mb-4 flex items-center justify-content font-bold text-white text-xl">
+              4
+            </div>
+            <h3 class="text-xl font-bold text-orange-600 dark:text-orange-400">Cuarto Semestre</h3>
+          </div>
+          <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <li>• Matemáticas IV</li>
+            <li>• Biología II</li>
+            <li>• Física II</li>
+            <li>• Estructura Socioeconómica de México</li>
+            <li>• Literatura II</li>
+            <li>• Lengua Adicional al Español IV</li>
+            <li>• <strong>Capacitación para el Trabajo II</strong></li>
+          </ul>
+        </div>
+
+        <!-- Semestre 5 -->
+        <div class="bg-gradient-to-br from-red-50 to-red-100 dark:from-gray-700 dark:to-gray-600 rounded-2xl p-6 shadow-lg">
+          <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-red-500 rounded-full mx-auto mb-4 flex items-center justify-content font-bold text-white text-xl">
+              5
+            </div>
+            <h3 class="text-xl font-bold text-red-600 dark:text-red-400">Quinto Semestre</h3>
+          </div>
+          <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <li>• Geografía</li>
+            <li>• Historia Universal Contemporánea</li>
+            <li>• Matemáticas V</li>
+            <li>• Ciencias de la Salud I</li>
+            <li>• Taller de Análisis de Textos Literarios I</li>
+            <li>• <strong>Capacitación para el Trabajo III</strong></li>
+            <li>• Orientación Educativa V</li>
+          </ul>
+        </div>
+
+        <!-- Semestre 6 -->
+        <div class="bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-gray-700 dark:to-gray-600 rounded-2xl p-6 shadow-lg">
+          <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-cyan-500 rounded-full mx-auto mb-4 flex items-center justify-content font-bold text-white text-xl">
+              6
+            </div>
+            <h3 class="text-xl font-bold text-cyan-600 dark:text-cyan-400">Sexto Semestre</h3>
+          </div>
+          <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <li>• Filosofía</li>
+            <li>• Ecología y Medio Ambiente</li>
+            <li>• Matemáticas VI</li>
+            <li>• Ciencias de la Salud II</li>
+            <li>• Taller de Análisis de Textos Literarios II</li>
+            <li>• <strong>Capacitación para el Trabajo IV</strong></li>
+            <li>• Orientación Educativa VI</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Especialidades Técnicas -->
+  <section id="especialidades" class="py-20 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">Capacitación para el Trabajo</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300">Especialidades técnicas que te preparan para el mundo laboral</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Informática -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-8 text-white text-center">
+            <i class="fas fa-laptop-code text-6xl mb-4"></i>
+            <h3 class="text-2xl font-bold">Informática</h3>
+          </div>
+          <div class="p-8">
+            <p class="text-gray-600 dark:text-gray-300 mb-6">
+              Desarrolla habilidades en programación, diseño web, redes y mantenimiento de equipos computacionales.
+            </p>
+            <h4 class="font-bold text-gray-900 dark:text-white mb-4">Competencias que desarrollas:</h4>
+            <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-300 mb-6">
+              <li class="flex items-center"><i class="fas fa-code text-blue-500 mr-2"></i> Programación básica</li>
+              <li class="flex items-center"><i class="fas fa-desktop text-blue-500 mr-2"></i> Soporte técnico</li>
+              <li class="flex items-center"><i class="fas fa-globe text-blue-500 mr-2"></i> Diseño web</li>
+              <li class="flex items-center"><i class="fas fa-network-wired text-blue-500 mr-2"></i> Redes de computadoras</li>
+              <li class="flex items-center"><i class="fas fa-database text-blue-500 mr-2"></i> Bases de datos</li>
+            </ul>
+            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+              <p class="text-blue-800 dark:text-blue-200 font-semibold text-sm">
+                <i class="fas fa-certificate mr-2"></i>
+                Certificación técnica reconocida por la SEP
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contabilidad -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="bg-gradient-to-br from-green-500 to-green-600 p-8 text-white text-center">
+            <i class="fas fa-calculator text-6xl mb-4"></i>
+            <h3 class="text-2xl font-bold">Contabilidad</h3>
+          </div>
+          <div class="p-8">
+            <p class="text-gray-600 dark:text-gray-300 mb-6">
+              Aprende a manejar registros contables, elaborar estados financieros y aplicar la normatividad fiscal.
+            </p>
+            <h4 class="font-bold text-gray-900 dark:text-white mb-4">Competencias que desarrollas:</h4>
+            <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-300 mb-6">
+              <li class="flex items-center"><i class="fas fa-file-invoice-dollar text-green-500 mr-2"></i> Registros contables</li>
+              <li class="flex items-center"><i class="fas fa-chart-line text-green-500 mr-2"></i> Estados financieros</li>
+              <li class="flex items-center"><i class="fas fa-receipt text-green-500 mr-2"></i> Facturación electrónica</li>
+              <li class="flex items-center"><i class="fas fa-coins text-green-500 mr-2"></i> Nóminas y impuestos</li>
+              <li class="flex items-center"><i class="fas fa-balance-scale text-green-500 mr-2"></i> Normatividad fiscal</li>
+            </ul>
+            <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+              <p class="text-green-800 dark:text-green-200 font-semibold text-sm">
+                <i class="fas fa-certificate mr-2"></i>
+                Certificación técnica reconocida por la SEP
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Electricidad -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 p-8 text-white text-center">
+            <i class="fas fa-bolt text-6xl mb-4"></i>
+            <h3 class="text-2xl font-bold">Electricidad</h3>
+          </div>
+          <div class="p-8">
+            <p class="text-gray-600 dark:text-gray-300 mb-6">
+              Domina las instalaciones eléctricas residenciales e industriales con enfoque en seguridad y eficiencia.
+            </p>
+            <h4 class="font-bold text-gray-900 dark:text-white mb-4">Competencias que desarrollas:</h4>
+            <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-300 mb-6">
+              <li class="flex items-center"><i class="fas fa-home text-yellow-500 mr-2"></i> Instalaciones residenciales</li>
+              <li class="flex items-center"><i class="fas fa-industry text-yellow-500 mr-2"></i> Sistemas industriales</li>
+              <li class="flex items-center"><i class="fas fa-tools text-yellow-500 mr-2"></i> Mantenimiento preventivo</li>
+              <li class="flex items-center"><i class="fas fa-shield-alt text-yellow-500 mr-2"></i> Normas de seguridad</li>
+              <li class="flex items-center"><i class="fas fa-leaf text-yellow-500 mr-2"></i> Eficiencia energética</li>
+            </ul>
+            <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
+              <p class="text-yellow-800 dark:text-yellow-200 font-semibold text-sm">
+                <i class="fas fa-certificate mr-2"></i>
+                Certificación técnica reconocida por la SEP
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Beneficios de la Capacitación -->
+      <div class="mt-16 bg-gradient-to-r from-primary-600 to-primary-800 rounded-2xl p-8 lg:p-12 text-white">
+        <div class="text-center mb-8">
+          <h3 class="text-2xl md:text-3xl font-bold mb-4">Ventajas de Nuestra Capacitación Técnica</h3>
+          <p class="text-lg text-blue-100">Preparación práctica para el mundo laboral con certificación oficial</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="text-center">
+            <i class="fas fa-briefcase text-secondary-400 text-3xl mb-4"></i>
+            <h4 class="font-bold mb-2">Inserción Laboral</h4>
+            <p class="text-blue-100 text-sm">Habilidades demandadas en el mercado de trabajo</p>
+          </div>
+          <div class="text-center">
+            <i class="fas fa-certificate text-secondary-400 text-3xl mb-4"></i>
+            <h4 class="font-bold mb-2">Certificación SEP</h4>
+            <p class="text-blue-100 text-sm">Validez oficial en todo el territorio nacional</p>
+          </div>
+          <div class="text-center">
+            <i class="fas fa-cogs text-secondary-400 text-3xl mb-4"></i>
+            <h4 class="font-bold mb-2">Práctica Real</h4>
+            <p class="text-blue-100 text-sm">Talleres equipados con tecnología actual</p>
+          </div>
+          <div class="text-center">
+            <i class="fas fa-graduation-cap text-secondary-400 text-3xl mb-4"></i>
+            <h4 class="font-bold mb-2">Doble Propósito</h4>
+            <p class="text-blue-100 text-sm">Bachillerato + capacitación técnica</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proceso de Admisión -->
+  <section id="admision" class="py-20 bg-white dark:bg-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">Proceso de Admisión</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300">Tu camino hacia la educación de calidad inicia aquí</p>
+      </div>
+
+      <!-- Timeline del Proceso -->
+      <div class="mb-16">
+        <div class="max-w-4xl mx-auto">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Paso 1 -->
+            <div class="text-center">
+              <div class="w-16 h-16 bg-blue-500 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-xl">
+                1
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Preinscripción</h3>
+              <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">Marzo - Abril</p>
+              <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <p class="text-blue-800 dark:text-blue-200 text-sm">Registro en línea a través del sistema SABES</p>
+              </div>
+            </div>
+
+            <!-- Paso 2 -->
+            <div class="text-center">
+              <div class="w-16 h-16 bg-green-500 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-xl">
+                2
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Examen</h3>
+              <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">Mayo</p>
+              <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                <p class="text-green-800 dark:text-green-200 text-sm">Examen CENEVAL o aplicado por la institución</p>
+              </div>
+            </div>
+
+            <!-- Paso 3 -->
+            <div class="text-center">
+              <div class="w-16 h-16 bg-orange-500 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-xl">
+                3
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Resultados</h3>
+              <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">Junio</p>
+              <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
+                <p class="text-orange-800 dark:text-orange-200 text-sm">Publicación de resultados y lista de aceptados</p>
+              </div>
+            </div>
+
+            <!-- Paso 4 -->
+            <div class="text-center">
+              <div class="w-16 h-16 bg-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-xl">
+                4
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Inscripción</h3>
+              <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">Julio - Agosto</p>
+              <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+                <p class="text-purple-800 dark:text-purple-200 text-sm">Entrega de documentos y pago de inscripción</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Requisitos -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <!-- Requisitos de Ingreso -->
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-600 rounded-2xl p-8">
+          <h3 class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-6 flex items-center">
+            <i class="fas fa-clipboard-list mr-3"></i>
+            Requisitos de Ingreso
+          </h3>
+          <ul class="space-y-4 text-gray-700 dark:text-gray-300">
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+              <span><strong>Certificado de Secundaria</strong> - Original y 2 copias</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+              <span><strong>Acta de Nacimiento</strong> - Original y 2 copias</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+              <span><strong>CURP actualizada</strong> - 2 copias</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+              <span><strong>6 fotografías</strong> tamaño infantil recientes</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+              <span><strong>Carta de buena conducta</strong> - De la secundaria de origen</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+              <span><strong>Aprobar examen de admisión</strong> - CENEVAL o institucional</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Perfil de Ingreso -->
+        <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-700 dark:to-gray-600 rounded-2xl p-8">
+          <h3 class="text-2xl font-bold text-green-600 dark:text-green-400 mb-6 flex items-center">
+            <i class="fas fa-user-check mr-3"></i>
+            Perfil de Ingreso
+          </h3>
+          <p class="text-gray-700 dark:text-gray-300 mb-6">Buscamos estudiantes que demuestren:</p>
+          <ul class="space-y-4 text-gray-700 dark:text-gray-300">
+            <li class="flex items-start">
+              <i class="fas fa-brain text-blue-500 mr-3 mt-1"></i>
+              <span><strong>Habilidades básicas</strong> en matemáticas, español y ciencias</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-heart text-red-500 mr-3 mt-1"></i>
+              <span><strong>Valores sólidos</strong> de respeto, responsabilidad y honestidad</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-rocket text-purple-500 mr-3 mt-1"></i>
+              <span><strong>Motivación</strong> para aprender y desarrollarse integralmente</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-users text-orange-500 mr-3 mt-1"></i>
+              <span><strong>Habilidades sociales</strong> para el trabajo en equipo</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-target text-green-500 mr-3 mt-1"></i>
+              <span><strong>Interés</strong> en continuar estudios superiores o insertarse laboralmente</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Call to Action -->
+      <div class="mt-16 text-center">
+        <div class="bg-gradient-to-r from-secondary-500 to-secondary-600 rounded-2xl p-8 lg:p-12 text-primary-900">
+          <h3 class="text-2xl md:text-3xl font-bold mb-4">¿Listo para comenzar tu futuro?</h3>
+          <p class="text-xl mb-8">El proceso de admisión 2025 está próximo a iniciar</p>
+          
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/contacto" class="inline-flex items-center px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
+              <i class="fas fa-info-circle mr-3"></i>
+              Más información
+            </a>
+            <a href="tel:+52-276-108-0200" class="inline-flex items-center px-8 py-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm font-semibold rounded-xl transition-all duration-300 transform hover:scale-105">
+              <i class="fas fa-phone mr-3"></i>
+              Llamar ahora
+            </a>
+          </div>
+          
+          <div class="mt-6 text-sm opacity-90">
+            <i class="fas fa-calendar-alt mr-2"></i>
+            Preinscripciones: Marzo 2025 | Examen: Mayo 2025 | Inicio de clases: Agosto 2025
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Smooth scrolling for navigation badges
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href')!);
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add intersection observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fade-in-up');
+        }
+      });
+    }, observerOptions);
+
+    // Observe cards and elements
+    document.querySelectorAll('.semester-card, .specialty-card, .pillar-card').forEach(el => {
+      observer.observe(el);
+    });
+  });
+</script>
+
+<style>
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+</style>

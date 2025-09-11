@@ -1,0 +1,73 @@
+name: ⚡ Performance Monitoring
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # Every 6 hours
+  workflow_dispatch:
+  deployment_status:
+
+jobs:
+  lighthouse:
+    name: 🔦 Lighthouse CI
+    runs-on: ubuntu-latest
+    if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.12.x
+
+      - name: 🔦 Run Lighthouse CI
+        run: |
+          lhci collect --url=https://sacrint.github.io/03-BachilleratoHeroesWeb/
+          lhci upload
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          LHCI_TOKEN: ${{ secrets.LHCI_TOKEN }}
+
+  web-vitals:
+    name: 📊 Web Vitals Monitoring
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📊 Web Vitals Test
+        run: |
+          npx web-vitals-reporter \
+            --url="https://sacrint.github.io/03-BachilleratoHeroesWeb/" \
+            --runs=3 \
+            --output=json > web-vitals-results.json
+
+      - name: 📈 Performance Report
+        run: |
+          echo "## ⚡ Performance Report" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Core Web Vitals" >> $GITHUB_STEP_SUMMARY
+          echo "- **LCP**: Largest Contentful Paint" >> $GITHUB_STEP_SUMMARY
+          echo "- **FID**: First Input Delay" >> $GITHUB_STEP_SUMMARY
+          echo "- **CLS**: Cumulative Layout Shift" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Lighthouse Scores" >> $GITHUB_STEP_SUMMARY
+          echo "- Performance: Target 90+" >> $GITHUB_STEP_SUMMARY
+          echo "- Accessibility: Target 95+" >> $GITHUB_STEP_SUMMARY
+          echo "- Best Practices: Target 95+" >> $GITHUB_STEP_SUMMARY
+          echo "- SEO: Target 95+" >> $GITHUB_STEP_SUMMARY
+
+      - name: 📤 Upload results
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-results
+          path: web-vitals-results.json

@@ -1,0 +1,29 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Carpetas de backup (ya eliminado)
+# backup_inicial/
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Node modules si usas Node.js
+node_modules/
+
+# Archivos de entorno
+.env
+.env.local
+
+# Archivos de editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos de cache
+.cache/

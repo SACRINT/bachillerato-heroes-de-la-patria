@@ -1,0 +1,741 @@
+---
+import { Layout } from '@heroes-patria/ui';
+import { siteConfig } from '@heroes-patria/config';
+---
+
+<Layout 
+  title={siteConfig.seo.defaultTitle}
+  description={siteConfig.seo.defaultDescription}
+  keywords={siteConfig.seo.keywords}
+>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white overflow-hidden min-h-screen flex items-center">
+    <!-- Background patterns -->
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Cdefs%3E%3Cpattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"%3E%3Cpath d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100" height="100" fill="url(%23grid)"/%3E%3C/svg%3E')] opacity-30"></div>
+    
+    <!-- Floating shapes -->
+    <div class="absolute inset-0">
+      <div class="absolute top-20 left-20 w-32 h-32 bg-secondary-400/10 rounded-full animate-float"></div>
+      <div class="absolute bottom-32 right-16 w-24 h-24 bg-primary-400/10 rounded-full animate-float" style="animation-delay: 2s;"></div>
+      <div class="absolute top-1/2 left-1/4 w-16 h-16 bg-white/10 rounded-full animate-float" style="animation-delay: 4s;"></div>
+    </div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        
+        <!-- Left content -->
+        <div class="text-left lg:order-1 order-2">
+          <!-- Badges -->
+          <div class="flex flex-wrap gap-3 mb-6">
+            <span class="inline-flex items-center px-4 py-2 bg-secondary-500/90 text-primary-900 rounded-full text-sm font-semibold">
+              <i class="fas fa-star mr-2"></i>
+              Excelencia Académica
+            </span>
+            <span class="inline-flex items-center px-4 py-2 bg-green-500/90 text-white rounded-full text-sm font-semibold">
+              <i class="fas fa-award mr-2"></i>
+              Certificación SEP
+            </span>
+          </div>
+          
+          <!-- Title -->
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            <span class="relative">
+              Bachillerato General Estatal
+              <div class="absolute bottom-0 left-0 w-full h-1 bg-secondary-500 rounded"></div>
+            </span>
+            <span class="block text-secondary-400 mt-2 text-3xl md:text-4xl lg:text-5xl">
+              "Héroes de la Patria"
+            </span>
+          </h1>
+          
+          <!-- Description -->
+          <p class="text-xl text-gray-200 mb-8 leading-relaxed">
+            🎯 <strong>Formamos líderes del mañana</strong> con educación integral, valores sólidos y 
+            preparación universitaria de excelencia. Tu futuro comienza aquí.
+          </p>
+          
+          <!-- Success Metrics -->
+          <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="text-center p-4 glass rounded-xl">
+              <h3 class="text-3xl font-bold text-secondary-400 mb-1">27</h3>
+              <p class="text-sm text-gray-300">Años de experiencia</p>
+            </div>
+            <div class="text-center p-4 glass rounded-xl">
+              <h3 class="text-3xl font-bold text-secondary-400 mb-1">1000+</h3>
+              <p class="text-sm text-gray-300">Egresados exitosos</p>
+            </div>
+            <div class="text-center p-4 glass rounded-xl">
+              <h3 class="text-3xl font-bold text-secondary-400 mb-1">97%</h3>
+              <p class="text-sm text-gray-300">Aprobación</p>
+            </div>
+          </div>
+          
+          <!-- CTA Buttons -->
+          <div class="flex flex-col sm:flex-row gap-4 mb-6">
+            <a 
+              href="/oferta-educativa" 
+              class="inline-flex items-center justify-center px-8 py-4 bg-secondary-500 hover:bg-secondary-600 text-primary-900 font-semibold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-xl"
+            >
+              <i class="fas fa-rocket mr-2"></i>
+              ¡Inscríbete Ahora!
+            </a>
+            <a 
+              href="#why-choose-us" 
+              class="inline-flex items-center justify-center px-8 py-4 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold rounded-full transition-all duration-300 hover:scale-105 border border-white/20"
+            >
+              <i class="fas fa-play-circle mr-2"></i>
+              ¿Por qué elegirnos?
+            </a>
+          </div>
+          
+          <!-- Trust indicator -->
+          <div class="flex items-center text-sm text-gray-300">
+            <i class="fas fa-shield-check text-green-400 mr-2"></i>
+            Institución oficial registrada ante la SEP • CCT: 21EBH0200X
+          </div>
+        </div>
+        
+        <!-- Right image -->
+        <div class="lg:order-2 order-1">
+          <div class="relative group">
+            <div class="relative overflow-hidden rounded-2xl shadow-2xl transition-transform duration-500 group-hover:scale-105">
+              <img 
+                src="/images/hero/fachada1.webp" 
+                alt="Fachada del Bachillerato Héroes de la Patria"
+                class="w-full h-auto object-cover"
+                loading="eager"
+                width="800" 
+                height="600"
+              />
+              <!-- Overlay gradient -->
+              <div class="absolute inset-0 bg-gradient-to-t from-primary-900/50 to-transparent"></div>
+            </div>
+            
+            <!-- Floating badge -->
+            <div class="absolute -bottom-6 -left-6 bg-secondary-500 text-primary-900 p-4 rounded-xl shadow-xl">
+              <div class="text-sm font-semibold">🏆 Institución de</div>
+              <div class="text-lg font-bold">Excelencia</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <div class="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
+        <div class="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
+      </div>
+    </div>
+    
+    <!-- Decorative elements -->
+    <div class="absolute -top-4 -right-4 w-72 h-72 bg-secondary-400/20 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-4 -left-4 w-72 h-72 bg-primary-400/20 rounded-full blur-3xl"></div>
+  </section>
+
+  <!-- Why Choose Us Section -->
+  <section id="why-choose-us" class="py-20 bg-white dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+          ¿Por qué elegir
+          <span class="text-primary-600 dark:text-primary-400">Héroes de la Patria</span>?
+        </h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          Descubre las razones que nos convierten en la mejor opción para tu educación media superior
+        </p>
+      </div>
+
+      <!-- Features Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <!-- Feature 1: Academic Excellence -->
+        <div class="group relative bg-gradient-to-br from-primary-50 to-primary-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+          <div class="absolute top-4 right-4 w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-star text-white text-lg"></i>
+          </div>
+          
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 pr-16">
+            Excelencia Académica Comprobada
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-6">
+            Con 27 años de experiencia, hemos formado más de 1,000 egresados exitosos con un 97% de tasa de aprobación.
+          </p>
+          
+          <div class="flex items-center text-primary-600 dark:text-primary-400 font-semibold">
+            <span>Ver resultados</span>
+            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+          </div>
+        </div>
+
+        <!-- Feature 2: Comprehensive Education -->
+        <div class="group relative bg-gradient-to-br from-secondary-50 to-secondary-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+          <div class="absolute top-4 right-4 w-12 h-12 bg-secondary-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-graduation-cap text-white text-lg"></i>
+          </div>
+          
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 pr-16">
+            Formación Integral y Valores
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-6">
+            No solo preparamos académicamente, también formamos ciudadanos íntegros con valores sólidos y responsabilidad social.
+          </p>
+          
+          <div class="flex items-center text-secondary-600 dark:text-secondary-400 font-semibold">
+            <span>Nuestros valores</span>
+            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+          </div>
+        </div>
+
+        <!-- Feature 3: Modern Facilities -->
+        <div class="group relative bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+          <div class="absolute top-4 right-4 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-building text-white text-lg"></i>
+          </div>
+          
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 pr-16">
+            Instalaciones Modernas
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-6">
+            Contamos con laboratorios equipados, biblioteca digital, salones inteligentes y espacios deportivos de primera.
+          </p>
+          
+          <div class="flex items-center text-green-600 dark:text-green-400 font-semibold">
+            <span>Conoce nuestras instalaciones</span>
+            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+          </div>
+        </div>
+
+        <!-- Feature 4: University Preparation -->
+        <div class="group relative bg-gradient-to-br from-purple-50 to-purple-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+          <div class="absolute top-4 right-4 w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-university text-white text-lg"></i>
+          </div>
+          
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 pr-16">
+            Preparación Universitaria
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-6">
+            Nuestro plan de estudios está diseñado para garantizar tu éxito en la universidad y en tu vida profesional.
+          </p>
+          
+          <div class="flex items-center text-purple-600 dark:text-purple-400 font-semibold">
+            <span>Plan de estudios</span>
+            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+          </div>
+        </div>
+
+        <!-- Feature 5: Work Training -->
+        <div class="group relative bg-gradient-to-br from-orange-50 to-orange-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+          <div class="absolute top-4 right-4 w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-tools text-white text-lg"></i>
+          </div>
+          
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 pr-16">
+            Capacitación para el Trabajo
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-6">
+            Ofrecemos especialidades técnicas que te permiten ingresar al campo laboral con habilidades demandadas.
+          </p>
+          
+          <div class="flex items-center text-orange-600 dark:text-orange-400 font-semibold">
+            <span>Ver especialidades</span>
+            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+          </div>
+        </div>
+
+        <!-- Feature 6: Official Recognition -->
+        <div class="group relative bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+          <div class="absolute top-4 right-4 w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-certificate text-white text-lg"></i>
+          </div>
+          
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 pr-16">
+            Reconocimiento Oficial SEP
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-6">
+            Institución registrada oficialmente ante la SEP con CCT: 21EBH0200X, garantizando la validez de tu certificado.
+          </p>
+          
+          <div class="flex items-center text-blue-600 dark:text-blue-400 font-semibold">
+            <span>Certificación oficial</span>
+            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA Section -->
+      <div class="text-center mt-16">
+        <a 
+          href="/oferta-educativa" 
+          class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-xl"
+        >
+          <i class="fas fa-rocket mr-3"></i>
+          Conoce nuestra oferta educativa completa
+          <i class="fas fa-arrow-right ml-3"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PWA Install Banner -->
+  <section class="py-16 bg-gradient-to-r from-primary-600 to-primary-700 text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="flex items-center justify-center mb-6">
+        <div class="w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl p-3">
+          <svg class="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21A2,2 0 0,0 7,23H17A2,2 0 0,0 19,21V3C19,1.89 18.1,1 17,1Z" />
+          </svg>
+        </div>
+      </div>
+      
+      <h3 class="text-3xl font-bold mb-4">¡Instala Nuestra App!</h3>
+      <p class="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
+        Accede rápidamente desde tu pantalla de inicio. Descarga nuestra aplicación web progresiva para tener información del bachillerato desde cualquier dispositivo.
+      </p>
+      
+      <button 
+        id="pwa-install-btn" 
+        class="inline-flex items-center px-8 py-4 bg-secondary-500 hover:bg-secondary-600 text-primary-900 font-semibold rounded-xl transition-all duration-300 hover:scale-105"
+      >
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+        </svg>
+        Instalar App
+      </button>
+    </div>
+  </section>
+
+  <!-- Quick Access Cards -->
+  <section class="py-16 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Acceso Rápido</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300">Encuentra rápidamente la información que necesitas</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Conócenos Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group">
+          <div class="p-6 text-center">
+            <div class="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-users text-white text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Conócenos</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">Nuestra misión, visión, historia e infraestructura educativa.</p>
+            <a href="/conocenos" class="inline-flex items-center px-4 py-2 border border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-200">
+              Más información <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Oferta Educativa Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group">
+          <div class="p-6 text-center">
+            <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-graduation-cap text-white text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Oferta Educativa</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">Plan de estudios, formaciones laborales y proceso de admisión.</p>
+            <a href="/oferta-educativa" class="inline-flex items-center px-4 py-2 border border-green-300 text-green-600 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors duration-200">
+              Ver oferta <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Servicios Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group">
+          <div class="p-6 text-center">
+            <div class="w-20 h-20 bg-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-cogs text-white text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Servicios</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">Servicios escolares y estudiantiles para apoyar tu formación.</p>
+            <a href="/servicios" class="inline-flex items-center px-4 py-2 border border-cyan-300 text-cyan-600 rounded-lg hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-colors duration-200">
+              Descubrir <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Comunidad Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group">
+          <div class="p-6 text-center">
+            <div class="w-20 h-20 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-heart text-white text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Comunidad</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">Vida estudiantil, testimonios de egresados y galería fotográfica.</p>
+            <a href="/comunidad" class="inline-flex items-center px-4 py-2 border border-yellow-300 text-yellow-600 rounded-lg hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors duration-200">
+              Explorar <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent News -->
+  <section class="py-16 bg-white dark:bg-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Noticias Recientes</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300">Mantente al día con las últimas novedades de nuestra institución</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="recent-news">
+        <!-- News will be loaded dynamically via CMS Integration -->
+        <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-8 text-center animate-pulse">
+          <div class="w-16 h-16 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-4"></div>
+          <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded mb-3"></div>
+          <div class="h-3 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+          <div class="h-3 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mx-auto"></div>
+        </div>
+        <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-8 text-center animate-pulse">
+          <div class="w-16 h-16 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-4"></div>
+          <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded mb-3"></div>
+          <div class="h-3 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+          <div class="h-3 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mx-auto"></div>
+        </div>
+        <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-8 text-center animate-pulse">
+          <div class="w-16 h-16 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-4"></div>
+          <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded mb-3"></div>
+          <div class="h-3 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+          <div class="h-3 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mx-auto"></div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-8">
+        <a href="/comunidad#noticias" class="inline-flex items-center px-6 py-3 border border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-200">
+          Ver todas las noticias <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upcoming Events -->
+  <section class="py-16 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Próximos Eventos</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300">No te pierdas las fechas importantes del calendario escolar</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="upcoming-events">
+        <!-- Events will be loaded dynamically via CMS Integration -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                <i class="fas fa-calendar-alt text-white"></i>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Cargando eventos...</h3>
+              <p class="text-gray-600 dark:text-gray-300 text-sm">Los próximos eventos se cargarán automáticamente</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-8">
+        <a href="/calendario" class="inline-flex items-center px-6 py-3 border border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-200">
+          Ver calendario completo <i class="fas fa-calendar-alt ml-2"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-16 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col lg:flex-row items-center justify-between">
+        <div class="lg:w-2/3 mb-8 lg:mb-0">
+          <h3 class="text-3xl font-bold mb-4">¿Listo para formar parte de nuestra comunidad educativa?</h3>
+          <p class="text-xl text-blue-100">
+            Conoce nuestro proceso de admisión y comienza tu camino hacia la excelencia académica.
+          </p>
+        </div>
+        <div class="lg:w-1/3 lg:text-right">
+          <a href="/oferta-educativa#proceso-admision" class="inline-flex items-center px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-lg">
+            <i class="fas fa-user-plus mr-3"></i>
+            Proceso de Admisión
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Enhanced PWA Install Section -->
+  <section id="instalar-app" class="py-16 bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-600 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col lg:flex-row items-center justify-between">
+        <div class="lg:w-2/3 mb-8 lg:mb-0">
+          <div class="flex items-center mb-6">
+            <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mr-4 backdrop-blur-sm">
+              <i class="fas fa-mobile-alt text-3xl"></i>
+            </div>
+            <div>
+              <h3 class="text-3xl font-bold mb-2">¡Instala Nuestra App!</h3>
+              <p class="text-lg text-blue-100">Accede rápidamente desde tu pantalla de inicio</p>
+            </div>
+          </div>
+          <p class="text-xl text-blue-100">
+            Descarga nuestra aplicación web progresiva para tener acceso rápido a toda la información del bachillerato desde cualquier dispositivo.
+          </p>
+        </div>
+        <div class="lg:w-1/3 lg:text-right">
+          <button class="inline-flex items-center px-8 py-4 bg-white text-purple-600 rounded-xl font-semibold hover:bg-purple-50 transition-all duration-300 transform hover:scale-105 shadow-lg mb-3" id="main-pwa-install-btn">
+            <i class="fas fa-download mr-3"></i>
+            Instalar App
+          </button>
+          <div class="text-sm text-purple-100 opacity-90">
+            <i class="fas fa-info-circle mr-2"></i>
+            Compatible con todos los dispositivos
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Development Notice -->
+  <div class="fixed bottom-4 right-4 z-50">
+    <div class="bg-amber-100 dark:bg-amber-900 border-l-4 border-amber-500 p-4 rounded-lg shadow-lg max-w-sm">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-amber-500" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-amber-700 dark:text-amber-200">
+            <strong>🚧 Modo Desarrollo</strong><br />
+            Stack moderno en construcción. Esta es una preview de las nuevas funcionalidades.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<!-- PWA Install and Dynamic Content Script -->
+<script>
+  // PWA Install functionality
+  let deferredPrompt: any;
+  const installBtn = document.getElementById('pwa-install-btn');
+  const mainInstallBtn = document.getElementById('main-pwa-install-btn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    if (installBtn) {
+      installBtn.style.display = 'inline-flex';
+    }
+    if (mainInstallBtn) {
+      mainInstallBtn.style.display = 'inline-flex';
+    }
+  });
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      
+      if (outcome === 'accepted') {
+        console.info('User accepted the install prompt');
+      }
+      
+      deferredPrompt = null;
+      if (installBtn) installBtn.style.display = 'none';
+      if (mainInstallBtn) mainInstallBtn.style.display = 'none';
+    }
+  };
+
+  installBtn?.addEventListener('click', handleInstallClick);
+  mainInstallBtn?.addEventListener('click', handleInstallClick);
+
+  // Hide buttons if already installed
+  window.addEventListener('appinstalled', () => {
+    console.info('PWA was installed');
+    if (installBtn) installBtn.style.display = 'none';
+    if (mainInstallBtn) mainInstallBtn.style.display = 'none';
+  });
+
+  // Load dynamic content when page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    // Simulate loading delay
+    setTimeout(() => {
+      loadRecentNews();
+      loadUpcomingEvents();
+    }, 1500);
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  });
+
+  // Load recent news
+  function loadRecentNews() {
+    const newsContainer = document.getElementById('recent-news');
+    if (!newsContainer) return;
+
+    const newsItems = [
+      {
+        title: 'Ceremonia de Graduación 2024',
+        date: '15 Jul 2024',
+        excerpt: 'Celebramos el éxito de nuestros egresados en una emotiva ceremonia que marcó el fin de su etapa bachiller.',
+        image: '/images/noticias/graduacion-2024.webp',
+        category: 'Evento'
+      },
+      {
+        title: 'Proyecto CTIM Ganador Regional',
+        date: '10 Jul 2024',
+        excerpt: 'Nuestros estudiantes obtienen primer lugar en la competencia estatal de proyectos CTIM con su innovador sistema de purificación de agua.',
+        image: '/images/noticias/proyecto-ctim.webp',
+        category: 'Logro'
+      },
+      {
+        title: 'Nueva Infraestructura Tecnológica',
+        date: '05 Jul 2024',
+        excerpt: 'Inauguramos laboratorios de última generación equipados con tecnología de vanguardia para mejorar el aprendizaje.',
+        image: '/images/noticias/laboratorios.webp',
+        category: 'Mejoras'
+      }
+    ];
+
+    newsContainer.innerHTML = newsItems.map(item => `
+      <article class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden group">
+        <div class="aspect-w-16 aspect-h-9 bg-gray-200 dark:bg-gray-700">
+          <div class="w-full h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+            <i class="fas fa-newspaper text-white text-3xl"></i>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-3">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200">
+              ${item.category}
+            </span>
+            <time class="text-sm text-gray-500 dark:text-gray-400">${item.date}</time>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
+            ${item.title}
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">${item.excerpt}</p>
+          <a href="/comunidad#noticias" class="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-semibold text-sm transition-colors duration-200">
+            Leer más 
+            <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform duration-200"></i>
+          </a>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  // Load upcoming events
+  function loadUpcomingEvents() {
+    const eventsContainer = document.getElementById('upcoming-events');
+    if (!eventsContainer) return;
+
+    const events = [
+      {
+        title: 'Proceso de Admisión 2025',
+        date: '01 Ago 2024',
+        time: '09:00 AM',
+        type: 'Admisiones',
+        description: 'Inicia el proceso de registro para el ciclo escolar 2025-2026',
+        icon: 'fas fa-user-plus',
+        color: 'from-blue-500 to-blue-600'
+      },
+      {
+        title: 'Inicio de Clases',
+        date: '26 Ago 2024',
+        time: '07:30 AM',
+        type: 'Académico',
+        description: 'Comienza oficialmente el nuevo ciclo escolar',
+        icon: 'fas fa-chalkboard-teacher',
+        color: 'from-green-500 to-green-600'
+      },
+      {
+        title: 'Jornada de Puertas Abiertas',
+        date: '15 Ago 2024',
+        time: '10:00 AM',
+        type: 'Evento',
+        description: 'Conoce nuestras instalaciones y programa académico',
+        icon: 'fas fa-door-open',
+        color: 'from-purple-500 to-purple-600'
+      }
+    ];
+
+    eventsContainer.innerHTML = events.map(event => `
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 border border-gray-200 dark:border-gray-700">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0">
+            <div class="w-12 h-12 bg-gradient-to-br ${event.color} rounded-lg flex items-center justify-center shadow-lg">
+              <i class="${event.icon} text-white"></i>
+            </div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between mb-2">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                ${event.type}
+              </span>
+              <div class="text-right">
+                <div class="text-sm font-semibold text-gray-900 dark:text-white">${event.date}</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">${event.time}</div>
+              </div>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
+              ${event.title}
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300 text-sm mb-3">${event.description}</p>
+            <a href="/calendario" class="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 text-sm font-semibold transition-colors duration-200">
+              Ver detalles 
+              <i class="fas fa-arrow-right ml-1 transform hover:translate-x-1 transition-transform duration-200"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+</script>
+
+<style>
+  /* Custom animations */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes glow {
+    0%, 100% {
+      box-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(255, 193, 7, 0.8), 0 0 30px rgba(255, 193, 7, 0.6);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  .animate-glow {
+    animation: glow 3s ease-in-out infinite;
+  }
+</style>

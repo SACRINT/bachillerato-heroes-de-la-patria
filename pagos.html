@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de pagos en línea del Bachillerato General Estatal Héroes de la Patria - Realiza tus pagos de forma segura y rápida">
+    <meta name="keywords" content="pagos, colegiaturas, inscripciones, servicios escolares, bachillerato">
+    <title>Sistema de Pagos | BGE Héroes de la Patria</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+    <!-- Header -->
+    <div id="main-header"></div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="page-hero bg-gradient-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-4">
+                        <i class="fas fa-credit-card me-3"></i>Sistema de Pagos En Línea
+                    </h1>
+                    <p class="lead mb-4">
+                        Realiza tus pagos de forma segura, rápida y desde cualquier lugar. 
+                        Disponible las 24 horas del día.
+                    </p>
+                    
+                    <!-- Hero Navigation Badges -->
+                    <div class="hero-badges d-flex flex-wrap gap-2 justify-content-start mb-4">
+                        <a href="#servicios-disponibles" class="badge bg-light text-primary fs-6 text-decoration-none">
+                            <i class="fas fa-list me-1" aria-hidden="true"></i>
+                            Servicios Disponibles
+                        </a>
+                        <a href="#metodos-pago" class="badge bg-light text-success fs-6 text-decoration-none">
+                            <i class="fas fa-credit-card me-1" aria-hidden="true"></i>
+                            Métodos de Pago
+                        </a>
+                        <a href="#ventajas" class="badge bg-light text-info fs-6 text-decoration-none">
+                            <i class="fas fa-shield-alt me-1" aria-hidden="true"></i>
+                            ¿Por qué usar nuestro sistema?
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-dollar-sign display-1 text-white-50"></i>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Servicios de Pago -->
+    <section id="servicios-disponibles" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="fw-bold">Servicios Disponibles</h2>
+                    <p class="text-muted">Paga todos tus servicios escolares de manera fácil y segura</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm payment-service-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="scrollToSection('metodos-pago')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-graduation-cap fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title">Métodos de Pago</h5>
+                            <p class="card-text text-muted">Conoce las opciones disponibles para realizar tus pagos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm payment-service-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="scrollToSection('ventajas')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-clipboard-list fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">Ventajas</h5>
+                            <p class="card-text text-muted">Beneficios de usar nuestro sistema de pagos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm payment-service-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="showLoginModal()" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-sign-in-alt fa-3x text-warning"></i>
+                            </div>
+                            <h5 class="card-title">Realizar Pago</h5>
+                            <p class="card-text text-muted">Inicia sesión para hacer tu pago</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm payment-service-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="showConsultModal()" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-search fa-3x text-info"></i>
+                            </div>
+                            <h5 class="card-title">Consultar Estado</h5>
+                            <p class="card-text text-muted">Revisa el estado de tus pagos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Métodos de Pago -->
+    <section id="metodos-pago" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="fw-bold">Métodos de Pago Aceptados</h2>
+                    <p class="text-muted">Elige la forma que más te convenga</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center p-4">
+                            <i class="fab fa-cc-visa fa-3x text-primary mb-3"></i>
+                            <h5>Tarjetas de Crédito</h5>
+                            <p class="text-muted">Visa, Mastercard, American Express</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center p-4">
+                            <i class="fas fa-university fa-3x text-success mb-3"></i>
+                            <h5>Transferencia Bancaria</h5>
+                            <p class="text-muted">Desde tu banca en línea</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center p-4">
+                            <i class="fas fa-store fa-3x text-warning mb-3"></i>
+                            <h5>Tiendas de Conveniencia</h5>
+                            <p class="text-muted">OXXO, 7-Eleven, Circle K</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ventajas -->
+    <section id="ventajas" class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="fw-bold mb-4">¿Por qué usar nuestro sistema de pagos?</h2>
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-shield-alt fa-2x text-success me-3"></i>
+                                </div>
+                                <div>
+                                    <h5>Seguridad Garantizada</h5>
+                                    <p class="text-muted">Tecnología de encriptación SSL y protocolos de seguridad bancaria</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-clock fa-2x text-primary me-3"></i>
+                                </div>
+                                <div>
+                                    <h5>Disponible 24/7</h5>
+                                    <p class="text-muted">Realiza tus pagos en cualquier momento del día</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-mobile-alt fa-2x text-warning me-3"></i>
+                                </div>
+                                <div>
+                                    <h5>Desde Cualquier Dispositivo</h5>
+                                    <p class="text-muted">Compatible con computadoras, tablets y smartphones</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-receipt fa-2x text-info me-3"></i>
+                                </div>
+                                <div>
+                                    <h5>Comprobantes Digitales</h5>
+                                    <p class="text-muted">Recibe tu comprobante de pago por email al instante</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="images/payment-security.webp" alt="Seguridad en pagos" class="img-fluid rounded" onerror="this.style.display='none'">
+                    <div class="mt-4">
+                        <i class="fas fa-lock fa-8x text-primary opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Login -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">
+                        <i class="fas fa-sign-in-alt me-2"></i>Acceso al Sistema de Pagos
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="paymentLoginForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="paymentEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="paymentEmail" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="studentIdPayment" class="form-label">Matrícula del Estudiante</label>
+                                <input type="text" class="form-control" id="studentIdPayment" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="paymentPassword" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="paymentPassword" required>
+                            </div>
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Datos de prueba:</strong> Email: padre@demo.com, Matrícula: 20230001, Contraseña: demo123
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="loginPaymentSystem()">Acceder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Consulta -->
+    <div class="modal fade" id="consultModal" tabindex="-1" aria-labelledby="consultModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="consultModalLabel">
+                        <i class="fas fa-search me-2"></i>Consultar Estado de Cuenta
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="consultForm">
+                        <div class="mb-3">
+                            <label for="consultStudentId" class="form-label">Matrícula del Estudiante</label>
+                            <input type="text" class="form-control" id="consultStudentId" placeholder="Ej: 20230001" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="consultMonth" class="form-label">Mes a Consultar</label>
+                            <select class="form-select" id="consultMonth" required>
+                                <option value="">Seleccionar mes</option>
+                                <option value="01">Enero</option>
+                                <option value="02">Febrero</option>
+                                <option value="03">Marzo</option>
+                                <option value="04">Abril</option>
+                                <option value="05">Mayo</option>
+                                <option value="06">Junio</option>
+                                <option value="07">Julio</option>
+                                <option value="08">Agosto</option>
+                                <option value="09">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="consultPaymentStatus()">Consultar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel de Pagos (oculto inicialmente) -->
+    <div id="paymentPanel" class="d-none">
+        <section class="py-5 bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h2>Panel de Pagos - <span id="studentName"></span></h2>
+                            <button class="btn btn-outline-secondary" onclick="logoutPaymentSystem()">
+                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Estado de Cuenta -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fas fa-wallet fa-3x text-success mb-3"></i>
+                                <h5>Saldo a Favor</h5>
+                                <h3 class="text-success">$0.00</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                                <h5>Pagos Pendientes</h5>
+                                <h3 class="text-warning">$2,500.00</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fas fa-calendar-alt fa-3x text-info mb-3"></i>
+                                <h5>Próximo Vencimiento</h5>
+                                <h3 class="text-info">15 Ene</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Pagos Pendientes -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-list me-2"></i>Pagos Pendientes
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Concepto</th>
+                                                <th>Periodo</th>
+                                                <th>Vencimiento</th>
+                                                <th>Monto</th>
+                                                <th>Estado</th>
+                                                <th>Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="pendingPaymentsTable">
+                                            <!-- Se llena dinámicamente -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal Pago -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentModalLabel">
+                        <i class="fas fa-credit-card me-2"></i>Realizar Pago
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="paymentDetails"></div>
+                    
+                    <hr>
+                    
+                    <h6>Seleccionar Método de Pago</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <input type="radio" class="btn-check" name="paymentMethod" id="creditCard" value="credit" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3" for="creditCard">
+                                <i class="fas fa-credit-card fa-2x mb-2"></i>
+                                <span>Tarjeta de Crédito</span>
+                            </label>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="radio" class="btn-check" name="paymentMethod" id="bankTransfer" value="transfer" autocomplete="off">
+                            <label class="btn btn-outline-success w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3" for="bankTransfer">
+                                <i class="fas fa-university fa-2x mb-2"></i>
+                                <span>Transferencia</span>
+                            </label>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="radio" class="btn-check" name="paymentMethod" id="convenience" value="convenience" autocomplete="off">
+                            <label class="btn btn-outline-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3" for="convenience">
+                                <i class="fas fa-store fa-2x mb-2"></i>
+                                <span>Tienda</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div id="paymentForm" class="mt-4">
+                        <!-- Se llena dinámicamente según el método seleccionado -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="processPayment()">
+                        <i class="fas fa-lock me-2"></i>Pagar Ahora
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="main-footer"></div>
+
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <!-- Chat Bot Toggle Button -->
+    <button class="chatbot-toggle" id="chatbotToggle" aria-label="Abrir chat de ayuda">
+        <i class="fas fa-comments"></i>
+    </button>
+    
+    <!-- Chat Bot Container -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <div>
+                <strong>Asistente Virtual</strong>
+                <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
+            </div>
+            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+        </div>
+        
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="message bot">
+                ¡Hola! 👋 Soy el asistente virtual del Bachillerato Héroes de la Patria. ¿En qué puedo ayudarte hoy?
+            </div>
+            <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                <div class="message bot typing">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chatbot-input">
+            <input type="text" id="chatInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/chatbot.js"></script>
+    
+    <!-- Ensure chatbot functions are accessible -->
+    <script>
+        // Make sure functions are globally accessible
+        window.toggleChatbot = toggleChatbot;
+        window.sendMessage = sendMessage;
+        window.handleKeyPress = handleKeyPress;
+    </script>
+    <script src="js/search-simple.js"></script>
+    <!-- <script src="js/payment-system.js"></script> -->
+    
+    <!-- Funciones temporales para evitar errores -->
+    <script>
+        function showLoginModal() {
+            alert('Sistema de pagos en desarrollo. Próximamente disponible.');
+        }
+        
+        function showConsultModal() {
+            alert('Consulta de estado de pagos en desarrollo.\n\nPronto podrás:\n• Consultar el estado de tus pagos\n• Ver historial de transacciones\n• Descargar comprobantes\n• Revisar saldos pendientes');
+        }
+        
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+    </script>
+
+    <!-- Dark Mode Styles & Script -->
+    <style>
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 6rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bs-primary);
+            color: white;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        body.dark-mode {
+            background-color: #1a1a1a !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .bg-light {
+            background-color: #2d2d2d !important;
+        }
+
+        body.dark-mode .card {
+            background-color: #2d2d2d !important;
+            border-color: #404040 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .text-muted {
+            color: #b0b0b0 !important;
+        }
+
+        body.dark-mode .text-dark {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .form-control,
+        body.dark-mode .form-select {
+            background-color: #404040 !important;
+            border-color: #505050 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .modal-content {
+            background-color: #2d2d2d !important;
+            border-color: #404040 !important;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+            
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                body.classList.add('dark-mode');
+                updateDarkModeIcon(true);
+            }
+            
+            darkModeToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                body.classList.toggle('dark-mode');
+                
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('darkMode', 'enabled');
+                    updateDarkModeIcon(true);
+                } else {
+                    localStorage.setItem('darkMode', 'disabled');
+                    updateDarkModeIcon(false);
+                }
+            });
+            
+            function updateDarkModeIcon(isDark) {
+                if (darkModeToggle) {
+                    let icon = darkModeToggle.querySelector('i');
+                    if (icon) {
+                        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

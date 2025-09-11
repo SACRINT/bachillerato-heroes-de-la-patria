@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunidad - Bachillerato General Estatal "Héroes de la Patria"</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Vida estudiantil del BGE Héroes de la Patria: noticias, eventos, testimonios y actividades de nuestra comunidad educativa en Coronel Tito Hernández, Puebla.">
+    <meta name="keywords" content="vida estudiantil, noticias bachillerato, eventos escolares, testimonios estudiantes, comunidad educativa">
+    <meta name="author" content="BGE Héroes de la Patria">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Comunidad - BGE Héroes de la Patria">
+    <meta property="og:description" content="Descubre la vida estudiantil, noticias y eventos de nuestra comunidad educativa">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://heroesdelapatria.edu.mx/comunidad.html">
+    <meta property="og:image" content="https://heroesdelapatria.edu.mx/images/hero/fachada1.webp">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Comunidad - BGE Héroes de la Patria">
+    <meta name="twitter:description" content="Conoce la vibrante vida estudiantil de nuestro bachillerato">
+    
+    <!-- Preconnects -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Critical CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="images/logo-bachillerato-HDLP.webp" type="image/webp">
+    <meta name="theme-color" content="#1976D2">
+    
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Inicio",
+                "item": "https://heroesdelapatria.edu.mx/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Comunidad",
+                "item": "https://heroesdelapatria.edu.mx/comunidad.html"
+            }
+        ]
+    }
+    </script>
+</head>
+<body>
+    <!-- Skip Links -->
+    <a href="#main-content" class="skip-link visually-hidden-focusable">Saltar al contenido principal</a>
+    
+    <!-- Header -->
+    <div id="main-header"></div>
+    
+    <!-- Main Content -->
+    <main id="main-content" class="main-content">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="index.html">
+                            <i class="fas fa-home" aria-hidden="true"></i>
+                            <span class="visually-hidden">Inicio</span>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Comunidad</li>
+                </ol>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="hero" class="page-hero bg-gradient-primary text-white py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="hero-title display-4 fw-bold mb-3">
+                            <i class="fas fa-heart me-3" aria-hidden="true"></i>
+                            Comunidad
+                        </h1>
+                        <p class="hero-subtitle lead mb-4">
+                            Descubre todo lo que sucede en nuestra comunidad educativa: noticias, eventos y mucho más
+                        </p>
+                        <!-- Hero Navigation Badges -->
+                        <div class="hero-badges d-flex flex-wrap gap-2 justify-content-start mb-4">
+                            <a href="#noticias" class="badge bg-light text-primary fs-6 text-decoration-none">
+                                <i class="fas fa-newspaper me-1" aria-hidden="true"></i>
+                                Noticias Actuales
+                            </a>
+                            <a href="#eventos" class="badge bg-light text-success fs-6 text-decoration-none">
+                                <i class="fas fa-calendar-alt me-1" aria-hidden="true"></i>
+                                Eventos y Actividades
+                            </a>
+                            <a href="#vida-estudiantil" class="badge bg-light text-info fs-6 text-decoration-none">
+                                <i class="fas fa-users me-1" aria-hidden="true"></i>
+                                Vida Estudiantil
+                            </a>
+                            <a href="#actividades-extracurriculares" class="badge bg-light text-warning fs-6 text-decoration-none">
+                                <i class="fas fa-star me-1" aria-hidden="true"></i>
+                                Actividades Extracurriculares
+                            </a>
+                            <a href="#galeria" class="badge bg-light text-secondary fs-6 text-decoration-none">
+                                <i class="fas fa-images me-1" aria-hidden="true"></i>
+                                Galería
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <div class="hero-icon display-1 text-white-50">
+                            <i class="fas fa-heart" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Noticias y Avisos -->
+        <section id="noticias" class="py-5">
+            <div class="container">
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-newspaper text-primary me-3" aria-hidden="true"></i>
+                        Noticias y Avisos
+                    </h2>
+                    <p class="section-subtitle text-muted">
+                        Mantente al día con los últimos acontecimientos y comunicados importantes
+                    </p>
+                </div>
+
+                <!-- Controles de Noticias -->
+                <div class="row mb-4">
+                    <div class="col-lg-8">
+                        <div class="news-filters" id="newsFilters">
+                            <!-- Los filtros se generarán dinámicamente -->
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="search" class="form-control" id="newsSearch" 
+                                   placeholder="Buscar noticias..." autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenedor de Noticias Dinámicas -->
+                <div class="row g-4" id="noticiasContainer">
+                    <!-- Las noticias se cargarán dinámicamente -->
+                    <div class="col-12 text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando noticias...</span>
+                        </div>
+                        <p class="text-muted mt-2">Cargando noticias...</p>
+                    </div>
+                </div>
+
+                <!-- Botón Cargar Más -->
+                <div class="row mt-4">
+                    <div class="col-12 text-center">
+                        <button class="btn btn-primary btn-lg" id="loadMoreNews" style="display: none;">
+                            <i class="fas fa-plus me-2"></i>
+                            Cargar más noticias
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Próximos Eventos -->
+        <section id="eventos" class="py-5 bg-light">
+            <div class="container">
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-calendar-alt text-primary me-3" aria-hidden="true"></i>
+                        Próximos Eventos
+                    </h2>
+                    <p class="section-subtitle text-muted">
+                        No te pierdas las actividades programadas para nuestra comunidad
+                    </p>
+                </div>
+
+                <div class="row g-4" id="eventosContainer">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card border-0 shadow-sm h-100 event-card">
+                            <div class="card-header bg-primary text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-book me-2" aria-hidden="true"></i>
+                                        Feria del Libro
+                                    </h5>
+                                    <span class="badge bg-light text-primary">Marzo 2025</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    Semana dedicada a la promoción de la lectura con presentaciones de libros, 
+                                    talleres literarios y encuentros con autores locales.
+                                </p>
+                                <div class="event-details">
+                                    <p class="mb-2">
+                                        <i class="fas fa-clock text-muted me-2" aria-hidden="true"></i>
+                                        <small>15-19 de Marzo</small>
+                                    </p>
+                                    <p class="mb-2">
+                                        <i class="fas fa-map-marker-alt text-muted me-2" aria-hidden="true"></i>
+                                        <small>Biblioteca y Aulas</small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card border-0 shadow-sm h-100 event-card">
+                            <div class="card-header bg-success text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-microscope me-2" aria-hidden="true"></i>
+                                        Expo Ciencias
+                                    </h5>
+                                    <span class="badge bg-light text-success">Abril 2025</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    Exposición de proyectos científicos desarrollados por nuestros estudiantes 
+                                    en las diferentes áreas del conocimiento.
+                                </p>
+                                <div class="event-details">
+                                    <p class="mb-2">
+                                        <i class="fas fa-clock text-muted me-2" aria-hidden="true"></i>
+                                        <small>22-24 de Abril</small>
+                                    </p>
+                                    <p class="mb-2">
+                                        <i class="fas fa-map-marker-alt text-muted me-2" aria-hidden="true"></i>
+                                        <small>Auditorio y Laboratorios</small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card border-0 shadow-sm h-100 event-card">
+                            <div class="card-header bg-warning text-dark">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-masks-theater me-2" aria-hidden="true"></i>
+                                        Festival Cultural
+                                    </h5>
+                                    <span class="badge bg-light text-warning">Mayo 2025</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    Celebración de las artes con presentaciones de danza, teatro, música 
+                                    y exposiciones artísticas de nuestra comunidad estudiantil.
+                                </p>
+                                <div class="event-details">
+                                    <p class="mb-2">
+                                        <i class="fas fa-clock text-muted me-2" aria-hidden="true"></i>
+                                        <small>10 de Mayo</small>
+                                    </p>
+                                    <p class="mb-2">
+                                        <i class="fas fa-map-marker-alt text-muted me-2" aria-hidden="true"></i>
+                                        <small>Auditorio Principal</small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Vida Estudiantil -->
+        <section id="vida-estudiantil" class="py-5 bg-light">
+            <div class="container">
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-users text-primary me-3" aria-hidden="true"></i>
+                        Vida Estudiantil
+                    </h2>
+                    <p class="section-subtitle text-muted">
+                        Descubre cómo es el día a día en nuestro bachillerato y el ambiente educativo que ofrecemos
+                    </p>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Ambiente Académico -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-graduation-cap fa-2x"></i>
+                                    </div>
+                                    <h4 class="card-title text-primary mb-0">Ambiente Académico</h4>
+                                </div>
+                                <p class="card-text text-muted">
+                                    Nuestro bachillerato se caracteriza por un ambiente de aprendizaje inclusivo y colaborativo, donde cada estudiante puede desarrollar su máximo potencial académico y personal.
+                                </p>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Clases dinámicas e interactivas</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Atención personalizada</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Grupos reducidos</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Apoyo académico constante</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Convivencia Escolar -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-handshake fa-2x"></i>
+                                    </div>
+                                    <h4 class="card-title text-success mb-0">Convivencia Escolar</h4>
+                                </div>
+                                <p class="card-text text-muted">
+                                    Fomentamos valores de respeto, tolerancia y compañerismo, creando un ambiente seguro y armonioso para toda nuestra comunidad educativa.
+                                </p>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-heart text-success me-2"></i>Valores y respeto mutuo</li>
+                                    <li class="mb-2"><i class="fas fa-heart text-success me-2"></i>Ambiente seguro y confiable</li>
+                                    <li class="mb-2"><i class="fas fa-heart text-success me-2"></i>Integración y diversidad</li>
+                                    <li class="mb-2"><i class="fas fa-heart text-success me-2"></i>Resolución pacífica de conflictos</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Desarrollo Integral -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="feature-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-puzzle-piece fa-2x"></i>
+                                    </div>
+                                    <h4 class="card-title text-info mb-0">Desarrollo Integral</h4>
+                                </div>
+                                <p class="card-text text-muted">
+                                    Promovemos el crecimiento personal de nuestros estudiantes a través de actividades que fortalecen sus habilidades socioemocionales y de liderazgo.
+                                </p>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-star text-info me-2"></i>Desarrollo de habilidades blandas</li>
+                                    <li class="mb-2"><i class="fas fa-star text-info me-2"></i>Formación en valores</li>
+                                    <li class="mb-2"><i class="fas fa-star text-info me-2"></i>Liderazgo estudiantil</li>
+                                    <li class="mb-2"><i class="fas fa-star text-info me-2"></i>Responsabilidad social</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Participación Activa -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="feature-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-microphone fa-2x"></i>
+                                    </div>
+                                    <h4 class="card-title text-warning mb-0">Participación Estudiantil</h4>
+                                </div>
+                                <p class="card-text text-muted">
+                                    Incentivamos la participación activa de nuestros estudiantes en eventos académicos, culturales y deportivos tanto a nivel local como estatal.
+                                </p>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-trophy text-warning me-2"></i>Concursos académicos</li>
+                                    <li class="mb-2"><i class="fas fa-trophy text-warning me-2"></i>Eventos culturales</li>
+                                    <li class="mb-2"><i class="fas fa-trophy text-warning me-2"></i>Competencias deportivas</li>
+                                    <li class="mb-2"><i class="fas fa-trophy text-warning me-2"></i>Representación institucional</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Horarios y Rutina Estudiantil -->
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <h4 class="text-center text-primary mb-4">
+                                    <i class="fas fa-clock me-2"></i>Nuestro Día a Día
+                                </h4>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <h5 class="text-secondary">
+                                            <i class="fas fa-sun text-warning me-2"></i>Horario Matutino
+                                        </h5>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item border-0 px-0">
+                                                <strong>8:00 AM:</strong> Entrada y preparación
+                                            </li>
+                                            <li class="list-group-item border-0 px-0">
+                                                <strong>8:00 - 10:30 AM:</strong> Clases matutinas
+                                            </li>
+                                            <li class="list-group-item border-0 px-0">
+                                                <strong>10:30 - 11:00 AM:</strong> Receso
+                                            </li>
+                                            <li class="list-group-item border-0 px-0">
+                                                <strong>11:00 - 1:30 PM:</strong> Clases vespertinas
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="text-secondary">
+                                            <i class="fas fa-calendar-week text-info me-2"></i>Actividades Semanales
+                                        </h5>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item border-0 px-0">
+                                                <strong>Lunes:</strong> Honores a la bandera y actividades cívicas
+                                            </li>
+                                            <li class="list-group-item border-0 px-0">
+                                                <strong>Miércoles:</strong> Talleres de capacitación laboral
+                                            </li>
+                                            <li class="list-group-item border-0 px-0">
+                                                <strong>Viernes:</strong> Actividades deportivas y culturales
+                                            </li>
+                                            <li class="list-group-item border-0 px-0">
+                                                <strong>Eventos:</strong> Según calendario escolar oficial
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enlaces Relacionados -->
+                <div class="row mt-5">
+                    <div class="col-12 text-center">
+                        <h5 class="mb-3">Conoce Más</h5>
+                        <div class="d-flex flex-wrap justify-content-center gap-2">
+                            <a href="#actividades-extracurriculares" class="btn btn-outline-primary">
+                                <i class="fas fa-star me-2"></i>Actividades Extracurriculares
+                            </a>
+                            <a href="#eventos" class="btn btn-outline-success">
+                                <i class="fas fa-calendar me-2"></i>Próximos Eventos
+                            </a>
+                            <a href="contacto.html" class="btn btn-primary">
+                                <i class="fas fa-envelope me-2"></i>Contactanos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Actividades Extracurriculares -->
+        <section id="actividades-extracurriculares" class="py-5">
+            <div class="container">
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-star text-primary me-3" aria-hidden="true"></i>
+                        Actividades Extracurriculares
+                    </h2>
+                    <p class="section-subtitle text-muted">
+                        Desarrolla tus talentos e intereses más allá del aula
+                    </p>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <p class="lead text-center mb-4">En "Héroes de la Patria" creemos en la formación integral. Por ello, ofrecemos una variedad de actividades para desarrollar tus talentos e intereses:</p>
+                                
+                                <div class="row g-4">
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="activity-category mb-4">
+                                            <h4 class="fw-bold text-primary mb-3">
+                                                <i class="fas fa-running me-2"></i> Deportivas
+                                            </h4>
+                                            <ul class="list-unstyled activity-list">
+                                                <li class="mb-2"><i class="fas fa-futbol text-success me-2"></i>Fútbol</li>
+                                                <li class="mb-2"><i class="fas fa-basketball-ball text-success me-2"></i>Básquetbol</li>
+                                                <li class="mb-2"><i class="fas fa-volleyball-ball text-success me-2"></i>Voleibol</li>
+                                                <li class="mb-2"><i class="fas fa-chess text-success me-2"></i>Ajedrez</li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="activity-category mb-4">
+                                            <h4 class="fw-bold text-warning mb-3">
+                                                <i class="fas fa-brain me-2"></i> Conocimientos
+                                            </h4>
+                                            <ul class="list-unstyled activity-list">
+                                                <li class="mb-2"><i class="fas fa-spell-check text-warning me-2"></i>Spelling Bee</li>
+                                                <li class="mb-2"><i class="fas fa-calculator text-warning me-2"></i>Olimpiada de Matemáticas</li>
+                                                <li class="mb-2"><i class="fas fa-flask text-warning me-2"></i>Experimentos Científicos</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="activity-category mb-4">
+                                            <h4 class="fw-bold text-info mb-3">
+                                                <i class="fas fa-palette me-2"></i> Culturales
+                                            </h4>
+                                            <ul class="list-unstyled activity-list">
+                                                <li class="mb-2"><i class="fas fa-music text-info me-2"></i>Ballet</li>
+                                                <li class="mb-2"><i class="fas fa-music text-info me-2"></i>Danza</li>
+                                                <li class="mb-2"><i class="fas fa-drum text-info me-2"></i>Panderos</li>
+                                                <li class="mb-2"><i class="fas fa-baton text-info me-2"></i>Bastoneras</li>
+                                                <li class="mb-2"><i class="fas fa-paint-brush text-info me-2"></i>Artes Plásticas</li>
+                                                <li class="mb-2"><i class="fas fa-microphone text-info me-2"></i>Oratoria, Declamación, Poesía, Cuento, Ensayo</li>
+                                                <li class="mb-2"><i class="fas fa-palette text-info me-2"></i>Carta, Cartel, Dibujo, Cómics, Pintura</li>
+                                                <li class="mb-2"><i class="fas fa-camera text-info me-2"></i>Fotografía Digital y TikTok</li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="activity-category">
+                                            <h4 class="fw-bold text-danger mb-3">
+                                                <i class="fas fa-flag me-2"></i> Cívicas
+                                            </h4>
+                                            <ul class="list-unstyled activity-list">
+                                                <li class="mb-2"><i class="fas fa-flag text-danger me-2"></i>Escolta</li>
+                                                <li class="mb-2"><i class="fas fa-drum text-danger me-2"></i>Banda de Guerra</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-4">
+                                    <p class="fw-bold text-primary">¡Participa y enriquece tu experiencia escolar!</p>
+                                    <a href="contacto.html" class="btn btn-primary">
+                                        <i class="fas fa-info-circle me-2"></i>Más Información
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Galería de Actividades -->
+        <section id="galeria" class="py-5 bg-light">
+            <div class="container">
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-images text-primary me-3" aria-hidden="true"></i>
+                        Galería de Actividades
+                    </h2>
+                    <p class="section-subtitle text-muted">
+                        Momentos destacados de nuestra vida estudiantil
+                    </p>
+                </div>
+
+                <div class="row g-3" id="galeriaContainer">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="gallery-item">
+                            <img src="images/galeria/placeholder_actividad.webp" alt="Actividad deportiva" class="img-fluid rounded shadow-sm">
+                            <div class="gallery-overlay">
+                                <div class="gallery-content">
+                                    <h5>Deportes y Recreación</h5>
+                                    <p>Actividades físicas y deportivas</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="gallery-item">
+                            <img src="images/galeria/placeholder_evento1.webp" alt="Festival cultural" class="img-fluid rounded shadow-sm">
+                            <div class="gallery-overlay">
+                                <div class="gallery-content">
+                                    <h5>Cultura y Arte</h5>
+                                    <p>Expresiones artísticas estudiantiles</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="gallery-item">
+                            <img src="images/galeria/placeholder_proyectos.webp" alt="Proyecto científico" class="img-fluid rounded shadow-sm">
+                            <div class="gallery-overlay">
+                                <div class="gallery-content">
+                                    <h5>Ciencia y Tecnología</h5>
+                                    <p>Proyectos e innovación estudiantil</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="gallery-item">
+                            <img src="images/fachada_placeholder.jpg" alt="Ceremonia cívica" class="img-fluid rounded shadow-sm">
+                            <div class="gallery-overlay">
+                                <div class="gallery-content">
+                                    <h5>Ceremonias Cívicas</h5>
+                                    <p>Honores y símbolos patrios</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="gallery-item">
+                            <img src="images/galeria/placeholder_graduacion.webp" alt="Graduación" class="img-fluid rounded shadow-sm">
+                            <div class="gallery-overlay">
+                                <div class="gallery-content">
+                                    <h5>Graduaciones</h5>
+                                    <p>Ceremonia de egreso</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="gallery-item">
+                            <img src="images/testimonios/egresado_placeholder1.webp" alt="Vida escolar" class="img-fluid rounded shadow-sm">
+                            <div class="gallery-overlay">
+                                <div class="gallery-content">
+                                    <h5>Vida Escolar</h5>
+                                    <p>Momentos cotidianos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-camera me-2" aria-hidden="true"></i>
+                        Ver Más Fotografías
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter -->
+        <section class="newsletter-section bg-gradient-primary text-white py-5">
+            <div class="container">
+                <div class="row justify-content-center text-center">
+                    <div class="col-lg-8">
+                        <h2 class="display-5 fw-bold mb-4">Mantente Conectado</h2>
+                        <p class="lead mb-4">
+                            Suscríbete para recibir las últimas noticias, eventos y comunicados de nuestra comunidad educativa
+                        </p>
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <form class="d-flex gap-2">
+                                    <input type="email" class="form-control form-control-lg" placeholder="Tu correo electrónico" required>
+                                    <button type="submit" class="btn btn-light btn-lg">
+                                        <i class="fas fa-paper-plane me-2" aria-hidden="true"></i>
+                                        Suscribirme
+                                    </button>
+                                </form>
+                                <small class="text-white-50 mt-2 d-block">
+                                    Respetamos tu privacidad. Puedes cancelar la suscripción en cualquier momento.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <div id="main-footer"></div>
+
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <!-- Chat Bot Toggle Button -->
+    <button class="chatbot-toggle" id="chatbotToggle" aria-label="Abrir chat de ayuda">
+        <i class="fas fa-comments"></i>
+    </button>
+    
+    <!-- Chat Bot Container -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <div>
+                <strong>Asistente Virtual</strong>
+                <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
+            </div>
+            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+        </div>
+        
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="message bot">
+                ¡Hola! 👋 Soy el asistente virtual del Bachillerato Héroes de la Patria. ¿En qué puedo ayudarte hoy?
+            </div>
+        </div>
+        
+        <div class="chatbot-input">
+            <input type="text" id="chatInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Back to Top -->
+    <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none" 
+            style="bottom: 2rem; right: 2rem; width: 50px; height: 50px; z-index: 1000;"
+            aria-label="Volver arriba" title="Volver arriba">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="js/script.js"></script>
+    <script src="js/cms-integration.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/search-simple.js"></script>
+    <script src="js/news.js"></script>
+    
+    <!-- Dark Mode Functionality -->
+    <script>
+        // Dark mode functionality - CORREGIDO V2
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+        
+        if (darkModeToggle) {
+            // Limpiar cualquier contenido de texto del botón
+            const cleanToggleButton = () => {
+                // Remover cualquier nodo de texto
+                const textNodes = [...darkModeToggle.childNodes].filter(node => node.nodeType === Node.TEXT_NODE);
+                textNodes.forEach(node => node.remove());
+            };
+            
+            // Check for saved dark mode preference
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                body.classList.add('dark-mode');
+                updateDarkModeIcon(true);
+            }
+            
+            darkModeToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                cleanToggleButton(); // Limpiar antes de cada toggle
+                body.classList.toggle('dark-mode');
+                
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('darkMode', 'enabled');
+                    updateDarkModeIcon(true);
+                } else {
+                    localStorage.setItem('darkMode', 'disabled');
+                    updateDarkModeIcon(false);
+                }
+            });
+            
+            // Limpiar al cargar la página
+            cleanToggleButton();
+        }
+        
+        function updateDarkModeIcon(isDark) {
+            if (darkModeToggle) {
+                let icon = darkModeToggle.querySelector('i');
+                
+                // Si no existe el icono, crearlo
+                if (!icon) {
+                    icon = document.createElement('i');
+                    darkModeToggle.innerHTML = ''; // Limpiar completamente
+                    darkModeToggle.appendChild(icon);
+                }
+                
+                if (isDark) {
+                    icon.className = 'fas fa-sun';
+                    darkModeToggle.setAttribute('aria-label', 'Activar modo claro');
+                } else {
+                    icon.className = 'fas fa-moon';
+                    darkModeToggle.setAttribute('aria-label', 'Activar modo oscuro');
+                }
+            }
+        }
+    </script>
+    
+    <!-- Dark Mode Styles -->
+    <style>
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .bg-light {
+            background-color: #2d2d2d !important;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .card {
+            background-color: #2d2d2d;
+            border-color: #404040;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .card-header {
+            border-bottom-color: #404040;
+        }
+        
+        body.dark-mode .text-muted {
+            color: #adb5bd !important;
+        }
+        
+        body.dark-mode .text-secondary {
+            color: #adb5bd !important;
+        }
+        
+        body.dark-mode .breadcrumb {
+            background-color: #2d2d2d;
+        }
+        
+        body.dark-mode .breadcrumb-item a {
+            color: #adb5bd;
+        }
+        
+        body.dark-mode .list-group-item {
+            background-color: transparent;
+            color: #ffffff;
+            border-color: #404040;
+        }
+        
+        body.dark-mode .form-control {
+            background-color: #404040;
+            border-color: #555555;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .form-control:focus {
+            background-color: #404040;
+            border-color: #1976d2;
+            color: #ffffff;
+            box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.25);
+        }
+        
+        body.dark-mode .form-control::placeholder {
+            color: #adb5bd;
+        }
+        
+        body.dark-mode .input-group-text {
+            background-color: #404040;
+            border-color: #555555;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .event-card {
+            background-color: #2d2d2d;
+            border-color: #404040;
+        }
+        
+        body.dark-mode .gallery-item {
+            background-color: #2d2d2d;
+        }
+        
+        body.dark-mode .gallery-overlay {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        body.dark-mode .chatbot-container {
+            background-color: #2d2d2d;
+            border: 1px solid #404040;
+        }
+        
+        body.dark-mode .chatbot-input {
+            border-top-color: #404040;
+        }
+        
+        body.dark-mode .chatbot-input input {
+            background-color: #404040;
+            border-color: #555555;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .message.bot {
+            background-color: #404040;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .hero-badges .badge:hover {
+            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
+        }
+        
+        /* Dark mode toggle positioning */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 1000;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background-color: #1976d2;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            background-color: #1565c0;
+            transform: scale(1.1);
+        }
+        
+        /* Hero badges styling */
+        .hero-badges .badge {
+            padding: 0.6rem 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .hero-badges .badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* Gallery styles */
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: white;
+            text-align: center;
+        }
+        
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+        
+        .gallery-content h5 {
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+    </style>
+</body>
+</html>
