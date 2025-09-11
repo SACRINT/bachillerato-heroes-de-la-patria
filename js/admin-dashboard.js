@@ -167,6 +167,8 @@ class AdminDashboard {
     }
 
     getDemoStudents() {
+        return {
+            overview: {
                 totalTeachers: 68,
                 totalSubjects: 42,
                 generalAverage: 8.4
@@ -481,6 +483,7 @@ class AdminDashboard {
             
             tbody.appendChild(row);
         });
+        };
     }
 
     getStudentStatusBadge(status) {

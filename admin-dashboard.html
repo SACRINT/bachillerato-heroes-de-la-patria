@@ -938,6 +938,19 @@
     
     <!-- Funciones reales del dashboard - Ya no son temporales -->
     <script>
+        // Funciones requeridas por onclick events para evitar errores
+        function showLoginModal() {
+            const modal = document.getElementById('adminModal');
+            if (modal) {
+                const modalInstance = new bootstrap.Modal(modal);
+                modalInstance.show();
+            }
+        }
+
+        function showInfoModal() {
+            alert('Panel de Administración\\n\\nEste sistema permite gestionar:\\n• Estudiantes y docentes\\n• Solicitudes de registro\\n• Finanzas del plantel\\n• Estadísticas académicas\\n\\nIngresa con tus credenciales para acceder.');
+        }
+
         // Las funciones reales están definidas en admin-dashboard.js
         // Esta sección ya no bloquea las funcionalidades
         
