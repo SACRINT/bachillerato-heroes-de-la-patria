@@ -167,11 +167,15 @@ class SecureAdminAuth {
     /**
      * Login seguro con el servidor
      */
-    async login(password) {
+    async login(password, username = 'admin') {
         //console.log('🔐 Iniciando login seguro...');
 
         if (!password || password.trim().length === 0) {
             throw new Error('Contraseña requerida');
+        }
+
+        if (!username || username.trim().length === 0) {
+            throw new Error('Usuario requerido');
         }
 
         try {
@@ -179,6 +183,7 @@ class SecureAdminAuth {
             //console.log('🔗 Verificando conectividad con servidor...');
 
             const requestBody = JSON.stringify({
+                username: username.trim(),
                 password: password.trim()
             });
 
@@ -408,6 +413,7 @@ class SecureAdminAuth {
         //console.log('🔐 handleLogin EJECUTÁNDOSE - Evento submit detectado');
         
         const passwordInput = document.getElementById('adminPanelPassword');
+        const usernameInput = document.getElementById('adminPanelUsername');
         const errorElement = document.getElementById('adminPanelAuthError');
         const errorTextElement = document.getElementById('adminPanelAuthErrorText');
         
@@ -438,7 +444,7 @@ class SecureAdminAuth {
         }
         
         try {
-            await this.login(passwordInput.value);
+            await this.login(passwordInput.value, usernameInput.value);
             
             // Cerrar modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('adminPanelAuthModal'));
