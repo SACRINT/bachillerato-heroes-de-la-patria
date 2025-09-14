@@ -1,0 +1,40 @@
+{
+  "noticias": [
+    {
+      "title": "Inicio del Ciclo Escolar 2025-2026",
+      "date": "2025-09-01T00:00:00.000Z",
+      "image": "images/noticias/inicio-ciclo-2025.jpg",
+      "summary": "Con gran emoción damos la bienvenida a todos nuestros estudiantes al nuevo ciclo escolar 2025-2026.",
+      "content": "# Inicio del Ciclo Escolar 2025-2026\n\nCon gran emoción damos la bienvenida a todos nuestros estudiantes al nuevo ciclo escolar 2025-2026. Las clases oficialmente iniciaron el 1 de septiembre, marcando el comienzo de un año lleno de aprendizaje, crecimiento y nuevas oportunidades académicas.\n\n## Bienvenidos a un nuevo año\n\nEste ciclo escolar representa una nueva oportunidad para crecer académica y personalmente. Nuestro equipo docente está preparado para brindar la mejor educación.\n\n## Horarios y actividades\n\n- **Inicio de clases**: 1 de septiembre 2025\n- **Horario**: 7:00 AM - 1:30 PM\n- **Ceremonias cívicas**: Lunes 7:00 AM\n- **Actividades extracurriculares**: A partir de la segunda semana\n\n¡Les deseamos un excelente año académico!",
+      "author": "Dirección Académica",
+      "category": "Ciclo Escolar"
+    },
+    {
+      "title": "Desfile Conmemorativo Fiestas Patrias",
+      "date": "2025-09-15T00:00:00.000Z", 
+      "image": "images/noticias/desfile-septiembre-2025.jpg",
+      "summary": "Te invitamos a participar en el tradicional desfile conmemorativo del 16 de septiembre. Inicia recorrido a las 8:00 AM.",
+      "content": "# Desfile Conmemorativo Fiestas Patrias\n\nTe invitamos a participar en el tradicional desfile conmemorativo del 16 de septiembre en honor a nuestras Fiestas Patrias. El recorrido inicia a las 8:00 AM desde las instalaciones del plantel. ¡Vive con orgullo nuestra identidad mexicana!\n\n## Información del desfile\n\n- **Fecha**: 16 de septiembre de 2025\n- **Hora de concentración**: 7:30 AM\n- **Inicio del recorrido**: 8:00 AM\n- **Punto de reunión**: Instalaciones del BGE Héroes de la Patria\n- **Recorrido**: Centro de Coronel Tito Hernández\n\n## Participación estudiantil\n\nTodos los estudiantes están invitados a participar portando el uniforme escolar. Se premiará a los grupos con mejor presentación y coordinación.\n\n## Actividades complementarias\n\n- Concurso de escoltas\n- Presentación de números artísticos\n- Reconocimiento a estudiantes destacados\n\n¡Ven y celebra con orgullo nuestras tradiciones patrias!",
+      "author": "Coordinación Estudiantil", 
+      "category": "Evento Cívico"
+    },
+    {
+      "title": "Inscripciones Abiertas 2025",
+      "date": "2025-08-18T00:00:00.000Z",
+      "image": "images/noticias/inscripciones-2025.jpg",
+      "summary": "Ya están abiertas las inscripciones para el ciclo escolar 2025-2026. ¡No te quedes fuera!",
+      "content": "# Inscripciones Abiertas 2025\n\nNos complace anunciar que ya están abiertas las inscripciones para el ciclo escolar 2025-2026.\n\n## Requisitos:\n- Certificado de secundaria\n- Acta de nacimiento\n- CURP\n- 6 fotografías tamaño infantil\n\n## Fechas importantes:\n- Inicio de inscripciones: 18 de agosto 2025\n- Cierre de inscripciones: 30 de septiembre 2025\n- Examen de admisión: No hay examen de admisión\n\n¡Te esperamos en nuestra institución educativa!",
+      "author": "Dirección Académica",
+      "category": "Comunicado"
+    },
+    {
+      "title": "Día del Estudiante 2026",
+      "date": "2025-06-01T00:00:00.000Z",
+      "image": "images/eventos/dia-estudiante-2025.jpg",
+      "summary": "Celebraremos el Día del Estudiante con actividades especiales los días 11 y 12 de junio.",
+      "content": "# Día del Estudiante 2025\n\n¡Celebremos juntos el Día del Estudiante!\n\n## Programa de actividades:\n\n### 11 de junio:\n- 9:00 AM - Ceremonia de inauguración\n- 10:00 AM - Concursos académicos\n- 2:00 PM - Actividades deportivas\n\n### 12 de junio:\n- 9:00 AM - Festival cultural\n- 11:00 AM - Presentaciones artísticas\n- 1:00 PM - Clausura y premiación\n\n¡No falten a esta gran celebración!",
+      "author": "Coordinación Estudiantil",
+      "category": "Evento"
+    }
+  ]
+}
