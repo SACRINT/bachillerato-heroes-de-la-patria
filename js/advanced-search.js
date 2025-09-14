@@ -22,7 +22,7 @@ class AdvancedSearch {
         this.setupSearchInterface();
         this.loadSearchHistory();
         this.initVoiceSearch();
-        console.log('🔍 Advanced Search inicializado');
+        //console.log('🔍 Advanced Search inicializado');
     }
 
     // ============================================
@@ -31,7 +31,7 @@ class AdvancedSearch {
 
     async buildSearchIndex() {
         this.isIndexing = true;
-        console.log('🔨 Construyendo índice de búsqueda...');
+        //console.log('🔨 Construyendo índice de búsqueda...');
         
         await Promise.all([
             this.indexStaticContent(),
@@ -40,7 +40,7 @@ class AdvancedSearch {
         ]);
         
         this.isIndexing = false;
-        console.log(`✅ Índice construido: ${this.searchIndex.size} elementos`);
+        //console.log(`✅ Índice construido: ${this.searchIndex.size} elementos`);
     }
 
     async indexStaticContent() {
@@ -877,7 +877,7 @@ class AdvancedSearch {
     }
 
     async reindex() {
-        console.log('🔄 Reindexando contenido...');
+        //console.log('🔄 Reindexando contenido...');
         this.searchIndex.clear();
         await this.buildSearchIndex();
     }

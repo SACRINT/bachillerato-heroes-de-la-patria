@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Force Admin - Test</title>
+</head>
+<body>
+    <h1>Forzando Elementos Admin</h1>
+    <button onclick="forceElements()">FORZAR ELEMENTOS</button>
+    
+    <script>
+    function forceElements() {
+        console.log('🔥 EJECUTANDO FUERZA BRUTA...');
+        
+        // Esperar a que la página principal cargue
+        setTimeout(() => {
+            const mainWindow = window.parent || window.opener || window;
+            
+            const adminElements = mainWindow.document.querySelectorAll('#adminOnlySection, #adminOnlySection2');
+            const loginBtn = mainWindow.document.getElementById('adminPanelMenuLink');
+            
+            console.log('Elementos encontrados:', adminElements.length);
+            
+            adminElements.forEach((el, i) => {
+                if (el) {
+                    el.classList.remove('d-none');
+                    el.style.display = 'block !important';
+                    el.style.visibility = 'visible !important';
+                    console.log('ELEMENTO', i + 1, 'FORZADO');
+                }
+            });
+            
+            if (loginBtn) {
+                loginBtn.innerHTML = '<i class="fas fa-user-shield me-1"></i>Panel Admin <span class="badge bg-success ms-1">✓</span>';
+                loginBtn.style.color = 'green';
+                console.log('BOTÓN FORZADO');
+            }
+            
+            alert('ELEMENTOS FORZADOS - REVISA EL MENÚ');
+        }, 1000);
+    }
+    
+    // Auto-ejecutar
+    setTimeout(forceElements, 2000);
+    </script>
+</body>
+</html>

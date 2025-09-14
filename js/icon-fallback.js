@@ -48,7 +48,7 @@ class IconFallback {
                 console.warn('⚠️ Font Awesome no detectado, activando sistema de respaldo');
                 this.activateFallbacks();
             } else {
-                console.log('✅ Font Awesome cargado correctamente');
+                //console.log('✅ Font Awesome cargado correctamente');
             }
             
         } catch (error) {

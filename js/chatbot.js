@@ -770,7 +770,7 @@ function initializeChatSession() {
     if (window.apiClient) {
         window.apiClient.checkConnection().then(connected => {
             isAPIConnected = connected;
-            console.log(isAPIConnected ? '🟢 Chatbot conectado a API' : '🟡 Chatbot en modo offline');
+            //console.log(isAPIConnected ? '🟢 Chatbot conectado a API' : '🟡 Chatbot en modo offline');
         });
     }
 }
@@ -976,7 +976,7 @@ function toggleChatbot() {
     const toggle = document.getElementById('chatbotToggle');
     
     if (!container || !toggle) {
-        console.log('Elementos del chatbot no encontrados');
+        //console.log('Elementos del chatbot no encontrados');
         return;
     }
     
@@ -1224,9 +1224,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatToggle = document.getElementById('chatbotToggle');
     if (chatToggle) {
         chatToggle.addEventListener('click', toggleChatbot);
-        console.log('✅ Botón chatbot conectado');
+        //console.log('✅ Botón chatbot conectado');
     } else {
-        console.log('❌ Botón chatbot no encontrado');
+        //console.log('❌ Botón chatbot no encontrado');
     }
     
     // Event listener para Enter en el input
@@ -1238,19 +1238,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 sendMessage();
             }
         });
-        console.log('✅ Input chatbot conectado');
+        //console.log('✅ Input chatbot conectado');
     } else {
-        console.log('❌ Input chatbot no encontrado');
+        //console.log('❌ Input chatbot no encontrado');
     }
     
     // Asegurar que el contenedor esté oculto inicialmente
     const container = document.getElementById('chatbotContainer');
     if (container) {
         container.style.display = 'none';
-        console.log('✅ Contenedor chatbot oculto inicialmente');
+        //console.log('✅ Contenedor chatbot oculto inicialmente');
     }
     
-    console.log('🤖 Chatbot de clase mundial inicializado correctamente');
+    //console.log('🤖 Chatbot de clase mundial inicializado correctamente');
 });
 
 // Agregar estilos CSS para las respuestas profesionales
@@ -1300,6 +1300,86 @@ professionalStyles.textContent = `
         line-height: 1.5;
         margin-left: 4px;
         padding: 4px 0;
+    }
+    
+    /* 🌙 MODO OSCURO - Colores adaptados */
+    [data-theme="dark"] .response-text,
+    body.dark-mode .response-text {
+        color: #ffffff !important;
+    }
+    
+    [data-theme="dark"] .response-professional,
+    body.dark-mode .response-professional {
+        color: #ffffff !important;
+    }
+    
+    [data-theme="dark"] .response-simple,
+    body.dark-mode .response-simple {
+        color: #ffffff !important;
+    }
+    
+    [data-theme="dark"] .response-subtitle,
+    body.dark-mode .response-subtitle {
+        color: #ffd700 !important;
+    }
+    
+    [data-theme="dark"] .response-text strong {
+        color: #64b5f6 !important;
+    }
+    
+    [data-theme="dark"] .response-text a {
+        color: #64b5f6 !important;
+    }
+    
+    [data-theme="dark"] .chatbot-message.bot {
+        background: #424242 !important;
+        border: 1px solid #616161 !important;
+        color: #ffffff !important;
+    }
+    
+    [data-theme="dark"] .response-title,
+    body.dark-mode .response-title {
+        color: #ffd700 !important;
+        background: linear-gradient(135deg, #37474f, #424242) !important;
+        border-left: 4px solid #ffd700 !important;
+    }
+    
+    [data-theme="dark"] .response-footer {
+        color: #a5d6a7 !important;
+        border-left: 3px solid #66bb6a !important;
+    }
+    
+    /* Estilos específicos adicionales para mejor contraste */
+    [data-theme="dark"] .response-subtitle,
+    [data-theme="dark"] .subtitle,
+    body.dark-mode .response-subtitle,
+    body.dark-mode .subtitle {
+        color: #ffd700 !important;
+        font-weight: 600 !important;
+    }
+    
+    [data-theme="dark"] .response-text,
+    [data-theme="dark"] .text,
+    body.dark-mode .response-text,
+    body.dark-mode .text {
+        color: #ffffff !important;
+    }
+    
+    /* Contenedor principal de respuestas */
+    [data-theme="dark"] .response-professional,
+    body.dark-mode .response-professional {
+        color: #ffffff !important;
+    }
+    
+    /* Secciones de contenido */
+    [data-theme="dark"] .response-section,
+    body.dark-mode .response-section {
+        color: #ffffff !important;
+    }
+    
+    [data-theme="dark"] .response-content,
+    body.dark-mode .response-content {
+        color: #ffffff !important;
     }
     
     .response-text strong {

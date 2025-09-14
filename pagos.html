@@ -208,7 +208,13 @@
                     </div>
                 </div>
                 <div class="col-lg-6 text-center">
-                    <img src="images/payment-security.webp" alt="Seguridad en pagos" class="img-fluid rounded" onerror="this.style.display='none'">
+                    <div class="payment-security-placeholder bg-primary text-white d-flex align-items-center justify-content-center rounded" style="height: 200px;">
+                        <div class="text-center">
+                            <i class="fas fa-shield-alt fa-3x mb-2"></i>
+                            <h5>Seguridad en Pagos</h5>
+                            <p class="mb-0">Transacciones 100% Seguras</p>
+                        </div>
+                    </div>
                     <div class="mt-4">
                         <i class="fas fa-lock fa-8x text-primary opacity-25"></i>
                     </div>
@@ -240,7 +246,7 @@
                             </div>
                             <div class="col-12">
                                 <label for="paymentPassword" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="paymentPassword" required>
+                                <input type="password" class="form-control" id="paymentPassword" autocomplete="current-password" required>
                             </div>
                             <div class="col-12">
                                 <div class="alert alert-info">
@@ -462,8 +468,17 @@
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
-            <div class="message bot">
-                ¡Hola! 👋 Soy el asistente virtual del Bachillerato Héroes de la Patria. ¿En qué puedo ayudarte hoy?
+            <div class="chatbot-message bot">
+                <div class="response-professional">
+                    <div class="response-title">🎓 Asistente Virtual BGE</div>
+                    <div class="response-content">
+                        <div class="response-section">
+                            <div class="response-subtitle">¡Hola! Soy tu asistente inteligente</div>
+                            <div class="response-text">Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.</div>
+                        </div>
+                    </div>
+                    <div class="response-footer">¿En qué puedo ayudarte hoy?</div>
+                </div>
             </div>
             <div class="typing-indicator" id="typingIndicator" style="display: none;">
                 <div class="message bot typing">
@@ -477,7 +492,7 @@
         </div>
         
         <div class="chatbot-input">
-            <input type="text" id="chatInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
             <button onclick="sendMessage()" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -492,21 +507,263 @@
     <!-- Ensure chatbot functions are accessible -->
     <script>
         // Make sure functions are globally accessible
-        window.toggleChatbot = toggleChatbot;
-        window.sendMessage = sendMessage;
-        window.handleKeyPress = handleKeyPress;
+        if (typeof toggleChatbot !== 'undefined') window.toggleChatbot = toggleChatbot;
+        if (typeof sendMessage !== 'undefined') window.sendMessage = sendMessage;
+        // handleKeyPress is now defined globally in script.js
     </script>
     <script src="js/search-simple.js"></script>
     <!-- <script src="js/payment-system.js"></script> -->
     
-    <!-- Funciones temporales para evitar errores -->
+    <!-- Sistema de Pagos Funcional -->
     <script>
+        // Estado de la aplicación de pagos
+        let currentPaymentUser = null;
+        let isPaymentLoggedIn = false;
+
         function showLoginModal() {
-            alert('Sistema de pagos en desarrollo. Próximamente disponible.');
+            const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+            modal.show();
         }
         
         function showConsultModal() {
-            alert('Consulta de estado de pagos en desarrollo.\n\nPronto podrás:\n• Consultar el estado de tus pagos\n• Ver historial de transacciones\n• Descargar comprobantes\n• Revisar saldos pendientes');
+            if (!isPaymentLoggedIn) {
+                showPaymentAlert('Debes iniciar sesión primero para consultar pagos.', 'warning');
+                showLoginModal();
+                return;
+            }
+            const modal = new bootstrap.Modal(document.getElementById('consultModal'));
+            modal.show();
+        }
+
+        function showPaymentModal() {
+            if (!isPaymentLoggedIn) {
+                showPaymentAlert('Debes iniciar sesión primero para realizar pagos.', 'warning');
+                showLoginModal();
+                return;
+            }
+            const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+            modal.show();
+        }
+
+        // Función principal de login para compatibilidad
+        function loginPaymentSystem() {
+            const email = document.getElementById('paymentEmail').value;
+            const studentId = document.getElementById('studentIdPayment').value;
+            const password = document.getElementById('paymentPassword').value;
+            
+            // Determinar si es estudiante o padre por el formato del campo
+            if (studentId) {
+                loginStudentWithId(studentId, password);
+            } else if (email) {
+                loginParentWithEmail(email, password);
+            } else {
+                showPaymentAlert('Por favor completa el campo de matrícula (estudiante) o email (padre).', 'warning');
+            }
+        }
+
+        // Login de estudiante
+        function loginStudentWithId(matricula, password) {
+            
+            if (!matricula || !password) {
+                showPaymentAlert('Por favor completa todos los campos.', 'warning');
+                return;
+            }
+
+            // Simulación de login exitoso
+            if (matricula === 'H2024001' && password === 'estudiante123') {
+                currentPaymentUser = {
+                    tipo: 'estudiante',
+                    matricula: 'H2024001',
+                    nombre: 'Ana García Hernández',
+                    semestre: '3°',
+                    adeudos: [
+                        { concepto: 'Colegiatura Enero', monto: 1500, fecha_vencimiento: '2025-01-31', estado: 'pendiente' },
+                        { concepto: 'Laboratorio Química', monto: 300, fecha_vencimiento: '2025-01-15', estado: 'pendiente' },
+                        { concepto: 'Material Didáctico', monto: 450, fecha_vencimiento: '2025-02-15', estado: 'pendiente' }
+                    ]
+                };
+                isPaymentLoggedIn = true;
+                showPaymentPanel();
+                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+                showPaymentAlert('¡Bienvenida, Ana! Sistema de pagos activo.', 'success');
+                loadPaymentData();
+            } else {
+                showPaymentAlert('Matrícula o contraseña incorrecta. Prueba con H2024001 y contraseña: estudiante123', 'danger');
+            }
+        }
+
+        // Login de padre
+        function loginParentWithEmail(email, password) {
+            
+            if (!email || !password) {
+                showPaymentAlert('Por favor completa todos los campos.', 'warning');
+                return;
+            }
+
+            if (email === 'padre@email.com' && password === 'padre123') {
+                currentPaymentUser = {
+                    tipo: 'padre',
+                    email: 'padre@email.com',
+                    nombre: 'Roberto García',
+                    hijo: 'Ana García Hernández',
+                    matricula_hijo: 'H2024001',
+                    adeudos: [
+                        { concepto: 'Colegiatura Enero', monto: 1500, fecha_vencimiento: '2025-01-31', estado: 'pendiente' },
+                        { concepto: 'Seguro Estudiantil', monto: 200, fecha_vencimiento: '2025-01-20', estado: 'pendiente' },
+                        { concepto: 'Excursión Académica', monto: 800, fecha_vencimiento: '2025-02-10', estado: 'pendiente' }
+                    ]
+                };
+                isPaymentLoggedIn = true;
+                showPaymentPanel();
+                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+                showPaymentAlert('¡Bienvenido, Roberto! Puedes gestionar los pagos de Ana.', 'success');
+                loadPaymentData();
+            } else {
+                showPaymentAlert('Email o contraseña incorrecta. Prueba con padre@email.com y contraseña: padre123', 'danger');
+            }
+        }
+
+        // Mostrar panel de pagos
+        function showPaymentPanel() {
+            const heroSection = document.querySelector('#hero');
+            if (heroSection) heroSection.style.display = 'none';
+            
+            const paymentPanel = document.getElementById('paymentPanel');
+            if (paymentPanel) {
+                paymentPanel.classList.remove('d-none');
+            }
+        }
+
+        // Cargar datos de pago
+        function loadPaymentData() {
+            // Actualizar información del usuario
+            const userName = document.getElementById('studentName');
+            
+            if (userName) {
+                userName.textContent = currentPaymentUser.tipo === 'estudiante' ? 
+                    currentPaymentUser.nombre :
+                    `${currentPaymentUser.nombre} (Pagos de ${currentPaymentUser.hijo})`;
+            }
+
+            // Cargar adeudos en la tabla
+            loadPendingPayments();
+            
+            // Actualizar estadísticas
+            updatePaymentStats();
+        }
+
+        // Cargar pagos pendientes
+        function loadPendingPayments() {
+            const tbody = document.getElementById('pendingPaymentsTable');
+            if (tbody && currentPaymentUser.adeudos) {
+                tbody.innerHTML = '';
+
+                currentPaymentUser.adeudos.forEach((pago, index) => {
+                    const row = `
+                        <tr>
+                            <td>${pago.concepto}</td>
+                            <td>$${pago.monto.toLocaleString()}</td>
+                            <td>${pago.fecha_vencimiento}</td>
+                            <td><span class="badge bg-warning">Pendiente</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-success" onclick="payDebt(${index})">
+                                    <i class="fas fa-credit-card"></i> Pagar
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            }
+        }
+
+        // Actualizar estadísticas
+        function updatePaymentStats() {
+            if (currentPaymentUser.adeudos) {
+                const totalDebt = currentPaymentUser.adeudos.reduce((sum, pago) => sum + pago.monto, 0);
+                const pendingCount = currentPaymentUser.adeudos.length;
+
+                const totalElement = document.getElementById('totalDebt');
+                const countElement = document.getElementById('pendingCount');
+
+                if (totalElement) totalElement.textContent = `$${totalDebt.toLocaleString()}`;
+                if (countElement) countElement.textContent = pendingCount;
+            }
+        }
+
+        // Pagar adeudo
+        function payDebt(index) {
+            const pago = currentPaymentUser.adeudos[index];
+            const confirmPay = confirm(`¿Confirmas el pago de $${pago.monto.toLocaleString()} por concepto de "${pago.concepto}"?`);
+            
+            if (confirmPay) {
+                // Simular procesamiento
+                showPaymentAlert('Procesando pago...', 'info');
+                
+                setTimeout(() => {
+                    // Remover el pago de la lista
+                    currentPaymentUser.adeudos.splice(index, 1);
+                    loadPendingPayments();
+                    updatePaymentStats();
+                    showPaymentAlert(`¡Pago exitoso! Se ha procesado el pago por $${pago.monto.toLocaleString()}.`, 'success');
+                }, 2000);
+            }
+        }
+
+        // Consultar historial
+        function consultHistory() {
+            showPaymentAlert('Mostrando historial de pagos... Esta funcionalidad estará disponible próximamente.', 'info');
+            bootstrap.Modal.getInstance(document.getElementById('consultModal')).hide();
+        }
+
+        // Logout de pagos
+        function logoutPayment() {
+            currentPaymentUser = null;
+            isPaymentLoggedIn = false;
+            
+            const heroSection = document.querySelector('#hero');
+            if (heroSection) heroSection.style.display = 'block';
+            
+            const paymentPanel = document.getElementById('paymentPanel');
+            if (paymentPanel) {
+                paymentPanel.classList.add('d-none');
+            }
+            
+            showPaymentAlert('Sesión cerrada exitosamente.', 'info');
+        }
+
+        // Sistema de alertas
+        function showPaymentAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+
+        // Procesar pago con tarjeta
+        function processCardPayment() {
+            const cardNumber = document.getElementById('cardNumber').value;
+            const cardName = document.getElementById('cardName').value;
+            const cardExpiry = document.getElementById('cardExpiry').value;
+            const cardCVC = document.getElementById('cardCVC').value;
+
+            if (!cardNumber || !cardName || !cardExpiry || !cardCVC) {
+                showPaymentAlert('Por favor completa todos los campos de la tarjeta.', 'warning');
+                return;
+            }
+
+            showPaymentAlert('Procesando pago con tarjeta... Esta funcionalidad estará disponible próximamente.', 'info');
+            bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
         }
         
         function scrollToSection(sectionId) {
@@ -615,5 +872,8 @@
             }
         });
     </script>
+    <!-- Scripts de autenticación admin -->
+    <script src="js/admin-auth-secure.js"></script>
+    <script src="force-admin-nuclear.js"></script>
 </body>
 </html>

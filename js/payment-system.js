@@ -80,13 +80,13 @@ class PaymentSystemManager {
     }
 
     async init() {
-        console.log('💳 Initializing Advanced Payment System...');
+        //console.log('💳 Initializing Advanced Payment System...');
         
         // Initialize payment providers
         for (const [name, provider] of Object.entries(this.providers)) {
             try {
                 await provider.init();
-                console.log(`✅ ${name} payment provider initialized`);
+                //console.log(`✅ ${name} payment provider initialized`);
             } catch (error) {
                 console.warn(`⚠️ ${name} provider failed:`, error);
             }
@@ -137,22 +137,22 @@ class PaymentSystemManager {
 
     // Método básico para manejar formularios (se extenderá más abajo)
     handlePaymentForm(form) {
-        console.log('💳 Payment form submitted:', form);
+        //console.log('💳 Payment form submitted:', form);
     }
 
     // Método básico para cambio de método de pago (se extenderá más abajo)
     handlePaymentMethodChange(method) {
-        console.log('💳 Payment method changed:', method);
+        //console.log('💳 Payment method changed:', method);
     }
 
     // Método básico para pagos rápidos
     handleQuickPayment(element) {
-        console.log('💳 Quick payment clicked:', element);
+        //console.log('💳 Quick payment clicked:', element);
     }
 
     // Método de compatibilidad
     updatePaymentForm(method) {
-        console.log('💳 Update payment form:', method);
+        //console.log('💳 Update payment form:', method);
     }
 
     initializeSystem() {
@@ -750,7 +750,7 @@ class StripeIntegration {
 
     async init() {
         // Mock initialization for demo
-        console.log('💳 Stripe integration initialized');
+        //console.log('💳 Stripe integration initialized');
     }
 
     async processCardPayment(paymentData) {
@@ -771,7 +771,7 @@ class PayPalIntegration {
     }
 
     async init() {
-        console.log('🟡 PayPal integration initialized');
+        //console.log('🟡 PayPal integration initialized');
     }
 
     async processPayment(paymentData) {
@@ -787,7 +787,7 @@ class PayPalIntegration {
 
 class OXXOPayIntegration {
     async init() {
-        console.log('🏪 OXXO Pay integration initialized');
+        //console.log('🏪 OXXO Pay integration initialized');
     }
 
     async generatePaymentCode(paymentData) {
@@ -804,7 +804,7 @@ class OXXOPayIntegration {
 
 class SPEIIntegration {
     async init() {
-        console.log('🏦 SPEI integration initialized');
+        //console.log('🏦 SPEI integration initialized');
     }
 
     async generateReference(paymentData) {

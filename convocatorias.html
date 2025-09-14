@@ -549,13 +549,22 @@
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
-            <div class="message bot">
-                ¡Hola! 👋 Soy el asistente virtual del Bachillerato Héroes de la Patria. ¿En qué puedo ayudarte hoy?
+            <div class="chatbot-message bot">
+                <div class="response-professional">
+                    <div class="response-title">🎓 Asistente Virtual BGE</div>
+                    <div class="response-content">
+                        <div class="response-section">
+                            <div class="response-subtitle">¡Hola! Soy tu asistente inteligente</div>
+                            <div class="response-text">Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.</div>
+                        </div>
+                    </div>
+                    <div class="response-footer">¿En qué puedo ayudarte hoy?</div>
+                </div>
             </div>
         </div>
         
         <div class="chatbot-input">
-            <input type="text" id="chatInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
             <button onclick="sendMessage()" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -580,29 +589,6 @@
         <i class="fas fa-comments"></i>
     </button>
     
-    <!-- Chat Bot Container -->
-    <div class="chatbot-container" id="chatbotContainer">
-        <div class="chatbot-header">
-            <div>
-                <strong>Asistente Virtual</strong>
-                <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
-            </div>
-            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
-        </div>
-        
-        <div class="chatbot-messages" id="chatbotMessages">
-            <div class="message bot">
-                ¡Hola! 👋 ¿Necesitas ayuda con las convocatorias? Estoy aquí para apoyarte.
-            </div>
-        </div>
-        
-        <div class="chatbot-input">
-            <input type="text" id="chatInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
-            <button onclick="sendMessage()" aria-label="Enviar mensaje">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
-    </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
@@ -611,65 +597,28 @@
     <script src="js/script.js"></script>
     <script src="js/chatbot.js"></script>
     
-    <!-- Dark Mode Functionality -->
+    <!-- Page-specific functionality -->
     <script>
-        // Dark mode functionality - CORREGIDO V2
-        const darkModeToggle = document.getElementById('darkModeToggle');
-        const body = document.body;
-        
-        if (darkModeToggle) {
-            // Limpiar cualquier contenido de texto del botón
-            const cleanToggleButton = () => {
-                // Remover cualquier nodo de texto
-                const textNodes = [...darkModeToggle.childNodes].filter(node => node.nodeType === Node.TEXT_NODE);
-                textNodes.forEach(node => node.remove());
-            };
-            
-            // Check for saved dark mode preference
-            if (localStorage.getItem('darkMode') === 'enabled') {
-                body.classList.add('dark-mode');
-                updateDarkModeIcon(true);
-            }
-            
-            darkModeToggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                cleanToggleButton(); // Limpiar antes de cada toggle
-                body.classList.toggle('dark-mode');
-                
-                if (body.classList.contains('dark-mode')) {
-                    localStorage.setItem('darkMode', 'enabled');
-                    updateDarkModeIcon(true);
-                } else {
-                    localStorage.setItem('darkMode', 'disabled');
-                    updateDarkModeIcon(false);
-                }
-            });
-            
-            // Limpiar al cargar la página
-            cleanToggleButton();
-        }
-        
-        function updateDarkModeIcon(isDark) {
-            if (darkModeToggle) {
-                let icon = darkModeToggle.querySelector('i');
-                
-                // Si no existe el icono, crearlo
-                if (!icon) {
-                    icon = document.createElement('i');
-                    darkModeToggle.innerHTML = ''; // Limpiar completamente
-                    darkModeToggle.appendChild(icon);
-                }
-                
-                if (isDark) {
-                    icon.className = 'fas fa-sun';
-                    darkModeToggle.setAttribute('aria-label', 'Activar modo claro');
-                } else {
-                    icon.className = 'fas fa-moon';
-                    darkModeToggle.setAttribute('aria-label', 'Activar modo oscuro');
-                }
+        // Función para manejar documentos faltantes
+        function showDocumentAlert(convocatoria, fallbackDoc = null) {
+            const message = fallbackDoc ? 
+                `La convocatoria de "${convocatoria}" está en proceso de actualización.\n\n` +
+                `Mientras tanto, puedes consultar nuestro reglamento escolar que contiene información relevante.\n\n` +
+                `¿Deseas abrir el documento disponible?` :
+                `La convocatoria de "${convocatoria}" se está preparando.\n\n` +
+                `Por favor contáctanos para más información:\n` +
+                `📞 (123) 456-7890\n` +
+                `📧 info@heroesdelapatria.edu.mx`;
+
+            if (fallbackDoc && confirm(message)) {
+                window.open(fallbackDoc, '_blank');
+            } else if (!fallbackDoc) {
+                alert(message);
             }
         }
     </script>
+    
+    <!-- Dark mode handled by global script.js -->
     
     <!-- Dark Mode Styles -->
     <style>
@@ -892,6 +841,9 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
     </style>
-    <script src="js/search-simple.js"></script>
+    <script src="js/search-unified.js"></script>
+    <!-- Scripts de autenticación admin -->
+    <script src="js/admin-auth-secure.js"></script>
+    <script src="force-admin-nuclear.js"></script>
 </body>
 </html>

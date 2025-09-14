@@ -45,7 +45,7 @@ class PerformanceOptimizer {
             // Web Vitals
             this.measureWebVitals();
             
-            console.log(`⚡ Página cargada en ${loadTime.toFixed(2)}ms`);
+            //console.log(`⚡ Página cargada en ${loadTime.toFixed(2)}ms`);
         });
     }
 
@@ -428,7 +428,7 @@ class PerformanceOptimizer {
         script.onload = () => {
             if (id) this.loadedModules.add(id);
             if (callback) callback();
-            console.log(`✅ Script cargado: ${src}`);
+            //console.log(`✅ Script cargado: ${src}`);
         };
         
         script.onerror = () => {
@@ -461,7 +461,7 @@ class PerformanceOptimizer {
         // Ejecutar todas las optimizaciones manualmente
         this.optimizeImages();
         this.setupLazyLoading();
-        console.log('🚀 Optimizaciones aplicadas');
+        //console.log('🚀 Optimizaciones aplicadas');
     }
 
     printPerformanceReport() {
@@ -474,7 +474,7 @@ class PerformanceOptimizer {
 // Inicializar optimizador automáticamente
 document.addEventListener('DOMContentLoaded', () => {
     window.performanceOptimizer = new PerformanceOptimizer();
-    console.log('🚀 Performance Optimizer inicializado');
+    //console.log('🚀 Performance Optimizer inicializado');
 });
 
 // Agregar estilos para animaciones y lazy loading

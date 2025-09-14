@@ -1,8 +1,17 @@
 /**
- * ADVANCED ANALYTICS & REPORTING - FASE 4
+ * 📊 ADVANCED ANALYTICS - Sistema Avanzado de Métricas
  * Bachillerato General Estatal "Héroes de la Patria"
- * Sistema avanzado de análisis de datos y reportes ejecutivos
+ * Análisis completo de comportamiento y rendimiento
  */
+
+// Configuración de API URL para analytics
+const ANALYTICS_API_BASE = (() => {
+    const currentHost = window.location.hostname;
+    if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
+        return 'http://localhost:3000';  // Backend en desarrollo
+    }
+    return window.location.origin;  // En producción, mismo dominio
+})();
 
 class AdvancedAnalyticsManager {
     constructor() {
@@ -40,13 +49,13 @@ class AdvancedAnalyticsManager {
     }
 
     async init() {
-        console.log('📊 Initializing Advanced Analytics System...');
+        //console.log('📊 Initializing Advanced Analytics System...');
         
         // Initialize all analytics providers
         for (const [name, provider] of Object.entries(this.analytics)) {
             try {
                 await provider.init();
-                console.log(`✅ ${name} analytics initialized`);
+                //console.log(`✅ ${name} analytics initialized`);
             } catch (error) {
                 console.warn(`⚠️ ${name} analytics failed:`, error);
             }
@@ -408,7 +417,7 @@ class AdvancedAnalyticsManager {
 
     async sendHeartbeat() {
         try {
-            await fetch('/api/analytics/heartbeat', {
+            await fetch(`${ANALYTICS_API_BASE}/api/analytics/heartbeat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -799,7 +808,7 @@ class FacebookPixelIntegration {
     async init() {
         // Only load if Pixel ID is configured
         if (!this.pixelId) {
-            console.log('⚠️ Facebook Pixel ID not configured, skipping initialization');
+            //console.log('⚠️ Facebook Pixel ID not configured, skipping initialization');
             return;
         }
         
@@ -838,7 +847,7 @@ class CustomAnalyticsEngine {
     }
 
     async init() {
-        console.log('🔧 Custom analytics engine initialized');
+        //console.log('🔧 Custom analytics engine initialized');
     }
 
     track(event, data) {
@@ -858,7 +867,7 @@ class CustomAnalyticsEngine {
 
     async sendToAPI(eventData) {
         try {
-            await fetch('/api/analytics/custom', {
+            await fetch(`${ANALYTICS_API_BASE}/api/analytics/custom`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(eventData)
@@ -881,7 +890,7 @@ class HeatmapAnalytics {
     }
 
     async init() {
-        console.log('🔥 Heatmap analytics initialized');
+        //console.log('🔥 Heatmap analytics initialized');
         this.setupMouseTracking();
     }
 
@@ -940,7 +949,7 @@ class PerformanceAnalytics {
     }
 
     async init() {
-        console.log('⚡ Performance analytics initialized');
+        //console.log('⚡ Performance analytics initialized');
         this.setupPerformanceObserver();
     }
 

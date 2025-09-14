@@ -7,6 +7,32 @@ Solo contiene overrides necesarios y estilos únicos no cubiertos por Bootstrap.
 ==============================================================================
 */
 
+/* Botón de autenticación del mismo tamaño que los enlaces del navbar */
+.auth-btn-compact {
+    padding: 0.15rem 0.5rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.1 !important;
+    height: 28px !important;
+    border-width: 1px !important;
+    border-radius: 15px !important;
+    transition: all 0.2s ease;
+    font-weight: 400 !important;
+    vertical-align: middle !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    margin-left: 15px !important; /* Separación del menú "Contacto" */
+}
+
+.auth-btn-compact i {
+    font-size: 0.75rem !important;
+    margin-right: 0.3rem !important;
+}
+
+.auth-btn-compact:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
 /* ==========================================================================
    1. VARIABLES CSS - BOOTSTRAP OVERRIDES & CUSTOM VARIABLES
    ========================================================================== */
@@ -700,8 +726,91 @@ body.dark-mode .chatbot-input {
 
 body.dark-mode .chatbot-input input {
     background: var(--dark-bg-tertiary);
-    border-color: var(--dark-border);
+    border-color: #ffd700;
     color: var(--dark-text-primary);
+}
+
+/* Estilos para respuestas del chatbot en modo oscuro */
+body.dark-mode .response-subtitle,
+[data-theme="dark"] .response-subtitle {
+    color: #ffd700 !important;
+    font-weight: 600 !important;
+}
+
+body.dark-mode .response-text,
+[data-theme="dark"] .response-text {
+    color: #ffffff !important;
+}
+
+body.dark-mode .response-title,
+[data-theme="dark"] .response-title {
+    color: #ffd700 !important;
+    background: linear-gradient(135deg, #37474f, #424242) !important;
+    border-left: 4px solid #ffd700 !important;
+}
+
+body.dark-mode .response-professional,
+[data-theme="dark"] .response-professional {
+    color: #ffffff !important;
+}
+
+body.dark-mode .response-simple,
+[data-theme="dark"] .response-simple {
+    color: #ffffff !important;
+}
+
+body.dark-mode .response-section,
+[data-theme="dark"] .response-section {
+    color: #ffffff !important;
+}
+
+body.dark-mode .response-content,
+[data-theme="dark"] .response-content {
+    color: #ffffff !important;
+}
+
+/* Estilos para unificar .message.bot con el formato profesional de index.html */
+.message.bot {
+    background: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    padding: 16px !important;
+    margin-bottom: 12px !important;
+    border-radius: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+    color: #37474f !important;
+}
+
+body.dark-mode .message.bot,
+[data-theme="dark"] .message.bot {
+    background: #424242 !important;
+    border: 1px solid #616161 !important;
+    color: #ffffff !important;
+}
+
+/* Estilos para .chatbot-message.bot (mensajes dinámicos del JS) */
+.chatbot-message.bot {
+    background: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    padding: 16px !important;
+    margin-bottom: 12px !important;
+    border-radius: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+    color: #37474f !important;
+}
+
+body.dark-mode .chatbot-message.bot,
+[data-theme="dark"] .chatbot-message.bot {
+    background: #424242 !important;
+    border: 1px solid #616161 !important;
+    color: #ffffff !important;
 }
 
 /* ==========================================================================
@@ -1518,6 +1627,78 @@ body.dark-mode .chatbot-input input {
 
 .dark-mode .sitemap-links a::after {
     background: linear-gradient(135deg, rgba(25, 118, 210, 0.1), rgba(33, 150, 243, 0.1));
+}
+
+/* ==========================================================================
+   CONSOLIDACIÓN CSS INLINE - COMPONENTES COMUNES
+   ========================================================================== */
+
+/* Chatbot Styles - Consolidación de estilos inline repetidos */
+.chatbot-close-btn {
+    background: none !important;
+    border: none !important;
+    color: white !important;
+    font-size: 18px !important;
+    position: absolute !important;
+    top: 10px !important;
+    right: 15px !important;
+}
+
+.chatbot-toggle-btn {
+    bottom: 2rem !important;
+    right: 2rem !important;
+    width: 50px !important;
+    height: 50px !important;
+    z-index: 1000 !important;
+}
+
+.chatbot-subtitle {
+    font-size: 12px !important;
+    opacity: 0.8 !important;
+}
+
+/* Feature Icons - Tamaño estandarizado */
+.feature-icon-md {
+    width: 60px !important;
+    height: 60px !important;
+}
+
+/* Gallery Placeholder */
+.gallery-placeholder {
+    height: 200px !important;
+    background: linear-gradient(45deg, #1976d2, #42a5f5) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+}
+
+/* Dark Mode - Consolidación de overrides */
+.dark-mode-bg-primary {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+}
+
+.dark-mode-bg-secondary {
+    background-color: #2d2d2d !important;
+}
+
+.dark-mode-border {
+    border-color: #404040 !important;
+}
+
+.dark-mode-text-primary {
+    color: #ffffff !important;
+}
+
+.dark-mode-text-secondary {
+    color: #b0b0b0 !important;
+}
+
+.dark-mode-input {
+    background-color: #404040 !important;
+    border-color: #505050 !important;
+    color: #ffffff !important;
 }
 
 /* Mobile responsive adjustments */

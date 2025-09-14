@@ -1,11 +1,11 @@
 /**
- * SERVICE WORKER AVANZADO - PWA OFFLINE FIRST
+ * SERVICE WORKER AVANZADO - PWA OFFLINE FIRST v3.1
  * Bachillerato General Estatal "Héroes de la Patria"
- * Versión 3.0 - Integración completa con API y funcionalidades avanzadas
+ * Versión 3.1 - Optimizado con telemetría avanzada y mejor error handling
  */
 
 // === CONFIGURATION ===
-const CACHE_NAME = 'heroes-patria-v3.0.0';
+const CACHE_NAME = 'heroes-patria-v3.1.0';
 const OFFLINE_PAGE = './offline.html';
 const API_CACHE_NAME = 'heroes-api-cache-v1';
 const IMAGES_CACHE_NAME = 'heroes-images-v1';

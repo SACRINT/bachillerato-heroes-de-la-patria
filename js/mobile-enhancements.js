@@ -27,7 +27,7 @@ class MobileEnhancements {
             this.setupOrientationHandling();
             this.optimizeMobilePerformance();
             
-            console.log('📱 Mobile Enhancements activadas');
+            //console.log('📱 Mobile Enhancements activadas');
         }
     }
 
@@ -778,7 +778,7 @@ class MobileEnhancements {
             }
         ];
         
-        console.log('📱 Atajos móviles habilitados:', shortcuts.length);
+        //console.log('📱 Atajos móviles habilitados:', shortcuts.length);
     }
 
     optimizeForNotch() {
@@ -910,7 +910,7 @@ class MobileEnhancements {
             window.performanceOptimizer.setBatterySavingMode(true);
         }
         
-        console.log('🔋 Modo ahorro de batería activado');
+        //console.log('🔋 Modo ahorro de batería activado');
     }
 
     disableBatterySavingMode() {
@@ -950,7 +950,7 @@ class MobileEnhancements {
             }
         });
         
-        console.log('📶 Modo bajo ancho de banda activado');
+        //console.log('📶 Modo bajo ancho de banda activado');
     }
 
     disableLowBandwidthMode() {
@@ -998,7 +998,7 @@ class MobileEnhancements {
                 // Permitir ambas orientaciones pero optimizar para landscape en tablets
                 if (this.isTablet) {
                     screen.orientation.lock('landscape').catch(() => {
-                        console.log('No se pudo bloquear orientación');
+                        //console.log('No se pudo bloquear orientación');
                     });
                 }
             }
@@ -1092,7 +1092,7 @@ class MobileEnhancements {
     refreshMobileOptimizations() {
         this.optimizeMobileInterface();
         this.setupMobileNavigation();
-        console.log('📱 Optimizaciones móviles actualizadas');
+        //console.log('📱 Optimizaciones móviles actualizadas');
     }
 }
 

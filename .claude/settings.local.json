@@ -19,7 +19,18 @@
       "Bash(npm install)",
       "Bash(node:*)",
       "Bash(for file in convocatorias.html normatividad.html privacidad.html sitios-interes.html terminos.html transparencia.html)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(tree:*)",
+      "Bash(awk:*)",
+      "Read(//c//**)",
+      "Bash(dir:*)",
+      "Bash(start http://localhost:3000)",
+      "Bash(for file in calendario.html convocatorias.html sitios-interes.html transparencia.html)",
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(python:*)",
+      "Bash(npm start)",
+      "Bash(curl:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

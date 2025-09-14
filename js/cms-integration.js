@@ -57,7 +57,7 @@ class CMSIntegration {
             // Load page-specific content
             await this.loadPageContent();
             
-            console.log('✅ CMS Integration initialized successfully');
+            //console.log('✅ CMS Integration initialized successfully');
             
         } catch (error) {
             console.error('❌ Error initializing CMS:', error);
@@ -119,7 +119,7 @@ class CMSIntegration {
         try {
             const config = await this.fetchData('config.json');
             this.updateSiteElements(config);
-            console.log('✅ Site configuration loaded');
+            //console.log('✅ Site configuration loaded');
         } catch (error) {
             console.warn('⚠️ Could not load site configuration:', error);
         }
@@ -475,7 +475,7 @@ class CMSIntegration {
     async refreshContent() {
         this.cache.clear();
         await this.loadPageContent();
-        console.log('✅ Content refreshed');
+        //console.log('✅ Content refreshed');
     }
 
     async loadSpecificContent(contentType) {

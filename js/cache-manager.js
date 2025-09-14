@@ -29,7 +29,7 @@ class CacheManager {
         await this.initIndexedDB();
         this.startCleanupScheduler();
         this.setupStorageListeners();
-        console.log('💾 Cache Manager inicializado');
+        //console.log('💾 Cache Manager inicializado');
     }
 
     // ============================================
@@ -53,7 +53,7 @@ class CacheManager {
             
             request.onsuccess = () => {
                 this.indexedDB = request.result;
-                console.log('✅ IndexedDB inicializado');
+                //console.log('✅ IndexedDB inicializado');
                 resolve();
             };
             
@@ -122,7 +122,7 @@ class CacheManager {
                     throw new Error(`Tipo de storage no soportado: ${storage}`);
             }
             
-            console.log(`💾 Cached: ${key} (${storage})`);
+            //console.log(`💾 Cached: ${key} (${storage})`);
             return true;
         } catch (error) {
             console.warn(`Error caching ${key}:`, error);
@@ -140,7 +140,7 @@ class CacheManager {
                 const item = await this.getFromStorage(key, storage);
                 if (item && !this.isExpired(item)) {
                     const data = item.compressed ? this.decompress(item.data) : item.data;
-                    console.log(`💾 Cache hit: ${key} (${storage})`);
+                    //console.log(`💾 Cache hit: ${key} (${storage})`);
                     return data;
                 }
             } catch (error) {
@@ -148,7 +148,7 @@ class CacheManager {
             }
         }
         
-        console.log(`💾 Cache miss: ${key}`);
+        //console.log(`💾 Cache miss: ${key}`);
         return null;
     }
 
@@ -370,7 +370,7 @@ class CacheManager {
     }
 
     async cleanup() {
-        console.log('🧹 Iniciando limpieza de caché...');
+        //console.log('🧹 Iniciando limpieza de caché...');
         
         await Promise.all([
             this.cleanupMemoryCache(),
@@ -379,7 +379,7 @@ class CacheManager {
             this.cleanupExpiredIndexedDB()
         ]);
         
-        console.log('✅ Limpieza de caché completada');
+        //console.log('✅ Limpieza de caché completada');
     }
 
     cleanupMemoryCache() {
@@ -495,7 +495,7 @@ class CacheManager {
         // Listener para storage events (sincronización entre tabs)
         window.addEventListener('storage', (event) => {
             if (event.key && event.key.startsWith(this.localStoragePrefix)) {
-                console.log('🔄 Storage sincronizado entre tabs');
+                //console.log('🔄 Storage sincronizado entre tabs');
             }
         });
         
@@ -522,7 +522,7 @@ class CacheManager {
                 this.clearStorage('indexedDB')
             ]);
         }
-        console.log('🗑️ Caché limpiado');
+        //console.log('🗑️ Caché limpiado');
     }
 
     async clearStorage(storage) {

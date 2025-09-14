@@ -7,8 +7,8 @@
             <a class="navbar-brand d-flex align-items-center" href="index.html" style="margin-right: 0;">
                 <img src="images/logo-bachillerato-HDLP.webp" alt="Logo Bachillerato Héroes de la Patria" style="height: 45px; width: auto;">
                 <div class="ms-2">
-                    <div class="fw-bold text-primary" style="font-size: 0.85rem; line-height: 1.1;">Bachillerato General Estatal</div>
-                    <div class="text-secondary fw-semibold" style="font-size: 0.75rem; line-height: 1.1;">"Héroes de la Patria"</div>
+                    <div class="fw-bold text-primary logo-main-text" style="font-size: 0.85rem; line-height: 1.1;">Bachillerato General Estatal</div>
+                    <div class="text-secondary fw-semibold logo-sub-text" style="font-size: 0.75rem; line-height: 1.1;">"Héroes de la Patria"</div>
                 </div>
             </a>
 
@@ -287,16 +287,25 @@
                         <li><a class="dropdown-item" href="index.html#mapa-sitio"><i class="fas fa-sitemap me-2"></i>Mapa del Sitio</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><h6 class="dropdown-header">Administración</h6></li>
-                        <li><a class="dropdown-item" href="admin-dashboard.html#hero"><i class="fas fa-tachometer-alt me-2"></i>Dashboard Admin</a></li>
+                        <li id="adminOnlySection" class="d-none">
+                            <a class="dropdown-item" href="admin-dashboard.html#hero">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard Admin
+                            </a>
+                        </li>
+                        <li id="adminOnlySection2" class="d-none">
+                            <a class="dropdown-item" href="#" onclick="openAdminPanel(); return false;">
+                                <i class="fas fa-cogs me-2"></i>Panel de Administración
+                            </a>
+                        </li>
                         <li>
-                            <a class="dropdown-item" href="#" onclick="showAdminPanelAuth()" style="cursor: pointer;" id="adminPanelMenuLink">
-                                <i class="fas fa-edit me-2"></i>Panel de Administración
-                                <span id="adminPanelSessionStatus" class="badge bg-success ms-2 d-none">Sesión Activa</span>
+                            <a class="dropdown-item admin-login-compact" href="#" onclick="handleAdminLogin(); return false;" style="cursor: pointer;" id="adminPanelMenuLink">
+                                <i class="fas fa-shield-halved me-2"></i>Admin
+                                <span id="adminPanelSessionStatus" class="badge bg-success ms-1 d-none">✓</span>
                             </a>
                         </li>
                         <li id="adminPanelLogoutOption" class="d-none">
-                            <a class="dropdown-item text-warning" href="#" onclick="logoutAdminPanel()" style="cursor: pointer;">
-                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión Panel
+                            <a class="dropdown-item text-danger" href="#" onclick="logoutAdminPanel()" style="cursor: pointer;">
+                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión Admin
                             </a>
                         </li>
                     </ul>
@@ -417,16 +426,25 @@
         }
     }
 
-    /* Dark mode */
+    /* Dark mode - MEJORADO CONTRASTE */
+    [data-theme="dark"] .search-input,
     .dark-mode .search-input {
-        background-color: #2d3748;
-        border-color: #4a5568;
-        color: #f7fafc;
+        background-color: #2d3748 !important;
+        border-color: #4a5568 !important;
+        color: #ffffff !important;
+    }
+    
+    [data-theme="dark"] .search-input::placeholder,
+    .dark-mode .search-input::placeholder {
+        color: #e2e8f0 !important;
+        opacity: 0.8 !important;
     }
 
+    [data-theme="dark"] .search-input:focus,
     .dark-mode .search-input:focus {
-        border-color: var(--bs-primary);
-        background-color: #2d3748;
+        border-color: #64b5f6 !important;
+        background-color: #2d3748 !important;
+        color: #ffffff !important;
     }
 
     .dark-mode .search-results {
@@ -497,6 +515,45 @@
         border-left-color: var(--bs-primary);
     }
     
+    /* Estilo mejorado para el botón de login admin */
+    .admin-login-btn {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+        color: white !important;
+        border-radius: 6px !important;
+        margin: 2px 6px !important;
+        padding: 6px 12px !important;
+        font-weight: 500 !important;
+        font-size: 0.875rem !important;
+        transition: all 0.3s ease !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
+        display: block !important;
+        max-width: calc(100% - 12px) !important;
+        word-wrap: break-word !important;
+    }
+    
+    .admin-login-btn:hover {
+        background: linear-gradient(135deg, #0056b3 0%, #003d82 100%) !important;
+        color: white !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 2px 8px rgba(0,123,255,0.3) !important;
+    }
+    
+    .admin-login-btn i {
+        opacity: 0.9;
+    }
+    
+    /* Ajuste para contenedor dropdown */
+    .dropdown-menu {
+        min-width: 260px !important;
+        max-width: 320px !important;
+    }
+    
+    /* Ajuste específico para dropdown de contacto */
+    .dropdown-menu-end {
+        min-width: 280px !important;
+        max-width: 320px !important;
+    }
+    
     /* Para dropdowns que van hacia la izquierda */
     .dropdown-submenu.dropstart > .dropdown-menu {
         top: 0;
@@ -533,6 +590,83 @@
             border-bottom: 0.3em solid transparent;
         }
     }
+
+    /* Estilo normal para botón admin - sin deformar el menú */
+    .admin-login-compact {
+        /* Resetear cualquier estilo que deforme */
+        padding: 0.5rem 1rem !important;
+        font-size: 0.875rem !important;
+        line-height: 1.5 !important;
+        border-radius: 0 !important;
+        transition: all 0.15s ease-in-out;
+        background: transparent !important;
+        border: none !important;
+        margin: 0 !important;
+        display: block !important;
+        align-items: normal !important;
+        justify-content: normal !important;
+        min-height: normal !important;
+        height: auto !important;
+        width: 100% !important;
+        text-align: left !important;
+        white-space: nowrap !important;
+    }
+    
+    .admin-login-compact:hover {
+        background-color: rgba(0, 0, 0, 0.04) !important;
+        color: #495057 !important;
+        border: none !important;
+        transform: none !important;
+    }
+    
+    .admin-login-compact.text-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+        color: white !important;
+        font-weight: 500 !important;
+        border-radius: 0.25rem !important;
+    }
+    
+    .admin-login-compact.text-success:hover {
+        background: linear-gradient(135deg, #218838 0%, #1c7430 100%) !important;
+        color: white !important;
+    }
+    
+    .admin-login-compact i {
+        font-size: 0.875rem !important;
+        width: auto !important;
+        text-align: left !important;
+        margin-right: 0.5rem !important;
+    }
+    
+    .admin-login-compact .badge {
+        font-size: 0.65rem !important;
+        padding: 0.15rem 0.4rem !important;
+        margin-left: 0.25rem !important;
+    }
+    
+    /* LOGO CONTRASTE - Modo Oscuro */
+    [data-theme="dark"] .logo-main-text,
+    .dark-mode .logo-main-text {
+        color: #90caf9 !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+    }
+    
+    [data-theme="dark"] .logo-sub-text,
+    .dark-mode .logo-sub-text {
+        color: #e8eaf6 !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+    }
+    
+    /* Mejor contraste para modo claro también */
+    .logo-main-text {
+        color: #1565c0 !important;
+        text-shadow: 0 1px 2px rgba(255,255,255,0.5) !important;
+    }
+    
+    .logo-sub-text {
+        color: #424242 !important;
+        text-shadow: 0 1px 2px rgba(255,255,255,0.5) !important;
+    }
 </style>
 
 <!-- Modal de Autenticación para Panel de Administración -->
@@ -550,12 +684,14 @@
                     <i class="fas fa-lock fa-3x text-warning mb-3"></i>
                     <h6>Panel de Administración</h6>
                     <p class="text-muted">Este panel está restringido solo para personal autorizado.</p>
+                    
+                    <!-- REMOVIDO: Información de desarrollo eliminada para producción -->
                 </div>
                 
                 <form id="adminPanelAuthForm">
                     <div class="mb-3">
                         <label for="adminPanelPassword" class="form-label">Contraseña de Administración:</label>
-                        <input type="password" class="form-control" id="adminPanelPassword" placeholder="Ingresa la contraseña" required>
+                        <input type="password" class="form-control" id="adminPanelPassword" placeholder="Ingresa la contraseña" autocomplete="current-password" required>
                     </div>
                     <div class="alert alert-danger d-none" id="adminPanelAuthError">
                         <i class="fas fa-exclamation-triangle me-2"></i>
@@ -567,7 +703,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-1"></i>Cancelar
                 </button>
-                <button type="submit" class="btn btn-warning" form="adminPanelAuthForm">
+                <button type="submit" form="adminPanelAuthForm" class="btn btn-warning">
                     <i class="fas fa-key me-1"></i>Acceder al Panel
                 </button>
             </div>
@@ -575,5 +711,8 @@
     </div>
 </div>
 
-<script src="js/responsive-nav.js"></script>
-<script src="js/nested-dropdowns.js"></script>
+<script src="js/responsive-nav.js?v=2024091401"></script>
+<script src="js/nested-dropdowns.js?v=2024091401"></script>
+<script src="js/admin-auth-secure.js?v=2024091401"></script>
+
+<!-- Script cleanup - función inline implementada -->

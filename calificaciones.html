@@ -283,7 +283,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="studentPassword" class="form-label">Contraseña</label>
-                                    <input type="password" class="form-control" id="studentPassword" required>
+                                    <input type="password" class="form-control" id="studentPassword" autocomplete="current-password" required>
                                 </div>
                                 <button type="button" class="btn btn-primary w-100" onclick="loginAsStudent()">
                                     Acceder como Estudiante
@@ -303,7 +303,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="parentPassword" class="form-label">Contraseña</label>
-                                    <input type="password" class="form-control" id="parentPassword" required>
+                                    <input type="password" class="form-control" id="parentPassword" autocomplete="current-password" required>
                                 </div>
                                 <button type="button" class="btn btn-success w-100" onclick="loginAsParent()">
                                     Acceder como Padre
@@ -621,14 +621,23 @@
         <div class="chatbot-header">
             <div>
                 <strong>Asistente Virtual</strong>
-                <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
+                <div class="chatbot-subtitle">Héroes de la Patria</div>
             </div>
-            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+            <button onclick="toggleChatbot()" class="chatbot-close-btn" aria-label="Cerrar chat">×</button>
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
-            <div class="message bot">
-                ¡Hola! 👋 Soy el asistente virtual del Bachillerato Héroes de la Patria. ¿En qué puedo ayudarte hoy?
+            <div class="chatbot-message bot">
+                <div class="response-professional">
+                    <div class="response-title">🎓 Asistente Virtual BGE</div>
+                    <div class="response-content">
+                        <div class="response-section">
+                            <div class="response-subtitle">¡Hola! Soy tu asistente inteligente</div>
+                            <div class="response-text">Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.</div>
+                        </div>
+                    </div>
+                    <div class="response-footer">¿En qué puedo ayudarte hoy?</div>
+                </div>
             </div>
             <div class="typing-indicator" id="typingIndicator" style="display: none;">
                 <div class="message bot typing">
@@ -642,7 +651,7 @@
         </div>
         
         <div class="chatbot-input">
-            <input type="text" id="chatInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
             <button onclick="sendMessage()" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -651,28 +660,234 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="js/script.js"></script>
     <script src="js/chatbot.js"></script>
     
     <!-- Ensure chatbot functions are accessible -->
     <script>
-        // Make sure functions are globally accessible
-        window.toggleChatbot = toggleChatbot;
-        window.sendMessage = sendMessage;
-        window.handleKeyPress = handleKeyPress;
+        // Make sure functions are globally accessible if they exist
+        if (typeof toggleChatbot !== 'undefined') {
+            window.toggleChatbot = toggleChatbot;
+        }
+        if (typeof sendMessage !== 'undefined') {
+            window.sendMessage = sendMessage;
+        }
+        if (typeof handleKeyPress !== 'undefined') {
+            window.handleKeyPress = handleKeyPress;
+        }
     </script>
-    <script src="js/search-simple.js"></script>
+    <script src="js/search-unified.js"></script>
     <!-- <script src="js/grades-platform.js"></script> -->
     
-    <!-- Funciones temporales para evitar errores -->
+    <!-- Sistema de Calificaciones Funcional -->
     <script>
+        // Estado de la aplicación
+        let currentUser = null;
+        let isLoggedIn = false;
+
         function showLoginModal() {
-            alert('Funcionalidad de login en desarrollo. Próximamente disponible.');
+            const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+            modal.show();
         }
         
         function showReportModal() {
-            alert('Generador de reportes en desarrollo.\n\nPronto podrás:\n• Generar reportes de calificaciones\n• Exportar boletas\n• Crear gráficos de rendimiento\n• Descargar historial académico');
+            if (!isLoggedIn) {
+                alert('Debes iniciar sesión primero para generar reportes.');
+                showLoginModal();
+                return;
+            }
+            const modal = new bootstrap.Modal(document.getElementById('reportModal'));
+            modal.show();
+        }
+
+        // Alias para compatibilidad con los botones existentes
+        function loginAsStudent() { loginStudent(); }
+        function loginAsParent() { loginParent(); }
+
+        // Función de login de estudiante
+        function loginStudent() {
+            const matricula = document.getElementById('studentId').value;
+            const password = document.getElementById('studentPassword').value;
+            
+            if (!matricula || !password) {
+                showAlert('Por favor completa todos los campos.', 'warning');
+                return;
+            }
+
+            // Simulación de login exitoso con datos de prueba
+            if (matricula === 'H2024001' && password === 'estudiante123') {
+                currentUser = {
+                    tipo: 'estudiante',
+                    matricula: 'H2024001',
+                    nombre: 'Ana García Hernández',
+                    semestre: '3°',
+                    grupo: 'A'
+                };
+                isLoggedIn = true;
+                showGradesPanel();
+                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+                showAlert('¡Bienvenida, Ana! Has iniciado sesión exitosamente.', 'success');
+            } else {
+                showAlert('Matrícula o contraseña incorrecta. Prueba con H2024001 y contraseña: estudiante123', 'danger');
+            }
+        }
+
+        // Función de login de padre
+        function loginParent() {
+            const email = document.getElementById('parentEmail').value;
+            const password = document.getElementById('parentPassword').value;
+            
+            if (!email || !password) {
+                showAlert('Por favor completa todos los campos.', 'warning');
+                return;
+            }
+
+            // Simulación de login exitoso
+            if (email === 'padre@email.com' && password === 'padre123') {
+                currentUser = {
+                    tipo: 'padre',
+                    email: 'padre@email.com',
+                    nombre: 'Roberto García',
+                    hijo: 'Ana García Hernández',
+                    matricula_hijo: 'H2024001'
+                };
+                isLoggedIn = true;
+                showGradesPanel();
+                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+                showAlert('¡Bienvenido, Roberto! Puedes ver las calificaciones de Ana.', 'success');
+            } else {
+                showAlert('Email o contraseña incorrecta. Prueba con padre@email.com y contraseña: padre123', 'danger');
+            }
+        }
+
+        // Mostrar panel de calificaciones
+        function showGradesPanel() {
+            // Ocultar hero section y mostrar panel
+            const heroSection = document.querySelector('#hero');
+            if (heroSection) heroSection.style.display = 'none';
+            
+            // Mostrar panel de calificaciones
+            const gradesPanel = document.getElementById('gradesPanel');
+            if (gradesPanel) {
+                gradesPanel.classList.remove('d-none');
+            }
+            
+            // Actualizar información del usuario
+            const studentName = document.getElementById('studentNameDisplay');
+            const studentId = document.getElementById('studentIdDisplay');
+            const userType = document.getElementById('userTypeDisplay');
+            
+            if (studentName) studentName.textContent = currentUser.nombre;
+            if (studentId) studentId.textContent = currentUser.matricula || currentUser.matricula_hijo;
+            if (userType) userType.textContent = currentUser.tipo === 'estudiante' ? 'Estudiante' : 'Padre de Familia';
+            
+            // Cargar calificaciones de ejemplo
+            loadSampleGrades();
+        }
+
+        // Cargar calificaciones de muestra
+        function loadSampleGrades() {
+            const gradesData = [
+                { materia: 'Matemáticas IV', calificacion: 9.2, faltas: 2, profesor: 'Lic. María Rodríguez' },
+                { materia: 'Física II', calificacion: 8.8, faltas: 1, profesor: 'Ing. Carlos López' },
+                { materia: 'Química II', calificacion: 9.5, faltas: 0, profesor: 'Q.F.B. Ana Martínez' },
+                { materia: 'Literatura Universal', calificacion: 8.6, faltas: 3, profesor: 'Lic. Pedro Sánchez' },
+                { materia: 'Historia de México', calificacion: 9.0, faltas: 1, profesor: 'Lic. Laura Jiménez' },
+                { materia: 'Inglés III', calificacion: 9.3, faltas: 0, profesor: 'Lic. David Brown' }
+            ];
+
+            // Usar la tabla del primer parcial como ejemplo
+            const tbody = document.getElementById('gradesTableParcial1');
+            if (tbody) {
+                tbody.innerHTML = '';
+
+                gradesData.forEach(materia => {
+                    const row = `
+                        <tr>
+                            <td>${materia.materia}</td>
+                            <td><span class="badge ${materia.calificacion >= 9 ? 'bg-success' : materia.calificacion >= 8 ? 'bg-warning' : 'bg-danger'}">${materia.calificacion}</span></td>
+                            <td>${materia.faltas}</td>
+                            <td>${materia.profesor}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" onclick="showSubjectDetail('${materia.materia}')">
+                                    <i class="fas fa-eye"></i> Ver
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            }
+
+            // Calcular promedio
+            const promedio = gradesData.reduce((sum, m) => sum + m.calificacion, 0) / gradesData.length;
+            const averageElement = document.getElementById('generalAverage');
+            if (averageElement) {
+                averageElement.textContent = promedio.toFixed(1);
+            }
+        }
+
+        // Función de logout
+        function logout() {
+            currentUser = null;
+            isLoggedIn = false;
+            
+            // Mostrar hero section y ocultar panel
+            const heroSection = document.querySelector('#hero');
+            if (heroSection) heroSection.style.display = 'block';
+            
+            const gradesPanel = document.getElementById('gradesPanel');
+            if (gradesPanel) {
+                gradesPanel.classList.add('d-none');
+            }
+            
+            showAlert('Sesión cerrada exitosamente.', 'info');
+        }
+
+        // Mostrar alertas
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+
+        // Generar reporte PDF (simulación)
+        function generatePDF() {
+            showAlert('Generando reporte PDF... Esta funcionalidad estará disponible próximamente.', 'info');
+            bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide();
+        }
+
+        // Mostrar detalle de materia
+        function showSubjectDetail(materia) {
+            showAlert(`Detalle de ${materia}: Funcionalidad en desarrollo. Aquí se mostrará información detallada de la materia.`, 'info');
+        }
+
+        // Función de reporte con validación
+        function generateReport() {
+            const studentId = document.getElementById('reportStudentId').value;
+            const period = document.getElementById('reportPeriod').value;
+            const type = document.getElementById('reportType').value;
+
+            if (!studentId || !period || !type) {
+                showAlert('Por favor completa todos los campos del reporte.', 'warning');
+                return;
+            }
+
+            showAlert(`Generando ${type} para el ${period}... Esta funcionalidad estará disponible próximamente.`, 'info');
+            bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide();
         }
         
         function scrollToSection(sectionId) {

@@ -287,7 +287,7 @@ function loadHeaderFooter() {
                 // El modo oscuro ahora se maneja via script.js
                 // setTimeout(initializeDarkMode, 500);
             })
-            .catch(error => console.log('Header no encontrado:', error));
+            .catch(error => //console.log('Header no encontrado:', error));
     }
     
     if (footerPlaceholder && !footerPlaceholder.innerHTML.trim()) {
@@ -296,7 +296,7 @@ function loadHeaderFooter() {
             .then(data => {
                 footerPlaceholder.innerHTML = data;
             })
-            .catch(error => console.log('Footer no encontrado:', error));
+            .catch(error => //console.log('Footer no encontrado:', error));
     }
 }
 

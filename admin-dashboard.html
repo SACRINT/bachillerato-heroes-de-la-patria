@@ -13,6 +13,101 @@
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 <body>
+    <!-- 🔒 PROTECCIÓN INMEDIATA - VERIFICA ANTES DE CARGAR CUALQUIER CONTENIDO -->
+    <script>
+        (function() {
+            'use strict';
+            console.log('🔒 [DASHBOARD SECURITY] Verificación inmediata de autenticación...');
+            
+            function showAccessDenied() {
+                document.body.innerHTML = `
+                    <div style="
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        min-height: 100vh;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                        margin: 0;
+                        padding: 20px;
+                        box-sizing: border-box;
+                    ">
+                        <div style="
+                            background: white;
+                            padding: 40px;
+                            border-radius: 15px;
+                            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+                            text-align: center;
+                            max-width: 500px;
+                            width: 100%;
+                        ">
+                            <div style="
+                                width: 80px;
+                                height: 80px;
+                                margin: 0 auto 20px;
+                                background: #dc3545;
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: white;
+                                font-size: 32px;
+                            ">
+                                🔒
+                            </div>
+                            <h1 style="
+                                color: #dc3545;
+                                margin-bottom: 20px;
+                                font-size: 24px;
+                                font-weight: 600;
+                            ">Acceso Restringido</h1>
+                            <p style="
+                                color: #6c757d;
+                                margin-bottom: 30px;
+                                line-height: 1.6;
+                                font-size: 16px;
+                            ">Debes iniciar sesión como administrador para acceder al dashboard.</p>
+                            <a href="index.html" style="
+                                display: inline-block;
+                                background: #007bff;
+                                color: white;
+                                padding: 12px 30px;
+                                text-decoration: none;
+                                border-radius: 8px;
+                                font-weight: 500;
+                                transition: background-color 0.3s ease;
+                            " onmouseover="this.style.background='#0056b3'" onmouseout="this.style.background='#007bff'">
+                                ← Volver al Inicio
+                            </a>
+                        </div>
+                    </div>
+                `;
+                return false;
+            }
+            
+            // Verificación inmediata de localStorage
+            try {
+                const session = localStorage.getItem('secure_admin_session');
+                if (!session) {
+                    console.log('❌ [DASHBOARD SECURITY] No hay sesión - Acceso denegado');
+                    return showAccessDenied();
+                }
+                
+                const sessionData = JSON.parse(session);
+                if (!sessionData.token || !sessionData.expiresAt || Date.now() >= sessionData.expiresAt) {
+                    console.log('⏰ [DASHBOARD SECURITY] Sesión expirada - Acceso denegado');
+                    localStorage.removeItem('secure_admin_session');
+                    return showAccessDenied();
+                }
+                
+                console.log('✅ [DASHBOARD SECURITY] Sesión válida encontrada - Permitiendo carga');
+            } catch (error) {
+                console.error('❌ [DASHBOARD SECURITY] Error verificando sesión:', error);
+                return showAccessDenied();
+            }
+        })();
+    </script>
+    
     <!-- Header -->
     <div id="main-header"></div>
 
@@ -393,7 +488,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="adminPassword" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="adminPassword" required>
+                            <input type="password" class="form-control" id="adminPassword" autocomplete="current-password" required>
                         </div>
                         <div class="mb-3">
                             <label for="adminRole" class="form-label">Rol</label>
@@ -885,8 +980,17 @@
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
-            <div class="message bot">
-                ¡Hola! 👋 Soy el asistente virtual del Bachillerato Héroes de la Patria. ¿En qué puedo ayudarte hoy?
+            <div class="chatbot-message bot">
+                <div class="response-professional">
+                    <div class="response-title">🎓 Asistente Virtual BGE</div>
+                    <div class="response-content">
+                        <div class="response-section">
+                            <div class="response-subtitle">¡Hola! Soy tu asistente inteligente</div>
+                            <div class="response-text">Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.</div>
+                        </div>
+                    </div>
+                    <div class="response-footer">¿En qué puedo ayudarte hoy?</div>
+                </div>
             </div>
             <div class="typing-indicator" id="typingIndicator" style="display: none;">
                 <div class="message bot typing">
@@ -900,7 +1004,7 @@
         </div>
         
         <div class="chatbot-input">
-            <input type="text" id="chatInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
             <button onclick="sendMessage()" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -918,6 +1022,7 @@
         }
     </script>
     <script src="js/script.js"></script>
+    <script src="js/admin-auth-secure.js"></script>
     <script src="js/chatbot.js"></script>
     
     <!-- Ensure chatbot functions are accessible -->
@@ -933,17 +1038,68 @@
             window.handleKeyPress = handleKeyPress;
         }
     </script>
-    <script src="js/search-simple.js"></script>
+    <script src="js/search-unified.js"></script>
     <script src="js/admin-dashboard.js"></script>
+    
+    <!-- VERIFICACIÓN ADICIONAL DE AUTENTICACIÓN AL CARGAR DOM -->
+    <script>
+        // Verificación adicional cuando el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔒 [DASHBOARD SECURITY] Verificación adicional de autenticación...');
+            
+            // Verificar nuevamente el estado de autenticación
+            setTimeout(() => {
+                let isAuthenticated = false;
+                
+                // Verificar con el sistema de autenticación si está disponible
+                if (window.secureAdminAuth && typeof window.secureAdminAuth.isUserAuthenticated === 'function') {
+                    isAuthenticated = window.secureAdminAuth.isUserAuthenticated();
+                    console.log('🔍 [DASHBOARD SECURITY] Verificación con secureAdminAuth:', isAuthenticated);
+                }
+                
+                // Verificar localStorage como respaldo
+                if (!isAuthenticated) {
+                    try {
+                        const session = localStorage.getItem('secure_admin_session');
+                        if (session) {
+                            const sessionData = JSON.parse(session);
+                            if (sessionData.token && sessionData.expiresAt && Date.now() < sessionData.expiresAt) {
+                                isAuthenticated = true;
+                                console.log('✅ [DASHBOARD SECURITY] Sesión válida en localStorage');
+                            } else {
+                                console.log('⏰ [DASHBOARD SECURITY] Sesión expirada en localStorage');
+                                localStorage.removeItem('secure_admin_session');
+                            }
+                        }
+                    } catch (error) {
+                        console.warn('❌ [DASHBOARD SECURITY] Error verificando localStorage:', error);
+                    }
+                }
+                
+                if (!isAuthenticated) {
+                    console.log('🚫 [DASHBOARD SECURITY] Acceso denegado - Usuario no autenticado');
+                    window.location.href = 'index.html';
+                } else {
+                    console.log('✅ [DASHBOARD SECURITY] Acceso confirmado - Usuario autenticado');
+                }
+            }, 100); // Verificación más rápida ya que el contenido ya fue validado
+        });
+    </script>
     
     <!-- Funciones reales del dashboard - Ya no son temporales -->
     <script>
         // Funciones requeridas por onclick events para evitar errores
         function showLoginModal() {
-            const modal = document.getElementById('adminModal');
+            console.log('🔐 Intentando mostrar modal de login...');
+            const modal = document.getElementById('loginModal');
             if (modal) {
+                console.log('✅ Modal encontrado, mostrando...');
                 const modalInstance = new bootstrap.Modal(modal);
                 modalInstance.show();
+            } else {
+                console.error('❌ Modal loginModal no encontrado');
+                // Fallback: mostrar alert con datos de prueba
+                alert('Modal no encontrado. Datos de prueba:\nUsuario: admin\nContraseña: admin123\nRol: Director');
             }
         }
 

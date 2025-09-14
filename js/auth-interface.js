@@ -130,7 +130,7 @@ class AuthInterface {
         authButtonContainer.className = 'auth-button-container';
         authButtonContainer.innerHTML = `
             <div class="auth-status" id="authStatus">
-                <button class="btn btn-outline-primary btn-sm" id="authToggleBtn" type="button">
+                <button class="btn btn-outline-primary auth-btn-compact" id="authToggleBtn" type="button">
                     <i class="fas fa-user me-1"></i>
                     <span id="authButtonText">Iniciar Sesión</span>
                 </button>
@@ -221,10 +221,10 @@ class AuthInterface {
                 if (profile.success) {
                     this.currentUser = profile.user;
                     this.updateAuthInterface();
-                    console.log('🔐 Usuario autenticado automáticamente:', this.currentUser.email);
+                    //console.log('🔐 Usuario autenticado automáticamente:', this.currentUser.email);
                 }
             } catch (error) {
-                console.log('🔓 Sesión anterior expirada');
+                //console.log('🔓 Sesión anterior expirada');
                 window.apiClient.removeToken();
             }
         }
@@ -264,7 +264,7 @@ class AuthInterface {
                 this.closeAuthModal();
                 this.showLoginSuccess();
                 
-                console.log('✅ Login exitoso:', this.currentUser.email);
+                //console.log('✅ Login exitoso:', this.currentUser.email);
 
                 // Reinicializar chatbot con nueva sesión
                 if (window.initializeChatSession) {
@@ -295,7 +295,7 @@ class AuthInterface {
         this.currentUser = null;
         this.updateAuthInterface();
         this.showLogoutSuccess();
-        console.log('🔓 Sesión cerrada');
+        //console.log('🔓 Sesión cerrada');
     }
 
     /**
@@ -651,7 +651,7 @@ Fecha: ${new Date().toLocaleString('es-MX')}
         });
         localStorage.setItem('pending_registrations', JSON.stringify(registrations));
 
-        console.log('📧 Solicitud guardada localmente:', data.email);
+        //console.log('📧 Solicitud guardada localmente:', data.email);
     }
 
     /**
@@ -865,7 +865,7 @@ Fecha: ${new Date().toLocaleString('es-MX')}
  */
 window.handleGoogleCredentialResponse = async function(response) {
     try {
-        console.log('🔐 Google Sign-In response received');
+        //console.log('🔐 Google Sign-In response received');
         
         if (!response.credential) {
             throw new Error('No se recibió credencial de Google');
@@ -884,7 +884,7 @@ window.handleGoogleCredentialResponse = async function(response) {
             google_id: decoded.sub
         };
 
-        console.log('📧 Usuario de Google:', googleUser.email);
+        //console.log('📧 Usuario de Google:', googleUser.email);
 
         // Autenticar con el backend usando Google token
         if (window.apiClient) {
@@ -897,7 +897,7 @@ window.handleGoogleCredentialResponse = async function(response) {
                     window.authInterface.closeAuthModal();
                     window.authInterface.showToast('success', '✅ Google Sign-In exitoso', `Bienvenido ${authResponse.user.nombre}`);
                     
-                    console.log('✅ Autenticación con Google exitosa');
+                    //console.log('✅ Autenticación con Google exitosa');
                 } else {
                     throw new Error(authResponse.message || 'Error de autenticación con Google');
                 }
@@ -939,9 +939,9 @@ window.handleGoogleCredentialResponse = async function(response) {
  * Inicializar Google Sign-In
  */
 function initializeGoogleSignIn() {
-    // Verificar si Google está configurado
-    if (!window.AppConfig.isEnabled('google')) {
-        console.log('⚠️ Google Sign-In no configurado - ocultando botón');
+    // Verificar si AppConfig está disponible y si Google está configurado
+    if (!window.AppConfig || !window.AppConfig.isEnabled || !window.AppConfig.isEnabled('google')) {
+        //console.log('⚠️ Google Sign-In no configurado - ocultando botón');
         
         // Ocultar sección de Google Sign-In si no está configurado
         setTimeout(() => {
@@ -950,15 +950,15 @@ function initializeGoogleSignIn() {
             
             if (googleSection) {
                 googleSection.style.display = 'none';
-                console.log('🔐 Botón de Google Sign-In ocultado');
+                //console.log('🔐 Botón de Google Sign-In ocultado');
             }
             if (separatorDiv) {
                 separatorDiv.style.display = 'none';
-                console.log('🔐 Separador "o continúa con" ocultado');
+                //console.log('🔐 Separador "o continúa con" ocultado');
             }
         }, 100);
         
-        console.log('🔐 Usando solo autenticación tradicional');
+        //console.log('🔐 Usando solo autenticación tradicional');
         return;
     }
     
@@ -968,7 +968,7 @@ function initializeGoogleSignIn() {
     script.async = true;
     script.defer = true;
     script.onload = () => {
-        console.log('📱 Google Sign-In SDK cargado');
+        //console.log('📱 Google Sign-In SDK cargado');
         
         // Configurar con client ID real
         const gOnloadElement = document.getElementById('g_id_onload');
@@ -984,7 +984,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Esperar a que el API client esté disponible
     setTimeout(() => {
         window.authInterface = new AuthInterface();
-        console.log('🔐 Interfaz de autenticación inicializada');
+        //console.log('🔐 Interfaz de autenticación inicializada');
         
         // Inicializar Google Sign-In
         setTimeout(() => {
@@ -998,7 +998,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const user = JSON.parse(googleSession);
                 window.authInterface.currentUser = user;
                 window.authInterface.updateAuthInterface();
-                console.log('🔐 Sesión de Google restaurada:', user.email);
+                //console.log('🔐 Sesión de Google restaurada:', user.email);
             } catch (error) {
                 console.warn('⚠️ Error al restaurar sesión de Google:', error);
                 sessionStorage.removeItem('google_user_session');

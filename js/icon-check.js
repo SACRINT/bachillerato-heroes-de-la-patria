@@ -29,7 +29,7 @@ function checkFontAwesome() {
                 showAdminNotification('Font Awesome no se cargó. Algunos iconos pueden no aparecer.');
             }
         } else {
-            console.log('✅ Font Awesome funcionando correctamente');
+            //console.log('✅ Font Awesome funcionando correctamente');
         }
         
         document.body.removeChild(testIcon);

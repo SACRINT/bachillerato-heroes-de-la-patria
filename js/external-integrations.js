@@ -1,8 +1,17 @@
 /**
- * EXTERNAL INTEGRATIONS - FASE 4
+ * 🌐 EXTERNAL INTEGRATIONS - Integraciones con Servicios Externos
  * Bachillerato General Estatal "Héroes de la Patria"
- * Integración con sistemas gubernamentales y plataformas educativas
+ * Sistema completo de integración con APIs y servicios externos
  */
+
+// Configuración de API URL para integraciones
+const INTEGRATIONS_API_BASE = (() => {
+    const currentHost = window.location.hostname;
+    if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
+        return 'http://localhost:3000';  // Backend en desarrollo
+    }
+    return window.location.origin;  // En producción, mismo dominio
+})();
 
 class ExternalIntegrationsManager {
     constructor() {
@@ -32,13 +41,13 @@ class ExternalIntegrationsManager {
     }
 
     async init() {
-        console.log('🔗 Initializing External Integrations...');
+        //console.log('🔗 Initializing External Integrations...');
         
         // Initialize all integrations
         for (const [name, integration] of Object.entries(this.integrations)) {
             try {
                 await integration.init();
-                console.log(`✅ ${name} integration initialized`);
+                //console.log(`✅ ${name} integration initialized`);
             } catch (error) {
                 console.warn(`⚠️ ${name} integration failed:`, error);
             }
@@ -143,7 +152,7 @@ class SEPIntegration {
 
     async init() {
         // Initialize SEP integration
-        console.log('🏛️ Initializing SEP integration...');
+        //console.log('🏛️ Initializing SEP integration...');
         // In production, this would handle OAuth flow with SEP
     }
 
@@ -188,7 +197,7 @@ class CURPValidator {
     }
 
     async init() {
-        console.log('🆔 Initializing CURP validator...');
+        //console.log('🆔 Initializing CURP validator...');
     }
 
     validate(curp) {
@@ -252,11 +261,11 @@ class GoogleWorkspaceIntegration {
     }
 
     async init() {
-        console.log('📧 Initializing Google Workspace integration...');
+        //console.log('📧 Initializing Google Workspace integration...');
         
         // Only load if API keys are configured
         if (!this.clientId || !this.apiKey) {
-            console.log('⚠️ Google API keys not configured, skipping initialization');
+            //console.log('⚠️ Google API keys not configured, skipping initialization');
             return;
         }
         
@@ -294,7 +303,7 @@ class GoogleWorkspaceIntegration {
             });
             
             this.initialized = true;
-            console.log('✅ Google client initialized');
+            //console.log('✅ Google client initialized');
         } catch (error) {
             console.error('❌ Google client initialization failed:', error);
         }
@@ -337,7 +346,7 @@ class GoogleWorkspaceIntegration {
             });
 
             const response = await request.execute();
-            console.log('✅ Event added to calendar:', response);
+            //console.log('✅ Event added to calendar:', response);
             
             this.showAlert('✅ Evento agregado al calendario de Google', 'success');
         } catch (error) {
@@ -385,13 +394,13 @@ class MicrosoftEducationIntegration {
     }
 
     async init() {
-        console.log('🏢 Initializing Microsoft Education integration...');
+        //console.log('🏢 Initializing Microsoft Education integration...');
         // Initialize Microsoft Graph integration
     }
 
     async addToOutlookCalendar(eventData) {
         // Microsoft Graph API integration for Outlook calendar
-        console.log('📅 Adding event to Outlook calendar:', eventData);
+        //console.log('📅 Adding event to Outlook calendar:', eventData);
         
         // Fallback to Outlook web URL
         const params = new URLSearchParams({
@@ -419,7 +428,7 @@ class SocialMediaIntegration {
     }
 
     async init() {
-        console.log('📱 Initializing Social Media integration...');
+        //console.log('📱 Initializing Social Media integration...');
     }
 
     share(platform, content) {
@@ -472,15 +481,17 @@ class SocialMediaIntegration {
         }
         
         // Custom analytics
-        fetch('/api/analytics/social-share', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                platform,
-                content_title: content.title,
-                timestamp: Date.now()
-            })
-        }).catch(e => console.warn('Analytics failed:', e));
+        // TEMPORALLY DISABLED - Backend not implemented
+        // fetch(`${INTEGRATIONS_API_BASE}/api/analytics/social-share`, {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({
+        //         platform,
+        //         content_title: content.title,
+        //         timestamp: Date.now()
+        //     })
+        // }).catch(e => console.warn('Analytics failed:', e));
+        //console.log('📊 Social share tracked (offline mode):', platform, content.title);
     }
 }
 
@@ -496,7 +507,7 @@ class AdvancedAnalytics {
     }
 
     async init() {
-        console.log('📊 Initializing Advanced Analytics...');
+        //console.log('📊 Initializing Advanced Analytics...');
         
         this.setupTracking();
         this.trackPageView();
@@ -587,8 +598,9 @@ class AdvancedAnalytics {
 
     async sendAnalytics(event, data) {
         try {
-            await fetch('/api/analytics/track', {
-                method: 'POST',
+            // TEMPORALLY DISABLED - Backend not implemented
+            // await fetch(`${INTEGRATIONS_API_BASE}/api/analytics/track`, {
+            //     method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     event,

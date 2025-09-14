@@ -9,7 +9,7 @@
     function initNestedDropdowns() {
         const dropdownSubmenus = document.querySelectorAll('.dropdown-submenu');
         
-        console.log('Inicializando submenús:', dropdownSubmenus.length);
+        //console.log('Inicializando submenús:', dropdownSubmenus.length);
         
         dropdownSubmenus.forEach(function(submenuItem) {
             const dropdownToggle = submenuItem.querySelector('.dropdown-toggle');

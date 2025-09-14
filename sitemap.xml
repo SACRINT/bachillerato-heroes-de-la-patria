@@ -150,13 +150,7 @@
         <priority>0.5</priority>
     </url>
 
-    <!-- Páginas administrativas -->
-    <url>
-        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/admin-dashboard.html</loc>
-        <lastmod>2025-01-15</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.3</priority>
-    </url>
+    <!-- Páginas administrativas removidas por seguridad -->
 
     <!-- Chatbot -->
     <url>

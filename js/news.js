@@ -520,8 +520,8 @@ Este ejercicio refuerza nuestro compromiso con la seguridad y nos permite mejora
 
         if (navigator.share && navigator.canShare(shareData)) {
             navigator.share(shareData)
-                .then(() => console.log('Noticia compartida exitosamente'))
-                .catch((error) => console.log('Error al compartir:', error));
+                .then(() => //console.log('Noticia compartida exitosamente'))
+                .catch((error) => //console.log('Error al compartir:', error));
         } else {
             this.fallbackShare(shareData);
         }

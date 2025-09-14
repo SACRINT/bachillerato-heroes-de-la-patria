@@ -766,13 +766,22 @@
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
-            <div class="message bot">
-                ¡Hola! 👋 ¿Buscas algún documento específico? Puedo ayudarte a encontrar formatos, reglamentos o guías de estudio.
+            <div class="chatbot-message bot">
+                <div class="response-professional">
+                    <div class="response-title">🎓 Asistente Virtual BGE</div>
+                    <div class="response-content">
+                        <div class="response-section">
+                            <div class="response-subtitle">¡Hola! Soy tu asistente inteligente</div>
+                            <div class="response-text">Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.</div>
+                        </div>
+                    </div>
+                    <div class="response-footer">¿En qué puedo ayudarte hoy?</div>
+                </div>
             </div>
         </div>
         
         <div class="chatbot-input">
-            <input type="text" id="chatInput" placeholder="Ej: formato de inscripción, reglamento escolar..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <input type="text" id="chatbotInput" placeholder="Ej: formato de inscripción, reglamento escolar..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
             <button onclick="sendMessage()" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -997,5 +1006,8 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
     </style>
+    <!-- Scripts de autenticación admin -->
+    <script src="js/admin-auth-secure.js"></script>
+    <script src="force-admin-nuclear.js"></script>
 </body>
 </html>

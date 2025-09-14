@@ -25,7 +25,7 @@ class PWAAdvancedFeatures {
     }
 
     async init() {
-        console.log('🚀 Initializing PWA Advanced Features...');
+        //console.log('🚀 Initializing PWA Advanced Features...');
         await this.detectCapabilities();
         await this.setupAdvancedFeatures();
         this.setupEventListeners();
@@ -53,7 +53,7 @@ class PWAAdvancedFeatures {
         // File System Access
         this.capabilities.fileSystem = 'showOpenFilePicker' in window;
         
-        console.log('📱 Device capabilities detected:', this.capabilities);
+        //console.log('📱 Device capabilities detected:', this.capabilities);
     }
 
     async setupAdvancedFeatures() {
@@ -93,7 +93,7 @@ class PWAAdvancedFeatures {
 
         // App installed
         window.addEventListener('appinstalled', () => {
-            console.log('📱 PWA installed successfully');
+            //console.log('📱 PWA installed successfully');
             this.hideInstallButton();
             this.trackInstallation();
         });
@@ -205,7 +205,7 @@ class PWAAdvancedFeatures {
     }
 
     async handleQRScan(qrData) {
-        console.log('📱 QR Scanned:', qrData);
+        //console.log('📱 QR Scanned:', qrData);
         
         // Vibrate if supported
         if (this.capabilities.vibration) {
@@ -278,7 +278,7 @@ class PWAAdvancedFeatures {
         if (Notification.permission === 'default') {
             const permission = await Notification.requestPermission();
             if (permission !== 'granted') {
-                console.log('❌ Notification permission denied');
+                //console.log('❌ Notification permission denied');
                 return;
             }
         }
@@ -295,7 +295,7 @@ class PWAAdvancedFeatures {
                 )
             });
 
-            console.log('📱 Push subscription:', subscription);
+            //console.log('📱 Push subscription:', subscription);
             
             // Send subscription to server
             await this.sendSubscriptionToServer(subscription);
@@ -330,7 +330,7 @@ class PWAAdvancedFeatures {
             });
             
             if (response.ok) {
-                console.log('✅ Push subscription saved to server');
+                //console.log('✅ Push subscription saved to server');
             }
         } catch (error) {
             console.error('❌ Failed to save subscription:', error);
@@ -360,7 +360,7 @@ class PWAAdvancedFeatures {
     }
 
     handleDeviceShake() {
-        console.log('📱 Device shake detected');
+        //console.log('📱 Device shake detected');
         
         // Show quick action menu
         this.showQuickActionMenu();
@@ -450,14 +450,14 @@ class PWAAdvancedFeatures {
         try {
             if (navigator.share) {
                 await navigator.share(shareData);
-                console.log('✅ Content shared successfully');
+                //console.log('✅ Content shared successfully');
             } else {
                 // Fallback to clipboard
                 await navigator.clipboard.writeText(`${shareData.title}\n${shareData.text}\n${shareData.url}`);
                 this.showAlert('📋 Contenido copiado al portapapeles');
             }
         } catch (error) {
-            console.log('Share cancelled or failed:', error);
+            //console.log('Share cancelled or failed:', error);
         }
     }
 
@@ -504,7 +504,7 @@ class PWAAdvancedFeatures {
             const result = await this.deferredPrompt.userChoice;
             
             if (result.outcome === 'accepted') {
-                console.log('✅ PWA installed');
+                //console.log('✅ PWA installed');
             }
             
             this.deferredPrompt = null;
@@ -542,11 +542,11 @@ class PWAAdvancedFeatures {
     handleVisibilityChange() {
         if (document.hidden) {
             // App went to background
-            console.log('📱 App backgrounded');
+            //console.log('📱 App backgrounded');
             this.onAppBackground();
         } else {
             // App came to foreground
-            console.log('📱 App foregrounded');
+            //console.log('📱 App foregrounded');
             this.onAppForeground();
         }
     }

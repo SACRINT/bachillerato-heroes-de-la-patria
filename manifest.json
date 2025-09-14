@@ -81,7 +81,36 @@
       ]
     }
   ],
-  "screenshots": [],
+  "screenshots": [
+    {
+      "src": "/images/screenshots/desktop-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Página principal del bachillerato con información institucional"
+    },
+    {
+      "src": "/images/screenshots/desktop-2.png", 
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Sección de oferta educativa y especialidades académicas"
+    },
+    {
+      "src": "/images/screenshots/mobile-1.png",
+      "sizes": "390x844",
+      "type": "image/png", 
+      "form_factor": "narrow",
+      "label": "Vista móvil responsiva de la página principal"
+    },
+    {
+      "src": "/images/screenshots/mobile-2.png",
+      "sizes": "390x844", 
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Portal de estudiantes y servicios académicos"
+    }
+  ],
   "icons": [
     {
       "src": "/images/app_icons/icon-16x16.png",

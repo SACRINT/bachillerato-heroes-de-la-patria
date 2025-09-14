@@ -93,7 +93,7 @@ class APIClient {
         }
 
         try {
-            console.log(`🔌 API Request: ${config.method} ${url}`);
+            //console.log(`🔌 API Request: ${config.method} ${url}`);
             
             const response = await fetch(url, config);
             const data = await response.json();
@@ -102,7 +102,7 @@ class APIClient {
                 throw new Error(data.error || data.message || `HTTP ${response.status}`);
             }
 
-            console.log(`✅ API Response: ${config.method} ${url}`, data);
+            //console.log(`✅ API Response: ${config.method} ${url}`, data);
             return data;
 
         } catch (error) {
@@ -295,13 +295,13 @@ class APIClient {
             
             if (response.ok) {
                 const data = await response.json();
-                console.log('🟢 Backend conectado:', data.status);
+                //console.log('🟢 Backend conectado:', data.status);
                 return true;
             }
             
             return false;
         } catch (error) {
-            console.log('🔴 Backend no disponible:', error.message);
+            //console.log('🔴 Backend no disponible:', error.message);
             return false;
         }
     }
@@ -343,8 +343,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const connected = await window.apiClient.checkConnection();
     
     if (connected) {
-        console.log('🚀 API Cliente inicializado correctamente');
+        //console.log('🚀 API Cliente inicializado correctamente');
     } else {
-        console.log('⚠️ API Cliente en modo offline - usando datos estáticos');
+        //console.log('⚠️ API Cliente en modo offline - usando datos estáticos');
     }
 });

@@ -185,6 +185,18 @@ self.addEventListener('fetch', event => {
     // Skip chrome-extension requests
     if (url.protocol === 'chrome-extension:') return;
     
+    // CRITICAL: Don't intercept authentication and critical API requests
+    // Let them go directly to the server to avoid 404 conflicts
+    if (url.pathname.includes('/api/auth/') || 
+        url.pathname.includes('/api/analytics/') ||
+        url.pathname.includes('/health') ||
+        request.method === 'POST' || 
+        request.method === 'PUT' || 
+        request.method === 'DELETE') {
+        // Let critical API requests go through directly
+        return;
+    }
+    
     event.respondWith(handleRequest(request));
 });
 
@@ -394,10 +406,14 @@ async function getOfflineFallback(request) {
         });
     }
     
-    // For other requests, return 404
-    return new Response('Recurso no disponible sin conexión', {
-        status: 404,
-        headers: { 'Content-Type': 'text/plain' }
+    // For other requests, let them go to network
+    // Don't intercept all requests - let the server handle them naturally
+    return fetch(request).catch(error => {
+        console.warn('SW: Network request failed:', request.url, error);
+        return new Response('Recurso no disponible sin conexión', {
+            status: 404,
+            headers: { 'Content-Type': 'text/plain' }
+        });
     });
 }
 

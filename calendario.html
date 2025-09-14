@@ -679,13 +679,22 @@
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
-            <div class="message bot">
-                ¡Hola! 👋 ¿Necesitas ayuda con el calendario escolar? Puedo ayudarte a encontrar fechas específicas o explicarte los eventos.
+            <div class="chatbot-message bot">
+                <div class="response-professional">
+                    <div class="response-title">🎓 Asistente Virtual BGE</div>
+                    <div class="response-content">
+                        <div class="response-section">
+                            <div class="response-subtitle">¡Hola! Soy tu asistente inteligente</div>
+                            <div class="response-text">Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.</div>
+                        </div>
+                    </div>
+                    <div class="response-footer">¿En qué puedo ayudarte hoy?</div>
+                </div>
             </div>
         </div>
         
         <div class="chatbot-input">
-            <input type="text" id="chatInput" placeholder="Ej: ¿Cuándo son las vacaciones de invierno?" onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <input type="text" id="chatbotInput" placeholder="Ej: ¿Cuándo son las vacaciones de invierno?" onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
             <button onclick="sendMessage()" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -701,9 +710,12 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="js/config.js?v=2024091401"></script>
     <script src="js/script.js"></script>
+    <script src="js/admin-auth-secure.js?v=2024091401"></script>
+    <!-- <script src="js/auth-interface.js"></script> -->
     <script src="js/chatbot.js"></script>
-    <script src="js/search-simple.js"></script>
+    <script src="js/search-unified.js"></script>
     <script src="js/interactive-calendar.js"></script>
 
     <!-- Dark Mode Styles & Script -->
@@ -772,38 +784,6 @@
         }
     </style>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const darkModeToggle = document.getElementById('darkModeToggle');
-            const body = document.body;
-            
-            if (localStorage.getItem('darkMode') === 'enabled') {
-                body.classList.add('dark-mode');
-                updateDarkModeIcon(true);
-            }
-            
-            darkModeToggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                body.classList.toggle('dark-mode');
-                
-                if (body.classList.contains('dark-mode')) {
-                    localStorage.setItem('darkMode', 'enabled');
-                    updateDarkModeIcon(true);
-                } else {
-                    localStorage.setItem('darkMode', 'disabled');
-                    updateDarkModeIcon(false);
-                }
-            });
-            
-            function updateDarkModeIcon(isDark) {
-                if (darkModeToggle) {
-                    let icon = darkModeToggle.querySelector('i');
-                    if (icon) {
-                        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-                    }
-                }
-            }
-        });
-    </script>
+    <!-- Dark mode handled by global script.js -->
 </body>
 </html>

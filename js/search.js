@@ -865,7 +865,7 @@ class SiteSearch {
         // Ocultar resultados
         this.hideResults();
         
-        console.log('🔍 Buscador destruido correctamente');
+        //console.log('🔍 Buscador destruido correctamente');
     }
 }
 
@@ -879,7 +879,7 @@ function initSiteSearch() {
     const searchResults = document.getElementById('searchResults');
     
     if (searchInput && searchResults) {
-        console.log('🔍 Elementos de búsqueda encontrados, inicializando...');
+        //console.log('🔍 Elementos de búsqueda encontrados, inicializando...');
         
         // Si ya existe una instancia, destruirla primero
         if (siteSearch && typeof siteSearch.destroy === 'function') {
@@ -889,7 +889,7 @@ function initSiteSearch() {
         siteSearch = new SiteSearch();
         return true;
     } else {
-        console.log('🔍 Elementos de búsqueda no encontrados aún, reintentando...');
+        //console.log('🔍 Elementos de búsqueda no encontrados aún, reintentando...');
         return false;
     }
 }
@@ -901,14 +901,14 @@ function tryInitSiteSearch(maxAttempts = 10, delay = 200) {
     const attempt = () => {
         attempts++;
         if (initSiteSearch()) {
-            console.log(`🔍 Búsqueda inicializada exitosamente en intento ${attempts}`);
+            //console.log(`🔍 Búsqueda inicializada exitosamente en intento ${attempts}`);
             return;
         }
         
         if (attempts < maxAttempts) {
             setTimeout(attempt, delay);
         } else {
-            console.log('🔍 No se pudieron encontrar los elementos de búsqueda después de', maxAttempts, 'intentos');
+            //console.log('🔍 No se pudieron encontrar los elementos de búsqueda después de', maxAttempts, 'intentos');
         }
     };
     
@@ -926,7 +926,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Función para reinicializar automáticamente el buscador
 function reinitializeSearch() {
-    console.log('🔍 Reinicializando sistema de búsqueda...');
+    //console.log('🔍 Reinicializando sistema de búsqueda...');
     
     // Usar la función con reintentos
     tryInitSiteSearch(5, 100);
@@ -955,7 +955,7 @@ function setupSearchObserver() {
                 );
                 
                 if (hasSearchElements) {
-                    console.log('🔍 Elementos de búsqueda detectados en DOM, reinicializando...');
+                    //console.log('🔍 Elementos de búsqueda detectados en DOM, reinicializando...');
                     setTimeout(reinitializeSearch, 100);
                 }
             }

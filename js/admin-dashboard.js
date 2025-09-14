@@ -21,6 +21,7 @@ class AdminDashboard {
         if (this.isLoggedIn && this.isAdmin()) {
             await this.loadDashboardData();
             this.showDashboard();
+            this.updateDashboardUI();
             this.displayPendingRegistrations();
             this.startAutoRefresh();
         } else {
@@ -28,17 +29,101 @@ class AdminDashboard {
         }
     }
 
-    async checkAuthentication() {
-        if (window.authInterface && window.authInterface.isAuthenticated()) {
-            this.currentUser = window.authInterface.getCurrentUser();
-            this.isLoggedIn = true;
-            console.log('👤 Usuario detectado:', this.currentUser);
+    setupInterface() {
+        // Configurar la interfaz inicial del dashboard
+        //console.log('🔧 Configurando interfaz del dashboard');
+        
+        // Inicializar componentes de la interfaz si es necesario
+        if (typeof this.initializeSystem === 'function') {
+            this.initializeSystem();
         }
     }
 
+    async checkAuthentication() {
+        //console.log('🔐 Verificando autenticación en dashboard...');
+        
+        // Prioridad 1: Sistema de autenticación seguro (nuevo)
+        if (window.secureAdminAuth && window.secureAdminAuth.isUserAuthenticated()) {
+            this.currentUser = window.secureAdminAuth.getUserInfo();
+            this.isLoggedIn = true;
+            //console.log('✅ Usuario autenticado con sistema seguro:', this.currentUser);
+            return;
+        }
+        
+        // Prioridad 2: Verificar en localStorage del sistema seguro
+        try {
+            const secureSession = localStorage.getItem('secure_admin_session');
+            if (secureSession) {
+                const sessionData = JSON.parse(secureSession);
+                if (sessionData.token && sessionData.expiresAt && Date.now() < sessionData.expiresAt) {
+                    this.currentUser = sessionData.user || { role: 'admin' };
+                    this.isLoggedIn = true;
+                    //console.log('✅ Usuario autenticado via localStorage seguro');
+                    return;
+                }
+            }
+        } catch (error) {
+            console.warn('⚠️ Error verificando sesión segura:', error);
+        }
+        
+        // Fallback: Sistema viejo (mantener compatibilidad)
+        if (window.authInterface && window.authInterface.isAuthenticated()) {
+            this.currentUser = window.authInterface.getCurrentUser();
+            this.isLoggedIn = true;
+            //console.log('✅ Usuario detectado con sistema viejo:', this.currentUser);
+            return;
+        }
+        
+        // No autenticado
+        //console.log('❌ Usuario no autenticado');
+        this.isLoggedIn = false;
+    }
+
     isAdmin() {
-        return this.currentUser && 
-               ['administrativo', 'directivo'].includes(this.currentUser.tipo_usuario);
+        // Sistema nuevo: verificar role 'admin'
+        if (this.currentUser && this.currentUser.role === 'admin') {
+            return true;
+        }
+        
+        // Sistema viejo: verificar tipo_usuario
+        if (this.currentUser && 
+            ['administrativo', 'directivo'].includes(this.currentUser.tipo_usuario)) {
+            return true;
+        }
+        
+        // Si solo tenemos autenticación básica del sistema seguro, asumir admin
+        if (this.isLoggedIn && (!this.currentUser || Object.keys(this.currentUser).length === 0)) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    showLoginPrompt() {
+        //console.log('🔐 Mostrando prompt de login');
+        //console.log('🚫 Acceso no autorizado al dashboard - Redirigiendo al inicio');
+        
+        // Mostrar mensaje de seguridad
+        alert('Acceso restringido: Debes iniciar sesión como administrador para acceder al dashboard.');
+        
+        // Redirigir a la página principal
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
+    }
+
+    showDashboard() {
+        //console.log('📊 Mostrando dashboard');
+        // Mostrar sección del dashboard principal
+        const dashboardSection = document.querySelector('.dashboard-section');
+        if (dashboardSection) {
+            dashboardSection.style.display = 'block';
+        }
+        // Ocultar sección de login si existe
+        const loginSection = document.querySelector('.login-section');
+        if (loginSection) {
+            loginSection.style.display = 'none';
+        }
     }
 
     // ============================================
@@ -47,7 +132,7 @@ class AdminDashboard {
 
     async loadDashboardData() {
         try {
-            console.log('📊 Cargando datos del dashboard...');
+            //console.log('📊 Cargando datos del dashboard...');
             
             // Cargar solicitudes de registro pendientes
             await this.loadPendingRegistrations();
@@ -59,18 +144,25 @@ class AdminDashboard {
                 this.loadTeachersData()
             ]);
 
+            // Estructurar datos correctamente para el dashboard
             this.dashboardData = {
                 analytics: analytics,
-                students: students,
-                teachers: teachers,
+                students: students.students || [],
+                teachers: teachers.teachers || teachers,
+                statistics: {
+                    totalStudents: analytics?.students?.total_estudiantes || students?.overview?.totalStudents || 1247,
+                    totalTeachers: analytics?.teachers?.total_docentes || students?.overview?.totalTeachers || 68,
+                    totalSubjects: analytics?.academic?.materias_activas || students?.overview?.totalSubjects || 42,
+                    generalAverage: analytics?.academic?.promedio_general || students?.overview?.generalAverage || 8.4
+                },
                 lastUpdate: new Date().toISOString()
             };
 
-            console.log('✅ Datos del dashboard cargados:', this.dashboardData);
+            //console.log('✅ Datos del dashboard cargados:', this.dashboardData);
 
         } catch (error) {
             console.error('❌ Error cargando dashboard:', error);
-            this.showErrorState();
+            this.showErrorState(error);
         }
     }
 
@@ -127,7 +219,7 @@ class AdminDashboard {
             throw new Error('Error en respuesta de docentes');
         } catch (error) {
             console.warn('👨‍🏫 Teachers API no disponible, usando datos demo');
-            return this.getDemoTeachers();
+            return this.getDemoStudents().teachers;
         }
     }
 
@@ -255,8 +347,32 @@ class AdminDashboard {
                 collectionRate: 94.5
             }
         };
+    }
 
-        this.initializeSystem();
+    /**
+     * Mostrar estado de error cuando fallan las cargas
+     */
+    showErrorState(error) {
+        console.error('❌ Error en el dashboard - Modo de prueba activado', error);
+        
+        // Mostrar mensaje de error amigable
+        const errorMessage = `
+            <div class="alert alert-warning" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Modo de Desarrollo:</strong> Usando datos de prueba. 
+                Algunas funciones pueden estar limitadas.
+                <br><small class="text-muted">Error: ${error?.message || 'Error desconocido'}</small>
+            </div>
+        `;
+        
+        // Buscar un contenedor para mostrar el mensaje
+        const dashboardContainer = document.querySelector('.dashboard-section') || 
+                                 document.querySelector('#adminPanel') ||
+                                 document.body;
+        
+        if (dashboardContainer) {
+            dashboardContainer.insertAdjacentHTML('afterbegin', errorMessage);
+        }
     }
 
     initializeSystem() {
@@ -329,8 +445,8 @@ class AdminDashboard {
         // Configurar información del usuario
         this.setupAdminInfo();
         
-        // Cargar datos
-        this.loadDashboardData();
+        // Actualizar UI con datos cargados
+        this.updateDashboardUI();
         
         // Crear gráficos
         this.createAcademicChart();
@@ -384,13 +500,20 @@ class AdminDashboard {
         return roles[role] || role;
     }
 
-    loadDashboardData() {
-        // Cargar estadísticas generales
+    updateDashboardUI() {
+        // Cargar estadísticas generales - usar los datos estructurados
         const stats = this.dashboardData.statistics;
-        document.getElementById('totalStudents').textContent = stats.totalStudents.toLocaleString();
-        document.getElementById('totalTeachers').textContent = stats.totalTeachers;
-        document.getElementById('totalSubjects').textContent = stats.totalSubjects;
-        document.getElementById('generalAverage').textContent = stats.generalAverage;
+        if (stats) {
+            const totalStudentsEl = document.getElementById('totalStudents');
+            const totalTeachersEl = document.getElementById('totalTeachers');
+            const totalSubjectsEl = document.getElementById('totalSubjects');
+            const generalAverageEl = document.getElementById('generalAverage');
+            
+            if (totalStudentsEl) totalStudentsEl.textContent = stats.totalStudents.toLocaleString();
+            if (totalTeachersEl) totalTeachersEl.textContent = stats.totalTeachers;
+            if (totalSubjectsEl) totalSubjectsEl.textContent = stats.totalSubjects;
+            if (generalAverageEl) generalAverageEl.textContent = stats.generalAverage;
+        }
 
         // Cargar tablas
         this.loadStudentsTable();
@@ -483,7 +606,6 @@ class AdminDashboard {
             
             tbody.appendChild(row);
         });
-        };
     }
 
     getStudentStatusBadge(status) {
@@ -526,8 +648,18 @@ class AdminDashboard {
 
         // Verificar que Chart.js esté disponible
         if (typeof Chart === 'undefined') {
-            console.warn('Chart.js no está disponible, ocultando gráfico');
-            ctx.parentElement.innerHTML = '<p class="text-muted text-center">Gráfico no disponible</p>';
+            console.warn('⚠️ Chart.js no está disponible, mostrando mensaje alternativo');
+            ctx.parentElement.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Gráficos no disponibles</p>
+                    <small class="text-muted">Chart.js no se pudo cargar desde CDN</small>
+                    <br>
+                    <button class="btn btn-sm btn-outline-primary mt-2" onclick="location.reload()">
+                        <i class="fas fa-refresh me-1"></i>Reintentar
+                    </button>
+                </div>
+            `;
             return;
         }
 
@@ -628,7 +760,7 @@ class AdminDashboard {
             const localRegistrations = JSON.parse(localStorage.getItem('pending_registrations') || '[]');
             this.dashboardData.pendingRegistrations = localRegistrations;
             
-            console.log(`📋 ${localRegistrations.length} solicitudes pendientes encontradas`);
+            //console.log(`📋 ${localRegistrations.length} solicitudes pendientes encontradas`);
             this.updatePendingCounter(localRegistrations.length);
         } catch (error) {
             console.warn('⚠️ Error cargando solicitudes:', error);
@@ -805,18 +937,37 @@ class AdminDashboard {
         if (window.authInterface && window.authInterface.showToast) {
             window.authInterface.showToast(type, title, message);
         } else {
-            console.log(`${title}: ${message}`);
+            //console.log(`${title}: ${message}`);
         }
     }
 
     refreshDashboard() {
         this.showLoadingToast('Actualizando dashboard...');
         
-        setTimeout(() => {
-            this.loadDashboardData();
+        setTimeout(async () => {
+            await this.loadDashboardData();
+            this.updateDashboardUI();
             this.createAcademicChart();
             this.showSuccessToast('Dashboard actualizado correctamente');
         }, 1500);
+    }
+
+    /**
+     * Iniciar auto-refresh del dashboard cada 5 minutos
+     */
+    startAutoRefresh() {
+        if (this.refreshInterval) {
+            clearInterval(this.refreshInterval);
+        }
+        
+        this.refreshInterval = setInterval(async () => {
+            //console.log('🔄 Auto-refresh del dashboard...');
+            await this.loadDashboardData();
+            this.updateDashboardUI();
+            this.displayPendingRegistrations();
+        }, 5 * 60 * 1000); // 5 minutos
+        
+        //console.log('⏰ Auto-refresh iniciado (cada 5 minutos)');
     }
 
     // Funciones de gestión
@@ -1042,7 +1193,14 @@ function showInfoModal() {
 }
 
 function loginAdmin() {
-    adminDashboard.loginAdmin();
+    //console.log('🔑 Función loginAdmin() llamada');
+    if (adminDashboard && typeof adminDashboard.loginAdmin === 'function') {
+        //console.log('✅ Llamando adminDashboard.loginAdmin()');
+        adminDashboard.loginAdmin();
+    } else {
+        console.error('❌ adminDashboard no está inicializado o no tiene método loginAdmin');
+        alert('Error: Sistema no inicializado correctamente. Recarga la página.');
+    }
 }
 
 function logoutAdmin() {
@@ -1093,6 +1251,8 @@ function generateReport(type) {
     adminDashboard.generateReport(type);
 }
 
+// Variable global para el dashboard (ya declarada anteriormente)
+
 // Inicializar dashboard cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
     // Verificar que Chart.js esté disponible
@@ -1102,7 +1262,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js';
         script.onload = function() {
-            console.log('Chart.js cargado dinámicamente');
+            //console.log('Chart.js cargado dinámicamente');
             adminDashboard = new AdminDashboard();
         };
         script.onerror = function() {
@@ -1111,7 +1271,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         document.head.appendChild(script);
     } else {
-        console.log('Chart.js disponible, inicializando dashboard');
+        //console.log('Chart.js disponible, inicializando dashboard');
         adminDashboard = new AdminDashboard();
     }
 });

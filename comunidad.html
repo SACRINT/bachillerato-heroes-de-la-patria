@@ -310,7 +310,7 @@
                         <div class="card border-0 shadow-sm h-100">
                             <div class="card-body p-4">
                                 <div class="d-flex align-items-center mb-3">
-                                    <div class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                    <div class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3 feature-icon-md">
                                         <i class="fas fa-graduation-cap fa-2x"></i>
                                     </div>
                                     <h4 class="card-title text-primary mb-0">Ambiente Académico</h4>
@@ -333,7 +333,7 @@
                         <div class="card border-0 shadow-sm h-100">
                             <div class="card-body p-4">
                                 <div class="d-flex align-items-center mb-3">
-                                    <div class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                    <div class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3 feature-icon-md">
                                         <i class="fas fa-handshake fa-2x"></i>
                                     </div>
                                     <h4 class="card-title text-success mb-0">Convivencia Escolar</h4>
@@ -356,7 +356,7 @@
                         <div class="card border-0 shadow-sm h-100">
                             <div class="card-body p-4">
                                 <div class="d-flex align-items-center mb-3">
-                                    <div class="feature-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                    <div class="feature-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3 feature-icon-md">
                                         <i class="fas fa-puzzle-piece fa-2x"></i>
                                     </div>
                                     <h4 class="card-title text-info mb-0">Desarrollo Integral</h4>
@@ -379,7 +379,7 @@
                         <div class="card border-0 shadow-sm h-100">
                             <div class="card-body p-4">
                                 <div class="d-flex align-items-center mb-3">
-                                    <div class="feature-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                    <div class="feature-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3 feature-icon-md">
                                         <i class="fas fa-microphone fa-2x"></i>
                                     </div>
                                     <h4 class="card-title text-warning mb-0">Participación Estudiantil</h4>
@@ -646,7 +646,7 @@
                 </div>
 
                 <div class="text-center mt-4">
-                    <button class="btn btn-primary btn-lg">
+                    <button class="btn btn-primary btn-lg" onclick="showPhotoGallery()">
                         <i class="fas fa-camera me-2" aria-hidden="true"></i>
                         Ver Más Fotografías
                     </button>
@@ -701,19 +701,28 @@
         <div class="chatbot-header">
             <div>
                 <strong>Asistente Virtual</strong>
-                <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
+                <div class="chatbot-subtitle">Héroes de la Patria</div>
             </div>
-            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+            <button onclick="toggleChatbot()" class="chatbot-close-btn" aria-label="Cerrar chat">×</button>
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
-            <div class="message bot">
-                ¡Hola! 👋 Soy el asistente virtual del Bachillerato Héroes de la Patria. ¿En qué puedo ayudarte hoy?
+            <div class="chatbot-message bot">
+                <div class="response-professional">
+                    <div class="response-title">🎓 Asistente Virtual BGE</div>
+                    <div class="response-content">
+                        <div class="response-section">
+                            <div class="response-subtitle">¡Hola! Soy tu asistente inteligente</div>
+                            <div class="response-text">Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.</div>
+                        </div>
+                    </div>
+                    <div class="response-footer">¿En qué puedo ayudarte hoy?</div>
+                </div>
             </div>
         </div>
         
         <div class="chatbot-input">
-            <input type="text" id="chatInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
             <button onclick="sendMessage()" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -730,9 +739,10 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="js/script.js"></script>
+    <script src="js/admin-auth-secure.js"></script>
     <script src="js/cms-integration.js"></script>
     <script src="js/chatbot.js"></script>
-    <script src="js/search-simple.js"></script>
+    <script src="js/search-unified.js"></script>
     <script src="js/news.js"></script>
     
     <!-- Dark Mode Functionality -->
@@ -973,5 +983,75 @@
             font-weight: bold;
         }
     </style>
+
+    <!-- Sistema de galería de fotos -->
+    <script>
+        function showPhotoGallery() {
+            // Crear modal dinámico para galería de fotos
+            const photos = [
+                { src: 'images/galeria/evento1.jpg', title: 'Festival Cultural 2024', desc: 'Presentaciones artísticas de nuestros estudiantes' },
+                { src: 'images/galeria/evento2.jpg', title: 'Ceremonia de Graduación', desc: 'Generación 2023-2024' },
+                { src: 'images/galeria/evento3.jpg', title: 'Concurso de Ciencias', desc: 'Proyectos innovadores de nuestros alumnos' },
+                { src: 'images/galeria/evento4.jpg', title: 'Día del Maestro', desc: 'Reconocimiento a nuestro personal docente' },
+                { src: 'images/galeria/evento5.jpg', title: 'Torneo Deportivo', desc: 'Competencias inter-grupos' },
+                { src: 'images/galeria/evento6.jpg', title: 'Obra de Teatro', desc: 'Representación estudiantil' }
+            ];
+
+            const galleryHtml = `
+                <div class="row g-3">
+                    ${photos.map((photo, index) => `
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card">
+                                <div class="gallery-placeholder">
+                                    <div class="text-center">
+                                        <i class="fas fa-camera fa-2x mb-2"></i>
+                                        <h6>${photo.title}</h6>
+                                        <small>${photo.desc}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="mt-3 text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    <small>Las fotografías se están subiendo al servidor. Pronto estarán disponibles para visualización.</small>
+                </div>
+            `;
+
+            createCommunityModal('Galería de Fotografías', galleryHtml);
+        }
+
+        function createCommunityModal(title, content) {
+            const modalId = 'communityModal' + Date.now();
+            const modalHtml = `
+                <div class="modal fade" id="${modalId}" tabindex="-1">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    <i class="fas fa-images me-2"></i>${title}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">${content}</div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = new bootstrap.Modal(document.getElementById(modalId));
+            modal.show();
+
+            // Limpiar modal cuando se cierre
+            document.getElementById(modalId).addEventListener('hidden.bs.modal', function() {
+                this.remove();
+            });
+        }
+    </script>
 </body>
 </html>
