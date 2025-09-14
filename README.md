@@ -4,8 +4,8 @@ Sitio web oficial del Bachillerato General Estatal "Héroes de la Patria" ubicad
 
 ## 🌐 Ver Sitio en Vivo
 
-- **Frontend:** [https://tu-proyecto.vercel.app](https://tu-proyecto.vercel.app)
-- **API Backend:** [https://tu-proyecto.vercel.app/api](https://tu-proyecto.vercel.app/api)
+- **Frontend:** [https://bachillerato-heroes-de-la-patria.vercel.app](https://bachillerato-heroes-de-la-patria.vercel.app)
+- **API Backend:** [https://bachillerato-heroes-de-la-patria.vercel.app/api](https://bachillerato-heroes-de-la-patria.vercel.app/api)
 
 ## 🚀 Características
 
