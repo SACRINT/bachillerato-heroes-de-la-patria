@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Inteligente - Bachillerato Héroes de la Patria</title>
+    <meta name="description" content="Asistente virtual inteligente del Bachillerato Héroes de la Patria. Obtén respuestas rápidas sobre horarios, admisiones, requisitos y más.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+        
+        .chatbot-header {
+            background: linear-gradient(135deg, #0D47A1 0%, #1976D2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chatbot-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 10px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .message.bot {
+            background: #f1f3f4;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message.user {
+            background: #1976D2;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .chatbot-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            border-radius: 0 0 15px 15px;
+        }
+        
+        .chatbot-input input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 10px 15px;
+            margin-right: 10px;
+            outline: none;
+        }
+        
+        .chatbot-input button {
+            background: #1976D2;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: #1976D2;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 24px;
+            z-index: 1001;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 10px 12px;
+            background: #f1f3f4;
+            border-radius: 15px;
+            border-bottom-left-radius: 5px;
+            align-self: flex-start;
+        }
+        
+        .typing-dots {
+            display: inline-block;
+            position: relative;
+        }
+        
+        .typing-dots span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #999;
+            margin: 0 1px;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dots span:nth-child(1) { animation-delay: 0s; }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-10px); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="main-header"></header>
+    
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section bg-gradient text-white py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="display-4 fw-bold mb-4">
+                            <i class="fas fa-robot text-warning me-3"></i>
+                            Asistente Virtual Inteligente
+                        </h1>
+                        <p class="lead mb-4">
+                            Nuestro chatbot está disponible 24/7 para resolver tus dudas sobre horarios, admisiones, 
+                            requisitos, carreras y más. ¡Pregunta lo que necesites!
+                        </p>
+                        
+                        <!-- Hero Navigation Badges -->
+                        <div class="hero-badges d-flex flex-wrap gap-2 justify-content-start mb-4">
+                            <a href="#como-usar" class="badge bg-light text-primary fs-6 text-decoration-none">
+                                <i class="fas fa-question-circle me-1"></i>
+                                Cómo Usar el Chatbot
+                            </a>
+                            <a href="#funciones-disponibles" class="badge bg-light text-success fs-6 text-decoration-none">
+                                <i class="fas fa-cogs me-1"></i>
+                                Funciones Disponibles
+                            </a>
+                            <a href="#preguntas-frecuentes" class="badge bg-light text-info fs-6 text-decoration-none">
+                                <i class="fas fa-comments me-1"></i>
+                                Preguntas Frecuentes
+                            </a>
+                            <a href="#demo-chatbot" class="badge bg-light text-warning fs-6 text-decoration-none">
+                                <i class="fas fa-robot me-1"></i>
+                                Probar Chatbot
+                            </a>
+                        </div>
+                        
+                        <button class="btn btn-warning btn-lg" onclick="toggleChatbot()">
+                            <i class="fas fa-comments me-2"></i>
+                            Iniciar Chat Ahora
+                        </button>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <div class="position-relative display-1 text-warning mb-3 animate__animated animate__pulse animate__infinite">
+                            <i class="fas fa-robot"></i>
+                            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                                <div class="pulse-ring"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Como Usar Section -->
+        <section class="py-5" id="como-usar">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold">Cómo Usar el Asistente Virtual</h2>
+                    <p class="text-muted">Sigue estos sencillos pasos para obtener la información que necesitas</p>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <i class="fas fa-play-circle text-primary" style="font-size: 3rem;"></i>
+                                </div>
+                                <h5>1. Inicia la Conversación</h5>
+                                <p class="text-muted">Haz clic en el botón flotante del chatbot o en "Iniciar Chat" para abrir el asistente virtual.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <i class="fas fa-keyboard text-success" style="font-size: 3rem;"></i>
+                                </div>
+                                <h5>2. Escribe tu Pregunta</h5>
+                                <p class="text-muted">Escribe tu consulta de forma natural. El bot entiende preguntas sobre horarios, admisiones, carreras y más.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <i class="fas fa-reply text-info" style="font-size: 3rem;"></i>
+                                </div>
+                                <h5>3. Obtén Respuestas</h5>
+                                <p class="text-muted">Recibe respuestas instantáneas y precisas. Si necesitas más información, ¡sigue preguntando!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Funciones Disponibles Section -->
+        <section class="py-5 bg-light" id="funciones-disponibles">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold">Funciones del Asistente Virtual</h2>
+                    <p class="text-muted">Descubre todo lo que nuestro chatbot puede hacer por ti</p>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card text-center p-4">
+                            <i class="fas fa-clock text-primary mb-3" style="font-size: 2.5rem;"></i>
+                            <h5>Horarios</h5>
+                            <p class="small text-muted">Información sobre horarios de atención y clases</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card text-center p-4">
+                            <i class="fas fa-user-graduate text-success mb-3" style="font-size: 2.5rem;"></i>
+                            <h5>Admisiones</h5>
+                            <p class="small text-muted">Proceso de inscripción y fechas importantes</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card text-center p-4">
+                            <i class="fas fa-map-marker-alt text-info mb-3" style="font-size: 2.5rem;"></i>
+                            <h5>Ubicación</h5>
+                            <p class="small text-muted">Dirección y cómo llegar al bachillerato</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card text-center p-4">
+                            <i class="fas fa-graduation-cap text-warning mb-3" style="font-size: 2.5rem;"></i>
+                            <h5>Carreras</h5>
+                            <p class="small text-muted">Especialidades y programas académicos</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card text-center p-4">
+                            <i class="fas fa-file-alt text-danger mb-3" style="font-size: 2.5rem;"></i>
+                            <h5>Requisitos</h5>
+                            <p class="small text-muted">Documentos necesarios para inscripción</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card text-center p-4">
+                            <i class="fas fa-phone text-purple mb-3" style="font-size: 2.5rem;"></i>
+                            <h5>Contacto</h5>
+                            <p class="small text-muted">Teléfonos y medios de comunicación</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card text-center p-4">
+                            <i class="fas fa-question-circle text-secondary mb-3" style="font-size: 2.5rem;"></i>
+                            <h5>Ayuda General</h5>
+                            <p class="small text-muted">Respuestas a consultas diversas</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card text-center p-4">
+                            <i class="fas fa-language text-primary mb-3" style="font-size: 2.5rem;"></i>
+                            <h5>Idioma Natural</h5>
+                            <p class="small text-muted">Comprende preguntas en español natural</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Preguntas Frecuentes Section -->
+        <section class="py-5" id="preguntas-frecuentes">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold">Preguntas Frecuentes del Chatbot</h2>
+                    <p class="text-muted">Ejemplos de preguntas que puedes hacer a nuestro asistente virtual</p>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">
+                                    <i class="fas fa-comment-dots me-2"></i>
+                                    Ejemplos de Preguntas
+                                </h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-chevron-right text-success me-2"></i>"¿Cuáles son los horarios de atención?"</li>
+                                    <li class="mb-2"><i class="fas fa-chevron-right text-success me-2"></i>"¿Cuándo son las inscripciones?"</li>
+                                    <li class="mb-2"><i class="fas fa-chevron-right text-success me-2"></i>"¿Dónde se encuentra el bachillerato?"</li>
+                                    <li class="mb-2"><i class="fas fa-chevron-right text-success me-2"></i>"¿Qué carreras ofrecen?"</li>
+                                    <li class="mb-2"><i class="fas fa-chevron-right text-success me-2"></i>"¿Qué requisitos necesito?"</li>
+                                    <li class="mb-2"><i class="fas fa-chevron-right text-success me-2"></i>"¿Cómo puedo contactarlos?"</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-info">
+                                    <i class="fas fa-lightbulb me-2"></i>
+                                    Consejos para Mejores Resultados
+                                </h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Escribe preguntas claras y específicas</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Usa palabras clave como "horarios", "admisiones"</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>No dudes en hacer preguntas de seguimiento</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>El chatbot está disponible 24/7</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Saluda primero para una mejor experiencia</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Si no entiendes algo, reformula tu pregunta</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Demo Chatbot Section -->
+        <section class="py-5 bg-primary text-white" id="demo-chatbot">
+            <div class="container text-center">
+                <h2 class="fw-bold mb-4">¡Prueba el Asistente Virtual Ahora!</h2>
+                <p class="lead mb-4">Experimenta la facilidad de obtener información instantánea</p>
+                <button class="btn btn-warning btn-lg me-3" onclick="toggleChatbot()">
+                    <i class="fas fa-comments me-2"></i>
+                    Abrir Chatbot
+                </button>
+                <a href="contacto.html" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-phone me-2"></i>
+                    Contacto Directo
+                </a>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer id="main-footer"></footer>
+    
+    <!-- Chat Bot Toggle Button -->
+    <button class="chatbot-toggle" id="chatbotToggle">
+        <i class="fas fa-comments"></i>
+    </button>
+    
+    <!-- Chat Bot Container -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <div>
+                <strong>Asistente Virtual</strong>
+                <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
+            </div>
+            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px;">×</button>
+        </div>
+        
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="chatbot-message bot">
+                <div class="response-professional">
+                    <div class="response-title">🎓 Asistente Virtual BGE</div>
+                    <div class="response-content">
+                        <div class="response-section">
+                            <div class="response-subtitle">¡Hola! Soy tu asistente inteligente</div>
+                            <div class="response-text">Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.</div>
+                        </div>
+                    </div>
+                    <div class="response-footer">¿En qué puedo ayudarte hoy?</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // FAQ Database - Preguntas frecuentes
+        const FAQ_DATABASE = {
+            'horarios': {
+                keywords: ['horario', 'hora', 'tiempo', 'cuando', 'abre', 'cierra'],
+                response: 'Nuestros horarios de atención son de Lunes a Viernes de 7:00 AM a 2:00 PM. Los sábados estamos cerrados.'
+            },
+            'admisiones': {
+                keywords: ['admision', 'inscripcion', 'matricula', 'registro', 'ingreso'],
+                response: 'Las inscripciones para el ciclo escolar 2025-2026 estarán abiertas en Agosto. Puedes encontrar más información en la sección "Convocatorias" de nuestra página.'
+            },
+            'ubicacion': {
+                keywords: ['ubicacion', 'direccion', 'donde', 'lugar', 'ubicado'],
+                response: 'Nos encontramos en C. Manuel Ávila Camacho #7, Col. Centro, Coronel Tito Hernández, Venustiano Carranza, Puebla. C.P. 73030'
+            },
+            'contacto': {
+                keywords: ['telefono', 'contacto', 'comunicar', 'llamar'],
+                response: 'Puedes contactarnos al teléfono [número] o enviarnos un correo a [email]. También puedes visitarnos en nuestras instalaciones.'
+            },
+            'carreras': {
+                keywords: ['carrera', 'especialidad', 'programa', 'estudios', 'capacitacion'],
+                response: 'Ofrecemos formación laboral en: Comunicación Gráfica, Preparación de Alimentos Artesanales e Instalaciones Residenciales, además del Bachillerato General.'
+            },
+            'requisitos': {
+                keywords: ['requisito', 'documento', 'necesito', 'papeles'],
+                response: 'Los requisitos principales son: Certificado de Secundaria, Acta de Nacimiento, CURP, 6 fotografías tamaño infantil y comprobante de domicilio.'
+            }
+        };
+
+        let chatbotOpen = false;
+
+        function toggleChatbot() {
+            const container = document.getElementById('chatbotContainer');
+            const toggle = document.getElementById('chatbotToggle');
+            
+            chatbotOpen = !chatbotOpen;
+            
+            if (chatbotOpen) {
+                container.style.display = 'flex';
+                toggle.style.display = 'none';
+                document.getElementById('chatInput').focus();
+            } else {
+                container.style.display = 'none';
+                toggle.style.display = 'block';
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Process message and respond
+            setTimeout(() => {
+                const response = processMessage(message);
+                hideTypingIndicator();
+                addMessage(response, 'bot');
+            }, 1000 + Math.random() * 1000); // Random delay for realism
+        }
+
+        function addMessage(text, type) {
+            const messagesContainer = document.getElementById('chatbotMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = text;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'block';
+            document.getElementById('chatbotMessages').scrollTop = document.getElementById('chatbotMessages').scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function processMessage(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Check FAQ database
+            for (const [topic, data] of Object.entries(FAQ_DATABASE)) {
+                if (data.keywords.some(keyword => lowerMessage.includes(keyword))) {
+                    return data.response;
+                }
+            }
+            
+            // Greeting responses
+            if (lowerMessage.includes('hola') || lowerMessage.includes('buenos') || lowerMessage.includes('hi')) {
+                return '¡Hola! 😊 Me da mucho gusto saludarte. ¿En qué puedo ayudarte hoy?';
+            }
+            
+            // Gratitude responses
+            if (lowerMessage.includes('gracias') || lowerMessage.includes('thanks')) {
+                return '¡De nada! 😊 Estoy aquí para ayudarte. ¿Hay algo más en lo que pueda asistirte?';
+            }
+            
+            // Default response with suggestions
+            return 'No estoy seguro de cómo responder a eso, pero puedo ayudarte con información sobre: horarios, admisiones, ubicación, contacto, carreras y requisitos. ¿Te interesa alguno de estos temas?';
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Initialize chatbot toggle
+        document.getElementById('chatbotToggle').addEventListener('click', toggleChatbot);
+    </script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Header/Footer Loader -->
+    <script src="js/loader.js"></script>
+    
+    <!-- Dark Mode -->
+    <button id="darkModeToggle" class="btn btn-outline-secondary position-fixed" 
+            style="bottom: 100px; right: 20px; z-index: 1000; border-radius: 50%; width: 50px; height: 50px; display: none;" 
+            aria-label="Toggle dark mode">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <style>
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .pulse-ring {
+            border: 3px solid #ffc107;
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            animation: pulse 2s infinite;
+            opacity: 0.6;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0;
+            }
+        }
+        
+        .hero-badges .badge {
+            padding: 0.6rem 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .hero-badges .badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .bg-light {
+            background-color: #2d2d2d !important;
+        }
+        
+        body.dark-mode .card {
+            background-color: #2d2d2d;
+            border-color: #404040;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .feature-card {
+            background-color: #2d2d2d;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .text-muted {
+            color: #adb5bd !important;
+        }
+        
+        body.dark-mode .chatbot-container {
+            background: #2d2d2d;
+            border: 1px solid #404040;
+        }
+        
+        body.dark-mode .message.bot {
+            background: #404040;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .chatbot-input {
+            border-top-color: #404040;
+        }
+        
+        body.dark-mode .chatbot-input input {
+            background-color: #2d2d2d;
+            border-color: #404040;
+            color: #ffffff;
+        }
+    </style>
+    
+    <script>
+        // Dark mode functionality
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+        const darkModeIcon = darkModeToggle.querySelector('i');
+        
+        // Show dark mode button after page load
+        window.addEventListener('load', () => {
+            darkModeToggle.style.display = 'block';
+        });
+        
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            body.classList.add('dark-mode');
+            darkModeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+        
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('darkMode', 'enabled');
+                darkModeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+                darkModeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+    </script>
+</body>
+</html>

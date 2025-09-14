@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dashboard Administrativo del Bachillerato General Estatal Héroes de la Patria">
+    <meta name="keywords" content="administración, dashboard, gestión, académico, control">
+    <title>Dashboard Administrativo | BGE Héroes de la Patria</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+    <!-- 🔒 PROTECCIÓN INMEDIATA - VERIFICA ANTES DE CARGAR CUALQUIER CONTENIDO -->
+    <script>
+        (function() {
+            'use strict';
+            console.log('🔒 [DASHBOARD SECURITY] Verificación inmediata de autenticación...');
+            
+            function showAccessDenied() {
+                document.body.innerHTML = `
+                    <div style="
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        min-height: 100vh;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                        margin: 0;
+                        padding: 20px;
+                        box-sizing: border-box;
+                    ">
+                        <div style="
+                            background: white;
+                            padding: 40px;
+                            border-radius: 15px;
+                            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+                            text-align: center;
+                            max-width: 500px;
+                            width: 100%;
+                        ">
+                            <div style="
+                                width: 80px;
+                                height: 80px;
+                                margin: 0 auto 20px;
+                                background: #dc3545;
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: white;
+                                font-size: 32px;
+                            ">
+                                🔒
+                            </div>
+                            <h1 style="
+                                color: #dc3545;
+                                margin-bottom: 20px;
+                                font-size: 24px;
+                                font-weight: 600;
+                            ">Acceso Restringido</h1>
+                            <p style="
+                                color: #6c757d;
+                                margin-bottom: 30px;
+                                line-height: 1.6;
+                                font-size: 16px;
+                            ">Debes iniciar sesión como administrador para acceder al dashboard.</p>
+                            <a href="index.html" style="
+                                display: inline-block;
+                                background: #007bff;
+                                color: white;
+                                padding: 12px 30px;
+                                text-decoration: none;
+                                border-radius: 8px;
+                                font-weight: 500;
+                                transition: background-color 0.3s ease;
+                            " onmouseover="this.style.background='#0056b3'" onmouseout="this.style.background='#007bff'">
+                                ← Volver al Inicio
+                            </a>
+                        </div>
+                    </div>
+                `;
+                return false;
+            }
+            
+            // Verificación inmediata de localStorage
+            try {
+                const session = localStorage.getItem('secure_admin_session');
+                if (!session) {
+                    console.log('❌ [DASHBOARD SECURITY] No hay sesión - Acceso denegado');
+                    return showAccessDenied();
+                }
+                
+                const sessionData = JSON.parse(session);
+                if (!sessionData.token || !sessionData.expiresAt || Date.now() >= sessionData.expiresAt) {
+                    console.log('⏰ [DASHBOARD SECURITY] Sesión expirada - Acceso denegado');
+                    localStorage.removeItem('secure_admin_session');
+                    return showAccessDenied();
+                }
+                
+                console.log('✅ [DASHBOARD SECURITY] Sesión válida encontrada - Permitiendo carga');
+            } catch (error) {
+                console.error('❌ [DASHBOARD SECURITY] Error verificando sesión:', error);
+                return showAccessDenied();
+            }
+        })();
+    </script>
+    
+    <!-- Header -->
+    <div id="main-header"></div>
+
+    <!-- Hero Section - Solo visible cuando no está logueado -->
+    <section id="hero" class="page-hero bg-gradient-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-4">
+                        <i class="fas fa-tachometer-alt me-3"></i>Dashboard Administrativo
+                    </h1>
+                    <p class="lead mb-4">
+                        Panel de control integral para la gestión académica y administrativa 
+                        del BGE Héroes de la Patria.
+                    </p>
+                </div>
+                    <div class="col-lg-4 text-center">
+                        <div class="hero-icon display-1 text-white-50">
+                            <i class="fas fa-cog" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Características del Dashboard -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="fw-bold text-dark" style="color: #212529 !important;">Características del Sistema</h2>
+                    <p class="text-muted">Herramientas completas para la gestión escolar</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="showLoginModal()" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-sign-in-alt fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title">Acceso al Dashboard</h5>
+                            <p class="card-text text-muted">Inicia sesión para acceder al panel administrativo</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="showInfoModal()" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-info-circle fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">Información del Sistema</h5>
+                            <p class="card-text text-muted">Conoce las características y capacidades del dashboard</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="scrollToSection('modulos-admin')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-th-large fa-3x text-warning"></i>
+                            </div>
+                            <h5 class="card-title">Módulos Administrativos</h5>
+                            <p class="card-text text-muted">Explora los módulos disponibles del sistema</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="scrollToSection('seguridad')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-shield-alt fa-3x text-info"></i>
+                            </div>
+                            <h5 class="card-title">Seguridad</h5>
+                            <p class="card-text text-muted">Información sobre protección y privacidad de datos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Módulos Administrativos -->
+    <section id="modulos-admin" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="fw-bold">Módulos Administrativos</h2>
+                    <p class="text-muted">Herramientas especializadas para la gestión integral</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-users fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title">Gestión de Estudiantes</h5>
+                            <p class="card-text text-muted">Control completo de matrículas, expedientes académicos, calificaciones y seguimiento estudiantil.</p>
+                            <ul class="list-unstyled small text-start">
+                                <li><i class="fas fa-check text-success me-2"></i>Registro y actualización de datos</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Historial académico completo</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Sistema de alertas académicas</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Exportación de reportes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-chalkboard-teacher fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">Gestión de Docentes</h5>
+                            <p class="card-text text-muted">Administración del personal académico, asignación de materias y control de carga horaria.</p>
+                            <ul class="list-unstyled small text-start">
+                                <li><i class="fas fa-check text-success me-2"></i>Perfil completo de docentes</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Asignación de materias</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Control de horarios</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Evaluación de desempeño</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-chart-bar fa-3x text-info"></i>
+                            </div>
+                            <h5 class="card-title">Reportes y Estadísticas</h5>
+                            <p class="card-text text-muted">Generación de reportes académicos, financieros y estadísticas institucionales en tiempo real.</p>
+                            <ul class="list-unstyled small text-start">
+                                <li><i class="fas fa-check text-success me-2"></i>Reportes académicos</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Estadísticas de rendimiento</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Control financiero</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Análisis predictivo</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-dollar-sign fa-3x text-warning"></i>
+                            </div>
+                            <h5 class="card-title">Sistema de Pagos</h5>
+                            <p class="card-text text-muted">Control integral de colegiaturas, pagos pendientes y estado financiero de estudiantes.</p>
+                            <ul class="list-unstyled small text-start">
+                                <li><i class="fas fa-check text-success me-2"></i>Registro de pagos</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Control de vencimientos</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Estados de cuenta</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Alertas automáticas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-calendar-alt fa-3x text-danger"></i>
+                            </div>
+                            <h5 class="card-title">Calendario Académico</h5>
+                            <p class="card-text text-muted">Gestión completa del calendario escolar, eventos importantes y fechas académicas.</p>
+                            <ul class="list-unstyled small text-start">
+                                <li><i class="fas fa-check text-success me-2"></i>Planificación de eventos</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Fechas de exámenes</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Períodos vacacionales</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Notificaciones automáticas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-cog fa-3x text-secondary"></i>
+                            </div>
+                            <h5 class="card-title">Configuración del Sistema</h5>
+                            <p class="card-text text-muted">Configuración avanzada de parámetros institucionales y personalización del sistema.</p>
+                            <ul class="list-unstyled small text-start">
+                                <li><i class="fas fa-check text-success me-2"></i>Configuración institucional</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Personalización de reportes</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Gestión de usuarios</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Respaldos automáticos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Seguridad -->
+    <section id="seguridad" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="fw-bold">
+                        <i class="fas fa-shield-alt me-2 text-primary"></i>Seguridad del Sistema
+                    </h2>
+                    <p class="text-muted">Protección integral de datos y privacidad institucional</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-lock me-2"></i>Medidas de Seguridad
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h6 class="text-primary">Autenticación y Acceso</h6>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <strong>Autenticación Multifactor:</strong> Sistema de verificación en dos pasos para acceso administrativo
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <strong>Roles y Permisos:</strong> Control granular de acceso según el nivel administrativo
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <strong>Sesiones Seguras:</strong> Timeout automático y cifrado de sesiones activas
+                                        </li>
+                                    </ul>
+                                    
+                                    <h6 class="text-primary">Protección de Datos</h6>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <strong>Cifrado de Datos:</strong> Encriptación AES-256 para información sensible
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <strong>Respaldos Automáticos:</strong> Copias de seguridad diarias y semanales
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <strong>Auditoría Completa:</strong> Registro de todas las acciones administrativas
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-user-shield me-2"></i>Privacidad y Cumplimiento
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h6 class="text-success">Normativas de Privacidad</h6>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="fas fa-gavel text-info me-2"></i>
+                                            <strong>Ley Federal de Protección de Datos:</strong> Cumplimiento total con normativas mexicanas
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-gavel text-info me-2"></i>
+                                            <strong>LOPD Educativa:</strong> Protección específica de datos académicos estudiantiles
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-gavel text-info me-2"></i>
+                                            <strong>Derecho al Olvido:</strong> Eliminación segura de datos según solicitud
+                                        </li>
+                                    </ul>
+                                    
+                                    <h6 class="text-success">Monitoreo y Alertas</h6>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="fas fa-eye text-warning me-2"></i>
+                                            <strong>Monitoreo 24/7:</strong> Supervisión continua del sistema
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-eye text-warning me-2"></i>
+                                            <strong>Alertas de Seguridad:</strong> Notificaciones inmediatas ante actividad sospechosa
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-eye text-warning me-2"></i>
+                                            <strong>Análisis de Comportamiento:</strong> Detección de patrones anómalos de acceso
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Panel de Estado de Seguridad -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-line me-2"></i>Estado Actual de Seguridad
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <div class="badge bg-success fs-6 p-3 rounded-circle mb-2">
+                                            <i class="fas fa-shield-alt fa-2x"></i>
+                                        </div>
+                                        <h6 class="text-success">Sistema Protegido</h6>
+                                        <small class="text-muted">Todas las medidas activas</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <div class="badge bg-primary fs-6 p-3 rounded-circle mb-2">
+                                            <i class="fas fa-users fa-2x"></i>
+                                        </div>
+                                        <h6 class="text-primary">4 Usuarios Activos</h6>
+                                        <small class="text-muted">Personal autorizado</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <div class="badge bg-warning fs-6 p-3 rounded-circle mb-2">
+                                            <i class="fas fa-database fa-2x"></i>
+                                        </div>
+                                        <h6 class="text-warning">Último Respaldo</h6>
+                                        <small class="text-muted">Hace 2 horas</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <div class="badge bg-info fs-6 p-3 rounded-circle mb-2">
+                                            <i class="fas fa-clock fa-2x"></i>
+                                        </div>
+                                        <h6 class="text-info">Uptime: 99.8%</h6>
+                                        <small class="text-muted">Disponibilidad del sistema</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Login -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">
+                        <i class="fas fa-shield-alt me-2"></i>Acceso Administrativo
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="adminLoginForm">
+                        <div class="mb-3">
+                            <label for="adminUsername" class="form-label">Usuario Administrativo</label>
+                            <input type="text" class="form-control" id="adminUsername" placeholder="Nombre de usuario" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="adminPassword" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="adminPassword" autocomplete="current-password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="adminRole" class="form-label">Rol</label>
+                            <select class="form-select" id="adminRole" required>
+                                <option value="">Seleccionar rol</option>
+                                <option value="director">Director</option>
+                                <option value="subdirector">Subdirector</option>
+                                <option value="coordinador">Coordinador Académico</option>
+                                <option value="secretaria">Secretaria Académica</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Datos de prueba:</strong><br>
+                            Usuario: admin<br>
+                            Contraseña: admin123<br>
+                            Rol: Director
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="loginAdmin()">
+                        <i class="fas fa-sign-in-alt me-2"></i>Acceder
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Información -->
+    <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="infoModalLabel">
+                        <i class="fas fa-info-circle me-2"></i>Información del Sistema
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Módulos Disponibles</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Gestión de Estudiantes</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Control Académico</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Reportes y Estadísticas</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Sistema de Pagos</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Gestión de Personal</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Configuración</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Características Técnicas</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-shield-alt text-primary me-2"></i>Seguridad avanzada</li>
+                                <li><i class="fas fa-cloud text-info me-2"></i>Respaldo automático</li>
+                                <li><i class="fas fa-mobile-alt text-success me-2"></i>Diseño responsivo</li>
+                                <li><i class="fas fa-chart-bar text-warning me-2"></i>Dashboard interactivo</li>
+                                <li><i class="fas fa-users text-secondary me-2"></i>Multi-usuario</li>
+                                <li><i class="fas fa-clock text-danger me-2"></i>Tiempo real</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel Administrativo (oculto inicialmente) -->
+    <div id="adminPanel" class="d-none">
+        <!-- Header del Dashboard -->
+        <section class="py-4 bg-primary text-white" style="margin-top: 20px;">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4 class="mb-0">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard Administrativo
+                            <span class="badge bg-warning ms-2" id="adminRole">Director</span>
+                        </h4>
+                        <small>Bienvenido, <span id="adminName">Administrador</span></small>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button class="btn btn-outline-light btn-sm me-2" onclick="refreshDashboard()">
+                            <i class="fas fa-sync-alt me-1"></i>Actualizar
+                        </button>
+                        <button class="btn btn-outline-light btn-sm" onclick="logoutAdmin()">
+                            <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Estadísticas Generales -->
+        <section class="py-4">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm stat-card">
+                            <div class="card-body text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div class="me-3">
+                                        <i class="fas fa-user-graduate fa-3x text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-primary mb-0" id="totalStudents">1,247</h3>
+                                        <p class="text-muted mb-0">Estudiantes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm stat-card">
+                            <div class="card-body text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div class="me-3">
+                                        <i class="fas fa-chalkboard-teacher fa-3x text-success"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-success mb-0" id="totalTeachers">68</h3>
+                                        <p class="text-muted mb-0">Docentes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm stat-card">
+                            <div class="card-body text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div class="me-3">
+                                        <i class="fas fa-book fa-3x text-warning"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-warning mb-0" id="totalSubjects">42</h3>
+                                        <p class="text-muted mb-0">Materias</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm stat-card">
+                            <div class="card-body text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div class="me-3">
+                                        <i class="fas fa-chart-line fa-3x text-info"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-info mb-0" id="generalAverage">8.4</h3>
+                                        <p class="text-muted mb-0">Promedio General</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navegación por Pestañas -->
+        <section class="py-4 bg-light">
+            <div class="container">
+                <ul class="nav nav-pills nav-fill mb-4" id="adminTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="overview-tab" data-bs-toggle="pill" data-bs-target="#overview" type="button" role="tab">
+                            <i class="fas fa-chart-pie me-2"></i>Resumen
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="students-tab" data-bs-toggle="pill" data-bs-target="#students" type="button" role="tab">
+                            <i class="fas fa-users me-2"></i>Estudiantes
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="teachers-tab" data-bs-toggle="pill" data-bs-target="#teachers" type="button" role="tab">
+                            <i class="fas fa-chalkboard-teacher me-2"></i>Docentes
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="registrations-tab" data-bs-toggle="pill" data-bs-target="#registrations" type="button" role="tab">
+                            <i class="fas fa-user-plus me-2"></i>Solicitudes
+                            <span class="badge bg-warning ms-1" id="pending-count" style="display: none;">0</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="finances-tab" data-bs-toggle="pill" data-bs-target="#finances" type="button" role="tab">
+                            <i class="fas fa-dollar-sign me-2"></i>Finanzas
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="reports-tab" data-bs-toggle="pill" data-bs-target="#reports" type="button" role="tab">
+                            <i class="fas fa-file-alt me-2"></i>Reportes
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="adminTabsContent">
+                    <!-- Tab Resumen -->
+                    <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                        <div class="row g-4">
+                            <div class="col-lg-8">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="mb-0">
+                                            <i class="fas fa-chart-bar me-2"></i>Evolución Académica
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="academicChart" width="400" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="card border-0 shadow-sm mb-3">
+                                    <div class="card-header bg-success text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-trophy me-2"></i>Rendimiento por Semestre
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>1° Semestre</span>
+                                            <span class="badge bg-success">8.7</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>3° Semestre</span>
+                                            <span class="badge bg-primary">8.4</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>5° Semestre</span>
+                                            <span class="badge bg-info">8.2</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-warning text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>Alertas
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="alert alert-warning mb-2">
+                                            <small><i class="fas fa-user me-1"></i>15 estudiantes en riesgo académico</small>
+                                        </div>
+                                        <div class="alert alert-info mb-2">
+                                            <small><i class="fas fa-dollar-sign me-1"></i>23 pagos pendientes</small>
+                                        </div>
+                                        <div class="alert alert-success mb-0">
+                                            <small><i class="fas fa-check me-1"></i>Sistema funcionando correctamente</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Estudiantes -->
+                    <div class="tab-pane fade" id="students" role="tabpanel">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-users me-2"></i>Gestión de Estudiantes
+                                </h5>
+                                <div>
+                                    <button class="btn btn-light btn-sm me-2" onclick="exportStudents()">
+                                        <i class="fas fa-download me-1"></i>Exportar
+                                    </button>
+                                    <button class="btn btn-warning btn-sm" onclick="addStudent()">
+                                        <i class="fas fa-plus me-1"></i>Nuevo
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <input type="search" class="form-control" placeholder="Buscar estudiante..." id="studentSearch">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select class="form-select" id="semesterFilter">
+                                            <option value="">Todos los semestres</option>
+                                            <option value="1">1° Semestre</option>
+                                            <option value="3">3° Semestre</option>
+                                            <option value="5">5° Semestre</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th>Matrícula</th>
+                                                <th>Nombre</th>
+                                                <th>Semestre</th>
+                                                <th>Promedio</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="studentsTable">
+                                            <!-- Se llena dinámicamente -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Docentes -->
+                    <div class="tab-pane fade" id="teachers" role="tabpanel">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-chalkboard-teacher me-2"></i>Gestión de Docentes
+                                </h5>
+                                <button class="btn btn-light btn-sm" onclick="addTeacher()">
+                                    <i class="fas fa-plus me-1"></i>Nuevo Docente
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-success">
+                                            <tr>
+                                                <th>Nombre</th>
+                                                <th>Especialidad</th>
+                                                <th>Materias</th>
+                                                <th>Carga Horaria</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="teachersTable">
+                                            <!-- Se llena dinámicamente -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Solicitudes de Registro -->
+                    <div class="tab-pane fade" id="registrations" role="tabpanel">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-user-plus me-2"></i>Solicitudes de Registro
+                                </h5>
+                                <div>
+                                    <span class="badge bg-warning me-2" id="pending-counter">0 pendientes</span>
+                                    <button class="btn btn-light btn-sm" onclick="adminDashboard.loadPendingRegistrations(); adminDashboard.displayPendingRegistrations();">
+                                        <i class="fas fa-sync me-1"></i>Actualizar
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Gestión de Solicitudes:</strong> Aquí aparecerán todas las solicitudes de registro de nuevos usuarios.
+                                    Puedes aprobar o rechazar cada solicitud después de revisar la información.
+                                </div>
+                                
+                                <!-- Contenedor de solicitudes -->
+                                <div id="pending-registrations-container">
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-spinner fa-spin fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">Cargando solicitudes...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Finanzas -->
+                    <div class="tab-pane fade" id="finances" role="tabpanel">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-dollar-sign fa-3x text-success mb-3"></i>
+                                        <h4 class="text-success">$2,847,500</h4>
+                                        <p class="text-muted">Ingresos del Mes</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-clock fa-3x text-warning mb-3"></i>
+                                        <h4 class="text-warning">$157,500</h4>
+                                        <p class="text-muted">Pagos Pendientes</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-chart-pie fa-3x text-info mb-3"></i>
+                                        <h4 class="text-info">94.5%</h4>
+                                        <p class="text-muted">Tasa de Cobro</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Reportes -->
+                    <div class="tab-pane fade" id="reports" role="tabpanel">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-info text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-file-alt me-2"></i>Reportes Académicos
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-outline-primary" onclick="generateReport('academic')">
+                                                <i class="fas fa-graduation-cap me-2"></i>Reporte de Calificaciones
+                                            </button>
+                                            <button class="btn btn-outline-success" onclick="generateReport('attendance')">
+                                                <i class="fas fa-calendar-check me-2"></i>Reporte de Asistencia
+                                            </button>
+                                            <button class="btn btn-outline-warning" onclick="generateReport('performance')">
+                                                <i class="fas fa-chart-bar me-2"></i>Análisis de Rendimiento
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-success text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-dollar-sign me-2"></i>Reportes Financieros
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-outline-info" onclick="generateReport('payments')">
+                                                <i class="fas fa-credit-card me-2"></i>Estado de Pagos
+                                            </button>
+                                            <button class="btn btn-outline-secondary" onclick="generateReport('income')">
+                                                <i class="fas fa-chart-line me-2"></i>Ingresos Mensuales
+                                            </button>
+                                            <button class="btn btn-outline-danger" onclick="generateReport('pending')">
+                                                <i class="fas fa-exclamation-triangle me-2"></i>Pagos Vencidos
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <div id="main-footer"></div>
+
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <!-- Chat Bot Toggle Button -->
+    <button class="chatbot-toggle" id="chatbotToggle" aria-label="Abrir chat de ayuda">
+        <i class="fas fa-comments"></i>
+    </button>
+    
+    <!-- Chat Bot Container -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <div>
+                <strong>Asistente Virtual</strong>
+                <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
+            </div>
+            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+        </div>
+        
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="chatbot-message bot">
+                <div class="response-professional">
+                    <div class="response-title">🎓 Asistente Virtual BGE</div>
+                    <div class="response-content">
+                        <div class="response-section">
+                            <div class="response-subtitle">¡Hola! Soy tu asistente inteligente</div>
+                            <div class="response-text">Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.</div>
+                        </div>
+                    </div>
+                    <div class="response-footer">¿En qué puedo ayudarte hoy?</div>
+                </div>
+            </div>
+            <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                <div class="message bot typing">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <!-- Fallback for Chart.js -->
+    <script>
+        if (typeof Chart === 'undefined') {
+            console.warn('Chart.js failed to load from CDN, loading from alternative source...');
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"><\/script>');
+        }
+    </script>
+    <script src="js/script.js"></script>
+    <script src="js/admin-auth-secure.js"></script>
+    <script src="js/chatbot.js"></script>
+    
+    <!-- Ensure chatbot functions are accessible -->
+    <script>
+        // Make sure functions are globally accessible if they exist
+        if (typeof toggleChatbot !== 'undefined') {
+            window.toggleChatbot = toggleChatbot;
+        }
+        if (typeof sendMessage !== 'undefined') {
+            window.sendMessage = sendMessage;
+        }
+        if (typeof handleKeyPress !== 'undefined') {
+            window.handleKeyPress = handleKeyPress;
+        }
+    </script>
+    <script src="js/search-unified.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+    
+    <!-- VERIFICACIÓN ADICIONAL DE AUTENTICACIÓN AL CARGAR DOM -->
+    <script>
+        // Verificación adicional cuando el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔒 [DASHBOARD SECURITY] Verificación adicional de autenticación...');
+            
+            // Verificar nuevamente el estado de autenticación
+            setTimeout(() => {
+                let isAuthenticated = false;
+                
+                // Verificar con el sistema de autenticación si está disponible
+                if (window.secureAdminAuth && typeof window.secureAdminAuth.isUserAuthenticated === 'function') {
+                    isAuthenticated = window.secureAdminAuth.isUserAuthenticated();
+                    console.log('🔍 [DASHBOARD SECURITY] Verificación con secureAdminAuth:', isAuthenticated);
+                }
+                
+                // Verificar localStorage como respaldo
+                if (!isAuthenticated) {
+                    try {
+                        const session = localStorage.getItem('secure_admin_session');
+                        if (session) {
+                            const sessionData = JSON.parse(session);
+                            if (sessionData.token && sessionData.expiresAt && Date.now() < sessionData.expiresAt) {
+                                isAuthenticated = true;
+                                console.log('✅ [DASHBOARD SECURITY] Sesión válida en localStorage');
+                            } else {
+                                console.log('⏰ [DASHBOARD SECURITY] Sesión expirada en localStorage');
+                                localStorage.removeItem('secure_admin_session');
+                            }
+                        }
+                    } catch (error) {
+                        console.warn('❌ [DASHBOARD SECURITY] Error verificando localStorage:', error);
+                    }
+                }
+                
+                if (!isAuthenticated) {
+                    console.log('🚫 [DASHBOARD SECURITY] Acceso denegado - Usuario no autenticado');
+                    window.location.href = 'index.html';
+                } else {
+                    console.log('✅ [DASHBOARD SECURITY] Acceso confirmado - Usuario autenticado');
+                }
+            }, 100); // Verificación más rápida ya que el contenido ya fue validado
+        });
+    </script>
+    
+    <!-- Funciones reales del dashboard - Ya no son temporales -->
+    <script>
+        // Funciones requeridas por onclick events para evitar errores
+        function showLoginModal() {
+            console.log('🔐 Intentando mostrar modal de login...');
+            const modal = document.getElementById('loginModal');
+            if (modal) {
+                console.log('✅ Modal encontrado, mostrando...');
+                const modalInstance = new bootstrap.Modal(modal);
+                modalInstance.show();
+            } else {
+                console.error('❌ Modal loginModal no encontrado');
+                // Fallback: mostrar alert con datos de prueba
+                alert('Modal no encontrado. Datos de prueba:\nUsuario: admin\nContraseña: admin123\nRol: Director');
+            }
+        }
+
+        function showInfoModal() {
+            alert('Panel de Administración\\n\\nEste sistema permite gestionar:\\n• Estudiantes y docentes\\n• Solicitudes de registro\\n• Finanzas del plantel\\n• Estadísticas académicas\\n\\nIngresa con tus credenciales para acceder.');
+        }
+
+        // Las funciones reales están definidas en admin-dashboard.js
+        // Esta sección ya no bloquea las funcionalidades
+        
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            } else {
+                // Si no existe la sección, hacer scroll al panel admin si está logueado
+                if (adminDashboard && adminDashboard.isLoggedIn) {
+                    const adminPanel = document.getElementById('adminPanel');
+                    if (adminPanel && !adminPanel.classList.contains('d-none')) {
+                        adminPanel.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Dark Mode Styles & Script -->
+    <style>
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 6rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bs-primary);
+            color: white;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        body.dark-mode {
+            background-color: #1a1a1a !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .bg-light {
+            background-color: #2d2d2d !important;
+        }
+
+        body.dark-mode .card {
+            background-color: #2d2d2d !important;
+            border-color: #404040 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .text-muted {
+            color: #b0b0b0 !important;
+        }
+
+        body.dark-mode .text-dark {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .table {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .table td,
+        body.dark-mode .table th {
+            border-color: #404040 !important;
+        }
+
+        body.dark-mode .form-control,
+        body.dark-mode .form-select {
+            background-color: #404040 !important;
+            border-color: #505050 !important;
+            color: #ffffff !important;
+        }
+
+        /* Fix para títulos visibles */
+        body.dark-mode h2.text-dark {
+            color: #ffffff !important;
+        }
+        
+        h2.text-dark {
+            color: #212529 !important;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+            
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                body.classList.add('dark-mode');
+                updateDarkModeIcon(true);
+            }
+            
+            darkModeToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                body.classList.toggle('dark-mode');
+                
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('darkMode', 'enabled');
+                    updateDarkModeIcon(true);
+                } else {
+                    localStorage.setItem('darkMode', 'disabled');
+                    updateDarkModeIcon(false);
+                }
+            });
+            
+            function updateDarkModeIcon(isDark) {
+                if (darkModeToggle) {
+                    let icon = darkModeToggle.querySelector('i');
+                    if (icon) {
+                        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+                    }
+                }
+            }
+        });
+    </script>
+    <script src="js/icon-check.js"></script>
+</body>
+</html>

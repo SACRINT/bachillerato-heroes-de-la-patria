@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Padres de Familia - Bachillerato General Estatal "Héroes de la Patria"</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Portal exclusivo para padres de familia del BGE Héroes de la Patria. Consulta calificaciones, comunicación con docentes, eventos y recursos educativos.">
+    <meta name="keywords" content="portal padres, calificaciones, comunicación docentes, eventos escolares, recursos padres">
+    <meta name="author" content="BGE Héroes de la Patria">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Portal de Padres - BGE Héroes de la Patria">
+    <meta property="og:description" content="Portal integral para padres de familia con acceso a información académica y comunicación directa">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://heroesdelapatria.edu.mx/padres.html">
+    <meta property="og:image" content="https://heroesdelapatria.edu.mx/images/hero/fachada1.webp">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Portal de Padres - BGE Héroes de la Patria">
+    <meta name="twitter:description" content="Acceso completo a información académica y comunicación escolar">
+    
+    <!-- Preconnects -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Critical CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="images/logo-bachillerato-HDLP.webp" type="image/webp">
+    <meta name="theme-color" content="#1976D2">
+    
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Inicio",
+                "item": "https://heroesdelapatria.edu.mx/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Portal de Padres",
+                "item": "https://heroesdelapatria.edu.mx/padres.html"
+            }
+        ]
+    }
+    </script>
+</head>
+<body>
+    <!-- Skip Links -->
+    <a href="#main-content" class="skip-link visually-hidden-focusable">Saltar al contenido principal</a>
+    
+    <!-- Header -->
+    <div id="main-header"></div>
+    
+    <!-- Main Content -->
+    <main id="main-content" class="main-content">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="index.html">
+                            <i class="fas fa-home" aria-hidden="true"></i>
+                            <span class="visually-hidden">Inicio</span>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Portal de Padres</li>
+                </ol>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="hero" class="page-hero bg-gradient-success text-white py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="hero-title display-4 fw-bold mb-3">
+                            <i class="fas fa-users me-3" aria-hidden="true"></i>
+                            Portal de Padres de Familia
+                        </h1>
+                        <p class="hero-subtitle lead mb-4">
+                            Mantente conectado con la educación de tus hijos. Consulta calificaciones, 
+                            comunícate con docentes y accede a recursos exclusivos.
+                        </p>
+                        <div class="hero-badges d-flex flex-wrap gap-2 justify-content-start">
+                            <a href="#loginSection" class="badge bg-light text-success fs-6 text-decoration-none">
+                                <i class="fas fa-sign-in-alt me-1" aria-hidden="true"></i>
+                                Acceso al Portal
+                            </a>
+                            <a href="#primera-vez" class="badge bg-light text-info fs-6 text-decoration-none">
+                                <i class="fas fa-info-circle me-1" aria-hidden="true"></i>
+                                ¿Primera vez en el portal?
+                            </a>
+                            <a href="#preguntas-frecuentes" class="badge bg-light text-warning fs-6 text-decoration-none">
+                                <i class="fas fa-question-circle me-1" aria-hidden="true"></i>
+                                Preguntas Frecuentes
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <div class="mb-4">
+                            <i class="fas fa-users display-1 text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Acceso al Portal -->
+        <section class="py-5 bg-light" id="loginSection">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="login-container">
+                            <div class="card border-0 shadow-lg">
+                                <div class="card-header bg-success text-white text-center py-4">
+                                    <h3 class="mb-0">
+                                        <i class="fas fa-key me-2"></i>
+                                        Acceso al Portal
+                                    </h3>
+                                    <p class="mb-0 mt-2">Ingresa tus credenciales para acceder a la información de tu hijo(a)</p>
+                                </div>
+                                <div class="card-body p-5">
+                                    <form id="parentLoginForm" class="padres-form-dark">
+                                        <div class="row g-4">
+                                            <div class="col-12">
+                                                <label for="parentEmail" class="form-label">
+                                                    <i class="fas fa-envelope text-primary me-2"></i>
+                                                    Correo Electrónico
+                                                </label>
+                                                <input type="email" class="form-control form-control-lg" 
+                                                       id="parentEmail" name="parentEmail" required
+                                                       placeholder="tu.correo@ejemplo.com">
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="studentId" class="form-label">
+                                                    <i class="fas fa-id-card text-primary me-2"></i>
+                                                    Matrícula del Estudiante
+                                                </label>
+                                                <input type="text" class="form-control form-control-lg" 
+                                                       id="studentId" name="studentId" required
+                                                       placeholder="BGE-2024-001">
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="accessPassword" class="form-label">
+                                                    <i class="fas fa-lock text-primary me-2"></i>
+                                                    Contraseña de Acceso
+                                                </label>
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control form-control-lg"
+                                                           id="accessPassword" name="accessPassword" required
+                                                           placeholder="Tu contraseña" autocomplete="current-password">
+                                                    <button class="btn btn-outline-secondary" type="button" 
+                                                            onclick="togglePassword('accessPassword')">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                                                    <label class="form-check-label" for="rememberMe">
+                                                        Recordar mis datos en este dispositivo
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <button type="submit" class="btn btn-success btn-lg w-100">
+                                                    <i class="fas fa-sign-in-alt me-2"></i>
+                                                    Ingresar al Portal
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    
+                                    <div class="text-center mt-4">
+                                        <p class="text-muted mb-3">¿Problemas para acceder?</p>
+                                        <div class="d-flex gap-2 justify-content-center flex-wrap">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="showPasswordRecovery()">
+                                                <i class="fas fa-question-circle me-1"></i>
+                                                Recuperar Contraseña
+                                            </button>
+                                            <button class="btn btn-outline-info btn-sm" onclick="showRegistrationHelp()">
+                                                <i class="fas fa-user-plus me-1"></i>
+                                                Primer Acceso
+                                            </button>
+                                            <a href="contacto.html" class="btn btn-outline-secondary btn-sm">
+                                                <i class="fas fa-headset me-1"></i>
+                                                Soporte Técnico
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard del Portal (inicialmente oculto) -->
+        <section class="py-5 d-none" id="parentDashboard">
+            <div class="container">
+                <!-- Información del Estudiante -->
+                <div class="student-info-header mb-5">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <div class="d-flex align-items-center">
+                                <div class="student-avatar bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-user-graduate fa-2x"></i>
+                                </div>
+                                <div>
+                                    <h2 class="mb-1" id="studentName">Ana García Mendoza</h2>
+                                    <p class="text-muted mb-1">
+                                        <strong>Matrícula:</strong> <span id="displayStudentId">BGE-2024-156</span> • 
+                                        <strong>Grado:</strong> <span id="studentGrade">5° Semestre</span> • 
+                                        <strong>Grupo:</strong> <span id="studentGroup">A</span>
+                                    </p>
+                                    <p class="text-muted mb-0">
+                                        <strong>Tutor:</strong> <span id="tutorName">Prof. María Rodríguez</span> • 
+                                        <strong>Turno:</strong> <span id="studentShift">Matutino</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 text-end">
+                            <div class="quick-stats">
+                                <div class="stat-item">
+                                    <div class="stat-number text-success h4" id="currentAverage">8.7</div>
+                                    <div class="stat-label text-muted small">Promedio Actual</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de Acciones Rápidas -->
+                <div class="row g-4 mb-5">
+                    <div class="col-lg-3 col-sm-6">
+                        <button class="btn btn-outline-primary w-100 p-3 quick-action-btn" onclick="showGrades()">
+                            <i class="fas fa-chart-line fa-2x d-block mb-2 text-primary"></i>
+                            <strong>Calificaciones</strong>
+                            <small class="d-block text-muted">Ver notas y promedios</small>
+                        </button>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <button class="btn btn-outline-success w-100 p-3 quick-action-btn" onclick="showAttendance()">
+                            <i class="fas fa-calendar-check fa-2x d-block mb-2 text-success"></i>
+                            <strong>Asistencias</strong>
+                            <small class="d-block text-muted">Control de asistencias</small>
+                        </button>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <button class="btn btn-outline-info w-100 p-3 quick-action-btn" onclick="showCommunication()">
+                            <i class="fas fa-comments fa-2x d-block mb-2 text-info"></i>
+                            <strong>Comunicación</strong>
+                            <small class="d-block text-muted">Mensajes y avisos</small>
+                        </button>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <button class="btn btn-outline-warning w-100 p-3 quick-action-btn" onclick="showSchedule()">
+                            <i class="fas fa-clock fa-2x d-block mb-2 text-warning"></i>
+                            <strong>Horarios</strong>
+                            <small class="d-block text-muted">Clases y actividades</small>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contenido Principal del Dashboard -->
+                <div class="row">
+                    <div class="col-lg-8">
+                        <!-- Panel Principal -->
+                        <div id="mainPanel">
+                            <!-- Resumen Académico -->
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-chart-bar me-2"></i>
+                                        Resumen Académico
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-4">
+                                        <div class="col-md-4 text-center">
+                                            <div class="academic-stat">
+                                                <div class="stat-circle bg-success text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                    <span class="h5 mb-0">8.7</span>
+                                                </div>
+                                                <h6>Promedio General</h6>
+                                                <small class="text-success">Rendimiento Satisfactorio</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <div class="academic-stat">
+                                                <div class="stat-circle bg-info text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                    <span class="h5 mb-0">95%</span>
+                                                </div>
+                                                <h6>Asistencia</h6>
+                                                <small class="text-info">Excelente Puntualidad</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <div class="academic-stat">
+                                                <div class="stat-circle bg-warning text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                    <span class="h5 mb-0">3</span>
+                                                </div>
+                                                <h6>Pendientes</h6>
+                                                <small class="text-warning">Tareas por Entregar</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Calificaciones Recientes -->
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-graduation-cap text-primary me-2"></i>
+                                        Calificaciones Recientes
+                                    </h6>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="showGrades()">Ver Todas</button>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Materia</th>
+                                                    <th>Evaluación</th>
+                                                    <th class="text-center">Calificación</th>
+                                                    <th>Fecha</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="recentGrades">
+                                                <!-- Las calificaciones se cargarán dinámicamente -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <!-- Sidebar con información adicional -->
+                        
+                        <!-- Próximos Eventos -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-info text-white">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-calendar-star me-2"></i>
+                                    Próximos Eventos
+                                </h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush" id="upcomingEvents">
+                                    <!-- Los eventos se cargarán dinámicamente -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Comunicados Importantes -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-warning text-dark">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-bullhorn me-2"></i>
+                                    Comunicados
+                                </h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush" id="announcements">
+                                    <!-- Los comunicados se cargarán dinámicamente -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Acciones Rápidas -->
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-tools text-secondary me-2"></i>
+                                    Acciones Rápidas
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="downloadReport()">
+                                        <i class="fas fa-file-download me-2"></i>
+                                        Descargar Reporte
+                                    </button>
+                                    <button class="btn btn-outline-success btn-sm" onclick="scheduleAppointment()">
+                                        <i class="fas fa-calendar-plus me-2"></i>
+                                        Agendar Cita
+                                    </button>
+                                    <button class="btn btn-outline-info btn-sm" onclick="contactTeacher()">
+                                        <i class="fas fa-envelope me-2"></i>
+                                        Contactar Tutor
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="parentLogout()">
+                                        <i class="fas fa-sign-out-alt me-2"></i>
+                                        Cerrar Sesión
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Información para Nuevos Usuarios -->
+        <section id="primera-vez" class="py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center">
+                        <h2 class="mb-4">
+                            <i class="fas fa-info-circle text-primary me-3"></i>
+                            ¿Primera vez en el portal?
+                        </h2>
+                        <p class="lead text-muted mb-5">
+                            El Portal de Padres te permite estar siempre conectado con la educación de tus hijos. 
+                            Aquí encontrarás todo lo que necesitas saber.
+                        </p>
+                        
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="feature-card text-center p-4">
+                                    <div class="feature-icon bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-chart-line fa-lg"></i>
+                                    </div>
+                                    <h5>Seguimiento Académico</h5>
+                                    <p class="text-muted small">Consulta calificaciones, promedios y el progreso académico en tiempo real</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="feature-card text-center p-4">
+                                    <div class="feature-icon bg-success text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-comments fa-lg"></i>
+                                    </div>
+                                    <h5>Comunicación Directa</h5>
+                                    <p class="text-muted small">Mantente en contacto con docentes y recibe notificaciones importantes</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="feature-card text-center p-4">
+                                    <div class="feature-icon bg-info text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-calendar-alt fa-lg"></i>
+                                    </div>
+                                    <h5>Gestión de Eventos</h5>
+                                    <p class="text-muted small">Mantente informado sobre eventos, juntas y actividades escolares</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ para Padres -->
+        <section id="preguntas-frecuentes" class="py-5 bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto">
+                        <h2 class="text-center mb-5">
+                            <i class="fas fa-question-circle text-primary me-3"></i>
+                            Preguntas Frecuentes
+                        </h2>
+                        
+                        <div class="accordion padres-faq-dark" id="parentsFAQ">
+                            <div class="accordion-item accordion-item-dark">
+                                <h2 class="accordion-header" id="faq1">
+                                    <button class="accordion-button accordion-button-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                                        ¿Cómo obtengo mis credenciales de acceso?
+                                    </button>
+                                </h2>
+                                <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#parentsFAQ">
+                                    <div class="accordion-body">
+                                        Las credenciales se proporcionan durante el proceso de inscripción. Si no las tienes, 
+                                        puedes solicitarlas en el área de Servicios Escolares presentando identificación oficial 
+                                        y comprobante de parentesco. También puedes contactarnos al teléfono (222) 123-4567.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item accordion-item-dark">
+                                <h2 class="accordion-header" id="faq2">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                                        ¿Con qué frecuencia se actualizan las calificaciones?
+                                    </button>
+                                </h2>
+                                <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#parentsFAQ">
+                                    <div class="accordion-body">
+                                        Las calificaciones se actualizan semanalmente. Los docentes registran las evaluaciones 
+                                        y estas se reflejan automáticamente en el portal. Al final de cada período de evaluación, 
+                                        las calificaciones definitivas están disponibles inmediatamente.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item accordion-item-dark">
+                                <h2 class="accordion-header" id="faq3">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                                        ¿Puedo contactar directamente a los docentes?
+                                    </button>
+                                </h2>
+                                <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#parentsFAQ">
+                                    <div class="accordion-body">
+                                        Sí, el portal incluye un sistema de mensajería que te permite comunicarte directamente 
+                                        con los docentes de tu hijo(a). También puedes agendar citas presenciales a través 
+                                        del sistema de citas en línea.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Recuperación de Contraseña -->
+    <div class="modal fade" id="passwordRecoveryModal" tabindex="-1" aria-labelledby="passwordRecoveryLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="passwordRecoveryLabel">
+                        <i class="fas fa-key me-2"></i>
+                        Recuperar Contraseña
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="recoveryForm">
+                        <div class="mb-3">
+                            <label for="recoveryEmail" class="form-label">Correo electrónico registrado</label>
+                            <input type="email" class="form-control" id="recoveryEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="recoveryStudentId" class="form-label">Matrícula del estudiante</label>
+                            <input type="text" class="form-control" id="recoveryStudentId" required>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Te enviaremos las instrucciones para restablecer tu contraseña al correo proporcionado.
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" form="recoveryForm">
+                        <i class="fas fa-paper-plane me-2"></i>
+                        Enviar Instrucciones
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Ayuda para Registro -->
+    <div class="modal fade" id="registrationHelpModal" tabindex="-1" aria-labelledby="registrationHelpLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title" id="registrationHelpLabel">
+                        <i class="fas fa-user-plus me-2"></i>
+                        Guía para Primer Acceso
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6 class="mb-3">¿Es tu primera vez en el portal? Sigue estos pasos:</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ol>
+                                <li class="mb-2"><strong>Obtén tus credenciales:</strong> Acude a Servicios Escolares con tu identificación</li>
+                                <li class="mb-2"><strong>Datos necesarios:</strong> Correo electrónico y matrícula del estudiante</li>
+                                <li class="mb-2"><strong>Contraseña temporal:</strong> Se genera automáticamente</li>
+                                <li class="mb-2"><strong>Primer ingreso:</strong> Deberás cambiar la contraseña</li>
+                            </ol>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="alert alert-warning">
+                                <h6><i class="fas fa-exclamation-triangle me-2"></i>Documentos necesarios:</h6>
+                                <ul class="mb-0">
+                                    <li>Identificación oficial</li>
+                                    <li>Comprobante de parentesco</li>
+                                    <li>Documento del estudiante</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <h6>Horarios de atención:</h6>
+                        <p><strong>Lunes a Viernes:</strong> 8:00 AM - 1:30 PM<br>
+                        <strong>Teléfono:</strong> (222) 123-4567<br>
+                        <strong>Ubicación:</strong> Edificio de Servicios Escolares</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <a href="contacto.html" class="btn btn-info">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        Ver Ubicación
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="main-footer"></div>
+
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <!-- Chat Bot Toggle Button -->
+    <button class="chatbot-toggle" id="chatbotToggle" aria-label="Abrir chat de ayuda">
+        <i class="fas fa-comments"></i>
+    </button>
+    
+    <!-- Chat Bot Container -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <div>
+                <strong>Asistente Virtual</strong>
+                <div style="font-size: 12px; opacity: 0.8;">Portal de Padres</div>
+            </div>
+            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+        </div>
+        
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="chatbot-message bot">
+                <div class="response-professional">
+                    <div class="response-title">🎓 Asistente Virtual BGE</div>
+                    <div class="response-content">
+                        <div class="response-section">
+                            <div class="response-subtitle">¡Hola! Soy tu asistente inteligente</div>
+                            <div class="response-text">Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.</div>
+                        </div>
+                    </div>
+                    <div class="response-footer">¿En qué puedo ayudarte hoy?</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Ej: ¿Cómo veo las calificaciones de mi hijo?" onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Back to Top -->
+    <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none" 
+            style="bottom: 2rem; right: 2rem; width: 50px; height: 50px; z-index: 1000;"
+            aria-label="Volver arriba" title="Volver arriba">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="js/script.js"></script>
+    <script src="js/admin-auth-secure.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/search-simple.js"></script>
+    <script src="js/parent-portal.js"></script>
+    <!-- Estilos adicionales para modo oscuro - Padres -->
+    <style>
+        /* Formulario Login - Modo Oscuro */
+        body.dark-mode .padres-form-dark .form-control {
+            background-color: #404040 !important;
+            color: #ffffff !important;
+            border-color: #555555 !important;
+        }
+        
+        body.dark-mode .padres-form-dark .form-control:focus {
+            background-color: #404040 !important;
+            color: #ffffff !important;
+            border-color: #1976d2 !important;
+            box-shadow: 0 0 0 0.25rem rgba(25, 118, 210, 0.25) !important;
+        }
+        
+        body.dark-mode .padres-form-dark .form-label {
+            color: #ffffff !important;
+        }
+        
+        body.dark-mode .padres-form-dark .card-body {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+        }
+        
+        /* Preguntas Frecuentes Accordion - Modo Oscuro */
+        body.dark-mode .padres-faq-dark .accordion-item-dark {
+            background-color: #2d2d2d !important;
+            border-color: #404040 !important;
+        }
+        
+        body.dark-mode .padres-faq-dark .accordion-button-dark {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+            border-color: #404040 !important;
+        }
+        
+        body.dark-mode .padres-faq-dark .accordion-button-dark:not(.collapsed) {
+            background-color: #404040 !important;
+            color: #ffffff !important;
+        }
+        
+        body.dark-mode .padres-faq-dark .accordion-body {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+        }
+
+        /* Hero badges dark mode */
+        body.dark-mode .hero-badges .badge:hover {
+            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
+        }
+        
+        .hero-badges .badge {
+            padding: 0.6rem 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .hero-badges .badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* Modal Card Styles */
+        .parent-item {
+            background: rgba(248, 249, 250, 0.6);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .parent-item:hover {
+            background: rgba(248, 249, 250, 0.9);
+            border-left-color: var(--bs-primary);
+            transform: translateX(2px);
+        }
+        
+        .guide-section {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .guide-section:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .help-badge {
+            background: linear-gradient(45deg, #17a2b8, #20c997);
+            color: white;
+            border-radius: 20px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .step-item {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .step-item:hover {
+            border-left-color: var(--bs-info);
+            transform: translateX(3px);
+        }
+        
+        /* Dark mode support for parent items */
+        body.dark-mode .parent-item {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+            border-color: #404040 !important;
+        }
+        
+        body.dark-mode .parent-item:hover {
+            background-color: #3d3d3d !important;
+        }
+        
+        body.dark-mode .guide-section {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+            border-color: #404040 !important;
+        }
+        
+        body.dark-mode .step-item {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+            border-color: #404040 !important;
+        }
+    </style>
+
+    <!-- Dark Mode Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+            
+            // Check for saved dark mode preference
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                body.classList.add('dark-mode');
+                updateDarkModeIcon(true);
+            }
+            
+            darkModeToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                body.classList.toggle('dark-mode');
+                
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('darkMode', 'enabled');
+                    updateDarkModeIcon(true);
+                } else {
+                    localStorage.setItem('darkMode', 'disabled');
+                    updateDarkModeIcon(false);
+                }
+            });
+            
+            function updateDarkModeIcon(isDark) {
+                if (darkModeToggle) {
+                    let icon = darkModeToggle.querySelector('i');
+                    if (icon) {
+                        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

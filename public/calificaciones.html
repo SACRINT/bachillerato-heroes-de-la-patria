@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Plataforma de calificaciones del Bachillerato General Estatal Héroes de la Patria - Consulta tus notas y seguimiento académico">
+    <meta name="keywords" content="calificaciones, notas, académico, estudiantes, seguimiento, boletas, evaluación">
+    <title>Plataforma de Calificaciones | BGE Héroes de la Patria</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+    <!-- Header -->
+    <div id="main-header"></div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="page-hero bg-gradient-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-4">
+                        <i class="fas fa-clipboard-list me-3"></i>Plataforma de Calificaciones
+                    </h1>
+                    <p class="lead mb-4">
+                        Consulta tus calificaciones, seguimiento académico y reportes de evaluación 
+                        en tiempo real.
+                    </p>
+                    <div class="hero-badges">
+                        <div class="mb-2">
+                            <a href="#caracteristicas-plataforma" class="badge bg-light text-primary fs-6 me-2 text-decoration-none">
+                                <i class="fas fa-cogs me-1" aria-hidden="true"></i>
+                                Características de la Plataforma
+                            </a>
+                            <a href="#sistema-evaluacion" class="badge bg-light text-primary fs-6 me-2 text-decoration-none">
+                                <i class="fas fa-clipboard-check me-1" aria-hidden="true"></i>
+                                Sistema de Evaluación
+                            </a>
+                        </div>
+                        <div>
+                            <a href="#escala-calificaciones" class="badge bg-light text-primary fs-6 text-decoration-none">
+                                <i class="fas fa-chart-bar me-1" aria-hidden="true"></i>
+                                Escala de Calificaciones
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="col-lg-4 text-center">
+                        <div class="hero-icon display-1 text-white-50">
+                            <i class="fas fa-medal" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Características de la Plataforma -->
+    <section id="caracteristicas-plataforma" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="fw-bold">Características de la Plataforma</h2>
+                    <p class="text-muted">Todo lo que necesitas para el seguimiento académico</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="scrollToSection('sistema-evaluacion')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-chart-bar fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title">Sistema de Evaluación</h5>
+                            <p class="card-text text-muted">Conoce cómo se evalúan tus conocimientos y el peso de cada evaluación</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="scrollToSection('escala-calificaciones')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-calculator fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">Escala de Calificaciones</h5>
+                            <p class="card-text text-muted">Sistema de evaluación numérica y cualitativa utilizado</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="showLoginModal()" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-sign-in-alt fa-3x text-warning"></i>
+                            </div>
+                            <h5 class="card-title">Acceso al Sistema</h5>
+                            <p class="card-text text-muted">Inicia sesión para consultar tus calificaciones</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="showReportModal()" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-file-pdf fa-3x text-danger"></i>
+                            </div>
+                            <h5 class="card-title">Reportes PDF</h5>
+                            <p class="card-text text-muted">Genera e imprime boletas y reportes académicos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sistema de Evaluación -->
+    <section id="sistema-evaluacion" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="fw-bold">Sistema de Evaluación</h2>
+                    <p class="text-muted">Conoce cómo se evalúan tus conocimientos</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-header bg-primary text-white text-center">
+                            <h5 class="mb-0">Evaluación Parcial</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <div class="display-6 fw-bold text-primary">40%</div>
+                                <small class="text-muted">del total</small>
+                            </div>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Exámenes parciales</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Tareas y proyectos</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Participación en clase</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-header bg-success text-white text-center">
+                            <h5 class="mb-0">Evaluación Continua</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <div class="display-6 fw-bold text-success">30%</div>
+                                <small class="text-muted">del total</small>
+                            </div>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Actividades diarias</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Reportes de lectura</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Ejercicios prácticos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-header bg-warning text-white text-center">
+                            <h5 class="mb-0">Evaluación Final</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <div class="display-6 fw-bold text-warning">30%</div>
+                                <small class="text-muted">del total</small>
+                            </div>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Examen final</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Proyecto integrador</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Presentación oral</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Escala de Calificaciones -->
+    <section id="escala-calificaciones" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="fw-bold">Escala de Calificaciones</h2>
+                    <p class="text-muted">Sistema de evaluación numérica y cualitativa</p>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center p-3 bg-success bg-opacity-10 rounded">
+                                        <div class="me-3">
+                                            <span class="badge bg-success fs-6">10 - 9</span>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Excelente</h6>
+                                            <small class="text-muted">Dominio excepcional</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center p-3 bg-primary bg-opacity-10 rounded">
+                                        <div class="me-3">
+                                            <span class="badge bg-primary fs-6">8.9 - 8</span>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Muy Bueno</h6>
+                                            <small class="text-muted">Dominio notable</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center p-3 bg-info bg-opacity-10 rounded">
+                                        <div class="me-3">
+                                            <span class="badge bg-info fs-6">7.9 - 7</span>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Bueno</h6>
+                                            <small class="text-muted">Dominio satisfactorio</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center p-3 bg-warning bg-opacity-10 rounded">
+                                        <div class="me-3">
+                                            <span class="badge bg-warning fs-6">6.9 - 6</span>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Suficiente</h6>
+                                            <small class="text-muted">Dominio básico</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center p-3 bg-danger bg-opacity-10 rounded">
+                                        <div class="me-3">
+                                            <span class="badge bg-danger fs-6">5.9 - 0</span>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">No Suficiente</h6>
+                                            <small class="text-muted">Requiere apoyo adicional - Necesita regularización</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Login -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">
+                        <i class="fas fa-graduation-cap me-2"></i>Acceso a Calificaciones
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Acceso para Estudiantes</h6>
+                            <form id="studentLoginForm">
+                                <div class="mb-3">
+                                    <label for="studentId" class="form-label">Matrícula</label>
+                                    <input type="text" class="form-control" id="studentId" placeholder="Ej: 20230001" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="studentPassword" class="form-label">Contraseña</label>
+                                    <input type="password" class="form-control" id="studentPassword" autocomplete="current-password" required>
+                                </div>
+                                <button type="button" class="btn btn-primary w-100" onclick="loginAsStudent()">
+                                    Acceder como Estudiante
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Acceso para Padres</h6>
+                            <form id="parentLoginForm">
+                                <div class="mb-3">
+                                    <label for="parentEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="parentEmail" placeholder="padre@email.com" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="parentStudentId" class="form-label">Matrícula del Hijo(a)</label>
+                                    <input type="text" class="form-control" id="parentStudentId" placeholder="Ej: 20230001" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="parentPassword" class="form-label">Contraseña</label>
+                                    <input type="password" class="form-control" id="parentPassword" autocomplete="current-password" required>
+                                </div>
+                                <button type="button" class="btn btn-success w-100" onclick="loginAsParent()">
+                                    Acceder como Padre
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle me-2"></i>Datos de Prueba</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Estudiante:</strong><br>
+                                Matrícula: 20230001<br>
+                                Contraseña: estudiante123
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Padre/Madre:</strong><br>
+                                Email: padre@demo.com<br>
+                                Matrícula: 20230001<br>
+                                Contraseña: padre123
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Generar Reporte -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">
+                        <i class="fas fa-file-alt me-2"></i>Generar Reporte
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="reportForm">
+                        <div class="mb-3">
+                            <label for="reportStudentId" class="form-label">Matrícula del Estudiante</label>
+                            <input type="text" class="form-control" id="reportStudentId" placeholder="Ej: 20230001" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reportPeriod" class="form-label">Período</label>
+                            <select class="form-select" id="reportPeriod" required>
+                                <option value="">Seleccionar período</option>
+                                <option value="parcial1">Primer Parcial</option>
+                                <option value="parcial2">Segundo Parcial</option>
+                                <option value="parcial3">Tercer Parcial</option>
+                                <option value="semestre">Semestre Completo</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reportType" class="form-label">Tipo de Reporte</label>
+                            <select class="form-select" id="reportType" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="boleta">Boleta de Calificaciones</option>
+                                <option value="detallado">Reporte Detallado</option>
+                                <option value="historico">Historial Académico</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="generateReport()">
+                        <i class="fas fa-download me-2"></i>Generar PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel de Calificaciones (oculto inicialmente) -->
+    <div id="gradesPanel" class="d-none">
+        <section class="py-5 bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                            <div>
+                                <h2 class="mb-1">
+                                    <span id="studentNameDisplay"></span>
+                                    <span id="userTypeDisplay" class="badge bg-primary ms-2"></span>
+                                </h2>
+                                <p class="text-muted mb-0">
+                                    Matrícula: <span id="studentIdDisplay"></span> | 
+                                    Semestre: <span id="currentSemester">3°</span>
+                                </p>
+                            </div>
+                            <button class="btn btn-outline-secondary" onclick="logoutGradeSystem()">
+                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resumen de Rendimiento -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                                <h5>Promedio General</h5>
+                                <h2 class="text-success mb-0" id="generalAverage">8.5</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
+                                <h5>Materias Cursadas</h5>
+                                <h2 class="text-primary mb-0" id="totalSubjects">8</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fas fa-trophy fa-3x text-warning mb-3"></i>
+                                <h5>Materias Aprobadas</h5>
+                                <h2 class="text-warning mb-0" id="passedSubjects">7</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                                <h5>En Riesgo</h5>
+                                <h2 class="text-danger mb-0" id="riskSubjects">1</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pestañas de Períodos -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <ul class="nav nav-pills" id="periodTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="parcial1-tab" data-bs-toggle="pill" data-bs-target="#parcial1" type="button" role="tab">
+                                    1er Parcial
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="parcial2-tab" data-bs-toggle="pill" data-bs-target="#parcial2" type="button" role="tab">
+                                    2do Parcial
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="parcial3-tab" data-bs-toggle="pill" data-bs-target="#parcial3" type="button" role="tab">
+                                    3er Parcial
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="final-tab" data-bs-toggle="pill" data-bs-target="#final" type="button" role="tab">
+                                    Final
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="periodTabsContent">
+                            <div class="tab-pane fade show active" id="parcial1" role="tabpanel">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th>Materia</th>
+                                                <th>Profesor</th>
+                                                <th>Evaluación Parcial</th>
+                                                <th>Evaluación Continua</th>
+                                                <th>Promedio Parcial</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="gradesTableParcial1">
+                                            <!-- Se llena dinámicamente -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="parcial2" role="tabpanel">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-success">
+                                            <tr>
+                                                <th>Materia</th>
+                                                <th>Profesor</th>
+                                                <th>Evaluación Parcial</th>
+                                                <th>Evaluación Continua</th>
+                                                <th>Promedio Parcial</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="gradesTableParcial2">
+                                            <!-- Se llena dinámicamente -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="parcial3" role="tabpanel">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-warning">
+                                            <tr>
+                                                <th>Materia</th>
+                                                <th>Profesor</th>
+                                                <th>Evaluación Parcial</th>
+                                                <th>Evaluación Continua</th>
+                                                <th>Promedio Parcial</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="gradesTableParcial3">
+                                            <!-- Se llena dinámicamente -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="final" role="tabpanel">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-info">
+                                            <tr>
+                                                <th>Materia</th>
+                                                <th>Profesor</th>
+                                                <th>Promedio Parciales</th>
+                                                <th>Evaluación Final</th>
+                                                <th>Calificación Final</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="gradesTableFinal">
+                                            <!-- Se llena dinámicamente -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficos de Rendimiento -->
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-chart-bar me-2"></i>Evolución por Materia
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="subjectChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-tasks me-2"></i>Acciones Rápidas
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary" onclick="generateReport('boleta')">
+                                        <i class="fas fa-file-alt me-2"></i>Descargar Boleta
+                                    </button>
+                                    <button class="btn btn-outline-success" onclick="generateReport('detallado')">
+                                        <i class="fas fa-chart-pie me-2"></i>Reporte Detallado
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="showAttendanceModal()">
+                                        <i class="fas fa-calendar-check me-2"></i>Ver Asistencia
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="showScheduleModal()">
+                                        <i class="fas fa-clock me-2"></i>Horario de Clases
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <div id="main-footer"></div>
+
+    <!-- Back to Top -->
+    <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none" 
+            style="bottom: 2rem; right: 2rem; width: 50px; height: 50px; z-index: 1000;"
+            aria-label="Volver arriba" title="Volver arriba">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <!-- Chat Bot Toggle Button -->
+    <button class="chatbot-toggle" id="chatbotToggle" aria-label="Abrir chat de ayuda">
+        <i class="fas fa-comments"></i>
+    </button>
+    
+    <!-- Chat Bot Container -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <div>
+                <strong>Asistente Virtual</strong>
+                <div class="chatbot-subtitle">Héroes de la Patria</div>
+            </div>
+            <button onclick="toggleChatbot()" class="chatbot-close-btn" aria-label="Cerrar chat">×</button>
+        </div>
+        
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="chatbot-message bot">
+                <div class="response-professional">
+                    <div class="response-title">🎓 Asistente Virtual BGE</div>
+                    <div class="response-content">
+                        <div class="response-section">
+                            <div class="response-subtitle">¡Hola! Soy tu asistente inteligente</div>
+                            <div class="response-text">Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.</div>
+                        </div>
+                    </div>
+                    <div class="response-footer">¿En qué puedo ayudarte hoy?</div>
+                </div>
+            </div>
+            <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                <div class="message bot typing">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/chatbot.js"></script>
+    
+    <!-- Ensure chatbot functions are accessible -->
+    <script>
+        // Make sure functions are globally accessible if they exist
+        if (typeof toggleChatbot !== 'undefined') {
+            window.toggleChatbot = toggleChatbot;
+        }
+        if (typeof sendMessage !== 'undefined') {
+            window.sendMessage = sendMessage;
+        }
+        if (typeof handleKeyPress !== 'undefined') {
+            window.handleKeyPress = handleKeyPress;
+        }
+    </script>
+    <script src="js/search-unified.js"></script>
+    <!-- <script src="js/grades-platform.js"></script> -->
+    
+    <!-- Sistema de Calificaciones Funcional -->
+    <script>
+        // Estado de la aplicación
+        let currentUser = null;
+        let isLoggedIn = false;
+
+        function showLoginModal() {
+            const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+            modal.show();
+        }
+        
+        function showReportModal() {
+            if (!isLoggedIn) {
+                alert('Debes iniciar sesión primero para generar reportes.');
+                showLoginModal();
+                return;
+            }
+            const modal = new bootstrap.Modal(document.getElementById('reportModal'));
+            modal.show();
+        }
+
+        // Alias para compatibilidad con los botones existentes
+        function loginAsStudent() { loginStudent(); }
+        function loginAsParent() { loginParent(); }
+
+        // Función de login de estudiante
+        function loginStudent() {
+            const matricula = document.getElementById('studentId').value;
+            const password = document.getElementById('studentPassword').value;
+            
+            if (!matricula || !password) {
+                showAlert('Por favor completa todos los campos.', 'warning');
+                return;
+            }
+
+            // Simulación de login exitoso con datos de prueba
+            if (matricula === 'H2024001' && password === 'estudiante123') {
+                currentUser = {
+                    tipo: 'estudiante',
+                    matricula: 'H2024001',
+                    nombre: 'Ana García Hernández',
+                    semestre: '3°',
+                    grupo: 'A'
+                };
+                isLoggedIn = true;
+                showGradesPanel();
+                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+                showAlert('¡Bienvenida, Ana! Has iniciado sesión exitosamente.', 'success');
+            } else {
+                showAlert('Matrícula o contraseña incorrecta. Prueba con H2024001 y contraseña: estudiante123', 'danger');
+            }
+        }
+
+        // Función de login de padre
+        function loginParent() {
+            const email = document.getElementById('parentEmail').value;
+            const password = document.getElementById('parentPassword').value;
+            
+            if (!email || !password) {
+                showAlert('Por favor completa todos los campos.', 'warning');
+                return;
+            }
+
+            // Simulación de login exitoso
+            if (email === 'padre@email.com' && password === 'padre123') {
+                currentUser = {
+                    tipo: 'padre',
+                    email: 'padre@email.com',
+                    nombre: 'Roberto García',
+                    hijo: 'Ana García Hernández',
+                    matricula_hijo: 'H2024001'
+                };
+                isLoggedIn = true;
+                showGradesPanel();
+                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+                showAlert('¡Bienvenido, Roberto! Puedes ver las calificaciones de Ana.', 'success');
+            } else {
+                showAlert('Email o contraseña incorrecta. Prueba con padre@email.com y contraseña: padre123', 'danger');
+            }
+        }
+
+        // Mostrar panel de calificaciones
+        function showGradesPanel() {
+            // Ocultar hero section y mostrar panel
+            const heroSection = document.querySelector('#hero');
+            if (heroSection) heroSection.style.display = 'none';
+            
+            // Mostrar panel de calificaciones
+            const gradesPanel = document.getElementById('gradesPanel');
+            if (gradesPanel) {
+                gradesPanel.classList.remove('d-none');
+            }
+            
+            // Actualizar información del usuario
+            const studentName = document.getElementById('studentNameDisplay');
+            const studentId = document.getElementById('studentIdDisplay');
+            const userType = document.getElementById('userTypeDisplay');
+            
+            if (studentName) studentName.textContent = currentUser.nombre;
+            if (studentId) studentId.textContent = currentUser.matricula || currentUser.matricula_hijo;
+            if (userType) userType.textContent = currentUser.tipo === 'estudiante' ? 'Estudiante' : 'Padre de Familia';
+            
+            // Cargar calificaciones de ejemplo
+            loadSampleGrades();
+        }
+
+        // Cargar calificaciones de muestra
+        function loadSampleGrades() {
+            const gradesData = [
+                { materia: 'Matemáticas IV', calificacion: 9.2, faltas: 2, profesor: 'Lic. María Rodríguez' },
+                { materia: 'Física II', calificacion: 8.8, faltas: 1, profesor: 'Ing. Carlos López' },
+                { materia: 'Química II', calificacion: 9.5, faltas: 0, profesor: 'Q.F.B. Ana Martínez' },
+                { materia: 'Literatura Universal', calificacion: 8.6, faltas: 3, profesor: 'Lic. Pedro Sánchez' },
+                { materia: 'Historia de México', calificacion: 9.0, faltas: 1, profesor: 'Lic. Laura Jiménez' },
+                { materia: 'Inglés III', calificacion: 9.3, faltas: 0, profesor: 'Lic. David Brown' }
+            ];
+
+            // Usar la tabla del primer parcial como ejemplo
+            const tbody = document.getElementById('gradesTableParcial1');
+            if (tbody) {
+                tbody.innerHTML = '';
+
+                gradesData.forEach(materia => {
+                    const row = `
+                        <tr>
+                            <td>${materia.materia}</td>
+                            <td><span class="badge ${materia.calificacion >= 9 ? 'bg-success' : materia.calificacion >= 8 ? 'bg-warning' : 'bg-danger'}">${materia.calificacion}</span></td>
+                            <td>${materia.faltas}</td>
+                            <td>${materia.profesor}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" onclick="showSubjectDetail('${materia.materia}')">
+                                    <i class="fas fa-eye"></i> Ver
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            }
+
+            // Calcular promedio
+            const promedio = gradesData.reduce((sum, m) => sum + m.calificacion, 0) / gradesData.length;
+            const averageElement = document.getElementById('generalAverage');
+            if (averageElement) {
+                averageElement.textContent = promedio.toFixed(1);
+            }
+        }
+
+        // Función de logout
+        function logout() {
+            currentUser = null;
+            isLoggedIn = false;
+            
+            // Mostrar hero section y ocultar panel
+            const heroSection = document.querySelector('#hero');
+            if (heroSection) heroSection.style.display = 'block';
+            
+            const gradesPanel = document.getElementById('gradesPanel');
+            if (gradesPanel) {
+                gradesPanel.classList.add('d-none');
+            }
+            
+            showAlert('Sesión cerrada exitosamente.', 'info');
+        }
+
+        // Mostrar alertas
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+
+        // Generar reporte PDF (simulación)
+        function generatePDF() {
+            showAlert('Generando reporte PDF... Esta funcionalidad estará disponible próximamente.', 'info');
+            bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide();
+        }
+
+        // Mostrar detalle de materia
+        function showSubjectDetail(materia) {
+            showAlert(`Detalle de ${materia}: Funcionalidad en desarrollo. Aquí se mostrará información detallada de la materia.`, 'info');
+        }
+
+        // Función de reporte con validación
+        function generateReport() {
+            const studentId = document.getElementById('reportStudentId').value;
+            const period = document.getElementById('reportPeriod').value;
+            const type = document.getElementById('reportType').value;
+
+            if (!studentId || !period || !type) {
+                showAlert('Por favor completa todos los campos del reporte.', 'warning');
+                return;
+            }
+
+            showAlert(`Generando ${type} para el ${period}... Esta funcionalidad estará disponible próximamente.`, 'info');
+            bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide();
+        }
+        
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+    </script>
+
+    <!-- Dark Mode Styles -->
+    <style>
+        /* Dark Mode Toggle Button */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 6rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bs-primary);
+            color: white;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dark-mode-toggle:hover {
+            background: var(--bs-primary);
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1a1a1a !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .bg-light {
+            background-color: #2d2d2d !important;
+        }
+
+        body.dark-mode .card {
+            background-color: #2d2d2d !important;
+            border-color: #404040 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .text-muted {
+            color: #b0b0b0 !important;
+        }
+
+        body.dark-mode .text-dark {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .table {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .table td,
+        body.dark-mode .table th {
+            border-color: #404040 !important;
+        }
+
+        body.dark-mode .form-control {
+            background-color: #404040 !important;
+            border-color: #505050 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .form-select {
+            background-color: #404040 !important;
+            border-color: #505050 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .modal-content {
+            background-color: #2d2d2d !important;
+            border-color: #404040 !important;
+        }
+
+        body.dark-mode .modal-header {
+            border-color: #404040 !important;
+        }
+
+        body.dark-mode .modal-body {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .breadcrumb {
+            background-color: transparent !important;
+        }
+
+        body.dark-mode .breadcrumb-item a {
+            color: #b0b0b0 !important;
+        }
+    </style>
+
+    <!-- Dark Mode Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+            
+            // Check for saved dark mode preference
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                body.classList.add('dark-mode');
+                updateDarkModeIcon(true);
+            }
+            
+            darkModeToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                body.classList.toggle('dark-mode');
+                
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('darkMode', 'enabled');
+                    updateDarkModeIcon(true);
+                } else {
+                    localStorage.setItem('darkMode', 'disabled');
+                    updateDarkModeIcon(false);
+                }
+            });
+            
+            function updateDarkModeIcon(isDark) {
+                if (darkModeToggle) {
+                    let icon = darkModeToggle.querySelector('i');
+                    if (icon) {
+                        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+                    }
+                }
+            }
+        });
+    </script>
+    <script src="js/icon-check.js"></script>
+</body>
+</html>

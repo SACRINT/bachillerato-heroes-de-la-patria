@@ -1,0 +1,718 @@
+<!-- Navigation -->
+<header role="banner">
+<nav class="navbar navbar-expand-lg bg-light fixed-top shadow-sm" role="navigation" aria-label="Navegación principal">
+    <div class="container-fluid" style="max-width: none; padding-left: 1rem; padding-right: 1rem;">
+        <!-- Logo y Nombre de la Escuela con Botón Hamburguesa integrado -->
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <a class="navbar-brand d-flex align-items-center" href="index.html" style="margin-right: 0;">
+                <img src="images/logo-bachillerato-HDLP.webp" alt="Logo Bachillerato Héroes de la Patria" style="height: 45px; width: auto;">
+                <div class="ms-2">
+                    <div class="fw-bold text-primary logo-main-text" style="font-size: 0.85rem; line-height: 1.1;">Bachillerato General Estatal</div>
+                    <div class="text-secondary fw-semibold logo-sub-text" style="font-size: 0.75rem; line-height: 1.1;">"Héroes de la Patria"</div>
+                </div>
+            </a>
+
+            <!-- Botón Hamburguesa para Móvil - Reubicado -->
+            <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbarCollapse" aria-controls="mainNavbarCollapse" aria-expanded="false" aria-label="Abrir menú de navegación" style="border: none; padding: 0.25rem 0.5rem;">
+                <span class="navbar-toggler-icon" aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <!-- Contenido del Menú Colapsable -->
+        <div class="collapse navbar-collapse" id="mainNavbarCollapse">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0" id="main-nav-list">
+                <!-- Inicio -->
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center" href="index.html">
+                        <i class="fas fa-home me-1"></i>Inicio
+                    </a>
+                </li>
+                
+                <!-- Conócenos -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="conocenos.html#hero" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-users me-1"></i>Conócenos
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="conocenos.html#mision-vision"><i class="fas fa-bullseye me-2"></i>Misión y Visión</a></li>
+                        <li><a class="dropdown-item" href="conocenos.html#historia"><i class="fas fa-history me-2"></i>Nuestra Historia</a></li>
+                        <li><a class="dropdown-item" href="conocenos.html#infraestructura"><i class="fas fa-building me-2"></i>Infraestructura</a></li>
+                        <li><a class="dropdown-item" href="conocenos.html#video-institucional"><i class="fas fa-video me-2"></i>Video Institucional</a></li>
+                        <li><a class="dropdown-item" href="conocenos.html#mensaje-director"><i class="fas fa-user-tie me-2"></i>Mensaje del Director</a></li>
+                        <li><a class="dropdown-item" href="conocenos.html#organigrama"><i class="fas fa-sitemap me-2"></i>Organigrama</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Oferta Educativa -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="oferta-educativa.html#hero" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-graduation-cap me-1"></i>Oferta Educativa
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="oferta-educativa.html#modelo-educativo"><i class="fas fa-lightbulb me-2"></i>Modelo Educativo</a></li>
+                        <li><a class="dropdown-item" href="oferta-educativa.html#plan-estudios"><i class="fas fa-book me-2"></i>Plan de Estudios</a></li>
+                        <li><a class="dropdown-item" href="oferta-educativa.html#capacitacion-trabajo"><i class="fas fa-tools me-2"></i>Capacitación para el Trabajo</a></li>
+                        <li><a class="dropdown-item" href="oferta-educativa.html#perfil-egreso"><i class="fas fa-user-graduate me-2"></i>Perfil de Egreso</a></li>
+                        <li><a class="dropdown-item" href="oferta-educativa.html#proceso-admision"><i class="fas fa-clipboard-check me-2"></i>Proceso de Admisión</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Portales Académicos -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-graduate me-1"></i>Portales Académicos
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">Portales Académicos</h6></li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="estudiantes.html#hero">
+                                <i class="fas fa-user-graduate me-2"></i>Estudiantes
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="estudiantes.html#acceso-rapido"><i class="fas fa-sign-in-alt me-2"></i>Acceso Directo</a></li>
+                                <li><a class="dropdown-item" href="estudiantes.html#recursos-academicos"><i class="fas fa-book me-2"></i>Recursos</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="padres.html#hero">
+                                <i class="fas fa-users me-2"></i>Padres de Familia
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="padres.html#loginSection"><i class="fas fa-sign-in-alt me-2"></i>Ingresar</a></li>
+                                <li><a class="dropdown-item" href="padres.html#primera-vez"><i class="fas fa-user-plus me-2"></i>Primer Acceso</a></li>
+                                <li><a class="dropdown-item" href="padres.html#preguntas-frecuentes"><i class="fas fa-question-circle me-2"></i>FAQ</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="calificaciones.html#hero">
+                                <i class="fas fa-chart-bar me-2"></i>Calificaciones
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="calificaciones.html#caracteristicas-plataforma"><i class="fas fa-cogs me-2"></i>Funciones</a></li>
+                                <li><a class="dropdown-item" href="calificaciones.html#sistema-evaluacion"><i class="fas fa-clipboard-check me-2"></i>Evaluación</a></li>
+                                <li><a class="dropdown-item" href="calificaciones.html#escala-calificaciones"><i class="fas fa-ruler me-2"></i>Escalas</a></li>
+                            </ul>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">Egresados</h6></li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="egresados.html#hero">
+                                <i class="fas fa-graduation-cap me-2"></i>Portal de Egresados
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="egresados.html#historias-exito"><i class="fas fa-star me-2"></i>Historias de Éxito</a></li>
+                                <li><a class="dropdown-item" href="egresados.html#seguimiento"><i class="fas fa-chart-line me-2"></i>Seguimiento</a></li>
+                                <li><a class="dropdown-item" href="egresados.html#red-contactos"><i class="fas fa-network-wired me-2"></i>Red de Contactos</a></li>
+                                <li><a class="dropdown-item" href="egresados.html#testimonios-egresados"><i class="fas fa-comment-dots me-2"></i>Testimonios</a></li>
+                                <li><a class="dropdown-item" href="egresados.html#actualizar-datos"><i class="fas fa-user-edit me-2"></i>Actualizar Datos</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="bolsa-trabajo.html#hero">
+                                <i class="fas fa-briefcase me-2"></i>Bolsa de Trabajo
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="bolsa-trabajo.html#oportunidades-laborales"><i class="fas fa-briefcase me-2"></i>Oportunidades Laborales</a></li>
+                                <li><a class="dropdown-item" href="bolsa-trabajo.html#empleos-destacados"><i class="fas fa-medal me-2"></i>Empleos Destacados</a></li>
+                                <li><a class="dropdown-item" href="bolsa-trabajo.html#empresas-aliadas"><i class="fas fa-building me-2"></i>Empresas Aliadas</a></li>
+                                <li><a class="dropdown-item" href="bolsa-trabajo.html#recursos-exito"><i class="fas fa-tools me-2"></i>Recursos para el Éxito</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- Servicios -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="servicios.html#hero" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-cogs me-1"></i>Servicios
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">Servicios Digitales</h6></li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="citas.html#hero">
+                                <i class="fas fa-calendar-check me-2"></i>Sistema de Citas
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="citas.html#departamentos-servicios"><i class="fas fa-building me-2"></i>Departamentos y Servicios</a></li>
+                                <li><a class="dropdown-item" href="citas.html#como-funciona"><i class="fas fa-question-circle me-2"></i>Cómo Funciona</a></li>
+                                <li><a class="dropdown-item" href="citas.html#preguntas-frecuentes"><i class="fas fa-question me-2"></i>Preguntas Frecuentes</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="pagos.html#hero">
+                                <i class="fas fa-credit-card me-2"></i>Sistema de Pagos
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="pagos.html#servicios-disponibles"><i class="fas fa-list me-2"></i>Servicios Disponibles</a></li>
+                                <li><a class="dropdown-item" href="pagos.html#metodos-pago"><i class="fas fa-credit-card me-2"></i>Métodos de Pago</a></li>
+                                <li><a class="dropdown-item" href="pagos.html#ventajas"><i class="fas fa-thumbs-up me-2"></i>Ventajas</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="descargas.html#hero">
+                                <i class="fas fa-download me-2"></i>Centro de Descargas
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="descargas.html#documentos-destacados"><i class="fas fa-star me-2"></i>Documentos Destacados</a></li>
+                                <li><a class="dropdown-item" href="descargas.html#categorias-documentos"><i class="fas fa-folder me-2"></i>Categorías de Documentos</a></li>
+                                <li><a class="dropdown-item" href="descargas.html#guia-usuario"><i class="fas fa-book me-2"></i>Guía de Usuario</a></li>
+                                <li><a class="dropdown-item" href="descargas.html#catalogo-documentos"><i class="fas fa-list me-2"></i>Catálogo de Documentos</a></li>
+                                <li><a class="dropdown-item" href="descargas.html#documentos-populares"><i class="fas fa-fire me-2"></i>Documentos Populares</a></li>
+                                <li><a class="dropdown-item" href="descargas.html#documentos-recientes"><i class="fas fa-clock me-2"></i>Documentos Recientes</a></li>
+                            </ul>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">Servicios Presenciales</h6></li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="servicios.html#hero">
+                                <i class="fas fa-clipboard me-2"></i>Servicios Escolares
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="servicios.html#servicios-principales"><i class="fas fa-star me-2"></i>Servicios Principales</a></li>
+                                <li><a class="dropdown-item" href="servicios.html#horarios"><i class="fas fa-clock me-2"></i>Horarios de Atención</a></li>
+                                <li><a class="dropdown-item" href="servicios.html#requisitos"><i class="fas fa-list-check me-2"></i>Requisitos y Procedimientos</a></li>
+                                <li><a class="dropdown-item" href="servicios.html#procedimientos-paso-paso"><i class="fas fa-route me-2"></i>Procedimientos Paso a Paso</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- Comunidad -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="comunidad.html#hero" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-heart me-1"></i>Comunidad
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="comunidad.html#noticias"><i class="fas fa-newspaper me-2"></i>Noticias Actuales</a></li>
+                        <li><a class="dropdown-item" href="comunidad.html#eventos"><i class="fas fa-calendar-alt me-2"></i>Eventos y Actividades</a></li>
+                        <li><a class="dropdown-item" href="comunidad.html#testimonios"><i class="fas fa-comment-dots me-2"></i>Testimonios</a></li>
+                        <li><a class="dropdown-item" href="comunidad.html#galeria"><i class="fas fa-images me-2"></i>Galería</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Información Institucional -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="transparencia.html#hero" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-file-alt me-1"></i>Información Institucional
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">Transparencia y Normas</h6></li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="transparencia.html#hero">
+                                <i class="fas fa-eye me-2"></i>Transparencia
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="transparencia.html#informacion-general"><i class="fas fa-folder-open me-2"></i>Información General</a></li>
+                                <li><a class="dropdown-item" href="transparencia.html#documentos-transparencia"><i class="fas fa-file-alt me-2"></i>Documentos de Transparencia</a></li>
+                                <li><a class="dropdown-item" href="transparencia.html#solicitudes-informacion"><i class="fas fa-paper-plane me-2"></i>Solicitudes de Información</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="normatividad.html#hero">
+                                <i class="fas fa-gavel me-2"></i>Normatividad
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="reglamento.html"><i class="fas fa-gavel me-2"></i>Manual de Convivencia Escolar</a></li>
+                                <li><a class="dropdown-item" href="normatividad.html#reglamento-escolar"><i class="fas fa-book-open me-2"></i>Reglamento Escolar</a></li>
+                                <li><a class="dropdown-item" href="normatividad.html#resumen-reglamento"><i class="fas fa-list me-2"></i>Resumen del Reglamento</a></li>
+                                <li><a class="dropdown-item" href="normatividad.html#normatividad-externa"><i class="fas fa-external-link-alt me-2"></i>Normatividad Externa</a></li>
+                                <li><a class="dropdown-item" href="normatividad.html#procedimientos"><i class="fas fa-cogs me-2"></i>Procedimientos</a></li>
+                                <li><a class="dropdown-item" href="normatividad.html#quejas-sugerencias"><i class="fas fa-comment-alt me-2"></i>Quejas y Sugerencias</a></li>
+                            </ul>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">Calendarios y Eventos</h6></li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="calendario.html#hero">
+                                <i class="fas fa-calendar-alt me-2"></i>Calendario Escolar
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="calendario.html#ciclo-escolar"><i class="fas fa-calendar me-2"></i>Ciclo Escolar 2024-2025</a></li>
+                                <li><a class="dropdown-item" href="calendario.html#periodos-academicos"><i class="fas fa-clock me-2"></i>Períodos Académicos</a></li>
+                                <li><a class="dropdown-item" href="calendario.html#tipos-eventos"><i class="fas fa-tags me-2"></i>Tipos de Eventos</a></li>
+                                <li><a class="dropdown-item" href="calendario.html#calendario-interactivo"><i class="fas fa-mouse-pointer me-2"></i>Calendario Interactivo</a></li>
+                                <li><a class="dropdown-item" href="calendario.html#informacion-general"><i class="fas fa-info-circle me-2"></i>Información General</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="convocatorias.html#hero">
+                                <i class="fas fa-bullhorn me-2"></i>Convocatorias
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="convocatorias.html#inscripciones-2025"><i class="fas fa-user-plus me-2"></i>Inscripciones 2025</a></li>
+                                <li><a class="dropdown-item" href="convocatorias.html#convocatorias-activas"><i class="fas fa-play me-2"></i>Convocatorias Activas</a></li>
+                                <li><a class="dropdown-item" href="convocatorias.html#proximas-convocatorias"><i class="fas fa-clock me-2"></i>Próximas Convocatorias</a></li>
+                                <li><a class="dropdown-item" href="convocatorias.html#notificaciones"><i class="fas fa-bell me-2"></i>Notificaciones</a></li>
+                            </ul>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">Enlaces Externos</h6></li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="sitios-interes.html#hero">
+                                <i class="fas fa-external-link-alt me-2"></i>Sitios de Interés
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="sitios-interes.html#recursos-educativos"><i class="fas fa-book me-2"></i>Recursos Educativos</a></li>
+                                <li><a class="dropdown-item" href="sitios-interes.html#universidades"><i class="fas fa-university me-2"></i>Universidades</a></li>
+                                <li><a class="dropdown-item" href="sitios-interes.html#herramientas-productividad"><i class="fas fa-tools me-2"></i>Herramientas de Productividad</a></li>
+                                <li><a class="dropdown-item" href="sitios-interes.html#sitios-gubernamentales"><i class="fas fa-landmark me-2"></i>Sitios Gubernamentales</a></li>
+                                <li><a class="dropdown-item" href="sitios-interes.html#capacitacion-trabajo"><i class="fas fa-certificate me-2"></i>Capacitación para el Trabajo</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- Contacto y Ayuda -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="contacto.html#hero" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-phone me-1"></i>Contacto y Ayuda
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><h6 class="dropdown-header">Comunicación</h6></li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="contacto.html#hero">
+                                <i class="fas fa-envelope me-2"></i>Contacto
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="contacto.html#info-contacto"><i class="fas fa-info-circle me-2"></i>Información de Contacto</a></li>
+                                <li><a class="dropdown-item" href="contacto.html#info-contacto"><i class="fas fa-paper-plane me-2"></i>Envíanos un Mensaje</a></li>
+                                <li><a class="dropdown-item" href="contacto.html#ubicacion"><i class="fas fa-map-marker-alt me-2"></i>Ubicación</a></li>
+                                <li><a class="dropdown-item" href="contacto.html#directorio"><i class="fas fa-address-book me-2"></i>Directorio</a></li>
+                            </ul>
+                        </li>
+                        <li><a class="dropdown-item" href="index.html#quejas-sugerencias"><i class="fas fa-comment me-2"></i>Quejas y Sugerencias</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">Ayuda y Soporte</h6></li>
+                        <li><a class="dropdown-item" href="index.html#faq"><i class="fas fa-question-circle me-2"></i>Preguntas Frecuentes</a></li>
+                        <li><a class="dropdown-item" href="index.html#mapa-sitio"><i class="fas fa-sitemap me-2"></i>Mapa del Sitio</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">Administración</h6></li>
+                        <li id="adminOnlySection" class="d-none">
+                            <a class="dropdown-item" href="admin-dashboard.html#hero">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard Admin
+                            </a>
+                        </li>
+                        <li id="adminOnlySection2" class="d-none">
+                            <a class="dropdown-item" href="#" onclick="openAdminPanel(); return false;">
+                                <i class="fas fa-cogs me-2"></i>Panel de Administración
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item admin-login-compact" href="#" onclick="handleAdminLogin(); return false;" style="cursor: pointer;" id="adminPanelMenuLink">
+                                <i class="fas fa-shield-halved me-2"></i>Admin
+                                <span id="adminPanelSessionStatus" class="badge bg-success ms-1 d-none">✓</span>
+                            </a>
+                        </li>
+                        <li id="adminPanelLogoutOption" class="d-none">
+                            <a class="dropdown-item text-danger" href="#" onclick="logoutAdminPanel()" style="cursor: pointer;">
+                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión Admin
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- El Menú Desplegable "Más" ahora empieza vacío y oculto. JS lo llenará. -->
+                <li class="nav-item dropdown" style="display: none;">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Más
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" id="more-dropdown-menu">
+                        <!-- JS llenará esto -->
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- Buscador Interno -->
+            <div class="navbar-search ms-3">
+                <div class="search-container position-relative">
+                    <input type="search" class="form-control search-input" id="siteSearch" placeholder="Buscar en el sitio..." autocomplete="off">
+                    <i class="fas fa-search search-icon position-absolute"></i>
+                    <div class="search-results position-absolute w-100 bg-white border rounded shadow-lg d-none" id="searchResults">
+                        <div class="search-loading p-3 text-center text-muted d-none">
+                            <i class="fas fa-spinner fa-spin me-2"></i>Buscando...
+                        </div>
+                        <div class="search-content"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+</header>
+
+<!-- Estilos del Buscador -->
+<style>
+    .search-container {
+        max-width: 300px;
+        min-width: 200px;
+    }
+
+    .search-input {
+        border-radius: 25px;
+        padding-left: 40px;
+        padding-right: 15px;
+        border: 2px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        border-color: var(--bs-primary);
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .search-icon {
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        z-index: 10;
+    }
+
+    .search-results {
+        top: 100%;
+        z-index: 1050;
+        max-height: 400px;
+        overflow-y: auto;
+        margin-top: 5px;
+    }
+
+    .search-item {
+        padding: 12px 16px;
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .search-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .search-item:last-child {
+        border-bottom: none;
+    }
+
+    .search-item-title {
+        font-weight: 600;
+        color: var(--bs-primary);
+        margin-bottom: 4px;
+    }
+
+    .search-item-description {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-bottom: 4px;
+    }
+
+    .search-item-url {
+        font-size: 0.75rem;
+        color: #28a745;
+    }
+
+    .no-results {
+        padding: 20px;
+        text-align: center;
+        color: #6c757d;
+    }
+
+    /* Responsive */
+    @media (max-width: 991.98px) {
+        .navbar-search {
+            margin-top: 1rem;
+            margin-left: 0 !important;
+        }
+        
+        .search-container {
+            max-width: 100%;
+        }
+    }
+
+    /* Dark mode - MEJORADO CONTRASTE */
+    [data-theme="dark"] .search-input,
+    .dark-mode .search-input {
+        background-color: #2d3748 !important;
+        border-color: #4a5568 !important;
+        color: #ffffff !important;
+    }
+    
+    [data-theme="dark"] .search-input::placeholder,
+    .dark-mode .search-input::placeholder {
+        color: #e2e8f0 !important;
+        opacity: 0.8 !important;
+    }
+
+    [data-theme="dark"] .search-input:focus,
+    .dark-mode .search-input:focus {
+        border-color: #64b5f6 !important;
+        background-color: #2d3748 !important;
+        color: #ffffff !important;
+    }
+
+    .dark-mode .search-results {
+        background-color: #2d3748;
+        border-color: #4a5568;
+    }
+
+    .dark-mode .search-item {
+        border-color: #4a5568;
+    }
+
+    .dark-mode .search-item:hover {
+        background-color: #4a5568;
+    }
+
+    .dark-mode .search-item-description {
+        color: #a0aec0;
+    }
+    
+    /* Submenús anidados - Enfoque CSS puro */
+    .dropdown-submenu {
+        position: relative;
+    }
+    
+    .dropdown-submenu > .dropdown-menu {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        margin-top: -6px;
+        margin-left: -1px;
+        border-radius: 0.375rem;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 1001;
+        min-width: 220px;
+        width: auto;
+    }
+    
+    /* Mostrar submenú en hover */
+    .dropdown-submenu:hover > .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        display: block;
+    }
+    
+    /* Indicador de flecha para submenús */
+    .dropdown-submenu > .dropdown-toggle {
+        position: relative;
+        padding-right: 2rem !important;
+    }
+    
+    .dropdown-submenu > .dropdown-toggle:after {
+        content: "";
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-top: 0.3em solid transparent;
+        border-right: 0;
+        border-bottom: 0.3em solid transparent;
+        border-left: 0.3em solid;
+    }
+    
+    .dropdown-submenu > .dropdown-toggle:hover:after {
+        border-left-color: var(--bs-primary);
+    }
+    
+    /* Estilo mejorado para el botón de login admin */
+    .admin-login-btn {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+        color: white !important;
+        border-radius: 6px !important;
+        margin: 2px 6px !important;
+        padding: 6px 12px !important;
+        font-weight: 500 !important;
+        font-size: 0.875rem !important;
+        transition: all 0.3s ease !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
+        display: block !important;
+        max-width: calc(100% - 12px) !important;
+        word-wrap: break-word !important;
+    }
+    
+    .admin-login-btn:hover {
+        background: linear-gradient(135deg, #0056b3 0%, #003d82 100%) !important;
+        color: white !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 2px 8px rgba(0,123,255,0.3) !important;
+    }
+    
+    .admin-login-btn i {
+        opacity: 0.9;
+    }
+    
+    /* Ajuste para contenedor dropdown */
+    .dropdown-menu {
+        min-width: 260px !important;
+        max-width: 320px !important;
+    }
+    
+    /* Ajuste específico para dropdown de contacto */
+    .dropdown-menu-end {
+        min-width: 280px !important;
+        max-width: 320px !important;
+    }
+    
+    /* Para dropdowns que van hacia la izquierda */
+    .dropdown-submenu.dropstart > .dropdown-menu {
+        top: 0;
+        right: 100%;
+        left: auto;
+        margin-right: -1px;
+    }
+    
+    /* Responsive: En móvil mostrar como lista normal */
+    @media (max-width: 991.98px) {
+        .dropdown-submenu > .dropdown-menu {
+            position: static !important;
+            float: none;
+            width: auto;
+            margin-top: 0;
+            margin-left: 0;
+            background-color: rgba(0, 0, 0, 0.05);
+            border: none;
+            box-shadow: none;
+            padding-left: 1rem;
+            opacity: 1;
+            visibility: visible;
+            display: none;
+        }
+        
+        .dropdown-submenu.open > .dropdown-menu {
+            display: block;
+        }
+        
+        .dropdown-submenu > .dropdown-toggle:after {
+            transform: rotate(0deg);
+            border-left: 0.3em solid;
+            border-top: 0.3em solid transparent;
+            border-bottom: 0.3em solid transparent;
+        }
+    }
+
+    /* Estilo normal para botón admin - sin deformar el menú */
+    .admin-login-compact {
+        /* Resetear cualquier estilo que deforme */
+        padding: 0.5rem 1rem !important;
+        font-size: 0.875rem !important;
+        line-height: 1.5 !important;
+        border-radius: 0 !important;
+        transition: all 0.15s ease-in-out;
+        background: transparent !important;
+        border: none !important;
+        margin: 0 !important;
+        display: block !important;
+        align-items: normal !important;
+        justify-content: normal !important;
+        min-height: normal !important;
+        height: auto !important;
+        width: 100% !important;
+        text-align: left !important;
+        white-space: nowrap !important;
+    }
+    
+    .admin-login-compact:hover {
+        background-color: rgba(0, 0, 0, 0.04) !important;
+        color: #495057 !important;
+        border: none !important;
+        transform: none !important;
+    }
+    
+    .admin-login-compact.text-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+        color: white !important;
+        font-weight: 500 !important;
+        border-radius: 0.25rem !important;
+    }
+    
+    .admin-login-compact.text-success:hover {
+        background: linear-gradient(135deg, #218838 0%, #1c7430 100%) !important;
+        color: white !important;
+    }
+    
+    .admin-login-compact i {
+        font-size: 0.875rem !important;
+        width: auto !important;
+        text-align: left !important;
+        margin-right: 0.5rem !important;
+    }
+    
+    .admin-login-compact .badge {
+        font-size: 0.65rem !important;
+        padding: 0.15rem 0.4rem !important;
+        margin-left: 0.25rem !important;
+    }
+    
+    /* LOGO CONTRASTE - Modo Oscuro */
+    [data-theme="dark"] .logo-main-text,
+    .dark-mode .logo-main-text {
+        color: #90caf9 !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+    }
+    
+    [data-theme="dark"] .logo-sub-text,
+    .dark-mode .logo-sub-text {
+        color: #e8eaf6 !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+    }
+    
+    /* Mejor contraste para modo claro también */
+    .logo-main-text {
+        color: #1565c0 !important;
+        text-shadow: 0 1px 2px rgba(255,255,255,0.5) !important;
+    }
+    
+    .logo-sub-text {
+        color: #424242 !important;
+        text-shadow: 0 1px 2px rgba(255,255,255,0.5) !important;
+    }
+</style>
+
+<!-- Modal de Autenticación para Panel de Administración -->
+<div class="modal fade" id="adminPanelAuthModal" tabindex="-1" aria-labelledby="adminPanelAuthLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="adminPanelAuthLabel">
+                    <i class="fas fa-shield-alt me-2"></i>Acceso Restringido
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <i class="fas fa-lock fa-3x text-warning mb-3"></i>
+                    <h6>Panel de Administración</h6>
+                    <p class="text-muted">Este panel está restringido solo para personal autorizado.</p>
+                    
+                    <!-- REMOVIDO: Información de desarrollo eliminada para producción -->
+                </div>
+                
+                <form id="adminPanelAuthForm">
+                    <div class="mb-3">
+                        <label for="adminPanelPassword" class="form-label">Contraseña de Administración:</label>
+                        <input type="password" class="form-control" id="adminPanelPassword" placeholder="Ingresa la contraseña" autocomplete="current-password" required>
+                    </div>
+                    <div class="alert alert-danger d-none" id="adminPanelAuthError">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <span id="adminPanelAuthErrorText">Contraseña incorrecta. Intenta nuevamente.</span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="submit" form="adminPanelAuthForm" class="btn btn-warning">
+                    <i class="fas fa-key me-1"></i>Acceder al Panel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/responsive-nav.js?v=2024091401"></script>
+<script src="js/nested-dropdowns.js?v=2024091401"></script>
+<script src="js/admin-auth-secure.js?v=2024091401"></script>
+
+<!-- Script cleanup - función inline implementada -->

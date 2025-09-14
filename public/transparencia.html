@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transparencia - Bachillerato General Estatal "Héroes de la Patria"</title>
+    
+    <!-- Preconnects -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/style.css" as="style">
+    
+    <!-- Meta tags -->
+    <meta name="description" content="Portal de transparencia del Bachillerato General Estatal Héroes de la Patria. Acceso a información pública, documentos y normatividad.">
+    <meta name="keywords" content="transparencia, informacion publica, documentos, normatividad, bachillerato heroes patria">
+    <meta name="theme-color" content="#1976D2">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Icons -->
+    <link rel="icon" href="images/logo-bachillerato-HDLP.webp" type="image/webp">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" >
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <!-- Header will be injected here -->
+    <header id="main-header"></header>
+
+    <!-- Page Header -->
+    <section id="hero" class="page-hero bg-gradient-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <nav aria-label="breadcrumb" class="mb-3">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html" class="text-white-50">Inicio</a></li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">Transparencia</li>
+                        </ol>
+                    </nav>
+                    <h1 class="hero-title display-4 fw-bold mb-3">
+                        <i class="fas fa-eye me-3" aria-hidden="true"></i>
+                        Portal de Transparencia
+                    </h1>
+                    <p class="hero-subtitle lead mb-4">
+                        Cumplimiento con la normatividad de transparencia y acceso a la información pública.
+                    </p>
+                    <div class="hero-badges">
+                        <a href="#informacion-general" class="badge bg-light text-primary fs-6 me-2 text-decoration-none">
+                            <i class="fas fa-file-alt me-1" aria-hidden="true"></i>
+                            Información Pública
+                        </a>
+                        <a href="#documentos-transparencia" class="badge bg-light text-primary fs-6 me-2 text-decoration-none">
+                            <i class="fas fa-shield-alt me-1" aria-hidden="true"></i>
+                            Cumplimiento Legal
+                        </a>
+                        <a href="#solicitudes-informacion" class="badge bg-light text-primary fs-6 text-decoration-none">
+                            <i class="fas fa-eye me-1" aria-hidden="true"></i>
+                            Transparencia Total
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <div class="hero-icon display-1 text-white-50">
+                        <i class="fas fa-eye" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Información General -->
+        <section id="informacion-general" class="py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center mb-5">
+                        <h2 class="fw-bold text-primary mb-3">Información Institucional</h2>
+                        <p class="lead text-muted">Datos generales y estructura organizacional de nuestra institución</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4 text-center">
+                                <div class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                     style="width: 70px; height: 70px;">
+                                    <i class="fas fa-building fa-2x"></i>
+                                </div>
+                                <h5 class="card-title text-dark fw-bold">Datos Generales</h5>
+                                <ul class="list-unstyled text-start mt-3">
+                                    <li class="mb-2"><strong>Nombre:</strong> Bachillerato General Estatal "Héroes de la Patria"</li>
+                                    <li class="mb-2"><strong>Clave:</strong> 21EBH0XXX</li>
+                                    <li class="mb-2"><strong>Modalidad:</strong> Escolarizada</li>
+                                    <li class="mb-2"><strong>Turno:</strong> Matutino</li>
+                                    <li class="mb-2"><strong>Sostenimiento:</strong> Estatal</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4 text-center">
+                                <div class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                     style="width: 70px; height: 70px;">
+                                    <i class="fas fa-map-marker-alt fa-2x"></i>
+                                </div>
+                                <h5 class="card-title text-dark fw-bold">Domicilio</h5>
+                                <div class="text-start mt-3">
+                                    <p class="mb-1">Coronel Tito Hernández</p>
+                                    <p class="mb-1">Venustiano Carranza, Puebla</p>
+                                    <p class="mb-1">C.P. 73560</p>
+                                    <p class="mb-0">México</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4 text-center">
+                                <div class="feature-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                     style="width: 70px; height: 70px;">
+                                    <i class="fas fa-users fa-2x"></i>
+                                </div>
+                                <h5 class="card-title text-dark fw-bold">Matrícula</h5>
+                                <div class="text-start mt-3">
+                                    <p class="mb-2"><strong>Total de estudiantes:</strong> [Número]</p>
+                                    <p class="mb-2"><strong>Personal docente:</strong> [Número]</p>
+                                    <p class="mb-2"><strong>Personal administrativo:</strong> [Número]</p>
+                                    <p class="mb-0"><strong>Grupos:</strong> [Número]</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Documentos de Transparencia -->
+        <section id="documentos-transparencia" class="py-5 bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center mb-5">
+                        <h2 class="fw-bold text-primary mb-3">Documentos y Normatividad</h2>
+                        <p class="lead text-muted">Acceso a documentos oficiales y marco normativo institucional</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="text-center mb-3">
+                                    <i class="fas fa-file-alt fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title text-center fw-bold">Reglamento Escolar</h5>
+                                <p class="card-text text-muted text-center">
+                                    Normativa interna que rige la vida académica y convivencia escolar.
+                                </p>
+                                <div class="text-center">
+                                    <a href="documents/reglamento-escolar.pdf" class="btn btn-primary" target="_blank">
+                                        <i class="fas fa-download me-2"></i>Descargar PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="text-center mb-3">
+                                    <i class="fas fa-graduation-cap fa-3x text-success"></i>
+                                </div>
+                                <h5 class="card-title text-center fw-bold">Plan de Estudios</h5>
+                                <p class="card-text text-muted text-center">
+                                    Estructura curricular y mapa curricular vigente del bachillerato.
+                                </p>
+                                <div class="text-center">
+                                    <a href="documents/plan-estudios.pdf" class="btn btn-success" target="_blank">
+                                        <i class="fas fa-download me-2"></i>Descargar PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="text-center mb-3">
+                                    <i class="fas fa-certificate fa-3x text-warning"></i>
+                                </div>
+                                <h5 class="card-title text-center fw-bold">RVOE</h5>
+                                <p class="card-text text-muted text-center">
+                                    Reconocimiento de Validez Oficial de Estudios vigente.
+                                </p>
+                                <div class="text-center">
+                                    <a href="documents/rvoe.pdf" class="btn btn-warning" target="_blank">
+                                        <i class="fas fa-download me-2"></i>Descargar PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="text-center mb-3">
+                                    <i class="fas fa-chart-line fa-3x text-info"></i>
+                                </div>
+                                <h5 class="card-title text-center fw-bold">Estadísticas</h5>
+                                <p class="card-text text-muted text-center">
+                                    Indicadores educativos y estadísticas institucionales.
+                                </p>
+                                <div class="text-center">
+                                    <a href="documents/estadisticas.pdf" class="btn btn-info" target="_blank">
+                                        <i class="fas fa-download me-2"></i>Descargar PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="text-center mb-3">
+                                    <i class="fas fa-balance-scale fa-3x text-danger"></i>
+                                </div>
+                                <h5 class="card-title text-center fw-bold">Marco Jurídico</h5>
+                                <p class="card-text text-muted text-center">
+                                    Fundamentos legales y normatividad educativa aplicable.
+                                </p>
+                                <div class="text-center">
+                                    <a href="documents/marco-juridico.pdf" class="btn btn-danger" target="_blank">
+                                        <i class="fas fa-download me-2"></i>Descargar PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="text-center mb-3">
+                                    <i class="fas fa-sitemap fa-3x text-dark"></i>
+                                </div>
+                                <h5 class="card-title text-center fw-bold">Organigrama</h5>
+                                <p class="card-text text-muted text-center">
+                                    Estructura organizacional y funciones del personal.
+                                </p>
+                                <div class="text-center">
+                                    <a href="conocenos.html#organigrama" class="btn btn-dark">
+                                        <i class="fas fa-eye me-2"></i>Ver Organigrama
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solicitudes de Información -->
+        <section id="solicitudes-informacion" class="py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center mb-5">
+                        <h2 class="fw-bold text-primary mb-3">Solicitudes de Información</h2>
+                        <p class="lead text-muted">Ejercer tu derecho de acceso a la información pública</p>
+                    </div>
+                </div>
+
+                <div class="row g-4 align-items-center">
+                    <div class="col-lg-6">
+                        <div class="info-content">
+                            <h4 class="fw-bold text-dark mb-3">¿Cómo solicitar información?</h4>
+                            <div class="steps">
+                                <div class="step mb-3">
+                                    <div class="d-flex">
+                                        <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                             style="width: 40px; height: 40px; flex-shrink: 0;">
+                                            <strong>1</strong>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold">Presenta tu solicitud</h6>
+                                            <p class="text-muted mb-0">Por escrito en la dirección de la institución o por correo electrónico.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="step mb-3">
+                                    <div class="d-flex">
+                                        <div class="step-number bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                             style="width: 40px; height: 40px; flex-shrink: 0;">
+                                            <strong>2</strong>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold">Especifica la información</h6>
+                                            <p class="text-muted mb-0">Describe claramente qué información necesitas y el formato deseado.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="step mb-3">
+                                    <div class="d-flex">
+                                        <div class="step-number bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                             style="width: 40px; height: 40px; flex-shrink: 0;">
+                                            <strong>3</strong>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold">Recibe respuesta</h6>
+                                            <p class="text-muted mb-0">Te responderemos en un plazo máximo de 20 días hábiles.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6">
+                        <div class="contact-info bg-light rounded p-4">
+                            <h5 class="fw-bold text-primary mb-3">Datos de Contacto</h5>
+                            <div class="contact-item mb-3">
+                                <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                <strong>Dirección:</strong> Coronel Tito Hernández, V. Carranza, Puebla
+                            </div>
+                            <div class="contact-item mb-3">
+                                <i class="fas fa-envelope text-primary me-2"></i>
+                                <strong>Email:</strong> transparencia@heroesdelapatria.edu.mx
+                            </div>
+                            <div class="contact-item mb-3">
+                                <i class="fas fa-phone text-primary me-2"></i>
+                                <strong>Teléfono:</strong> [Número de teléfono]
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-clock text-primary me-2"></i>
+                                <strong>Horario:</strong> Lunes a Viernes, 7:00 AM - 2:00 PM
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Documentos Financieros -->
+        <section id="documentos-financieros" class="py-5">
+            <div class="container">
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-chart-line text-success me-3" aria-hidden="true"></i>
+                        Transparencia Financiera
+                    </h2>
+                    <p class="section-subtitle text-muted">
+                        Documentos relacionados con la gestión financiera del bachillerato
+                    </p>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <p class="lead mb-4">Aquí encontrarás los documentos relacionados con la gestión financiera del bachillerato:</p>
+                                <ul class="document-list list-unstyled">
+                                    <li class="mb-3 p-3 border rounded">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-file-pdf text-danger fa-2x me-3"></i>
+                                            <div class="flex-grow-1">
+                                                <a href="documents/corte_caja_bim3_2025.pdf" target="_blank" class="fw-bold text-decoration-none">
+                                                    Corte de Caja Bimestre 1 - 2024
+                                                </a>
+                                                <div class="text-muted small">Publicado: [Fecha]</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="mb-3 p-3 border rounded">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-file-pdf text-danger fa-2x me-3"></i>
+                                            <div class="flex-grow-1">
+                                                <a href="documents/corte_caja_bim4_2025.pdf" target="_blank" class="fw-bold text-decoration-none">
+                                                    Corte de Caja Bimestre 2 - 2024
+                                                </a>
+                                                <div class="text-muted small">Publicado: [Fecha]</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="text-center">
+                                        <em class="text-muted">Más informes serán publicados periódicamente.</em>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Informes de Actividades -->
+        <section id="informes-actividades" class="py-5 bg-light">
+            <div class="container">
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-clipboard-check text-info me-3" aria-hidden="true"></i>
+                        Informes de Actividades
+                    </h2>
+                    <p class="section-subtitle text-muted">
+                        Programa de Mejora Continua (PMC) y Plan Anual de Evaluación y Certificación (PAEC)
+                    </p>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <p class="lead mb-4">Consulta los informes sobre el Programa de Mejora Continua (PMC) y el Plan Anual de Evaluación y Certificación (PAEC):</p>
+                                <ul class="document-list list-unstyled">
+                                    <li class="mb-3 p-3 border rounded">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-file-alt text-info fa-2x me-3"></i>
+                                            <div class="flex-grow-1">
+                                                <a href="documents/informe_pmc_2025.pdf" target="_blank" class="fw-bold text-decoration-none">
+                                                    Informe Anual PMC 2025
+                                                </a>
+                                                <div class="text-muted small">Publicado: [Fecha]</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="mb-3 p-3 border rounded">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-file-alt text-info fa-2x me-3"></i>
+                                            <div class="flex-grow-1">
+                                                <a href="documents/paec_resultados_2025.pdf" target="_blank" class="fw-bold text-decoration-none">
+                                                    Resultados PAEC 2025
+                                                </a>
+                                                <div class="text-muted small">Publicado: [Fecha]</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="text-center">
+                                        <em class="text-muted">Más informes serán publicados periódicamente.</em>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enlaces Útiles -->
+        <section id="enlaces-utiles" class="py-5 bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center mb-5">
+                        <h2 class="fw-bold text-primary mb-3">Enlaces de Interés</h2>
+                        <p class="lead text-muted">Portales oficiales relacionados con transparencia y educación</p>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6 col-lg-3">
+                        <a href="https://www.gob.mx/sep" target="_blank" class="card h-100 border-0 shadow-sm text-decoration-none">
+                            <div class="card-body p-3 text-center">
+                                <i class="fas fa-external-link-alt text-primary mb-2"></i>
+                                <h6 class="card-title text-dark">SEP</h6>
+                                <small class="text-muted">Secretaría de Educación Pública</small>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <a href="https://www.puebla.gob.mx/" target="_blank" class="card h-100 border-0 shadow-sm text-decoration-none">
+                            <div class="card-body p-3 text-center">
+                                <i class="fas fa-external-link-alt text-primary mb-2"></i>
+                                <h6 class="card-title text-dark">Gobierno de Puebla</h6>
+                                <small class="text-muted">Portal Oficial del Estado</small>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <a href="https://www.plataformadetransparencia.org.mx/" target="_blank" class="card h-100 border-0 shadow-sm text-decoration-none">
+                            <div class="card-body p-3 text-center">
+                                <i class="fas fa-external-link-alt text-primary mb-2"></i>
+                                <h6 class="card-title text-dark">PNT</h6>
+                                <small class="text-muted">Plataforma Nacional de Transparencia</small>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <a href="contacto.html" class="card h-100 border-0 shadow-sm text-decoration-none">
+                            <div class="card-body p-3 text-center">
+                                <i class="fas fa-phone text-primary mb-2"></i>
+                                <h6 class="card-title text-dark">Contacto</h6>
+                                <small class="text-muted">Información de contacto</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <!-- Chat Bot Toggle Button -->
+    <button class="chatbot-toggle" id="chatbotToggle" aria-label="Abrir chat de ayuda">
+        <i class="fas fa-comments"></i>
+    </button>
+    
+    <!-- Chat Bot Container -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <div>
+                <strong>Asistente Virtual</strong>
+                <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
+            </div>
+            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+        </div>
+        
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="chatbot-message bot">
+                <div class="response-professional">
+                    <div class="response-title">🎓 Asistente Virtual BGE</div>
+                    <div class="response-content">
+                        <div class="response-section">
+                            <div class="response-subtitle">¡Hola! Soy tu asistente inteligente</div>
+                            <div class="response-text">Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.</div>
+                        </div>
+                    </div>
+                    <div class="response-footer">¿En qué puedo ayudarte hoy?</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Back to Top -->
+    <button id="back-to-top" class="btn btn-primary" aria-label="Volver arriba">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Footer will be injected here -->
+    <footer id="main-footer"></footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/script.js"></script>
+    <script src="js/chatbot.js"></script>
+
+    <!-- Dark Mode Styles & Script -->
+    <style>
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 6rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bs-primary);
+            color: white;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        body.dark-mode {
+            background-color: #1a1a1a !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .bg-light {
+            background-color: #2d2d2d !important;
+        }
+
+        body.dark-mode .card {
+            background-color: #2d2d2d !important;
+            border-color: #404040 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .text-muted {
+            color: #b0b0b0 !important;
+        }
+
+        body.dark-mode .text-dark {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .accordion-item {
+            background-color: #2d2d2d !important;
+            border-color: #404040 !important;
+        }
+
+        body.dark-mode .accordion-button {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+            border-color: #404040 !important;
+        }
+
+        body.dark-mode .accordion-button:not(.collapsed) {
+            background-color: #404040 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .accordion-body {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+        }
+    </style>
+
+    <!-- Dark mode handled by global script.js -->
+    <script src="js/search-simple.js"></script>
+    <!-- Scripts de autenticación admin -->
+    <script src="js/admin-auth-secure.js"></script>
+    <script src="force-admin-nuclear.js"></script>
+</body>
+</html>
