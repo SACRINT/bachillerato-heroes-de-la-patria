@@ -62,7 +62,7 @@ const ADMIN_PASSWORD_HASH = '$2b$12$8K0vKg.QJxvRPFCqNDvzOe.c1.XG5VGX7QyEqYNJwrHz
 // ============================================
 
 // POST /api/auth/login
-app.post('/auth/login', async (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
     try {
         const { username, password } = req.body;
 
@@ -124,7 +124,7 @@ app.post('/auth/login', async (req, res) => {
 });
 
 // POST /api/auth/verify
-app.post('/auth/verify', (req, res) => {
+app.post('/api/auth/verify', (req, res) => {
     try {
         const authHeader = req.headers.authorization;
 
@@ -164,7 +164,7 @@ app.post('/auth/verify', (req, res) => {
 });
 
 // POST /api/auth/logout
-app.post('/auth/logout', (req, res) => {
+app.post('/api/auth/logout', (req, res) => {
     res.json({
         success: true,
         message: 'Logout exitoso'
@@ -172,7 +172,7 @@ app.post('/auth/logout', (req, res) => {
 });
 
 // Ruta de health check
-app.get('/health', (req, res) => {
+app.get('/api/health', (req, res) => {
     res.json({
         status: 'OK',
         message: 'Servidor funcionando correctamente',
@@ -182,7 +182,7 @@ app.get('/health', (req, res) => {
 });
 
 // Ruta por defecto
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.json({
         message: 'API Backend - Bachillerato Héroes de la Patria',
         version: '2.0.0',
@@ -199,5 +199,5 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Para Vercel, necesitamos exportar la app
+// Para Vercel serverless, exportamos una función handler
 module.exports = app;
