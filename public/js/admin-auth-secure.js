@@ -236,16 +236,23 @@ class SecureAdminAuth {
             }
 
             // Login exitoso
-            //console.log('✅ Login exitoso');
-            
+            console.log('✅ Login exitoso');
+
             this.authToken = data.token;
             this.userInfo = data.user;
             this.isAuthenticated = true;
+
+            console.log('🔐 Estado después del login:', {
+                isAuthenticated: this.isAuthenticated,
+                token: !!this.authToken,
+                user: this.userInfo
+            });
 
             // Almacenar sesión
             this.storeSession(data.token, data.user);
 
             // Actualizar UI
+            console.log('🔄 Llamando a updateUI después del login exitoso...');
             this.updateUI();
             this.showSuccessMessage();
 
@@ -492,25 +499,31 @@ class SecureAdminAuth {
      * Actualizar interfaz de usuario
      */
     updateUI() {
-        //console.log(`🔄 Actualizando UI - Autenticado: ${this.isAuthenticated}`);
-        
+        console.log(`🔄 Actualizando UI - Autenticado: ${this.isAuthenticated}`);
+
         // Elementos admin-only
         const adminElements = document.querySelectorAll('#adminOnlySection, #adminOnlySection2');
         const loginButton = document.getElementById('adminPanelMenuLink');
-        
-        //console.log(`🔍 Elementos admin encontrados: ${adminElements.length}`);
-        //console.log(`🔍 Botón login encontrado:`, !!loginButton);
+
+        console.log(`🔍 Elementos admin encontrados: ${adminElements.length}`);
+        console.log(`🔍 Botón login encontrado:`, !!loginButton);
         if (loginButton) {
             //console.log(`🔍 Contenido actual del botón:`, loginButton.innerHTML);
         }
         
-        adminElements.forEach(element => {
+        adminElements.forEach((element, index) => {
+            console.log(`🔍 Elemento admin ${index + 1}:`, element.id, element.classList.toString());
+
             if (this.isAuthenticated) {
+                console.log(`🟢 Mostrando elemento admin: ${element.id}`);
                 element.classList.remove('d-none');
                 element.style.display = '';
             } else {
+                console.log(`🔴 Ocultando elemento admin: ${element.id}`);
                 element.classList.add('d-none');
             }
+
+            console.log(`🔍 Estado después - ${element.id}:`, element.classList.toString());
         });
         
         // Actualizar botón de login
@@ -763,11 +776,12 @@ let secureAdminAuth;
 
 function initSecureAuthSystem() {
     if (!secureAdminAuth) {
-        //console.log('🚀 Inicializando sistema de autenticación seguro...');
+        console.log('🚀 Inicializando sistema de autenticación seguro...');
         secureAdminAuth = new SecureAdminAuth();
-        
+
         // Funciones globales para compatibilidad
         window.secureAdminAuth = secureAdminAuth;
+        console.log('✅ window.secureAdminAuth establecido:', !!window.secureAdminAuth);
         window.isAdminAuthenticated = () => secureAdminAuth.isUserAuthenticated();
         window.requireAdminAuth = (callback) => secureAdminAuth.requireAuth(callback);
         window.showAdminPanelAuth = () => secureAdminAuth.showLoginModal();
@@ -826,11 +840,21 @@ function initSecureAuthSystem() {
 // Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', initSecureAuthSystem);
 
+// NUEVA: También inicializar inmediatamente para asegurar disponibilidad
+// Esto resuelve problemas de timing con verificaciones tempranas
+if (document.readyState === 'loading') {
+    // Si el DOM aún se está cargando, esperar hasta que esté listo
+    document.addEventListener('DOMContentLoaded', initSecureAuthSystem);
+} else {
+    // Si el DOM ya está listo, inicializar inmediatamente
+    initSecureAuthSystem();
+}
+
 // Exponer función de inicialización
 window.initSecureAuthSystem = initSecureAuthSystem;
 
-//console.log('✅ admin-auth-secure.js CARGADO COMPLETAMENTE');
-//console.log('🔍 window.initSecureAuthSystem disponible?', !!window.initSecureAuthSystem);
+console.log('✅ admin-auth-secure.js CARGADO COMPLETAMENTE');
+console.log('🔍 window.initSecureAuthSystem disponible?', !!window.initSecureAuthSystem);
 
 // ============================================
 // FUNCIÓN PARA EL BOTÓN DE LOGIN DEL HEADER
