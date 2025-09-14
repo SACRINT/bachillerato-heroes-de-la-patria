@@ -123,8 +123,8 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// POST /api/auth/verify
-app.post('/api/auth/verify', (req, res) => {
+// Función común para verificar tokens
+const verifyAuthToken = (req, res) => {
     try {
         const authHeader = req.headers.authorization;
 
@@ -161,7 +161,13 @@ app.post('/api/auth/verify', (req, res) => {
             message: 'Error interno del servidor'
         });
     }
-});
+};
+
+// GET /api/auth/verify (para el cliente JavaScript)
+app.get('/api/auth/verify', verifyAuthToken);
+
+// POST /api/auth/verify (compatibilidad)
+app.post('/api/auth/verify', verifyAuthToken);
 
 // POST /api/auth/logout
 app.post('/api/auth/logout', (req, res) => {
