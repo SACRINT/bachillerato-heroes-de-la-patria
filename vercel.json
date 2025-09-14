@@ -1,35 +1,8 @@
 {
-  "functions": {
-    "api/server.js": {
-      "maxDuration": 10
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/server.js"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/server.js"
-    },
-    {
-      "src": "/",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|json))",
-      "dest": "/$1"
-    },
-    {
-      "src": "/(.*\\.html)",
-      "dest": "/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "destination": "/api/index.js"
     }
   ]
 }
