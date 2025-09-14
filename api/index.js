@@ -54,8 +54,8 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 const JWT_SECRET = process.env.JWT_SECRET || 'CAMBIAR_POR_CLAVE_ULTRA_SECRETA_DE_PRODUCCION_64_CARACTERES';
 const ADMIN_PASSWORD = 'HeroesPatria2024!';
 
-// Hash de la contraseña admin (pre-calculado)
-const ADMIN_PASSWORD_HASH = '$2b$12$8K0vKg.QJxvRPFCqNDvzOe.c1.XG5VGX7QyEqYNJwrHzJBgI5cFGO';
+// Hash de la contraseña admin (pre-calculado para HeroesPatria2024!)
+const ADMIN_PASSWORD_HASH = '$2b$12$pL.A7agYOVl2ahQqUnLn5.W/LD85ealJLyzNvbK8ZT0d0eLWbAvWe';
 
 // ============================================
 // RUTAS DE AUTENTICACIÓN
@@ -74,8 +74,8 @@ app.post('/api/auth/login', async (req, res) => {
             });
         }
 
-        // Verificar credenciales admin
-        if (username.toLowerCase() === 'admin') {
+        // Verificar credenciales admin (acepta "admin" o "Administrador")
+        if (username.toLowerCase() === 'admin' || username.toLowerCase() === 'administrador') {
             const isValidPassword = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
 
             if (isValidPassword) {
