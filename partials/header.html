@@ -690,8 +690,12 @@
                 
                 <form id="adminPanelAuthForm">
                     <div class="mb-3">
+                        <label for="adminPanelUsername" class="form-label">Usuario:</label>
+                        <input type="text" class="form-control" id="adminPanelUsername" name="username" placeholder="Ingresa el usuario" autocomplete="username" value="Administrador" required>
+                    </div>
+                    <div class="mb-3">
                         <label for="adminPanelPassword" class="form-label">Contraseña de Administración:</label>
-                        <input type="password" class="form-control" id="adminPanelPassword" placeholder="Ingresa la contraseña" autocomplete="current-password" required>
+                        <input type="password" class="form-control" id="adminPanelPassword" name="password" placeholder="Ingresa la contraseña" autocomplete="current-password" required>
                     </div>
                     <div class="alert alert-danger d-none" id="adminPanelAuthError">
                         <i class="fas fa-exclamation-triangle me-2"></i>

@@ -1055,6 +1055,17 @@
                 if (window.secureAdminAuth && typeof window.secureAdminAuth.isUserAuthenticated === 'function') {
                     isAuthenticated = window.secureAdminAuth.isUserAuthenticated();
                     console.log('🔍 [DASHBOARD SECURITY] Verificación con secureAdminAuth:', isAuthenticated);
+                } else {
+                    console.warn('⚠️ [DASHBOARD SECURITY] window.secureAdminAuth no disponible, estado:', window.secureAdminAuth);
+                    // Si secureAdminAuth no está disponible, intentar inicializarlo
+                    if (window.initSecureAuthSystem && typeof window.initSecureAuthSystem === 'function') {
+                        console.log('🔄 [DASHBOARD SECURITY] Inicializando sistema de autenticación...');
+                        window.initSecureAuthSystem();
+                        if (window.secureAdminAuth && typeof window.secureAdminAuth.isUserAuthenticated === 'function') {
+                            isAuthenticated = window.secureAdminAuth.isUserAuthenticated();
+                            console.log('🔍 [DASHBOARD SECURITY] Verificación tras inicialización:', isAuthenticated);
+                        }
+                    }
                 }
                 
                 // Verificar localStorage como respaldo
