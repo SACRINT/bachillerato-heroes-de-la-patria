@@ -231,11 +231,26 @@
             if (window.opener && window.opener.adminAuth) {
                 console.log('🔄 Forzando actualización inmediata de UI en ventana padre...');
                 window.opener.adminAuth.updateUI();
-                
+
                 // Múltiples intentos de actualización para garantizar que se aplique
                 setTimeout(() => window.opener.adminAuth.updateUI(), 100);
                 setTimeout(() => window.opener.adminAuth.updateUI(), 300);
                 setTimeout(() => window.opener.adminAuth.updateUI(), 500);
+            }
+
+            // SEGURIDAD: Redirigir ventana padre a index.html si es dashboard
+            if (window.opener && window.opener.location) {
+                const openerUrl = window.opener.location.href;
+                console.log('🔍 Ventana padre URL:', openerUrl);
+
+                // Si la ventana padre es el dashboard, redirigirla por seguridad
+                if (openerUrl.includes('admin-dashboard.html') || openerUrl.includes('dashboard')) {
+                    console.log('🔒 SEGURIDAD: Cerrando dashboard y redirigiendo a index.html...');
+                    setTimeout(() => {
+                        // Redirigir la ventana padre al index
+                        window.opener.location.href = window.opener.location.origin + '/index.html';
+                    }, 1000);
+                }
             }
             
             // Mostrar mensaje y manejar cierre
