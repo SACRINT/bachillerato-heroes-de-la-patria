@@ -573,8 +573,8 @@
 
                 <div class="row g-3" id="galeriaContainer">
                     <div class="col-lg-4 col-md-6">
-                        <div class="gallery-item">
-                            <img src="images/galeria/placeholder_actividad.webp" alt="Actividad deportiva" class="img-fluid rounded shadow-sm">
+                        <div class="gallery-item h-100">
+                            <img src="images/galeria/placeholder_actividad2.webp" alt="Actividad deportiva" class="img-fluid rounded shadow-sm gallery-img">
                             <div class="gallery-overlay">
                                 <div class="gallery-content">
                                     <h5>Deportes y Recreación</h5>
@@ -585,8 +585,8 @@
                     </div>
 
                     <div class="col-lg-4 col-md-6">
-                        <div class="gallery-item">
-                            <img src="images/galeria/placeholder_evento1.webp" alt="Festival cultural" class="img-fluid rounded shadow-sm">
+                        <div class="gallery-item h-100">
+                            <img src="images/galeria/placeholder_evento1.webp" alt="Festival cultural" class="img-fluid rounded shadow-sm gallery-img">
                             <div class="gallery-overlay">
                                 <div class="gallery-content">
                                     <h5>Cultura y Arte</h5>
@@ -597,8 +597,8 @@
                     </div>
 
                     <div class="col-lg-4 col-md-6">
-                        <div class="gallery-item">
-                            <img src="images/galeria/placeholder_proyectos.webp" alt="Proyecto científico" class="img-fluid rounded shadow-sm">
+                        <div class="gallery-item h-100">
+                            <img src="images/galeria/placeholder_proyectos.webp" alt="Proyecto científico" class="img-fluid rounded shadow-sm gallery-img">
                             <div class="gallery-overlay">
                                 <div class="gallery-content">
                                     <h5>Ciencia y Tecnología</h5>
@@ -609,8 +609,8 @@
                     </div>
 
                     <div class="col-lg-4 col-md-6">
-                        <div class="gallery-item">
-                            <img src="images/fachada_placeholder.jpg" alt="Ceremonia cívica" class="img-fluid rounded shadow-sm">
+                        <div class="gallery-item h-100">
+                            <img src="images/galeria/placeholder_civica.webp" alt="Ceremonia cívica" class="img-fluid rounded shadow-sm gallery-img">
                             <div class="gallery-overlay">
                                 <div class="gallery-content">
                                     <h5>Ceremonias Cívicas</h5>
@@ -621,8 +621,8 @@
                     </div>
 
                     <div class="col-lg-4 col-md-6">
-                        <div class="gallery-item">
-                            <img src="images/galeria/placeholder_graduacion.webp" alt="Graduación" class="img-fluid rounded shadow-sm">
+                        <div class="gallery-item h-100">
+                            <img src="images/galeria/placeholder_graduacion.webp" alt="Graduación" class="img-fluid rounded shadow-sm gallery-img">
                             <div class="gallery-overlay">
                                 <div class="gallery-content">
                                     <h5>Graduaciones</h5>
@@ -633,8 +633,8 @@
                     </div>
 
                     <div class="col-lg-4 col-md-6">
-                        <div class="gallery-item">
-                            <img src="images/testimonios/egresado_placeholder1.webp" alt="Vida escolar" class="img-fluid rounded shadow-sm">
+                        <div class="gallery-item h-100">
+                            <img src="images/galeria/placeholder_vidaescolar.webp" alt="Vida escolar" class="img-fluid rounded shadow-sm gallery-img">
                             <div class="gallery-overlay">
                                 <div class="gallery-content">
                                     <h5>Vida Escolar</h5>
@@ -807,6 +807,18 @@
     
     <!-- Dark Mode Styles -->
     <style>
+        /* Gallery images same height */
+        .gallery-img {
+            height: 250px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+        }
+
         /* Dark mode styles */
         body.dark-mode {
             background-color: #1a1a1a;
@@ -989,25 +1001,23 @@
         function showPhotoGallery() {
             // Crear modal dinámico para galería de fotos
             const photos = [
-                { src: 'images/galeria/evento1.jpg', title: 'Festival Cultural 2024', desc: 'Presentaciones artísticas de nuestros estudiantes' },
-                { src: 'images/galeria/evento2.jpg', title: 'Ceremonia de Graduación', desc: 'Generación 2023-2024' },
-                { src: 'images/galeria/evento3.jpg', title: 'Concurso de Ciencias', desc: 'Proyectos innovadores de nuestros alumnos' },
-                { src: 'images/galeria/evento4.jpg', title: 'Día del Maestro', desc: 'Reconocimiento a nuestro personal docente' },
-                { src: 'images/galeria/evento5.jpg', title: 'Torneo Deportivo', desc: 'Competencias inter-grupos' },
-                { src: 'images/galeria/evento6.jpg', title: 'Obra de Teatro', desc: 'Representación estudiantil' }
+                { src: 'images/galeria/evento1.jpeg', title: 'Festival Cultural 2024', desc: 'Presentaciones artísticas de nuestros estudiantes' },
+                { src: 'images/galeria/evento2.jpeg', title: 'Ceremonia de Graduación', desc: 'Generación 2023-2024' },
+                { src: 'images/galeria/evento3.jpeg', title: 'Concurso de Ciencias', desc: 'Proyectos innovadores de nuestros alumnos' },
+                { src: 'images/galeria/evento4.jpeg', title: 'Viaje Estudiantil', desc: 'Reconocimiento a nuestro alumnos' },
+                { src: 'images/galeria/evento5.jpeg', title: 'Torneo Deportivo', desc: 'Competencias inter-grupos' },
+                { src: 'images/galeria/evento6.jpeg', title: 'Desfile del 18 de marzo', desc: 'Representación estudiantil' }
             ];
 
             const galleryHtml = `
                 <div class="row g-3">
                     ${photos.map((photo, index) => `
                         <div class="col-md-6 col-lg-4">
-                            <div class="card">
-                                <div class="gallery-placeholder">
-                                    <div class="text-center">
-                                        <i class="fas fa-camera fa-2x mb-2"></i>
-                                        <h6>${photo.title}</h6>
-                                        <small>${photo.desc}</small>
-                                    </div>
+                            <div class="card h-100">
+                                <img src="${photo.src}" alt="${photo.title}" class="card-img-top" style="height: 200px; object-fit: cover;" onerror="this.src='images/galeria/placeholder_actividad2.webp'">
+                                <div class="card-body">
+                                    <h6 class="card-title">${photo.title}</h6>
+                                    <p class="card-text small text-muted">${photo.desc}</p>
                                 </div>
                             </div>
                         </div>

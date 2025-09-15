@@ -3,465 +3,826 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aviso de Privacidad - BGE Héroes de la Patria</title>
+    <title>Aviso de Privacidad - Bachillerato General Estatal "Héroes de la Patria"</title>
+
+    <!-- Preconnects -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/style.css" as="style">
+
+    <!-- Meta tags -->
     <meta name="description" content="Aviso de privacidad integral del Bachillerato General Estatal Héroes de la Patria. Protección de datos personales y derechos ARCO.">
+    <meta name="keywords" content="aviso privacidad, protección datos, derechos ARCO, bachillerato heroes patria">
+    <meta name="theme-color" content="#1976D2">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <!-- PWA Meta Tags -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1976D2">
-    <link rel="apple-touch-icon" href="images/icons/icon-192x192.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="css/style.css">
 
-    <style>
-        .privacy-header {
-            background: linear-gradient(135deg, #1976D2 0%, #42A5F5 100%);
-            color: white;
-            padding: 3rem 0;
-        }
+    <!-- Icons -->
+    <link rel="icon" href="images/logo-bachillerato-HDLP.webp" type="image/webp">
 
-        .privacy-content {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-top: -2rem;
-            position: relative;
-            z-index: 10;
-        }
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" >
 
-        .section-title {
-            color: #1976D2;
-            border-bottom: 2px solid #E3F2FD;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .highlight {
-            background: linear-gradient(120deg, #FFE082 0%, transparent 100%);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-
-        .rights-card {
-            background: #F3E5F5;
-            border-left: 4px solid #9C27B0;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .legal-footer {
-            background: #263238;
-            color: #B0BEC5;
-            padding: 2rem 0;
-            margin-top: 3rem;
-        }
-
-        .contact-card {
-            background: linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%);
-            border: 1px solid #4CAF50;
-            border-radius: 10px;
-            padding: 1.5rem;
-        }
-
-        .warning-box {
-            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
-            border: 1px solid #FF9800;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-        }
-    </style>
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
+    <!-- Header will be injected here -->
+    <header id="main-header"></header>
 
-<!-- Header Principal -->
-<div class="privacy-header">
-    <div class="container">
-        <div class="row justify-content-center text-center">
-            <div class="col-lg-10">
-                <div class="d-flex justify-content-center align-items-center mb-3">
-                    <img src="images/logo-bachillerato-HDLP2.webp" alt="Logo BGE" width="80" height="80" class="me-3">
-                    <div>
-                        <h1 class="mb-2"><i class="fas fa-shield-alt me-2"></i>Aviso de Privacidad Integral</h1>
-                        <h4 class="text-light">Bachillerato General Estatal "Héroes de la Patria"</h4>
-                    </div>
-                </div>
-                <p class="lead">
-                    <i class="fas fa-globe me-2"></i>Sitio web:
-                    <a href="https://bge-heroesdelapatria.vercel.app" class="text-light"><strong>https://bge-heroesdelapatria.vercel.app</strong></a>
-                </p>
-                <div class="warning-box text-dark">
-                    <i class="fas fa-info-circle me-2"></i>
-                    <strong>Fecha de última actualización:</strong> Septiembre 2024 |
-                    <strong>Vigencia:</strong> Indefinida hasta nueva actualización
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="privacy-content p-4 p-lg-5">
-
-        <!-- Sección 1 -->
-        <section class="mb-5">
-            <h2 class="section-title"><i class="fas fa-building me-2"></i>1. Responsable del Tratamiento de Datos Personales</h2>
-            <p class="lead">El <strong>Bachillerato General Estatal "Héroes de la Patria"</strong>, en lo sucesivo <em>la Institución</em>, con domicilio en sus instalaciones en territorio mexicano, es responsable del tratamiento y protección de los datos personales recabados a través de su sitio web institucional y medios electrónicos relacionados.</p>
-        </section>
-
-        <!-- Sección 2 -->
-        <section class="mb-5">
-            <h2 class="section-title"><i class="fas fa-database me-2"></i>2. Datos Personales Recabados</h2>
-            <p class="mb-4">El sitio web puede recopilar las siguientes categorías de datos:</p>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <div class="card h-100 border-primary">
-                        <div class="card-header bg-primary text-white">
-                            <i class="fas fa-user-graduate me-2"></i>Estudiantes
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled">
-                                <li><i class="fas fa-check text-success me-2"></i>Nombres (solo de pila en publicaciones)</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Fotografías y videos escolares</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Logros académicos</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Grado escolar</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <div class="card h-100 border-info">
-                        <div class="card-header bg-info text-white">
-                            <i class="fas fa-chalkboard-teacher me-2"></i>Personal Docente
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled">
-                                <li><i class="fas fa-check text-success me-2"></i>Nombre completo y cargo</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Área de trabajo</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Fotografías profesionales</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Información laboral básica</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-md-6 mb-3">
-                    <div class="card h-100 border-secondary">
-                        <div class="card-header bg-secondary text-white">
-                            <i class="fas fa-users me-2"></i>Visitantes del Sitio
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled">
-                                <li><i class="fas fa-check text-success me-2"></i>Dirección IP</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Cookies técnicas</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Datos de navegación</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <div class="card h-100 border-success">
-                        <div class="card-header bg-success text-white">
-                            <i class="fas fa-envelope me-2"></i>Formularios de Contacto
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled">
-                                <li><i class="fas fa-check text-success me-2"></i>Nombre completo</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Correo electrónico</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Teléfono de contacto</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Sección 3 -->
-        <section class="mb-5">
-            <h2 class="section-title"><i class="fas fa-bullseye me-2"></i>3. Finalidades del Tratamiento</h2>
-            <p class="mb-4">Los datos personales se utilizan <strong>exclusivamente</strong> con las siguientes finalidades educativas:</p>
-
-            <div class="row">
-                <div class="col-lg-6">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <i class="fas fa-graduation-cap text-primary me-2"></i>
-                            Difusión y promoción de programas educativos institucionales
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-info-circle text-info me-2"></i>
-                            Publicación de información oficial de la Institución
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-camera text-warning me-2"></i>
-                            Documentación de actividades académicas, culturales y deportivas
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-lg-6">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <i class="fas fa-comments text-success me-2"></i>
-                            Comunicación con la comunidad educativa
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-archive text-secondary me-2"></i>
-                            Preservación de la memoria institucional
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-chart-line text-danger me-2"></i>
-                            Mejora de experiencia web y análisis de uso (Google Analytics)
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="alert alert-danger mt-4">
-                <h5><i class="fas fa-exclamation-triangle me-2"></i>IMPORTANTE</h5>
-                <p class="mb-0"><strong>No se realizará el uso de datos personales con fines comerciales, ni se transferirán a terceros ajenos a la Institución.</strong></p>
-            </div>
-        </section>
-
-        <!-- Sección 4 -->
-        <section class="mb-5">
-            <h2 class="section-title"><i class="fas fa-cookie-bite me-2"></i>4. Uso de Cookies y Tecnologías Web</h2>
-
-            <div class="row">
+    <!-- Hero Section -->
+    <section id="hero" class="page-hero bg-gradient-primary text-white" style="padding: 5.5rem 0 2.5rem 0 !important;">
+        <div class="container">
+            <div class="row align-items-center">
                 <div class="col-lg-8">
-                    <p>Este sitio web emplea las siguientes tecnologías:</p>
-
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead class="table-primary">
-                                <tr>
-                                    <th>Tecnología</th>
-                                    <th>Propósito</th>
-                                    <th>Tipo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Cookies Técnicas</strong></td>
-                                    <td>Funcionamiento básico del sitio</td>
-                                    <td><span class="badge bg-success">Necesarias</span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Service Workers</strong></td>
-                                    <td>Funcionalidad PWA y caché offline</td>
-                                    <td><span class="badge bg-info">Técnicas</span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Google Analytics</strong></td>
-                                    <td>Análisis de tráfico y mejora UX</td>
-                                    <td><span class="badge bg-warning">Opcional</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <h1 class="hero-title display-4 fw-bold mb-3">
+                        <i class="fas fa-shield-alt me-3" aria-hidden="true"></i>
+                        Aviso de Privacidad
+                    </h1>
+                    <p class="hero-subtitle lead mb-4">
+                        Protección y tratamiento de datos personales en el Bachillerato General Estatal "Héroes de la Patria".
+                    </p>
+                    <div class="hero-badges">
+                        <a href="#datos-recopilados" class="badge bg-light text-primary fs-6 me-2 mb-2 text-decoration-none">
+                            <i class="fas fa-database me-1" aria-hidden="true"></i>
+                            Datos Recopilados
+                        </a>
+                        <a href="#finalidades" class="badge bg-light text-success fs-6 me-2 mb-2 text-decoration-none">
+                            <i class="fas fa-bullseye me-1" aria-hidden="true"></i>
+                            Finalidades
+                        </a>
+                        <a href="#derechos-arco" class="badge bg-light text-warning fs-6 me-2 mb-2 text-decoration-none">
+                            <i class="fas fa-user-shield me-1" aria-hidden="true"></i>
+                            Derechos ARCO
+                        </a>
+                        <a href="#contacto-privacidad" class="badge bg-light text-info fs-6 me-2 mb-2 text-decoration-none">
+                            <i class="fas fa-envelope me-1" aria-hidden="true"></i>
+                            Contacto
+                        </a>
                     </div>
                 </div>
-                <div class="col-lg-4">
-                    <div class="card bg-light">
-                        <div class="card-body text-center">
-                            <i class="fas fa-cog fa-3x text-muted mb-3"></i>
-                            <p><small>Los usuarios pueden deshabilitar cookies desde su navegador, aunque esto puede afectar funcionalidades.</small></p>
-                        </div>
+                <div class="col-lg-4 text-center">
+                    <div class="hero-icon display-1 text-white-50">
+                        <i class="fas fa-shield-alt" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Sección 5 -->
-        <section class="mb-5">
-            <h2 class="section-title"><i class="fas fa-shield-alt me-2"></i>5. Medidas de Seguridad</h2>
-            <p>La Institución implementa medidas administrativas, técnicas y físicas para proteger los datos personales:</p>
-
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <div class="text-center">
-                        <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                            <i class="fas fa-lock fa-2x text-white"></i>
-                        </div>
-                        <h5>Administrativas</h5>
-                        <p class="text-muted">Acceso restringido y capacitación del personal</p>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="text-center">
-                        <div class="bg-info rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                            <i class="fas fa-server fa-2x text-white"></i>
-                        </div>
-                        <h5>Técnicas</h5>
-                        <p class="text-muted">Hosting seguro en Vercel.app con transferencia internacional protegida</p>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="text-center">
-                        <div class="bg-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                            <i class="fas fa-building fa-2x text-white"></i>
-                        </div>
-                        <h5>Físicas</h5>
-                        <p class="text-muted">Protección de instalaciones y documentos físicos</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Sección 6 - DERECHOS ARCO -->
-        <section class="mb-5">
-            <h2 class="section-title"><i class="fas fa-balance-scale me-2"></i>6. Derechos ARCO</h2>
-            <p class="lead">Los titulares de datos personales pueden ejercer los siguientes derechos:</p>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <div class="rights-card">
-                        <h5><i class="fas fa-eye text-info me-2"></i>Acceso</h5>
-                        <p class="mb-0">Conocer qué datos personales tenemos y cómo los utilizamos.</p>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <div class="rights-card">
-                        <h5><i class="fas fa-edit text-warning me-2"></i>Rectificación</h5>
-                        <p class="mb-0">Solicitar la corrección de datos inexactos o incompletos.</p>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <div class="rights-card">
-                        <h5><i class="fas fa-trash-alt text-danger me-2"></i>Cancelación</h5>
-                        <p class="mb-0">Solicitar la eliminación cuando ya no sean necesarios.</p>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <div class="rights-card">
-                        <h5><i class="fas fa-hand-stop-o text-secondary me-2"></i>Oposición</h5>
-                        <p class="mb-0">Oponerse al uso para finalidades específicas.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="contact-card">
-                <h5><i class="fas fa-envelope me-2"></i>Para ejercer sus derechos ARCO:</h5>
+    <!-- Main Content -->
+    <main id="main-content">
+        <section class="py-5">
+            <div class="container">
                 <div class="row">
-                    <div class="col-md-6">
-                        <p><strong><i class="fas fa-at me-2"></i>Correo electrónico:</strong><br>
-                        <a href="mailto:privacidad@bge-heroesdelapatria.edu.mx">privacidad@bge-heroesdelapatria.edu.mx</a></p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong><i class="fas fa-map-marker-alt me-2"></i>Presencialmente:</strong><br>
-                        Dirección del plantel en horario administrativo</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+                    <div class="col-lg-8 mx-auto">
 
-        <!-- Sección 7 -->
-        <section class="mb-5">
-            <h2 class="section-title"><i class="fas fa-child me-2"></i>7. Tratamiento de Datos de Menores de Edad</h2>
-            <div class="warning-box">
-                <h5><i class="fas fa-exclamation-circle me-2"></i>Protección Especial para Menores</h5>
-                <p>El tratamiento de datos de estudiantes menores de edad se realiza conforme a la <strong>Ley General de los Derechos de Niñas, Niños y Adolescentes</strong>, y requiere:</p>
-                <ul class="mb-0">
-                    <li><strong>Autorización expresa de ambos padres o tutores</strong></li>
-                    <li><strong>Consentimiento del menor</strong> (si es mayor de 12 años)</li>
-                    <li><strong>Publicación limitada</strong> a nombres de pila y logros académicos</li>
-                    <li><strong>Exclusión de datos sensibles</strong></li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- Sección 8 -->
-        <section class="mb-5">
-            <h2 class="section-title"><i class="fas fa-share-alt me-2"></i>8. Transferencias de Datos</h2>
-            <div class="alert alert-success">
-                <h5><i class="fas fa-check-circle me-2"></i>Compromiso de No Transferencia</h5>
-                <p class="mb-0"><strong>No se realizarán transferencias de datos personales a terceros sin consentimiento expreso</strong>, salvo aquellas que sean legalmente exigidas por autoridad competente.</p>
-            </div>
-        </section>
-
-        <!-- Sección 9 -->
-        <section class="mb-5">
-            <h2 class="section-title"><i class="fas fa-sync-alt me-2"></i>9. Cambios al Aviso de Privacidad</h2>
-            <p>Este Aviso de Privacidad puede ser actualizado para reflejar cambios normativos, técnicos o administrativos. Cualquier modificación será publicada en el sitio web institucional.</p>
-        </section>
-
-        <!-- Sección 10 -->
-        <section class="mb-5">
-            <h2 class="section-title"><i class="fas fa-gavel me-2"></i>10. Autoridad de Control</h2>
-            <div class="card border-warning">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0"><i class="fas fa-institution me-2"></i>Instituto Nacional de Transparencia (INAI)</h5>
-                </div>
-                <div class="card-body">
-                    <p>Si considera que se han vulnerado sus derechos de protección de datos personales, puede acudir al INAI:</p>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><i class="fas fa-globe me-2"></i><strong>Sitio web:</strong><br>
-                            <a href="https://home.inai.org.mx" target="_blank">https://home.inai.org.mx</a></p>
+                        <!-- Información General -->
+                        <div id="informacion-general" class="mb-5">
+                            <h2 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Información General
+                            </h2>
+                            <div class="alert alert-info">
+                                <i class="fas fa-calendar-alt me-2"></i>
+                                <strong>Última actualización:</strong> Enero 2024
+                            </div>
+                            <p class="lead">
+                                El Bachillerato General Estatal "Héroes de la Patria" es responsable del tratamiento de sus datos personales, conforme a lo dispuesto por la Ley General de Protección de Datos Personales en Posesión de Sujetos Obligados.
+                            </p>
                         </div>
-                        <div class="col-md-6">
-                            <p><i class="fas fa-phone me-2"></i><strong>Teléfono:</strong><br>
-                            01 800 835 4324</p>
+
+                        <!-- Responsable del Tratamiento -->
+                        <div id="responsable-tratamiento" class="mb-5">
+                            <h3 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-building me-2"></i>
+                                Responsable del Tratamiento
+                            </h3>
+
+                            <div class="card border-primary">
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="me-3">
+                                                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                        <i class="fas fa-building text-white"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <strong>Institución:</strong><br>
+                                                    Bachillerato General Estatal "Héroes de la Patria"
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="me-3">
+                                                    <div class="bg-success rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                        <i class="fas fa-map-marker-alt text-white"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <strong>Dirección:</strong><br>
+                                                    Coronel Tito Hernández, Venustiano Carranza, Puebla, C.P. 73560
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="me-3">
+                                                    <div class="bg-info rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                        <i class="fas fa-envelope text-white"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <strong>Email:</strong><br>
+                                                    21ebh0200x.sep@gmail.com
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="me-3">
+                                                    <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                        <i class="fas fa-id-card text-white"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <strong>CCT:</strong><br>
+                                                    21EBH0200X
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Datos Personales que Recopilamos -->
+                        <div id="datos-recopilados" class="mb-5">
+                            <h3 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-database me-2"></i>
+                                Datos Personales que Recopilamos
+                            </h3>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                                                    <i class="fas fa-id-card text-primary"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="card-title mb-1 text-dark">Datos de Identificación</h6>
+                                                    <small class="text-muted">Fuente: Estudiante/Tutor</small>
+                                                </div>
+                                            </div>
+                                            <p class="card-text text-muted small mb-0">Nombre completo, CURP, RFC, fecha de nacimiento, lugar de nacimiento</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                                                    <i class="fas fa-address-book text-success"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="card-title mb-1 text-dark">Datos de Contacto</h6>
+                                                    <small class="text-muted">Fuente: Estudiante/Tutor</small>
+                                                </div>
+                                            </div>
+                                            <p class="card-text text-muted small mb-0">Dirección, teléfono, correo electrónico</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                                                    <i class="fas fa-graduation-cap text-warning"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="card-title mb-1 text-dark">Datos Académicos</h6>
+                                                    <small class="text-muted">Fuente: Registro académico</small>
+                                                </div>
+                                            </div>
+                                            <p class="card-text text-muted small mb-0">Calificaciones, historial académico, certificados</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                                                    <i class="fas fa-users text-info"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="card-title mb-1 text-dark">Datos Familiares</h6>
+                                                    <small class="text-muted">Fuente: Estudiante/Tutor</small>
+                                                </div>
+                                            </div>
+                                            <p class="card-text text-muted small mb-0">Información de padres o tutores, contactos de emergencia</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mx-auto">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                                                    <i class="fas fa-chart-pie text-secondary"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="card-title mb-1 text-dark">Datos Socioeconómicos</h6>
+                                                    <small class="text-muted">Fuente: Estudiante/Tutor</small>
+                                                </div>
+                                            </div>
+                                            <p class="card-text text-muted small mb-0">Información para becas y apoyos educativos</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Finalidades del Tratamiento -->
+                        <div id="finalidades" class="mb-5">
+                            <h3 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-bullseye me-2"></i>
+                                Finalidades del Tratamiento
+                            </h3>
+
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Para qué utilizamos sus datos personales</strong><br>
+                                Los datos personales se utilizan exclusivamente con las siguientes finalidades educativas:
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-3">
+                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                            <i class="fas fa-graduation-cap text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 text-dark">Promoción Educativa</h6>
+                                            <p class="text-muted small mb-0">Difusión y promoción de programas educativos institucionales</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-3">
+                                        <div class="bg-info rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                            <i class="fas fa-info-circle text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 text-dark">Información Oficial</h6>
+                                            <p class="text-muted small mb-0">Publicación de información oficial de la Institución</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-3">
+                                        <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                            <i class="fas fa-folder-open text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 text-dark">Documentación</h6>
+                                            <p class="text-muted small mb-0">Actividades académicas, culturales y deportivas</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-3">
+                                        <div class="bg-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                            <i class="fas fa-comments text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 text-dark">Comunicación</h6>
+                                            <p class="text-muted small mb-0">Comunicación con la comunidad educativa</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-3">
+                                        <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                            <i class="fas fa-history text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 text-dark">Memoria Institucional</h6>
+                                            <p class="text-muted small mb-0">Preservación de la memoria institucional</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-3">
+                                        <div class="bg-danger rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                            <i class="fas fa-chart-line text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 text-dark">Análisis Web</h6>
+                                            <p class="text-muted small mb-0">Mejora de experiencia web (Google Analytics)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-success">
+                                <h6 class="alert-heading">
+                                    <i class="fas fa-shield-alt me-2"></i>
+                                    IMPORTANTE
+                                </h6>
+                                <p class="mb-0">
+                                    No se realizará el uso de datos personales con fines comerciales, ni se transferirán a terceros ajenos a la Institución.
+                                </p>
+                            </div>
+
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="card border-success h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-success">
+                                                <i class="fas fa-check-circle me-2"></i>
+                                                Finalidades Primarias
+                                            </h6>
+                                            <ul class="list-unstyled small">
+                                                <li class="mb-2">✓ Prestación de servicios educativos</li>
+                                                <li class="mb-2">✓ Control escolar y seguimiento académico</li>
+                                                <li class="mb-2">✓ Expedición de documentos oficiales</li>
+                                                <li class="mb-2">✓ Comunicación institucional</li>
+                                                <li class="mb-0">✓ Cumplimiento de obligaciones legales</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card border-info h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-info">
+                                                <i class="fas fa-plus-circle me-2"></i>
+                                                Finalidades Secundarias
+                                            </h6>
+                                            <ul class="list-unstyled small">
+                                                <li class="mb-2">• Estadísticas institucionales</li>
+                                                <li class="mb-2">• Mejora de servicios educativos</li>
+                                                <li class="mb-2">• Promoción de eventos académicos</li>
+                                                <li class="mb-2">• Programas de becas y apoyos</li>
+                                                <li class="mb-0">• Estudios de satisfacción</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Transferencias de Datos -->
+                        <div id="transferencias" class="mb-5">
+                            <h3 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-exchange-alt me-2"></i>
+                                Transferencias de Datos
+                            </h3>
+
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Importante:</strong> Sus datos personales pueden ser transferidos a las siguientes entidades cuando sea necesario para el cumplimiento de nuestras obligaciones.
+                            </div>
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <i class="fas fa-university text-primary me-3"></i>
+                                            <div>
+                                                <strong>Secretaría de Educación Pública (SEP)</strong>
+                                                <br><small class="text-muted">Para reportes estadísticos y cumplimiento normativo</small>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <i class="fas fa-graduation-cap text-primary me-3"></i>
+                                            <div>
+                                                <strong>Instituciones de Educación Superior</strong>
+                                                <br><small class="text-muted">Para procesos de admisión universitaria</small>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <i class="fas fa-balance-scale text-primary me-3"></i>
+                                            <div>
+                                                <strong>Autoridades Competentes</strong>
+                                                <br><small class="text-muted">Cuando sea requerido por mandato legal</small>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Derechos ARCO -->
+                        <div id="derechos-arco" class="mb-5">
+                            <h3 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-user-shield me-2"></i>
+                                Sus Derechos ARCO
+                            </h3>
+
+                            <div class="row g-3">
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="card text-center h-100 border-primary">
+                                        <div class="card-body">
+                                            <i class="fas fa-eye fa-2x text-primary mb-3"></i>
+                                            <h6 class="card-title">Acceso</h6>
+                                            <p class="card-text small">Conocer qué datos personales tenemos de usted</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="card text-center h-100 border-success">
+                                        <div class="card-body">
+                                            <i class="fas fa-edit fa-2x text-success mb-3"></i>
+                                            <h6 class="card-title">Rectificación</h6>
+                                            <p class="card-text small">Solicitar la corrección de datos incorrectos</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="card text-center h-100 border-warning">
+                                        <div class="card-body">
+                                            <i class="fas fa-ban fa-2x text-warning mb-3"></i>
+                                            <h6 class="card-title">Cancelación</h6>
+                                            <p class="card-text small">Solicitar que se eliminen sus datos personales</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="card text-center h-100 border-info">
+                                        <div class="card-body">
+                                            <i class="fas fa-pause fa-2x text-info mb-3"></i>
+                                            <h6 class="card-title">Oposición</h6>
+                                            <p class="card-text small">Oponerse al tratamiento de sus datos</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Procedimiento para Ejercer Derechos -->
+                        <div id="procedimiento-derechos" class="mb-5">
+                            <h3 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-clipboard-list me-2"></i>
+                                Procedimiento para Ejercer sus Derechos
+                            </h3>
+
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-file-alt text-primary me-2"></i>
+                                        Para ejercer sus derechos ARCO, debe presentar una solicitud que contenga:
+                                    </h6>
+                                    <ol class="mb-0">
+                                        <li>Nombre completo y firma del titular</li>
+                                        <li>Domicilio para recibir notificaciones</li>
+                                        <li>Copia de identificación oficial vigente</li>
+                                        <li>Descripción clara del derecho que desea ejercer</li>
+                                        <li>Documentos que acrediten la petición</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Medidas de Seguridad -->
+                        <div id="medidas-seguridad" class="mb-5">
+                            <h3 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-lock me-2"></i>
+                                Medidas de Seguridad
+                            </h3>
+
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="card text-center h-100">
+                                        <div class="card-body">
+                                            <i class="fas fa-shield-alt fa-2x text-success mb-3"></i>
+                                            <h6 class="card-title">Físicas</h6>
+                                            <p class="card-text small">Acceso controlado a instalaciones y archivos</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card text-center h-100">
+                                        <div class="card-body">
+                                            <i class="fas fa-laptop fa-2x text-info mb-3"></i>
+                                            <h6 class="card-title">Técnicas</h6>
+                                            <p class="card-text small">Sistemas de seguridad informática y encriptación</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card text-center h-100">
+                                        <div class="card-body">
+                                            <i class="fas fa-users fa-2x text-warning mb-3"></i>
+                                            <h6 class="card-title">Administrativas</h6>
+                                            <p class="card-text small">Políticas y procedimientos de protección de datos</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cookies y Tecnologías Web -->
+                        <div id="cookies-tecnologias" class="mb-5">
+                            <h3 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-cookie-bite me-2"></i>
+                                Cookies y Tecnologías Web
+                            </h3>
+
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Tecnologías utilizadas en nuestro sitio</strong><br>
+                                Este sitio web emplea las siguientes tecnologías:
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="text-center" width="60"><i class="fas fa-cog text-muted"></i></th>
+                                            <th>Tecnología</th>
+                                            <th>Propósito</th>
+                                            <th class="text-center">Tipo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center">
+                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                    <i class="fas fa-cog text-success"></i>
+                                                </div>
+                                            </td>
+                                            <td><strong>Cookies Técnicas</strong></td>
+                                            <td>Funcionamiento básico del sitio</td>
+                                            <td class="text-center"><span class="badge bg-success">Necesarias</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center">
+                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                    <i class="fas fa-sync-alt text-info"></i>
+                                                </div>
+                                            </td>
+                                            <td><strong>Service Workers</strong></td>
+                                            <td>Funcionalidad PWA y caché offline</td>
+                                            <td class="text-center"><span class="badge bg-info">Técnicas</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center">
+                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                    <i class="fas fa-chart-line text-warning"></i>
+                                                </div>
+                                            </td>
+                                            <td><strong>Google Analytics</strong></td>
+                                            <td>Análisis de tráfico y mejora UX</td>
+                                            <td class="text-center"><span class="badge bg-warning">Opcional</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Los usuarios pueden deshabilitar cookies desde su navegador, aunque esto puede afectar algunas funcionalidades.
+                            </div>
+                        </div>
+
+                        <!-- Protección de Menores -->
+                        <div id="proteccion-menores" class="mb-5">
+                            <h3 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-child me-2"></i>
+                                Protección de Menores
+                            </h3>
+
+                            <div class="card border-warning">
+                                <div class="card-body">
+                                    <h6 class="card-title text-warning mb-3">
+                                        <i class="fas fa-shield-alt me-2"></i>
+                                        Medidas especiales para estudiantes
+                                    </h6>
+                                    <h6 class="text-primary mb-3">Protección Especial para Menores</h6>
+                                    <p class="mb-3">
+                                        El tratamiento de datos de estudiantes menores de edad se realiza conforme a la Ley General de los Derechos de Niñas, Niños y Adolescentes, y requiere:
+                                    </p>
+
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex align-items-center px-0">
+                                            <i class="fas fa-check-circle text-success me-3"></i>
+                                            <span>Autorización expresa de ambos padres o tutores</span>
+                                        </li>
+                                        <li class="list-group-item d-flex align-items-center px-0">
+                                            <i class="fas fa-check-circle text-success me-3"></i>
+                                            <span>Consentimiento del menor (si es mayor de 12 años)</span>
+                                        </li>
+                                        <li class="list-group-item d-flex align-items-center px-0">
+                                            <i class="fas fa-check-circle text-success me-3"></i>
+                                            <span>Publicación limitada a nombres de pila y logros académicos</span>
+                                        </li>
+                                        <li class="list-group-item d-flex align-items-center px-0">
+                                            <i class="fas fa-check-circle text-success me-3"></i>
+                                            <span>Exclusión de datos sensibles</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Autoridad de Control -->
+                        <div id="autoridad-control" class="mb-5">
+                            <h3 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-balance-scale me-2"></i>
+                                Autoridad de Control
+                            </h3>
+
+                            <div class="card border-info">
+                                <div class="card-body">
+                                    <h6 class="card-title text-info mb-3">
+                                        <i class="fas fa-university me-2"></i>
+                                        Instituto Nacional de Transparencia
+                                    </h6>
+                                    <h6 class="text-primary mb-3">Instituto Nacional de Transparencia (INAI)</h6>
+                                    <p class="mb-3">
+                                        Si considera que se han vulnerado sus derechos de protección de datos personales, puede acudir al INAI:
+                                    </p>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="me-3">
+                                                    <div class="bg-info rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                        <i class="fas fa-globe text-white"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <strong>Sitio web:</strong><br>
+                                                    <a href="https://home.inai.org.mx" target="_blank" class="text-decoration-none">https://home.inai.org.mx</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="me-3">
+                                                    <div class="bg-success rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                        <i class="fas fa-phone text-white"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <strong>Teléfono:</strong><br>
+                                                    01 800 835 4324
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modificaciones al Aviso -->
+                        <div id="modificaciones-aviso" class="mb-5">
+                            <h3 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-edit me-2"></i>
+                                Modificaciones al Aviso de Privacidad
+                            </h3>
+
+                            <div class="card bg-warning bg-opacity-10 border-warning">
+                                <div class="card-body">
+                                    <h6 class="card-title text-warning">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        Cambios y Actualizaciones
+                                    </h6>
+                                    <p class="card-text">
+                                        Nos reservamos el derecho de modificar este aviso de privacidad en cualquier momento. Las modificaciones se notificarán a través de nuestro sitio web oficial.
+                                    </p>
+                                    <div class="mt-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-bell me-1"></i>
+                                            Se recomienda revisar periódicamente este aviso para estar al tanto de posibles cambios.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contacto para Privacidad -->
+                        <div id="contacto-privacidad" class="mb-5">
+                            <h3 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-envelope me-2"></i>
+                                Contacto para Asuntos de Privacidad
+                            </h3>
+
+                            <div class="card border-primary">
+                                <div class="card-body">
+                                    <p class="mb-3">Para ejercer sus derechos ARCO:</p>
+
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start">
+                                                <i class="fas fa-envelope text-primary me-3 mt-1"></i>
+                                                <div>
+                                                    <strong>Correo electrónico:</strong><br>
+                                                    <a href="mailto:21ebh0200x.sep@gmail.com" class="text-decoration-none">21ebh0200x.sep@gmail.com</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start">
+                                                <i class="fas fa-phone text-primary me-3 mt-1"></i>
+                                                <div>
+                                                    <strong>Teléfono:</strong><br>
+                                                    Disponible próximamente
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start">
+                                                <i class="fas fa-map-marker-alt text-primary me-3 mt-1"></i>
+                                                <div>
+                                                    <strong>Dirección:</strong><br>
+                                                    C. Manuel Ávila Camacho #7<br>
+                                                    Coronel Tito Hernández<br>
+                                                    V. Carranza, Puebla
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start">
+                                                <i class="fas fa-clock text-primary me-3 mt-1"></i>
+                                                <div>
+                                                    <strong>Horario de atención:</strong><br>
+                                                    Lun - Vie: 8:00 AM - 1:30 PM
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </section>
+    </main>
 
-    </div>
-</div>
+    <!-- Footer -->
+    <div id="main-footer"></div>
 
-<!-- Footer Legal -->
-<div class="legal-footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                <h5><i class="fas fa-balance-scale me-2"></i>Fundamento Legal</h5>
-                <p class="mb-2">Este aviso se emite en cumplimiento de:</p>
-                <ul class="list-unstyled">
-                    <li><i class="fas fa-check me-2"></i>Ley Federal de Protección de Datos Personales en Posesión de Particulares</li>
-                    <li><i class="fas fa-check me-2"></i>Ley General de Protección de Datos Personales en Posesión de Sujetos Obligados</li>
-                    <li><i class="fas fa-check me-2"></i>Ley General de los Derechos de Niñas, Niños y Adolescentes</li>
-                </ul>
-            </div>
-            <div class="col-lg-4 text-center">
-                <img src="images/logo-bachillerato-HDLP2.webp" alt="Logo BGE" width="60" height="60" class="mb-3">
-                <p class="mb-0"><small>Bachillerato General Estatal<br>"Héroes de la Patria"</small></p>
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Chat Bot Toggle Button -->
+    <button class="chatbot-toggle" id="chatbotToggle" aria-label="Abrir chat de ayuda">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Chat Bot Container -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <h6 class="mb-0">Asistente Virtual</h6>
+            <p class="small mb-0">¿En qué puedo ayudarte?</p>
+            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="message bot-message">
+                ¡Hola! Soy el asistente virtual del Bachillerato Héroes de la Patria. ¿Qué información necesitas?
             </div>
         </div>
-        <hr class="border-light">
-        <div class="text-center">
-            <p class="mb-0"><small><i class="fas fa-calendar me-2"></i>Última actualización: Septiembre 2024 | <i class="fas fa-copyright me-2"></i>Todos los derechos reservados</small></p>
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+                <i class="fas fa-paper-plane"></i>
+            </button>
         </div>
     </div>
-</div>
 
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Smooth scroll para navegación interna
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none"
+            style="bottom: 2rem; right: 2rem; width: 50px; height: 50px; z-index: 1000;"
+            aria-label="Volver arriba">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
-    // Update current year
-    document.getElementById('currentYear')?.innerText = new Date().getFullYear();
-</script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
+    <!-- Custom JavaScript -->
+    <script src="js/script.js"></script>
+    <script src="js/search-simple.js"></script>
 </body>
 </html>

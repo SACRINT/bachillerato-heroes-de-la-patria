@@ -36,7 +36,8 @@
       "Bash(git remote add:*)",
       "Bash(git push:*)",
       "Bash(copy serverserver.js api )",
-      "Bash(copy serverpackage.json api)"
+      "Bash(copy serverpackage.json api)",
+      "WebFetch(domain:bge-heroesdelapatria.vercel.app)"
     ],
     "deny": [],
     "ask": []
