@@ -18,8 +18,8 @@ class NewsManager {
             {
                 id: 1,
                 title: "Proyecto CTIM Destacado en Feria Estatal",
-                excerpt: "Nuestro equipo estudiantil obtuvo el primer lugar en la Feria Estatal de Ciencias con su innovador proyecto sobre energías renovables.",
-                content: `El proyecto titulado "Sistema de Captación de Energía Solar para Escuelas Rurales" fue desarrollado por estudiantes de sexto semestre bajo la supervisión de nuestros docentes especializados. La propuesta incluye un diseño sustentable y de bajo costo que puede implementarse en comunidades con recursos limitados.
+                excerpt: "Nuestro equipo estudiantil obtuvo el primer lugar en la Feria Regional de Ciencias con su innovador proyecto sobre energías renovables.",
+                content: `El proyecto titulado "Sistema de Captación de Energía Solar para Escuelas Rurales" fue desarrollado por estudiantes de cuarto y sexto semestre bajo la supervisión de nuestros docentes especializados. La propuesta incluye un diseño sustentable y de bajo costo que puede implementarse en comunidades con recursos limitados.
 
 Felicitamos a todo el equipo participante y a los docentes que los acompañaron en este proceso. Este reconocimiento reafirma nuestro compromiso con una educación de calidad que prepara a nuestros estudiantes para los desafíos del futuro.
 
@@ -38,9 +38,8 @@ El proyecto será presentado próximamente en el Congreso Nacional de Jóvenes I
 
 **Fechas importantes:**
 - Pre-registro en línea: Del 1 al 28 de febrero
-- Examen de admisión: 15 y 16 de marzo
-- Publicación de resultados: 30 de marzo
-- Inscripciones: Del 1 al 15 de abril
+- Examen de admisión: No hay Examen de adminsión
+- Inscripciones: Del 1 al 30 de septiembre
 
 Los requisitos incluyen certificado de secundaria, acta de nacimiento, CURP y comprobante de domicilio. Para más información, consulta nuestra página de servicios escolares.`,
                 date: "2024-12-15",
@@ -96,7 +95,7 @@ Los estudiantes interesados pueden acudir a la oficina de servicios escolares pa
 
 **Detalles del evento:**
 - Fecha: 25 y 26 de enero de 2025
-- Participantes: 8 estudiantes seleccionados
+- Participantes: 5 estudiantes seleccionados
 - Categorías: Álgebra, Geometría, y Cálculo
 - Modalidad: Individual y por equipos
 
@@ -133,10 +132,10 @@ La ceremonia se realiza en el patio principal con la participación de nuestra e
                 content: `La Generación 2024 culminó exitosamente sus estudios de bachillerato en una emotiva ceremonia donde 156 estudiantes recibieron su certificado de estudios.
 
 **Estadísticas de la generación:**
-- 156 estudiantes graduados
+- 56 estudiantes graduados
 - Promedio general: 8.7
-- 23 estudiantes con mención honorífica
-- 95% continuará estudios superiores
+- 15 estudiantes con mención honorífica
+- 90% continuará estudios superiores
 
 Felicitamos a todos nuestros egresados y sus familias por este importante logro. Les deseamos el mayor éxito en su próxima etapa educativa y profesional.`,
                 date: "2024-07-15",
