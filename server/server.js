@@ -23,6 +23,7 @@ const path = require('path');
 
 // Routes
 const authRoutes = require('./routes/auth');
+const contactRoutes = require('./routes/contact');
 
 // Middleware
 const { errorHandler } = require('./middleware/errorHandler');
@@ -225,6 +226,9 @@ app.post('/api/analytics/session', (req, res) => {
 
 // Authentication Routes
 app.use('/api/auth', authRoutes);
+
+// Contact Routes
+app.use('/api/contact', contactRoutes);
 
 // Static Files (Development & Production)
 console.log('🌍 Configurando servidor de archivos estáticos...');

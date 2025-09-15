@@ -136,7 +136,10 @@
                                     <p class="mb-0 mt-2">Ingresa tus credenciales para acceder a la información de tu hijo(a)</p>
                                 </div>
                                 <div class="card-body p-5">
-                                    <form id="parentLoginForm" class="padres-form-dark">
+                                    <form id="parentLoginForm" class="padres-form-dark" method="POST" action="/api/contact/send">
+                                        <!-- Campo oculto para identificar el formulario -->
+                                        <input type="hidden" name="form_type" value="Solicitud Acceso - Padres de Familia">
+                                        <input type="hidden" name="subject" value="Solicitud de acceso - Padres de familia">
                                         <div class="row g-4">
                                             <div class="col-12">
                                                 <label for="parentEmail" class="form-label">

@@ -477,7 +477,10 @@
 
                         <div class="card border-0 shadow">
                             <div class="card-body p-5">
-                                <form id="actualizarDatosForm" novalidate>
+                                <form id="actualizarDatosForm" method="POST" action="/api/contact/send" novalidate>
+                                    <!-- Campo oculto para identificar el formulario -->
+                                    <input type="hidden" name="form_type" value="Actualización de Datos - Egresados">
+                                    <input type="hidden" name="subject" value="Actualización de datos de egresado">
                                     <div class="row g-3">
                                         <!-- Información Personal -->
                                         <div class="col-12">

@@ -38,7 +38,8 @@
       "Bash(copy serverserver.js api )",
       "Bash(copy serverpackage.json api)",
       "WebFetch(domain:bge-heroesdelapatria.vercel.app)",
-      "WebFetch(domain:formspree.io)"
+      "WebFetch(domain:formspree.io)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []
