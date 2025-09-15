@@ -626,7 +626,10 @@
                     </div>
 
                     <!-- Formulario -->
-                    <form id="appointmentForm">
+                    <form id="appointmentForm" method="POST" action="https://formspree.io/f/mblyyzon">
+                        <!-- Campo oculto para identificar el formulario -->
+                        <input type="hidden" name="form_type" value="Sistema de Citas">
+                        <input type="hidden" name="_subject" value="[BACHILLERATO] Nueva Cita Solicitada">
                         <div class="row g-3">
                             <div class="col-12">
                                 <label for="name" class="form-label">Nombre completo *</label>
