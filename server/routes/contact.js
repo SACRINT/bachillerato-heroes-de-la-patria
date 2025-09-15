@@ -8,6 +8,7 @@ const express = require('express');
 const nodemailer = require('nodemailer');
 const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
+const verificationService = require('../services/verificationService');
 
 const router = express.Router();
 
@@ -203,7 +204,7 @@ const getEmailTemplate = (formType, data) => {
 // RUTAS
 // ============================================
 
-// Endpoint para todos los formularios
+// Endpoint para envío con verificación
 router.post('/send', contactLimiter, contactValidation, async (req, res) => {
     try {
         // Verificar errores de validación
@@ -216,36 +217,123 @@ router.post('/send', contactLimiter, contactValidation, async (req, res) => {
             });
         }
 
-        const { form_type, ...formData } = req.body;
+        const formData = req.body;
 
-        // Configurar transporter
+        // Crear verificación y enviar email de confirmación
+        const token = await verificationService.createVerification(formData);
+
+        res.json({
+            success: true,
+            message: 'Se ha enviado un email de confirmación a tu correo. Revisa tu bandeja de entrada y haz clic en el enlace para completar el envío.',
+            requiresVerification: true,
+            verificationSent: true
+        });
+
+    } catch (error) {
+        console.error('Error sending verification email:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error enviando email de verificación',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Error interno'
+        });
+    }
+});
+
+// Endpoint para verificar token y enviar mensaje final
+router.get('/verify/:token', async (req, res) => {
+    try {
+        const { token } = req.params;
+
+        // Verificar token
+        const verification = verificationService.verifyToken(token);
+
+        if (!verification.success) {
+            return res.status(400).send(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Error de Verificación</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f8f9fa; }
+                        .error { background: white; padding: 40px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                        .error h1 { color: #e74c3c; margin-bottom: 20px; }
+                        .back-btn { background: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="error">
+                        <h1>❌ Error de Verificación</h1>
+                        <p>${verification.error}</p>
+                        <p>El enlace puede haber expirado o ya fue utilizado.</p>
+                        <a href="/" class="back-btn">Volver al sitio</a>
+                    </div>
+                </body>
+                </html>
+            `);
+        }
+
+        // Enviar mensaje verificado
+        const { form_type, ...formData } = verification.data;
+
         const transporter = createTransporter();
-
-        // Configurar email
         const mailOptions = {
             from: `"BGE Héroes de la Patria" <${process.env.EMAIL_USER}>`,
             to: process.env.EMAIL_TO || process.env.EMAIL_USER,
-            subject: `[BACHILLERATO] ${form_type || 'Nuevo Mensaje'}`,
+            subject: `[BACHILLERATO - VERIFICADO] ${form_type || 'Nuevo Mensaje'}`,
             html: getEmailTemplate(form_type, formData),
             replyTo: formData.email
         };
 
-        // Enviar email
-        const info = await transporter.sendMail(mailOptions);
+        await transporter.sendMail(mailOptions);
 
-        res.json({
-            success: true,
-            message: 'Mensaje enviado exitosamente',
-            messageId: info.messageId
-        });
+        // Página de confirmación
+        res.send(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Mensaje Confirmado</title>
+                <style>
+                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f8f9fa; }
+                    .success { background: white; padding: 40px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                    .success h1 { color: #27ae60; margin-bottom: 20px; }
+                    .back-btn { background: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+                </style>
+            </head>
+            <body>
+                <div class="success">
+                    <h1>✅ Mensaje Confirmado</h1>
+                    <p>Tu mensaje ha sido enviado exitosamente al Bachillerato Héroes de la Patria.</p>
+                    <p>Gracias por verificar tu email. Nos pondremos en contacto contigo pronto.</p>
+                    <a href="/" class="back-btn">Volver al sitio</a>
+                </div>
+            </body>
+            </html>
+        `);
 
     } catch (error) {
-        console.error('Error sending email:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error interno del servidor',
-            error: process.env.NODE_ENV === 'development' ? error.message : 'Error enviando mensaje'
-        });
+        console.error('Error verifying token:', error);
+        res.status(500).send(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Error del Sistema</title>
+                <style>
+                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f8f9fa; }
+                    .error { background: white; padding: 40px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                    .error h1 { color: #e74c3c; margin-bottom: 20px; }
+                    .back-btn { background: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+                </style>
+            </head>
+            <body>
+                <div class="error">
+                    <h1>⚠️ Error del Sistema</h1>
+                    <p>Ocurrió un error procesando tu verificación.</p>
+                    <p>Por favor intenta enviar tu mensaje nuevamente.</p>
+                    <a href="/" class="back-btn">Volver al sitio</a>
+                </div>
+            </body>
+            </html>
+        `);
     }
 });
 
