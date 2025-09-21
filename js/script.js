@@ -531,12 +531,15 @@ class HeroesPatriaApp {
     }
 
     initServiceWorker() {
+        // DESHABILITADO - Conflicto con Service Worker en index.html
+        // Solo index.html debe registrar sw-stable.js para evitar ciclos infinitos
+        /*
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', async () => {
                 try {
                     const registration = await navigator.serviceWorker.register('./sw-offline-first.js');
                     //console.log('ServiceWorker registered successfully:', registration.scope);
-                    
+
                     // Listen for updates
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
@@ -548,12 +551,13 @@ class HeroesPatriaApp {
                             });
                         }
                     });
-                    
+
                 } catch (error) {
                     console.warn('ServiceWorker registration failed:', error);
                 }
             });
         }
+        */
     }
 
     showUpdateNotification() {
@@ -798,7 +802,7 @@ class AdminPanelAuth {
     constructor() {
         // Configuración de autenticación
         this.config = {
-            password: 'CHANGE_IN_PRODUCTION', // CAMBIAR EN PRODUCCIÓN - No usar en producción
+            password: process.env.ADMIN_PASSWORD || 'TEMPORARY_PASSWORD_SET_ENV_VAR', // Usar variable de entorno
             sessionDuration: 2 * 60 * 60 * 1000, // 2 horas en milisegundos
             storageKey: 'heroesPatria_adminPanelAuth',
             maxAttempts: 3,

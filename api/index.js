@@ -50,12 +50,19 @@ app.use('/api/', limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Variables de entorno por defecto para producción
-const JWT_SECRET = process.env.JWT_SECRET || 'CAMBIAR_POR_CLAVE_ULTRA_SECRETA_DE_PRODUCCION_64_CARACTERES';
-const ADMIN_PASSWORD = 'HeroesPatria2024!';
+// Variables de entorno obligatorias para producción
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+    console.error('❌ ERROR: JWT_SECRET environment variable is required');
+    process.exit(1);
+}
 
-// Hash de la contraseña admin (pre-calculado para HeroesPatria2024!)
-const ADMIN_PASSWORD_HASH = '$2b$12$pL.A7agYOVl2ahQqUnLn5.W/LD85ealJLyzNvbK8ZT0d0eLWbAvWe';
+// Contraseña y hash desde variables de entorno
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
+if (!ADMIN_PASSWORD_HASH) {
+    console.error('❌ ERROR: ADMIN_PASSWORD_HASH environment variable is required');
+    process.exit(1);
+}
 
 // ============================================
 // RUTAS DE AUTENTICACIÓN

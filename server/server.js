@@ -41,15 +41,15 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "'unsafe-hashes'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com", "https://accounts.google.com"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "'unsafe-hashes'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://accounts.google.com", "https://www.googleapis.com"],
             scriptSrcAttr: ["'self'", "'unsafe-inline'", "'unsafe-hashes'"],
             imgSrc: ["'self'", "data:", "https:", "http:"],
-            connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://www.google-analytics.com", "https://www.googletagmanager.com"],
+            connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://www.google-analytics.com", "https://www.googletagmanager.com", "https://accounts.google.com", "https://www.googleapis.com"],
             fontSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com", "data:"],
             objectSrc: ["'none'"],
             mediaSrc: ["'self'"],
-            frameSrc: ["'self'", "https://www.google.com", "https://maps.google.com", "https://www.openstreetmap.org"]
+            frameSrc: ["'self'", "https://www.google.com", "https://maps.google.com", "https://www.openstreetmap.org", "https://accounts.google.com"]
         }
     },
     hsts: {
@@ -99,9 +99,15 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
-// Session Configuration
+// Session Configuration - Obligatoria SESSION_SECRET
+const SESSION_SECRET = process.env.SESSION_SECRET;
+if (!SESSION_SECRET) {
+    console.error('❌ ERROR: SESSION_SECRET environment variable is required');
+    process.exit(1);
+}
+
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'default-session-secret-change-me',
+    secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
