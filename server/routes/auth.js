@@ -3,6 +3,9 @@
  * Endpoints seguros para login/logout con JWT
  */
 
+// Cargar variables de entorno
+require('dotenv').config();
+
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -31,31 +34,25 @@ const router = express.Router();
 const DEFAULT_ADMIN_PASSWORD = 'HeroesPatria2024!';
 
 /**
- * Hash de la contraseña admin (se genera automáticamente)
+ * Hash de la contraseña admin (desde variables de entorno)
  */
-let ADMIN_PASSWORD_HASH = null;
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
 
 /**
  * Inicializar hash de contraseña
  */
-const initializeAdminPassword = async () => {
-    try {
-        // TEMPORAL: Regenerar hash dinámicamente para debugging
-        console.log('🔄 Regenerando hash dinámicamente para debugging...');
-        const saltRounds = 12;
-        ADMIN_PASSWORD_HASH = await bcrypt.hash(DEFAULT_ADMIN_PASSWORD, saltRounds);
-        
-        console.log('✅ Hash generado dinámicamente');
-        console.log('🔑 Nuevo hash para .env:', ADMIN_PASSWORD_HASH);
-        
-    } catch (error) {
-        console.error('❌ Error inicializando contraseña admin:', error);
-        throw new Error('Error en inicialización de seguridad');
-    }
-};
+// Debug de variables de entorno
+console.log('🔍 DEBUG - ADMIN_PASSWORD_HASH:', ADMIN_PASSWORD_HASH ? 'LOADED' : 'NOT_FOUND');
+console.log('🔍 DEBUG - JWT_SECRET:', process.env.JWT_SECRET ? 'LOADED' : 'NOT_FOUND');
 
-// Inicializar al cargar el módulo
-initializeAdminPassword();
+// Verificar que el hash esté configurado
+if (!ADMIN_PASSWORD_HASH) {
+    console.error('❌ ERROR: ADMIN_PASSWORD_HASH environment variable is required');
+    console.error('🔍 All env vars:', Object.keys(process.env).filter(k => k.includes('ADMIN')));
+    process.exit(1);
+}
+
+console.log('✅ Using ADMIN_PASSWORD_HASH from environment variables');
 
 // ============================================
 // VALIDACIONES DE INPUT
