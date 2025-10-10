@@ -13,7 +13,17 @@ if (typeof window.BGE_CHATBOT_LOADED !== 'undefined') {
 
 // 🔧 Configuración de API Backend
 const API_CONFIG = {
-    baseUrl: 'http://localhost:3000/api',
+    // Auto-detectar baseURL según el entorno
+    get baseUrl() {
+        const hostname = window.location.hostname;
+        // Producción: Vercel o cualquier dominio remoto
+        if (hostname.includes('vercel.app') ||
+            (!hostname.includes('localhost') && !hostname.includes('127.0.0.1'))) {
+            return `${window.location.protocol}//${window.location.host}/api`;
+        }
+        // Desarrollo: localhost
+        return 'http://localhost:3000/api';
+    },
     endpoints: {
         search: '/chatbot/search',
         message: '/chatbot/message',

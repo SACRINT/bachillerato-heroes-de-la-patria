@@ -67,7 +67,7 @@ class BGEAuthSystem {
 
         if (hostname === 'localhost' || hostname === '127.0.0.1') {
             // Desarrollo local
-            return port === '8080' ? 'http://localhost:3000' : `http://${hostname}:${port || 3000}`;
+            return port === '8080' ? ${window.location.origin} : `http://${hostname}:${port || 3000}`;
         } else {
             // Producción
             return window.location.origin;

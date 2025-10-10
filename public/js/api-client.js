@@ -28,14 +28,21 @@ class APIClient {
      */
     detectEnvironment() {
         const hostname = window.location.hostname;
-        
+
+        // Producción: Vercel o cualquier dominio personalizado
+        if (hostname.includes('vercel.app') ||
+            (!hostname.includes('localhost') && !hostname.includes('127.0.0.1'))) {
+            // En producción, usar URLs relativas (mismo dominio)
+            return `${window.location.protocol}//${window.location.host}/api`;
+        }
+
+        // Desarrollo local
         if (hostname === 'localhost' || hostname === '127.0.0.1') {
             return this.baseURLs.development;
-        } else if (hostname.includes('github.io') || hostname.includes('githubpages')) {
-            return this.baseURLs.production;
-        } else {
-            return this.baseURLs.local;
         }
+
+        // Fallback
+        return this.baseURLs.development;
     }
 
     /**
