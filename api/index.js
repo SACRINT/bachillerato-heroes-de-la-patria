@@ -3,9 +3,13 @@
  * Bachillerato General Estatal "Héroes de la Patria"
  *
  * Este archivo es el punto de entrada para las funciones serverless de Vercel.
- * Simplemente importa y exporta la aplicación Express desde backend/server.js
+ * Carga el servidor Express desde el directorio backend
  */
 
-const app = require('../backend/server');
+// Cargar variables de entorno
+require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
+
+// Importar y exportar la aplicación Express
+const app = require(require('path').join(__dirname, '../backend/server'));
 
 module.exports = app;
