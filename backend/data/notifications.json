@@ -1,0 +1,34 @@
+{
+  "notifications": [
+    {
+      "id": "notif-001",
+      "student_id": "est-001",
+      "titulo": "Nueva calificación disponible",
+      "mensaje": "Se ha registrado tu calificación de Matemáticas V - Unidad 3",
+      "tipo": "grade",
+      "fecha": "2025-01-23T10:30:00Z",
+      "leido": false,
+      "prioridad": "normal"
+    },
+    {
+      "id": "notif-002",
+      "student_id": "est-001",
+      "titulo": "Tarea próxima a vencer",
+      "mensaje": "La tarea 'Resolver ejercicios de derivadas' vence en 3 días",
+      "tipo": "assignment",
+      "fecha": "2025-01-24T09:00:00Z",
+      "leido": false,
+      "prioridad": "alta"
+    },
+    {
+      "id": "notif-003",
+      "student_id": "est-001",
+      "titulo": "Evento: Feria de Ciencias",
+      "mensaje": "Se acerca la Feria de Ciencias 2025. ¡Inscríbete!",
+      "tipo": "event",
+      "fecha": "2025-01-22T14:15:00Z",
+      "leido": true,
+      "prioridad": "normal"
+    }
+  ]
+}

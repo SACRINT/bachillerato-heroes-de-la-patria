@@ -336,124 +336,193 @@
         </div>
     </div>
 
+    <!-- 🚀 BGE FRAMEWORK MODULAR - PÁGINA OFFLINE -->
+
+    <!-- 🔧 SISTEMA CORE (BGE Framework - Solo esenciales para offline) -->
+    <script src="js/context-manager.js" defer></script>
+    <script src="js/config.js?v=2024091401" defer></script>
+    <script src="js/theme-manager.js" defer></script>
+
+    <!-- 🎯 BGE FRAMEWORK CORE (Carga condicional para offline) -->
     <script>
-        // Connection status checking
-        let isCheckingConnection = false;
-        
-        function updateConnectionIcon(isOnline) {
-            const icon = document.getElementById('connectionIcon');
-            const status = document.getElementById('connectionStatus');
-            
-            if (isOnline) {
-                icon.textContent = '✅';
-                status.className = 'connection-status status-online';
-                status.innerHTML = '<strong>Estado:</strong> ¡Conexión restaurada! Redirigiendo...';
-                
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 2000);
-            } else {
-                icon.textContent = '📡';
-                status.className = 'connection-status status-offline';
-                status.innerHTML = '<strong>Estado:</strong> Sin conexión a Internet';
+        // Load BGE core only if online
+        if (navigator.onLine) {
+            const script = document.createElement('script');
+            script.src = 'js/bge-framework-core.js';
+            script.defer = true;
+            document.head.appendChild(script);
+        }
+    </script>
+
+    <!-- 📊 MÓDULOS BGE PARA OFFLINE -->
+    <script src="js/bge-performance-module.js" defer></script>
+    <script src="js/bge-pwa-module.js" defer></script>
+
+    <!-- 🔧 FUNCIONALIDADES ESPECÍFICAS OFFLINE -->
+    <script>
+        // BGE Offline Manager - Connection status checking
+        class BGEOfflineManager {
+            constructor() {
+                this.isCheckingConnection = false;
+                this.init();
             }
-        }
-        
-        function checkConnection() {
-            if (isCheckingConnection) return;
-            
-            isCheckingConnection = true;
-            const icon = document.getElementById('connectionIcon');
-            const status = document.getElementById('connectionStatus');
-            const button = document.querySelector('.btn-primary');
-            
-            // Update UI to show checking state
-            icon.textContent = '🔄';
-            status.className = 'connection-status status-checking';
-            status.innerHTML = '<strong>Estado:</strong> Verificando conexión...';
-            button.disabled = true;
-            button.innerHTML = '<span>⏳</span> Verificando...';
-            
-            // Try to fetch a small resource to check connectivity
-            fetch('/', { 
-                method: 'HEAD', 
-                cache: 'no-cache',
-                mode: 'no-cors'
-            })
-            .then(() => {
-                updateConnectionIcon(true);
-            })
-            .catch(() => {
-                updateConnectionIcon(false);
-            })
-            .finally(() => {
-                isCheckingConnection = false;
-                button.disabled = false;
-                button.innerHTML = '<span>🔄</span> Verificar conexión';
-            });
-        }
-        
-        // Auto-check connection periodically
-        function startAutoCheck() {
-            setInterval(() => {
-                if (!isCheckingConnection) {
-                    fetch('/', { 
-                        method: 'HEAD', 
-                        cache: 'no-cache',
-                        mode: 'no-cors',
-                        signal: AbortSignal.timeout(5000)
-                    })
-                    .then(() => {
-                        updateConnectionIcon(true);
-                    })
-                    .catch(() => {
-                        // Still offline, do nothing
+
+            init() {
+                this.setupEventListeners();
+                this.startAutoCheck();
+
+                // Initial check after a short delay
+                setTimeout(() => this.checkConnection(), 2000);
+            }
+
+            updateConnectionIcon(isOnline) {
+                const icon = document.getElementById('connectionIcon');
+                const status = document.getElementById('connectionStatus');
+
+                if (isOnline) {
+                    icon.textContent = '✅';
+                    status.className = 'connection-status status-online';
+                    status.innerHTML = '<strong>Estado:</strong> ¡Conexión restaurada! Redirigiendo...';
+
+                    // BGE Analytics - Track connection restored
+                    if (window.BGEAnalytics) {
+                        window.BGEAnalytics.trackEvent('offline_page', 'connection_restored');
+                    }
+
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                } else {
+                    icon.textContent = '📡';
+                    status.className = 'connection-status status-offline';
+                    status.innerHTML = '<strong>Estado:</strong> Sin conexión a Internet';
+
+                    // BGE Analytics - Track offline state
+                    if (window.BGEAnalytics) {
+                        window.BGEAnalytics.trackEvent('offline_page', 'connection_failed');
+                    }
+                }
+            }
+
+            checkConnection() {
+                if (this.isCheckingConnection) return;
+
+                this.isCheckingConnection = true;
+                const icon = document.getElementById('connectionIcon');
+                const status = document.getElementById('connectionStatus');
+                const button = document.querySelector('.btn-primary');
+
+                // Update UI to show checking state
+                icon.textContent = '🔄';
+                status.className = 'connection-status status-checking';
+                status.innerHTML = '<strong>Estado:</strong> Verificando conexión...';
+                button.disabled = true;
+                button.innerHTML = '<span>⏳</span> Verificando...';
+
+                // BGE Performance - Optimized connection check
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+                fetch('/', {
+                    method: 'HEAD',
+                    cache: 'no-cache',
+                    mode: 'no-cors',
+                    signal: controller.signal
+                })
+                .then(() => {
+                    clearTimeout(timeoutId);
+                    this.updateConnectionIcon(true);
+                })
+                .catch(() => {
+                    clearTimeout(timeoutId);
+                    this.updateConnectionIcon(false);
+                })
+                .finally(() => {
+                    this.isCheckingConnection = false;
+                    button.disabled = false;
+                    button.innerHTML = '<span>🔄</span> Verificar conexión';
+                });
+            }
+
+            startAutoCheck() {
+                setInterval(() => {
+                    if (!this.isCheckingConnection) {
+                        const controller = new AbortController();
+                        setTimeout(() => controller.abort(), 3000);
+
+                        fetch('/', {
+                            method: 'HEAD',
+                            cache: 'no-cache',
+                            mode: 'no-cors',
+                            signal: controller.signal
+                        })
+                        .then(() => {
+                            this.updateConnectionIcon(true);
+                        })
+                        .catch(() => {
+                            // Still offline, do nothing
+                        });
+                    }
+                }, 30000); // Check every 30 seconds
+            }
+
+            setupEventListeners() {
+                // Listen for online/offline events
+                window.addEventListener('online', () => {
+                    this.updateConnectionIcon(true);
+                });
+
+                window.addEventListener('offline', () => {
+                    this.updateConnectionIcon(false);
+                });
+
+                // Service Worker communication
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.addEventListener('message', event => {
+                        if (event.data && event.data.type === 'CACHE_UPDATED') {
+                            const status = document.getElementById('connectionStatus');
+                            status.className = 'connection-status status-online';
+                            status.innerHTML = '<strong>Actualización:</strong> Contenido actualizado en segundo plano';
+                        }
                     });
                 }
-            }, 30000); // Check every 30 seconds
+
+                // PWA install prompt
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+
+                    const installButton = document.createElement('button');
+                    installButton.className = 'btn btn-secondary';
+                    installButton.innerHTML = '<span>📱</span> Instalar App';
+                    installButton.onclick = () => {
+                        e.prompt();
+                        // BGE Analytics - Track install prompt
+                        if (window.BGEAnalytics) {
+                            window.BGEAnalytics.trackEvent('pwa', 'install_prompt_clicked');
+                        }
+                    };
+
+                    document.querySelector('.button-group').appendChild(installButton);
+                });
+            }
         }
-        
-        // Listen for online/offline events
-        window.addEventListener('online', () => {
-            updateConnectionIcon(true);
-        });
-        
-        window.addEventListener('offline', () => {
-            updateConnectionIcon(false);
-        });
-        
-        // Start auto-checking after page load
+
+        // Initialize BGE Offline Manager
         window.addEventListener('load', () => {
-            startAutoCheck();
-            
-            // Initial check after a short delay
-            setTimeout(checkConnection, 2000);
+            window.bgeOfflineManager = new BGEOfflineManager();
+
+            // Initialize BGE modules if available
+            if (window.BGECore) {
+                window.BGECore.initializeOfflineMode();
+            }
         });
-        
-        // Service Worker communication
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.addEventListener('message', event => {
-                if (event.data && event.data.type === 'CACHE_UPDATED') {
-                    const status = document.getElementById('connectionStatus');
-                    status.className = 'connection-status status-online';
-                    status.innerHTML = '<strong>Actualización:</strong> Contenido actualizado en segundo plano';
-                }
-            });
+
+        // Global function for button onclick (backward compatibility)
+        function checkConnection() {
+            if (window.bgeOfflineManager) {
+                window.bgeOfflineManager.checkConnection();
+            }
         }
-        
-        // PWA install prompt (if offline page is accessed as standalone)
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            
-            const installButton = document.createElement('button');
-            installButton.className = 'btn btn-secondary';
-            installButton.innerHTML = '<span>📱</span> Instalar App';
-            installButton.onclick = () => {
-                e.prompt();
-            };
-            
-            document.querySelector('.button-group').appendChild(installButton);
-        });
     </script>
 </body>
 </html>

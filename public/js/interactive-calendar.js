@@ -621,16 +621,201 @@ class InteractiveCalendar {
 
 // Funciones globales
 function downloadCalendar() {
-    // Simular descarga del calendario
-    const link = document.createElement('a');
-    link.href = '#'; // En un caso real, sería la URL del PDF
-    link.download = 'calendario-escolar-2024-2025.pdf';
-    
-    showAlert('Iniciando descarga del calendario escolar...', 'success');
+    // Crear descarga del calendario escolar en PDF
+    showAlert('Preparando descarga del calendario escolar...', 'info');
+
+    // Generar PDF con los eventos del calendario
+    const printWindow = window.open('', '_blank');
+    const calendarContent = generateCalendarPDF();
+
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Calendario Escolar 2024-2025 - BGE Héroes de la Patria</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                .header { text-align: center; margin-bottom: 30px; }
+                .logo { color: #1976D2; }
+                .month { page-break-before: always; margin-bottom: 40px; }
+                .month:first-child { page-break-before: auto; }
+                .month-title { font-size: 24px; font-weight: bold; color: #1976D2; margin-bottom: 20px; }
+                .events { background: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 15px; }
+                .event { margin-bottom: 10px; padding: 8px; border-left: 4px solid #1976D2; }
+                .event-date { font-weight: bold; color: #333; }
+                .event-title { color: #666; margin-left: 10px; }
+                table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+                th { background-color: #1976D2; color: white; }
+                .weekend { background-color: #f8f9fa; }
+                .event-day { background-color: #e3f2fd; font-weight: bold; }
+                @media print {
+                    body { margin: 0; }
+                    .no-print { display: none; }
+                }
+            </style>
+        </head>
+        <body>
+            ${calendarContent}
+            <script>
+                window.onload = function() {
+                    window.print();
+                    setTimeout(() => window.close(), 1000);
+                };
+            </script>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+
+    setTimeout(() => {
+        showAlert('Calendario descargado exitosamente', 'success');
+    }, 2000);
+}
+
+function generateCalendarPDF() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const schoolYear = `${year}-${year + 1}`;
+
+    let content = `
+        <div class="header">
+            <h1 class="logo">📚 BGE Héroes de la Patria</h1>
+            <h2>Calendario Escolar ${schoolYear}</h2>
+            <p>Bachillerato General Estatal</p>
+            <hr>
+        </div>
+    `;
+
+    // Generar 12 meses de calendario
+    for (let month = 0; month < 12; month++) {
+        const date = new Date(year, month, 1);
+        const monthName = date.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+        const monthEvents = window.calendar ? window.calendar.getEventsForMonth(year, month) : [];
+
+        content += `
+            <div class="month">
+                <h3 class="month-title">${monthName.charAt(0).toUpperCase() + monthName.slice(1)}</h3>
+                ${generateMonthGrid(year, month)}
+                ${monthEvents.length > 0 ? `
+                    <div class="events">
+                        <h4>📅 Eventos del mes:</h4>
+                        ${monthEvents.map(event => `
+                            <div class="event">
+                                <span class="event-date">${formatEventDate(event.date)}</span>
+                                <span class="event-title">${event.title}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : '<p><em>No hay eventos programados para este mes</em></p>'}
+            </div>
+        `;
+    }
+
+    return content;
+}
+
+function generateMonthGrid(year, month) {
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
+
+    let grid = `
+        <table>
+            <tr>
+                <th>Dom</th><th>Lun</th><th>Mar</th><th>Mié</th>
+                <th>Jue</th><th>Vie</th><th>Sáb</th>
+            </tr>
+    `;
+
+    const current = new Date(startDate);
+    while (current <= lastDay || current.getDay() !== 0) {
+        grid += '<tr>';
+        for (let day = 0; day < 7; day++) {
+            const isCurrentMonth = current.getMonth() === month;
+            const isWeekend = day === 0 || day === 6;
+            const hasEvent = window.calendar ? window.calendar.hasEventOnDate(current) : false;
+
+            const cellClass = !isCurrentMonth ? 'text-muted' :
+                            isWeekend ? 'weekend' :
+                            hasEvent ? 'event-day' : '';
+
+            grid += `<td class="${cellClass}">${current.getDate()}</td>`;
+            current.setDate(current.getDate() + 1);
+        }
+        grid += '</tr>';
+
+        if (current > lastDay && current.getDay() === 0) break;
+    }
+
+    grid += '</table>';
+    return grid;
+}
+
+function formatEventDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('es-ES', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
 }
 
 function exportToGoogle() {
-    showAlert('Funcionalidad próximamente. Podrás sincronizar eventos con Google Calendar.', 'info');
+    showAlert('Generando archivo de Google Calendar...', 'info');
+
+    // Generar archivo .ics para importar a Google Calendar
+    const events = window.calendar ? window.calendar.events : [];
+    let icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//BGE Héroes de la Patria//Calendario Escolar//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Calendario Escolar BGE Héroes de la Patria
+X-WR-TIMEZONE:America/Mexico_City
+X-WR-CALDESC:Calendario oficial del Bachillerato General Estatal Héroes de la Patria
+`;
+
+    events.forEach(event => {
+        const startDate = new Date(event.date);
+        const endDate = new Date(event.endDate || event.date);
+
+        // Formatear fechas para el archivo ICS
+        const formatDateForICS = (date) => {
+            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        };
+
+        icsContent += `
+BEGIN:VEVENT
+UID:${event.id}@heroesdelapatria.edu.mx
+DTSTART:${formatDateForICS(startDate)}
+DTEND:${formatDateForICS(endDate)}
+SUMMARY:${event.title}
+DESCRIPTION:${event.description || event.title}
+LOCATION:BGE Héroes de la Patria
+CATEGORIES:${event.type.toUpperCase()}
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT`;
+    });
+
+    icsContent += `
+END:VCALENDAR`;
+
+    // Crear y descargar el archivo
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'calendario-escolar-bge-heroes.ics';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setTimeout(() => {
+        showAlert('Archivo .ics generado. Ábrelo con Google Calendar para importar eventos.', 'success');
+    }, 1000);
 }
 
 function shareCalendar() {

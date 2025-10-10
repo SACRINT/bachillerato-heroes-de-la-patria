@@ -20,11 +20,29 @@ window.AppConfig = {
         retries: 3
     },
 
-    // Google APIs
+    // Google OAuth 2.0 Configuration
     google: {
-        clientId: null, // 'TU_GOOGLE_CLIENT_ID.googleusercontent.com'
-        apiKey: null,   // 'TU_GOOGLE_API_KEY'
-        enabled: false  // Cambiar a true cuando configures las keys
+        // 🔑 Client ID para Google Sign-In
+        // Para obtenerlo:
+        // 1. Ve a https://console.cloud.google.com/apis/credentials
+        // 2. Crea "ID de cliente de OAuth 2.0"
+        // 3. Configura los orígenes autorizados:
+        //    - http://localhost:3000
+        //    - http://127.0.0.1:8080
+        //    - https://tu-dominio-produccion.com
+        clientId: null, // Ejemplo: '123456-abc.apps.googleusercontent.com'
+
+        apiKey: null,   // 'TU_GOOGLE_API_KEY' (opcional para otras APIs)
+        enabled: false, // Cambiar a true cuando configures el clientId
+
+        // Configuración avanzada de OAuth
+        oauth: {
+            scope: 'email profile',
+            cookiePolicy: 'single_host_origin',
+            fetchBasicProfile: true,
+            uxMode: 'popup', // 'popup' o 'redirect'
+            redirectUri: window.location.origin
+        }
     },
 
     // Facebook Pixel
@@ -87,7 +105,10 @@ window.AppConfig = {
 window.AppConfig.isEnabled = function(service) {
     switch (service) {
         case 'google':
-            return this.google.enabled && this.google.clientId && this.google.apiKey;
+            // Para Google OAuth, solo necesitamos el clientId
+            return this.google.enabled &&
+                   this.google.clientId &&
+                   this.google.clientId.includes('.apps.googleusercontent.com');
         case 'facebook':
             return this.facebook.enabled && this.facebook.pixelId;
         case 'stripe':
@@ -101,6 +122,32 @@ window.AppConfig.isEnabled = function(service) {
         default:
             return false;
     }
+};
+
+// Función para obtener el Client ID de Google
+window.AppConfig.getGoogleClientId = function() {
+    if (!this.isEnabled('google')) {
+        console.warn(`
+⚠️ ============================================
+   GOOGLE OAUTH NO CONFIGURADO
+   ============================================
+
+   Para habilitar Google Sign-In:
+
+   1. Ve a https://console.cloud.google.com/apis/credentials
+   2. Crea "ID de cliente de OAuth 2.0"
+   3. Configura los orígenes autorizados
+   4. Pega el Client ID en js/config.js:
+
+      window.AppConfig.google.clientId = 'TU_CLIENT_ID';
+      window.AppConfig.google.enabled = true;
+
+   Mientras tanto, el sistema usará modo DEMO.
+   ============================================
+        `);
+        return null;
+    }
+    return this.google.clientId;
 };
 
 // Función para obtener la configuración de un servicio

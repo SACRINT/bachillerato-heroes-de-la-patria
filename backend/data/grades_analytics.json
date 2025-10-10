@@ -1,0 +1,95 @@
+{
+  "academic_periods": [
+    {
+      "id": "2024-2025A",
+      "name": "Semestre Agosto-Diciembre 2024",
+      "start_date": "2024-08-26",
+      "end_date": "2024-12-20",
+      "status": "active"
+    },
+    {
+      "id": "2023-2024B",
+      "name": "Semestre Febrero-Julio 2024",
+      "start_date": "2024-02-05",
+      "end_date": "2024-07-15",
+      "status": "completed"
+    }
+  ],
+  "subjects_metadata": [
+    {
+      "subject": "Matemáticas V",
+      "category": "Ciencias Exactas",
+      "difficulty_level": 4,
+      "required_average": 6,
+      "teacher": "Prof. García Hernández",
+      "credits": 8
+    },
+    {
+      "subject": "Programación Web",
+      "category": "Tecnología",
+      "difficulty_level": 3,
+      "required_average": 7,
+      "teacher": "Prof. López Martínez",
+      "credits": 6
+    },
+    {
+      "subject": "Inglés V",
+      "category": "Idiomas",
+      "difficulty_level": 2,
+      "required_average": 6,
+      "teacher": "Prof. Johnson Smith",
+      "credits": 4
+    },
+    {
+      "subject": "Historia de México",
+      "category": "Humanidades",
+      "difficulty_level": 2,
+      "required_average": 6,
+      "teacher": "Prof. Rodríguez Vega",
+      "credits": 4
+    },
+    {
+      "subject": "Física II",
+      "category": "Ciencias Exactas",
+      "difficulty_level": 5,
+      "required_average": 6,
+      "teacher": "Prof. Martínez Silva",
+      "credits": 8
+    }
+  ],
+  "performance_metrics": {
+    "grade_scale": {
+      "A": {
+        "min": 9,
+        "max": 10,
+        "label": "Excelente"
+      },
+      "B": {
+        "min": 8,
+        "max": 8.9,
+        "label": "Muy Bueno"
+      },
+      "C": {
+        "min": 7,
+        "max": 7.9,
+        "label": "Bueno"
+      },
+      "D": {
+        "min": 6,
+        "max": 6.9,
+        "label": "Suficiente"
+      },
+      "F": {
+        "min": 0,
+        "max": 5.9,
+        "label": "Insuficiente"
+      }
+    },
+    "alert_thresholds": {
+      "critical": 5.9,
+      "warning": 6.9,
+      "good": 8,
+      "excellent": 9
+    }
+  }
+}

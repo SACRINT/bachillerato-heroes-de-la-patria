@@ -1,0 +1,47 @@
+{
+  "requests": [
+    {
+      "id": 1,
+      "email": "aprobado@test.com",
+      "fullName": "Usuario Aprobado Test",
+      "requestedRole": "estudiante",
+      "status": "approved",
+      "createdAt": "2025-10-04T10:00:00.000Z",
+      "approvedAt": "2025-10-04T10:30:00.000Z",
+      "reviewedBy": "admin@bge.edu.mx",
+      "reviewNotes": "Solicitud aprobada para testing",
+      "userId": 123
+    },
+    {
+      "id": 2,
+      "email": "pendiente@test.com",
+      "fullName": "Usuario Pendiente Test",
+      "requestedRole": "estudiante",
+      "status": "pending",
+      "createdAt": "2025-10-04T11:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "email": "rechazado@test.com",
+      "fullName": "Usuario Rechazado Test",
+      "requestedRole": "estudiante",
+      "status": "rejected",
+      "createdAt": "2025-10-04T09:00:00.000Z",
+      "reviewedBy": "admin@bge.edu.mx",
+      "reviewNotes": "No cumple requisitos"
+    },
+    {
+      "id": 4,
+      "email": "MAYUSCULAS@TEST.COM",
+      "fullName": "Usuario Con Email Mayúsculas",
+      "requestedRole": "docente",
+      "status": "approved",
+      "createdAt": "2025-10-04T08:00:00.000Z",
+      "approvedAt": "2025-10-04T08:15:00.000Z",
+      "reviewedBy": "admin@bge.edu.mx",
+      "reviewNotes": "Docente aprobado",
+      "userId": 456
+    }
+  ],
+  "lastId": 4
+}

@@ -1,6 +1,6 @@
 /**
- * 🎓 RUTAS DE ESTUDIANTES
- * Gestión completa de estudiantes del plantel
+ * 🎓 RUTAS DE ESTUDIANTES - Sistema de Dashboard Estudiantil
+ * Gestión completa de estudiantes del plantel con dashboard integrado
  */
 
 const express = require('express');
@@ -8,7 +8,19 @@ const { body, validationResult } = require('express-validator');
 const { executeQuery } = require('../config/database');
 const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
 const { logger } = require('../middleware/logger');
+const crypto = require('crypto');
 const router = express.Router();
+
+// Obtener servicio de estudiantes
+function getStudentService() {
+    try {
+        const { getStudentService } = require('../services/studentService');
+        return getStudentService();
+    } catch (error) {
+        console.error('❌ Error obteniendo servicio de estudiantes:', error.message);
+        return null;
+    }
+}
 
 // ============================================
 // RUTAS PÚBLICAS (información básica)
@@ -516,6 +528,252 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res, next) =>
         
     } catch (error) {
         next(error);
+    }
+});
+
+// ============================================
+// RUTAS DEL DASHBOARD ESTUDIANTIL
+// ============================================
+
+/**
+ * POST /api/students/auth/login
+ * Autenticación de estudiante para dashboard
+ */
+router.post('/auth/login', async (req, res, next) => {
+    try {
+        const { matricula, password } = req.body;
+
+        if (!matricula || !password) {
+            return res.status(400).json({
+                success: false,
+                message: 'Matrícula y contraseña son requeridos'
+            });
+        }
+
+        const studentService = getStudentService();
+        if (!studentService) {
+            return res.status(500).json({
+                success: false,
+                message: 'Servicio de estudiantes no disponible'
+            });
+        }
+
+        const result = await studentService.authenticateStudent(matricula, password);
+
+        if (result.success) {
+            // Generar token JWT (simplificado para demo)
+            const token = crypto.randomBytes(32).toString('hex');
+
+            res.json({
+                success: true,
+                message: 'Login exitoso',
+                data: {
+                    student: result.student,
+                    token: token,
+                    expires_in: '24h'
+                }
+            });
+        } else {
+            res.status(401).json({
+                success: false,
+                message: 'Credenciales inválidas'
+            });
+        }
+    } catch (error) {
+        console.error('❌ Error en login de estudiante:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error interno del servidor',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+/**
+ * GET /api/students/dashboard
+ * Obtener datos del dashboard estudiantil
+ */
+router.get('/dashboard', authenticateToken, async (req, res, next) => {
+    try {
+        const studentService = getStudentService();
+        if (!studentService) {
+            return res.status(500).json({
+                success: false,
+                message: 'Servicio de estudiantes no disponible'
+            });
+        }
+
+        const dashboardData = await studentService.getDashboardData(req.user.id);
+
+        res.json({
+            success: true,
+            data: dashboardData
+        });
+    } catch (error) {
+        console.error('❌ Error obteniendo dashboard:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error obteniendo datos del dashboard',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+/**
+ * GET /api/students/profile
+ * Obtener perfil del estudiante
+ */
+router.get('/profile', authenticateToken, async (req, res, next) => {
+    try {
+        const studentService = getStudentService();
+        if (!studentService) {
+            return res.status(500).json({
+                success: false,
+                message: 'Servicio de estudiantes no disponible'
+            });
+        }
+
+        const profile = await studentService.getStudentProfile(req.user.id);
+
+        res.json({
+            success: true,
+            data: profile
+        });
+    } catch (error) {
+        console.error('❌ Error obteniendo perfil:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error obteniendo perfil del estudiante',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+/**
+ * GET /api/students/grades
+ * Obtener calificaciones del estudiante
+ */
+router.get('/grades', authenticateToken, async (req, res, next) => {
+    try {
+        const { semestre, materia } = req.query;
+
+        const studentService = getStudentService();
+        if (!studentService) {
+            return res.status(500).json({
+                success: false,
+                message: 'Servicio de estudiantes no disponible'
+            });
+        }
+
+        const grades = await studentService.getStudentGrades(req.user.id, { semestre, materia });
+
+        res.json({
+            success: true,
+            data: grades
+        });
+    } catch (error) {
+        console.error('❌ Error obteniendo calificaciones:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error obteniendo calificaciones',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+/**
+ * GET /api/students/schedule
+ * Obtener horario del estudiante
+ */
+router.get('/schedule', authenticateToken, async (req, res, next) => {
+    try {
+        const studentService = getStudentService();
+        if (!studentService) {
+            return res.status(500).json({
+                success: false,
+                message: 'Servicio de estudiantes no disponible'
+            });
+        }
+
+        const schedule = await studentService.getStudentSchedule(req.user.id);
+
+        res.json({
+            success: true,
+            data: schedule
+        });
+    } catch (error) {
+        console.error('❌ Error obteniendo horario:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error obteniendo horario',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+/**
+ * GET /api/students/assignments
+ * Obtener tareas del estudiante
+ */
+router.get('/assignments', authenticateToken, async (req, res, next) => {
+    try {
+        const { status } = req.query;
+
+        const studentService = getStudentService();
+        if (!studentService) {
+            return res.status(500).json({
+                success: false,
+                message: 'Servicio de estudiantes no disponible'
+            });
+        }
+
+        const assignments = await studentService.getStudentAssignments(req.user.id, { status });
+
+        res.json({
+            success: true,
+            data: assignments
+        });
+    } catch (error) {
+        console.error('❌ Error obteniendo tareas:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error obteniendo tareas',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+/**
+ * GET /api/students/notifications
+ * Obtener notificaciones del estudiante
+ */
+router.get('/notifications', authenticateToken, async (req, res, next) => {
+    try {
+        const { unread_only } = req.query;
+
+        const studentService = getStudentService();
+        if (!studentService) {
+            return res.status(500).json({
+                success: false,
+                message: 'Servicio de estudiantes no disponible'
+            });
+        }
+
+        const notifications = await studentService.getStudentNotifications(req.user.id, {
+            unread_only: unread_only === 'true'
+        });
+
+        res.json({
+            success: true,
+            data: notifications
+        });
+    } catch (error) {
+        console.error('❌ Error obteniendo notificaciones:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error obteniendo notificaciones',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 });
 

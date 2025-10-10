@@ -5,11 +5,15 @@
  */
 
 // === CONFIGURATION ===
-const CACHE_NAME = 'heroes-patria-v4.0.0';
+const CACHE_NAME = 'heroes-patria-v4.3.0-auto-update';
 const OFFLINE_PAGE = './offline.html';
 const API_CACHE_NAME = 'heroes-api-cache-v1';
 const IMAGES_CACHE_NAME = 'heroes-images-v1';
 const STATIC_CACHE_NAME = 'heroes-static-v1';
+const UPDATE_CHECK_INTERVAL = 5 * 60 * 1000; // 5 minutos
+
+// Versión del service worker para auto-actualizaciones
+const SW_VERSION = '4.3.0-auto-update';
 
 const CACHE_STRATEGY_CONFIG = {
     staleWhileRevalidate: {
@@ -74,14 +78,9 @@ const PRECACHE_RESOURCES = [
     '/images/app_icons/icon-192x192.png',
     '/images/app_icons/icon-512x512.png',
     
-    // Hero images
+    // Hero images (solo las que existen)
     '/images/hero/fachada1.webp',
-    '/images/hero/fachada1.jpg',
-    
-    // Fallback images
-    '/images/galeria/placeholder_actividad.webp',
-    '/images/placeholder/avatar-placeholder.jpg',
-    '/images/placeholder/teacher-placeholder.jpg'
+    '/images/hero/fachada1.jpeg'
 ];
 
 // === DYNAMIC CONTENT PATTERNS ===
@@ -151,13 +150,19 @@ self.addEventListener('activate', event => {
     event.waitUntil(
         (async () => {
             try {
-                // Clean up old caches
+                // Clean up old caches más agresivamente
                 const cacheNames = await caches.keys();
+                const currentCaches = [CACHE_NAME, API_CACHE_NAME, IMAGES_CACHE_NAME, STATIC_CACHE_NAME];
                 const deletionPromises = cacheNames
-                    .filter(cacheName => cacheName !== CACHE_NAME)
-                    .map(cacheName => {
+                    .filter(cacheName => !currentCaches.includes(cacheName))
+                    .map(async cacheName => {
                         console.log(`🗑️ Deleting old cache: ${cacheName}`);
-                        return caches.delete(cacheName);
+                        try {
+                            await caches.delete(cacheName);
+                            console.log(`✅ Deleted cache: ${cacheName}`);
+                        } catch (error) {
+                            console.warn(`⚠️ Failed to delete cache ${cacheName}:`, error);
+                        }
                     });
                 
                 await Promise.all(deletionPromises);
@@ -187,11 +192,13 @@ self.addEventListener('fetch', event => {
     
     // CRITICAL: Don't intercept authentication and critical API requests
     // Let them go directly to the server to avoid 404 conflicts
-    if (url.pathname.includes('/api/auth/') || 
+    if (url.pathname.includes('/api/auth/') ||
         url.pathname.includes('/api/analytics/') ||
         url.pathname.includes('/health') ||
-        request.method === 'POST' || 
-        request.method === 'PUT' || 
+        url.pathname.includes('/dashboard-manager-2025.js') ||
+        url.pathname.includes('/admin-dashboard.js') ||
+        request.method === 'POST' ||
+        request.method === 'PUT' ||
         request.method === 'DELETE') {
         // Let critical API requests go through directly
         return;
@@ -788,6 +795,89 @@ async function performIntelligentCacheCleanup() {
     } catch (error) {
         console.error('❌ Cache cleanup failed:', error);
     }
+}
+
+// === SISTEMA DE ACTUALIZACIONES AUTOMÁTICAS ===
+self.addEventListener('message', event => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        console.log('🔄 [AUTO-UPDATE] Activando nueva versión del service worker');
+        self.skipWaiting();
+    }
+
+    if (event.data && event.data.type === 'CHECK_UPDATE') {
+        console.log('🔍 [AUTO-UPDATE] Verificación manual de actualizaciones');
+        event.waitUntil(checkForManualUpdate(event));
+    }
+
+    if (event.data && event.data.type === 'GET_VERSION') {
+        event.ports[0].postMessage({
+            version: SW_VERSION,
+            cacheName: CACHE_NAME
+        });
+    }
+});
+
+async function checkForManualUpdate(event) {
+    try {
+        // Verificar si hay una nueva versión disponible
+        const registration = await self.registration.update();
+
+        if (registration.installing) {
+            console.log('🔄 [AUTO-UPDATE] Nueva versión encontrada y descargando');
+
+            // Notificar al cliente que hay una actualización
+            const clients = await self.clients.matchAll();
+            clients.forEach(client => {
+                client.postMessage({
+                    type: 'UPDATE_AVAILABLE',
+                    version: SW_VERSION
+                });
+            });
+        } else {
+            console.log('✅ [AUTO-UPDATE] Ya tienes la versión más reciente');
+
+            // Notificar que no hay actualizaciones
+            const clients = await self.clients.matchAll();
+            clients.forEach(client => {
+                client.postMessage({
+                    type: 'NO_UPDATE_AVAILABLE',
+                    version: SW_VERSION
+                });
+            });
+        }
+    } catch (error) {
+        console.error('❌ [AUTO-UPDATE] Error verificando actualizaciones:', error);
+    }
+}
+
+// Verificación periódica de actualizaciones en background
+self.addEventListener('activate', event => {
+    console.log('🚀 [AUTO-UPDATE] Service Worker activado - Versión:', SW_VERSION);
+
+    event.waitUntil(
+        Promise.all([
+            self.clients.claim(),
+            performIntelligentCacheCleanup(),
+            scheduleUpdateChecks()
+        ])
+    );
+});
+
+async function scheduleUpdateChecks() {
+    // Programar verificaciones periódicas de actualizaciones
+    console.log('⏰ [AUTO-UPDATE] Programando verificaciones automáticas');
+
+    // Verificar actualizaciones cada 5 minutos cuando la app esté en uso
+    setInterval(async () => {
+        try {
+            const clients = await self.clients.matchAll();
+            if (clients.length > 0) { // Solo verificar si hay clientes activos
+                await self.registration.update();
+            }
+        } catch (error) {
+            console.warn('⚠️ [AUTO-UPDATE] Error en verificación automática:', error);
+        }
+    }, UPDATE_CHECK_INTERVAL);
 }
 
 async function cleanExpiredCacheEntries(cacheName) {

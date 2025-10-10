@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🥽 Laboratorio AR/VR - BGE Héroes de la Patria</title>
+
+    <!-- CSS Principal -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
+
+    <style>
+        .ar-vr-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+        }
+
+        .ar-vr-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .ar-vr-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .ar-vr-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .experiences-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .experience-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .experience-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .experience-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .experience-card h3 {
+            color: #2563eb;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .experience-scenarios {
+            list-style: none;
+            padding: 0;
+        }
+
+        .experience-scenarios li {
+            background: #f3f4f6;
+            margin: 0.5rem 0;
+            padding: 0.8rem;
+            border-radius: 10px;
+            border-left: 4px solid #2563eb;
+        }
+
+        .ar-status {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            text-align: center;
+            color: white;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-available { background: #10b981; }
+        .status-unavailable { background: #ef4444; }
+        .status-partial { background: #f59e0b; }
+
+        .launch-btn {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .launch-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .launch-btn:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .ar-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 1000;
+            display: none;
+        }
+
+        .ar-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .ar-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .compatibility-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            color: white;
+        }
+
+        .device-icons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .device-icon {
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        .device-icon.supported {
+            opacity: 1;
+            color: #10b981;
+        }
+    </style>
+</head>
+<body>
+    <div class="ar-vr-container">
+        <!-- Header del Laboratorio AR/VR -->
+        <div class="ar-vr-header">
+            <h1>🥽 Laboratorio AR/VR</h1>
+            <p>Experiencias de aprendizaje inmersivas para el Bachillerato General Estatal</p>
+        </div>
+
+        <!-- Estado de Compatibilidad AR/VR -->
+        <div class="ar-status" id="arStatus">
+            <h3>🔍 Estado del Sistema AR/VR</h3>
+            <div id="compatibilityResults">
+                <p><span class="status-indicator status-unavailable"></span>Detectando capacidades del dispositivo...</p>
+            </div>
+
+            <div class="device-icons">
+                <div class="device-icon" id="webxr-icon">
+                    <div>🥽</div>
+                    <small>WebXR</small>
+                </div>
+                <div class="device-icon" id="webgl-icon">
+                    <div>🎮</div>
+                    <small>WebGL</small>
+                </div>
+                <div class="device-icon" id="camera-icon">
+                    <div>📷</div>
+                    <small>Cámara</small>
+                </div>
+                <div class="device-icon" id="sensors-icon">
+                    <div>📱</div>
+                    <small>Sensores</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid de Experiencias AR/VR -->
+        <div class="experiences-grid">
+            <!-- Matemáticas AR -->
+            <div class="experience-card" data-subject="mathematics">
+                <div class="experience-icon">🔢</div>
+                <h3>Matemáticas AR</h3>
+                <p>Explora geometría 3D, funciones y estadísticas en realidad aumentada</p>
+                <ul class="experience-scenarios">
+                    <li>📐 Geometría 3D Interactiva</li>
+                    <li>📊 Gráficas de Funciones</li>
+                    <li>📈 Estadísticas Visuales</li>
+                    <li>🧮 Álgebra Interactiva</li>
+                </ul>
+                <button class="launch-btn" onclick="launchARExperience('mathematics')" disabled>
+                    Iniciar Experiencia AR
+                </button>
+            </div>
+
+            <!-- Ciencias AR -->
+            <div class="experience-card" data-subject="sciences">
+                <div class="experience-icon">🔬</div>
+                <h3>Ciencias AR</h3>
+                <p>Laboratorio virtual con modelos moleculares y experimentos 3D</p>
+                <ul class="experience-scenarios">
+                    <li>⚛️ Modelos Moleculares</li>
+                    <li>🫀 Anatomía 3D</li>
+                    <li>🧪 Experimentos de Física</li>
+                    <li>🧬 Laboratorio de Química</li>
+                </ul>
+                <button class="launch-btn" onclick="launchARExperience('sciences')" disabled>
+                    Iniciar Laboratorio AR
+                </button>
+            </div>
+
+            <!-- Historia AR -->
+            <div class="experience-card" data-subject="history">
+                <div class="experience-icon">🏛️</div>
+                <h3>Historia AR</h3>
+                <p>Viaja en el tiempo y explora civilizaciones y eventos históricos</p>
+                <ul class="experience-scenarios">
+                    <li>🗿 Sitios Históricos</li>
+                    <li>🏺 Civilizaciones Antiguas</li>
+                    <li>🇲🇽 Independencia de México</li>
+                    <li>⚔️ Revolución Mexicana</li>
+                </ul>
+                <button class="launch-btn" onclick="launchARExperience('history')" disabled>
+                    Explorar Historia AR
+                </button>
+            </div>
+
+            <!-- Artes AR -->
+            <div class="experience-card" data-subject="arts">
+                <div class="experience-icon">🎨</div>
+                <h3>Artes AR</h3>
+                <p>Galería virtual con obras de arte y experiencias creativas</p>
+                <ul class="experience-scenarios">
+                    <li>🗿 Vista de Esculturas</li>
+                    <li>🖼️ Análisis de Pinturas</li>
+                    <li>🏛️ Tours Arquitectónicos</li>
+                    <li>🎵 Visualización Musical</li>
+                </ul>
+                <button class="launch-btn" onclick="launchARExperience('arts')" disabled>
+                    Entrar a Galería AR
+                </button>
+            </div>
+
+            <!-- Laboratorio Virtual 3D -->
+            <div class="experience-card" data-subject="virtual-lab">
+                <div class="experience-icon">🥽</div>
+                <h3>Laboratorio Virtual 3D</h3>
+                <p>Simulador completo de laboratorio con herramientas científicas</p>
+                <ul class="experience-scenarios">
+                    <li>🔬 Microscopía Virtual</li>
+                    <li>⚗️ Reacciones Químicas</li>
+                    <li>🌡️ Mediciones Precisas</li>
+                    <li>📊 Análisis de Datos</li>
+                </ul>
+                <button class="launch-btn" onclick="launchVirtualLab()" disabled>
+                    Abrir Laboratorio 3D
+                </button>
+            </div>
+
+            <!-- Realidad Virtual Inmersiva -->
+            <div class="experience-card" data-subject="vr-immersive">
+                <div class="experience-icon">🌐</div>
+                <h3>VR Inmersiva</h3>
+                <p>Experiencias de realidad virtual completa para exploración educativa</p>
+                <ul class="experience-scenarios">
+                    <li>🌌 Exploración Espacial</li>
+                    <li>🌊 Mundo Submarino</li>
+                    <li>🏔️ Ecosistemas Naturales</li>
+                    <li>🏛️ Museos Virtuales</li>
+                </ul>
+                <button class="launch-btn" onclick="launchVRExperience()" disabled>
+                    Entrar a VR
+                </button>
+            </div>
+        </div>
+
+        <!-- Información de Compatibilidad -->
+        <div class="compatibility-info">
+            <h4>📱 Compatibilidad de Dispositivos</h4>
+            <p><strong>Móviles:</strong> iOS 12+, Android 8+ con ARCore</p>
+            <p><strong>Navegadores:</strong> Chrome 67+, Firefox 55+, Safari 11.1+</p>
+            <p><strong>VR Headsets:</strong> Meta Quest, HTC Vive, Valve Index</p>
+            <p><strong>Recomendado:</strong> Dispositivo con giroscopio y acelerómetro</p>
+        </div>
+    </div>
+
+    <!-- Visor AR/VR (Modal) -->
+    <div class="ar-viewer" id="arViewer">
+        <canvas id="arCanvas"></canvas>
+        <div class="ar-controls">
+            <button class="ar-btn" onclick="toggleARRecording()">📹 Grabar</button>
+            <button class="ar-btn" onclick="takeARScreenshot()">📸 Captura</button>
+            <button class="ar-btn" onclick="closeARViewer()">❌ Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Scripts del Sistema AR/VR -->
+    <script src="js/ar-education-system.js"></script>
+    <script src="js/lab-simulator-3d.js"></script>
+    <script src="js/virtual-labs-system.js"></script>
+
+    <script>
+        // Variables globales
+        let arSystem = null;
+        let labSimulator = null;
+        let virtualLabs = null;
+
+        // Inicialización del sistema AR/VR
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🥽 Inicializando Laboratorio AR/VR...');
+
+            try {
+                // Inicializar sistemas
+                arSystem = new AREducationSystem();
+                labSimulator = new LabSimulator3D();
+                virtualLabs = new VirtualLabsSystem();
+
+                // Verificar compatibilidad
+                await checkARVRCompatibility();
+
+                // Activar interfaz según capacidades
+                activateAvailableFeatures();
+
+                console.log('✅ Laboratorio AR/VR inicializado correctamente');
+            } catch (error) {
+                console.error('❌ Error inicializando AR/VR:', error);
+                showCompatibilityError();
+            }
+        });
+
+        // Verificar compatibilidad AR/VR
+        async function checkARVRCompatibility() {
+            const status = document.getElementById('arStatus');
+            const results = document.getElementById('compatibilityResults');
+
+            // Verificar WebXR
+            const webxrSupported = 'xr' in navigator;
+            updateDeviceIcon('webxr-icon', webxrSupported);
+
+            // Verificar WebGL
+            const canvas = document.createElement('canvas');
+            const webglSupported = !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+            updateDeviceIcon('webgl-icon', webglSupported);
+
+            // Verificar cámara
+            let cameraSupported = false;
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                cameraSupported = true;
+                stream.getTracks().forEach(track => track.stop());
+            } catch (e) {
+                console.log('📷 Cámara no disponible');
+            }
+            updateDeviceIcon('camera-icon', cameraSupported);
+
+            // Verificar sensores de orientación
+            const sensorsSupported = 'DeviceOrientationEvent' in window;
+            updateDeviceIcon('sensors-icon', sensorsSupported);
+
+            // Actualizar estado general
+            const overallSupport = webglSupported && cameraSupported;
+
+            if (overallSupport) {
+                results.innerHTML = `
+                    <p><span class="status-indicator status-available"></span>✅ Sistema AR/VR listo para usar</p>
+                    <p>Todas las funcionalidades están disponibles en este dispositivo</p>
+                `;
+            } else if (webglSupported) {
+                results.innerHTML = `
+                    <p><span class="status-indicator status-partial"></span>⚡ Funcionalidad limitada disponible</p>
+                    <p>Algunas características AR requieren permisos de cámara</p>
+                `;
+            } else {
+                results.innerHTML = `
+                    <p><span class="status-indicator status-unavailable"></span>❌ AR/VR no compatible</p>
+                    <p>Este dispositivo/navegador no soporta las tecnologías requeridas</p>
+                `;
+            }
+
+            return overallSupport;
+        }
+
+        // Actualizar iconos de dispositivos
+        function updateDeviceIcon(iconId, supported) {
+            const icon = document.getElementById(iconId);
+            if (supported) {
+                icon.classList.add('supported');
+            }
+        }
+
+        // Activar funciones disponibles
+        function activateAvailableFeatures() {
+            const buttons = document.querySelectorAll('.launch-btn');
+
+            // Habilitar botones si el sistema es compatible
+            if (arSystem && arSystem.arSupport.available) {
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                });
+            } else {
+                // Modo demo/simulación
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.style.opacity = '0.8';
+                    btn.textContent = btn.textContent.replace('AR', 'Demo');
+                });
+            }
+        }
+
+        // Lanzar experiencia AR por materia
+        async function launchARExperience(subject) {
+            console.log(`🚀 Lanzando experiencia AR: ${subject}`);
+
+            try {
+                // Mostrar visor AR
+                const viewer = document.getElementById('arViewer');
+                viewer.style.display = 'block';
+
+                // Inicializar experiencia AR
+                const experience = await arSystem.startExperience(subject, 'basic');
+
+                if (experience.success) {
+                    console.log(`✅ Experiencia AR iniciada: ${subject}`);
+                    // Aquí se renderizaría la experiencia AR real
+                    simulateARExperience(subject);
+                } else {
+                    throw new Error(experience.error);
+                }
+
+            } catch (error) {
+                console.error('❌ Error lanzando AR:', error);
+                alert('Error al iniciar la experiencia AR. Verifique los permisos de cámara.');
+                closeARViewer();
+            }
+        }
+
+        // Lanzar laboratorio virtual 3D
+        async function launchVirtualLab() {
+            console.log('🔬 Lanzando Laboratorio Virtual 3D...');
+
+            try {
+                const viewer = document.getElementById('arViewer');
+                viewer.style.display = 'block';
+
+                // Inicializar laboratorio 3D
+                await labSimulator.initializeEnvironment();
+                console.log('✅ Laboratorio 3D inicializado');
+
+                simulateLabExperience();
+
+            } catch (error) {
+                console.error('❌ Error lanzando laboratorio 3D:', error);
+                alert('Error al iniciar el laboratorio virtual.');
+                closeARViewer();
+            }
+        }
+
+        // Lanzar experiencia VR inmersiva
+        async function launchVRExperience() {
+            console.log('🌐 Lanzando experiencia VR inmersiva...');
+
+            try {
+                // Verificar soporte VR
+                if ('xr' in navigator) {
+                    const session = await navigator.xr.requestSession('immersive-vr');
+                    console.log('✅ Sesión VR iniciada');
+                    // Aquí se inicializaría la experiencia VR real
+                } else {
+                    // Modo simulación
+                    const viewer = document.getElementById('arViewer');
+                    viewer.style.display = 'block';
+                    simulateVRExperience();
+                }
+
+            } catch (error) {
+                console.error('❌ Error lanzando VR:', error);
+                alert('VR no disponible. Mostrando experiencia simulada.');
+                const viewer = document.getElementById('arViewer');
+                viewer.style.display = 'block';
+                simulateVRExperience();
+            }
+        }
+
+        // Simulaciones para demo
+        function simulateARExperience(subject) {
+            const canvas = document.getElementById('arCanvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            // Simular experiencia AR
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#fff';
+            ctx.font = '24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`🥽 Experiencia AR: ${subject.toUpperCase()}`, canvas.width/2, canvas.height/2 - 50);
+            ctx.fillText('(Simulación - Configurar cámaras reales para AR completo)', canvas.width/2, canvas.height/2);
+            ctx.fillText('Mueva su dispositivo para explorar el entorno virtual', canvas.width/2, canvas.height/2 + 50);
+        }
+
+        function simulateLabExperience() {
+            const canvas = document.getElementById('arCanvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            ctx.fillStyle = '#001122';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#00ffff';
+            ctx.font = '24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('🔬 LABORATORIO VIRTUAL 3D', canvas.width/2, canvas.height/2 - 50);
+            ctx.fillText('Entorno de simulación científica avanzada', canvas.width/2, canvas.height/2);
+            ctx.fillText('Use los controles para interactuar con equipos', canvas.width/2, canvas.height/2 + 50);
+        }
+
+        function simulateVRExperience() {
+            const canvas = document.getElementById('arCanvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            ctx.fillStyle = '#000033';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('🌐 REALIDAD VIRTUAL INMERSIVA', canvas.width/2, canvas.height/2 - 50);
+            ctx.fillText('Exploración 360° del entorno educativo', canvas.width/2, canvas.height/2);
+            ctx.fillText('Conecte un visor VR para experiencia completa', canvas.width/2, canvas.height/2 + 50);
+        }
+
+        // Controles AR/VR
+        function toggleARRecording() {
+            console.log('📹 Toggle grabación AR');
+            alert('Función de grabación AR activada (simulada)');
+        }
+
+        function takeARScreenshot() {
+            console.log('📸 Captura de pantalla AR');
+            alert('Captura de pantalla guardada (simulada)');
+        }
+
+        function closeARViewer() {
+            const viewer = document.getElementById('arViewer');
+            viewer.style.display = 'none';
+
+            // Limpiar recursos AR/VR
+            if (arSystem && arSystem.activeSession) {
+                arSystem.endSession();
+            }
+        }
+
+        // Mostrar error de compatibilidad
+        function showCompatibilityError() {
+            const results = document.getElementById('compatibilityResults');
+            results.innerHTML = `
+                <p><span class="status-indicator status-unavailable"></span>❌ Error de inicialización</p>
+                <p>No se pudieron cargar los sistemas AR/VR</p>
+            `;
+        }
+
+        // Eventos de teclado para controles
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('arViewer').style.display === 'block') {
+                switch(e.key) {
+                    case 'Escape':
+                        closeARViewer();
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        takeARScreenshot();
+                        break;
+                    case 'r':
+                        toggleARRecording();
+                        break;
+                }
+            }
+        });
+    </script>
+
+    <!-- 🚀 BGE FRAMEWORK MODULAR - PÁGINA AR/VR LAB -->
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 🔧 SISTEMA CORE (OBLIGATORIO) -->
+    <script src="js/context-manager.js"></script>
+    <script src="js/config.js?v=2024091401"></script>
+    <script src="js/theme-manager.js"></script>
+    <script src="js/script.js"></script>
+
+    <!-- 🎯 BGE FRAMEWORK CORE -->
+    <script src="js/bge-framework-core.js"></script>
+
+    <!-- 📊 MÓDULOS BGE PARA AR/VR LAB -->
+    <script src="js/bge-performance-module.js"></script>
+    <script src="js/bge-analytics-module.js"></script>
+    <script src="js/bge-education-module.js"></script>
+    <script src="js/bge-pwa-module.js"></script>
+
+    <!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DE AR/VR LAB -->
+    <script src="js/ar-education-system.js"></script>
+    <script src="js/lab-simulator-3d.js"></script>
+    <script src="js/virtual-labs-system.js"></script>
+
+</body>
+</html>

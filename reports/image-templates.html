@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plantillas de Imágenes Optimizadas - BGE</title>
+</head>
+<body>
+    <h1>🖼️ Plantillas de Imágenes Optimizadas</h1>
+
+    <h2>Plantilla Base</h2>
+    <pre><code>
+<!-- Plantilla de imagen optimizada -->
+<picture>
+    <source srcset="images/[FILENAME].webp" type="image/webp">
+    <source srcset="images/[FILENAME].jpg" type="image/jpeg">
+    <img src="images/[FILENAME].jpg" alt="[ALT_TEXT]" loading="lazy" class="img-fluid">
+</picture></code></pre>
+
+    <h2>Ejemplo de Uso</h2>
+    <pre><code>
+<!-- Ejemplo de uso en el proyecto -->
+<picture>
+    <source srcset="images/hero-bg.webp" type="image/webp">
+    <source srcset="images/hero-bg.jpg" type="image/jpeg">
+    <img src="images/hero-bg.jpg" alt="Bachillerato Héroes de la Patria" loading="lazy" class="img-fluid">
+</picture></code></pre>
+
+    <h2>Instrucciones</h2>
+    <ul>
+        <li>Reemplaza [FILENAME] con el nombre del archivo sin extensión</li>
+        <li>Reemplaza [ALT_TEXT] con texto descriptivo apropiado</li>
+        <li>Usa <code>loading="lazy"</code> para lazy loading automático</li>
+        <li>Mantén la clase <code>img-fluid</code> para responsividad</li>
+    </ul>
+
+    <h2>Formatos Recomendados</h2>
+    <ul>
+        <li><strong>WebP:</strong> Para máxima compresión (60-80% menos tamaño)</li>
+        <li><strong>JPEG:</strong> Para compatibilidad con navegadores antiguos</li>
+        <li><strong>SVG:</strong> Para iconos y gráficos vectoriales</li>
+    </ul>
+</body>
+</html>

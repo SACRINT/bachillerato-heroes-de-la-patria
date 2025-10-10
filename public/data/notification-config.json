@@ -1,0 +1,219 @@
+{
+  "notification_types": {
+    "news": {
+      "id": "news",
+      "title": "Noticias",
+      "description": "Nuevas noticias y comunicados institucionales",
+      "icon": "📰",
+      "color": "#1976D2",
+      "priority": "normal",
+      "enabled_by_default": true,
+      "examples": [
+        "Nueva convocatoria de becas disponible",
+        "Comunicado importante de la dirección",
+        "Actualizaciones del sitio web"
+      ]
+    },
+    "events": {
+      "id": "events",
+      "title": "Eventos",
+      "description": "Eventos académicos, culturales y deportivos",
+      "icon": "📅",
+      "color": "#4CAF50",
+      "priority": "normal",
+      "enabled_by_default": true,
+      "examples": [
+        "Ceremonia de graduación próxima",
+        "Festival cultural escolar",
+        "Competencia deportiva interescolar"
+      ]
+    },
+    "academic": {
+      "id": "academic",
+      "title": "Académico",
+      "description": "Información académica, calificaciones y fechas importantes",
+      "icon": "🎓",
+      "color": "#FF9800",
+      "priority": "high",
+      "enabled_by_default": true,
+      "examples": [
+        "Calificaciones publicadas",
+        "Fecha límite de inscripciones",
+        "Cambio en horario de clases"
+      ]
+    },
+    "emergency": {
+      "id": "emergency",
+      "title": "Emergencias",
+      "description": "Alertas y comunicados de emergencia",
+      "icon": "🚨",
+      "color": "#F44336",
+      "priority": "critical",
+      "enabled_by_default": true,
+      "bypass_quiet_hours": true,
+      "examples": [
+        "Suspensión de clases por emergencia",
+        "Alerta de seguridad",
+        "Comunicado urgente"
+      ]
+    },
+    "announcements": {
+      "id": "announcements",
+      "title": "Avisos",
+      "description": "Avisos generales y recordatorios",
+      "icon": "📢",
+      "color": "#9C27B0",
+      "priority": "normal",
+      "enabled_by_default": true,
+      "examples": [
+        "Recordatorio de reunión de padres",
+        "Cambio en horario de atención",
+        "Mantenimiento del sistema"
+      ]
+    },
+    "reminders": {
+      "id": "reminders",
+      "title": "Recordatorios",
+      "description": "Recordatorios personalizados y fechas importantes",
+      "icon": "⏰",
+      "color": "#607D8B",
+      "priority": "normal",
+      "enabled_by_default": false,
+      "examples": [
+        "Recordatorio de entrega de proyecto",
+        "Cita programada",
+        "Fecha de examen próxima"
+      ]
+    }
+  },
+  "schedules": {
+    "school_hours": {
+      "monday": {"start": "07:00", "end": "15:00"},
+      "tuesday": {"start": "07:00", "end": "15:00"},
+      "wednesday": {"start": "07:00", "end": "15:00"},
+      "thursday": {"start": "07:00", "end": "15:00"},
+      "friday": {"start": "07:00", "end": "15:00"},
+      "saturday": {"start": "08:00", "end": "12:00"},
+      "sunday": {"start": null, "end": null}
+    },
+    "default_quiet_hours": {
+      "start": "22:00",
+      "end": "07:00",
+      "description": "Horario de silencio nocturno"
+    },
+    "emergency_bypass": {
+      "enabled": true,
+      "description": "Las emergencias siempre se muestran, ignorando horarios de silencio"
+    }
+  },
+  "notification_templates": {
+    "news": {
+      "title_prefix": "📰",
+      "default_actions": [
+        {"action": "read", "title": "Leer artículo", "icon": "📖"},
+        {"action": "share", "title": "Compartir", "icon": "📤"},
+        {"action": "dismiss", "title": "Cerrar", "icon": "✖️"}
+      ]
+    },
+    "events": {
+      "title_prefix": "📅",
+      "default_actions": [
+        {"action": "view", "title": "Ver evento", "icon": "👁️"},
+        {"action": "remind", "title": "Recordar", "icon": "⏰"},
+        {"action": "calendar", "title": "Añadir al calendario", "icon": "📅"},
+        {"action": "dismiss", "title": "Cerrar", "icon": "✖️"}
+      ]
+    },
+    "academic": {
+      "title_prefix": "🎓",
+      "default_actions": [
+        {"action": "open", "title": "Abrir", "icon": "📂"},
+        {"action": "download", "title": "Descargar", "icon": "⬇️"},
+        {"action": "dismiss", "title": "Cerrar", "icon": "✖️"}
+      ]
+    },
+    "emergency": {
+      "title_prefix": "🚨",
+      "require_interaction": true,
+      "vibrate_pattern": [200, 100, 200, 100, 200],
+      "default_actions": [
+        {"action": "acknowledge", "title": "Entendido", "icon": "✅"},
+        {"action": "details", "title": "Ver detalles", "icon": "ℹ️"}
+      ]
+    },
+    "announcements": {
+      "title_prefix": "📢",
+      "default_actions": [
+        {"action": "read", "title": "Leer", "icon": "📖"},
+        {"action": "dismiss", "title": "Cerrar", "icon": "✖️"}
+      ]
+    },
+    "reminders": {
+      "title_prefix": "⏰",
+      "default_actions": [
+        {"action": "done", "title": "Hecho", "icon": "✅"},
+        {"action": "snooze", "title": "Posponer", "icon": "💤"},
+        {"action": "dismiss", "title": "Cerrar", "icon": "✖️"}
+      ]
+    }
+  },
+  "delivery_settings": {
+    "batch_notifications": {
+      "enabled": true,
+      "max_per_batch": 3,
+      "delay_between_batches": 5000,
+      "description": "Agrupar notificaciones para evitar saturación"
+    },
+    "priority_levels": {
+      "critical": {
+        "immediate": true,
+        "bypass_quiet_hours": true,
+        "require_interaction": true,
+        "max_retries": 3
+      },
+      "high": {
+        "immediate": true,
+        "bypass_quiet_hours": false,
+        "require_interaction": false,
+        "max_retries": 2
+      },
+      "normal": {
+        "immediate": false,
+        "bypass_quiet_hours": false,
+        "require_interaction": false,
+        "max_retries": 1
+      },
+      "low": {
+        "immediate": false,
+        "bypass_quiet_hours": false,
+        "require_interaction": false,
+        "max_retries": 0
+      }
+    },
+    "rate_limiting": {
+      "max_per_hour": 10,
+      "max_per_day": 50,
+      "cooldown_between_same_type": 300000,
+      "description": "Límites para evitar spam de notificaciones"
+    }
+  },
+  "user_preferences_defaults": {
+    "enabled": false,
+    "sound": true,
+    "vibration": true,
+    "badge": true,
+    "show_on_lock_screen": true,
+    "group_similar": true,
+    "auto_clear_read": false,
+    "permission_requested": false
+  },
+  "analytics": {
+    "track_delivery": true,
+    "track_interactions": true,
+    "track_dismissals": true,
+    "retention_days": 30,
+    "privacy_compliant": true
+  },
+  "version": "1.0.0",
+  "last_updated": "2025-09-21T00:00:00Z"
+}

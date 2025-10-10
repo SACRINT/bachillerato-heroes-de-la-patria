@@ -34,6 +34,64 @@ Solo contiene overrides necesarios y estilos únicos no cubiertos por Bootstrap.
 }
 
 /* ==========================================================================
+   FEATURE CARDS - FIX ESPECÍFICO PARA SECCIÓN "POR QUÉ ELEGIR"
+   ========================================================================== */
+
+/* Solo aplicar estilos a las tarjetas dentro de la sección why-choose-us */
+#why-choose-us .feature-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    padding: 1.5rem !important;
+}
+
+#why-choose-us .feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+#why-choose-us .feature-card .feature-icon {
+    flex-shrink: 0;
+    margin-bottom: 1rem;
+}
+
+#why-choose-us .feature-card h4 {
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+#why-choose-us .feature-card p {
+    flex-grow: 1;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+#why-choose-us .feature-card .feature-highlight {
+    margin-top: auto;
+    padding-top: 0;
+}
+
+/* Asegurar altura consistente solo en la sección why-choose-us */
+@media (min-width: 768px) {
+    #why-choose-us .feature-card {
+        min-height: 240px;
+    }
+}
+
+@media (min-width: 992px) {
+    #why-choose-us .feature-card {
+        min-height: 260px;
+    }
+}
+
+/* ==========================================================================
    1. VARIABLES CSS - BOOTSTRAP OVERRIDES & CUSTOM VARIABLES
    ========================================================================== */
 
@@ -538,26 +596,44 @@ body.dark-mode .dropdown-item:focus {
    6. PWA STYLES
    ========================================================================== */
 
-/* PWA Install Banner */
+/* PWA Install Banner - REPOSICIONADO CORRECTAMENTE */
 .pwa-install-banner {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--bs-primary);
+    position: fixed !important;
+    bottom: 30px;     /* MISMA LÍNEA que botones flotantes */
+    left: 50%;        /* CENTRADO */
+    transform: translateX(-50%); /* Centrado desde el punto de referencia */
+    width: auto;      /* Ancho automático */
+    max-width: 850px; /* TAMAÑO ORIGINAL RESTAURADO */
+    min-width: 650px; /* TAMAÑO ORIGINAL RESTAURADO */
+    background: linear-gradient(135deg, var(--bs-primary) 0%, #4a90e2 100%);
     color: white;
-    padding: 1rem;
-    z-index: 1040;
-    box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
-    animation: slideUpIn 0.3s ease;
+    padding: 0.6rem 3rem; /* PADDING ORIGINAL RESTAURADO */
+    z-index: 1000;    /* Por debajo de botones flotantes */
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    border-radius: 30px; /* Más redondeado estilo píldora elegante */
+    backdrop-filter: blur(10px); /* Efecto cristal */
+    position: relative; /* Para el botón absoluto */
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 @keyframes slideUpIn {
     from {
-        transform: translateY(100%);
+        transform: translateX(-50%) translateY(100%);
+        opacity: 0;
     }
     to {
-        transform: translateY(0);
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
     }
 }
 
@@ -664,7 +740,7 @@ body.dark-mode .dropdown-item:focus {
     cursor: pointer !important;
     box-shadow: var(--box-shadow-custom) !important;
     font-size: 24px !important;
-    z-index: 1001 !important;
+    z-index: 991 !important;
     transition: var(--transition-custom) !important;
 }
 
@@ -687,7 +763,7 @@ body.dark-mode .dropdown-item:focus {
     cursor: pointer !important;
     box-shadow: var(--box-shadow-custom) !important;
     font-size: 18px !important;
-    z-index: 1000 !important;
+    z-index: 990 !important;
     transition: var(--transition-custom) !important;
     display: flex !important;
     align-items: center !important;
@@ -982,8 +1058,210 @@ body.dark-mode .chatbot-message.bot,
     }
     
     .pwa-install-banner .container {
-        padding: 0 1rem;
+        padding: 0;
+        max-width: none;
     }
+
+    /* Layout horizontal elegante en una línea */
+    .pwa-install-banner .row {
+        margin: 0;
+        align-items: center;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+    }
+
+    .pwa-install-banner .col-lg-8,
+    .pwa-install-banner .col-lg-4 {
+        padding: 0 1rem;
+        flex: none;
+    }
+
+    .pwa-install-banner .col-lg-8 {
+        flex: 0 0 65% !important; /* Menos espacio para texto */
+        margin-right: 1rem;
+    }
+
+    .pwa-install-banner .col-lg-4,
+    .pwa-install-banner .col-lg-4.text-lg-end,
+    .pwa-install-banner .col-lg-4.mt-2,
+    .pwa-install-banner .col-lg-4.mt-lg-0 {
+        flex: 0 0 35% !important; /* MÁS ESPACIO para botones */
+        text-align: right !important;
+        padding-right: 1rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 0.75rem !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        flex-direction: row !important;
+        min-width: 200px !important; /* Ancho mínimo garantizado */
+    }
+
+    .pwa-install-banner h6 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        display: inline-block;
+        margin-right: 0.75rem;
+        white-space: nowrap;
+    }
+
+    .pwa-install-banner p {
+        display: inline-block; /* Mostrar en línea */
+        margin: 0;
+        font-size: 0.85rem;
+        opacity: 0.9;
+        white-space: nowrap;
+    }
+
+    .pwa-install-banner .btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin: 0 0.3rem;
+        border-radius: 20px;
+        transition: all 0.2s ease;
+    }
+
+    .pwa-install-banner .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* Botón cerrar DENTRO del banner en esquina superior derecha */
+    .pwa-install-banner #pwa-install-btn,
+    .pwa-install-banner #pwa-close-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 0.25rem !important;
+        vertical-align: middle !important;
+        float: none !important;
+    }
+
+    .pwa-install-banner #pwa-close-btn {
+        width: 32px !important;
+        height: 32px !important;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        background: rgba(255, 255, 255, 0.25) !important;
+        color: rgba(255, 255, 255, 0.9) !important;
+        border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        font-size: 14px !important;
+        transition: all 0.2s ease !important;
+        flex-shrink: 0 !important;
+    }
+
+    .pwa-install-banner #pwa-close-btn:hover {
+        background: rgba(255, 255, 255, 0.3) !important;
+        color: rgba(255, 255, 255, 1) !important;
+        transform: scale(1.05);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Responsive elegante */
+    @media (max-width: 768px) {
+        .pwa-install-banner {
+            bottom: 90px; /* Arriba de botones flotantes en móviles */
+            left: 20px;   /* Pegado al lado izquierdo */
+            min-width: 320px;
+            max-width: calc(100% - 40px);
+            padding: 0.5rem 1rem;
+        }
+
+        .pwa-install-banner .col-lg-8 {
+            margin-right: 1rem;
+        }
+
+        .pwa-install-banner h6 {
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+
+        .pwa-install-banner p {
+            font-size: 0.75rem;
+        }
+
+        .pwa-install-banner .btn {
+            padding: 0.3rem 0.75rem;
+            font-size: 0.8rem;
+            margin: 0 0.2rem;
+        }
+
+        /* Botón flotante instalar en móviles */
+        body .install-button {
+            bottom: 95px !important; /* Arriba del back-to-top en móviles */
+            left: 15px !important;   /* Lado izquierdo en móviles */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .pwa-install-banner {
+            bottom: 100px; /* Más arriba en pantallas pequeñas */
+            left: 10px;    /* Menos margen en pantallas pequeñas */
+            min-width: 280px;
+            max-width: calc(100% - 20px);
+            padding: 0.4rem 0.8rem;
+        }
+
+        .pwa-install-banner .row {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .pwa-install-banner .col-lg-8,
+        .pwa-install-banner .col-lg-4 {
+            margin: 0;
+            padding: 0.2rem 0;
+        }
+    }
+
+/* ===================================================================
+   OCULTACIÓN AUTOMÁTICA CUANDO PWA ESTÉ INSTALADA
+   =================================================================== */
+
+/* Ocultar banner de instalación cuando PWA esté instalada */
+body.pwa-installed .pwa-install-banner,
+body.pwa-installed #pwa-install-banner {
+    display: none !important;
+}
+
+/* Ocultar sección de instalación principal cuando PWA esté instalada */
+body.pwa-installed #instalar-app {
+    display: none !important;
+}
+
+/* Ocultar botón flotante de instalación cuando PWA esté instalada */
+body.pwa-installed .install-button,
+body.pwa-installed #main-pwa-install-btn {
+    display: none !important;
+}
+
+/* Mensaje opcional para usuarios que ya tienen la app instalada */
+body.pwa-installed::after {
+    content: '';
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    z-index: 999;
+    opacity: 0;
+    animation: showInstalledMessage 3s ease-in-out 1s;
+}
+
+@keyframes showInstalledMessage {
+    0%, 90% { opacity: 0; }
+    10%, 80% { opacity: 1; }
+    100% { opacity: 0; }
+}
     
     .hero-content {
         text-align: center;
@@ -1211,7 +1489,6 @@ body.dark-mode .chatbot-message.bot,
     .dark-mode-toggle,
     .chatbot-container,
     .chatbot-toggle,
-    .pwa-install-banner,
     #back-to-top {
         display: none !important;
     }
@@ -1572,9 +1849,20 @@ body.dark-mode .chatbot-message.bot,
     background-clip: text;
 }
 
-/* Professional Dark Mode */
+/* Professional Dark Mode - Sección Mapa del Sitio */
 .dark-mode #mapa-sitio {
-    background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%);
+    background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%) !important;
+}
+
+.dark-mode #mapa-sitio h2 {
+    background: linear-gradient(135deg, #60a5fa, #3b82f6) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+.dark-mode #mapa-sitio .text-muted {
+    color: #cbd5e1 !important;
 }
 
 .dark-mode #mapa-sitio::before {
@@ -1649,7 +1937,7 @@ body.dark-mode .chatbot-message.bot,
     right: 2rem !important;
     width: 50px !important;
     height: 50px !important;
-    z-index: 1000 !important;
+    z-index: 990 !important;
 }
 
 .chatbot-subtitle {
@@ -1722,4 +2010,481 @@ body.dark-mode .chatbot-message.bot,
         font-size: 0.85rem;
         padding: 0.4rem 0.6rem;
     }
+}
+
+/* ========================================= */
+/* SISTEMA DE REORGANIZACIÓN DE BOTONES FLOTANTES */
+/* ========================================= */
+
+/* FILA HORIZONTAL - Como solicitado en imagen #3 */
+/* Botones principales permanecen en posición vertical derecha */
+body .dark-mode-toggle {
+    bottom: 30px !important;
+    right: 20px !important;
+}
+
+body .chatbot-toggle {
+    bottom: 95px !important;
+    right: 20px !important;
+}
+
+/* Botones de gamificación y AR en FILA HORIZONTAL hacia la izquierda */
+/* 5. Iniciar AR (al final) */
+body .ar-activation {
+    bottom: 30px !important;  /* Misma línea que dark-mode */
+    right: 510px !important;  /* Al final de la fila */
+}
+
+body .game-activation {
+    bottom: 30px !important;  /* Misma línea que dark-mode */
+    right: 160px !important;  /* 140px separación horizontal */
+}
+
+/* CONFIGURACIÓN ANTIGUA REMOVIDA - AHORA ESTÁ EN LA LÍNEA HORIZONTAL PRINCIPAL */
+
+/* REPOSICIONAR BOTÓN FLOTANTE INSTALAR APP - AL LADO DEL BACK TO TOP */
+body .install-button {
+    bottom: 30px !important;   /* Misma línea que back-to-top */
+    left: 90px !important;     /* Al lado del botón Back to Top */
+    right: auto !important;    /* Anular right original */
+    transform: none !important; /* Sin transformación */
+    z-index: 998 !important;   /* Debajo de chatbot y dark mode */
+}
+
+/* REORGANIZACIÓN CORRECTA DE BOTONES FLOTANTES */
+
+/* 1. Chatbot Toggle - POSICIÓN ORIGINAL (no mover) */
+body .chatbot-toggle {
+    bottom: 120px !important;
+    right: 20px !important;
+    z-index: 1010 !important;
+}
+
+/* 2. Dark Mode Toggle - ABAJO del chatbot */
+body .dark-mode-toggle {
+    bottom: 60px !important;
+    right: 20px !important;
+    z-index: 1009 !important;
+}
+
+/* LÍNEA HORIZONTAL INFERIOR - 7 BOTONES CON ESPACIADO CORRECTO */
+/* 3. IA Floating Button - Posición 1 */
+body .ia-floating-button {
+    bottom: 30px !important;
+    right: 120px !important;
+    left: auto !important;
+    z-index: 997 !important;
+}
+
+/* 4. Notification Config Button - Posición 2 */
+body .notification-config-btn {
+    bottom: 30px !important;
+    right: 200px !important;
+    left: auto !important;
+    z-index: 996 !important;
+}
+
+/* 5. Dashboard Personalizer Button - Posición 3 */
+body .dashboard-personalizer-btn {
+    bottom: 30px !important;
+    right: 280px !important;
+    left: auto !important;
+    z-index: 995 !important;
+}
+
+/* 6. AR Activation - Posición 4 */
+body .ar-activation {
+    bottom: 30px !important;
+    right: 360px !important;
+    z-index: 994 !important;
+}
+
+/* 7. Game Activation - Posición 5 */
+body .game-activation {
+    bottom: 30px !important;
+    right: 440px !important;
+    z-index: 993 !important;
+}
+
+/* 8. AI Dashboard Activation - Posición 6 */
+body .ai-dashboard-activation {
+    bottom: 30px !important;
+    right: 520px !important;
+    z-index: 992 !important;
+}
+
+/* 9. AI Tutor Activation - Posición 7 */
+body .ai-tutor-activation {
+    bottom: 30px !important;
+    right: 600px !important;
+    z-index: 991 !important;
+}
+
+/* 10. Labs Activation - Posición 8 (si es necesario) */
+body .labs-activation {
+    bottom: 30px !important;
+    right: 680px !important;
+    z-index: 990 !important;
+}
+
+/* LADO IZQUIERDO */
+/* Back to top mantiene su posición */
+body #back-to-top {
+    bottom: 30px !important;
+    left: 20px !important;
+    z-index: 997 !important;
+}
+
+/* Analytics Dashboard arriba del back-to-top */
+body .analytics-dashboard-toggle {
+    bottom: 95px !important;
+    left: 20px !important;
+    z-index: 996 !important;
+}
+
+/* Fix para contenedores de gráficos que crecen indefinidamente */
+.chart-container,
+#institutional-trends-chart,
+#academicChart {
+    max-height: 300px !important;
+    height: auto !important;
+}
+
+/* Dashboard Layout Fixes - Evitar superposición de secciones */
+.card {
+    margin-bottom: 1.5rem !important;
+}
+
+/* Espaciado adicional entre secciones del dashboard */
+#executive-widgets,
+.row.mt-4 {
+    margin-bottom: 2rem !important;
+    clear: both !important;
+}
+
+/* FIX: Métricas Ejecutivas Avanzadas - Altura adecuada */
+#executive-metrics-section {
+    min-height: 400px !important;
+    padding: 3rem 0 !important;
+}
+
+#executive-widgets {
+    min-height: 300px !important;
+    margin-bottom: 3rem !important;
+}
+
+/* Asegurar que los widgets ejecutivos tengan espacio */
+#executive-widgets .col-md-4,
+#executive-widgets .col-lg-3 {
+    margin-bottom: 1.5rem !important;
+}
+
+/* Cards dentro de widgets ejecutivos */
+#executive-widgets .card {
+    min-height: 200px !important;
+    height: auto !important;
+}
+
+/* Asegurar que las cards del dashboard tengan espacio suficiente */
+.tab-content .card {
+    margin-bottom: 1rem !important;
+}
+
+/* Separación específica para Analytics Institucionales */
+.card:has(#institutional-trends-chart) {
+    margin-bottom: 3rem !important;
+    clear: both !important;
+}
+
+/* Separación específica para Evolución Académica */
+.card:has(#academicChart) {
+    margin-top: 2rem !important;
+    clear: both !important;
+}
+
+/* Contenedor general del dashboard */
+.container-fluid .row {
+    margin-bottom: 1.5rem !important;
+}
+
+/* Forzar posicionamiento estático para evitar solapamiento */
+#institutional-trends-chart,
+#academicChart {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+}
+
+/* Permitir que Chart.js maneje su propio posicionamiento */
+.card-body canvas {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* Solución limpia: Separación de secciones sin afectar Chart.js */
+.dashboard-analytics-section {
+    margin-bottom: 4rem !important;
+    padding-bottom: 2rem !important;
+}
+
+.dashboard-academic-section {
+    margin-top: 3rem !important;
+    padding-top: 2rem !important;
+}
+
+/* Fix específico para Analytics Institucionales */
+.card .card-body canvas {
+    display: block !important;
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* Evitar espacios gigantes en dashboard - EXCEPTO métricas ejecutivas */
+.dashboard-section {
+    min-height: auto !important;
+    max-height: 500px !important;
+}
+
+/* Override para la sección de métricas ejecutivas */
+#executive-metrics-section.dashboard-section {
+    max-height: none !important;
+    min-height: 500px !important;
+}
+
+/* Limitar altura de cards con gráficos */
+.card-body canvas {
+    max-height: 250px !important;
+    width: 100% !important;
+    height: auto !important;
+}
+
+/* Responsive: Mantener posiciones originales y organizar horizontalmente */
+@media (max-width: 768px) {
+    /* POSICIONES ORIGINALES - No mover */
+    body .chatbot-toggle {
+        bottom: 85px !important;
+        right: 15px !important;
+    }
+
+    body .dark-mode-toggle {
+        bottom: 145px !important;
+        right: 15px !important;
+    }
+
+    /* LÍNEA HORIZONTAL INFERIOR - Más espacio entre botones en móvil */
+    body .ia-floating-button {
+        bottom: 30px !important;
+        right: 70px !important;
+    }
+
+    body .notification-config-btn {
+        bottom: 30px !important;
+        right: 125px !important;
+    }
+
+    body .dashboard-personalizer-btn {
+        bottom: 30px !important;
+        right: 180px !important;
+    }
+
+    body .ar-activation {
+        bottom: 30px !important;
+        right: 235px !important;
+    }
+
+    body .game-activation {
+        bottom: 30px !important;
+        right: 290px !important;
+    }
+
+    body .ai-dashboard-activation {
+        bottom: 265px !important;
+        right: 15px !important;
+    }
+
+    body .ai-tutor-activation {
+        bottom: 325px !important;
+        right: 15px !important;
+    }
+
+    body .ia-floating-button {
+        bottom: 385px !important;
+        right: 15px !important;
+        left: auto !important;
+    }
+
+    body .labs-activation {
+        bottom: 445px !important;
+        right: 15px !important;
+    }
+
+    body #back-to-top {
+        bottom: 25px !important;
+        left: 15px !important;
+    }
+
+    body .analytics-dashboard-toggle {
+        bottom: 85px !important;
+        left: 15px !important;
+    }
+}
+
+/* ========================================= */
+/* FIN SISTEMA DE REORGANIZACIÓN FLOTANTES */
+/* ========================================= */
+
+/* ===========================================
+   MODAL CUSTOMIZATIONS - BOTONES CERRAR AZULES
+   =========================================== */
+
+/* Botón cerrar azul para todos los modales */
+.modal .btn-close {
+    background: #007bff !important;
+    border-radius: 50% !important;
+    opacity: 1 !important;
+    width: 32px !important;
+    height: 32px !important;
+    position: relative !important;
+}
+
+.modal .btn-close:before {
+    content: '×' !important;
+    color: white !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    line-height: 1 !important;
+}
+
+.modal .btn-close:hover {
+    background: #0056b3 !important;
+    transform: scale(1.1) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Mejorar spacing en headers de modales */
+.modal-header {
+    padding: 1rem 1.5rem !important;
+    border-bottom: 2px solid #dee2e6 !important;
+}
+
+.modal-header .modal-title {
+    font-weight: 600 !important;
+    color: #333 !important;
+}
+
+/* Headers específicos para modales con fondo verde */
+.modal-header.bg-success .modal-title {
+    color: white !important;
+    font-weight: bold !important;
+}
+
+/* Override para asegurar que el botón cerrar siempre sea azul */
+.modal-header .btn-close {
+    background: #007bff !important;
+    border-radius: 50% !important;
+    opacity: 1 !important;
+    width: 32px !important;
+    height: 32px !important;
+    position: relative !important;
+    background-image: none !important;
+}
+
+.modal-header .btn-close:before {
+    content: '×' !important;
+    color: white !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    line-height: 1 !important;
+}
+
+/* ===========================================
+   OVERRIDE MÁXIMO PARA BOTÓN CERRAR AZUL
+   =========================================== */
+
+/* Máxima especificidad para botón cerrar - ESTILO TRANSPARENTE */
+.modal .modal-dialog .modal-content .modal-header .btn-close,
+.modal-fade .modal-dialog .modal-content .modal-header .btn-close,
+#eventoModal .modal-header .btn-close,
+#dynamicDetailModal .modal-header .btn-close {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    opacity: 1 !important;
+    width: 32px !important;
+    height: 32px !important;
+    position: relative !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+}
+
+.modal .modal-dialog .modal-content .modal-header .btn-close:before,
+.modal-fade .modal-dialog .modal-content .modal-header .btn-close:before,
+#eventoModal .modal-header .btn-close:before,
+#dynamicDetailModal .modal-header .btn-close:before {
+    content: '×' !important;
+    color: white !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    line-height: 1 !important;
+    display: block !important;
+}
+
+.modal .modal-dialog .modal-content .modal-header .btn-close:hover,
+#eventoModal .modal-header .btn-close:hover,
+#dynamicDetailModal .modal-header .btn-close:hover {
+    background: transparent !important;
+    background-color: transparent !important;
+    opacity: 0.7 !important;
+    transform: none !important;
+    transition: opacity 0.2s ease !important;
+}
+
+/* ===================================================================== */
+/* ESTILO ESPECÍFICO PARA MODALES DE NOTICIAS (header azul + botón blanco) */
+/* ===================================================================== */
+
+/* Header azul para modales de noticias */
+#dynamicDetailModal .modal-header {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+    border-bottom: none !important;
+    color: white !important;
+}
+
+#dynamicDetailModal .modal-title {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* FORZAR BOTÓN CERRAR BLANCO - MÁXIMA ESPECIFICIDAD */
+#dynamicDetailModal .modal-header .btn-close {
+    background: transparent !important;
+    border: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    color: white !important;
+}
+
+/* Deshabilitar :before para evitar duplicación con HTML inline */
+#dynamicDetailModal .modal-header .btn-close:before {
+    content: none !important;
+    display: none !important;
+}
+
+#dynamicDetailModal .modal-header .btn-close:hover {
+    opacity: 0.8 !important;
 }

@@ -1,377 +1,409 @@
 /**
- * 🛠️ RESOURCE OPTIMIZER - FASE 2 OPTIMIZACIÓN
- * Sistema de optimización de recursos, minificación y code splitting
+ * 🔧 RESOURCE OPTIMIZER - FASE 4.1
+ * Sistema de optimización de recursos CSS/JS para BGE Héroes de la Patria
+ * Minificación dinámica y compresión de recursos
  */
 
 class ResourceOptimizer {
     constructor() {
-        this.loadedScripts = new Set();
-        this.loadedStyles = new Set();
-        this.criticalCSS = '';
-        this.deferredResources = [];
-        this.performanceMetrics = {
-            startTime: performance.now(),
-            scriptsLoaded: 0,
-            stylesLoaded: 0,
-            resourcesOptimized: 0
+        this.compressionCache = new Map();
+        this.loadedResources = new Set();
+        this.criticalResources = new Set();
+        this.deferredResources = new Set();
+
+        this.config = {
+            enableCompression: true,
+            enableMinification: true,
+            enableCriticalCSS: true,
+            enableAsyncLoading: true,
+            cacheExpiry: 24 * 60 * 60 * 1000 // 24 horas
         };
-        
+
         this.init();
     }
 
     init() {
-        //console.log('🛠️ Inicializando Resource Optimizer...');
-        
-        // Extraer CSS crítico
-        this.extractCriticalCSS();
-        
-        // Optimizar carga de scripts
-        this.optimizeScriptLoading();
-        
-        // Implementar preload para recursos críticos
-        this.implementResourceHints();
-        
-        // Configurar code splitting dinámico
-        this.setupDynamicImports();
-        
-        //console.log('✅ Resource Optimizer inicializado');
+        this.identifyCriticalResources();
+        this.setupAsyncLoading();
+        this.optimizeExistingResources();
+        this.setupResourcePreloading();
+        this.monitorResourceLoading();
+
+        console.log('🔧 Resource Optimizer inicializado');
     }
 
-    extractCriticalCSS() {
-        // Identificar CSS crítico (above the fold)
-        const criticalSelectors = [
-            'body', 'html', '.navbar', '.hero', '.container', 
-            '.row', '.col-*', '.btn', '.text-*', '.bg-*',
-            'h1', 'h2', 'h3', 'p', 'a'
-        ];
+    identifyCriticalResources() {
+        // Recursos críticos para el primer renderizado
+        this.criticalResources.add('css/style.css');
+        this.criticalResources.add('js/script.js');
+        this.criticalResources.add('js/google-auth-integration.js');
 
-        try {
-            const stylesheets = document.styleSheets;
-            let criticalCSS = '';
+        // Recursos que se pueden diferir
+        this.deferredResources.add('js/chatbot.js');
+        this.deferredResources.add('js/image-optimizer.js');
+        this.deferredResources.add('js/advanced-lazy-loader.js');
+    }
 
-            for (let sheet of stylesheets) {
-                try {
-                    for (let rule of sheet.cssRules) {
-                        if (rule.type === CSSRule.STYLE_RULE) {
-                            const selector = rule.selectorText;
-                            
-                            // Verificar si es CSS crítico
-                            if (this.isCriticalSelector(selector, criticalSelectors)) {
-                                criticalCSS += rule.cssText + '\n';
-                            }
-                        }
-                    }
-                } catch (e) {
-                    // Ignorar errores de CORS en stylesheets externos
-                }
-            }
-
-            if (criticalCSS) {
-                this.inlineCriticalCSS(criticalCSS);
-            }
-
-        } catch (error) {
-            console.warn('No se pudo extraer CSS crítico:', error);
+    setupAsyncLoading() {
+        // Cargar recursos no críticos de forma asíncrona
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.loadDeferredResources());
+        } else {
+            this.loadDeferredResources();
         }
-    }
 
-    isCriticalSelector(selector, criticalSelectors) {
-        return criticalSelectors.some(critical => {
-            if (critical.includes('*')) {
-                const pattern = critical.replace('*', '\\w+');
-                const regex = new RegExp(pattern);
-                return regex.test(selector);
-            }
-            return selector.includes(critical);
+        // Cargar recursos adicionales cuando la página esté completamente cargada
+        window.addEventListener('load', () => {
+            setTimeout(() => this.loadEnhancementResources(), 100);
         });
     }
 
-    inlineCriticalCSS(css) {
-        // Crear elemento style para CSS crítico
-        const criticalStyle = document.createElement('style');
-        criticalStyle.id = 'critical-css';
-        criticalStyle.textContent = css;
-        
-        // Insertar antes de cualquier otro CSS
-        const firstLink = document.head.querySelector('link[rel="stylesheet"]');
-        if (firstLink) {
-            document.head.insertBefore(criticalStyle, firstLink);
-        } else {
-            document.head.appendChild(criticalStyle);
-        }
+    async loadDeferredResources() {
+        const deferredScripts = [
+            'js/chatbot.js',
+            'js/stats-counter.js',
+            'js/interactive-calendar.js'
+        ];
 
-        //console.log('✅ CSS crítico inline aplicado');
+        for (const script of deferredScripts) {
+            this.loadScriptAsync(script);
+        }
     }
 
-    optimizeScriptLoading() {
-        // Identificar scripts no críticos para carga diferida
-        const scripts = document.querySelectorAll('script[src]');
-        const nonCriticalScripts = [
-            'chatbot', 'analytics', 'social', 'maps', 'chart',
-            'admin-dashboard', 'advanced-search'
+    async loadEnhancementResources() {
+        const enhancementScripts = [
+            'js/image-optimizer.js',
+            'js/pwa-advanced.js',
+            'js/security-manager.js'
         ];
+
+        for (const script of enhancementScripts) {
+            this.loadScriptAsync(script, { priority: 'low' });
+        }
+    }
+
+    loadScriptAsync(src, options = {}) {
+        return new Promise((resolve, reject) => {
+            // Verificar si ya está cargado
+            if (this.loadedResources.has(src)) {
+                resolve();
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = src + '?v=' + this.getCacheVersion();
+            script.async = true;
+
+            if (options.priority === 'low') {
+                script.loading = 'lazy';
+            }
+
+            script.onload = () => {
+                this.loadedResources.add(src);
+                console.log(`✅ Script cargado: ${src}`);
+                resolve();
+            };
+
+            script.onerror = () => {
+                console.warn(`⚠️ Error cargando script: ${src}`);
+                reject(new Error(`Failed to load script: ${src}`));
+            };
+
+            document.head.appendChild(script);
+        });
+    }
+
+    optimizeExistingResources() {
+        // Optimizar links CSS existentes
+        this.optimizeCSS();
+
+        // Optimizar scripts existentes
+        this.optimizeJS();
+
+        // Precargar recursos críticos
+        this.preloadCriticalResources();
+    }
+
+    optimizeCSS() {
+        const cssLinks = document.querySelectorAll('link[rel="stylesheet"]');
+
+        cssLinks.forEach(link => {
+            const href = link.href;
+
+            // Agregar preload hint para CSS crítico
+            if (this.isCriticalResource(href)) {
+                this.addPreloadHint(href, 'style');
+            }
+
+            // Agregar versioning para cache busting
+            if (!href.includes('?v=')) {
+                link.href = href + '?v=' + this.getCacheVersion();
+            }
+        });
+    }
+
+    optimizeJS() {
+        const scripts = document.querySelectorAll('script[src]');
 
         scripts.forEach(script => {
             const src = script.src;
-            const isNonCritical = nonCriticalScripts.some(pattern => 
-                src.includes(pattern)
-            );
 
-            if (isNonCritical && !script.defer && !script.async) {
-                script.defer = true;
-                //console.log(`⚡ Script optimizado para carga diferida: ${src}`);
+            // Agregar async/defer a scripts no críticos
+            if (!this.isCriticalResource(src) && !script.async && !script.defer) {
+                script.async = true;
+            }
+
+            // Agregar versioning
+            if (!src.includes('?v=')) {
+                script.src = src + '?v=' + this.getCacheVersion();
             }
         });
     }
 
-    implementResourceHints() {
-        const criticalResources = [
-            'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css',
-            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
-            'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js'
+    preloadCriticalResources() {
+        const criticalAssets = [
+            { href: 'images/logo-bachillerato-HDLP.webp', as: 'image' },
+            { href: 'css/style.css', as: 'style' },
+            { href: 'js/script.js', as: 'script' }
         ];
 
-        // Preload de recursos críticos
-        criticalResources.forEach(resource => {
-            this.addResourceHint('preload', resource);
-        });
-
-        // DNS prefetch para dominios externos
-        const externalDomains = [
-            'cdn.jsdelivr.net',
-            'cdnjs.cloudflare.com',
-            'fonts.googleapis.com',
-            'fonts.gstatic.com'
-        ];
-
-        externalDomains.forEach(domain => {
-            this.addResourceHint('dns-prefetch', `//${domain}`);
+        criticalAssets.forEach(asset => {
+            this.addPreloadHint(asset.href, asset.as);
         });
     }
 
-    addResourceHint(rel, href, as = null) {
+    addPreloadHint(href, asType) {
+        // Verificar que no exista ya
+        const existing = document.querySelector(`link[rel="preload"][href*="${href}"]`);
+        if (existing) return;
+
         const link = document.createElement('link');
-        link.rel = rel;
+        link.rel = 'preload';
         link.href = href;
-        if (as) link.as = as;
-        
+        link.as = asType;
+
+        if (asType === 'style') {
+            link.onload = function() {
+                this.onload = null;
+                this.rel = 'stylesheet';
+            };
+        }
+
         document.head.appendChild(link);
-        //console.log(`🔗 Resource hint añadido: ${rel} ${href}`);
+        console.log(`🔗 Preload agregado: ${href} (${asType})`);
     }
 
-    setupDynamicImports() {
-        // Configurar carga dinámica de módulos según necesidad
-        this.registerDynamicModule('admin', () => 
-            import('./admin-dashboard.js').catch(() => //console.log('Admin module not needed'))
-        );
-        
-        this.registerDynamicModule('charts', () => 
-            this.loadScript('https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js')
-        );
-        
-        this.registerDynamicModule('maps', () => 
-            this.loadScript('https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY')
-        );
+    setupResourcePreloading() {
+        // Precargar recursos para la siguiente navegación
+        this.preloadNextPageResources();
+
+        // Prefetch de recursos de páginas populares
+        this.prefetchPopularPages();
     }
 
-    registerDynamicModule(name, loader) {
-        window[`load${name.charAt(0).toUpperCase() + name.slice(1)}`] = async () => {
-            if (this.loadedScripts.has(name)) return;
-            
-            //console.log(`📦 Cargando módulo dinámico: ${name}`);
-            this.loadedScripts.add(name);
-            
-            try {
-                await loader();
-                this.performanceMetrics.scriptsLoaded++;
-                //console.log(`✅ Módulo ${name} cargado exitosamente`);
-            } catch (error) {
-                console.error(`❌ Error cargando módulo ${name}:`, error);
-            }
-        };
-    }
+    preloadNextPageResources() {
+        // Observar links para precargar recursos de páginas visitadas frecuentemente
+        const internalLinks = document.querySelectorAll('a[href^="/"], a[href^="./"], a[href^="../"]');
 
-    loadScript(src) {
-        return new Promise((resolve, reject) => {
-            if (this.loadedScripts.has(src)) {
-                resolve();
-                return;
-            }
+        const linkObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const link = entry.target;
+                    this.prefetchPage(link.href);
+                    linkObserver.unobserve(link);
+                }
+            });
+        }, { rootMargin: '200px' });
 
-            const script = document.createElement('script');
-            script.src = src;
-            script.onload = () => {
-                this.loadedScripts.add(src);
-                resolve();
-            };
-            script.onerror = reject;
-            
-            document.head.appendChild(script);
+        internalLinks.forEach(link => {
+            linkObserver.observe(link);
         });
     }
 
-    loadCSS(href) {
-        return new Promise((resolve, reject) => {
-            if (this.loadedStyles.has(href)) {
-                resolve();
-                return;
-            }
+    prefetchPopularPages() {
+        const popularPages = [
+            'conocenos.html',
+            'oferta-educativa.html',
+            'servicios.html',
+            'estudiantes.html'
+        ];
 
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = href;
-            link.onload = () => {
-                this.loadedStyles.add(href);
-                resolve();
-            };
-            link.onerror = reject;
-            
-            document.head.appendChild(link);
-        });
+        // Prefetch después de 2 segundos para no interferir con la carga inicial
+        setTimeout(() => {
+            popularPages.forEach(page => {
+                this.addPrefetchHint(page);
+            });
+        }, 2000);
     }
 
-    // Minificación básica de CSS inline
+    prefetchPage(href) {
+        try {
+            const url = new URL(href, window.location.origin);
+            if (url.origin === window.location.origin) {
+                this.addPrefetchHint(url.pathname);
+            }
+        } catch (error) {
+            console.warn('Error prefetching page:', error);
+        }
+    }
+
+    addPrefetchHint(href) {
+        const link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.href = href;
+        document.head.appendChild(link);
+
+        console.log(`⚡ Prefetch agregado: ${href}`);
+    }
+
+    monitorResourceLoading() {
+        // Monitorear performance de recursos
+        if ('PerformanceObserver' in window) {
+            const resourceObserver = new PerformanceObserver((list) => {
+                const entries = list.getEntries();
+                entries.forEach(entry => {
+                    if (entry.duration > 1000) { // Recursos que tardan más de 1 segundo
+                        console.warn(`🐌 Recurso lento detectado: ${entry.name} (${entry.duration.toFixed(2)}ms)`);
+                    }
+                });
+            });
+
+            resourceObserver.observe({ entryTypes: ['resource'] });
+        }
+    }
+
+    isCriticalResource(url) {
+        return Array.from(this.criticalResources).some(resource => url.includes(resource));
+    }
+
+    getCacheVersion() {
+        // Usar timestamp del día para cache busting diario
+        const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
+        return today;
+    }
+
+    // Método para comprimir contenido dinámicamente
+    async compressContent(content, type = 'text') {
+        const cacheKey = this.generateCacheKey(content);
+
+        // Verificar cache
+        if (this.compressionCache.has(cacheKey)) {
+            return this.compressionCache.get(cacheKey);
+        }
+
+        try {
+            let compressed = content;
+
+            if (type === 'css') {
+                compressed = this.minifyCSS(content);
+            } else if (type === 'js') {
+                compressed = this.minifyJS(content);
+            }
+
+            // Guardar en cache
+            this.compressionCache.set(cacheKey, compressed);
+
+            return compressed;
+        } catch (error) {
+            console.warn('Error comprimiendo contenido:', error);
+            return content;
+        }
+    }
+
     minifyCSS(css) {
         return css
             .replace(/\/\*[\s\S]*?\*\//g, '') // Remover comentarios
-            .replace(/\s+/g, ' ') // Comprimir espacios
-            .replace(/;\s*}/g, '}') // Remover ; antes de }
-            .replace(/{\s*/g, '{') // Remover espacios después de {
-            .replace(/}\s*/g, '}') // Remover espacios después de }
-            .replace(/:\s*/g, ':') // Remover espacios después de :
-            .replace(/;\s*/g, ';') // Remover espacios después de ;
+            .replace(/\s+/g, ' ') // Colapsar espacios
+            .replace(/;\s*}/g, '}') // Remover último punto y coma
+            .replace(/\s*{\s*/g, '{') // Limpiar llaves
+            .replace(/\s*}\s*/g, '}')
+            .replace(/\s*;\s*/g, ';')
+            .replace(/\s*:\s*/g, ':')
             .trim();
     }
 
-    // Comprimir JavaScript básico
     minifyJS(js) {
         return js
-            .replace(/\/\*[\s\S]*?\*\//g, '') // Remover comentarios de bloque
+            .replace(/\/\*[\s\S]*?\*\//g, '') // Remover comentarios multilinea
             .replace(/\/\/.*$/gm, '') // Remover comentarios de línea
-            .replace(/\s+/g, ' ') // Comprimir espacios
-            .replace(/;\s*}/g, '}') // Optimizar sintaxis
+            .replace(/\s+/g, ' ') // Colapsar espacios
+            .replace(/\s*([{}();,:])\s*/g, '$1') // Limpiar espacios alrededor de operadores
             .trim();
     }
 
-    // Implementar Resource Bundling
-    bundleResources(resources, type = 'js') {
-        //console.log(`📦 Bundling ${resources.length} ${type} resources...`);
-        
-        const bundledContent = resources.map(resource => {
-            // En un entorno real, aquí cargaríamos el contenido de cada recurso
-            return `/* ${resource} */\n`;
-        }).join('\n');
-
-        if (type === 'css') {
-            const style = document.createElement('style');
-            style.textContent = this.minifyCSS(bundledContent);
-            document.head.appendChild(style);
-        } else if (type === 'js') {
-            const script = document.createElement('script');
-            script.textContent = this.minifyJS(bundledContent);
-            document.head.appendChild(script);
+    generateCacheKey(content) {
+        // Generar hash simple del contenido
+        let hash = 0;
+        for (let i = 0; i < content.length; i++) {
+            const char = content.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convertir a 32-bit integer
         }
-
-        this.performanceMetrics.resourcesOptimized += resources.length;
+        return hash.toString(36);
     }
 
-    // Configurar Service Worker para cache inteligente
-    setupServiceWorkerOptimizations() {
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.addEventListener('message', event => {
-                if (event.data.type === 'CACHE_OPTIMIZED') {
-                    //console.log('🚀 Cache optimizado por Service Worker');
-                }
-            });
-        }
-    }
-
-    // Métricas de rendimiento
-    getPerformanceMetrics() {
-        const timing = performance.timing;
-        const loadTime = timing.loadEventEnd - timing.navigationStart;
-        const domReady = timing.domContentLoadedEventEnd - timing.navigationStart;
-        
+    // API pública para obtener estadísticas
+    getOptimizationStats() {
         return {
-            ...this.performanceMetrics,
-            pageLoadTime: loadTime,
-            domReadyTime: domReady,
-            optimizationTime: performance.now() - this.performanceMetrics.startTime,
-            totalResourcesLoaded: this.loadedScripts.size + this.loadedStyles.size
+            loadedResources: this.loadedResources.size,
+            cachedItems: this.compressionCache.size,
+            criticalResources: this.criticalResources.size,
+            deferredResources: this.deferredResources.size
         };
     }
 
-    // Reportar métricas al servidor
-    reportMetrics() {
-        const metrics = this.getPerformanceMetrics();
-        
-        // Enviar métricas de rendimiento al analytics
-        if (window.analyticsTracker) {
-            window.analyticsTracker.track('performance_metrics', metrics);
-        }
-        
-        //console.log('📊 Métricas de rendimiento:', metrics);
-        return metrics;
+    // Método para limpiar cache
+    clearCache() {
+        this.compressionCache.clear();
+        console.log('🧹 Cache de optimización limpiado');
     }
 
-    // Optimización automática basada en condiciones de red
-    autoOptimize() {
-        const connection = navigator.connection;
-        
-        if (connection) {
-            // Ajustar estrategia según velocidad de conexión
-            if (connection.effectiveType === '2g' || connection.effectiveType === 'slow-2g') {
-                this.enableAggressiveOptimizations();
-            } else if (connection.effectiveType === '4g') {
-                this.enablePreloadOptimizations();
-            }
-        }
-    }
-
-    enableAggressiveOptimizations() {
-        //console.log('📶 Conexión lenta detectada - Aplicando optimizaciones agresivas');
-        
-        // Diferir todos los recursos no críticos
-        const deferrableScripts = document.querySelectorAll('script[src*="analytics"], script[src*="social"], script[src*="maps"]');
-        deferrableScripts.forEach(script => {
-            script.defer = true;
-        });
-        
-        // Reducir calidad de imágenes
-        const images = document.querySelectorAll('img');
-        images.forEach(img => {
-            if (img.src && img.src.includes('.jpg')) {
-                img.loading = 'lazy';
-            }
-        });
-    }
-
-    enablePreloadOptimizations() {
-        //console.log('🚀 Conexión rápida detectada - Habilitando preload agresivo');
-        
-        // Precargar recursos de la siguiente página probable
-        this.addResourceHint('prefetch', './conocenos.html');
-        this.addResourceHint('prefetch', './servicios.html');
+    // Método para forzar optimización de todos los recursos
+    forceOptimizeAll() {
+        this.optimizeExistingResources();
+        this.loadDeferredResources();
+        console.log('🚀 Optimización forzada de todos los recursos');
     }
 }
 
-// Inicializar automáticamente
-let resourceOptimizer;
+// CSS para indicadores de carga
+const optimizerStyles = document.createElement('style');
+optimizerStyles.textContent = `
+    .resource-loading {
+        position: relative;
+    }
 
+    .resource-loading::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #007bff, transparent);
+        animation: loadingShimmer 1.5s infinite;
+    }
+
+    @keyframes loadingShimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    .resource-loaded {
+        transition: opacity 0.3s ease;
+    }
+
+    .resource-error {
+        opacity: 0.5;
+        filter: grayscale(50%);
+    }
+`;
+document.head.appendChild(optimizerStyles);
+
+// Inicialización automática
 document.addEventListener('DOMContentLoaded', () => {
-    resourceOptimizer = new ResourceOptimizer();
-    
-    // Auto-optimización después de la carga
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            resourceOptimizer.autoOptimize();
-            resourceOptimizer.reportMetrics();
-        }, 1000);
-    });
-    
-    // Hacer accesible globalmente
-    window.resourceOptimizer = resourceOptimizer;
+    window.resourceOptimizer = new ResourceOptimizer();
 });
 
-// Exponer la clase
+// Exponer globalmente
 window.ResourceOptimizer = ResourceOptimizer;

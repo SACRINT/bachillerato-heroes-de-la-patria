@@ -1,0 +1,33 @@
+{
+  "subscribers": [
+    {
+      "id": "SUB-2025-0001",
+      "email": "samuelci6377@gmail.com",
+      "name": "Suscriptor Newsletter",
+      "categories": [
+        "all"
+      ],
+      "source": "newsletter",
+      "subscribedAt": "2025-10-03T01:59:26.474Z",
+      "active": true,
+      "unsubscribeToken": "e313de1a4d601ad636bbeb4f0b16373acc0fd5e09f1b58a9f5824050c76c1fd3",
+      "emailsSent": 2,
+      "lastEmailSent": "2025-10-03T21:44:23.285Z"
+    },
+    {
+      "id": "SUB-2025-0002",
+      "email": "21ebh0200xsep@gmail.com",
+      "name": "Suscriptor Newsletter",
+      "categories": [
+        "all"
+      ],
+      "source": "newsletter",
+      "subscribedAt": "2025-10-03T12:36:25.708Z",
+      "active": true,
+      "unsubscribeToken": "fbe30ced409278eac77820581b1ce98f74574894670c3db3090e0059135db1ba",
+      "emailsSent": 2,
+      "lastEmailSent": "2025-10-03T21:44:25.389Z"
+    }
+  ],
+  "lastId": 2
+}

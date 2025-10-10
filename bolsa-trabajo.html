@@ -404,7 +404,9 @@
                 <div class="modal-body p-4">
                     <p class="lead mb-4">Completa tu perfil profesional para acceder a oportunidades laborales</p>
                     
-                    <form id="cvUploadForm">
+                    <form id="cvUploadForm" class="professional-form" method="POST" action="/api/contact/send">
+                        <input type="hidden" name="form_type" value="Registro Bolsa de Trabajo">
+
                         <!-- Información Personal -->
                         <div class="job-section">
                             <h5 class="text-primary mb-3">
@@ -412,15 +414,15 @@
                                 Información Personal
                                 <span class="requirement-badge ms-2">Requerido</span>
                             </h5>
-                            
+
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <div class="form-step">
-                                        <label for="fullName" class="form-label fw-semibold">
+                                        <label for="name" class="form-label fw-semibold">
                                             <i class="fas fa-id-card text-primary me-2"></i>
                                             Nombre completo *
                                         </label>
-                                        <input type="text" class="form-control" id="fullName" required 
+                                        <input type="text" class="form-control" id="name" name="name" required
                                                placeholder="Tu nombre completo como aparece en documentos oficiales">
                                     </div>
                                 </div>
@@ -430,7 +432,7 @@
                                             <i class="fas fa-envelope text-primary me-2"></i>
                                             Correo electrónico *
                                         </label>
-                                        <input type="email" class="form-control" id="email" required 
+                                        <input type="email" class="form-control" id="email" name="email" required
                                                placeholder="email@ejemplo.com">
                                     </div>
                                 </div>
@@ -440,7 +442,7 @@
                                             <i class="fas fa-phone text-primary me-2"></i>
                                             Teléfono *
                                         </label>
-                                        <input type="tel" class="form-control" id="phone" required 
+                                        <input type="tel" class="form-control" id="phone" name="phone" required
                                                placeholder="+52 XXX XXX XXXX">
                                     </div>
                                 </div>
@@ -450,14 +452,14 @@
                                             <i class="fas fa-graduation-cap text-primary me-2"></i>
                                             Año de egreso *
                                         </label>
-                                        <select class="form-select" id="graduationYear" required>
+                                        <select class="form-select" id="graduationYear" name="graduationYear" required>
                                             <option value="">Seleccionar año...</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Información Profesional -->
                         <div class="job-section">
                             <h5 class="text-success mb-3">
@@ -465,21 +467,35 @@
                                 Perfil Profesional
                                 <span class="requirement-badge ms-2">Importante</span>
                             </h5>
-                            
+
                             <div class="job-item">
                                 <div class="d-flex align-items-start">
                                     <span class="badge bg-success me-3 mt-1">
                                         <i class="fas fa-user-tie"></i>
                                     </span>
                                     <div class="flex-grow-1">
-                                        <label for="professionalSummary" class="form-label fw-semibold">Resumen profesional</label>
-                                        <textarea class="form-control" id="professionalSummary" rows="3" 
-                                                  placeholder="Describe tu experiencia laboral, logros destacados y objetivos profesionales. Ej: Egresado en Comunicación Gráfica con experiencia en diseño digital y manejo de redes sociales..."></textarea>
-                                        <small class="text-muted">Recomendado: 50-150 palabras que destaquen tus fortalezas</small>
+                                        <label for="subject" class="form-label fw-semibold">Área de interés / Especialidad *</label>
+                                        <input type="text" class="form-control" id="subject" name="subject" required
+                                               placeholder="Ej: Comunicación Gráfica, Instalaciones Residenciales, Alimentos y Bebidas, etc.">
+                                        <small class="text-muted">Indica tu especialidad o área de interés profesional</small>
                                     </div>
                                 </div>
                             </div>
-                            
+
+                            <div class="job-item">
+                                <div class="d-flex align-items-start">
+                                    <span class="badge bg-success me-3 mt-1">
+                                        <i class="fas fa-file-alt"></i>
+                                    </span>
+                                    <div class="flex-grow-1">
+                                        <label for="message" class="form-label fw-semibold">Resumen profesional y habilidades *</label>
+                                        <textarea class="form-control" id="message" name="message" rows="5" required
+                                                  placeholder="Describe tu experiencia laboral, logros destacados, habilidades técnicas y objetivos profesionales. Ej: Egresado en Comunicación Gráfica con experiencia en diseño digital, manejo de Adobe Creative Suite, redes sociales...&#10;&#10;Incluye también tus habilidades principales y competencias."></textarea>
+                                        <small class="text-muted">Recomendado: 100-300 palabras que destaquen tu perfil completo</small>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="job-item">
                                 <div class="d-flex align-items-start">
                                     <span class="badge bg-success me-3 mt-1">
@@ -503,21 +519,7 @@
                                 <span class="requirement-badge ms-2">Opcional</span>
                             </h5>
                             
-                            <div class="job-item">
-                                <div class="d-flex align-items-start">
-                                    <span class="badge bg-warning me-3 mt-1">
-                                        <i class="fas fa-file-pdf"></i>
-                                    </span>
-                                    <div class="flex-grow-1">
-                                        <label for="cvFile" class="form-label fw-semibold">Curriculum Vitae</label>
-                                        <input type="file" class="form-control" id="cvFile" accept=".pdf" max-size="5242880">
-                                        <small class="text-muted">
-                                            <i class="fas fa-info-circle me-1"></i>
-                                            Formato PDF únicamente, máximo 5MB. Si no tienes CV, no te preocupes, crearemos uno con tu información.
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- Campo de CV eliminado - La información completa se envía por email -->
                         </div>
                         
                         <!-- Términos y Condiciones -->
@@ -637,12 +639,32 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="js/script.js"></script>
-    <script src="js/chatbot.js"></script>
-    <script src="js/search-unified.js"></script>
-    <script src="js/job-portal.js"></script>
+    <!-- 🚀 BGE FRAMEWORK MODULAR - PÁGINA BOLSA TRABAJO -->
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+
+    <!-- 🔧 SISTEMA CORE (OBLIGATORIO) -->
+    <script src="js/context-manager.js"></script>        <!-- 🔒 Base del sistema -->
+    <script src="js/config.js?v=2024091401"></script>    <!-- 🔧 Configuración global -->
+    <script src="js/theme-manager.js"></script>          <!-- 🎨 Gestión de temas -->
+    <script src="js/script.js"></script>                 <!-- 🔒 Script principal -->
+
+    <!-- 🎯 BGE FRAMEWORK CORE -->
+    <script src="js/bge-framework-core.js"></script>
+
+    <!-- 📊 MÓDULOS BGE PARA BOLSA TRABAJO -->
+      <!-- ⚡ Performance optimizado -->
+    <script src="js/bge-analytics-module.js"></script>    <!-- 📊 Analytics empleos -->
+    <script src="js/bge-security-module.js"></script>    <!-- 🔒 Seguridad y autenticación admin -->
+    <script src="js/bge-pwa-module.js"></script>         <!-- 📱 PWA features -->
+
+    <!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DE BOLSA TRABAJO -->
+    <script src="js/chatbot.js"></script>                <!-- 🤖 Chatbot soporte -->
+    <script src="js/search-simple.js"></script>          <!-- 🔍 Búsqueda -->
+    <script src="js/job-portal.js"></script>             <!-- 💼 Portal de empleos -->
 
     <!-- Dark Mode Styles & Script -->
     <style>
@@ -800,9 +822,16 @@
         }
     </style>
 
-    <!-- Sistema de Bolsa de Trabajo Funcional -->
+    <!-- ✅ Sistema de Bolsa de Trabajo - GESTIONADO POR professional-forms.js -->
+    <!--
+        NOTA TÉCNICA:
+        - El formulario #cvUploadForm en el modal (línea 407) tiene class="professional-form"
+        - professional-forms.js gestiona automáticamente el envío con verificación de email
+        - No se necesita JavaScript personalizado para el formulario
+        - El código anterior fue eliminado para evitar conflictos (FormData vs JSON)
+    -->
     <script>
-        // Estado del sistema de bolsa de trabajo
+        // ✅ Sistema de Portal de Empleos (búsqueda y gestión local)
         let jobApplicationState = {
             jobs: [
                 { id: 1, title: 'Auxiliar Administrativo', company: 'Empresa ABC', location: 'Puebla', type: 'Tiempo Completo', salary: '$8,000 - $10,000', posted: '2025-01-08' },
@@ -811,48 +840,19 @@
                 { id: 4, title: 'Auxiliar de Sistemas', company: 'TechSoft SA', location: 'Zona Industrial', type: 'Tiempo Completo', salary: '$9,000 - $12,000', posted: '2025-01-05' }
             ],
             savedJobs: JSON.parse(localStorage.getItem('savedJobs') || '[]'),
-            userProfile: JSON.parse(localStorage.getItem('userProfile') || 'null'),
             applications: JSON.parse(localStorage.getItem('applications') || '[]')
         };
 
-        // Mostrar modal de subida de CV
+        // ✅ NOTA: showUploadCV() ELIMINADA
+        // El modal se abre con Bootstrap: data-bs-toggle="modal" data-bs-target="#uploadCVModal"
+        // El formulario se envía automáticamente con professional-forms.js
+
         function showUploadCV() {
-            const modal = createModal('Subir tu CV', `
-                <form id="cvUploadForm" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="fullName" class="form-label">Nombre Completo</label>
-                        <input type="text" class="form-control" id="fullName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Teléfono</label>
-                        <input type="tel" class="form-control" id="phone" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="cvFile" class="form-label">Archivo CV (PDF, máx. 5MB)</label>
-                        <input type="file" class="form-control" id="cvFile" accept=".pdf" max-size="5242880" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="experience" class="form-label">Experiencia Laboral</label>
-                        <select class="form-control" id="experience">
-                            <option value="sin-experiencia">Sin experiencia</option>
-                            <option value="menos-1-año">Menos de 1 año</option>
-                            <option value="1-2-años">1-2 años</option>
-                            <option value="3-5-años">3-5 años</option>
-                            <option value="mas-5-años">Más de 5 años</option>
-                        </select>
-                    </div>
-                </form>
-            `, [
-                { text: 'Cancelar', class: 'btn-secondary', action: 'dismiss' },
-                { text: 'Guardar Perfil', class: 'btn-success', action: () => saveProfile() }
-            ]);
+            // Abrir modal de Bootstrap directamente
+            const modal = new bootstrap.Modal(document.getElementById('uploadCVModal'));
+            modal.show();
         }
 
-        // Mostrar trabajos guardados
         function showSavedJobs() {
             if (jobApplicationState.savedJobs.length === 0) {
                 showJobAlert('No tienes trabajos guardados aún. Explora las ofertas disponibles y guarda las que te interesen.', 'info');
@@ -881,73 +881,65 @@
                 ` : '';
             }).join('');
 
-            createModal('Trabajos Guardados', savedJobsHtml, [
-                { text: 'Cerrar', class: 'btn-secondary', action: 'dismiss' }
-            ]);
+            showJobModal('Trabajos Guardados', savedJobsHtml);
         }
 
-        // Buscar trabajos
         function searchJobs() {
-            const searchTerm = document.getElementById('jobSearch').value.toLowerCase();
-            const location = document.getElementById('jobLocation').value.toLowerCase();
-            const category = document.getElementById('jobCategory').value;
+            const searchTerm = document.getElementById('searchKeywords')?.value.toLowerCase() || '';
+            const location = document.getElementById('jobLocation')?.value.toLowerCase() || '';
+            const category = document.getElementById('jobCategory')?.value || '';
 
             let filteredJobs = jobApplicationState.jobs;
 
             if (searchTerm) {
-                filteredJobs = filteredJobs.filter(job => 
+                filteredJobs = filteredJobs.filter(job =>
                     job.title.toLowerCase().includes(searchTerm) ||
                     job.company.toLowerCase().includes(searchTerm)
                 );
             }
 
-            if (location) {
-                filteredJobs = filteredJobs.filter(job => 
+            if (location && location !== '') {
+                filteredJobs = filteredJobs.filter(job =>
                     job.location.toLowerCase().includes(location)
                 );
-            }
-
-            if (category && category !== 'todas') {
-                // Implementar filtro por categoría según sea necesario
             }
 
             displayJobResults(filteredJobs);
         }
 
-        // Mostrar resultados de búsqueda
         function displayJobResults(jobs) {
-            const resultsContainer = document.getElementById('jobResults') || createJobResultsContainer();
-            
+            const resultsContainer = document.getElementById('featuredJobsContainer');
+            if (!resultsContainer) return;
+
             if (jobs.length === 0) {
                 resultsContainer.innerHTML = `
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        No se encontraron empleos con esos criterios. Intenta con otros términos de búsqueda.
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No se encontraron empleos con esos criterios. Intenta con otros términos de búsqueda.
+                        </div>
                     </div>
                 `;
                 return;
             }
 
             const jobsHtml = jobs.map(job => `
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="flex-grow-1">
-                                <h5 class="card-title mb-2">${job.title}</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">${job.company}</h6>
-                                <p class="card-text">
-                                    <i class="fas fa-map-marker-alt me-1 text-muted"></i>${job.location}<br>
-                                    <span class="badge bg-outline-primary me-1">${job.type}</span>
-                                    <span class="badge bg-outline-success">${job.salary}</span>
-                                </p>
-                                <small class="text-muted">Publicado: ${job.posted}</small>
-                            </div>
-                            <div class="text-end">
-                                <button class="btn btn-outline-secondary btn-sm mb-2" onclick="saveJob(${job.id})">
-                                    <i class="fas fa-bookmark me-1"></i>Guardar
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">${job.title}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">${job.company}</h6>
+                            <p class="card-text">
+                                <i class="fas fa-map-marker-alt me-1 text-primary"></i>${job.location}<br>
+                                <span class="badge bg-primary mt-2">${job.type}</span>
+                                <span class="badge bg-success mt-2">${job.salary}</span>
+                            </p>
+                            <small class="text-muted d-block mb-3">Publicado: ${job.posted}</small>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="saveJob(${job.id})">
+                                    <i class="fas fa-bookmark"></i>
                                 </button>
-                                <br>
-                                <button class="btn btn-primary btn-sm" onclick="applyToJob(${job.id})">
+                                <button class="btn btn-sm btn-primary flex-grow-1" onclick="showUploadCV()">
                                     <i class="fas fa-paper-plane me-1"></i>Aplicar
                                 </button>
                             </div>
@@ -956,27 +948,7 @@
                 </div>
             `).join('');
 
-            resultsContainer.innerHTML = `
-                <h4 class="mb-3">Resultados de búsqueda (${jobs.length} empleos)</h4>
-                ${jobsHtml}
-            `;
-        }
-
-        // Funciones auxiliares
-        function saveProfile() {
-            const profile = {
-                fullName: document.getElementById('fullName').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                experience: document.getElementById('experience').value,
-                cvUploaded: true
-            };
-            
-            jobApplicationState.userProfile = profile;
-            localStorage.setItem('userProfile', JSON.stringify(profile));
-            
-            showJobAlert('¡Perfil guardado exitosamente! Ya puedes aplicar a ofertas de trabajo.', 'success');
-            bootstrap.Modal.getInstance(document.querySelector('.modal.show')).hide();
+            resultsContainer.innerHTML = jobsHtml;
         }
 
         function saveJob(jobId) {
@@ -993,54 +965,48 @@
             jobApplicationState.savedJobs = jobApplicationState.savedJobs.filter(id => id !== jobId);
             localStorage.setItem('savedJobs', JSON.stringify(jobApplicationState.savedJobs));
             showJobAlert('Trabajo eliminado de guardados.', 'info');
-            // Refrescar modal si está abierto
             showSavedJobs();
         }
 
         function applyToJob(jobId) {
-            if (!jobApplicationState.userProfile) {
-                showJobAlert('Primero debes subir tu CV y completar tu perfil.', 'warning');
-                showUploadCV();
+            const job = jobApplicationState.jobs.find(j => j.id === jobId);
+            showUploadCV(); // Abrir formulario de CV
+            showJobAlert(`Para aplicar a "${job.title}", completa el formulario de CV.`, 'info');
+        }
+
+        function showAllJobs() {
+            displayJobResults(jobApplicationState.jobs);
+        }
+
+        function showCareerTips() {
+            const content = `
+                <div class="row">
+                    <div class="col-12">
+                        <h5 class="text-primary mb-3">Consejos para el Éxito Laboral</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Mantén tu CV actualizado y profesional</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Investiga sobre la empresa antes de aplicar</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Personaliza tu carta de presentación</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Prepara respuestas para preguntas comunes</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Sé puntual y viste apropiadamente</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            showJobModal('Consejos Profesionales', content);
+        }
+
+        function showApplications() {
+            if (jobApplicationState.applications.length === 0) {
+                showJobAlert('No tienes postulaciones registradas aún.', 'info');
                 return;
             }
-
-            const job = jobApplicationState.jobs.find(j => j.id === jobId);
-            if (confirm(`¿Confirmas tu aplicación para el puesto de "${job.title}" en "${job.company}"?`)) {
-                const application = {
-                    jobId: jobId,
-                    appliedDate: new Date().toISOString().split('T')[0],
-                    status: 'enviada'
-                };
-                
-                jobApplicationState.applications.push(application);
-                localStorage.setItem('applications', JSON.stringify(jobApplicationState.applications));
-                
-                showJobAlert('¡Aplicación enviada exitosamente! Te contactarán si tu perfil es seleccionado.', 'success');
-            }
+            const content = `<p>Tienes ${jobApplicationState.applications.length} postulaciones enviadas.</p>`;
+            showJobModal('Mis Postulaciones', content);
         }
 
-        function createJobResultsContainer() {
-            const container = document.createElement('div');
-            container.id = 'jobResults';
-            container.className = 'mt-4';
-            
-            // Buscar un lugar apropiado para insertar los resultados
-            const searchSection = document.querySelector('.hero-section') || document.querySelector('main');
-            if (searchSection) {
-                searchSection.appendChild(container);
-            }
-            
-            return container;
-        }
-
-        function createModal(title, content, buttons) {
-            const modalId = 'dynamicModal' + Date.now();
-            const buttonsHtml = buttons.map(btn => 
-                `<button type="button" class="btn ${btn.class}" ${btn.action === 'dismiss' ? 'data-bs-dismiss="modal"' : `onclick="${btn.action.name || 'this.onclick'}()"`}>
-                    ${btn.text}
-                </button>`
-            ).join('');
-
+        function showJobModal(title, content) {
+            const modalId = 'jobInfoModal_' + Date.now();
             const modalHtml = `
                 <div class="modal fade" id="${modalId}" tabindex="-1">
                     <div class="modal-dialog modal-lg">
@@ -1050,46 +1016,44 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">${content}</div>
-                            <div class="modal-footer">${buttonsHtml}</div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
-
             document.body.insertAdjacentHTML('beforeend', modalHtml);
             const modal = new bootstrap.Modal(document.getElementById(modalId));
             modal.show();
-
-            // Limpiar modal cuando se cierre
             document.getElementById(modalId).addEventListener('hidden.bs.modal', function() {
                 this.remove();
             });
-
-            return modal;
         }
 
         function showJobAlert(message, type) {
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+            alertDiv.style.cssText = 'top: 80px; right: 20px; z-index: 9999; max-width: 400px;';
             alertDiv.innerHTML = `
                 ${message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             `;
             document.body.appendChild(alertDiv);
-
-            setTimeout(() => {
-                if (alertDiv.parentNode) {
-                    alertDiv.remove();
-                }
-            }, 5000);
+            setTimeout(() => { if (alertDiv.parentNode) alertDiv.remove(); }, 5000);
         }
 
-        // Inicializar búsqueda automática al cargar
+        // Inicializar al cargar página
         document.addEventListener('DOMContentLoaded', function() {
-            // Mostrar algunos trabajos por defecto
-            if (document.getElementById('jobSearch')) {
-                displayJobResults(jobApplicationState.jobs);
+            displayJobResults(jobApplicationState.jobs);
+
+            // Event listener para formulario de búsqueda
+            const searchForm = document.getElementById('jobSearchForm');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    searchJobs();
+                });
             }
         });
 
@@ -1126,7 +1090,13 @@
         });
     </script>
     <!-- Scripts de autenticación admin -->
-    <script src="js/admin-auth-secure.js"></script>
+        <!-- 🔒 Seguridad y autenticación (mismo que index.html) -->
+    <!-- Sistema de formularios profesionales -->
+    <script src="js/professional-forms.js"></script>
+
+    <!-- CSP Universal Fixer - Debe cargar al final -->
+    <script src="js/csp-universal-fixer.js"></script>
+
     <!--  DESHABILITADO - Ya no necesario con auth seguro -->
 </body>
 </html>

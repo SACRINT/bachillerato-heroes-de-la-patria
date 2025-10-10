@@ -1,0 +1,34 @@
+{
+  "schedule": [
+    {
+      "id": "hor-001",
+      "student_id": "est-001",
+      "dia": "Lunes",
+      "hora_inicio": "08:00",
+      "hora_fin": "08:50",
+      "materia": "Matemáticas V",
+      "profesor": "Prof. García Hernández",
+      "aula": "Aula 201"
+    },
+    {
+      "id": "hor-002",
+      "student_id": "est-001",
+      "dia": "Lunes",
+      "hora_inicio": "08:50",
+      "hora_fin": "09:40",
+      "materia": "Programación Web",
+      "profesor": "Prof. López Martínez",
+      "aula": "Lab. Informática 1"
+    },
+    {
+      "id": "hor-003",
+      "student_id": "est-001",
+      "dia": "Martes",
+      "hora_inicio": "08:00",
+      "hora_fin": "08:50",
+      "materia": "Inglés V",
+      "profesor": "Prof. Johnson Smith",
+      "aula": "Aula 105"
+    }
+  ]
+}

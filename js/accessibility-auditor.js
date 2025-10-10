@@ -65,7 +65,7 @@ class AccessibilityAuditor {
     auditImages() {
         const images = document.querySelectorAll('img');
         let imageScore = 0;
-        let maxImageScore = images.length * 2; // 2 puntos por imagen correcta
+        const maxImageScore = images.length * 2; // 2 puntos por imagen correcta
 
         images.forEach(img => {
             // Alt text obligatorio
@@ -109,7 +109,7 @@ class AccessibilityAuditor {
     auditButtons() {
         const buttons = document.querySelectorAll('button, input[type="button"], input[type="submit"], [role="button"]');
         let buttonScore = 0;
-        let maxButtonScore = buttons.length * 3;
+        const maxButtonScore = buttons.length * 3;
 
         buttons.forEach(button => {
             let elementScore = 0;
@@ -162,7 +162,7 @@ class AccessibilityAuditor {
     auditForms() {
         const formElements = document.querySelectorAll('input, textarea, select');
         let formScore = 0;
-        let maxFormScore = formElements.length * 2;
+        const maxFormScore = formElements.length * 2;
 
         formElements.forEach(element => {
             let elementScore = 0;
@@ -202,7 +202,7 @@ class AccessibilityAuditor {
     auditHeadings() {
         const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
         let headingScore = 0;
-        let maxHeadingScore = 10; // Score fijo para estructura de headings
+        const maxHeadingScore = 10; // Score fijo para estructura de headings
 
         // Verificar que existe h1
         const h1s = document.querySelectorAll('h1');
@@ -247,7 +247,7 @@ class AccessibilityAuditor {
     auditColors() {
         const elementsToCheck = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, a, button, .btn');
         let colorScore = 0;
-        let maxColorScore = 20;
+        const maxColorScore = 20;
 
         // Simulación básica de contraste
         let contrastIssues = 0;
@@ -283,7 +283,7 @@ class AccessibilityAuditor {
     auditKeyboardNavigation() {
         const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, [tabindex]');
         let keyboardScore = 0;
-        let maxKeyboardScore = 15;
+        const maxKeyboardScore = 15;
 
         let negativeTabIndex = 0;
         let missingTabIndex = 0;
@@ -329,7 +329,7 @@ class AccessibilityAuditor {
     auditAriaLabels() {
         const ariaElements = document.querySelectorAll('[aria-label], [aria-labelledby], [aria-describedby]');
         let ariaScore = 0;
-        let maxAriaScore = 10;
+        const maxAriaScore = 10;
 
         ariaElements.forEach(element => {
             const ariaLabel = element.getAttribute('aria-label');
@@ -365,7 +365,7 @@ class AccessibilityAuditor {
     auditLandmarks() {
         const landmarks = document.querySelectorAll('main, nav, header, footer, aside, section[aria-label], [role="main"], [role="navigation"], [role="banner"], [role="contentinfo"]');
         let landmarkScore = 0;
-        let maxLandmarkScore = 15;
+        const maxLandmarkScore = 15;
 
         const hasMain = document.querySelector('main, [role="main"]');
         const hasNav = document.querySelector('nav, [role="navigation"]');
@@ -411,7 +411,7 @@ class AccessibilityAuditor {
     auditSkipLinks() {
         const skipLinks = document.querySelectorAll('a[href^="#"]');
         let skipScore = 0;
-        let maxSkipScore = 5;
+        const maxSkipScore = 5;
 
         const hasSkipToMain = Array.from(skipLinks).some(link => 
             link.textContent.toLowerCase().includes('skip') || 
@@ -436,7 +436,7 @@ class AccessibilityAuditor {
     auditFocusManagement() {
         const modalTriggers = document.querySelectorAll('[data-bs-toggle="modal"], [data-toggle="modal"]');
         let focusScore = 0;
-        let maxFocusScore = 5;
+        const maxFocusScore = 5;
 
         if (modalTriggers.length > 0) {
             this.recommendations.push({

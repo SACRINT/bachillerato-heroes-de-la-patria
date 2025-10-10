@@ -1,0 +1,49 @@
+{
+  "newsletters": [
+    {
+      "id": "NEWS-2025-0001",
+      "subject": "Particular",
+      "content": "<h2>📢 Título de tu Newsletter</h2>\n                                <p class=\"MsoNormal\">Este es un mensaje de prueba solo para verificar si el formulario\nestá funcionando correctamente no es un mensaje real<o:p></o:p></p>",
+      "targetCategory": "all",
+      "sentTo": 2,
+      "sentAt": "2025-10-03T21:25:29.428Z",
+      "successCount": 2,
+      "failureCount": 0,
+      "subscribers": [
+        {
+          "email": "samuelci6377@gmail.com",
+          "status": "sent",
+          "sentAt": "2025-10-03T21:25:29.529Z"
+        },
+        {
+          "email": "21ebh0200xsep@gmail.com",
+          "status": "sent",
+          "sentAt": "2025-10-03T21:25:30.643Z"
+        }
+      ]
+    },
+    {
+      "id": "NEWS-2025-0002",
+      "subject": "?? PRUEBA REAL - Newsletter BGE con Transporter Gmail",
+      "content": "<h2>? �Sistema de Email Funcionando!</h2><p>Este es un email de prueba para verificar que el transporter real de Gmail est� funcionando correctamente.</p><p><strong>Cambios implementados:</strong></p><ul><li>? Reemplazado mock transporter por nodemailer real</li><li>? Configuraci�n de Gmail SMTP verificada</li><li>? Conexi�n exitosa con Gmail</li></ul><p>Si recibes este email, significa que el sistema est� enviando emails reales correctamente.</p><p><em>Enviado: vie.,  3 de oct. de 2025 03:44:21 p. m.</em></p>",
+      "targetCategory": "all",
+      "sentTo": 2,
+      "sentAt": "2025-10-03T21:44:22.149Z",
+      "successCount": 2,
+      "failureCount": 0,
+      "subscribers": [
+        {
+          "email": "samuelci6377@gmail.com",
+          "status": "sent",
+          "sentAt": "2025-10-03T21:44:23.285Z"
+        },
+        {
+          "email": "21ebh0200xsep@gmail.com",
+          "status": "sent",
+          "sentAt": "2025-10-03T21:44:25.389Z"
+        }
+      ]
+    }
+  ],
+  "lastId": 2
+}

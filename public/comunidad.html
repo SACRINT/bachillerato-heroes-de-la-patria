@@ -665,17 +665,27 @@
                         </p>
                         <div class="row justify-content-center">
                             <div class="col-lg-8">
-                                <form class="d-flex gap-2" method="POST" action="/api/contact/send">
-                                    <!-- Campo oculto para identificar el formulario -->
-                                    <input type="hidden" name="form_type" value="Newsletter - Comunidad">
-                                    <input type="hidden" name="_subject" value="[BACHILLERATO] Nueva suscripción - Newsletter Comunidad">
-                                    <input type="email" name="email" class="form-control form-control-lg" placeholder="Tu correo electrónico" required>
-                                    <button type="submit" class="btn btn-light btn-lg">
-                                        <i class="fas fa-paper-plane me-2" aria-hidden="true"></i>
-                                        Suscribirme
-                                    </button>
+                                <form class="newsletter-subscription-form professional-form" method="POST" action="/api/contact/send">
+                                    <input type="hidden" name="form_type" value="Suscripción Newsletter">
+                                    <input type="hidden" name="name" value="Suscriptor Newsletter">
+                                    <input type="hidden" name="subject" value="Suscripción a Newsletter y Comunicados">
+                                    <input type="hidden" name="message" value="Solicitud de suscripción al newsletter de noticias, eventos y comunicados de la comunidad educativa">
+
+                                    <div class="input-group input-group-lg newsletter-input-group">
+                                        <input type="email"
+                                               name="email"
+                                               class="form-control newsletter-email-input"
+                                               placeholder="Tu correo electrónico"
+                                               required
+                                               aria-label="Correo electrónico para suscripción">
+                                        <button type="submit" class="btn newsletter-subscribe-btn">
+                                            <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                                            <span class="btn-text">Suscribirme</span>
+                                        </button>
+                                    </div>
                                 </form>
-                                <small class="text-white-50 mt-2 d-block">
+                                <small class="newsletter-privacy-text d-block mt-3">
+                                    <i class="fas fa-shield-alt me-1"></i>
                                     Respetamos tu privacidad. Puedes cancelar la suscripción en cualquier momento.
                                 </small>
                             </div>
@@ -739,15 +749,33 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="js/script.js"></script>
-    <script src="js/admin-auth-secure.js"></script>
-    <script src="js/cms-integration.js"></script>
-    <script src="js/chatbot.js"></script>
-    <script src="js/search-unified.js"></script>
-    <script src="js/news.js"></script>
-    
+    <!-- 🚀 BGE FRAMEWORK MODULAR - PÁGINA COMUNIDAD -->
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+
+    <!-- 🔧 SISTEMA CORE (OBLIGATORIO) -->
+    <script src="js/context-manager.js"></script>        <!-- 🔒 Base del sistema -->
+    <script src="js/config.js?v=2024091401"></script>    <!-- 🔧 Configuración global -->
+    <script src="js/theme-manager.js"></script>          <!-- 🎨 Gestión de temas -->
+    <script src="js/script.js"></script>                 <!-- 🔒 Script principal -->
+
+    <!-- 🎯 BGE FRAMEWORK CORE -->
+    <script src="js/bge-framework-core.js"></script>
+
+    <!-- 📊 MÓDULOS BGE PARA COMUNIDAD -->
+      <!-- ⚡ Performance optimizado -->
+    <script src="js/bge-analytics-module.js"></script>    <!-- 📊 Analytics tracking -->
+    <script src="js/bge-security-module.js"></script>    <!-- 🔒 Seguridad y autenticación admin -->
+    <script src="js/bge-pwa-module.js"></script>         <!-- 📱 PWA features (notificaciones) -->
+
+    <!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DE COMUNIDAD -->
+    <script src="js/chatbot.js"></script>                <!-- 🤖 Chatbot soporte -->
+    <script src="js/search-simple.js"></script>          <!-- 🔍 Búsqueda -->
+    <script src="js/news.js"></script>                   <!-- 📰 Sistema de noticias -->
+
     <!-- Dark Mode Functionality -->
     <script>
         // Dark mode functionality - CORREGIDO V2
@@ -820,6 +848,147 @@
         .gallery-item {
             position: relative;
             overflow: hidden;
+        }
+
+        /* ========================================
+           Newsletter Subscription Styles
+           ======================================== */
+
+        .newsletter-subscription-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .newsletter-input-group {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 50px !important;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .newsletter-input-group:focus-within {
+            box-shadow: 0 6px 30px rgba(25, 118, 210, 0.25);
+            border-color: #1976d2;
+            transform: translateY(-2px);
+        }
+
+        .newsletter-email-input {
+            border: none !important;
+            padding: 18px 25px;
+            font-size: 16px;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+            border-radius: 50px 0 0 50px !important;
+        }
+
+        .newsletter-email-input:focus {
+            background-color: #ffffff;
+            box-shadow: none !important;
+            outline: none;
+        }
+
+        .newsletter-email-input::placeholder {
+            color: #6c757d;
+            font-weight: 400;
+        }
+
+        .newsletter-subscribe-btn {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            font-size: 16px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            border-radius: 0 50px 50px 0 !important;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .newsletter-subscribe-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+            transition: left 0.5s ease;
+        }
+
+        .newsletter-subscribe-btn:hover {
+            background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+            transform: translateX(-2px);
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4);
+        }
+
+        .newsletter-subscribe-btn:hover::before {
+            left: 100%;
+        }
+
+        .newsletter-subscribe-btn:active {
+            transform: translateX(-2px) scale(0.98);
+        }
+
+        .newsletter-subscribe-btn .btn-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .newsletter-subscribe-btn i {
+            font-size: 18px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .newsletter-subscribe-btn:hover i {
+            transform: translateX(3px);
+        }
+
+        .newsletter-privacy-text {
+            color: #6c757d;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 15px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .newsletter-privacy-text i {
+            color: #28a745;
+            font-size: 14px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 576px) {
+            .newsletter-input-group {
+                flex-direction: column;
+                border-radius: 15px !important;
+            }
+
+            .newsletter-email-input {
+                border-radius: 15px 15px 0 0 !important;
+                padding: 16px 20px;
+            }
+
+            .newsletter-subscribe-btn {
+                border-radius: 0 0 15px 15px !important;
+                padding: 16px 20px;
+                justify-content: center;
+                width: 100%;
+            }
+
+            .newsletter-subscribe-btn:hover {
+                transform: translateY(-2px);
+            }
         }
 
         /* Dark mode styles */
@@ -924,7 +1093,33 @@
         body.dark-mode .hero-badges .badge:hover {
             box-shadow: 0 4px 15px rgba(255,255,255,0.1);
         }
-        
+
+        /* Newsletter dark mode styles */
+        body.dark-mode .newsletter-email-input {
+            background-color: #404040;
+            color: #ffffff;
+        }
+
+        body.dark-mode .newsletter-email-input:focus {
+            background-color: #4a4a4a;
+        }
+
+        body.dark-mode .newsletter-email-input::placeholder {
+            color: #adb5bd;
+        }
+
+        body.dark-mode .newsletter-input-group {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .newsletter-input-group:focus-within {
+            box-shadow: 0 6px 30px rgba(25, 118, 210, 0.4);
+        }
+
+        body.dark-mode .newsletter-privacy-text {
+            color: #adb5bd;
+        }
+
         /* Dark mode toggle positioning */
         .dark-mode-toggle {
             position: fixed;
@@ -1066,5 +1261,7 @@
             });
         }
     </script>
+    <!-- Sistema de formularios profesionales -->
+    <script src="js/professional-forms.js"></script>
 </body>
 </html>

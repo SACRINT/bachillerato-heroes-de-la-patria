@@ -32,6 +32,9 @@
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
@@ -477,7 +480,8 @@
 
                         <div class="card border-0 shadow">
                             <div class="card-body p-5">
-                                <form id="actualizarDatosForm" novalidate>
+                                <form id="actualizarDatosForm" method="POST" action="/api/egresados" class="professional-form" data-form-type="egresado-update" novalidate>
+                                    <input type="hidden" name="form_type" value="Actualización de Datos - Egresados">
                                     <div class="row g-3">
                                         <!-- Información Personal -->
                                         <div class="col-12">
@@ -488,7 +492,7 @@
                                         
                                         <div class="col-md-6">
                                             <label for="nombre" class="form-label">Nombre Completo *</label>
-                                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                                            <input type="text" class="form-control" id="nombre" name="name" required>
                                             <div class="invalid-feedback">Por favor, ingresa tu nombre completo.</div>
                                         </div>
                                         
@@ -496,6 +500,7 @@
                                             <label for="generacion" class="form-label">Año de Generación *</label>
                                             <select class="form-select" id="generacion" name="generacion" required>
                                                 <option value="">Selecciona tu generación</option>
+                                                <option value="2025">2025</option>
                                                 <option value="2024">2024</option>
                                                 <option value="2023">2023</option>
                                                 <option value="2022">2022</option>
@@ -505,7 +510,22 @@
                                                 <option value="2018">2018</option>
                                                 <option value="2017">2017</option>
                                                 <option value="2016">2016</option>
-                                                <option value="anterior">Anterior a 2016</option>
+                                                <option value="2015">2015</option>
+                                                <option value="2014">2014</option>
+                                                <option value="2013">2013</option>
+                                                <option value="2012">2012</option>
+                                                <option value="2011">2011</option>
+                                                <option value="2010">2010</option>
+                                                <option value="2009">2009</option>
+                                                <option value="2008">2008</option>
+                                                <option value="2007">2007</option>
+                                                <option value="2006">2006</option>
+                                                <option value="2005">2005</option>
+                                                <option value="2004">2004</option>
+                                                <option value="2003">2003</option>
+                                                <option value="2002">2002</option>
+                                                <option value="2001">2001</option>
+                                                <option value="2000">2000</option>
                                             </select>
                                             <div class="invalid-feedback">Por favor, selecciona tu año de generación.</div>
                                         </div>
@@ -560,8 +580,8 @@
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label for="año-egreso" class="form-label">Año de Egreso Universitario</label>
-                                            <input type="number" class="form-control" id="año-egreso" name="año-egreso" placeholder="2024" min="2016" max="2030">
+                                            <label for="anio-egreso" class="form-label">Año de Egreso Universitario</label>
+                                            <input type="number" class="form-control" id="anio-egreso" name="anio-egreso" placeholder="2024" min="2000" max="2035">
                                         </div>
 
                                         <!-- Historia de Éxito -->
@@ -572,8 +592,13 @@
                                         </div>
 
                                         <div class="col-12">
-                                            <label for="historia" class="form-label">Cuéntanos tu historia de éxito</label>
-                                            <textarea class="form-control" id="historia" name="historia" rows="4" 
+                                            <label for="subject" class="form-label">Asunto *</label>
+                                            <input type="text" class="form-control" id="subject" name="subject" value="Actualización de Datos de Egresado" readonly>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label for="message" class="form-label">Cuéntanos tu historia de éxito</label>
+                                            <textarea class="form-control" id="message" name="message" rows="4"
                                                     placeholder="Comparte cómo te ha ayudado la formación del bachillerato en tu desarrollo profesional y personal..."></textarea>
                                             <small class="form-text text-muted">Tu historia podría inspirar a futuros estudiantes</small>
                                         </div>
@@ -673,63 +698,34 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="js/script.js"></script>
-    <script src="js/chatbot.js"></script>
-    <script src="js/search-unified.js"></script>
+    <!-- 🚀 BGE FRAMEWORK MODULAR - PÁGINA EGRESADOS -->
 
-    <!-- Form validation and submission -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('actualizarDatosForm');
-            
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
-                event.stopPropagation();
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
 
-                if (form.checkValidity()) {
-                    // Collect form data
-                    const formData = new FormData(form);
-                    const data = {};
-                    
-                    for (let [key, value] of formData.entries()) {
-                        data[key] = value;
-                    }
+    <!-- 🔧 SISTEMA CORE (OBLIGATORIO) -->
+    <script src="js/context-manager.js"></script>        <!-- 🔒 Base del sistema -->
+    <script src="js/config.js?v=2024091401"></script>    <!-- 🔧 Configuración global -->
+    <script src="js/theme-manager.js"></script>          <!-- 🎨 Gestión de temas -->
+    <script src="js/script.js"></script>                 <!-- 🔒 Script principal -->
 
-                    // Show success message
-                    showSuccessMessage();
-                    
-                    // Reset form
-                    form.reset();
-                    form.classList.remove('was-validated');
-                } else {
-                    // Show validation errors
-                    form.classList.add('was-validated');
-                }
-            });
+    <!-- 🎯 BGE FRAMEWORK CORE -->
+    <script src="js/bge-framework-core.js"></script>
 
-            function showSuccessMessage() {
-                const successHTML = `
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="fas fa-check-circle me-2"></i>
-                        <strong>¡Información enviada exitosamente!</strong> 
-                        Gracias por actualizar tus datos. Te contactaremos pronto para confirmar la información recibida.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                `;
-                
-                const container = document.querySelector('#actualizar-datos .container');
-                container.insertAdjacentHTML('afterbegin', successHTML);
-                
-                // Scroll to success message
-                document.querySelector('#actualizar-datos').scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    </script>
+    <!-- 📊 MÓDULOS BGE PARA EGRESADOS -->
+      <!-- ⚡ Performance optimizado -->
+    <script src="js/bge-analytics-module.js"></script>    <!-- 📊 Analytics egresados -->
+    <script src="js/bge-security-module.js"></script>    <!-- 🔒 Seguridad y autenticación admin -->
+    <script src="js/bge-pwa-module.js"></script>         <!-- 📱 PWA features -->
+
+    <!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DE EGRESADOS -->
+    <script src="js/chatbot.js"></script>                <!-- 🤖 Chatbot soporte -->
+    <script src="js/search-simple.js"></script>          <!-- 🔍 Búsqueda -->
+    <script src="js/egresados-form-handler.js"></script> <!-- 🎓 Handler específico para formulario de egresados -->
+
+    <!-- ✅ Handler de formulario manejado por egresados-form-handler.js -->
 
     <!-- Estilos para mejorar visibilidad de controles del carrusel -->
     <style>
@@ -1030,7 +1026,7 @@
         });
     </script>
     <!-- Scripts de autenticación admin -->
-    <script src="js/admin-auth-secure.js"></script>
+        <!-- 🔒 Seguridad y autenticación (mismo que index.html) -->
     <!--  DESHABILITADO - Ya no necesario con auth seguro -->
 </body>
 </html>

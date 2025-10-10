@@ -24,6 +24,11 @@ const path = require('path');
 // Routes
 const authRoutes = require('./routes/auth');
 const contactRoutes = require('./routes/contact');
+const studentsAuthRoutes = require('../backend/routes/students-auth');
+const inscriptionsRoutes = require('../backend/routes/inscriptions');
+const subscriptionsRoutes = require('../backend/routes/subscriptions');
+const newslettersRoutes = require('../backend/routes/newsletters');
+const egresadosRoutes = require('../backend/routes/egresados');
 
 // Middleware
 const { errorHandler } = require('./middleware/errorHandler');
@@ -42,11 +47,11 @@ app.use(helmet({
         directives: {
             defaultSrc: ["'self'"],
             styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com", "https://accounts.google.com"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "'unsafe-hashes'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://accounts.google.com", "https://www.googleapis.com"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "'unsafe-hashes'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://accounts.google.com", "https://www.googleapis.com"],
             scriptSrcAttr: ["'self'", "'unsafe-inline'", "'unsafe-hashes'"],
             imgSrc: ["'self'", "data:", "https:", "http:"],
-            connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://www.google-analytics.com", "https://www.googletagmanager.com", "https://accounts.google.com", "https://www.googleapis.com"],
-            fontSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com", "data:"],
+            connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://www.google-analytics.com", "https://www.googletagmanager.com", "https://accounts.google.com", "https://www.googleapis.com", "https://fonts.googleapis.com", "https://fonts.gstatic.com"],
+            fontSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com", "https://fonts.googleapis.com", "data:"],
             objectSrc: ["'none'"],
             mediaSrc: ["'self'"],
             frameSrc: ["'self'", "https://www.google.com", "https://maps.google.com", "https://www.openstreetmap.org", "https://accounts.google.com"]
@@ -62,9 +67,9 @@ app.use(helmet({
 // CORS Configuration
 const corsOptions = {
     origin: function (origin, callback) {
-        const allowedOrigins = process.env.CORS_ORIGIN ? 
-            process.env.CORS_ORIGIN.split(',') : 
-            ['http://localhost:8080', 'http://127.0.0.1:8080'];
+        const allowedOrigins = process.env.CORS_ORIGIN ?
+            process.env.CORS_ORIGIN.split(',') :
+            ['http://localhost:8080', 'http://127.0.0.1:8080', 'http://localhost:3000'];
         
         // Allow requests with no origin (mobile apps, curl, etc.)
         if (!origin) return callback(null, true);
@@ -233,8 +238,23 @@ app.post('/api/analytics/session', (req, res) => {
 // Authentication Routes
 app.use('/api/auth', authRoutes);
 
+// Students Auth Routes
+app.use('/api/students-auth', studentsAuthRoutes);
+
 // Contact Routes
 app.use('/api/contact', contactRoutes);
+
+// Inscriptions Routes
+app.use('/api/inscriptions', inscriptionsRoutes);
+
+// Subscriptions Routes
+app.use('/api/subscriptions', subscriptionsRoutes);
+
+// Newsletters Routes
+app.use('/api/newsletters', newslettersRoutes);
+
+// Egresados Routes
+app.use('/api/egresados', egresadosRoutes);
 
 // Static Files (Development & Production)
 console.log('🌍 Configurando servidor de archivos estáticos...');

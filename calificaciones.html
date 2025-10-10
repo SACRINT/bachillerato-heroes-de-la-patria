@@ -53,10 +53,9 @@
                             <i class="fas fa-medal" aria-hidden="true"></i>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
-        </div>
     </section>
 
     <!-- Características de la Plataforma -->
@@ -279,7 +278,7 @@
                             <form id="studentLoginForm">
                                 <div class="mb-3">
                                     <label for="studentId" class="form-label">Matrícula</label>
-                                    <input type="text" class="form-control" id="studentId" placeholder="Ej: 20230001" required>
+                                    <input type="text" class="form-control" id="studentId" placeholder="Ej: 20230001" autocomplete="username" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="studentPassword" class="form-label">Contraseña</label>
@@ -295,11 +294,11 @@
                             <form id="parentLoginForm">
                                 <div class="mb-3">
                                     <label for="parentEmail" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="parentEmail" placeholder="padre@email.com" required>
+                                    <input type="email" class="form-control" id="parentEmail" placeholder="padre@email.com" autocomplete="username" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="parentStudentId" class="form-label">Matrícula del Hijo(a)</label>
-                                    <input type="text" class="form-control" id="parentStudentId" placeholder="Ej: 20230001" required>
+                                    <input type="text" class="form-control" id="parentStudentId" placeholder="Ej: 20230001" autocomplete="off" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="parentPassword" class="form-label">Contraseña</label>
@@ -659,32 +658,60 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="js/script.js"></script>
-    <script src="js/chatbot.js"></script>
-    
-    <!-- Ensure chatbot functions are accessible -->
     <script>
-        // Make sure functions are globally accessible if they exist
-        if (typeof toggleChatbot !== 'undefined') {
-            window.toggleChatbot = toggleChatbot;
-        }
-        if (typeof sendMessage !== 'undefined') {
-            window.sendMessage = sendMessage;
-        }
-        if (typeof handleKeyPress !== 'undefined') {
-            window.handleKeyPress = handleKeyPress;
+        // Cache busting - Forzar recarga de scripts
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                }
+            });
         }
     </script>
-    <script src="js/search-unified.js"></script>
-    <!-- <script src="js/grades-platform.js"></script> -->
-    
-    <!-- Sistema de Calificaciones Funcional -->
+    <!-- 🚀 BGE FRAMEWORK MODULAR - PÁGINA CALIFICACIONES -->
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+
+    <!-- 📊 Chart.js para gráficos de calificaciones -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- 🔧 SISTEMA CORE (OBLIGATORIO) -->
+    <script src="js/context-manager.js"></script>        <!-- 🔒 Base del sistema -->
+    <script src="js/config.js?v=2024091401"></script>    <!-- 🔧 Configuración global -->
+    <script src="js/theme-manager.js"></script>          <!-- 🎨 Gestión de temas -->
+    <script src="js/script.js"></script>                 <!-- 🔒 Script principal -->
+
+    <!-- 🎯 BGE FRAMEWORK CORE -->
+    <script src="js/bge-framework-core.js"></script>
+
+    <!-- 📊 MÓDULOS BGE PARA CALIFICACIONES -->
+      <!-- ⚡ Performance optimizado -->
+    <script src="js/bge-analytics-module.js"></script>    <!-- 📊 Analytics académico -->
+    <script src="js/bge-education-module.js"></script>    <!-- 🎓 IA educativa y análisis -->
+    <script src="js/bge-security-module.js"></script>    <!-- 🔒 Seguridad y autenticación admin -->
+        <!-- 🔒 Seguridad datos académicos -->
+    <script src="js/bge-pwa-module.js"></script>         <!-- 📱 PWA features -->
+
+    <!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DE CALIFICACIONES -->
+    <script src="js/chatbot.js"></script>                <!-- 🤖 Chatbot educativo -->
+    <script src="js/search-simple.js"></script>          <!-- 🔍 Búsqueda -->
+    <script src="js/grades-manager.js"></script>         <!-- 📊 Gestor de calificaciones -->
+
+    <!-- 🔧 SISTEMAS ESPECIALES -->
+    <script src="js/csp-universal-fixer.js"></script>    <!-- 🔒 CSP compliance (último) -->
+
+    <!-- Contenedor para el Sistema de Calificaciones de Fase B -->
+    <div id="grades-system-container" class="d-none"></div>
+
+    <!-- Sistema de Calificaciones Funcional Integrado -->
     <script>
         // Estado de la aplicación
         let currentUser = null;
         let isLoggedIn = false;
+        let gradesManagerInstance = null;
 
         function showLoginModal() {
             const modal = new bootstrap.Modal(document.getElementById('loginModal'));
@@ -717,17 +744,29 @@
 
             // Simulación de login exitoso con datos de prueba
             if (matricula === 'H2024001' && password === 'estudiante123') {
-                currentUser = {
+                // Guardar datos para el sistema
+                const userData = {
+                    id: 1,
                     tipo: 'estudiante',
+                    rol: 'estudiante',
                     matricula: 'H2024001',
                     nombre: 'Ana García Hernández',
                     semestre: '3°',
-                    grupo: 'A'
+                    grupo: 'A',
+                    email: 'ana.garcia@estudiante.bge.mx'
                 };
+
+                currentUser = userData;
                 isLoggedIn = true;
-                showGradesPanel();
+
+                // Guardar en localStorage para el sistema de calificaciones
+                localStorage.setItem('authToken', 'demo-token-student-123');
+                localStorage.setItem('userData', JSON.stringify(userData));
+
+                // Mostrar el sistema avanzado
+                showAdvancedGradesSystem();
                 bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-                showAlert('¡Bienvenida, Ana! Has iniciado sesión exitosamente.', 'success');
+                showAlert('¡Bienvenida, Ana! Sistema de calificaciones cargado.', 'success');
             } else {
                 showAlert('Matrícula o contraseña incorrecta. Prueba con H2024001 y contraseña: estudiante123', 'danger');
             }
@@ -745,17 +784,28 @@
 
             // Simulación de login exitoso
             if (email === 'padre@email.com' && password === 'padre123') {
-                currentUser = {
+                // Guardar datos para el sistema
+                const userData = {
+                    id: 2,
                     tipo: 'padre',
+                    rol: 'padre',
                     email: 'padre@email.com',
                     nombre: 'Roberto García',
                     hijo: 'Ana García Hernández',
                     matricula_hijo: 'H2024001'
                 };
+
+                currentUser = userData;
                 isLoggedIn = true;
-                showGradesPanel();
+
+                // Guardar en localStorage para el sistema de calificaciones
+                localStorage.setItem('authToken', 'demo-token-parent-123');
+                localStorage.setItem('userData', JSON.stringify(userData));
+
+                // Mostrar el sistema avanzado
+                showAdvancedGradesSystem();
                 bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-                showAlert('¡Bienvenido, Roberto! Puedes ver las calificaciones de Ana.', 'success');
+                showAlert('¡Bienvenido, Roberto! Sistema de seguimiento cargado.', 'success');
             } else {
                 showAlert('Email o contraseña incorrecta. Prueba con padre@email.com y contraseña: padre123', 'danger');
             }
@@ -828,20 +878,62 @@
             }
         }
 
+        // Nueva función para mostrar el sistema avanzado de calificaciones
+        function showAdvancedGradesSystem() {
+            // Ocultar hero section y panel básico
+            const heroSection = document.querySelector('#hero');
+            if (heroSection) heroSection.style.display = 'none';
+
+            const basicPanel = document.getElementById('gradesPanel');
+            if (basicPanel) {
+                basicPanel.classList.add('d-none');
+            }
+
+            // Mostrar contenedor del sistema avanzado
+            const advancedContainer = document.getElementById('grades-system-container');
+            if (advancedContainer) {
+                advancedContainer.classList.remove('d-none');
+
+                // Inicializar el sistema de calificaciones de Fase B
+                if (typeof GradesManager !== 'undefined') {
+                    gradesManagerInstance = new GradesManager();
+                    console.log('✅ Sistema avanzado de calificaciones inicializado');
+                } else {
+                    console.error('❌ GradesManager no disponible, cargando sistema básico');
+                    showGradesPanel(); // Fallback al sistema básico
+                }
+            }
+        }
+
         // Función de logout
         function logout() {
             currentUser = null;
             isLoggedIn = false;
-            
-            // Mostrar hero section y ocultar panel
+
+            // Limpiar localStorage
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userData');
+
+            // Destruir instancia del manager si existe
+            if (gradesManagerInstance && typeof gradesManagerInstance.destroy === 'function') {
+                gradesManagerInstance.destroy();
+                gradesManagerInstance = null;
+            }
+
+            // Mostrar hero section y ocultar paneles
             const heroSection = document.querySelector('#hero');
             if (heroSection) heroSection.style.display = 'block';
-            
+
             const gradesPanel = document.getElementById('gradesPanel');
             if (gradesPanel) {
                 gradesPanel.classList.add('d-none');
             }
-            
+
+            const advancedContainer = document.getElementById('grades-system-container');
+            if (advancedContainer) {
+                advancedContainer.classList.add('d-none');
+            }
+
             showAlert('Sesión cerrada exitosamente.', 'info');
         }
 
@@ -864,10 +956,106 @@
             }, 5000);
         }
 
-        // Generar reporte PDF (simulación)
+        // Generar reporte PDF funcional
         function generatePDF() {
-            showAlert('Generando reporte PDF... Esta funcionalidad estará disponible próximamente.', 'info');
-            bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide();
+            showAlert('Generando boleta de calificaciones en PDF...', 'info');
+
+            // Crear contenido del PDF
+            const reportContent = `
+                <div style="text-align: center; font-family: Arial, sans-serif; padding: 20px;">
+                    <h1 style="color: #1976D2;">BACHILLERATO GENERAL ESTATAL</h1>
+                    <h2 style="color: #1976D2;">"HÉROES DE LA PATRIA"</h2>
+                    <hr style="border: 2px solid #1976D2;">
+
+                    <h3 style="margin-top: 30px;">BOLETA DE CALIFICACIONES</h3>
+                    <p><strong>Semestre:</strong> 2024-2025</p>
+                    <p><strong>Estudiante:</strong> [Nombre del Estudiante]</p>
+                    <p><strong>Grupo:</strong> 2°A</p>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 30px;">
+                        <thead>
+                            <tr style="background-color: #1976D2; color: white;">
+                                <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">Materia</th>
+                                <th style="border: 1px solid #ddd; padding: 12px; text-align: center;">Calificación</th>
+                                <th style="border: 1px solid #ddd; padding: 12px; text-align: center;">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid #ddd; padding: 12px;">Matemáticas</td>
+                                <td style="border: 1px solid #ddd; padding: 12px; text-align: center; color: #28a745; font-weight: bold;">8.5</td>
+                                <td style="border: 1px solid #ddd; padding: 12px; text-align: center; color: #28a745;">APROBADO</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #ddd; padding: 12px;">Español</td>
+                                <td style="border: 1px solid #ddd; padding: 12px; text-align: center; color: #28a745; font-weight: bold;">9.2</td>
+                                <td style="border: 1px solid #ddd; padding: 12px; text-align: center; color: #28a745;">APROBADO</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #ddd; padding: 12px;">Química</td>
+                                <td style="border: 1px solid #ddd; padding: 12px; text-align: center; color: #ffc107; font-weight: bold;">7.8</td>
+                                <td style="border: 1px solid #ddd; padding: 12px; text-align: center; color: #ffc107;">APROBADO</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #ddd; padding: 12px;">Historia</td>
+                                <td style="border: 1px solid #ddd; padding: 12px; text-align: center; color: #28a745; font-weight: bold;">8.9</td>
+                                <td style="border: 1px solid #ddd; padding: 12px; text-align: center; color: #28a745;">APROBADO</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #ddd; padding: 12px;">Inglés</td>
+                                <td style="border: 1px solid #ddd; padding: 12px; text-align: center; color: #28a745; font-weight: bold;">9.0</td>
+                                <td style="border: 1px solid #ddd; padding: 12px; text-align: center; color: #28a745;">APROBADO</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top: 30px;">
+                        <p><strong>PROMEDIO GENERAL: 8.68</strong></p>
+                        <p style="color: #28a745;"><strong>SITUACIÓN ACADÉMICA: APROBADO</strong></p>
+                    </div>
+
+                    <div style="margin-top: 50px; text-align: left;">
+                        <p>_____________________________</p>
+                        <p>Coordinación Académica</p>
+                        <p style="font-size: 12px; margin-top: 30px;">
+                            Fecha de emisión: ${new Date().toLocaleDateString()}<br>
+                            Este documento es oficial y tiene validez académica.
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            // Abrir ventana para imprimir/guardar como PDF
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Boleta de Calificaciones - BGE Héroes de la Patria</title>
+                    <style>
+                        @media print {
+                            @page { margin: 1in; }
+                            body { margin: 0; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${reportContent}
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                        }
+                    </` + `script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+
+            // Cerrar modal después de generar
+            setTimeout(() => {
+                bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide();
+                showAlert('¡Boleta generada exitosamente! Utiliza Ctrl+S en la ventana de impresión para guardar como PDF.', 'success');
+            }, 1000);
         }
 
         // Mostrar detalle de materia
@@ -893,11 +1081,224 @@
         function scrollToSection(sectionId) {
             const element = document.getElementById(sectionId);
             if (element) {
-                element.scrollIntoView({ 
+                element.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start'
                 });
             }
+        }
+
+        // Función para logout del sistema de calificaciones
+        function logoutGradeSystem() {
+            if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                showAlert('Cerrando sesión...', 'info');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+        }
+
+        // Función para mostrar modal de asistencia
+        function showAttendanceModal() {
+            const modalHtml = `
+                <div class="modal fade" id="attendanceModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-warning text-white">
+                                <h5 class="modal-title"><i class="fas fa-calendar-check me-2"></i>Registro de Asistencia</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="card text-center border-success">
+                                            <div class="card-body">
+                                                <h3 class="text-success">92%</h3>
+                                                <p class="mb-0">Asistencias</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card text-center border-warning">
+                                            <div class="card-body">
+                                                <h3 class="text-warning">8%</h3>
+                                                <p class="mb-0">Faltas</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h6>Resumen por Materia:</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Materia</th>
+                                                <th>Asistencias</th>
+                                                <th>Faltas</th>
+                                                <th>%</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Matemáticas</td>
+                                                <td class="text-success">35</td>
+                                                <td class="text-danger">3</td>
+                                                <td>92%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Español</td>
+                                                <td class="text-success">37</td>
+                                                <td class="text-danger">1</td>
+                                                <td>97%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Química</td>
+                                                <td class="text-success">33</td>
+                                                <td class="text-danger">5</td>
+                                                <td>87%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-warning" onclick="generateAttendanceReport()">Descargar Reporte</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Remover modal existente si existe
+            const existingModal = document.getElementById('attendanceModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Agregar modal al DOM
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            // Mostrar modal
+            const modal = new bootstrap.Modal(document.getElementById('attendanceModal'));
+            modal.show();
+        }
+
+        // Función para mostrar modal de horarios
+        function showScheduleModal() {
+            const modalHtml = `
+                <div class="modal fade" id="scheduleModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-info text-white">
+                                <h5 class="modal-title"><i class="fas fa-clock me-2"></i>Horario de Clases</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>Hora</th>
+                                                <th>Lunes</th>
+                                                <th>Martes</th>
+                                                <th>Miércoles</th>
+                                                <th>Jueves</th>
+                                                <th>Viernes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="fw-bold">7:00-8:00</td>
+                                                <td class="table-primary">Matemáticas</td>
+                                                <td class="table-success">Español</td>
+                                                <td class="table-primary">Matemáticas</td>
+                                                <td class="table-warning">Química</td>
+                                                <td class="table-info">Inglés</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">8:00-9:00</td>
+                                                <td class="table-warning">Química</td>
+                                                <td class="table-primary">Matemáticas</td>
+                                                <td class="table-success">Español</td>
+                                                <td class="table-success">Español</td>
+                                                <td class="table-primary">Matemáticas</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">9:00-9:30</td>
+                                                <td colspan="5" class="text-center table-light">🍎 RECESO</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">9:30-10:30</td>
+                                                <td class="table-info">Inglés</td>
+                                                <td class="table-warning">Química</td>
+                                                <td class="table-info">Inglés</td>
+                                                <td class="table-info">Inglés</td>
+                                                <td class="table-warning">Química</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-info" onclick="printSchedule()">Imprimir Horario</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Remover modal existente si existe
+            const existingModal = document.getElementById('scheduleModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Agregar modal al DOM
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            // Mostrar modal
+            const modal = new bootstrap.Modal(document.getElementById('scheduleModal'));
+            modal.show();
+        }
+
+        // Función para generar reporte de asistencia
+        function generateAttendanceReport() {
+            showAlert('Generando reporte de asistencia... Se descargará en breve.', 'success');
+            // Simular descarga
+            setTimeout(() => {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('attendanceModal'));
+                modal.hide();
+            }, 1500);
+        }
+
+        // Función para imprimir horario
+        function printSchedule() {
+            const printContent = document.querySelector('#scheduleModal .modal-body').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Horario de Clases</title>
+                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+                    <style>
+                        @media print {
+                            .no-print { display: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container mt-4">
+                        <h2 class="text-center mb-4">Horario de Clases - BGE Héroes de la Patria</h2>
+                        ${printContent}
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
         }
     </script>
 

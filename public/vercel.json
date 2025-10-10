@@ -1,0 +1,16 @@
+{
+  "buildCommand": "echo 'Static files ready in public/'",
+  "outputDirectory": "public",
+  "installCommand": "npm install --prefix api",
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    }
+  ]
+}

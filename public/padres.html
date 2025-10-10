@@ -136,10 +136,7 @@
                                     <p class="mb-0 mt-2">Ingresa tus credenciales para acceder a la información de tu hijo(a)</p>
                                 </div>
                                 <div class="card-body p-5">
-                                    <form id="parentLoginForm" class="padres-form-dark" method="POST" action="/api/contact/send">
-                                        <!-- Campo oculto para identificar el formulario -->
-                                        <input type="hidden" name="form_type" value="Solicitud Acceso - Padres de Familia">
-                                        <input type="hidden" name="subject" value="Solicitud de acceso - Padres de familia">
+                                    <form id="parentLoginForm" class="padres-form-dark">
                                         <div class="row g-4">
                                             <div class="col-12">
                                                 <label for="parentEmail" class="form-label">
@@ -615,7 +612,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <a href="contacto.html" class="btn btn-info">
+                    <a href="contacto.html#ubicacion" class="btn btn-info">
                         <i class="fas fa-map-marker-alt me-2"></i>
                         Ver Ubicación
                     </a>
@@ -677,13 +674,38 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="js/script.js"></script>
-    <script src="js/admin-auth-secure.js"></script>
-    <script src="js/chatbot.js"></script>
-    <script src="js/search-simple.js"></script>
-    <script src="js/parent-portal.js"></script>
+    <!-- 🚀 BGE FRAMEWORK MODULAR - PÁGINA PADRES -->
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+
+    <!-- 🔧 SISTEMA CORE (OBLIGATORIO) -->
+    <script src="js/context-manager.js"></script>        <!-- 🔒 Base del sistema -->
+    <script src="js/config.js?v=2024091401"></script>    <!-- 🔧 Configuración global -->
+    <script src="js/theme-manager.js"></script>          <!-- 🎨 Gestión de temas -->
+    <script src="js/script.js"></script>                 <!-- 🔒 Script principal -->
+
+    <!-- 🎯 BGE FRAMEWORK CORE -->
+    <script src="js/bge-framework-core.js"></script>
+
+    <!-- 📊 MÓDULOS BGE PARA PADRES -->
+      <!-- ⚡ Performance optimizado -->
+    <script src="js/bge-analytics-module.js"></script>    <!-- 📊 Analytics familiar -->
+    <script src="js/bge-security-module.js"></script>    <!-- 🔒 Seguridad y autenticación admin -->
+    <script src="js/bge-pwa-module.js"></script>         <!-- 📱 PWA features (notificaciones padres) -->
+        <!-- 🔒 Seguridad familiar -->
+
+    <!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DE PADRES -->
+    <script src="js/chatbot.js"></script>                <!-- 🤖 Chatbot soporte padres -->
+    <script src="js/search-simple.js"></script>          <!-- 🔍 Búsqueda -->
+    <script src="js/parent-portal.js"></script>          <!-- 👨‍👩‍👧‍👦 Portal de padres -->
+    <script src="js/appointments.js"></script>           <!-- 📅 Sistema de citas -->
+
+    <!-- 🔧 SISTEMAS ESPECIALES -->
+    <script src="js/csp-universal-fixer.js"></script>    <!-- 🔒 CSP compliance (último) -->
+
     <!-- Estilos adicionales para modo oscuro - Padres -->
     <style>
         /* Formulario Login - Modo Oscuro */

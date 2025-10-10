@@ -4,6 +4,8 @@
  * Sistema completo de optimización, compresión y gestión de imágenes
  */
 
+// Verificar si ya existe para evitar declaraciones duplicadas
+if (typeof ImageOptimizer === 'undefined') {
 class ImageOptimizer {
     constructor() {
         this.supportedFormats = {
@@ -751,3 +753,4 @@ document.head.appendChild(imageOptimizerStyles);
 window.ImageOptimizer = ImageOptimizer;
 
 //console.log('🖼️ Image Optimizer cargado. Usa window.imageOptimizer para acceso directo.');
+}

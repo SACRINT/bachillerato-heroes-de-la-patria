@@ -5,6 +5,35 @@
  * Versión 2.0 - Integración con Backend API
  */
 
+// Prevenir carga múltiple del script
+if (typeof window.BGE_CHATBOT_LOADED !== 'undefined') {
+    console.log('🤖 [CHATBOT] Ya está cargado, evitando duplicación');
+} else {
+    window.BGE_CHATBOT_LOADED = true;
+
+// 🔧 Configuración de API Backend
+const API_CONFIG = {
+    baseUrl: 'http://localhost:3000/api',
+    endpoints: {
+        search: '/chatbot/search',
+        message: '/chatbot/message',
+        analytics: '/chatbot/analytics/daily'
+    },
+    timeout: 5000
+};
+
+// 📱 Generador único de sesión
+const CHAT_SESSION = {
+    id: `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    startTime: Date.now(),
+    messageCount: 0
+};
+
+// Verificar si ya está cargado para evitar declaraciones duplicadas
+if (typeof KNOWLEDGE_DATABASE !== 'undefined') {
+    console.warn('⚠️ Chatbot ya está cargado, evitando carga duplicada');
+} else {
+
 // 📚 BASE DE CONOCIMIENTO EXPANDIDA Y COMPLETA
 const KNOWLEDGE_DATABASE = {
     // === INFORMACIÓN BÁSICA ===
@@ -775,33 +804,199 @@ function initializeChatSession() {
     }
 }
 
-// Función principal de procesamiento de mensajes (mejorada con API)
+// 🌐 FUNCIONES DE INTEGRACIÓN CON BACKEND API
+
+/**
+ * Buscar información en el backend
+ */
+async function searchBackendAPI(query, userType = 'visitante') {
+    try {
+        const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.search}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                query: query,
+                user_type: userType,
+                limit: 5
+            }),
+            signal: AbortSignal.timeout(API_CONFIG.timeout)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log(`🔍 API Search: "${query}" - ${data.total} resultados`);
+
+        return data;
+    } catch (error) {
+        console.warn('⚠️ Error en búsqueda API:', error.message);
+        return null;
+    }
+}
+
+/**
+ * Registrar mensaje en el backend
+ */
+async function logMessageToAPI(message, senderType, intent = null) {
+    try {
+        const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.message}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                session_id: CHAT_SESSION.id,
+                message: message,
+                sender_type: senderType,
+                intent: intent,
+                user_type: 'visitante'
+            }),
+            signal: AbortSignal.timeout(API_CONFIG.timeout)
+        });
+
+        if (response.ok) {
+            CHAT_SESSION.messageCount++;
+            console.log(`📝 Mensaje registrado: ${senderType}`);
+        }
+    } catch (error) {
+        console.warn('⚠️ Error registrando mensaje:', error.message);
+    }
+}
+
+/**
+ * Formatear respuesta de la base de datos
+ */
+function formatDatabaseResponse(dbResult) {
+    try {
+        let contenido = dbResult.contenido;
+
+        // Si el contenido es JSON string, parsearlo
+        if (typeof contenido === 'string' && contenido.startsWith('{')) {
+            contenido = JSON.parse(contenido);
+        }
+
+        const response = {
+            title: `🔍 ${dbResult.titulo}`,
+            content: [],
+            footer: `Información actualizada: ${new Date(dbResult.updated_at).toLocaleDateString()}`
+        };
+
+        // Formatear contenido estructurado
+        if (typeof contenido === 'object') {
+            for (const [key, value] of Object.entries(contenido)) {
+                if (Array.isArray(value)) {
+                    response.content.push({
+                        subtitle: key.charAt(0).toUpperCase() + key.slice(1),
+                        text: value.map(item => `• ${item}`).join('<br>')
+                    });
+                } else if (typeof value === 'object') {
+                    let text = '';
+                    for (const [subKey, subValue] of Object.entries(value)) {
+                        text += `<strong>${subKey}:</strong> ${subValue}<br>`;
+                    }
+                    response.content.push({
+                        subtitle: key.charAt(0).toUpperCase() + key.slice(1),
+                        text: text
+                    });
+                } else {
+                    response.content.push({
+                        subtitle: key.charAt(0).toUpperCase() + key.slice(1),
+                        text: value
+                    });
+                }
+            }
+        } else {
+            response.content.push({
+                subtitle: 'Información',
+                text: contenido
+            });
+        }
+
+        return formatResponse(response);
+    } catch (error) {
+        console.error('Error formateando respuesta DB:', error);
+        return formatResponse({
+            title: dbResult.titulo,
+            content: [{ text: dbResult.contenido }],
+            footer: 'Información de la base de datos'
+        });
+    }
+}
+
+// Función principal de procesamiento de mensajes (mejorada con API y AI)
 async function processMessage(message) {
     const startTime = Date.now();
-    
-    // Primero intentar buscar en la base de datos
+
+    // Registrar mensaje del usuario en el backend
+    await logMessageToAPI(message, 'user');
+
+    // FASE 1: Intentar buscar en el backend API primero
+    console.log('🔍 Buscando en backend API...');
+    const apiResponse = await searchBackendAPI(message, 'visitante');
+
+    if (apiResponse && apiResponse.results && apiResponse.results.length > 0) {
+        console.log('✅ Respuesta encontrada en API backend');
+        const dbResult = apiResponse.results[0];
+        const formattedResponse = formatDatabaseResponse(dbResult);
+
+        // Registrar respuesta del bot
+        await logMessageToAPI(formattedResponse, 'bot', 'database_match');
+
+        return formattedResponse;
+    }
+
+    // FASE 2: Intentar usar los nuevos sistemas de IA como fallback
+    if (window.aiEducationalSystem && window.aiRecommendationEngine) {
+        try {
+            const userId = getCurrentUserId();
+
+            // Usar el sistema educativo AI para respuestas inteligentes
+            const aiResponse = await window.aiEducationalSystem.processMessage(message, userId);
+
+            if (aiResponse && aiResponse.response) {
+                // Registrar interacción para recomendaciones
+                window.aiRecommendationEngine.recordInteraction(userId, {
+                    timestamp: Date.now(),
+                    message: message,
+                    response: aiResponse.response,
+                    confidence: aiResponse.confidence || 0.8
+                });
+
+                // Formatear respuesta AI
+                return formatAIResponse(aiResponse);
+            }
+        } catch (error) {
+            console.warn('🤖 Sistema AI no disponible, usando fallback:', error.message);
+        }
+    }
+
+    // Intentar buscar en la base de datos
     if (isAPIConnected && window.apiClient) {
         try {
             const userInfo = window.apiClient.getUserInfo();
             const userType = userInfo ? userInfo.tipo_usuario : 'visitante';
-            
+
             // Buscar en base de datos
             const apiResponse = await window.apiClient.searchInformation(message, userType, 5);
-            
+
             if (apiResponse && apiResponse.success && apiResponse.results.length > 0) {
                 const dbResult = apiResponse.results[0];
-                
+
                 // Formatear respuesta de la base de datos
                 const formattedResponse = formatDatabaseResponse(dbResult);
-                
+
                 // Registrar el mensaje en la base de datos
                 await window.apiClient.logMessage(
-                    currentSessionId, 
-                    message, 
-                    formattedResponse, 
+                    currentSessionId,
+                    message,
+                    formattedResponse,
                     userType
                 );
-                
+
                 return formattedResponse;
             }
         } catch (error) {
@@ -809,13 +1004,19 @@ async function processMessage(message) {
             isAPIConnected = false;
         }
     }
-    
-    // Fallback a base de conocimiento local
-    return processMessageLocal(message);
+
+    // FASE 3: Fallback a base de conocimiento local
+    console.log('📚 Usando base de conocimiento local como fallback');
+    const localResponse = processMessageLocal(message);
+
+    // Registrar respuesta del bot
+    await logMessageToAPI(localResponse, 'bot', 'local_fallback');
+
+    return localResponse;
 }
 
-// Formatear respuesta de la base de datos
-function formatDatabaseResponse(dbResult) {
+// Formatear respuesta de la base de datos (versión 2)
+function formatDatabaseResponseV2(dbResult) {
     try {
         const content = typeof dbResult.contenido === 'string' ? 
                        JSON.parse(dbResult.contenido) : dbResult.contenido;
@@ -1094,6 +1295,66 @@ async function sendMessage() {
         
         window.lastMessageTime = Date.now();
     }
+}
+
+// 🤖 FUNCIONES AUXILIARES PARA INTEGRACIÓN AI
+
+// Formatear respuesta del sistema AI educativo
+function formatAIResponse(aiResponse) {
+    const response = {
+        title: `🤖 ${aiResponse.subject ? `${aiResponse.subject} -` : ''} Asistente IA`,
+        content: [
+            {
+                subtitle: '💡 Respuesta Inteligente',
+                text: aiResponse.response
+            }
+        ],
+        footer: `Confianza: ${Math.round((aiResponse.confidence || 0.8) * 100)}% | Categoría: ${aiResponse.category || 'General'}`
+    };
+
+    if (aiResponse.recommendations && aiResponse.recommendations.length > 0) {
+        response.content.push({
+            subtitle: '📚 Recomendaciones Personalizadas',
+            text: aiResponse.recommendations.map(rec => `• ${rec}`).join('<br>')
+        });
+    }
+
+    if (aiResponse.relatedTopics && aiResponse.relatedTopics.length > 0) {
+        response.content.push({
+            subtitle: '🔗 Temas Relacionados',
+            text: aiResponse.relatedTopics.join(', ')
+        });
+    }
+
+    return formatResponse(response);
+}
+
+// Obtener ID de usuario actual
+function getCurrentUserId() {
+    // Intentar obtener del sistema de autenticación
+    if (window.currentUser && window.currentUser.id) {
+        return window.currentUser.id;
+    }
+
+    // Intentar obtener del localStorage
+    const userData = localStorage.getItem('userData');
+    if (userData) {
+        try {
+            const user = JSON.parse(userData);
+            return user.id || user.google_id || user.email;
+        } catch (error) {
+            console.warn('Error parsing user data:', error);
+        }
+    }
+
+    // Generar ID temporal para sesión anónima
+    let sessionId = localStorage.getItem('chatbot_session_id');
+    if (!sessionId) {
+        sessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('chatbot_session_id', sessionId);
+    }
+
+    return sessionId;
 }
 
 // 🛠️ FUNCIONES AUXILIARES PARA INTEGRACIÓN API
@@ -1574,6 +1835,10 @@ professionalStyles.textContent = `
         text-align: center;
         padding: 4px 0;
     }
-`;;
+`;
 
 document.head.appendChild(professionalStyles);
+
+} // Fin del bloque else de verificación de carga duplicada
+
+} // Fin del bloque else principal de window.BGE_CHATBOT_LOADED

@@ -155,9 +155,9 @@ class AdminAuth {
 
         //console.log('💾 Guardando sesión:', this.adminSession);
         //console.log('🔍 Estado interno:', {
-            isAdminLoggedIn: this.isAdminLoggedIn,
-            sessionExists: !!this.adminSession
-        });
+        //    isAdminLoggedIn: this.isAdminLoggedIn,
+        //    sessionExists: !!this.adminSession
+        //});
 
         // Guardar sesión
         localStorage.setItem('admin_session', JSON.stringify(this.adminSession));
@@ -296,11 +296,11 @@ class AdminAuth {
             const sessionStatus = document.getElementById('adminPanelSessionStatus');
 
             //console.log(`🔍 Intento ${attemptNum} - Elementos encontrados:`, {
-                adminElements: adminOnlyElements.length,
-                loginBtn: !!loginBtn,
-                logoutOption: !!logoutOption,
-                sessionStatus: !!sessionStatus
-            });
+            //    adminElements: adminOnlyElements.length,
+            //    loginBtn: !!loginBtn,
+            //    logoutOption: !!logoutOption,
+            //    sessionStatus: !!sessionStatus
+            //});
 
             // Si no encontramos elementos críticos y aún podemos reintentar
             if ((adminOnlyElements.length === 0 || !loginBtn) && attemptNum < maxAttempts) {
@@ -387,9 +387,11 @@ class AdminAuth {
                 } else if (logoutOption && logoutOption.hasAttribute('data-force-visible')) {
                     //console.log('🔒 Logout PROTEGIDO - no se oculta');
                 }
-                if (sessionStatus) {
+                if (sessionStatus && sessionStatus.id !== 'googleUserSessionStatus') {
                     sessionStatus.classList.add('d-none');
                     //console.log('🙈 Ocultando status de sesión');
+                } else if (sessionStatus && sessionStatus.id === 'googleUserSessionStatus') {
+                    //console.log('🔒 PROTEGIDO: No se oculta el estado de Google Auth');
                 }
             }
 
@@ -673,10 +675,10 @@ function initAdminAuthSystem() {
                 };
                 localStorage.setItem('admin_session', JSON.stringify(adminAuth.adminSession));
                 //console.log('🔍 Estado después de forzar:', {
-                    loggedIn: adminAuth.isAdminLoggedIn,
-                    session: adminAuth.adminSession,
-                    localStorage: !!localStorage.getItem('admin_session')
-                });
+                //    loggedIn: adminAuth.isAdminLoggedIn,
+                //    session: adminAuth.adminSession,
+                //    localStorage: !!localStorage.getItem('admin_session')
+                //});
                 
                 // Actualizar UI múltiples veces
                 adminAuth.updateUI();
@@ -723,10 +725,10 @@ function initAdminAuthSystem() {
             const logoutBtn = document.getElementById('adminPanelLogoutOption');
             
             //console.log('🔍 Elementos encontrados:', {
-                adminElements: adminElements.length,
-                loginBtn: !!loginBtn,
-                logoutBtn: !!logoutBtn
-            });
+            //    adminElements: adminElements.length,
+            //    loginBtn: !!loginBtn,
+            //    logoutBtn: !!logoutBtn
+            //});
             
             // FORZAR ELEMENTOS CON MÚLTIPLES MÉTODOS
             adminElements.forEach((el, i) => {

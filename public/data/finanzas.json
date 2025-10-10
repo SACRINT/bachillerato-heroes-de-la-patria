@@ -1,0 +1,225 @@
+{
+  "resumen": {
+    "ingresosMes": 2847500,
+    "pagosPendientes": 157500,
+    "tasaCobro": 94.5,
+    "gastosMes": 1250000,
+    "utilidadMes": 1597500,
+    "presupuestoAnual": 34170000,
+    "ingresoAcumulado": 25523250,
+    "porcentajePresupuesto": 74.7
+  },
+  "ingresos": [
+    {
+      "id": "ING001",
+      "concepto": "Colegiaturas Bachillerato",
+      "categoria": "Colegiaturas",
+      "monto": 2100000,
+      "fecha": "2024-09-01",
+      "estado": "Recibido",
+      "periodo": "2024-09",
+      "descripcion": "Pago de colegiaturas mensuales - Septiembre 2024"
+    },
+    {
+      "id": "ING002",
+      "concepto": "Inscripciones Nuevo Ciclo",
+      "categoria": "Inscripciones",
+      "monto": 450000,
+      "fecha": "2024-08-15",
+      "estado": "Recibido",
+      "periodo": "2024-08",
+      "descripcion": "Inscripciones de alumnos de nuevo ingreso"
+    },
+    {
+      "id": "ING003",
+      "concepto": "Servicios Adicionales",
+      "categoria": "Servicios",
+      "monto": 125000,
+      "fecha": "2024-09-10",
+      "estado": "Recibido",
+      "periodo": "2024-09",
+      "descripcion": "Servicios de biblioteca, laboratorio y actividades"
+    },
+    {
+      "id": "ING004",
+      "concepto": "Certificaciones y Trámites",
+      "categoria": "Trámites",
+      "monto": 75000,
+      "fecha": "2024-09-05",
+      "estado": "Recibido",
+      "periodo": "2024-09",
+      "descripcion": "Trámites de certificados y documentos oficiales"
+    },
+    {
+      "id": "ING005",
+      "concepto": "Eventos y Actividades",
+      "categoria": "Eventos",
+      "monto": 97500,
+      "fecha": "2024-09-12",
+      "estado": "Recibido",
+      "periodo": "2024-09",
+      "descripcion": "Ingresos por eventos académicos y culturales"
+    }
+  ],
+  "gastos": [
+    {
+      "id": "GAS001",
+      "concepto": "Nómina Docentes",
+      "categoria": "Personal",
+      "monto": 750000,
+      "fecha": "2024-09-01",
+      "estado": "Pagado",
+      "periodo": "2024-09",
+      "descripcion": "Salarios del personal docente - Septiembre 2024"
+    },
+    {
+      "id": "GAS002",
+      "concepto": "Nómina Administrativo",
+      "categoria": "Personal",
+      "monto": 280000,
+      "fecha": "2024-09-01",
+      "estado": "Pagado",
+      "periodo": "2024-09",
+      "descripcion": "Salarios del personal administrativo"
+    },
+    {
+      "id": "GAS003",
+      "concepto": "Servicios Públicos",
+      "categoria": "Servicios",
+      "monto": 85000,
+      "fecha": "2024-09-15",
+      "estado": "Pagado",
+      "periodo": "2024-09",
+      "descripcion": "Electricidad, agua, internet y teléfono"
+    },
+    {
+      "id": "GAS004",
+      "concepto": "Material Didáctico",
+      "categoria": "Materiales",
+      "monto": 65000,
+      "fecha": "2024-09-08",
+      "estado": "Pagado",
+      "periodo": "2024-09",
+      "descripcion": "Libros, materiales de laboratorio y suministros"
+    },
+    {
+      "id": "GAS005",
+      "concepto": "Mantenimiento",
+      "categoria": "Mantenimiento",
+      "monto": 45000,
+      "fecha": "2024-09-20",
+      "estado": "Pendiente",
+      "periodo": "2024-09",
+      "descripcion": "Mantenimiento de instalaciones y equipos"
+    },
+    {
+      "id": "GAS006",
+      "concepto": "Seguros y Licencias",
+      "categoria": "Administrativos",
+      "monto": 25000,
+      "fecha": "2024-09-12",
+      "estado": "Pagado",
+      "periodo": "2024-09",
+      "descripcion": "Seguros institucionales y licencias de software"
+    }
+  ],
+  "pagosPendientes": [
+    {
+      "id": "PEN001",
+      "estudiante": "Ana María González Pérez",
+      "matricula": "20230001",
+      "concepto": "Colegiatura Septiembre",
+      "monto": 12500,
+      "fechaVencimiento": "2024-09-05",
+      "diasVencido": 14,
+      "estado": "Vencido",
+      "contactos": 2
+    },
+    {
+      "id": "PEN002",
+      "estudiante": "Carlos Eduardo Martínez López",
+      "matricula": "20230002",
+      "concepto": "Colegiatura Septiembre",
+      "monto": 12500,
+      "fechaVencimiento": "2024-09-05",
+      "diasVencido": 14,
+      "estado": "Vencido",
+      "contactos": 1
+    },
+    {
+      "id": "PEN003",
+      "estudiante": "Diego Alejandro Ramírez Torres",
+      "matricula": "20230004",
+      "concepto": "Servicios Adicionales",
+      "monto": 8500,
+      "fechaVencimiento": "2024-09-10",
+      "diasVencido": 9,
+      "estado": "Vencido",
+      "contactos": 0
+    },
+    {
+      "id": "PEN004",
+      "estudiante": "Luis Alberto Castillo Ruiz",
+      "matricula": "20240001",
+      "concepto": "Colegiatura Septiembre",
+      "monto": 12500,
+      "fechaVencimiento": "2024-09-25",
+      "diasVencido": 0,
+      "estado": "Próximo",
+      "contactos": 0
+    },
+    {
+      "id": "PEN005",
+      "estudiante": "Ricardo Daniel Guerrero Sánchez",
+      "matricula": "20240003",
+      "concepto": "Inscripción",
+      "monto": 15000,
+      "fechaVencimiento": "2024-09-30",
+      "diasVencido": 0,
+      "estado": "Vigente",
+      "contactos": 0
+    }
+  ],
+  "estadisticas": {
+    "totalIngresosMes": 2847500,
+    "totalGastosMes": 1250000,
+    "utilidadMes": 1597500,
+    "totalPagosPendientes": 157500,
+    "tasaCobroActual": 94.5,
+    "promedioIngresoDiario": 94916.67,
+    "totalEstudiantesPagando": 190,
+    "totalEstudiantesMorosos": 12,
+    "porcentajeMorosidad": 5.9,
+    "ingresoProyectadoAnual": 34170000,
+    "avancePresupuestal": 74.7
+  },
+  "categorias": {
+    "ingresos": [
+      "Colegiaturas",
+      "Inscripciones",
+      "Servicios",
+      "Trámites",
+      "Eventos",
+      "Otros"
+    ],
+    "gastos": [
+      "Personal",
+      "Servicios",
+      "Materiales",
+      "Mantenimiento",
+      "Administrativos",
+      "Otros"
+    ]
+  },
+  "configuracion": {
+    "monedaDefault": "MXN",
+    "simboloMoneda": "$",
+    "periodoFiscal": "2024",
+    "fechaCorte": "2024-09-19",
+    "ultimaActualizacion": "2024-09-19T02:45:00.000Z",
+    "version": "1.0",
+    "alertaVencimiento": 5,
+    "metaCobroMensual": 95.0,
+    "presupuestoAnual": 34170000
+  }
+}

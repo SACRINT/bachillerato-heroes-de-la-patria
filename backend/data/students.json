@@ -1,0 +1,36 @@
+{
+  "students": [
+    {
+      "id": "est-001",
+      "matricula": "2025-0001",
+      "password": "$2a$12$Pt8kqb2pb2cSvC8nYggw7OB6VwHb.PgFwrT5Zz1vv3upQ7ge6DnD6",
+      "nombre": "Ana María",
+      "apellido_paterno": "García",
+      "apellido_materno": "López",
+      "email": "ana.garcia@estudiantes.bge.edu.mx",
+      "grupo": "5A",
+      "semestre": 5,
+      "especialidad": "Programación",
+      "promedio_general": 8.7,
+      "foto_perfil": "images/students/ana-garcia.jpg",
+      "fecha_ingreso": "2023-08-15",
+      "estatus": "activo"
+    },
+    {
+      "id": "est-002",
+      "matricula": "2025-0002",
+      "password": "$2a$12$XllVZlNA7x68WqJU5LQBgeNTw0xRbFye5E5hWdcoxdctUoQ/ZcAXm",
+      "nombre": "Carlos",
+      "apellido_paterno": "Rodríguez",
+      "apellido_materno": "Martínez",
+      "email": "carlos.rodriguez@estudiantes.bge.edu.mx",
+      "grupo": "5B",
+      "semestre": 5,
+      "especialidad": "Contabilidad",
+      "promedio_general": 9.2,
+      "foto_perfil": "images/students/carlos-rodriguez.jpg",
+      "fecha_ingreso": "2023-08-15",
+      "estatus": "activo"
+    }
+  ]
+}

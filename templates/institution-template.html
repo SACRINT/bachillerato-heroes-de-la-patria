@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="{{LANGUAGE}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{INSTITUTION_NAME}}</title>
+
+    <!-- Meta tags dinámicos -->
+    <meta name="description" content="{{META_DESCRIPTION}}">
+    <meta name="keywords" content="{{META_KEYWORDS}}">
+    <meta name="theme-color" content="{{PRIMARY_COLOR}}">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="{{OG_TITLE}}">
+    <meta property="og:description" content="{{OG_DESCRIPTION}}">
+    <meta property="og:image" content="{{HERO_IMAGE_URL}}">
+    <meta property="og:url" content="{{WEBSITE_URL}}">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Icons -->
+    <link rel="icon" href="{{FAVICON_URL}}" type="image/webp">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- CSS Variables dinámicas -->
+    <style>
+        :root {
+            --primary-color: {{PRIMARY_COLOR}};
+            --secondary-color: {{SECONDARY_COLOR}};
+            --accent-color: {{ACCENT_COLOR}};
+            --font-family: {{FONT_FAMILY}};
+        }
+
+        body {
+            font-family: var(--font-family);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
+
+        .bg-primary {
+            background-color: var(--primary-color) !important;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url('{{HERO_IMAGE_URL}}');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .feature-card {
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .navbar-brand img {
+            height: 50px;
+        }
+
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header dinámico -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#inicio">
+                <img src="{{LOGO_URL}}" alt="Logo {{INSTITUTION_SHORT_NAME}}" class="me-2">
+                {{INSTITUTION_SHORT_NAME}}
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#inicio"><i class="fas fa-home me-1"></i>Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#conocenos"><i class="fas fa-users me-1"></i>Conócenos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#programas"><i class="fas fa-graduation-cap me-1"></i>Programas</a>
+                    </li>
+                    {{#if FEATURES.newsEnabled}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#noticias"><i class="fas fa-newspaper me-1"></i>Noticias</a>
+                    </li>
+                    {{/if}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contacto"><i class="fas fa-envelope me-1"></i>Contacto</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="inicio">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h1 class="display-4 mb-4 animate__animated animate__fadeInUp">
+                        {{WELCOME_MESSAGE}}
+                    </h1>
+                    <p class="lead mb-5 animate__animated animate__fadeInUp animate__delay-1s">
+                        {{HERO_SLOGAN}}
+                    </p>
+                    <div class="animate__animated animate__fadeInUp animate__delay-2s">
+                        <a href="#conocenos" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-info-circle me-2"></i>Conoce Más
+                        </a>
+                        {{#if FEATURES.appointmentsEnabled}}
+                        <a href="#citas" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-calendar me-2"></i>Agendar Cita
+                        </a>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Conócenos -->
+    <section class="py-5 bg-light" id="conocenos">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h2 class="display-5 text-primary mb-4">Sobre {{INSTITUTION_SHORT_NAME}}</h2>
+                    <p class="lead">{{ABOUT_US}}</p>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5 class="text-primary"><i class="fas fa-bullseye me-2"></i>Nuestra Misión</h5>
+                            <p>{{MISSION_STATEMENT}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-primary"><i class="fas fa-eye me-2"></i>Nuestra Visión</h5>
+                            <p>{{VISION_STATEMENT}}</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h5 class="text-primary"><i class="fas fa-heart me-2"></i>Nuestros Valores</h5>
+                        <ul class="list-unstyled">
+                            {{#each VALUES}}
+                            <li><i class="fas fa-check text-success me-2"></i>{{this}}</li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row">
+                        <!-- Estadísticas dinámicas -->
+                        <div class="col-6 mb-4">
+                            <div class="card feature-card h-100 text-center">
+                                <div class="card-body">
+                                    <i class="fas fa-calendar-alt fa-3x text-primary mb-3"></i>
+                                    <h4 class="text-primary">{{ESTABLISHED_YEAR}}</h4>
+                                    <p class="mb-0">Fundada</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-4">
+                            <div class="card feature-card h-100 text-center">
+                                <div class="card-body">
+                                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                                    <h4 class="text-primary">500+</h4>
+                                    <p class="mb-0">Estudiantes</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-4">
+                            <div class="card feature-card h-100 text-center">
+                                <div class="card-body">
+                                    <i class="fas fa-chalkboard-teacher fa-3x text-primary mb-3"></i>
+                                    <h4 class="text-primary">30+</h4>
+                                    <p class="mb-0">Docentes</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-4">
+                            <div class="card feature-card h-100 text-center">
+                                <div class="card-body">
+                                    <i class="fas fa-trophy fa-3x text-primary mb-3"></i>
+                                    <h4 class="text-primary">15+</h4>
+                                    <p class="mb-0">Años Experiencia</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Programas Educativos -->
+    <section class="py-5" id="programas">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 text-primary">Programas Educativos</h2>
+                <p class="lead">Descubre nuestras opciones académicas</p>
+            </div>
+            <div class="row">
+                {{#each EDUCATIONAL_PROGRAMS}}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">{{name}}</h5>
+                            <p class="card-text">{{description}}</p>
+                            <p class="text-muted"><i class="fas fa-clock me-2"></i>Duración: {{duration}}</p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a href="#contacto" class="btn btn-primary btn-sm">
+                                <i class="fas fa-info-circle me-1"></i>Más información
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </section>
+
+    <!-- Equipo Directivo -->
+    <section class="py-5 bg-light" id="equipo">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 text-primary">Equipo Directivo</h2>
+                <p class="lead">Conoce a nuestros líderes educativos</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-4 mb-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <img src="{{LEADERSHIP.director.photo}}" alt="{{LEADERSHIP.director.name}}"
+                                 class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                            <h5 class="text-primary">{{LEADERSHIP.director.name}}</h5>
+                            <p class="text-muted mb-2">{{LEADERSHIP.director.title}}</p>
+                            <p class="small">{{LEADERSHIP.director.bio}}</p>
+                        </div>
+                    </div>
+                </div>
+                {{#if LEADERSHIP.subdirector}}
+                <div class="col-md-4 mb-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <img src="{{LEADERSHIP.subdirector.photo}}" alt="{{LEADERSHIP.subdirector.name}}"
+                                 class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                            <h5 class="text-primary">{{LEADERSHIP.subdirector.name}}</h5>
+                            <p class="text-muted">{{LEADERSHIP.subdirector.title}}</p>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+                {{#if LEADERSHIP.coordinator}}
+                <div class="col-md-4 mb-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <img src="{{LEADERSHIP.coordinator.photo}}" alt="{{LEADERSHIP.coordinator.name}}"
+                                 class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                            <h5 class="text-primary">{{LEADERSHIP.coordinator.name}}</h5>
+                            <p class="text-muted">{{LEADERSHIP.coordinator.title}}</p>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </section>
+
+    <!-- Características Condicionales -->
+    {{#if FEATURES.newsEnabled}}
+    <section class="py-5" id="noticias">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 text-primary">Últimas Noticias</h2>
+                <p class="lead">Mantente informado de nuestras actividades</p>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Inicio de Ciclo Escolar</h5>
+                            <p class="card-text">Te damos la bienvenida al nuevo ciclo escolar.</p>
+                            <p class="text-muted small"><i class="fas fa-calendar me-1"></i>25 Sep 2024</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Talleres Extracurriculares</h5>
+                            <p class="card-text">Inscripciones abiertas para talleres vespertinos.</p>
+                            <p class="text-muted small"><i class="fas fa-calendar me-1"></i>20 Sep 2024</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Examen PLANEA</h5>
+                            <p class="card-text">Preparación para la evaluación nacional.</p>
+                            <p class="text-muted small"><i class="fas fa-calendar me-1"></i>15 Sep 2024</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {{/if}}
+
+    <!-- Contacto -->
+    <section class="py-5 bg-light" id="contacto">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 text-primary">Contacto</h2>
+                <p class="lead">¿Tienes alguna pregunta? ¡Contáctanos!</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body">
+                                    <i class="fas fa-map-marker-alt fa-2x text-primary mb-3"></i>
+                                    <h5>Ubicación</h5>
+                                    <p>{{FULL_ADDRESS}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body">
+                                    <i class="fas fa-phone fa-2x text-primary mb-3"></i>
+                                    <h5>Teléfono</h5>
+                                    <p><a href="tel:{{MAIN_PHONE}}" class="text-decoration-none">{{MAIN_PHONE}}</a></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body">
+                                    <i class="fas fa-envelope fa-2x text-primary mb-3"></i>
+                                    <h5>Email</h5>
+                                    <p><a href="mailto:{{MAIN_EMAIL}}" class="text-decoration-none">{{MAIN_EMAIL}}</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>{{INSTITUTION_NAME}}</h5>
+                    <p>{{ABOUT_US_SHORT}}</p>
+                    <div class="social-links">
+                        {{#if SOCIAL_MEDIA.facebook}}
+                        <a href="{{SOCIAL_MEDIA.facebook}}" class="text-white me-3" target="_blank">
+                            <i class="fab fa-facebook fa-lg"></i>
+                        </a>
+                        {{/if}}
+                        {{#if SOCIAL_MEDIA.instagram}}
+                        <a href="{{SOCIAL_MEDIA.instagram}}" class="text-white me-3" target="_blank">
+                            <i class="fab fa-instagram fa-lg"></i>
+                        </a>
+                        {{/if}}
+                        {{#if SOCIAL_MEDIA.youtube}}
+                        <a href="{{SOCIAL_MEDIA.youtube}}" class="text-white me-3" target="_blank">
+                            <i class="fab fa-youtube fa-lg"></i>
+                        </a>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Enlaces Rápidos</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#inicio" class="text-white text-decoration-none">Inicio</a></li>
+                        <li><a href="#conocenos" class="text-white text-decoration-none">Conócenos</a></li>
+                        <li><a href="#programas" class="text-white text-decoration-none">Programas</a></li>
+                        <li><a href="#contacto" class="text-white text-decoration-none">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Información</h5>
+                    <p><i class="fas fa-certificate me-2"></i>{{ACCREDITATION}}</p>
+                    <p><i class="fas fa-clock me-2"></i>Lun - Vie: 7:00 - 18:00</p>
+                    <p><i class="fas fa-calendar me-2"></i>Fundada en {{ESTABLISHED_YEAR}}</p>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p>&copy; 2024 {{INSTITUTION_NAME}}. Todos los derechos reservados.</p>
+                <p class="small">
+                    <i class="fas fa-magic me-1"></i>
+                    Powered by BGE Multi-Tenant System v1.0
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Features Condicionales JavaScript -->
+    {{#if FEATURES.chatbotEnabled}}
+    <script src="js/chatbot.js"></script>
+    {{/if}}
+
+    {{#if FEATURES.analyticsEnabled}}
+    <script src="js/advanced-analytics.js"></script>
+    {{/if}}
+
+    {{#if FEATURES.aiTutorEnabled}}
+    <script src="js/ai-tutor-interface.js"></script>
+    {{/if}}
+
+    <!-- Scripts base -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/bge-multi-tenant-system.js"></script>
+
+    <!-- Template engine configuration -->
+    <script>
+        // Configuración dinámica generada desde JSON
+        window.BGEConfig = {
+            tenantId: "{{TENANT_ID}}",
+            institutionName: "{{INSTITUTION_NAME}}",
+            primaryColor: "{{PRIMARY_COLOR}}",
+            features: {{FEATURES_JSON}},
+            localization: {{LOCALIZATION_JSON}}
+        };
+    </script>
+</body>
+</html>

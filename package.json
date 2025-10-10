@@ -7,12 +7,41 @@
     "start": "cd server && npm start",
     "dev": "cd server && npm run dev",
     "build": "echo 'Static files ready'",
-    "install-server": "cd server && npm install"
+    "install-server": "cd server && npm install",
+    "docs:install": "node scripts/docs-automation/master-docs.js --install",
+    "docs:update": "node scripts/docs-automation/master-docs.js --update",
+    "docs:maps": "node scripts/docs-automation/master-docs.js --maps",
+    "docs:cleanup": "node scripts/docs-automation/master-docs.js --cleanup",
+    "docs:cleanup-dry": "node scripts/docs-automation/master-docs.js --cleanup --dry-run",
+    "docs:full": "node scripts/docs-automation/master-docs.js --full",
+    "lint:js": "eslint js/**/*.js --fix",
+    "lint:html": "htmlhint *.html",
+    "lint:css": "stylelint css/**/*.css --fix",
+    "format": "prettier --write js/**/*.js css/**/*.css *.html",
+    "fix-all": "npm run lint:js && npm run lint:css && npm run format",
+    "check-errors": "npm run lint:js && npm run lint:html && npm run lint:css"
   },
-  "keywords": ["education", "bachillerato", "website", "node.js"],
+  "keywords": [
+    "education",
+    "bachillerato",
+    "website",
+    "node.js"
+  ],
   "author": "BGE Héroes de la Patria",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^9.36.0",
+    "glob": "^10.4.5",
+    "htmlhint": "^1.7.1",
+    "jshint": "^2.13.6",
+    "prettier": "^3.6.2",
+    "stylelint": "^16.24.0"
   }
 }

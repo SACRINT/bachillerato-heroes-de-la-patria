@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+                            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+    <!-- Página principal -->
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/index.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- Páginas principales -->
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/conocenos.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/oferta-educativa.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/servicios.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/comunidad.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/contacto.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Páginas para estudiantes -->
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/estudiantes.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/calificaciones.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/calendario.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Páginas para padres -->
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/padres.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/pagos.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/citas.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- Páginas para egresados -->
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/egresados.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/bolsa-trabajo.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- Información institucional -->
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/normatividad.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/transparencia.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/convocatorias.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/descargas.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/sitios-interes.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <!-- Páginas administrativas removidas por seguridad -->
+
+    <!-- Chatbot -->
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/chatbot.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- Páginas legales -->
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/privacidad.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/terminos.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+
+    <!-- PWA específicas -->
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/manifest.json</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+
+    <url>
+        <loc>https://sacrint.github.io/heroes_de_la_patria_oficial/offline.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+</urlset>

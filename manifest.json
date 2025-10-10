@@ -16,65 +16,65 @@
   "categories": ["education", "government", "productivity", "reference"],
   "shortcuts": [
     {
-      "name": "Conócenos",
-      "short_name": "Conócenos",
-      "description": "Información sobre nuestra institución, misión, visión y valores",
-      "url": "/conocenos.html?source=pwa",
+      "name": "Portal Estudiantes",
+      "short_name": "Estudiantes",
+      "description": "Acceso directo al portal estudiantil con calificaciones y servicios",
+      "url": "/estudiantes.html?source=pwa",
       "icons": [
         {
-          "src": "/images/shortcuts/conocenos-96x96.png",
+          "src": "/images/shortcuts/estudiantes-96x96.png",
           "sizes": "96x96",
           "type": "image/png"
         }
       ]
     },
     {
-      "name": "Oferta Educativa",
-      "short_name": "Carreras",
-      "description": "Conoce nuestras especialidades y plan de estudios",
-      "url": "/oferta-educativa.html?source=pwa",
+      "name": "Chat Padres-Docentes",
+      "short_name": "Chat",
+      "description": "Comunicación directa entre padres de familia y docentes",
+      "url": "/comunicacion-padres-docentes.html?source=pwa",
       "icons": [
         {
-          "src": "/images/shortcuts/oferta-96x96.png",
+          "src": "/images/shortcuts/chat-96x96.png",
           "sizes": "96x96",
           "type": "image/png"
         }
       ]
     },
     {
-      "name": "Servicios",
-      "short_name": "Servicios",
-      "description": "Servicios escolares y estudiantiles disponibles",
-      "url": "/servicios.html?source=pwa",
+      "name": "Citas Virtuales",
+      "short_name": "Citas",
+      "description": "Agenda reuniones presenciales o virtuales con docentes",
+      "url": "/comunicacion-padres-docentes.html?appointments=true&source=pwa",
       "icons": [
         {
-          "src": "/images/shortcuts/servicios-96x96.png",
+          "src": "/images/shortcuts/calendar-96x96.png",
           "sizes": "96x96",
           "type": "image/png"
         }
       ]
     },
     {
-      "name": "Comunidad",
-      "short_name": "Comunidad",
-      "description": "Noticias, eventos y vida estudiantil",
-      "url": "/comunidad.html?source=pwa",
+      "name": "Calificaciones",
+      "short_name": "Grades",
+      "description": "Consulta calificaciones y reportes académicos",
+      "url": "/calificaciones.html?source=pwa",
       "icons": [
         {
-          "src": "/images/shortcuts/comunidad-96x96.png",
+          "src": "/images/shortcuts/grades-96x96.png",
           "sizes": "96x96",
           "type": "image/png"
         }
       ]
     },
     {
-      "name": "Contacto",
-      "short_name": "Contacto",
-      "description": "Información de contacto y formularios",
-      "url": "/contacto.html?source=pwa",
+      "name": "Admin Dashboard",
+      "short_name": "Admin",
+      "description": "Panel de administración para directivos y docentes",
+      "url": "/admin-dashboard.html?source=pwa",
       "icons": [
         {
-          "src": "/images/shortcuts/contacto-96x96.png",
+          "src": "/images/shortcuts/admin-96x96.png",
           "sizes": "96x96",
           "type": "image/png"
         }
@@ -219,6 +219,33 @@
     }
   ],
   "permissions": [
+    "notifications",
+    "geolocation",
+    "camera",
+    "microphone",
+    "storage-access"
+  ],
+  "background_sync": [
+    "messages",
+    "appointments",
+    "grades",
     "notifications"
-  ]
+  ],
+  "push_messaging": {
+    "enabled": true,
+    "vapid_key": "BK7UJ5Lmb-doxEbE6-gwgBIIMxciG4S0qHbUqXRZ2sPdXzVOCJsaQV_OwLdcXoXHmqBCZ3rSfJ4iH-qFNyA6tic"
+  },
+  "offline_pages": [
+    "/",
+    "/index.html",
+    "/estudiantes.html",
+    "/comunicacion-padres-docentes.html",
+    "/calificaciones.html",
+    "/admin-dashboard.html"
+  ],
+  "update_policy": {
+    "strategy": "immediate",
+    "background_check": true,
+    "prompt_user": true
+  }
 }

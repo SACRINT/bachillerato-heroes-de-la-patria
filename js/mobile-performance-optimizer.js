@@ -489,7 +489,7 @@ class MobilePerformanceOptimizer {
 
     setupMobileKeyboardHandling() {
         // Manejar aparición/desaparición del teclado virtual
-        let initialViewportHeight = window.innerHeight;
+        const initialViewportHeight = window.innerHeight;
         
         window.addEventListener('resize', () => {
             const currentHeight = window.innerHeight;

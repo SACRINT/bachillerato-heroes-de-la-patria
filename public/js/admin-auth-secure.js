@@ -139,8 +139,32 @@ class SecureAdminAuth {
 
     /**
      * Verificar token con el servidor
+     * MODO DESARROLLO: Si estamos en localhost, NO verificar con servidor
      */
     async verifyTokenWithServer(token) {
+        // ✅ MODO DESARROLLO: En localhost, confiar en el token local
+        const isLocalhost = window.location.hostname === 'localhost' ||
+                          window.location.hostname === '127.0.0.1' ||
+                          window.location.hostname === '';
+
+        if (isLocalhost) {
+            console.log('🔧 [DEV MODE] Modo desarrollo: verificación local sin servidor');
+
+            // Verificar solo que el token existe y tiene estructura válida
+            try {
+                const session = JSON.parse(localStorage.getItem('secure_admin_session'));
+                if (session && session.token && session.user) {
+                    this.userInfo = session.user;
+                    console.log('✅ [DEV MODE] Sesión local válida:', session.user.email);
+                    return true;
+                }
+            } catch (e) {
+                console.error('❌ [DEV MODE] Error parseando sesión local:', e);
+            }
+            return false;
+        }
+
+        // MODO PRODUCCIÓN: Verificar con servidor
         try {
             const response = await fetch(`${this.apiBaseUrl}/auth/verify`, {
                 method: 'GET',
@@ -504,13 +528,24 @@ class SecureAdminAuth {
         // Elementos admin-only
         const adminElements = document.querySelectorAll('#adminOnlySection, #adminOnlySection2');
         const loginButton = document.getElementById('adminPanelMenuLink');
+        const logoutOption = document.getElementById('adminPanelLogoutOption'); // ✅ NUEVO: botón "Cerrar Sesión" del header
+        const dashboardLink = document.getElementById('adminDashboardLink'); // ✅ NUEVO: enlace "Dashboard Admin"
 
         console.log(`🔍 Elementos admin encontrados: ${adminElements.length}`);
         console.log(`🔍 Botón login encontrado:`, !!loginButton);
+        console.log(`🔍 Botón logout encontrado:`, !!logoutOption); // ✅ NUEVO
         if (loginButton) {
-            //console.log(`🔍 Contenido actual del botón:`, loginButton.innerHTML);
+            console.log(`🔍 Contenido actual del botón:`, loginButton.innerHTML);
         }
-        
+
+        // DEBUG: Listar TODOS los elementos con IDs que contienen "admin"
+        console.log('🔍 DEBUG: Buscando todos los elementos con "admin" en el ID...');
+        const allElements = document.querySelectorAll('[id*="admin"], [id*="Admin"]');
+        console.log(`🔍 Total de elementos con "admin" en ID: ${allElements.length}`);
+        allElements.forEach(el => {
+            console.log(`   - ID: ${el.id}, Classes: ${el.className}, Visible: ${!el.classList.contains('d-none')}`);
+        });
+
         adminElements.forEach((element, index) => {
             console.log(`🔍 Elemento admin ${index + 1}:`, element.id, element.classList.toString());
 
@@ -525,32 +560,56 @@ class SecureAdminAuth {
 
             console.log(`🔍 Estado después - ${element.id}:`, element.classList.toString());
         });
-        
+
+        // ✅ NUEVO: Actualizar botón "Cerrar Sesión" del header
+        if (logoutOption) {
+            if (this.isAuthenticated) {
+                console.log(`🟢 Mostrando botón "Cerrar Sesión" del header`);
+                logoutOption.classList.remove('d-none');
+            } else {
+                console.log(`🔴 Ocultando botón "Cerrar Sesión" del header`);
+                logoutOption.classList.add('d-none');
+            }
+        }
+
+        // ✅ NUEVO: NO actualizar el enlace "Dashboard Admin" - dejarlo sin nombre de usuario
+        // (Se mantiene como está en el HTML: "Dashboard Admin")
+
         // Actualizar botón de login
         if (loginButton) {
             //console.log(`🔄 Actualizando botón - Autenticado: ${this.isAuthenticated}`);
             if (this.isAuthenticated) {
-                loginButton.innerHTML = `
-                    <i class="fas fa-user-shield me-2"></i>Cerrar Sesión 
-                    <span class="badge bg-danger ms-1">🚪</span>
-                `;
-                loginButton.classList.add('text-danger');
-                loginButton.classList.remove('text-success');
-                
-                // Cambiar a función de logout
+                // ✅ CORRECCIÓN: Mostrar botón "Admin (usuario)" en VERDE cuando esté autenticado
+                loginButton.parentElement.classList.remove('d-none');
+
+                // Obtener nombre de usuario (extraer solo la parte antes del @ si es email)
+                let username = this.userInfo?.username || this.userInfo?.email || 'admin';
+
+                // Si contiene @, extraer solo la parte antes del @
+                if (username.includes('@')) {
+                    username = username.split('@')[0];
+                }
+
+                // Actualizar texto y estilo (username en BLANCO para mejor visibilidad)
+                loginButton.innerHTML = `<i class="fas fa-shield-halved me-2"></i>Admin (${username})`;
+                loginButton.classList.add('text-success', 'bg-success', 'bg-opacity-25');
+                loginButton.classList.remove('text-danger');
+
+                // Cambiar a función que redirige al dashboard
                 loginButton.onclick = (e) => {
                     e.preventDefault();
-                    //console.log('🚪 Logout clickeado desde botón');
-                    this.logout();
+                    window.location.href = 'admin-dashboard.html';
                     return false;
                 };
-                
-                //console.log('✅ Botón actualizado para logout');
-                
+
+                //console.log('✅ Botón actualizado para mostrar usuario autenticado');
+
             } else {
+                // Mostrar el botón "Admin" cuando NO esté autenticado
+                loginButton.parentElement.classList.remove('d-none');
                 loginButton.innerHTML = '<i class="fas fa-shield-halved me-2"></i>Admin';
-                loginButton.classList.remove('text-success', 'text-danger');
-                
+                loginButton.classList.remove('text-success', 'text-danger', 'bg-success', 'bg-opacity-25');
+
                 // Cambiar a función de mostrar modal
                 loginButton.onclick = (e) => {
                     e.preventDefault();
@@ -558,13 +617,13 @@ class SecureAdminAuth {
                     this.showLoginModal();
                     return false;
                 };
-                
+
                 //console.log('✅ Botón actualizado para login');
             }
         } else {
             //console.log('ℹ️ Botón de admin no encontrado en esta página (normal en páginas sin menú de admin)');
         }
-        
+
         //console.log('✅ UI actualizada');
     }
 
@@ -865,16 +924,40 @@ console.log('🔍 window.initSecureAuthSystem disponible?', !!window.initSecureA
  */
 window.handleAdminLogin = function() {
     //console.log('🔑 handleAdminLogin llamado desde el header');
+
+    // PRIMERO: Verificar si ya existe una sesión válida
+    const existingSession = localStorage.getItem('secure_admin_session');
+    if (existingSession) {
+        try {
+            const session = JSON.parse(existingSession);
+            const now = Date.now();
+
+            // Verificar si la sesión es válida y no ha expirado
+            if (session.token && session.expiresAt && session.expiresAt > now) {
+                //console.log('✅ Sesión válida encontrada, redirigiendo a panel admin...');
+                window.location.href = 'admin-dashboard.html';
+                return; // Salir de la función
+            } else {
+                //console.log('⚠️ Sesión expirada o inválida, limpiando...');
+                localStorage.removeItem('secure_admin_session');
+            }
+        } catch (error) {
+            console.error('❌ Error al verificar sesión:', error);
+            localStorage.removeItem('secure_admin_session');
+        }
+    }
+
+    // Si no hay sesión válida, mostrar modal de login
     //console.log('🔍 Debug: secureAdminAuth existe?', !!secureAdminAuth);
     //console.log('🔍 Debug: window.secureAdminAuth existe?', !!window.secureAdminAuth);
-    
+
     // Intentar usar window.secureAdminAuth primero
     const authInstance = secureAdminAuth || window.secureAdminAuth;
-    
+
     if (!authInstance) {
         //console.log('⏳ Sistema no inicializado, inicializando...');
         initSecureAuthSystem();
-        
+
         // Dar tiempo para que se inicialice
         setTimeout(() => {
             const newAuthInstance = secureAdminAuth || window.secureAdminAuth;

@@ -1,0 +1,37 @@
+{
+  "assignments": [
+    {
+      "id": "tarea-001",
+      "student_id": "est-001",
+      "materia": "Matemáticas V",
+      "titulo": "Resolver ejercicios de derivadas",
+      "descripcion": "Completar los ejercicios 1-20 del capítulo 8",
+      "fecha_asignacion": "2025-01-20",
+      "fecha_entrega": "2025-01-27",
+      "status": "pending",
+      "prioridad": "alta"
+    },
+    {
+      "id": "tarea-002",
+      "student_id": "est-001",
+      "materia": "Programación Web",
+      "titulo": "Proyecto: Página web responsiva",
+      "descripcion": "Crear una página web usando HTML5, CSS3 y JavaScript",
+      "fecha_asignacion": "2025-01-18",
+      "fecha_entrega": "2025-02-01",
+      "status": "in_progress",
+      "prioridad": "alta"
+    },
+    {
+      "id": "tarea-003",
+      "student_id": "est-001",
+      "materia": "Inglés V",
+      "titulo": "Essay: My Future Career",
+      "descripcion": "Write a 500-word essay about your future career plans",
+      "fecha_asignacion": "2025-01-22",
+      "fecha_entrega": "2025-01-29",
+      "status": "completed",
+      "prioridad": "media"
+    }
+  ]
+}

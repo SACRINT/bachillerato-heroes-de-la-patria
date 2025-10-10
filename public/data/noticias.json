@@ -1,40 +1,51 @@
 {
   "noticias": [
     {
-      "title": "Inicio del Ciclo Escolar 2025-2026",
-      "date": "2025-09-01T00:00:00.000Z",
-      "image": "images/noticias/inicio-ciclo-2025.jpg",
-      "summary": "Con gran emoción damos la bienvenida a todos nuestros estudiantes al nuevo ciclo escolar 2025-2026.",
-      "content": "# Inicio del Ciclo Escolar 2025-2026\n\nCon gran emoción damos la bienvenida a todos nuestros estudiantes al nuevo ciclo escolar 2025-2026. Las clases oficialmente iniciaron el 1 de septiembre, marcando el comienzo de un año lleno de aprendizaje, crecimiento y nuevas oportunidades académicas.\n\n## Bienvenidos a un nuevo año\n\nEste ciclo escolar representa una nueva oportunidad para crecer académica y personalmente. Nuestro equipo docente está preparado para brindar la mejor educación.\n\n## Horarios y actividades\n\n- **Inicio de clases**: 1 de septiembre 2025\n- **Horario**: 7:00 AM - 1:30 PM\n- **Ceremonias cívicas**: Lunes 7:00 AM\n- **Actividades extracurriculares**: A partir de la segunda semana\n\n¡Les deseamos un excelente año académico!",
-      "author": "Dirección Académica",
-      "category": "Ciclo Escolar"
+      "id": "noticia-001",
+      "titulo": "Inicio del Nuevo Ciclo Escolar 2025-2026",
+      "contenido": "El Bachillerato General Estatal Héroes de la Patria da la bienvenida a todos los estudiantes al nuevo ciclo escolar. Las clases iniciarán el próximo lunes con protocolos de seguridad actualizados y nuevas modalidades de enseñanza que fortalecerán la formación integral de nuestros jóvenes.",
+      "resumen": "Bienvenida al nuevo ciclo escolar con protocolos actualizados y modalidades educativas renovadas.",
+      "fecha": "2024-09-15",
+      "autor": "Dirección Académica",
+      "imagen": "images/noticias/inicio-ciclo-2024.jpg",
+      "categoria": "académico",
+      "destacado": true,
+      "activo": true,
+      "fechaCreacion": "2024-09-15T10:00:00Z",
+      "tags": ["ciclo escolar", "bienvenida", "protocolos", "educación"]
     },
     {
-      "title": "Desfile Conmemorativo Fiestas Patrias",
-      "date": "2025-09-15T00:00:00.000Z", 
-      "image": "images/noticias/desfile-septiembre-2025.jpg",
-      "summary": "Te invitamos a participar en el tradicional desfile conmemorativo del 16 de septiembre. Inicia recorrido a las 8:00 AM.",
-      "content": "# Desfile Conmemorativo Fiestas Patrias\n\nTe invitamos a participar en el tradicional desfile conmemorativo del 16 de septiembre en honor a nuestras Fiestas Patrias. El recorrido inicia a las 8:00 AM desde las instalaciones del plantel. ¡Vive con orgullo nuestra identidad mexicana!\n\n## Información del desfile\n\n- **Fecha**: 16 de septiembre de 2025\n- **Hora de concentración**: 7:30 AM\n- **Inicio del recorrido**: 8:00 AM\n- **Punto de reunión**: Instalaciones del BGE Héroes de la Patria\n- **Recorrido**: Centro de Coronel Tito Hernández\n\n## Participación estudiantil\n\nTodos los estudiantes están invitados a participar portando el uniforme escolar. Se premiará a los grupos con mejor presentación y coordinación.\n\n## Actividades complementarias\n\n- Concurso de escoltas\n- Presentación de números artísticos\n- Reconocimiento a estudiantes destacados\n\n¡Ven y celebra con orgullo nuestras tradiciones patrias!",
-      "author": "Coordinación Estudiantil", 
-      "category": "Evento Cívico"
+      "id": "noticia-002",
+      "titulo": "Inscripciones Abiertas para Talleres Extracurriculares",
+      "contenido": "Se encuentran abiertas las inscripciones para los talleres de música, danza, teatro, deportes y robótica. Los interesados pueden registrarse en la oficina de actividades estudiantiles hasta el 30 de septiembre. Estos talleres buscan desarrollar habilidades artísticas, deportivas y tecnológicas complementarias a la formación académica.",
+      "resumen": "Abierta la inscripción a talleres extracurriculares: danza y baile folcloriko, teatro, deportes, banda de guerra y escolta",
+      "fecha": "2024-09-10",
+      "autor": "Coordinación Estudiantil",
+      "imagen": "images/noticias/talleres-extra.jpg",
+      "categoria": "actividades",
+      "destacado": false,
+      "activo": true,
+      "fechaCreacion": "2024-09-10T14:30:00Z",
+      "tags": ["talleres", "extracurriculares", "inscripciones", "arte", "deporte", "tecnología"]
     },
     {
-      "title": "Inscripciones Abiertas 2025",
-      "date": "2025-08-18T00:00:00.000Z",
-      "image": "images/noticias/inscripciones-2025.jpg",
-      "summary": "Ya están abiertas las inscripciones para el ciclo escolar 2025-2026. ¡No te quedes fuera!",
-      "content": "# Inscripciones Abiertas 2025\n\nNos complace anunciar que ya están abiertas las inscripciones para el ciclo escolar 2025-2026.\n\n## Requisitos:\n- Certificado de secundaria\n- Acta de nacimiento\n- CURP\n- 6 fotografías tamaño infantil\n\n## Fechas importantes:\n- Inicio de inscripciones: 18 de agosto 2025\n- Cierre de inscripciones: 30 de septiembre 2025\n- Examen de admisión: No hay examen de admisión\n\n¡Te esperamos en nuestra institución educativa!",
-      "author": "Dirección Académica",
-      "category": "Comunicado"
-    },
-    {
-      "title": "Día del Estudiante 2026",
-      "date": "2025-06-01T00:00:00.000Z",
-      "image": "images/eventos/dia-estudiante-2025.jpg",
-      "summary": "Celebraremos el Día del Estudiante con actividades especiales los días 11 y 12 de junio.",
-      "content": "# Día del Estudiante 2025\n\n¡Celebremos juntos el Día del Estudiante!\n\n## Programa de actividades:\n\n### 11 de junio:\n- 9:00 AM - Ceremonia de inauguración\n- 10:00 AM - Concursos académicos\n- 2:00 PM - Actividades deportivas\n\n### 12 de junio:\n- 9:00 AM - Festival cultural\n- 11:00 AM - Presentaciones artísticas\n- 1:00 PM - Clausura y premiación\n\n¡No falten a esta gran celebración!",
-      "author": "Coordinación Estudiantil",
-      "category": "Evento"
+      "id": "noticia-003",
+      "titulo": "Excelencia Académica: Resultados Olimpiada de Matemáticas 2025",
+      "contenido": "Nuestros estudiantes obtuvieron resultados sobresalientes en la prueba Olimpiada de Matemáticas 2025, posicionándose en el primer lugar a nivel zona en el área de Matemáticas. Estos logros reflejan el compromiso de nuestra comunidad educativa con la excelencia académica.",
+      "resumen": "Resultados destacados en la Olimpiada de Matemáticas 2025: primer lugar a nivel Zona en la Olimpiada de Matemáticas.",
+      "fecha": "2024-09-05",
+      "autor": "Subdirección Académica",
+      "imagen": "images/noticias/planea-2024.jpg",
+      "categoria": "académico",
+      "destacado": true,
+      "activo": true,
+      "fechaCreacion": "2024-09-05T12:00:00Z",
+      "tags": ["PLANEA", "excelencia", "matemáticas", "logros", "regional"]
     }
-  ]
+  ],
+  "configuracion": {
+    "ultimaActualizacion": "2024-09-15T16:00:00Z",
+    "version": "1.0",
+    "totalElementos": 3
+  }
 }

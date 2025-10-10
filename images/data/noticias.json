@@ -1,0 +1,51 @@
+{
+  "noticias": [
+    {
+      "id": "noticia-001",
+      "titulo": "Inicio del Nuevo Ciclo Escolar 2024-2025",
+      "contenido": "El Bachillerato General Estatal Héroes de la Patria da la bienvenida a todos los estudiantes al nuevo ciclo escolar. Las clases iniciarán el próximo lunes con protocolos de seguridad actualizados y nuevas modalidades de enseñanza que fortalecerán la formación integral de nuestros jóvenes.",
+      "resumen": "Bienvenida al nuevo ciclo escolar con protocolos actualizados y modalidades educativas renovadas.",
+      "fecha": "2024-09-15",
+      "autor": "Dirección Académica",
+      "imagen": "images/noticias/inicio-ciclo-2024.jpg",
+      "categoria": "académico",
+      "destacado": true,
+      "activo": true,
+      "fechaCreacion": "2024-09-15T10:00:00Z",
+      "tags": ["ciclo escolar", "bienvenida", "protocolos", "educación"]
+    },
+    {
+      "id": "noticia-002",
+      "titulo": "Inscripciones Abiertas para Talleres Extracurriculares",
+      "contenido": "Se encuentran abiertas las inscripciones para los talleres de música, danza, teatro, deportes y robótica. Los interesados pueden registrarse en la oficina de actividades estudiantiles hasta el 30 de septiembre. Estos talleres buscan desarrollar habilidades artísticas, deportivas y tecnológicas complementarias a la formación académica.",
+      "resumen": "Abierta la inscripción a talleres extracurriculares: música, danza, teatro, deportes y robótica.",
+      "fecha": "2024-09-10",
+      "autor": "Coordinación Estudiantil",
+      "imagen": "images/noticias/talleres-extra.jpg",
+      "categoria": "actividades",
+      "destacado": false,
+      "activo": true,
+      "fechaCreacion": "2024-09-10T14:30:00Z",
+      "tags": ["talleres", "extracurriculares", "inscripciones", "arte", "deporte", "tecnología"]
+    },
+    {
+      "id": "noticia-003",
+      "titulo": "Excelencia Académica: Resultados PLANEA 2024",
+      "contenido": "Nuestros estudiantes obtuvieron resultados sobresalientes en la prueba PLANEA 2024, posicionándose en el primer lugar a nivel regional en el área de Matemáticas y segundo lugar en Lenguaje y Comunicación. Estos logros reflejan el compromiso de nuestra comunidad educativa con la excelencia académica.",
+      "resumen": "Resultados destacados en PLANEA 2024: primer lugar regional en Matemáticas.",
+      "fecha": "2024-09-05",
+      "autor": "Subdirección Académica",
+      "imagen": "images/noticias/planea-2024.jpg",
+      "categoria": "académico",
+      "destacado": true,
+      "activo": true,
+      "fechaCreacion": "2024-09-05T12:00:00Z",
+      "tags": ["PLANEA", "excelencia", "matemáticas", "logros", "regional"]
+    }
+  ],
+  "configuracion": {
+    "ultimaActualizacion": "2024-09-15T16:00:00Z",
+    "version": "1.0",
+    "totalElementos": 3
+  }
+}

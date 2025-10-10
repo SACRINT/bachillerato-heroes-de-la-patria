@@ -1,0 +1,41 @@
+{
+  "docentes": [
+    {
+      "name": "Director General",
+      "position": "Director",
+      "subjects": ["Administración Educativa"],
+      "photo": "images/docentes/director.jpg",
+      "email": "direccion@heroesdelapatria.edu.mx",
+      "specialization": "Administración Educativa"
+    },
+    {
+      "name": "Subdirectora Académica",
+      "position": "Subdirectora",
+      "subjects": ["Coordinación Académica"],
+      "photo": "images/docentes/subdirectora.jpg",
+      "email": "academica@heroesdelapatria.edu.mx",
+      "specialization": "Desarrollo Curricular"
+    },
+    {
+      "name": "Profesor de Matemáticas",
+      "position": "Docente",
+      "subjects": ["Matemáticas I", "Matemáticas II", "Cálculo Diferencial"],
+      "photo": "images/docentes/matematicas.jpg",
+      "specialization": "Matemáticas Aplicadas"
+    },
+    {
+      "name": "Profesora de Español",
+      "position": "Docente",
+      "subjects": ["Taller de Lectura y Redacción", "Literatura"],
+      "photo": "images/docentes/espanol.jpg",
+      "specialization": "Literatura Mexicana"
+    },
+    {
+      "name": "Profesor de Ciencias",
+      "position": "Docente",
+      "subjects": ["Química", "Física", "Biología"],
+      "photo": "images/docentes/ciencias.jpg",
+      "specialization": "Ciencias Naturales"
+    }
+  ]
+}

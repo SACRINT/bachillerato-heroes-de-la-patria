@@ -2,9 +2,6 @@
 .DS_Store
 Thumbs.db
 
-# Carpetas de backup (ya eliminado)
-# backup_inicial/
-
 # Logs
 *.log
 
@@ -12,12 +9,13 @@ Thumbs.db
 *.tmp
 *.temp
 
-# Node modules si usas Node.js
+# Node modules
 node_modules/
 
 # Archivos de entorno
 .env
 .env.local
+.env.database
 
 # Archivos de editor
 .vscode/
@@ -27,3 +25,85 @@ node_modules/
 
 # Archivos de cache
 .cache/
+
+# ============================================
+# 🧹 LIMPIEZA OCTUBRE 2025
+# ============================================
+
+# Directorio de archivos no usados (COMPLETO)
+no_usados/
+
+# Documentación local (no subir a GitHub)
+**/SESION_*.md
+**/REPORTE_*.md
+**/CORRECCION_*.md
+**/DIAGNOSTICO_*.md
+**/IMPLEMENTACION_*.md
+**/SOLUCION_*.md
+**/ESTADO_*.md
+**/RESUMEN_*.md
+**/VERIFICACION_*.md
+**/PLAN_*.md
+**/ENTREGA_*.md
+**/INTEGRACION_*.md
+**/MOCKUPS_*.md
+**/MAPEO_*.md
+**/AUDITORIA_*.md
+
+# Reportes de texto
+*.txt
+
+# Backups
+*.backup
+*.backup_*
+
+# Archivos temporales de Office
+~$*.md
+~$*.docx
+
+# Scripts temporales
+fix-*.sh
+test-*.sh
+update-*.py
+SCRIPT_*.js
+
+# Subdirectorios de docs (mantener solo esenciales)
+docs/01-PROYECTO/
+docs/02-DESARROLLO/
+docs/03-DEPLOYMENT/
+docs/04-FASES/
+docs/05-SEGURIDAD/
+docs/06-ARQUITECTURA/
+docs/07-REPORTES/
+docs/08-SISTEMAS/
+docs/09-HISTORICO/
+
+# Build reports
+build-report.json
+public/build-report.json
+
+# Archivos de configuración temporal
+config/
+
+# Package lock (opcional - algunos proyectos lo incluyen)
+# package-lock.json
+
+# Backend específico
+backend/nul
+backend/backups/
+backend/data/sessions.json
+backend/data/users.json
+backend/test-*.js
+backend/test-report-*.json
+
+# Public duplicados (mantenemos solo raíz)
+# Nota: public/ se mantiene para Vercel static serving
+
+# Claude Code
+.claude/settings.local.json
+
+# GitHub Actions (si no se usa)
+.github/
+
+# API lock files temporales
+api/package-lock.json

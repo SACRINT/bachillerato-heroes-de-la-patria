@@ -1,15 +1,16 @@
 /**
- * SERVICE WORKER AVANZADO - PWA OFFLINE FIRST v3.1
+ * SERVICE WORKER AVANZADO - PWA FASE 2 v4.0
  * Bachillerato General Estatal "Héroes de la Patria"
- * Versión 3.1 - Optimizado con telemetría avanzada y mejor error handling
+ * Versión 4.0 - Integración completa Fase 2: Analytics, Notifications, Google Classroom
  */
 
 // === CONFIGURATION ===
-const CACHE_NAME = 'heroes-patria-v3.1.0';
+const CACHE_NAME = 'heroes-patria-v4.0.0';
 const OFFLINE_PAGE = './offline.html';
-const API_CACHE_NAME = 'heroes-api-cache-v1';
-const IMAGES_CACHE_NAME = 'heroes-images-v1';
-const STATIC_CACHE_NAME = 'heroes-static-v1';
+const API_CACHE_NAME = 'heroes-api-cache-v2';
+const IMAGES_CACHE_NAME = 'heroes-images-v2';
+const STATIC_CACHE_NAME = 'heroes-static-v2';
+const COMMUNICATION_CACHE_NAME = 'heroes-communication-v1';
 
 const CACHE_STRATEGY_CONFIG = {
     staleWhileRevalidate: {
@@ -37,47 +38,54 @@ const PRECACHE_RESOURCES = [
     './',
     './index.html',
     './conocenos.html',
-    './oferta-educativa.html',
-    './servicios.html',
     './estudiantes.html',
     './padres.html',
     './comunidad.html',
     './contacto.html',
+    './admin-dashboard.html',
+    './calificaciones.html',
+    './comunicacion-padres-docentes.html',
     './offline.html',
-    
+
     // Partials
     './partials/header.html',
     './partials/footer.html',
-    
+
     // Core styles
     './css/style.css',
+    './css/parent-teacher-chat.css',
+    './css/virtual-appointments.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
-    
+
     // Core scripts
-    './js/script.js',
-    './js/cms-integration.js',
-    './js/api-client.js',
+    './js/resource-optimizer.js',
+    './js/parent-teacher-chat.js',
+    './js/virtual-appointments.js',
+    './js/dashboard-manager-2025.js',
     './js/auth-interface.js',
     './js/chatbot.js',
-    './js/performance-optimizer.js',
-    './js/cache-manager.js',
-    './js/advanced-search.js',
-    './js/mobile-enhancements.js',
+    './js/performance-monitor.js',
+
+    // Fase 2 scripts
+    './js/google-classroom-integration.js',
+    './js/bge-analytics-advanced-system.js',
+    './js/bge-push-notification-system.js',
+    './js/bge-pwa-advanced.js',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js',
-    
+
     // PWA essentials
     '/manifest.json',
-    
+
     // Critical images
     '/images/logo-bachillerato-HDLP.webp',
     '/images/app_icons/icon-192x192.png',
     '/images/app_icons/icon-512x512.png',
-    
+
     // Hero images
     '/images/hero/fachada1.webp',
     '/images/hero/fachada1.jpg',
-    
+
     // Fallback images
     '/images/galeria/placeholder_actividad.webp',
     '/images/placeholder/avatar-placeholder.jpg',
@@ -109,7 +117,12 @@ const CACHE_STRATEGIES = {
     ]
 };
 
-// === INSTALL EVENT ===
+// === CONFIGURACIÓN MEJORADA DEL SERVICE WORKER ===
+const isDevelopment = self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1';
+
+console.log('🚀 Service Worker iniciando...', isDevelopment ? '(Modo Desarrollo)' : '(Modo Producción)');
+
+// === INSTALL EVENT MEJORADO ===
 self.addEventListener('install', event => {
     console.log('🔄 Service Worker installing...');
     
@@ -122,21 +135,40 @@ self.addEventListener('install', event => {
                 console.log('📦 Precaching App Shell...');
                 
                 // Cache resources individually to avoid total failure
+                // En desarrollo, limitar la frecuencia de logs para evitar spam
+                const logInterval = isDevelopment ? 5 : 1; // Log cada 5 recursos en desarrollo
+                let logCounter = 0;
+
                 for (const resource of PRECACHE_RESOURCES) {
                     try {
                         await cache.add(resource);
-                        console.log(`✅ Cached: ${resource}`);
+
+                        // Log controlado para evitar spam en desarrollo
+                        if (!isDevelopment || (logCounter % logInterval === 0)) {
+                            console.log(`✅ Cached: ${resource}`);
+                        }
+                        logCounter++;
                     } catch (error) {
                         console.warn(`⚠️ Failed to cache ${resource}:`, error.message);
                         // Continue with other resources instead of failing completely
                     }
                 }
-                
+
+                // Log de resumen en lugar de individual para desarrollo
+                if (isDevelopment) {
+                    console.log(`📦 Precache completado: ${logCounter} recursos procesados`);
+                }
+
                 console.log('✅ Service Worker installed successfully');
-                
-                // Skip waiting to activate immediately
-                await self.skipWaiting();
-                
+
+                // Skip waiting habilitado para producción - activación inmediata de actualizaciones
+                if (!isDevelopment) {
+                    await self.skipWaiting();
+                } else {
+                    // En desarrollo, permitir activación manual para evitar bucles
+                    console.log('⚠️ [DEV] skipWaiting deshabilitado - usa mensaje SKIP_WAITING para activar manualmente');
+                }
+
             } catch (error) {
                 console.error('❌ Service Worker installation failed:', error);
             }
@@ -144,9 +176,9 @@ self.addEventListener('install', event => {
     );
 });
 
-// === ACTIVATE EVENT ===
+// === ACTIVATE EVENT MEJORADO ===
 self.addEventListener('activate', event => {
-    console.log('🚀 Service Worker activating...');
+    console.log('🚀 Service Worker activating...', isDevelopment ? '(Desarrollo)' : '(Producción)');
     
     event.waitUntil(
         (async () => {
@@ -181,10 +213,22 @@ self.addEventListener('fetch', event => {
     
     // Only handle HTTP/HTTPS requests
     if (!url.protocol.startsWith('http')) return;
-    
+
     // Skip chrome-extension requests
     if (url.protocol === 'chrome-extension:') return;
-    
+
+    // Skip Google OAuth and authentication requests to prevent 403 errors
+    if (url.hostname.includes('accounts.google.com') ||
+        url.hostname.includes('oauth2.googleapis.com') ||
+        url.hostname.includes('gsi.client') ||
+        url.pathname.includes('gsi/client') ||
+        url.pathname.includes('oauth') ||
+        url.search.includes('client_id') ||
+        url.search.includes('oauth')) {
+        console.log('🔐 Skipping OAuth request:', url.href);
+        return;
+    }
+
     event.respondWith(handleRequest(request));
 });
 
@@ -589,15 +633,27 @@ async function imagesCacheStrategy(request) {
 // === BACKGROUND SYNC PARA DATOS ===
 self.addEventListener('sync', event => {
     console.log('🔄 Background sync triggered:', event.tag);
-    
+
     if (event.tag === 'chat-messages-sync') {
         event.waitUntil(syncChatMessages());
     }
-    
+
+    if (event.tag === 'parent-teacher-messages-sync') {
+        event.waitUntil(syncParentTeacherMessages());
+    }
+
+    if (event.tag === 'appointments-sync') {
+        event.waitUntil(syncAppointments());
+    }
+
+    if (event.tag === 'grades-sync') {
+        event.waitUntil(syncGrades());
+    }
+
     if (event.tag === 'offline-actions-sync') {
         event.waitUntil(syncOfflineActions());
     }
-    
+
     if (event.tag === 'user-preferences-sync') {
         event.waitUntil(syncUserPreferences());
     }
@@ -899,4 +955,415 @@ self.addEventListener('unhandledrejection', event => {
     console.error('❌ Service Worker unhandled rejection:', event.reason);
 });
 
-console.log('🚀 Service Worker script loaded - Version:', CACHE_NAME);
+// === FUNCIONES DE SINCRONIZACIÓN PARA COMUNICACIÓN PADRES-DOCENTES ===
+
+async function syncParentTeacherMessages() {
+    try {
+        console.log('📤 [PT-SYNC] Sincronizando mensajes padres-docentes...');
+
+        const pendingMessages = await getPendingParentTeacherMessages();
+
+        for (const message of pendingMessages) {
+            try {
+                const response = await fetch('/api/parent-teacher/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${message.authToken}`
+                    },
+                    body: JSON.stringify(message.data)
+                });
+
+                if (response.ok) {
+                    await removePendingParentTeacherMessage(message.id);
+                    console.log('✅ [PT-SYNC] Mensaje sincronizado:', message.id);
+
+                    // Notificar al cliente sobre la sincronización exitosa
+                    notifyClients({
+                        type: 'MESSAGE_SYNCED',
+                        messageId: message.id,
+                        conversationId: message.data.conversation_id
+                    });
+                } else {
+                    console.warn('⚠️ [PT-SYNC] Error HTTP al sincronizar mensaje:', response.status);
+                }
+
+            } catch (error) {
+                console.warn('⚠️ [PT-SYNC] Error sincronizando mensaje individual:', message.id, error);
+            }
+        }
+
+    } catch (error) {
+        console.error('❌ [PT-SYNC] Error en syncParentTeacherMessages:', error);
+    }
+}
+
+async function syncAppointments() {
+    try {
+        console.log('📅 [APPT-SYNC] Sincronizando citas...');
+
+        const pendingAppointments = await getPendingAppointments();
+
+        for (const appointment of pendingAppointments) {
+            try {
+                const response = await fetch('/api/parent-teacher/appointments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${appointment.authToken}`
+                    },
+                    body: JSON.stringify(appointment.data)
+                });
+
+                if (response.ok) {
+                    await removePendingAppointment(appointment.id);
+                    console.log('✅ [APPT-SYNC] Cita sincronizada:', appointment.id);
+
+                    notifyClients({
+                        type: 'APPOINTMENT_SYNCED',
+                        appointmentId: appointment.id,
+                        data: appointment.data
+                    });
+                }
+
+            } catch (error) {
+                console.warn('⚠️ [APPT-SYNC] Error sincronizando cita:', appointment.id, error);
+            }
+        }
+
+    } catch (error) {
+        console.error('❌ [APPT-SYNC] Error en syncAppointments:', error);
+    }
+}
+
+async function syncGrades() {
+    try {
+        console.log('📊 [GRADES-SYNC] Sincronizando calificaciones...');
+
+        const pendingGrades = await getPendingGrades();
+
+        for (const grade of pendingGrades) {
+            try {
+                const response = await fetch('/api/grades', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${grade.authToken}`
+                    },
+                    body: JSON.stringify(grade.data)
+                });
+
+                if (response.ok) {
+                    await removePendingGrade(grade.id);
+                    console.log('✅ [GRADES-SYNC] Calificación sincronizada:', grade.id);
+                }
+
+            } catch (error) {
+                console.warn('⚠️ [GRADES-SYNC] Error sincronizando calificación:', grade.id, error);
+            }
+        }
+
+    } catch (error) {
+        console.error('❌ [GRADES-SYNC] Error en syncGrades:', error);
+    }
+}
+
+// === FUNCIONES AUXILIARES PARA INDEXEDDB ESPECÍFICAS ===
+
+async function getPendingParentTeacherMessages() {
+    // En implementación real, usar IndexedDB
+    // Por ahora retornamos array vacío
+    return [];
+}
+
+async function removePendingParentTeacherMessage(id) {
+    console.log(`🗑️ [PT-SYNC] Removiendo mensaje pendiente:`, id);
+    return true;
+}
+
+async function getPendingAppointments() {
+    return [];
+}
+
+async function removePendingAppointment(id) {
+    console.log(`🗑️ [APPT-SYNC] Removiendo cita pendiente:`, id);
+    return true;
+}
+
+async function getPendingGrades() {
+    return [];
+}
+
+async function removePendingGrade(id) {
+    console.log(`🗑️ [GRADES-SYNC] Removiendo calificación pendiente:`, id);
+    return true;
+}
+
+// === NOTIFICACIÓN A CLIENTES ===
+async function notifyClients(message) {
+    try {
+        const clients = await self.clients.matchAll();
+        clients.forEach(client => {
+            client.postMessage(message);
+        });
+        console.log('📨 [SW] Notificación enviada a clientes:', message.type);
+    } catch (error) {
+        console.error('❌ [SW] Error notificando clientes:', error);
+    }
+}
+
+// === MANEJO DE API PARENT-TEACHER ===
+async function handleParentTeacherAPI(request) {
+    const url = new URL(request.url);
+    const communicationCache = await caches.open(COMMUNICATION_CACHE_NAME);
+
+    // Endpoints críticos que deben cacharse para funcionamiento offline
+    const criticalEndpoints = [
+        '/api/parent-teacher/conversations',
+        '/api/parent-teacher/stats'
+    ];
+
+    const isCriticalEndpoint = criticalEndpoints.some(endpoint =>
+        url.pathname.includes(endpoint)
+    );
+
+    try {
+        // Network First para APIs críticas
+        const response = await fetch(request);
+
+        if (response.ok && isCriticalEndpoint) {
+            // Cachear respuestas exitosas de endpoints críticos
+            const responseToCache = response.clone();
+            const headers = new Headers(responseToCache.headers);
+            headers.set('sw-cached-date', new Date().toISOString());
+
+            const cachedResponse = new Response(responseToCache.body, {
+                status: responseToCache.status,
+                statusText: responseToCache.statusText,
+                headers: headers
+            });
+
+            await communicationCache.put(request, cachedResponse);
+            console.log('📞 [PT-API] Cached:', url.pathname);
+        }
+
+        return response;
+
+    } catch (error) {
+        console.warn('⚠️ [PT-API] Network failed, trying cache:', url.pathname);
+
+        // Buscar en cache específico de comunicación
+        const cachedResponse = await communicationCache.match(request);
+
+        if (cachedResponse && isCriticalEndpoint) {
+            // Verificar que no esté muy viejo (5 minutos)
+            const cachedTime = new Date(cachedResponse.headers.get('sw-cached-date') || 0);
+            const maxAge = 5 * 60 * 1000; // 5 minutos
+
+            if (Date.now() - cachedTime.getTime() < maxAge) {
+                console.log('📞 [PT-API] Serving from cache:', url.pathname);
+                return cachedResponse;
+            }
+        }
+
+        // Respuesta offline estructurada para Parent-Teacher API
+        return new Response(JSON.stringify({
+            error: 'offline',
+            message: 'Sistema de comunicación no disponible sin conexión',
+            endpoint: url.pathname,
+            timestamp: new Date().toISOString(),
+            cached: !!cachedResponse
+        }), {
+            status: 503,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-SW-Source': 'offline'
+            }
+        });
+    }
+}
+
+// === GOOGLE CLASSROOM SYNC ===
+self.addEventListener('sync', event => {
+    if (event.tag === 'google-classroom-sync') {
+        event.waitUntil(syncGoogleClassroomData());
+    }
+
+    if (event.tag === 'analytics-events-sync') {
+        event.waitUntil(syncAnalyticsEvents());
+    }
+});
+
+async function syncGoogleClassroomData() {
+    try {
+        console.log('📚 [CLASSROOM] Sincronizando datos de Google Classroom...');
+
+        const pendingActions = await getPendingClassroomActions();
+
+        for (const action of pendingActions) {
+            try {
+                const response = await fetch(`/api/google-classroom/${action.endpoint}`, {
+                    method: action.method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${action.token}`
+                    },
+                    body: JSON.stringify(action.data)
+                });
+
+                if (response.ok) {
+                    await removePendingClassroomAction(action.id);
+                    console.log('✅ [CLASSROOM] Acción sincronizada:', action.type);
+                }
+            } catch (error) {
+                console.warn('⚠️ [CLASSROOM] Error sincronizando:', action.type, error);
+            }
+        }
+    } catch (error) {
+        console.error('❌ [CLASSROOM] Error en sync:', error);
+    }
+}
+
+async function syncAnalyticsEvents() {
+    try {
+        console.log('📊 [ANALYTICS] Sincronizando eventos de analytics...');
+
+        const pendingEvents = await getPendingAnalyticsEvents();
+
+        for (const event of pendingEvents) {
+            try {
+                const response = await fetch('/api/analytics/events', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(event.data)
+                });
+
+                if (response.ok) {
+                    await removePendingAnalyticsEvent(event.id);
+                    console.log('✅ [ANALYTICS] Evento sincronizado:', event.type);
+                }
+            } catch (error) {
+                console.warn('⚠️ [ANALYTICS] Error sincronizando evento:', error);
+            }
+        }
+    } catch (error) {
+        console.error('❌ [ANALYTICS] Error en sync:', error);
+    }
+}
+
+// === FUNCIONES AUXILIARES FASE 2 ===
+async function getPendingClassroomActions() {
+    // En implementación real usar IndexedDB
+    return [];
+}
+
+async function removePendingClassroomAction(id) {
+    console.log('🗑️ [CLASSROOM] Removiendo acción pendiente:', id);
+    return true;
+}
+
+async function getPendingAnalyticsEvents() {
+    // En implementación real usar IndexedDB
+    return [];
+}
+
+async function removePendingAnalyticsEvent(id) {
+    console.log('🗑️ [ANALYTICS] Removiendo evento pendiente:', id);
+    return true;
+}
+
+// === NOTIFICACIONES PUSH EDUCATIVAS ===
+self.addEventListener('push', event => {
+    if (event.data) {
+        const payload = event.data.json();
+
+        // Configuración específica por tipo de notificación educativa
+        let options = {
+            icon: '/images/app_icons/icon-192x192.png',
+            badge: '/images/app_icons/icon-96x96.png',
+            vibrate: [200, 100, 200],
+            requireInteraction: true,
+            data: payload.data || {}
+        };
+
+        switch (payload.type) {
+            case 'academic':
+                options.body = payload.body || 'Nueva actualización académica';
+                options.actions = [
+                    { action: 'view-grades', title: 'Ver calificaciones', icon: '/images/icons/grades.png' },
+                    { action: 'dismiss', title: 'Cerrar', icon: '/images/icons/close.png' }
+                ];
+                break;
+
+            case 'administrative':
+                options.body = payload.body || 'Nueva información administrativa';
+                options.actions = [
+                    { action: 'view-info', title: 'Ver información', icon: '/images/icons/info.png' },
+                    { action: 'dismiss', title: 'Cerrar', icon: '/images/icons/close.png' }
+                ];
+                break;
+
+            case 'emergency':
+                options.body = payload.body || 'Alerta importante del plantel';
+                options.vibrate = [500, 200, 500];
+                options.requireInteraction = true;
+                options.actions = [
+                    { action: 'view-alert', title: 'Ver alerta', icon: '/images/icons/alert.png' }
+                ];
+                break;
+
+            case 'classroom':
+                options.body = payload.body || 'Nueva actividad en Google Classroom';
+                options.actions = [
+                    { action: 'open-classroom', title: 'Abrir Classroom', icon: '/images/icons/classroom.png' },
+                    { action: 'dismiss', title: 'Cerrar', icon: '/images/icons/close.png' }
+                ];
+                break;
+
+            default:
+                options.body = payload.body || 'Nueva notificación de Héroes de la Patria';
+        }
+
+        event.waitUntil(
+            self.registration.showNotification('BGE Héroes de la Patria', options)
+        );
+    }
+});
+
+// === MANEJO DE CLICKS EN NOTIFICACIONES EDUCATIVAS ===
+self.addEventListener('notificationclick', event => {
+    event.notification.close();
+
+    const action = event.action;
+    const data = event.notification.data;
+
+    switch (action) {
+        case 'view-grades':
+            event.waitUntil(self.clients.openWindow('/calificaciones.html'));
+            break;
+
+        case 'view-info':
+            event.waitUntil(self.clients.openWindow('/admin-dashboard.html'));
+            break;
+
+        case 'view-alert':
+            event.waitUntil(self.clients.openWindow('/'));
+            break;
+
+        case 'open-classroom':
+            if (data.classroomUrl) {
+                event.waitUntil(self.clients.openWindow(data.classroomUrl));
+            } else {
+                event.waitUntil(self.clients.openWindow('/estudiantes.html'));
+            }
+            break;
+
+        default:
+            // Click en la notificación sin acción específica
+            event.waitUntil(self.clients.openWindow('/'));
+    }
+});
+
+console.log('🚀 Service Worker FASE 2 cargado - Version:', CACHE_NAME);

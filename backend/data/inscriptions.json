@@ -1,0 +1,47 @@
+{
+  "inscriptions": [
+    {
+      "inscriptionId": "INS-2025-0001",
+      "activityId": "feria-ciencias-2025",
+      "activityName": "Feria de Ciencias 2025",
+      "student": {
+        "id": "2025-A-123",
+        "name": "Juan Pérez García",
+        "email": "juan.perez@ejemplo.com",
+        "group": "3° A"
+      },
+      "emergencyContact": "5551234567",
+      "additionalInfo": "Me apasiona la ciencia y quiero participar para aprender más sobre proyectos científicos innovadores.",
+      "status": "pending",
+      "registeredAt": "2025-10-01T01:06:14.454Z",
+      "approvedAt": null,
+      "approvedBy": null,
+      "rejectedAt": null,
+      "rejectedBy": null,
+      "rejectionReason": null,
+      "ipAddress": "::1"
+    },
+    {
+      "inscriptionId": "INS-2025-0002",
+      "activityId": "feria-ciencias-2025",
+      "activityName": "Feria de Ciencias 2025",
+      "student": {
+        "id": "2025-A-123",
+        "name": "Juan Pérez García",
+        "email": "juan.perez@ejemplo.com",
+        "group": "3° A"
+      },
+      "emergencyContact": "5551234567",
+      "additionalInfo": "me interesa el curso",
+      "status": "pending",
+      "registeredAt": "2025-10-01T01:24:04.351Z",
+      "approvedAt": null,
+      "approvedBy": null,
+      "rejectedAt": null,
+      "rejectedBy": null,
+      "rejectionReason": null,
+      "ipAddress": "::1"
+    }
+  ],
+  "lastId": 2
+}

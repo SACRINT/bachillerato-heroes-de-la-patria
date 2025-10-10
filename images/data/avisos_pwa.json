@@ -1,0 +1,23 @@
+[
+    { 
+        "id": "av001", 
+        "fecha": "2025-06-20", 
+        "titulo": "Reunión Informativa Nuevo Ciclo", 
+        "contenido": "Se convoca a todos los padres de familia y estudiantes de nuevo ingreso a la reunión informativa el día Lunes 25 de Agosto a las 10:00 AM en el auditorio principal. Se tratarán temas importantes sobre el inicio del ciclo escolar.",
+        "urgente": true 
+    },
+    { 
+        "id": "av002", 
+        "fecha": "2025-06-18", 
+        "titulo": "Actualización de Plataforma Escolar", 
+        "contenido": "Les informamos que la plataforma de consulta de calificaciones y recursos estará en mantenimiento programado el próximo sábado de 8:00 AM a 12:00 PM. Durante este periodo, el acceso podría ser intermitente.",
+        "urgente": false 
+    },
+    { 
+        "id": "av003", 
+        "fecha": "2025-06-15", 
+        "titulo": "Convocatoria Taller de Fotografía", 
+        "contenido": "¡Inscríbete al nuevo taller de fotografía extracurricular! Cupo limitado. Informes en la coordinación de actividades culturales. Inicio: Próximo Lunes.",
+        "urgente": false 
+    }
+]

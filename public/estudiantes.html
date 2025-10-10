@@ -98,11 +98,15 @@
                         </p>
                         <!-- Hero Navigation Badges -->
                         <div class="hero-badges d-flex flex-wrap gap-2 justify-content-start mb-4">
-                            <a href="#acceso-rapido" class="badge bg-light text-primary fs-6 text-decoration-none">
+                            <a href="#dashboard" class="badge bg-light text-primary fs-6 text-decoration-none">
+                                <i class="fas fa-tachometer-alt me-1" aria-hidden="true"></i>
+                                Mi Dashboard
+                            </a>
+                            <a href="#acceso-rapido" class="badge bg-light text-success fs-6 text-decoration-none">
                                 <i class="fas fa-bolt me-1" aria-hidden="true"></i>
                                 Acceso Rápido
                             </a>
-                            <a href="#recursos-academicos" class="badge bg-light text-success fs-6 text-decoration-none">
+                            <a href="#recursos-academicos" class="badge bg-light text-warning fs-6 text-decoration-none">
                                 <i class="fas fa-book me-1" aria-hidden="true"></i>
                                 Recursos Académicos
                             </a>
@@ -113,6 +117,42 @@
                             <i class="fas fa-user-graduate" aria-hidden="true"></i>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Estudiantil -->
+        <section id="dashboard" class="py-5">
+            <div class="container">
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-tachometer-alt text-primary me-3" aria-hidden="true"></i>
+                        Dashboard Estudiantil
+                    </h2>
+                    <p class="section-subtitle text-muted">
+                        Accede a tu información académica personalizada
+                    </p>
+                </div>
+
+                <!-- Contenedor del Dashboard -->
+                <div id="dashboardContainer" class="dashboard-container">
+                    <!-- Estado inicial: Botón para acceder al dashboard -->
+                    <div id="loginPrompt" class="text-center py-5">
+                        <div class="card border-0 shadow-sm mx-auto" style="max-width: 400px;">
+                            <div class="card-body p-4">
+                                <div class="mb-3">
+                                    <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
+                                </div>
+                                <h5 class="card-title text-primary mb-3">Accede a tu Dashboard</h5>
+                                <p class="text-muted mb-4">Inicia sesión para ver tu información académica personalizada</p>
+                                <button class="btn btn-primary btn-lg" onclick="showStudentLogin()">
+                                    <i class="fas fa-sign-in-alt me-2"></i>
+                                    Iniciar Sesión
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- El dashboard se cargará dinámicamente aquí después del login -->
                 </div>
             </div>
         </section>
@@ -139,10 +179,10 @@
                                 </div>
                                 <h4 class="card-title text-primary mb-3">Mis Calificaciones</h4>
                                 <p class="text-muted mb-3">Consulta tus calificaciones por materia y semestre</p>
-                                <button class="btn btn-primary btn-sm" onclick="showComingSoon('Consulta de Calificaciones')">
+                                <a href="calificaciones.html" class="btn btn-primary btn-sm">
                                     <i class="fas fa-chart-line me-2"></i>
                                     Ver calificaciones
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -171,7 +211,7 @@
                                 </div>
                                 <h4 class="card-title text-warning mb-3">Tareas</h4>
                                 <p class="text-muted mb-3">Revisa las tareas pendientes y entregas</p>
-                                <button class="btn btn-warning btn-sm" onclick="showComingSoon('Gestión de Tareas')">
+                                <button class="btn btn-warning btn-sm" onclick="showTasksModal()">
                                     <i class="fas fa-list-check me-2"></i>
                                     Ver tareas
                                 </button>
@@ -331,7 +371,7 @@
                                         Presenta tu proyecto científico en nuestra feria anual. Inscripciones abiertas hasta el 10 de febrero.
                                     </p>
                                     <div class="timeline-actions">
-                                        <button class="btn btn-primary btn-sm" onclick="showComingSoon('Inscripción Feria de Ciencias')">
+                                        <button class="btn btn-primary btn-sm" onclick="showActivityRegistration('Feria de Ciencias')">
                                             <i class="fas fa-edit me-2"></i>Inscribirse
                                         </button>
                                         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#eventDetailsModal">
@@ -368,7 +408,7 @@
                                         Desarrolla tus habilidades de liderazgo con expertos en el área. Capacidad limitada a 30 estudiantes.
                                     </p>
                                     <div class="timeline-actions">
-                                        <button class="btn btn-info btn-sm" onclick="showComingSoon('Inscripción Taller de Liderazgo')">
+                                        <button class="btn btn-info btn-sm" onclick="showActivityRegistration('Taller de Liderazgo')">
                                             <i class="fas fa-users me-2"></i>Inscribirse
                                         </button>
                                     </div>
@@ -799,6 +839,47 @@
         </div>
     </div>
 
+    <!-- Modal para detalles del evento -->
+    <div class="modal fade" id="eventDetailsModal" tabindex="-1" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventDetailsModalLabel">Detalles del Evento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Información General</h6>
+                            <p><strong>Evento:</strong> <span id="eventTitle">Evento Estudiantil</span></p>
+                            <p><strong>Fecha:</strong> <span id="eventDate">Por confirmar</span></p>
+                            <p><strong>Lugar:</strong> <span id="eventLocation">Instalaciones del plantel</span></p>
+                            <p><strong>Dirigido a:</strong> <span id="eventAudience">Estudiantes activos</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Descripción</h6>
+                            <p id="eventDescription">Actividad educativa diseñada para complementar la formación académica de nuestros estudiantes, promoviendo valores y competencias necesarias para su desarrollo integral.</p>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h6>Requisitos de Participación</h6>
+                            <ul id="eventRequirements">
+                                <li>Ser estudiante activo del plantel</li>
+                                <li>Presentar credencial vigente</li>
+                                <li>Completar formato de inscripción</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="contactForRegistration()">Solicitar Información</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <div id="main-footer"></div>
 
@@ -852,13 +933,46 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="js/script.js"></script>
-    <script src="js/admin-auth-secure.js"></script>
-    <script src="js/chatbot.js"></script>
-    <script src="js/search-unified.js"></script>
-    
+    <!-- 🚀 BGE FRAMEWORK MODULAR - PÁGINA ESTUDIANTES -->
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+
+    <!-- 📊 Chart.js para gráficos de calificaciones -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- ✅ GESTOR DE INSCRIPCIONES (DEBE IR PRIMERO) -->
+    <script src="js/inscriptions-handler.js"></script>
+
+    <!-- 🔧 SISTEMA CORE (OBLIGATORIO) -->
+    <script src="js/context-manager.js"></script>        <!-- 🔒 Base del sistema -->
+    <script src="js/config.js?v=2024091401"></script>    <!-- 🔧 Configuración global -->
+    <script src="js/theme-manager.js"></script>          <!-- 🎨 Gestión de temas -->
+    <script src="js/script.js"></script>                 <!-- 🔒 Script principal -->
+
+    <!-- 🎯 BGE FRAMEWORK CORE -->
+    <script src="js/bge-framework-core.js"></script>
+
+    <!-- 📊 MÓDULOS BGE PARA ESTUDIANTES -->
+      <!-- ⚡ Performance optimizado -->
+    <script src="js/bge-analytics-module.js"></script>    <!-- 📊 Analytics académico -->
+    <script src="js/bge-education-module.js"></script>    <!-- 🎓 IA educativa y tutorías -->
+    <script src="js/bge-security-module.js"></script>    <!-- 🔒 Seguridad y autenticación admin -->
+    <script src="js/bge-pwa-module.js"></script>         <!-- 📱 PWA features (notificaciones) -->
+
+    <!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DE ESTUDIANTES -->
+    <script src="js/chatbot.js"></script>                <!-- 🤖 Chatbot educativo -->
+    <script src="js/search-simple.js"></script>          <!-- 🔍 Búsqueda -->
+    <script src="js/student-auth.js"></script>           <!-- 🔐 Autenticación estudiantes -->
+    <!-- ❌ REMOVIDO: inscriptions-client.js (conflicto con inscriptions-handler.js línea 947) -->
+    <script src="js/student-dashboard.js"></script>      <!-- 📊 Dashboard estudiantil -->
+    <script src="js/student-portal.js"></script>         <!-- 🎓 Portal estudiantil -->
+
+    <!-- 🔧 SISTEMAS ESPECIALES -->
+    <script src="js/csp-universal-fixer.js"></script>    <!-- 🔒 CSP compliance (último) -->
+
     <!-- Student Portal Scripts -->
     <script>
         // Calculadora de promedio
@@ -888,6 +1002,105 @@
         function showComingSoon(feature) {
             showAlert(`${feature} estará disponible próximamente. ¡Mantente atento a las actualizaciones!`, 'info');
         }
+
+        // Función para mostrar modal de tareas
+        function showTasksModal() {
+            const modalHtml = `
+                <div class="modal fade" id="tasksModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-warning text-white">
+                                <h5 class="modal-title"><i class="fas fa-tasks me-2"></i>Mis Tareas Pendientes</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="card border-left-warning">
+                                            <div class="card-body">
+                                                <h6 class="text-warning"><i class="fas fa-book me-2"></i>Matemáticas - Álgebra</h6>
+                                                <p class="mb-2">Resolver ejercicios del capítulo 5 (páginas 85-92)</p>
+                                                <small class="text-muted"><i class="fas fa-calendar me-1"></i>Fecha límite: ${new Date(Date.now() + 3*24*60*60*1000).toLocaleDateString()}</small>
+                                                <div class="mt-2">
+                                                    <span class="badge bg-warning">Pendiente</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="card border-left-info">
+                                            <div class="card-body">
+                                                <h6 class="text-info"><i class="fas fa-flask me-2"></i>Química - Laboratorio</h6>
+                                                <p class="mb-2">Reporte de práctica: Reacciones químicas</p>
+                                                <small class="text-muted"><i class="fas fa-calendar me-1"></i>Fecha límite: ${new Date(Date.now() + 5*24*60*60*1000).toLocaleDateString()}</small>
+                                                <div class="mt-2">
+                                                    <span class="badge bg-info">En progreso</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="card border-left-primary">
+                                            <div class="card-body">
+                                                <h6 class="text-primary"><i class="fas fa-pen me-2"></i>Literatura - Ensayo</h6>
+                                                <p class="mb-2">Ensayo sobre "El Realismo Mágico en América Latina"</p>
+                                                <small class="text-muted"><i class="fas fa-calendar me-1"></i>Fecha límite: ${new Date(Date.now() + 7*24*60*60*1000).toLocaleDateString()}</small>
+                                                <div class="mt-2">
+                                                    <span class="badge bg-primary">Asignada</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <a href="calendario.html" class="btn btn-warning">Ver Calendario Completo</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Remover modal existente si existe
+            const existingModal = document.getElementById('tasksModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Agregar modal al DOM
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            // Mostrar modal de forma segura
+            try {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    const modal = new bootstrap.Modal(document.getElementById('tasksModal'));
+                    modal.show();
+                } else {
+                    console.warn('⚠️ Bootstrap no disponible, mostrando modal con fallback');
+                    document.getElementById('tasksModal').style.display = 'block';
+                    document.getElementById('tasksModal').classList.add('show');
+                }
+            } catch (error) {
+                console.error('❌ Error mostrando modal de tareas:', error);
+            }
+        }
+
+        // ========================================
+        // ❌ FUNCIONES ANTIGUAS DESHABILITADAS
+        // Las funciones showActivityRegistration() y submitActivityRegistration()
+        // ahora están implementadas en js/inscriptions-client.js con funcionalidad completa
+        // ========================================
+
+        /* CÓDIGO ANTIGUO (SOLO SIMULACIÓN) - YA NO SE USA
+        function showActivityRegistration(activityName) {
+            // Código antiguo comentado - ahora en inscriptions-client.js
+        }
+
+        function submitActivityRegistration(activityName) {
+            // Código antiguo comentado - ahora en inscriptions-client.js
+        }
+        */
 
         // Función para imprimir horario
         function printSchedule() {
@@ -1159,9 +1372,19 @@
                 document.getElementById('btn-eliminar-clase-modal-pwa').style.display = 'none';
             }
             
-            // Mostrar modal
-            const modal = new bootstrap.Modal(document.getElementById('modal-clase-pwa'));
-            modal.show();
+            // Mostrar modal de forma segura
+            try {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    const modal = new bootstrap.Modal(document.getElementById('modal-clase-pwa'));
+                    modal.show();
+                } else {
+                    console.warn('⚠️ Bootstrap no disponible, mostrando modal con fallback');
+                    document.getElementById('modal-clase-pwa').style.display = 'block';
+                    document.getElementById('modal-clase-pwa').classList.add('show');
+                }
+            } catch (error) {
+                console.error('❌ Error mostrando modal de clase:', error);
+            }
         }
 
         // Eliminar clase
@@ -1171,8 +1394,17 @@
                 savePersonalSchedule();
                 renderScheduleTable();
                 
-                const modal = bootstrap.Modal.getInstance(document.getElementById('modal-clase-pwa'));
-                modal.hide();
+                try {
+                    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('modal-clase-pwa'));
+                        if (modal) modal.hide();
+                    } else {
+                        document.getElementById('modal-clase-pwa').style.display = 'none';
+                        document.getElementById('modal-clase-pwa').classList.remove('show');
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Error cerrando modal:', error);
+                }
                 
                 showAlert('Clase eliminada correctamente', 'success');
             }
@@ -1272,8 +1504,17 @@
                     savePersonalSchedule();
                     renderScheduleTable();
                     
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('modal-clase-pwa'));
-                    modal.hide();
+                    try {
+                        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('modal-clase-pwa'));
+                            if (modal) modal.hide();
+                        } else {
+                            document.getElementById('modal-clase-pwa').style.display = 'none';
+                            document.getElementById('modal-clase-pwa').classList.remove('show');
+                        }
+                    } catch (error) {
+                        console.warn('⚠️ Error cerrando modal:', error);
+                    }
                     
                     showAlert('Clase guardada correctamente', 'success');
                 }
@@ -1357,6 +1598,107 @@
                     darkModeToggle.setAttribute('aria-label', 'Activar modo oscuro');
                 }
             }
+        }
+
+        // Función para contactar para registrarse en eventos
+        function contactForRegistration() {
+            const contactInfo = {
+                telefono: '(33) 1234-5678',
+                email: 'informes@bge-heroes-patria.edu.mx',
+                whatsapp: '52-33-1234-5678'
+            };
+
+            const modalHtml = `
+                <div class="modal fade" id="contactModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">
+                                    <i class="fas fa-phone me-2"></i>Contacta para Más Información
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            Para obtener más información o registrarte en este evento, puedes contactarnos a través de:
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-phone fa-2x text-primary mb-2"></i>
+                                                <h6>Teléfono</h6>
+                                                <p class="mb-2">${contactInfo.telefono}</p>
+                                                <button class="btn btn-outline-primary btn-sm" onclick="window.location.href='tel:${contactInfo.telefono}'">
+                                                    <i class="fas fa-phone me-1"></i>Llamar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-envelope fa-2x text-success mb-2"></i>
+                                                <h6>Email</h6>
+                                                <p class="mb-2">${contactInfo.email}</p>
+                                                <button class="btn btn-outline-success btn-sm" onclick="window.location.href='mailto:${contactInfo.email}?subject=Información sobre evento estudiantil'">
+                                                    <i class="fas fa-envelope me-1"></i>Enviar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body text-center">
+                                                <i class="fab fa-whatsapp fa-2x text-success mb-2"></i>
+                                                <h6>WhatsApp</h6>
+                                                <p class="mb-2">Chat directo</p>
+                                                <button class="btn btn-success btn-sm" onclick="window.open('https://wa.me/${contactInfo.whatsapp}?text=Hola, me interesa obtener información sobre los eventos estudiantiles', '_blank')">
+                                                    <i class="fab fa-whatsapp me-1"></i>Chatear
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Remover modal existente si existe
+            const existingModal = document.getElementById('contactModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Agregar el modal al DOM
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            // Mostrar el modal de forma segura
+            try {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    const contactModal = new bootstrap.Modal(document.getElementById('contactModal'));
+                    contactModal.show();
+                } else {
+                    console.warn('⚠️ Bootstrap no disponible, mostrando modal con fallback');
+                    document.getElementById('contactModal').style.display = 'block';
+                    document.getElementById('contactModal').classList.add('show');
+                }
+            } catch (error) {
+                console.error('❌ Error mostrando modal de contacto:', error);
+            }
+
+            // Limpiar el modal después de cerrarlo
+            document.getElementById('contactModal').addEventListener('hidden.bs.modal', function() {
+                this.remove();
+            });
         }
     </script>
     
@@ -1569,5 +1911,58 @@
             border-color: #404040 !important;
         }
     </style>
+
+    <script>
+        // ============================================
+        // FUNCIONES PARA GESTIÓN DEL DASHBOARD ESTUDIANTIL
+        // ============================================
+
+        // Función para mostrar el modal de login desde el botón
+        function showStudentLogin() {
+            console.log('🔐 Abriendo modal de login estudiantil...');
+            if (window.studentDashboard) {
+                window.studentDashboard.showLoginModal();
+            } else {
+                // Crear instancia si no existe
+                window.studentDashboard = new StudentDashboard();
+            }
+        }
+
+        // Función para ocultar el prompt de login
+        function hideLoginPrompt() {
+            const loginPrompt = document.getElementById('loginPrompt');
+            if (loginPrompt) {
+                loginPrompt.style.display = 'none';
+            }
+        }
+
+        // Función para mostrar el prompt de login
+        function showLoginPrompt() {
+            const loginPrompt = document.getElementById('loginPrompt');
+            if (loginPrompt) {
+                loginPrompt.style.display = 'block';
+            }
+        }
+
+        // Función para verificar estado de autenticación al cargar
+        function checkStudentAuthStatus() {
+            const authToken = localStorage.getItem('student_auth_token');
+            if (authToken) {
+                // Usuario ya logueado, ocultar prompt
+                hideLoginPrompt();
+                console.log('✅ Usuario ya autenticado');
+            } else {
+                // Mostrar prompt de login
+                showLoginPrompt();
+                console.log('ℹ️ Usuario no autenticado, mostrando prompt');
+            }
+        }
+
+        // Inicializar verificación de autenticación cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar estado de autenticación después de un breve delay
+            setTimeout(checkStudentAuthStatus, 500);
+        });
+    </script>
 </body>
 </html>

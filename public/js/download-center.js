@@ -800,6 +800,32 @@ function searchDocuments() {
     }
 }
 
+function filterCategory(categoryName) {
+    if (!window.downloadCenter) return;
+
+    // Mapear nombres en español a IDs en inglés
+    const categoryMap = {
+        'academicos': 'academic',
+        'administrativos': 'administrative',
+        'normativos': 'regulatory',
+        'recursos': 'educational'
+    };
+
+    const categoryId = categoryMap[categoryName];
+    if (categoryId) {
+        window.downloadCenter.showCategoryDocuments(categoryId);
+
+        // Scroll to catalog section
+        const catalogSection = document.getElementById('catalogo-documentos');
+        if (catalogSection) {
+            catalogSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    }
+}
+
 function showHelp() {
     const modal = new bootstrap.Modal(document.getElementById('helpModal'));
     modal.show();

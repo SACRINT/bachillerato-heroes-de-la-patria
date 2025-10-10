@@ -5,7 +5,7 @@
  */
 
 // === CONFIGURATION & CONSTANTS ===
-const APP_CONFIG = {
+const APP_CONFIG = window.APP_CONFIG || {
     partials: {
         header: 'partials/header.html',
         footer: 'partials/footer.html'
@@ -1159,3 +1159,6 @@ function handleKeyPress(event) {
 
 // Hacer la función disponible globalmente
 window.handleKeyPress = handleKeyPress;
+
+// Exportar APP_CONFIG globalmente
+window.APP_CONFIG = APP_CONFIG;

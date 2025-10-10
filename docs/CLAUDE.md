@@ -1,6 +1,11 @@
+---
+Versión: 1.1
+Fecha: 20-09-2025
+---
+
 # CLAUDE.md
 
-Claude, este proyecto corresponde a: **Portal Web Héroes de la Patria**.  
+Claude, este proyecto corresponde a: **Portal Web Héroes de la Patria**.
 Nombre de la PWA: "Héroes Conectados"
 
 Tu tarea es actuar como mi **asistente de desarrollo profesional**, generando, revisando y mejorando todo el código y configuraciones necesarias.  

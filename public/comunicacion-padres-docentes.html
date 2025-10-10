@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunicación Padres-Docentes - BGE Héroes de la Patria</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Estilos principales -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/parent-teacher-chat.css">
+    <link rel="stylesheet" href="css/virtual-appointments.css">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+
+    <style>
+        .communication-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .communication-features {
+            padding: 2rem 0;
+            background: #f8f9fa;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .chat-launcher {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .chat-launcher:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .demo-section {
+            padding: 3rem 0;
+            background: white;
+        }
+
+        .demo-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            text-align: center;
+        }
+
+        .demo-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .demo-btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .demo-btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .demo-btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .demo-btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .demo-btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .user-selector {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-option:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .user-option.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .user-info h4 {
+            margin: 0 0 0.25rem 0;
+            color: #333;
+        }
+
+        .user-info p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+
+            .chat-launcher {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+                bottom: 1rem;
+                right: 1rem;
+            }
+
+            .demo-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .demo-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header principal -->
+    <header id="main-header">
+        <!-- Se cargará dinámicamente -->
+    </header>
+
+    <!-- Header de comunicación -->
+    <section class="communication-header">
+        <div class="container">
+            <h1><i class="fas fa-comments"></i> Comunicación Padres-Docentes</h1>
+            <p>Sistema integrado de comunicación en tiempo real para fortalecer la relación educativa</p>
+        </div>
+    </section>
+
+    <!-- Características del sistema -->
+    <section class="communication-features">
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3>Chat en Tiempo Real</h3>
+                <p>Comunicación instantánea entre padres de familia y docentes con notificaciones push</p>
+                <button class="demo-btn demo-btn-primary" onclick="showParentTeacherChat()">
+                    <i class="fas fa-play"></i> Probar Chat
+                </button>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3>Citas Virtuales</h3>
+                <p>Agenda reuniones presenciales o virtuales con facilidad y confirmación automática</p>
+                <button class="demo-btn demo-btn-primary" onclick="showVirtualAppointments()">
+                    <i class="fas fa-calendar-plus"></i> Probar Citas
+                </button>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Seguimiento Académico</h3>
+                <p>Reportes automáticos de progreso, calificaciones y recomendaciones personalizadas</p>
+                <button class="demo-btn demo-btn-secondary" onclick="showReportsDemo()">
+                    <i class="fas fa-file-alt"></i> Ver Reportes
+                </button>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h3>Notificaciones Inteligentes</h3>
+                <p>Alertas personalizadas para eventos importantes, tareas y recordatorios</p>
+                <button class="demo-btn demo-btn-secondary" onclick="showNotificationsDemo()">
+                    <i class="fas fa-cog"></i> Configurar
+                </button>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Seguridad Total</h3>
+                <p>Comunicación encriptada y privada con controles de acceso avanzados</p>
+                <button class="demo-btn demo-btn-secondary" onclick="showSecurityDemo()">
+                    <i class="fas fa-lock"></i> Más Info
+                </button>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>Multiplataforma</h3>
+                <p>Acceso desde cualquier dispositivo: móvil, tablet, computadora</p>
+                <button class="demo-btn demo-btn-secondary" onclick="showPWADemo()">
+                    <i class="fas fa-download"></i> Instalar App
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo del sistema -->
+    <section class="demo-section">
+        <div class="demo-content">
+            <h2><i class="fas fa-rocket"></i> Prueba el Sistema</h2>
+            <p>Experimenta con el sistema de comunicación seleccionando tu rol:</p>
+
+            <div class="user-selector">
+                <div class="user-option" onclick="selectUserType('parent')">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-info">
+                        <h4>Padre de Familia</h4>
+                        <p>Comunícate con los docentes de tus hijos</p>
+                    </div>
+                </div>
+
+                <div class="user-option" onclick="selectUserType('teacher')">
+                    <div class="user-avatar">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="user-info">
+                        <h4>Docente</h4>
+                        <p>Mantén comunicación fluida con padres de familia</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-actions">
+                <button class="demo-btn demo-btn-primary" onclick="startDemo()">
+                    <i class="fas fa-play-circle"></i> Iniciar Demo
+                </button>
+                <button class="demo-btn demo-btn-secondary" onclick="showTutorial()">
+                    <i class="fas fa-question-circle"></i> Ver Tutorial
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Botón flotante para abrir chat -->
+    <button class="chat-launcher" onclick="showParentTeacherChat()" title="Abrir Chat">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer id="main-footer">
+        <!-- Se cargará dinámicamente -->
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/resource-optimizer.js"></script>
+    <script src="js/parent-teacher-chat.js"></script>
+    <script src="js/virtual-appointments.js"></script>
+    <!-- Sistema avanzado de comunicación -->
+    <script src="js/parent-teacher-communication.js"></script>
+
+    <!-- Container para el sistema avanzado -->
+    <div id="advanced-communication-container" class="d-none"></div>
+
+    <script>
+        let selectedUserType = null;
+
+        function selectUserType(type) {
+            selectedUserType = type;
+
+            // Remover selección anterior
+            document.querySelectorAll('.user-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // Seleccionar nuevo tipo
+            event.currentTarget.classList.add('selected');
+
+            // Simular datos de sesión
+            const userData = {
+                parent: {
+                    id: 'parent_001',
+                    name: 'María González',
+                    type: 'parent',
+                    token: 'demo_token_parent_001'
+                },
+                teacher: {
+                    id: 'teacher_001',
+                    name: 'Prof. Carlos Méndez',
+                    type: 'teacher',
+                    token: 'demo_token_teacher_001'
+                }
+            };
+
+            const user = userData[type];
+            if (user) {
+                localStorage.setItem('auth_token', user.token);
+                localStorage.setItem('user_id', user.id);
+                localStorage.setItem('user_name', user.name);
+                localStorage.setItem('user_type', user.type);
+            }
+        }
+
+        function startDemo() {
+            if (!selectedUserType) {
+                alert('Por favor selecciona tu rol primero (Padre de Familia o Docente)');
+                return;
+            }
+
+            // Inicializar sistema avanzado de comunicación
+            initAdvancedCommunicationSystem();
+            showParentTeacherChat();
+        }
+
+        function initAdvancedCommunicationSystem() {
+            try {
+                if (typeof ParentTeacherCommunicationSystem !== 'undefined') {
+                    // Crear instancia del sistema avanzado
+                    const advancedComm = new ParentTeacherCommunicationSystem();
+                    window.advancedCommSystem = advancedComm;
+
+                    // Mostrar container del sistema avanzado
+                    const container = document.getElementById('advanced-communication-container');
+                    if (container) {
+                        container.classList.remove('d-none');
+                    }
+
+                    console.log('✅ Sistema avanzado de comunicación inicializado');
+                    return true;
+                } else {
+                    console.warn('⚠️ ParentTeacherCommunicationSystem no disponible, usando sistema básico');
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Error inicializando sistema avanzado:', error);
+                return false;
+            }
+        }
+
+        function showAppointmentDemo() {
+            alert('🗓️ Demo de Citas Virtuales\n\nCaracterísticas:\n• Calendario integrado\n• Confirmación automática\n• Links de videoconferencia\n• Recordatorios inteligentes');
+        }
+
+        function showReportsDemo() {
+            alert('📊 Demo de Reportes Académicos\n\nCaracterísticas:\n• Progreso en tiempo real\n• Análisis de rendimiento\n• Recomendaciones personalizadas\n• Gráficos interactivos');
+        }
+
+        function showNotificationsDemo() {
+            alert('🔔 Demo de Notificaciones\n\nCaracterísticas:\n• Push notifications\n• Alertas personalizables\n• Prioridades automáticas\n• Sincronización multiplataforma');
+        }
+
+        function showSecurityDemo() {
+            alert('🔒 Seguridad del Sistema\n\nCaracterísticas:\n• Encriptación end-to-end\n• Autenticación de dos factores\n• Auditoría de accesos\n• Privacidad total');
+        }
+
+        function showPWADemo() {
+            if ('serviceWorker' in navigator) {
+                alert('📱 App PWA Disponible\n\n¡Instala la aplicación en tu dispositivo!\n\nCaracterísticas:\n• Funciona offline\n• Notificaciones push\n• Instalación fácil\n• Actualización automática');
+            } else {
+                alert('Tu navegador no soporta PWA. Usa Chrome, Firefox o Safari para la mejor experiencia.');
+            }
+        }
+
+        function showTutorial() {
+            alert('📚 Tutorial del Sistema\n\n1. Selecciona tu rol (Padre/Docente)\n2. Inicia el demo\n3. Explora las conversaciones\n4. Envía mensajes\n5. Agenda citas\n6. Revisa reportes');
+        }
+
+        // Cargar header y footer
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cargar componentes comunes
+            if (typeof loadPartials === 'function') {
+                loadPartials();
+            }
+
+            // Configurar notificaciones
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+
+            // Configurar PWA
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(() => console.log('✅ Service Worker registrado'))
+                    .catch(error => console.error('❌ Error Service Worker:', error));
+            }
+
+            // Efectos de scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Animar cards al aparecer
+            document.querySelectorAll('.feature-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        });
+
+        // Atajos de teclado
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + K para abrir chat
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                showParentTeacherChat();
+            }
+        });
+    </script>
+
+    <!-- 🚀 BGE FRAMEWORK MODULAR - PÁGINA COMUNICACIÓN PADRES-DOCENTES -->
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 🔧 SISTEMA CORE (OBLIGATORIO) -->
+    <script src="js/context-manager.js"></script>
+    <script src="js/config.js?v=2024091401"></script>
+    <script src="js/theme-manager.js"></script>
+    <script src="js/script.js"></script>
+
+    <!-- 🎯 BGE FRAMEWORK CORE -->
+    <script src="js/bge-framework-core.js"></script>
+
+    <!-- 📊 MÓDULOS BGE PARA COMUNICACIÓN -->
+    
+    <script src="js/bge-analytics-module.js"></script>
+    
+    <script src="js/bge-pwa-module.js"></script>
+
+    <!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DE COMUNICACIÓN -->
+    <script src="js/parent-teacher-communication.js"></script>
+    <script src="js/virtual-appointments.js"></script>
+    <script src="js/chatbot.js"></script>
+
+</body>
+</html>

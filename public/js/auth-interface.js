@@ -73,7 +73,7 @@ class AuthInterface {
                                         <i class="fas fa-lock me-1"></i>
                                         Contraseña
                                     </label>
-                                    <input type="password" class="form-control" id="loginPassword" required>
+                                    <input type="password" class="form-control" id="loginPassword" autocomplete="current-password" required>
                                 </div>
                                 <div class="mb-3 form-check">
                                     <input type="checkbox" class="form-check-input" id="rememberMe">
@@ -125,6 +125,12 @@ class AuthInterface {
      * Crear botón de autenticación en la interfaz
      */
     createAuthButton() {
+        // No crear botón en index.html porque usa Google Auth
+        const isIndexPage = window.location.pathname === '/' || window.location.pathname.includes('index.html');
+        if (isIndexPage) {
+            return; // Salir sin crear el botón
+        }
+
         const authButtonContainer = document.createElement('div');
         authButtonContainer.id = 'authButtonContainer';
         authButtonContainer.className = 'auth-button-container';

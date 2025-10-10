@@ -269,13 +269,13 @@ class UnifiedPerformanceOptimizer {
         const totalTime = (currentTime - this.performanceMetrics.loadTime).toFixed(2);
         
         //console.log('📊 Métricas de Performance:', {
-            tiempoTotal: totalTime + 'ms',
-            recursosOptimizados: this.performanceMetrics.resourcesOptimized,
-            memoriaLiberada: this.performanceMetrics.memoryReduced,
-            solicitudesMinimizadas: this.performanceMetrics.requestsMinimized,
-            dispositivo: this.isMobile ? 'Móvil' : 'Desktop',
-            red: this.networkInfo.effectiveType
-        });
+        //    tiempoTotal: totalTime + 'ms',
+        //    recursosOptimizados: this.performanceMetrics.resourcesOptimized,
+        //    memoriaLiberada: this.performanceMetrics.memoryReduced,
+        //    solicitudesMinimizadas: this.performanceMetrics.requestsMinimized,
+        //    dispositivo: this.isMobile ? 'Móvil' : 'Desktop',
+        //    red: this.networkInfo.effectiveType
+        //});
     }
 
     // Método público para obtener métricas

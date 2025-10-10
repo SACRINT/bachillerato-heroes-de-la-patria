@@ -4,12 +4,14 @@
  * Protección integral contra amenazas web y validación de seguridad
  */
 
+// Verificar si ya existe para evitar declaraciones duplicadas
+if (typeof SecurityManager === 'undefined') {
 class SecurityManager {
     constructor() {
         this.securityPolicies = {
             csp: {
                 enabled: true,
-                reportOnly: false,
+                reportOnly: true,  // MODO DESARROLLO - Permite scripts inline
                 violations: []
             },
             xss: {
@@ -51,7 +53,18 @@ class SecurityManager {
             'cdn.jsdelivr.net',
             'cdnjs.cloudflare.com',
             'fonts.googleapis.com',
-            'fonts.gstatic.com'
+            'fonts.gstatic.com',
+            'formspree.io',
+            'api.emailjs.com',
+            'api.web3forms.com',
+            'accounts.google.com',
+            'www.googleapis.com',
+            // Dominios oficiales del gobierno mexicano (SEP)
+            'www.sep.gob.mx',
+            'sisep.seppue.gob.mx',
+            'www.gob.mx',
+            'www.siged.sep.gob.mx',
+            'planea.sep.gob.mx'
         ];
 
         this.init();
@@ -692,11 +705,11 @@ class SecurityManager {
     // ============================================
 
     startSecurityMonitoring() {
-        // Monitoreo continuo cada 30 segundos
+        // Monitoreo continuo cada 5 minutos (reducido para evitar spam)
         setInterval(() => {
             this.updateSecurityScore();
             this.checkSecurityThreshold();
-        }, 30000);
+        }, 300000);
         
         // Reporte periódico cada 5 minutos
         setInterval(() => {
@@ -715,9 +728,13 @@ class SecurityManager {
     }
 
     checkSecurityThreshold() {
-        if (this.securityMetrics.securityScore < 70) {
-            console.warn('🚨 Score de seguridad bajo:', this.securityMetrics.securityScore);
+        // Solo alertar en casos críticos para evitar spam
+        if (this.securityMetrics.securityScore < 30) {
+            console.warn('🚨 Score de seguridad crítico:', this.securityMetrics.securityScore);
             this.escalateSecurityAlert();
+        } else if (this.securityMetrics.securityScore < 50) {
+            // Log silencioso para scores bajos pero no críticos
+            console.log('⚠️ Score de seguridad bajo:', this.securityMetrics.securityScore);
         }
     }
 
@@ -770,19 +787,20 @@ class SecurityManager {
         // DESHABILITADO - Backend no implementado (evita bucles de errores 404)
         //console.log('📋 Security incident logged locally:', incident.type);
         return;
-        
-        try {
-            await fetch('/api/security/incident', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': this.getCSRFToken()
-                },
-                body: JSON.stringify(incident)
-            });
-        } catch (error) {
-            // Silent fail - los incidentes se mantienen localmente
-        }
+
+        // CÓDIGO DESHABILITADO - Backend no implementado
+        // try {
+        //     await fetch('/api/security/incident', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'X-CSRF-Token': this.getCSRFToken()
+        //         },
+        //         body: JSON.stringify(incident)
+        //     });
+        // } catch (error) {
+        //     // Silent fail - los incidentes se mantienen localmente
+        // }
     }
 
     generateSecurityReport() {
@@ -1003,3 +1021,4 @@ document.head.appendChild(securityStyles);
 window.SecurityManager = SecurityManager;
 
 //console.log('🔒 Security Manager cargado. Usa window.securityManager para acceso directo.');
+}

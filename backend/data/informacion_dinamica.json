@@ -1,0 +1,36 @@
+[
+  {
+    "id": 1,
+    "titulo": "Horarios de Clases",
+    "keywords": [
+      "horarios",
+      "clases",
+      "tiempo",
+      "schedule"
+    ],
+    "categoria": "academico",
+    "tipo_usuario": "estudiante",
+    "contenido": "{\"lunes_viernes\":\"7:00 AM - 3:30 PM\",\"recreos\":[\"10:00-10:30 AM\",\"1:00-1:30 PM\"],\"laboratorio\":\"Por horario especial\"}",
+    "activo": true,
+    "prioridad": 1,
+    "created_at": "2025-09-23T01:44:51.760Z",
+    "updated_at": "2025-09-23T01:44:51.760Z"
+  },
+  {
+    "id": 2,
+    "titulo": "Información de Contacto",
+    "keywords": [
+      "contacto",
+      "teléfono",
+      "dirección",
+      "ubicación"
+    ],
+    "categoria": "general",
+    "tipo_usuario": "general",
+    "contenido": "{\"telefono\":\"222-123-4567\",\"direccion\":\"Av. Héroes de la Patria #123, Puebla\",\"email\":\"info@heroespatria.edu.mx\"}",
+    "activo": true,
+    "prioridad": 2,
+    "created_at": "2025-09-23T01:44:51.761Z",
+    "updated_at": "2025-09-23T01:44:51.761Z"
+  }
+]

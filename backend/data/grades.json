@@ -1,0 +1,37 @@
+{
+  "grades": [
+    {
+      "id": "cal-001",
+      "student_id": "est-001",
+      "materia": "Matemáticas V",
+      "unidad_1": 8.5,
+      "unidad_2": 9,
+      "unidad_3": 8.8,
+      "promedio": 8.8,
+      "semestre": 5,
+      "periodo": "2024-2025A"
+    },
+    {
+      "id": "cal-002",
+      "student_id": "est-001",
+      "materia": "Programación Web",
+      "unidad_1": 9.5,
+      "unidad_2": 9.8,
+      "unidad_3": 9.2,
+      "promedio": 9.5,
+      "semestre": 5,
+      "periodo": "2024-2025A"
+    },
+    {
+      "id": "cal-003",
+      "student_id": "est-001",
+      "materia": "Inglés V",
+      "unidad_1": 8,
+      "unidad_2": 8.5,
+      "unidad_3": 8.2,
+      "promedio": 8.2,
+      "semestre": 5,
+      "periodo": "2024-2025A"
+    }
+  ]
+}

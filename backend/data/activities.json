@@ -1,0 +1,34 @@
+{
+  "activities": [
+    {
+      "id": "feria-ciencias-2025",
+      "name": "Feria de Ciencias",
+      "fullName": "Feria de Ciencias 2025",
+      "date": "2025-02-15",
+      "maxCapacity": 50,
+      "status": "open",
+      "closeDate": "2025-02-10",
+      "description": "Presenta tu proyecto científico en nuestra feria anual"
+    },
+    {
+      "id": "torneo-matematicas-2025",
+      "name": "Torneo de Matemáticas",
+      "fullName": "Torneo de Matemáticas 2025",
+      "date": "2025-01-25",
+      "maxCapacity": 40,
+      "status": "closed",
+      "closeDate": "2025-01-20",
+      "description": "Demuestra tus habilidades matemáticas"
+    },
+    {
+      "id": "taller-liderazgo-2025",
+      "name": "Taller de Liderazgo",
+      "fullName": "Taller de Liderazgo 2025",
+      "date": "2025-03-20",
+      "maxCapacity": 30,
+      "status": "open",
+      "closeDate": "2025-03-15",
+      "description": "Desarrolla tus habilidades de liderazgo"
+    }
+  ]
+}

@@ -4,6 +4,8 @@
  * Implementación completa de PWA con características nativas
  */
 
+// Verificar si ya existe para evitar declaraciones duplicadas
+if (typeof PWAAdvanced === 'undefined') {
 class PWAAdvanced {
     constructor() {
         this.notificationManager = new NotificationManager();
@@ -75,6 +77,30 @@ class PWAAdvanced {
         } else {
             this.state.isInstalled = window.matchMedia('(display-mode: standalone)').matches;
         }
+
+        // Aplicar clase CSS y ocultar elementos de instalación si ya está instalada
+        if (this.state.isInstalled) {
+            document.body.classList.add('pwa-installed');
+            this.hideInstallElements();
+            console.log('✅ PWA detectada como instalada - Elementos de instalación ocultados');
+        } else {
+            document.body.classList.remove('pwa-installed');
+            console.log('📱 PWA no instalada - Elementos de instalación visibles');
+        }
+    }
+
+    hideInstallElements() {
+        // Ocultar banner flotante
+        const banner = document.getElementById('pwa-install-banner');
+        if (banner) banner.style.display = 'none';
+
+        // Ocultar sección principal de instalación
+        const section = document.getElementById('instalar-app');
+        if (section) section.style.display = 'none';
+
+        // Ocultar botones de instalación
+        const installBtns = document.querySelectorAll('.install-button, #main-pwa-install-btn');
+        installBtns.forEach(btn => btn.style.display = 'none');
     }
 
     setupEventListeners() {
@@ -805,18 +831,36 @@ class UpdateManager {
 
     onUpdateAvailable() {
         this.updateAvailable = true;
-        
-        // Mostrar notificación de actualización
+
+        // Verificar si ya existe un banner de actualización para evitar duplicados
+        const existingBanner = document.querySelector('.update-banner');
+        if (existingBanner) {
+            console.log('🔄 Banner de actualización ya existe, evitando duplicado');
+            return;
+        }
+
+        // Verificar si acabamos de mostrar un banner recientemente (throttling)
+        const now = Date.now();
+        const lastBannerTime = localStorage.getItem('lastUpdateBannerTime');
+        if (lastBannerTime && (now - parseInt(lastBannerTime)) < 10000) { // 10 segundos mínimo
+            console.log('🔄 Banner de actualización mostrado recientemente, esperando...');
+            return;
+        }
+
+        // Guardar timestamp del banner actual
+        localStorage.setItem('lastUpdateBannerTime', now.toString());
+
+        // Mostrar notificación de actualización con mejores controles
         const updateBanner = document.createElement('div');
         updateBanner.className = 'update-banner';
         updateBanner.innerHTML = `
             <div class="update-content">
                 <span>🚀 Nueva versión disponible</span>
                 <button onclick="window.pwaAdvanced.updateManager.applyUpdate()" class="btn btn-primary btn-sm">Actualizar</button>
-                <button onclick="this.parentElement.parentElement.remove()" class="btn btn-outline-secondary btn-sm">Después</button>
+                <button onclick="window.pwaAdvanced.updateManager.dismissBanner()" class="btn btn-outline-secondary btn-sm">Después</button>
             </div>
         `;
-        
+
         updateBanner.style.cssText = `
             position: fixed;
             top: 0;
@@ -830,12 +874,33 @@ class UpdateManager {
             transform: translateY(-100%);
             transition: transform 0.3s ease;
         `;
-        
+
         document.body.appendChild(updateBanner);
-        
+
         setTimeout(() => {
             updateBanner.style.transform = 'translateY(0)';
         }, 100);
+
+        // Auto-remover después de 30 segundos si no se interactúa
+        setTimeout(() => {
+            if (updateBanner.parentNode) {
+                this.dismissBanner();
+            }
+        }, 30000);
+    }
+
+    dismissBanner() {
+        const banner = document.querySelector('.update-banner');
+        if (banner) {
+            banner.style.transform = 'translateY(-100%)';
+            setTimeout(() => {
+                if (banner.parentNode) {
+                    banner.remove();
+                }
+            }, 300);
+        }
+        // Extender el throttling cuando se descarta manualmente
+        localStorage.setItem('lastUpdateBannerTime', (Date.now() + 30000).toString());
     }
 
     async applyUpdate() {
@@ -929,8 +994,29 @@ class InstallManager {
     onAppInstalled() {
         this.isInstalled = true;
         document.body.classList.add('pwa-installed');
-        
+
+        // Ocultar elementos de instalación inmediatamente después de instalar
+        this.hideInstallElements();
+
         window.pwaAdvanced?.showToast('🎉 App instalada exitosamente', 'success');
+    }
+
+    hideInstallElements() {
+        // Ocultar banner flotante
+        const banner = document.getElementById('pwa-install-banner');
+        if (banner) banner.style.display = 'none';
+
+        // Ocultar sección principal de instalación
+        const section = document.getElementById('instalar-app');
+        if (section) section.style.display = 'none';
+
+        // Ocultar botones de instalación
+        const installBtns = document.querySelectorAll('.install-button, #main-pwa-install-btn');
+        installBtns.forEach(btn => btn.style.display = 'none');
+
+        // Remover el botón de instalación creado dinámicamente
+        const dynamicInstallBtn = document.querySelector('.install-button');
+        if (dynamicInstallBtn) dynamicInstallBtn.remove();
     }
 }
 
@@ -1042,3 +1128,4 @@ document.head.appendChild(pwaStyles);
 window.PWAAdvanced = PWAAdvanced;
 
 //console.log('📱 PWA Advanced cargado. Usa window.pwaAdvanced para acceso directo.');
+}

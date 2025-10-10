@@ -197,10 +197,30 @@ class APIClient {
     // ============================================
 
     /**
+     * Verificar si un usuario está aprobado
+     */
+    async checkApproval(email) {
+        try {
+            const response = await this.request(`/admin/check-approval/${encodeURIComponent(email)}`);
+            return response;
+        } catch (error) {
+            console.warn('❌ Error verificando aprobación:', error);
+            return { success: false, approved: false };
+        }
+    }
+
+    /**
      * Iniciar sesión
      */
     async login(email, password) {
         try {
+            // ✅ PRIMERO: Verificar si el usuario está aprobado
+            const approvalCheck = await this.checkApproval(email);
+
+            if (!approvalCheck.approved) {
+                throw new Error('Tu solicitud de registro aún no ha sido aprobada. Por favor contacta al administrador.');
+            }
+
             const response = await this.request('/auth/login', {
                 method: 'POST',
                 body: {

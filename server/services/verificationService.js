@@ -12,8 +12,58 @@ class VerificationService {
         // Almacén temporal de verificaciones (en producción usar Redis/DB)
         this.pendingVerifications = new Map();
 
+        // ✅ NUEVO: Control de re-envíos por email
+        this.emailCooldowns = new Map(); // { email: timestamp }
+        this.COOLDOWN_TIME = 2 * 60 * 1000; // 2 minutos entre envíos
+
         // Configurar transporter
-        this.transporter = nodemailer.createTransporter({
+        this.transporter = this.createTransporter();
+    }
+
+    createTransporter() {
+        // Verificar si tenemos credenciales reales de Gmail configuradas
+        if (process.env.EMAIL_USER && process.env.EMAIL_PASS &&
+            process.env.EMAIL_USER.includes('gmail.com') &&
+            process.env.EMAIL_PASS !== 'desarrollo_temporal') {
+            console.log('📧 [VERIFICATION SERVICE] Usando transporter real de Gmail...');
+
+            // Usar Gmail real
+            return nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS
+                }
+            });
+        }
+
+        // En modo desarrollo sin credenciales reales, usar transporter mock
+        if (process.env.NODE_ENV === 'development') {
+            console.log('📧 [VERIFICATION SERVICE] Usando transporter mock para desarrollo...');
+
+            return {
+                sendMail: async (mailOptions) => {
+                    console.log('📨 [MOCK VERIFICATION EMAIL] Email de verificación simulado:');
+                    console.log('  Para:', mailOptions.to);
+                    console.log('  De:', mailOptions.from);
+                    console.log('  Asunto:', mailOptions.subject);
+                    console.log('  HTML Template disponible:', !!mailOptions.html);
+
+                    // Simular delay de envío
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    return {
+                        messageId: 'verification_mock_' + Date.now(),
+                        accepted: [mailOptions.to],
+                        rejected: [],
+                        response: 'Mock verification email sent successfully'
+                    };
+                }
+            };
+        }
+
+        // En producción, usar configuración real
+        return nodemailer.createTransport({
             service: 'gmail',
             auth: {
                 user: process.env.EMAIL_USER,
@@ -26,6 +76,18 @@ class VerificationService {
      * Crear token de verificación y enviar email
      */
     async createVerification(formData) {
+        const email = formData.email.toLowerCase();
+
+        // ✅ VALIDAR: Verificar cooldown de re-envíos
+        const lastSent = this.emailCooldowns.get(email);
+        if (lastSent) {
+            const timeElapsed = Date.now() - lastSent;
+            if (timeElapsed < this.COOLDOWN_TIME) {
+                const remainingSeconds = Math.ceil((this.COOLDOWN_TIME - timeElapsed) / 1000);
+                throw new Error(`Por favor espera ${remainingSeconds} segundos antes de solicitar otro código de verificación`);
+            }
+        }
+
         const token = uuidv4();
         const expirationTime = Date.now() + (30 * 60 * 1000); // 30 minutos
 
@@ -39,6 +101,14 @@ class VerificationService {
 
         // Enviar email de confirmación
         await this.sendVerificationEmail(formData.email, token, formData.form_type);
+
+        // ✅ REGISTRAR timestamp de envío para cooldown
+        this.emailCooldowns.set(email, Date.now());
+
+        // ✅ LIMPIAR cooldown después del tiempo establecido
+        setTimeout(() => {
+            this.emailCooldowns.delete(email);
+        }, this.COOLDOWN_TIME);
 
         return token;
     }
