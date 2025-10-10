@@ -107,3 +107,4 @@ backend/test-report-*.json
 
 # API lock files temporales
 api/package-lock.json
+.vercel

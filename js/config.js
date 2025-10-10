@@ -9,13 +9,15 @@
  */
 
 window.AppConfig = {
-    // Configuración del entorno
-    environment: 'development', // 'development' | 'production'
-    debug: true,
+    // Configuración del entorno (auto-detecta Vercel)
+    environment: window.location.hostname.includes('vercel.app') ? 'production' : 'development',
+    debug: !window.location.hostname.includes('vercel.app'),
 
-    // URLs del backend
+    // URLs del backend (auto-detecta entorno)
     api: {
-        baseURL: 'http://localhost:3000', // Cambia por tu URL de producción
+        baseURL: window.location.hostname.includes('vercel.app')
+            ? `${window.location.protocol}//${window.location.host}` // Vercel usa URLs relativas
+            : 'http://localhost:3000', // Desarrollo local
         timeout: 10000,
         retries: 3
     },

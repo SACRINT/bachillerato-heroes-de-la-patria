@@ -101,7 +101,10 @@
       "Bash(bash:*)",
       "Bash(fuser:*)",
       "Bash(pkill:*)",
-      "Bash(do echo \".\")"
+      "Bash(do echo \".\")",
+      "Bash(vercel ls:*)",
+      "Bash(vercel:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
