@@ -9,10 +9,10 @@
  */
 
 const { Pool } = require('pg');
-const jsonDb = require('./database-json');
+// const jsonDb = require('./database-json'); // ⚠️ DESHABILITADO: No disponible en Vercel serverless
 require('dotenv').config();
 
-// Flag para determinar qué sistema usar
+// Flag para determinar qué sistema usar (deshabilitado en Vercel)
 let useJsonFallback = false;
 
 // Configuración del pool de conexiones PostgreSQL
@@ -57,22 +57,20 @@ console.log('🔧 Configuración PostgreSQL:', {
  * @returns {Promise<Array>} Resultado del query
  */
 async function executeQuery(query, params = []) {
-    // Si está activado el fallback JSON, usar ese sistema
-    if (useJsonFallback) {
-        return await jsonDb.executeQuery(query, params);
-    }
+    // ⚠️ Fallback JSON deshabilitado en Vercel - solo PostgreSQL
+    // if (useJsonFallback) {
+    //     return await jsonDb.executeQuery(query, params);
+    // }
 
     try {
         const result = await pool.query(query, params);
         return result.rows;
     } catch (error) {
-        console.error('❌ Error en PostgreSQL, activando fallback JSON:', error.message);
+        console.error('❌ Error en PostgreSQL:', error.message);
+        console.error('⚠️ Fallback JSON no disponible en Vercel');
 
-        // Activar fallback automáticamente
-        useJsonFallback = true;
-        console.log('🔄 Cambiando a sistema JSON temporal...');
-
-        return await jsonDb.executeQuery(query, params);
+        // En Vercel, lanzar error directamente
+        throw error;
     }
 }
 
@@ -108,10 +106,10 @@ async function executeTransaction(queries) {
  * Test de conexión a la base de datos con fallback
  */
 async function testConnection() {
-    // Si ya está usando JSON, testear ese sistema
-    if (useJsonFallback) {
-        return await jsonDb.testConnection();
-    }
+    // ⚠️ Fallback JSON deshabilitado en Vercel
+    // if (useJsonFallback) {
+    //     return await jsonDb.testConnection();
+    // }
 
     try {
         const client = await pool.connect();
@@ -144,10 +142,8 @@ async function testConnection() {
             ssl: poolConfig.ssl ? 'Habilitado' : 'Deshabilitado'
         });
 
-        // Activar fallback automáticamente
-        console.log('🔄 Activando sistema JSON como fallback...');
-        useJsonFallback = true;
-        return await jsonDb.testConnection();
+        // En Vercel, lanzar error directamente (no hay fallback)
+        throw error;
     }
 }
 
@@ -155,9 +151,10 @@ async function testConnection() {
  * Cerrar pool de conexiones o sistema JSON
  */
 async function closePool() {
-    if (useJsonFallback) {
-        return await jsonDb.closePool();
-    }
+    // ⚠️ Fallback JSON deshabilitado en Vercel
+    // if (useJsonFallback) {
+    //     return await jsonDb.closePool();
+    // }
 
     try {
         await pool.end();
@@ -171,9 +168,10 @@ async function closePool() {
  * Obtener estadísticas del pool o sistema JSON
  */
 async function getPoolStats() {
-    if (useJsonFallback) {
-        return await jsonDb.getPoolStats();
-    }
+    // ⚠️ Fallback JSON deshabilitado en Vercel
+    // if (useJsonFallback) {
+    //     return await jsonDb.getPoolStats();
+    // }
 
     try {
         return {
@@ -244,9 +242,10 @@ function getDatabaseMode() {
  * Para compatibilidad con rutas que usan db.query()
  */
 async function query(sql, params = []) {
-    if (useJsonFallback) {
-        return await jsonDb.executeQuery(sql, params);
-    }
+    // ⚠️ Fallback JSON deshabilitado en Vercel
+    // if (useJsonFallback) {
+    //     return await jsonDb.executeQuery(sql, params);
+    // }
     const result = await pool.query(sql, params);
     return [result.rows, result.fields]; // Formato compatible con mysql2
 }
