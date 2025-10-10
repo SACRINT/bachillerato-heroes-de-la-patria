@@ -45,6 +45,10 @@ const PORT = process.env.PORT || 3000;
 // CONFIGURACIÓN DE SEGURIDAD
 // ============================================
 
+// Trust proxy for Vercel/Cloud deployments
+// CRÍTICO: Necesario para rate-limit y X-Forwarded-For headers
+app.set('trust proxy', true);
+
 // Helmet - Security Headers
 app.use(helmet({
     contentSecurityPolicy: {
