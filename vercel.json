@@ -1,32 +1,13 @@
 {
   "version": 2,
-  "name": "bge-heroes-patria",
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/index.js",
-      "use": "@vercel/node"
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
     },
     {
-      "src": "public/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
-    },
-    {
-      "src": "/(.*\\.(js|css|png|jpg|jpeg|webp|svg|ico|json|woff|woff2|ttf|eot|mp4|webm|pdf))",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/(.*\\.html)",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/index.html"
+      "source": "/(.*)",
+      "destination": "/public/$1"
     }
   ],
   "env": {
