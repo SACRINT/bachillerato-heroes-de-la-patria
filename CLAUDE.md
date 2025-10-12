@@ -7,8 +7,8 @@
 Cuando el usuario escriba **"continua con el proyecto BGE"**, DEBES:
 
 1. **📖 LEER INMEDIATAMENTE estos documentos en orden**:
-   - `docs/INVENTARIO_COMPLETO_FORMULARIOS_30_SEP_2025.md` (estado más reciente)
-   - `docs/CORRECCION_FORMULARIO_QUEJAS_SEPTIEMBRE_30_2025.md` (último trabajo realizado)
+   - `VISION_FUTURA_PROYECTO_BGE_MAESTRO.md` (DOCUMENTO MAESTRO - **LEER SIEMPRE PRIMERO**)
+   - `GUIA_COMPLETA_IMPLEMENTACION_Y_TESTING_11_OCT_2025.md` (estado más reciente)
    - `CLAUDE.md` (este archivo - instrucciones generales)
 
 2. **🔍 IDENTIFICAR tareas pendientes**:
@@ -40,9 +40,49 @@ Cuando el usuario escriba **"continua con el proyecto BGE"**, DEBES:
 - Todos los comentarios de código en español
 - Documentación y reportes en español
 
-## 🎯 ESTADO ACTUAL DEL PROYECTO (ACTUALIZADO: 09 OCT 2025)
+## 🎯 ESTADO ACTUAL DEL PROYECTO (ACTUALIZADO: 11 OCT 2025)
 
-**📌 ÚLTIMA SESIÓN COMPLETADA: 09 de Octubre 2025** ⭐ NUEVA
+**📌 ÚLTIMA SESIÓN COMPLETADA: 11 de Octubre 2025** ⭐ NUEVA
+
+### 🌟 DECISIÓN ESTRATÉGICA: VISIÓN FUTURA COMPLETA
+**El usuario ha seleccionado la OPCIÓN 3: VISIÓN FUTURA (2-4 años, $97k-$150k USD)**
+
+**Compromiso del Usuario:**
+- ✅ Presupuesto inicial: $0 (solo tiempo/trabajo)
+- ✅ Tiempo dedicado: 20-40 horas/semana (tiempo completo)
+- ✅ Objetivo: Implementar los 28 sistemas de visión futura
+- ✅ Horizonte: 2-4 años para completar todo
+
+**Priorización Confirmada:**
+1. 🔴 URGENTE → Completar funcionalidades básicas (formularios, analytics)
+2. 🟠 ALTA → Sistema de pagos + Mobile enhancements
+3. 🟡 MEDIA → Calendario + Calificaciones + Citas
+4. 🟢 BAJA → 28 sistemas de visión futura
+
+**📄 DOCUMENTO MAESTRO:** `VISION_FUTURA_PROYECTO_BGE_MAESTRO.md`
+**Este documento contiene el plan completo de 2-4 años y DEBE leerse SIEMPRE al inicio de cada sesión.**
+
+### ✅ LOGROS DE SESIÓN 11 OCT 2025:
+- ✅ **Análisis exhaustivo de 71 archivos JS movidos durante limpieza** 📊
+- ✅ **28 sistemas de visión futura identificados y documentados** (58,883 líneas)
+- ✅ **0 archivos perdidos - Todos seguros** ✅
+- ✅ Restauración de 6 archivos críticos FASE 3/4
+- ✅ Restauración de 11 archivos adicionales de visión futura
+- ✅ Verificación: 19 archivos ya existían + 9 en ubicaciones alternativas
+- ✅ Documentación completa: `REPORTE_FINAL_RESTAURACION_VISION_FUTURA_10_OCT_2025.md`
+- ✅ Guía técnica completa: `GUIA_COMPLETA_IMPLEMENTACION_Y_TESTING_11_OCT_2025.md`
+- ✅ Plan maestro 2-4 años: `VISION_FUTURA_PROYECTO_BGE_MAESTRO.md`
+- ✅ 60+ endpoints backend verificados y documentados
+- ✅ URLs de prueba manual para todos los endpoints
+
+### ✅ LOGROS DE SESIÓN 10 OCT 2025:
+- ✅ Corrección de errores críticos en producción (5/8 = 63%)
+- ✅ URLs dinámicas implementadas (detección automática Vercel)
+- ✅ Scripts rotos eliminados de HTML
+- ✅ CSP violations corregidas
+- ✅ Limpieza masiva: 71 archivos JS + 24 rutas backend movidos a `no_usados/`
+
+**📌 ÚLTIMA SESIÓN COMPLETADA: 09 de Octubre 2025**
 
 ### ✅ LOGROS DE SESIÓN 09 OCT 2025:
 - ✅ **Sistema de Bolsa de Trabajo y Suscriptores COMPLETAMENTE FUNCIONAL** 🎉
