@@ -218,57 +218,239 @@ Enviado: ${new Date().toLocaleString('es-MX')}
 
 /**
  * POST /api/contact/send
- * Enviar mensaje de contacto
+ * ✅ NUEVO: Enviar mensaje CON VERIFICACIÓN DE EMAIL (anti-spam)
  */
 router.post('/send', contactLimiter, validateContactForm, async (req, res) => {
     try {
         const { nombre, email, telefono, asunto, mensaje, form_type } = req.body;
         const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
 
-        console.log('📧 Nuevo mensaje de contacto recibido:', {
+        console.log('📧 Nuevo mensaje de contacto recibido (verificación requerida):', {
             nombre: nombre.substring(0, 20),
             email: email.substring(0, 30),
             asunto: asunto.substring(0, 50),
             form_type
         });
 
-        // Preparar datos del mensaje
-        const messageData = {
-            nombre,
+        // Preparar datos del mensaje para verificación
+        const formData = {
+            name: nombre,
+            nombre: nombre,
             email,
             telefono,
+            phone: telefono,
             asunto,
+            subject: asunto,
             mensaje,
-            form_type,
-            ip: clientIP
+            message: mensaje,
+            form_type
         };
 
-        // ✅ ENVÍO REAL DE EMAIL
-        const result = await sendContactEmail(messageData);
+        // ✅ CREAR VERIFICACIÓN Y ENVIAR EMAIL AL USUARIO
+        const verificationService = require('../services/verificationService');
+        const token = await verificationService.createVerification(formData);
 
-        if (result.success) {
-            console.log(`✅ Email enviado exitosamente - ID: ${result.messageId}`);
-            res.json({
-                success: true,
-                message: '¡Mensaje enviado correctamente! Te responderemos pronto.',
-                data: {
-                    id: result.id,
-                    timestamp: new Date(),
-                    status: 'sent'
-                }
-            });
-        } else {
-            throw new Error('Error al enviar el mensaje');
-        }
+        console.log(`✅ Email de verificación enviado a: ${email} - Token: ${token.substring(0, 8)}...`);
+
+        res.json({
+            success: true,
+            message: 'Se ha enviado un email de confirmación a tu correo. Revisa tu bandeja de entrada y haz clic en el enlace para completar el envío.',
+            requiresVerification: true,
+            verificationSent: true
+        });
 
     } catch (error) {
-        console.error('❌ Error procesando mensaje de contacto:', error);
+        console.error('❌ Error enviando email de verificación:', error);
 
         res.status(500).json({
             success: false,
-            message: 'Error interno del servidor. Por favor, inténtalo más tarde.',
+            message: 'Error enviando email de verificación',
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
+    }
+});
+
+/**
+ * GET /api/contact/verify/:token
+ * ✅ VERIFICAR TOKEN Y ENVIAR MENSAJE FINAL A LA ESCUELA
+ */
+router.get('/verify/:token', async (req, res) => {
+    try {
+        const { token } = req.params;
+
+        // Verificar token usando verificationService
+        const verificationService = require('../services/verificationService');
+        const verification = verificationService.verifyToken(token);
+
+        if (!verification.success) {
+            return res.status(400).send(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Error de Verificación</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f8f9fa; }
+                        .error { background: white; padding: 40px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                        .error h1 { color: #e74c3c; margin-bottom: 20px; }
+                        .back-btn { background: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="error">
+                        <h1>❌ Error de Verificación</h1>
+                        <p>${verification.error}</p>
+                        <p>El enlace puede haber expirado o ya fue utilizado.</p>
+                        <a href="/" class="back-btn">Volver al sitio</a>
+                    </div>
+                </body>
+                </html>
+            `);
+        }
+
+        // Token válido - Enviar mensaje verificado a la escuela
+        const { form_type, ...formData } = verification.data;
+
+        // Enviar email final a la escuela
+        const result = await sendContactEmail({
+            nombre: formData.name || formData.nombre,
+            email: formData.email,
+            telefono: formData.phone || formData.telefono || '',
+            asunto: formData.subject || formData.asunto,
+            mensaje: formData.message || formData.mensaje,
+            form_type
+        });
+
+        if (result.success) {
+            console.log(`✅ [VERIFIED] Mensaje enviado a la escuela desde: ${formData.email}`);
+
+            // Página de confirmación
+            res.send(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Mensaje Confirmado</title>
+                    <style>
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                            text-align: center;
+                            padding: 50px;
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            margin: 0;
+                            min-height: 100vh;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+                        .success {
+                            background: white;
+                            padding: 40px;
+                            border-radius: 15px;
+                            display: inline-block;
+                            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                            max-width: 500px;
+                            width: 90%;
+                        }
+                        .success h1 {
+                            color: #27ae60;
+                            margin-bottom: 20px;
+                            font-size: 32px;
+                        }
+                        .success p {
+                            font-size: 16px;
+                            line-height: 1.6;
+                            color: #555;
+                            margin-bottom: 15px;
+                        }
+                        .countdown {
+                            font-size: 18px;
+                            font-weight: bold;
+                            color: #3498db;
+                            margin: 20px 0;
+                        }
+                        .back-btn {
+                            background: #3498db;
+                            color: white;
+                            padding: 12px 25px;
+                            text-decoration: none;
+                            border-radius: 8px;
+                            display: inline-block;
+                            margin-top: 20px;
+                            transition: background 0.3s;
+                        }
+                        .back-btn:hover {
+                            background: #2980b9;
+                        }
+                        .icon {
+                            font-size: 64px;
+                            margin-bottom: 20px;
+                        }
+                    </style>
+                    <script>
+                        let countdown = 5;
+                        function updateCountdown() {
+                            const countdownEl = document.getElementById('countdown');
+                            if (countdownEl) {
+                                countdownEl.textContent = countdown;
+                            }
+
+                            if (countdown <= 0) {
+                                window.close();
+                                setTimeout(() => {
+                                    window.location.href = '/';
+                                }, 500);
+                            } else {
+                                countdown--;
+                                setTimeout(updateCountdown, 1000);
+                            }
+                        }
+
+                        window.onload = function() {
+                            updateCountdown();
+                        };
+                    </script>
+                </head>
+                <body>
+                    <div class="success">
+                        <div class="icon">✅</div>
+                        <h1>¡Mensaje Confirmado!</h1>
+                        <p>Tu mensaje ha sido enviado exitosamente al Bachillerato Héroes de la Patria.</p>
+                        <p>Gracias por verificar tu email. Nos pondremos en contacto contigo pronto.</p>
+                        <div class="countdown">
+                            Esta ventana se cerrará en <span id="countdown">5</span> segundos...
+                        </div>
+                        <a href="/" class="back-btn" onclick="window.close(); return false;">Cerrar Ventana</a>
+                    </div>
+                </body>
+                </html>
+            `);
+        } else {
+            throw new Error('Error al enviar mensaje verificado');
+        }
+
+    } catch (error) {
+        console.error('❌ Error en verificación:', error);
+        res.status(500).send(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Error del Sistema</title>
+                <style>
+                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f8f9fa; }
+                    .error { background: white; padding: 40px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                    .error h1 { color: #e74c3c; margin-bottom: 20px; }
+                    .back-btn { background: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+                </style>
+            </head>
+            <body>
+                <div class="error">
+                    <h1>⚠️ Error del Sistema</h1>
+                    <p>Ocurrió un error procesando tu verificación.</p>
+                    <p>Por favor intenta enviar tu mensaje nuevamente.</p>
+                    <a href="/" class="back-btn">Volver al sitio</a>
+                </div>
+            </body>
+            </html>
+        `);
     }
 });
 

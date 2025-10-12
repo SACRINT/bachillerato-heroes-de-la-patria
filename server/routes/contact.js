@@ -1,230 +1,256 @@
 /**
- * 📧 SISTEMA DE CONTACTO PROFESIONAL
- * Rutas para manejo de formularios con Nodemailer
- * Sin branding de terceros, emails desde el dominio propio
+ * 📧 CONTACT ROUTES - Sistema de contacto y comunicación
+ * Manejo de formularios de contacto, quejas y sugerencias
  */
 
 const express = require('express');
-const nodemailer = require('nodemailer');
-const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
-const verificationService = require('../services/verificationService');
-
+const helmet = require('helmet');
+const validator = require('validator');
+const nodemailer = require('nodemailer');
 const router = express.Router();
-
-// ============================================
-// CONFIGURACIÓN DE RATE LIMITING
-// ============================================
-
-const contactLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    max: 20, // máximo 20 mensajes por IP cada 15 min (aumentado para desarrollo/pruebas)
-    message: {
-        error: 'Demasiados mensajes enviados. Intenta de nuevo en 15 minutos.',
-        code: 'RATE_LIMIT_EXCEEDED'
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-    skipSuccessfulRequests: false, // Contar todos los requests
-    skipFailedRequests: true, // No contar requests fallidos
-});
 
 // ============================================
 // CONFIGURACIÓN DE NODEMAILER
 // ============================================
-// Nota: Ya no necesitamos createTransporter aquí porque
-// verificationService ya tiene un transporter configurado
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
+// Verificar conexión al iniciar
+transporter.verify((error, success) => {
+    if (error) {
+        console.error('❌ Error configurando transporter de email:', error);
+    } else {
+        console.log('✅ [CONTACT] Transporter de Gmail configurado y listo');
+    }
+});
 
 // ============================================
-// VALIDACIONES
+// RATE LIMITING PARA FORMULARIOS
 // ============================================
 
-const contactValidation = [
-    body('name')
-        .optional()
-        .trim()
-        .isLength({ min: 2, max: 100 })
-        .withMessage('El nombre debe tener entre 2 y 100 caracteres'),
-
-    body('email')
-        .isEmail()
-        .normalizeEmail()
-        .withMessage('Email inválido'),
-
-    body('subject')
-        .optional()
-        .trim()
-        .isLength({ min: 5, max: 200 })
-        .withMessage('El asunto debe tener entre 5 y 200 caracteres'),
-
-    body('message')
-        .optional()
-        .trim()
-        .isLength({ min: 10, max: 2000 })
-        .withMessage('El mensaje debe tener entre 10 y 2000 caracteres'),
-
-    body('form_type')
-        .optional()
-        .trim()
-        .escape()
-];
+const contactLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 10, // Aumentado de 5 a 10 para desarrollo/testing
+    message: {
+        success: false,
+        message: 'Demasiados intentos de envío. Inténtalo nuevamente en 15 minutos.',
+        code: 'RATE_LIMIT_EXCEEDED'
+    },
+    standardHeaders: true,
+    legacyHeaders: false
+});
 
 // ============================================
-// PLANTILLAS DE EMAIL
+// MIDDLEWARE DE VALIDACIÓN
 // ============================================
 
-const getEmailTemplate = (formType, data) => {
-    const baseStyle = `
-        <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .header { background: #2c3e50; color: white; padding: 20px; text-align: center; }
-            .content { padding: 20px; background: #f8f9fa; }
-            .footer { background: #34495e; color: white; padding: 15px; text-align: center; font-size: 12px; }
-            .data-row { margin: 10px 0; padding: 10px; background: white; border-left: 4px solid #3498db; }
-            .label { font-weight: bold; color: #2c3e50; }
-        </style>
+const validateContactForm = (req, res, next) => {
+    const { nombre, email, telefono, asunto, mensaje, form_type } = req.body;
+    const errors = [];
+
+    // Validar nombre
+    if (!nombre || nombre.trim().length < 2) {
+        errors.push('El nombre debe tener al menos 2 caracteres');
+    }
+
+    // Validar email
+    if (!email || !validator.isEmail(email)) {
+        errors.push('El email no es válido');
+    }
+
+    // Validar teléfono (opcional pero si se proporciona debe ser válido)
+    if (telefono && !validator.isMobilePhone(telefono, 'es-MX')) {
+        // Validación flexible para números mexicanos
+        if (!/^[\d\-\s\+\(\)]{10,15}$/.test(telefono)) {
+            errors.push('El teléfono no es válido');
+        }
+    }
+
+    // Validar asunto
+    if (!asunto || asunto.trim().length < 5) {
+        errors.push('El asunto debe tener al menos 5 caracteres');
+    }
+
+    // Validar mensaje
+    if (!mensaje || mensaje.trim().length < 10) {
+        errors.push('El mensaje debe tener al menos 10 caracteres');
+    }
+
+    // Validar longitud máxima
+    if (mensaje && mensaje.length > 2000) {
+        errors.push('El mensaje no puede exceder 2000 caracteres');
+    }
+
+    if (errors.length > 0) {
+        return res.status(400).json({
+            success: false,
+            message: 'Errores en el formulario',
+            errors: errors
+        });
+    }
+
+    // Sanitizar datos
+    req.body = {
+        nombre: validator.escape(nombre.trim()),
+        email: validator.normalizeEmail(email.trim()),
+        telefono: telefono ? validator.escape(telefono.trim()) : '',
+        asunto: validator.escape(asunto.trim()),
+        mensaje: validator.escape(mensaje.trim()),
+        form_type: form_type ? validator.escape(form_type.trim()) : 'Contacto General'
+    };
+
+    next();
+};
+
+// ============================================
+// FUNCIÓN DE ENVÍO DE EMAIL
+// ============================================
+
+const contactMessages = []; // Almacenamiento temporal
+
+const sendContactEmail = async (messageData) => {
+    const { nombre, email, telefono, asunto, mensaje, form_type } = messageData;
+
+    // Crear HTML para el email
+    const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
+                .content { background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }
+                .field { margin-bottom: 15px; }
+                .label { font-weight: bold; color: #1e3a8a; }
+                .value { color: #4b5563; margin-top: 5px; }
+                .footer { background: #1f2937; color: #9ca3af; padding: 15px; text-align: center; border-radius: 0 0 8px 8px; font-size: 12px; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h2>🎓 BGE Héroes de la Patria</h2>
+                    <p>${form_type || 'Nuevo Mensaje de Contacto'}</p>
+                </div>
+                <div class="content">
+                    <div class="field">
+                        <div class="label">👤 Nombre:</div>
+                        <div class="value">${nombre}</div>
+                    </div>
+                    <div class="field">
+                        <div class="label">📧 Email:</div>
+                        <div class="value">${email}</div>
+                    </div>
+                    ${telefono ? `
+                    <div class="field">
+                        <div class="label">📞 Teléfono:</div>
+                        <div class="value">${telefono}</div>
+                    </div>
+                    ` : ''}
+                    <div class="field">
+                        <div class="label">📋 Asunto:</div>
+                        <div class="value">${asunto}</div>
+                    </div>
+                    <div class="field">
+                        <div class="label">💬 Mensaje:</div>
+                        <div class="value" style="white-space: pre-wrap;">${mensaje}</div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>Enviado desde el sistema de contacto web - BGE Héroes de la Patria</p>
+                    <p>Fecha: ${new Date().toLocaleString('es-MX')}</p>
+                </div>
+            </div>
+        </body>
+        </html>
     `;
 
-    switch(formType) {
-        case 'Registro Bolsa de Trabajo':
-        case 'Bolsa de Trabajo - CV':
-            return `
-                <!DOCTYPE html>
-                <html>
-                <head>${baseStyle}</head>
-                <body>
-                    <div class="header">
-                        <h2>🎯 Nueva Aplicación - Bolsa de Trabajo</h2>
-                        <p>Bachillerato General Estatal "Héroes de la Patria"</p>
-                    </div>
-                    <div class="content">
-                        <div class="data-row">
-                            <span class="label">👤 Nombre:</span> ${data.nombre_completo || data.name}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">📧 Email:</span> ${data.email}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">📱 Teléfono:</span> ${data.phone || data.telefono || 'No proporcionado'}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">💼 Experiencia:</span> ${data.experience || data.experiencia || data.message || 'No proporcionada'}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">🛠️ Habilidades:</span> ${data.skills || 'No proporcionadas'}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">🎓 Educación:</span> ${data.education || 'No proporcionada'}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">📅 Disponibilidad:</span> ${data.availability || 'No especificada'}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">💰 Expectativas:</span> ${data.expectations || 'No especificadas'}
-                        </div>
-                    </div>
-                    <div class="footer">
-                        BGE Héroes de la Patria - Sistema de Gestión de Talento<br>
-                        Enviado desde: bge-heroesdelapatria.vercel.app
-                    </div>
-                </body>
-                </html>
-            `;
+    // Configurar email
+    const mailOptions = {
+        from: `"BGE Héroes de la Patria" <${process.env.EMAIL_USER}>`,
+        to: process.env.EMAIL_TO,
+        replyTo: email,
+        subject: `${form_type || 'Contacto'}: ${asunto}`,
+        html: htmlContent,
+        text: `
+Nuevo mensaje de contacto - ${form_type}
 
-        case 'Sistema de Citas':
-            return `
-                <!DOCTYPE html>
-                <html>
-                <head>${baseStyle}</head>
-                <body>
-                    <div class="header">
-                        <h2>📅 Nueva Cita Solicitada</h2>
-                        <p>Bachillerato General Estatal "Héroes de la Patria"</p>
-                    </div>
-                    <div class="content">
-                        <div class="data-row">
-                            <span class="label">👤 Nombre:</span> ${data.name}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">📧 Email:</span> ${data.email}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">📱 Teléfono:</span> ${data.phone || 'No proporcionado'}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">🏢 Departamento:</span> ${data.department || 'No especificado'}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">📝 Motivo:</span> ${data.reason || data.message || 'No especificado'}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">⏰ Fecha preferida:</span> ${data.preferred_date || 'No especificada'}
-                        </div>
-                    </div>
-                    <div class="footer">
-                        BGE Héroes de la Patria - Sistema de Citas<br>
-                        Enviado desde: bge-heroesdelapatria.vercel.app
-                    </div>
-                </body>
-                </html>
-            `;
+Nombre: ${nombre}
+Email: ${email}
+${telefono ? `Teléfono: ${telefono}` : ''}
+Asunto: ${asunto}
 
-        default: // Contacto general y otros
-            return `
-                <!DOCTYPE html>
-                <html>
-                <head>${baseStyle}</head>
-                <body>
-                    <div class="header">
-                        <h2>📬 Nuevo Mensaje de Contacto</h2>
-                        <p>Bachillerato General Estatal "Héroes de la Patria"</p>
-                    </div>
-                    <div class="content">
-                        <div class="data-row">
-                            <span class="label">👤 Nombre:</span> ${data.name || data.nombre_completo}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">📧 Email:</span> ${data.email}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">📋 Asunto:</span> ${data.subject || formType || 'Consulta General'}
-                        </div>
-                        <div class="data-row">
-                            <span class="label">💬 Mensaje:</span><br>
-                            ${(data.message || '').replace(/\n/g, '<br>')}
-                        </div>
-                    </div>
-                    <div class="footer">
-                        BGE Héroes de la Patria - Sistema de Contacto<br>
-                        Enviado desde: bge-heroesdelapatria.vercel.app
-                    </div>
-                </body>
-                </html>
-            `;
-    }
+Mensaje:
+${mensaje}
+
+---
+Enviado: ${new Date().toLocaleString('es-MX')}
+        `.trim()
+    };
+
+    // Enviar email
+    const info = await transporter.sendMail(mailOptions);
+
+    // Guardar en almacenamiento temporal
+    const message = {
+        id: Date.now().toString(),
+        ...messageData,
+        timestamp: new Date(),
+        status: 'sent',
+        messageId: info.messageId
+    };
+    contactMessages.push(message);
+
+    return { success: true, id: message.id, messageId: info.messageId };
 };
 
 // ============================================
 // RUTAS
 // ============================================
 
-// Endpoint para envío con verificación
-router.post('/send', contactLimiter, contactValidation, async (req, res) => {
+/**
+ * POST /api/contact/send
+ * ✅ NUEVO: Enviar mensaje CON VERIFICACIÓN DE EMAIL (anti-spam)
+ */
+router.post('/send', contactLimiter, validateContactForm, async (req, res) => {
     try {
-        // Verificar errores de validación
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({
-                success: false,
-                message: 'Datos inválidos',
-                errors: errors.array()
-            });
-        }
+        const { nombre, email, telefono, asunto, mensaje, form_type } = req.body;
+        const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
 
-        const formData = req.body;
+        console.log('📧 Nuevo mensaje de contacto recibido (verificación requerida):', {
+            nombre: nombre.substring(0, 20),
+            email: email.substring(0, 30),
+            asunto: asunto.substring(0, 50),
+            form_type
+        });
 
-        // Crear verificación y enviar email de confirmación
+        // Preparar datos del mensaje para verificación
+        const formData = {
+            name: nombre,
+            nombre: nombre,
+            email,
+            telefono,
+            phone: telefono,
+            asunto,
+            subject: asunto,
+            mensaje,
+            message: mensaje,
+            form_type
+        };
+
+        // ✅ CREAR VERIFICACIÓN Y ENVIAR EMAIL AL USUARIO
+        const verificationService = require('../services/verificationService');
         const token = await verificationService.createVerification(formData);
+
+        console.log(`✅ Email de verificación enviado a: ${email} - Token: ${token.substring(0, 8)}...`);
 
         res.json({
             success: true,
@@ -234,21 +260,26 @@ router.post('/send', contactLimiter, contactValidation, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error sending verification email:', error);
+        console.error('❌ Error enviando email de verificación:', error);
+
         res.status(500).json({
             success: false,
             message: 'Error enviando email de verificación',
-            error: process.env.NODE_ENV === 'development' ? error.message : 'Error interno'
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
 
-// Endpoint para verificar token y enviar mensaje final
+/**
+ * GET /api/contact/verify/:token
+ * ✅ VERIFICAR TOKEN Y ENVIAR MENSAJE FINAL A LA ESCUELA
+ */
 router.get('/verify/:token', async (req, res) => {
     try {
         const { token } = req.params;
 
-        // Verificar token
+        // Verificar token usando verificationService
+        const verificationService = require('../services/verificationService');
         const verification = verificationService.verifyToken(token);
 
         if (!verification.success) {
@@ -276,260 +307,128 @@ router.get('/verify/:token', async (req, res) => {
             `);
         }
 
-        // Enviar mensaje verificado
-        const { form_type, ...formData} = verification.data;
+        // Token válido - Enviar mensaje verificado a la escuela
+        const { form_type, ...formData } = verification.data;
 
-        // Si es una suscripción, guardar en base de datos
-        if (form_type === 'Suscripción Newsletter' || form_type === 'Suscripción a Notificaciones') {
-            try {
-                // Importar las funciones de suscripción directamente (más eficiente que HTTP)
-                const subscriptionService = require('./subscriptions-service');
+        // Enviar email final a la escuela
+        const result = await sendContactEmail({
+            nombre: formData.name || formData.nombre,
+            email: formData.email,
+            telefono: formData.phone || formData.telefono || '',
+            asunto: formData.subject || formData.asunto,
+            mensaje: formData.message || formData.mensaje,
+            form_type
+        });
 
-                const categories = form_type === 'Suscripción a Notificaciones'
-                    ? [formData.subject || 'all']
-                    : ['all'];
+        if (result.success) {
+            console.log(`✅ [VERIFIED] Mensaje enviado a la escuela desde: ${formData.email}`);
 
-                await subscriptionService.addSubscriber({
-                    email: formData.email,
-                    name: formData.name || 'Suscriptor',
-                    categories: categories,
-                    source: form_type === 'Suscripción Newsletter' ? 'newsletter' : 'notifications'
-                });
-
-                console.log(`✅ Suscriptor guardado: ${formData.email}`);
-            } catch (error) {
-                console.error('Error guardando suscriptor:', error.message);
-                // No fallar el proceso si el guardado falla
-            }
-        }
-
-        // Si es actualización de egresados, guardar en base de datos MySQL
-        if (form_type === 'Actualización de Datos - Egresados') {
-            try {
-                const db = require('../config/database');
-
-                // Preparar datos para insertar
-                const egresadoData = {
-                    nombre: formData.name || formData.nombre,
-                    email: formData.email,
-                    generacion: formData.generacion,
-                    telefono: formData.telefono || null,
-                    ciudad: formData.ciudad || null,
-                    ocupacion_actual: formData.trabajo || null,
-                    universidad: formData.universidad || null,
-                    carrera: formData.carrera || null,
-                    estatus_estudios: formData['estatus-estudios'] || null,
-                    año_egreso: formData['año-egreso'] || null,
-                    historia_exito: formData.message || null,
-                    autoriza_publicar: formData['publicar-historia'] === 'on',
-                    verificado: true,
-                    ip_registro: req.ip || null
-                };
-
-                // Verificar si ya existe el email
-                const [existing] = await db.query(
-                    'SELECT id FROM egresados WHERE email = ?',
-                    [egresadoData.email]
-                );
-
-                if (existing.length > 0) {
-                    // Actualizar registro existente
-                    await db.query(`
-                        UPDATE egresados SET
-                            nombre = ?,
-                            generacion = ?,
-                            telefono = ?,
-                            ciudad = ?,
-                            ocupacion_actual = ?,
-                            universidad = ?,
-                            carrera = ?,
-                            estatus_estudios = ?,
-                            año_egreso = ?,
-                            historia_exito = ?,
-                            autoriza_publicar = ?,
-                            verificado = ?,
-                            fecha_actualizacion = NOW(),
-                            ip_registro = ?
-                        WHERE email = ?
-                    `, [
-                        egresadoData.nombre,
-                        egresadoData.generacion,
-                        egresadoData.telefono,
-                        egresadoData.ciudad,
-                        egresadoData.ocupacion_actual,
-                        egresadoData.universidad,
-                        egresadoData.carrera,
-                        egresadoData.estatus_estudios,
-                        egresadoData.año_egreso,
-                        egresadoData.historia_exito,
-                        egresadoData.autoriza_publicar,
-                        egresadoData.verificado,
-                        egresadoData.ip_registro,
-                        egresadoData.email
-                    ]);
-
-                    console.log(`✅ Egresado actualizado en BD: ${egresadoData.email}`);
-                } else {
-                    // Insertar nuevo egresado
-                    await db.query(`
-                        INSERT INTO egresados (
-                            nombre, email, generacion, telefono, ciudad,
-                            ocupacion_actual, universidad, carrera, estatus_estudios,
-                            año_egreso, historia_exito, autoriza_publicar, verificado, ip_registro
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    `, [
-                        egresadoData.nombre,
-                        egresadoData.email,
-                        egresadoData.generacion,
-                        egresadoData.telefono,
-                        egresadoData.ciudad,
-                        egresadoData.ocupacion_actual,
-                        egresadoData.universidad,
-                        egresadoData.carrera,
-                        egresadoData.estatus_estudios,
-                        egresadoData.año_egreso,
-                        egresadoData.historia_exito,
-                        egresadoData.autoriza_publicar,
-                        egresadoData.verificado,
-                        egresadoData.ip_registro
-                    ]);
-
-                    console.log(`✅ Egresado guardado en BD: ${egresadoData.email}`);
-                }
-            } catch (error) {
-                console.error('❌ Error guardando egresado en BD:', error.message);
-                // No fallar el proceso si el guardado falla
-            }
-        }
-
-        // Usar el transporter de verificationService
-        const mailOptions = {
-            from: `"BGE Héroes de la Patria" <${process.env.EMAIL_USER}>`,
-            to: process.env.EMAIL_TO || process.env.EMAIL_USER,
-            subject: `[BACHILLERATO - VERIFICADO] ${form_type || 'Nuevo Mensaje'}`,
-            html: getEmailTemplate(form_type, formData),
-            replyTo: formData.email
-        };
-
-        await verificationService.transporter.sendMail(mailOptions);
-
-        // Página de confirmación que se cierra automáticamente
-        res.send(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Mensaje Confirmado</title>
-                <style>
-                    body {
-                        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-                        text-align: center;
-                        padding: 50px;
-                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                        margin: 0;
-                        min-height: 100vh;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                    }
-                    .success {
-                        background: white;
-                        padding: 40px;
-                        border-radius: 15px;
-                        display: inline-block;
-                        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-                        max-width: 500px;
-                        width: 90%;
-                    }
-                    .success h1 {
-                        color: #27ae60;
-                        margin-bottom: 20px;
-                        font-size: 32px;
-                    }
-                    .success p {
-                        font-size: 16px;
-                        line-height: 1.6;
-                        color: #555;
-                        margin-bottom: 15px;
-                    }
-                    .countdown {
-                        font-size: 18px;
-                        font-weight: bold;
-                        color: #3498db;
-                        margin: 20px 0;
-                    }
-                    .back-btn {
-                        background: #3498db;
-                        color: white;
-                        padding: 12px 25px;
-                        text-decoration: none;
-                        border-radius: 8px;
-                        display: inline-block;
-                        margin-top: 20px;
-                        transition: background 0.3s;
-                    }
-                    .back-btn:hover {
-                        background: #2980b9;
-                    }
-                    .icon {
-                        font-size: 64px;
-                        margin-bottom: 20px;
-                    }
-                </style>
-                <script>
-                    let countdown = 5;
-                    function updateCountdown() {
-                        const countdownEl = document.getElementById('countdown');
-                        if (countdownEl) {
-                            countdownEl.textContent = countdown;
+            // Página de confirmación
+            res.send(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Mensaje Confirmado</title>
+                    <style>
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                            text-align: center;
+                            padding: 50px;
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            margin: 0;
+                            min-height: 100vh;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
                         }
-
-                        if (countdown <= 0) {
-                            window.close();
-                            // Si no se puede cerrar la ventana, redirigir
-                            setTimeout(() => {
-                                window.location.href = '/';
-                            }, 500);
-                        } else {
-                            countdown--;
-                            setTimeout(updateCountdown, 1000);
+                        .success {
+                            background: white;
+                            padding: 40px;
+                            border-radius: 15px;
+                            display: inline-block;
+                            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                            max-width: 500px;
+                            width: 90%;
                         }
-                    }
-
-                    window.onload = function() {
-                        updateCountdown();
-
-                        // Intentar notificar a la ventana padre si existe
-                        try {
-                            if (window.opener && !window.opener.closed) {
-                                window.opener.postMessage({
-                                    type: 'EMAIL_VERIFIED',
-                                    success: true,
-                                    message: 'Email verificado exitosamente'
-                                }, '*');
+                        .success h1 {
+                            color: #27ae60;
+                            margin-bottom: 20px;
+                            font-size: 32px;
+                        }
+                        .success p {
+                            font-size: 16px;
+                            line-height: 1.6;
+                            color: #555;
+                            margin-bottom: 15px;
+                        }
+                        .countdown {
+                            font-size: 18px;
+                            font-weight: bold;
+                            color: #3498db;
+                            margin: 20px 0;
+                        }
+                        .back-btn {
+                            background: #3498db;
+                            color: white;
+                            padding: 12px 25px;
+                            text-decoration: none;
+                            border-radius: 8px;
+                            display: inline-block;
+                            margin-top: 20px;
+                            transition: background 0.3s;
+                        }
+                        .back-btn:hover {
+                            background: #2980b9;
+                        }
+                        .icon {
+                            font-size: 64px;
+                            margin-bottom: 20px;
+                        }
+                    </style>
+                    <script>
+                        let countdown = 5;
+                        function updateCountdown() {
+                            const countdownEl = document.getElementById('countdown');
+                            if (countdownEl) {
+                                countdownEl.textContent = countdown;
                             }
-                        } catch (e) {
-                            console.log('No se pudo comunicar con la ventana padre');
+
+                            if (countdown <= 0) {
+                                window.close();
+                                setTimeout(() => {
+                                    window.location.href = '/';
+                                }, 500);
+                            } else {
+                                countdown--;
+                                setTimeout(updateCountdown, 1000);
+                            }
                         }
-                    };
-                </script>
-            </head>
-            <body>
-                <div class="success">
-                    <div class="icon">✅</div>
-                    <h1>¡Mensaje Confirmado!</h1>
-                    <p>Tu mensaje ha sido enviado exitosamente al Bachillerato Héroes de la Patria.</p>
-                    <p>Gracias por verificar tu email. Nos pondremos en contacto contigo pronto.</p>
-                    <div class="countdown">
-                        Esta ventana se cerrará en <span id="countdown">5</span> segundos...
+
+                        window.onload = function() {
+                            updateCountdown();
+                        };
+                    </script>
+                </head>
+                <body>
+                    <div class="success">
+                        <div class="icon">✅</div>
+                        <h1>¡Mensaje Confirmado!</h1>
+                        <p>Tu mensaje ha sido enviado exitosamente al Bachillerato Héroes de la Patria.</p>
+                        <p>Gracias por verificar tu email. Nos pondremos en contacto contigo pronto.</p>
+                        <div class="countdown">
+                            Esta ventana se cerrará en <span id="countdown">5</span> segundos...
+                        </div>
+                        <a href="/" class="back-btn" onclick="window.close(); return false;">Cerrar Ventana</a>
                     </div>
-                    <a href="/" class="back-btn" onclick="window.close(); return false;">Cerrar Ventana</a>
-                </div>
-            </body>
-            </html>
-        `);
+                </body>
+                </html>
+            `);
+        } else {
+            throw new Error('Error al enviar mensaje verificado');
+        }
 
     } catch (error) {
-        console.error('Error verifying token:', error);
+        console.error('❌ Error en verificación:', error);
         res.status(500).send(`
             <!DOCTYPE html>
             <html>
@@ -555,13 +454,82 @@ router.get('/verify/:token', async (req, res) => {
     }
 });
 
-// Ruta de verificación
-router.get('/test', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Sistema de contacto funcionando',
-        timestamp: new Date().toISOString()
-    });
+/**
+ * GET /api/contact/messages
+ * Obtener mensajes de contacto (solo para admin)
+ */
+router.get('/messages', async (req, res) => {
+    try {
+        // En un sistema real aquí verificarías autenticación de admin
+        const limit = parseInt(req.query.limit) || 50;
+        const page = parseInt(req.query.page) || 1;
+        const skip = (page - 1) * limit;
+
+        const messages = contactMessages
+            .slice(skip, skip + limit)
+            .map(msg => ({
+                id: msg.id,
+                nombre: msg.nombre,
+                email: msg.email,
+                asunto: msg.asunto,
+                mensaje: msg.mensaje.substring(0, 100) + '...',
+                form_type: msg.form_type,
+                timestamp: msg.timestamp,
+                status: msg.status
+            }));
+
+        res.json({
+            success: true,
+            data: messages,
+            total: contactMessages.length,
+            page,
+            totalPages: Math.ceil(contactMessages.length / limit)
+        });
+
+    } catch (error) {
+        console.error('❌ Error obteniendo mensajes:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error obteniendo mensajes'
+        });
+    }
+});
+
+/**
+ * GET /api/contact/stats
+ * Estadísticas de mensajes de contacto
+ */
+router.get('/stats', async (req, res) => {
+    try {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const thisWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        const stats = {
+            total: contactMessages.length,
+            today: contactMessages.filter(msg => new Date(msg.timestamp) >= today).length,
+            thisWeek: contactMessages.filter(msg => new Date(msg.timestamp) >= thisWeek).length,
+            thisMonth: contactMessages.filter(msg => new Date(msg.timestamp) >= thisMonth).length,
+            byType: contactMessages.reduce((acc, msg) => {
+                acc[msg.form_type] = (acc[msg.form_type] || 0) + 1;
+                return acc;
+            }, {}),
+            pending: contactMessages.filter(msg => msg.status === 'pending').length
+        };
+
+        res.json({
+            success: true,
+            data: stats
+        });
+
+    } catch (error) {
+        console.error('❌ Error obteniendo estadísticas:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error obteniendo estadísticas'
+        });
+    }
 });
 
 module.exports = router;
