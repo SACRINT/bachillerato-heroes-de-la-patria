@@ -712,7 +712,8 @@ class NotificationConfigUI {
 
     setupEventListeners() {
         // Listen for notification events
-        if (this.notificationManager) {
+        // ✅ CORRECCIÓN: .on() puede no existir, usar verificación defensiva
+        if (this.notificationManager && typeof this.notificationManager.on === 'function') {
             this.notificationManager.on('configUpdated', () => {
                 this.updateButtonBadge();
             });
