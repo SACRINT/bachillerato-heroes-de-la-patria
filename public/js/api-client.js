@@ -113,13 +113,23 @@ class APIClient {
             return data;
 
         } catch (error) {
-            console.error(`❌ API Error: ${config.method} ${url}`, error);
-            
+            // ✅ MEJORA: Solo mostrar errores que NO sean 404 esperados
+            const is404 = error.message.includes('404') || error.message.includes('Not Found');
+            const isExpectedEndpoint = endpoint.includes('/teachers') || endpoint.includes('/students');
+
+            if (is404 && isExpectedEndpoint) {
+                // Silenciar 404 esperados (endpoints aún no implementados)
+                console.log(`ℹ️ Endpoint no disponible aún: ${config.method} ${endpoint} - usando fallback`);
+            } else {
+                // Mostrar otros errores normalmente
+                console.error(`❌ API Error: ${config.method} ${url}`, error);
+            }
+
             // Si el error es de autenticación, limpiar token
             if (error.message.includes('401') || error.message.includes('Token')) {
                 this.removeToken();
             }
-            
+
             throw error;
         }
     }

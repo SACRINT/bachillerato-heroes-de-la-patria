@@ -841,7 +841,18 @@ O ve a Configuración del navegador > Privacidad y seguridad > Configuración de
         const badge = document.getElementById('notificationBadge');
         if (!badge || !this.notificationManager) return;
 
-        const stats = this.notificationManager.getStats();
+        // ✅ CORRECCIÓN: getStats() puede no existir, usar fallback seguro
+        let stats = { unread: 0 };
+        try {
+            if (typeof this.notificationManager.getStats === 'function') {
+                stats = this.notificationManager.getStats();
+            } else if (window.heroesNotifications && typeof window.heroesNotifications.getStats === 'function') {
+                stats = window.heroesNotifications.getStats();
+            }
+        } catch (error) {
+            console.warn('⚠️ [NOTIFICATION-UI] getStats() no disponible, usando fallback');
+        }
+
         const unreadCount = stats.unread || 0;
 
         if (unreadCount > 0) {
