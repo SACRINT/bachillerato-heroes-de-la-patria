@@ -193,10 +193,13 @@ self.addEventListener('activate', event => {
                     });
                 
                 await Promise.all(deletionPromises);
-                
-                // Take control of all clients immediately
-                await self.clients.claim();
-                
+
+                // ✅ CORRECCIÓN: Solo claim() en producción, no en desarrollo
+                // Take control of all clients immediately (solo si es el active worker)
+                if (self.registration.active === self) {
+                    await self.clients.claim();
+                }
+
                 console.log('✅ Service Worker activated successfully');
                 
             } catch (error) {
