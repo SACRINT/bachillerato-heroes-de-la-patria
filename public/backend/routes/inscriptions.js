@@ -8,7 +8,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const fs = require('fs').promises;
 const path = require('path');
-const verificationService = require('../services/verificationService');
+const verificationService = require('../../server/services/verificationService');
 
 // 📁 Rutas de archivos
 const INSCRIPTIONS_FILE = path.join(__dirname, '../data/inscriptions.json');

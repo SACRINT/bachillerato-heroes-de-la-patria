@@ -406,7 +406,7 @@ class InteractiveCalendar {
                 const dayEvents = this.getEventsForDate(currentDate);
                 const filteredEvents = this.filterEvents(dayEvents);
                 
-                let dayClasses = ['calendar-day'];
+                const dayClasses = ['calendar-day'];
                 if (!isCurrentMonth) dayClasses.push('other-month');
                 if (isToday) dayClasses.push('today');
                 if (filteredEvents.length > 0) dayClasses.push('has-events');

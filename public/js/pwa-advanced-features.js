@@ -340,7 +340,7 @@ class PWAAdvancedFeatures {
     setupDeviceMotion() {
         // Shake detection for emergency or quick actions
         let lastAcceleration = { x: 0, y: 0, z: 0 };
-        let shakeThreshold = 15;
+        const shakeThreshold = 15;
         
         window.addEventListener('devicemotion', (event) => {
             const acceleration = event.accelerationIncludingGravity;

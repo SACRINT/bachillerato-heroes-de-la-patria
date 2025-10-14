@@ -563,7 +563,7 @@ class MobileUXManager {
 
         console.log('📜 [MOBILE-UX] Mejorando scroll behavior...');
 
-        let isScrolling = false;
+        const isScrolling = false;
         let lastScrollY = window.pageYOffset;
 
         window.addEventListener('scroll', () => {

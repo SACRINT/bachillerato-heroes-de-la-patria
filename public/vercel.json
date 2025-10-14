@@ -1,16 +1,24 @@
 {
-  "buildCommand": "echo 'Static files ready in public/'",
-  "outputDirectory": "public",
-  "installCommand": "npm install --prefix api",
-  "functions": {
-    "api/index.js": {
-      "maxDuration": 10
-    }
-  },
+  "version": 2,
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/index.js"
+      "destination": "/api/server.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/public/$1"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "regions": ["iad1"],
+  "functions": {
+    "api/server.js": {
+      "maxDuration": 30,
+      "memory": 1024,
+      "includeFiles": "backend/**"
+    }
+  }
 }

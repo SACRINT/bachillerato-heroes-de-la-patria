@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 Panel Multi-Tenant - BGE Sistema Configurable</title>
+
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-gradient {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+            color: white;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+            background: white;
+        }
+
+        .tenant-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .tenant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8em;
+        }
+
+        .status-active {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .status-demo {
+            background: var(--danger-gradient);
+            color: white;
+        }
+
+        .header-section {
+            background: var(--primary-gradient);
+            padding: 2rem 0;
+            color: white;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .config-preview {
+            background: #1a1a1a;
+            color: #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .floating-action .btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .floating-action .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.7);
+        }
+
+        .switch-demo {
+            background: var(--dark-gradient);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            margin: 20px 0;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 400px;
+            border: none;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(102, 126, 234, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0); }
+        }
+
+        .pulse-effect {
+            animation: pulse 2s infinite;
+        }
+
+        .wizard-step {
+            display: none;
+        }
+
+        .wizard-step.active {
+            display: block;
+            animation: slideInRight 0.5s ease;
+        }
+
+        .step-indicator {
+            height: 4px;
+            background: #ddd;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .step-progress {
+            height: 100%;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-section animate__animated animate__fadeInDown">
+        <div class="container">
+            <h1 class="display-4 mb-3">
+                <i class="fas fa-globe-americas me-3"></i>
+                Panel Multi-Tenant BGE
+            </h1>
+            <p class="lead">
+                🚀 Sistema Revolucionario para Configurar Instituciones Educativas
+            </p>
+            <div class="mt-4">
+                <span class="badge bg-success me-2 p-2">
+                    <i class="fas fa-check-circle me-1"></i> Sistema Activo
+                </span>
+                <span class="badge bg-info me-2 p-2">
+                    <i class="fas fa-school me-1"></i> <span id="tenant-count">0</span> Instituciones Configuradas
+                </span>
+                <span class="badge bg-warning p-2">
+                    <i class="fas fa-rocket me-1"></i> Versión 1.0.0
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Panel de Control Principal -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="glass-panel p-4 animate__animated animate__fadeInUp">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3>
+                            <i class="fas fa-cogs text-primary me-2"></i>
+                            Panel de Control
+                        </h3>
+                        <div>
+                            <button class="btn btn-gradient me-2" onclick="openTenantWizard()">
+                                <i class="fas fa-plus me-2"></i>Nueva Institución
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="exportAllConfigs()">
+                                <i class="fas fa-download me-2"></i>Exportar Todo
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Demo de Cambio Instantáneo -->
+                    <div class="switch-demo animate__animated animate__fadeIn animate__delay-1s">
+                        <h5><i class="fas fa-magic me-2"></i>Demo de Cambio Instantáneo</h5>
+                        <p>Selecciona una institución y observa cómo el sitio se transforma automáticamente:</p>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <select class="form-select" id="demo-tenant-selector" onchange="switchTenantDemo()">
+                                    <option value="bge-heroes-patria-001">BGE Héroes de la Patria (Original)</option>
+                                    <option value="instituto-tecnologico-mx-002">Instituto Tecnológico Guadalajara</option>
+                                    <option value="custom">Crear Nueva Configuración</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-success w-100" onclick="applyTenantChange()">
+                                    <i class="fas fa-sync-alt me-2"></i>Aplicar Cambio
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-info w-100" onclick="previewTenant()">
+                                    <i class="fas fa-eye me-2"></i>Vista Previa
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-3" id="switch-status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Tenants Configurados -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="glass-panel p-4 animate__animated animate__fadeInUp animate__delay-1s">
+                    <h4>
+                        <i class="fas fa-list text-primary me-2"></i>
+                        Instituciones Configuradas
+                    </h4>
+                    <div class="row" id="tenants-container">
+                        <!-- Tenants se cargan dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vista Previa en Tiempo Real -->
+        <div class="row mb-4" id="preview-section" style="display: none;">
+            <div class="col-12">
+                <div class="glass-panel p-4 animate__animated animate__fadeInUp">
+                    <h4>
+                        <i class="fas fa-eye text-success me-2"></i>
+                        Vista Previa en Tiempo Real
+                    </h4>
+                    <iframe id="preview-frame" class="preview-frame" src=""></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Asistente de Configuración -->
+    <div class="modal fade" id="tenantWizardModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" style="border: none; border-radius: 20px;">
+                <div class="modal-header" style="background: var(--primary-gradient); color: white; border: none; border-radius: 20px 20px 0 0;">
+                    <h5 class="modal-title">
+                        <i class="fas fa-magic me-2"></i>
+                        Asistente de Configuración de Institución
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Progress Bar -->
+                    <div class="mb-4">
+                        <div class="step-indicator">
+                            <div class="step-progress" id="step-progress" style="width: 25%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2 small text-muted">
+                            <span>Información Básica</span>
+                            <span>Branding</span>
+                            <span>Contenido</span>
+                            <span>Configuración</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Información Básica -->
+                    <div class="wizard-step active" id="step-1">
+                        <h4 class="text-primary mb-4">
+                            <i class="fas fa-info-circle me-2"></i>Información de la Institución
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre Completo de la Institución</label>
+                                    <input type="text" class="form-control" id="institution-name" placeholder="Ej: Instituto Tecnológico Superior de...">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre Corto</label>
+                                    <input type="text" class="form-control" id="institution-short" placeholder="Ej: ITSG">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo de Institución</label>
+                                    <select class="form-select" id="institution-type">
+                                        <option value="Bachillerato General Estatal">Bachillerato General Estatal</option>
+                                        <option value="Instituto Tecnológico">Instituto Tecnológico</option>
+                                        <option value="Preparatoria Federal">Preparatoria Federal</option>
+                                        <option value="Centro de Estudios">Centro de Estudios</option>
+                                        <option value="Universidad">Universidad</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Ciudad</label>
+                                    <input type="text" class="form-control" id="institution-city" placeholder="Ej: Guadalajara">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Estado</label>
+                                    <input type="text" class="form-control" id="institution-state" placeholder="Ej: Jalisco">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Teléfono Principal</label>
+                                    <input type="text" class="form-control" id="institution-phone" placeholder="+52 33 1234 5678">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Branding -->
+                    <div class="wizard-step" id="step-2">
+                        <h4 class="text-primary mb-4">
+                            <i class="fas fa-palette me-2"></i>Branding y Diseño
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Color Primario</label>
+                                    <input type="color" class="form-control form-control-color" id="primary-color" value="#1976D2">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Color Secundario</label>
+                                    <input type="color" class="form-control form-control-color" id="secondary-color" value="#FFC107">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Color de Acento</label>
+                                    <input type="color" class="form-control form-control-color" id="accent-color" value="#FF5722">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">URL del Logo</label>
+                                    <input type="url" class="form-control" id="logo-url" placeholder="/images/logo-institucion.webp">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Imagen Principal (Hero)</label>
+                                    <input type="url" class="form-control" id="hero-image" placeholder="/images/hero/campus.webp">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Fuente Principal</label>
+                                    <select class="form-select" id="font-family">
+                                        <option value="'Segoe UI', Roboto, Arial, sans-serif">Segoe UI (Moderna)</option>
+                                        <option value="'Roboto', sans-serif">Roboto (Limpia)</option>
+                                        <option value="'Open Sans', sans-serif">Open Sans (Amigable)</option>
+                                        <option value="'Montserrat', sans-serif">Montserrat (Elegante)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6>Vista Previa de Colores</h6>
+                                        <div id="color-preview" class="p-3 rounded">
+                                            <div class="d-flex justify-content-between">
+                                                <div class="preview-primary p-2 rounded text-white">Primario</div>
+                                                <div class="preview-secondary p-2 rounded">Secundario</div>
+                                                <div class="preview-accent p-2 rounded text-white">Acento</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Contenido -->
+                    <div class="wizard-step" id="step-3">
+                        <h4 class="text-primary mb-4">
+                            <i class="fas fa-edit me-2"></i>Contenido Institucional
+                        </h4>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label">Mensaje de Bienvenida</label>
+                                    <input type="text" class="form-control" id="welcome-message" placeholder="¡Bienvenidos a nuestra institución educativa!">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Slogan Principal</label>
+                                    <input type="text" class="form-control" id="hero-slogan" placeholder="Formando líderes del futuro">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Misión</label>
+                                    <textarea class="form-control" id="mission-statement" rows="3" placeholder="Nuestra misión es..."></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Visión</label>
+                                    <textarea class="form-control" id="vision-statement" rows="3" placeholder="Nuestra visión es..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Configuración Final -->
+                    <div class="wizard-step" id="step-4">
+                        <h4 class="text-primary mb-4">
+                            <i class="fas fa-cog me-2"></i>Configuración Final
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Características Habilitadas:</h6>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="chatbot-enabled" checked>
+                                    <label class="form-check-label">Chatbot IA</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="calendar-enabled" checked>
+                                    <label class="form-check-label">Calendario Escolar</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="grades-enabled" checked>
+                                    <label class="form-check-label">Sistema de Calificaciones</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="payments-enabled" checked>
+                                    <label class="form-check-label">Pagos en Línea</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Vista Previa de Configuración:</h6>
+                                <div class="config-preview" id="config-preview">
+                                    {
+                                      "tenantId": "generando...",
+                                      "institution": {
+                                        "name": "Cargando..."
+                                      }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border: none;">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()" id="prev-btn" disabled>
+                        <i class="fas fa-arrow-left me-2"></i>Anterior
+                    </button>
+                    <button type="button" class="btn btn-gradient" onclick="nextStep()" id="next-btn">
+                        Siguiente<i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="createTenant()" id="create-btn" style="display: none;">
+                        <i class="fas fa-save me-2"></i>Crear Institución
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="floating-action">
+        <button class="btn pulse-effect" onclick="openTenantWizard()" title="Nueva Institución">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/bge-multi-tenant-system.js"></script>
+
+    <script>
+        // Variables globales
+        let currentStep = 1;
+        const totalSteps = 4;
+        let previewTimeout;
+
+        // Datos de ejemplo para demostración
+        const demoTenants = {
+            'bge-heroes-patria-001': {
+                name: 'BGE Héroes de la Patria',
+                type: 'Original',
+                status: 'active',
+                description: 'Configuración original del Bachillerato General Estatal "Héroes de la Patria"',
+                primaryColor: '#1976D2',
+                location: 'Venustiano Carranza, Puebla'
+            },
+            'instituto-tecnologico-mx-002': {
+                name: 'Instituto Tecnológico Superior de Guadalajara',
+                type: 'Demo',
+                status: 'demo',
+                description: 'Configuración demo para instituto tecnológico',
+                primaryColor: '#2E7D32',
+                location: 'Guadalajara, Jalisco'
+            }
+        };
+
+        // Inicializar panel al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌐 Inicializando Panel Multi-Tenant');
+            loadTenants();
+            updateColorPreview();
+
+            // Event listeners para actualización en tiempo real
+            document.querySelectorAll('#primary-color, #secondary-color, #accent-color').forEach(input => {
+                input.addEventListener('change', updateColorPreview);
+            });
+
+            document.querySelectorAll('input, textarea, select').forEach(input => {
+                input.addEventListener('input', updateConfigPreview);
+            });
+        });
+
+        // Cargar tenants existentes
+        function loadTenants() {
+            const container = document.getElementById('tenants-container');
+            container.innerHTML = '';
+
+            Object.keys(demoTenants).forEach(tenantId => {
+                const tenant = demoTenants[tenantId];
+                const card = createTenantCard(tenantId, tenant);
+                container.appendChild(card);
+            });
+
+            document.getElementById('tenant-count').textContent = Object.keys(demoTenants).length;
+        }
+
+        // Crear tarjeta de tenant
+        function createTenantCard(tenantId, tenant) {
+            const col = document.createElement('div');
+            col.className = 'col-md-6 col-lg-4 mb-4';
+
+            col.innerHTML = `
+                <div class="tenant-card card h-100 animate__animated animate__fadeInUp">
+                    <div class="card-header d-flex justify-content-between align-items-center" style="background: ${tenant.primaryColor}; color: white;">
+                        <h6 class="mb-0">${tenant.name}</h6>
+                        <span class="status-badge status-${tenant.status}">${tenant.status.toUpperCase()}</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text small">${tenant.description}</p>
+                        <p class="text-muted small">
+                            <i class="fas fa-map-marker-alt me-1"></i>${tenant.location}
+                        </p>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-sm btn-outline-primary flex-fill" onclick="editTenant('${tenantId}')">
+                                <i class="fas fa-edit me-1"></i>Editar
+                            </button>
+                            <button class="btn btn-sm btn-outline-success flex-fill" onclick="previewTenantById('${tenantId}')">
+                                <i class="fas fa-eye me-1"></i>Ver
+                            </button>
+                            <button class="btn btn-sm btn-outline-info" onclick="exportTenant('${tenantId}')">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            return col;
+        }
+
+        // Abrir asistente de configuración
+        function openTenantWizard() {
+            const modal = new bootstrap.Modal(document.getElementById('tenantWizardModal'));
+            modal.show();
+            resetWizard();
+        }
+
+        // Reset wizard
+        function resetWizard() {
+            currentStep = 1;
+            updateWizardStep();
+            clearForm();
+        }
+
+        // Navegación del wizard
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateWizardStep();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateWizardStep();
+            }
+        }
+
+        function updateWizardStep() {
+            // Ocultar todos los pasos
+            document.querySelectorAll('.wizard-step').forEach(step => {
+                step.classList.remove('active');
+            });
+
+            // Mostrar paso actual
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+
+            // Actualizar barra de progreso
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('step-progress').style.width = `${progress}%`;
+
+            // Actualizar botones
+            document.getElementById('prev-btn').disabled = currentStep === 1;
+
+            if (currentStep === totalSteps) {
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('create-btn').style.display = 'inline-block';
+            } else {
+                document.getElementById('next-btn').style.display = 'inline-block';
+                document.getElementById('create-btn').style.display = 'none';
+            }
+
+            // Actualizar vista previa si es el último paso
+            if (currentStep === totalSteps) {
+                updateConfigPreview();
+            }
+        }
+
+        // Actualizar vista previa de colores
+        function updateColorPreview() {
+            const primaryColor = document.getElementById('primary-color').value;
+            const secondaryColor = document.getElementById('secondary-color').value;
+            const accentColor = document.getElementById('accent-color').value;
+
+            document.querySelector('.preview-primary').style.backgroundColor = primaryColor;
+            document.querySelector('.preview-secondary').style.backgroundColor = secondaryColor;
+            document.querySelector('.preview-accent').style.backgroundColor = accentColor;
+        }
+
+        // Actualizar vista previa de configuración
+        function updateConfigPreview() {
+            const config = {
+                tenantId: generateTenantId(),
+                version: "1.0.0",
+                configType: "production",
+                institution: {
+                    name: document.getElementById('institution-name').value || "Nueva Institución",
+                    shortName: document.getElementById('institution-short').value || "NI",
+                    type: document.getElementById('institution-type').value,
+                    city: document.getElementById('institution-city').value,
+                    state: document.getElementById('institution-state').value
+                },
+                branding: {
+                    primaryColor: document.getElementById('primary-color').value,
+                    secondaryColor: document.getElementById('secondary-color').value,
+                    accentColor: document.getElementById('accent-color').value,
+                    logoUrl: document.getElementById('logo-url').value,
+                    heroImageUrl: document.getElementById('hero-image').value,
+                    fontFamily: document.getElementById('font-family').value
+                },
+                customContent: {
+                    welcomeMessage: document.getElementById('welcome-message').value,
+                    heroSlogan: document.getElementById('hero-slogan').value
+                },
+                academicInfo: {
+                    missionStatement: document.getElementById('mission-statement').value,
+                    visionStatement: document.getElementById('vision-statement').value
+                }
+            };
+
+            document.getElementById('config-preview').textContent = JSON.stringify(config, null, 2);
+        }
+
+        // Generar ID de tenant único
+        function generateTenantId() {
+            const name = document.getElementById('institution-name').value || 'nueva-institucion';
+            const slug = name.toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 20);
+            return `${slug}-${Date.now().toString().slice(-3)}`;
+        }
+
+        // Crear tenant
+        function createTenant() {
+            const config = JSON.parse(document.getElementById('config-preview').textContent);
+
+            console.log('🏗️ Creando nueva institución:', config.institution.name);
+
+            // Simular creación exitosa
+            setTimeout(() => {
+                alert(`✅ ¡Institución "${config.institution.name}" creada exitosamente!\n\nID: ${config.tenantId}`);
+
+                // Agregar a la lista de demos
+                demoTenants[config.tenantId] = {
+                    name: config.institution.name,
+                    type: 'Custom',
+                    status: 'active',
+                    description: `Institución personalizada creada el ${new Date().toLocaleDateString()}`,
+                    primaryColor: config.branding.primaryColor,
+                    location: `${config.institution.city}, ${config.institution.state}`
+                };
+
+                // Recargar lista
+                loadTenants();
+
+                // Cerrar modal
+                bootstrap.Modal.getInstance(document.getElementById('tenantWizardModal')).hide();
+
+            }, 1500);
+        }
+
+        // Demo de cambio de tenant
+        function switchTenantDemo() {
+            const selector = document.getElementById('demo-tenant-selector');
+            const tenantId = selector.value;
+
+            if (tenantId === 'custom') {
+                openTenantWizard();
+                selector.value = 'bge-heroes-patria-001'; // Reset
+                return;
+            }
+
+            const status = document.getElementById('switch-status');
+            status.innerHTML = `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Tenant seleccionado: <strong>${demoTenants[tenantId].name}</strong>
+                    <br><small>Presiona "Aplicar Cambio" para ver la transformación</small>
+                </div>
+            `;
+        }
+
+        // Aplicar cambio de tenant
+        function applyTenantChange() {
+            const tenantId = document.getElementById('demo-tenant-selector').value;
+            const status = document.getElementById('switch-status');
+
+            status.innerHTML = `
+                <div class="alert alert-success">
+                    <div class="d-flex align-items-center">
+                        <div class="spinner-border spinner-border-sm me-3" role="status"></div>
+                        <div>
+                            <strong>Aplicando configuración...</strong><br>
+                            <small>Transformando sitio a: ${demoTenants[tenantId].name}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Simular aplicación
+            setTimeout(() => {
+                status.innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>¡Transformación completada!</strong><br>
+                        <small>El sitio ahora está configurado para: ${demoTenants[tenantId].name}</small>
+                        <button class="btn btn-sm btn-outline-success ms-3" onclick="window.open('index.html?tenant=${tenantId}', '_blank')">
+                            <i class="fas fa-external-link-alt me-1"></i>Ver Sitio
+                        </button>
+                    </div>
+                `;
+            }, 2000);
+        }
+
+        // Vista previa de tenant
+        function previewTenant() {
+            const tenantId = document.getElementById('demo-tenant-selector').value;
+            previewTenantById(tenantId);
+        }
+
+        function previewTenantById(tenantId) {
+            const previewSection = document.getElementById('preview-section');
+            const previewFrame = document.getElementById('preview-frame');
+
+            previewSection.style.display = 'block';
+            previewFrame.src = `index.html?tenant=${tenantId}&preview=1`;
+
+            // Scroll a la vista previa
+            previewSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Funciones adicionales
+        function editTenant(tenantId) {
+            alert(`🔧 Función de edición para ${demoTenants[tenantId].name}\n\nEsta característica se implementará en la siguiente versión.`);
+        }
+
+        function exportTenant(tenantId) {
+            const tenant = demoTenants[tenantId];
+            const config = {
+                tenantId: tenantId,
+                exported: new Date().toISOString(),
+                ...tenant
+            };
+
+            const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${tenantId}-config.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportAllConfigs() {
+            const allConfigs = {
+                exported: new Date().toISOString(),
+                version: "1.0.0",
+                tenants: demoTenants
+            };
+
+            const blob = new Blob([JSON.stringify(allConfigs, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'bge-multi-tenant-complete-config.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function clearForm() {
+            document.querySelectorAll('input, textarea, select').forEach(input => {
+                if (input.type === 'checkbox') {
+                    input.checked = input.id.includes('enabled');
+                } else if (input.type === 'color') {
+                    // Mantener valores por defecto
+                } else {
+                    input.value = '';
+                }
+            });
+            updateColorPreview();
+        }
+
+        // Animaciones y efectos
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} position-fixed`;
+            notification.style.cssText = `
+                top: 20px; right: 20px; z-index: 9999;
+                max-width: 300px; animation: slideInRight 0.5s ease;
+            `;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check' : 'info'}-circle me-2"></i>
+                ${message}
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

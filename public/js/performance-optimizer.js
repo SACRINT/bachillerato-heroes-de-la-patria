@@ -78,7 +78,7 @@ class PerformanceOptimizer {
 
     measureCLS() {
         let clsValue = 0;
-        let clsEntries = [];
+        const clsEntries = [];
 
         if ('PerformanceObserver' in window) {
             try {

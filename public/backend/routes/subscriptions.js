@@ -8,6 +8,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const fs = require('fs').promises;
 const path = require('path');
+const crypto = require('crypto');
 const verificationService = require('../services/verificationService');
 
 // Archivo de base de datos JSON
@@ -142,23 +143,57 @@ router.post('/subscribe', [
 
     try {
         const { email, name, categories, source } = req.body;
-
         const subscribersData = await readSubscribers();
 
-        // Verificar si ya existe
-        const existingSubscriber = subscribersData.subscribers.find(
+        // Verificar si ya existe activo
+        const activeSubscriber = subscribersData.subscribers.find(
             sub => sub.email === email && sub.active
         );
 
-        if (existingSubscriber) {
+        if (activeSubscriber) {
+            console.log(`ℹ️  Suscriptor ya existe y está activo: ${email}`);
             return res.json({
                 success: true,
                 message: 'Ya estás suscrito',
-                subscriber: existingSubscriber
+                subscriber: activeSubscriber,
+                existed: true
             });
         }
 
-        // Crear nuevo suscriptor
+        // Verificar si existe pero está inactivo (se dio de baja)
+        const inactiveSubscriber = subscribersData.subscribers.find(
+            sub => sub.email === email && !sub.active
+        );
+
+        if (inactiveSubscriber) {
+            // REACTIVAR suscripción existente en lugar de crear nueva
+            inactiveSubscriber.active = true;
+            inactiveSubscriber.resubscribedAt = new Date().toISOString();
+            inactiveSubscriber.name = name || inactiveSubscriber.name;
+            inactiveSubscriber.categories = categories || inactiveSubscriber.categories;
+            inactiveSubscriber.source = source || inactiveSubscriber.source;
+
+            // Eliminar fecha de baja
+            delete inactiveSubscriber.unsubscribedAt;
+
+            await saveSubscribers(subscribersData);
+
+            console.log(`✅ Suscriptor reactivado: ${email} (${inactiveSubscriber.id})`);
+
+            return res.json({
+                success: true,
+                message: 'Suscripción reactivada exitosamente',
+                subscriber: {
+                    id: inactiveSubscriber.id,
+                    email: email,
+                    categories: inactiveSubscriber.categories
+                },
+                existed: false,
+                reactivated: true
+            });
+        }
+
+        // Si no existe, crear nuevo suscriptor
         const subscriberId = generateSubscriberId(subscribersData.lastId);
         const unsubscribeToken = generateUnsubscribeToken();
 
@@ -180,7 +215,7 @@ router.post('/subscribe', [
 
         await saveSubscribers(subscribersData);
 
-        console.log(`✅ Nuevo suscriptor: ${email} (${subscriberId})`);
+        console.log(`✅ Nuevo suscriptor agregado: ${email} (${subscriberId})`);
 
         res.json({
             success: true,
@@ -189,7 +224,9 @@ router.post('/subscribe', [
                 id: subscriberId,
                 email: email,
                 categories: newSubscriber.categories
-            }
+            },
+            existed: false,
+            reactivated: false
         });
 
     } catch (error) {

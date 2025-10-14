@@ -157,7 +157,7 @@ class ScalabilityTools {
             },
 
             weightedRoundRobinAlgorithm(servers) {
-                let totalWeight = servers.reduce((sum, server) => sum + server.weight, 0);
+                const totalWeight = servers.reduce((sum, server) => sum + server.weight, 0);
                 let random = Math.random() * totalWeight;
 
                 for (const server of servers) {

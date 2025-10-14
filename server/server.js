@@ -21,14 +21,17 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
 
+// Inicializar la conexión a la base de datos
+require('./config/database');
+
 // Routes
 const authRoutes = require('./routes/auth');
 const contactRoutes = require('./routes/contact');
-const studentsAuthRoutes = require('../backend/routes/students-auth');
-const inscriptionsRoutes = require('../backend/routes/inscriptions');
-const subscriptionsRoutes = require('../backend/routes/subscriptions');
-const newslettersRoutes = require('../backend/routes/newsletters');
-const egresadosRoutes = require('../backend/routes/egresados');
+const studentsAuthRoutes = require('./routes/students-auth');
+const inscriptionsRoutes = require('./routes/inscriptions');
+const subscriptionsRoutes = require('./routes/subscriptions');
+const newslettersRoutes = require('./routes/newsletters');
+const egresadosRoutes = require('./routes/egresados');
 
 // Middleware
 const { errorHandler } = require('./middleware/errorHandler');

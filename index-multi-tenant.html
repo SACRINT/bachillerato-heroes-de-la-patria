@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Bachillerato General Estatal - Sistema Multi-Tenant</title>
+    <meta name="description" content="Plataforma educativa multi-institucional">
+
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #0d47a1;
+            --secondary-color: #ffc107;
+            --accent-color: #dc3545;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --institution-font: 'Inter', sans-serif;
+        }
+
+        * {
+            font-family: var(--institution-font);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+        }
+
+        .institution-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .tenant-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 25px;
+            font-size: 14px;
+            margin: 5px;
+            display: inline-block;
+        }
+
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .program-card {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .program-card:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .transformation-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .transformation-indicator.active {
+            display: block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand-custom {
+            color: var(--primary-color) !important;
+            font-weight: 600;
+        }
+
+        .nav-link-custom {
+            color: var(--primary-color) !important;
+            font-weight: 500;
+        }
+
+        .nav-link-custom:hover {
+            color: var(--accent-color) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Selector de Tenant -->
+    <div class="tenant-selector">
+        <h6 class="mb-2">🌐 Multi-Tenant</h6>
+        <select id="tenantSelector" class="form-select form-select-sm mb-2">
+            <option value="">Selecciona institución...</option>
+            <option value="bge-heroes-patria-001">BGE Héroes de la Patria</option>
+            <option value="cetis-64-guadalajara-001">CETIS 64 Guadalajara</option>
+        </select>
+        <button id="applyTenant" class="btn btn-primary btn-sm w-100">
+            <i class="fas fa-magic me-1"></i> Transformar
+        </button>
+    </div>
+
+    <!-- Indicador de Transformación -->
+    <div class="transformation-indicator" id="transformationIndicator">
+        <i class="fas fa-sync fa-spin me-2"></i>
+        <span id="indicatorText">Aplicando transformación...</span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand navbar-brand-custom" href="#" id="navbarBrand">
+                <i class="fas fa-graduation-cap me-2"></i>
+                <span id="navInstitutionName">Institución Educativa</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="#inicio">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="#conocenos">Conócenos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="#programas">Programas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="#contacto">Contacto</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero-section">
+        <div class="hero-bg-overlay"></div>
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="text-center mb-4">
+                        <img id="heroLogo" src="/images/placeholder/school-logo.png" alt="Logo" class="institution-logo mb-3">
+                    </div>
+                    <h1 class="display-4 fw-bold mb-3" id="heroTitle">
+                        Sistema Multi-Tenant BGE
+                    </h1>
+                    <p class="lead mb-4" id="heroSubtitle">
+                        Selecciona una institución para ver la transformación completa del sitio web
+                    </p>
+                    <div class="mb-4" id="heroMessage">
+                        <p class="fs-5">Plataforma educativa revolucionaria que se adapta a cualquier institución</p>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mb-4" id="heroFeatures">
+                        <span class="feature-badge">Multi-Tenant</span>
+                        <span class="feature-badge">Transformación Instantánea</span>
+                        <span class="feature-badge">Personalizable</span>
+                    </div>
+                    <div>
+                        <a href="#conocenos" class="btn btn-light btn-lg me-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Conocer más
+                        </a>
+                        <a href="#contacto" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-phone me-2"></i>
+                            Contactar
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="text-center">
+                        <img id="heroImage" src="/images/placeholder/campus-hero.jpg" alt="Campus" class="img-fluid rounded shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Información Institucional -->
+    <section id="conocenos" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="text-center mb-5">
+                        <h2 class="display-5 fw-bold" id="aboutTitle">Conócenos</h2>
+                        <p class="lead text-muted" id="aboutSubtitle">Información institucional dinámica</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <h4 class="mb-3">
+                            <i class="fas fa-bullseye text-primary me-2"></i>
+                            Nuestra Misión
+                        </h4>
+                        <p id="missionText">Selecciona una institución para ver su misión específica...</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <h4 class="mb-3">
+                            <i class="fas fa-eye text-primary me-2"></i>
+                            Nuestra Visión
+                        </h4>
+                        <p id="visionText">Selecciona una institución para ver su visión específica...</p>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="info-card">
+                        <h4 class="mb-3">
+                            <i class="fas fa-users text-primary me-2"></i>
+                            Nuestro Equipo Directivo
+                        </h4>
+                        <div class="row" id="leadershipTeam">
+                            <div class="col-12">
+                                <p class="text-muted">Información del equipo directivo se mostrará al seleccionar una institución...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Programas Académicos -->
+    <section id="programas" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Programas Académicos</h2>
+                <p class="lead text-muted">Oferta educativa personalizada por institución</p>
+            </div>
+
+            <div class="programs-grid" id="programsContainer">
+                <div class="program-card">
+                    <i class="fas fa-graduation-cap fa-3x mb-3" style="color: var(--primary-color);"></i>
+                    <h5>Programas Disponibles</h5>
+                    <p>Selecciona una institución para ver sus programas específicos</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto -->
+    <section id="contacto" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="text-center mb-5">
+                        <h2 class="display-5 fw-bold">Contacto</h2>
+                        <p class="lead text-muted">Información de contacto dinámica</p>
+                    </div>
+
+                    <div class="contact-info">
+                        <div class="row g-4 text-center">
+                            <div class="col-md-4">
+                                <i class="fas fa-map-marker-alt fa-2x mb-3"></i>
+                                <h5>Ubicación</h5>
+                                <p id="contactAddress">Selecciona una institución...</p>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-phone fa-2x mb-3"></i>
+                                <h5>Teléfono</h5>
+                                <p id="contactPhone">Selecciona una institución...</p>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-envelope fa-2x mb-3"></i>
+                                <h5>Email</h5>
+                                <p id="contactEmail">Selecciona una institución...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4" style="background: var(--primary-color); color: white;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 id="footerInstitution">Sistema Multi-Tenant BGE</h5>
+                    <p id="footerDescription">Transformando la educación con tecnología adaptable</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2025 Sistema Multi-Tenant BGE. Todos los derechos reservados.</p>
+                    <div id="socialMedia">
+                        <small>Redes sociales aparecerán al seleccionar institución</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class MultiTenantPageTransformer {
+            constructor() {
+                this.currentConfig = null;
+                this.availableConfigs = {
+                    'bge-heroes-patria-001': '/config/bge-heroes-patria-config.json',
+                    'cetis-64-guadalajara-001': '/config/cetis-64-guadalajara-config.json'
+                };
+
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                console.log('🌐 Multi-Tenant Page Transformer inicializado');
+            }
+
+            setupEventListeners() {
+                document.getElementById('applyTenant').addEventListener('click', () => {
+                    this.applyTenantTransformation();
+                });
+
+                document.getElementById('tenantSelector').addEventListener('change', (e) => {
+                    if (e.target.value) {
+                        this.previewTenant(e.target.value);
+                    }
+                });
+            }
+
+            async previewTenant(tenantId) {
+                try {
+                    const configPath = this.availableConfigs[tenantId];
+                    if (!configPath) {
+                        throw new Error('Configuración no encontrada');
+                    }
+
+                    const response = await fetch(configPath);
+                    if (!response.ok) {
+                        throw new Error(`Error cargando configuración: ${response.status}`);
+                    }
+
+                    const config = await response.json();
+                    this.currentConfig = config;
+
+                    console.log('Configuración cargada:', config);
+
+                } catch (error) {
+                    console.error('Error cargando configuración:', error);
+                    this.showError('Error cargando configuración de la institución');
+                }
+            }
+
+            async applyTenantTransformation() {
+                const selector = document.getElementById('tenantSelector');
+                if (!selector.value) {
+                    alert('Por favor selecciona una institución');
+                    return;
+                }
+
+                if (!this.currentConfig) {
+                    await this.previewTenant(selector.value);
+                }
+
+                if (!this.currentConfig) {
+                    this.showError('No se pudo cargar la configuración');
+                    return;
+                }
+
+                this.showTransformationIndicator('Aplicando transformación...');
+
+                try {
+                    // Aplicar transformación completa
+                    await this.transformPage(this.currentConfig);
+
+                    this.showTransformationIndicator('¡Transformación completada!', 3000);
+
+                } catch (error) {
+                    console.error('Error aplicando transformación:', error);
+                    this.showError('Error aplicando la transformación');
+                }
+            }
+
+            async transformPage(config) {
+                return new Promise((resolve) => {
+                    // Simular tiempo de transformación
+                    setTimeout(() => {
+                        // Transformar contenido básico
+                        this.updateBasicInfo(config);
+
+                        // Transformar branding
+                        this.updateBranding(config);
+
+                        // Transformar contenido académico
+                        this.updateAcademicContent(config);
+
+                        // Transformar contacto
+                        this.updateContactInfo(config);
+
+                        // Transformar características
+                        this.updateFeatures(config);
+
+                        resolve();
+                    }, 2000);
+                });
+            }
+
+            updateBasicInfo(config) {
+                // Título de la página
+                document.getElementById('pageTitle').textContent = config.institution.name;
+
+                // Navegación
+                document.getElementById('navInstitutionName').textContent = config.institution.shortName;
+
+                // Hero section
+                document.getElementById('heroTitle').textContent = config.institution.name;
+                document.getElementById('heroSubtitle').textContent = config.customContent?.heroText || `Bienvenidos a ${config.institution.name}`;
+
+                // Mensaje de bienvenida
+                const heroMessage = document.getElementById('heroMessage');
+                heroMessage.innerHTML = `<p class="fs-5">${config.customContent?.welcomeMessage || config.institution.name}</p>`;
+
+                // Footer
+                document.getElementById('footerInstitution').textContent = config.institution.name;
+                document.getElementById('footerDescription').textContent = config.institution.type + ' - ' + config.institution.address.city;
+            }
+
+            updateBranding(config) {
+                const branding = config.branding;
+
+                // Actualizar variables CSS
+                document.documentElement.style.setProperty('--primary-color', branding.primaryColor);
+                document.documentElement.style.setProperty('--secondary-color', branding.secondaryColor);
+                document.documentElement.style.setProperty('--accent-color', branding.accentColor);
+                document.documentElement.style.setProperty('--institution-font', branding.fontFamily);
+
+                // Actualizar hero background
+                const heroSection = document.querySelector('.hero-section');
+                heroSection.style.background = `linear-gradient(135deg, ${branding.primaryColor}, ${branding.secondaryColor})`;
+
+                // Actualizar colores de elementos específicos
+                const contactInfo = document.querySelector('.contact-info');
+                contactInfo.style.background = `linear-gradient(135deg, ${branding.primaryColor}, ${branding.accentColor})`;
+            }
+
+            updateAcademicContent(config) {
+                // Misión y Visión
+                document.getElementById('missionText').textContent = config.academicInfo.missionStatement;
+                document.getElementById('visionText').textContent = config.academicInfo.visionStatement;
+
+                // Equipo directivo
+                this.updateLeadershipTeam(config.leadership);
+
+                // Programas académicos
+                this.updatePrograms(config.academicInfo.programs);
+            }
+
+            updateLeadershipTeam(leadership) {
+                const container = document.getElementById('leadershipTeam');
+                container.innerHTML = '';
+
+                Object.values(leadership).forEach(leader => {
+                    const leaderDiv = document.createElement('div');
+                    leaderDiv.className = 'col-md-6 mb-3';
+                    leaderDiv.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <i class="fas fa-user fa-lg"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">${leader.name}</h6>
+                                <p class="mb-0 text-muted">${leader.title}</p>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(leaderDiv);
+                });
+            }
+
+            updatePrograms(programs) {
+                const container = document.getElementById('programsContainer');
+                container.innerHTML = '';
+
+                if (programs && programs.length > 0) {
+                    programs.forEach(program => {
+                        const programDiv = document.createElement('div');
+                        programDiv.className = 'program-card';
+                        programDiv.innerHTML = `
+                            <i class="fas fa-graduation-cap fa-3x mb-3" style="color: var(--primary-color);"></i>
+                            <h5>${program.name}</h5>
+                            <p class="small text-muted">Duración: ${program.duration}</p>
+                            <p>${program.description}</p>
+                        `;
+                        container.appendChild(programDiv);
+                    });
+                } else {
+                    container.innerHTML = `
+                        <div class="program-card">
+                            <i class="fas fa-graduation-cap fa-3x mb-3" style="color: var(--primary-color);"></i>
+                            <h5>Bachillerato General</h5>
+                            <p>Formación integral para jóvenes</p>
+                        </div>
+                    `;
+                }
+            }
+
+            updateContactInfo(config) {
+                const contact = config.institution.contact;
+                const address = config.institution.address;
+
+                document.getElementById('contactAddress').textContent = `${address.city}, ${address.state}`;
+                document.getElementById('contactPhone').textContent = contact.phone;
+                document.getElementById('contactEmail').textContent = contact.email;
+
+                // Redes sociales si existen
+                if (config.socialMedia) {
+                    this.updateSocialMedia(config.socialMedia);
+                }
+            }
+
+            updateSocialMedia(socialMedia) {
+                const container = document.getElementById('socialMedia');
+                container.innerHTML = '';
+
+                const socialLinks = [];
+                if (socialMedia.facebook) socialLinks.push(`<a href="${socialMedia.facebook}" class="text-white me-3"><i class="fab fa-facebook"></i></a>`);
+                if (socialMedia.instagram) socialLinks.push(`<a href="${socialMedia.instagram}" class="text-white me-3"><i class="fab fa-instagram"></i></a>`);
+                if (socialMedia.youtube) socialLinks.push(`<a href="${socialMedia.youtube}" class="text-white me-3"><i class="fab fa-youtube"></i></a>`);
+
+                if (socialLinks.length > 0) {
+                    container.innerHTML = socialLinks.join('');
+                }
+            }
+
+            updateFeatures(config) {
+                const featuresContainer = document.getElementById('heroFeatures');
+                featuresContainer.innerHTML = '';
+
+                const featureNames = {
+                    chatbotEnabled: 'Chatbot IA',
+                    paymentsEnabled: 'Pagos Online',
+                    calendarEnabled: 'Calendario',
+                    gradesEnabled: 'Calificaciones',
+                    appointmentsEnabled: 'Citas',
+                    newsEnabled: 'Noticias',
+                    analyticsEnabled: 'Analytics',
+                    jobBoardEnabled: 'Bolsa de Trabajo',
+                    alumniEnabled: 'Egresados'
+                };
+
+                Object.entries(config.features).forEach(([key, enabled]) => {
+                    if (enabled && featureNames[key]) {
+                        const badge = document.createElement('span');
+                        badge.className = 'feature-badge';
+                        badge.textContent = featureNames[key];
+                        featuresContainer.appendChild(badge);
+                    }
+                });
+            }
+
+            showTransformationIndicator(message, duration = 0) {
+                const indicator = document.getElementById('transformationIndicator');
+                const text = document.getElementById('indicatorText');
+
+                text.textContent = message;
+                indicator.classList.add('active');
+
+                if (duration > 0) {
+                    setTimeout(() => {
+                        indicator.classList.remove('active');
+                    }, duration);
+                }
+            }
+
+            showError(message) {
+                alert(message);
+                const indicator = document.getElementById('transformationIndicator');
+                indicator.classList.remove('active');
+            }
+        }
+
+        // Inicializar sistema cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            window.multiTenantTransformer = new MultiTenantPageTransformer();
+        });
+    </script>
+</body>
+</html>

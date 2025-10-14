@@ -1,0 +1,177 @@
+<!-- ============================================
+     🎓 SECCIÓN DE GESTIÓN DE EGRESADOS
+     Panel de visualización y administración completa
+     ============================================ -->
+
+<section id="egresados-section" class="py-5 bg-light">
+    <div class="container-fluid">
+
+        <!-- Encabezado de Sección -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="fw-bold">
+                    <i class="fas fa-graduation-cap me-2"></i>
+                    Gestión de Egresados
+                </h2>
+                <p class="text-muted">
+                    Administración completa de egresados, historias de éxito y estadísticas
+                </p>
+            </div>
+        </div>
+
+        <!-- Tarjetas de Estadísticas -->
+        <div id="egresados-stats" class="row mb-4">
+            <!-- Las estadísticas se cargarán dinámicamente aquí -->
+        </div>
+
+        <!-- Panel de Filtros -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            <i class="fas fa-filter me-2"></i>
+                            Filtros de Búsqueda
+                        </h5>
+                        <div id="egresados-filters">
+                            <!-- Los filtros se cargarán dinámicamente aquí -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Egresados -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-table me-2"></i>
+                            Lista de Egresados
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="egresados-table">
+                            <!-- La tabla se cargará dinámicamente aquí -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Gráficas -->
+        <div class="row mt-4">
+            <!-- Gráfica: Egresados por Generación -->
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Egresados por Generación
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chart-generacion"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfica: Estatus Académico -->
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Distribución por Estatus Académico
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chart-estatus"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfica: Timeline de Registros -->
+            <div class="col-lg-12 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Timeline de Registros
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chart-timeline"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ============================================
+     ESTILOS ADICIONALES (Si no se usa archivo CSS separado)
+     ============================================ -->
+<style>
+    /* Transiciones suaves */
+    #egresados-section .card {
+        transition: all 0.3s ease;
+    }
+
+    #egresados-section .card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* Mejoras de tabla responsive */
+    #egresados-table .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Loading placeholder */
+    #egresados-section .placeholder-glow {
+        animation: placeholder-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes placeholder-glow {
+        50% {
+            opacity: 0.5;
+        }
+    }
+</style>
+
+<!-- ============================================
+     SCRIPTS NECESARIOS
+     ============================================ -->
+
+<!-- Cargar CSS de Egresados -->
+<link rel="stylesheet" href="css/egresados-dashboard.css">
+
+<!-- Cargar el script principal de egresados -->
+<script src="js/egresados-dashboard.js"></script>
+
+<!-- Script de inicialización automática -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Verificar que estamos en la sección correcta
+        const egresadosSection = document.getElementById('egresados-section');
+
+        if (egresadosSection) {
+            console.log('🎓 [EGRESADOS] Sección detectada, inicializando...');
+
+            // Inicializar el dashboard de egresados
+            if (typeof EgresadosDashboard !== 'undefined') {
+                // Esperar a que Chart.js esté disponible
+                const initEgresados = () => {
+                    if (typeof Chart !== 'undefined') {
+                        egresadosApp = new EgresadosDashboard();
+                        egresadosApp.init();
+                    } else {
+                        console.warn('⚠️ [EGRESADOS] Esperando Chart.js...');
+                        setTimeout(initEgresados, 500);
+                    }
+                };
+
+                initEgresados();
+            } else {
+                console.error('❌ [EGRESADOS] EgresadosDashboard no está definido');
+            }
+        }
+    });
+</script>

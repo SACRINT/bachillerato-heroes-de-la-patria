@@ -165,8 +165,8 @@ class BGEAdvancedAnalytics {
 
     setupScrollTracking() {
         let maxScroll = 0;
-        let scrollCheckpoints = [25, 50, 75, 90, 100];
-        let reachedCheckpoints = [];
+        const scrollCheckpoints = [25, 50, 75, 90, 100];
+        const reachedCheckpoints = [];
 
         const trackScroll = () => {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -210,7 +210,7 @@ class BGEAdvancedAnalytics {
     }
 
     setupTimeTracking() {
-        let startTime = Date.now();
+        const startTime = Date.now();
         let isActive = true;
         let totalActiveTime = 0;
         let lastActiveTime = startTime;
@@ -279,7 +279,7 @@ class BGEAdvancedAnalytics {
             const formData = new FormData(form);
             const fields = {};
 
-            for (let [key, value] of formData.entries()) {
+            for (const [key, value] of formData.entries()) {
                 fields[key] = typeof value === 'string' ? value.length : 'file';
             }
 

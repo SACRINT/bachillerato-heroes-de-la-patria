@@ -1,268 +1,74 @@
-# 📋 CLAUDE CODE - NOTAS DEL PROYECTO
+# 🧠 MEMORIA CENTRAL PARA CLAUDE CODE - PROYECTO BGE
 
-## 🤖 INSTRUCCIÓN DE CONTINUIDAD DEL PROYECTO
-
-**⚠️ COMANDO ESPECIAL: "continua con el proyecto BGE"**
-
-Cuando el usuario escriba **"continua con el proyecto BGE"**, DEBES:
-
-1. **📖 LEER INMEDIATAMENTE estos documentos en orden**:
-   - `VISION_FUTURA_PROYECTO_BGE_MAESTRO.md` (DOCUMENTO MAESTRO - **LEER SIEMPRE PRIMERO**)
-   - `GUIA_COMPLETA_IMPLEMENTACION_Y_TESTING_11_OCT_2025.md` (estado más reciente)
-   - `CLAUDE.md` (este archivo - instrucciones generales)
-
-2. **🔍 IDENTIFICAR tareas pendientes**:
-   - Buscar secciones marcadas con ⏳ PENDIENTE
-   - Revisar "Plan de Acción" en documentos
-   - Identificar formularios en estado ⚠️ o ❌
-
-3. **📋 RETOMAR trabajo automáticamente**:
-   - Continuar desde donde se quedó la última sesión
-   - Priorizar tareas marcadas como "Prioridad Alta"
-   - Mantener el contexto completo del proyecto
-
-4. **📝 DOCUMENTAR TODO**:
-   - Cada cambio debe documentarse en un archivo .md en `docs/`
-   - Usar formato: `NOMBRE_TAREA_FECHA.md`
-   - Incluir: problemas, soluciones, código antes/después, pruebas
-   - Actualizar inventarios y checklists existentes
-
-5. **🔄 SINCRONIZAR SIEMPRE**:
-   - Cualquier cambio en raíz → copiar a `public/`
-   - Cualquier cambio en `public/` → copiar a raíz
-   - Verificar ambos servidores funcionando
-
-## 🌍 INSTRUCCIONES DE IDIOMA
-
-**⚠️ IMPORTANTE: CLAUDE DEBE RESPONDER SIEMPRE EN ESPAÑOL**
-- Todas las conversaciones deben ser en español
-- Todas las explicaciones técnicas en español
-- Todos los comentarios de código en español
-- Documentación y reportes en español
-
-## 🎯 ESTADO ACTUAL DEL PROYECTO (ACTUALIZADO: 11 OCT 2025)
-
-**📌 ÚLTIMA SESIÓN COMPLETADA: 11 de Octubre 2025** ⭐ NUEVA
-
-### 🌟 DECISIÓN ESTRATÉGICA: VISIÓN FUTURA COMPLETA
-**El usuario ha seleccionado la OPCIÓN 3: VISIÓN FUTURA (2-4 años, $97k-$150k USD)**
-
-**Compromiso del Usuario:**
-- ✅ Presupuesto inicial: $0 (solo tiempo/trabajo)
-- ✅ Tiempo dedicado: 20-40 horas/semana (tiempo completo)
-- ✅ Objetivo: Implementar los 28 sistemas de visión futura
-- ✅ Horizonte: 2-4 años para completar todo
-
-**Priorización Confirmada:**
-1. 🔴 URGENTE → Completar funcionalidades básicas (formularios, analytics)
-2. 🟠 ALTA → Sistema de pagos + Mobile enhancements
-3. 🟡 MEDIA → Calendario + Calificaciones + Citas
-4. 🟢 BAJA → 28 sistemas de visión futura
-
-**📄 DOCUMENTO MAESTRO:** `VISION_FUTURA_PROYECTO_BGE_MAESTRO.md`
-**Este documento contiene el plan completo de 2-4 años y DEBE leerse SIEMPRE al inicio de cada sesión.**
-
-### ✅ LOGROS DE SESIÓN 11 OCT 2025:
-- ✅ **Análisis exhaustivo de 71 archivos JS movidos durante limpieza** 📊
-- ✅ **28 sistemas de visión futura identificados y documentados** (58,883 líneas)
-- ✅ **0 archivos perdidos - Todos seguros** ✅
-- ✅ Restauración de 6 archivos críticos FASE 3/4
-- ✅ Restauración de 11 archivos adicionales de visión futura
-- ✅ Verificación: 19 archivos ya existían + 9 en ubicaciones alternativas
-- ✅ Documentación completa: `REPORTE_FINAL_RESTAURACION_VISION_FUTURA_10_OCT_2025.md`
-- ✅ Guía técnica completa: `GUIA_COMPLETA_IMPLEMENTACION_Y_TESTING_11_OCT_2025.md`
-- ✅ Plan maestro 2-4 años: `VISION_FUTURA_PROYECTO_BGE_MAESTRO.md`
-- ✅ 60+ endpoints backend verificados y documentados
-- ✅ URLs de prueba manual para todos los endpoints
-
-### ✅ LOGROS DE SESIÓN 10 OCT 2025:
-- ✅ Corrección de errores críticos en producción (5/8 = 63%)
-- ✅ URLs dinámicas implementadas (detección automática Vercel)
-- ✅ Scripts rotos eliminados de HTML
-- ✅ CSP violations corregidas
-- ✅ Limpieza masiva: 71 archivos JS + 24 rutas backend movidos a `no_usados/`
-
-**📌 ÚLTIMA SESIÓN COMPLETADA: 09 de Octubre 2025**
-
-### ✅ LOGROS DE SESIÓN 09 OCT 2025:
-- ✅ **Sistema de Bolsa de Trabajo y Suscriptores COMPLETAMENTE FUNCIONAL** 🎉
-- ✅ Backend API completo con endpoints CRUD para bolsa de trabajo y suscriptores
-- ✅ Frontend managers implementados (BolsaTrabajoManager + SuscriptoresManager)
-- ✅ **PROBLEMA CRÍTICO RESUELTO:** Tabs del dashboard ahora cargan correctamente
-- ✅ Event-driven initialization implementada con Bootstrap tab events
-- ✅ IDs de elementos HTML corregidos en ambos managers
-- ✅ Funciones globales agregadas para onclick handlers
-- ✅ Estados visuales (loading, empty, table) funcionando perfectamente
-- ✅ Exportación a CSV implementada y funcional
-- ✅ Filtros y búsquedas operativas en ambos paneles
-- ✅ Archivos sincronizados entre raíz y public/
-- ✅ Documentación completa creada: `REPORTE_CORRECCION_TABS_DASHBOARD_09_OCT_2025.md`
-
-### ✅ LOGROS DE SESIÓN 02 OCT 2025:
-- ✅ **TODOS LOS PROBLEMAS RESUELTOS (7/6 = 117%)** 🎉
-- ✅ Error módulos duplicados eliminado en 23 páginas HTML
-- ✅ Botón "Recordar sesión" funcional (24h o 30 días)
-- ✅ **Sistema completo de registro de usuarios implementado**
-- ✅ Tab "Contenido" con contadores reales funcionando
-- ✅ Menús desplegables funcionando en todas las páginas
-- ✅ Botones de login funcionando en todas las páginas
-- ✅ **Backend completo con 6 endpoints de API**
-- ✅ **Dashboard administrativo integrado con API**
-- ✅ 10 tests automatizados (100% exitosos)
-
-### ✅ LOGROS PREVIOS (30 SEP 2025):
-- ✅ Sistema de formularios con verificación de email **FUNCIONANDO**
-- ✅ Formulario "Quejas y Sugerencias" (index.html) **PROBADO Y OPERATIVO**
-- ✅ Formulario "Contacto General" (contacto.html) **PROBADO Y OPERATIVO**
-- ✅ Email final llegando correctamente a `21ebh0200x.sep@gmail.com`
-- ✅ Eliminadas APIs externas bloqueadas por CSP
-- ✅ Corregido error nodemailer.createTransporter
-- ✅ Inventario completo de 11 formularios documentado
-- ✅ Corregido mismatch de nombres de campos (español ↔ inglés)
-
-### ⏳ TAREAS PENDIENTES (Prioridad Alta):
-1. **Probar formulario de Actualización de Egresados** (`egresados.html`)
-   - Estado: Configurado con muchos campos
-   - Requiere verificación de todos los campos
-   - Tiempo estimado: 10 minutos
-
-### ⏳ TAREAS PENDIENTES (Prioridad Media):
-2. **Configurar formulario de CV** (`bolsa-trabajo.html`)
-   - Problema: Envía FormData en lugar de JSON
-   - Requiere: Agregar clase `professional-form` y convertir a JSON
-   - Tiempo estimado: 30 minutos
-
-3. **Configurar formulario de Notificaciones** (`convocatorias.html`)
-   - Requiere: Agregar clase `professional-form` y action
-   - Tiempo estimado: 15 minutos
-
-### 📊 ESTADÍSTICAS DEL PROYECTO:
-- **11 formularios** identificados
-- **3 funcionando** (27%) ⬆️ +9%
-- **1 parcialmente configurado** (9%) ⬇️
-- **7 pendientes o no requieren config** (64%)
-
-### 📄 DOCUMENTACIÓN CREADA:
-- `REPORTE_CORRECCION_TABS_DASHBOARD_09_OCT_2025.md` (25 KB) ⭐ NUEVO
-- `IMPLEMENTACION_FRONTEND_BOLSA_TRABAJO_SUSCRIPTORES_09_OCT_2025.md` (22 KB)
-- `docs/CORRECCION_FORMULARIO_QUEJAS_SEPTIEMBRE_30_2025.md` (55 KB)
-- `docs/CORRECCION_FORMULARIO_CONTACTO_30_SEP_2025.md` (18 KB)
-- `docs/INVENTARIO_COMPLETO_FORMULARIOS_30_SEP_2025.md` (30 KB)
-
-**⚠️ RECORDATORIO CRÍTICO PARA CLAUDE:**
-**AL INICIO DE CADA SESIÓN, LEER:**
-1. `docs/INVENTARIO_COMPLETO_FORMULARIOS_30_SEP_2025.md` (más reciente)
-2. Este archivo (`CLAUDE.md`)
-
-### 📊 **RESUMEN ESTADO ACTUAL:**
-- ✅ **Radiografía completa FINALIZADA** (7/7 fases, 179 archivos, 125,143 líneas)
-- 🚨 **5 vulnerabilidades críticas** identificadas (bloquean producción)
-- 💰 **Fase 1 Seguridad** ($5,600 USD) - **PENDIENTE APROBACIÓN**
-- 🌟 **Proyecto de vanguardia mundial** - Sin competencia en educación
-
-### 📋 **DOCUMENTOS CLAVE CREADOS:**
-- `ESTADO-PROYECTO-Y-SECUENCIA.md` - **LEER SIEMPRE PRIMERO**
-- `RADIOGRAFIA-COMPLETA-FINAL-7-FASES.md` - Análisis completo
-- `PLAN-PRECISO-IMPLEMENTACION.md` - Plan detallado
-- `MAPEO-BOTONES-SCRIPTS.md` - **MAPEO DE BOTONES Y SCRIPTS** 🔔
-
-### 🎯 **PRÓXIMA ACCIÓN ESPERADA:**
-**Decisión sobre Fase 1 Seguridad ($5,600 USD) para resolver vulnerabilidades**
+**Propósito:** Claude, este es tu archivo de memoria y protocolo. Contiene tus instrucciones, el estado del proyecto y el contexto para continuar el trabajo de forma consistente.
 
 ---
 
-## 🚨 ESTRUCTURA DUAL CRÍTICA DEL PROYECTO
+## 1. 📖 INSTRUCCIÓN DE CONTINUIDAD (LEER SIEMPRE PRIMERO)
 
-**⚠️ IMPORTANTE: Este proyecto tiene una estructura DUAL que debe mantenerse sincronizada:**
+**COMANDO ESPECIAL: "continua con el proyecto BGE"**
 
-### 📁 Estructura Dual:
-- **Raíz del proyecto** (`C:\03 BachilleratoHeroesWeb\`) - Servido por **localhost:3000** (Node.js backend)
-- **Carpeta public** (`C:\03 BachilleratoHeroesWeb\public\`) - Servido por **127.0.0.1:8080** (servidor estático)
+Cuando el usuario te dé esta instrucción, tu protocolo OBLIGATORIO es:
 
-### 🔄 REGLA DE SINCRONIZACIÓN OBLIGATORIA:
+1.  **LEER ESTOS 2 ARCHIVOS EN ORDEN:**
+    1.  `docs/historia_del_proyecto.md` - Para entender la historia completa, la arquitectura y el estado actual del proyecto. **Esta es tu fuente principal de contexto.**
+    2.  `CLAUDE.md` (este archivo) - Para recordar tus instrucciones y los logros más recientes.
 
-**CUANDO HAGAS UN CAMBIO EN LA RAÍZ, SIEMPRE COPIARLO A PUBLIC Y VICEVERSA**
+2.  **RESUMIR** brevemente al usuario tu entendimiento del punto en que se quedó el trabajo para confirmar que tienes el contexto correcto.
 
-```bash
-# Copiar cambios de raíz a public:
-cp archivo.html public/
-cp -r js/ public/
-cp -r css/ public/
+3.  **RETOMAR** el trabajo desde ese punto.
 
-# Copiar cambios de public a raíz:
-cp public/archivo.html ./
-cp -r public/js/ ./
-cp -r public/css/ ./
+---
+
+## 2. 📜 PROTOCOLOS DE TRABAJO OBLIGATORIOS
+
+### 2.1. Regla de la Estructura Dual (¡CRÍTICA!)
+
+Este proyecto tiene una arquitectura de directorios dual que **DEBE** mantenerse sincronizada.
+
+*   **Directorio Raíz (`C:\03 BachilleratoHeroesWeb\`):** Servido por `localhost:3000` (Node.js).
+*   **Directorio Público (`C:\03 BachilleratoHeroesWeb\public\`):** Servido por `127.0.0.1:8080` (Estático).
+
+**REGLA DE ORO:** Cualquier modificación a un archivo estático (HTML, JS, CSS) en la raíz, **DEBE replicarse inmediatamente** en la carpeta `public/`, y viceversa.
+
+### 2.2. Prioridad: Modificar Antes que Crear (Protocolo de Búsqueda Eficiente)
+
+Para evitar la duplicación de código, sigue este protocolo de búsqueda antes de crear algo nuevo:
+
+1.  **Consultar `docs/historia_del_proyecto.md`:** Busca palabras clave de la funcionalidad que necesitas.
+2.  **Usar `search_file_content` y `glob`:** Busca en el código y nombres de archivo existentes.
+3.  **Analizar Archivos Candidatos:** Solo después de acotar la búsqueda, lee los archivos específicos.
+4.  **Extender o Modificar:** Prioriza siempre adaptar el código existente.
+
+### 2.3. Instrucciones de Idioma
+
+*   **TODO en Español:** Tus respuestas, comentarios de código y documentación.
+
+---
+
+## 3. ✍️ PROTOCOLO DE DOCUMENTACIÓN DE CAMBIOS
+
+El método antiguo de crear un archivo por tarea queda descontinuado. Usa este nuevo protocolo:
+
+### 3.1. Registro de Cambios (`CHANGELOG.md`)
+
+Al completar una tarea, **DEBES** añadir una entrada al archivo `CHANGELOG.md`.
+
+**Formato:**
+```markdown
+### [Fecha] - [Título del Cambio]
+*   **Tipo:** [Feature | Bugfix | Refactor | Docs]
+*   **Impacto:** [Descripción del cambio.]
+*   **Archivos Modificados:** `ruta/al/archivo.js`
 ```
 
-### 🐛 Problemas Resueltos:
+### 3.2. Mensajes de Commit Descriptivos
 
-#### Problema: Dashboard JavaScript no cargaba
-- **Causa**: Referencias a `admin-dashboard.js` (archivo eliminado)
-- **Solución**: Actualizar referencias a `dashboard-manager-2025.js`
-- **Archivos afectados**:
-  - `admin-dashboard.html` (raíz y public)
-  - `js/resource-optimizer.js` (raíz y public)
-  - `js/build-optimizer.js` (raíz y public)
+Usa "Conventional Commits" para tus mensajes de `git commit`.
 
-#### Problema: Caché del navegador/Service Worker
-- **Causa**: Service Worker cachéaba versiones antiguas
-- **Solución**: Implementar limpieza de Service Worker en dashboard HTML
+---
+## 4. 🏆 REGISTRO DE LOGROS RECIENTES (Actualizar al final de cada sesión)
 
-### 📝 Lista de archivos que SIEMPRE deben estar sincronizados:
-
-#### HTML Files:
-- `*.html` (todos los archivos HTML)
-- Especialmente: `admin-dashboard.html`, `index.html`
-
-#### JavaScript Files:
-- `js/*.js` (toda la carpeta)
-- Críticos: `dashboard-manager-2025.js`, `resource-optimizer.js`
-
-#### CSS Files:
-- `css/*.css` (toda la carpeta)
-
-#### Assets:
-- `images/` (todas las imágenes)
-- `partials/` (componentes HTML)
-
-### 🚀 Comandos de Sincronización Completa:
-
-```bash
-# Sincronizar TODO de raíz a public:
-cp *.html public/
-cp -r js/ public/
-cp -r css/ public/
-cp -r images/ public/
-cp -r partials/ public/
-
-# Verificar sincronización:
-curl -s "http://localhost:3000/admin-dashboard.html" | grep "dashboard-manager-2025.js"
-curl -s "http://127.0.0.1:8080/admin-dashboard.html" | grep "dashboard-manager-2025.js"
-```
-
-### 🔧 Servidores:
-
-#### Backend Node.js (localhost:3000):
-- Directorio: Raíz del proyecto
-- Comando: `npm start` (desde raíz)
-- Archivos servidos desde: `C:\03 BachilleratoHeroesWeb\`
-
-#### Servidor Estático (127.0.0.1:8080):
-- Directorio: Carpeta public
-- Archivos servidos desde: `C:\03 BachilleratoHeroesWeb\public\`
-
-### ✅ Estado Actual (2025-09-16):
-- ✅ Ambos servidores sincronizados
-- ✅ Dashboard funciona en localhost:3000
-- ✅ Referencias a `dashboard-manager-2025.js` actualizadas
-- ✅ Service Worker cleanup implementado
-- ✅ Sin errores MIME type
-
-### 🎯 Próximos pasos siempre:
-1. Hacer cambios en UN directorio
-2. INMEDIATAMENTE copiar al otro directorio
-3. Verificar que ambos servidores sirvan el mismo contenido
-4. Probar funcionalidad en ambos servidores
-
-**💡 RECORDAR: UN CAMBIO EN UN LUGAR = CAMBIO EN AMBOS LUGARES**
+*   **14 de Octubre de 2025:**
+    *   **Tipo:** Docs
+    *   **Logro:** Se consolidó toda la documentación del proyecto en `docs/historia_del_proyecto.md`. Se crearon los archivos de memoria para agentes `MEMORIA_AGENTE.md` y `CLAUDE.md`. Se archivó la documentación antigua.

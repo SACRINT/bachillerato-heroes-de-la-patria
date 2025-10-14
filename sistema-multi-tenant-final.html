@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">🌐 Sistema Multi-Tenant BGE - FUNCIONAL</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #1565C0;
+            --secondary-color: #FFA726;
+            --accent-color: #E53935;
+            --bg-gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background 1s ease;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            color: var(--primary-color) !important;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .nav-link {
+            color: var(--primary-color) !important;
+            font-weight: 500;
+        }
+
+        .control-panel {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+        }
+
+        .debug-panel {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            width: 300px;
+            background: rgba(0, 0, 0, 0.9);
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            border: 1px solid #333;
+        }
+
+        .main-content {
+            margin-top: 120px;
+            padding: 0 20px;
+        }
+
+        .hero-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.8s ease;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid var(--primary-color);
+            transition: all 0.5s ease;
+        }
+
+        .feature-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 13px;
+            margin: 3px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .program-card {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .program-card:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .transforming {
+            animation: transformPulse 2s ease-in-out infinite;
+            border: 3px solid var(--accent-color);
+        }
+
+        @keyframes transformPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.02); opacity: 0.9; }
+        }
+
+        .btn-transform {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-transform:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+            color: white;
+        }
+
+        .btn-transform:disabled {
+            background: #ccc;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #28a745;
+            margin-right: 8px;
+            animation: statusPulse 2s infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .institution-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin: 0 auto 20px auto;
+            transition: all 0.5s ease;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .color-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.1);
+        }
+
+        .debug-entry {
+            margin-bottom: 5px;
+            padding: 3px 8px;
+            border-left: 2px solid #00ff00;
+            background: rgba(0, 255, 0, 0.05);
+        }
+
+        .debug-timestamp {
+            color: #888;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#" id="navBrand">
+                <i class="fas fa-graduation-cap me-2"></i>
+                <span id="navInstitutionName">Sistema Multi-Tenant BGE</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="status-indicator"></span>
+                <small id="systemStatus">Sistema Activo</small>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Panel de Control -->
+    <div class="control-panel">
+        <h6><i class="fas fa-cogs me-2"></i>Panel de Control</h6>
+
+        <div class="mb-3">
+            <label class="form-label small">Institución:</label>
+            <select id="institutionSelector" class="form-select form-select-sm">
+                <option value="">-- Selecciona --</option>
+                <option value="bge-heroes">🎓 BGE Héroes de la Patria</option>
+                <option value="cetis-64">🔧 CETIS 64 Guadalajara</option>
+                <option value="cobao-plantel">🌱 COBAO Plantel 03</option>
+            </select>
+        </div>
+
+        <div class="d-grid gap-2">
+            <button id="btnTransform" class="btn btn-transform btn-sm" disabled>
+                <i class="fas fa-magic me-2"></i>Transformar Ahora
+            </button>
+            <button id="btnReset" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-undo me-2"></i>Resetear
+            </button>
+        </div>
+
+        <div class="mt-3">
+            <small><strong>Tenant Activo:</strong></small><br>
+            <small id="activeTenant" class="text-muted">Ninguno</small>
+        </div>
+
+        <div class="color-palette" id="colorPalette">
+            <div class="color-swatch" style="background: var(--primary-color);"></div>
+            <div class="color-swatch" style="background: var(--secondary-color);"></div>
+            <div class="color-swatch" style="background: var(--accent-color);"></div>
+        </div>
+    </div>
+
+    <!-- Panel de Debug -->
+    <div class="debug-panel">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0"><i class="fas fa-terminal me-2"></i>Console</h6>
+            <button class="btn btn-outline-success btn-sm" onclick="clearDebugLog()" style="font-size: 10px; padding: 2px 8px;">Clear</button>
+        </div>
+        <div id="debugLog">
+            <div class="debug-entry">
+                <div class="debug-timestamp">[INIT]</div>
+                <div>🚀 Sistema Multi-Tenant Inicializado</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="container main-content">
+        <!-- Hero Section -->
+        <div class="hero-section" id="heroSection">
+            <div class="text-center">
+                <div class="institution-logo" id="institutionLogo">
+                    <i class="fas fa-school"></i>
+                </div>
+                <h1 id="institutionName">Sistema Multi-Tenant BGE</h1>
+                <p class="lead" id="institutionSlogan">Plataforma educativa configurable para múltiples instituciones</p>
+                <p id="institutionDescription">Selecciona una institución para ver la transformación en tiempo real</p>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-4 text-center">
+                    <h5><i class="fas fa-map-marker-alt me-2"></i>Ubicación</h5>
+                    <p id="locationInfo">Configurable</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5><i class="fas fa-phone me-2"></i>Contacto</h5>
+                    <p id="contactInfo">Por definir</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5><i class="fas fa-users me-2"></i>Tipo</h5>
+                    <p id="institutionType">Multi-Tenant</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información Académica -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="info-card">
+                    <h4><i class="fas fa-bullseye me-2"></i>Misión</h4>
+                    <p id="missionText">La misión institucional aparecerá al seleccionar una institución específica.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-card">
+                    <h4><i class="fas fa-eye me-2"></i>Visión</h4>
+                    <p id="visionText">La visión institucional aparecerá al seleccionar una institución específica.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Características -->
+        <div class="info-card">
+            <h4><i class="fas fa-star me-2"></i>Características Disponibles</h4>
+            <div id="featuresContainer">
+                <span class="feature-badge">Sistema Multi-Tenant</span>
+                <span class="feature-badge">Configuración Dinámica</span>
+                <span class="feature-badge">Branding Personalizable</span>
+            </div>
+        </div>
+
+        <!-- Programas -->
+        <div class="info-card">
+            <h4><i class="fas fa-graduation-cap me-2"></i>Programas Académicos</h4>
+            <div id="programsContainer">
+                <div class="program-card">
+                    <h6>📚 Programas Configurables</h6>
+                    <p class="mb-0">Los programas específicos aparecerán al seleccionar una institución.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Configuraciones embebidas (sin necesidad de servidor)
+        const INSTITUTIONAL_CONFIGS = {
+            'bge-heroes': {
+                id: 'bge-heroes-patria-001',
+                name: 'Bachillerato General Estatal Héroes de la Patria',
+                shortName: 'BGE Héroes de la Patria',
+                slogan: '¡Formando Héroes del Mañana!',
+                description: 'Institución de excelencia académica comprometida con el desarrollo integral de nuestros estudiantes.',
+                type: 'Bachillerato General Estatal',
+                location: 'Venustiano Carranza, Puebla',
+                contact: '+52 276 123 4567',
+                email: 'contacto@bgeheroes.edu.mx',
+                colors: {
+                    primary: '#1565C0',
+                    secondary: '#FFA726',
+                    accent: '#E53935'
+                },
+                mission: 'Formar jóvenes íntegros, competentes y comprometidos con el desarrollo social, mediante una educación de calidad que promueva los valores, el conocimiento y las habilidades necesarias para su desarrollo personal y profesional.',
+                vision: 'Ser una institución educativa líder en la región, reconocida por la excelencia académica, la formación integral de nuestros estudiantes y su contribución al desarrollo sustentable de la sociedad.',
+                features: ['Bachillerato General', 'Programa de Inglés', 'Actividades Culturales', 'Deportes', 'Servicio Social'],
+                programs: [
+                    { name: 'Bachillerato General', duration: '3 años', description: 'Formación propedéutica integral preparatoria para la universidad.' },
+                    { name: 'Programa de Inglés', duration: 'Complementario', description: 'Certificación internacional en idioma inglés.' }
+                ],
+                logo: '🎓'
+            },
+            'cetis-64': {
+                id: 'cetis-64-guadalajara-001',
+                name: 'Centro de Estudios Tecnológicos Industrial y de Servicios No. 64',
+                shortName: 'CETIS 64',
+                slogan: 'Tecnología • Innovación • Excelencia',
+                description: 'Formando técnicos profesionales competentes para el desarrollo tecnológico e industrial de México.',
+                type: 'Centro de Estudios Tecnológicos',
+                location: 'Guadalajara, Jalisco',
+                contact: '+52 33 3826 1542',
+                email: 'cetis64@dgeti.sems.gob.mx',
+                colors: {
+                    primary: '#2E7D32',
+                    secondary: '#FF9800',
+                    accent: '#D32F2F'
+                },
+                mission: 'Formar técnicos profesionales competentes, críticos, creativos y propositivos que contribuyan al desarrollo sustentable de la región y del país, mediante una educación integral de calidad.',
+                vision: 'Ser una institución de educación media superior tecnológica líder en la región, reconocida por la excelencia académica, la innovación educativa y la vinculación con el sector productivo.',
+                features: ['Técnico en Programación', 'Técnico en Mecatrónica', 'Administración de RH', 'Vinculación Industrial', 'Certificaciones'],
+                programs: [
+                    { name: 'Técnico en Programación', duration: '3 años', description: 'Desarrollo de software y aplicaciones tecnológicas avanzadas.' },
+                    { name: 'Técnico en Mecatrónica', duration: '3 años', description: 'Integración de sistemas mecánicos, electrónicos y de control automatizado.' },
+                    { name: 'Técnico en Administración de RH', duration: '3 años', description: 'Gestión integral del capital humano en organizaciones modernas.' }
+                ],
+                logo: '🔧'
+            },
+            'cobao-plantel': {
+                id: 'cobao-plantel-03-001',
+                name: 'Colegio de Bachilleres del Estado de Oaxaca - Plantel 03',
+                shortName: 'COBAO Plantel 03',
+                slogan: 'Educación de Calidad • Cultura Oaxaqueña',
+                description: 'Institución comprometida con la preservación de nuestras raíces culturales y la excelencia educativa.',
+                type: 'Colegio de Bachilleres',
+                location: 'Oaxaca de Juárez, Oaxaca',
+                contact: '+52 951 234 5678',
+                email: 'plantel03@cobao.edu.mx',
+                colors: {
+                    primary: '#8E24AA',
+                    secondary: '#FF7043',
+                    accent: '#43A047'
+                },
+                mission: 'Ofrecer educación media superior de calidad que contribuya al desarrollo integral de los jóvenes oaxaqueños, preservando y fortaleciendo nuestra identidad cultural.',
+                vision: 'Ser el colegio de bachilleres líder en Oaxaca, reconocido por formar ciudadanos comprometidos con su cultura, su estado y su país.',
+                features: ['Bachillerato General', 'Preservación Cultural', 'Lenguas Originarias', 'Arte Oaxaqueño', 'Intercambio Cultural'],
+                programs: [
+                    { name: 'Bachillerato General', duration: '3 años', description: 'Formación integral con énfasis en la cultura oaxaqueña.' },
+                    { name: 'Programa Cultural', duration: 'Transversal', description: 'Preservación y difusión de las tradiciones oaxaqueñas.' },
+                    { name: 'Lenguas Originarias', duration: 'Optativo', description: 'Fortalecimiento de las lenguas indígenas de Oaxaca.' }
+                ],
+                logo: '🌱'
+            }
+        };
+
+        class MultiTenantSystem {
+            constructor() {
+                this.currentConfig = null;
+                this.isTransforming = false;
+                this.init();
+            }
+
+            init() {
+                this.addDebugLog('🚀 Inicializando Sistema Multi-Tenant Final');
+                this.setupEventListeners();
+                this.updateSystemStatus('Sistema listo para transformaciones');
+                this.addDebugLog('✅ Sistema inicializado correctamente - Sin errores de servidor');
+            }
+
+            setupEventListeners() {
+                document.getElementById('institutionSelector').addEventListener('change', (e) => {
+                    const selectedInstitution = e.target.value;
+                    if (selectedInstitution) {
+                        this.addDebugLog(`📋 Institución seleccionada: ${selectedInstitution}`);
+                        document.getElementById('btnTransform').disabled = false;
+                        this.previewConfig(selectedInstitution);
+                    } else {
+                        document.getElementById('btnTransform').disabled = true;
+                        document.getElementById('activeTenant').textContent = 'Ninguno';
+                    }
+                });
+
+                document.getElementById('btnTransform').addEventListener('click', () => {
+                    this.executeTransformation();
+                });
+
+                document.getElementById('btnReset').addEventListener('click', () => {
+                    this.resetSystem();
+                });
+
+                this.addDebugLog('⚡ Event listeners configurados');
+            }
+
+            previewConfig(institutionKey) {
+                const config = INSTITUTIONAL_CONFIGS[institutionKey];
+                if (config) {
+                    this.currentConfig = config;
+                    this.addDebugLog(`📊 Configuración cargada: ${config.name}`);
+                    document.getElementById('activeTenant').textContent = config.shortName;
+                }
+            }
+
+            async executeTransformation() {
+                if (!this.currentConfig || this.isTransforming) return;
+
+                this.isTransforming = true;
+                this.addDebugLog('🎨 Iniciando transformación completa...');
+                this.updateSystemStatus('Transformando sitio web...');
+
+                const heroSection = document.getElementById('heroSection');
+                heroSection.classList.add('transforming');
+
+                try {
+                    // Paso 1: Información básica
+                    await this.updateBasicInfo();
+
+                    // Paso 2: Branding y colores
+                    await this.updateBranding();
+
+                    // Paso 3: Contenido académico
+                    await this.updateAcademicContent();
+
+                    // Paso 4: Características
+                    await this.updateFeatures();
+
+                    // Paso 5: Programas
+                    await this.updatePrograms();
+
+                    this.addDebugLog('✅ Transformación completada exitosamente');
+                    this.updateSystemStatus(`Activo: ${this.currentConfig.shortName}`);
+
+                } catch (error) {
+                    this.addDebugLog(`❌ Error en transformación: ${error.message}`);
+                    this.updateSystemStatus('Error en transformación');
+                }
+
+                heroSection.classList.remove('transforming');
+                this.isTransforming = false;
+            }
+
+            async updateBasicInfo() {
+                this.addDebugLog('📝 Actualizando información básica...');
+
+                const config = this.currentConfig;
+
+                // Actualizar navegación
+                document.getElementById('navInstitutionName').textContent = config.shortName;
+
+                // Actualizar hero section
+                document.getElementById('institutionName').textContent = config.name;
+                document.getElementById('institutionSlogan').textContent = config.slogan;
+                document.getElementById('institutionDescription').textContent = config.description;
+                document.getElementById('institutionType').textContent = config.type;
+                document.getElementById('locationInfo').textContent = config.location;
+                document.getElementById('contactInfo').textContent = config.contact;
+
+                // Actualizar logo
+                document.getElementById('institutionLogo').innerHTML = `<span style="font-size: 2.5rem;">${config.logo}</span>`;
+
+                // Actualizar título de página
+                document.getElementById('pageTitle').textContent = `${config.shortName} - Sistema Multi-Tenant`;
+
+                await this.delay(300);
+                this.addDebugLog('✅ Información básica actualizada');
+            }
+
+            async updateBranding() {
+                this.addDebugLog('🎨 Aplicando branding personalizado...');
+
+                const colors = this.currentConfig.colors;
+
+                // Actualizar variables CSS
+                document.documentElement.style.setProperty('--primary-color', colors.primary);
+                document.documentElement.style.setProperty('--secondary-color', colors.secondary);
+                document.documentElement.style.setProperty('--accent-color', colors.accent);
+
+                // Actualizar gradiente del fondo
+                const newGradient = `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`;
+                document.body.style.background = newGradient;
+
+                // Actualizar paleta de colores
+                const swatches = document.querySelectorAll('.color-swatch');
+                swatches[0].style.background = colors.primary;
+                swatches[1].style.background = colors.secondary;
+                swatches[2].style.background = colors.accent;
+
+                await this.delay(500);
+                this.addDebugLog('✅ Branding aplicado correctamente');
+            }
+
+            async updateAcademicContent() {
+                this.addDebugLog('🎓 Actualizando contenido académico...');
+
+                document.getElementById('missionText').textContent = this.currentConfig.mission;
+                document.getElementById('visionText').textContent = this.currentConfig.vision;
+
+                await this.delay(300);
+                this.addDebugLog('✅ Contenido académico actualizado');
+            }
+
+            async updateFeatures() {
+                this.addDebugLog('⭐ Actualizando características...');
+
+                const container = document.getElementById('featuresContainer');
+                container.innerHTML = '';
+
+                this.currentConfig.features.forEach(feature => {
+                    const badge = document.createElement('span');
+                    badge.className = 'feature-badge';
+                    badge.textContent = feature;
+                    container.appendChild(badge);
+                });
+
+                await this.delay(300);
+                this.addDebugLog('✅ Características actualizadas');
+            }
+
+            async updatePrograms() {
+                this.addDebugLog('📚 Actualizando programas académicos...');
+
+                const container = document.getElementById('programsContainer');
+                container.innerHTML = '';
+
+                this.currentConfig.programs.forEach(program => {
+                    const programDiv = document.createElement('div');
+                    programDiv.className = 'program-card';
+                    programDiv.innerHTML = `
+                        <h6><i class="fas fa-graduation-cap me-2"></i>${program.name}</h6>
+                        <p class="mb-2"><small><strong>Duración:</strong> ${program.duration}</small></p>
+                        <p class="mb-0">${program.description}</p>
+                    `;
+                    container.appendChild(programDiv);
+                });
+
+                await this.delay(300);
+                this.addDebugLog('✅ Programas académicos actualizados');
+            }
+
+            resetSystem() {
+                this.addDebugLog('🔄 Reiniciando sistema...');
+
+                // Reset selectors
+                document.getElementById('institutionSelector').value = '';
+                document.getElementById('btnTransform').disabled = true;
+                document.getElementById('activeTenant').textContent = 'Ninguno';
+
+                // Reset básico
+                document.getElementById('navInstitutionName').textContent = 'Sistema Multi-Tenant BGE';
+                document.getElementById('institutionName').textContent = 'Sistema Multi-Tenant BGE';
+                document.getElementById('institutionSlogan').textContent = 'Plataforma educativa configurable para múltiples instituciones';
+                document.getElementById('institutionDescription').textContent = 'Selecciona una institución para ver la transformación en tiempo real';
+                document.getElementById('institutionType').textContent = 'Multi-Tenant';
+                document.getElementById('locationInfo').textContent = 'Configurable';
+                document.getElementById('contactInfo').textContent = 'Por definir';
+                document.getElementById('pageTitle').textContent = '🌐 Sistema Multi-Tenant BGE - FUNCIONAL';
+
+                // Reset logo
+                document.getElementById('institutionLogo').innerHTML = '<i class="fas fa-school"></i>';
+
+                // Reset contenido académico
+                document.getElementById('missionText').textContent = 'La misión institucional aparecerá al seleccionar una institución específica.';
+                document.getElementById('visionText').textContent = 'La visión institucional aparecerá al seleccionar una institución específica.';
+
+                // Reset características
+                const featuresContainer = document.getElementById('featuresContainer');
+                featuresContainer.innerHTML = `
+                    <span class="feature-badge">Sistema Multi-Tenant</span>
+                    <span class="feature-badge">Configuración Dinámica</span>
+                    <span class="feature-badge">Branding Personalizable</span>
+                `;
+
+                // Reset programas
+                const programsContainer = document.getElementById('programsContainer');
+                programsContainer.innerHTML = `
+                    <div class="program-card">
+                        <h6>📚 Programas Configurables</h6>
+                        <p class="mb-0">Los programas específicos aparecerán al seleccionar una institución.</p>
+                    </div>
+                `;
+
+                // Reset branding
+                document.documentElement.style.setProperty('--primary-color', '#1565C0');
+                document.documentElement.style.setProperty('--secondary-color', '#FFA726');
+                document.documentElement.style.setProperty('--accent-color', '#E53935');
+
+                const defaultGradient = 'linear-gradient(135deg, #1565C0, #FFA726)';
+                document.body.style.background = defaultGradient;
+
+                // Reset paleta
+                const swatches = document.querySelectorAll('.color-swatch');
+                swatches[0].style.background = '#1565C0';
+                swatches[1].style.background = '#FFA726';
+                swatches[2].style.background = '#E53935';
+
+                this.currentConfig = null;
+                this.updateSystemStatus('Sistema reiniciado - Listo para usar');
+                this.addDebugLog('✅ Sistema reiniciado correctamente');
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            addDebugLog(message) {
+                const debugLog = document.getElementById('debugLog');
+                const timestamp = new Date().toLocaleTimeString();
+                const entry = document.createElement('div');
+                entry.className = 'debug-entry';
+                entry.innerHTML = `
+                    <div class="debug-timestamp">[${timestamp}]</div>
+                    <div>${message}</div>
+                `;
+                debugLog.appendChild(entry);
+                debugLog.scrollTop = debugLog.scrollHeight;
+                console.log(`[${timestamp}] ${message}`);
+            }
+
+            updateSystemStatus(status) {
+                document.getElementById('systemStatus').textContent = status;
+            }
+        }
+
+        // Función para limpiar debug log
+        function clearDebugLog() {
+            document.getElementById('debugLog').innerHTML = `
+                <div class="debug-entry">
+                    <div class="debug-timestamp">[INIT]</div>
+                    <div>🚀 Sistema Multi-Tenant Inicializado</div>
+                </div>
+            `;
+        }
+
+        // Inicializar sistema
+        document.addEventListener('DOMContentLoaded', () => {
+            window.multiTenantSystem = new MultiTenantSystem();
+        });
+    </script>
+</body>
+</html>

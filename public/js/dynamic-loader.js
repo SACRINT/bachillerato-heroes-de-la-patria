@@ -333,7 +333,7 @@ class DynamicContentLoader {
 
     createDetailModal({ title, content, author, date, image, category, tags }) {
         const modalId = 'dynamicDetailModal';
-        let modal = document.getElementById(modalId);
+        const modal = document.getElementById(modalId);
 
         if (modal) {
             modal.remove();

@@ -1,6 +1,11 @@
 /**
  * 🎓 API CRUD PARA EGRESADOS
  * Gestión completa de datos de egresados del bachillerato
+ *
+ * ADAPTADO PARA POSTGRESQL (Neon)
+ * - Placeholders: $1, $2, $3 (en lugar de ?)
+ * - RETURNING clause para obtener ID insertado
+ * - rowCount en lugar de affectedRows
  */
 
 const express = require('express');
@@ -15,8 +20,8 @@ router.get('/generacion/:generacion', async (req, res) => {
     try {
         const { generacion } = req.params;
 
-        const [egresados] = await db.query(
-            'SELECT * FROM egresados WHERE generacion = ? ORDER BY nombre',
+        const egresados = await db.executeQuery(
+            'SELECT * FROM egresados WHERE generacion = $1 ORDER BY nombre',
             [generacion]
         );
 
@@ -43,11 +48,11 @@ router.get('/generacion/:generacion', async (req, res) => {
 router.get('/stats/general', async (req, res) => {
     try {
         // Total de egresados
-        const [totalResult] = await db.query('SELECT COUNT(*) as total FROM egresados');
-        const total = totalResult[0].total;
+        const totalResult = await db.executeQuery('SELECT COUNT(*) as total FROM egresados');
+        const total = parseInt(totalResult[0].total);
 
         // Por generación
-        const [porGeneracion] = await db.query(`
+        const porGeneracion = await db.executeQuery(`
             SELECT generacion, COUNT(*) as cantidad
             FROM egresados
             GROUP BY generacion
@@ -55,7 +60,7 @@ router.get('/stats/general', async (req, res) => {
         `);
 
         // Por estatus de estudios
-        const [porEstatus] = await db.query(`
+        const porEstatus = await db.executeQuery(`
             SELECT estatus_estudios, COUNT(*) as cantidad
             FROM egresados
             WHERE estatus_estudios IS NOT NULL
@@ -63,7 +68,7 @@ router.get('/stats/general', async (req, res) => {
         `);
 
         // Historias publicables
-        const [historiasResult] = await db.query(`
+        const historiasResult = await db.executeQuery(`
             SELECT COUNT(*) as total
             FROM egresados
             WHERE autoriza_publicar = TRUE AND historia_exito IS NOT NULL
@@ -73,9 +78,15 @@ router.get('/stats/general', async (req, res) => {
             success: true,
             stats: {
                 total,
-                porGeneracion,
-                porEstatus,
-                historiasPublicables: historiasResult[0].total
+                porGeneracion: porGeneracion.map(g => ({
+                    generacion: g.generacion,
+                    cantidad: parseInt(g.cantidad)
+                })),
+                porEstatus: porEstatus.map(e => ({
+                    estatus_estudios: e.estatus_estudios,
+                    cantidad: parseInt(e.cantidad)
+                })),
+                historiasPublicables: parseInt(historiasResult[0].total)
             }
         });
 
@@ -93,7 +104,7 @@ router.get('/stats/general', async (req, res) => {
 // ============================================
 router.get('/', async (req, res) => {
     try {
-        const [egresados] = await db.query(`
+        const egresados = await db.executeQuery(`
             SELECT
                 id,
                 nombre,
@@ -138,8 +149,8 @@ router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
 
-        const [egresados] = await db.query(
-            'SELECT * FROM egresados WHERE id = ?',
+        const egresados = await db.executeQuery(
+            'SELECT * FROM egresados WHERE id = $1',
             [id]
         );
 
@@ -182,8 +193,7 @@ router.post('/', async (req, res) => {
             anio_egreso,
             historia_exito,
             autoriza_publicar,
-            verificado = true,
-            ip_registro
+            verificado = true
         } = req.body;
 
         // Validaciones básicas
@@ -195,8 +205,8 @@ router.post('/', async (req, res) => {
         }
 
         // Verificar si el email ya existe
-        const [existing] = await db.query(
-            'SELECT id FROM egresados WHERE email = ?',
+        const existing = await db.executeQuery(
+            'SELECT id FROM egresados WHERE email = $1',
             [email]
         );
 
@@ -204,24 +214,24 @@ router.post('/', async (req, res) => {
             // Actualizar registro existente
             const updateQuery = `
                 UPDATE egresados SET
-                    nombre = ?,
-                    generacion = ?,
-                    telefono = ?,
-                    ciudad = ?,
-                    ocupacion_actual = ?,
-                    universidad = ?,
-                    carrera = ?,
-                    estatus_estudios = ?,
-                    anio_egreso = ?,
-                    historia_exito = ?,
-                    autoriza_publicar = ?,
-                    verificado = ?,
-                    fecha_actualizacion = NOW(),
-                    ip_registro = ?
-                WHERE email = ?
+                    nombre = $1,
+                    generacion = $2,
+                    telefono = $3,
+                    ciudad = $4,
+                    ocupacion_actual = $5,
+                    universidad = $6,
+                    carrera = $7,
+                    estatus_estudios = $8,
+                    anio_egreso = $9,
+                    historia_exito = $10,
+                    autoriza_publicar = $11,
+                    verificado = $12,
+                    fecha_actualizacion = CURRENT_TIMESTAMP
+                WHERE email = $13
+                RETURNING id
             `;
 
-            await db.query(updateQuery, [
+            const result = await db.executeQuery(updateQuery, [
                 nombre,
                 generacion,
                 telefono || null,
@@ -234,19 +244,18 @@ router.post('/', async (req, res) => {
                 historia_exito || null,
                 autoriza_publicar || false,
                 verificado,
-                ip_registro || null,
                 email
             ]);
 
             return res.json({
                 success: true,
                 message: 'Datos de egresado actualizados exitosamente',
-                id: existing[0].id,
+                id: result[0].id,
                 updated: true
             });
         }
 
-        // Insertar nuevo egresado
+        // Insertar nuevo egresado con RETURNING id
         const insertQuery = `
             INSERT INTO egresados (
                 nombre,
@@ -261,12 +270,12 @@ router.post('/', async (req, res) => {
                 anio_egreso,
                 historia_exito,
                 autoriza_publicar,
-                verificado,
-                ip_registro
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                verificado
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+            RETURNING id
         `;
 
-        const [result] = await db.query(insertQuery, [
+        const result = await db.executeQuery(insertQuery, [
             nombre,
             email,
             generacion,
@@ -279,14 +288,13 @@ router.post('/', async (req, res) => {
             anio_egreso || null,
             historia_exito || null,
             autoriza_publicar || false,
-            verificado,
-            ip_registro || null
+            verificado
         ]);
 
         res.status(201).json({
             success: true,
             message: 'Egresado registrado exitosamente',
-            id: result.insertId,
+            id: result[0].id,
             updated: false
         });
 
@@ -324,24 +332,24 @@ router.put('/:id', async (req, res) => {
 
         const updateQuery = `
             UPDATE egresados SET
-                nombre = ?,
-                email = ?,
-                generacion = ?,
-                telefono = ?,
-                ciudad = ?,
-                ocupacion_actual = ?,
-                universidad = ?,
-                carrera = ?,
-                estatus_estudios = ?,
-                anio_egreso = ?,
-                historia_exito = ?,
-                autoriza_publicar = ?,
-                verificado = ?,
-                fecha_actualizacion = NOW()
-            WHERE id = ?
+                nombre = $1,
+                email = $2,
+                generacion = $3,
+                telefono = $4,
+                ciudad = $5,
+                ocupacion_actual = $6,
+                universidad = $7,
+                carrera = $8,
+                estatus_estudios = $9,
+                anio_egreso = $10,
+                historia_exito = $11,
+                autoriza_publicar = $12,
+                verificado = $13,
+                fecha_actualizacion = CURRENT_TIMESTAMP
+            WHERE id = $14
         `;
 
-        const [result] = await db.query(updateQuery, [
+        const result = await db.pool.query(updateQuery, [
             nombre,
             email,
             generacion,
@@ -358,7 +366,7 @@ router.put('/:id', async (req, res) => {
             id
         ]);
 
-        if (result.affectedRows === 0) {
+        if (result.rowCount === 0) {
             return res.status(404).json({
                 success: false,
                 error: 'Egresado no encontrado'
@@ -386,12 +394,12 @@ router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
 
-        const [result] = await db.query(
-            'DELETE FROM egresados WHERE id = ?',
+        const result = await db.pool.query(
+            'DELETE FROM egresados WHERE id = $1',
             [id]
         );
 
-        if (result.affectedRows === 0) {
+        if (result.rowCount === 0) {
             return res.status(404).json({
                 success: false,
                 error: 'Egresado no encontrado'

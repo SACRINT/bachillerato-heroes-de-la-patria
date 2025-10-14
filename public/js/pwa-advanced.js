@@ -299,7 +299,7 @@ class PWAAdvanced {
 
     setupDeviceMotionFeatures() {
         // Implementar shake to refresh
-        let shakeThreshold = 15;
+        const shakeThreshold = 15;
         let lastUpdate = 0;
         let lastX = 0, lastY = 0, lastZ = 0;
         

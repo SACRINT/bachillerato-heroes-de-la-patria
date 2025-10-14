@@ -5,19 +5,19 @@
     "source": "BGE Heroes Dashboard System"
   },
   "academicStats": {
-    "totalStudents": 1247,
-    "totalTeachers": 68,
-    "totalSubjects": 42,
+    "totalStudents": 202,
+    "totalTeachers": 12,
+    "totalSubjects": 41,
     "generalAverage": 8.4,
     "totalCourses": 156,
     "graduationRate": 94.8
   },
   "activityStats": {
-    "totalNoticias": 0,
-    "totalEventos": 0,
-    "totalAvisos": 0,
-    "totalComunicados": 0,
-    "activeRegistrations": 23
+    "totalNoticias": 3,
+    "totalEventos": 3,
+    "totalAvisos": 3,
+    "totalComunicados": 3,
+    "activeRegistrations": 12
   },
   "systemStats": {
     "serverUptime": "99.7%",

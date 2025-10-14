@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">BGE Multi-Tenant REAL - Sistema Funcional</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #0d47a1;
+            --secondary-color: #ffc107;
+            --accent-color: #dc3545;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .debug-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 350px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 9999;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .control-panel {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 9998;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-content {
+            margin-top: 100px;
+            padding: 20px;
+        }
+
+        .institution-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
+        }
+
+        .feature-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 2px;
+            display: inline-block;
+        }
+
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 2px;
+            border: 2px solid #ddd;
+        }
+
+        .transformation-active {
+            animation: pulse 1s infinite;
+            border: 3px solid var(--accent-color);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Panel de Debug -->
+    <div class="debug-panel" id="debugPanel">
+        <h6><i class="fas fa-bug me-2"></i>Debug Console</h6>
+        <div id="debugLog">Inicializando sistema...</div>
+        <button class="btn btn-sm btn-outline-light mt-2" onclick="clearDebug()">Clear</button>
+    </div>
+
+    <!-- Panel de Control -->
+    <div class="control-panel">
+        <h5><i class="fas fa-cogs me-2"></i>Control Multi-Tenant</h5>
+
+        <div class="mb-3">
+            <label class="form-label">Seleccionar Institución:</label>
+            <select id="tenantSelector" class="form-select">
+                <option value="">-- Selecciona una institución --</option>
+                <option value="bge-heroes-patria">BGE Héroes de la Patria</option>
+                <option value="cetis-64-guadalajara">CETIS 64 Guadalajara</option>
+            </select>
+        </div>
+
+        <div class="d-grid gap-2">
+            <button id="loadConfigBtn" class="btn btn-primary" disabled>
+                <i class="fas fa-download me-2"></i>Cargar Configuración
+            </button>
+            <button id="applyTransformBtn" class="btn btn-success" disabled>
+                <i class="fas fa-magic me-2"></i>Aplicar Transformación
+            </button>
+            <button id="resetBtn" class="btn btn-secondary">
+                <i class="fas fa-undo me-2"></i>Reset
+            </button>
+        </div>
+
+        <div class="mt-3">
+            <small><strong>Estado:</strong> <span id="systemStatus">Listo</span></small>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="container main-content">
+        <!-- Información de la Institución -->
+        <div class="institution-card" id="institutionCard">
+            <div class="row">
+                <div class="col-md-8">
+                    <h1 id="institutionName">Sistema Multi-Tenant BGE</h1>
+                    <p class="lead" id="institutionType">Selecciona una institución para ver la transformación</p>
+                    <p id="institutionSlogan">Plataforma educativa revolucionaria</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div id="brandingPreview">
+                        <h6>Colores:</h6>
+                        <div class="color-preview" style="background: var(--primary-color);"></div>
+                        <div class="color-preview" style="background: var(--secondary-color);"></div>
+                        <div class="color-preview" style="background: var(--accent-color);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información Académica -->
+        <div class="institution-card">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4><i class="fas fa-bullseye me-2"></i>Misión</h4>
+                    <p id="missionText">La misión aparecerá al seleccionar una institución...</p>
+                </div>
+                <div class="col-md-6">
+                    <h4><i class="fas fa-eye me-2"></i>Visión</h4>
+                    <p id="visionText">La visión aparecerá al seleccionar una institución...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información de Contacto -->
+        <div class="institution-card">
+            <h4><i class="fas fa-map-marker-alt me-2"></i>Información de Contacto</h4>
+            <div class="row">
+                <div class="col-md-4">
+                    <strong>Dirección:</strong>
+                    <p id="addressText">Dirección aparecerá aquí...</p>
+                </div>
+                <div class="col-md-4">
+                    <strong>Teléfono:</strong>
+                    <p id="phoneText">Teléfono aparecerá aquí...</p>
+                </div>
+                <div class="col-md-4">
+                    <strong>Email:</strong>
+                    <p id="emailText">Email aparecerá aquí...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Características -->
+        <div class="institution-card">
+            <h4><i class="fas fa-star me-2"></i>Características Disponibles</h4>
+            <div id="featuresContainer">
+                <span class="feature-badge">Selecciona una institución</span>
+            </div>
+        </div>
+
+        <!-- Programas -->
+        <div class="institution-card">
+            <h4><i class="fas fa-graduation-cap me-2"></i>Programas Académicos</h4>
+            <div id="programsContainer">
+                <p>Los programas aparecerán al seleccionar una institución...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class RealMultiTenantSystem {
+            constructor() {
+                this.currentConfig = null;
+                this.availableConfigs = {
+                    'bge-heroes-patria': {
+                        tenantId: 'bge-heroes-patria-001',
+                        institution: {
+                            name: 'Bachillerato General Estatal Héroes de la Patria',
+                            shortName: 'BGE Héroes de la Patria',
+                            type: 'Bachillerato General Estatal',
+                            address: {
+                                street: 'Calle Revolución 123',
+                                city: 'Venustiano Carranza',
+                                state: 'Puebla',
+                                country: 'México'
+                            },
+                            contact: {
+                                phone: '+52 276 123 4567',
+                                email: 'contacto@bgeheroes.edu.mx'
+                            }
+                        },
+                        branding: {
+                            primaryColor: '#0d47a1',
+                            secondaryColor: '#ffc107',
+                            accentColor: '#dc3545'
+                        },
+                        academicInfo: {
+                            missionStatement: 'Formar jóvenes íntegros, competentes y comprometidos con el desarrollo social, mediante una educación de calidad que promueva los valores, el conocimiento y las habilidades necesarias para su desarrollo personal y profesional.',
+                            visionStatement: 'Ser una institución educativa líder en la región, reconocida por la excelencia académica, la formación integral de nuestros estudiantes y su contribución al desarrollo sustentable de la sociedad.',
+                            programs: [
+                                { name: 'Bachillerato General', duration: '3 años', description: 'Formación integral y propedéutica' },
+                                { name: 'Programa de Inglés', duration: 'Complementario', description: 'Certificación internacional' }
+                            ]
+                        },
+                        features: {
+                            chatbotEnabled: true,
+                            calendarEnabled: true,
+                            gradesEnabled: true,
+                            appointmentsEnabled: true,
+                            newsEnabled: true
+                        },
+                        customContent: {
+                            welcomeMessage: '¡Bienvenidos a los Héroes de la Patria!',
+                            heroSlogan: 'Formando líderes del mañana'
+                        }
+                    },
+                    'cetis-64-guadalajara': {
+                        tenantId: 'cetis-64-guadalajara-001',
+                        institution: {
+                            name: 'Centro de Estudios Tecnológicos Industrial y de Servicios No. 64',
+                            shortName: 'CETIS 64',
+                            type: 'Centro de Estudios Tecnológicos',
+                            address: {
+                                street: 'Av. Revolución 1847, Col. Moderna',
+                                city: 'Guadalajara',
+                                state: 'Jalisco',
+                                country: 'México'
+                            },
+                            contact: {
+                                phone: '+52 33 3826 1542',
+                                email: 'cetis64@dgeti.sems.gob.mx'
+                            }
+                        },
+                        branding: {
+                            primaryColor: '#2E7D32',
+                            secondaryColor: '#FFA726',
+                            accentColor: '#D32F2F'
+                        },
+                        academicInfo: {
+                            missionStatement: 'Formar técnicos profesionales competentes, críticos, creativos y propositivos que contribuyan al desarrollo sustentable de la región y del país, mediante una educación integral de calidad.',
+                            visionStatement: 'Ser una institución de educación media superior tecnológica líder en la región, reconocida por la excelencia académica, la innovación educativa y la vinculación con el sector productivo.',
+                            programs: [
+                                { name: 'Técnico en Programación', duration: '3 años', description: 'Desarrollo de software y aplicaciones' },
+                                { name: 'Técnico en Mecatrónica', duration: '3 años', description: 'Integración de sistemas mecánicos y electrónicos' },
+                                { name: 'Técnico en Administración de RH', duration: '3 años', description: 'Gestión del capital humano' }
+                            ]
+                        },
+                        features: {
+                            chatbotEnabled: true,
+                            calendarEnabled: true,
+                            gradesEnabled: true,
+                            appointmentsEnabled: true,
+                            jobBoardEnabled: true,
+                            alumniEnabled: true
+                        },
+                        customContent: {
+                            welcomeMessage: '¡Bienvenidos al CETIS 64! Forjando el futuro tecnológico',
+                            heroSlogan: 'Tecnología • Innovación • Excelencia'
+                        }
+                    }
+                };
+
+                this.init();
+            }
+
+            init() {
+                this.debugLog('🚀 Inicializando Sistema Multi-Tenant REAL');
+                this.setupEventListeners();
+                this.updateStatus('Sistema inicializado - Listo para usar');
+            }
+
+            setupEventListeners() {
+                this.debugLog('⚡ Configurando event listeners');
+
+                document.getElementById('tenantSelector').addEventListener('change', (e) => {
+                    const selectedTenant = e.target.value;
+                    this.debugLog(`📋 Tenant seleccionado: ${selectedTenant}`);
+
+                    const loadBtn = document.getElementById('loadConfigBtn');
+                    if (selectedTenant) {
+                        loadBtn.disabled = false;
+                    } else {
+                        loadBtn.disabled = true;
+                        document.getElementById('applyTransformBtn').disabled = true;
+                    }
+                });
+
+                document.getElementById('loadConfigBtn').addEventListener('click', () => {
+                    this.loadConfiguration();
+                });
+
+                document.getElementById('applyTransformBtn').addEventListener('click', () => {
+                    this.applyTransformation();
+                });
+
+                document.getElementById('resetBtn').addEventListener('click', () => {
+                    this.resetSystem();
+                });
+
+                this.debugLog('✅ Event listeners configurados');
+            }
+
+            async loadConfiguration() {
+                const selectedTenant = document.getElementById('tenantSelector').value;
+                this.debugLog(`🔄 Cargando configuración para: ${selectedTenant}`);
+                this.updateStatus('Cargando configuración...');
+
+                try {
+                    // Simular carga desde servidor
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    if (this.availableConfigs[selectedTenant]) {
+                        this.currentConfig = this.availableConfigs[selectedTenant];
+                        this.debugLog('✅ Configuración cargada exitosamente');
+                        this.debugLog(`📊 Datos cargados: ${JSON.stringify(this.currentConfig.institution.name)}`);
+
+                        document.getElementById('applyTransformBtn').disabled = false;
+                        this.updateStatus('Configuración cargada - Lista para aplicar');
+                    } else {
+                        throw new Error('Configuración no encontrada');
+                    }
+
+                } catch (error) {
+                    this.debugLog(`❌ Error cargando configuración: ${error.message}`);
+                    this.updateStatus('Error cargando configuración');
+                }
+            }
+
+            async applyTransformation() {
+                if (!this.currentConfig) {
+                    this.debugLog('❌ No hay configuración para aplicar');
+                    return;
+                }
+
+                this.debugLog('🎨 Iniciando transformación...');
+                this.updateStatus('Aplicando transformación...');
+
+                // Añadir efecto visual
+                const institutionCard = document.getElementById('institutionCard');
+                institutionCard.classList.add('transformation-active');
+
+                try {
+                    // Aplicar transformación paso a paso
+                    await this.updateBasicInfo();
+                    await this.updateBranding();
+                    await this.updateAcademicInfo();
+                    await this.updateContactInfo();
+                    await this.updateFeatures();
+                    await this.updatePrograms();
+
+                    this.debugLog('✅ Transformación aplicada exitosamente');
+                    this.updateStatus(`Transformación completada - ${this.currentConfig.institution.shortName}`);
+
+                } catch (error) {
+                    this.debugLog(`❌ Error en transformación: ${error.message}`);
+                    this.updateStatus('Error en transformación');
+                }
+
+                // Remover efecto visual
+                setTimeout(() => {
+                    institutionCard.classList.remove('transformation-active');
+                }, 2000);
+            }
+
+            async updateBasicInfo() {
+                this.debugLog('📝 Actualizando información básica...');
+
+                const config = this.currentConfig;
+
+                document.getElementById('pageTitle').textContent = config.institution.name;
+                document.getElementById('institutionName').textContent = config.institution.name;
+                document.getElementById('institutionType').textContent = config.institution.type;
+                document.getElementById('institutionSlogan').textContent = config.customContent.welcomeMessage;
+
+                await new Promise(resolve => setTimeout(resolve, 300));
+                this.debugLog('✅ Información básica actualizada');
+            }
+
+            async updateBranding() {
+                this.debugLog('🎨 Actualizando branding...');
+
+                const branding = this.currentConfig.branding;
+
+                // Actualizar variables CSS
+                document.documentElement.style.setProperty('--primary-color', branding.primaryColor);
+                document.documentElement.style.setProperty('--secondary-color', branding.secondaryColor);
+                document.documentElement.style.setProperty('--accent-color', branding.accentColor);
+
+                // Actualizar gradiente del body
+                document.body.style.background = `linear-gradient(135deg, ${branding.primaryColor}, ${branding.secondaryColor})`;
+
+                // Actualizar preview de colores
+                const colorPreviews = document.querySelectorAll('.color-preview');
+                colorPreviews[0].style.background = branding.primaryColor;
+                colorPreviews[1].style.background = branding.secondaryColor;
+                colorPreviews[2].style.background = branding.accentColor;
+
+                await new Promise(resolve => setTimeout(resolve, 300));
+                this.debugLog('✅ Branding actualizado');
+            }
+
+            async updateAcademicInfo() {
+                this.debugLog('🎓 Actualizando información académica...');
+
+                const academicInfo = this.currentConfig.academicInfo;
+
+                document.getElementById('missionText').textContent = academicInfo.missionStatement;
+                document.getElementById('visionText').textContent = academicInfo.visionStatement;
+
+                await new Promise(resolve => setTimeout(resolve, 300));
+                this.debugLog('✅ Información académica actualizada');
+            }
+
+            async updateContactInfo() {
+                this.debugLog('📞 Actualizando información de contacto...');
+
+                const institution = this.currentConfig.institution;
+                const address = institution.address;
+                const contact = institution.contact;
+
+                document.getElementById('addressText').textContent = `${address.city}, ${address.state}, ${address.country}`;
+                document.getElementById('phoneText').textContent = contact.phone;
+                document.getElementById('emailText').textContent = contact.email;
+
+                await new Promise(resolve => setTimeout(resolve, 300));
+                this.debugLog('✅ Información de contacto actualizada');
+            }
+
+            async updateFeatures() {
+                this.debugLog('⭐ Actualizando características...');
+
+                const features = this.currentConfig.features;
+                const container = document.getElementById('featuresContainer');
+                container.innerHTML = '';
+
+                const featureNames = {
+                    chatbotEnabled: 'Chatbot IA',
+                    calendarEnabled: 'Calendario',
+                    gradesEnabled: 'Calificaciones',
+                    appointmentsEnabled: 'Citas',
+                    newsEnabled: 'Noticias',
+                    jobBoardEnabled: 'Bolsa de Trabajo',
+                    alumniEnabled: 'Egresados'
+                };
+
+                Object.entries(features).forEach(([key, enabled]) => {
+                    if (enabled && featureNames[key]) {
+                        const badge = document.createElement('span');
+                        badge.className = 'feature-badge';
+                        badge.textContent = featureNames[key];
+                        container.appendChild(badge);
+                    }
+                });
+
+                await new Promise(resolve => setTimeout(resolve, 300));
+                this.debugLog('✅ Características actualizadas');
+            }
+
+            async updatePrograms() {
+                this.debugLog('📚 Actualizando programas...');
+
+                const programs = this.currentConfig.academicInfo.programs;
+                const container = document.getElementById('programsContainer');
+                container.innerHTML = '';
+
+                if (programs && programs.length > 0) {
+                    programs.forEach(program => {
+                        const programDiv = document.createElement('div');
+                        programDiv.className = 'mb-3 p-3 border rounded';
+                        programDiv.innerHTML = `
+                            <h6>${program.name}</h6>
+                            <p class="mb-1"><small><strong>Duración:</strong> ${program.duration}</small></p>
+                            <p class="mb-0">${program.description}</p>
+                        `;
+                        container.appendChild(programDiv);
+                    });
+                } else {
+                    container.innerHTML = '<p>No hay programas configurados.</p>';
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 300));
+                this.debugLog('✅ Programas actualizados');
+            }
+
+            resetSystem() {
+                this.debugLog('🔄 Reiniciando sistema...');
+                this.currentConfig = null;
+
+                // Reset selectors
+                document.getElementById('tenantSelector').value = '';
+                document.getElementById('loadConfigBtn').disabled = true;
+                document.getElementById('applyTransformBtn').disabled = true;
+
+                // Reset content
+                document.getElementById('pageTitle').textContent = 'BGE Multi-Tenant REAL - Sistema Funcional';
+                document.getElementById('institutionName').textContent = 'Sistema Multi-Tenant BGE';
+                document.getElementById('institutionType').textContent = 'Selecciona una institución para ver la transformación';
+                document.getElementById('institutionSlogan').textContent = 'Plataforma educativa revolucionaria';
+                document.getElementById('missionText').textContent = 'La misión aparecerá al seleccionar una institución...';
+                document.getElementById('visionText').textContent = 'La visión aparecerá al seleccionar una institución...';
+                document.getElementById('addressText').textContent = 'Dirección aparecerá aquí...';
+                document.getElementById('phoneText').textContent = 'Teléfono aparecerá aquí...';
+                document.getElementById('emailText').textContent = 'Email aparecerá aquí...';
+
+                // Reset features
+                document.getElementById('featuresContainer').innerHTML = '<span class="feature-badge">Selecciona una institución</span>';
+                document.getElementById('programsContainer').innerHTML = '<p>Los programas aparecerán al seleccionar una institución...</p>';
+
+                // Reset branding
+                document.documentElement.style.setProperty('--primary-color', '#0d47a1');
+                document.documentElement.style.setProperty('--secondary-color', '#ffc107');
+                document.documentElement.style.setProperty('--accent-color', '#dc3545');
+                document.body.style.background = 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))';
+
+                const colorPreviews = document.querySelectorAll('.color-preview');
+                colorPreviews[0].style.background = '#0d47a1';
+                colorPreviews[1].style.background = '#ffc107';
+                colorPreviews[2].style.background = '#dc3545';
+
+                this.updateStatus('Sistema reiniciado - Listo para usar');
+                this.debugLog('✅ Sistema reiniciado exitosamente');
+            }
+
+            debugLog(message) {
+                const debugLog = document.getElementById('debugLog');
+                const timestamp = new Date().toLocaleTimeString();
+                debugLog.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+                debugLog.scrollTop = debugLog.scrollHeight;
+                console.log(message);
+            }
+
+            updateStatus(status) {
+                document.getElementById('systemStatus').textContent = status;
+            }
+        }
+
+        // Función para limpiar debug
+        function clearDebug() {
+            document.getElementById('debugLog').innerHTML = '';
+        }
+
+        // Inicializar sistema cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            window.multiTenantSystem = new RealMultiTenantSystem();
+        });
+    </script>
+</body>
+</html>

@@ -516,7 +516,7 @@ class BGEDashboardMonitor {
         let totalResponseTime = 0;
         let totalMemoryUsage = 0;
         let totalErrors = 0;
-        let totalRequests = 0;
+        const totalRequests = 0;
 
         // Agregar métricas de todos los sistemas
         for (const [systemKey, metrics] of Object.entries(systemsMetrics)) {

@@ -9,13 +9,14 @@ Thumbs.db
 *.tmp
 *.temp
 
-# Node modules
+# Node modules (todas las instancias)
 node_modules/
 
 # Archivos de entorno
 .env
 .env.local
 .env.database
+.env.example # El template de variables de entorno
 
 # Archivos de editor
 .vscode/
@@ -27,30 +28,18 @@ node_modules/
 .cache/
 
 # ============================================
-# 🧹 LIMPIEZA OCTUBRE 2025
+# 🧹 LIMPIEZA OCTUBRE 2025 (Reglas existentes)
 # ============================================
 
 # Directorio de archivos no usados (COMPLETO)
 no_usados/
 
-# Documentación local (no subir a GitHub)
-**/SESION_*.md
-**/REPORTE_*.md
-**/CORRECCION_*.md
-**/DIAGNOSTICO_*.md
-**/IMPLEMENTACION_*.md
-**/SOLUCION_*.md
-**/ESTADO_*.md
-**/RESUMEN_*.md
-**/VERIFICACION_*.md
-**/PLAN_*.md
-**/ENTREGA_*.md
-**/INTEGRACION_*.md
-**/MOCKUPS_*.md
-**/MAPEO_*.md
-**/AUDITORIA_*.md
+# Documentación local (no subir a GitHub ni a Vercel para despliegue)
+# Generalizado para ignorar todos los archivos Markdown excepto README.md
+*.md
+!README.md # Mantener README.md en GitHub para referencia del repositorio
 
-# Reportes de texto
+# Reportes de texto (ya cubierto por *.log, pero se mantiene si hay otros .txt)
 *.txt
 
 # Backups
@@ -61,32 +50,29 @@ no_usados/
 ~$*.md
 ~$*.docx
 
-# Scripts temporales
+# Scripts temporales de desarrollo
 fix-*.sh
 test-*.sh
 update-*.py
 SCRIPT_*.js
 
-# Subdirectorios de docs (mantener solo esenciales)
-docs/01-PROYECTO/
-docs/02-DESARROLLO/
-docs/03-DEPLOYMENT/
-docs/04-FASES/
-docs/05-SEGURIDAD/
-docs/06-ARQUITECTURA/
-docs/07-REPORTES/
-docs/08-SISTEMAS/
-docs/09-HISTORICO/
+# Subdirectorios de docs (ignorar toda la carpeta docs/)
+docs/
 
 # Build reports
 build-report.json
 public/build-report.json
 
-# Archivos de configuración temporal
+# Archivos de configuración temporal (revisar si config/ es realmente temporal)
+# Si la carpeta config/ en la raíz o backend/config/ son esenciales para la app,
+# esta regla es demasiado amplia. Asumo que se refiere a archivos temporales
+# dentro de config/, no a la carpeta completa.
+# Mantengo la regla original, pero con esta nota.
 config/
 
-# Package lock (opcional - algunos proyectos lo incluyen)
-# package-lock.json
+# Package lock (mantener package-lock.json es una buena práctica para builds reproducibles)
+# La línea original estaba comentada, la elimino para asegurar que se incluya.
+# package-lock.json # NO IGNORAR - ESENCIAL PARA BUILDS REPRODUCIBLES
 
 # Backend específico
 backend/nul
@@ -95,16 +81,41 @@ backend/data/sessions.json
 backend/data/users.json
 backend/test-*.js
 backend/test-report-*.json
+backend/data/ # Ignorar toda la carpeta de datos del backend
 
 # Public duplicados (mantenemos solo raíz)
 # Nota: public/ se mantiene para Vercel static serving
 
 # Claude Code
-.claude/settings.local.json
+.claude/
 
 # GitHub Actions (si no se usa)
 .github/
 
-# API lock files temporales
+# API lock files temporales (revisar si api/package-lock.json es realmente temporal)
+# package-lock.json debe ser versionado para sub-proyectos también.
+# Si es un archivo temporal, debe ser más específico.
+# Por ahora, lo mantengo como estaba en el original.
 api/package-lock.json
+
+# Vercel local config/cache (ya cubierto por .vercel/)
 .vercel
+
+# ============================================
+# 🤖 RECOMENDACIONES (OCTUBRE 2025)
+# ============================================
+
+# Scripts de Desarrollo y Herramientas Locales (adiciones/generalizaciones)
+scripts/ # Ignorar toda la carpeta scripts/ en la raíz
+backend/scripts/ # Ignorar toda la carpeta scripts/ en backend/
+audit-unused-files.js
+move-unused-files.js
+restore-critical-fase4-files.js
+restore-development-files.js
+restore-future-vision-files.js
+setup-security.bat
+test-forms.js # Ya cubierto por *.js si se ignora scripts/, pero explícito
+test_real_login.json
+
+# Archivos de Base de Datos (scripts de ejecución única, no parte del runtime)
+EJECUTAR_EN_NEON.sql

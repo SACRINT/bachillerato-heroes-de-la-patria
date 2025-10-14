@@ -308,7 +308,7 @@
         const results = [];
 
         unifiedSearchDatabase.forEach(item => {
-            let score = calculateRelevanceScore(item, terms, normalizedQuery);
+            const score = calculateRelevanceScore(item, terms, normalizedQuery);
 
             if (score > 0) {
                 results.push({

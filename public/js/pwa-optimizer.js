@@ -728,7 +728,7 @@ class PWAOptimizer {
     optimizeHeadingsHierarchy() {
         const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
         let currentLevel = 0;
-        let issues = [];
+        const issues = [];
 
         headings.forEach((heading, index) => {
             const level = parseInt(heading.tagName[1]);
