@@ -87,57 +87,66 @@ class APIClient {
      */
     async request(endpoint, options = {}) {
         const url = `${this.baseURL}${endpoint}`;
-        
         const config = {
             method: 'GET',
             headers: this.getHeaders(),
             ...options
         };
 
-        // Agregar body para requests POST/PUT
         if (options.body && typeof options.body === 'object') {
             config.body = JSON.stringify(options.body);
         }
 
         try {
-            //console.log(`🔌 API Request: ${config.method} ${url}`);
-            
             const response = await fetch(url, config);
 
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                // Si la respuesta no es JSON, es un HTML (página 404 de Vercel), lanzar error controlado
-                throw new Error(`Respuesta no es JSON. Status: ${response.status}`);
+            // ✅ Verificar si Content-Type es JSON
+            const contentType = response.headers.get('Content-Type') || '';
+
+            if (!contentType.includes('application/json')) {
+                console.warn(`⚠️ [API WARNING] Endpoint devolvió contenido no JSON (${contentType}): ${config.method} ${url}`);
+
+                return {
+                    success: false,
+                    fallback: true,
+                    message: "Respuesta no JSON",
+                    status: response.status
+                };
             }
 
-            const data = await response.json();
+            // ✅ Intentar parsear JSON de forma segura
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonError) {
+                console.warn(`⚠️ [API WARNING] No se pudo parsear JSON: ${config.method} ${url}`, jsonError);
+
+                return {
+                    success: false,
+                    fallback: true,
+                    message: "Error al parsear JSON",
+                    status: response.status
+                };
+            }
 
             if (!response.ok) {
                 throw new Error(data.error || data.message || `HTTP ${response.status}`);
             }
 
-            //console.log(`✅ API Response: ${config.method} ${url}`, data);
             return data;
 
         } catch (error) {
-            // ✅ MEJORA: Solo mostrar errores que NO sean 404 esperados
-            const is404 = error.message.includes('404') || error.message.includes('Not Found');
-            const isExpectedEndpoint = endpoint.includes('/teachers') || endpoint.includes('/students');
+            console.error(`❌ API Error: ${config.method} ${url}`, error);
 
-            if (is404 && isExpectedEndpoint) {
-                // Silenciar 404 esperados (endpoints aún no implementados)
-                console.log(`ℹ️ Endpoint no disponible aún: ${config.method} ${endpoint} - usando fallback`);
-            } else {
-                // Mostrar otros errores normalmente
-                console.error(`❌ API Error: ${config.method} ${url}`, error);
-            }
-
-            // Si el error es de autenticación, limpiar token
             if (error.message.includes('401') || error.message.includes('Token')) {
                 this.removeToken();
             }
 
-            throw error;
+            return {
+                success: false,
+                error: true,
+                message: error.message
+            };
         }
     }
 
