@@ -2,6 +2,7 @@
   "name": "bachillerato-heroes-patria-website",
   "version": "1.0.0",
   "description": "Sitio web oficial del Bachillerato General Estatal Héroes de la Patria",
+  "type": "module",
   "main": "server/server.js",
   "scripts": {
     "start": "cd server && npm start",
@@ -51,12 +52,11 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "mysql2": "^3.6.3",
     "node-cron": "^4.2.1",
     "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.6",
     "openai": "^4.104.0",
-    "pg": "^8.11.3",
+    "pg": "^8.16.3",
     "sharp": "^0.34.4",
     "socket.io": "^4.8.1",
     "swagger-jsdoc": "^6.2.8",
@@ -65,12 +65,3 @@
     "web-push": "^3.6.7",
     "ws": "^8.18.3"
   },
-  "devDependencies": {
-    "eslint": "^9.36.0",
-    "glob": "^10.4.5",
-    "htmlhint": "^1.7.1",
-    "jshint": "^2.13.6",
-    "prettier": "^3.6.2",
-    "stylelint": "^16.24.0"
-  }
-}
