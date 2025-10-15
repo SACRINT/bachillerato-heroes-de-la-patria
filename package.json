@@ -65,3 +65,12 @@
     "web-push": "^3.6.7",
     "ws": "^8.18.3"
   },
+  "devDependencies": {
+    "eslint": "^9.36.0",
+    "glob": "^10.4.5",
+    "htmlhint": "^1.7.1",
+    "jshint": "^2.13.6",
+    "prettier": "^3.6.2",
+    "stylelint": "^16.24.0"
+  }
+}
