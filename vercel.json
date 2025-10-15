@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/legacy-backend/api/index.js"
+      "destination": "/backend/api/index.js"
     },
     {
       "source": "/(.*)",
@@ -15,10 +15,10 @@
   },
   "regions": ["iad1"],
   "functions": {
-    "legacy-backend/api/index.js": {
+    "backend/api/index.js": {
       "maxDuration": 30,
       "memory": 1024,
-      "includeFiles": ["server/**", "legacy-backend/config/**"]
+      "includeFiles": ["server/**", "backend/config/**"]
     }
   }
 }
