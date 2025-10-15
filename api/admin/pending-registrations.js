@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
 
   try {
     // Construir la ruta al archivo JSON
-    const jsonPath = path.resolve(process.cwd(), 'data', 'pending-registrations.json');
+    const jsonPath = path.join(__dirname, '..', 'data', 'pending-registrations.json');
     
     // Leer el archivo
     const fileContent = await fs.readFile(jsonPath, 'utf8');

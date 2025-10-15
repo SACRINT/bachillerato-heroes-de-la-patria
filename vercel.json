@@ -18,31 +18,31 @@
       "destination": "/api/admin/pending-registrations.js"
     },
     {
-      "source": "/api/egresados",
+      "source": "/api/egresados/:path*",
       "destination": "/api/egresados.js"
     },
     {
-      "source": "/api/auth",
+      "source": "/api/auth/:path*",
       "destination": "/api/auth.js"
     },
     {
-      "source": "/api/students-auth",
+      "source": "/api/students-auth/:path*",
       "destination": "/api/students-auth.js"
     },
     {
-      "source": "/api/contact",
+      "source": "/api/contact/:path*",
       "destination": "/api/contact.js"
     },
     {
-      "source": "/api/inscriptions",
+      "source": "/api/inscriptions/:path*",
       "destination": "/api/inscriptions.js"
     },
     {
-      "source": "/api/subscriptions",
+      "source": "/api/subscriptions/:path*",
       "destination": "/api/subscriptions.js"
     },
     {
-      "source": "/api/newsletters",
+      "source": "/api/newsletters/:path*",
       "destination": "/api/newsletters.js"
     },
     {

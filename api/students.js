@@ -4,7 +4,7 @@ const fs = require('fs').promises;
 module.exports = async (req, res) => {
   try {
     // Construir la ruta al archivo JSON
-    const jsonPath = path.resolve(process.cwd(), 'data', 'estudiantes.json');
+    const jsonPath = path.join(__dirname, '..', 'data', 'estudiantes.json');
     
     // Leer el archivo
     const fileContent = await fs.readFile(jsonPath, 'utf8');
