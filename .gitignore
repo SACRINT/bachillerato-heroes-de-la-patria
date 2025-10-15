@@ -88,6 +88,7 @@ backend/data/ # Ignorar toda la carpeta de datos del backend
 
 # Claude Code
 .claude/
+.claude/agents
 
 # GitHub Actions (si no se usa)
 .github/
