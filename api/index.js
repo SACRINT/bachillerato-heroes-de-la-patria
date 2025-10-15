@@ -6,10 +6,13 @@
  * Carga el servidor Express desde el directorio backend
  */
 
-// Cargar variables de entorno
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 
-// Importar y exportar la aplicación Express
-const app = require(require('path').join(__dirname, '../server/server'));
+// Set NODE_PATH to include server node_modules
+process.env.NODE_PATH = require('path').join(__dirname, '../server/node_modules');
+require('module').Module._initPaths();
+
+// Importar y exportar la aplicación Express desde el directorio server
+const app = require('../server/server');
 
 module.exports = app;
