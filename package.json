@@ -4,9 +4,9 @@
   "description": "Sitio web oficial del Bachillerato General Estatal Héroes de la Patria",
   "main": "server/server.js",
   "scripts": {
-    "start": "cd server && npm start",
-    "dev": "cd server && npm run dev",
-    "build": "echo 'Static files ready'",
+    "start": "cd api/server && npm start",
+    "dev": "cd api/server && npm run dev",
+    "build": "echo 'Static files ready'",,
     "install-server": "cd server && npm install",
     "docs:install": "node scripts/docs-automation/master-docs.js --install",
     "docs:update": "node scripts/docs-automation/master-docs.js --update",
