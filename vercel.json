@@ -14,6 +14,10 @@
       "destination": "/api/students-auth.js"
     },
     {
+      "source": "/api/contact",
+      "destination": "/api/contact.js"
+    },
+    {
       ""source": "/api/(.*)",
       "destination": "/backend/api/index.js"
     },
@@ -46,6 +50,11 @@
       "maxDuration": 30,
       "memory": 1024,
       "includeFiles": ["lib/**", "data/students.json"]
+    },
+    "api/contact.js": {
+      "maxDuration": 30,
+      "memory": 1024,
+      "includeFiles": ["lib/**", "server/services/verificationService.js"]
     }
   }
 }
