@@ -8,7 +8,6 @@ class APIClient {
         // URLs base para diferentes ambientes
         this.baseURLs = {
             development: 'http://localhost:3000/api',
-            production: 'https://your-backend-domain.com/api',
             local: 'http://127.0.0.1:3000/api'
         };
         
@@ -28,20 +27,24 @@ class APIClient {
      */
     detectEnvironment() {
         const hostname = window.location.hostname;
+        console.log('DEBUG: Hostname detectado:', hostname);
 
         // Producción: Vercel o cualquier dominio personalizado
         if (hostname.includes('vercel.app') ||
             (!hostname.includes('localhost') && !hostname.includes('127.0.0.1'))) {
-            // En producción, usar URLs relativas (mismo dominio)
-            return `${window.location.protocol}//${window.location.host}/api`;
+            const productionURL = `${window.location.protocol}//${window.location.host}/api`;
+            console.log('DEBUG: Usando URL de producción:', productionURL);
+            return productionURL;
         }
 
         // Desarrollo local
         if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            console.log('DEBUG: Usando URL de desarrollo local:', this.baseURLs.development);
             return this.baseURLs.development;
         }
 
         // Fallback
+        console.log('DEBUG: Usando URL de fallback (desarrollo):', this.baseURLs.development);
         return this.baseURLs.development;
     }
 
