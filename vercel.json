@@ -26,6 +26,10 @@
       "destination": "/api/subscriptions.js"
     },
     {
+      "source": "/api/newsletters",
+      "destination": "/api/newsletters.js"
+    },
+    {
       "source": "/(.*)",
       "destination": "/public/$1"
     }
@@ -61,6 +65,11 @@
       "includeFiles": "lib/**,data/inscriptions.json,data/activities.json,server/services/verificationService.js"
     },
     "api/subscriptions.js": {
+      "maxDuration": 30,
+      "memory": 1024,
+      "includeFiles": "lib/**,data/subscribers.json,data/newsletters.json,server/services/verificationService.js"
+    },
+    "api/newsletters.js": {
       "maxDuration": 30,
       "memory": 1024,
       "includeFiles": "lib/**,data/subscribers.json,data/newsletters.json,server/services/verificationService.js"
