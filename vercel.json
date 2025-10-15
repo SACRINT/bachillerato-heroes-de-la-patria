@@ -2,6 +2,22 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/api/students",
+      "destination": "/api/students.js"
+    },
+    {
+      "source": "/api/teachers",
+      "destination": "/api/teachers.js"
+    },
+    {
+      "source": "/api/analytics/dashboard",
+      "destination": "/api/analytics/dashboard.js"
+    },
+    {
+      "source": "/api/admin/pending-registrations",
+      "destination": "/api/admin/pending-registrations.js"
+    },
+    {
       "source": "/api/egresados",
       "destination": "/api/egresados.js"
     },
@@ -39,6 +55,25 @@
   },
   "regions": ["iad1"],
   "functions": {
+    "api/students.js": {
+      "maxDuration": 30,
+      "memory": 1024,
+      "includeFiles": "data/estudiantes.json"
+    },
+    "api/teachers.js": {
+      "maxDuration": 30,
+      "memory": 1024,
+      "includeFiles": "data/docentes.json"
+    },
+    "api/analytics/dashboard.js": {
+      "maxDuration": 30,
+      "memory": 1024
+    },
+    "api/admin/pending-registrations.js": {
+      "maxDuration": 30,
+      "memory": 1024,
+      "includeFiles": "data/pending-registrations.json"
+    },
     "api/egresados.js": {
       "maxDuration": 30,
       "memory": 1024,

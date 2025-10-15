@@ -1,0 +1,20 @@
+[
+  {
+    "id": "req_12345",
+    "fullName": "Juan Perez Solicitante",
+    "email": "juan.perez.test@example.com",
+    "requestedRole": "docente",
+    "createdAt": "2025-10-15T10:00:00.000Z",
+    "reason": "Quiero unirme a su equipo de docentes.",
+    "status": "pending"
+  },
+  {
+    "id": "req_67890",
+    "fullName": "Maria Garcia Prueba",
+    "email": "maria.garcia.test@example.com",
+    "requestedRole": "estudiante",
+    "createdAt": "2025-10-14T15:30:00.000Z",
+    "reason": "Solicitud de inscripción para el próximo semestre.",
+    "status": "pending"
+  }
+]

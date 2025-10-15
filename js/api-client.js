@@ -103,6 +103,13 @@ class APIClient {
             //console.log(`🔌 API Request: ${config.method} ${url}`);
             
             const response = await fetch(url, config);
+
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                // Si la respuesta no es JSON, es un HTML (página 404 de Vercel), lanzar error controlado
+                throw new Error(`Respuesta no es JSON. Status: ${response.status}`);
+            }
+
             const data = await response.json();
 
             if (!response.ok) {
