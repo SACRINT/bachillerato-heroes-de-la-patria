@@ -2,50 +2,6 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/api/students",
-      "destination": "/api/students.js"
-    },
-    {
-      "source": "/api/teachers",
-      "destination": "/api/teachers.js"
-    },
-    {
-      "source": "/api/analytics/dashboard",
-      "destination": "/api/analytics/dashboard.js"
-    },
-    {
-      "source": "/api/admin/pending-registrations",
-      "destination": "/api/admin/pending-registrations.js"
-    },
-    {
-      "source": "/api/egresados/:path*",
-      "destination": "/api/egresados.js"
-    },
-    {
-      "source": "/api/auth/:path*",
-      "destination": "/api/auth.js"
-    },
-    {
-      "source": "/api/students-auth/:path*",
-      "destination": "/api/students-auth.js"
-    },
-    {
-      "source": "/api/contact/:path*",
-      "destination": "/api/contact.js"
-    },
-    {
-      "source": "/api/inscriptions/:path*",
-      "destination": "/api/inscriptions.js"
-    },
-    {
-      "source": "/api/subscriptions/:path*",
-      "destination": "/api/subscriptions.js"
-    },
-    {
-      "source": "/api/newsletters/:path*",
-      "destination": "/api/newsletters.js"
-    },
-    {
       "source": "/(.*)",
       "destination": "/public/$1"
     }
@@ -53,61 +9,5 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "regions": ["iad1"],
-  "functions": {
-    "api/students.js": {
-      "maxDuration": 30,
-      "memory": 1024,
-      "includeFiles": "data/estudiantes.json"
-    },
-    "api/teachers.js": {
-      "maxDuration": 30,
-      "memory": 1024,
-      "includeFiles": "data/docentes.json"
-    },
-    "api/analytics/dashboard.js": {
-      "maxDuration": 30,
-      "memory": 1024
-    },
-    "api/admin/pending-registrations.js": {
-      "maxDuration": 30,
-      "memory": 1024,
-      "includeFiles": "data/pending-registrations.json"
-    },
-    "api/egresados.js": {
-      "maxDuration": 30,
-      "memory": 1024,
-      "includeFiles": "lib/**"
-    },
-    "api/auth.js": {
-      "maxDuration": 30,
-      "memory": 1024,
-      "includeFiles": "lib/**"
-    },
-    "api/students-auth.js": {
-      "maxDuration": 30,
-      "memory": 1024,
-      "includeFiles": "lib/**,data/students.json"
-    },
-    "api/contact.js": {
-      "maxDuration": 30,
-      "memory": 1024,
-      "includeFiles": "lib/**,server/services/verificationService.js"
-    },
-    "api/inscriptions.js": {
-      "maxDuration": 30,
-      "memory": 1024,
-      "includeFiles": "lib/**,data/inscriptions.json,data/activities.json,server/services/verificationService.js"
-    },
-    "api/subscriptions.js": {
-      "maxDuration": 30,
-      "memory": 1024,
-      "includeFiles": "lib/**,data/subscribers.json,data/newsletters.json,server/services/verificationService.js"
-    },
-    "api/newsletters.js": {
-      "maxDuration": 30,
-      "memory": 1024,
-      "includeFiles": "lib/**,data/subscribers.json,data/newsletters.json,server/services/verificationService.js"
-    }
-  }
+  "regions": ["iad1"]
 }
