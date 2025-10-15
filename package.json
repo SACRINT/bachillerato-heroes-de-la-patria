@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cd api/server && npm start",
     "dev": "cd api/server && npm run dev",
-    "build": "echo 'Static files ready'",,
+    "build": "echo 'Static files ready'",
     "install-server": "cd server && npm install",
     "docs:install": "node scripts/docs-automation/master-docs.js --install",
     "docs:update": "node scripts/docs-automation/master-docs.js --update",
