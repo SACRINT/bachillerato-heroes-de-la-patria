@@ -1314,58 +1314,53 @@ class AdminDashboard {
     // GESTIÓN DE SOLICITUDES DE REGISTRO
     // ============================================
 
-    /**
-     * Cargar solicitudes de registro pendientes desde la API backend
-     * Utiliza el endpoint /api/admin/pending-registrations con autenticación JWT
-     */
-    async loadPendingRegistrations() {
-        try {
-            console.log('📋 [REGISTRATIONS] Cargando solicitudes desde API backend...');
+async loadPendingRegistrations() {    try {        console.log('📋 [REGISTRATIONS] Cargando solicitudes desde API backend...');
 
-            // Obtener token de administrador
-            const token = this.getAdminToken();
+        const token = this.getAdminToken();
 
-            if (!token) {
-                console.warn('⚠️ [REGISTRATIONS] No hay token disponible - usando fallback local');
-                await this.loadPendingRegistrationsLocal();
-                return;
-            }
-
-            // Llamar a la API real
-            const response = await fetch('/api/admin/pending-registrations', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-
-            if (data.success && data.requests) {
-                // Guardar las solicitudes en dashboardData
-                this.dashboardData.pendingRegistrations = data.requests;
-
-                // Actualizar contador del badge
-                this.updatePendingCounter(data.count);
-
-                console.log(`✅ [REGISTRATIONS] ${data.count} solicitudes pendientes cargadas desde API`);
-            } else {
-                throw new Error('Respuesta inválida de la API');
-            }
-
-        } catch (error) {
-            console.error('❌ [REGISTRATIONS] Error al cargar desde API:', error.message);
-
-            // Fallback: intentar cargar desde localStorage
-            console.log('🔄 [REGISTRATIONS] Usando fallback con datos locales...');
+        if (!token) {
+            console.warn('⚠️ [REGISTRATIONS] No hay token disponible - usando fallback local');
             await this.loadPendingRegistrationsLocal();
+            return;
         }
+
+        const response = await fetch('/api/admin/pending-registrations', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        // ✅ Mover validación de Content-Type *ANTES* de .json()
+        const contentType = response.headers.get('Content-Type') || '';
+
+        if (!contentType.includes('application/json')) {
+            console.warn(`⚠️ [REGISTRATIONS] La API devolvió HTML en lugar de JSON. Activando fallback...`);
+            await this.loadPendingRegistrationsLocal();
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success && data.requests) {
+            this.dashboardData.pendingRegistrations = data.requests;
+            this.updatePendingCounter(data.count);
+            console.log(`✅ [REGISTRATIONS] ${data.count} solicitudes pendientes cargadas desde API`);
+        } else {
+            throw new Error('Respuesta inválida de la API');
+        }
+
+    } catch (error) {
+        console.error('❌ [REGISTRATIONS] Error al cargar desde API:', error.message);
+        console.log('🔄 [REGISTRATIONS] Usando fallback con datos locales...');
+        await this.loadPendingRegistrationsLocal();
     }
+}
 
     /**
      * Fallback: Cargar solicitudes desde localStorage
