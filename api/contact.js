@@ -263,6 +263,7 @@ export default async function handler(req, res) {
 
                     if (result.success) {
                         console.log(`✅ [VERIFIED] Mensaje enviado a la escuela desde: ${formData.email}`);
+
                         return res.status(200).send(`
                             <!DOCTYPE html>
                             <html>
