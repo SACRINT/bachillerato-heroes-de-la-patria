@@ -22,7 +22,7 @@ const session = require('express-session');
 const path = require('path');
 
 // Inicializar la conexión a la base de datos
-require('./config/database');
+require(path.join(__dirname, 'config/database'));
 
 // Routes
 const authRoutes = require('./routes/auth');
