@@ -1,7 +1,12 @@
-const path = require('path');
-const fs = require('fs').promises;
+import path from 'path';
+import fs from 'fs/promises';
+import { fileURLToPath } from 'url';
 
-module.exports = async (req, res) => {
+// Helper para obtener __dirname en módulos ES
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default async (req, res) => {
   // Simple check for admin authentication (en un caso real, esto usaría un middleware y validación de token JWT)
   const isAuthenticated = req.headers.authorization;
 
@@ -10,7 +15,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // Construir la ruta al archivo JSON
+    // Construir la ruta al archivo JSON de forma robusta
     const jsonPath = path.join(__dirname, '..', 'data', 'pending-registrations.json');
     
     // Leer el archivo

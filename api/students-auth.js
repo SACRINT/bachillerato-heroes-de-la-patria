@@ -5,8 +5,12 @@ import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import { URL } from 'url';
 
-// Archivo de estudiantes (asumiendo que está en la raíz del proyecto o en /data)
-const STUDENTS_FILE = path.join(process.cwd(), 'data/students.json');
+// Helper para obtener __dirname en módulos ES
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Archivo de estudiantes
+const STUDENTS_FILE = path.join(__dirname, '..', 'data', 'students.json');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // ============================================

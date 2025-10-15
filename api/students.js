@@ -1,9 +1,14 @@
-const path = require('path');
-const fs = require('fs').promises;
+import path from 'path';
+import fs from 'fs/promises';
+import { fileURLToPath } from 'url';
 
-module.exports = async (req, res) => {
+// Helper para obtener __dirname en módulos ES
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default async (req, res) => {
   try {
-    // Construir la ruta al archivo JSON
+    // Construir la ruta al archivo JSON de forma robusta
     const jsonPath = path.join(__dirname, '..', 'data', 'estudiantes.json');
     
     // Leer el archivo
@@ -11,7 +16,8 @@ module.exports = async (req, res) => {
     const data = JSON.parse(fileContent);
 
     // Aplicar límite si se especifica en la query
-    const limit = req.query.limit ? parseInt(req.query.limit, 10) : undefined;
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const limit = url.searchParams.has('limit') ? parseInt(url.searchParams.get('limit'), 10) : undefined;
     const students = limit ? data.estudiantes.slice(0, limit) : data.estudiantes;
 
     // Enviar respuesta exitosa
