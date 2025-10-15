@@ -10,6 +10,10 @@
       "destination": "/api/auth.js"
     },
     {
+      "source": "/api/students-auth",
+      "destination": "/api/students-auth.js"
+    },
+    {
       ""source": "/api/(.*)",
       "destination": "/backend/api/index.js"
     },
@@ -37,6 +41,11 @@
       "maxDuration": 30,
       "memory": 1024,
       "includeFiles": ["lib/**"]
+    },
+    "api/students-auth.js": {
+      "maxDuration": 30,
+      "memory": 1024,
+      "includeFiles": ["lib/**", "data/students.json"]
     }
   }
 }
