@@ -18,10 +18,6 @@
       "destination": "/api/contact.js"
     },
     {
-      "source": "/api/(.*)",
-      "destination": "/backend/api/index.js"
-    },
-    {
       "source": "/(.*)",
       "destination": "/public/$1"
     }
@@ -31,11 +27,6 @@
   },
   "regions": ["iad1"],
   "functions": {
-    "backend/api/index.js": {
-      "maxDuration": 30,
-      "memory": 1024,
-      "includeFiles": ["server/**", "lib/**"]
-    },
     "api/egresados.js": {
       "maxDuration": 30,
       "memory": 1024,
