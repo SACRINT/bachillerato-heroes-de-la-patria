@@ -1373,20 +1373,16 @@ class AdminDashboard {
      */
     async loadPendingRegistrationsLocal() {
         try {
-            // Cargar desde localStorage
-            const localRegistrations = JSON.parse(localStorage.getItem('pending_registrations') || '[]');
-
-            // NUEVO: Integrar usuarios pendientes de Google Auth
-            const pendingUsers = JSON.parse(localStorage.getItem('bge_pending_users') || '[]');
+            // Cargar desde localStorage con seguridad
+            const localRegistrations = this.safeParse(localStorage.getItem('pending_registrations')) || [];
+            const pendingUsers = this.safeParse(localStorage.getItem('bge_pending_users')) || [];
 
             // Combinar ambas listas evitando duplicados
             const combinedRegistrations = [...localRegistrations];
 
             pendingUsers.forEach(user => {
-                // Verificar si ya existe en la lista local
                 const exists = localRegistrations.some(reg => reg.email === user.email);
                 if (!exists) {
-                    // Convertir formato de usuario pendiente de Google Auth al formato de registro
                     combinedRegistrations.push({
                         id: `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
                         email: user.email,
@@ -1394,7 +1390,7 @@ class AdminDashboard {
                         requestedRole: user.role || 'estudiante',
                         createdAt: user.requestDate || new Date().toISOString(),
                         picture: user.picture,
-                        source: 'google_auth', // Identificar origen
+                        source: 'google_auth',
                         status: 'pending'
                     });
                 }
@@ -1408,6 +1404,15 @@ class AdminDashboard {
             console.warn('⚠️ [LOCAL] Error cargando solicitudes locales:', error);
             this.dashboardData.pendingRegistrations = [];
             this.updatePendingCounter(0);
+        }
+    }
+
+    // ✅ Función auxiliar para parsear JSON sin romper el flujo
+    safeParse(jsonString) {
+        try {
+            return JSON.parse(jsonString);
+        } catch (e) {
+            return null;
         }
     }
 
