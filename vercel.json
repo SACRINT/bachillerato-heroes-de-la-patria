@@ -30,22 +30,22 @@
     "api/egresados.js": {
       "maxDuration": 30,
       "memory": 1024,
-      "includeFiles": ["lib/**"]
+      "includeFiles": "lib/**"
     },
     "api/auth.js": {
       "maxDuration": 30,
       "memory": 1024,
-      "includeFiles": ["lib/**"]
+      "includeFiles": "lib/**"
     },
     "api/students-auth.js": {
       "maxDuration": 30,
       "memory": 1024,
-      "includeFiles": ["lib/**", "data/students.json"]
+      "includeFiles": "lib/**,data/students.json"
     },
     "api/contact.js": {
       "maxDuration": 30,
       "memory": 1024,
-      "includeFiles": ["lib/**", "server/services/verificationService.js"]
+      "includeFiles": "lib/**,server/services/verificationService.js"
     }
   }
 }
