@@ -10,6 +10,6 @@
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 
 // Importar y exportar la aplicación Express
-const app = require(require('path').join(__dirname, '../backend/server'));
+const app = require(require('path').join(__dirname, '../server/server'));
 
 module.exports = app;
