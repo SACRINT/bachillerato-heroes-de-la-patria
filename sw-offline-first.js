@@ -194,6 +194,7 @@ self.addEventListener('fetch', event => {
     // Let them go directly to the server to avoid 404 conflicts
     if (url.pathname.includes('/api/auth/') ||
         url.pathname.includes('/api/analytics/') ||
+        url.pathname.includes('/api/contact/') ||  // ✅ Permitir verificación de email
         url.pathname.includes('/health') ||
         url.pathname.includes('/dashboard-manager-2025.js') ||
         url.pathname.includes('/admin-dashboard.js') ||
