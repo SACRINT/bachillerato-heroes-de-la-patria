@@ -57,6 +57,13 @@ class GradesManager {
 
     async loadStudents() {
         try {
+            // ✅ SAFEGUARD: Verificar que window.apiClient esté disponible
+            if (!window.apiClient || typeof window.apiClient.request !== 'function') {
+                console.warn('⚠️ [GRADES] window.apiClient no disponible, usando datos demo');
+                this.students = this.getDemoStudents();
+                return;
+            }
+
             const response = await window.apiClient.request('/api/students', {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
             });

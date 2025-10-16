@@ -57,20 +57,26 @@ class GradesManager {
 
     async loadStudents() {
         try {
-            const response = await fetch('/api/students', {
+            // ✅ SAFEGUARD: Verificar que window.apiClient esté disponible
+            if (!window.apiClient || typeof window.apiClient.request !== 'function') {
+                console.warn('⚠️ [GRADES] window.apiClient no disponible, usando datos demo');
+                this.students = this.getDemoStudents();
+                return;
+            }
+
+            const response = await window.apiClient.request('/api/students', {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
             });
 
-            if (response.ok) {
-                const result = await response.json();
-                this.students = result.data || result;
+            if (response.success && response.data && Array.isArray(response.data.students)) {
+                this.students = response.data.students;
             } else {
-                throw new Error(`Error ${response.status}`);
+                console.warn('⚠️ [GRADES] No se pudieron cargar los estudiantes de la API, usando array vacío o datos demo.');
+                this.students = this.getDemoStudents(); // Fallback to demo students
             }
         } catch (error) {
-            // ✅ CORRECCIÓN: Fallback a estudiantes demo cuando API no disponible
-            console.log('ℹ️ [GRADES] API de estudiantes no disponible, usando datos demo');
-            this.students = this.getDemoStudents();
+            console.error('❌ [GRADES] Error al cargar estudiantes:', error);
+            this.students = this.getDemoStudents(); // Fallback to demo students on API call error
         }
     }
 
@@ -297,6 +303,48 @@ class GradesManager {
     }
 
     renderCaptureForm() {
+        // --- DEBUG + SAFEGUARD: Garantizar que this.students sea un array ---
+        console.groupCollapsed('DEBUG GradesManager - students check');
+        console.log('typeof this.students:', typeof this.students);
+        console.log('this.students (shallow):', this.students && (Array.isArray(this.students) ? '[Array]' : Object.prototype.toString.call(this.students)));
+        try {
+          // show small preview safely
+          if (this.students && typeof this.students === 'object') {
+            // limit output length
+            const preview = Array.isArray(this.students)
+              ? this.students.slice(0,5)
+              : (this.students.data && Array.isArray(this.students.data.students) ? this.students.data.students.slice(0,5) : this.students);
+            console.log('preview:', preview);
+          }
+        } catch(e) { console.warn('error previewing this.students', e); }
+        console.groupEnd();
+
+        // Normalize to an array in the most likely shapes we expect
+        if (!Array.isArray(this.students)) {
+          if (this.students && this.students.data && Array.isArray(this.students.data.students)) {
+            this.students = this.students.data.students;
+          } else if (this.students && Array.isArray(this.students.students)) {
+            // in case API returned { students: [...] } at top level
+            this.students = this.students.students;
+          } else {
+            // fallback safe empty array
+            this.students = [];
+          }
+        }
+
+        // AÑADE ESTA VERIFICACIÓN
+        if (!Array.isArray(this.students) || this.students.length === 0) {
+            return `
+                <form id="grade-capture-form">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="text-center text-muted">No hay estudiantes disponibles para capturar calificaciones.</p>
+                        </div>
+                    </div>
+                </form>
+            `;
+        }
+
         return `
             <form id="grade-capture-form">
                 <div class="row">
