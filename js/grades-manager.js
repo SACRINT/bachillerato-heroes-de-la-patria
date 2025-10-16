@@ -57,20 +57,19 @@ class GradesManager {
 
     async loadStudents() {
         try {
-            const response = await fetch('/api/students', {
+            const response = await window.apiClient.request('/api/students', {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
             });
 
-            if (response.ok) {
-                const result = await response.json();
-                this.students = result.data.students || [];
+            if (response.success && response.data && Array.isArray(response.data.students)) {
+                this.students = response.data.students;
             } else {
-                throw new Error(`Error ${response.status}`);
+                console.warn('⚠️ [GRADES] No se pudieron cargar los estudiantes de la API, usando array vacío o datos demo.');
+                this.students = this.getDemoStudents(); // Fallback to demo students
             }
         } catch (error) {
-            // ✅ CORRECCIÓN: Fallback a estudiantes demo cuando API no disponible
-            console.log('ℹ️ [GRADES] API de estudiantes no disponible, usando datos demo');
-            this.students = this.getDemoStudents();
+            console.error('❌ [GRADES] Error al cargar estudiantes:', error);
+            this.students = this.getDemoStudents(); // Fallback to demo students on API call error
         }
     }
 
