@@ -462,6 +462,126 @@ Enviado: ${new Date().toLocaleString('es-MX')}
     }
 }
 
+// ============================================
+// HANDLER DE INSCRIPTIONS/REGISTER
+// ============================================
+async function handleInscriptionsRegister(req, res) {
+    try {
+        const chunks = [];
+        for await (const chunk of req) {
+            chunks.push(chunk);
+        }
+        const body = JSON.parse(Buffer.concat(chunks).toString());
+
+        const { studentName, studentEmail, activityId, activityName, comments } = body;
+
+        console.log('📝 [API] Nueva inscripción recibida:', {
+            studentName,
+            activityName
+        });
+
+        // Validaciones básicas
+        if (!studentName || !studentEmail || !activityId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Faltan campos requeridos'
+            });
+        }
+
+        // ✅ CREAR VERIFICACIÓN para inscripción
+        const token = await verificationService.createVerification({
+            nombre: studentName,
+            name: studentName,
+            email: studentEmail,
+            asunto: `Inscripción a actividad: ${activityName}`,
+            subject: `Inscripción a actividad: ${activityName}`,
+            mensaje: `Solicitud de inscripción a la actividad "${activityName}". ${comments ? `Comentarios: ${comments}` : ''}`,
+            message: `Solicitud de inscripción a la actividad "${activityName}". ${comments ? `Comentarios: ${comments}` : ''}`,
+            form_type: 'Inscripción a Actividad',
+            activityId,
+            activityName,
+            comments
+        });
+
+        console.log(`✅ [API] Email de verificación enviado para inscripción`);
+
+        res.status(200).json({
+            success: true,
+            message: '📧 Se ha enviado un email de confirmación. Revisa tu bandeja de entrada y confirma tu inscripción.',
+            requiresVerification: true
+        });
+
+    } catch (error) {
+        console.error('❌ [API] Error en handleInscriptionsRegister:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al procesar inscripción'
+        });
+    }
+}
+
+// ============================================
+// HANDLER DE EGRESADOS
+// ============================================
+async function handleEgresados(req, res) {
+    try {
+        const chunks = [];
+        for await (const chunk of req) {
+            chunks.push(chunk);
+        }
+        const body = JSON.parse(Buffer.concat(chunks).toString());
+
+        const { nombre, apellido, email, telefono, anioEgreso, carreraActual, empresa, puesto } = body;
+
+        console.log('👨‍🎓 [API] Actualización de egresado recibida:', {
+            nombre,
+            apellido,
+            email
+        });
+
+        // Validaciones básicas
+        if (!nombre || !apellido || !email || !anioEgreso) {
+            return res.status(400).json({
+                success: false,
+                message: 'Faltan campos requeridos: nombre, apellido, email, año de egreso'
+            });
+        }
+
+        // ✅ CREAR VERIFICACIÓN para actualización de egresado
+        const token = await verificationService.createVerification({
+            nombre: `${nombre} ${apellido}`,
+            name: `${nombre} ${apellido}`,
+            email,
+            telefono,
+            phone: telefono,
+            asunto: `Actualización de datos de egresado: ${nombre} ${apellido}`,
+            subject: `Actualización de datos de egresado: ${nombre} ${apellido}`,
+            mensaje: `Año de egreso: ${anioEgreso}\n${carreraActual ? `Carrera actual: ${carreraActual}\n` : ''}${empresa ? `Empresa: ${empresa}\n` : ''}${puesto ? `Puesto: ${puesto}` : ''}`,
+            message: `Año de egreso: ${anioEgreso}\n${carreraActual ? `Carrera actual: ${carreraActual}\n` : ''}${empresa ? `Empresa: ${empresa}\n` : ''}${puesto ? `Puesto: ${puesto}` : ''}`,
+            form_type: 'Actualización de Egresado',
+            anioEgreso,
+            carreraActual,
+            empresa,
+            puesto
+        });
+
+        console.log(`✅ [API] Email de verificación enviado para actualización de egresado`);
+
+        res.status(200).json({
+            success: true,
+            message: '📧 Se ha enviado un email de confirmación. Por favor verifica tu correo para completar la actualización.',
+            requiresVerification: true
+        });
+
+    } catch (error) {
+        console.error('❌ [API] Error en handleEgresados:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al procesar actualización de egresado'
+        });
+    }
+}
+
 // --- Router Principal ---
 
 export default async function handler(req, res) {
@@ -510,6 +630,20 @@ export default async function handler(req, res) {
         case '/api/contact/send': // ✅ NUEVO: Formulario de contacto
             if (req.method === 'POST') {
                 return handleContactSend(req, res);
+            } else {
+                return res.status(405).json({ success: false, error: 'Método no permitido. Usa POST.' });
+            }
+
+        case '/api/inscriptions/register': // ✅ NUEVO: Inscripciones a actividades
+            if (req.method === 'POST') {
+                return handleInscriptionsRegister(req, res);
+            } else {
+                return res.status(405).json({ success: false, error: 'Método no permitido. Usa POST.' });
+            }
+
+        case '/api/egresados': // ✅ NUEVO: Actualización de egresados
+            if (req.method === 'POST') {
+                return handleEgresados(req, res);
             } else {
                 return res.status(405).json({ success: false, error: 'Método no permitido. Usa POST.' });
             }
