@@ -111,17 +111,16 @@ async function handleSubjects(req, res) {
     }
 }
 
-async function handleGamificationProfile(req, res) {
-    // Datos mockeados para el perfil de gamificación
-    res.status(200).json({ success: true, data: {
-        user: 'admin @bge.edu.mx',
-        level: 10,
-        points: 1500,
-        badges: ['first_login', 'early_adopter', 'problem_solver'],
-        rank: 'Gold'
-    }});
-}
-
+async function handleGamificationProfile(req, res, identifier) { // Añade 'identifier' como parámetro
+        // Usa el 'identifier' para devolver datos específicos del perfil
+        res.status(200).json({ success: true, data: {
+            user: identifier || 'default', // Usa el identificador aquí
+            level: 10,
+            points: 1500,
+            badges: ['first_login', 'early_adopter'],
+            rank: 'Gold'
+        }});
+    }
 async function handleGamificationDailyChallenges(req, res) {
     // Datos mockeados para desafíos diarios
     res.status(200).json({ success: true, data: {
@@ -160,6 +159,12 @@ export default async function handler(req, res) {
     if (path.startsWith('/api/students-auth')) {
         return handleStudentsAuth(req, res);
     }
+    // NUEVO: Manejar rutas de perfil de gamificación dinámicas
+    if (path.startsWith('/api/gamification/profile/')) {
+        const parts = path.split('/');
+        const identifier = parts[parts.length - 1]; // Extrae "admin@bge.edu.mx"
+        return handleGamificationProfile(req, res, identifier);
+    }
 
     // Rutas de coincidencia exacta
     switch (path) {
@@ -176,8 +181,6 @@ export default async function handler(req, res) {
             return handleHealth(req, res);
         case '/api/subjects': // NUEVA RUTA
             return handleSubjects(req, res);
-        case '/api/gamification/profile/admin': // NUEVA RUTA
-            return handleGamificationProfile(req, res);
         case '/api/gamification/daily-challenges': // NUEVA RUTA
             return handleGamificationDailyChallenges(req, res);
         case '/api/calendar/events': // NUEVA RUTA
