@@ -90,6 +90,10 @@ async function handleStudentsAuth(req, res) {
     }
 }
 
+async function handleHealth(req, res) {
+    res.status(200).json({ success: true, status: 'API is healthy' });
+}
+
 // --- Router Principal ---
 
 export default async function handler(req, res) {
@@ -115,6 +119,8 @@ export default async function handler(req, res) {
             return handleAnalytics(req, res);
         case '/api/admin/pending-registrations':
             return handlePendingRegistrations(req, res);
+        case '/api/health':
+            return handleHealth(req, res);
         // Agrega aquí los otros endpoints que son de coincidencia exacta
         // ej. /api/egresados, /api/contact, etc.
 
