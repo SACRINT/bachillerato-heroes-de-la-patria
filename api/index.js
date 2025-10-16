@@ -94,6 +94,59 @@ async function handleHealth(req, res) {
     res.status(200).json({ success: true, status: 'API is healthy' });
 }
 
+// --- Handlers para cada ruta (Nuevos) ---
+
+async function handleSubjects(req, res) {
+    try {
+        // Intenta leer de un archivo JSON si existe
+        const data = await readJsonFile('subjects.json'); // Asegúrate de tener un data/subjects.json
+        res.status(200).json({ success: true, data: { subjects: data.subjects } });
+    } catch (error) {
+        // Si el archivo no existe o hay un error, devuelve datos mockeados
+        res.status(200).json({ success: true, data: { subjects: [
+            { id: 'SUB001', name: 'Matemáticas', code: 'MAT101', description: 'Curso de matemáticas básicas' },
+            { id: 'SUB002', name: 'Física', code: 'FIS201', description: 'Introducción a la física' },
+            { id: 'SUB003', name: 'Química', code: 'QUI301', description: 'Fundamentos de química' }
+        ]}});
+    }
+}
+
+async function handleGamificationProfile(req, res) {
+    // Datos mockeados para el perfil de gamificación
+    res.status(200).json({ success: true, data: {
+        user: 'admin @bge.edu.mx',
+        level: 10,
+        points: 1500,
+        badges: ['first_login', 'early_adopter', 'problem_solver'],
+        rank: 'Gold'
+    }});
+}
+
+async function handleGamificationDailyChallenges(req, res) {
+    // Datos mockeados para desafíos diarios
+    res.status(200).json({ success: true, data: {
+        challenges: [
+            { id: 'CHL001', name: 'Completar 3 tareas', points: 50, completed: false, deadline: '2025-10-16' },
+            { id: 'CHL002', name: 'Iniciar sesión 3 días seguidos', points: 100, completed: true, deadline: '2025-10-15' },
+            { id: 'CHL003', name: 'Participar en foro', points: 75, completed: false, deadline: '2025-10-17' }
+        ]
+    }});
+}
+
+async function handleCalendarEvents(req, res) {
+    // Puedes leer de un archivo JSON o devolver datos mockeados
+    try {
+        const data = await readJsonFile('eventos.json'); // Asegúrate de tener un data/eventos.json
+        res.status(200).json({ success: true, data: { events: data.events } });
+    } catch (error) {
+        res.status(200).json({ success: true, data: { events: [
+            { id: 'EVT001', title: 'Reunión de Padres', date: '2025-10-20', time: '18:00', location: 'Zoom' },
+            { id: 'EVT002', title: 'Examen Final Matemáticas', date: '2025-10-25', time: '09:00', subject: 'Matemáticas' },
+            { id: 'EVT003', title: 'Festival de Otoño', date: '2025-11-05', time: '10:00', location: 'Patio Central' }
+        ]}});
+    }
+}
+
 // --- Router Principal ---
 
 export default async function handler(req, res) {
@@ -121,6 +174,14 @@ export default async function handler(req, res) {
             return handlePendingRegistrations(req, res);
         case '/api/health':
             return handleHealth(req, res);
+        case '/api/subjects': // NUEVA RUTA
+            return handleSubjects(req, res);
+        case '/api/gamification/profile/admin': // NUEVA RUTA
+            return handleGamificationProfile(req, res);
+        case '/api/gamification/daily-challenges': // NUEVA RUTA
+            return handleGamificationDailyChallenges(req, res);
+        case '/api/calendar/events': // NUEVA RUTA
+            return handleCalendarEvents(req, res);
         // Agrega aquí los otros endpoints que son de coincidencia exacta
         // ej. /api/egresados, /api/contact, etc.
 
