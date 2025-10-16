@@ -296,6 +296,35 @@ class GradesManager {
     }
 
     renderCaptureForm() {
+        // --- DEBUG + SAFEGUARD: Garantizar que this.students sea un array ---
+        console.groupCollapsed('DEBUG GradesManager - students check');
+        console.log('typeof this.students:', typeof this.students);
+        console.log('this.students (shallow):', this.students && (Array.isArray(this.students) ? '[Array]' : Object.prototype.toString.call(this.students)));
+        try {
+          // show small preview safely
+          if (this.students && typeof this.students === 'object') {
+            // limit output length
+            const preview = Array.isArray(this.students)
+              ? this.students.slice(0,5)
+              : (this.students.data && Array.isArray(this.students.data.students) ? this.students.data.students.slice(0,5) : this.students);
+            console.log('preview:', preview);
+          }
+        } catch(e) { console.warn('error previewing this.students', e); }
+        console.groupEnd();
+
+        // Normalize to an array in the most likely shapes we expect
+        if (!Array.isArray(this.students)) {
+          if (this.students && this.students.data && Array.isArray(this.students.data.students)) {
+            this.students = this.students.data.students;
+          } else if (this.students && Array.isArray(this.students.students)) {
+            // in case API returned { students: [...] } at top level
+            this.students = this.students.students;
+          } else {
+            // fallback safe empty array
+            this.students = [];
+          }
+        }
+
         // AÑADE ESTA VERIFICACIÓN
         if (!Array.isArray(this.students) || this.students.length === 0) {
             return `
