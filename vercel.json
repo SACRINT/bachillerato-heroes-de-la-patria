@@ -1,11 +1,32 @@
 {
   "version": 2,
+  "public": "public",
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/backend/server.js"
+    },
     {
       "source": "/(.*)",
       "destination": "/public/$1"
     }
   ],
+  "headers": [
+    {
+      "source": "/manifest.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/manifest+json" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ],
+  "functions": {
+    "backend/server.js": {
+      "maxDuration": 30,
+      "memory": 1024,
+      "includeFiles": "backend/**"
+    }
+  },
   "env": {
     "NODE_ENV": "production"
   },
