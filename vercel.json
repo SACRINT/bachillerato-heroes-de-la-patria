@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/backend/server.js"
+      "destination": "/api/index.js"
     },
     {
       "source": "/(.*)",
@@ -19,13 +19,6 @@
       ]
     }
   ],
-  "functions": {
-    "backend/server.js": {
-      "maxDuration": 30,
-      "memory": 1024,
-      "includeFiles": "backend/**"
-    }
-  },
   "env": {
     "NODE_ENV": "production"
   },
