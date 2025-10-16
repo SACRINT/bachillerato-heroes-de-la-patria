@@ -93,20 +93,40 @@ class GradesManager {
 
     async loadSubjects() {
         try {
-            // Cargar materias desde base de datos
-            const response = await fetch('/api/subjects', {
+            // ✅ SAFEGUARD: Verificar que window.apiClient esté disponible
+            if (!window.apiClient || typeof window.apiClient.request !== 'function') {
+                console.warn('⚠️ [GRADES] window.apiClient no disponible para materias, usando datos demo');
+                this.subjects = this.getDemoSubjects();
+                return;
+            }
+
+            // Cargar materias desde API usando apiClient
+            const response = await window.apiClient.request('/api/subjects', {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
             });
 
-            if (response.ok) {
-                const result = await response.json();
-                this.subjects = result.data || result;
+            if (response.success && response.data) {
+                // Normalizar respuesta - puede venir como array directo o dentro de data.subjects
+                if (Array.isArray(response.data)) {
+                    this.subjects = response.data;
+                } else if (response.data.subjects && Array.isArray(response.data.subjects)) {
+                    this.subjects = response.data.subjects;
+                } else {
+                    console.warn('⚠️ [GRADES] Formato de respuesta inesperado para materias');
+                    this.subjects = this.getDemoSubjects();
+                }
             } else {
-                throw new Error(`Error ${response.status}`);
+                console.warn('⚠️ [GRADES] No se pudieron cargar materias de la API, usando datos demo');
+                this.subjects = this.getDemoSubjects();
             }
         } catch (error) {
-            // ✅ CORRECCIÓN: Fallback a materias demo cuando API no disponible
-            console.log('ℹ️ [GRADES] API de materias no disponible, usando datos demo');
+            console.error('❌ [GRADES] Error al cargar materias:', error);
+            this.subjects = this.getDemoSubjects();
+        }
+
+        // ✅ SAFEGUARD FINAL: Garantizar que subjects sea SIEMPRE un array
+        if (!Array.isArray(this.subjects)) {
+            console.warn('⚠️ [GRADES] this.subjects no es array, forzando a datos demo');
             this.subjects = this.getDemoSubjects();
         }
     }
