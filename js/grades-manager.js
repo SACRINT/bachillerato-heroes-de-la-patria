@@ -63,7 +63,7 @@ class GradesManager {
 
             if (response.ok) {
                 const result = await response.json();
-                this.students = result.data || result;
+                this.students = result.data.students || [];
             } else {
                 throw new Error(`Error ${response.status}`);
             }
