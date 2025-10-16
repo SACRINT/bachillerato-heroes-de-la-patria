@@ -111,6 +111,7 @@ export default async function handler(req, res) {
         case '/api/teachers':
             return handleTeachers(req, res);
         case '/api/analytics':
+        case '/api/analytics/dashboard':
             return handleAnalytics(req, res);
         case '/api/admin/pending-registrations':
             return handlePendingRegistrations(req, res);
