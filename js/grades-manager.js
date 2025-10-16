@@ -297,6 +297,19 @@ class GradesManager {
     }
 
     renderCaptureForm() {
+        // AÑADE ESTA VERIFICACIÓN
+        if (!Array.isArray(this.students) || this.students.length === 0) {
+            return `
+                <form id="grade-capture-form">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="text-center text-muted">No hay estudiantes disponibles para capturar calificaciones.</p>
+                        </div>
+                    </div>
+                </form>
+            `;
+        }
+
         return `
             <form id="grade-capture-form">
                 <div class="row">
