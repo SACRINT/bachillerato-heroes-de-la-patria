@@ -376,7 +376,8 @@ class JobPortal {
         if (!select) return;
 
         const currentYear = new Date().getFullYear();
-        for (let year = currentYear; year >= currentYear - 10; year--) {
+        // ✅ CAMBIO: Rango ampliado de 1950 hasta año actual (antes solo 10 años)
+        for (let year = currentYear; year >= 1950; year--) {
             const option = document.createElement('option');
             option.value = year;
             option.textContent = year;
@@ -667,17 +668,18 @@ class JobPortal {
 
         const profile = {
             id: this.generateId(),
-            fullName: formData.get('fullName'),
+            fullName: formData.get('name'), // ✅ FIX: El campo se llama 'name', no 'fullName'
             email: formData.get('email'),
             phone: formData.get('phone'),
             graduationYear: formData.get('graduationYear'),
-            professionalSummary: formData.get('professionalSummary'),
+            professionalSummary: formData.get('message'), // ✅ FIX: El campo se llama 'message', no 'professionalSummary'
             skills: formData.get('skills'),
+            subject: formData.get('subject'), // ✅ FIX: Agregar subject que también se necesita
             createdAt: new Date().toISOString()
         };
 
-        // Validación básica
-        if (!profile.fullName || !profile.email || !profile.phone) {
+        // ✅ FIX: Validación corregida - ahora valida los campos correctos
+        if (!profile.fullName || !profile.email || !profile.phone || !profile.subject || !profile.professionalSummary) {
             this.showAlert('Por favor completa todos los campos obligatorios', 'error');
             return;
         }
