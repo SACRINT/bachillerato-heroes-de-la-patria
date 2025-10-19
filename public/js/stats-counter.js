@@ -11,7 +11,7 @@ if (typeof window.StatsCounter !== 'undefined') {
 class StatsCounter {
     constructor() {
         console.log('📊 [STATS] Inicializando contador de estadísticas...');
-        this.apiBase = 'data/';
+        this.apiBase = '/api/';
         this.init();
     }
 
@@ -27,16 +27,16 @@ class StatsCounter {
         }
     }
 
-    async fetchData(endpoint) {
+    async fetchStats(endpoint) {
         try {
-            console.log(`📥 [STATS] Cargando datos de ${endpoint}...`);
-            const response = await fetch(`${this.apiBase}${endpoint}`);
+            console.log(`📥 [STATS] Cargando estadísticas de ${endpoint}...`);
+            const response = await fetch(`${this.apiBase}${endpoint}/stats`);
             if (!response.ok) {
                 throw new Error(`Error ${response.status}: ${response.statusText}`);
             }
-            const data = await response.json();
-            console.log(`✅ [STATS] ${endpoint} cargado:`, data);
-            return data;
+            const result = await response.json();
+            console.log(`✅ [STATS] ${endpoint} stats cargado:`, result);
+            return result.success ? result.data : null;
         } catch (error) {
             console.error(`❌ [STATS] Error cargando ${endpoint}:`, error);
             return null;
@@ -44,123 +44,31 @@ class StatsCounter {
     }
 
     async countNoticias() {
-        let totalCount = 0;
-
-        // Contar desde archivo JSON
-        const data = await this.fetchData('noticias.json');
-        if (data && data.noticias) {
-            totalCount += data.noticias.filter(n => n.activo).length;
-        }
-
-        // Contar desde localStorage (noticias creadas en CMS)
-        const cmsData = localStorage.getItem('cms_noticias.json');
-        if (cmsData) {
-            try {
-                const parsedData = JSON.parse(cmsData);
-                if (parsedData.noticias) {
-                    totalCount += parsedData.noticias.filter(n => n.activo).length;
-                }
-            } catch (e) {
-                console.warn('⚠️ [STATS] Error parseando noticias del localStorage:', e);
-            }
-        }
-
-        console.log(`📰 [STATS] Noticias activas totales: ${totalCount}`);
-        return totalCount;
+        const stats = await this.fetchStats('noticias');
+        const publicadas = stats ? parseInt(stats.publicadas || 0) : 0;
+        console.log(`📰 [STATS] Noticias publicadas: ${publicadas}`);
+        return publicadas;
     }
 
     async countEventos() {
-        let totalCount = 0;
-
-        // Contar desde archivo JSON
-        const data = await this.fetchData('eventos.json');
-        if (data && data.eventos) {
-            totalCount += data.eventos.filter(e => e.activo).length;
-        }
-
-        // Contar desde localStorage (eventos creados en CMS)
-        const cmsData = localStorage.getItem('cms_eventos.json');
-        if (cmsData) {
-            try {
-                const parsedData = JSON.parse(cmsData);
-                if (parsedData.eventos) {
-                    totalCount += parsedData.eventos.filter(e => e.activo).length;
-                }
-            } catch (e) {
-                console.warn('⚠️ [STATS] Error parseando eventos del localStorage:', e);
-            }
-        }
-
-        console.log(`📅 [STATS] Eventos activos totales: ${totalCount}`);
-        return totalCount;
+        const stats = await this.fetchStats('eventos');
+        const publicados = stats ? parseInt(stats.publicadas || 0) : 0;
+        console.log(`📅 [STATS] Eventos publicados: ${publicados}`);
+        return publicados;
     }
 
     async countAvisos() {
-        let totalCount = 0;
-
-        // Contar desde archivo JSON
-        const data = await this.fetchData('avisos.json');
-        if (data && data.avisos) {
-            const now = new Date();
-            totalCount += data.avisos.filter(aviso => {
-                if (!aviso.activo) return false;
-
-                const fechaInicio = new Date(aviso.fechaInicio);
-                const fechaFin = aviso.fechaFin ? new Date(aviso.fechaFin) : null;
-
-                return fechaInicio <= now && (!fechaFin || fechaFin >= now);
-            }).length;
-        }
-
-        // Contar desde localStorage (avisos creados en CMS)
-        const cmsData = localStorage.getItem('cms_avisos.json');
-        if (cmsData) {
-            try {
-                const parsedData = JSON.parse(cmsData);
-                if (parsedData.avisos) {
-                    const now = new Date();
-                    totalCount += parsedData.avisos.filter(aviso => {
-                        if (!aviso.activo) return false;
-
-                        const fechaInicio = new Date(aviso.fechaInicio);
-                        const fechaFin = aviso.fechaFin ? new Date(aviso.fechaFin) : null;
-
-                        return fechaInicio <= now && (!fechaFin || fechaFin >= now);
-                    }).length;
-                }
-            } catch (e) {
-                console.warn('⚠️ [STATS] Error parseando avisos del localStorage:', e);
-            }
-        }
-
-        console.log(`⚠️ [STATS] Avisos vigentes totales: ${totalCount}`);
-        return totalCount;
+        const stats = await this.fetchStats('avisos');
+        const publicados = stats ? parseInt(stats.publicadas || 0) : 0;
+        console.log(`⚠️ [STATS] Avisos publicados: ${publicados}`);
+        return publicados;
     }
 
     async countComunicados() {
-        let totalCount = 0;
-
-        // Contar desde archivo JSON
-        const data = await this.fetchData('comunicados.json');
-        if (data && data.comunicados) {
-            totalCount += data.comunicados.filter(c => c.activo).length;
-        }
-
-        // Contar desde localStorage (comunicados creados en CMS)
-        const cmsData = localStorage.getItem('cms_comunicados.json');
-        if (cmsData) {
-            try {
-                const parsedData = JSON.parse(cmsData);
-                if (parsedData.comunicados) {
-                    totalCount += parsedData.comunicados.filter(c => c.activo).length;
-                }
-            } catch (e) {
-                console.warn('⚠️ [STATS] Error parseando comunicados del localStorage:', e);
-            }
-        }
-
-        console.log(`📋 [STATS] Comunicados activos totales: ${totalCount}`);
-        return totalCount;
+        const stats = await this.fetchStats('comunicados');
+        const publicados = stats ? parseInt(stats.publicadas || 0) : 0;
+        console.log(`📋 [STATS] Comunicados publicados: ${publicados}`);
+        return publicados;
     }
 
     async updateAllStats() {

@@ -1,0 +1,91 @@
+{
+  "timestamp": "2025-10-19T01:43:56.784Z",
+  "score": 70,
+  "maxScore": 100,
+  "vulnerabilities": [],
+  "warnings": [
+    {
+      "severity": "MEDIUM",
+      "category": "A4: CSRF",
+      "message": "Protección CSRF no detectada",
+      "recommendation": "Considerar implementar csurf middleware para formularios"
+    },
+    {
+      "severity": "HIGH",
+      "category": "A2: Autenticación Rota",
+      "message": "1/3 verificaciones pasadas",
+      "details": [
+        {
+          "item": "JWT implementado",
+          "status": false
+        },
+        {
+          "item": "Expiración de tokens",
+          "status": false
+        }
+      ],
+      "recommendation": "Implementar todas las mejores prácticas de autenticación"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "A5: Control de Acceso",
+      "message": "26 rutas potencialmente sin protección",
+      "recommendation": "Revisar que todas las rutas sensibles requieran autenticación"
+    }
+  ],
+  "passed": [
+    {
+      "check": "A1: Inyección SQL",
+      "status": "PASS",
+      "message": "Todas las queries usan parametrización segura"
+    },
+    {
+      "check": "A7: XSS - Validación de Inputs",
+      "status": "PASS",
+      "message": "express-validator instalado"
+    },
+    {
+      "check": "A3: Exposición de Datos Sensibles",
+      "status": "PASS"
+    },
+    {
+      "check": "A6: Configuración de Seguridad",
+      "status": "PASS",
+      "details": [
+        {
+          "item": "Helmet configurado",
+          "status": true
+        },
+        {
+          "item": "CORS configurado",
+          "status": true
+        },
+        {
+          "item": "Rate limiting configurado",
+          "status": true
+        }
+      ]
+    },
+    {
+      "check": "A8: Deserialización Insegura",
+      "status": "PASS"
+    },
+    {
+      "check": "A10: Logging y Monitoreo",
+      "status": "PASS",
+      "details": [
+        {
+          "item": "Logging de errores",
+          "status": true
+        },
+        {
+          "item": "Logger profesional",
+          "status": false
+        }
+      ]
+    }
+  ],
+  "recommendations": [],
+  "percentage": 70,
+  "grade": "C (Aceptable)"
+}

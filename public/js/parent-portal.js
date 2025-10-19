@@ -415,23 +415,42 @@ class ParentPortal {
         return colors[priority] || 'secondary';
     }
 
-    processPasswordRecovery() {
+    async processPasswordRecovery() {
         const email = document.getElementById('recoveryEmail').value;
         const studentId = document.getElementById('recoveryStudentId').value;
 
-        if (!email || !studentId) {
-            this.showAlert('Por favor completa todos los campos', 'error');
+        if (!email) {
+            this.showAlert('Por favor ingresa tu correo electrónico', 'error');
             return;
         }
 
-        // Simular envío de recuperación
-        this.showAlert('Enviando instrucciones...', 'info');
-        
-        setTimeout(() => {
-            this.showAlert('Se han enviado las instrucciones de recuperación a tu correo electrónico', 'success');
-            bootstrap.Modal.getInstance(document.getElementById('passwordRecoveryModal')).hide();
-            document.getElementById('recoveryForm').reset();
-        }, 2000);
+        try {
+            this.showAlert('Enviando instrucciones...', 'info');
+
+            const response = await fetch('/api/password-recovery', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    recoveryEmail: email,
+                    recoveryStudentId: studentId
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.showAlert(data.message || 'Se han enviado las instrucciones de recuperación a tu correo electrónico', 'success');
+                bootstrap.Modal.getInstance(document.getElementById('passwordRecoveryModal')).hide();
+                document.getElementById('recoveryForm').reset();
+            } else {
+                throw new Error(data.error || 'Error al procesar la solicitud');
+            }
+        } catch (error) {
+            console.error('Error en recuperación de contraseña:', error);
+            this.showAlert('Error al enviar las instrucciones. Por favor intenta nuevamente.', 'error');
+        }
     }
 
     parentLogout() {

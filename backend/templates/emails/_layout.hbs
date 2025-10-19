@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{subject}}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #f4f4f4;
+        }
+
+        .email-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+
+        .email-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .email-header .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .email-body {
+            padding: 40px 30px;
+        }
+
+        .email-body h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .email-body p {
+            margin-bottom: 15px;
+            color: #555555;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .button:hover {
+            opacity: 0.9;
+        }
+
+        .info-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .info-box strong {
+            color: #667eea;
+        }
+
+        .email-footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #777777;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .email-footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .social-links {
+            margin: 15px 0;
+        }
+
+        .social-links a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .email-body {
+                padding: 20px 15px;
+            }
+
+            .email-header h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <!-- Header -->
+        <div class="email-header">
+            <div class="logo">🎓</div>
+            <h1>Bachillerato General Estatal<br>"Héroes de la Patria"</h1>
+        </div>
+
+        <!-- Body Content -->
+        <div class="email-body">
+            {{> content}}
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            <p><strong>Bachillerato General Estatal "Héroes de la Patria"</strong></p>
+            <p>Formando líderes del mañana</p>
+
+            <div class="social-links">
+                <a href="https://facebook.com/bge-heroes" target="_blank">📘 Facebook</a>
+                <a href="https://twitter.com/bge-heroes" target="_blank">🐦 Twitter</a>
+                <a href="https://instagram.com/bge-heroes" target="_blank">📷 Instagram</a>
+            </div>
+
+            <p style="margin-top: 15px;">
+                <a href="{{absoluteUrl '/'}}" target="_blank">Visitar sitio web</a> |
+                <a href="{{absoluteUrl '/contacto'}}" target="_blank">Contacto</a> |
+                <a href="{{absoluteUrl '/privacidad'}}" target="_blank">Política de Privacidad</a>
+            </p>
+
+            <p style="margin-top: 10px; font-size: 11px; color: #999999;">
+                Este es un correo automático, por favor no responda a este mensaje.<br>
+                Si tiene alguna duda, contáctenos en: contacto@bachilleratoheroesdelapatria.edu.mx
+            </p>
+        </div>
+    </div>
+</body>
+</html>

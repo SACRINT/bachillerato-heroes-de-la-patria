@@ -236,32 +236,24 @@ class ProfessionalFormsManager {
         const originalText = submitButton?.textContent || 'Enviar';
 
         try {
-            // 1. Verificar checkbox de términos y condiciones (IMPORTANTE)
-            const termsCheckbox = form.querySelector('input[type="checkbox"][required]');
-            if (termsCheckbox && !termsCheckbox.checked) {
-                this.showError(form, 'Debes aceptar el tratamiento de datos personales para continuar.');
-                termsCheckbox.focus();
-                return;
-            }
-
-            // 2. Validaciones de seguridad básicas (sin API externa)
+            // 1. Validaciones de seguridad básicas (sin API externa)
             const securityCheck = await this.performSecurityChecksLocal(form);
             if (!securityCheck.passed) {
                 this.showError(form, securityCheck.message);
                 return;
             }
 
-            // 3. Verificar email (solo formato básico)
+            // 2. Verificar email (solo formato básico)
             const emailField = form.querySelector('input[type="email"]');
             if (emailField && !this.isValidEmailFormat(emailField.value)) {
                 this.showError(form, 'Por favor ingresa un email válido');
                 return;
             }
 
-            // 4. UI de carga
+            // 3. UI de carga
             this.showLoadingState(form, 'Enviando mensaje...');
 
-            // 5. Envío al servidor propio (único método)
+            // 4. Envío al servidor propio (único método)
             let result = await this.sendToOwnServer(form);
 
             if (result.success) {

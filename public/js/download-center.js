@@ -707,31 +707,44 @@ class DownloadCenter {
         this.updateStatistics();
     }
 
-    processDocumentRequest() {
+    async processDocumentRequest() {
         const form = document.getElementById('documentRequestForm');
         const formData = new FormData(form);
 
         const request = {
-            id: this.generateId(),
-            name: formData.get('requesterName'),
-            email: formData.get('requesterEmail'),
-            userType: formData.get('requesterType'),
+            requesterName: formData.get('requesterName'),
+            requesterEmail: formData.get('requesterEmail'),
+            requesterType: formData.get('requesterType'),
             documentName: formData.get('documentName'),
-            reason: formData.get('requestReason'),
-            urgency: formData.get('urgencyLevel'),
-            requestDate: new Date().toISOString(),
-            status: 'pending'
+            requestReason: formData.get('requestReason'),
+            urgencyLevel: formData.get('urgencyLevel')
         };
 
-        this.requests.push(request);
-        this.saveRequests();
+        try {
+            const response = await fetch('/api/solicitudes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(request)
+            });
 
-        this.showAlert('Solicitud enviada exitosamente. Te contactaremos pronto.', 'success');
+            const data = await response.json();
 
-        // Cerrar modal y limpiar formulario
-        const modal = bootstrap.Modal.getInstance(document.getElementById('requestModal'));
-        modal.hide();
-        form.reset();
+            if (data.success) {
+                this.showAlert(data.message || 'Solicitud enviada exitosamente. Te contactaremos pronto.', 'success');
+
+                // Cerrar modal y limpiar formulario
+                const modal = bootstrap.Modal.getInstance(document.getElementById('requestModal'));
+                modal.hide();
+                form.reset();
+            } else {
+                throw new Error(data.error || 'Error al enviar la solicitud');
+            }
+        } catch (error) {
+            console.error('Error al procesar solicitud:', error);
+            this.showAlert('Error al enviar la solicitud. Por favor intenta nuevamente.', 'error');
+        }
     }
 
     updateStatistics() {

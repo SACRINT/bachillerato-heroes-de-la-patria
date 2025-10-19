@@ -598,18 +598,20 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="documentRequestForm">
+                    <form id="documentRequestForm" class="professional-form" method="POST" action="/api/solicitudes">
+                        <input type="hidden" name="form_type" value="Solicitud de Documento">
+
                         <div class="mb-3">
                             <label for="requesterName" class="form-label">Nombre completo *</label>
-                            <input type="text" class="form-control" id="requesterName" required>
+                            <input type="text" class="form-control" id="requesterName" name="requesterName" required>
                         </div>
                         <div class="mb-3">
                             <label for="requesterEmail" class="form-label">Correo electrónico *</label>
-                            <input type="email" class="form-control" id="requesterEmail" required>
+                            <input type="email" class="form-control" id="requesterEmail" name="requesterEmail" required>
                         </div>
                         <div class="mb-3">
                             <label for="requesterType" class="form-label">Tipo de usuario *</label>
-                            <select class="form-select" id="requesterType" required>
+                            <select class="form-select" id="requesterType" name="requesterType" required>
                                 <option value="">Seleccionar...</option>
                                 <option value="student">Estudiante</option>
                                 <option value="parent">Padre de familia</option>
@@ -620,16 +622,16 @@
                         </div>
                         <div class="mb-3">
                             <label for="documentName" class="form-label">Nombre del documento solicitado *</label>
-                            <input type="text" class="form-control" id="documentName" required>
+                            <input type="text" class="form-control" id="documentName" name="documentName" required>
                         </div>
                         <div class="mb-3">
                             <label for="requestReason" class="form-label">Motivo de la solicitud *</label>
-                            <textarea class="form-control" id="requestReason" rows="3" required
+                            <textarea class="form-control" id="requestReason" name="requestReason" rows="3" required
                                       placeholder="Explica por qué necesitas este documento..."></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="urgencyLevel" class="form-label">Nivel de urgencia</label>
-                            <select class="form-select" id="urgencyLevel">
+                            <select class="form-select" id="urgencyLevel" name="urgencyLevel">
                                 <option value="low">Baja</option>
                                 <option value="normal" selected>Normal</option>
                                 <option value="high">Alta</option>

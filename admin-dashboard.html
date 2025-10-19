@@ -644,6 +644,105 @@
 
             <!-- Widgets de Analytics movidos dentro de pestañas -->
 
+            <!-- Sección de Gráficas Estadísticas -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-gradient-primary text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-chart-line me-2"></i>Estadísticas y Visualizaciones
+                                </h5>
+                                <button class="btn btn-light btn-sm" onclick="dashboardCharts.refreshAll()">
+                                    <i class="fas fa-sync-alt me-1"></i>Actualizar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Gráfica: Noticias por Mes -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                        <canvas id="chartNoticiasPorMes"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- Gráfica: Eventos por Categoría -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                        <canvas id="chartEventosPorCategoria"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- Gráfica: Quejas por Tipo -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                        <canvas id="chartQuejasPorTipo"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- Gráfica: Crecimiento de Suscriptores -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                        <canvas id="chartSuscriptoresCrecimiento"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Calendario de Eventos -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-gradient-success text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-calendar-alt me-2"></i>Calendario de Eventos
+                                </h5>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-light btn-sm" onclick="globalEventCalendar?.refetch()">
+                                        <i class="fas fa-sync-alt me-1"></i>Actualizar
+                                    </button>
+                                    <button class="btn btn-light btn-sm" onclick="globalEventCalendar?.goToToday()">
+                                        <i class="fas fa-calendar-day me-1"></i>Hoy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Filtros del calendario -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Categoría</label>
+                                    <select class="form-select form-select-sm" id="calendarCategoriaFilter" onchange="globalEventCalendar?.applyFilters({categoria: this.value})">
+                                        <option value="todas">Todas las categorías</option>
+                                        <option value="Académico">Académico</option>
+                                        <option value="Cultural">Cultural</option>
+                                        <option value="Deportivo">Deportivo</option>
+                                        <option value="Social">Social</option>
+                                        <option value="Administrativo">Administrativo</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Modalidad</label>
+                                    <select class="form-select form-select-sm" id="calendarModalidadFilter" onchange="globalEventCalendar?.applyFilters({modalidad: this.value})">
+                                        <option value="todas">Todas las modalidades</option>
+                                        <option value="presencial">Presencial</option>
+                                        <option value="virtual">Virtual</option>
+                                        <option value="híbrido">Híbrido</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Contenedor del calendario -->
+                            <div id="eventCalendarContainer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Panel de Alertas y Notificaciones -->
             <div class="row mt-4">
                 <div class="col-md-6">
@@ -1203,6 +1302,12 @@
                         <button class="nav-link" id="suscriptores-tab" data-bs-toggle="pill" data-bs-target="#suscriptores" type="button" role="tab">
                             <i class="fas fa-envelope me-2"></i>Suscriptores
                             <span class="badge bg-primary ms-1" id="suscriptores-count">0</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="approvals-tab" data-bs-toggle="pill" data-bs-target="#approvals" type="button" role="tab">
+                            <i class="fas fa-check-circle me-2"></i>Aprobaciones
+                            <span class="badge bg-warning ms-1" id="approvals-count">0</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -2094,6 +2199,51 @@
                         </div>
                     </div>
 
+                    <!-- Tab Aprobaciones Pendientes -->
+                    <div class="tab-pane fade" id="approvals" role="tabpanel">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-check-circle me-2"></i>Solicitudes Pendientes de Aprobación
+                                </h5>
+                                <div>
+                                    <button class="btn btn-sm btn-light" onclick="refreshApprovals()">
+                                        <i class="fas fa-sync-alt me-1"></i>Actualizar
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <!-- Filtros -->
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Filtrar por tipo:</label>
+                                        <select class="form-select" id="filter-form-type" onchange="filterApprovals()">
+                                            <option value="">Todos los formularios</option>
+                                            <option value="bolsa_trabajo">Bolsa de Trabajo</option>
+                                            <option value="egresados">Actualización de Egresados</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-8 text-end">
+                                        <div class="alert alert-info mb-0 d-inline-block">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            <strong>Total pendientes:</strong> <span id="total-pending-approvals">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Lista de solicitudes pendientes -->
+                                <div id="approvals-list">
+                                    <div class="text-center py-5">
+                                        <div class="spinner-border text-warning" role="status">
+                                            <span class="visually-hidden">Cargando...</span>
+                                        </div>
+                                        <p class="mt-3 text-muted">Cargando solicitudes pendientes...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Tab Usuarios Activos -->
                     <div class="tab-pane fade" id="activeusers" role="tabpanel">
                         <div class="card border-0 shadow-sm">
@@ -2897,6 +3047,16 @@
         }
     </script>
 
+    <!-- 📅 FullCalendar para calendario de eventos -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
+    <script>
+        if (typeof FullCalendar === 'undefined') {
+            console.warn('⚠️ FullCalendar failed to load from CDN');
+        } else {
+            console.log('✅ FullCalendar loaded successfully');
+        }
+    </script>
+
     <!-- 🔧 SISTEMA CORE (OBLIGATORIO) - VERSIONADO PARA FORZAR RECARGA -->
     <script src="js/context-manager.js?v=20251001-1430"></script>        <!-- 🔒 Base del sistema -->
     <script src="js/config.js?v=20251001-1430"></script>    <!-- 🔧 Configuración global -->
@@ -2932,6 +3092,7 @@
     <script src="js/academic-reports-manager.js?v=20251001-1430"></script> <!-- 📋 Reportes académicos -->
     <script src="js/bolsa-trabajo-manager.js?v=20251009"></script>       <!-- 💼 Gestor Bolsa de Trabajo -->
     <script src="js/suscriptores-manager.js?v=20251009"></script>         <!-- 📧 Gestor de Suscriptores -->
+    <script src="js/approvals-manager.js?v=20251017"></script>            <!-- ✅ Gestor de Aprobaciones -->
 
     <!-- 🎓 Panel de Egresados - NUEVO -->
     <script>
@@ -4346,7 +4507,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="noticiaContenido" class="form-label">Contenido *</label>
-                                            <textarea class="form-control" id="noticiaContenido" rows="4" required></textarea>
+                                            <textarea class="form-control tinymce-auto" id="noticiaContenido" rows="4" data-tinymce-type="noticia" required></textarea>
                                         </div>
                                         <div class="mb-3">
                                             <label for="noticiaAutor" class="form-label">Autor *</label>
@@ -4419,6 +4580,8 @@
                                     </button>
                                 </div>
                                 <div class="card-body">
+                                    <!-- Contenedor de filtros para noticias -->
+                                    <div id="noticiasFiltersContainer" class="mb-3"></div>
                                     <div id="noticiasContainer" class="table-responsive">
                                         <div class="text-center p-4">
                                             <div class="spinner-border text-primary" role="status">
@@ -4427,6 +4590,8 @@
                                             <p class="mt-2">Cargando noticias...</p>
                                         </div>
                                     </div>
+                                    <!-- Contenedor de paginación de noticias -->
+                                    <div id="noticiasPaginationContainer" class="mt-3"></div>
                                 </div>
                             </div>
                         </div>
@@ -4483,9 +4648,24 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="eventoLugar" class="form-label">Lugar *</label>
-                                            <input type="text" class="form-control" id="eventoLugar" required>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="eventoLugar" class="form-label">Lugar *</label>
+                                                    <input type="text" class="form-control" id="eventoLugar" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="eventoModalidad" class="form-label">Modalidad *</label>
+                                                    <select class="form-select" id="eventoModalidad" required>
+                                                        <option value="">Seleccionar...</option>
+                                                        <option value="presencial" selected>Presencial</option>
+                                                        <option value="virtual">Virtual</option>
+                                                        <option value="híbrido">Híbrido</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="mb-3">
                                             <label for="eventoOrganizador" class="form-label">Organizador *</label>
@@ -4561,6 +4741,8 @@
                                     </button>
                                 </div>
                                 <div class="card-body">
+                                    <!-- Contenedor de filtros para eventos -->
+                                    <div id="eventosFiltersContainer" class="mb-3"></div>
                                     <div id="eventosContainer" class="table-responsive">
                                         <div class="text-center p-4">
                                             <div class="spinner-border text-success" role="status">
@@ -4569,6 +4751,8 @@
                                             <p class="mt-2">Cargando eventos...</p>
                                         </div>
                                     </div>
+                                    <!-- Contenedor de paginación de eventos -->
+                                    <div id="eventosPaginationContainer" class="mt-3"></div>
                                 </div>
                             </div>
                         </div>
@@ -4697,6 +4881,8 @@
                                     </button>
                                 </div>
                                 <div class="card-body">
+                                    <!-- Contenedor de filtros para avisos -->
+                                    <div id="avisosFiltersContainer" class="mb-3"></div>
                                     <div id="avisosContainer" class="table-responsive">
                                         <div class="text-center p-4">
                                             <div class="spinner-border text-warning" role="status">
@@ -4705,6 +4891,8 @@
                                             <p class="mt-2">Cargando avisos...</p>
                                         </div>
                                     </div>
+                                    <!-- Contenedor de paginación de avisos -->
+                                    <div id="avisosPaginationContainer" class="mt-3"></div>
                                 </div>
                             </div>
                         </div>
@@ -4745,7 +4933,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="comunicadoContenido" class="form-label">Contenido *</label>
-                                            <textarea class="form-control" id="comunicadoContenido" rows="4" required></textarea>
+                                            <textarea class="form-control tinymce-auto" id="comunicadoContenido" rows="4" data-tinymce-type="comunicado" required></textarea>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
@@ -4847,6 +5035,8 @@
                                     </button>
                                 </div>
                                 <div class="card-body">
+                                    <!-- Contenedor de filtros para comunicados -->
+                                    <div id="comunicadosFiltersContainer" class="mb-3"></div>
                                     <div id="comunicadosContainer" class="table-responsive">
                                         <div class="text-center p-4">
                                             <div class="spinner-border text-info" role="status">
@@ -4855,6 +5045,8 @@
                                             <p class="mt-2">Cargando comunicados...</p>
                                         </div>
                                     </div>
+                                    <!-- Contenedor de paginación de comunicados -->
+                                    <div id="comunicadosPaginationContainer" class="mt-3"></div>
                                 </div>
                             </div>
                         </div>
@@ -4888,6 +5080,17 @@
     </div>
 
     <script src="js/stats-counter.js?v=20251001"></script>
+    <script src="js/pagination-manager.js?v=20251019"></script>
+    <script src="js/form-validator.js?v=20251019"></script>
+    <script src="js/form-validation-config.js?v=20251019"></script>
+    <script src="js/advanced-filters.js?v=20251019"></script>
+    <script src="js/dashboard-filters-config.js?v=20251019"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="js/tinymce-config.js?v=20251019"></script>
+    <script src="js/dashboard-charts.js?v=20251019"></script>
+    <script src="js/event-calendar.js?v=20251019"></script>
+    <script src="js/global-search.js?v=20251019"></script>
     <script src="js/cms-manager.js?v=20251001"></script>
     <script src="js/icon-check.js?v=20251001"></script>
 

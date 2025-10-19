@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-10-19T03:28:38.177Z",
+  "backupFile": "files-backup-2025-10-19T03-28-38-147Z.zip",
+  "sizeMB": "0.00",
+  "sourceDirs": [
+    "uploads",
+    "uploads",
+    ".env"
+  ],
+  "retentionDays": 30
+}

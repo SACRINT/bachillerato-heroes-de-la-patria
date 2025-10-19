@@ -1,0 +1,8 @@
+{
+  "timestamp": "2025-10-19T03:28:37.912Z",
+  "backupFile": "backup-sql-2025-10-19T03-28-37-909Z.sql",
+  "sizeMB": "0.04",
+  "tablesBackedUp": 21,
+  "method": "SQL Direct (No pg_dump)",
+  "retentionDays": 7
+}

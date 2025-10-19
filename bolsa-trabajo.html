@@ -404,7 +404,7 @@
                 <div class="modal-body p-4">
                     <p class="lead mb-4">Completa tu perfil profesional para acceder a oportunidades laborales</p>
                     
-                    <form id="cvUploadForm" class="professional-form" method="POST" action="/api/contact/send">
+                    <form id="cvUploadForm" class="professional-form" method="POST" action="/api/bolsa-trabajo/cv">
                         <input type="hidden" name="form_type" value="Registro Bolsa de Trabajo">
 
                         <!-- Información Personal -->
@@ -531,14 +531,14 @@
                             
                             <div class="job-item">
                                 <div class="form-check d-flex align-items-start">
-                                    <input class="form-check-input mt-1 me-3" type="checkbox" id="privacyConsent" required>
+                                    <input class="form-check-input mt-1 me-3" type="checkbox" id="privacyConsent" name="privacyConsent" value="accepted" required>
                                     <div>
                                         <label class="form-check-label fw-semibold" for="privacyConsent">
                                             <i class="fas fa-handshake text-info me-2"></i>
-                                            Acepto compartir mi información con empleadores
+                                            Acepto compartir mi información con empleadores *
                                         </label>
                                         <p class="small text-muted mb-0 mt-1">
-                                            Tu información será compartida únicamente con empresas que ofrezcan oportunidades relevantes a tu perfil. 
+                                            Tu información será compartida únicamente con empresas que ofrezcan oportunidades relevantes a tu perfil.
                                             Puedes modificar o eliminar tu perfil en cualquier momento.
                                         </p>
                                     </div>
@@ -662,7 +662,7 @@
     <!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DE BOLSA TRABAJO -->
     <script src="js/chatbot.js"></script>                <!-- 🤖 Chatbot soporte -->
     <script src="js/search-simple.js"></script>          <!-- 🔍 Búsqueda -->
-    <script src="js/job-portal.js"></script>             <!-- 💼 Portal de empleos -->
+    <script src="js/job-portal.js"></script>             <!-- 💼 Portal de empleos (modificado - NO intercepta formulario CV) -->
 
     <!-- Dark Mode Styles & Script -->
     <style>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Noticia: {{noticia.titulo}}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; }
+        .email-wrapper { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .email-header { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 30px 20px; text-align: center; }
+        .email-header h1 { margin: 10px 0 0 0; font-size: 24px; }
+        .email-body { padding: 40px 30px; }
+        .email-body h2 { color: #3b82f6; margin-bottom: 20px; }
+        .email-body p { margin-bottom: 15px; color: #555; }
+        .button { display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white !important; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: 600; }
+        .news-card { background-color: #f8f9fa; padding: 0; margin: 20px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .news-image { width: 100%; height: auto; display: block; }
+        .news-content { padding: 20px; }
+        .news-date { color: #6b7280; font-size: 13px; margin-bottom: 10px; }
+        .email-footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #777; border-top: 1px solid #e0e0e0; }
+        .email-footer a { color: #3b82f6; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <div class="email-header">
+            <div style="font-size: 48px;">📰</div>
+            <h1>Nueva Noticia Publicada</h1>
+        </div>
+
+        <div class="email-body">
+            <h2>Hola, {{nombre}}</h2>
+
+            <p>Te informamos que se ha publicado una nueva noticia en el portal del Bachillerato:</p>
+
+            <div class="news-card">
+                {{#if noticia.imagen_url}}
+                <img src="{{noticia.imagen_url}}" alt="{{noticia.titulo}}" class="news-image">
+                {{/if}}
+
+                <div class="news-content">
+                    {{#if noticia.fecha_publicacion}}
+                    <div class="news-date">
+                        📅 Publicado el {{formatDate noticia.fecha_publicacion}}
+                    </div>
+                    {{/if}}
+
+                    <h3 style="color: #1f2937; margin-bottom: 15px; font-size: 20px;">
+                        {{noticia.titulo}}
+                    </h3>
+
+                    {{#if noticia.resumen}}
+                    <p style="color: #4b5563; line-height: 1.6; margin-bottom: 15px;">
+                        {{noticia.resumen}}
+                    </p>
+                    {{/if}}
+
+                    <a href="{{absoluteUrl (concat '/noticias/' noticia.slug)}}"
+                       style="color: #3b82f6; text-decoration: none; font-weight: 600; font-size: 15px;">
+                        Leer noticia completa →
+                    </a>
+                </div>
+            </div>
+
+            <p style="text-align: center;">
+                <a href="{{absoluteUrl (concat '/noticias/' noticia.slug)}}" class="button">Ver Noticia Completa</a>
+            </p>
+
+            <div style="background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 30px 0; border-radius: 5px;">
+                <p style="color: #1e40af; font-weight: 600; margin-bottom: 5px;">💬 Comparte esta noticia</p>
+                <p style="color: #3b82f6; font-size: 14px;">
+                    ¿Crees que esta información puede ser útil para otros? Compártela con tu comunidad.
+                </p>
+            </div>
+
+            <p style="text-align: center; margin-top: 20px;">
+                <a href="{{absoluteUrl '/noticias'}}" style="color: #3b82f6; text-decoration: none; font-weight: 600;">
+                    Ver todas las noticias →
+                </a>
+            </p>
+
+            <p style="margin-top: 20px; font-size: 14px; color: #888;">
+                ¿No quieres recibir notificaciones de noticias?
+                <a href="{{absoluteUrl '/configuracion/notificaciones'}}" style="color: #3b82f6;">Administra tus preferencias aquí</a>.
+            </p>
+        </div>
+
+        <div class="email-footer">
+            <p><strong>Bachillerato General Estatal "Héroes de la Patria"</strong></p>
+            <p>Manteniéndote informado de las últimas novedades</p>
+            <p style="margin-top: 10px;">
+                <a href="{{absoluteUrl '/'}}">Sitio Web</a> |
+                <a href="{{absoluteUrl '/noticias'}}">Todas las Noticias</a> |
+                <a href="{{absoluteUrl '/contacto'}}">Contacto</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

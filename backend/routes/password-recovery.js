@@ -1,0 +1,280 @@
+/**
+ * 🔑 API PARA SOLICITUDES DE RECUPERACIÓN DE CONTRASEÑA - PostgreSQL
+ * Gestión de solicitudes de recuperación de contraseña del portal de padres
+ * Fecha: 17 Octubre 2025
+ */
+
+const express = require('express');
+const router = express.Router();
+const { pool } = require('../config/database');
+const { body, validationResult } = require('express-validator');
+const crypto = require('crypto');
+const verificationService = require('../services/verificationService');
+
+// =====================================================
+// POST /api/password-recovery - Crear solicitud de recuperación
+// =====================================================
+router.post('/', [
+    body('email').isEmail().withMessage('Email inválido'),
+    body('recoveryEmail').optional().isEmail().withMessage('Email inválido'),
+    body('studentId').optional().trim(),
+    body('recoveryStudentId').optional().trim()
+], async (req, res) => {
+    // Validar datos
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            errors: errors.array()
+        });
+    }
+
+    // Aceptar tanto 'email' como 'recoveryEmail'
+    const email = req.body.email || req.body.recoveryEmail;
+    const student_id = req.body.studentId || req.body.recoveryStudentId || null;
+
+    if (!email) {
+        return res.status(400).json({
+            success: false,
+            error: 'Email es requerido'
+        });
+    }
+
+    const ip_address = req.ip || req.connection.remoteAddress;
+    const user_agent = req.get('User-Agent');
+
+    try {
+        const insertQuery = `
+            INSERT INTO password_recovery_requests (
+                email, student_id, ip_address, user_agent
+            )
+            VALUES ($1, $2, $3, $4)
+            RETURNING *;
+        `;
+
+        const result = await pool.query(insertQuery, [
+            email,
+            student_id,
+            ip_address,
+            user_agent
+        ]);
+
+        console.log('✅ Nueva solicitud de recuperación creada:', result.rows[0].id);
+
+        // Generar token de recuperación único
+        const recoveryToken = crypto.randomBytes(32).toString('hex');
+        const tokenExpiration = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas
+
+        // Actualizar la solicitud con el token
+        await pool.query(`
+            UPDATE password_recovery_requests
+            SET token = $1, token_expires_at = $2
+            WHERE id = $3
+        `, [recoveryToken, tokenExpiration, result.rows[0].id]);
+
+        // Enviar email con enlace de recuperación
+        const recoveryLink = `${process.env.BASE_URL || 'http://localhost:3000'}/reset-password.html?token=${recoveryToken}`;
+
+        try {
+            await verificationService.transporter.sendMail({
+                from: `"BGE Héroes de la Patria" <${process.env.EMAIL_USER}>`,
+                to: email,
+                subject: '🔑 Recuperación de Contraseña - Portal de Padres',
+                html: `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <style>
+                            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                            .header { background: #1976D2; color: white; padding: 20px; text-align: center; border-radius: 5px; }
+                            .content { padding: 20px; background: #f9f9f9; border-radius: 5px; margin-top: 20px; }
+                            .button { display: inline-block; padding: 12px 30px; background: #1976D2; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+                            .footer { margin-top: 20px; text-align: center; font-size: 12px; color: #888; }
+                            .warning { background: #fff3cd; padding: 10px; border-left: 4px solid #f39c12; margin: 15px 0; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <div class="header">
+                                <h1>🔑 Recuperación de Contraseña</h1>
+                            </div>
+                            <div class="content">
+                                <p>Hola,</p>
+                                <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta en el Portal de Padres del Bachillerato General Estatal "Héroes de la Patria".</p>
+
+                                <p>Haz clic en el siguiente botón para crear una nueva contraseña:</p>
+
+                                <div style="text-align: center;">
+                                    <a href="${recoveryLink}" class="button">Restablecer Contraseña</a>
+                                </div>
+
+                                <p>O copia y pega este enlace en tu navegador:</p>
+                                <p style="word-break: break-all; background: #eee; padding: 10px; border-radius: 3px; font-size: 12px;">
+                                    ${recoveryLink}
+                                </p>
+
+                                <div class="warning">
+                                    <strong>⏱️ Importante:</strong><br>
+                                    Este enlace es válido por 24 horas. Después de este tiempo, tendrás que solicitar uno nuevo.
+                                </div>
+
+                                <p><strong>¿No solicitaste este cambio?</strong><br>
+                                Si no fuiste tú quien solicitó restablecer la contraseña, ignora este mensaje. Tu cuenta está segura.</p>
+                            </div>
+                            <div class="footer">
+                                <p>Bachillerato General Estatal "Héroes de la Patria"</p>
+                                <p>📧 contacto.heroesdelapatria.sep@gmail.com</p>
+                                <p>Puebla, México</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                `
+            });
+
+            console.log(`📧 Email de recuperación enviado a: ${email}`);
+
+        } catch (emailError) {
+            console.error('❌ Error al enviar email de recuperación:', emailError);
+            // No fallar la solicitud si el email falla, el token está guardado en BD
+        }
+
+        res.status(201).json({
+            success: true,
+            message: 'Se han enviado las instrucciones de recuperación a tu correo electrónico. Revisa tu bandeja de entrada y spam.',
+            data: {
+                id: result.rows[0].id,
+                fecha: result.rows[0].fecha_solicitud
+            }
+        });
+
+    } catch (error) {
+        console.error('❌ Error al crear solicitud de recuperación:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al procesar tu solicitud. Por favor intenta nuevamente.'
+        });
+    }
+});
+
+// =====================================================
+// GET /api/password-recovery - Listar solicitudes (ADMIN)
+// =====================================================
+router.get('/', async (req, res) => {
+    const { status, limit = 50, offset = 0 } = req.query;
+
+    try {
+        let query = 'SELECT * FROM password_recovery_requests';
+        const params = [];
+
+        if (status) {
+            query += ' WHERE status = $1';
+            params.push(status);
+        }
+
+        query += ` ORDER BY fecha_solicitud DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+        params.push(parseInt(limit), parseInt(offset));
+
+        const result = await pool.query(query, params);
+
+        // Contar total
+        const countQuery = status ?
+            'SELECT COUNT(*) FROM password_recovery_requests WHERE status = $1' :
+            'SELECT COUNT(*) FROM password_recovery_requests';
+        const countParams = status ? [status] : [];
+        const countResult = await pool.query(countQuery, countParams);
+
+        res.json({
+            success: true,
+            data: result.rows,
+            total: parseInt(countResult.rows[0].count),
+            limit: parseInt(limit),
+            offset: parseInt(offset)
+        });
+
+    } catch (error) {
+        console.error('❌ Error al obtener solicitudes:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener los datos'
+        });
+    }
+});
+
+// =====================================================
+// GET /api/password-recovery/stats - Estadísticas (ADMIN)
+// =====================================================
+router.get('/stats', async (req, res) => {
+    try {
+        const query = `
+            SELECT
+                COUNT(*) as total,
+                COUNT(*) FILTER (WHERE status = 'pending') as pendientes,
+                COUNT(*) FILTER (WHERE status = 'processed') as procesados,
+                COUNT(*) FILTER (WHERE status = 'expired') as expirados,
+                COUNT(*) FILTER (WHERE DATE(fecha_solicitud) = CURRENT_DATE) as hoy,
+                COUNT(*) FILTER (WHERE DATE(fecha_solicitud) >= CURRENT_DATE - INTERVAL '7 days') as esta_semana
+            FROM password_recovery_requests;
+        `;
+
+        const result = await pool.query(query);
+
+        res.json({
+            success: true,
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error('❌ Error al obtener estadísticas:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener estadísticas'
+        });
+    }
+});
+
+// =====================================================
+// PUT /api/password-recovery/:id - Actualizar solicitud (ADMIN)
+// =====================================================
+router.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const { status, notas_admin, procesado_por } = req.body;
+
+    try {
+        const query = `
+            UPDATE password_recovery_requests
+            SET
+                status = COALESCE($1, status),
+                notas_admin = COALESCE($2, notas_admin),
+                procesado_por = COALESCE($3, procesado_por),
+                fecha_procesado = CASE WHEN $1 = 'processed' THEN NOW() ELSE fecha_procesado END
+            WHERE id = $4
+            RETURNING *;
+        `;
+
+        const result = await pool.query(query, [status, notas_admin, procesado_por, id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: 'Solicitud no encontrada'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Solicitud actualizada correctamente',
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error('❌ Error al actualizar solicitud:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al actualizar la solicitud'
+        });
+    }
+});
+
+module.exports = router;

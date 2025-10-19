@@ -1,160 +1,229 @@
 /**
- * 💼 API CRUD PARA BOLSA DE TRABAJO
+ * 💼 API CRUD PARA BOLSA DE TRABAJO - PostgreSQL
  * Gestión completa de CVs y candidatos
- * Fecha: 09 Octubre 2025
+ * Fecha: 17 Octubre 2025
  */
 
 const express = require('express');
 const router = express.Router();
-const db = require('../config/database');
+const { pool } = require('../config/database');
+const { body, validationResult } = require('express-validator');
 
-// ============================================
-// GET - Listar todos los candidatos
-// ============================================
-router.get('/', async (req, res) => {
-    try {
-        const [candidatos] = await db.query(`
-            SELECT
-                id,
-                nombre,
-                email,
-                telefono,
-                ciudad,
-                generacion,
-                area_interes,
-                resumen_profesional,
-                habilidades,
-                cv_filename,
-                cv_url,
-                estado,
-                notas_admin,
-                empresas_compartido,
-                fecha_registro,
-                fecha_actualizacion,
-                fecha_ultimo_contacto
-            FROM bolsa_trabajo
-            ORDER BY fecha_registro DESC
-        `);
-
-        res.json({
-            success: true,
-            total: candidatos.length,
-            candidatos
-        });
-
-    } catch (error) {
-        console.error('❌ Error al obtener candidatos:', error);
-        res.status(500).json({
+// =====================================================
+// POST /api/bolsa-trabajo/cv - Crear perfil de CV
+// =====================================================
+router.post('/cv', [
+    body('name').trim().notEmpty().withMessage('Nombre es requerido'),
+    body('email').isEmail().withMessage('Email inválido'),
+    body('phone').trim().notEmpty().withMessage('Teléfono es requerido'),
+    body('graduationYear').notEmpty().withMessage('Año de egreso es requerido'),
+    body('subject').trim().notEmpty().withMessage('Área de interés es requerida'),
+    body('message').trim().isLength({ min: 50 }).withMessage('El resumen profesional debe tener al menos 50 caracteres')
+], async (req, res) => {
+    // Validar datos
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
             success: false,
-            error: 'Error al obtener lista de candidatos'
+            errors: errors.array()
         });
     }
-});
 
-// ============================================
-// GET - Filtrar candidatos por estado
-// ============================================
-router.get('/estado/:estado', async (req, res) => {
+    const { name, email, phone, graduationYear, subject, message, skills } = req.body;
+    const ip_address = req.ip || req.connection.remoteAddress;
+    const user_agent = req.get('User-Agent');
+
     try {
-        const { estado } = req.params;
+        // Verificar si el email ya existe
+        const checkQuery = 'SELECT id FROM bolsa_trabajo_cv WHERE email = $1';
+        const existingResult = await pool.query(checkQuery, [email]);
 
-        const [candidatos] = await db.query(
-            'SELECT * FROM bolsa_trabajo WHERE estado = ? ORDER BY fecha_registro DESC',
-            [estado]
-        );
+        if (existingResult.rows.length > 0) {
+            // Actualizar registro existente
+            const updateQuery = `
+                UPDATE bolsa_trabajo_cv
+                SET
+                    nombre = $1,
+                    telefono = $2,
+                    anio_egreso = $3,
+                    area_interes = $4,
+                    resumen_profesional = $5,
+                    habilidades = $6,
+                    fecha_actualizacion = NOW(),
+                    ip_address = $7,
+                    user_agent = $8
+                WHERE email = $9
+                RETURNING *;
+            `;
 
-        res.json({
+            const result = await pool.query(updateQuery, [
+                name,
+                phone,
+                graduationYear,
+                subject,
+                message,
+                skills || null,
+                ip_address,
+                user_agent,
+                email
+            ]);
+
+            console.log('✅ Perfil CV actualizado:', result.rows[0].id);
+
+            return res.json({
+                success: true,
+                message: 'Tu perfil ha sido actualizado exitosamente',
+                data: {
+                    id: result.rows[0].id,
+                    updated: true
+                }
+            });
+        }
+
+        // Insertar nuevo perfil
+        const insertQuery = `
+            INSERT INTO bolsa_trabajo_cv (
+                nombre, email, telefono, anio_egreso, area_interes,
+                resumen_profesional, habilidades, ip_address, user_agent
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            RETURNING *;
+        `;
+
+        const result = await pool.query(insertQuery, [
+            name,
+            email,
+            phone,
+            graduationYear,
+            subject,
+            message,
+            skills || null,
+            ip_address,
+            user_agent
+        ]);
+
+        console.log('✅ Nuevo perfil CV creado:', result.rows[0].id);
+
+        res.status(201).json({
             success: true,
-            estado,
-            total: candidatos.length,
-            candidatos
-        });
-
-    } catch (error) {
-        console.error('❌ Error al filtrar por estado:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Error al filtrar candidatos'
-        });
-    }
-});
-
-// ============================================
-// GET - Filtrar candidatos por generación
-// ============================================
-router.get('/generacion/:generacion', async (req, res) => {
-    try {
-        const { generacion } = req.params;
-
-        const [candidatos] = await db.query(
-            'SELECT * FROM bolsa_trabajo WHERE generacion = ? ORDER BY fecha_registro DESC',
-            [generacion]
-        );
-
-        res.json({
-            success: true,
-            generacion,
-            total: candidatos.length,
-            candidatos
-        });
-
-    } catch (error) {
-        console.error('❌ Error al filtrar por generación:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Error al filtrar candidatos'
-        });
-    }
-});
-
-// ============================================
-// GET - Estadísticas generales
-// ============================================
-router.get('/stats/general', async (req, res) => {
-    try {
-        // Total de candidatos
-        const [totalResult] = await db.query('SELECT COUNT(*) as total FROM bolsa_trabajo');
-        const total = totalResult[0].total;
-
-        // Por estado
-        const [porEstado] = await db.query(`
-            SELECT estado, COUNT(*) as cantidad
-            FROM bolsa_trabajo
-            GROUP BY estado
-        `);
-
-        // Por generación
-        const [porGeneracion] = await db.query(`
-            SELECT generacion, COUNT(*) as cantidad
-            FROM bolsa_trabajo
-            WHERE generacion IS NOT NULL
-            GROUP BY generacion
-            ORDER BY generacion DESC
-        `);
-
-        // Candidatos nuevos (últimos 7 días)
-        const [nuevosResult] = await db.query(`
-            SELECT COUNT(*) as total
-            FROM bolsa_trabajo
-            WHERE fecha_registro >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-        `);
-
-        // CVs con archivo adjunto
-        const [conCVResult] = await db.query(`
-            SELECT COUNT(*) as total
-            FROM bolsa_trabajo
-            WHERE cv_filename IS NOT NULL
-        `);
-
-        res.json({
-            success: true,
-            stats: {
-                total,
-                porEstado,
-                porGeneracion,
-                nuevosUltimos7Dias: nuevosResult[0].total,
-                conCV: conCVResult[0].total
+            message: 'Tu perfil profesional ha sido registrado exitosamente. Te contactaremos pronto.',
+            data: {
+                id: result.rows[0].id,
+                fecha: result.rows[0].fecha_creacion
             }
+        });
+
+    } catch (error) {
+        console.error('❌ Error al guardar CV:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al procesar tu perfil. Por favor intenta nuevamente.'
+        });
+    }
+});
+
+// =====================================================
+// GET /api/bolsa-trabajo/cv - Listar todos los CVs
+// =====================================================
+router.get('/cv', async (req, res) => {
+    const { status, limit = 50, offset = 0 } = req.query;
+
+    try {
+        let query = 'SELECT * FROM bolsa_trabajo_cv';
+        const params = [];
+
+        if (status) {
+            query += ' WHERE status = $1';
+            params.push(status);
+        }
+
+        query += ` ORDER BY fecha_creacion DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+        params.push(parseInt(limit), parseInt(offset));
+
+        const result = await pool.query(query, params);
+
+        // Contar total
+        const countQuery = status ?
+            'SELECT COUNT(*) FROM bolsa_trabajo_cv WHERE status = $1' :
+            'SELECT COUNT(*) FROM bolsa_trabajo_cv';
+        const countParams = status ? [status] : [];
+        const countResult = await pool.query(countQuery, countParams);
+
+        res.json({
+            success: true,
+            data: result.rows,
+            total: parseInt(countResult.rows[0].count),
+            limit: parseInt(limit),
+            offset: parseInt(offset)
+        });
+
+    } catch (error) {
+        console.error('❌ Error al obtener CVs:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener los datos'
+        });
+    }
+});
+
+// =====================================================
+// GET /api/bolsa-trabajo/cv/stats - Estadísticas
+// =====================================================
+router.get('/cv/stats', async (req, res) => {
+    try {
+        const query = `
+            SELECT
+                COUNT(*) as total,
+                COUNT(*) FILTER (WHERE status = 'activo') as activos,
+                COUNT(*) FILTER (WHERE status = 'inactivo') as inactivos,
+                COUNT(*) FILTER (WHERE status = 'contratado') as contratados,
+                COUNT(*) FILTER (WHERE DATE(fecha_creacion) = CURRENT_DATE) as hoy,
+                COUNT(*) FILTER (WHERE DATE(fecha_creacion) >= CURRENT_DATE - INTERVAL '7 days') as esta_semana,
+                COUNT(*) FILTER (WHERE verificado = true) as verificados
+            FROM bolsa_trabajo_cv;
+        `;
+
+        const result = await pool.query(query);
+
+        // Estadísticas por año de egreso
+        const yearQuery = `
+            SELECT anio_egreso, COUNT(*) as cantidad
+            FROM bolsa_trabajo_cv
+            GROUP BY anio_egreso
+            ORDER BY anio_egreso DESC;
+        `;
+
+        const yearResult = await pool.query(yearQuery);
+        const byYear = yearResult.rows.reduce((acc, row) => {
+            acc[row.anio_egreso] = parseInt(row.cantidad);
+            return acc;
+        }, {});
+
+        // Estadísticas por área de interés
+        const areaQuery = `
+            SELECT area_interes, COUNT(*) as cantidad
+            FROM bolsa_trabajo_cv
+            WHERE area_interes IS NOT NULL
+            GROUP BY area_interes
+            ORDER BY cantidad DESC
+            LIMIT 10;
+        `;
+
+        const areaResult = await pool.query(areaQuery);
+        const byArea = areaResult.rows.reduce((acc, row) => {
+            acc[row.area_interes] = parseInt(row.cantidad);
+            return acc;
+        }, {});
+
+        const stats = {
+            ...result.rows[0],
+            byYear,
+            byArea
+        };
+
+        res.json({
+            success: true,
+            data: stats
         });
 
     } catch (error) {
@@ -166,360 +235,113 @@ router.get('/stats/general', async (req, res) => {
     }
 });
 
-// ============================================
-// GET - Obtener candidato por ID
-// ============================================
-router.get('/:id', async (req, res) => {
+// =====================================================
+// GET /api/bolsa-trabajo/cv/:id - Obtener un CV
+// =====================================================
+router.get('/cv/:id', async (req, res) => {
+    const { id } = req.params;
+
     try {
-        const { id } = req.params;
+        const result = await pool.query('SELECT * FROM bolsa_trabajo_cv WHERE id = $1', [id]);
 
-        const [candidatos] = await db.query(
-            'SELECT * FROM bolsa_trabajo WHERE id = ?',
-            [id]
-        );
-
-        if (candidatos.length === 0) {
+        if (result.rows.length === 0) {
             return res.status(404).json({
                 success: false,
-                error: 'Candidato no encontrado'
+                error: 'CV no encontrado'
             });
         }
 
         res.json({
             success: true,
-            candidato: candidatos[0]
+            data: result.rows[0]
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener candidato:', error);
+        console.error('❌ Error al obtener CV:', error);
         res.status(500).json({
             success: false,
-            error: 'Error al obtener datos del candidato'
+            error: 'Error al obtener el CV'
         });
     }
 });
 
-// ============================================
-// POST - Crear nuevo candidato
-// ============================================
-router.post('/', async (req, res) => {
+// =====================================================
+// PUT /api/bolsa-trabajo/cv/:id - Actualizar CV (ADMIN)
+// =====================================================
+router.put('/cv/:id', async (req, res) => {
+    const { id } = req.params;
+    const { nombre, email, telefono, anio_egreso, area_interes, resumen_profesional, habilidades, status } = req.body;
+
     try {
-        const {
-            nombre,
-            email,
-            telefono,
-            ciudad,
-            generacion,
-            area_interes,
-            resumen_profesional,
-            habilidades,
-            cv_filename,
-            cv_path,
-            cv_url,
-            estado = 'nuevo',
-            ip_registro,
-            user_agent,
-            form_type = 'Registro Bolsa de Trabajo'
-        } = req.body;
-
-        // Validaciones básicas
-        if (!nombre || !email) {
-            return res.status(400).json({
-                success: false,
-                error: 'Nombre y email son obligatorios'
-            });
-        }
-
-        // Verificar si el email ya existe
-        const [existing] = await db.query(
-            'SELECT id FROM bolsa_trabajo WHERE email = ?',
-            [email]
-        );
-
-        if (existing.length > 0) {
-            // Actualizar registro existente
-            const updateQuery = `
-                UPDATE bolsa_trabajo SET
-                    nombre = ?,
-                    telefono = ?,
-                    ciudad = ?,
-                    generacion = ?,
-                    area_interes = ?,
-                    resumen_profesional = ?,
-                    habilidades = ?,
-                    cv_filename = COALESCE(?, cv_filename),
-                    cv_path = COALESCE(?, cv_path),
-                    cv_url = COALESCE(?, cv_url),
-                    fecha_actualizacion = NOW()
-                WHERE email = ?
-            `;
-
-            await db.query(updateQuery, [
-                nombre,
-                telefono || null,
-                ciudad || null,
-                generacion || null,
-                area_interes || null,
-                resumen_profesional || null,
-                habilidades || null,
-                cv_filename || null,
-                cv_path || null,
-                cv_url || null,
-                email
-            ]);
-
-            return res.json({
-                success: true,
-                message: 'Datos actualizados exitosamente',
-                id: existing[0].id,
-                updated: true
-            });
-        }
-
-        // Insertar nuevo candidato
-        const insertQuery = `
-            INSERT INTO bolsa_trabajo (
-                nombre,
-                email,
-                telefono,
-                ciudad,
-                generacion,
-                area_interes,
-                resumen_profesional,
-                habilidades,
-                cv_filename,
-                cv_path,
-                cv_url,
-                estado,
-                ip_registro,
-                user_agent,
-                form_type
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `;
-
-        const [result] = await db.query(insertQuery, [
-            nombre,
-            email,
-            telefono || null,
-            ciudad || null,
-            generacion || null,
-            area_interes || null,
-            resumen_profesional || null,
-            habilidades || null,
-            cv_filename || null,
-            cv_path || null,
-            cv_url || null,
-            estado,
-            ip_registro || null,
-            user_agent || null,
-            form_type
-        ]);
-
-        res.status(201).json({
-            success: true,
-            message: 'Candidato registrado exitosamente',
-            id: result.insertId,
-            updated: false
-        });
-
-    } catch (error) {
-        console.error('❌ Error al crear candidato:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Error al registrar candidato',
-            details: error.message
-        });
-    }
-});
-
-// ============================================
-// PUT - Actualizar candidato
-// ============================================
-router.put('/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const {
-            nombre,
-            email,
-            telefono,
-            ciudad,
-            generacion,
-            area_interes,
-            resumen_profesional,
-            habilidades,
-            cv_filename,
-            cv_path,
-            cv_url,
-            estado,
-            notas_admin,
-            empresas_compartido
-        } = req.body;
-
-        const updateQuery = `
-            UPDATE bolsa_trabajo SET
-                nombre = ?,
-                email = ?,
-                telefono = ?,
-                ciudad = ?,
-                generacion = ?,
-                area_interes = ?,
-                resumen_profesional = ?,
-                habilidades = ?,
-                cv_filename = ?,
-                cv_path = ?,
-                cv_url = ?,
-                estado = ?,
-                notas_admin = ?,
-                empresas_compartido = ?,
+        const query = `
+            UPDATE bolsa_trabajo_cv
+            SET
+                nombre = COALESCE($1, nombre),
+                email = COALESCE($2, email),
+                telefono = COALESCE($3, telefono),
+                anio_egreso = COALESCE($4, anio_egreso),
+                area_interes = COALESCE($5, area_interes),
+                resumen_profesional = COALESCE($6, resumen_profesional),
+                habilidades = COALESCE($7, habilidades),
+                status = COALESCE($8, status),
                 fecha_actualizacion = NOW()
-            WHERE id = ?
+            WHERE id = $9
+            RETURNING *;
         `;
 
-        const [result] = await db.query(updateQuery, [
-            nombre,
-            email,
-            telefono || null,
-            ciudad || null,
-            generacion || null,
-            area_interes || null,
-            resumen_profesional || null,
-            habilidades || null,
-            cv_filename || null,
-            cv_path || null,
-            cv_url || null,
-            estado || 'nuevo',
-            notas_admin || null,
-            empresas_compartido || null,
-            id
+        const result = await pool.query(query, [
+            nombre, email, telefono, anio_egreso, area_interes,
+            resumen_profesional, habilidades, status, id
         ]);
 
-        if (result.affectedRows === 0) {
+        if (result.rows.length === 0) {
             return res.status(404).json({
                 success: false,
-                error: 'Candidato no encontrado'
+                error: 'CV no encontrado'
             });
         }
 
         res.json({
             success: true,
-            message: 'Candidato actualizado exitosamente'
+            message: 'CV actualizado correctamente',
+            data: result.rows[0]
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar candidato:', error);
+        console.error('❌ Error al actualizar CV:', error);
         res.status(500).json({
             success: false,
-            error: 'Error al actualizar candidato'
+            error: 'Error al actualizar el CV'
         });
     }
 });
 
-// ============================================
-// PATCH - Actualizar estado del candidato
-// ============================================
-router.patch('/:id/estado', async (req, res) => {
+// =====================================================
+// DELETE /api/bolsa-trabajo/cv/:id - Eliminar CV (ADMIN)
+// =====================================================
+router.delete('/cv/:id', async (req, res) => {
+    const { id } = req.params;
+
     try {
-        const { id } = req.params;
-        const { estado } = req.body;
+        const result = await pool.query('DELETE FROM bolsa_trabajo_cv WHERE id = $1 RETURNING id', [id]);
 
-        const validEstados = ['nuevo', 'revisado', 'contactado', 'contratado', 'rechazado', 'archivado'];
-
-        if (!validEstados.includes(estado)) {
-            return res.status(400).json({
-                success: false,
-                error: `Estado inválido. Debe ser uno de: ${validEstados.join(', ')}`
-            });
-        }
-
-        const [result] = await db.query(
-            'UPDATE bolsa_trabajo SET estado = ?, fecha_actualizacion = NOW() WHERE id = ?',
-            [estado, id]
-        );
-
-        if (result.affectedRows === 0) {
+        if (result.rows.length === 0) {
             return res.status(404).json({
                 success: false,
-                error: 'Candidato no encontrado'
+                error: 'CV no encontrado'
             });
         }
 
         res.json({
             success: true,
-            message: `Estado actualizado a: ${estado}`
+            message: 'CV eliminado correctamente'
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar estado:', error);
+        console.error('❌ Error al eliminar CV:', error);
         res.status(500).json({
             success: false,
-            error: 'Error al actualizar estado'
-        });
-    }
-});
-
-// ============================================
-// PATCH - Agregar nota administrativa
-// ============================================
-router.patch('/:id/notas', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { notas_admin } = req.body;
-
-        const [result] = await db.query(
-            'UPDATE bolsa_trabajo SET notas_admin = ?, fecha_actualizacion = NOW() WHERE id = ?',
-            [notas_admin, id]
-        );
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Candidato no encontrado'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: 'Notas actualizadas exitosamente'
-        });
-
-    } catch (error) {
-        console.error('❌ Error al actualizar notas:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Error al actualizar notas'
-        });
-    }
-});
-
-// ============================================
-// DELETE - Eliminar candidato
-// ============================================
-router.delete('/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const [result] = await db.query(
-            'DELETE FROM bolsa_trabajo WHERE id = ?',
-            [id]
-        );
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Candidato no encontrado'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: 'Candidato eliminado exitosamente'
-        });
-
-    } catch (error) {
-        console.error('❌ Error al eliminar candidato:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Error al eliminar candidato'
+            error: 'Error al eliminar el CV'
         });
     }
 });

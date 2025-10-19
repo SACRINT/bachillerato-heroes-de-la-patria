@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Evento: {{evento.titulo}}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; }
+        .email-wrapper { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .email-header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px 20px; text-align: center; }
+        .email-header h1 { margin: 10px 0 0 0; font-size: 24px; }
+        .email-body { padding: 40px 30px; }
+        .email-body h2 { color: #10b981; margin-bottom: 20px; }
+        .email-body p { margin-bottom: 15px; color: #555; }
+        .button { display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white !important; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: 600; }
+        .event-card { background-color: #f8f9fa; border-left: 4px solid #10b981; padding: 20px; margin: 20px 0; border-radius: 5px; }
+        .event-detail { margin: 10px 0; }
+        .event-detail strong { color: #10b981; display: inline-block; width: 120px; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-presencial { background-color: #dbeafe; color: #1e40af; }
+        .badge-virtual { background-color: #fef3c7; color: #92400e; }
+        .badge-hibrido { background-color: #e0e7ff; color: #4338ca; }
+        .email-footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #777; border-top: 1px solid #e0e0e0; }
+        .email-footer a { color: #10b981; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <div class="email-header">
+            <div style="font-size: 48px;">📅</div>
+            <h1>Nuevo Evento Publicado</h1>
+        </div>
+
+        <div class="email-body">
+            <h2>Hola, {{nombre}}</h2>
+
+            <p>Te informamos que se ha publicado un nuevo evento que podría interesarte:</p>
+
+            <div class="event-card">
+                <h3 style="color: #10b981; margin-bottom: 15px;">{{evento.titulo}}</h3>
+
+                <p style="color: #666; margin-bottom: 15px;">{{evento.descripcion}}</p>
+
+                <div class="event-detail">
+                    <strong>📅 Inicio:</strong> {{formatDateTime evento.fecha_inicio}}
+                </div>
+
+                {{#if evento.fecha_fin}}
+                <div class="event-detail">
+                    <strong>🏁 Fin:</strong> {{formatDateTime evento.fecha_fin}}
+                </div>
+                {{/if}}
+
+                {{#if evento.ubicacion}}
+                <div class="event-detail">
+                    <strong>📍 Ubicación:</strong> {{evento.ubicacion}}
+                </div>
+                {{/if}}
+
+                <div class="event-detail">
+                    <strong>💻 Modalidad:</strong>
+                    {{#ifEquals evento.modalidad "presencial"}}
+                        <span class="badge badge-presencial">Presencial</span>
+                    {{/ifEquals}}
+                    {{#ifEquals evento.modalidad "virtual"}}
+                        <span class="badge badge-virtual">Virtual</span>
+                    {{/ifEquals}}
+                    {{#ifEquals evento.modalidad "híbrido"}}
+                        <span class="badge badge-hibrido">Híbrido</span>
+                    {{/ifEquals}}
+                </div>
+            </div>
+
+            <p style="text-align: center;">
+                <a href="{{absoluteUrl (concat '/eventos/' evento.slug)}}" class="button">Ver Detalles del Evento</a>
+            </p>
+
+            <p style="margin-top: 20px; font-size: 14px; color: #888;">
+                ¿No quieres recibir notificaciones de eventos? <a href="{{absoluteUrl '/configuracion/notificaciones'}}" style="color: #10b981;">Administra tus preferencias aquí</a>.
+            </p>
+        </div>
+
+        <div class="email-footer">
+            <p><strong>Bachillerato General Estatal "Héroes de la Patria"</strong></p>
+            <p>Mantente informado de todos nuestros eventos</p>
+            <p style="margin-top: 10px;">
+                <a href="{{absoluteUrl '/'}}">Sitio Web</a> |
+                <a href="{{absoluteUrl '/eventos'}}">Todos los Eventos</a> |
+                <a href="{{absoluteUrl '/contacto'}}">Contacto</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

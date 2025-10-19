@@ -6,9 +6,20 @@
 class CMSManager {
     constructor() {
         console.log('🎛️ [CMS] Inicializando sistema de gestión de contenido...');
-        this.apiBase = 'http://localhost:3002/api/cms/';
-        this.uploadBase = 'http://localhost:3002/api/uploads/';
-        this.calendarBase = 'http://localhost:3002/api/calendar/';
+        // Endpoints PostgreSQL unificados
+        this.apiBase = '/api/';
+
+        // Estado de paginación
+        this.pagination = {
+            noticias: { page: 1, limit: 20, total: 0 },
+            eventos: { page: 1, limit: 20, total: 0 },
+            avisos: { page: 1, limit: 20, total: 0 },
+            comunicados: { page: 1, limit: 20, total: 0 }
+        };
+
+        // Instancias de PaginationManager
+        this.paginationManagers = {};
+
         this.init();
     }
 
@@ -69,43 +80,32 @@ class CMSManager {
     }
 
     // ==========================================
-    // FUNCIONES DE DATOS
+    // FUNCIONES DE DATOS - PostgreSQL
     // ==========================================
 
-    async loadData(type) {
+    async fetchAPI(endpoint, method = 'GET', data = null) {
         try {
-            const response = await fetch(`${this.apiBase}content?type=${type}`);
-            if (!response.ok) {
-                throw new Error(`Error ${response.status}: ${response.statusText}`);
-            }
-            const result = await response.json();
-            return result.success ? result.data : [];
-        } catch (error) {
-            console.error(`❌ [CMS] Error cargando ${type}:`, error);
-            return [];
-        }
-    }
-
-    async saveData(type, data) {
-        try {
-            const response = await fetch(`${this.apiBase}content`, {
-                method: 'POST',
+            const options = {
+                method: method,
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.getAuthToken()}`
-                },
-                body: JSON.stringify({ type, ...data })
-            });
+                    'Content-Type': 'application/json'
+                }
+            };
 
-            const result = await response.json();
-            if (!result.success) {
-                throw new Error(result.message || 'Error al guardar');
+            if (data) {
+                options.body = JSON.stringify(data);
             }
 
-            console.log(`💾 [CMS] Datos guardados: ${type}`);
-            return result.data;
+            const response = await fetch(`${this.apiBase}${endpoint}`, options);
+            const result = await response.json();
+
+            if (!result.success && !response.ok) {
+                throw new Error(result.error || result.message || `Error ${response.status}`);
+            }
+
+            return result;
         } catch (error) {
-            console.error(`❌ [CMS] Error guardando ${type}:`, error);
+            console.error(`❌ [CMS] Error en API ${endpoint}:`, error);
             throw error;
         }
     }
@@ -125,24 +125,35 @@ class CMSManager {
     async handleNoticiaSubmit(e) {
         e.preventDefault();
 
+        // Detectar modo edición
+        const id = document.getElementById('noticiaId').value;
+        const isEditMode = id && id !== '';
+
+        // Mapear campos del frontend al schema PostgreSQL
         const noticiaData = {
-            title: document.getElementById('noticiaTitulo').value,
-            content: document.getElementById('noticiaContenido').value,
-            image_url: document.getElementById('noticiaImagen').value || 'images/default.jpg',
-            status: document.getElementById('noticiaActivo').checked ? 'published' : 'draft',
-            priority: document.getElementById('noticiaDestacado').checked ? 'high' : 'normal',
-            publish_date: document.getElementById('noticiaFecha').value,
-            metadata: {
-                resumen: document.getElementById('noticiaResumen').value,
-                autor: document.getElementById('noticiaAutor').value,
-                categoria: document.getElementById('noticiaCategoria').value,
-                tags: document.getElementById('noticiaTags').value.split(',').map(tag => tag.trim()).filter(tag => tag)
-            }
+            titulo: document.getElementById('noticiaTitulo').value,
+            contenido: document.getElementById('noticiaContenido').value,
+            resumen: document.getElementById('noticiaResumen').value,
+            imagen_url: document.getElementById('noticiaImagen').value || null,
+            categoria: document.getElementById('noticiaCategoria').value || 'General',
+            etiquetas: document.getElementById('noticiaTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+            estado: document.getElementById('noticiaActivo').checked ? 'publicada' : 'borrador',
+            autor: document.getElementById('noticiaAutor').value || 'Administrador',
+            destacada: document.getElementById('noticiaDestacado').checked || false
         };
 
         try {
-            const savedData = await this.saveData('noticia', noticiaData);
-            this.showNotification('Noticia guardada exitosamente', 'success');
+            let result;
+            if (isEditMode) {
+                // Modo edición - usar PUT
+                result = await this.fetchAPI(`noticias/${id}`, 'PUT', noticiaData);
+                this.showNotification('Noticia actualizada exitosamente', 'success');
+            } else {
+                // Modo creación - usar POST
+                result = await this.fetchAPI('noticias', 'POST', noticiaData);
+                this.showNotification('Noticia creada exitosamente', 'success');
+            }
+
             this.clearNoticiaForm();
             this.loadNoticiasExistentes();
 
@@ -157,7 +168,7 @@ class CMSManager {
         }
     }
 
-    async loadNoticiasExistentes() {
+    async loadNoticiasExistentes(page = 1) {
         const container = document.getElementById('noticiasContainer');
         if (!container) return;
 
@@ -171,7 +182,11 @@ class CMSManager {
         `;
 
         try {
-            const noticias = await this.loadData('noticia');
+            const limit = this.pagination.noticias.limit;
+            const offset = (page - 1) * limit;
+            const result = await this.fetchAPI(`noticias?limit=${limit}&offset=${offset}`);
+            const noticias = result.data || [];
+            const total = result.total || noticias.length;
 
             if (noticias.length === 0) {
                 container.innerHTML = `
@@ -198,18 +213,17 @@ class CMSManager {
             `;
 
             noticias.forEach(noticia => {
-                const metadata = noticia.metadata || {};
                 html += `
                     <tr>
                         <td>
-                            <strong>${noticia.title}</strong>
-                            ${noticia.priority === 'high' ? '<span class="badge bg-warning ms-2">Destacada</span>' : ''}
+                            <strong>${noticia.titulo}</strong>
+                            ${noticia.destacada ? '<span class="badge bg-warning ms-2">Destacada</span>' : ''}
                         </td>
-                        <td><span class="badge bg-secondary">${metadata.categoria || 'General'}</span></td>
-                        <td>${this.formatDate(noticia.publish_date || noticia.created_at)}</td>
+                        <td><span class="badge bg-secondary">${noticia.categoria || 'General'}</span></td>
+                        <td>${this.formatDate(noticia.fecha_creacion)}</td>
                         <td>
-                            <span class="badge ${noticia.status === 'published' ? 'bg-success' : 'bg-danger'}">
-                                ${noticia.status === 'published' ? 'Publicada' : 'Borrador'}
+                            <span class="badge ${noticia.estado === 'publicada' ? 'bg-success' : 'bg-danger'}">
+                                ${noticia.estado === 'publicada' ? 'Publicada' : 'Borrador'}
                             </span>
                         </td>
                         <td>
@@ -232,6 +246,28 @@ class CMSManager {
             `;
 
             container.innerHTML = html;
+
+            // Actualizar paginación
+            this.pagination.noticias.total = total;
+            this.pagination.noticias.page = page;
+
+            // Inicializar o actualizar PaginationManager
+            if (!this.paginationManagers.noticias) {
+                this.paginationManagers.noticias = new PaginationManager({
+                    containerId: 'noticiasPaginationContainer',
+                    itemsPerPage: limit,
+                    totalItems: total,
+                    currentPage: page,
+                    onPageChange: (newPage) => this.loadNoticiasExistentes(newPage)
+                });
+                window.paginationManagers['noticiasPaginationContainer'] = this.paginationManagers.noticias;
+            } else {
+                this.paginationManagers.noticias.updateTotalItems(total);
+                this.paginationManagers.noticias.currentPage = page;
+            }
+
+            this.paginationManagers.noticias.render();
+
         } catch (error) {
             console.error('Error cargando noticias:', error);
             container.innerHTML = `
@@ -250,41 +286,39 @@ class CMSManager {
     async handleEventoSubmit(e) {
         e.preventDefault();
 
-        // Crear evento usando la API de calendar
+        // Detectar modo edición
+        const id = document.getElementById('eventoId').value;
+        const isEditMode = id && id !== '';
+
+        // Mapear campos del frontend al schema PostgreSQL
         const eventoData = {
-            title: document.getElementById('eventoTitulo').value,
-            description: document.getElementById('eventoDescripcion').value,
-            start_date: `${document.getElementById('eventoFecha').value}T${document.getElementById('eventoHora').value || '00:00'}`,
-            end_date: `${document.getElementById('eventoFecha').value}T${document.getElementById('eventoHora').value || '23:59'}`,
-            location: document.getElementById('eventoLugar').value,
-            category: document.getElementById('eventoCategoria').value,
-            max_attendees: document.getElementById('eventoCupo').value ? parseInt(document.getElementById('eventoCupo').value) : null,
-            registration_required: document.getElementById('eventoInscripcion').checked,
-            status: document.getElementById('eventoActivo').checked ? 'published' : 'draft',
-            priority: document.getElementById('eventoDestacado').checked ? 'high' : 'normal',
-            metadata: {
-                organizador: document.getElementById('eventoOrganizador').value,
-                contacto: document.getElementById('eventoContacto').value,
-                imagen: document.getElementById('eventoImagen').value || 'images/default.jpg'
-            }
+            titulo: document.getElementById('eventoTitulo').value,
+            descripcion: document.getElementById('eventoDescripcion').value,
+            imagen_url: document.getElementById('eventoImagen').value || null,
+            fecha_inicio: `${document.getElementById('eventoFecha').value}T${document.getElementById('eventoHora').value || '00:00'}:00`,
+            ubicacion: document.getElementById('eventoLugar').value,
+            modalidad: document.getElementById('eventoModalidad').value || 'presencial',
+            categoria: document.getElementById('eventoCategoria').value,
+            capacidad_maxima: document.getElementById('eventoCupo').value ? parseInt(document.getElementById('eventoCupo').value) : null,
+            requiere_inscripcion: document.getElementById('eventoInscripcion').checked,
+            estado: document.getElementById('eventoActivo').checked ? 'publicado' : 'borrador',
+            destacado: document.getElementById('eventoDestacado').checked || false,
+            organizador: document.getElementById('eventoOrganizador').value,
+            contacto_email: document.getElementById('eventoContacto').value || null
         };
 
         try {
-            const response = await fetch(`${this.calendarBase}events`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.getAuthToken()}`
-                },
-                body: JSON.stringify(eventoData)
-            });
-
-            const result = await response.json();
-            if (!result.success) {
-                throw new Error(result.message || 'Error al guardar');
+            let result;
+            if (isEditMode) {
+                // Modo edición - usar PUT
+                result = await this.fetchAPI(`eventos/${id}`, 'PUT', eventoData);
+                this.showNotification('Evento actualizado exitosamente', 'success');
+            } else {
+                // Modo creación - usar POST
+                result = await this.fetchAPI('eventos', 'POST', eventoData);
+                this.showNotification('Evento creado exitosamente', 'success');
             }
 
-            this.showNotification('Evento guardado exitosamente', 'success');
             this.clearEventoForm();
             this.loadEventosExistentes();
 
@@ -294,7 +328,7 @@ class CMSManager {
         }
     }
 
-    async loadEventosExistentes() {
+    async loadEventosExistentes(page = 1) {
         const container = document.getElementById('eventosContainer');
         if (!container) return;
 
@@ -308,9 +342,11 @@ class CMSManager {
         `;
 
         try {
-            const response = await fetch(`${this.calendarBase}events`);
-            const result = await response.json();
-            const eventos = result.success ? result.data : [];
+            const limit = this.pagination.eventos.limit;
+            const offset = (page - 1) * limit;
+            const result = await this.fetchAPI(`eventos?limit=${limit}&offset=${offset}`);
+            const eventos = result.data || [];
+            const total = result.total || eventos.length;
 
             if (eventos.length === 0) {
                 container.innerHTML = `
@@ -337,23 +373,22 @@ class CMSManager {
             `;
 
             eventos.forEach(evento => {
-                const metadata = evento.metadata || {};
-                const startDate = new Date(evento.start_date);
+                const startDate = new Date(evento.fecha_inicio);
                 html += `
                     <tr>
                         <td>
-                            <strong>${evento.title}</strong><br>
-                            <small class="text-muted">${evento.category || 'General'}</small>
-                            ${evento.priority === 'high' ? '<span class="badge bg-warning ms-2">Destacado</span>' : ''}
+                            <strong>${evento.titulo}</strong><br>
+                            <small class="text-muted">${evento.categoria || 'General'}</small>
+                            ${evento.destacado ? '<span class="badge bg-warning ms-2">Destacado</span>' : ''}
                         </td>
                         <td>
-                            ${this.formatDate(evento.start_date)}<br>
+                            ${this.formatDate(evento.fecha_inicio)}<br>
                             <small class="text-muted">${startDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</small>
                         </td>
-                        <td>${evento.location || 'No especificado'}</td>
+                        <td>${evento.ubicacion || 'No especificado'}</td>
                         <td>
-                            <span class="badge ${evento.status === 'published' ? 'bg-success' : 'bg-danger'}">
-                                ${evento.status === 'published' ? 'Publicado' : 'Borrador'}
+                            <span class="badge ${evento.estado === 'publicado' ? 'bg-success' : 'bg-danger'}">
+                                ${evento.estado === 'publicado' ? 'Publicado' : 'Borrador'}
                             </span>
                         </td>
                         <td>
@@ -376,6 +411,28 @@ class CMSManager {
             `;
 
             container.innerHTML = html;
+
+            // Actualizar paginación
+            this.pagination.eventos.total = total;
+            this.pagination.eventos.page = page;
+
+            // Inicializar o actualizar PaginationManager
+            if (!this.paginationManagers.eventos) {
+                this.paginationManagers.eventos = new PaginationManager({
+                    containerId: 'eventosPaginationContainer',
+                    itemsPerPage: limit,
+                    totalItems: total,
+                    currentPage: page,
+                    onPageChange: (newPage) => this.loadEventosExistentes(newPage)
+                });
+                window.paginationManagers['eventosPaginationContainer'] = this.paginationManagers.eventos;
+            } else {
+                this.paginationManagers.eventos.updateTotalItems(total);
+                this.paginationManagers.eventos.currentPage = page;
+            }
+
+            this.paginationManagers.eventos.render();
+
         } catch (error) {
             console.error('Error cargando eventos:', error);
             container.innerHTML = `
@@ -394,24 +451,32 @@ class CMSManager {
     async handleAvisoSubmit(e) {
         e.preventDefault();
 
+        // Detectar modo edición
+        const id = document.getElementById('avisoId').value;
+        const isEditMode = id && id !== '';
+
+        // Mapear campos del frontend al schema PostgreSQL
         const avisoData = {
-            title: document.getElementById('avisoTitulo').value,
-            content: document.getElementById('avisoContenido').value,
-            image_url: document.getElementById('avisoImagen').value || 'images/default.jpg',
-            status: document.getElementById('avisoActivo').checked ? 'published' : 'draft',
-            priority: document.getElementById('avisoPrioridad').value,
-            publish_date: document.getElementById('avisoFechaInicio').value,
-            expire_date: document.getElementById('avisoFechaFin').value || null,
-            metadata: {
-                tipo: document.getElementById('avisoTipo').value,
-                dirigidoA: document.getElementById('avisoDirigidoA').value,
-                contacto: document.getElementById('avisoContacto').value
-            }
+            titulo: document.getElementById('avisoTitulo').value,
+            contenido: document.getElementById('avisoContenido').value,
+            imagen_url: document.getElementById('avisoImagen').value || null,
+            estado: document.getElementById('avisoActivo').checked ? 'publicada' : 'borrador',
+            categoria: document.getElementById('avisoTipo').value || 'General',
+            autor: 'Administrador'
         };
 
         try {
-            const savedData = await this.saveData('aviso', avisoData);
-            this.showNotification('Aviso guardado exitosamente', 'success');
+            let result;
+            if (isEditMode) {
+                // Modo edición - usar PUT
+                result = await this.fetchAPI(`avisos/${id}`, 'PUT', avisoData);
+                this.showNotification('Aviso actualizado exitosamente', 'success');
+            } else {
+                // Modo creación - usar POST
+                result = await this.fetchAPI('avisos', 'POST', avisoData);
+                this.showNotification('Aviso creado exitosamente', 'success');
+            }
+
             this.clearAvisoForm();
             this.loadAvisosExistentes();
         } catch (error) {
@@ -420,7 +485,7 @@ class CMSManager {
         }
     }
 
-    async loadAvisosExistentes() {
+    async loadAvisosExistentes(page = 1) {
         const container = document.getElementById('avisosContainer');
         if (!container) return;
 
@@ -434,7 +499,11 @@ class CMSManager {
         `;
 
         try {
-            const avisos = await this.loadData('aviso');
+            const limit = this.pagination.avisos.limit;
+            const offset = (page - 1) * limit;
+            const result = await this.fetchAPI(`avisos?limit=${limit}&offset=${offset}`);
+            const avisos = result.data || [];
+            const total = result.total || avisos.length;
 
             if (avisos.length === 0) {
                 container.innerHTML = `
@@ -451,9 +520,8 @@ class CMSManager {
                     <thead>
                         <tr>
                             <th>Título</th>
-                            <th>Tipo</th>
-                            <th>Prioridad</th>
-                            <th>Vigencia</th>
+                            <th>Categoría</th>
+                            <th>Fecha</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -462,20 +530,17 @@ class CMSManager {
             `;
 
             avisos.forEach(aviso => {
-                const metadata = aviso.metadata || {};
-                const prioridadClass = aviso.priority === 'high' ? 'danger' : aviso.priority === 'medium' ? 'warning' : 'secondary';
                 html += `
                     <tr>
-                        <td><strong>${aviso.title}</strong></td>
-                        <td><span class="badge bg-info">${metadata.tipo || 'General'}</span></td>
-                        <td><span class="badge bg-${prioridadClass}">${aviso.priority || 'normal'}</span></td>
                         <td>
-                            ${this.formatDate(aviso.publish_date)}
-                            ${aviso.expire_date ? ' - ' + this.formatDate(aviso.expire_date) : ''}
+                            <strong>${aviso.titulo}</strong>
+                            ${aviso.destacada ? '<span class="badge bg-warning ms-2">Destacado</span>' : ''}
                         </td>
+                        <td><span class="badge bg-info">${aviso.categoria || 'General'}</span></td>
+                        <td>${this.formatDate(aviso.fecha_creacion)}</td>
                         <td>
-                            <span class="badge ${aviso.status === 'published' ? 'bg-success' : 'bg-danger'}">
-                                ${aviso.status === 'published' ? 'Publicado' : 'Borrador'}
+                            <span class="badge ${aviso.estado === 'publicada' ? 'bg-success' : 'bg-danger'}">
+                                ${aviso.estado === 'publicada' ? 'Publicado' : 'Borrador'}
                             </span>
                         </td>
                         <td>
@@ -498,6 +563,29 @@ class CMSManager {
             `;
 
             container.innerHTML = html;
+        
+
+            // Actualizar paginación
+            this.pagination.avisos.total = total;
+            this.pagination.avisos.page = page;
+
+            // Inicializar o actualizar PaginationManager
+            if (!this.paginationManagers.avisos) {
+                this.paginationManagers.avisos = new PaginationManager({
+                    containerId: 'avisosPaginationContainer',
+                    itemsPerPage: limit,
+                    totalItems: total,
+                    currentPage: page,
+                    onPageChange: (newPage) => this.loadAvisosExistentes(newPage)
+                });
+                window.paginationManagers['avisosPaginationContainer'] = this.paginationManagers.avisos;
+            } else {
+                this.paginationManagers.avisos.updateTotalItems(total);
+                this.paginationManagers.avisos.currentPage = page;
+            }
+
+            this.paginationManagers.avisos.render();
+
         } catch (error) {
             console.error('Error cargando avisos:', error);
             container.innerHTML = `
@@ -516,32 +604,32 @@ class CMSManager {
     async handleComunicadoSubmit(e) {
         e.preventDefault();
 
-        // Recopilar destinatarios seleccionados
-        const destinatarios = [];
-        document.querySelectorAll('input[id^="dest_"]:checked').forEach(checkbox => {
-            destinatarios.push(checkbox.value);
-        });
+        // Detectar modo edición
+        const id = document.getElementById('comunicadoId').value;
+        const isEditMode = id && id !== '';
 
+        // Mapear campos del frontend al schema PostgreSQL
         const comunicadoData = {
-            title: document.getElementById('comunicadoTitulo').value,
-            content: document.getElementById('comunicadoContenido').value,
-            image_url: document.getElementById('comunicadoImagen').value || 'images/default.jpg',
-            status: document.getElementById('comunicadoActivo').checked ? 'published' : 'draft',
-            priority: document.getElementById('comunicadoPrioridad').value,
-            publish_date: document.getElementById('comunicadoFecha').value,
-            expire_date: document.getElementById('comunicadoVigencia').value !== 'permanente' ?
-                new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] : null,
-            metadata: {
-                emisor: document.getElementById('comunicadoEmisor').value,
-                tipo: document.getElementById('comunicadoTipo').value,
-                destinatarios: destinatarios,
-                vigencia: document.getElementById('comunicadoVigencia').value || 'permanente'
-            }
+            titulo: document.getElementById('comunicadoTitulo').value,
+            contenido: document.getElementById('comunicadoContenido').value,
+            imagen_url: document.getElementById('comunicadoImagen').value || null,
+            estado: document.getElementById('comunicadoActivo').checked ? 'publicada' : 'borrador',
+            categoria: document.getElementById('comunicadoTipo').value || 'General',
+            autor: document.getElementById('comunicadoEmisor').value || 'Administrador'
         };
 
         try {
-            const savedData = await this.saveData('comunicado', comunicadoData);
-            this.showNotification('Comunicado guardado exitosamente', 'success');
+            let result;
+            if (isEditMode) {
+                // Modo edición - usar PUT
+                result = await this.fetchAPI(`comunicados/${id}`, 'PUT', comunicadoData);
+                this.showNotification('Comunicado actualizado exitosamente', 'success');
+            } else {
+                // Modo creación - usar POST
+                result = await this.fetchAPI('comunicados', 'POST', comunicadoData);
+                this.showNotification('Comunicado creado exitosamente', 'success');
+            }
+
             this.clearComunicadoForm();
             this.loadComunicadosExistentes();
         } catch (error) {
@@ -550,7 +638,7 @@ class CMSManager {
         }
     }
 
-    async loadComunicadosExistentes() {
+    async loadComunicadosExistentes(page = 1) {
         const container = document.getElementById('comunicadosContainer');
         if (!container) return;
 
@@ -564,7 +652,11 @@ class CMSManager {
         `;
 
         try {
-            const comunicados = await this.loadData('comunicado');
+            const limit = this.pagination.comunicados.limit;
+            const offset = (page - 1) * limit;
+            const result = await this.fetchAPI(`comunicados?limit=${limit}&offset=${offset}`);
+            const comunicados = result.data || [];
+            const total = result.total || comunicados.length;
 
             if (comunicados.length === 0) {
                 container.innerHTML = `
@@ -581,8 +673,8 @@ class CMSManager {
                     <thead>
                         <tr>
                             <th>Título</th>
-                            <th>Emisor</th>
-                            <th>Tipo</th>
+                            <th>Autor</th>
+                            <th>Categoría</th>
                             <th>Fecha</th>
                             <th>Estado</th>
                             <th>Acciones</th>
@@ -592,20 +684,18 @@ class CMSManager {
             `;
 
             comunicados.forEach(comunicado => {
-                const metadata = comunicado.metadata || {};
-                const prioridadClass = comunicado.priority === 'high' ? 'danger' : comunicado.priority === 'medium' ? 'warning' : 'secondary';
                 html += `
                     <tr>
-                        <td><strong>${comunicado.title}</strong></td>
-                        <td>${metadata.emisor || 'Sistema'}</td>
                         <td>
-                            <span class="badge bg-info">${metadata.tipo || 'General'}</span>
-                            <span class="badge bg-${prioridadClass} ms-1">${comunicado.priority || 'normal'}</span>
+                            <strong>${comunicado.titulo}</strong>
+                            ${comunicado.destacada ? '<span class="badge bg-warning ms-2">Destacado</span>' : ''}
                         </td>
-                        <td>${this.formatDate(comunicado.publish_date)}</td>
+                        <td>${comunicado.autor || 'Sistema'}</td>
+                        <td><span class="badge bg-info">${comunicado.categoria || 'General'}</span></td>
+                        <td>${this.formatDate(comunicado.fecha_creacion)}</td>
                         <td>
-                            <span class="badge ${comunicado.status === 'published' ? 'bg-success' : 'bg-danger'}">
-                                ${comunicado.status === 'published' ? 'Publicado' : 'Borrador'}
+                            <span class="badge ${comunicado.estado === 'publicada' ? 'bg-success' : 'bg-danger'}">
+                                ${comunicado.estado === 'publicada' ? 'Publicado' : 'Borrador'}
                             </span>
                         </td>
                         <td>
@@ -628,6 +718,29 @@ class CMSManager {
             `;
 
             container.innerHTML = html;
+        
+
+            // Actualizar paginación
+            this.pagination.comunicados.total = total;
+            this.pagination.comunicados.page = page;
+
+            // Inicializar o actualizar PaginationManager
+            if (!this.paginationManagers.comunicados) {
+                this.paginationManagers.comunicados = new PaginationManager({
+                    containerId: 'comunicadosPaginationContainer',
+                    itemsPerPage: limit,
+                    totalItems: total,
+                    currentPage: page,
+                    onPageChange: (newPage) => this.loadComunicadosExistentes(newPage)
+                });
+                window.paginationManagers['comunicadosPaginationContainer'] = this.paginationManagers.comunicados;
+            } else {
+                this.paginationManagers.comunicados.updateTotalItems(total);
+                this.paginationManagers.comunicados.currentPage = page;
+            }
+
+            this.paginationManagers.comunicados.render();
+
         } catch (error) {
             console.error('Error cargando comunicados:', error);
             container.innerHTML = `
@@ -640,51 +753,213 @@ class CMSManager {
     }
 
     // ==========================================
+    // FUNCIONES DE EDICIÓN
+    // ==========================================
+
+    async editNoticia(id) {
+        try {
+            // Obtener datos de la noticia
+            const result = await this.fetchAPI(`noticias/${id}`);
+            const noticia = result.data;
+
+            // Llenar formulario
+            document.getElementById('noticiaId').value = noticia.id;
+            document.getElementById('noticiaTitulo').value = noticia.titulo;
+            document.getElementById('noticiaResumen').value = noticia.resumen || '';
+            document.getElementById('noticiaContenido').value = noticia.contenido;
+            document.getElementById('noticiaAutor').value = noticia.autor;
+            document.getElementById('noticiaCategoria').value = noticia.categoria || 'General';
+            document.getElementById('noticiaImagen').value = noticia.imagen_url || '';
+            document.getElementById('noticiaTags').value = noticia.etiquetas ? noticia.etiquetas.join(', ') : '';
+            document.getElementById('noticiaDestacado').checked = noticia.destacada || false;
+            document.getElementById('noticiaActivo').checked = noticia.estado === 'publicada';
+
+            // Cambiar botón y título del modal
+            const submitBtn = document.querySelector('#noticiaForm button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.textContent = 'Actualizar Noticia';
+                submitBtn.classList.remove('btn-primary');
+                submitBtn.classList.add('btn-warning');
+            }
+
+            // Cerrar modal de lista y abrir modal de formulario
+            const listModal = bootstrap.Modal.getInstance(document.getElementById('noticiasModal'));
+            if (listModal) listModal.hide();
+
+            const formModal = new bootstrap.Modal(document.getElementById('createNoticiaModal'));
+            formModal.show();
+
+        } catch (error) {
+            console.error('Error cargando noticia:', error);
+            this.showNotification('Error cargando noticia para editar', 'error');
+        }
+    }
+
+    async editEvento(id) {
+        try {
+            const result = await this.fetchAPI(`eventos/${id}`);
+            const evento = result.data;
+
+            // Llenar formulario
+            document.getElementById('eventoId').value = evento.id;
+            document.getElementById('eventoTitulo').value = evento.titulo;
+            document.getElementById('eventoDescripcion').value = evento.descripcion;
+            document.getElementById('eventoImagen').value = evento.imagen_url || '';
+
+            // Formatear fecha para input
+            if (evento.fecha_inicio) {
+                const fecha = new Date(evento.fecha_inicio);
+                document.getElementById('eventoFecha').value = fecha.toISOString().split('T')[0];
+                document.getElementById('eventoHora').value = fecha.toISOString().split('T')[1].substring(0, 5);
+            }
+
+            document.getElementById('eventoLugar').value = evento.ubicacion || '';
+            document.getElementById('eventoCategoria').value = evento.categoria || 'General';
+            document.getElementById('eventoCupo').value = evento.capacidad_maxima || '';
+            document.getElementById('eventoInscripcion').checked = evento.requiere_inscripcion || false;
+            document.getElementById('eventoActivo').checked = evento.estado === 'publicado';
+            document.getElementById('eventoDestacado').checked = evento.destacado || false;
+            document.getElementById('eventoOrganizador').value = evento.organizador || '';
+            document.getElementById('eventoContacto').value = evento.contacto_email || '';
+
+            // Cambiar botón
+            const submitBtn = document.querySelector('#eventoForm button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.textContent = 'Actualizar Evento';
+                submitBtn.classList.remove('btn-primary');
+                submitBtn.classList.add('btn-warning');
+            }
+
+            // Cambiar modales
+            const listModal = bootstrap.Modal.getInstance(document.getElementById('eventosModal'));
+            if (listModal) listModal.hide();
+
+            const formModal = new bootstrap.Modal(document.getElementById('createEventoModal'));
+            formModal.show();
+
+        } catch (error) {
+            console.error('Error cargando evento:', error);
+            this.showNotification('Error cargando evento para editar', 'error');
+        }
+    }
+
+    async editAviso(id) {
+        try {
+            const result = await this.fetchAPI(`avisos/${id}`);
+            const aviso = result.data;
+
+            // Llenar formulario
+            document.getElementById('avisoId').value = aviso.id;
+            document.getElementById('avisoTitulo').value = aviso.titulo;
+            document.getElementById('avisoContenido').value = aviso.contenido;
+            document.getElementById('avisoImagen').value = aviso.imagen_url || '';
+            document.getElementById('avisoTipo').value = aviso.categoria || 'General';
+            document.getElementById('avisoActivo').checked = aviso.estado === 'publicada';
+
+            // Cambiar botón
+            const submitBtn = document.querySelector('#avisoForm button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.textContent = 'Actualizar Aviso';
+                submitBtn.classList.remove('btn-primary');
+                submitBtn.classList.add('btn-warning');
+            }
+
+            // Cambiar modales
+            const listModal = bootstrap.Modal.getInstance(document.getElementById('avisosModal'));
+            if (listModal) listModal.hide();
+
+            const formModal = new bootstrap.Modal(document.getElementById('createAvisoModal'));
+            formModal.show();
+
+        } catch (error) {
+            console.error('Error cargando aviso:', error);
+            this.showNotification('Error cargando aviso para editar', 'error');
+        }
+    }
+
+    async editComunicado(id) {
+        try {
+            const result = await this.fetchAPI(`comunicados/${id}`);
+            const comunicado = result.data;
+
+            // Llenar formulario
+            document.getElementById('comunicadoId').value = comunicado.id;
+            document.getElementById('comunicadoTitulo').value = comunicado.titulo;
+            document.getElementById('comunicadoContenido').value = comunicado.contenido;
+            document.getElementById('comunicadoImagen').value = comunicado.imagen_url || '';
+            document.getElementById('comunicadoTipo').value = comunicado.categoria || 'General';
+            document.getElementById('comunicadoEmisor').value = comunicado.autor || '';
+            document.getElementById('comunicadoActivo').checked = comunicado.estado === 'publicada';
+
+            // Cambiar botón
+            const submitBtn = document.querySelector('#comunicadoForm button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.textContent = 'Actualizar Comunicado';
+                submitBtn.classList.remove('btn-primary');
+                submitBtn.classList.add('btn-warning');
+            }
+
+            // Cambiar modales
+            const listModal = bootstrap.Modal.getInstance(document.getElementById('comunicadosModal'));
+            if (listModal) listModal.hide();
+
+            const formModal = new bootstrap.Modal(document.getElementById('createComunicadoModal'));
+            formModal.show();
+
+        } catch (error) {
+            console.error('Error cargando comunicado:', error);
+            this.showNotification('Error cargando comunicado para editar', 'error');
+        }
+    }
+
+    // ==========================================
     // FUNCIONES DE ELIMINACIÓN
     // ==========================================
 
-    async deleteContent(type, id) {
+    async deleteNoticia(id) {
         try {
-            const response = await fetch(`${this.apiBase}content/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${this.getAuthToken()}`
-                }
-            });
-
-            const result = await response.json();
-            if (!result.success) {
-                throw new Error(result.message || 'Error al eliminar');
-            }
-
-            this.showNotification(`${type} eliminado exitosamente`, 'success');
+            await this.fetchAPI(`noticias/${id}`, 'DELETE');
+            this.showNotification('Noticia archivada exitosamente', 'success');
             return true;
         } catch (error) {
-            console.error(`Error eliminando ${type}:`, error);
-            this.showNotification(`Error al eliminar ${type}: ${error.message}`, 'error');
+            console.error('Error archivando noticia:', error);
+            this.showNotification(`Error al archivar noticia: ${error.message}`, 'error');
             return false;
         }
     }
 
-    async deleteEvent(id) {
+    async deleteEvento(id) {
         try {
-            const response = await fetch(`${this.calendarBase}events/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${this.getAuthToken()}`
-                }
-            });
-
-            const result = await response.json();
-            if (!result.success) {
-                throw new Error(result.message || 'Error al eliminar');
-            }
-
-            this.showNotification('Evento eliminado exitosamente', 'success');
+            await this.fetchAPI(`eventos/${id}`, 'DELETE');
+            this.showNotification('Evento archivado exitosamente', 'success');
             return true;
         } catch (error) {
-            console.error('Error eliminando evento:', error);
-            this.showNotification(`Error al eliminar evento: ${error.message}`, 'error');
+            console.error('Error archivando evento:', error);
+            this.showNotification(`Error al archivar evento: ${error.message}`, 'error');
+            return false;
+        }
+    }
+
+    async deleteAviso(id) {
+        try {
+            await this.fetchAPI(`avisos/${id}`, 'DELETE');
+            this.showNotification('Aviso archivado exitosamente', 'success');
+            return true;
+        } catch (error) {
+            console.error('Error archivando aviso:', error);
+            this.showNotification(`Error al archivar aviso: ${error.message}`, 'error');
+            return false;
+        }
+    }
+
+    async deleteComunicado(id) {
+        try {
+            await this.fetchAPI(`comunicados/${id}`, 'DELETE');
+            this.showNotification('Comunicado archivado exitosamente', 'success');
+            return true;
+        } catch (error) {
+            console.error('Error archivando comunicado:', error);
+            this.showNotification(`Error al archivar comunicado: ${error.message}`, 'error');
             return false;
         }
     }
@@ -837,31 +1112,39 @@ function clearComunicadoForm() {
 }
 
 // Funciones de edición (placeholders para futuras implementaciones)
-function editNoticia(id) {
+async function editNoticia(id) {
     console.log('🖊️ Editando noticia:', id);
-    // TODO: Implementar edición
+    if (window.cmsManager) {
+        await window.cmsManager.editNoticia(id);
+    }
 }
 
-function editEvento(id) {
+async function editEvento(id) {
     console.log('🖊️ Editando evento:', id);
-    // TODO: Implementar edición
+    if (window.cmsManager) {
+        await window.cmsManager.editEvento(id);
+    }
 }
 
-function editAviso(id) {
+async function editAviso(id) {
     console.log('🖊️ Editando aviso:', id);
-    // TODO: Implementar edición
+    if (window.cmsManager) {
+        await window.cmsManager.editAviso(id);
+    }
 }
 
-function editComunicado(id) {
+async function editComunicado(id) {
     console.log('🖊️ Editando comunicado:', id);
-    // TODO: Implementar edición
+    if (window.cmsManager) {
+        await window.cmsManager.editComunicado(id);
+    }
 }
 
 // Funciones de eliminación
 async function deleteNoticia(id) {
-    if (confirm('¿Estás seguro de que deseas eliminar esta noticia?')) {
+    if (confirm('¿Estás seguro de que deseas archivar esta noticia?')) {
         if (window.cmsManager) {
-            const success = await window.cmsManager.deleteContent('noticia', id);
+            const success = await window.cmsManager.deleteNoticia(id);
             if (success) {
                 window.cmsManager.loadNoticiasExistentes();
             }
@@ -870,9 +1153,9 @@ async function deleteNoticia(id) {
 }
 
 async function deleteEvento(id) {
-    if (confirm('¿Estás seguro de que deseas eliminar este evento?')) {
+    if (confirm('¿Estás seguro de que deseas archivar este evento?')) {
         if (window.cmsManager) {
-            const success = await window.cmsManager.deleteEvent(id);
+            const success = await window.cmsManager.deleteEvento(id);
             if (success) {
                 window.cmsManager.loadEventosExistentes();
             }
@@ -881,9 +1164,9 @@ async function deleteEvento(id) {
 }
 
 async function deleteAviso(id) {
-    if (confirm('¿Estás seguro de que deseas eliminar este aviso?')) {
+    if (confirm('¿Estás seguro de que deseas archivar este aviso?')) {
         if (window.cmsManager) {
-            const success = await window.cmsManager.deleteContent('aviso', id);
+            const success = await window.cmsManager.deleteAviso(id);
             if (success) {
                 window.cmsManager.loadAvisosExistentes();
             }
@@ -892,9 +1175,9 @@ async function deleteAviso(id) {
 }
 
 async function deleteComunicado(id) {
-    if (confirm('¿Estás seguro de que deseas eliminar este comunicado?')) {
+    if (confirm('¿Estás seguro de que deseas archivar este comunicado?')) {
         if (window.cmsManager) {
-            const success = await window.cmsManager.deleteContent('comunicado', id);
+            const success = await window.cmsManager.deleteComunicado(id);
             if (success) {
                 window.cmsManager.loadComunicadosExistentes();
             }

@@ -8,6 +8,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const validator = require('validator');
 const nodemailer = require('nodemailer');
+const { pool } = require('../config/database');
 const router = express.Router();
 
 // ============================================
@@ -36,11 +37,11 @@ transporter.verify((error, success) => {
 // ============================================
 
 const contactLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    max: 10, // Aumentado de 5 a 10 para desarrollo/testing
+    windowMs: 5 * 60 * 1000, // 5 minutos (reducido para testing)
+    max: 50, // Aumentado a 50 para desarrollo/testing
     message: {
         success: false,
-        message: 'Demasiados intentos de envío. Inténtalo nuevamente en 15 minutos.',
+        message: 'Demasiados intentos de envío. Inténtalo nuevamente en 5 minutos.',
         code: 'RATE_LIMIT_EXCEEDED'
     },
     standardHeaders: true,
@@ -52,7 +53,15 @@ const contactLimiter = rateLimit({
 // ============================================
 
 const validateContactForm = (req, res, next) => {
-    const { nombre, email, telefono, asunto, mensaje, form_type } = req.body;
+    // Normalizar campos (aceptar tanto name/nombre, subject/asunto, message/mensaje)
+    const nombre = req.body.nombre || req.body.name;
+    const email = req.body.email;
+    const telefono = req.body.telefono || req.body.phone;
+    const tipo = req.body.tipo || req.body.tipo_consulta;
+    const asunto = req.body.asunto || req.body.subject;
+    const mensaje = req.body.mensaje || req.body.message;
+    const form_type = req.body.form_type;
+
     const errors = [];
 
     // Validar nombre
@@ -96,11 +105,12 @@ const validateContactForm = (req, res, next) => {
         });
     }
 
-    // Sanitizar datos
+    // Sanitizar datos y normalizar nombres de campos
     req.body = {
         nombre: validator.escape(nombre.trim()),
         email: validator.normalizeEmail(email.trim()),
         telefono: telefono ? validator.escape(telefono.trim()) : '',
+        tipo_consulta: tipo ? validator.escape(tipo.trim()) : null,
         asunto: validator.escape(asunto.trim()),
         mensaje: validator.escape(mensaje.trim()),
         form_type: form_type ? validator.escape(form_type.trim()) : 'Contacto General'
@@ -110,13 +120,11 @@ const validateContactForm = (req, res, next) => {
 };
 
 // ============================================
-// FUNCIÓN DE ENVÍO DE EMAIL
+// FUNCIÓN DE ENVÍO DE EMAIL Y GUARDADO EN BD
 // ============================================
 
-const contactMessages = []; // Almacenamiento temporal
-
 const sendContactEmail = async (messageData) => {
-    const { nombre, email, telefono, asunto, mensaje, form_type } = messageData;
+    const { nombre, email, telefono, tipo_consulta, asunto, mensaje, form_type, ip_address, user_agent } = messageData;
 
     // Crear HTML para el email
     const htmlContent = `
@@ -199,17 +207,40 @@ Enviado: ${new Date().toLocaleString('es-MX')}
     // Enviar email
     const info = await transporter.sendMail(mailOptions);
 
-    // Guardar en almacenamiento temporal
-    const message = {
-        id: Date.now().toString(),
-        ...messageData,
-        timestamp: new Date(),
-        status: 'sent',
-        messageId: info.messageId
-    };
-    contactMessages.push(message);
+    // Guardar en PostgreSQL
+    const query = `
+        INSERT INTO contactos (
+            nombre, email, telefono, tipo_consulta, asunto, mensaje,
+            form_type, ip_address, user_agent, email_sent, verificado, status
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+        RETURNING *;
+    `;
 
-    return { success: true, id: message.id, messageId: info.messageId };
+    const result = await pool.query(query, [
+        nombre,
+        email,
+        telefono || null,
+        tipo_consulta || null,
+        asunto,
+        mensaje,
+        form_type,
+        ip_address || null,
+        user_agent || null,
+        true, // email_sent
+        true, // verificado (email confirmado)
+        'pendiente' // status
+    ]);
+
+    const savedMessage = result.rows[0];
+    console.log('✅ Mensaje guardado en BD con ID:', savedMessage.id);
+
+    return {
+        success: true,
+        id: savedMessage.id,
+        messageId: info.messageId,
+        dbRecord: savedMessage
+    };
 };
 
 // ============================================
@@ -222,8 +253,9 @@ Enviado: ${new Date().toLocaleString('es-MX')}
  */
 router.post('/send', contactLimiter, validateContactForm, async (req, res) => {
     try {
-        const { nombre, email, telefono, asunto, mensaje, form_type } = req.body;
+        const { nombre, email, telefono, tipo_consulta, asunto, mensaje, form_type } = req.body;
         const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+        const userAgent = req.get('User-Agent') || 'unknown';
 
         console.log('📧 Nuevo mensaje de contacto recibido (verificación requerida):', {
             nombre: nombre.substring(0, 20),
@@ -239,11 +271,15 @@ router.post('/send', contactLimiter, validateContactForm, async (req, res) => {
             email,
             telefono,
             phone: telefono,
+            tipo_consulta,
+            tipo: tipo_consulta,
             asunto,
             subject: asunto,
             mensaje,
             message: mensaje,
-            form_type
+            form_type,
+            ip_address: clientIP,
+            user_agent: userAgent
         };
 
         // ✅ CREAR VERIFICACIÓN Y ENVIAR EMAIL AL USUARIO
@@ -307,24 +343,137 @@ router.get('/verify/:token', async (req, res) => {
             `);
         }
 
-        // Token válido - Enviar mensaje verificado a la escuela
-        const { form_type, ...formData } = verification.data;
+        // Token válido - Determinar si requiere aprobación o envío directo
+        const { form_type, ip_address, user_agent, ...formData } = verification.data;
 
-        // Enviar email final a la escuela
-        const result = await sendContactEmail({
-            nombre: formData.name || formData.nombre,
-            email: formData.email,
-            telefono: formData.phone || formData.telefono || '',
-            asunto: formData.subject || formData.asunto,
-            mensaje: formData.message || formData.mensaje,
-            form_type
-        });
+        // Formularios que requieren aprobación administrativa
+        const requiresApproval = ['bolsa_trabajo', 'egresados'].includes(form_type);
 
-        if (result.success) {
-            console.log(`✅ [VERIFIED] Mensaje enviado a la escuela desde: ${formData.email}`);
+        if (requiresApproval) {
+            // ========================================
+            // FLUJO DE APROBACIÓN ADMINISTRATIVA
+            // ========================================
+            try {
+                // Guardar en tabla pending_submissions
+                const insertQuery = `
+                    INSERT INTO pending_submissions (
+                        form_type, submission_data, verification_token,
+                        email_verified, verification_email, ip_address, user_agent, verified_at
+                    )
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+                    RETURNING id
+                `;
 
-            // Página de confirmación
-            res.send(`
+                const result = await pool.query(insertQuery, [
+                    form_type,
+                    JSON.stringify(formData), // Guardar todos los datos del formulario
+                    token,
+                    true, // Email verificado
+                    formData.email,
+                    ip_address || null,
+                    user_agent || null
+                ]);
+
+                console.log(`✅ [PENDING APPROVAL] Formulario ${form_type} guardado para aprobación. ID: ${result.rows[0].id}`);
+
+                // Página de confirmación - PENDIENTE DE APROBACIÓN
+                res.send(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Solicitud Recibida</title>
+                        <style>
+                            body {
+                                font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                                text-align: center;
+                                padding: 50px;
+                                background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+                                margin: 0;
+                                min-height: 100vh;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
+                            .success {
+                                background: white;
+                                padding: 40px;
+                                border-radius: 15px;
+                                display: inline-block;
+                                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                                max-width: 500px;
+                                width: 90%;
+                            }
+                            .success h1 {
+                                color: #f39c12;
+                                margin-bottom: 20px;
+                                font-size: 32px;
+                            }
+                            .success p {
+                                font-size: 16px;
+                                line-height: 1.6;
+                                color: #555;
+                                margin-bottom: 15px;
+                            }
+                            .icon { font-size: 64px; margin-bottom: 20px; }
+                            .alert { background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 20px; border-left: 4px solid #f39c12; }
+                            .back-btn {
+                                background: #3498db;
+                                color: white;
+                                padding: 12px 25px;
+                                text-decoration: none;
+                                border-radius: 8px;
+                                display: inline-block;
+                                margin-top: 20px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="success">
+                            <div class="icon">⏳</div>
+                            <h1>¡Solicitud Recibida!</h1>
+                            <p>Tu email ha sido verificado correctamente.</p>
+                            <div class="alert">
+                                <strong>⏱️ Tu solicitud será revisada</strong><br>
+                                Un administrador revisará tu información y te enviaremos un email cuando sea aprobada o rechazada.
+                                <br><br>
+                                <strong>📧 Guarda el email de confirmación como comprobante.</strong>
+                            </div>
+                            <p style="margin-top: 20px; color: #888; font-size: 14px;">
+                                Tiempo estimado de revisión: 24-48 horas
+                            </p>
+                            <a href="/" class="back-btn" onclick="window.close(); return false;">Cerrar Ventana</a>
+                        </div>
+                    </body>
+                    </html>
+                `);
+
+            } catch (error) {
+                console.error('❌ Error al guardar en pending_submissions:', error);
+                throw error;
+            }
+
+        } else {
+            // ========================================
+            // FLUJO NORMAL - ENVÍO DIRECTO
+            // ========================================
+            // Enviar email final a la escuela y guardar en BD
+            const result = await sendContactEmail({
+                nombre: formData.name || formData.nombre,
+                email: formData.email,
+                telefono: formData.phone || formData.telefono || '',
+                tipo_consulta: formData.tipo || formData.tipo_consulta || null,
+                asunto: formData.subject || formData.asunto,
+                mensaje: formData.message || formData.mensaje,
+                form_type,
+                ip_address: ip_address || null,
+                user_agent: user_agent || null
+            });
+
+            if (result.success) {
+                console.log(`✅ [VERIFIED] Mensaje enviado a la escuela desde: ${formData.email}`);
+
+                // Página de confirmación
+                res.send(`
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -423,9 +572,10 @@ router.get('/verify/:token', async (req, res) => {
                 </body>
                 </html>
             `);
-        } else {
-            throw new Error('Error al enviar mensaje verificado');
-        }
+            } else {
+                throw new Error('Error al enviar mensaje verificado');
+            }
+        } // Fin del bloque else (FLUJO NORMAL)
 
     } catch (error) {
         console.error('❌ Error en verificación:', error);
@@ -463,27 +613,36 @@ router.get('/messages', async (req, res) => {
         // En un sistema real aquí verificarías autenticación de admin
         const limit = parseInt(req.query.limit) || 50;
         const page = parseInt(req.query.page) || 1;
-        const skip = (page - 1) * limit;
+        const offset = (page - 1) * limit;
+        const status = req.query.status;
 
-        const messages = contactMessages
-            .slice(skip, skip + limit)
-            .map(msg => ({
-                id: msg.id,
-                nombre: msg.nombre,
-                email: msg.email,
-                asunto: msg.asunto,
-                mensaje: msg.mensaje.substring(0, 100) + '...',
-                form_type: msg.form_type,
-                timestamp: msg.timestamp,
-                status: msg.status
-            }));
+        let query = 'SELECT * FROM contactos';
+        const params = [];
+
+        if (status) {
+            query += ' WHERE status = $1';
+            params.push(status);
+        }
+
+        query += ` ORDER BY fecha_creacion DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+        params.push(limit, offset);
+
+        const result = await pool.query(query, params);
+
+        // Contar total
+        const countQuery = status ?
+            'SELECT COUNT(*) FROM contactos WHERE status = $1' :
+            'SELECT COUNT(*) FROM contactos';
+        const countParams = status ? [status] : [];
+        const countResult = await pool.query(countQuery, countParams);
+        const total = parseInt(countResult.rows[0].count);
 
         res.json({
             success: true,
-            data: messages,
-            total: contactMessages.length,
+            data: result.rows,
+            total: total,
             page,
-            totalPages: Math.ceil(contactMessages.length / limit)
+            totalPages: Math.ceil(total / limit)
         });
 
     } catch (error) {
@@ -501,21 +660,40 @@ router.get('/messages', async (req, res) => {
  */
 router.get('/stats', async (req, res) => {
     try {
-        const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const thisWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-        const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const query = `
+            SELECT
+                COUNT(*) as total,
+                COUNT(*) FILTER (WHERE status = 'pendiente') as pendientes,
+                COUNT(*) FILTER (WHERE status = 'en_revision') as en_revision,
+                COUNT(*) FILTER (WHERE status = 'respondida') as respondidas,
+                COUNT(*) FILTER (WHERE DATE(fecha_creacion) = CURRENT_DATE) as hoy,
+                COUNT(*) FILTER (WHERE DATE(fecha_creacion) >= CURRENT_DATE - INTERVAL '7 days') as esta_semana,
+                COUNT(*) FILTER (WHERE DATE(fecha_creacion) >= DATE_TRUNC('month', CURRENT_DATE)) as este_mes,
+                COUNT(*) FILTER (WHERE verificado = true) as verificados,
+                COUNT(*) FILTER (WHERE email_sent = true) as enviados
+            FROM contactos;
+        `;
+
+        const result = await pool.query(query);
+
+        // Estadísticas por tipo de consulta
+        const typeQuery = `
+            SELECT tipo_consulta, COUNT(*) as cantidad
+            FROM contactos
+            WHERE tipo_consulta IS NOT NULL
+            GROUP BY tipo_consulta
+            ORDER BY cantidad DESC;
+        `;
+
+        const typeResult = await pool.query(typeQuery);
+        const byType = typeResult.rows.reduce((acc, row) => {
+            acc[row.tipo_consulta] = parseInt(row.cantidad);
+            return acc;
+        }, {});
 
         const stats = {
-            total: contactMessages.length,
-            today: contactMessages.filter(msg => new Date(msg.timestamp) >= today).length,
-            thisWeek: contactMessages.filter(msg => new Date(msg.timestamp) >= thisWeek).length,
-            thisMonth: contactMessages.filter(msg => new Date(msg.timestamp) >= thisMonth).length,
-            byType: contactMessages.reduce((acc, msg) => {
-                acc[msg.form_type] = (acc[msg.form_type] || 0) + 1;
-                return acc;
-            }, {}),
-            pending: contactMessages.filter(msg => msg.status === 'pending').length
+            ...result.rows[0],
+            byType
         };
 
         res.json({

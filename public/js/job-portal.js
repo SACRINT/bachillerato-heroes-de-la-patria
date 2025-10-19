@@ -412,19 +412,19 @@ class JobPortal {
             }
         });
 
-        // Subir CV
-        const cvForm = document.getElementById('cvUploadForm');
-        if (cvForm) {
-            cvForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.processCVUpload();
-            });
-        }
+        // ❌ DESHABILITADO: No interceptar formulario CV - lo maneja professional-forms.js
+        // const cvForm = document.getElementById('cvUploadForm');
+        // if (cvForm) {
+        //     cvForm.addEventListener('submit', (e) => {
+        //         e.preventDefault();
+        //         this.processCVUpload();
+        //     });
+        // }
 
         // Botones de acción rápida
         const applyJobBtn = document.getElementById('applyJobBtn');
         const saveJobBtn = document.getElementById('saveJobBtn');
-        
+
         if (applyJobBtn) {
             applyJobBtn.addEventListener('click', () => {
                 this.applyToCurrentJob();

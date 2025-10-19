@@ -1,10 +1,12 @@
 /**
  * 📊 ANALYTICS DASHBOARD ROUTES
  * Endpoint para estadísticas del dashboard administrativo
+ * INTEGRADO CON POSTGRESQL - 18 Oct 2025
  */
 
 const express = require('express');
 const router = express.Router();
+const { pool } = require('../config/database');
 
 // ============================================
 // GET /api/analytics/dashboard
@@ -12,55 +14,135 @@ const router = express.Router();
 // ============================================
 router.get('/dashboard', async (req, res) => {
     try {
-        // TODO: Integrar con base de datos real cuando esté disponible
+        // Obtener todas las estadísticas en paralelo
+        const [
+            contactosResult,
+            quejasResult,
+            inscripcionesResult,
+            egresadosResult,
+            solicitudesResult,
+            citasResult,
+            noticiasResult,
+            eventosResult,
+            avisosResult,
+            comunicadosResult
+        ] = await Promise.all([
+            // Contactos
+            pool.query(`
+                SELECT
+                    COUNT(*) as total,
+                    COUNT(*) FILTER (WHERE status = 'pendiente') as pendientes,
+                    COUNT(*) FILTER (WHERE status = 'respondida') as respondidos
+                FROM contactos
+            `),
+            // Quejas
+            pool.query(`
+                SELECT
+                    COUNT(*) as total,
+                    COUNT(*) FILTER (WHERE status = 'pendiente') as pendientes
+                FROM quejas
+            `),
+            // Inscripciones
+            pool.query(`
+                SELECT
+                    COUNT(*) as total,
+                    COUNT(*) FILTER (WHERE status = 'approved') as aprobadas,
+                    COUNT(*) FILTER (WHERE status = 'pending') as pendientes,
+                    COUNT(*) FILTER (WHERE status = 'rejected') as rechazadas
+                FROM inscripciones_actividades
+            `),
+            // Egresados
+            pool.query(`
+                SELECT
+                    COUNT(*) as total,
+                    COUNT(*) FILTER (WHERE estado_perfil = 'aprobado') as verificados,
+                    COUNT(*) FILTER (WHERE cv_url IS NOT NULL) as con_cv
+                FROM egresados
+            `),
+            // Solicitudes de documentos
+            pool.query(`
+                SELECT
+                    COUNT(*) as total,
+                    COUNT(*) FILTER (WHERE status = 'pendiente') as pendientes
+                FROM solicitudes_documentos
+            `),
+            // Citas
+            pool.query(`
+                SELECT
+                    COUNT(*) as total,
+                    COUNT(*) FILTER (WHERE estado = 'pendiente') as pendientes,
+                    COUNT(*) FILTER (WHERE estado = 'aprobada') as confirmadas
+                FROM citas
+            `),
+            // Noticias
+            pool.query(`SELECT COUNT(*) as total FROM noticias WHERE estado = 'publicada'`),
+            // Eventos
+            pool.query(`SELECT COUNT(*) as total FROM eventos WHERE estado = 'publicado'`),
+            // Avisos
+            pool.query(`SELECT COUNT(*) as total FROM avisos WHERE estado = 'publicada'`),
+            // Comunicados
+            pool.query(`SELECT COUNT(*) as total FROM comunicados WHERE estado = 'publicada'`)
+        ]);
+
+        // Extraer datos
+        const contactos = contactosResult.rows[0];
+        const quejas = quejasResult.rows[0];
+        const inscripciones = inscripcionesResult.rows[0];
+        const egresados = egresadosResult.rows[0];
+        const solicitudes = solicitudesResult.rows[0];
+        const citas = citasResult.rows[0];
+        const noticias = noticiasResult.rows[0];
+        const eventos = eventosResult.rows[0];
+        const avisos = avisosResult.rows[0];
+        const comunicados = comunicadosResult.rows[0];
+
+        // Construir respuesta con datos reales
         const stats = {
-            estudiantes: {
-                total: 450,
-                activos: 432,
-                nuevos_mes: 15,
-                tendencia: '+3.5%'
-            },
-            docentes: {
-                total: 28,
-                activos: 26,
-                nuevos_mes: 1,
-                tendencia: '+3.7%'
-            },
-            cursos: {
-                total: 45,
-                en_progreso: 42,
-                completados: 3,
-                tendencia: '+2.3%'
-            },
             mensajes: {
-                total: 127,
-                pendientes: 12,
-                respondidos: 115,
-                tendencia: '+15.2%'
+                total: parseInt(contactos.total) + parseInt(quejas.total),
+                pendientes: parseInt(contactos.pendientes) + parseInt(quejas.pendientes),
+                respondidos: parseInt(contactos.respondidos),
+                tendencia: calcularTendencia(parseInt(contactos.total))
             },
             inscripciones: {
-                total: 89,
-                aprobadas: 67,
-                pendientes: 22,
-                rechazadas: 0,
-                tendencia: '+8.5%'
+                total: parseInt(inscripciones.total),
+                aprobadas: parseInt(inscripciones.aprobadas),
+                pendientes: parseInt(inscripciones.pendientes),
+                rechazadas: parseInt(inscripciones.rechazadas),
+                tendencia: calcularTendencia(parseInt(inscripciones.total))
             },
             egresados: {
-                total: 0,
-                verificados: 0,
-                con_historia: 0,
-                tendencia: '0%'
+                total: parseInt(egresados.total),
+                verificados: parseInt(egresados.verificados),
+                con_cv: parseInt(egresados.con_cv),
+                tendencia: calcularTendencia(parseInt(egresados.total))
             },
-            visitas: {
-                hoy: 234,
-                semana: 1567,
-                mes: 6789,
-                tendencia: '+12.3%'
+            solicitudes: {
+                total: parseInt(solicitudes.total),
+                pendientes: parseInt(solicitudes.pendientes),
+                tendencia: calcularTendencia(parseInt(solicitudes.total))
             },
-            engagement: {
-                tasa_respuesta: '89%',
-                tiempo_promedio: '2.3 min',
-                satisfaccion: '4.6/5'
+            citas: {
+                total: parseInt(citas.total),
+                pendientes: parseInt(citas.pendientes),
+                confirmadas: parseInt(citas.confirmadas),
+                tendencia: calcularTendencia(parseInt(citas.total))
+            },
+            cms: {
+                noticias: parseInt(noticias.total),
+                eventos: parseInt(eventos.total),
+                avisos: parseInt(avisos.total),
+                comunicados: parseInt(comunicados.total),
+                total: parseInt(noticias.total) + parseInt(eventos.total) +
+                       parseInt(avisos.total) + parseInt(comunicados.total)
+            },
+            resumen: {
+                total_actividad: parseInt(contactos.total) + parseInt(quejas.total) +
+                                parseInt(inscripciones.total) + parseInt(solicitudes.total),
+                pendientes_atencion: parseInt(contactos.pendientes) + parseInt(quejas.pendientes) +
+                                    parseInt(inscripciones.pendientes) + parseInt(solicitudes.pendientes),
+                contenido_publicado: parseInt(noticias.total) + parseInt(eventos.total) +
+                                    parseInt(avisos.total) + parseInt(comunicados.total)
             }
         };
 
@@ -80,37 +162,80 @@ router.get('/dashboard', async (req, res) => {
     }
 });
 
+/**
+ * Calcular tendencia basada en el total
+ * TODO: Implementar cálculo real comparando con mes anterior
+ */
+function calcularTendencia(total) {
+    if (total === 0) return '0%';
+    // Por ahora retornar un valor indicativo
+    return '+N/A';
+}
+
 // ============================================
 // GET /api/analytics/dashboard/recent-activity
-// Obtener actividad reciente
+// Obtener actividad reciente desde PostgreSQL
 // ============================================
 router.get('/dashboard/recent-activity', async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 10;
 
-        const activities = [
-            {
-                id: 1,
-                tipo: 'inscripcion',
-                usuario: 'María González',
-                accion: 'Nueva inscripción a actividad extracurricular',
-                timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString()
-            },
-            {
-                id: 2,
-                tipo: 'mensaje',
-                usuario: 'Juan Pérez',
-                accion: 'Nuevo mensaje de contacto',
-                timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString()
-            },
-            {
-                id: 3,
-                tipo: 'egresado',
-                usuario: 'Carlos López',
-                accion: 'Actualización de perfil de egresado',
-                timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString()
-            }
-        ].slice(0, limit);
+        // Obtener actividades de diferentes fuentes
+        const [contactosRecent, quejasRecent, inscripcionesRecent, egresadosRecent, citasRecent] = await Promise.all([
+            pool.query(`
+                SELECT 'contacto' as tipo, nombre, email, fecha_creacion as timestamp, 'Nuevo mensaje de contacto' as accion
+                FROM contactos
+                ORDER BY fecha_creacion DESC
+                LIMIT $1
+            `, [3]),
+            pool.query(`
+                SELECT 'queja' as tipo, nombre, email, fecha_creacion as timestamp, 'Nueva queja registrada' as accion
+                FROM quejas
+                ORDER BY fecha_creacion DESC
+                LIMIT $1
+            `, [3]),
+            pool.query(`
+                SELECT 'inscripcion' as tipo, student_name as nombre, student_email as email, fecha_solicitud as timestamp,
+                       CONCAT('Inscripción a ', activity_name) as accion
+                FROM inscripciones_actividades
+                ORDER BY fecha_solicitud DESC
+                LIMIT $1
+            `, [3]),
+            pool.query(`
+                SELECT 'egresado' as tipo, nombre_completo as nombre, email, created_at as timestamp, 'Nuevo perfil de egresado' as accion
+                FROM egresados
+                ORDER BY created_at DESC
+                LIMIT $1
+            `, [2]),
+            pool.query(`
+                SELECT 'cita' as tipo, nombre_completo as nombre, email, created_at as timestamp, 'Nueva solicitud de cita' as accion
+                FROM citas
+                ORDER BY created_at DESC
+                LIMIT $1
+            `, [2])
+        ]);
+
+        // Combinar y ordenar todas las actividades
+        const allActivities = [
+            ...contactosRecent.rows,
+            ...quejasRecent.rows,
+            ...inscripcionesRecent.rows,
+            ...egresadosRecent.rows,
+            ...citasRecent.rows
+        ];
+
+        // Ordenar por timestamp descendente
+        allActivities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        // Formatear actividades
+        const activities = allActivities.slice(0, limit).map((activity, index) => ({
+            id: index + 1,
+            tipo: activity.tipo,
+            usuario: activity.nombre || 'Usuario',
+            accion: activity.accion,
+            timestamp: activity.timestamp,
+            email: activity.email
+        }));
 
         res.json({
             success: true,
@@ -129,24 +254,81 @@ router.get('/dashboard/recent-activity', async (req, res) => {
 
 // ============================================
 // GET /api/analytics/dashboard/charts
-// Obtener datos para gráficas
+// Obtener datos para gráficas desde PostgreSQL
 // ============================================
 router.get('/dashboard/charts', async (req, res) => {
     try {
         const type = req.query.type || 'all';
 
+        // Obtener inscripciones por mes (últimos 6 meses)
+        const inscripcionesMes = await pool.query(`
+            SELECT
+                TO_CHAR(fecha_solicitud, 'TMMonth') as mes,
+                EXTRACT(MONTH FROM fecha_solicitud) as mes_num,
+                COUNT(*) as total
+            FROM inscripciones_actividades
+            WHERE fecha_solicitud >= CURRENT_DATE - INTERVAL '6 months'
+            GROUP BY mes_num, mes
+            ORDER BY mes_num ASC
+        `);
+
+        // Obtener mensajes por tipo
+        const mensajesTipo = await pool.query(`
+            SELECT
+                'Contacto' as tipo,
+                COUNT(*) as total
+            FROM contactos
+            UNION ALL
+            SELECT
+                'Quejas' as tipo,
+                COUNT(*) as total
+            FROM quejas
+            UNION ALL
+            SELECT
+                'Solicitudes' as tipo,
+                COUNT(*) as total
+            FROM solicitudes_documentos
+            UNION ALL
+            SELECT
+                'Citas' as tipo,
+                COUNT(*) as total
+            FROM citas
+        `);
+
+        // Obtener contenido CMS publicado
+        const contenidoCMS = await Promise.all([
+            pool.query(`SELECT COUNT(*) as total FROM noticias WHERE estado = 'publicada'`),
+            pool.query(`SELECT COUNT(*) as total FROM eventos WHERE estado = 'publicado'`),
+            pool.query(`SELECT COUNT(*) as total FROM avisos WHERE estado = 'publicada'`),
+            pool.query(`SELECT COUNT(*) as total FROM comunicados WHERE estado = 'publicada'`)
+        ]);
+
+        // Formatear datos para gráficas
         const charts = {
             inscripciones_mes: {
-                labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
-                data: [12, 19, 15, 23, 18, 22]
-            },
-            visitas_semana: {
-                labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-                data: [234, 345, 289, 412, 378, 156, 98]
+                labels: inscripcionesMes.rows.length > 0
+                    ? inscripcionesMes.rows.map(row => row.mes.substring(0, 3))
+                    : ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                data: inscripcionesMes.rows.length > 0
+                    ? inscripcionesMes.rows.map(row => parseInt(row.total))
+                    : [0, 0, 0, 0, 0, 0]
             },
             mensajes_tipo: {
-                labels: ['Contacto', 'Quejas', 'Sugerencias', 'Información'],
-                data: [45, 12, 23, 47]
+                labels: mensajesTipo.rows.map(row => row.tipo),
+                data: mensajesTipo.rows.map(row => parseInt(row.total))
+            },
+            contenido_cms: {
+                labels: ['Noticias', 'Eventos', 'Avisos', 'Comunicados'],
+                data: [
+                    parseInt(contenidoCMS[0].rows[0].total),
+                    parseInt(contenidoCMS[1].rows[0].total),
+                    parseInt(contenidoCMS[2].rows[0].total),
+                    parseInt(contenidoCMS[3].rows[0].total)
+                ]
+            },
+            actividad_general: {
+                labels: ['Inscripciones', 'Mensajes', 'Egresados', 'Citas'],
+                data: await obtenerActividadGeneral()
             }
         };
 
@@ -166,5 +348,24 @@ router.get('/dashboard/charts', async (req, res) => {
         });
     }
 });
+
+/**
+ * Obtener actividad general por categoría
+ */
+async function obtenerActividadGeneral() {
+    const [inscripciones, mensajes, egresados, citas] = await Promise.all([
+        pool.query(`SELECT COUNT(*) as total FROM inscripciones_actividades`),
+        pool.query(`SELECT COUNT(*) as total FROM contactos`),
+        pool.query(`SELECT COUNT(*) as total FROM egresados`),
+        pool.query(`SELECT COUNT(*) as total FROM citas`)
+    ]);
+
+    return [
+        parseInt(inscripciones.rows[0].total),
+        parseInt(mensajes.rows[0].total),
+        parseInt(egresados.rows[0].total),
+        parseInt(citas.rows[0].total)
+    ];
+}
 
 module.exports = router;

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter - {{titulo}}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; }
+        .email-wrapper { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .email-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 20px; text-align: center; }
+        .email-header h1 { margin: 10px 0 0 0; font-size: 24px; }
+        .email-body { padding: 40px 30px; }
+        .email-body h2 { color: #667eea; margin-bottom: 20px; }
+        .email-body p { margin-bottom: 15px; color: #555; }
+        .button { display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white !important; text-decoration: none; border-radius: 5px; margin: 10px 0; font-weight: 600; font-size: 14px; }
+        .section-title { color: #667eea; font-size: 20px; margin: 30px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #667eea; }
+        .news-item { background-color: #f8f9fa; padding: 15px; margin: 15px 0; border-radius: 5px; border-left: 4px solid #667eea; }
+        .news-item h3 { color: #333; font-size: 16px; margin-bottom: 10px; }
+        .news-item p { color: #666; font-size: 14px; margin-bottom: 10px; }
+        .event-item { background-color: #f0fdf4; padding: 15px; margin: 15px 0; border-radius: 5px; border-left: 4px solid #10b981; }
+        .event-item h3 { color: #065f46; font-size: 16px; margin-bottom: 10px; }
+        .event-item .event-date { color: #059669; font-weight: 600; font-size: 13px; margin-bottom: 5px; }
+        .email-footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #777; border-top: 1px solid #e0e0e0; }
+        .email-footer a { color: #667eea; text-decoration: none; }
+        .unsubscribe { margin-top: 15px; font-size: 11px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <div class="email-header">
+            <div style="font-size: 48px;">📬</div>
+            <h1>Newsletter BGE</h1>
+            <p style="margin: 10px 0 0 0; font-size: 14px; opacity: 0.9;">Mantente informado con las últimas novedades</p>
+        </div>
+
+        <div class="email-body">
+            <h2>Hola, {{nombre}}</h2>
+
+            <p>{{titulo}}</p>
+
+            {{#if contenido}}
+            <div style="margin: 20px 0; padding: 15px; background-color: #f9fafb; border-radius: 5px;">
+                {{{contenido}}}
+            </div>
+            {{/if}}
+
+            {{#if noticias}}
+            {{#if noticias.length}}
+            <h3 class="section-title">📰 Noticias Destacadas</h3>
+
+            {{#each noticias}}
+            <div class="news-item">
+                <h3>{{this.titulo}}</h3>
+                {{#if this.resumen}}
+                <p>{{this.resumen}}</p>
+                {{/if}}
+                <a href="{{absoluteUrl (concat '/noticias/' this.slug)}}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 600;">
+                    Leer más →
+                </a>
+            </div>
+            {{/each}}
+
+            <p style="text-align: center; margin-top: 20px;">
+                <a href="{{absoluteUrl '/noticias'}}" class="button">Ver Todas las Noticias</a>
+            </p>
+            {{/if}}
+            {{/if}}
+
+            {{#if eventos}}
+            {{#if eventos.length}}
+            <h3 class="section-title">📅 Próximos Eventos</h3>
+
+            {{#each eventos}}
+            <div class="event-item">
+                <div class="event-date">📅 {{formatDate this.fecha_inicio}}</div>
+                <h3>{{this.titulo}}</h3>
+                {{#if this.descripcion}}
+                <p style="color: #374151; font-size: 14px;">{{this.descripcion}}</p>
+                {{/if}}
+                {{#if this.ubicacion}}
+                <p style="color: #6b7280; font-size: 13px; margin-top: 5px;">
+                    📍 {{this.ubicacion}}
+                </p>
+                {{/if}}
+                <a href="{{absoluteUrl (concat '/eventos/' this.slug)}}" style="color: #059669; text-decoration: none; font-size: 14px; font-weight: 600;">
+                    Ver detalles →
+                </a>
+            </div>
+            {{/each}}
+
+            <p style="text-align: center; margin-top: 20px;">
+                <a href="{{absoluteUrl '/eventos'}}" class="button" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    Ver Todos los Eventos
+                </a>
+            </p>
+            {{/if}}
+            {{/if}}
+
+            <div style="background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 30px 0; border-radius: 5px;">
+                <p style="color: #1e40af; font-weight: 600; margin-bottom: 5px;">💡 ¿Sabías que...?</p>
+                <p style="color: #3b82f6; font-size: 14px;">
+                    Puedes personalizar las notificaciones que recibes desde tu perfil en el portal.
+                </p>
+            </div>
+
+            <p style="text-align: center; margin-top: 30px;">
+                <a href="{{absoluteUrl '/'}}" class="button">Visitar el Portal</a>
+            </p>
+        </div>
+
+        <div class="email-footer">
+            <p><strong>Bachillerato General Estatal "Héroes de la Patria"</strong></p>
+            <p>Manteniéndote conectado con tu comunidad educativa</p>
+            <p style="margin-top: 10px;">
+                <a href="{{absoluteUrl '/'}}">Sitio Web</a> |
+                <a href="{{absoluteUrl '/contacto'}}">Contacto</a> |
+                <a href="{{absoluteUrl '/configuracion/notificaciones'}}">Preferencias</a>
+            </p>
+
+            {{#if unsubscribeUrl}}
+            <p class="unsubscribe">
+                ¿No deseas recibir estos correos? <a href="{{unsubscribeUrl}}" style="color: #999;">Cancelar suscripción</a>
+            </p>
+            {{/if}}
+        </div>
+    </div>
+</body>
+</html>

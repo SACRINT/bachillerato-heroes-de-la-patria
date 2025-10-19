@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Inscripción</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; }
+        .email-wrapper { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .email-header { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: white; padding: 30px 20px; text-align: center; }
+        .email-header h1 { margin: 10px 0 0 0; font-size: 24px; }
+        .email-body { padding: 40px 30px; }
+        .email-body h2 { color: #06b6d4; margin-bottom: 20px; }
+        .email-body p { margin-bottom: 15px; color: #555; }
+        .button { display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: white !important; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: 600; }
+        .confirmation-card { background-color: #f0fdfa; border: 2px solid #06b6d4; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .detail-row { margin: 12px 0; padding: 8px 0; border-bottom: 1px solid #e0e0e0; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-row strong { color: #06b6d4; display: inline-block; width: 140px; }
+        .success-icon { font-size: 64px; text-align: center; margin: 20px 0; }
+        .email-footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #777; border-top: 1px solid #e0e0e0; }
+        .email-footer a { color: #06b6d4; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <div class="email-header">
+            <div style="font-size: 48px;">✅</div>
+            <h1>Confirmación de Inscripción</h1>
+        </div>
+
+        <div class="email-body">
+            <div class="success-icon">🎉</div>
+
+            <h2 style="text-align: center;">¡Inscripción Exitosa!</h2>
+
+            <p>Hola, <strong>{{nombre}}</strong></p>
+
+            <p>Te confirmamos que tu inscripción ha sido procesada exitosamente para la siguiente actividad:</p>
+
+            <div class="confirmation-card">
+                <h3 style="color: #06b6d4; margin-bottom: 15px; text-align: center;">{{actividad.nombre}}</h3>
+
+                {{#if actividad.descripcion}}
+                <p style="color: #666; text-align: center; margin-bottom: 20px; font-style: italic;">
+                    {{actividad.descripcion}}
+                </p>
+                {{/if}}
+
+                <div class="detail-row">
+                    <strong>📅 Fecha:</strong> {{formatDateTime actividad.fecha}}
+                </div>
+
+                {{#if actividad.ubicacion}}
+                <div class="detail-row">
+                    <strong>📍 Ubicación:</strong> {{actividad.ubicacion}}
+                </div>
+                {{/if}}
+
+                {{#if actividad.duracion}}
+                <div class="detail-row">
+                    <strong>⏱️ Duración:</strong> {{actividad.duracion}}
+                </div>
+                {{/if}}
+
+                {{#if actividad.costo}}
+                <div class="detail-row">
+                    <strong>💰 Costo:</strong> {{actividad.costo}}
+                </div>
+                {{/if}}
+            </div>
+
+            {{#if actividad.instrucciones}}
+            <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 5px;">
+                <p><strong>📋 Instrucciones Importantes:</strong></p>
+                <p style="margin-top: 10px; color: #666;">{{actividad.instrucciones}}</p>
+            </div>
+            {{/if}}
+
+            <div style="background-color: #f8f9fa; padding: 15px; margin: 20px 0; border-radius: 5px;">
+                <p><strong>📝 ¿Qué sigue?</strong></p>
+                <ul style="margin-left: 20px; color: #555; margin-top: 10px;">
+                    <li>Guarda este correo como comprobante</li>
+                    <li>Presenta tu identificación el día del evento</li>
+                    <li>Llega 15 minutos antes de la hora programada</li>
+                    <li>En caso de cancelación, avisa con anticipación</li>
+                </ul>
+            </div>
+
+            <p style="text-align: center;">
+                <a href="{{absoluteUrl '/mis-inscripciones'}}" class="button">Ver Mis Inscripciones</a>
+            </p>
+
+            <p style="margin-top: 30px; text-align: center; color: #888; font-size: 14px;">
+                ¿Necesitas cancelar? <a href="{{absoluteUrl '/contacto'}}" style="color: #06b6d4;">Contáctanos aquí</a>
+            </p>
+        </div>
+
+        <div class="email-footer">
+            <p><strong>Bachillerato General Estatal "Héroes de la Patria"</strong></p>
+            <p>¡Nos vemos pronto!</p>
+            <p style="margin-top: 10px;">
+                <a href="{{absoluteUrl '/'}}">Sitio Web</a> |
+                <a href="{{absoluteUrl '/contacto'}}">Contacto</a> |
+                <a href="{{absoluteUrl '/preguntas-frecuentes'}}">FAQ</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

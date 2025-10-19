@@ -19,6 +19,8 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
+const { pool } = require('./config/database');
 const path = require('path');
 
 // Routes
@@ -33,6 +35,20 @@ const egresadosRoutes = require('./routes/egresados');
 const analyticsDashboardRoutes = require('./routes/analytics-dashboard');
 const bolsaTrabajoRoutes = require('./routes/bolsa-trabajo');
 const suscriptoresRoutes = require('./routes/suscriptores');
+const quejasRoutes = require('./routes/quejas');
+const notificacionesRoutes = require('./routes/notificaciones');
+const solicitudesRoutes = require('./routes/solicitudes');
+const passwordRecoveryRoutes = require('./routes/password-recovery');
+const approvalsRoutes = require('./routes/approvals');
+const noticiasRoutes = require('./routes/noticias');
+const eventosRoutes = require('./routes/eventos');
+const avisosRoutes = require('./routes/avisos');
+const comunicadosRoutes = require('./routes/comunicados');
+const uploadRoutes = require('./routes/upload');
+const healthRoutes = require('./routes/health');
+const chartsDataRoutes = require('./routes/charts-data');
+const searchRoutes = require('./routes/search');
+const emailsRoutes = require('./routes/emails');
 
 // Middleware
 const { errorHandler } = require('./middleware/errorHandler');
@@ -47,7 +63,7 @@ const PORT = process.env.PORT || 3000;
 
 // Trust proxy for Vercel/Cloud deployments
 // CRÍTICO: Necesario para rate-limit y X-Forwarded-For headers
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 
 // Helmet - Security Headers
 app.use(helmet({
@@ -127,14 +143,21 @@ if (!SESSION_SECRET) {
     process.exit(1);
 }
 
+// Configurar store de sesiones con PostgreSQL
 app.use(session({
+    store: new pgSession({
+        pool: pool,                     // Pool de conexiones PostgreSQL
+        tableName: 'user_sessions',     // Tabla que creamos en PostgreSQL
+        pruneSessionInterval: 60 * 15,  // Limpiar sesiones expiradas cada 15 minutos
+        createTableIfMissing: false     // No crear tabla automáticamente (ya la creamos)
+    }),
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
         secure: process.env.NODE_ENV === 'production', // HTTPS only in production
-        httpOnly: true, // Prevent XSS
-        maxAge: 30 * 60 * 1000 // 30 minutes
+        httpOnly: true,                                // Prevent XSS
+        maxAge: 30 * 24 * 60 * 60 * 1000               // 30 días (como recomendaste)
     }
 }));
 
@@ -251,6 +274,9 @@ app.post('/api/analytics/session', (req, res) => {
     });
 });
 
+// Health Check Routes - Sin rate limiting para monitoreo
+app.use('/api/health', healthRoutes);
+
 // Authentication Routes
 app.use('/api/auth', authRoutes);
 
@@ -266,11 +292,16 @@ app.use('/api/contact', contactRoutes);
 // Inscriptions Routes
 app.use('/api/inscriptions', inscriptionsRoutes);
 
-// Subscriptions Routes
+// Subscriptions Routes (PostgreSQL)
 app.use('/api/subscriptions', subscriptionsRoutes);
 
-// Newsletters Routes
-app.use('/api/newsletters', newslettersRoutes);
+// Newsletters Routes (PostgreSQL)
+const newslettersPgRoutes = require('./routes/newsletters-pg');
+app.use('/api/newsletters', newslettersPgRoutes);
+
+// Citas Routes (PostgreSQL)
+const citasRoutes = require('./routes/citas');
+app.use('/api/citas', citasRoutes);
 
 // Egresados Routes
 app.use('/api/egresados', egresadosRoutes);
@@ -283,6 +314,39 @@ app.use('/api/suscriptores', suscriptoresRoutes);
 
 // Analytics Dashboard Routes
 app.use('/api/analytics', analyticsDashboardRoutes);
+
+// Quejas Routes
+app.use('/api/quejas', quejasRoutes);
+
+// Notificaciones Routes
+app.use('/api/notificaciones', notificacionesRoutes);
+
+// Solicitudes Routes
+app.use('/api/solicitudes', solicitudesRoutes);
+
+// Password Recovery Routes
+app.use('/api/password-recovery', passwordRecoveryRoutes);
+
+// Approvals Routes (Sistema de Aprobaciones Administrativas)
+app.use('/api/approvals', approvalsRoutes);
+
+// CMS Routes (Noticias, Eventos, Avisos, Comunicados)
+app.use('/api/noticias', noticiasRoutes);
+app.use('/api/eventos', eventosRoutes);
+app.use('/api/avisos', avisosRoutes);
+app.use('/api/comunicados', comunicadosRoutes);
+
+// Upload Routes (Subida de archivos)
+app.use('/api/upload', uploadRoutes);
+
+// Charts Data Routes
+app.use('/api/charts', chartsDataRoutes);
+
+// Search Routes
+app.use('/api/search', searchRoutes);
+
+// Email Routes (Sistema de envío de emails con plantillas)
+app.use('/api/emails', emailsRoutes);
 
 // Static Files (Development & Production)
 console.log('🌍 Configurando servidor de archivos estáticos...');
