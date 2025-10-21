@@ -601,14 +601,14 @@ class AdvancedAnalytics {
             // TEMPORALLY DISABLED - Backend not implemented
             // await fetch(`${INTEGRATIONS_API_BASE}/api/analytics/track`, {
             //     method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    event,
-                    data,
-                    session: this.sessionData,
-                    timestamp: Date.now()
-                })
-            });
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify({
+            //         event,
+            //         data,
+            //         session: this.sessionData,
+            //         timestamp: Date.now()
+            //     })
+            // });
         } catch (error) {
             // Store for later if network fails
             this.storeOfflineAnalytics(event, data);

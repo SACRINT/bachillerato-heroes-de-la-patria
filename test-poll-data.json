@@ -1,0 +1,31 @@
+{
+  "title": "¿Cuál es tu materia favorita?",
+  "description": "Ayúdanos a entender las preferencias académicas de nuestros estudiantes",
+  "type": "single_choice",
+  "category_ids": [1],
+  "allow_multiple_votes": false,
+  "show_results_before_voting": false,
+  "anonymous_voting": true,
+  "require_login": false,
+  "status": "active",
+  "featured": true,
+  "published": true,
+  "options": [
+    {
+      "text": "Matemáticas",
+      "description": "Álgebra, geometría, cálculo"
+    },
+    {
+      "text": "Ciencias",
+      "description": "Física, química, biología"
+    },
+    {
+      "text": "Humanidades",
+      "description": "Historia, filosofía, literatura"
+    },
+    {
+      "text": "Artes",
+      "description": "Música, pintura, teatro"
+    }
+  ]
+}

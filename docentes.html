@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portal de Docentes - Bachillerato General del Estado Héroes de la Patria">
+    <title>Portal de Docentes | BGE Héroes de la Patria</title>
+
+    <!-- Bootstrap 5.3.0 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --dark-color: #343a40;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+        }
+
+        /* Login Screen */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-card {
+            max-width: 450px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+        }
+
+        /* Dashboard */
+        .dashboard-container {
+            display: none;
+        }
+
+        .dashboard-container.active {
+            display: block;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--dark-color);
+            min-height: 100vh;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .sidebar .sidebar-header {
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            text-align: center;
+            color: white;
+        }
+
+        .sidebar .sidebar-header h4 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li a {
+            display: block;
+            padding: 15px 20px;
+            color: #b8c7ce;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu li a:hover,
+        .sidebar-menu li a.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--primary-color);
+            color: white;
+        }
+
+        .sidebar-menu li a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-card.primary .icon {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .stat-card.success .icon {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+        }
+
+        .stat-card.warning .icon {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .stat-card.info .icon {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        /* Tables */
+        .data-table {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Modals */
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Attendance Grid */
+        .attendance-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .attendance-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .attendance-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Grades Table */
+        .grades-table input[type="number"] {
+            width: 80px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stat-card {
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner-container.active {
+            display: flex;
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a;
+                color: #e0e0e0;
+            }
+
+            .stat-card,
+            .data-table,
+            .attendance-item {
+                background: #2d2d2d;
+                color: #e0e0e0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Spinner -->
+    <div class="spinner-container" id="loadingSpinner">
+        <div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- LOGIN SCREEN -->
+    <!-- ============================================ -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="images/logo.png" alt="BGE Logo" onerror="this.src='https://via.placeholder.com/80'">
+                <h3>Portal de Docentes</h3>
+                <p class="text-muted">BGE Héroes de la Patria</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label for="loginEmail" class="form-label">Correo Electrónico</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="profesor@ejemplo.com" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="loginPassword" class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="********" required>
+                    </div>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">Recordarme</label>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                    </button>
+                </div>
+
+                <div class="text-center mt-3">
+                    <a href="#" class="text-decoration-none">¿Olvidaste tu contraseña?</a>
+                </div>
+            </form>
+
+            <div class="alert alert-danger mt-3 d-none" id="loginError" role="alert"></div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- DASHBOARD CONTAINER -->
+    <!-- ============================================ -->
+    <div class="dashboard-container" id="dashboardContainer">
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="images/logo.png" alt="BGE Logo" style="width: 50px; height: 50px; margin-bottom: 0.5rem;" onerror="this.src='https://via.placeholder.com/50'">
+                <h4>Portal Docentes</h4>
+                <p class="text-muted small mb-0" id="teacherName">Bienvenido</p>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="#" class="menu-link active" data-section="dashboard"><i class="bi bi-house-door"></i> Dashboard</a></li>
+                <li><a href="#" class="menu-link" data-section="classes"><i class="bi bi-book"></i> Mis Clases</a></li>
+                <li><a href="#" class="menu-link" data-section="grades"><i class="bi bi-journal-check"></i> Calificaciones</a></li>
+                <li><a href="#" class="menu-link" data-section="attendance"><i class="bi bi-calendar-check"></i> Asistencia</a></li>
+                <li><a href="#" class="menu-link" data-section="resources"><i class="bi bi-folder"></i> Recursos</a></li>
+                <li><a href="#" class="menu-link" data-section="messages"><i class="bi bi-envelope"></i> Mensajes <span class="badge bg-danger" id="unreadMessagesCount" style="display: none;"></span></a></li>
+                <li><a href="#" class="menu-link" data-section="notifications"><i class="bi bi-bell"></i> Notificaciones <span class="badge bg-warning" id="unreadNotificationsCount" style="display: none;"></span></a></li>
+                <li><hr class="my-2" style="border-color: rgba(255,255,255,0.1);"></li>
+                <li><a href="#" id="logoutBtn"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+
+            <!-- ============================================ -->
+            <!-- DASHBOARD SECTION -->
+            <!-- ============================================ -->
+            <div class="content-section active" id="section-dashboard">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-house-door"></i> Dashboard</h2>
+                    <button class="btn btn-outline-secondary d-md-none" id="toggleSidebar">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card primary">
+                            <div class="d-flex align-items-center">
+                                <div class="icon">
+                                    <i class="bi bi-book"></i>
+                                </div>
+                                <div class="ms-3 flex-grow-1">
+                                    <h6 class="text-muted mb-1">Clases Activas</h6>
+                                    <h3 class="mb-0" id="totalClasses">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card success">
+                            <div class="d-flex align-items-center">
+                                <div class="icon">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <div class="ms-3 flex-grow-1">
+                                    <h6 class="text-muted mb-1">Estudiantes</h6>
+                                    <h3 class="mb-0" id="totalStudents">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card warning">
+                            <div class="d-flex align-items-center">
+                                <div class="icon">
+                                    <i class="bi bi-journal-check"></i>
+                                </div>
+                                <div class="ms-3 flex-grow-1">
+                                    <h6 class="text-muted mb-1">Por Revisar</h6>
+                                    <h3 class="mb-0" id="pendingReviews">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card info">
+                            <div class="d-flex align-items-center">
+                                <div class="icon">
+                                    <i class="bi bi-envelope"></i>
+                                </div>
+                                <div class="ms-3 flex-grow-1">
+                                    <h6 class="text-muted mb-1">Mensajes</h6>
+                                    <h3 class="mb-0" id="unreadMessages">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Classes -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="data-table">
+                            <h5 class="mb-3"><i class="bi bi-calendar"></i> Próximas Clases</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Hora</th>
+                                            <th>Materia</th>
+                                            <th>Grupo</th>
+                                            <th>Salón</th>
+                                            <th>Estudiantes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="upcomingClassesTable">
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted">No hay clases próximas</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="data-table">
+                            <h5 class="mb-3"><i class="bi bi-list-check"></i> Tareas Pendientes</h5>
+                            <div id="pendingTasksList">
+                                <p class="text-muted">No hay tareas pendientes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- CLASSES SECTION -->
+            <!-- ============================================ -->
+            <div class="content-section" id="section-classes">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-book"></i> Mis Clases</h2>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClassModal">
+                        <i class="bi bi-plus-circle"></i> Nueva Clase
+                    </button>
+                </div>
+
+                <div class="row" id="classesGrid">
+                    <div class="col-12 text-center text-muted">
+                        <p>No hay clases registradas</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- GRADES SECTION -->
+            <!-- ============================================ -->
+            <div class="content-section" id="section-grades">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-journal-check"></i> Calificaciones</h2>
+                    <div>
+                        <select class="form-select d-inline-block w-auto" id="gradesClassSelect">
+                            <option value="">Seleccionar clase...</option>
+                        </select>
+                        <select class="form-select d-inline-block w-auto ms-2" id="gradesPeriodSelect">
+                            <option value="">Periodo...</option>
+                            <option value="parcial_1">Parcial 1</option>
+                            <option value="parcial_2">Parcial 2</option>
+                            <option value="final">Final</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="data-table">
+                    <div class="table-responsive">
+                        <table class="table table-bordered grades-table">
+                            <thead>
+                                <tr>
+                                    <th>Matrícula</th>
+                                    <th>Estudiante</th>
+                                    <th>Calificación</th>
+                                    <th>Letra</th>
+                                    <th>Faltas</th>
+                                    <th>Retardos</th>
+                                    <th>Observaciones</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gradesTableBody">
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">Seleccione una clase y periodo</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-success" id="saveGradesBtn" disabled>
+                            <i class="bi bi-save"></i> Guardar Calificaciones
+                        </button>
+                        <button class="btn btn-outline-secondary ms-2" id="publishGradesBtn" disabled>
+                            <i class="bi bi-eye"></i> Publicar a Padres
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- ATTENDANCE SECTION -->
+            <!-- ============================================ -->
+            <div class="content-section" id="section-attendance">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-calendar-check"></i> Asistencia</h2>
+                    <button class="btn btn-primary" id="startAttendanceBtn">
+                        <i class="bi bi-plus-circle"></i> Iniciar Sesión
+                    </button>
+                </div>
+
+                <div id="attendanceContent">
+                    <p class="text-muted">Seleccione una clase e inicie una sesión de asistencia</p>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- RESOURCES SECTION -->
+            <!-- ============================================ -->
+            <div class="content-section" id="section-resources">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-folder"></i> Recursos Educativos</h2>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addResourceModal">
+                        <i class="bi bi-upload"></i> Subir Recurso
+                    </button>
+                </div>
+
+                <div class="row" id="resourcesGrid">
+                    <div class="col-12 text-center text-muted">
+                        <p>No hay recursos disponibles</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- MESSAGES SECTION -->
+            <!-- ============================================ -->
+            <div class="content-section" id="section-messages">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-envelope"></i> Mensajes</h2>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newMessageModal">
+                        <i class="bi bi-plus-circle"></i> Nuevo Mensaje
+                    </button>
+                </div>
+
+                <div class="data-table">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>De</th>
+                                    <th>Asunto</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="messagesTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">No hay mensajes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- NOTIFICATIONS SECTION -->
+            <!-- ============================================ -->
+            <div class="content-section" id="section-notifications">
+                <h2 class="mb-4"><i class="bi bi-bell"></i> Notificaciones</h2>
+
+                <div class="data-table">
+                    <div id="notificationsList">
+                        <p class="text-muted">No hay notificaciones</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- MODALS -->
+    <!-- ============================================ -->
+
+    <!-- Add Class Modal -->
+    <div class="modal fade" id="addClassModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Nueva Clase</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addClassForm">
+                        <div class="mb-3">
+                            <label class="form-label">Materia</label>
+                            <input type="text" class="form-control" name="materia" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Grado</label>
+                                <select class="form-select" name="grado" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="1">1°</option>
+                                    <option value="2">2°</option>
+                                    <option value="3">3°</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Grupo</label>
+                                <input type="text" class="form-control" name="grupo" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ciclo Escolar</label>
+                            <input type="text" class="form-control" name="ciclo_escolar" value="2025-2026" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Salón</label>
+                            <input type="text" class="form-control" name="salon">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveClassBtn">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Resource Modal -->
+    <div class="modal fade" id="addResourceModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-upload"></i> Subir Recurso</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addResourceForm">
+                        <div class="mb-3">
+                            <label class="form-label">Título</label>
+                            <input type="text" class="form-control" name="titulo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea class="form-control" name="descripcion" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo</label>
+                            <select class="form-select" name="tipo" required>
+                                <option value="documento">Documento</option>
+                                <option value="presentacion">Presentación</option>
+                                <option value="video">Video</option>
+                                <option value="enlace">Enlace</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Archivo</label>
+                            <input type="file" class="form-control" name="archivo">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveResourceBtn">Subir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Message Modal -->
+    <div class="modal fade" id="newMessageModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-envelope"></i> Nuevo Mensaje</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newMessageForm">
+                        <div class="mb-3">
+                            <label class="form-label">Para</label>
+                            <select class="form-select" name="recipient_type" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="parent">Padre/Tutor</option>
+                                <option value="student">Estudiante</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Asunto</label>
+                            <input type="text" class="form-control" name="asunto" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mensaje</label>
+                            <textarea class="form-control" name="mensaje" rows="5" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="sendMessageBtn">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5.3.0 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- API Client -->
+    <script src="js/api-client.js"></script>
+
+    <!-- Teachers Portal Manager -->
+    <script src="js/teachers-portal-manager.js"></script>
+
+    <script>
+        // Initialize Teachers Portal on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            window.teachersPortal = new TeachersPortalManager({
+                apiBaseURL: '/api/teachers-portal'
+            });
+        });
+    </script>
+
+</body>
+</html>

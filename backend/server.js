@@ -49,6 +49,11 @@ const healthRoutes = require('./routes/health');
 const chartsDataRoutes = require('./routes/charts-data');
 const searchRoutes = require('./routes/search');
 const emailsRoutes = require('./routes/emails');
+const pollsRoutes = require('./routes/polls');
+const teachersPortalRoutes = require('./routes/teachers-portal');
+const messagingRoutes = require('./routes/messaging');
+const digitalLibraryRoutes = require('./routes/digital-library');
+const supportTicketsRoutes = require('./routes/support-tickets');
 
 // Middleware
 const { errorHandler } = require('./middleware/errorHandler');
@@ -347,6 +352,33 @@ app.use('/api/search', searchRoutes);
 
 // Email Routes (Sistema de envío de emails con plantillas)
 app.use('/api/emails', emailsRoutes);
+
+// Polls Routes (Sistema de Encuestas y Votaciones - FASE 3)
+app.use('/api/polls', pollsRoutes);
+
+// Parents Portal Routes (Sistema de Portal de Padres - FASE 3)
+const parentsRoutes = require('./routes/parents');
+app.use('/api/parents', parentsRoutes);
+
+// Install Polls Routes (TEMPORAL - Solo para instalación inicial)
+const installPollsRoutes = require('./routes/install-polls');
+app.use('/api/install-polls', installPollsRoutes);
+
+// Install Parents Portal Routes (TEMPORAL - Solo para instalación inicial)
+const installParentsRoutes = require('./routes/install-parents');
+app.use('/api/install-parents', installParentsRoutes);
+
+// Teachers Portal Routes (Sistema de Portal de Docentes - FASE 3)
+app.use('/api/teachers-portal', teachersPortalRoutes);
+
+// Messaging Routes (Sistema de Mensajería Interna - FASE 3)
+app.use('/api/messaging', messagingRoutes);
+
+// Digital Library Routes (Sistema de Biblioteca Digital - FASE 3)
+app.use('/api/digital-library', digitalLibraryRoutes);
+
+// Support Tickets Routes (Sistema de Tickets de Soporte - FASE 3)
+app.use('/api/support-tickets', supportTicketsRoutes);
 
 // Static Files (Development & Production)
 console.log('🌍 Configurando servidor de archivos estáticos...');

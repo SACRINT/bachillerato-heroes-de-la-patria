@@ -4,18 +4,19 @@
  */
 
 class APIClient {
-    constructor() {
+    constructor(options = {}) {
         // URLs base para diferentes ambientes
         this.baseURLs = {
             development: 'http://localhost:3000/api',
             production: 'https://your-backend-domain.com/api',
             local: 'http://127.0.0.1:3000/api'
         };
-        
-        // Detectar ambiente y establecer URL base
-        this.baseURL = this.detectEnvironment();
+
+        // Detectar ambiente y establecer URL base (o usar la proporcionada)
+        this.baseURL = options.baseURL || this.detectEnvironment();
+        this.timeout = options.timeout || 30000; // 30 segundos por defecto
         this.token = this.getStoredToken();
-        
+
         // Configuración por defecto para requests
         this.defaultHeaders = {
             'Content-Type': 'application/json',
@@ -83,14 +84,76 @@ class APIClient {
     }
 
     /**
+     * Construir URL completa desde endpoint
+     */
+    buildURL(endpoint) {
+        // Asegurar que endpoint empiece con /
+        const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+        return `${this.baseURL}${normalizedEndpoint}`;
+    }
+
+    /**
+     * GET request
+     */
+    async get(endpoint, options = {}) {
+        return this.request(endpoint, {
+            ...options,
+            method: 'GET'
+        });
+    }
+
+    /**
+     * POST request
+     */
+    async post(endpoint, data, options = {}) {
+        return this.request(endpoint, {
+            ...options,
+            method: 'POST',
+            body: data
+        });
+    }
+
+    /**
+     * PUT request
+     */
+    async put(endpoint, data, options = {}) {
+        return this.request(endpoint, {
+            ...options,
+            method: 'PUT',
+            body: data
+        });
+    }
+
+    /**
+     * DELETE request
+     */
+    async delete(endpoint, options = {}) {
+        return this.request(endpoint, {
+            ...options,
+            method: 'DELETE'
+        });
+    }
+
+    /**
      * Realizar request HTTP genérico
      */
     async request(endpoint, options = {}) {
         const url = `${this.baseURL}${endpoint}`;
+
+        // Configurar timeout con AbortController
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+        // Merge headers: default + custom options
+        const headers = {
+            ...this.getHeaders(),
+            ...(options.headers || {})
+        };
+
         const config = {
-            method: 'GET',
-            headers: this.getHeaders(),
-            ...options
+            method: options.method || 'GET',
+            headers: headers,
+            signal: controller.signal
         };
 
         if (options.body && typeof options.body === 'object') {
@@ -99,11 +162,18 @@ class APIClient {
 
         try {
             const response = await fetch(url, config);
+            clearTimeout(timeoutId);
 
             // ✅ Verificar si Content-Type es JSON
             const contentType = response.headers.get('Content-Type') || '';
 
+            // Si no es JSON, intentar retornar como texto
             if (!contentType.includes('application/json')) {
+                if (response.ok) {
+                    // Para tests: retornar texto directamente
+                    return await response.text();
+                }
+
                 console.warn(`⚠️ [API WARNING] Endpoint devolvió contenido no JSON (${contentType}): ${config.method} ${url}`);
 
                 return {
@@ -136,17 +206,21 @@ class APIClient {
             return data;
 
         } catch (error) {
+            clearTimeout(timeoutId);
             console.error(`❌ API Error: ${config.method} ${url}`, error);
 
+            // Manejar timeout
+            if (error.name === 'AbortError') {
+                throw new Error('Request timeout');
+            }
+
+            // Manejar errores de autenticación
             if (error.message.includes('401') || error.message.includes('Token')) {
                 this.removeToken();
             }
 
-            return {
-                success: false,
-                error: true,
-                message: error.message
-            };
+            // Re-lanzar el error para que los tests puedan capturarlo
+            throw error;
         }
     }
 
@@ -394,10 +468,15 @@ window.apiClient = new APIClient();
 // Verificar conexión al cargar
 document.addEventListener('DOMContentLoaded', async () => {
     const connected = await window.apiClient.checkConnection();
-    
+
     if (connected) {
         //console.log('🚀 API Cliente inicializado correctamente');
     } else {
         //console.log('⚠️ API Cliente en modo offline - usando datos estáticos');
     }
 });
+
+// Export para testing en Node.js/Jest
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = APIClient;
+}

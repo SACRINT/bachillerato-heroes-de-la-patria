@@ -1,9 +1,15 @@
 # Archivos del sistema
 .DS_Store
 Thumbs.db
+nul 
 
-# Logs
+# Logs y Reportes de Herramientas
+coverage/
+audit-report.json
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Archivos temporales
 *.tmp
@@ -12,7 +18,7 @@ Thumbs.db
 # Node modules (todas las instancias)
 node_modules/
 
-# Archivos de entorno
+# Archivos de Entorno y Dependencias
 .env
 .env.local
 .env.database
@@ -59,6 +65,9 @@ SCRIPT_*.js
 # Subdirectorios de docs (ignorar toda la carpeta docs/)
 docs/
 
+# Otros Subdirectorios
+actualizacion/
+
 # Build reports
 build-report.json
 public/build-report.json
@@ -86,7 +95,15 @@ backend/data/ # Ignorar toda la carpeta de datos del backend
 # Public duplicados (mantenemos solo raíz)
 # Nota: public/ se mantiene para Vercel static serving
 
-# Claude Code
+# Carpetas de Datos y Contenido Generado
+public/uploads/
+backups/
+
+# Archivos de Configuración Sensibles
+# Carpetas que podrían contener claves de API o configuraciones locales.
+public/config/
+.genkit/
+.vercel/
 .claude/
 .claude/agents
 
@@ -101,6 +118,14 @@ api/package-lock.json
 
 # Vercel local config/cache (ya cubierto por .vercel/)
 .vercel
+
+# Archivos Obsoletos y de Prueba
+# Archivos de experimentación que ya no son parte de la aplicación final.
+force-admin.html
+*-tenant-*.html
+sistema-multi-tenant-final.html
+aviso-privacidad-elegante.html
+ux-demo.html
 
 # ============================================
 # 🤖 RECOMENDACIONES (OCTUBRE 2025)
@@ -120,4 +145,4 @@ test_real_login.json
 
 # Archivos de Base de Datos (scripts de ejecución única, no parte del runtime)
 EJECUTAR_EN_NEON.sql
-nul 
+

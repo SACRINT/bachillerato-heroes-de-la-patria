@@ -1,0 +1,324 @@
+/**
+ * DARK MODE STYLES
+ * BGE Héroes de la Patria
+ * Sistema de variables CSS para tema claro y oscuro
+ */
+
+/* ============================================
+   VARIABLES DE TEMA CLARO (Default)
+   ============================================ */
+:root[data-theme="light"],
+:root {
+    /* Colores primarios */
+    --color-primary: #2c3e50;
+    --color-secondary: #3498db;
+    --color-accent: #e74c3c;
+    --color-success: #27ae60;
+    --color-warning: #f39c12;
+    --color-danger: #e74c3c;
+    --color-info: #3498db;
+
+    /* Fondos */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
+    --bg-card: #ffffff;
+    --bg-modal: #ffffff;
+    --bg-sidebar: #2c3e50;
+    --bg-header: #34495e;
+
+    /* Textos */
+    --text-primary: #2c3e50;
+    --text-secondary: #6c757d;
+    --text-tertiary: #adb5bd;
+    --text-inverse: #ffffff;
+    --text-link: #3498db;
+
+    /* Bordes */
+    --border-color: #dee2e6;
+    --border-light: #e9ecef;
+    --border-dark: #adb5bd;
+
+    /* Sombras */
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+
+    /* Inputs */
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+    --input-focus-border: #3498db;
+    --input-text: #2c3e50;
+    --input-placeholder: #6c757d;
+
+    /* Botones */
+    --btn-primary-bg: #3498db;
+    --btn-primary-text: #ffffff;
+    --btn-secondary-bg: #6c757d;
+    --btn-secondary-text: #ffffff;
+
+    /* Tablas */
+    --table-bg: #ffffff;
+    --table-stripe: #f8f9fa;
+    --table-hover: #e9ecef;
+    --table-border: #dee2e6;
+
+    /* Transiciones */
+    --transition-speed: 0.3s;
+}
+
+/* ============================================
+   VARIABLES DE TEMA OSCURO
+   ============================================ */
+:root[data-theme="dark"] {
+    /* Colores primarios - ajustados para dark mode */
+    --color-primary: #ecf0f1;
+    --color-secondary: #3498db;
+    --color-accent: #e74c3c;
+    --color-success: #2ecc71;
+    --color-warning: #f1c40f;
+    --color-danger: #e74c3c;
+    --color-info: #3498db;
+
+    /* Fondos oscuros */
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #3d3d3d;
+    --bg-card: #2d2d2d;
+    --bg-modal: #2d2d2d;
+    --bg-sidebar: #1a1a1a;
+    --bg-header: #252525;
+
+    /* Textos claros */
+    --text-primary: #ecf0f1;
+    --text-secondary: #bdc3c7;
+    --text-tertiary: #95a5a6;
+    --text-inverse: #2c3e50;
+    --text-link: #5dade2;
+
+    /* Bordes */
+    --border-color: #4a4a4a;
+    --border-light: #3d3d3d;
+    --border-dark: #5a5a5a;
+
+    /* Sombras más sutiles */
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.5);
+
+    /* Inputs */
+    --input-bg: #3d3d3d;
+    --input-border: #4a4a4a;
+    --input-focus-border: #5dade2;
+    --input-text: #ecf0f1;
+    --input-placeholder: #95a5a6;
+
+    /* Botones */
+    --btn-primary-bg: #3498db;
+    --btn-primary-text: #ffffff;
+    --btn-secondary-bg: #4a4a4a;
+    --btn-secondary-text: #ecf0f1;
+
+    /* Tablas */
+    --table-bg: #2d2d2d;
+    --table-stripe: #3d3d3d;
+    --table-hover: #4a4a4a;
+    --table-border: #4a4a4a;
+}
+
+/* ============================================
+   APLICAR VARIABLES A ELEMENTOS
+   ============================================ */
+
+/* Fondo general */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+/* Cards */
+.card, .modal-content, .alert {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    transition: background-color var(--transition-speed), border-color var(--transition-speed);
+}
+
+/* Inputs y Forms */
+input, textarea, select, .form-control {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--input-text);
+    transition: background-color var(--transition-speed), border-color var(--transition-speed), color var(--transition-speed);
+}
+
+input::placeholder, textarea::placeholder {
+    color: var(--input-placeholder);
+}
+
+input:focus, textarea:focus, select:focus, .form-control:focus {
+    border-color: var(--input-focus-border);
+    background-color: var(--input-bg);
+}
+
+/* Tablas */
+table {
+    background-color: var(--table-bg);
+    color: var(--text-primary);
+}
+
+tbody tr:nth-child(odd) {
+    background-color: var(--table-stripe);
+}
+
+tbody tr:hover {
+    background-color: var(--table-hover);
+}
+
+table, th, td {
+    border-color: var(--table-border);
+}
+
+/* Links */
+a {
+    color: var(--text-link);
+}
+
+/* Headers y Sidebar */
+.sidebar, nav.sidebar {
+    background-color: var(--bg-sidebar);
+    color: var(--text-inverse);
+}
+
+header, .header {
+    background-color: var(--bg-header);
+    color: var(--text-inverse);
+}
+
+/* Botón de toggle de dark mode */
+.dark-mode-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--color-secondary);
+    border: 2px solid var(--border-color);
+    color: var(--text-inverse);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    z-index: 9999;
+}
+
+.dark-mode-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-lg);
+    background-color: var(--color-primary);
+}
+
+.dark-mode-toggle:active {
+    transform: scale(0.95);
+}
+
+.dark-mode-toggle svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* Botones */
+.btn-primary {
+    background-color: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+    border-color: var(--btn-primary-bg);
+}
+
+.btn-secondary {
+    background-color: var(--btn-secondary-bg);
+    color: var(--btn-secondary-text);
+    border-color: var(--btn-secondary-bg);
+}
+
+/* Modales */
+.modal {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-header, .modal-footer {
+    border-color: var(--border-color);
+}
+
+/* Badges */
+.badge {
+    color: var(--text-inverse);
+}
+
+/* Alertas específicas para dark mode */
+[data-theme="dark"] .alert-light {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .alert-dark {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+}
+
+/* Código y pre */
+pre, code {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* Scrollbars para dark mode */
+[data-theme="dark"] ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: var(--bg-tertiary);
+    border-radius: 6px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--border-dark);
+}
+
+/* Mejoras de contraste para accesibilidad */
+[data-theme="dark"] .text-muted {
+    color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .text-dark {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .bg-light {
+    background-color: var(--bg-tertiary) !important;
+}
+
+[data-theme="dark"] .bg-white {
+    background-color: var(--bg-card) !important;
+}
+
+/* Transiciones suaves */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Evitar transición en imágenes */
+img, svg, video {
+    transition: none;
+}
