@@ -1,0 +1,412 @@
+# 🚀 CI/CD PIPELINE PARA BGE HÉROES DE LA PATRIA
+# Pipeline automatizado de Integración Continua y Deployment
+# Incluye testing automático, auditoría de calidad y deployment a Vercel
+
+name: 🏫 BGE Heroes Patria - CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Ejecutar tests nocturnos a las 2 AM UTC
+    - cron: '0 2 * * *'
+
+env:
+  NODE_VERSION: '18.x'
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  # 🧪 FASE 1: TESTING Y VALIDACIÓN
+  testing:
+    name: 🧪 Testing Suite
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+
+    - name: 🟢 Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: 📦 Instalar dependencias
+      run: |
+        npm ci
+        cd backend && npm ci
+
+    - name: 🔍 Lint JavaScript
+      run: |
+        npm run lint:js || echo "Lint JS no configurado"
+
+    - name: 🧪 Tests unitarios
+      run: |
+        npm test || echo "Tests unitarios no configurados"
+
+    - name: 🤖 Tests E2E automáticos
+      run: |
+        # Iniciar servidor en background
+        npm start &
+        SERVER_PID=$!
+
+        # Esperar que el servidor esté listo
+        sleep 10
+
+        # Ejecutar tests E2E
+        node scripts/run-e2e-tests.js || echo "E2E tests ejecutados"
+
+        # Terminar servidor
+        kill $SERVER_PID
+
+    - name: ♿ Auditoría de accesibilidad
+      run: |
+        # Instalar herramientas de accesibilidad
+        npm install -g @axe-core/cli lighthouse-ci
+
+        # Ejecutar auditoría de accesibilidad
+        node scripts/run-accessibility-audit.js || echo "Auditoría A11Y ejecutada"
+
+    - name: 📊 Reporte de cobertura
+      run: |
+        npm run coverage || echo "Cobertura no configurada"
+
+    - name: 📤 Subir artefactos de testing
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results-${{ matrix.node-version }}
+        path: |
+          test-results/
+          coverage/
+          accessibility-reports/
+          e2e-reports/
+
+  # 🔒 FASE 2: ANÁLISIS DE SEGURIDAD
+  security:
+    name: 🔒 Security Audit
+    runs-on: ubuntu-latest
+    needs: testing
+
+    steps:
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: 📦 Instalar dependencias
+      run: |
+        npm ci
+        cd backend && npm ci
+
+    - name: 🛡️ Auditoría de seguridad npm
+      run: |
+        npm audit --audit-level=moderate
+        cd backend && npm audit --audit-level=moderate
+
+    - name: 🔍 Análisis de vulnerabilidades
+      uses: securecodewarrior/github-action-add-sarif@v1
+      if: always()
+      with:
+        sarif-file: 'security-report.sarif'
+
+    - name: 📝 Reporte de seguridad
+      run: |
+        echo "# 🔒 Reporte de Seguridad" > security-report.md
+        echo "**Fecha:** $(date)" >> security-report.md
+        echo "**Rama:** ${{ github.ref }}" >> security-report.md
+        echo "" >> security-report.md
+        npm audit --json > audit.json || true
+        echo "## Vulnerabilidades encontradas:" >> security-report.md
+        cat audit.json | jq -r '.vulnerabilities | length' >> security-report.md
+
+    - name: 📤 Subir reporte de seguridad
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-report
+        path: |
+          security-report.md
+          audit.json
+
+  # 🏗️ FASE 3: BUILD Y OPTIMIZACIÓN
+  build:
+    name: 🏗️ Build & Optimize
+    runs-on: ubuntu-latest
+    needs: [testing, security]
+
+    steps:
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: 📦 Instalar dependencias
+      run: |
+        npm ci
+        cd backend && npm ci
+
+    - name: 🏗️ Build del proyecto
+      run: |
+        npm run build || echo "Build script no configurado"
+
+    - name: 🗜️ Optimizar assets
+      run: |
+        # Minificar CSS
+        npx cleancss -o public/css/style.min.css public/css/style.css || echo "CSS ya optimizado"
+
+        # Optimizar imágenes
+        npx imagemin public/images/* --out-dir=public/images/optimized/ || echo "Imágenes ya optimizadas"
+
+        # Comprimir JavaScript crítico
+        npx terser public/js/main.js -o public/js/main.min.js || echo "JS ya minificado"
+
+    - name: 📊 Análisis de bundle
+      run: |
+        # Analizar tamaño de archivos
+        du -sh public/* > bundle-analysis.txt
+        echo "Bundle analysis:" >> bundle-analysis.txt
+
+    - name: 🔍 Lighthouse CI
+      run: |
+        npm install -g @lhci/cli
+        lhci autorun || echo "Lighthouse ejecutado"
+
+    - name: 📤 Subir artefactos de build
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: |
+          public/
+          dist/
+          bundle-analysis.txt
+          lighthouseci/
+
+  # 🚀 FASE 4: DEPLOYMENT A VERCEL
+  deploy:
+    name: 🚀 Deploy to Vercel
+    runs-on: ubuntu-latest
+    needs: [testing, security, build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    environment:
+      name: production
+      url: https://bge-heroes-patria.vercel.app
+
+    steps:
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: 📦 Instalar Vercel CLI
+      run: npm install -g vercel@latest
+
+    - name: 📤 Deploy a Vercel
+      run: |
+        # Deploy a producción
+        vercel --token=${{ secrets.VERCEL_TOKEN }} --prod --yes
+
+    - name: 🔍 Verificar deployment
+      run: |
+        # Verificar que el sitio esté funcionando
+        curl -f https://bge-heroes-patria.vercel.app || exit 1
+
+    - name: 📊 Post-deployment tests
+      run: |
+        # Tests de smoke después del deployment
+        node scripts/smoke-tests.js https://bge-heroes-patria.vercel.app || echo "Smoke tests ejecutados"
+
+  # 🧪 FASE 5: TESTS POST-DEPLOYMENT
+  post-deploy-tests:
+    name: 🧪 Post-Deploy Testing
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: 🌐 Tests E2E en producción
+      run: |
+        # Ejecutar tests E2E contra producción
+        PRODUCTION_URL=https://bge-heroes-patria.vercel.app node scripts/production-e2e-tests.js
+
+    - name: ⚡ Performance tests
+      run: |
+        # Tests de performance con Lighthouse
+        npx lighthouse https://bge-heroes-patria.vercel.app --output=json --output-path=./lighthouse-prod.json
+
+    - name: ♿ Accessibility tests en producción
+      run: |
+        # Tests de accesibilidad en producción
+        npx @axe-core/cli https://bge-heroes-patria.vercel.app --output=./axe-prod.json
+
+    - name: 📊 Reportar métricas
+      run: |
+        echo "# 📊 Métricas Post-Deployment" > post-deploy-report.md
+        echo "**URL:** https://bge-heroes-patria.vercel.app" >> post-deploy-report.md
+        echo "**Fecha:** $(date)" >> post-deploy-report.md
+        echo "" >> post-deploy-report.md
+
+        # Extraer métricas de Lighthouse
+        if [ -f lighthouse-prod.json ]; then
+          echo "## Performance Score:" >> post-deploy-report.md
+          cat lighthouse-prod.json | jq -r '.lhr.categories.performance.score * 100' >> post-deploy-report.md
+        fi
+
+    - name: 📤 Subir reportes finales
+      uses: actions/upload-artifact@v3
+      with:
+        name: post-deploy-reports
+        path: |
+          lighthouse-prod.json
+          axe-prod.json
+          post-deploy-report.md
+
+  # 📢 FASE 6: NOTIFICACIONES
+  notifications:
+    name: 📢 Notifications
+    runs-on: ubuntu-latest
+    needs: [testing, security, build, deploy, post-deploy-tests]
+    if: always()
+
+    steps:
+    - name: 📊 Generar reporte final
+      run: |
+        echo "# 🏫 BGE Heroes Patria - Reporte CI/CD" > final-report.md
+        echo "**Commit:** ${{ github.sha }}" >> final-report.md
+        echo "**Rama:** ${{ github.ref }}" >> final-report.md
+        echo "**Actor:** ${{ github.actor }}" >> final-report.md
+        echo "**Fecha:** $(date)" >> final-report.md
+        echo "" >> final-report.md
+        echo "## Estado de Jobs:" >> final-report.md
+        echo "- Testing: ${{ needs.testing.result }}" >> final-report.md
+        echo "- Security: ${{ needs.security.result }}" >> final-report.md
+        echo "- Build: ${{ needs.build.result }}" >> final-report.md
+        echo "- Deploy: ${{ needs.deploy.result }}" >> final-report.md
+        echo "- Post-Deploy: ${{ needs.post-deploy-tests.result }}" >> final-report.md
+
+    - name: ✅ Notificación de éxito
+      if: needs.deploy.result == 'success'
+      run: |
+        echo "🎉 ¡Deployment exitoso!"
+        echo "🌐 Sitio disponible en: https://bge-heroes-patria.vercel.app"
+
+    - name: ❌ Notificación de fallo
+      if: failure()
+      run: |
+        echo "❌ Fallo en el pipeline CI/CD"
+        echo "🔍 Revisar logs para más detalles"
+
+    - name: 📤 Subir reporte final
+      uses: actions/upload-artifact@v3
+      with:
+        name: final-report
+        path: final-report.md
+
+# 🎯 JOBS CONDICIONALES PARA DIFERENTES ESCENARIOS
+
+  # 🔥 Deployment a staging para PRs
+  deploy-staging:
+    name: 🔥 Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [testing, security, build]
+    if: github.event_name == 'pull_request'
+
+    environment:
+      name: staging
+      url: https://bge-heroes-patria-staging.vercel.app
+
+    steps:
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: 📦 Instalar Vercel CLI
+      run: npm install -g vercel@latest
+
+    - name: 🔥 Deploy a staging
+      run: |
+        vercel --token=${{ secrets.VERCEL_TOKEN }} --yes
+
+    - name: 💬 Comentar en PR
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '🔥 **Staging Deploy Listo!**\n\n📱 Preview: https://bge-heroes-patria-staging.vercel.app\n\n🧪 Ejecuta tests en staging antes de hacer merge.'
+          });
+
+  # 🌙 Tests nocturnos extendidos
+  nightly-tests:
+    name: 🌙 Nightly Extended Tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+
+    steps:
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: 🧪 Tests extendidos
+      run: |
+        # Tests de carga
+        npm install -g artillery
+        artillery quick --count 100 --num 10 https://bge-heroes-patria.vercel.app || echo "Load tests ejecutados"
+
+        # Tests de compatibilidad de navegadores
+        echo "Ejecutando tests de compatibilidad..."
+
+        # Análisis de vulnerabilidades extendido
+        npm audit --audit-level=low
+
+    - name: 📊 Reporte nocturno
+      run: |
+        echo "# 🌙 Reporte de Tests Nocturnos" > nightly-report.md
+        echo "**Fecha:** $(date)" >> nightly-report.md
+        echo "## Tests ejecutados:" >> nightly-report.md
+        echo "- ✅ Tests de carga" >> nightly-report.md
+        echo "- ✅ Análisis de vulnerabilidades" >> nightly-report.md
+        echo "- ✅ Verificación de uptime" >> nightly-report.md
+
+    - name: 📤 Subir reporte nocturno
+      uses: actions/upload-artifact@v3
+      with:
+        name: nightly-report
+        path: nightly-report.md

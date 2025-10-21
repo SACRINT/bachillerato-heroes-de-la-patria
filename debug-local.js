@@ -1,16 +1,20 @@
 /**
- * 🔍 DEBUG LOCAL vs VERCEL - COMPARADOR AUTOMÁTICO
+ * 🔍 DEBUG LOCAL vs VERCEL - COMPARADOR AUTOMÁTICO + AUTO-FIX MODE
  * Autor: GPT-5 para BGE Héroes de la Patria
  * 
- * Ejecuta: node debug-local.js [--auto-fix]
+ * Ejecuta:
+ *   node debug-local.js
+ *   node debug-local.js --auto-fix
  */
 
-import fetch from "node-fetch";
 import fs from "fs";
-import path from "path";
 import os from "os";
+import path from "path";
 import dotenv from "dotenv";
 dotenv.config();
+
+// Node-fetch ESM compatible en Node >=18
+const fetch = (await import("node-fetch")).default;
 
 const VERCEL_URL = process.env.VERCEL_URL || "https://bge-heroesdelapatria.vercel.app";
 const AUTO_FIX_MODE = process.argv.includes("--auto-fix");
@@ -18,6 +22,7 @@ const AUTO_FIX_MODE = process.argv.includes("--auto-fix");
 async function checkEndpoint(name, url) {
   try {
     const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     return { name, success: true, data };
   } catch (error) {
@@ -33,8 +38,8 @@ async function localEnvironmentReport() {
   const fileCount = (dir) => {
     if (!fs.existsSync(dir)) return 0;
     let count = 0;
-    for (const file of fs.readdirSync(dir)) {
-      const full = path.join(dir, file);
+    for (const f of fs.readdirSync(dir)) {
+      const full = path.join(dir, f);
       if (fs.statSync(full).isDirectory()) count += fileCount(full);
       else count++;
     }
@@ -61,60 +66,110 @@ async function localEnvironmentReport() {
   };
 }
 
+async function autoFix(report) {
+  console.log("\n🛠️ Ejecutando Modo Auto-Doctor...");
+  const suggestions = [];
+
+  // Verificar si falta vercel.json o está mal configurado
+  if (!fs.existsSync("vercel.json")) {
+    suggestions.push("⚙️ Crear un archivo vercel.json base para Node backend.");
+    fs.writeFileSync(
+      "vercel.json",
+      JSON.stringify(
+        {
+          version: 2,
+          builds: [{ src: "api/index.js", use: "@vercel/node" }],
+          functions: {
+            "api/index.js": {
+              maxDuration: 30,
+              memory: 1024,
+              includeFiles: "backend/**", // Ensure backend files are included
+            },
+          },
+          rewrites: [
+            { source: "/api/(.*)", destination: "/api/index.js" },
+            { source: "/(.*)", destination: "/public/$1" },
+          ],
+          env: { NODE_ENV: "production" },
+          regions: ["iad1"],
+          outputDirectory: "public",
+        },
+        null,
+        2
+      )
+    );
+  } else {
+    // If vercel.json exists, check its content for backend inclusion
+    const vercelConfig = JSON.parse(fs.readFileSync("vercel.json", "utf8"));
+    const apiIndexFunction = vercelConfig.functions?.["api/index.js"];
+    if (apiIndexFunction && (!apiIndexFunction.includeFiles || !apiIndexFunction.includeFiles.includes("backend/**"))) {
+      suggestions.push("⚙️ Tu vercel.json existe, pero la función 'api/index.js' no incluye 'backend/**'. Considera añadir 'includeFiles: \"backend/**\"' a la configuración de esa función para asegurar que todos los archivos del backend se empaqueten.");
+    }
+  }
+
+  // Verificar .vercelignore
+  if (fs.existsSync(".vercelignore")) {
+    const ignored = fs.readFileSync(".vercelignore", "utf8");
+    if (ignored.includes("backend/")) {
+      suggestions.push("❌ 'backend/' está siendo ignorado en .vercelignore. Elimina esta línea para que el backend se empaquete.");
+    }
+  } else if (report.diff.backendFiles < report.local.backendFiles) {
+    // If .vercelignore doesn't exist but files are missing, suggest creating one or checking .gitignore
+    suggestions.push("🔍 No se encontró un archivo .vercelignore. Si faltan archivos del backend, revisa tu .gitignore o considera crear un .vercelignore para controlar explícitamente qué se despliega.");
+  }
+
+
+  // Variables críticas
+  const vars = report.local.envVars;
+  if (vars.DATABASE_URL === "(not set)") {
+    suggestions.push("⚠️ La variable de entorno DATABASE_URL no está configurada localmente. Asegúrate de que esté definida en tu archivo .env local y en Vercel.");
+  }
+
+  // General suggestion for missing backend files
+  if (report.diff.backendFiles < report.local.backendFiles) {
+    suggestions.push("📦 Gran diferencia en el número de archivos del backend entre local y Vercel. Esto es crítico. Revisa a fondo tu vercel.json y .vercelignore. Asegúrate de que no haya reglas que excluyan el directorio 'backend' o sus subdirectorios. Un redespliegue con 'Clear build cache' es a menudo necesario después de estos cambios.");
+  }
+
+
+  if (suggestions.length === 0) {
+    console.log("✅ No se detectaron problemas automáticos.");
+  } else {
+    console.log("📋 Sugerencias de corrección:");
+    suggestions.forEach((s) => console.log(" -", s));
+  }
+
+  console.log("🧩 Auto-Doctor finalizado.\n");
+}
+
 async function main() {
   console.log("🧠 Iniciando diagnóstico completo del entorno BGE Héroes de la Patria...");
   console.log("🌐 Vercel URL:", VERCEL_URL);
-  if (AUTO_FIX_MODE) {
-    console.log("🛠️ Modo Auto-Doctor ACTIVADO. Se sugerirán correcciones.");
-  }
-  console.log("⏳ Esto puede tardar unos segundos...\n");
+  if (AUTO_FIX_MODE) console.log("🛠️ Modo Auto-Doctor ACTIVADO");
+  console.log("⏳ Analizando...\n");
 
-  const endpoints = [
-    "debug-health",
-    "debug-env",
-    "debug-system",
-    "debug-files",
-    "debug-db",
-  ];
-
+  const endpoints = ["debug-health", "debug-env", "debug-system", "debug-files", "debug-db"];
   const results = {};
-  for (const ep of endpoints) {
-    results[ep] = await checkEndpoint(ep, `${VERCEL_URL}/api/${ep}`);
-  }
-
+  for (const ep of endpoints) results[ep] = await checkEndpoint(ep, `${VERCEL_URL}/api/${ep}`);
   const local = await localEnvironmentReport();
 
-  // Comparar diferencias clave
   const diff = {
     missingEndpoints: endpoints.filter((ep) => !results[ep].success),
     dbConnection: results["debug-db"]?.data?.success ? "OK" : "FAIL",
     backendFiles: results["debug-files"]?.data?.backendFilesCount || 0,
     localFiles: local.backendFiles,
-    envComparison: local.envVars,
   };
 
-  // Detectar problemas comunes
   const warnings = [];
   if (diff.dbConnection === "FAIL") warnings.push("⚠️ Base de datos inaccesible en producción.");
-  if (diff.backendFiles < local.backendFiles) {
-    warnings.push("⚠️ No todos los archivos del backend se empaquetaron en Vercel.");
-  }
-  if (diff.missingEndpoints.length) {
-    warnings.push(`⚠️ Endpoints faltantes en Vercel: ${diff.missingEndpoints.join(", ")}`);
-  }
+  if (diff.backendFiles < local.backendFiles)
+    warnings.push("⚠️ No todos los archivos del backend se empaquetaron.");
+  if (diff.missingEndpoints.length)
+    warnings.push(`⚠️ Endpoints faltantes: ${diff.missingEndpoints.join(", ")}`);
 
-  const report = {
-    timestamp: new Date().toISOString(),
-    local,
-    vercel: results,
-    diff,
-    warnings,
-  };
-
+  const report = { timestamp: new Date().toISOString(), local, vercel: results, diff, warnings };
   fs.writeFileSync("diagnostic-report.json", JSON.stringify(report, null, 2));
-  console.log("\n📋 Informe completo guardado en diagnostic-report.json\n");
 
-  console.log("🧾 RESUMEN:");
+  console.log("\n📋 Informe completo guardado en diagnostic-report.json\n");
   console.table([
     { Check: "Endpoints OK", Value: endpoints.length - diff.missingEndpoints.length },
     { Check: "Archivos Backend Local", Value: local.backendFiles },
@@ -123,30 +178,14 @@ async function main() {
   ]);
 
   if (warnings.length) {
-    console.log("\n⚠️ ADVERTENCIAS DETECTADAS:");
+    console.log("\n⚠️ ADVERTENCIAS:");
     warnings.forEach((w) => console.log(" -", w));
-
-    if (AUTO_FIX_MODE) {
-      console.log("\n🛠️ SUGERENCIAS DE AUTO-CORRECCIÓN (Modo Auto-Doctor):");
-
-      if (diff.dbConnection === "FAIL") {
-        console.log("  - Problema: La base de datos no es accesible en Vercel.");
-        console.log("    Sugerencia: Asegúrate de que la variable de entorno 'DATABASE_URL' esté correctamente configurada en tu proyecto de Vercel y que la base de datos permita conexiones desde Vercel (por ejemplo, lista blanca de IPs).");
-      }
-      if (diff.backendFiles < local.backendFiles) {
-        console.log("  - Problema: Faltan archivos del backend en el despliegue de Vercel.");
-        console.log("    Sugerencia: Revisa tu archivo '.vercelignore' (si existe) para asegurarte de que no esté excluyendo archivos necesarios. También, verifica los logs de construcción en Vercel para ver si hay errores relacionados con el empaquetado de archivos. Considera un redespliegue con 'Clear build cache'.");
-      }
-      if (diff.missingEndpoints.length) {
-        console.log(`  - Problema: Los siguientes endpoints de depuración no responden en Vercel: ${diff.missingEndpoints.join(", ")}.`);
-        console.log("    Sugerencia: Asegúrate de que los archivos 'debug-*.js' estén en la carpeta 'api/' de tu proyecto y que no estén siendo ignorados por '.vercelignore' o '.gitignore'. Realiza un 'git add' y 'git commit' de estos archivos, y luego un redespliegue en Vercel con 'Clear build cache'.");
-      }
-    }
   } else {
-    console.log("\n✅ Todo parece correcto. Tu entorno Vercel está funcionando bien.");
+    console.log("\n✅ Todo parece correcto.");
   }
 
-  console.log("\n🧠 Ejecución finalizada.\n");
+  if (AUTO_FIX_MODE) await autoFix(report);
+  console.log("\n🧠 Diagnóstico completado.\n");
 }
 
 main();
