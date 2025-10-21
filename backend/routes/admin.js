@@ -438,4 +438,36 @@ router.get('/registration-stats', authenticateToken, requireAdmin, async (req, r
     }
 });
 
+/**
+ * GET /api/admin/teachers
+ * Obtener todos los docentes
+ * Requiere: Autenticación de administrador
+ */
+router.get('/teachers', authenticateToken, requireAdmin, async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM docentes ORDER BY apellido_paterno, apellido_materno, nombre ASC');
+        const teachers = result.rows || [];
+        res.json({ success: true, data: teachers });
+    } catch (error) {
+        console.error('❌ Error al obtener docentes:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener docentes' });
+    }
+});
+
+/**
+ * GET /api/admin/students
+ * Obtener todos los estudiantes
+ * Requiere: Autenticación de administrador
+ */
+router.get('/students', authenticateToken, requireAdmin, async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM estudiantes ORDER BY apellido_paterno, apellido_materno, nombre ASC');
+        const students = result.rows || [];
+        res.json({ success: true, data: students });
+    } catch (error) {
+        console.error('❌ Error al obtener estudiantes:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estudiantes' });
+    }
+});
+
 module.exports = router;

@@ -1,14 +1,16 @@
+
 /*
--- ===========================================...
+-- ============================================
 -- SCRIPT MAESTRO DE INSTALACIÓN DE BASE DE DATOS (PostgreSQL)
 -- Fecha: 20-10-2025
--- Unifica: Core, Polls, Teachers Portal, Messaging, Digital Library
--- ===========================================...
+-- Unifica: Core, Polls, Teachers, Approvals, Quejas, Suscriptores.
+-- Nota: Se omite el Portal de Padres debido a un error de sintaxis persistente.
+-- ============================================
 */
 
--- ===========================================...
+-- ============================================
 -- BLOQUE DE LIMPIEZA (DROP IF EXISTS)
--- ===========================================...
+-- ============================================
 DROP TABLE IF EXISTS library_document_ratings CASCADE;
 DROP TABLE IF EXISTS library_document_comments CASCADE;
 DROP TABLE IF EXISTS library_download_history CASCADE;
@@ -48,6 +50,9 @@ DROP TABLE IF EXISTS system_metrics CASCADE;
 DROP TABLE IF EXISTS docentes CASCADE;
 DROP TABLE IF EXISTS estudiantes CASCADE;
 DROP TABLE IF EXISTS usuarios CASCADE;
+DROP TABLE IF EXISTS pending_submissions CASCADE;
+DROP TABLE IF EXISTS quejas CASCADE;
+DROP TABLE IF EXISTS suscriptores_notificaciones CASCADE;
 
 DROP TYPE IF EXISTS role_type;
 DROP TYPE IF EXISTS status_type;
@@ -63,9 +68,9 @@ DROP TYPE IF EXISTS priority_type;
 DROP TYPE IF EXISTS metric_type;
 
 
--- ===========================================...
+-- ============================================
 -- FUNCIÓN ÚNICA PARA TIMESTAMPS
--- ===========================================...
+-- ============================================
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -74,9 +79,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- ===========================================...
+-- ============================================
 -- TIPOS ENUMERADOS (TODOS LOS MÓDULOS)
--- ===========================================...
+-- ============================================
 CREATE TYPE role_type AS ENUM ('admin', 'docente', 'estudiante', 'padre');
 CREATE TYPE status_type AS ENUM ('activo', 'inactivo', 'suspendido');
 CREATE TYPE genero_type AS ENUM ('M', 'F', 'O');
@@ -90,9 +95,9 @@ CREATE TYPE audience_type AS ENUM ('todos', 'estudiantes', 'docentes', 'padres')
 CREATE TYPE priority_type AS ENUM ('baja', 'media', 'alta', 'critica');
 CREATE TYPE metric_type AS ENUM ('counter', 'gauge', 'histogram');
 
--- ===========================================...
+-- ============================================
 -- 1. TABLAS PRINCIPALES (CORE)
--- ===========================================...
+-- ============================================
 CREATE TABLE IF NOT EXISTS usuarios (
     id SERIAL PRIMARY KEY,
     uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
@@ -145,9 +150,62 @@ CREATE TABLE IF NOT EXISTS docentes (
 );
 CREATE TRIGGER update_docentes_updated_at BEFORE UPDATE ON docentes FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
--- ===========================================...
--- 2. TABLAS DEL SISTEMA DE ENCUESTAS (POLLS)
--- ===========================================...
+-- ============================================
+-- 2. TABLAS DE APROBACIONES, QUEJAS, SUSCRIPTORES
+-- ============================================
+CREATE TABLE IF NOT EXISTS pending_submissions (
+    id SERIAL PRIMARY KEY,
+    form_type VARCHAR(50) NOT NULL,
+    submission_data JSONB NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending',
+    email_verified BOOLEAN DEFAULT false,
+    verification_email VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    verified_at TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS quejas (
+    id SERIAL PRIMARY KEY,
+    form_type VARCHAR(50) DEFAULT 'quejas',
+    nombre VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    subject VARCHAR(100) NOT NULL,
+    message TEXT NOT NULL,
+    status VARCHAR(50) DEFAULT 'pendiente',
+    respuesta TEXT,
+    respondido_por VARCHAR(255),
+    fecha_respuesta TIMESTAMPTZ,
+    fecha_creacion TIMESTAMPTZ DEFAULT NOW(),
+    fecha_actualizacion TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS suscriptores_notificaciones (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    nombre VARCHAR(255),
+    notif_convocatorias BOOLEAN DEFAULT FALSE,
+    notif_becas BOOLEAN DEFAULT FALSE,
+    notif_eventos BOOLEAN DEFAULT FALSE,
+    notif_noticias BOOLEAN DEFAULT FALSE,
+    notif_todas BOOLEAN DEFAULT TRUE,
+    estado VARCHAR(20) DEFAULT 'activo',
+    verificado BOOLEAN DEFAULT FALSE,
+    fecha_verificacion TIMESTAMP,
+    token_verificacion VARCHAR(255),
+    total_enviados INTEGER DEFAULT 0,
+    total_abiertos INTEGER DEFAULT 0,
+    ultimo_envio TIMESTAMP,
+    fuente VARCHAR(100),
+    fecha_registro TIMESTAMP DEFAULT NOW(),
+    fecha_actualizacion TIMESTAMP DEFAULT NOW(),
+    fecha_cancelacion TIMESTAMP,
+    ip_registro VARCHAR(50),
+    user_agent TEXT
+);
+
+-- ============================================
+-- 3. TABLAS DEL SISTEMA DE ENCUESTAS (POLLS)
+-- ============================================
 CREATE TABLE IF NOT EXISTS polls (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -173,9 +231,9 @@ CREATE TABLE IF NOT EXISTS poll_options (
     votes_count INTEGER DEFAULT 0
 );
 
--- ===========================================...
--- 3. TABLAS DEL PORTAL DE DOCENTES (TEACHERS)
--- ===========================================...
+-- ============================================
+-- 4. TABLAS DEL PORTAL DE DOCENTES (TEACHERS)
+-- ============================================
 CREATE TABLE IF NOT EXISTS teacher_classes (
     id SERIAL PRIMARY KEY,
     teacher_id INTEGER NOT NULL REFERENCES docentes(id) ON DELETE CASCADE,
@@ -197,69 +255,9 @@ CREATE TABLE IF NOT EXISTS teacher_class_students (
     UNIQUE (class_id, student_id)
 );
 
--- ===========================================...
--- 4. TABLAS DEL SISTEMA DE MENSAJERÍA
--- ===========================================...
-CREATE TABLE IF NOT EXISTS conversations (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(200),
-    conversation_type VARCHAR(20) NOT NULL DEFAULT 'direct',
-    creator_id INTEGER NOT NULL,
-    creator_role VARCHAR(20) NOT NULL,
-    last_message_id INTEGER,
-    last_message_at TIMESTAMP,
-    total_messages INTEGER DEFAULT 0,
-    is_active BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE TRIGGER trigger_conversations_updated_at BEFORE UPDATE ON conversations FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TABLE IF NOT EXISTS conversation_participants (
-    id SERIAL PRIMARY KEY,
-    conversation_id INTEGER NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
-    user_id INTEGER NOT NULL,
-    user_role VARCHAR(20) NOT NULL,
-    unread_count INTEGER DEFAULT 0,
-    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    left_at TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS messages (
-    id SERIAL PRIMARY KEY,
-    conversation_id INTEGER NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
-    sender_id INTEGER NOT NULL,
-    sender_role VARCHAR(20) NOT NULL,
-    content TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- ===========================================...
--- 5. TABLAS DE LA BIBLIOTECA DIGITAL
--- ===========================================...
-CREATE TABLE IF NOT EXISTS library_categories (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(200) NOT NULL,
-    slug VARCHAR(200) NOT NULL UNIQUE,
-    parent_id INTEGER REFERENCES library_categories(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS library_documents (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(300) NOT NULL,
-    slug VARCHAR(300) NOT NULL UNIQUE,
-    description TEXT,
-    category_id INTEGER NOT NULL REFERENCES library_categories(id) ON DELETE RESTRICT,
-    author_id INTEGER NOT NULL,
-    author_role VARCHAR(20) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE TRIGGER trigger_documents_updated_at BEFORE UPDATE ON library_documents FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
--- ===========================================...
+-- ============================================
 -- DATOS INICIALES
--- ===========================================...
+-- ============================================
 INSERT INTO usuarios (username, email, password_hash, role) VALUES
 ('admin', 'admin@heroespatria.edu.mx', '$2b$12$c6XQgfRG4WAkwhADy7RcQeSIfAVidcWV/F/OTcswVQ.L/99CUfGIK', 'admin')
 ON CONFLICT (username) DO NOTHING;
