@@ -1,0 +1,113 @@
+{
+  "tenantId": "cetis-64-guadalajara-001",
+  "version": "1.0.0",
+  "configType": "production",
+  "lastUpdated": "2025-09-25T00:00:00Z",
+
+  "institution": {
+    "name": "Centro de Estudios Tecnológicos Industrial y de Servicios No. 64",
+    "shortName": "CETIS 64",
+    "type": "Centro de Estudios Tecnológicos",
+    "level": "Media Superior",
+    "address": {
+      "street": "Av. Revolución 1847, Col. Moderna",
+      "city": "Guadalajara",
+      "state": "Jalisco",
+      "country": "México",
+      "postalCode": "44190"
+    },
+    "contact": {
+      "phone": "+52 33 3826 1542",
+      "email": "cetis64@dgeti.sems.gob.mx",
+      "website": "https://cetis64.edu.mx"
+    }
+  },
+
+  "branding": {
+    "primaryColor": "#2E7D32",
+    "secondaryColor": "#FFA726",
+    "accentColor": "#D32F2F",
+    "logoUrl": "/images/logos/cetis-64-logo.webp",
+    "faviconUrl": "/images/favicons/cetis-64-favicon.ico",
+    "heroImageUrl": "/images/hero/cetis-64-campus.webp",
+    "fontFamily": "'Roboto Slab', serif"
+  },
+
+  "leadership": {
+    "director": {
+      "name": "Ing. María Elena Rodríguez Vázquez",
+      "title": "Directora",
+      "photo": "/images/team/directora-cetis64.jpg",
+      "bio": "Ingeniera Industrial con 25 años de experiencia en educación tecnológica. Especialista en desarrollo curricular y vinculación empresarial."
+    },
+    "subdirector": {
+      "name": "Mtro. Carlos Javier Hernández López",
+      "title": "Subdirector Académico",
+      "photo": "/images/team/subdirector-cetis64.jpg",
+      "bio": "Maestro en Educación con especialidad en Tecnologías de la Información. 20 años en educación media superior."
+    }
+  },
+
+  "academicInfo": {
+    "missionStatement": "Formar técnicos profesionales competentes, críticos, creativos y propositivos que contribuyan al desarrollo sustentable de la región y del país, mediante una educación integral de calidad que fomente los valores universales, la cultura tecnológica y el cuidado del medio ambiente.",
+    "visionStatement": "Ser una institución de educación media superior tecnológica líder en la región, reconocida por la excelencia académica, la innovación educativa, la vinculación con el sector productivo y su contribución al desarrollo sustentable de la sociedad.",
+    "values": ["Excelencia", "Innovación", "Responsabilidad", "Sustentabilidad", "Trabajo en Equipo"],
+    "establishedYear": "1975",
+    "programs": [
+      {
+        "name": "Técnico en Programación",
+        "duration": "3 años",
+        "description": "Formación en desarrollo de software y programación de aplicaciones."
+      },
+      {
+        "name": "Técnico en Mecatrónica",
+        "duration": "3 años",
+        "description": "Integración de sistemas mecánicos, electrónicos y de control."
+      },
+      {
+        "name": "Técnico en Administración de Recursos Humanos",
+        "duration": "3 años",
+        "description": "Gestión del capital humano en organizaciones."
+      }
+    ]
+  },
+
+  "features": {
+    "chatbotEnabled": true,
+    "paymentsEnabled": false,
+    "calendarEnabled": true,
+    "gradesEnabled": true,
+    "appointmentsEnabled": true,
+    "newsEnabled": true,
+    "analyticsEnabled": false,
+    "jobBoardEnabled": true,
+    "alumniEnabled": true
+  },
+
+  "localization": {
+    "language": "es",
+    "timezone": "America/Mexico_City",
+    "currency": "MXN",
+    "dateFormat": "DD/MM/YYYY"
+  },
+
+  "theme": {
+    "headerStyle": "modern",
+    "footerStyle": "corporate",
+    "buttonStyle": "rounded",
+    "cardStyle": "elevated"
+  },
+
+  "socialMedia": {
+    "facebook": "https://facebook.com/CETIS64Guadalajara",
+    "instagram": "https://instagram.com/cetis64gdl",
+    "youtube": "https://youtube.com/@CETIS64GDL",
+    "linkedin": "https://linkedin.com/school/cetis64"
+  },
+
+  "customContent": {
+    "welcomeMessage": "¡Bienvenidos al CETIS 64! Forjando el futuro tecnológico de México",
+    "mainSlogan": "Tecnología • Innovación • Excelencia",
+    "heroText": "Descubre tu potencial tecnológico en el mejor Centro de Estudios Tecnológicos de Guadalajara"
+  }
+}
