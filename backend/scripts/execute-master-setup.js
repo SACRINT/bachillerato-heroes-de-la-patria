@@ -26,7 +26,7 @@ async function runMasterSetup() {
         const tablesQuery = `
             SELECT table_name FROM information_schema.tables
             WHERE table_schema = 'public'
-            AND table_name IN ('usuarios', 'estudiantes', 'docentes', 'polls', 'teacher_classes', 'conversations', 'library_documents', 'pending_submissions', 'quejas', 'suscriptores_notificaciones');
+            AND table_name IN ('usuarios', 'estudiantes', 'docentes', 'polls', 'teacher_classes', 'conversations', 'library_documents', 'pending_submissions', 'quejas', 'suscriptores_notificaciones', 'noticias', 'eventos', 'comunicados');
         `;
         const result = await client.query(tablesQuery);
 
