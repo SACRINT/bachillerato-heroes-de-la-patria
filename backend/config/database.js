@@ -241,12 +241,8 @@ function getDatabaseMode() {
  * Para compatibilidad con rutas que usan db.query()
  */
 async function query(sql, params = []) {
-    // ⚠️ Fallback JSON deshabilitado en Vercel
-    // if (useJsonFallback) {
-    //     return await jsonDb.executeQuery(sql, params);
-    // }
     const result = await pool.query(sql, params);
-    return [result.rows, result.fields]; // Formato compatible con mysql2
+    return result.rows; // Return only rows for PostgreSQL compatibility
 }
 
 module.exports = {

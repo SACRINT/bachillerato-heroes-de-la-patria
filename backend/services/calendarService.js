@@ -51,27 +51,41 @@ class CalendarService {
 
     async ensureTablesExist() {
         try {
+            // Define ENUM types for PostgreSQL
+            await this.db.execute(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'event_type') THEN CREATE TYPE event_type AS ENUM ('academico', 'administrativo', 'cultural', 'deportivo', 'social', 'emergencia'); END IF; END $$;`);
+            await this.db.execute(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'event_priority') THEN CREATE TYPE event_priority AS ENUM ('baja', 'media', 'alta', 'urgente'); END IF; END $$;`);
+            await this.db.execute(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'event_status') THEN CREATE TYPE event_status AS ENUM ('programado', 'en_curso', 'completado', 'cancelado'); END IF; END $$;`);
+            await this.db.execute(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'attendee_status') THEN CREATE TYPE attendee_status AS ENUM ('registrado', 'confirmado', 'presente', 'ausente'); END IF; END $$;`);
+            await this.db.execute(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'reminder_type') THEN CREATE TYPE reminder_type AS ENUM ('email', 'push', 'sms'); END IF; END $$;`);
+            await this.db.execute(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'reminder_status') THEN CREATE TYPE reminder_status AS ENUM ('pendiente', 'enviado', 'error'); END IF; END $$;`);
+
+
             const createEventsTable = `
                 CREATE TABLE IF NOT EXISTS calendar_events (
-                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    id SERIAL PRIMARY KEY,
                     title VARCHAR(255) NOT NULL,
                     description TEXT,
-                    start_date DATETIME NOT NULL,
-                    end_date DATETIME,
+                    start_date TIMESTAMP WITH TIME ZONE NOT NULL,
+                    end_date TIMESTAMP WITH TIME ZONE,
                     all_day BOOLEAN DEFAULT FALSE,
                     location VARCHAR(255),
-                    type ENUM('academico', 'administrativo', 'cultural', 'deportivo', 'social', 'emergencia') NOT NULL,
-                    priority ENUM('baja', 'media', 'alta', 'urgente') DEFAULT 'media',
+                    type event_type NOT NULL,
+                    priority event_priority DEFAULT 'media',
                     is_public BOOLEAN DEFAULT TRUE,
-                    max_attendees INT,
-                    current_attendees INT DEFAULT 0,
+                    max_attendees INTEGER,
+                    current_attendees INTEGER DEFAULT 0,
                     google_event_id VARCHAR(255),
-                    status ENUM('programado', 'en_curso', 'completado', 'cancelado') DEFAULT 'programado',
-                    created_by INT NOT NULL,
-                    updated_by INT,
-                    metadata JSON,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    status event_status DEFAULT 'programado',
+                    created_by INTEGER NOT NULL,
+                    updated_by INTEGER,
+                    metadata JSONB,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+                    -- FOREIGN KEY (created_by) REFERENCES users(id), -- Assuming a users table exists
+                    -- FOREIGN KEY (updated_by) REFERENCES users(id)
+                    -- No foreign key for created_by/updated_by for now to avoid circular dependencies or issues if users table is not yet defined.
+                    -- This can be added later if needed.
 
                     INDEX idx_start_date (start_date),
                     INDEX idx_type (type),
@@ -87,15 +101,15 @@ class CalendarService {
             // Crear tabla de asistentes
             const createAttendeesTable = `
                 CREATE TABLE IF NOT EXISTS event_attendees (
-                    id INT PRIMARY KEY AUTO_INCREMENT,
-                    event_id INT NOT NULL,
-                    user_id INT NOT NULL,
-                    status ENUM('registrado', 'confirmado', 'presente', 'ausente') DEFAULT 'registrado',
-                    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    id SERIAL PRIMARY KEY,
+                    event_id INTEGER NOT NULL,
+                    user_id INTEGER NOT NULL,
+                    status attendee_status DEFAULT 'registrado',
+                    registered_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 
                     FOREIGN KEY (event_id) REFERENCES calendar_events(id) ON DELETE CASCADE,
-                    UNIQUE KEY unique_attendance (event_id, user_id),
+                    UNIQUE (event_id, user_id),
                     INDEX idx_event_id (event_id),
                     INDEX idx_user_id (user_id),
                     INDEX idx_status (status)
@@ -108,14 +122,14 @@ class CalendarService {
             // Crear tabla de recordatorios
             const createRemindersTable = `
                 CREATE TABLE IF NOT EXISTS event_reminders (
-                    id INT PRIMARY KEY AUTO_INCREMENT,
-                    event_id INT NOT NULL,
-                    type ENUM('email', 'push', 'sms') NOT NULL,
-                    minutes_before INT NOT NULL,
-                    status ENUM('pendiente', 'enviado', 'error') DEFAULT 'pendiente',
-                    sent_at TIMESTAMP NULL,
-                    created_by INT NOT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    id SERIAL PRIMARY KEY,
+                    event_id INTEGER NOT NULL,
+                    type reminder_type NOT NULL,
+                    minutes_before INTEGER NOT NULL,
+                    status reminder_status DEFAULT 'pendiente',
+                    sent_at TIMESTAMP WITH TIME ZONE NULL,
+                    created_by INTEGER NOT NULL,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 
                     FOREIGN KEY (event_id) REFERENCES calendar_events(id) ON DELETE CASCADE,
                     INDEX idx_event_id (event_id),
@@ -184,21 +198,22 @@ class CalendarService {
                 WHERE 1=1
             `;
             const params = [];
+            let paramIndex = 1;
 
             // Filtro por rango de fechas
             if (filters.start_date) {
-                query += ' AND e.start_date >= ?';
+                query += ` AND e.start_date >= $${paramIndex++}`;
                 params.push(filters.start_date);
             }
 
             if (filters.end_date) {
-                query += ' AND e.start_date <= ?';
+                query += ` AND e.start_date <= $${paramIndex++}`;
                 params.push(filters.end_date);
             }
 
             // Filtro por tipo
             if (filters.type) {
-                query += ' AND e.type = ?';
+                query += ` AND e.type = $${paramIndex++}`;
                 params.push(filters.type);
             }
 
@@ -208,40 +223,41 @@ class CalendarService {
             }
 
             // Solo eventos activos
-            query += ' AND e.status != "cancelado"';
+            query += ` AND e.status != 'cancelado'`;
 
             // Ordenar por fecha de inicio
             query += ' ORDER BY e.start_date ASC, e.created_at ASC';
 
             // Paginación
             if (filters.limit) {
-                query += ' LIMIT ?';
+                query += ` LIMIT $${paramIndex++}`;
                 params.push(filters.limit);
             }
 
             if (filters.offset) {
-                query += ' OFFSET ?';
+                query += ` OFFSET $${paramIndex++}`;
                 params.push(filters.offset);
             }
 
-            const [events] = await this.db.execute(query, params);
+            const events = (await this.db.execute(query, params)).rows; // PostgreSQL returns rows property
 
             // Contar total
             let countQuery = 'SELECT COUNT(*) as total FROM calendar_events e WHERE 1=1';
             const countParams = [];
+            let countParamIndex = 1;
 
             if (filters.start_date) {
-                countQuery += ' AND e.start_date >= ?';
+                countQuery += ` AND e.start_date >= $${countParamIndex++}`;
                 countParams.push(filters.start_date);
             }
 
             if (filters.end_date) {
-                countQuery += ' AND e.start_date <= ?';
+                countQuery += ` AND e.start_date <= $${countParamIndex++}`;
                 countParams.push(filters.end_date);
             }
 
             if (filters.type) {
-                countQuery += ' AND e.type = ?';
+                countQuery += ` AND e.type = $${countParamIndex++}`;
                 countParams.push(filters.type);
             }
 
@@ -249,9 +265,9 @@ class CalendarService {
                 countQuery += ' AND e.is_public = TRUE';
             }
 
-            countQuery += ' AND e.status != "cancelado"';
+            countQuery += ` AND e.status != 'cancelado'`;
 
-            const [countResult] = await this.db.execute(countQuery, countParams);
+            const countResult = (await this.db.execute(countQuery, countParams)).rows;
             const total = countResult[0].total;
 
             // Procesar metadata JSON
@@ -333,10 +349,11 @@ class CalendarService {
                         max_attendees, current_attendees, status,
                         created_by, created_at, updated_at, metadata
                     FROM calendar_events
-                    WHERE id = ?
+                    WHERE id = $1
                 `;
 
-                const [rows] = await this.db.execute(query, [id]);
+                const result = await this.db.execute(query, [id]);
+                const rows = result.rows;
 
                 if (rows.length === 0) return null;
 
@@ -370,7 +387,8 @@ class CalendarService {
                     title, description, start_date, end_date, all_day,
                     location, type, priority, is_public, max_attendees,
                     created_by, metadata
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+                RETURNING id;
             `;
 
             const params = [
@@ -388,9 +406,10 @@ class CalendarService {
                 eventData.metadata || null
             ];
 
-            const [result] = await this.db.execute(query, params);
+            const result = await this.db.execute(query, params);
+            const newEventId = result.rows[0].id;
 
-            return this.getEventById(result.insertId);
+            return this.getEventById(newEventId);
 
         } catch (error) {
             console.error('Error creando evento en DB:', error);
@@ -459,6 +478,7 @@ class CalendarService {
         try {
             const fields = [];
             const params = [];
+            let paramIndex = 1;
 
             const allowedFields = [
                 'title', 'description', 'start_date', 'end_date', 'all_day',
@@ -468,7 +488,7 @@ class CalendarService {
 
             allowedFields.forEach(field => {
                 if (updateData.hasOwnProperty(field)) {
-                    fields.push(`${field} = ?`);
+                    fields.push(`${field} = $${paramIndex++}`);
                     params.push(updateData[field]);
                 }
             });
@@ -477,14 +497,14 @@ class CalendarService {
                 throw new Error('No hay campos para actualizar');
             }
 
-            fields.push('updated_at = NOW()');
+            fields.push(`updated_at = CURRENT_TIMESTAMP`);
 
-            const query = `UPDATE calendar_events SET ${fields.join(', ')} WHERE id = ?`;
+            const query = `UPDATE calendar_events SET ${fields.join(', ')} WHERE id = $${paramIndex++}`;
             params.push(id);
 
-            const [result] = await this.db.execute(query, params);
+            const result = await this.db.execute(query, params);
 
-            if (result.affectedRows === 0) {
+            if (result.rowCount === 0) {
                 return null;
             }
 
@@ -507,12 +527,12 @@ class CalendarService {
                 // Soft delete - marcar como cancelado
                 const query = `
                     UPDATE calendar_events
-                    SET status = 'cancelado', updated_by = ?, updated_at = NOW()
-                    WHERE id = ?
+                    SET status = 'cancelado', updated_by = $1, updated_at = CURRENT_TIMESTAMP
+                    WHERE id = $2
                 `;
 
-                const [result] = await this.db.execute(query, [userId, id]);
-                return result.affectedRows > 0;
+                const result = await this.db.execute(query, [userId, id]);
+                return result.rowCount > 0;
 
             } catch (error) {
                 console.error('Error eliminando evento:', error);
@@ -573,8 +593,8 @@ class CalendarService {
             // Registrar asistencia
             const insertQuery = `
                 INSERT INTO event_attendees (event_id, user_id, status)
-                VALUES (?, ?, 'registrado')
-                ON DUPLICATE KEY UPDATE status = 'registrado', updated_at = NOW()
+                VALUES ($1, $2, 'registrado')
+                ON CONFLICT (event_id, user_id) DO UPDATE SET status = 'registrado', updated_at = CURRENT_TIMESTAMP
             `;
 
             await this.db.execute(insertQuery, [eventId, userId]);
@@ -584,9 +604,9 @@ class CalendarService {
                 UPDATE calendar_events
                 SET current_attendees = (
                     SELECT COUNT(*) FROM event_attendees
-                    WHERE event_id = ? AND status != 'ausente'
+                    WHERE event_id = $1 AND status != 'ausente'
                 )
-                WHERE id = ?
+                WHERE id = $2
             `;
 
             await this.db.execute(updateQuery, [eventId, eventId]);
@@ -620,12 +640,12 @@ class CalendarService {
                 SELECT
                     ea.user_id, ea.status, ea.registered_at, ea.updated_at
                 FROM event_attendees ea
-                WHERE ea.event_id = ?
+                WHERE ea.event_id = $1
                 ORDER BY ea.registered_at ASC
             `;
 
-            const [attendees] = await this.db.execute(query, [eventId]);
-            return attendees;
+            const result = await this.db.execute(query, [eventId]);
+            return result.rows;
 
         } catch (error) {
             console.error('Error obteniendo asistentes:', error);
@@ -666,7 +686,7 @@ class CalendarService {
         }
 
         try {
-            const periodQuery = period === 'month' ? 'MONTH' : 'WEEK';
+            const interval = period === 'month' ? '1 month' : '1 week';
 
             const statsQuery = `
                 SELECT
@@ -674,12 +694,13 @@ class CalendarService {
                     status,
                     COUNT(*) as count
                 FROM calendar_events
-                WHERE start_date >= DATE_SUB(NOW(), INTERVAL 1 ${periodQuery})
+                WHERE start_date >= NOW() - INTERVAL '${interval}'
                 GROUP BY type, status
                 ORDER BY type, status
             `;
 
-            const [stats] = await this.db.execute(statsQuery);
+            const statsResult = await this.db.execute(statsQuery);
+            const stats = statsResult.rows;
 
             const totalQuery = `
                 SELECT
@@ -688,10 +709,11 @@ class CalendarService {
                     COUNT(CASE WHEN status = 'completado' THEN 1 END) as completed,
                     AVG(current_attendees) as avg_attendance
                 FROM calendar_events
-                WHERE start_date >= DATE_SUB(NOW(), INTERVAL 1 ${periodQuery})
+                WHERE start_date >= NOW() - INTERVAL '${interval}'
             `;
 
-            const [totals] = await this.db.execute(totalQuery);
+            const totalsResult = await this.db.execute(totalQuery);
+            const totals = totalsResult.rows;
 
             return {
                 period: period,
@@ -755,13 +777,13 @@ class CalendarService {
 
         try {
             // Eliminar recordatorios existentes
-            await this.db.execute('DELETE FROM event_reminders WHERE event_id = ?', [eventId]);
+            await this.db.execute('DELETE FROM event_reminders WHERE event_id = $1', [eventId]);
 
             // Insertar nuevos recordatorios
             for (const reminder of reminders) {
                 const query = `
                     INSERT INTO event_reminders (event_id, type, minutes_before, created_by)
-                    VALUES (?, ?, ?, ?)
+                    VALUES ($1, $2, $3, $4)
                 `;
 
                 await this.db.execute(query, [
