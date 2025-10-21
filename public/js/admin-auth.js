@@ -433,7 +433,7 @@ class AdminAuth {
     // Abrir panel de admin
     openAdminPanel() {
         if (this.isAdminLoggedIn) {
-            window.location.href = 'admin-dashboard.html';
+            window.location.href = 'public/admin-dashboard.html';
         }
     }
 

@@ -434,7 +434,7 @@ class AdvancedFloatingWidgets {
             'padres': 'padres.html',
             'calendario': 'calendario.html',
             'calificaciones': 'calificaciones.html',
-            'admin': 'admin-dashboard.html'
+            'admin': 'public/admin-dashboard.html'
         };
 
         if (routes[action]) {

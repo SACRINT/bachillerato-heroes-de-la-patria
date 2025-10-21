@@ -598,7 +598,7 @@ class SecureAdminAuth {
                 // Cambiar a función que redirige al dashboard
                 loginButton.onclick = (e) => {
                     e.preventDefault();
-                    window.location.href = 'admin-dashboard.html';
+                    window.location.href = 'public/admin-dashboard.html';
                     return false;
                 };
 
@@ -935,7 +935,7 @@ window.handleAdminLogin = function() {
             // Verificar si la sesión es válida y no ha expirado
             if (session.token && session.expiresAt && session.expiresAt > now) {
                 //console.log('✅ Sesión válida encontrada, redirigiendo a panel admin...');
-                window.location.href = 'admin-dashboard.html';
+                window.location.href = 'public/admin-dashboard.html';
                 return; // Salir de la función
             } else {
                 //console.log('⚠️ Sesión expirada o inválida, limpiando...');

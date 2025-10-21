@@ -114,9 +114,9 @@ public/config/
 # package-lock.json debe ser versionado para sub-proyectos también.
 # Si es un archivo temporal, debe ser más específico.
 # Por ahora, lo mantengo como estaba en el original.
-api/package-lock.json
-api/debug-env.js
-api/debug-files.js
+# api/package-lock.json
+# api/debug-env.js
+# api/debug-files.js
 
 # Vercel local config/cache (ya cubierto por .vercel/)
 .vercel
