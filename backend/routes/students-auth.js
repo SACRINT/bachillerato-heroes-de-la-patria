@@ -70,14 +70,6 @@ router.post('/login', [
             group: student.grupo,
             loginAt: new Date().toISOString()
         };
-            id: student.id,
-            usuario_id: user.id,
-            matricula: student.matricula,
-            name: student.nombre_completo,
-            email: user.email,
-            group: student.grupo,
-            loginAt: new Date().toISOString()
-        };
 
         console.log(`✅ [STUDENT LOGIN] ${student.nombre_completo} (${student.matricula}) ha iniciado sesión.`);
 
