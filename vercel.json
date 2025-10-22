@@ -10,8 +10,12 @@
       "destination": "/public/$1"
     }
   ],
+  "builds": [{
+    "src": "api/index.cjs",
+    "use": "@vercel/node"
+  }],
   "functions": {
-    "api/index.js": {
+    "api/index.cjs": {
       "memory": 1024,
       "maxDuration": 30,
       "includeFiles": "backend/**"

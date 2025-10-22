@@ -116,18 +116,23 @@ router.post('/logout', (req, res) => {
  * Verificar si hay una sesión de estudiante activa. Ahora funciona con la sesión de PostgreSQL.
  */
 router.get('/check', (req, res) => {
-    if (req.session && req.session.student) {
-        res.json({
-            success: true,
-            isAuthenticated: true,
-            student: req.session.student
-        });
-    } else {
-        res.json({
-            success: true,
-            isAuthenticated: false,
-            student: null
-        });
+    try {
+        if (req.session && req.session.student) {
+            res.json({
+                success: true,
+                isAuthenticated: true,
+                student: req.session.student
+            });
+        } else {
+            res.json({
+                success: true,
+                isAuthenticated: false,
+                student: null
+            });
+        }
+    } catch (error) {
+        console.error('❌ Error en /api/students-auth/check:', error);
+        res.status(500).json({ success: false, message: 'Error interno al verificar sesión.' });
     }
 });
 
