@@ -7,7 +7,6 @@
       "config": { "includeFiles": ["backend/**"] }
     }
   ],
-        "rewrites": [
-          { "source": "/api/(.*)", "destination": "/api/index.cjs" },
-          { "source": "/(.*)", "destination": "/public/$1" }
-        ]    }
+          "rewrites": [
+            { "source": "/api/(.*)", "destination": "/api/index.cjs" }
+          ]    }
