@@ -7,9 +7,15 @@
       "config": { "includeFiles": ["backend/**"] }
     }
   ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/app.js" },
-    { "src": "/(.*)", "dest": "/public/$1" }
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/app.js" }
   ],
-  "outputDirectory": "public"
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "s-maxage=1, stale-while-revalidate" }
+      ]
+    }
+  ]
 }
