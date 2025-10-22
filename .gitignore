@@ -88,8 +88,8 @@ backend/nul
 backend/backups/
 backend/data/sessions.json
 backend/data/users.json
-# backend/test-*.js
-# backend/test-report-*.json
+backend/test-*.js
+backend/test-report-*.json
 backend/data/ # Ignorar toda la carpeta de datos del backend
 
 # Public duplicados (mantenemos solo raíz)
@@ -101,12 +101,12 @@ backend/data/ # Ignorar toda la carpeta de datos del backend
 
 # Archivos de Configuración Sensibles
 # Carpetas que podrían contener claves de API o configuraciones locales.
-public/config/
+# public/config/
 .genkit/
 .vercel/
 # .claude/
 .claude/agents
-
+.gitignore
 # GitHub Actions (si no se usa)
 # .github/
 
@@ -132,8 +132,8 @@ ux-demo.html
 # ============================================
 
 # Scripts de Desarrollo y Herramientas Locales (adiciones/generalizaciones)
-# scripts/ # Ignorar toda la carpeta scripts/ en la raíz
-# backend/scripts/ # Ignorar toda la carpeta scripts/ en backend/
+scripts/ # Ignorar toda la carpeta scripts/ en la raíz
+backend/scripts/ # Ignorar toda la carpeta scripts/ en backend/
 audit-unused-files.js
 move-unused-files.js
 restore-critical-fase4-files.js
