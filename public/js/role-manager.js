@@ -75,7 +75,7 @@ class BGERoleManager {
         // Rutas protegidas por rol
         this.protectedRoutes = {
             admin: [
-                'public/admin-dashboard.html',
+                'admin-dashboard.html',
                 'system-config.html',
                 'user-management.html',
                 'analytics.html'
@@ -288,7 +288,7 @@ class BGERoleManager {
         if (this.currentRole) {
             switch (this.currentRole) {
                 case 'admin':
-                    redirectUrl = 'public/admin-dashboard.html';
+                    redirectUrl = 'admin-dashboard.html';
                     break;
                 case 'docente':
                     redirectUrl = 'teacher-dashboard.html';

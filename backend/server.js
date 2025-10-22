@@ -154,7 +154,7 @@ app.use(session({
         pool: pool,                     // Pool de conexiones PostgreSQL
         tableName: 'user_sessions',     // Tabla que creamos en PostgreSQL
         pruneSessionInterval: 60 * 15,  // Limpiar sesiones expiradas cada 15 minutos
-        createTableIfMissing: true      // Permitir que la tabla se cree automáticamente si falta
+        createTableIfMissing: false     // No crear tabla automáticamente (ya la creamos)
     }),
     secret: SESSION_SECRET,
     resave: false,

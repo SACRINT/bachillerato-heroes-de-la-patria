@@ -1,85 +1,148 @@
-# Node.js
-node_modules/
-npm-debug.log
-yarn-debug.log
-yarn-error.log
-.pnpm-store/
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+nul 
 
-# Vercel
-.vercel/
-.vercelignore # This file itself should be committed, but its contents define what Vercel ignores.
-
-# Logs
+# Logs y Reportes de Herramientas
+coverage/
+audit-report.json
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lcov-report/
-coverage/
 
-# IDEs and editors
+# Archivos temporales
+*.tmp
+*.temp
+
+# Node modules (todas las instancias)
+node_modules/
+
+# Archivos de Entorno y Dependencias
+.env
+.env.local
+.env.database
+.env.example # El template de variables de entorno
+
+# Archivos de editor
 .vscode/
 .idea/
-.DS_Store
-*.sublime-project
-*.sublime-workspace
-
-# Build artifacts
-dist/
-build/
-out/
-
-# Backups and temporary files
-backups/
-*.bak
-*.tmp
 *.swp
-*~.nib
 *.swo
-temp-test-content.txt
-cookies.txt
 
-# Diagnostic reports
-diagnostic-report.json
-build-report.json
-audit-report.json
-backend/test-report-direct.json
+# Archivos de cache
+.cache/
 
-# Agent-specific files
-.claude/
-.genkit/
-MEMORIA_AGENTE.md # This is my own memory, should not be committed.
-CLAUDE.md # Claude's memory, should not be committed.
-GEMINI.md # My own memory, should not be committed.
+# ============================================
+# 🧹 LIMPIEZA OCTUBRE 2025 (Reglas existentes)
+# ============================================
+
+# Directorio de archivos no usados (COMPLETO)
+no_usados/
+
+# Documentación local (no subir a GitHub ni a Vercel para despliegue)
+# Generalizado para ignorar todos los archivos Markdown excepto README.md
 *.md
 !README.md # Mantener README.md en GitHub para referencia del repositorio
+
+# Reportes de texto (ya cubierto por *.log, pero se mantiene si hay otros .txt)
 *.txt
-# Unused/Legacy files (as per user's list and context)
-.gitignore2
-no_usados/
-nul
 
-# Backend specific ignores
-backend/node_modules/
-backend/.env
+# Backups
+*.backup
+*.backup_*
+
+# Archivos temporales de Office
+~$*.md
+~$*.docx
+
+# Scripts temporales de desarrollo
+fix-*.sh
+test-*.sh
+update-*.py
+SCRIPT_*.js
+
+# Subdirectorios de docs (ignorar toda la carpeta docs/)
+docs/
+
+# Otros Subdirectorios
+actualizacion/
+
+# Build reports
+build-report.json
+public/build-report.json
+
+# Archivos de configuración temporal (revisar si config/ es realmente temporal)
+# Si la carpeta config/ en la raíz o backend/config/ son esenciales para la app,
+# esta regla es demasiado amplia. Asumo que se refiere a archivos temporales
+# dentro de config/, no a la carpeta completa.
+# Mantengo la regla original, pero con esta nota.
+# config/
+
+# Package lock (mantener package-lock.json es una buena práctica para builds reproducibles)
+# La línea original estaba comentada, la elimino para asegurar que se incluya.
+# package-lock.json # NO IGNORAR - ESENCIAL PARA BUILDS REPRODUCIBLES
+
+# Backend específico
+backend/nul
 backend/backups/
-backend/server.log
+backend/data/sessions.json
+backend/data/users.json
+# backend/test-*.js
+# backend/test-report-*.json
+backend/data/ # Ignorar toda la carpeta de datos del backend
 
-# Server specific ignores (if 'server' is a separate Node.js project)
-server/node_modules/
-server/.env
+# Public duplicados (mantenemos solo raíz)
+# Nota: public/ se mantiene para Vercel static serving
 
-# Other specific files from the list that should be ignored
-firebase-debug.log
+# Carpetas de Datos y Contenido Generado
+# public/uploads/
+# backups/
+
+# Archivos de Configuración Sensibles
+# Carpetas que podrían contener claves de API o configuraciones locales.
+public/config/
+.genkit/
+.vercel/
+# .claude/
+.claude/agents
+
+# GitHub Actions (si no se usa)
+# .github/
+
+# API lock files temporales (revisar si api/package-lock.json es realmente temporal)
+# package-lock.json debe ser versionado para sub-proyectos también.
+# Si es un archivo temporal, debe ser más específico.
+# Por ahora, lo mantengo como estaba en el original.
+# api/package-lock.json
+
+# Vercel local config/cache (ya cubierto por .vercel/)
+# .vercel
+
+# Archivos Obsoletos y de Prueba
+# Archivos de experimentación que ya no son parte de la aplicación final.
+force-admin.html
+*-tenant-*.html
+sistema-multi-tenant-final.html
+aviso-privacidad-elegante.html
+ux-demo.html
+
+# ============================================
+# 🤖 RECOMENDACIONES (OCTUBRE 2025)
+# ============================================
+
+# Scripts de Desarrollo y Herramientas Locales (adiciones/generalizaciones)
+# scripts/ # Ignorar toda la carpeta scripts/ en la raíz
+# backend/scripts/ # Ignorar toda la carpeta scripts/ en backend/
+audit-unused-files.js
+move-unused-files.js
+restore-critical-fase4-files.js
+restore-development-files.js
+restore-future-vision-files.js
+setup-security.bat
+test-forms.js # Ya cubierto por *.js si se ignora scripts/, pero explícito
 test_real_login.json
 
+# Archivos de Base de Datos (scripts de ejecución única, no parte del runtime)
 EJECUTAR_EN_NEON.sql
-SCRIPT_VERIFICACION_DASHBOARD.js
-actualizacion/
-public/SCRIPT_VERIFICACION_DASHBOARD.js
-setup-security.bat
+

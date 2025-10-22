@@ -31,7 +31,7 @@ class BGEAdvancedPWA {
         this.criticalResources = [
             '/',
             '/index.html',
-            '/public/admin-dashboard.html',
+            '/admin-dashboard.html',
             '/estudiantes.html',
             '/calificaciones.html',
             '/css/style.css',

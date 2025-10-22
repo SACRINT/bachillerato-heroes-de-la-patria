@@ -90,7 +90,7 @@
             if (!isAuthenticated()) {
                 console.log('❌ [DASHBOARD AUTH] No autenticado - Redirigiendo...');
                 setTimeout(() => {
-                    window.location.href = 'public/index.html';
+                    window.location.href = 'index.html';
                 }, 100);
                 return;
             }
@@ -3588,7 +3588,7 @@
                 
                 if (!isAuthenticated) {
                     console.log('🚫 [DASHBOARD SECURITY] Acceso denegado - Usuario no autenticado');
-                    window.location.href = 'public/index.html';
+                    window.location.href = 'index.html';
                 } else {
                     console.log('✅ [DASHBOARD SECURITY] Acceso confirmado - Usuario autenticado');
                 }
@@ -4311,7 +4311,7 @@
 
                 // Redirigir después de un breve delay
                 setTimeout(() => {
-                    window.location.replace('public/index.html'); // replace evita volver con botón atrás
+                    window.location.replace('index.html'); // replace evita volver con botón atrás
                 }, 2000);
             }
 

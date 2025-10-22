@@ -325,7 +325,7 @@ async function handleNotificationClick(action, data) {
             return;
 
         default:
-            targetURL = url || '/public/admin-dashboard.html';
+            targetURL = url || '/admin-dashboard.html';
     }
 
     // Navegar a la URL
@@ -341,7 +341,7 @@ async function handleNotificationClick(action, data) {
 
 function getDefaultURLForType(type) {
     const urls = {
-        'COMUNICADO_OFICIAL': '/public/admin-dashboard.html#comunicados',
+        'COMUNICADO_OFICIAL': '/admin-dashboard.html#comunicados',
         'RECORDATORIO_EXAMEN': '/calendario.html',
         'EMERGENCIA_ESCOLAR': '/contacto.html',
         'CALIFICACIONES_DISPONIBLES': '/calificaciones.html',

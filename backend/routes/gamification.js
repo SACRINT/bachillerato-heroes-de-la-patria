@@ -116,17 +116,7 @@ router.get('/leaderboard', authenticateToken, async (req, res, next) => {
 
         // Simular leaderboard
         const leaderboard = [];
-        let users = [];
-        try {
-            const dbUsers = await executeQuery('SELECT * FROM usuarios', []);
-            users = dbUsers.rows || []; // Ensure users is an array, even if dbUsers.rows is null/undefined
-        } catch (dbError) {
-            console.error('❌ Error al obtener usuarios de la base de datos para el leaderboard:', dbError.message);
-            // Fallback: create dummy users if DB query fails
-            for (let i = 0; i < 10; i++) {
-                users.push({ id: i + 1, username: `DummyUser${i + 1}`, nombre: `Estudiante Dummy ${i + 1}`, role: 'student' });
-            }
-        }
+        const users = await executeQuery('SELECT * FROM usuarios', []);
 
         for (let i = 0; i < Math.min(limit, users.length + 7); i++) {
             const baseUser = users[i % users.length];

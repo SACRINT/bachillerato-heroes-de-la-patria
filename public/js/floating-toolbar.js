@@ -204,7 +204,7 @@ class FloatingToolbar {
     // Acciones de los botones
     openDashboard() {
         console.log('📊 Abriendo Dashboard Analytics...');
-        window.open('./public/admin-dashboard.html', '_blank');
+        window.open('./admin-dashboard.html', '_blank');
     }
 
     openVirtualLabs() {

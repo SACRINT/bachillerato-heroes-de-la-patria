@@ -1,39 +1,52 @@
-import fs from "fs";
-import path from "path";
+/**
+ * 🔍 DEBUG ENDPOINT: Lista todos los archivos incluidos en el entorno de ejecución
+ * Útil para confirmar si backend/config/database.js fue empaquetado correctamente
+ */
 
-export default async function handler(req, res) {
+const fs = require("fs");
+const path = require("path");
+
+module.exports = async (req, res) => {
   try {
-    const baseDir = process.cwd(); // raíz del entorno Vercel
+    const baseDir = path.join(__dirname, "../");
     const backendDir = path.join(baseDir, "backend");
 
-    function listFilesRecursive(dir, fileList = []) {
-      if (!fs.existsSync(dir)) return fileList;
-      const files = fs.readdirSync(dir);
-      for (const file of files) {
-        const full = path.join(dir, file);
-        if (fs.statSync(full).isDirectory()) {
-          listFilesRecursive(full, fileList);
+    let files = [];
+
+    function walk(dir) {
+      const entries = fs.readdirSync(dir, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          walk(fullPath);
         } else {
-          fileList.push(full.replace(baseDir, ""));
+          files.push(path.relative(baseDir, fullPath));
         }
       }
-      return fileList;
     }
 
-    const backendFiles = listFilesRecursive(backendDir);
-    const apiFiles = listFilesRecursive(path.join(baseDir, "api"));
+    if (fs.existsSync(backendDir)) {
+      walk(backendDir);
+    } else {
+      return res.status(404).json({
+        error: "Directorio backend no encontrado. Puede no haber sido incluido en el paquete.",
+        baseDir,
+        cwd: process.cwd(),
+      });
+    }
 
     res.status(200).json({
       success: true,
+      count: files.length,
+      message: "Archivos encontrados dentro del despliegue actual",
+      files: files.sort(),
       timestamp: new Date().toISOString(),
-      backendFilesCount: backendFiles.length,
-      apiFilesCount: apiFiles.length,
-      backendFiles,
-      apiFiles,
-      backendConfigExists: fs.existsSync(path.join(backendDir, "config", "database.js")),
-      workingDir: baseDir
+      workingDirectory: process.cwd(),
     });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+  } catch (err) {
+    res.status(500).json({
+      error: "Error al listar archivos",
+      message: err.message,
+    });
   }
-}
+};

@@ -57,10 +57,6 @@ router.post('/login', [
         const student = studentResult.rows[0];
 
         // Crear la sesión del estudiante
-        if (!req.session) {
-            console.error('❌ Error: req.session no está disponible. El middleware de sesión no está configurado correctamente.');
-            return res.status(500).json({ success: false, message: 'Error interno: Configuración de sesión incorrecta.' });
-        }
         req.session.student = {
             id: student.id,
             usuario_id: user.id,
@@ -116,23 +112,18 @@ router.post('/logout', (req, res) => {
  * Verificar si hay una sesión de estudiante activa. Ahora funciona con la sesión de PostgreSQL.
  */
 router.get('/check', (req, res) => {
-    try {
-        if (req.session && req.session.student) {
-            res.json({
-                success: true,
-                isAuthenticated: true,
-                student: req.session.student
-            });
-        } else {
-            res.json({
-                success: true,
-                isAuthenticated: false,
-                student: null
-            });
-        }
-    } catch (error) {
-        console.error('❌ Error en /api/students-auth/check:', error);
-        res.status(500).json({ success: false, message: 'Error interno al verificar sesión.' });
+    if (req.session && req.session.student) {
+        res.json({
+            success: true,
+            isAuthenticated: true,
+            student: req.session.student
+        });
+    } else {
+        res.json({
+            success: true,
+            isAuthenticated: false,
+            student: null
+        });
     }
 });
 
