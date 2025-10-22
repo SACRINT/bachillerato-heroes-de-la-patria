@@ -1,5 +1,12 @@
 {
   "version": 2,
+  "builds": [
+    {
+      "src": "api/index.cjs",
+      "use": "@vercel/node@2.15.3",
+      "config": { "includeFiles": ["backend/**"] }
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
