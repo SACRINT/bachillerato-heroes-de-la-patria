@@ -7,6 +7,24 @@
       "dest": "/public/$1"
     }
   ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.cjs"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.cjs"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    }
+  ],
   "builds": [
     {
       "src": "api/index.cjs",
