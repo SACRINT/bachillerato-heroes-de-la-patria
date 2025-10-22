@@ -1,10 +1,23 @@
-// api/index.js
+// api/index.cjs
 // Este archivo es el punto de entrada para el entorno serverless de Vercel.
-// Importa la aplicación Express completa desde el backend y la exporta.
+// Carga la aplicación consolidada de la API desde api/app.js (que usa ES Modules).
 
 require('dotenv').config(); // Cargar variables de entorno al inicio
 
-const app = require('../backend/server.js');
-
-// Vercel espera que se exporte por defecto la función del servidor.
-module.exports = app;
+// Exportar una función asíncrona que cargará dinámicamente api/app.js
+// y luego ejecutará su handler.
+module.exports = async (req, res) => {
+    try {
+        // Importar dinámicamente api/app.js (que es un módulo ES)
+        // y obtener su exportación por defecto (el handler).
+        const { default: handler } = await import('./app.js');
+        // Ejecutar el handler importado
+        return handler(req, res);
+    } catch (error) {
+        console.error('Error al cargar o ejecutar api/app.js:', error);
+        // Asegurarse de que la respuesta se envíe incluso en caso de error
+        if (!res.headersSent) {
+            res.status(500).json({ success: false, error: 'Error interno del servidor al iniciar la API.' });
+        }
+    }
+};

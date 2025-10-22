@@ -2,20 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/app.js",
+      "src": "api/index.cjs",
       "use": "@vercel/node@3.x",
       "config": { "includeFiles": ["backend/**"] }
     }
   ],
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/app.js" }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/index.cjs" },
+    { "src": "/(.*)", "dest": "/public/$1" }
   ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "s-maxage=1, stale-while-revalidate" }
-      ]
-    }
-  ]
+  "outputDirectory": "public"
 }
