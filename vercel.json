@@ -1,4 +1,5 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "rewrites": [
     {
@@ -6,10 +7,9 @@
       "destination": "/public/$1"
     }
   ],
-
   "functions": {
     "api/index.mjs": {
-      "runtime": "@vercel/node@2.x", // Explicitly set runtime
+      "runtime": "@vercel/node@2.x",
       "memory": 1024,
       "maxDuration": 10
     }
