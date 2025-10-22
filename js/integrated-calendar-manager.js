@@ -661,7 +661,7 @@ class IntegratedCalendarManager {
         }
 
         const filteredEvents = this.events.filter(event =>
-            event.title.toLowerCase().includes(query.toLowerCase()) ||
+            event.title?.toLowerCase().includes(query.toLowerCase()) ||
             event.description?.toLowerCase().includes(query.toLowerCase()) ||
             event.location?.toLowerCase().includes(query.toLowerCase())
         );

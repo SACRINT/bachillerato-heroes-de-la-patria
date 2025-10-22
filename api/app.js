@@ -70,8 +70,8 @@ async function handleStudents(req, res) {
         res.status(200).json({ success: true, data: { students: students } });
     } catch (error) {
         console.error('Error reading estudiantes.json:', error);
-        // Devolver 500 si hay un error al leer el archivo
-        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estudiantes.' });
+        // Si hay un error al leer el archivo (ej. no encontrado o mal formado), devolver un array vacío
+        res.status(200).json({ success: true, data: { students: [] } });
     }
 }
 
@@ -365,9 +365,9 @@ async function handleParents(req, res) {
     }
 }
 
-async function handleParents(req, res) {
+async function handleEgresados(req, res) {
     let body = {};
-    if (req.method === 'POST' || req.method === 'PUT') {
+    if (req.method === 'POST') {
         try {
             const chunks = [];
             for await (const chunk of req) { chunks.push(chunk); }
@@ -375,117 +375,50 @@ async function handleParents(req, res) {
         } catch (e) { return res.status(400).json({ success: false, error: 'Invalid JSON' }); }
     }
 
-    const parentId = req.url.split('/').pop(); // For PUT and DELETE
-
     switch (req.method) {
-        case 'GET':
-            try {
-                const client = await pool.connect();
-                const result = await client.query('SELECT id, nombre, email FROM parents');
-                const parents = result.rows;
-                client.release();
-                return res.status(200).json({ success: true, data: parents });
-            } catch (error) {
-                console.error('Error fetching parents:', error);
-                return res.status(500).json({ success: false, error: 'Error interno del servidor al obtener padres.' });
+        case 'POST':
+            const { 
+                name,
+                generacion,
+                email,
+                telefono,
+                ciudad,
+                trabajo, // This maps to ocupacion_actual
+                universidad,
+                carrera,
+                'estatus-estudios': estatus_academico, // Renamed to match DB
+                'anio-egreso': anio_egreso_universitario, // Renamed to match DB
+                message, // This maps to historia_exito
+                autorizacion, // This maps to autoriza_uso_datos
+                'publicar-historia': autoriza_publicar_historia // Renamed to match DB
+            } = body;
+
+            // Basic validation
+            if (!name || !generacion || !email || !autorizacion) {
+                return res.status(400).json({ success: false, message: 'Nombre, generación, email y autorización son requeridos.' });
             }
 
-        case 'POST':
-            const { nombre, email, password, student_id } = body;
-            if (!nombre || !email || !password) {
-                return res.status(400).json({ success: false, message: 'Nombre, email y contraseña son requeridos.' });
-            }
             try {
-                const hashedPassword = await bcrypt.hash(password, 10);
                 const client = await pool.connect();
                 const result = await client.query(
-                    'INSERT INTO parents (nombre, email, password_hash) VALUES ($1, $2, $3) RETURNING id, nombre, email',
-                    [nombre, email, hashedPassword]
+                    `INSERT INTO alumni (
+                        nombre, generacion, email, telefono, ciudad, ocupacion_actual,
+                        universidad, carrera, estatus_academico, anio_egreso_universitario,
+                        historia_exito, autoriza_uso_datos, autoriza_publicar_historia
+                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+                    RETURNING id, nombre, email`,
+                    [
+                        name, generacion, email, telefono, ciudad, trabajo,
+                        universidad, carrera, estatus_academico, anio_egreso_universitario,
+                        message, autorizacion === 'on', autoriza_publicar_historia === 'on'
+                    ]
                 );
-                const newParent = result.rows[0];
-
-                if (student_id) {
-                    await client.query(
-                        'INSERT INTO student_parents (parent_id, student_id) VALUES ($1, $2)',
-                        [newParent.id, student_id]
-                    );
-                }
+                const newAlumni = result.rows[0];
                 client.release();
-                return res.status(201).json({ success: true, data: newParent });
+                return res.status(201).json({ success: true, data: newAlumni });
             } catch (error) {
-                console.error('Error creating parent:', error);
-                return res.status(500).json({ success: false, error: 'Error interno del servidor al crear padre.' });
-            }
-
-        case 'PUT':
-            if (!parentId || isNaN(parentId)) {
-                return res.status(400).json({ success: false, message: 'Parent ID is required for update.' });
-            }
-            const { nombre: updatedNombre, email: updatedEmail, password: updatedPassword, student_id: updatedStudentId } = body;
-            if (!updatedNombre && !updatedEmail && !updatedPassword && !updatedStudentId) {
-                return res.status(400).json({ success: false, message: 'No data provided for update.' });
-            }
-            try {
-                const client = await pool.connect();
-                let updateQuery = 'UPDATE parents SET';
-                const updateValues = [];
-                let paramCount = 1;
-
-                if (updatedNombre) { updateQuery += ` nombre = $${paramCount++},`; updateValues.push(updatedNombre); }
-                if (updatedEmail) { updateQuery += ` email = $${paramCount++},`; updateValues.push(updatedEmail); }
-                if (updatedPassword) {
-                    const hashedUpdatedPassword = await bcrypt.hash(updatedPassword, 10);
-                    updateQuery += ` password_hash = $${paramCount++},`; updateValues.push(hashedUpdatedPassword);
-                }
-
-                updateQuery = updateQuery.slice(0, -1); // Remove trailing comma
-                updateQuery += ` WHERE id = $${paramCount} RETURNING id, nombre, email`;
-                updateValues.push(parentId);
-
-                const result = await client.query(updateQuery, updateValues);
-                const updatedParent = result.rows[0];
-
-                if (updatedStudentId) {
-                    // Check if association exists, if not, insert or update
-                    const existingAssociation = await client.query(
-                        'SELECT * FROM student_parents WHERE parent_id = $1 AND student_id = $2',
-                        [parentId, updatedStudentId]
-                    );
-                    if (existingAssociation.rows.length === 0) {
-                        await client.query(
-                            'INSERT INTO student_parents (parent_id, student_id) VALUES ($1, $2)',
-                            [parentId, updatedStudentId]
-                        );
-                    }
-                }
-                client.release();
-
-                if (updatedParent) {
-                    return res.status(200).json({ success: true, data: updatedParent });
-                } else {
-                    return res.status(404).json({ success: false, message: 'Parent not found.' });
-                }
-            } catch (error) {
-                console.error('Error updating parent:', error);
-                return res.status(500).json({ success: false, error: 'Error interno del servidor al actualizar padre.' });
-            }
-
-        case 'DELETE':
-            if (!parentId || isNaN(parentId)) {
-                return res.status(400).json({ success: false, message: 'Parent ID is required for deletion.' });
-            }
-            try {
-                const client = await pool.connect();
-                const result = await client.query('DELETE FROM parents WHERE id = $1 RETURNING id', [parentId]);
-                client.release();
-                if (result.rows.length > 0) {
-                    return res.status(200).json({ success: true, message: 'Parent deleted successfully.' });
-                } else {
-                    return res.status(404).json({ success: false, message: 'Parent not found.' });
-                }
-            } catch (error) {
-                console.error('Error deleting parent:', error);
-                return res.status(500).json({ success: false, error: 'Error interno del servidor al eliminar padre.' });
+                console.error('Error creating alumni record:', error);
+                return res.status(500).json({ success: false, error: 'Error interno del servidor al registrar egresado.' });
             }
 
         default:
@@ -545,7 +478,16 @@ async function handleEgresados(req, res) {
                 client.release();
                 return res.status(201).json({ success: true, data: newAlumni });
             } catch (error) {
+                console.error('Error creating alumni record:', error);
+                return res.status(500).json({ success: false, error: 'Error interno del servidor al registrar egresado.' });
+            }
 
+        default:
+            return res.status(405).json({ success: false, error: 'Method Not Allowed.' });
+    }
+}
+
+async function handleNotificationsSubscription(req, res) {
     let body = {};
     if (req.method === 'POST') {
         try {
@@ -558,50 +500,41 @@ async function handleEgresados(req, res) {
     switch (req.method) {
         case 'POST':
             const {
-                name,
-                generacion,
                 email,
-                telefono,
-                ciudad,
-                trabajo, // This maps to ocupacion_actual
-                universidad,
-                carrera,
-                'estatus-estudios': estatus_academico, // Renamed to match DB
-                'anio-egreso': anio_egreso_universitario, // Renamed to match DB
-                message, // This maps to historia_exito
-                autorizacion, // This maps to autoriza_uso_datos
-                'publicar-historia': autoriza_publicar_historia // Renamed to match DB
+                subject, // This maps to category_of_interest
+                name,
+                message,
+                acceptTerms // This maps to accept_terms
             } = body;
 
             // Basic validation
-            if (!name || !generacion || !email || !autorizacion) {
-                return res.status(400).json({ success: false, message: 'Nombre, generación, email y autorización son requeridos.' });
+            if (!email || !name || !acceptTerms) {
+                return res.status(400).json({ success: false, message: 'Email, nombre y aceptación de términos son requeridos.' });
             }
 
             try {
                 const client = await pool.connect();
                 const result = await client.query(
-                    `INSERT INTO alumni (
-                        nombre, generacion, email, telefono, ciudad, ocupacion_actual,
-                        universidad, carrera, estatus_academico, anio_egreso_universitario,
-                        historia_exito, autoriza_uso_datos, autoriza_publicar_historia
-                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-                    RETURNING id, nombre, email`,
+                    `INSERT INTO notifications_subscriptions (
+                        email, category_of_interest, name, message, accept_terms
+                    ) VALUES ($1, $2, $3, $4, $5)
+                    RETURNING id, email`,
                     [
-                        name, generacion, email, telefono, ciudad, trabajo,
-                        universidad, carrera, estatus_academico, anio_egreso_universitario,
-                        message, autorizacion === 'on', autoriza_publicar_historia === 'on'
+                        email, subject, name, message, acceptTerms === 'on'
                     ]
                 );
-                const newAlumni = result.rows[0];
+                const newSubscription = result.rows[0];
                 client.release();
-                return res.status(201).json({ success: true, data: newAlumni });
+                return res.status(201).json({ success: true, data: newSubscription });
             } catch (error) {
-                console.error('Error creating alumni record:', error);
-                return res.status(500).json({ success: false, error: 'Error interno del servidor al registrar egresado.' });
+                console.error('Error creating notification subscription:', error);
+                return res.status(500).json({ success: false, error: 'Error interno del servidor al registrar suscripción.' });
             }
 
-
+        default:
+            return res.status(405).json({ success: false, error: 'Method Not Allowed.' });
+    }
+}
 
 async function handleNotificationsSubscription(req, res) {
     let body = {};
@@ -683,8 +616,8 @@ async function handleTeachers(req, res) {
         res.status(200).json({ success: true, data: { teachers: teachers } });
     } catch (error) {
         console.error('Error reading docentes.json:', error);
-        // Devolver 500 si hay un error al leer el archivo
-        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener docentes.' });
+        // Si hay un error al leer el archivo (ej. no encontrado o mal formado), devolver un array vacío
+        res.status(200).json({ success: true, data: { teachers: [] } });
     }
 }
 

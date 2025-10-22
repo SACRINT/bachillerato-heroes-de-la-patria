@@ -302,12 +302,12 @@ class StudentService {
         try {
             const studentsData = await this.readJsonFile(this.studentsFile);
             if (!studentsData || !studentsData.students) {
-                throw new Error('No hay datos de estudiantes');
+                return null; // No student data available
             }
 
             const student = studentsData.students.find(s => s.id === studentId);
             if (!student) {
-                throw new Error('Estudiante no encontrado');
+                return null; // Student not found
             }
 
             // No devolver la contraseña
@@ -329,6 +329,21 @@ class StudentService {
                 this.getStudentAssignments(studentId, { limit: 5 }),
                 this.getStudentNotifications(studentId, { unread_only: true, limit: 5 })
             ]);
+
+            if (!profile) {
+                return {
+                    profile: null,
+                    statistics: {
+                        promedio_general: 0,
+                        tareas_pendientes: 0,
+                        notificaciones_nuevas: 0,
+                        materias_cursando: 0
+                    },
+                    recent_grades: [],
+                    pending_assignments: [],
+                    recent_notifications: []
+                };
+            }
 
             // Calcular estadísticas
             const pendingAssignments = assignments.filter(a => a.status === 'pending').length;
@@ -448,7 +463,7 @@ class StudentService {
         try {
             const notificationsData = await this.readJsonFile(this.notificationsFile);
             if (!notificationsData || !notificationsData.notifications) {
-                throw new Error('No hay datos de notificaciones');
+                return false; // No notification data available
             }
 
             const notification = notificationsData.notifications.find(
@@ -456,7 +471,7 @@ class StudentService {
             );
 
             if (!notification) {
-                throw new Error('Notificación no encontrada');
+                return false; // Notification not found
             }
 
             notification.leido = true;

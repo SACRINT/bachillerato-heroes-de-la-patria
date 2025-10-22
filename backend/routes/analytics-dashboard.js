@@ -84,17 +84,17 @@ router.get('/dashboard', async (req, res) => {
             pool.query(`SELECT COUNT(*) as total FROM comunicados WHERE estado = 'publicada'`)
         ]);
 
-        // Extraer datos
-        const contactos = contactosResult.rows[0];
-        const quejas = quejasResult.rows[0];
-        const inscripciones = inscripcionesResult.rows[0];
-        const egresados = egresadosResult.rows[0];
-        const solicitudes = solicitudesResult.rows[0];
-        const citas = citasResult.rows[0];
-        const noticias = noticiasResult.rows[0];
-        const eventos = eventosResult.rows[0];
-        const avisos = avisosResult.rows[0];
-        const comunicados = comunicadosResult.rows[0];
+        // Extraer datos con valores por defecto si no hay resultados
+        const contactos = contactosResult.rows[0] || { total: 0, pendientes: 0, respondidos: 0 };
+        const quejas = quejasResult.rows[0] || { total: 0, pendientes: 0 };
+        const inscripciones = inscripcionesResult.rows[0] || { total: 0, aprobadas: 0, pendientes: 0, rechazadas: 0 };
+        const egresados = egresadosResult.rows[0] || { total: 0, verificados: 0, con_cv: 0 };
+        const solicitudes = solicitudesResult.rows[0] || { total: 0, pendientes: 0 };
+        const citas = citasResult.rows[0] || { total: 0, pendientes: 0, confirmadas: 0 };
+        const noticias = noticiasResult.rows[0] || { total: 0 };
+        const eventos = eventosResult.rows[0] || { total: 0 };
+        const avisos = avisosResult.rows[0] || { total: 0 };
+        const comunicados = comunicadosResult.rows[0] || { total: 0 };
 
         // Construir respuesta con datos reales
         const stats = {
@@ -320,10 +320,10 @@ router.get('/dashboard/charts', async (req, res) => {
             contenido_cms: {
                 labels: ['Noticias', 'Eventos', 'Avisos', 'Comunicados'],
                 data: [
-                    parseInt(contenidoCMS[0].rows[0].total),
-                    parseInt(contenidoCMS[1].rows[0].total),
-                    parseInt(contenidoCMS[2].rows[0].total),
-                    parseInt(contenidoCMS[3].rows[0].total)
+                    parseInt(contenidoCMS[0].rows[0]?.total || 0),
+                    parseInt(contenidoCMS[1].rows[0]?.total || 0),
+                    parseInt(contenidoCMS[2].rows[0]?.total || 0),
+                    parseInt(contenidoCMS[3].rows[0]?.total || 0)
                 ]
             },
             actividad_general: {
@@ -361,10 +361,10 @@ async function obtenerActividadGeneral() {
     ]);
 
     return [
-        parseInt(inscripciones.rows[0].total),
-        parseInt(mensajes.rows[0].total),
-        parseInt(egresados.rows[0].total),
-        parseInt(citas.rows[0].total)
+        parseInt(inscripciones.rows[0]?.total || 0),
+        parseInt(mensajes.rows[0]?.total || 0),
+        parseInt(egresados.rows[0]?.total || 0),
+        parseInt(citas.rows[0]?.total || 0)
     ];
 }
 

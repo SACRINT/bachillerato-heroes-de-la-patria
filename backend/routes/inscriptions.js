@@ -244,7 +244,7 @@ router.get('/', async (req, res) => {
         res.json({
             success: true,
             data: result.rows,
-            total: parseInt(countResult.rows[0].count),
+            total: parseInt(countResult.rows[0]?.count || 0),
             limit: parseInt(limit),
             offset: parseInt(offset)
         });

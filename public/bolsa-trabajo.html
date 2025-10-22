@@ -519,7 +519,18 @@
                                 <span class="requirement-badge ms-2">Opcional</span>
                             </h5>
                             
-                            <!-- Campo de CV eliminado - La información completa se envía por email -->
+                            <div class="job-item">
+                                <div class="d-flex align-items-start">
+                                    <span class="badge bg-warning me-3 mt-1">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </span>
+                                    <div class="flex-grow-1">
+                                        <label for="additionalDocument" class="form-label fw-semibold">Documento Adicional (PDF, max 5MB)</label>
+                                        <input type="file" class="form-control" id="additionalDocument" name="additionalDocument" accept=".pdf">
+                                        <small class="text-muted">Puedes subir un portafolio, carta de recomendación, etc.</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
                         <!-- Términos y Condiciones -->
@@ -1094,6 +1105,21 @@
 
     <!-- CSP Universal Fixer - Debe cargar al final -->
     <script src="js/csp-universal-fixer.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const graduationYearSelect = document.getElementById('graduationYear');
+            if (graduationYearSelect) {
+                const currentYear = new Date().getFullYear();
+                for (let year = currentYear; year >= 1950; year--) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    graduationYearSelect.appendChild(option);
+                }
+            }
+        });
+    </script>
 
     <!--  DESHABILITADO - Ya no necesario con auth seguro -->
 </body>

@@ -270,7 +270,7 @@ function showStudentLoginModal() {
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             Cancelar
                         </button>
-                        <button type="button" class="btn btn-primary" onclick="handleStudentLogin()">
+                        <button type="button" class="btn btn-primary" onclick="handleStudentLogin(event)">
                             <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
                         </button>
                     </div>
@@ -309,7 +309,7 @@ function showStudentLoginModal() {
 /**
  * 🔐 Manejar login desde el modal
  */
-async function handleStudentLogin() {
+async function handleStudentLogin(event) {
     const email = document.getElementById('studentEmail').value.trim();
     const password = document.getElementById('studentPassword').value;
 

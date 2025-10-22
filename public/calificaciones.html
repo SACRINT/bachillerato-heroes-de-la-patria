@@ -683,6 +683,7 @@
     <script src="js/config.js?v=2024091401"></script>    <!-- 🔧 Configuración global -->
     <script src="js/theme-manager.js"></script>          <!-- 🎨 Gestión de temas -->
     <script src="js/script.js"></script>                 <!-- 🔒 Script principal -->
+    <script src="js/api-client.js"></script>             <!-- 📡 Cliente API para comunicaciones -->
 
     <!-- 🎯 BGE FRAMEWORK CORE -->
     <script src="js/bge-framework-core.js"></script>
@@ -695,7 +696,6 @@
     <!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DE CALIFICACIONES -->
     <script src="js/chatbot.js"></script>                <!-- 🤖 Chatbot educativo -->
     <script src="js/search-simple.js"></script>          <!-- 🔍 Búsqueda -->
-    <script src="js/grades-manager.js"></script>         <!-- 📊 Gestor de calificaciones -->
 
     <!-- 🔧 SISTEMAS ESPECIALES -->
     <script src="js/csp-universal-fixer.js"></script>    <!-- 🔒 CSP compliance (último) -->
@@ -730,7 +730,7 @@
         function loginAsParent() { loginParent(); }
 
         // Función de login de estudiante
-        function loginStudent() {
+        async function loginStudent() {
             const matricula = document.getElementById('studentId').value;
             const password = document.getElementById('studentPassword').value;
             
@@ -739,38 +739,38 @@
                 return;
             }
 
-            // Simulación de login exitoso con datos de prueba
-            if (matricula === 'H2024001' && password === 'estudiante123') {
-                // Guardar datos para el sistema
-                const userData = {
-                    id: 1,
-                    tipo: 'estudiante',
-                    rol: 'estudiante',
-                    matricula: 'H2024001',
-                    nombre: 'Ana García Hernández',
-                    semestre: '3°',
-                    grupo: 'A',
-                    email: 'ana.garcia@estudiante.bge.mx'
-                };
+            try {
+                const response = await fetch('/api/students-auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: matricula, password: password })
+                });
 
-                currentUser = userData;
-                isLoggedIn = true;
+                const data = await response.json();
 
-                // Guardar en localStorage para el sistema de calificaciones
-                localStorage.setItem('authToken', 'demo-token-student-123');
-                localStorage.setItem('userData', JSON.stringify(userData));
+                if (data.success) {
+                    currentUser = { ...data.student, tipo: 'estudiante', rol: 'estudiante' };
+                    isLoggedIn = true;
 
-                // Mostrar el sistema avanzado
-                showAdvancedGradesSystem();
-                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-                showAlert('¡Bienvenida, Ana! Sistema de calificaciones cargado.', 'success');
-            } else {
-                showAlert('Matrícula o contraseña incorrecta. Prueba con H2024001 y contraseña: estudiante123', 'danger');
+                    localStorage.setItem('authToken', data.token || 'dummy-token'); // Assuming token is returned
+                    localStorage.setItem('userData', JSON.stringify(currentUser));
+
+                    showAdvancedGradesSystem();
+                    bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+                    showAlert(`¡Bienvenido, ${currentUser.nombre}! Sistema de calificaciones cargado.`, 'success');
+                } else {
+                    showAlert(data.message || 'Matrícula o contraseña incorrecta.', 'danger');
+                }
+            } catch (error) {
+                console.error('Error en login de estudiante:', error);
+                showAlert('Error de conexión. Por favor intenta nuevamente.', 'danger');
             }
         }
 
         // Función de login de padre
-        function loginParent() {
+        async function loginParent() {
             const email = document.getElementById('parentEmail').value;
             const password = document.getElementById('parentPassword').value;
             
@@ -779,37 +779,38 @@
                 return;
             }
 
-            // Simulación de login exitoso
-            if (email === 'padre@email.com' && password === 'padre123') {
-                // Guardar datos para el sistema
-                const userData = {
-                    id: 2,
-                    tipo: 'padre',
-                    rol: 'padre',
-                    email: 'padre@email.com',
-                    nombre: 'Roberto García',
-                    hijo: 'Ana García Hernández',
-                    matricula_hijo: 'H2024001'
-                };
+            try {
+                const response = await fetch('/api/parents-auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
 
-                currentUser = userData;
-                isLoggedIn = true;
+                const data = await response.json();
 
-                // Guardar en localStorage para el sistema de calificaciones
-                localStorage.setItem('authToken', 'demo-token-parent-123');
-                localStorage.setItem('userData', JSON.stringify(userData));
+                if (data.success) {
+                    currentUser = { ...data.parent, tipo: 'padre', rol: 'padre' };
+                    isLoggedIn = true;
 
-                // Mostrar el sistema avanzado
-                showAdvancedGradesSystem();
-                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-                showAlert('¡Bienvenido, Roberto! Sistema de seguimiento cargado.', 'success');
-            } else {
-                showAlert('Email o contraseña incorrecta. Prueba con padre@email.com y contraseña: padre123', 'danger');
+                    localStorage.setItem('authToken', data.token || 'dummy-token'); // Assuming token is returned
+                    localStorage.setItem('userData', JSON.stringify(currentUser));
+
+                    showAdvancedGradesSystem();
+                    bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+                    showAlert(`¡Bienvenido, ${currentUser.nombre}! Sistema de seguimiento cargado.`, 'success');
+                } else {
+                    showAlert(data.message || 'Email o contraseña incorrecta.', 'danger');
+                }
+            } catch (error) {
+                console.error('Error en login de padre:', error);
+                showAlert('Error de conexión. Por favor intenta nuevamente.', 'danger');
             }
         }
 
         // Mostrar panel de calificaciones
-        function showGradesPanel() {
+        async function showGradesPanel() {
             // Ocultar hero section y mostrar panel
             const heroSection = document.querySelector('#hero');
             if (heroSection) heroSection.style.display = 'none';
@@ -829,8 +830,89 @@
             if (studentId) studentId.textContent = currentUser.matricula || currentUser.matricula_hijo;
             if (userType) userType.textContent = currentUser.tipo === 'estudiante' ? 'Estudiante' : 'Padre de Familia';
             
-            // Cargar calificaciones de ejemplo
-            loadSampleGrades();
+            // Cargar calificaciones desde la API
+            await loadGradesFromAPI(currentUser.id);
+        }
+
+        // Cargar calificaciones desde la API
+        async function loadGradesFromAPI(studentId) {
+            try {
+                const response = await fetch(`/api/grades/${studentId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const grades = data.data.grades;
+                    
+                    // Group grades by period
+                    const gradesByPeriod = grades.reduce((acc, grade) => {
+                        if (!acc[grade.period]) {
+                            acc[grade.period] = [];
+                        }
+                        acc[grade.period].push(grade);
+                        return acc;
+                    }, {});
+
+                    // Populate tables
+                    populateGradesTable('gradesTableParcial1', gradesByPeriod['1er Parcial'] || []);
+                    populateGradesTable('gradesTableParcial2', gradesByPeriod['2do Parcial'] || []);
+                    populateGradesTable('gradesTableParcial3', gradesByPeriod['3er Parcial'] || []);
+                    populateGradesTableFinal('gradesTableFinal', gradesByPeriod['Final'] || []);
+
+                    // Calculate and display general average
+                    const allGrades = grades.map(g => g.final_grade || g.partial_grade);
+                    const generalAverage = allGrades.length > 0 ? allGrades.reduce((sum, grade) => sum + grade, 0) / allGrades.length : 0;
+                    const averageElement = document.getElementById('generalAverage');
+                    if (averageElement) {
+                        averageElement.textContent = generalAverage.toFixed(1);
+                    }
+
+                } else {
+                    showAlert(data.error || 'Error al cargar calificaciones.', 'danger');
+                }
+            } catch (error) {
+                console.error('Error loading grades from API:', error);
+                showAlert('Error de conexión al cargar calificaciones. Intenta nuevamente.', 'danger');
+            }
+        }
+
+        // Helper function to populate grades table
+        function populateGradesTable(tableId, grades) {
+            const tbody = document.getElementById(tableId);
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+            grades.forEach(grade => {
+                const row = `
+                    <tr>
+                        <td>${grade.subject_name}</td>
+                        <td>${grade.partial_grade !== null ? grade.partial_grade : '-'}</td>
+                        <td>${grade.continuous_assessment_grade !== null ? grade.continuous_assessment_grade : '-'}</td>
+                        <td><span class="badge ${grade.final_grade >= 6 ? 'bg-success' : 'bg-danger'}">${grade.final_grade !== null ? grade.final_grade : '-'}</span></td>
+                        <td>${grade.status || '-'}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Helper function to populate final grades table (slightly different columns)
+        function populateGradesTableFinal(tableId, grades) {
+            const tbody = document.getElementById(tableId);
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+            grades.forEach(grade => {
+                const row = `
+                    <tr>
+                        <td>${grade.subject_name}</td>
+                        <td>${grade.partial_grade !== null ? grade.partial_grade : '-'}</td>
+                        <td>${grade.continuous_assessment_grade !== null ? grade.continuous_assessment_grade : '-'}</td>
+                        <td><span class="badge ${grade.final_grade >= 6 ? 'bg-success' : 'bg-danger'}">${grade.final_grade !== null ? grade.final_grade : '-'}</span></td>
+                        <td>${grade.status || '-'}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
         }
 
         // Cargar calificaciones de muestra
