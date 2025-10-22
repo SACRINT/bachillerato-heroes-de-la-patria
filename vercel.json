@@ -1,18 +1,5 @@
 {
   "version": 2,
-
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/index.cjs"
-    }
-  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -31,6 +18,5 @@
       "use": "@vercel/node@3.x",
       "config": { "includeFiles": ["backend/**"] }
     }
-  ],
-
+  ]
 }

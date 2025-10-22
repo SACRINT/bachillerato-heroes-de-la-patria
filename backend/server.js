@@ -382,29 +382,7 @@ app.use('/api/support-tickets', supportTicketsRoutes);
 
 // Static Files (Development & Production)
 console.log('🌍 Configurando servidor de archivos estáticos...');
-app.use(express.static(path.join(__dirname, '../')));
 
-// Serve index.html for any non-API routes (SPA support)
-app.get('*', (req, res) => {
-    // Skip API routes
-    if (req.path.startsWith('/api/')) {
-        return res.status(404).json({ error: 'API endpoint not found' });
-    }
-    
-    // Serve static files
-    const filePath = path.join(__dirname, '../', req.path);
-    
-    // Check if file exists
-    require('fs').access(filePath, require('fs').constants.F_OK, (err) => {
-        if (err) {
-            // File doesn't exist, serve index.html for SPA routing
-            res.sendFile(path.join(__dirname, '../index.html'));
-        } else {
-            // File exists, let express.static handle it
-            res.sendFile(filePath);
-        }
-    });
-});
 
 // ============================================
 // ERROR HANDLING
