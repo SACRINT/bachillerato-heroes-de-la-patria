@@ -545,16 +545,7 @@ async function handleEgresados(req, res) {
                 client.release();
                 return res.status(201).json({ success: true, data: newAlumni });
             } catch (error) {
-                console.error('Error creating alumni record:', error);
-                return res.status(500).json({ success: false, error: 'Error interno del servidor al registrar egresado.' });
-            }
 
-        default:
-            return res.status(405).json({ success: false, error: 'Method Not Allowed.' });
-    }
-}
-
-async function handleEgresados(req, res) {
     let body = {};
     if (req.method === 'POST') {
         try {
@@ -610,59 +601,7 @@ async function handleEgresados(req, res) {
                 return res.status(500).json({ success: false, error: 'Error interno del servidor al registrar egresado.' });
             }
 
-        default:
-            return res.status(405).json({ success: false, error: 'Method Not Allowed.' });
-    }
-}
 
-async function handleNotificationsSubscription(req, res) {
-    let body = {};
-    if (req.method === 'POST') {
-        try {
-            const chunks = [];
-            for await (const chunk of req) { chunks.push(chunk); }
-            body = JSON.parse(Buffer.concat(chunks).toString());
-        } catch (e) { return res.status(400).json({ success: false, error: 'Invalid JSON' }); }
-    }
-
-    switch (req.method) {
-        case 'POST':
-            const {
-                email,
-                subject, // This maps to category_of_interest
-                name,
-                message,
-                acceptTerms // This maps to accept_terms
-            } = body;
-
-            // Basic validation
-            if (!email || !name || !acceptTerms) {
-                return res.status(400).json({ success: false, message: 'Email, nombre y aceptación de términos son requeridos.' });
-            }
-
-            try {
-                const client = await pool.connect();
-                const result = await client.query(
-                    `INSERT INTO notifications_subscriptions (
-                        email, category_of_interest, name, message, accept_terms
-                    ) VALUES ($1, $2, $3, $4, $5)
-                    RETURNING id, email`,
-                    [
-                        email, subject, name, message, acceptTerms === 'on'
-                    ]
-                );
-                const newSubscription = result.rows[0];
-                client.release();
-                return res.status(201).json({ success: true, data: newSubscription });
-            } catch (error) {
-                console.error('Error creating notification subscription:', error);
-                return res.status(500).json({ success: false, error: 'Error interno del servidor al registrar suscripción.' });
-            }
-
-        default:
-            return res.status(405).json({ success: false, error: 'Method Not Allowed.' });
-    }
-}
 
 async function handleNotificationsSubscription(req, res) {
     let body = {};
