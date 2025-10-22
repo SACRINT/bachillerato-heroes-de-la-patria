@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "outputDirectory": "public",
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -11,12 +10,7 @@
       "destination": "/public/$1"
     }
   ],
-  "functions": {
-    "api/index.cjs": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
+
   "headers": [
     {
       "source": "/manifest.json",
