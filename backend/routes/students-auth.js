@@ -26,7 +26,7 @@ router.post('/login', [
         const { email, password } = req.body;
 
         // Buscar al usuario en la tabla de usuarios con el rol de estudiante
-        const userQuery = 'SELECT * FROM usuarios WHERE email = $1 AND role = \'estudiante\';
+        const userQuery = `SELECT * FROM usuarios WHERE email = $1 AND role = 'estudiante';`;
         const userResult = await pool.query(userQuery, [email]);
 
         if (userResult.rows.length === 0) {
