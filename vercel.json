@@ -1,6 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
+  "framework": "express", // Explicitly set framework preset
+  "installCommand": "npm install", // Explicitly run npm install in the root
+  "buildCommand": "npm run build", // Explicitly run the build script from root package.json
   "functions": {
     "api/index.mjs": {
       "runtime": "@vercel/node@2.15.3",
