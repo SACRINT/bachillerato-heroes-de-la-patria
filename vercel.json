@@ -9,7 +9,7 @@
   ],
   "functions": {
     "api/index.mjs": {
-      "runtime": "@vercel/node@2.x",
+      "runtime": "@vercel/node@2.15.3", // Explicitly set runtime with specific version
       "memory": 1024,
       "maxDuration": 10
     }
