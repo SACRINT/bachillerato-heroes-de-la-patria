@@ -12,19 +12,19 @@ const fs = require('fs');
 
 // Crear directorio de uploads si no existe
 // __dirname es backend/routes, necesitamos subir a la raíz del proyecto
-const uploadsDir = path.join(__dirname, '../../public/uploads');
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-}
+// const uploadsDir = path.join(__dirname, '../../public/uploads');
+// if (!fs.existsSync(uploadsDir)) {
+//     fs.mkdirSync(uploadsDir, { recursive: true });
+// }
 
-// Subdirectorios por tipo de contenido
-const contentDirs = ['noticias', 'eventos', 'avisos', 'comunicados', 'general'];
-contentDirs.forEach(dir => {
-    const fullPath = path.join(uploadsDir, dir);
-    if (!fs.existsSync(fullPath)) {
-        fs.mkdirSync(fullPath, { recursive: true });
-    }
-});
+// // Subdirectorios por tipo de contenido
+// const contentDirs = ['noticias', 'eventos', 'avisos', 'comunicados', 'general'];
+// contentDirs.forEach(dir => {
+//     const fullPath = path.join(uploadsDir, dir);
+//     if (!fs.existsSync(fullPath)) {
+//         fs.mkdirSync(fullPath, { recursive: true });
+//     }
+// });
 
 // Configuración de Multer para almacenamiento
 const storage = multer.diskStorage({

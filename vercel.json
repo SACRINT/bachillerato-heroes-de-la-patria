@@ -11,11 +11,8 @@
     {
       "source": "/api/(.*)",
       "destination": "/api/index.cjs"
-    },
-
+    }
   ],
-
-
   "headers": [
     {
       "source": "/manifest.json",
