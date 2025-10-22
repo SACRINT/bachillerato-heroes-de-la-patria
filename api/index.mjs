@@ -8,7 +8,7 @@ async function loadExpressApp() {
   if (!appPromise) {
     appPromise = (async () => {
       const expressAppModule = await import('../backend/server.js');
-      return expressAppModule.default || expressAppModule; // Handle both default and non-default exports
+      return expressAppModule; // When importing CommonJS from ESM, the module.exports is the default export
     })();
   }
   return appPromise;
