@@ -2,9 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.cjs",
+      "src": "api/app.js",
       "use": "@vercel/node@3.x",
       "config": { "includeFiles": ["backend/**"] }
     }
-  ]
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/app.js" },
+    { "src": "/(.*)", "dest": "/public/$1" }
+  ],
+  "outputDirectory": "public"
 }
