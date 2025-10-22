@@ -3,9 +3,9 @@
  * Consulta la API de Vercel y devuelve los últimos Build Logs.
  */
 
-import fetch from "node-fetch";
+const fetch = require("node-fetch");
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   const token = process.env.VERCEL_TOKEN;
   const project = process.env.VERCEL_PROJECT_ID;
   const team = process.env.VERCEL_TEAM_ID;
@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     });
   }
 
-  const base = `https://api.vercel.com/v6/deployments?projectId=${project}${ 
+  const base = `https://api.vercel.com/v6/deployments?projectId=${project}${
     team ? `&teamId=${team}` : ""
   }`;
 
@@ -60,4 +60,4 @@ export default async function handler(req, res) {
       error: err.message,
     });
   }
-}
+};

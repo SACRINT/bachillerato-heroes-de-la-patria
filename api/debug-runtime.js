@@ -3,7 +3,7 @@
  * Devuelve errores y advertencias recientes del entorno runtime
  * (captura global de excepciones y console logs).
  */
-import os from "os";
+const os = require("os");
 
 let runtimeErrors = [];
 
@@ -24,16 +24,17 @@ process.on("unhandledRejection", (reason) => {
   });
 });
 
-console.error = ((orig) => (...args) => {
+const originalConsoleError = console.error;
+console.error = (...args) => {
   runtimeErrors.push({
     type: "console.error",
     message: args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" "),
     time: new Date().toISOString(),
   });
-  orig(...args);
-})(console.error);
+  originalConsoleError(...args);
+};
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   const summary = {
     hostname: os.hostname(),
     nodeVersion: process.version,
@@ -47,4 +48,4 @@ export default async function handler(req, res) {
     summary,
     recentErrors: runtimeErrors.slice(-20),
   });
-}
+};

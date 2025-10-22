@@ -5,8 +5,7 @@
   "installCommand": "npm install",
   "buildCommand": "npm run build",
   "functions": {
-    "api/index.mjs": {
-      "runtime": "@vercel/node@2.15.3",
+    "api/index.js": {
       "memory": 1024,
       "maxDuration": 10
     }
