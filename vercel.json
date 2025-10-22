@@ -7,8 +7,8 @@
       "config": { "includeFiles": ["backend/**"] }
     }
   ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/index.cjs" }
-  ],
-
-}
+      "routes": [
+        { "src": "/api/(.*)", "dest": "/api/index.cjs" },
+        { "src": "/(.*)", "dest": "/public/$1" }
+      ]
+    }
