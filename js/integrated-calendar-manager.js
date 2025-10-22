@@ -51,13 +51,18 @@ class IntegratedCalendarManager {
     // ============================================
 
     async loadUserAuth() {
-        // Obtener información de autenticación
         const token = localStorage.getItem('authToken');
         const user = localStorage.getItem('userData');
 
         if (token && user) {
             this.authToken = token;
-            this.userRole = JSON.parse(user).rol || 'estudiante';
+            try {
+                const userDataParsed = JSON.parse(user);
+                this.userRole = userDataParsed.rol || 'estudiante';
+            } catch (e) {
+                console.error('Error parsing userData from localStorage:', e);
+                this.userRole = 'estudiante'; // Default to student role on error
+            }
         }
 
         // Configurar headers para requests

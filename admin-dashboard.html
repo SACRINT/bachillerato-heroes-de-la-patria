@@ -1241,6 +1241,11 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="parents-tab" data-bs-toggle="pill" data-bs-target="#parents" type="button" role="tab">
+                            <i class="fas fa-user-friends me-2"></i>Padres
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
                         <button class="nav-link" id="registrations-tab" data-bs-toggle="pill" data-bs-target="#registrations" type="button" role="tab">
                             <i class="fas fa-user-plus me-2"></i>Solicitudes
                             <span class="badge bg-warning ms-1" id="pending-count" style="display: none;">0</span>
@@ -1554,6 +1559,146 @@
                                                         <span class="visually-hidden">Cargando...</span>
                                                     </div>
                                                     <p class="mt-2 text-muted">Cargando información de docentes...</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Docentes -->
+                    <div class="tab-pane fade" id="teachers" role="tabpanel">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-chalkboard-teacher me-2"></i>Gestión de Docentes
+                                    <span class="badge bg-light text-success ms-2" id="totalTeachersCount">0</span>
+                                </h5>
+                                <div>
+                                    <span class="badge bg-light text-success me-2">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        <span id="activeTeachersCount">0</span> Activos
+                                    </span>
+                                    <span class="badge bg-light text-success me-2">
+                                        <i class="fas fa-graduation-cap me-1"></i>
+                                        <span id="specialtiesCount">0</span> Especialidades
+                                    </span>
+                                    <button class="btn btn-light btn-sm" id="newTeacherBtn">
+                                        <i class="fas fa-plus me-1"></i>Nuevo Docente
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                            <input type="text" class="form-control" id="teacherSearchInput" placeholder="Buscar por nombre o especialidad...">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-select" id="teacherFilterSpecialty">
+                                            <option value="">Todas las especialidades</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-select" id="teacherFilterStatus">
+                                            <option value="">Todos los estados</option>
+                                            <option value="Activo">Activos</option>
+                                            <option value="Inactivo">Inactivos</option>
+                                            <option value="Licencia">En Licencia</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-outline-primary w-100" onclick="reloadTeachers()">
+                                            <i class="fas fa-sync me-1"></i>Actualizar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-success">
+                                            <tr>
+                                                <th width="60">Foto</th>
+                                                <th>Información</th>
+                                                <th>Especialidad</th>
+                                                <th>Materias</th>
+                                                <th>Estado</th>
+                                                <th width="200">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="teachersTable">
+                                            <tr>
+                                                <td colspan="6" class="text-center py-4">
+                                                    <div class="spinner-border text-success" role="status">
+                                                        <span class="visually-hidden">Cargando...</span>
+                                                    </div>
+                                                    <p class="mt-2 text-muted">Cargando información de docentes...</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Padres -->
+                    <div class="tab-pane fade" id="parents" role="tabpanel">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-user-friends me-2"></i>Gestión de Padres de Familia
+                                    <span class="badge bg-light text-info ms-2" id="totalParentsCount">0</span>
+                                </h5>
+                                <div>
+                                    <button class="btn btn-light btn-sm" id="newParentBtn" onclick="showCreateParentModal()">
+                                        <i class="fas fa-plus me-1"></i>Nuevo Padre
+                                    </button>
+                                    <button class="btn btn-light btn-sm" onclick="reloadParents()">
+                                        <i class="fas fa-sync me-1"></i>Actualizar
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                            <input type="text" class="form-control" id="parentSearchInput" placeholder="Buscar por nombre o email...">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-select" id="parentFilterStudent">
+                                            <option value="">Todos los estudiantes</option>
+                                            <!-- Opciones de estudiantes se cargarán dinámicamente -->
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-outline-secondary w-100" onclick="clearParentFilters()">
+                                            <i class="fas fa-times me-1"></i>Limpiar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-info">
+                                            <tr>
+                                                <th>Nombre</th>
+                                                <th>Email</th>
+                                                <th>Estudiante Asociado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="parentsTable">
+                                            <tr>
+                                                <td colspan="4" class="text-center py-4">
+                                                    <div class="spinner-border text-info" role="status">
+                                                        <span class="visually-hidden">Cargando...</span>
+                                                    </div>
+                                                    <p class="mt-2 text-muted">Cargando información de padres...</p>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -3053,6 +3198,7 @@
     <script src="js/bolsa-trabajo-manager.js?v=20251009"></script>       <!-- 💼 Gestor Bolsa de Trabajo -->
     <script src="js/suscriptores-manager.js?v=20251009"></script>         <!-- 📧 Gestor de Suscriptores -->
     <script src="js/approvals-manager.js?v=20251017"></script>            <!-- ✅ Gestor de Aprobaciones -->
+    <script src="js/parent-manager.js?v=20251022"></script>             <!-- 👨‍👩‍👧‍👦 Gestor de Padres -->
 
     <!-- 🎓 Panel de Egresados - NUEVO -->
     <script>
@@ -3150,17 +3296,17 @@
         }
 
         populateFilters() {
-            // Llenar generaciones
-            const generaciones = [...new Set(this.egresados.map(e => e.generacion))].sort().reverse();
+            // Llenar generaciones dinámicamente de 1950 al año actual
             const selectGen = document.getElementById('filter-generacion');
             if (selectGen) {
                 selectGen.innerHTML = '<option value="">Todas las generaciones</option>';
-                generaciones.forEach(gen => {
-                    const opt = document.createElement('option');
-                    opt.value = gen;
-                    opt.textContent = `Generación ${gen}`;
-                    selectGen.appendChild(opt);
-                });
+                const currentYear = new Date().getFullYear();
+                for (let year = currentYear; year >= 1950; year--) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = `Generación ${year}`;
+                    selectGen.appendChild(option);
+                }
             }
 
             // Llenar estatus dinámicamente
@@ -3181,7 +3327,7 @@
                 });
             }
 
-            console.log(`🔍 [EgresadosManager] Filtros poblados: ${generaciones.length} generaciones, ${estatusUnicos.length} estatus`);
+            console.log(`🔍 [EgresadosManager] Filtros poblados: ${selectGen ? selectGen.options.length - 1 : 0} generaciones, ${estatusUnicos.length} estatus`);
         }
 
         renderTable() {
@@ -5566,6 +5712,39 @@
                     console.log('✅ [TABS] Listener de docentes agregado');
                 } else {
                     console.warn('⚠️ [TABS] Tab teachers-tab no encontrado');
+                }
+
+                // Event listener para tab Docentes
+                const teachersTab = document.getElementById('teachers-tab');
+                if (teachersTab) {
+                    teachersTab.addEventListener('shown.bs.tab', function () {
+                        console.log('👨‍🏫 [TAB] Cargando tabla de docentes...');
+                        if (window.adminDashboard && typeof window.adminDashboard.loadTeachersTable === 'function') {
+                            window.adminDashboard.loadTeachersTable();
+                        } else {
+                            console.error('❌ [TAB] loadTeachersTable no disponible');
+                        }
+                    });
+                    console.log('✅ [TABS] Listener de docentes agregado');
+                } else {
+                    console.warn('⚠️ [TABS] Tab teachers-tab no encontrado');
+                }
+
+                // Event listener para tab Padres
+                const parentsTab = document.getElementById('parents-tab');
+                if (parentsTab) {
+                    parentsTab.addEventListener('shown.bs.tab', async function() {
+                        console.log('👨‍👩‍👧‍👦 [TAB] Inicializando Gestión de Padres...');
+                        if (!window.parentManager) {
+                            window.parentManager = new ParentManager();
+                            await window.parentManager.init();
+                        } else {
+                            await window.parentManager.loadParents(); // Reload data if already initialized
+                        }
+                    });
+                    console.log('✅ [TABS] Listener de padres agregado');
+                } else {
+                    console.warn('⚠️ [TABS] Tab parents-tab no encontrado');
                 }
 
                 // Event listener para tab Solicitudes

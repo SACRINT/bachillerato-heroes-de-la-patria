@@ -236,6 +236,13 @@ class ProfessionalFormsManager {
         const originalText = submitButton?.textContent || 'Enviar';
 
         try {
+            // 0. Validar formulario HTML5
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                this.showError(form, 'Por favor, completa todos los campos requeridos.');
+                return;
+            }
+
             // 1. Validaciones de seguridad básicas (sin API externa)
             const securityCheck = await this.performSecurityChecksLocal(form);
             if (!securityCheck.passed) {
@@ -261,7 +268,7 @@ class ProfessionalFormsManager {
                     // ✅ NUEVO: Emitir evento para formulario de citas
                     if (form.id === 'appointmentForm') {
                         window.dispatchEvent(new CustomEvent('appointmentEmailSent', {
-                            detail: { success: true, data: result.data }
+                            detail: { success: true, data: result.data
                         }));
                     }
 
@@ -357,44 +364,86 @@ class ProfessionalFormsManager {
     async sendToOwnServer(form) {
         try {
             const formData = new FormData(form);
+            const fileInput = form.querySelector('input[type="file"]');
+            let response;
+            let result;
 
-            // ✅ FIX BUG CRÍTICO: Mapeo de campos inglés → español
-            // El backend espera: nombre, asunto, mensaje, telefono
-            // Los formularios envían: name, subject, message, phone
-            const jsonData = {
-                nombre: formData.get('name') || formData.get('nombre'),
-                email: formData.get('email'),
-                telefono: formData.get('phone') || formData.get('telefono'),
-                asunto: formData.get('subject') || formData.get('asunto'),
-                mensaje: formData.get('message') || formData.get('mensaje'),
-                form_type: formData.get('form_type'),
+            if (fileInput && fileInput.files.length > 0) {
+                // If there's a file, send FormData directly
+                response = await fetch(this.config.apiEndpoint, {
+                    method: 'POST',
+                    body: formData, // Send FormData directly
+                    headers: {
+                        // 'Content-Type': 'multipart/form-data' is automatically set by browser with FormData
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                result = await response.json();
 
-                // Campos adicionales para citas (mantener en inglés, son opcionales)
-                ...(formData.get('department') && { department: formData.get('department') }),
-                ...(formData.get('date') && { date: formData.get('date') }),
-                ...(formData.get('time') && { time: formData.get('time') }),
-                ...(formData.get('reason') && { reason: formData.get('reason') }),
+                if (result.success && result.filePath) {
+                    // If file upload is successful, add file path to jsonData and send again as JSON
+                    const jsonData = {
+                        nombre: formData.get('name') || formData.get('nombre'),
+                        email: formData.get('email'),
+                        telefono: formData.get('phone') || formData.get('telefono'),
+                        asunto: formData.get('subject') || formData.get('asunto'),
+                        mensaje: formData.get('message') || formData.get('mensaje'),
+                        form_type: formData.get('form_type'),
+                        filePath: result.filePath, // Add uploaded file path
+                        _timestamp: new Date().toISOString(),
+                        _source: 'website_contact',
+                        _institution: 'BGE Héroes de la Patria',
+                        _verified: 'true'
+                    };
 
-                // Metadata profesional
-                _timestamp: new Date().toISOString(),
-                _source: 'website_contact',
-                _institution: 'BGE Héroes de la Patria',
-                _verified: 'true'
-            };
+                    console.log('📤 Enviando datos al servidor (con archivo):', jsonData);
 
-            console.log('📤 Enviando datos al servidor:', jsonData);
-
-            const response = await fetch(this.config.apiEndpoint, {
-                method: 'POST',
-                body: JSON.stringify(jsonData),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
+                    response = await fetch(this.config.apiEndpoint, {
+                        method: 'POST',
+                        body: JSON.stringify(jsonData),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    result = await response.json();
                 }
-            });
 
-            const result = await response.json();
-            console.log('📥 Respuesta del servidor:', result);
+            } else {
+                // No file, send as JSON as before
+                const jsonData = {
+                    nombre: formData.get('name') || formData.get('nombre'),
+                    email: formData.get('email'),
+                    telefono: formData.get('phone') || formData.get('telefono'),
+                    asunto: formData.get('subject') || formData.get('asunto'),
+                    mensaje: formData.get('message') || formData.get('mensaje'),
+                    form_type: formData.get('form_type'),
+
+                    // Campos adicionales para citas (mantener en inglés, son opcionales)
+                    ...(formData.get('department') && { department: formData.get('department') }),
+                    ...(formData.get('date') && { date: formData.get('date') }),
+                    ...(formData.get('time') && { time: formData.get('time') }),
+                    ...(formData.get('reason') && { reason: formData.get('reason') }),
+
+                    // Metadata profesional
+                    _timestamp: new Date().toISOString(),
+                    _source: 'website_contact',
+                    _institution: 'BGE Héroes de la Patria',
+                    _verified: 'true'
+                };
+
+                console.log('📤 Enviando datos al servidor:', jsonData);
+
+                response = await fetch(this.config.apiEndpoint, {
+                    method: 'POST',
+                    body: JSON.stringify(jsonData),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                result = await response.json();
+            }
 
             if (response.ok && result.success) {
                 // Devolver resultado con flag de verificación
