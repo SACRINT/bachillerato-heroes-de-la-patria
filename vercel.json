@@ -8,7 +8,8 @@
   ],
 
   "functions": {
-    "api/index.js": {
+    "api/index.mjs": {
+      "runtime": "@vercel/node@2.x", // Explicitly set runtime
       "memory": 1024,
       "maxDuration": 10
     }
