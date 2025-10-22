@@ -11,11 +11,11 @@
     }
   ],
   "builds": [{
-    "src": "api/index.cjs",
+    "src": "api/index.js",
     "use": "@vercel/node"
   }],
   "functions": {
-    "api/index.cjs": {
+    "api/index.js": {
       "memory": 1024,
       "maxDuration": 30
     }
