@@ -5,6 +5,11 @@
       "src": "api/index.cjs",
       "use": "@vercel/node@3.x",
       "config": { "includeFiles": ["backend/**"] }
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "public" }
     }
   ],
   "rewrites": [
