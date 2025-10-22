@@ -7,14 +7,14 @@
       "config": { "includeFiles": ["backend/**"] }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/index.cjs"
+      "source": "/api/(.*)",
+      "destination": "/api/index.cjs"
     },
     {
-      "src": "/(.*)",
-      "dest": "/public/$1"
+      "source": "/(.*)",
+      "destination": "/public/$1"
     }
   ],
 
