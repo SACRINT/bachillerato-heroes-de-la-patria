@@ -12,6 +12,10 @@
       "source": "/api/(.*)",
       "destination": "/api/index.cjs"
     },
+    {
+      "source": "/(.*)",
+      "destination": "/public/$1"
+    },
 
   ],
 
