@@ -545,7 +545,7 @@ async function handleDebugDb(req, res) {
 }
 
 async function handleHealth(req, res) {
-    res.status(200).json({ success: true, message: 'API is healthy.' });
+    res.status(200).json({ success: true, message: 'API is alive and healthy.' });
 }
 
 async function handleNotImplemented(req, res) {
@@ -585,6 +585,19 @@ export default async function handler(req, res) {
     if (path === '/api/notificaciones') {
         return handleNotificationsSubscription(req, res);
     }
+
+    async function handleEgresados(req, res) {
+        try {
+            // This is a placeholder. In the future, this will read from a database.
+            const data = await readJsonFile('egresados.json');
+            const egresados = data && data.egresados ? data.egresados : [];
+            res.status(200).json({ success: true, data: egresados });
+        } catch (error) {
+            console.error('Error reading egresados.json:', error);
+            res.status(200).json({ success: true, data: [] });
+        }
+    }
+
 
     if (path === '/api/upload') {
         return handleUpload(req, res);
