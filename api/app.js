@@ -216,10 +216,18 @@ async function handleAnalytics(req, res) {
 
 async function handlePendingRegistrations(req, res) {
     try {
-        const requests = await readJsonFile('pending-registrations.json');
-        res.status(200).json({ success: true, count: requests?.length || 0, requests: requests || [] });
+        const client = await pool.connect();
+        const { rows } = await client.query(
+            `SELECT id, form_type, submission_data, created_at 
+             FROM public.pending_submissions 
+             WHERE status = 'pending' 
+             ORDER BY created_at ASC;`
+        );
+        client.release();
+        res.status(200).json({ success: true, count: rows.length, requests: rows });
     } catch (error) {
-        res.status(200).json({ success: true, count: 0, requests: [] });
+        console.error('Error fetching pending registrations:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener registros pendientes.' });
     }
 }
 
