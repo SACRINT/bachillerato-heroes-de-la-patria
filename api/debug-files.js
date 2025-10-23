@@ -3,10 +3,15 @@
  * Útil para confirmar si backend/config/database.js fue empaquetado correctamente
  */
 
-const fs = require("fs");
-const path = require("path");
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-module.exports = async (req, res) => {
+// Helper para obtener __dirname en ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default async (req, res) => {
   try {
     const baseDir = path.join(__dirname, "../");
     const backendDir = path.join(baseDir, "backend");

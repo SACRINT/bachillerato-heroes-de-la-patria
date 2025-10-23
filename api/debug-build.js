@@ -3,9 +3,9 @@
  * Consulta la API de Vercel y devuelve los últimos Build Logs.
  */
 
-const fetch = require("node-fetch");
+import fetch from 'node-fetch';
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   const token = process.env.VERCEL_TOKEN;
   const project = process.env.VERCEL_PROJECT_ID;
   const team = process.env.VERCEL_TEAM_ID;
