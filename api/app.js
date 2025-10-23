@@ -268,6 +268,69 @@ async function handleNoticiasStats(req, res) {
     }
 }
 
+async function handleEventosStats(req, res) {
+    try {
+        const client = await pool.connect();
+        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.eventos WHERE status = 'publicado';");
+        client.release();
+        const count = rows[0] ? parseInt(rows[0].total, 10) : 0;
+        res.status(200).json({ success: true, stats: { count: count } });
+    } catch (error) {
+        console.error('Error fetching events stats:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estadísticas de eventos.' });
+    }
+}
+
+async function handleComunicadosStats(req, res) {
+    try {
+        const client = await pool.connect();
+        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.comunicados WHERE status = 'publicado';");
+        client.release();
+        const count = rows[0] ? parseInt(rows[0].total, 10) : 0;
+        res.status(200).json({ success: true, stats: { count: count } });
+    } catch (error) {
+        console.error('Error fetching comunicados stats:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estadísticas de comunicados.' });
+    }
+}
+
+async function handleChartSuscriptoresCrecimiento(req, res) {
+    try {
+        // Dummy data for now, actual DB query for subscriber growth over time would go here
+        const dummyData = {
+            labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
+            datasets: [{
+                label: 'Nuevos Suscriptores',
+                data: [100, 120, 150, 130, 180, 200],
+                borderColor: '#4CAF50',
+                fill: false
+            }]
+        };
+        res.status(200).json({ success: true, chartData: dummyData });
+    } catch (error) {
+        console.error('Error fetching subscriber growth chart data:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener datos del gráfico de crecimiento de suscriptores.' });
+    }
+}
+
+async function handleChartEventosPorCategoria(req, res) {
+    try {
+        // Dummy data for now, actual DB query for events by category would go here
+        const dummyData = {
+            labels: ['Académico', 'Deportivo', 'Cultural', 'Social', 'Otros'],
+            datasets: [{
+                label: 'Eventos por Categoría',
+                data: [15, 10, 20, 12, 8],
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+            }]
+        };
+        res.status(200).json({ success: true, chartData: dummyData });
+    } catch (error) {
+        console.error('Error fetching events by category chart data:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener datos del gráfico de eventos por categoría.' });
+    }
+}
+
 // --- Express App Setup ---
 const app = express();
 
@@ -287,6 +350,11 @@ app.get('/api/admin/students', handleStudents);
 app.get('/api/admin/teachers', handleTeachers);
 app.get('/api/grades/:studentId', handleGrades);
 app.get('/api/noticias/stats', handleNoticiasStats);
+app.get('/api/eventos/stats', handleEventosStats);
+app.get('/api/avisos/stats', handleAvisosStats);
+app.get('/api/comunicados/stats', handleComunicadosStats);
+app.get('/api/charts/suscriptores-crecimiento', handleChartSuscriptoresCrecimiento);
+app.get('/api/charts/eventos-por-categoria', handleChartEventosPorCategoria);
 
 // Auth routes
 app.all('/api/students-auth*', handleStudentsAuth);
@@ -308,13 +376,8 @@ app.get('/api/debug-db', handleDebugDb);
 const notImplementedRoutes = [
     '/api/approvals/pending',
     '/api/eventos/calendar',
-    '/api/charts/suscriptores-crecimiento',
-    '/api/charts/eventos-por-categoria',
     '/api/charts/noticias-por-mes',
     '/api/charts/quejas-por-tipo',
-    '/api/avisos/stats',
-    '/api/comunicados/stats',
-    '/api/eventos/stats',
     '/api/gamification/profile/admin@bge.edu.mx',
     '/api/gamification/daily-challenges'
 ];
