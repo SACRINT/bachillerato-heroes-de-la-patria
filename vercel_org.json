@@ -8,7 +8,8 @@
     }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.cjs" }
+    { "source": "/api/(.*)", "destination": "/api/index.cjs" },
+    {"source": "/(.*)", "destination": "/public/$1"}
   ],
   "outputDirectory": "public"
 }
