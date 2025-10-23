@@ -5698,37 +5698,8 @@
                     console.warn('⚠️ [TABS] Tab students-tab no encontrado');
                 }
 
-                // Event listener para tab Docentes
-                const teachersTab = document.getElementById('teachers-tab');
-                if (teachersTab) {
-                    teachersTab.addEventListener('shown.bs.tab', function () {
-                        console.log('👨‍🏫 [TAB] Cargando tabla de docentes...');
-                        if (window.adminDashboard && typeof window.adminDashboard.loadTeachersTable === 'function') {
-                            window.adminDashboard.loadTeachersTable();
-                        } else {
-                            console.error('❌ [TAB] loadTeachersTable no disponible');
-                        }
-                    });
-                    console.log('✅ [TABS] Listener de docentes agregado');
-                } else {
-                    console.warn('⚠️ [TABS] Tab teachers-tab no encontrado');
-                }
 
-                // Event listener para tab Docentes
-                const teachersTab = document.getElementById('teachers-tab');
-                if (teachersTab) {
-                    teachersTab.addEventListener('shown.bs.tab', function () {
-                        console.log('👨‍🏫 [TAB] Cargando tabla de docentes...');
-                        if (window.adminDashboard && typeof window.adminDashboard.loadTeachersTable === 'function') {
-                            window.adminDashboard.loadTeachersTable();
-                        } else {
-                            console.error('❌ [TAB] loadTeachersTable no disponible');
-                        }
-                    });
-                    console.log('✅ [TABS] Listener de docentes agregado');
-                } else {
-                    console.warn('⚠️ [TABS] Tab teachers-tab no encontrado');
-                }
+
 
                 // Event listener para tab Padres
                 const parentsTab = document.getElementById('parents-tab');

@@ -548,6 +548,10 @@ async function handleHealth(req, res) {
     res.status(200).json({ success: true, message: 'API is healthy.' });
 }
 
+async function handleNotImplemented(req, res) {
+    res.status(501).json({ success: false, error: 'Not Implemented' });
+}
+
 // --- Router Principal ---
 
 export default async function handler(req, res) {
@@ -608,6 +612,24 @@ export default async function handler(req, res) {
             return handleDebugDb(req, res);
         case '/api/health': // Nuevo endpoint para verificación de estado
             return handleHealth(req, res);
+        case '/api/approvals/pending':
+            return handleNotImplemented(req, res);
+        case '/api/eventos/calendar':
+            return handleNotImplemented(req, res);
+        case '/api/charts/suscriptores-crecimiento':
+            return handleNotImplemented(req, res);
+        case '/api/charts/eventos-por-categoria':
+            return handleNotImplemented(req, res);
+        case '/api/charts/noticias-por-mes':
+            return handleNotImplemented(req, res);
+        case '/api/charts/quejas-por-tipo':
+            return handleNotImplemented(req, res);
+        case '/api/avisos/stats':
+            return handleNotImplemented(req, res);
+        case '/api/comunicados/stats':
+            return handleNotImplemented(req, res);
+        case '/api/noticias/stats':
+            return handleNotImplemented(req, res);
 
         default:
             res.status(404).json({ success: false, error: `Ruta no encontrada: ${path}` });

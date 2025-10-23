@@ -352,6 +352,17 @@ class GradesManager {
           }
         }
 
+        // Normalize to an array in the most likely shapes we expect
+        if (!Array.isArray(this.subjects)) {
+          if (this.subjects && this.subjects.data && Array.isArray(this.subjects.data.subjects)) {
+            this.subjects = this.subjects.data.subjects;
+          } else if (this.subjects && Array.isArray(this.subjects.subjects)) {
+            this.subjects = this.subjects.subjects;
+          } else {
+            this.subjects = [];
+          }
+        }
+
         // AÑADE ESTA VERIFICACIÓN
         if (!Array.isArray(this.students) || this.students.length === 0) {
             return `
@@ -535,6 +546,13 @@ class GradesManager {
     }
 
     updateQueryFilters() {
+        if (!Array.isArray(this.students)) {
+            this.students = [];
+        }
+        if (!Array.isArray(this.subjects)) {
+            this.subjects = [];
+        }
+
         const queryType = document.getElementById('query-type').value;
         const filtersContainer = document.getElementById('query-filters');
 

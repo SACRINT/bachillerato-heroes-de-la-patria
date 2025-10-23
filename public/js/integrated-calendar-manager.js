@@ -101,7 +101,7 @@ class IntegratedCalendarManager {
             }
 
             const data = await response.json();
-            this.events = data.data || [];
+            this.events = Array.isArray(data.data) ? data.data : [];
 
             // Procesar eventos para normalizar formato
             this.events = this.events.map(event => this.normalizeEvent(event));

@@ -99,21 +99,21 @@ class ParentManager {
         const associatedStudent = this.students.find(s => parent.student_id && s.id === parent.student_id);
         const studentInfo = associatedStudent ? `${associatedStudent.nombre} (${associatedStudent.matricula})` : 'N/A';
 
-        tr.innerHTML = "`
+        tr.innerHTML = `
             <td><strong>${this.escapeHtml(parent.nombre)}</strong></td>
             <td>${this.escapeHtml(parent.email)}</td>
             <td>${this.escapeHtml(studentInfo)}</td>
             <td>
-                <div class=\"btn-group btn-group-sm\">
-                    <button class=\"btn btn-outline-primary\" onclick=\"parentManager.showEditParentModal(${parent.id})">
-                        <i class=\"fas fa-edit\"></i> Editar
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-primary" onclick="parentManager.showEditParentModal(${parent.id})">
+                        <i class="fas fa-edit"></i> Editar
                     </button>
-                    <button class=\"btn btn-outline-danger\" onclick=\"parentManager.confirmDeleteParent(${parent.id})">
-                        <i class=\"fas fa-trash\"></i> Eliminar
+                    <button class="btn btn-outline-danger" onclick="parentManager.confirmDeleteParent(${parent.id})">
+                        <i class="fas fa-trash"></i> Eliminar
                     </button>
                 </div>
             </td>
-        ";
+        `;
         return tr;
     }
 
