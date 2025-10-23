@@ -258,7 +258,7 @@ function handleNotImplemented(req, res) { res.status(501).json({ success: false,
 async function handleNoticiasStats(req, res) {
     try {
         const client = await pool.connect();
-        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.noticias WHERE status = 'publicado';");
+        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.noticias;");
         client.release();
         const count = rows[0] ? parseInt(rows[0].total, 10) : 0;
         res.status(200).json({ success: true, stats: { count: count } });
@@ -271,7 +271,7 @@ async function handleNoticiasStats(req, res) {
 async function handleEventosStats(req, res) {
     try {
         const client = await pool.connect();
-        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.eventos WHERE status = 'publicado';");
+        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.eventos;");
         client.release();
         const count = rows[0] ? parseInt(rows[0].total, 10) : 0;
         res.status(200).json({ success: true, stats: { count: count } });
@@ -284,7 +284,7 @@ async function handleEventosStats(req, res) {
 async function handleAvisosStats(req, res) {
     try {
         const client = await pool.connect();
-        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.avisos WHERE status = 'publicado';");
+        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.avisos;");
         client.release();
         const count = rows[0] ? parseInt(rows[0].total, 10) : 0;
         res.status(200).json({ success: true, stats: { count: count } });
@@ -297,7 +297,7 @@ async function handleAvisosStats(req, res) {
 async function handleComunicadosStats(req, res) {
     try {
         const client = await pool.connect();
-        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.comunicados WHERE status = 'publicado';");
+        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.comunicados;");
         client.release();
         const count = rows[0] ? parseInt(rows[0].total, 10) : 0;
         res.status(200).json({ success: true, stats: { count: count } });
