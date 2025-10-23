@@ -5,7 +5,7 @@
  */
 
 // === CONFIGURATION ===
-const CACHE_NAME = 'heroes-patria-v4.3.0-auto-update';
+const CACHE_NAME = 'heroes-patria-v4.3.1-auto-update';
 const OFFLINE_PAGE = './offline.html';
 const API_CACHE_NAME = 'heroes-api-cache-v1';
 const IMAGES_CACHE_NAME = 'heroes-images-v1';
@@ -71,7 +71,7 @@ const PRECACHE_RESOURCES = [
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js',
     
     // PWA essentials
-    '/manifest.json',
+
     
     // Critical images
     '/images/logo-bachillerato-HDLP.webp',
