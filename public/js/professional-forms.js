@@ -268,7 +268,7 @@ class ProfessionalFormsManager {
                     // ✅ NUEVO: Emitir evento para formulario de citas
                     if (form.id === 'appointmentForm') {
                         window.dispatchEvent(new CustomEvent('appointmentEmailSent', {
-                            detail: { success: true, data: result.data
+                            detail: { success: true, data: result.data }
                         }));
                     }
 
