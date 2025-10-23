@@ -1125,6 +1125,9 @@ class PWAOptimizer {
     }
 }
 
+// Exponer la clase al scope global para compatibilidad
+window.PWAOptimizer = PWAOptimizer;
+
 // Inicialización automática
 document.addEventListener('DOMContentLoaded', () => {
     window.pwaOptimizer = new PWAOptimizer();
