@@ -4,16 +4,14 @@
     {
       "source": "/api/(.*)",
       "destination": "/api/app.js"
+    },
+    {
+      "source": "/manifest.json",
+      "destination": "/manifest.json"
     }
   ],
   "headers": [
-    {
-      "source": "/manifest.json",
-      "headers": [
-        { "key": "Content-Type", "value": "application/manifest+json" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
-      ]
-    },
+
     {
       "source": "/sw(.*).js",
       "headers": [

@@ -122,6 +122,7 @@ class EventCalendar {
             console.log(`✅ ${data.events.length} eventos cargados`);
         } catch (error) {
             console.error('❌ Error al cargar eventos:', error);
+            successCallback([]); // Call successCallback with an empty array to prevent retries
             failureCallback(error);
         }
     }

@@ -596,6 +596,10 @@ export default async function handler(req, res) {
             return handleStudents(req, res);
         case '/api/teachers':
             return handleTeachers(req, res);
+        case '/api/admin/students':
+            return handleStudents(req, res);
+        case '/api/admin/teachers':
+            return handleTeachers(req, res);
         case '/api/analytics':
             return handleAnalytics(req, res);
         case '/api/admin/pending-registrations':
@@ -629,6 +633,12 @@ export default async function handler(req, res) {
         case '/api/comunicados/stats':
             return handleNotImplemented(req, res);
         case '/api/noticias/stats':
+            return handleNotImplemented(req, res);
+        case '/api/eventos/stats':
+            return handleNotImplemented(req, res);
+        case '/api/gamification/profile/admin@bge.edu.mx':
+            return handleNotImplemented(req, res);
+        case '/api/gamification/daily-challenges':
             return handleNotImplemented(req, res);
 
         default:
