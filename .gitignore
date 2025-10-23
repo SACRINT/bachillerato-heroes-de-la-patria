@@ -145,3 +145,6 @@ test_real_login.json
 # Archivos de Base de Datos (scripts de ejecución única, no parte del runtime)
 EJECUTAR_EN_NEON.sql
 
+# Directorios de Build
+dist/
+public/dist/

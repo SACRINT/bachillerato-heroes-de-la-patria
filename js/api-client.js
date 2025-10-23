@@ -34,7 +34,7 @@ class APIClient {
         if (hostname.includes('vercel.app') ||
             (!hostname.includes('localhost') && !hostname.includes('127.0.0.1'))) {
             // En producción, usar URLs relativas (mismo dominio)
-            return `${window.location.protocol}//${window.location.host}/api`;
+            return `${window.location.protocol}//${window.location.host}`;
         }
 
         // Desarrollo local
@@ -233,7 +233,7 @@ class APIClient {
      */
     async searchInformation(query, userType = 'visitante', limit = 5) {
         try {
-            return await this.request('/chatbot/search', {
+            return await this.request('/api/chatbot/search', {
                 method: 'POST',
                 body: {
                     query: query,
@@ -252,7 +252,7 @@ class APIClient {
      */
     async logMessage(sessionId, query, response, userType = 'visitante') {
         try {
-            return await this.request('/chatbot/message', {
+            return await this.request('/api/chatbot/message', {
                 method: 'POST',
                 body: {
                     session_id: sessionId,
@@ -273,7 +273,7 @@ class APIClient {
      */
     async submitFeedback(sessionId, rating, comment = '') {
         try {
-            return await this.request('/chatbot/feedback', {
+            return await this.request('/api/chatbot/feedback', {
                 method: 'POST',
                 body: {
                     session_id: sessionId,
@@ -292,7 +292,7 @@ class APIClient {
      */
     async getCategories() {
         try {
-            return await this.request('/information/categories');
+            return await this.request('/api/information/categories');
         } catch (error) {
             console.warn('📂 Obtener categorías falló:', error.message);
             return null;
@@ -308,7 +308,7 @@ class APIClient {
      */
     async checkApproval(email) {
         try {
-            const response = await this.request(`/admin/check-approval/${encodeURIComponent(email)}`);
+            const response = await this.request(`/api/admin/check-approval/${encodeURIComponent(email)}`);
             return response;
         } catch (error) {
             console.warn('❌ Error verificando aprobación:', error);
@@ -328,7 +328,7 @@ class APIClient {
                 throw new Error('Tu solicitud de registro aún no ha sido aprobada. Por favor contacta al administrador.');
             }
 
-            const response = await this.request('/auth/login', {
+            const response = await this.request('/api/auth/login', {
                 method: 'POST',
                 body: {
                     email: email,
@@ -352,7 +352,7 @@ class APIClient {
      */
     async loginWithGoogle(googleToken) {
         try {
-            const response = await this.request('/auth/google', {
+            const response = await this.request('/api/auth/google', {
                 method: 'POST',
                 body: {
                     credential: googleToken
@@ -376,13 +376,14 @@ class APIClient {
     async logout() {
         try {
             if (this.token) {
-                await this.request('/auth/logout', {
+                await this.request('/api/auth/logout', {
                     method: 'POST'
                 });
             }
         } catch (error) {
             console.warn('Logout API falló:', error.message);
-        } finally {
+        }
+        finally {
             this.removeToken();
             // Limpiar sesión de Google también
             sessionStorage.removeItem('google_user_session');
@@ -394,7 +395,7 @@ class APIClient {
      */
     async getProfile() {
         try {
-            return await this.request('/auth/profile');
+            return await this.request('/api/auth/profile');
         } catch (error) {
             throw error;
         }
@@ -417,7 +418,7 @@ class APIClient {
     async checkConnection() {
         try {
             // Usar el método 'get' que ya construye la URL correctamente
-            const data = await this.get('/health');
+            const data = await this.get('/api/health');
             if (data && data.success) {
                 //console.log('🟢 Backend conectado:', data.message);
                 return true;

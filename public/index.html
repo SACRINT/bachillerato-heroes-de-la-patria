@@ -1563,48 +1563,12 @@
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
 
-    <!-- 🔧 SISTEMA CORE (OBLIGATORIO - NO CONSOLIDADO) -->
-    <!-- Estos scripts DEBEN mantenerse separados por dependencias críticas -->
-    <script src="js/context-manager.js"></script>        <!-- 🔒 Base del sistema -->
-    <script src="js/config.js?v=2024091401"></script>    <!-- 🔧 Configuración global -->
-    <script src="js/theme-manager.js"></script>          <!-- 🎨 Gestión de temas -->
-    <script src="js/dynamic-loader.js"></script>         <!-- 📦 Carga dinámica -->
-
-    <!-- 🎯 BGE FRAMEWORK CORE - MOTOR PRINCIPAL -->
-    <script src="js/bge-framework-core.js"></script>
-
-    <!-- 📊 MÓDULOS BGE CONSOLIDADOS (6 MÓDULOS PRINCIPALES) -->
-      <!-- ⚡ Performance y Core Web Vitals --><!-- 📊 Analytics y métricas avanzadas --><!-- 🎓 IA educativa y tutorías --><!-- 📱 PWA y móvil optimizado -->
-    <script src="js/pwa-optimizer.js"></script>         <!-- 📱 PWA Optimizer -->
-        <!-- 🔒 Seguridad y autenticación --><!-- 🌐 APIs externas y conectividad -->
-    <script src="js/bge-security-module.js"></script>    <!-- 🔒 Seguridad y autenticación admin -->
-
-    <!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DE INDEX.HTML -->
-    <!-- Estos scripts son específicos para la página principal -->
-    <!-- <script src="js/dev-override.js"></script> -->    <!-- ⚠️ DESHABILITADO PARA PRODUCCIÓN -->
-    <!-- <script src="js/dev-credentials.js"></script> -->        <!-- ⚠️ DESHABILITADO PARA PRODUCCIÓN -->
-    <script src="js/index-events.js"></script>           <!-- 📟 Eventos específicos index -->
-    <script src="js/script.js"></script>                 <!-- 🔒 Script principal -->
-    <script src="js/chatbot.js"></script>                <!-- 🤖 Chatbot principal -->
-    <script src="js/search-simple.js"></script>          <!-- 🔍 Búsqueda simple -->
-    <script src="js/api-client.js"></script>             <!-- 🔗 Cliente API -->
-    <script src="js/professional-forms.js"></script>     <!-- 📧 Sistema de formularios profesionales -->
-    <script src="js/gamification-system.js"></script>    <!-- 🎮 Sistema de gamificación -->
-    <script src="js/dashboard-personalizer.js"></script> <!-- 📋 Personalizador Dashboard -->
-    <!-- 🚀 BGE FRAMEWORK CORE BUNDLE (Consolidado) -->
-    <script src="js/core.bundle.js"></script>           <!-- 🔔🤖 Notificaciones + IA Tutor consolidado -->
-    <script src="js/ia-dashboard-access.js"></script>    <!-- 🤖 Acceso dashboard IA -->
-    <script src="js/floating-toolbar.js"></script>       <!-- 🎯 Barra de herramientas flotante -->
-    <!-- <script src="js/notification-manager.js"></script> -->   <!-- ❌ DESHABILITADO: Ya incluido en core.bundle.js -->
-    <script src="js/notification-config-ui.js"></script> <!-- 🔔 Botón flotante de notificaciones -->
-
-    <!-- 🔧 SISTEMAS ESPECIALES NO CONSOLIDADOS -->
-    <!-- Sistemas que requieren carga individual por compatibilidad -->
-    <!-- <script src="js/advanced-floating-widgets.js"></script> -->    <!-- 🎨 DESHABILITADO: Widgets flotantes eran inapropiados para UX -->
-    <script src="js/ar-education-system.js"></script>          <!-- 🥽 Sistema educativo AR/VR -->
-    <script src="js/google-auth-integration.js"></script>      <!-- 🔐 Google Login OAuth -->
-    <!-- <script src="js/widget-buttons-fix.js"></script> -->  <!-- 🔧 Fix widgets - OBSOLETO -->
-    <script src="js/csp-universal-fixer.js"></script>          <!-- 🔒 CSP compliance (último) -->
+    <!-- 🚀 SCRIPTS EMPAQUETADOS POR WEBPACK (Actualizado) -->
+    <!-- Estos son los archivos generados por el proceso de build. -->
+    <script src="/dist/runtime.ddd013cd210e8450e64c.bundle.js" defer></script>
+    <script src="/dist/vendors.a5f2ea00d5becaf9af80.bundle.js" defer></script>
+    <script src="/dist/main.60e9526fff68d039a47f.bundle.js" defer></script>
+    <!-- Fin de scripts empaquetados -->
 
     <!-- Service Worker Registration - ESTABLE -->
     <script>
