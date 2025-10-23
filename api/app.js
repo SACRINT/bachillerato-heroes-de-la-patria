@@ -544,6 +544,10 @@ async function handleDebugDb(req, res) {
     }
 }
 
+async function handleHealth(req, res) {
+    res.status(200).json({ success: true, message: 'API is healthy.' });
+}
+
 // --- Router Principal ---
 
 export default async function handler(req, res) {
@@ -602,6 +606,8 @@ export default async function handler(req, res) {
             return handleDebugFiles(req, res);
         case '/api/debug-db':
             return handleDebugDb(req, res);
+        case '/api/health': // Nuevo endpoint para verificación de estado
+            return handleHealth(req, res);
 
         default:
             res.status(404).json({ success: false, error: `Ruta no encontrada: ${path}` });
