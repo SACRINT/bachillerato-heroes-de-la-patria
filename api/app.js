@@ -255,6 +255,19 @@ async function handleDebugDb(req, res) {
 function handleHealth(req, res) { res.status(200).json({ success: true, message: 'API is alive and healthy.' }); }
 function handleNotImplemented(req, res) { res.status(501).json({ success: false, error: 'Not Implemented' }); }
 
+async function handleNoticiasStats(req, res) {
+    try {
+        const client = await pool.connect();
+        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.noticias WHERE status = 'publicado';");
+        client.release();
+        const count = rows[0] ? parseInt(rows[0].total, 10) : 0;
+        res.status(200).json({ success: true, stats: { count: count } });
+    } catch (error) {
+        console.error('Error fetching news stats:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estadísticas de noticias.' });
+    }
+}
+
 // --- Express App Setup ---
 const app = express();
 
@@ -273,6 +286,7 @@ app.get('/api/admin/pending-registrations', handlePendingRegistrations);
 app.get('/api/admin/students', handleStudents);
 app.get('/api/admin/teachers', handleTeachers);
 app.get('/api/grades/:studentId', handleGrades);
+app.get('/api/noticias/stats', handleNoticiasStats);
 
 // Auth routes
 app.all('/api/students-auth*', handleStudentsAuth);
@@ -300,7 +314,6 @@ const notImplementedRoutes = [
     '/api/charts/quejas-por-tipo',
     '/api/avisos/stats',
     '/api/comunicados/stats',
-    '/api/noticias/stats',
     '/api/eventos/stats',
     '/api/gamification/profile/admin@bge.edu.mx',
     '/api/gamification/daily-challenges'
