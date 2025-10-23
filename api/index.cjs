@@ -1,4 +1,4 @@
-// api/index.js
+// api/index.cjs
 // Este archivo es el punto de entrada para el entorno serverless de Vercel.
 // Es un wrapper CommonJS que carga dinámicamente api/app.js (ES Module).
 

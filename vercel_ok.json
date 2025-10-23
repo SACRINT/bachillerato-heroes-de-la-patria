@@ -1,15 +1,12 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/index.cjs",
-      "use": "@vercel/node@3.x",
-      "config": { "includeFiles": ["backend/**"] }
-    }
-  ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.cjs" },
     {"source": "/(.*)", "destination": "/public/$1"}
   ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "regions": ["iad1"],
   "outputDirectory": "public"
 }
