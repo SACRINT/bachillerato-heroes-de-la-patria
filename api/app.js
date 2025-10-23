@@ -289,6 +289,11 @@ async function handleAvisosStats(req, res) {
         const count = rows[0] ? parseInt(rows[0].total, 10) : 0;
         res.status(200).json({ success: true, stats: { count: count } });
     } catch (error) {
+        // If the table does not exist, return 0 instead of a 500 error
+        if (error.code === '42P01') { // 42P01 is the error code for "undefined_table"
+            console.warn('Warning: Table public.avisos does not exist. Returning count 0.');
+            return res.status(200).json({ success: true, stats: { count: 0 } });
+        }
         console.error('Error fetching avisos stats:', error);
         res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estadísticas de avisos.' });
     }
