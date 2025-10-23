@@ -281,6 +281,19 @@ async function handleEventosStats(req, res) {
     }
 }
 
+async function handleAvisosStats(req, res) {
+    try {
+        const client = await pool.connect();
+        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.avisos WHERE status = 'publicado';");
+        client.release();
+        const count = rows[0] ? parseInt(rows[0].total, 10) : 0;
+        res.status(200).json({ success: true, stats: { count: count } });
+    } catch (error) {
+        console.error('Error fetching avisos stats:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estadísticas de avisos.' });
+    }
+}
+
 async function handleComunicadosStats(req, res) {
     try {
         const client = await pool.connect();
@@ -331,6 +344,102 @@ async function handleChartEventosPorCategoria(req, res) {
     }
 }
 
+async function handleChartNoticiasPorMes(req, res) {
+    try {
+        // Dummy data for now, actual DB query for news by month would go here
+        const dummyData = {
+            labels: ['Ene', 'Feb', 'Mar', 'Abr', 'Mayo', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            datasets: [{
+                label: 'Noticias Publicadas',
+                data: [5, 7, 10, 8, 12, 9, 11, 15, 13, 10, 8, 6],
+                backgroundColor: '#007bff',
+            }]
+        };
+        res.status(200).json({ success: true, chartData: dummyData });
+    } catch (error) {
+        console.error('Error fetching news by month chart data:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener datos del gráfico de noticias por mes.' });
+    }
+}
+
+async function handleChartQuejasPorTipo(req, res) {
+    try {
+        // Dummy data for now, actual DB query for complaints by type would go here
+        const dummyData = {
+            labels: ['Académicas', 'Administrativas', 'Infraestructura', 'Convivencia', 'Otros'],
+            datasets: [{
+                label: 'Quejas por Tipo',
+                data: [7, 5, 3, 6, 2],
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+            }]
+        };
+        res.status(200).json({ success: true, chartData: dummyData });
+    } catch (error) {
+        console.error('Error fetching complaints by type chart data:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener datos del gráfico de quejas por tipo.' });
+    }
+}
+
+async function handleApprovalsPending(req, res) {
+    try {
+        // Dummy data for now, actual DB query for pending approvals would go here
+        const dummyData = [
+            { id: 1, type: 'Solicitud de Beca', applicant: 'Juan Pérez', status: 'pending', date: '2025-10-20' },
+            { id: 2, type: 'Permiso Especial', applicant: 'María García', status: 'pending', date: '2025-10-21' }
+        ];
+        res.status(200).json({ success: true, approvals: dummyData });
+    } catch (error) {
+        console.error('Error fetching pending approvals:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener aprobaciones pendientes.' });
+    }
+}
+
+async function handleEventosCalendar(req, res) {
+    try {
+        // Dummy data for now, actual DB query for calendar events would go here
+        const dummyData = [
+            { id: 1, title: 'Examen Final Matemáticas', start: '2025-11-15T10:00:00', end: '2025-11-15T12:00:00', category: 'Académico' },
+            { id: 2, title: 'Partido de Baloncesto', start: '2025-11-20T16:00:00', end: '2025-11-20T18:00:00', category: 'Deportivo' }
+        ];
+        res.status(200).json({ success: true, events: dummyData });
+    } catch (error) {
+        console.error('Error fetching calendar events:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener eventos del calendario.' });
+    }
+}
+
+async function handleGamificationProfile(req, res) {
+    try {
+        // Dummy data for now, actual DB query for gamification profile would go here
+        const dummyData = {
+            user: 'admin@bge.edu.mx',
+            level: 10,
+            xp: 1250,
+            badges: ['Innovador', 'Líder', 'Estratega'],
+            iacoins: 500
+        };
+        res.status(200).json({ success: true, profile: dummyData });
+    } catch (error) {
+        console.error('Error fetching gamification profile:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener el perfil de gamificación.' });
+    }
+}
+
+async function handleGamificationDailyChallenges(req, res) {
+    try {
+        // Dummy data for now, actual DB query for daily challenges would go here
+        const dummyData = [
+            { id: 1, title: 'Completa 3 tareas académicas', xp_reward: 50, iacoins_reward: 5, completed: false },
+            { id: 2, title: 'Participa en un foro de discusión', xp_reward: 30, iacoins_reward: 3, completed: false },
+            { id: 3, title: 'Ayuda a un compañero en el laboratorio', xp_reward: 70, iacoins_reward: 7, completed: true }
+        ];
+        res.status(200).json({ success: true, challenges: dummyData });
+    } catch (error) {
+        console.error('Error fetching daily gamification challenges:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener los desafíos diarios de gamificación.' });
+    }
+}
+
 // --- Express App Setup ---
 const app = express();
 
@@ -355,6 +464,12 @@ app.get('/api/avisos/stats', handleAvisosStats);
 app.get('/api/comunicados/stats', handleComunicadosStats);
 app.get('/api/charts/suscriptores-crecimiento', handleChartSuscriptoresCrecimiento);
 app.get('/api/charts/eventos-por-categoria', handleChartEventosPorCategoria);
+app.get('/api/charts/noticias-por-mes', handleChartNoticiasPorMes);
+app.get('/api/charts/quejas-por-tipo', handleChartQuejasPorTipo);
+app.get('/api/approvals/pending', handleApprovalsPending);
+app.get('/api/eventos/calendar', handleEventosCalendar);
+app.get('/api/gamification/profile/admin@bge.edu.mx', handleGamificationProfile);
+app.get('/api/gamification/daily-challenges', handleGamificationDailyChallenges);
 
 // Auth routes
 app.all('/api/students-auth*', handleStudentsAuth);
@@ -374,12 +489,6 @@ app.get('/api/debug-db', handleDebugDb);
 
 // Not implemented routes
 const notImplementedRoutes = [
-    '/api/approvals/pending',
-    '/api/eventos/calendar',
-    '/api/charts/noticias-por-mes',
-    '/api/charts/quejas-por-tipo',
-    '/api/gamification/profile/admin@bge.edu.mx',
-    '/api/gamification/daily-challenges'
 ];
 app.all(notImplementedRoutes, handleNotImplemented);
 
