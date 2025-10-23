@@ -3,7 +3,7 @@
  * Devuelve errores y advertencias recientes del entorno runtime
  * (captura global de excepciones y console logs).
  */
-const os = require("os");
+import os from "os";
 
 let runtimeErrors = [];
 
@@ -34,7 +34,7 @@ console.error = (...args) => {
   originalConsoleError(...args);
 };
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   const summary = {
     hostname: os.hostname(),
     nodeVersion: process.version,

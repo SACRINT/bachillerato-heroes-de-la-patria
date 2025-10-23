@@ -131,8 +131,8 @@ ux-demo.html
 # ============================================
 
 # Scripts de Desarrollo y Herramientas Locales (adiciones/generalizaciones)
-# scripts/ # Ignorar toda la carpeta scripts/ en la raíz
-# backend/scripts/ # Ignorar toda la carpeta scripts/ en backend/
+scripts/ # Ignorar toda la carpeta scripts/ en la raíz
+backend/scripts/ # Ignorar toda la carpeta scripts/ en backend/
 audit-unused-files.js
 move-unused-files.js
 restore-critical-fase4-files.js
