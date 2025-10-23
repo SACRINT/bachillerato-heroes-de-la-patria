@@ -335,7 +335,7 @@ class AdminDashboard {
                 throw new Error('API client no disponible');
             }
 
-            const response = await window.apiClient.request('/students?limit=10');
+            const response = await window.apiClient.request('/api/admin/students?limit=10');
 
             if (response.success) {
                 return response.data;
@@ -354,7 +354,7 @@ class AdminDashboard {
                 throw new Error('API client no disponible');
             }
 
-            const response = await window.apiClient.request('/teachers?limit=10');
+            const response = await window.apiClient.request('/api/admin/teachers?limit=10');
 
             if (response.success) {
                 return response.data;

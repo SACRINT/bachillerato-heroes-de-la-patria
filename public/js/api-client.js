@@ -416,16 +416,12 @@ class APIClient {
      */
     async checkConnection() {
         try {
-            // Intentar endpoint de salud
-            const healthURL = this.baseURL.replace('/api', '/health');
-            const response = await fetch(healthURL);
-            
-            if (response.ok) {
-                const data = await response.json();
-                //console.log('🟢 Backend conectado:', data.status);
+            // Usar el método 'get' que ya construye la URL correctamente
+            const data = await this.get('/health');
+            if (data && data.success) {
+                //console.log('🟢 Backend conectado:', data.message);
                 return true;
             }
-            
             return false;
         } catch (error) {
             //console.log('🔴 Backend no disponible:', error.message);

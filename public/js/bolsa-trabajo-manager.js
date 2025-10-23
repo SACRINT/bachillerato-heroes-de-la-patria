@@ -19,6 +19,7 @@ class BolsaTrabajoManager {
         console.log('💼 Inicializando Bolsa de Trabajo Manager...');
         await this.cargarCandidatos();
         await this.cargarEstadisticas();
+        this.populateGeneracionFilter(); // Populate filter after loading stats
         this.setupEventListeners();
     }
 
@@ -54,6 +55,23 @@ class BolsaTrabajoManager {
             }
         } catch (error) {
             console.error('❌ Error al cargar estadísticas:', error);
+        }
+    }
+
+    /**
+     * Popula el filtro de generación con años desde 1950 hasta el actual.
+     */
+    populateGeneracionFilter() {
+        const selectGen = document.getElementById('filter-generacion-bolsa');
+        if (!selectGen) return;
+
+        selectGen.innerHTML = '<option value="">Todas las generaciones</option>';
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear; year >= 1950; year--) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = `Generación ${year}`;
+            selectGen.appendChild(option);
         }
     }
 
