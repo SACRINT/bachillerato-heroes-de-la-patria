@@ -28,11 +28,11 @@ class BolsaTrabajoManager {
      */
     async cargarCandidatos() {
         try {
-            const response = await fetch(`${this.API_BASE}/cv`);
+            const response = await fetch(this.API_BASE);
             const data = await response.json();
 
             if (data.success) {
-                this.candidatos = data.data; // Corrected from data.candidatos
+                this.candidatos = data.candidatos;
                 this.renderizarTabla();
                 console.log(`✅ ${data.total} candidatos cargados`);
             }

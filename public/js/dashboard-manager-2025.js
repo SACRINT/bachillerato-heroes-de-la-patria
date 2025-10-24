@@ -534,18 +534,56 @@ class AdminDashboard {
     }
 
     loginAdmin() {
-        console.log('🔑 [LOGIN] Delegando al sistema de autenticación seguro...');
-        if (window.secureAdminAuth && typeof window.secureAdminAuth.handleLogin === 'function') {
-            // Create a dummy event object to pass to the handler
-            const form = document.getElementById('adminLoginForm');
-            if (form) {
-                const event = new Event('submit', { bubbles: true, cancelable: true });
-                form.dispatchEvent(event);
-            } else {
-                this.showErrorToast('El formulario de login no se encontró.');
-            }
+        console.log('🔑 [LOGIN] Iniciando proceso de login...');
+        // Verificar que las credenciales estén inicializadas
+        if (!this.adminCredentials) {
+            console.error('❌ adminCredentials no está inicializado');
+            this.adminCredentials = {
+                username: 'admin',
+                password: 'admin123',
+                role: 'director',
+                name: 'Administrador del Sistema'
+            };
+        }
+
+        const username = document.getElementById('adminUsername').value;
+        const password = document.getElementById('adminPassword').value;
+        const role = document.getElementById('adminRole').value;
+
+        console.log('🔍 [LOGIN] Verificando credenciales...');
+
+        if (username === this.adminCredentials.username &&
+            password === this.adminCredentials.password &&
+            role === this.adminCredentials.role) {
+
+            console.log('✅ [LOGIN] Credenciales correctas');
+
+            // Crear sesión
+            this.currentSession = {
+                username: username,
+                role: role,
+                name: this.adminCredentials.name,
+                loginTime: Date.now(),
+                expires: Date.now() + (8 * 60 * 60 * 1000) // 8 horas
+            };
+
+            localStorage.setItem('adminSession', JSON.stringify(this.currentSession));
+            this.isLoggedIn = true;
+
+            // Cerrar modal y mostrar panel
+            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+            loginModal.hide();
+
+            this.showAdminPanel();
+            this.showSuccessToast('Acceso administrativo exitoso');
+
+            // Redireccionar automáticamente al dashboard principal
+            setTimeout(() => {
+                this.scrollToDashboard();
+            }, 1000);
         } else {
-            this.showErrorToast('Sistema de autenticación no disponible. Recarga la página.');
+            console.log('❌ [LOGIN] Credenciales incorrectas');
+            this.showErrorToast('Credenciales administrativas incorrectas');
         }
     }
 

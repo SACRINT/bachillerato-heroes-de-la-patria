@@ -470,20 +470,4 @@ router.get('/students', authenticateToken, requireAdmin, async (req, res) => {
     }
 });
 
-/**
- * GET /api/admin/parents
- * Obtener todos los padres
- * Requiere: Autenticación de administrador
- */
-router.get('/parents', authenticateToken, requireAdmin, async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM parents ORDER BY nombre ASC');
-        const parents = result.rows || [];
-        res.json({ success: true, data: parents });
-    } catch (error) {
-        console.error('❌ Error al obtener padres:', error);
-        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener padres' });
-    }
-});
-
 module.exports = router;
