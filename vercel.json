@@ -4,6 +4,10 @@
     {
       "source": "/api/(.*)",
       "destination": "/api/app.js"
+    },
+    {
+      "source": "/manifest.json",
+      "destination": "/public/manifest.json"
     }
   ],
   "headers": [
