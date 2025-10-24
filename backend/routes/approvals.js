@@ -71,7 +71,7 @@ router.get('/pending', async (req, res) => {
 
         res.json({
             success: true,
-            data: submissions,
+            approvals: submissions,
             total: parseInt(countResult.rows[0].count),
             limit: parseInt(limit),
             offset: parseInt(offset)

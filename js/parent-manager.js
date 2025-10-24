@@ -27,7 +27,7 @@ class ParentManager {
             <p class="mt-2 text-muted">Cargando información de padres...</p></td></tr>`;
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/admin/parents`);
+            const response = await fetch(`${this.apiBaseUrl}/parents`);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
             const result = await response.json();
