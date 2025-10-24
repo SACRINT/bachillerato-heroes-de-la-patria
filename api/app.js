@@ -460,9 +460,9 @@ app.use((req, res, next) => {
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud;" +
         "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://cdn.tiny.cloud;" +
         "connect-src 'self' http://localhost:3000 http://localhost:3001 http://localhost:3002 http://localhost:3003 http://localhost:3004 http://localhost:3005 http://localhost:8000 http://127.0.0.1:8080 https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://sp.tinymce.com;" +
-        "img-src 'self' data: https://cdn.tiny.cloud;" + // Added img-src for TinyMCE images
+        "img-src 'self' data: https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com;" + // Added img-src for TinyMCE images
         "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.tiny.cloud;" + // Added font-src for TinyMCE fonts
-        "frame-src 'self' https://cdn.tiny.cloud;" // Added frame-src for TinyMCE iframes
+        "frame-src 'self' https://cdn.tiny.cloud https://www.google.com https://maps.google.com https://forms.gle;" // Added frame-src for TinyMCE iframes, Google Maps, and Google Forms
     );
     next();
 });
