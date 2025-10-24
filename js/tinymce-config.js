@@ -10,6 +10,7 @@ class TinyMCEManager {
         this.uploadEndpoint = '/api/upload/image';
         this.defaultConfig = {
             // Configuración básica
+            api_key: '9eomuls0jgbqziqkahugmesowt48tellxulfspshp9pa03bi',
             height: 400,
             menubar: true,
             language: 'es',
