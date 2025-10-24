@@ -74,7 +74,7 @@ class DynamicTeacherLoader {
         try {
             console.log('🔄 Actualizando tabla de docentes...');
 
-            const tableBody = document.querySelector('#teachersTable tbody');
+                        const tableBody = document.getElementById('teachersTable');
             if (!tableBody) {
                 console.log('⚠️ Tabla de docentes no encontrada');
                 return;

@@ -73,7 +73,7 @@ class DynamicStudentLoader {
         try {
             console.log('🔄 Actualizando tabla de estudiantes...');
 
-            const tableBody = document.querySelector('#studentsTable tbody');
+                        const tableBody = document.getElementById('studentsTable');
             if (!tableBody) {
                 console.log('⚠️ Tabla de estudiantes no encontrada');
                 return;
