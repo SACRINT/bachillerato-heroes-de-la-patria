@@ -174,6 +174,7 @@ module.exports = (env, argv) => {
             }),
             new webpack.DefinePlugin({
                 'window.TINYMCE_API_KEY_GLOBAL': JSON.stringify(process.env.TINYMCE_API_KEY || 'no-api-key'),
+                'TINYMCE_API_KEY_PLACEHOLDER': JSON.stringify(process.env.TINYMCE_API_KEY || 'no-api-key'),
             }),
             // Compression con gzip
             ...(isProduction ? [
