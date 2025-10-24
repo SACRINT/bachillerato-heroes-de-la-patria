@@ -111,7 +111,7 @@ class EventCalendar {
                 modalidad: this.currentFilters.modalidad
             });
 
-            const response = await fetch(`/api/eventos/calendar?${params}`);
+            const response = await fetch(`/api/calendar/events?${params}`);
             const data = await response.json();
 
             if (!data.success) {
@@ -122,7 +122,6 @@ class EventCalendar {
             console.log(`✅ ${data.events.length} eventos cargados`);
         } catch (error) {
             console.error('❌ Error al cargar eventos:', error);
-            successCallback([]); // Call successCallback with an empty array to prevent retries
             failureCallback(error);
         }
     }

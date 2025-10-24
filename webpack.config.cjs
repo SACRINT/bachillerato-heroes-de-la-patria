@@ -28,6 +28,7 @@ module.exports = (env, argv) => {
             cms: './public/js/cms-manager.js',
             analytics: './public/js/advanced-analytics.js',
             calendar: './public/js/event-calendar.js',
+            tinymce: './public/js/tinymce-config.js', // Nuevo punto de entrada para TinyMCE
 
             // Vendors (libraries externas) - comentado temporalmente
             // vendor: [
@@ -168,6 +169,7 @@ module.exports = (env, argv) => {
                 template: './public/admin-dashboard.html', // Source HTML file
                 filename: 'admin-dashboard.html', // Output HTML file
                 inject: 'body', // Inject scripts into the body
+                chunks: ['main', 'admin', 'tinymce', 'calendar', 'vendors', 'common', 'charts', 'styles'], // Inyectar todos los bundles relevantes
                 TINYMCE_API_KEY: process.env.TINYMCE_API_KEY || 'no-api-key', // Pass env var to template
             }),
             new webpack.DefinePlugin({
