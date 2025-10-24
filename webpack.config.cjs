@@ -173,7 +173,7 @@ module.exports = (env, argv) => {
                 TINYMCE_API_KEY: process.env.TINYMCE_API_KEY || 'no-api-key', // Pass env var to template
             }),
             new webpack.DefinePlugin({
-                'window.TINYMCE_API_KEY': JSON.stringify(process.env.TINYMCE_API_KEY || 'no-api-key'),
+                'window.TINYMCE_API_KEY_GLOBAL': JSON.stringify(process.env.TINYMCE_API_KEY || 'no-api-key'),
             }),
             // Compression con gzip
             ...(isProduction ? [
