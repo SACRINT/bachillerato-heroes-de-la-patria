@@ -13,14 +13,6 @@ const crypto = require('crypto');
 // GET - Listar todos los suscriptores
 // ============================================
 router.get('/', async (req, res) => {
-    // TEMPORARY FIX: Return dummy data to avoid 501 error.
-    res.json({
-        success: true,
-        total: 0,
-        suscriptores: []
-    });
-    return;
-
     try {
         const [suscriptores] = await db.query(`
             SELECT

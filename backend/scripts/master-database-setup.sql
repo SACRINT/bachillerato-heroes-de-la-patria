@@ -147,6 +147,14 @@ CREATE TABLE IF NOT EXISTS comunicados (
     fecha_publicacion TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS avisos (
+    id SERIAL PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    contenido TEXT NOT NULL,
+    estado VARCHAR(20) DEFAULT 'borrador',
+    fecha_publicacion TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ============================================
 -- 3. TABLAS DE INTERACCIÓN
 -- ============================================

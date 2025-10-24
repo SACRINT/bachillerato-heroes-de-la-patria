@@ -126,16 +126,6 @@ router.post('/cv', [
 // GET /api/bolsa-trabajo/cv - Listar todos los CVs
 // =====================================================
 router.get('/cv', async (req, res) => {
-    // TEMPORARY FIX: Return dummy data to avoid 501 error.
-    res.json({
-        success: true,
-        data: [],
-        total: 0,
-        limit: 50,
-        offset: 0
-    });
-    return;
-
     const { status, limit = 50, offset = 0 } = req.query;
 
     try {

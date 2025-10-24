@@ -21,7 +21,7 @@ async function loadPendingApprovals() {
         const result = await response.json();
 
         if (result.success) {
-            pendingApprovals = result.data;
+            pendingApprovals = result.approvals;
             filteredApprovals = [...pendingApprovals];
 
             console.log(`✅ Cargadas ${pendingApprovals.length} solicitudes pendientes`);
