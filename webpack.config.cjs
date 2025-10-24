@@ -19,16 +19,16 @@ module.exports = (env, argv) => {
         mode: isProduction ? 'production' : 'development',
         entry: {
             // Bundles principales por sección
-            main: './public/js/main.js',
-            admin: './public/js/admin-dashboard.js',
-            'parent-portal': './public/js/parent-portal.js',
-            'job-portal': './public/js/job-portal.js',
+            main: './js/main.js',
+            admin: './js/admin-dashboard.js',
+            'parent-portal': './js/parents-portal-manager.js',
+            'job-portal': './js/job-portal.js',
 
             // Bundles de features específicas
-            cms: './public/js/cms-manager.js',
-            analytics: './public/js/advanced-analytics.js',
-            calendar: './public/js/event-calendar.js',
-            tinymce: './public/js/tinymce-config.js', // Nuevo punto de entrada para TinyMCE
+            cms: './js/cms-manager.js',
+            analytics: './js/advanced-analytics.js',
+            calendar: './js/event-calendar.js',
+            tinymce: './js/tinymce-config.js', // Nuevo punto de entrada para TinyMCE
 
             // Vendors (libraries externas) - comentado temporalmente
             // vendor: [

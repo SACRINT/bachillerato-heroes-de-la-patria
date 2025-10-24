@@ -7,7 +7,7 @@
   "scripts": {
     "start": "cd server && npm start",
     "dev": "cd server && npm run dev",
-    "build": "npx webpack --mode production",
+    "build": "webpack --mode production",
     "install-server": "cd server && npm install",
     "docs:install": "node scripts/docs-automation/master-docs.js --install",
     "docs:update": "node scripts/docs-automation/master-docs.js --update",
