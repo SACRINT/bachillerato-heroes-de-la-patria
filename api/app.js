@@ -486,7 +486,7 @@ app.get('/api/charts/eventos-por-categoria', handleChartEventosPorCategoria);
 app.get('/api/charts/noticias-por-mes', handleChartNoticiasPorMes);
 app.get('/api/charts/quejas-por-tipo', handleChartQuejasPorTipo);
 app.get('/api/approvals/pending', handleApprovalsPending);
-app.get('/api/eventos/calendar', handleEventosCalendar);
+app.get('/api/calendar/events', handleEventosCalendar);
 app.get('/api/gamification/profile/admin@bge.edu.mx', handleGamificationProfile);
 app.get('/api/gamification/daily-challenges', handleGamificationDailyChallenges);
 
