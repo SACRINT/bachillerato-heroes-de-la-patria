@@ -3163,6 +3163,10 @@
     </script>
 
     <!-- 🔧 SISTEMA CORE (OBLIGATORIO) - VERSIONADO PARA FORZAR RECARGA -->
+    <script>
+        // Inyectar la clave API de TinyMCE desde la variable de entorno
+        window.TINYMCE_API_KEY = "<%= htmlWebpackPlugin.options.TINYMCE_API_KEY %>";
+    </script>
     <script src="js/context-manager.js?v=20251001-1430"></script>        <!-- 🔒 Base del sistema -->
     <script src="js/config.js?v=20251001-1430"></script>    <!-- 🔧 Configuración global -->
     <script src="js/content-manager.js?v=20251001-1430"></script>        <!-- 📝 Gestión de contenido -->
