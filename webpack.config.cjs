@@ -5,6 +5,8 @@
  */
 
 const path = require('path');
+const webpack = require('webpack'); // Import webpack for DefinePlugin
+const HtmlWebpackPlugin = require('html-webpack-plugin'); // Import HtmlWebpackPlugin
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
@@ -162,6 +164,15 @@ module.exports = (env, argv) => {
         },
 
         plugins: [
+            new HtmlWebpackPlugin({
+                template: './public/admin-dashboard.html', // Source HTML file
+                filename: 'admin-dashboard.html', // Output HTML file
+                inject: 'body', // Inject scripts into the body
+                TINYMCE_API_KEY: process.env.TINYMCE_API_KEY || 'no-api-key', // Pass env var to template
+            }),
+            new webpack.DefinePlugin({
+                'process.env.TINYMCE_API_KEY': JSON.stringify(process.env.TINYMCE_API_KEY || 'no-api-key'),
+            }),
             // Compression con gzip
             ...(isProduction ? [
                 new CompressionPlugin({

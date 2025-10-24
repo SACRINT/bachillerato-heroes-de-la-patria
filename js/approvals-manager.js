@@ -21,7 +21,9 @@ async function loadPendingApprovals() {
         const result = await response.json();
 
         if (result.success) {
+            console.log('DEBUG: API result:', result); // Added for debugging
             pendingApprovals = Array.isArray(result.approvals) ? result.approvals : [];
+            console.log('DEBUG: pendingApprovals after assignment:', pendingApprovals); // Added for debugging
             filteredApprovals = [...pendingApprovals];
 
             console.log(`✅ Cargadas ${pendingApprovals.length} solicitudes pendientes`);
