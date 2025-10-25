@@ -60,12 +60,11 @@ async function readJsonFile(fileName) {
 
 async function handleStudents(req, res) {
     try {
-        const data = await readJsonFile('estudiantes.json');
-        const students = data && data.estudiantes ? data.estudiantes : [];
-        res.status(200).json({ success: true, data: { students: students } });
+        const { rows } = await pool.query('SELECT * FROM estudiantes');
+        res.status(200).json({ success: true, data: { students: rows } });
     } catch (error) {
-        console.error('Error reading estudiantes.json:', error);
-        res.status(200).json({ success: true, data: { students: [] } });
+        console.error('Error fetching students from DB:', error);
+        res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 }
 
@@ -198,14 +197,9 @@ function handleUpload(req, res) {
 
 async function handleTeachers(req, res) {
     try {
-        const data = await readJsonFile('docentes.json');
-        // The frontend component expects the entire object from docentes.json
-        if (data) {
-            res.status(200).json(data);
-        } else {
-            // Return a default structure if the file is missing/empty
-            res.status(404).json({ docentes: [], estadisticas: {}, materias: [], configuracion: {} });
-        }
+        const { rows } = await pool.query('SELECT * FROM docentes');
+        // The frontend component expects an object with a 'docentes' property.
+        res.status(200).json({ docentes: rows });
     } catch (error) {
         console.error('Error in handleTeachers:', error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -394,16 +388,11 @@ async function handleChartQuejasPorTipo(req, res) {
 
 async function handleApprovalsPending(req, res) {
     try {
-        // NOTE: The frontend expects the array directly, not an object wrapper.
-        // This is a compatibility fix for the old, deployed frontend code.
-        const dummyData = [
-            { id: 1, form_type: 'bolsa_trabajo', data: { nombre: 'Juan Pérez', puesto_deseado: 'Desarrollador Frontend' }, created_at: '2025-10-24T10:00:00Z', verification_email: 'juan.perez@example.com', email_verified: true },
-            { id: 2, form_type: 'egresados', data: { nombre_completo: 'María García', generacion: '2020-2023' }, created_at: '2025-10-23T15:30:00Z', verification_email: 'maria.garcia@example.com', email_verified: false }
-        ];
-        res.status(200).json(dummyData);
+        const { rows } = await pool.query("SELECT id, form_type, submission_data, created_at FROM pending_approvals WHERE status = 'pending' ORDER BY created_at ASC");
+        // The frontend expects an array directly.
+        res.status(200).json(rows);
     } catch (error) {
         console.error('Error fetching pending approvals:', error);
-        // Return an empty array on error to prevent the frontend from crashing.
         res.status(500).json([]);
     }
 }
@@ -482,7 +471,7 @@ async function handleGetSuscriptoresStats(req, res) {
 async function handleGetBolsaTrabajo(req, res) {
     try {
         const client = await pool.connect();
-        const { rows } = await client.query("SELECT id, nombre, email, telefono, puesto_deseado, nivel_experiencia, disponibilidad, submitted_at FROM public.bolsa_trabajo ORDER BY submitted_at DESC;");
+        const { rows } = await client.query("SELECT id, nombre_completo, email, telefono, generacion, cv_url, habilidades, experiencia, estado, notas, fecha_registro FROM public.bolsa_trabajo ORDER BY fecha_registro DESC;");
         client.release();
         res.status(200).json({ success: true, candidatos: rows });
     } catch (error) {
