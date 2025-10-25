@@ -5,7 +5,7 @@
 
 class DynamicTeacherLoader {
     constructor() {
-        this.teachersFile = '/data/docentes.json';
+        this.teachersFile = '/api/admin/teachers';
         this.teachers = {};
         this.currentEditingId = null;
         console.log('👩‍🏫 Dynamic Teacher Loader inicializado');

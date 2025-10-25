@@ -199,9 +199,16 @@ function handleUpload(req, res) {
 async function handleTeachers(req, res) {
     try {
         const data = await readJsonFile('docentes.json');
-        res.status(200).json({ success: true, data: { teachers: data?.docentes || [] } });
+        // The frontend component expects the entire object from docentes.json
+        if (data) {
+            res.status(200).json(data);
+        } else {
+            // Return a default structure if the file is missing/empty
+            res.status(404).json({ docentes: [], estadisticas: {}, materias: [], configuracion: {} });
+        }
     } catch (error) {
-        res.status(200).json({ success: true, data: { teachers: [] } });
+        console.error('Error in handleTeachers:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
