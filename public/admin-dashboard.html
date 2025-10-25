@@ -9,7 +9,6 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 
     <!-- CSS adicional para métricas avanzadas -->
@@ -3086,43 +3085,7 @@
         }
     </script>
 
-    <!-- 🔧 SISTEMA CORE (OBLIGATORIO) - VERSIONADO PARA FORZAR RECARGA -->
-    <script src="js/context-manager.js?v=20251001-1430"></script>        <!-- 🔒 Base del sistema -->
-    <script src="js/config.js?v=20251001-1430"></script>    <!-- 🔧 Configuración global -->
-    <script src="js/content-manager.js?v=20251001-1430"></script>        <!-- 📝 Gestión de contenido -->
-    <script src="js/script.js?v=20251001-1430"></script>                 <!-- 🔒 Script principal -->
-
-    <!-- 📝 LOGGER CENTRALIZADO (debe cargar primero) -->
-    <script src="js/core/logger.js?v=20251001-1430"></script>
-
-    <!-- 🎯 BGE FRAMEWORK CORE -->
-    <!-- ⚠️ IMPORTANTE: bge-framework-core.js AUTOMÁTICAMENTE carga performance y security -->
-    <!-- ⚠️ NO CARGAR MÓDULOS MANUALMENTE PARA EVITAR DUPLICACIÓN -->
-    <script src="js/bge-framework-core.js?v=FINAL2025"></script>
-
-    <!-- 📊 MÓDULOS BGE ADICIONALES (Solo los que NO carga automáticamente el core) -->
-    <!-- ✅ ELIMINADOS: bge-analytics-module.js y bge-pwa-module.js - No existen actualmente -->
-    <!-- Las funcionalidades de analytics están en bge-advanced-analytics.js -->
-    <!-- Las funcionalidades PWA están en bge-pwa-advanced.js -->
-
-    <!-- 🔧 FUNCIONALIDADES DESARROLLO -->
-    <!-- <script src="js/dev-override.js?v=20251001"></script> -->    <!-- ⚠️ DESHABILITADO PARA PRODUCCIÓN -->
-
-    <!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DEL DASHBOARD -->
-    <script src="js/chatbot.js?v=20251001-1430"></script>                <!-- 🤖 Chatbot admin -->
-    <script src="js/search-simple.js?v=20251001-1430"></script>          <!-- 🔍 Búsqueda -->
-    <script src="js/api-client.js?v=20251015-LATEST"></script>             <!-- 🔗 Cliente API -->
-    <script src="js/dashboard-manager-2025.js?v=20251015-LATEST"></script> <!-- 📊 Gestor principal dashboard CORREGIDO -->
-    <script src="js/dynamic-dashboard-data.js?v=20251001-1430"></script> <!-- 📈 Datos dinámicos -->
-    <script src="js/dynamic-stats-loader.js?v=20251001-1430"></script>   <!-- 📊 Estadísticas -->
-        <script src="js/dynamic-teacher-loader.js?v=20251001-1430"></script> <!-- 👨‍🏫 Datos docentes -->
-        <script src="js/dynamic-student-loader.js?v=20251001-1430"></script> <!-- 👨‍🎓 Datos estudiantes -->
-    <script src="js/dynamic-finance-loader.js?v=20251001-1430"></script> <!-- 💰 Datos financieros -->
-    <script src="js/academic-reports-manager.js?v=20251001-1430"></script> <!-- 📋 Reportes académicos -->
-    <script src="js/bolsa-trabajo-manager.js?v=20251009"></script>       <!-- 💼 Gestor Bolsa de Trabajo -->
-    <script src="js/suscriptores-manager.js?v=20251009"></script>         <!-- 📧 Gestor de Suscriptores -->
-    <script src="js/approvals-manager.js?v=20251024-0300"></script>            <!-- ✅ Gestor de Aprobaciones -->
-    <script src="js/parent-manager.js?v=20251022"></script>             <!-- 👨‍👩‍👧‍👦 Gestor de Padres -->
+    <!-- Webpack will inject all necessary script bundles here -->
 
     <!-- 🎓 Panel de Egresados - NUEVO -->
     <script>
@@ -5208,7 +5171,7 @@
                 let data = [];
                 const endpoint = `${type}.json`;
 
-                const response = await fetch(`data/${endpoint}`);
+                const response = await fetch(`/api/${type}`);
                 if (response.ok) {
                     const jsonData = await response.json();
                     data = jsonData[type] || [];

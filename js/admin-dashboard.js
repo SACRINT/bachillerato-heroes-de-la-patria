@@ -1,3 +1,5 @@
+import '../css/style.css';
+
 // Dashboard Administrativo Integrado con API
 class AdminDashboard {
     constructor() {

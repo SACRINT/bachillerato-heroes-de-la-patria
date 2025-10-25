@@ -10,6 +10,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin'); // Import HtmlWebpackP
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = (env, argv) => {
     const isProduction = argv.mode === 'production';
@@ -175,6 +176,11 @@ module.exports = (env, argv) => {
             new webpack.DefinePlugin({
                 'window.TINYMCE_API_KEY_GLOBAL': JSON.stringify(process.env.TINYMCE_API_KEY || 'no-api-key'),
                 'TINYMCE_API_KEY_PLACEHOLDER': JSON.stringify(process.env.TINYMCE_API_KEY || 'no-api-key'),
+            }),
+            new CopyWebpackPlugin({
+                patterns: [
+                    { from: 'partials', to: 'partials' }
+                ]
             }),
             // Compression con gzip
             ...(isProduction ? [
