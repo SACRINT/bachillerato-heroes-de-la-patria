@@ -168,7 +168,7 @@ module.exports = (env, argv) => {
         plugins: [
             new HtmlWebpackPlugin({
                 template: './public/admin-dashboard.html', // Source HTML file
-                filename: 'admin-dashboard.html', // Output HTML file
+                filename: '../admin-dashboard.html', // Output HTML file
                 inject: 'body', // Inject scripts into the body
                 chunks: ['main', 'admin', 'tinymce', 'calendar', 'vendors', 'common', 'charts', 'styles'], // Inyectar todos los bundles relevantes
                 TINYMCE_API_KEY: process.env.TINYMCE_API_KEY || 'no-api-key', // Pass env var to template
