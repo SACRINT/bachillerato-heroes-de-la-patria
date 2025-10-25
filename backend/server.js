@@ -184,6 +184,14 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+app.get('/api/debug-server-check', (req, res) => {
+    res.json({
+        running_server: "backend/server.js",
+        timestamp: new Date().toISOString(),
+        message: "If you see this, backend/server.js is running on Vercel."
+    });
+});
+
 // Health Check alternativo (compatibilidad con el frontend)
 app.get('/health', (req, res) => {
     res.json({
