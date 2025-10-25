@@ -446,11 +446,27 @@ async function handleGamificationDailyChallenges(req, res) {
 async function handleGetSuscriptores(req, res) {
     try {
         const client = await pool.connect();
-        const { rows } = await client.query("SELECT id, email, nombre, subscribed_at FROM public.suscriptores ORDER BY subscribed_at DESC;");
+        // Query the correct table 'suscriptores_notificaciones' and alias columns to match frontend expectations
+        const { rows } = await client.query(`
+            SELECT 
+                id, 
+                email, 
+                nombre, 
+                estado, 
+                verificado, 
+                fecha_registro,
+                0 as total_enviados, -- Fake data for now
+                0 as total_abiertos, -- Fake data for now
+                true as notif_todas -- Fake data for now
+            FROM 
+                public.suscriptores_notificaciones 
+            ORDER BY 
+                fecha_registro DESC;
+        `);
         client.release();
-        res.status(200).json({ success: true, suscriptores: rows });
+        res.status(200).json({ success: true, suscriptores: rows, total: rows.length });
     } catch (error) {
-        console.error('Error fetching suscriptores:', error);
+        console.error('Error fetching suscriptores_notificaciones:', error);
         res.status(500).json({ success: false, error: 'Error interno del servidor al obtener suscriptores.' });
     }
 }
