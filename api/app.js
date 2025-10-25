@@ -387,15 +387,17 @@ async function handleChartQuejasPorTipo(req, res) {
 
 async function handleApprovalsPending(req, res) {
     try {
-        // Dummy data for now, actual DB query for pending approvals would go here
+        // NOTE: The frontend expects the array directly, not an object wrapper.
+        // This is a compatibility fix for the old, deployed frontend code.
         const dummyData = [
-            { id: 1, type: 'Solicitud de Beca', applicant: 'Juan Pérez', status: 'pending', date: '2025-10-20' },
-            { id: 2, type: 'Permiso Especial', applicant: 'María García', status: 'pending', date: '2025-10-21' }
+            { id: 1, form_type: 'bolsa_trabajo', data: { nombre: 'Juan Pérez', puesto_deseado: 'Desarrollador Frontend' }, created_at: '2025-10-24T10:00:00Z', verification_email: 'juan.perez@example.com', email_verified: true },
+            { id: 2, form_type: 'egresados', data: { nombre_completo: 'María García', generacion: '2020-2023' }, created_at: '2025-10-23T15:30:00Z', verification_email: 'maria.garcia@example.com', email_verified: false }
         ];
-        res.status(200).json({ success: true, approvals: dummyData });
+        res.status(200).json(dummyData);
     } catch (error) {
         console.error('Error fetching pending approvals:', error);
-        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener aprobaciones pendientes.' });
+        // Return an empty array on error to prevent the frontend from crashing.
+        res.status(500).json([]);
     }
 }
 
@@ -445,6 +447,56 @@ async function handleGamificationDailyChallenges(req, res) {
     }
 }
 
+async function handleGetSuscriptores(req, res) {
+    try {
+        const client = await pool.connect();
+        const { rows } = await client.query("SELECT id, email, nombre, subscribed_at FROM public.suscriptores ORDER BY subscribed_at DESC;");
+        client.release();
+        res.status(200).json({ success: true, suscriptores: rows });
+    } catch (error) {
+        console.error('Error fetching suscriptores:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener suscriptores.' });
+    }
+}
+
+async function handleGetSuscriptoresStats(req, res) {
+    try {
+        const client = await pool.connect();
+        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.suscriptores;");
+        client.release();
+        const count = rows[0] ? parseInt(rows[0].total, 10) : 0;
+        res.status(200).json({ success: true, stats: { count: count } });
+    } catch (error) {
+        console.error('Error fetching suscriptores stats:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estadísticas de suscriptores.' });
+    }
+}
+
+async function handleGetBolsaTrabajo(req, res) {
+    try {
+        const client = await pool.connect();
+        const { rows } = await client.query("SELECT id, nombre, email, telefono, puesto_deseado, nivel_experiencia, disponibilidad, submitted_at FROM public.bolsa_trabajo ORDER BY submitted_at DESC;");
+        client.release();
+        res.status(200).json({ success: true, candidatos: rows });
+    } catch (error) {
+        console.error('Error fetching bolsa_trabajo:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener candidatos.' });
+    }
+}
+
+async function handleGetBolsaTrabajoStats(req, res) {
+    try {
+        const client = await pool.connect();
+        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.bolsa_trabajo;");
+        client.release();
+        const count = rows[0] ? parseInt(rows[0].total, 10) : 0;
+        res.status(200).json({ success: true, stats: { count: count } });
+    } catch (error) {
+        console.error('Error fetching bolsa_trabajo stats:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estadísticas de la bolsa de trabajo.' });
+    }
+}
+
 // --- Express App Setup ---
 const app = express();
 
@@ -489,6 +541,14 @@ app.get('/api/approvals/pending', handleApprovalsPending);
 app.get('/api/calendar/events', handleEventosCalendar);
 app.get('/api/gamification/profile/admin@bge.edu.mx', handleGamificationProfile);
 app.get('/api/gamification/daily-challenges', handleGamificationDailyChallenges);
+
+// Suscriptores routes
+app.get('/api/suscriptores', handleGetSuscriptores);
+app.get('/api/suscriptores/stats/general', handleGetSuscriptoresStats);
+
+// Bolsa de Trabajo routes
+app.get('/api/bolsa-trabajo', handleGetBolsaTrabajo);
+app.get('/api/bolsa-trabajo/stats/general', handleGetBolsaTrabajoStats);
 
 // Auth routes
 app.all('/api/students-auth*', handleStudentsAuth);
