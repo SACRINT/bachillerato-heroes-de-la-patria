@@ -1228,34 +1228,35 @@ const financesRoutes = require('../backend/routes/finances');
 const citasRoutes = require('../backend/routes/citas');
 
 // ✅ 28 RUTAS FALTANTES AGREGADAS (2 NOV 2025)
-const aiDatabaseRoutes = require('../backend/routes/ai-database');
-const analyticsPredictiveRoutes = require('../backend/routes/analytics-predictivo');
-const analyticsRoutes = require('../backend/routes/analytics');
-const asistenteVirtualRoutes = require('../backend/routes/asistente-virtual');
-const backupRoutes = require('../backend/routes/backup');
-const calendarRoutes = require('../backend/routes/calendar');
-const chatbotIaRoutes = require('../backend/routes/chatbot-ia');
-const chatbotRoutes = require('../backend/routes/chatbot');
-const cmsRoutes = require('../backend/routes/cms');
-const deteccionRiesgosRoutes = require('../backend/routes/deteccion-riesgos');
-const gamificationRoutes = require('../backend/routes/gamification');
-const googleClassroomRoutes = require('../backend/routes/google-classroom');
-const gradesRoutes = require('../backend/routes/grades');
-const gradesAnalyticsRoutes = require('../backend/routes/gradesAnalytics');
-const informationRoutes = require('../backend/routes/information');
-const maintenanceRoutes = require('../backend/routes/maintenance');
-const migrationRoutes = require('../backend/routes/migration');
-const multiTenantRoutes = require('../backend/routes/multi-tenant');
-const newslettersPgRoutes = require('../backend/routes/newsletters-pg');
-const notificationsRoutes = require('../backend/routes/notifications');
-const parentTeacherCommunicationRoutes = require('../backend/routes/parentTeacherCommunication');
-const realAiRoutes = require('../backend/routes/real-ai');
-const recomendacionesMlRoutes = require('../backend/routes/recomendaciones-ml');
-const sslRoutes = require('../backend/routes/ssl');
-const studentsRoutes = require('../backend/routes/students');
-const subscriptionsServiceRoutes = require('../backend/routes/subscriptions-service');
-const teachersRoutes = require('../backend/routes/teachers');
-const uploadsRoutes = require('../backend/routes/uploads');
+// ⏸️ COMENTADAS TEMPORALMENTE PARA DEBUG - UNA TIENE ERROR DE SINTAXIS
+// const aiDatabaseRoutes = require('../backend/routes/ai-database');
+// const analyticsPredictiveRoutes = require('../backend/routes/analytics-predictivo');
+// const analyticsRoutes = require('../backend/routes/analytics');
+// const asistenteVirtualRoutes = require('../backend/routes/asistente-virtual');
+// const backupRoutes = require('../backend/routes/backup');
+// const calendarRoutes = require('../backend/routes/calendar');
+// const chatbotIaRoutes = require('../backend/routes/chatbot-ia');
+// const chatbotRoutes = require('../backend/routes/chatbot');
+// const cmsRoutes = require('../backend/routes/cms');
+// const deteccionRiesgosRoutes = require('../backend/routes/deteccion-riesgos');
+// const gamificationRoutes = require('../backend/routes/gamification');
+// const googleClassroomRoutes = require('../backend/routes/google-classroom');
+// const gradesRoutes = require('../backend/routes/grades');
+// const gradesAnalyticsRoutes = require('../backend/routes/gradesAnalytics');
+// const informationRoutes = require('../backend/routes/information');
+// const maintenanceRoutes = require('../backend/routes/maintenance');
+// const migrationRoutes = require('../backend/routes/migration');
+// const multiTenantRoutes = require('../backend/routes/multi-tenant');
+// const newslettersPgRoutes = require('../backend/routes/newsletters-pg');
+// const notificationsRoutes = require('../backend/routes/notifications');
+// const parentTeacherCommunicationRoutes = require('../backend/routes/parentTeacherCommunication');
+// const realAiRoutes = require('../backend/routes/real-ai');
+// const recomendacionesMlRoutes = require('../backend/routes/recomendaciones-ml');
+// const sslRoutes = require('../backend/routes/ssl');
+// const studentsRoutes = require('../backend/routes/students');
+// const subscriptionsServiceRoutes = require('../backend/routes/subscriptions-service');
+// const teachersRoutes = require('../backend/routes/teachers');
+// const uploadsRoutes = require('../backend/routes/uploads');
 
 // Register all route modules
 app.use('/api/auth', authRoutes);
@@ -1296,34 +1297,35 @@ app.use('/api/digital-library', digitalLibraryRoutes);
 app.use('/api/support-tickets', supportTicketsRoutes);
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
-app.use('/api/ai-database', aiDatabaseRoutes);
-app.use('/api/analytics-predictivo', analyticsPredictiveRoutes);
-app.use('/api/analytics-direct', analyticsRoutes);  // analytics (para evitar conflicto con analytics-dashboard)
-app.use('/api/asistente-virtual', asistenteVirtualRoutes);
-app.use('/api/backup', backupRoutes);
-app.use('/api/calendar-direct', calendarRoutes);  // calendar (para evitar conflicto si necesario)
-app.use('/api/chatbot-ia', chatbotIaRoutes);
-app.use('/api/chatbot-direct', chatbotRoutes);  // chatbot (para evitar conflicto)
-app.use('/api/cms', cmsRoutes);
-app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes);
-app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para evitar conflicto)
-app.use('/api/google-classroom', googleClassroomRoutes);
-app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
-app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
-app.use('/api/information', informationRoutes);
-app.use('/api/maintenance', maintenanceRoutes);
-app.use('/api/migration', migrationRoutes);
-app.use('/api/multi-tenant', multiTenantRoutes);
-app.use('/api/newsletters-pg', newslettersPgRoutes);
-app.use('/api/notifications-direct', notificationsRoutes);  // notifications (para evitar conflicto)
-app.use('/api/parentTeacherCommunication', parentTeacherCommunicationRoutes);
-app.use('/api/real-ai', realAiRoutes);
-app.use('/api/recomendaciones-ml', recomendacionesMlRoutes);
-app.use('/api/ssl', sslRoutes);
-app.use('/api/students-direct', studentsRoutes);  // students (para evitar conflicto)
-app.use('/api/subscriptions-service', subscriptionsServiceRoutes);
-app.use('/api/teachers-direct', teachersRoutes);  // teachers (para evitar conflicto)
-app.use('/api/uploads-direct', uploadsRoutes);  // uploads (para evitar conflicto)
+// ⏸️ COMENTADAS TEMPORALMENTE PARA DEBUG - UNA TIENE ERROR DE SINTAXIS
+// app.use('/api/ai-database', aiDatabaseRoutes);
+// app.use('/api/analytics-predictivo', analyticsPredictiveRoutes);
+// app.use('/api/analytics-direct', analyticsRoutes);  // analytics (para evitar conflicto con analytics-dashboard)
+// app.use('/api/asistente-virtual', asistenteVirtualRoutes);
+// app.use('/api/backup', backupRoutes);
+// app.use('/api/calendar-direct', calendarRoutes);  // calendar (para evitar conflicto si necesario)
+// app.use('/api/chatbot-ia', chatbotIaRoutes);
+// app.use('/api/chatbot-direct', chatbotRoutes);  // chatbot (para evitar conflicto)
+// app.use('/api/cms', cmsRoutes);
+// app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes);
+// app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para evitar conflicto)
+// app.use('/api/google-classroom', googleClassroomRoutes);
+// app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
+// app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
+// app.use('/api/information', informationRoutes);
+// app.use('/api/maintenance', maintenanceRoutes);
+// app.use('/api/migration', migrationRoutes);
+// app.use('/api/multi-tenant', multiTenantRoutes);
+// app.use('/api/newsletters-pg', newslettersPgRoutes);
+// app.use('/api/notifications-direct', notificationsRoutes);  // notifications (para evitar conflicto)
+// app.use('/api/parentTeacherCommunication', parentTeacherCommunicationRoutes);
+// app.use('/api/real-ai', realAiRoutes);
+// app.use('/api/recomendaciones-ml', recomendacionesMlRoutes);
+// app.use('/api/ssl', sslRoutes);
+// app.use('/api/students-direct', studentsRoutes);  // students (para evitar conflicto)
+// app.use('/api/subscriptions-service', subscriptionsServiceRoutes);
+// app.use('/api/teachers-direct', teachersRoutes);  // teachers (para evitar conflicto)
+// app.use('/api/uploads-direct', uploadsRoutes);  // uploads (para evitar conflicto)
 
 // Not implemented routes
 const notImplementedRoutes = [
