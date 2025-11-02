@@ -1241,23 +1241,23 @@ const cmsRoutes = require('../backend/routes/cms');
 const deteccionRiesgosRoutes = require('../backend/routes/deteccion-riesgos');
 // Mitad A del segundo grupo (9 rutas)
 const gamificationRoutes = require('../backend/routes/gamification');
-// const googleClassroomRoutes = require('../backend/routes/google-classroom');  // Has executeQuery
+// const googleClassroomRoutes = require('../backend/routes/google-classroom');  // Has executeQuery issue
 const gradesRoutes = require('../backend/routes/grades');
-// const gradesAnalyticsRoutes = require('../backend/routes/gradesAnalytics');  // Has logger import
-// const informationRoutes = require('../backend/routes/information');  // Has logger import
-// const maintenanceRoutes = require('../backend/routes/maintenance');  // Has logger import
+const gradesAnalyticsRoutes = require('../backend/routes/gradesAnalytics');  // FIXED: logger removed
+// const informationRoutes = require('../backend/routes/information');  // SKIP: complex logger usage
 // const migrationRoutes = require('../backend/routes/migration');  // Requires mysql2/promise
+const maintenanceRoutes = require('../backend/routes/maintenance');  // FIXED: logger removed
 const multiTenantRoutes = require('../backend/routes/multi-tenant');
 const newslettersPgRoutes = require('../backend/routes/newsletters-pg');
 // Mitad B del segundo grupo (9 rutas)
-// const notificationsRoutes = require('../backend/routes/notifications');  // Has logger import
-// const parentTeacherCommunicationRoutes = require('../backend/routes/parentTeacherCommunication');  // Has logger import
+const notificationsRoutes = require('../backend/routes/notifications');  // FIXED: logger removed
+const parentTeacherCommunicationRoutes = require('../backend/routes/parentTeacherCommunication');  // FIXED: logger removed
 // const realAiRoutes = require('../backend/routes/real-ai');
 // const recomendacionesMlRoutes = require('../backend/routes/recomendaciones-ml');
-// const sslRoutes = require('../backend/routes/ssl');  // Has logger import
-// const studentsRoutes = require('../backend/routes/students');  // Has logger import
+const sslRoutes = require('../backend/routes/ssl');  // FIXED: logger removed
+const studentsRoutes = require('../backend/routes/students');  // FIXED: logger removed
 // const subscriptionsServiceRoutes = require('../backend/routes/subscriptions-service');
-// const teachersRoutes = require('../backend/routes/teachers');  // Has logger import
+const teachersRoutes = require('../backend/routes/teachers');  // FIXED: logger removed
 // const uploadsRoutes = require('../backend/routes/uploads');
 
 // Register all route modules
@@ -1310,25 +1310,30 @@ app.use('/api/chatbot-ia', chatbotIaRoutes);
 app.use('/api/chatbot-direct', chatbotRoutes);  // chatbot (para evitar conflicto)
 app.use('/api/cms', cmsRoutes);
 app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes);
-// Mitad A - Activadas (14 de 28 rutas nuevas)
+// Mitad A - Activadas (24 de 28 rutas nuevas + analytics & dashboard)
 app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para evitar conflicto)
 app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
+app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
+app.use('/api/maintenance', maintenanceRoutes);
 // app.use('/api/migration', migrationRoutes);  // Requires mysql2/promise
 app.use('/api/multi-tenant', multiTenantRoutes);
 app.use('/api/newsletters-pg', newslettersPgRoutes);
 
-// Mitad B - Activadas (adicionales)
-// DESHABILITADAS TEMPORALMENTE (requieren reparación de logger imports):
-// Rutas con logger import que causa "Route.post() requires callback":
-// - google-classroom (executeQuery issue)
-// - gradesAnalytics
-// - information
-// - maintenance
-// - notifications
-// - parentTeacherCommunication
-// - ssl
-// - students
-// - teachers
+// Mitad B - Activadas
+app.use('/api/notifications-direct', notificationsRoutes);  // notifications (para evitar conflicto)
+app.use('/api/parentTeacherCommunication', parentTeacherCommunicationRoutes);
+app.use('/api/ssl', sslRoutes);
+app.use('/api/students-direct', studentsRoutes);  // students (para evitar conflicto)
+app.use('/api/teachers-direct', teachersRoutes);  // teachers (para evitar conflicto)
+
+// TODAVÍA DESHABILITADAS:
+// - google-classroom (executeQuery issue - needs revisión)
+// - information (complex executeQuery usage)
+// - migration (Requires mysql2/promise)
+// - real-ai (no reparado)
+// - recomendaciones-ml (no reparado)
+// - subscriptions-service (no reparado)
+// - uploads (no reparado)
 
 // Not implemented routes
 const notImplementedRoutes = [
