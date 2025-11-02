@@ -1241,23 +1241,23 @@ const cmsRoutes = require('../backend/routes/cms');
 const deteccionRiesgosRoutes = require('../backend/routes/deteccion-riesgos');
 // Mitad A del segundo grupo (9 rutas)
 const gamificationRoutes = require('../backend/routes/gamification');
-const googleClassroomRoutes = require('../backend/routes/google-classroom');
+// const googleClassroomRoutes = require('../backend/routes/google-classroom');  // Has executeQuery
 const gradesRoutes = require('../backend/routes/grades');
-const gradesAnalyticsRoutes = require('../backend/routes/gradesAnalytics');
-const informationRoutes = require('../backend/routes/information');
-const maintenanceRoutes = require('../backend/routes/maintenance');
+// const gradesAnalyticsRoutes = require('../backend/routes/gradesAnalytics');  // Has logger import
+// const informationRoutes = require('../backend/routes/information');  // Has logger import
+// const maintenanceRoutes = require('../backend/routes/maintenance');  // Has logger import
 const migrationRoutes = require('../backend/routes/migration');
 const multiTenantRoutes = require('../backend/routes/multi-tenant');
 const newslettersPgRoutes = require('../backend/routes/newsletters-pg');
 // Mitad B del segundo grupo (9 rutas)
-// const notificationsRoutes = require('../backend/routes/notifications');
-// const parentTeacherCommunicationRoutes = require('../backend/routes/parentTeacherCommunication');
+// const notificationsRoutes = require('../backend/routes/notifications');  // Has logger import
+// const parentTeacherCommunicationRoutes = require('../backend/routes/parentTeacherCommunication');  // Has logger import
 // const realAiRoutes = require('../backend/routes/real-ai');
 // const recomendacionesMlRoutes = require('../backend/routes/recomendaciones-ml');
-// const sslRoutes = require('../backend/routes/ssl');
-// const studentsRoutes = require('../backend/routes/students');
+// const sslRoutes = require('../backend/routes/ssl');  // Has logger import
+// const studentsRoutes = require('../backend/routes/students');  // Has logger import
 // const subscriptionsServiceRoutes = require('../backend/routes/subscriptions-service');
-// const teachersRoutes = require('../backend/routes/teachers');
+// const teachersRoutes = require('../backend/routes/teachers');  // Has logger import
 // const uploadsRoutes = require('../backend/routes/uploads');
 
 // Register all route modules
@@ -1310,26 +1310,25 @@ app.use('/api/chatbot-ia', chatbotIaRoutes);
 app.use('/api/chatbot-direct', chatbotRoutes);  // chatbot (para evitar conflicto)
 app.use('/api/cms', cmsRoutes);
 app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes);
-// Mitad A
+// Mitad A - Activadas (18 de 28 rutas nuevas)
 app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para evitar conflicto)
-// app.use('/api/google-classroom', googleClassroomRoutes);  // DEBUG: Testing
-// app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
-// app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
-// app.use('/api/information', informationRoutes);  // DEBUG: Has same logger issue
-app.use('/api/maintenance', maintenanceRoutes);
-// app.use('/api/migration', migrationRoutes);
-// app.use('/api/multi-tenant', multiTenantRoutes);
-// app.use('/api/newsletters-pg', newslettersPgRoutes);
-// Mitad B
-// app.use('/api/notifications-direct', notificationsRoutes);  // notifications (para evitar conflicto)
-// app.use('/api/parentTeacherCommunication', parentTeacherCommunicationRoutes);
-// app.use('/api/real-ai', realAiRoutes);
-// app.use('/api/recomendaciones-ml', recomendacionesMlRoutes);
-// app.use('/api/ssl', sslRoutes);
-// app.use('/api/students-direct', studentsRoutes);  // students (para evitar conflicto)
-// app.use('/api/subscriptions-service', subscriptionsServiceRoutes);
-// app.use('/api/teachers-direct', teachersRoutes);  // teachers (para evitar conflicto)
-// app.use('/api/uploads-direct', uploadsRoutes);  // uploads (para evitar conflicto)
+app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
+app.use('/api/migration', migrationRoutes);
+app.use('/api/multi-tenant', multiTenantRoutes);
+app.use('/api/newsletters-pg', newslettersPgRoutes);
+
+// Mitad B - Activadas (adicionales)
+// DESHABILITADAS TEMPORALMENTE (requieren reparación de logger imports):
+// Rutas con logger import que causa "Route.post() requires callback":
+// - google-classroom (executeQuery issue)
+// - gradesAnalytics
+// - information
+// - maintenance
+// - notifications
+// - parentTeacherCommunication
+// - ssl
+// - students
+// - teachers
 
 // Not implemented routes
 const notImplementedRoutes = [
