@@ -11,8 +11,11 @@ try {
     app = require('./app.js');
     console.log('[api/index.js] ✅ app.js cargado exitosamente');
 } catch (error) {
-    console.error('[api/index.js] ❌ Error al cargar app.js:', error.message);
-    console.error('[api/index.js] Stack:', error.stack);
+    console.error('[api/index.js] ❌ Error al cargar app.js');
+    console.error('[api/index.js] Tipo de error:', error.constructor.name);
+    console.error('[api/index.js] Mensaje:', error.message);
+    console.error('[api/index.js] En:', error.stack.split('\n')[1]);
+    console.error('[api/index.js] Stack completo:', error.stack);
 
     // Crear una app de fallback en caso de error
     const express = require('express');
