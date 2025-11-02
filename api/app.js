@@ -158,20 +158,87 @@ async function handleGrades(req, res) {
 }
 
 async function handleParents(req, res) {
-    // This handler can be simplified further, but for now, we keep the logic
-    // based on method, assuming it's attached to app.all('/api/parents*')
-    switch (req.method) {
+    const method = req.method;
+    const parentId = req.params.id;
+
+    switch (method) {
         case 'GET':
             try {
-                const { rows } = await pool.query('SELECT id, nombre, email FROM parents');
+                const { rows } = await pool.query('SELECT id, nombre, email, student_id FROM parents ORDER BY nombre');
                 return res.status(200).json({ success: true, data: rows });
             } catch (error) {
                 console.error('Error fetching parents:', error);
                 return res.status(500).json({ success: false, error: 'Error interno del servidor.' });
             }
-        // Other methods (POST, PUT, DELETE) would be here
+
+        case 'POST':
+            try {
+                const { nombre, email, password, student_id } = req.body;
+                if (!nombre || !email || !password) {
+                    return res.status(400).json({ success: false, message: 'Nombre, email y contraseña son requeridos.' });
+                }
+
+                const hashedPassword = await bcrypt.hash(password, 10);
+                const { rows } = await pool.query(
+                    'INSERT INTO parents (nombre, email, password_hash, student_id) VALUES ($1, $2, $3, $4) RETURNING id, nombre, email, student_id',
+                    [nombre, email, hashedPassword, student_id || null]
+                );
+
+                return res.status(201).json({ success: true, data: rows[0], message: 'Padre creado exitosamente.' });
+            } catch (error) {
+                console.error('Error creating parent:', error);
+                if (error.code === '23505') {
+                    return res.status(409).json({ success: false, message: 'El email ya está registrado.' });
+                }
+                return res.status(500).json({ success: false, error: 'Error interno del servidor.' });
+            }
+
+        case 'PUT':
+            if (!parentId) {
+                return res.status(400).json({ success: false, message: 'ID de padre requerido.' });
+            }
+            try {
+                const { nombre, email, password, student_id } = req.body;
+                if (!nombre || !email) {
+                    return res.status(400).json({ success: false, message: 'Nombre y email son requeridos.' });
+                }
+
+                if (password) {
+                    const hashedPassword = await bcrypt.hash(password, 10);
+                    await pool.query(
+                        'UPDATE parents SET nombre = $1, email = $2, password_hash = $3, student_id = $4 WHERE id = $5',
+                        [nombre, email, hashedPassword, student_id || null, parentId]
+                    );
+                } else {
+                    await pool.query(
+                        'UPDATE parents SET nombre = $1, email = $2, student_id = $3 WHERE id = $4',
+                        [nombre, email, student_id || null, parentId]
+                    );
+                }
+
+                return res.status(200).json({ success: true, message: 'Padre actualizado exitosamente.' });
+            } catch (error) {
+                console.error('Error updating parent:', error);
+                return res.status(500).json({ success: false, error: 'Error interno del servidor.' });
+            }
+
+        case 'DELETE':
+            if (!parentId) {
+                return res.status(400).json({ success: false, message: 'ID de padre requerido.' });
+            }
+            try {
+                const result = await pool.query('DELETE FROM parents WHERE id = $1', [parentId]);
+                if (result.rowCount === 0) {
+                    return res.status(404).json({ success: false, message: 'Padre no encontrado.' });
+                }
+                return res.status(200).json({ success: true, message: 'Padre eliminado exitosamente.' });
+            } catch (error) {
+                console.error('Error deleting parent:', error);
+                return res.status(500).json({ success: false, error: 'Error interno del servidor.' });
+            }
+
         default:
-            return res.status(405).json({ success: false, error: 'Method Not Allowed for this handler.' });
+            return res.status(405).json({ success: false, error: 'Método no permitido.' });
     }
 }
 
@@ -256,6 +323,91 @@ async function handleDebugDb(req, res) {
 function handleHealth(req, res) { res.status(200).json({ success: true, message: 'API is alive and healthy.' }); }
 function handleNotImplemented(req, res) { res.status(501).json({ success: false, error: 'Not Implemented' }); }
 
+async function handleFinances(req, res) {
+    try {
+        const client = await pool.connect();
+
+        // Fetch ingresos
+        const ingresosResult = await client.query('SELECT * FROM ingresos');
+        const ingresos = ingresosResult.rows;
+
+        // Fetch gastos
+        const gastosResult = await client.query('SELECT * FROM gastos');
+        const gastos = gastosResult.rows;
+
+        // Fetch pagos_pendientes
+        const pagosPendientesResult = await client.query('SELECT * FROM pagos_pendientes');
+        const pagosPendientes = pagosPendientesResult.rows;
+
+        client.release();
+
+        // Calculate resumen
+        const totalIngresos = ingresos.reduce((sum, item) => sum + parseFloat(item.monto), 0);
+        const totalGastos = gastos.reduce((sum, item) => sum + parseFloat(item.monto), 0);
+        const totalPagosPendientes = pagosPendientes.reduce((sum, item) => sum + parseFloat(item.monto), 0);
+        const utilidadMes = totalIngresos - totalGastos;
+        const tasaCobro = totalIngresos > 0 ? ((totalIngresos / (totalIngresos + totalPagosPendientes)) * 100).toFixed(1) : 0;
+
+        const resumen = {
+            ingresosMes: totalIngresos,
+            pagosPendientes: totalPagosPendientes,
+            tasaCobro: parseFloat(tasaCobro),
+            gastosMes: totalGastos,
+            utilidadMes: utilidadMes,
+            presupuestoAnual: 34170000, // Placeholder, ideally from DB config
+            ingresoAcumulado: 25523250, // Placeholder
+            porcentajePresupuesto: 74.7 // Placeholder
+        };
+
+        // Calculate estadisticas
+        const estadisticas = {
+            totalIngresosMes: totalIngresos,
+            totalGastosMes: totalGastos,
+            utilidadMes: utilidadMes,
+            totalPagosPendientes: totalPagosPendientes,
+            tasaCobroActual: parseFloat(tasaCobro),
+            promedioIngresoDiario: totalIngresos / 30, // Simple average
+            totalEstudiantesPagando: 190, // Placeholder
+            totalEstudiantesMorosos: 12, // Placeholder
+            porcentajeMorosidad: 5.9, // Placeholder
+            ingresoProyectadoAnual: 34170000, // Placeholder
+            avancePresupuestal: 74.7 // Placeholder
+        };
+
+        const categorias = {
+            ingresos: ["Colegiaturas", "Inscripciones", "Servicios", "Trámites", "Eventos", "Otros"],
+            gastos: ["Personal", "Servicios", "Materiales", "Mantenimiento", "Administrativos", "Otros"]
+        };
+
+        const configuracion = {
+            monedaDefault: "MXN",
+            simboloMoneda: "$",
+            periodoFiscal: "2024",
+            fechaCorte: new Date().toISOString().split('T')[0],
+            ultimaActualizacion: new Date().toISOString(),
+            version: "1.0",
+            alertaVencimiento: 5,
+            metaCobroMensual: 95.0,
+            presupuestoAnual: 34170000
+        };
+
+        res.status(200).json({
+            success: true,
+            resumen,
+            ingresos,
+            gastos,
+            pagosPendientes,
+            estadisticas,
+            categorias,
+            configuracion
+        });
+
+    } catch (error) {
+        console.error('Error fetching financial data:', error);
+        res.status(500).json({ success: false, error: 'Internal Server Error fetching financial data.', details: error.message });
+    }
+}
+
 async function handleNoticiasStats(req, res) {
     try {
         const client = await pool.connect();
@@ -296,7 +448,7 @@ async function handleAvisosStats(req, res) {
             return res.status(200).json({ success: true, stats: { count: 0 } });
         }
         console.error('Error fetching avisos stats:', error);
-        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estadísticas de avisos.' });
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estadísticas de avisos.', details: error.message });
     }
 }
 
@@ -328,7 +480,7 @@ async function handleChartSuscriptoresCrecimiento(req, res) {
         res.status(200).json({ success: true, chartData: dummyData });
     } catch (error) {
         console.error('Error fetching subscriber growth chart data:', error);
-        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener datos del gráfico de crecimiento de suscriptores.' });
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener datos del gráfico de crecimiento de suscriptores.', details: error.message });
     }
 }
 
@@ -496,16 +648,462 @@ async function handleGetBolsaTrabajo(req, res) {
     }
 }
 
-async function handleGetBolsaTrabajoStats(req, res) {
+async function handleFinances(req, res) {
     try {
         const client = await pool.connect();
-        const { rows } = await client.query("SELECT COUNT(*) AS total FROM public.bolsa_trabajo;");
+
+        // Fetch ingresos
+        const ingresosResult = await client.query('SELECT * FROM ingresos');
+        const ingresos = ingresosResult.rows;
+
+        // Fetch gastos
+        const gastosResult = await client.query('SELECT * FROM gastos');
+        const gastos = gastosResult.rows;
+
+        // Fetch pagos_pendientes
+        const pagosPendientesResult = await client.query('SELECT * FROM pagos_pendientes');
+        const pagosPendientes = pagosPendientesResult.rows;
+
         client.release();
-        const count = rows[0] ? parseInt(rows[0].total, 10) : 0;
+
+        // Calculate resumen
+        const totalIngresos = ingresos.reduce((sum, item) => sum + parseFloat(item.monto), 0);
+        const totalGastos = gastos.reduce((sum, item) => sum + parseFloat(item.monto), 0);
+        const totalPagosPendientes = pagosPendientes.reduce((sum, item) => sum + parseFloat(item.monto), 0);
+        const utilidadMes = totalIngresos - totalGastos;
+        const tasaCobro = totalIngresos > 0 ? ((totalIngresos / (totalIngresos + totalPagosPendientes)) * 100).toFixed(1) : 0;
+
+        const resumen = {
+            ingresosMes: totalIngresos,
+            pagosPendientes: totalPagosPendientes,
+            tasaCobro: parseFloat(tasaCobro),
+            gastosMes: totalGastos,
+            utilidadMes: utilidadMes,
+            presupuestoAnual: 34170000, // Placeholder, ideally from DB config
+            ingresoAcumulado: 25523250, // Placeholder
+            porcentajePresupuesto: 74.7 // Placeholder
+        };
+
+        // Calculate estadisticas
+        const estadisticas = {
+            totalIngresosMes: totalIngresos,
+            totalGastosMes: totalGastos,
+            utilidadMes: utilidadMes,
+            totalPagosPendientes: totalPagosPendientes,
+            tasaCobroActual: parseFloat(tasaCobro),
+            promedioIngresoDiario: totalIngresos / 30, // Simple average
+            totalEstudiantesPagando: 190, // Placeholder
+            totalEstudiantesMorosos: 12, // Placeholder
+            porcentajeMorosidad: 5.9, // Placeholder
+            ingresoProyectadoAnual: 34170000, // Placeholder
+            avancePresupuestal: 74.7 // Placeholder
+        };
+
+        const categorias = {
+            ingresos: ["Colegiaturas", "Inscripciones", "Servicios", "Trámites", "Eventos", "Otros"],
+            gastos: ["Personal", "Servicios", "Materiales", "Mantenimiento", "Administrativos", "Otros"]
+        };
+
+        const configuracion = {
+            monedaDefault: "MXN",
+            simboloMoneda: "$",
+            periodoFiscal: "2024",
+            fechaCorte: new Date().toISOString().split('T')[0],
+            ultimaActualizacion: new Date().toISOString(),
+            version: "1.0",
+            alertaVencimiento: 5,
+            metaCobroMensual: 95.0,
+            presupuestoAnual: 34170000
+        };
+
+        res.status(200).json({
+            success: true,
+            resumen,
+            ingresos,
+            gastos,
+            pagosPendientes,
+            estadisticas,
+            categorias,
+            configuracion
+        });
+
+    } catch (error) {
+        console.error('Error fetching financial data:', error);
+        res.status(500).json({ success: false, error: 'Internal Server Error fetching financial data.', details: error.message });
+    }
+}
+
+
+// ============================================
+// ADMIN AUTHENTICATION HANDLERS
+// ============================================
+
+/**
+ * POST /api/auth/login
+ * Autenticación de administradores
+ */
+async function handleAuthLogin(req, res) {
+    const { username, password, rememberMe = false } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({
+            success: false,
+            error: 'Credenciales requeridas',
+            message: 'Nombre de usuario y contraseña son requeridos'
+        });
+    }
+
+    try {
+        // Buscar usuario en usuarios table
+        const { rows } = await pool.query(
+            'SELECT id, username, email, password_hash, nombre, apellido_paterno, apellido_materno, role, active FROM usuarios WHERE username = $1 OR email = $1',
+            [username]
+        );
+
+        const user = rows[0];
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                error: 'Credenciales inválidas'
+            });
+        }
+
+        // Verificar que esté activo
+        if (!user.active) {
+            return res.status(403).json({
+                success: false,
+                error: 'Cuenta desactivada'
+            });
+        }
+
+        // Verificar contraseña
+        const passwordMatch = await bcrypt.compare(password, user.password_hash);
+        if (!passwordMatch) {
+            return res.status(401).json({
+                success: false,
+                error: 'Credenciales inválidas'
+            });
+        }
+
+        // Generar JWT token
+        const expiresIn = rememberMe ? '7d' : '1h';
+        const token = jwt.sign(
+            {
+                userId: user.id,
+                email: user.email,
+                username: user.username,
+                role: user.role,
+                type: 'access'
+            },
+            JWT_SECRET,
+            { expiresIn }
+        );
+
+        // Actualizar último login
+        await pool.query(
+            'UPDATE usuarios SET last_login = NOW() WHERE id = $1',
+            [user.id]
+        );
+
+        console.log(`✅ Login exitoso: ${user.email} (${user.role})`);
+
+        res.json({
+            success: true,
+            message: 'Autenticación exitosa',
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                nombre: user.nombre,
+                apellido_paterno: user.apellido_paterno,
+                role: user.role
+            },
+            tokens: {
+                accessToken: token,
+                tokenType: 'Bearer'
+            }
+        });
+
+    } catch (error) {
+        console.error('❌ Error en login:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error interno del servidor'
+        });
+    }
+}
+
+/**
+ * POST /api/auth/logout
+ * Cerrar sesión
+ */
+async function handleAuthLogout(req, res) {
+    // En una implementación simple, el cliente elimina el token
+    // En producción, agregaríamos el token a una blacklist en Redis
+    res.json({
+        success: true,
+        message: 'Sesión cerrada exitosamente'
+    });
+}
+
+/**
+ * GET /api/auth/profile
+ * Obtener perfil del usuario autenticado
+ */
+async function handleAuthProfile(req, res) {
+    try {
+        // Extraer token del header
+        const authHeader = req.headers['authorization'];
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token requerido'
+            });
+        }
+
+        const token = authHeader.substring(7);
+
+        // Verificar token
+        let decoded;
+        try {
+            decoded = jwt.verify(token, JWT_SECRET);
+        } catch (error) {
+            return res.status(403).json({
+                success: false,
+                error: 'Token inválido o expirado'
+            });
+        }
+
+        // Obtener información actualizada del usuario
+        const { rows } = await pool.query(
+            'SELECT id, username, email, nombre, apellido_paterno, apellido_materno, role, active, created_at, last_login FROM usuarios WHERE id = $1',
+            [decoded.userId]
+        );
+
+        const user = rows[0];
+
+        if (!user || !user.active) {
+            return res.status(401).json({
+                success: false,
+                error: 'Usuario no encontrado o inactivo'
+            });
+        }
+
+        res.json({
+            success: true,
+            user: user
+        });
+
+    } catch (error) {
+        console.error('❌ Error obteniendo perfil:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error interno del servidor'
+        });
+    }
+}
+
+/**
+ * POST /api/auth/refresh
+ * Renovar token de acceso
+ */
+async function handleAuthRefresh(req, res) {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+        return res.status(401).json({
+            success: false,
+            error: 'Refresh token requerido'
+        });
+    }
+
+    try {
+        // Verificar refresh token
+        const decoded = jwt.verify(refreshToken, JWT_SECRET);
+
+        // Generar nuevo access token
+        const newToken = jwt.sign(
+            {
+                userId: decoded.userId,
+                email: decoded.email,
+                username: decoded.username,
+                role: decoded.role,
+                type: 'access'
+            },
+            JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        res.json({
+            success: true,
+            tokens: {
+                accessToken: newToken,
+                tokenType: 'Bearer'
+            }
+        });
+
+    } catch (error) {
+        console.error('❌ Error renovando token:', error);
+        res.status(403).json({
+            success: false,
+            error: 'Refresh token inválido'
+        });
+    }
+}
+
+/**
+ * GET /api/bolsa-trabajo/stats/general
+ * Obtener estadísticas de bolsa de trabajo
+ */
+async function handleGetBolsaTrabajoStats(req, res) {
+    try {
+        const { rows } = await pool.query('SELECT COUNT(*) as count FROM public.bolsa_trabajo');
+        const count = rows[0] ? parseInt(rows[0].count, 10) : 0;
         res.status(200).json({ success: true, stats: { count: count } });
     } catch (error) {
         console.error('Error fetching bolsa_trabajo stats:', error);
-        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estadísticas de la bolsa de trabajo.' });
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estadísticas.' });
+    }
+}
+
+// ============================================
+// CONTACT FORM HANDLER
+// ============================================
+
+/**
+ * POST /api/contact
+ * Procesar formulario de contacto
+ */
+async function handleContactPost(req, res) {
+    const { nombre, name, email, telefono, phone, asunto, subject, mensaje, message, tipo_consulta, tipo } = req.body;
+
+    // Normalizar campos
+    const normalizedData = {
+        nombre: nombre || name,
+        email: email,
+        telefono: telefono || phone || '',
+        tipo_consulta: tipo_consulta || tipo || 'General',
+        asunto: asunto || subject,
+        mensaje: mensaje || message
+    };
+
+    // Validaciones básicas
+    if (!normalizedData.nombre || normalizedData.nombre.trim().length < 2) {
+        return res.status(400).json({
+            success: false,
+            message: 'El nombre debe tener al menos 2 caracteres'
+        });
+    }
+
+    if (!normalizedData.email || !/\S+@\S+\.\S+/.test(normalizedData.email)) {
+        return res.status(400).json({
+            success: false,
+            message: 'El email no es válido'
+        });
+    }
+
+    if (!normalizedData.asunto || normalizedData.asunto.trim().length < 5) {
+        return res.status(400).json({
+            success: false,
+            message: 'El asunto debe tener al menos 5 caracteres'
+        });
+    }
+
+    if (!normalizedData.mensaje || normalizedData.mensaje.trim().length < 10) {
+        return res.status(400).json({
+            success: false,
+            message: 'El mensaje debe tener al menos 10 caracteres'
+        });
+    }
+
+    try {
+        // Guardar en base de datos
+        const insertQuery = `
+            INSERT INTO contactos (nombre, email, telefono, tipo_consulta, asunto, mensaje, status, ip_address, user_agent)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            RETURNING id, fecha_creacion
+        `;
+
+        const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
+        const userAgent = req.headers['user-agent'] || 'unknown';
+
+        const { rows } = await pool.query(insertQuery, [
+            normalizedData.nombre.trim(),
+            normalizedData.email.trim().toLowerCase(),
+            normalizedData.telefono.trim(),
+            normalizedData.tipo_consulta,
+            normalizedData.asunto.trim(),
+            normalizedData.mensaje.trim(),
+            'pendiente',
+            ipAddress,
+            userAgent
+        ]);
+
+        const contactoId = rows[0].id;
+
+        console.log(`✅ Mensaje de contacto guardado: ID ${contactoId} - ${normalizedData.nombre}`);
+
+        res.status(201).json({
+            success: true,
+            message: '¡Gracias por contactarnos! Tu mensaje ha sido recibido y será respondido pronto.',
+            data: {
+                id: contactoId,
+                fecha: rows[0].fecha_creacion
+            }
+        });
+
+    } catch (error) {
+        console.error('❌ Error procesando mensaje de contacto:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al procesar tu mensaje. Por favor intenta nuevamente.'
+        });
+    }
+}
+
+/**
+ * GET /api/contact
+ * Listar mensajes de contacto (admin)
+ */
+async function handleContactGet(req, res) {
+    try {
+        const { status, limit = 50, offset = 0 } = req.query;
+
+        let query = 'SELECT * FROM contactos';
+        const params = [];
+
+        if (status) {
+            query += ' WHERE status = $1';
+            params.push(status);
+        }
+
+        query += ` ORDER BY fecha_creacion DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+        params.push(parseInt(limit), parseInt(offset));
+
+        const { rows } = await pool.query(query, params);
+
+        // Contar total
+        const countQuery = status ?
+            'SELECT COUNT(*) FROM contactos WHERE status = $1' :
+            'SELECT COUNT(*) FROM contactos';
+        const countParams = status ? [status] : [];
+        const countResult = await pool.query(countQuery, countParams);
+
+        res.json({
+            success: true,
+            data: rows,
+            total: parseInt(countResult.rows[0].count),
+            limit: parseInt(limit),
+            offset: parseInt(offset)
+        });
+
+    } catch (error) {
+        console.error('❌ Error obteniendo mensajes de contacto:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener los mensajes'
+        });
     }
 }
 
@@ -516,6 +1114,7 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/images', express.static(path.join(__dirname, '../images')));
 
 // CSP Middleware for TinyMCE
 app.use((req, res, next) => {
@@ -535,7 +1134,8 @@ app.use((req, res, next) => {
 app.get('/api/health', handleHealth);
 app.get('/api/students', handleStudents);
 app.get('/api/teachers', handleTeachers);
-app.get('/api/egresados', handleEgresados);
+// REMOVED: Conflictaba con egresadosRoutes module (app.use('/api/egresados', egresadosRoutes))
+// app.get('/api/egresados', handleEgresados);
 app.get('/api/analytics', handleAnalytics);
 app.get('/api/admin/pending-registrations', handlePendingRegistrations);
 app.get('/api/admin/students', handleStudents);
@@ -554,22 +1154,33 @@ app.get('/api/calendar/events', handleEventosCalendar);
 app.get('/api/gamification/profile/admin@bge.edu.mx', handleGamificationProfile);
 app.get('/api/gamification/daily-challenges', handleGamificationDailyChallenges);
 
+// REMOVED: Conflictaba con suscriptoresRoutes module (app.use('/api/suscriptores', suscriptoresRoutes))
 // Suscriptores routes
-app.get('/api/suscriptores', handleGetSuscriptores);
-app.get('/api/suscriptores/stats/general', handleGetSuscriptoresStats);
+// app.get('/api/suscriptores', handleGetSuscriptores);
+// app.get('/api/suscriptores/stats/general', handleGetSuscriptoresStats);
 
+// REMOVED: Conflictaba con bolsaTrabajoRoutes module (app.use('/api/bolsa-trabajo', bolsaTrabajoRoutes))
 // Bolsa de Trabajo routes
-app.get('/api/bolsa-trabajo', handleGetBolsaTrabajo);
-app.get('/api/bolsa-trabajo/stats/general', handleGetBolsaTrabajoStats);
+// app.get('/api/bolsa-trabajo', handleGetBolsaTrabajo);
+// app.get('/api/bolsa-trabajo/stats/general', handleGetBolsaTrabajoStats);
+app.get('/api/finances', handleFinances);
 
-// Auth routes
-app.all('/api/students-auth*', handleStudentsAuth);
-app.all('/api/parents-auth*', handleParentsAuth);
+// NOTE: The following routes are now handled by the imported route modules:
+// - /api/auth/* (authRoutes)
+// - /api/students-auth/* (studentsAuthRoutes)
+// - /api/contact/* (contactRoutes)
+// - /api/parents/* (parentsRoutes)
+// - /api/notificaciones/* (notificacionesRoutes)
+// - /api/upload/* (uploadRoutes)
+//
+// These legacy handlers below are kept for backward compatibility only
+// and will be overridden by the route modules above
 
-// POST/PUT/DELETE routes
-app.all('/api/parents*', handleParents);
-app.post('/api/notificaciones', handleNotificationsSubscription);
-app.post('/api/upload', upload.single('additionalDocument'), handleUpload);
+// Legacy handlers for backward compatibility (these are overridden by route modules)
+// app.all('/api/students-auth*', handleStudentsAuth);
+// app.all('/api/parents*', handleParents);
+// app.post('/api/notificaciones', handleNotificationsSubscription);
+// app.post('/api/upload', upload.single('additionalDocument'), handleUpload);
 
 // Debug routes
 app.get('/api/debug-health', handleDebugHealth);
@@ -577,6 +1188,142 @@ app.get('/api/debug-env', handleDebugEnv);
 app.get('/api/debug-system', handleDebugSystem);
 app.get('/api/debug-files', handleDebugFiles);
 app.get('/api/debug-db', handleDebugDb);
+
+// --- Import and Register All Backend Routes ---
+const authRoutes = require('../backend/routes/auth');
+const adminRoutes = require('../backend/routes/admin');
+const dashboardRoutes = require('../backend/routes/dashboard');
+const contactRoutes = require('../backend/routes/contact');
+const inscriptionsRoutes = require('../backend/routes/inscriptions');
+const studentsAuthRoutes = require('../backend/routes/students-auth');
+const subscriptionsRoutes = require('../backend/routes/subscriptions');
+const newslettersRoutes = require('../backend/routes/newsletters');
+const egresadosRoutes = require('../backend/routes/egresados');
+const analyticsDashboardRoutes = require('../backend/routes/analytics-dashboard');
+const bolsaTrabajoRoutes = require('../backend/routes/bolsa-trabajo');
+const suscriptoresRoutes = require('../backend/routes/suscriptores');
+const quejasRoutes = require('../backend/routes/quejas');
+const notificacionesRoutes = require('../backend/routes/notificaciones');
+const solicitudesRoutes = require('../backend/routes/solicitudes');
+const passwordRecoveryRoutes = require('../backend/routes/password-recovery');
+const approvalsRoutes = require('../backend/routes/approvals');
+const noticiasRoutes = require('../backend/routes/noticias');
+const eventosRoutes = require('../backend/routes/eventos');
+const avisosRoutes = require('../backend/routes/avisos');
+const comunicadosRoutes = require('../backend/routes/comunicados');
+const uploadRoutes = require('../backend/routes/upload');
+const healthRoutes = require('../backend/routes/health');
+const chartsDataRoutes = require('../backend/routes/charts-data');
+const searchRoutes = require('../backend/routes/search');
+const emailsRoutes = require('../backend/routes/emails');
+const pollsRoutes = require('../backend/routes/polls');
+const parentsRoutes = require('../backend/routes/parents');
+const installPollsRoutes = require('../backend/routes/install-polls');
+const installParentsRoutes = require('../backend/routes/install-parents');
+const teachersPortalRoutes = require('../backend/routes/teachers-portal');
+const messagingRoutes = require('../backend/routes/messaging');
+const digitalLibraryRoutes = require('../backend/routes/digital-library');
+const supportTicketsRoutes = require('../backend/routes/support-tickets');
+const financesRoutes = require('../backend/routes/finances');
+const citasRoutes = require('../backend/routes/citas');
+
+// ✅ 28 RUTAS FALTANTES AGREGADAS (2 NOV 2025)
+const aiDatabaseRoutes = require('../backend/routes/ai-database');
+const analyticsPredictiveRoutes = require('../backend/routes/analytics-predictivo');
+const analyticsRoutes = require('../backend/routes/analytics');
+const asistenteVirtualRoutes = require('../backend/routes/asistente-virtual');
+const backupRoutes = require('../backend/routes/backup');
+const calendarRoutes = require('../backend/routes/calendar');
+const chatbotIaRoutes = require('../backend/routes/chatbot-ia');
+const chatbotRoutes = require('../backend/routes/chatbot');
+const cmsRoutes = require('../backend/routes/cms');
+const deteccionRiesgosRoutes = require('../backend/routes/deteccion-riesgos');
+const gamificationRoutes = require('../backend/routes/gamification');
+const googleClassroomRoutes = require('../backend/routes/google-classroom');
+const gradesRoutes = require('../backend/routes/grades');
+const gradesAnalyticsRoutes = require('../backend/routes/gradesAnalytics');
+const informationRoutes = require('../backend/routes/information');
+const maintenanceRoutes = require('../backend/routes/maintenance');
+const migrationRoutes = require('../backend/routes/migration');
+const multiTenantRoutes = require('../backend/routes/multi-tenant');
+const newslettersPgRoutes = require('../backend/routes/newsletters-pg');
+const notificationsRoutes = require('../backend/routes/notifications');
+const parentTeacherCommunicationRoutes = require('../backend/routes/parentTeacherCommunication');
+const realAiRoutes = require('../backend/routes/real-ai');
+const recomendacionesMlRoutes = require('../backend/routes/recomendaciones-ml');
+const sslRoutes = require('../backend/routes/ssl');
+const studentsRoutes = require('../backend/routes/students');
+const subscriptionsServiceRoutes = require('../backend/routes/subscriptions-service');
+const teachersRoutes = require('../backend/routes/teachers');
+const uploadsRoutes = require('../backend/routes/uploads');
+
+// Register all route modules
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/inscriptions', inscriptionsRoutes);
+app.use('/api/students-auth', studentsAuthRoutes);
+app.use('/api/subscriptions', subscriptionsRoutes);
+app.use('/api/newsletters', newslettersRoutes);
+app.use('/api/egresados', egresadosRoutes);
+app.use('/api/analytics', analyticsDashboardRoutes);
+app.use('/api/bolsa-trabajo', bolsaTrabajoRoutes);
+app.use('/api/suscriptores', suscriptoresRoutes);
+app.use('/api/quejas', quejasRoutes);
+app.use('/api/notificaciones', notificacionesRoutes);
+app.use('/api/solicitudes', solicitudesRoutes);
+app.use('/api/password-recovery', passwordRecoveryRoutes);
+app.use('/api/approvals', approvalsRoutes);
+app.use('/api/noticias', noticiasRoutes);
+app.use('/api/eventos', eventosRoutes);
+app.use('/api/avisos', avisosRoutes);
+app.use('/api/comunicados', comunicadosRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/health', healthRoutes);
+app.use('/api/charts', chartsDataRoutes);
+app.use('/api/search', searchRoutes);
+app.use('/api/emails', emailsRoutes);
+app.use('/api/polls', pollsRoutes);
+app.use('/api/parents', parentsRoutes);
+app.use('/api/install-polls', installPollsRoutes);
+app.use('/api/install-parents', installParentsRoutes);
+app.use('/api/finances', financesRoutes);
+app.use('/api/citas', citasRoutes);
+app.use('/api/teachers-portal', teachersPortalRoutes);
+app.use('/api/messaging', messagingRoutes);
+app.use('/api/digital-library', digitalLibraryRoutes);
+app.use('/api/support-tickets', supportTicketsRoutes);
+
+// ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
+app.use('/api/ai-database', aiDatabaseRoutes);
+app.use('/api/analytics-predictivo', analyticsPredictiveRoutes);
+app.use('/api/analytics-direct', analyticsRoutes);  // analytics (para evitar conflicto con analytics-dashboard)
+app.use('/api/asistente-virtual', asistenteVirtualRoutes);
+app.use('/api/backup', backupRoutes);
+app.use('/api/calendar-direct', calendarRoutes);  // calendar (para evitar conflicto si necesario)
+app.use('/api/chatbot-ia', chatbotIaRoutes);
+app.use('/api/chatbot-direct', chatbotRoutes);  // chatbot (para evitar conflicto)
+app.use('/api/cms', cmsRoutes);
+app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes);
+app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para evitar conflicto)
+app.use('/api/google-classroom', googleClassroomRoutes);
+app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
+app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
+app.use('/api/information', informationRoutes);
+app.use('/api/maintenance', maintenanceRoutes);
+app.use('/api/migration', migrationRoutes);
+app.use('/api/multi-tenant', multiTenantRoutes);
+app.use('/api/newsletters-pg', newslettersPgRoutes);
+app.use('/api/notifications-direct', notificationsRoutes);  // notifications (para evitar conflicto)
+app.use('/api/parentTeacherCommunication', parentTeacherCommunicationRoutes);
+app.use('/api/real-ai', realAiRoutes);
+app.use('/api/recomendaciones-ml', recomendacionesMlRoutes);
+app.use('/api/ssl', sslRoutes);
+app.use('/api/students-direct', studentsRoutes);  // students (para evitar conflicto)
+app.use('/api/subscriptions-service', subscriptionsServiceRoutes);
+app.use('/api/teachers-direct', teachersRoutes);  // teachers (para evitar conflicto)
+app.use('/api/uploads-direct', uploadsRoutes);  // uploads (para evitar conflicto)
 
 // Not implemented routes
 const notImplementedRoutes = [
