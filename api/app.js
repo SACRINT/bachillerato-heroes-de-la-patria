@@ -1315,8 +1315,8 @@ app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para 
 // app.use('/api/google-classroom', googleClassroomRoutes);  // DEBUG: Testing
 // app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
 // app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
-app.use('/api/information', informationRoutes);
-// app.use('/api/maintenance', maintenanceRoutes);
+// app.use('/api/information', informationRoutes);  // DEBUG: Has same logger issue
+app.use('/api/maintenance', maintenanceRoutes);
 // app.use('/api/migration', migrationRoutes);
 // app.use('/api/multi-tenant', multiTenantRoutes);
 // app.use('/api/newsletters-pg', newslettersPgRoutes);

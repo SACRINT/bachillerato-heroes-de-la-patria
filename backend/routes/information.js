@@ -5,9 +5,7 @@
 
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { executeQuery } = require('../config/database');
 const { requireAdmin, authenticateToken } = require('../middleware/auth');
-const { logger } = require('../middleware/logger');
 const router = express.Router();
 
 // ============================================
