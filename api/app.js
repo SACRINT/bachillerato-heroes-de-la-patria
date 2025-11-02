@@ -1240,7 +1240,7 @@ const chatbotRoutes = require('../backend/routes/chatbot');
 const cmsRoutes = require('../backend/routes/cms');
 const deteccionRiesgosRoutes = require('../backend/routes/deteccion-riesgos');
 // Mitad A del segundo grupo (9 rutas)
-// const gamificationRoutes = require('../backend/routes/gamification');
+const gamificationRoutes = require('../backend/routes/gamification');
 // const googleClassroomRoutes = require('../backend/routes/google-classroom');
 // const gradesRoutes = require('../backend/routes/grades');
 // const gradesAnalyticsRoutes = require('../backend/routes/gradesAnalytics');
@@ -1311,7 +1311,7 @@ app.use('/api/chatbot-direct', chatbotRoutes);  // chatbot (para evitar conflict
 app.use('/api/cms', cmsRoutes);
 app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes);
 // Mitad A
-// app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para evitar conflicto)
+app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para evitar conflicto)
 // app.use('/api/google-classroom', googleClassroomRoutes);
 // app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
 // app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);

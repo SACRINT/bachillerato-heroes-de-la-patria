@@ -5,8 +5,6 @@
 
 const express = require('express');
 const { authenticateToken } = require('../middleware/auth');
-const { executeQuery } = require('../config/database');
-const { logger } = require('../middleware/logger');
 const router = express.Router();
 
 // ============================================
@@ -89,7 +87,7 @@ router.get('/profile/:userId', authenticateToken, async (req, res, next) => {
             }
         };
 
-        await logger.info('Perfil de gamificación consultado', {
+        console.log('✅ Perfil de gamificación consultado', {
             userId: userId,
             requestedBy: req.user.id
         });
@@ -116,7 +114,7 @@ router.get('/leaderboard', authenticateToken, async (req, res, next) => {
 
         // Simular leaderboard
         const leaderboard = [];
-        const users = await executeQuery('SELECT * FROM usuarios', []);
+        const users = [];  // Datos simulados sin acceso a BD
 
         for (let i = 0; i < Math.min(limit, users.length + 7); i++) {
             const baseUser = users[i % users.length];
@@ -234,7 +232,7 @@ router.post('/award-points', authenticateToken, async (req, res, next) => {
             }
         });
 
-        await logger.info('Puntos otorgados en gamificación', {
+        console.log('⭐ Puntos otorgados en gamificación', {
             userId: req.user.id,
             activity: activity,
             points: earnedPoints,
@@ -472,7 +470,7 @@ router.post('/complete-challenge', authenticateToken, async (req, res, next) => 
 
         const totalPoints = challenge.pointsEarned * challenge.bonusMultiplier;
 
-        await logger.info('Desafío completado', {
+        console.log('🎯 Desafío completado', {
             userId: req.user.id,
             challengeId: challengeId,
             points: totalPoints
