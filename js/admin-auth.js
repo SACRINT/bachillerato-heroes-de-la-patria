@@ -8,7 +8,7 @@ class AdminAuth {
         this.isAdminLoggedIn = false;
         this.adminSession = null;
         this.sessionTimeout = 30 * 60 * 1000; // 30 minutos
-        this.adminPassword = 'HeroesPatria2024!'; // CAMBIAR AQUÍ: Reemplaza por tu contraseña segura
+
         this.maxAttempts = 5; // Máximo 5 intentos
         this.lockoutTime = 15 * 60 * 1000; // 15 minutos de bloqueo
         this.storagePrefix = 'adminAuth_';
@@ -78,70 +78,83 @@ class AdminAuth {
     // Manejar el login
     async handleLogin(event) {
         event.preventDefault();
-        
+
         // Verificar si está bloqueado
         if (this.isLockedOut()) {
             this.showLockoutMessage();
             return;
         }
-        
+
+        const usernameInput = document.getElementById('adminPanelUsername');
         const passwordInput = document.getElementById('adminPanelPassword');
         const errorElement = document.getElementById('adminPanelAuthError');
         const errorText = document.getElementById('adminPanelAuthErrorText');
-        
-        if (!passwordInput) return;
 
+        if (!usernameInput || !passwordInput) {
+            console.error('❌ Campos de login no encontrados');
+            return;
+        }
+
+        const username = usernameInput.value.trim();
         const password = passwordInput.value.trim();
-        
-        // Validar contraseña
-        if (this.validatePassword(password)) {
-            // Login exitoso - limpiar intentos fallidos
-            //console.log('🔐 Contraseña correcta - iniciando login...');
-            this.clearFailedAttempts();
-            this.login();
-            this.closeAuthModal();
-            this.showSuccessMessage();
-            passwordInput.value = '';
-            errorElement?.classList.add('d-none');
-            
-            // FORZAR actualización de UI múltiples veces
-            //console.log('🔄 Forzando actualización de UI post-login...');
-            setTimeout(() => this.updateUI(), 100);
-            setTimeout(() => this.updateUI(), 300);
-            setTimeout(() => this.updateUI(), 500);
-            setTimeout(() => this.updateUI(), 1000);
-            
-            //console.log('✅ Proceso de login completado');
-        } else {
-            // Login fallido - incrementar contador
-            this.recordFailedAttempt();
-            const attempts = this.getFailedAttempts();
-            const remaining = this.maxAttempts - attempts;
-            
-            if (attempts >= this.maxAttempts) {
-                this.lockout();
-                this.showLockoutMessage();
+
+        // Validar que no estén vacíos
+        if (!username || !password) {
+            this.showError(errorElement, errorText, 'Usuario y contraseña son requeridos');
+            return;
+        }
+
+        // Autenticar contra el API
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username, password: password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                this.clearFailedAttempts();
+                const session = {
+                    token: data.tokens.accessToken,
+                    refreshToken: data.tokens.refreshToken,
+                    user: data.user,
+                    role: data.user.role,
+                    timestamp: Date.now(),
+                    expiresAt: data.tokens.expiresAt
+                };
+                localStorage.setItem('secure_admin_session', JSON.stringify(session));
+                this.isAdminLoggedIn = true;
+                this.adminSession = session;
                 this.closeAuthModal();
+                this.showSuccessMessage();
+                usernameInput.value = '';
+                passwordInput.value = '';
+                if(errorElement) errorElement.classList.add('d-none');
+                this.updateUI();
             } else {
-                this.showError(errorElement, errorText, 
-                    `Contraseña incorrecta. Te quedan ${remaining} intento(s).`);
+                this.recordFailedAttempt();
+                const attempts = this.getFailedAttempts();
+                const remaining = this.maxAttempts - attempts;
+                if (attempts >= this.maxAttempts) {
+                    this.lockout();
+                    this.showLockoutMessage();
+                    this.closeAuthModal();
+                } else {
+                    this.showError(errorElement, errorText, data.message || data.error || `Credenciales incorrectas. Te quedan ${remaining} intento(s).`);
+                }
+                passwordInput.value = '';
             }
-            
-            passwordInput.value = '';
-            
-            // Delay de seguridad progresivo
-            const delay = Math.min(attempts * 1000, 5000);
-            passwordInput.disabled = true;
-            setTimeout(() => {
-                passwordInput.disabled = false;
-            }, delay);
+        } catch (error) {
+            console.error('Error en el proceso de login:', error);
+            this.showError(errorElement, errorText, 'Error de conexión con el servidor. Inténtalo de nuevo.');
         }
     }
 
-    // Validar contraseña
-    validatePassword(password) {
-        return password === this.adminPassword;
-    }
+
 
     // Iniciar sesión admin
     login() {
@@ -634,7 +647,22 @@ function initAdminAuthSystem() {
                 //console.log('🔍 Elementos disponibles:', document.querySelectorAll('[id*="admin"]'));
             }
         };
-        
+
+        // ✅ NUEVA: Función para el botón "Admin" del header (reemplaza a bge-security-module.js)
+        window.handleAdminLogin = function() {
+            console.log('🔐 handleAdminLogin llamado desde header (admin-auth.js)');
+
+            // Verificar si ya hay sesión activa
+            if (adminAuth && adminAuth.isAuthenticated()) {
+                console.log('✅ Sesión activa, redirigiendo a dashboard...');
+                window.location.href = 'admin-dashboard.html';
+                return;
+            }
+
+            // Si no hay sesión, mostrar modal de login
+            window.showAdminPanelAuth();
+        };
+
         window.logoutAdminPanel = function() {
             //console.log('🚪 Cerrando sesión admin...');
             if (adminAuth) {

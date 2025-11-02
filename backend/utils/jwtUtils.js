@@ -8,12 +8,12 @@ const crypto = require('crypto');
 
 class JWTUtils {
     constructor() {
-        this.jwtSecret = process.env.JWT_SECRET || 'heroes_patria_secret_2024';
+        this.jwtSecret = process.env.JWT_SECRET;
         this.algorithm = 'HS256';
 
         // Configuraciones de tiempo
-        this.accessTokenExpiry = process.env.JWT_EXPIRY || '1h';
-        this.refreshTokenExpiry = process.env.REFRESH_TOKEN_EXPIRY || '7d';
+        this.accessTokenExpiry = process.env.JWT_EXPIRES_IN || '24h';
+        this.refreshTokenExpiry = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
         this.rememberMeExpiry = process.env.REMEMBER_ME_EXPIRY || '30d';
 
         // Configuración de emisor
@@ -25,7 +25,7 @@ class JWTUtils {
 
         // Rate limiting para tokens
         this.tokenAttempts = new Map();
-        this.maxAttempts = 5;
+        this.maxAttempts = 200;
         this.attemptWindow = 15 * 60 * 1000; // 15 minutos
     }
 

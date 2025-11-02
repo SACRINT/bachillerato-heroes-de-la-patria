@@ -37,6 +37,11 @@ class DashboardCharts {
             Chart.defaults.responsive = true;
             Chart.defaults.maintainAspectRatio = false;
 
+            // ✅ DESHABILITAR ANIMACIONES para prevenir loops infinitos
+            Chart.defaults.animation = false;
+            Chart.defaults.animations.numbers = false;
+            Chart.defaults.animations.colors = false;
+
             // Cargar todas las gráficas en paralelo
             await Promise.all([
                 this.loadNoticiasPorMes(),

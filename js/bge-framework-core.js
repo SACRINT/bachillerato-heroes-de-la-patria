@@ -61,6 +61,12 @@ class BGEFramework {
             // 5. Auto-cargar módulos críticos
             await this.loadCriticalModules();
 
+            // 6. Disparar evento de que el framework está listo
+            window.dispatchEvent(new CustomEvent('bge:ready', {
+                detail: { framework: this, modules: Array.from(this.modules.keys()) }
+            }));
+            console.log('🎉 BGE Framework listo - Evento bge:ready disparado');
+
         } catch (error) {
             console.error('❌ Error inicializando BGE Framework:', error);
         }
@@ -386,13 +392,14 @@ class BGEModule {
     }
 }
 
+// ✅ CRÍTICO: Exponer clases ANTES del DOMContentLoaded
+// para que los módulos cargados dinámicamente puedan extenderlas
+window.BGEFramework = BGEFramework;
+window.BGEModule = BGEModule;
+
 // Auto-inicialización del framework
 document.addEventListener('DOMContentLoaded', () => {
     if (!window.bgeFramework) {
         window.bgeFramework = new BGEFramework();
     }
 });
-
-// Compatibilidad con sistemas existentes
-window.BGEFramework = BGEFramework;
-window.BGEModule = BGEModule;

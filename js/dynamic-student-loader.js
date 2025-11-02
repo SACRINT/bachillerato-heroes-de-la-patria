@@ -1,29 +1,54 @@
 /**
  * 🎓 DYNAMIC STUDENT LOADER - BGE HEROES DE LA PATRIA
- * Sistema de gestión dinámica de estudiantes desde JSON
+ * Sistema de gestión dinámica de estudiantes desde API
  */
 
 class DynamicStudentLoader {
     constructor() {
-        this.studentsFile = '/data/estudiantes.json';
+        this.studentsFile = '/api/admin/students';
         this.students = {};
         this.currentEditingId = null;
+
+        // Usar la instancia global de APIClient
+        this.apiClient = window.apiClient || new APIClient();
+
         console.log('🎓 Dynamic Student Loader inicializado');
     }
 
     /**
-     * Cargar estudiantes desde JSON
+     * Cargar estudiantes desde API (usando APIClient con auth automática)
      */
     async loadStudents() {
         try {
             console.log('📡 Cargando estudiantes desde:', this.studentsFile);
-            const response = await fetch(this.studentsFile);
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            // Usar APIClient que incluye automáticamente el token JWT
+            const response = await this.apiClient.get(this.studentsFile);
+
+            // Extraer los estudiantes del response correctamente
+            let estudiantesArray = [];
+            if (response && response.data && Array.isArray(response.data)) {
+                // Caso: { success: true, data: [...] }
+                estudiantesArray = response.data;
+            } else if (response && response.students && Array.isArray(response.students)) {
+                // Caso: { students: [...] }
+                estudiantesArray = response.students;
+            } else if (Array.isArray(response)) {
+                // Caso: respuesta directa es array
+                estudiantesArray = response;
             }
 
-            this.students = await response.json();
+            // Crear estructura esperada por el resto del código
+            this.students = {
+                estudiantes: estudiantesArray,
+                estadisticas: {
+                    totalEstudiantes: estudiantesArray.length,
+                    estudiantesActivos: estudiantesArray.filter(e => e.status_academico === 'regular' || e.estado === 'Activo').length,
+                    estudiantesEnRiesgo: estudiantesArray.filter(e => e.status_academico === 'baja' || e.estado === 'En Riesgo').length,
+                    promedioGeneral: 0
+                }
+            };
+
             console.log('✅ Estudiantes cargados:', this.students);
 
             // Actualizar la interfaz
@@ -73,7 +98,7 @@ class DynamicStudentLoader {
         try {
             console.log('🔄 Actualizando tabla de estudiantes...');
 
-            const tableBody = document.querySelector('#studentsTable tbody');
+                        const tableBody = document.getElementById('studentsTable');
             if (!tableBody) {
                 console.log('⚠️ Tabla de estudiantes no encontrada');
                 return;
@@ -99,58 +124,75 @@ class DynamicStudentLoader {
      */
     createStudentRow(student) {
         const row = document.createElement('tr');
-        
-        // Determinar color del badge según estado y nivel de riesgo
+
+        // Construir nombre completo desde los campos de la BD
+        const nombreCompleto = [
+            student.nombre,
+            student.apellido_paterno,
+            student.apellido_materno
+        ].filter(Boolean).join(' ') || 'Sin nombre';
+
+        // Mapear status_academico de BD a estado visual
+        let estado = 'Activo';
         let estadoBadge = 'bg-success';
-        let riesgoBadge = 'bg-success';
-        
-        if (student.estado === 'En Riesgo') {
+        if (student.status_academico === 'baja') {
+            estado = 'En Riesgo';
             estadoBadge = 'bg-danger';
-        } else if (student.estado === 'Inactivo') {
+        } else if (student.status_academico === 'suspendido') {
+            estado = 'Inactivo';
             estadoBadge = 'bg-secondary';
         }
-        
-        if (student.nivelRiesgo === 'Alto Riesgo') {
+
+        // Determinar nivel de riesgo según promedio
+        let nivelRiesgo = 'Bajo Riesgo';
+        let riesgoBadge = 'bg-success';
+        const promedio = parseFloat(student.promedio) || 0;
+        if (promedio < 6.0 && promedio > 0) {
+            nivelRiesgo = 'Alto Riesgo';
             riesgoBadge = 'bg-danger';
-        } else if (student.nivelRiesgo === 'Medio Riesgo') {
+        } else if (promedio >= 6.0 && promedio < 7.5) {
+            nivelRiesgo = 'Medio Riesgo';
             riesgoBadge = 'bg-warning';
         }
 
+        // Email desde usuario_id si existe, sino placeholder
+        const email = student.email || `estudiante${student.matricula}@bge.edu.mx`;
+
         row.innerHTML = `
-            <td><strong>${student.matricula}</strong></td>
+            <td><strong>${student.matricula || 'Sin matrícula'}</strong></td>
             <td>
-                <strong>${student.nombre}</strong><br>
-                <small class="text-muted">${student.email}</small>
+                <strong>${nombreCompleto}</strong><br>
+                <small class="text-muted">${email}</small>
             </td>
             <td>
-                <span class="badge bg-info">${student.semestre}</span>
+                <span class="badge bg-info">${student.semestre || 'N/A'}°</span>
             </td>
             <td>
-                <span class="badge ${student.promedio >= 8.0 ? 'bg-success' : student.promedio >= 7.0 ? 'bg-warning' : 'bg-danger'}">
-                    ${student.promedio}
+                <span class="badge ${promedio >= 8.0 ? 'bg-success' : promedio >= 7.0 ? 'bg-warning' : promedio > 0 ? 'bg-danger' : 'bg-secondary'}">
+                    ${promedio.toFixed(2)}
                 </span>
             </td>
             <td>
-                <span class="badge ${estadoBadge}">${student.estado}</span><br>
-                <small><span class="badge ${riesgoBadge} mt-1">${student.nivelRiesgo}</span></small>
+                <span class="badge ${estadoBadge}">${estado}</span><br>
+                <small><span class="badge ${riesgoBadge} mt-1">${nivelRiesgo}</span></small>
             </td>
             <td>
                 <div class="btn-group btn-group-sm" role="group">
-                    <button type="button" 
-                            class="btn btn-outline-primary" 
-                            onclick="dynamicStudentLoader.editStudent('${student.id}')" 
+                    <button type="button"
+                            class="btn btn-outline-primary"
+                            onclick="dynamicStudentLoader.editStudent('${student.id}')"
                             title="Editar información">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button type="button" 
-                            class="btn btn-outline-info" 
-                            onclick="dynamicStudentLoader.contactStudent('${student.id}')" 
+                    <button type="button"
+                            class="btn btn-outline-info"
+                            onclick="dynamicStudentLoader.contactStudent('${student.id}')"
                             title="Contactar">
                         <i class="fas fa-envelope"></i>
                     </button>
-                    <button type="button" 
-                            class="btn btn-outline-danger" 
-                            onclick="dynamicStudentLoader.deleteStudent('${student.id}')" 
+                    <button type="button"
+                            class="btn btn-outline-danger"
+                            onclick="dynamicStudentLoader.deleteStudent('${student.id}')"
                             title="Eliminar estudiante">
                         <i class="fas fa-trash"></i>
                     </button>

@@ -1,18 +1,12 @@
 /**
  * 🛡️ SERVIDOR BACKEND SEGURO
  * Bachillerato General Estatal "Héroes de la Patria"
- * 
- * CARACTERÍSTICAS DE SEGURIDAD:
- * ✅ JWT Authentication
- * ✅ bcrypt Password Hashing  
- * ✅ Rate Limiting
- * ✅ CORS Protection
- * ✅ Security Headers (Helmet)
- * ✅ Input Validation & Sanitization
- * ✅ CSRF Protection
  */
 
-require('dotenv').config();
+// 🔴 CORRECCIÓN: Cargar .env desde el directorio raíz del proyecto
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env'), override: true });
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -21,11 +15,15 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const { pool } = require('./config/database');
-const path = require('path');
+
+// Middleware
+const { errorHandler } = require('./middleware/errorHandler');
+const { securityMiddleware } = require('./middleware/security');
 
 // Routes
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
+const dashboardRoutes = require('./routes/dashboard');
 const contactRoutes = require('./routes/contact');
 const inscriptionsRoutes = require('./routes/inscriptions');
 const studentsAuthRoutes = require('./routes/students-auth');
@@ -50,46 +48,42 @@ const chartsDataRoutes = require('./routes/charts-data');
 const searchRoutes = require('./routes/search');
 const emailsRoutes = require('./routes/emails');
 const pollsRoutes = require('./routes/polls');
+const parentsRoutes = require('./routes/parents');
+const installPollsRoutes = require('./routes/install-polls');
 const teachersPortalRoutes = require('./routes/teachers-portal');
 const messagingRoutes = require('./routes/messaging');
 const digitalLibraryRoutes = require('./routes/digital-library');
 const supportTicketsRoutes = require('./routes/support-tickets');
-
-// Middleware
-const { errorHandler } = require('./middleware/errorHandler');
-const { securityMiddleware } = require('./middleware/security');
+const installParentsRoutes = require('./routes/install-parents');
+const financesRoutes = require('./routes/finances');
+const citasRoutes = require('./routes/citas');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ============================================
-// CONFIGURACIÓN DE SEGURIDAD
+// MIDDLEWARE & CONFIGURACIÓN
 // ============================================
 
-// Trust proxy for Vercel/Cloud deployments
-// CRÍTICO: Necesario para rate-limit y X-Forwarded-For headers
 app.set('trust proxy', 1);
 
-// Helmet - Security Headers
 app.use(helmet({
+    permissionsPolicy: {
+        camera: ["'self'"],
+    },
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com", "https://accounts.google.com", "https://cdn.tiny.cloud"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "'unsafe-hashes'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://accounts.google.com", "https://www.googleapis.com"],
-            scriptSrcAttr: ["'self'", "'unsafe-inline'", "'unsafe-hashes'"],
-            imgSrc: ["'self'", "data:", "https:", "http:"],
-            connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://www.google-analytics.com", "https://www.googletagmanager.com", "https://accounts.google.com", "https://www.googleapis.com", "https://fonts.googleapis.com", "https://fonts.gstatic.com"],
-            fontSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com", "https://fonts.googleapis.com", "data:"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://accounts.google.com", "https://www.googleapis.com", "https://cdn.tiny.cloud", "*.tiny.cloud", "blob:"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://cdn.tiny.cloud", "*.tiny.cloud"],
+            connectSrc: ["'self'", "http://localhost:3000", "ws:", "wss:", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://www.google-analytics.com", "https://www.googletagmanager.com", "https://accounts.google.com", "https://www.googleapis.com", "https://cdn.tiny.cloud", "*.tiny.cloud", "https://sp.tinymce.com"],
+            imgSrc: ["'self'", "data:", "blob:", "https:", "https://cdn.tiny.cloud", "*.tiny.cloud", "https://sp.tinymce.com"],
+            fontSrc: ["'self'", "data:", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com", "https://cdn.tiny.cloud", "*.tiny.cloud"],
+            frameSrc: ["'self'", "https://cdn.tiny.cloud", "*.tiny.cloud", "https://www.google.com", "https://maps.google.com", "https://forms.gle"],
             objectSrc: ["'none'"],
-            mediaSrc: ["'self'"],
-            frameSrc: ["'self'", "https://www.google.com", "https://maps.google.com", "https://www.openstreetmap.org", "https://accounts.google.com"]
+            baseUri: ["'self'"],
+            formAction: ["'self'"]
         }
-    },
-    hsts: {
-        maxAge: parseInt(process.env.SECURITY_HSTS_MAX_AGE) || 31536000,
-        includeSubDomains: true,
-        preload: true
     }
 }));
 
@@ -123,16 +117,24 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Rate Limiting
+// Rate Limiting - Ajustado para dashboard con auto-refresh
 const limiter = rateLimit({
     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
-    max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // limit each IP to 100 requests per windowMs
+    max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || (process.env.NODE_ENV === 'production' ? 300 : 1000), // 1000 en dev, 300 en prod (aumentado de 100)
     message: {
         error: 'Demasiadas solicitudes desde esta IP, intenta de nuevo más tarde.',
         retryAfter: '15 minutos'
     },
     standardHeaders: true,
     legacyHeaders: false,
+    skip: (req) => {
+        // Saltar rate limiting para localhost en desarrollo
+        if (process.env.NODE_ENV !== 'production') {
+            const ip = req.ip || req.connection.remoteAddress;
+            return ip === '::1' || ip === '127.0.0.1' || ip === '::ffff:127.0.0.1';
+        }
+        return false;
+    }
 });
 app.use('/api/', limiter);
 
@@ -166,274 +168,118 @@ app.use(session({
     }
 }));
 
-// Security Middleware
+// Security Middleware - ✅ CONFIGURADO para no interferir con archivos estáticos
 app.use(securityMiddleware);
+
+// --- CORRECT & COMPLETE STATIC FILE SERVING ---
+console.log('🌍 Configurando servidor de archivos estáticos...');
+app.use(express.static(path.join(__dirname, '../public')));
+app.use('/js', express.static(path.join(__dirname, '../js')));
+app.use('/css', express.static(path.join(__dirname, '../css')));
+app.use('/images', express.static(path.join(__dirname, '../images')));
+app.use('/documents', express.static(path.join(__dirname, '../documents')));
+app.use('/videos', express.static(path.join(__dirname, '../videos')));
+app.use('/data', express.static(path.join(__dirname, '../data')));
+app.use('/partials', express.static(path.join(__dirname, '../partials')));
+app.use('/sw-offline-first.js', express.static(path.join(__dirname, '../sw-offline-first.js')));
+
 
 // ============================================
 // RUTAS DE API
 // ============================================
 
-// Health Check (con ambas rutas para compatibilidad)
-app.get('/api/health', (req, res) => {
-    res.json({
-        status: 'OK',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        environment: process.env.NODE_ENV || 'development',
-        version: '1.0.0'
-    });
-});
+// ✅ RATE LIMITER YA APLICADO EN LÍNEA 132 (1000 req/15min en dev, 300 en prod)
+// ❌ ELIMINADO: apiLimiter duplicado que causaba error 429
+// const apiLimiter = rateLimit({
+//     windowMs: 15 * 60 * 1000,
+//     max: 100,
+//     message: { error: 'Demasiadas solicitudes desde esta IP, intenta de nuevo más tarde.' },
+//     standardHeaders: true,
+//     legacyHeaders: false,
+// });
+// app.use('/api/', apiLimiter);
 
-// Health Check alternativo (compatibilidad con el frontend)
-app.get('/health', (req, res) => {
-    res.json({
-        status: 'OK',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        environment: process.env.NODE_ENV || 'development',
-        version: '1.0.0'
-    });
-});
-
-// Endpoints de información para compatibilidad con el frontend
-app.get('/api/information/categories', (req, res) => {
-    res.json({
-        categories: [
-            {
-                id: 'general',
-                name: 'Información General',
-                description: 'Información básica sobre el bachillerato'
-            },
-            {
-                id: 'academic',
-                name: 'Académico',
-                description: 'Programas académicos y especialidades'
-            },
-            {
-                id: 'services',
-                name: 'Servicios',
-                description: 'Servicios estudiantiles disponibles'
-            },
-            {
-                id: 'admissions',
-                name: 'Admisiones',
-                description: 'Proceso de admisión y requisitos'
-            }
-        ],
-        timestamp: new Date().toISOString()
-    });
-});
-
-// Endpoints para analytics (mock responses)
-app.get('/api/analytics/custom', (req, res) => {
-    res.json({
-        message: 'Analytics endpoint - implementar según necesidades',
-        timestamp: new Date().toISOString()
-    });
-});
-
-app.post('/api/analytics/custom', (req, res) => {
-    res.json({
-        message: 'Analytics data received',
-        data: req.body,
-        timestamp: new Date().toISOString()
-    });
-});
-
-// Analytics tracking endpoint
-app.post('/api/analytics/track', (req, res) => {
-    console.log('📊 Analytics track:', req.body);
-    res.json({
-        success: true,
-        message: 'Analytics tracking data received',
-        timestamp: new Date().toISOString()
-    });
-});
-
-// Analytics heartbeat endpoint
-app.post('/api/analytics/heartbeat', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Heartbeat received',
-        timestamp: new Date().toISOString()
-    });
-});
-
-// Social share analytics endpoint
-app.post('/api/analytics/social-share', (req, res) => {
-    console.log('📱 Social share:', req.body);
-    res.json({
-        success: true,
-        message: 'Social share analytics received',
-        timestamp: new Date().toISOString()
-    });
-});
-
-// Session analytics endpoint
-app.post('/api/analytics/session', (req, res) => {
-    console.log('📊 Session analytics:', req.body);
-    res.json({
-        success: true,
-        message: 'Session analytics received',
-        timestamp: new Date().toISOString()
-    });
-});
-
-// Health Check Routes - Sin rate limiting para monitoreo
-app.use('/api/health', healthRoutes);
-
-// Authentication Routes
 app.use('/api/auth', authRoutes);
-
-// Admin Routes
 app.use('/api/admin', adminRoutes);
-
-// Student Authentication Routes
-app.use('/api/students-auth', studentsAuthRoutes);
-
-// Contact Routes
+app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/contact', contactRoutes);
-
-// Inscriptions Routes
 app.use('/api/inscriptions', inscriptionsRoutes);
-
-// Subscriptions Routes (PostgreSQL)
+app.use('/api/students-auth', studentsAuthRoutes);
 app.use('/api/subscriptions', subscriptionsRoutes);
-
-// Newsletters Routes (PostgreSQL)
-const newslettersPgRoutes = require('./routes/newsletters-pg');
-app.use('/api/newsletters', newslettersPgRoutes);
-
-// Citas Routes (PostgreSQL)
-const citasRoutes = require('./routes/citas');
-app.use('/api/citas', citasRoutes);
-
-// Egresados Routes
+app.use('/api/newsletters', newslettersRoutes);
 app.use('/api/egresados', egresadosRoutes);
-
-// Bolsa de Trabajo Routes
-app.use('/api/bolsa-trabajo', bolsaTrabajoRoutes);
-
-// Suscriptores Routes
-app.use('/api/suscriptores', suscriptoresRoutes);
-
-// Analytics Dashboard Routes
 app.use('/api/analytics', analyticsDashboardRoutes);
-
-// Quejas Routes
+app.use('/api/bolsa-trabajo', bolsaTrabajoRoutes);
+app.use('/api/suscriptores', suscriptoresRoutes);
 app.use('/api/quejas', quejasRoutes);
-
-// Notificaciones Routes
 app.use('/api/notificaciones', notificacionesRoutes);
-
-// Solicitudes Routes
 app.use('/api/solicitudes', solicitudesRoutes);
-
-// Password Recovery Routes
 app.use('/api/password-recovery', passwordRecoveryRoutes);
-
-// Approvals Routes (Sistema de Aprobaciones Administrativas)
 app.use('/api/approvals', approvalsRoutes);
-
-// CMS Routes (Noticias, Eventos, Avisos, Comunicados)
 app.use('/api/noticias', noticiasRoutes);
 app.use('/api/eventos', eventosRoutes);
 app.use('/api/avisos', avisosRoutes);
 app.use('/api/comunicados', comunicadosRoutes);
-
-// Upload Routes (Subida de archivos)
 app.use('/api/upload', uploadRoutes);
-
-// Charts Data Routes
+app.use('/api/health', healthRoutes);
 app.use('/api/charts', chartsDataRoutes);
-
-// Search Routes
 app.use('/api/search', searchRoutes);
-
-// Email Routes (Sistema de envío de emails con plantillas)
 app.use('/api/emails', emailsRoutes);
-
-// Polls Routes (Sistema de Encuestas y Votaciones - FASE 3)
 app.use('/api/polls', pollsRoutes);
-
-// Parents Portal Routes (Sistema de Portal de Padres - FASE 3)
-const parentsRoutes = require('./routes/parents');
 app.use('/api/parents', parentsRoutes);
-
-// Install Polls Routes (TEMPORAL - Solo para instalación inicial)
-const installPollsRoutes = require('./routes/install-polls');
 app.use('/api/install-polls', installPollsRoutes);
-
-// Install Parents Portal Routes (TEMPORAL - Solo para instalación inicial)
-const installParentsRoutes = require('./routes/install-parents');
 app.use('/api/install-parents', installParentsRoutes);
-
-// Teachers Portal Routes (Sistema de Portal de Docentes - FASE 3)
+app.use('/api/finances', financesRoutes);
+app.use('/api/citas', citasRoutes);
 app.use('/api/teachers-portal', teachersPortalRoutes);
-
-// Messaging Routes (Sistema de Mensajería Interna - FASE 3)
 app.use('/api/messaging', messagingRoutes);
-
-// Digital Library Routes (Sistema de Biblioteca Digital - FASE 3)
 app.use('/api/digital-library', digitalLibraryRoutes);
-
-// Support Tickets Routes (Sistema de Tickets de Soporte - FASE 3)
 app.use('/api/support-tickets', supportTicketsRoutes);
 
-// Static Files (Development & Production)
-console.log('🌍 Configurando servidor de archivos estáticos...');
-
-
 // ============================================
-// ERROR HANDLING
+// CONFIGURACIÓN PÚBLICA (API KEYS PARA FRONTEND)
 // ============================================
 
-// 404 Handler
-app.use('*', (req, res) => {
-    res.status(404).json({
-        error: 'Endpoint no encontrado',
-        path: req.originalUrl,
-        method: req.method
+/**
+ * GET /api/config/public-keys
+ * Endpoint para exponer configuraciones públicas de forma segura
+ * No requiere autenticación (API keys públicas de CDNs)
+ */
+app.get('/api/config/public-keys', (req, res) => {
+    res.json({
+        success: true,
+        keys: {
+            tinymce: process.env.TINYMCE_API_KEY || 'no-api-key',
+            google_oauth_client_id: process.env.GOOGLE_OAUTH_CLIENT_ID_PROD || ''
+        }
     });
 });
 
-// Global Error Handler
+// ============================================
+// FALLBACK & ERROR HANDLING
+// ============================================
+
+// SPA Fallback: Sirve index.html para rutas de navegación, ignorando archivos con extensiones.
+app.get(/^(?!\/api|.*\.\w+$).*$/, (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
+// 404 Handler para rutas de API no encontradas
+app.use('/api/*', (req, res) => {
+    res.status(404).json({ error: 'Endpoint de API no encontrado' });
+});
+
 app.use(errorHandler);
 
 // ============================================
 // SERVER START
 // ============================================
 
-// Exportar la app para Vercel serverless
-module.exports = app;
-
-// Solo ejecutar servidor local si se llama directamente (no en Vercel)
 if (require.main === module) {
-    const server = app.listen(PORT, () => {
-        console.log(`🚀 Servidor backend iniciado (MODO LOCAL):`);
-        console.log(`   📡 Puerto: ${PORT}`);
-        console.log(`   🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
-        console.log(`   🔒 Seguridad: Helmet + CORS + Rate Limiting`);
-        console.log(`   🛡️  JWT: Habilitado`);
-        console.log(`   ⏰ Iniciado: ${new Date().toLocaleString()}`);
-        console.log(`   🌐 URL: http://localhost:${PORT}`);
-        console.log(`   ⚠️  NOTA: En Vercel, esto NO se ejecuta (serverless)`);
-    });
-
-    // Graceful Shutdown (solo en modo local)
-    process.on('SIGTERM', () => {
-        console.log('💤 Apagando servidor gracefully...');
-        server.close(() => {
-            console.log('✅ Servidor cerrado.');
-            process.exit(0);
-        });
-    });
-
-    process.on('SIGINT', () => {
-        console.log('💤 Apagando servidor gracefully...');
-        server.close(() => {
-            console.log('✅ Servidor cerrado.');
-            process.exit(0);
-        });
+    app.listen(PORT, () => {
+        console.log(`🚀 Servidor backend iniciado en http://localhost:${PORT}`);
+        console.log('✅✅✅ ¡VERSIÓN CORRECTA DEL SERVIDOR EN EJECUCIÓN! ✅✅✅');
     });
 }
+
+module.exports = app;

@@ -22,8 +22,8 @@ const errorHandler = async (error, req, res, next) => {
     // Registrar error en base de datos
     try {
         await executeQuery(
-            `INSERT INTO logs_sistema (nivel, mensaje, contexto, usuario_id, ip_address, user_agent) 
-             VALUES (?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO logs_sistema (nivel, mensaje, contexto, usuario_id, ip_address, user_agent)
+             VALUES ($1, $2, $3, $4, $5, $6)`,
             [
                 'error',
                 error.message,

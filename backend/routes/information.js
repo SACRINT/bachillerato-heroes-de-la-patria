@@ -35,16 +35,16 @@ router.get('/', async (req, res, next) => {
         }
         
         if (category) {
-            query += ' AND categoria = ?';
+            query += ' AND categoria = $' + (params.length + 1);
             params.push(category);
         }
-        
+
         // Solo información pública para usuarios no autenticados
         query += ' AND (es_confidencial = FALSE OR es_confidencial IS NULL)';
         query += ' AND (requiere_autenticacion = FALSE OR requiere_autenticacion IS NULL)';
-        
+
         query += ' ORDER BY prioridad DESC, updated_at DESC';
-        query += ' LIMIT ?';
+        query += ' LIMIT $' + (params.length + 1);
         params.push(parseInt(limit));
         
         const information = await executeQuery(query, params);
@@ -103,10 +103,10 @@ router.get('/:id', async (req, res, next) => {
         const { id } = req.params;
         
         const information = await executeQuery(`
-            SELECT id, clave, categoria, titulo, contenido, prioridad, 
+            SELECT id, clave, categoria, titulo, contenido, prioridad,
                    es_confidencial, requiere_autenticacion, updated_at
-            FROM informacion_dinamica 
-            WHERE id = ? AND is_active = TRUE
+            FROM informacion_dinamica
+            WHERE id = $1 AND is_active = TRUE
         `, [id]);
         
         if (information.length === 0) {
@@ -177,7 +177,7 @@ router.post('/', authenticateToken, requireAdmin, [
         
         // Verificar que la clave sea única
         const existing = await executeQuery(
-            'SELECT id FROM informacion_dinamica WHERE clave = ?',
+            'SELECT id FROM informacion_dinamica WHERE clave = $1',
             [clave]
         );
         
@@ -201,10 +201,11 @@ router.post('/', authenticateToken, requireAdmin, [
         }
         
         const result = await executeQuery(`
-            INSERT INTO informacion_dinamica 
-            (clave, categoria, titulo, contenido, prioridad, es_confidencial, 
-             requiere_autenticacion, tipos_usuario_permitidos, fecha_inicio, fecha_fin) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO informacion_dinamica
+            (clave, categoria, titulo, contenido, prioridad, es_confidencial,
+             requiere_autenticacion, tipos_usuario_permitidos, fecha_inicio, fecha_fin)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            RETURNING id
         `, [
             clave,
             categoria,
@@ -217,19 +218,19 @@ router.post('/', authenticateToken, requireAdmin, [
             fecha_inicio,
             fecha_fin
         ]);
-        
+
         await logger.info('Nueva información creada', {
-            informacionId: result.insertId,
+            informacionId: result[0].id,
             clave: clave,
             categoria: categoria,
             creadoPor: req.user.id
         });
-        
+
         res.status(201).json({
             success: true,
             message: 'Información creada exitosamente',
             data: {
-                id: result.insertId,
+                id: result[0].id,
                 clave: clave,
                 categoria: categoria,
                 titulo: titulo
@@ -276,39 +277,39 @@ router.put('/:id', authenticateToken, requireAdmin, [
                 if (field === 'contenido') {
                     // Validar JSON
                     try {
-                        const contenidoJson = typeof req.body[field] === 'string' 
-                            ? req.body[field] 
+                        const contenidoJson = typeof req.body[field] === 'string'
+                            ? req.body[field]
                             : JSON.stringify(req.body[field]);
                         JSON.parse(contenidoJson);
-                        updateFields[field] = '?';
+                        updateFields[field] = '$' + (updateValues.length + 1);
                         updateValues.push(contenidoJson);
                     } catch (jsonError) {
                         throw new Error('El contenido debe ser un JSON válido');
                     }
                 } else {
-                    updateFields[field] = '?';
+                    updateFields[field] = '$' + (updateValues.length + 1);
                     updateValues.push(req.body[field]);
                 }
             }
         });
-        
+
         if (Object.keys(updateFields).length === 0) {
             return res.status(400).json({
                 error: 'Sin cambios',
                 message: 'No se proporcionaron campos para actualizar'
             });
         }
-        
+
         // Agregar timestamp de actualización
         updateFields['updated_at'] = 'CURRENT_TIMESTAMP';
         updateValues.push(id);
-        
+
         const setClause = Object.keys(updateFields)
             .map(field => `${field} = ${updateFields[field]}`)
             .join(', ');
-        
+
         const result = await executeQuery(
-            `UPDATE informacion_dinamica SET ${setClause} WHERE id = ? AND is_active = TRUE`,
+            `UPDATE informacion_dinamica SET ${setClause} WHERE id = $` + updateValues.length + ` AND is_active = TRUE`,
             updateValues
         );
         
@@ -344,7 +345,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res, next) =>
         const { id } = req.params;
         
         const result = await executeQuery(
-            'UPDATE informacion_dinamica SET is_active = FALSE WHERE id = ?',
+            'UPDATE informacion_dinamica SET is_active = FALSE WHERE id = $1',
             [id]
         );
         
@@ -388,13 +389,13 @@ router.get('/admin/all', authenticateToken, requireAdmin, async (req, res, next)
         `;
         
         const params = [];
-        
+
         if (category) {
-            query += ' AND categoria = ?';
+            query += ' AND categoria = $' + (params.length + 1);
             params.push(category);
         }
-        
-        query += ' ORDER BY updated_at DESC LIMIT ? OFFSET ?';
+
+        query += ' ORDER BY updated_at DESC LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2);
         params.push(parseInt(limit), parseInt(offset));
         
         const information = await executeQuery(query, params);
@@ -402,9 +403,9 @@ router.get('/admin/all', authenticateToken, requireAdmin, async (req, res, next)
         // Contar total para paginación
         let countQuery = 'SELECT COUNT(*) as total FROM informacion_dinamica WHERE 1=1';
         const countParams = [];
-        
+
         if (category) {
-            countQuery += ' AND categoria = ?';
+            countQuery += ' AND categoria = $1';
             countParams.push(category);
         }
         

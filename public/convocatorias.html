@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="css/style.css">
     
     <!-- Icons -->
-    <link rel="icon" href="public/images/logo-bachillerato-HDLP.webp" type="image/webp">
+    <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
     
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" >
@@ -494,9 +494,10 @@
                         <div class="card border-0 shadow-sm">
                             <div class="card-body p-4">
                                 <h5 class="card-title fw-bold text-center mb-4">Suscríbete a Notificaciones</h5>
-                                
-                                <form class="notification-form professional-form" method="POST" action="/api/notificaciones">
-                                    <input type="hidden" name="form_type" value="Suscripción a Notificaciones">
+
+                                <!-- ✅ ACTUALIZADO: Usar endpoint unificado de subscriptions -->
+                                <form class="notification-form professional-form" method="POST" action="/api/subscriptions/subscribe">
+                                    <input type="hidden" name="form_type" value="Suscripción Newsletter">
 
                                     <div class="mb-3">
                                         <label for="email" class="form-label">Correo Electrónico</label>
@@ -518,15 +519,15 @@
                                     <!-- Campo oculto para mensaje -->
                                     <input type="hidden" name="name" value="Suscriptor">
                                     <input type="hidden" name="message" value="Solicitud de suscripción a notificaciones de convocatorias">
-                                    
+
                                     <div class="mb-3 form-check">
                                         <input type="checkbox" class="form-check-input" id="acceptTerms" required>
                                         <label class="form-check-label small" for="acceptTerms">
-                                            Acepto recibir notificaciones y el tratamiento de mis datos conforme 
+                                            Acepto recibir notificaciones y el tratamiento de mis datos conforme
                                             a la <a href="transparencia.html" class="text-primary">política de privacidad</a>
                                         </label>
                                     </div>
-                                    
+
                                     <button type="submit" class="btn btn-primary w-100">
                                         <i class="fas fa-bell me-2"></i>Suscribirme
                                     </button>

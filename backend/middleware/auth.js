@@ -15,10 +15,16 @@ const authService = getAuthService();
  */
 const authenticateToken = async (req, res, next) => {
     try {
+        // 🔬 DEBUG: Loguear TODAS las peticiones que llegan al middleware
+        console.log(`\n🔍 [AUTH DEBUG] Request recibido: ${req.method} ${req.originalUrl}`);
+        console.log(`🔍 [AUTH DEBUG] IP: ${req.ip}`);
+
         // Extraer token del header
         const authHeader = req.headers['authorization'];
+        console.log(`🔍 [AUTH DEBUG] Authorization header presente: ${!!authHeader}`);
 
         if (!authHeader) {
+            console.log('❌ [AUTH DEBUG] No hay Authorization header');
             return res.status(401).json({
                 success: false,
                 error: 'Token de acceso requerido',
@@ -42,6 +48,9 @@ const authenticateToken = async (req, res, next) => {
         try {
             decoded = jwtUtils.verifyToken(token);
         } catch (error) {
+            // 🔬 DEBUG: Loguear error exacto de validación del token
+            console.error('❌ [AUTH MIDDLEWARE] Error verificando token:', error.message);
+            console.error('🔍 [AUTH MIDDLEWARE] Token recibido (primeros 50 chars):', token.substring(0, 50));
             return res.status(403).json({
                 success: false,
                 error: 'Token inválido',

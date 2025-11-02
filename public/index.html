@@ -1577,18 +1577,19 @@
       <!-- ⚡ Performance y Core Web Vitals --><!-- 📊 Analytics y métricas avanzadas --><!-- 🎓 IA educativa y tutorías --><!-- 📱 PWA y móvil optimizado -->
     <script src="js/pwa-optimizer.js"></script>         <!-- 📱 PWA Optimizer -->
         <!-- 🔒 Seguridad y autenticación --><!-- 🌐 APIs externas y conectividad -->
-    <script src="js/bge-security-module.js"></script>    <!-- 🔒 Seguridad y autenticación admin -->
+    <script src="js/bge-security-module.js"></script>    <!-- ✅ Sistema de seguridad completo CON autenticación real JWT -->
+    <!-- <script src="js/admin-auth.js"></script> ⚠️ DESHABILITADO: Funcionalidad básica, reemplazada por bge-security-module.js mejorado -->
 
     <!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DE INDEX.HTML -->
     <!-- Estos scripts son específicos para la página principal -->
     <!-- <script src="js/dev-override.js"></script> -->    <!-- ⚠️ DESHABILITADO PARA PRODUCCIÓN -->
     <!-- <script src="js/dev-credentials.js"></script> -->        <!-- ⚠️ DESHABILITADO PARA PRODUCCIÓN -->
-    <script src="js/index-events.js"></script>           <!-- 📟 Eventos específicos index -->
     <script src="js/script.js"></script>                 <!-- 🔒 Script principal -->
     <script src="js/chatbot.js"></script>                <!-- 🤖 Chatbot principal -->
+    <script src="js/index-events.js"></script>           <!-- 📟 Eventos específicos index -->
     <script src="js/search-simple.js"></script>          <!-- 🔍 Búsqueda simple -->
     <script src="js/api-client.js"></script>             <!-- 🔗 Cliente API -->
-    <script src="js/professional-forms.js"></script>     <!-- 📧 Sistema de formularios profesionales -->
+
     <script src="js/gamification-system.js"></script>    <!-- 🎮 Sistema de gamificación -->
     <script src="js/dashboard-personalizer.js"></script> <!-- 📋 Personalizador Dashboard -->
     <!-- 🚀 BGE FRAMEWORK CORE BUNDLE (Consolidado) -->
@@ -1613,7 +1614,7 @@
     <script src="/dist/main.60e9526fff68d039a47f.bundle.js" defer></script>
     -->
 
-    <!-- Service Worker Registration - ESTABLE -->
+    <!-- Service Worker Registration - CORREGIDO Y REACTIVADO -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', async () => {
@@ -2386,5 +2387,6 @@
         </div>
     </div>
 
+    <script src="js/professional-forms.js"></script>
 </body>
 </html>

@@ -55,8 +55,8 @@ router.get('/dashboard', async (req, res) => {
             pool.query(`
                 SELECT
                     COUNT(*) as total,
-                    COUNT(*) FILTER (WHERE estado_perfil = 'aprobado') as verificados,
-                    COUNT(*) FILTER (WHERE cv_url IS NOT NULL) as con_cv
+                    COUNT(*) FILTER (WHERE verificado = true) as verificados,
+                    COUNT(*) FILTER (WHERE historia_exito IS NOT NULL) as con_cv
                 FROM egresados
             `),
             // Solicitudes de documentos

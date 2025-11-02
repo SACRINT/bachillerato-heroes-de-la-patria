@@ -8,6 +8,7 @@ const { body, validationResult } = require('express-validator');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const { getAuthService } = require('../services/authService');
 const { getPasswordGenerator } = require('../utils/passwordGenerator');
+const { pool } = require('../config/database');
 const fs = require('fs').promises;
 const path = require('path');
 const router = express.Router();
@@ -461,12 +462,46 @@ router.get('/teachers', authenticateToken, requireAdmin, async (req, res) => {
  */
 router.get('/students', authenticateToken, requireAdmin, async (req, res) => {
     try {
+        // 🔍 LOGS DE DIAGNÓSTICO - Verificar conexión a BD
+        console.log(`[DB_DEBUG] DATABASE_URL presente: ${!!process.env.DATABASE_URL}`);
+        console.log(`[DB_DEBUG] Pool configurado - Total connections: ${pool.totalCount}, Idle: ${pool.idleCount}`);
+        console.log(`[DB_DEBUG] Ejecutando consulta: SELECT * FROM estudiantes`);
+
         const result = await pool.query('SELECT * FROM estudiantes ORDER BY apellido_paterno, apellido_materno, nombre ASC');
         const students = result.rows || [];
+
+        console.log(`[DB_DEBUG] ✅ Consulta exitosa: ${students.length} estudiantes encontrados`);
+
         res.json({ success: true, data: students });
     } catch (error) {
         console.error('❌ Error al obtener estudiantes:', error);
         res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estudiantes' });
+    }
+});
+
+/**
+ * GET /api/admin/parents
+ * Obtener todos los padres de familia
+ * Requiere: Autenticación de administrador
+ */
+router.get('/parents', authenticateToken, requireAdmin, async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT
+                p.id,
+                p.nombre,
+                p.email,
+                p.telefono,
+                p.fecha_creacion as fecha_registro,
+                p.activo
+            FROM parents p
+            ORDER BY p.nombre ASC
+        `);
+        const parents = result.rows || [];
+        res.json({ success: true, data: parents, total: parents.length });
+    } catch (error) {
+        console.error('❌ Error al obtener padres:', error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor al obtener padres' });
     }
 });
 

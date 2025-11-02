@@ -323,4 +323,59 @@ router.post('/execute-action', authenticateToken, requireAdmin, async (req, res,
     }
 });
 
+/**
+ * GET /api/dashboard/active-users
+ * Obtener usuarios activos con sesiones vigentes
+ */
+router.get('/active-users', authenticateToken, requireAdmin, async (req, res, next) => {
+    try {
+        console.log('👥 [DASHBOARD] Obteniendo usuarios activos...');
+
+        // Obtener sesiones activas de user_sessions (no expiradas)
+        const activeSessions = await executeQuery(`
+            SELECT
+                sess,
+                expire
+            FROM user_sessions
+            WHERE expire > NOW()
+            ORDER BY expire DESC
+        `, []);
+
+        // Extraer información de usuarios de las sesiones
+        const activeUsers = activeSessions.map((session, index) => {
+            try {
+                // Parse session data
+                const sessionData = typeof session.sess === 'string'
+                    ? JSON.parse(session.sess)
+                    : session.sess;
+
+                return {
+                    id: index + 1,
+                    username: sessionData.user?.username || sessionData.user?.email || 'Usuario',
+                    email: sessionData.user?.email || 'N/A',
+                    role: sessionData.user?.role || 'N/A',
+                    lastActivity: session.expire,
+                    sessionExpires: session.expire
+                };
+            } catch (error) {
+                console.error('Error procesando sesión:', error);
+                return null;
+            }
+        }).filter(user => user !== null);
+
+        console.log(`✅ [DASHBOARD] ${activeUsers.length} usuarios activos encontrados`);
+
+        res.json({
+            success: true,
+            data: activeUsers,
+            count: activeUsers.length,
+            timestamp: new Date().toISOString()
+        });
+
+    } catch (error) {
+        console.error('❌ [DASHBOARD] Error obteniendo usuarios activos:', error);
+        next(error);
+    }
+});
+
 module.exports = router;

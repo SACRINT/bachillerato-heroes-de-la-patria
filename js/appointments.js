@@ -548,8 +548,10 @@ class AppointmentSystem {
 
         // Poblar campos ocultos
         document.getElementById('appointment-department-hidden').value = dept.name;
-        document.getElementById('appointment-date-hidden').value = dateFormatted;
-        document.getElementById('appointment-time-hidden').value = this.selectedTime;
+        // ✅ MEJORADO: Pasar fecha en formato YYYY-MM-DD para API de citas mejorada
+        const dateISO = this.selectedDate.toISOString().split('T')[0];
+        document.getElementById('appointment-date-hidden').value = dateISO; // Formato para API: YYYY-MM-DD
+        document.getElementById('appointment-time-hidden').value = this.selectedTime; // HH:MM
         document.getElementById('appointment-subject-hidden').value = `Nueva Cita - ${dept.name}`;
 
         // Generar mensaje detallado

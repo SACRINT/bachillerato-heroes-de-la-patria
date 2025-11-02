@@ -166,14 +166,14 @@ router.get('/suscriptores-crecimiento', async (req, res) => {
     try {
         const query = `
             SELECT
-                TO_CHAR(subscribed_at, 'Mon YYYY') as mes,
-                DATE_TRUNC('month', subscribed_at) as fecha_mes,
+                TO_CHAR(fecha_suscripcion, 'Mon YYYY') as mes,
+                DATE_TRUNC('month', fecha_suscripcion) as fecha_mes,
                 COUNT(*) as nuevos,
-                SUM(COUNT(*)) OVER (ORDER BY DATE_TRUNC('month', subscribed_at)) as acumulado
-            FROM suscriptores
-            WHERE subscribed_at >= CURRENT_DATE - INTERVAL '12 months'
-            AND active = true
-            GROUP BY DATE_TRUNC('month', subscribed_at), TO_CHAR(subscribed_at, 'Mon YYYY')
+                SUM(COUNT(*)) OVER (ORDER BY DATE_TRUNC('month', fecha_suscripcion)) as acumulado
+            FROM suscriptores_notificaciones
+            WHERE fecha_suscripcion >= CURRENT_DATE - INTERVAL '12 months'
+            AND estado = 'activo'
+            GROUP BY DATE_TRUNC('month', fecha_suscripcion), TO_CHAR(fecha_suscripcion, 'Mon YYYY')
             ORDER BY fecha_mes ASC
         `;
 
@@ -208,6 +208,34 @@ router.get('/suscriptores-crecimiento', async (req, res) => {
         });
     } catch (error) {
         console.error('Error en /suscriptores-crecimiento:', error);
+
+        // Si la tabla no existe, devolver datos vacíos en lugar de error
+        if (error.code === '42P01') {
+            console.warn('⚠️ Tabla "suscriptores" no existe - devolviendo datos vacíos');
+            return res.json({
+                success: true,
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Nuevos Suscriptores',
+                        data: [],
+                        fill: true,
+                        backgroundColor: 'rgba(75, 192, 192, 0.3)',
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Acumulado',
+                        data: [],
+                        fill: false,
+                        borderColor: 'rgb(255, 99, 132)',
+                        borderDash: [5, 5],
+                        tension: 0.4
+                    }
+                ]
+            });
+        }
+
         res.status(500).json({
             success: false,
             error: 'Error al obtener crecimiento de suscriptores'
@@ -260,12 +288,12 @@ router.get('/resumen-general', async (req, res) => {
             pool.query(`
                 SELECT
                     CASE
-                        WHEN active = true THEN 'Activos'
+                        WHEN estado = 'activo' THEN 'Activos'
                         ELSE 'Inactivos'
-                    END as estado,
+                    END as estado_sub,
                     COUNT(*) as total
-                FROM suscriptores
-                GROUP BY active
+                FROM suscriptores_notificaciones
+                GROUP BY estado
             `)
         ]);
 

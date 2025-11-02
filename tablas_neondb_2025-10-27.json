@@ -1,0 +1,1536 @@
+[{
+  "table_name": "achievements",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "achievements",
+  "column_name": "code",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "achievements",
+  "column_name": "title",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "achievements",
+  "column_name": "description",
+  "data_type": "text",
+  "is_nullable": "NO"
+}, {
+  "table_name": "achievements",
+  "column_name": "icon",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "achievements",
+  "column_name": "category",
+  "data_type": "USER-DEFINED",
+  "is_nullable": "NO"
+}, {
+  "table_name": "achievements",
+  "column_name": "points",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "achievements",
+  "column_name": "xp_reward",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "achievements",
+  "column_name": "coins_reward",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "achievements",
+  "column_name": "rarity",
+  "data_type": "USER-DEFINED",
+  "is_nullable": "YES"
+}, {
+  "table_name": "achievements",
+  "column_name": "is_active",
+  "data_type": "boolean",
+  "is_nullable": "YES"
+}, {
+  "table_name": "achievements",
+  "column_name": "created_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "bolsa_trabajo",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "bolsa_trabajo",
+  "column_name": "nombre_completo",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "bolsa_trabajo",
+  "column_name": "email",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "bolsa_trabajo",
+  "column_name": "telefono",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "bolsa_trabajo",
+  "column_name": "generacion",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "bolsa_trabajo",
+  "column_name": "cv_url",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "bolsa_trabajo",
+  "column_name": "habilidades",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "bolsa_trabajo",
+  "column_name": "experiencia",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "bolsa_trabajo",
+  "column_name": "estado",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "bolsa_trabajo",
+  "column_name": "notas",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "bolsa_trabajo",
+  "column_name": "fecha_registro",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "bolsa_trabajo",
+  "column_name": "fecha_actualizacion",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "calificaciones",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "calificaciones",
+  "column_name": "estudiante_id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "calificaciones",
+  "column_name": "materia_id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "calificaciones",
+  "column_name": "docente_id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "calificaciones",
+  "column_name": "parcial",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "calificaciones",
+  "column_name": "calificacion",
+  "data_type": "numeric",
+  "is_nullable": "NO"
+}, {
+  "table_name": "calificaciones",
+  "column_name": "fecha_evaluacion",
+  "data_type": "date",
+  "is_nullable": "NO"
+}, {
+  "table_name": "calificaciones",
+  "column_name": "observaciones",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "calificaciones",
+  "column_name": "created_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "calificaciones",
+  "column_name": "updated_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "citas",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "citas",
+  "column_name": "cita_id",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "citas",
+  "column_name": "nombre_completo",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "citas",
+  "column_name": "email",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "citas",
+  "column_name": "telefono",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "citas",
+  "column_name": "tipo_persona",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "citas",
+  "column_name": "motivo",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "citas",
+  "column_name": "descripcion",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "citas",
+  "column_name": "fecha_solicitada",
+  "data_type": "date",
+  "is_nullable": "NO"
+}, {
+  "table_name": "citas",
+  "column_name": "hora_solicitada",
+  "data_type": "time without time zone",
+  "is_nullable": "NO"
+}, {
+  "table_name": "citas",
+  "column_name": "estado",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "citas",
+  "column_name": "fecha_aprobada",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "citas",
+  "column_name": "fecha_rechazada",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "citas",
+  "column_name": "motivo_rechazo",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "citas",
+  "column_name": "confirmada",
+  "data_type": "boolean",
+  "is_nullable": "YES"
+}, {
+  "table_name": "citas",
+  "column_name": "token_confirmacion",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "citas",
+  "column_name": "notas_admin",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "citas",
+  "column_name": "metadata",
+  "data_type": "jsonb",
+  "is_nullable": "YES"
+}, {
+  "table_name": "citas",
+  "column_name": "created_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "citas",
+  "column_name": "updated_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "comunicados",
+  "column_name": "titulo",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "comunicados",
+  "column_name": "contenido",
+  "data_type": "text",
+  "is_nullable": "NO"
+}, {
+  "table_name": "comunicados",
+  "column_name": "resumen",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "imagen_url",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "categoria",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "etiquetas",
+  "data_type": "ARRAY",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "estado",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "fecha_publicacion",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "fecha_creacion",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "fecha_modificacion",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "autor",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "comunicados",
+  "column_name": "autor_id",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "slug",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "meta_descripcion",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "vistas",
+  "data_type": "integer",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "destacada",
+  "data_type": "boolean",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "ip_address",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "comunicados",
+  "column_name": "user_agent",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "contactos",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "contactos",
+  "column_name": "form_type",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "contactos",
+  "column_name": "nombre",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "contactos",
+  "column_name": "email",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "contactos",
+  "column_name": "telefono",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "contactos",
+  "column_name": "tipo_consulta",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "contactos",
+  "column_name": "asunto",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "contactos",
+  "column_name": "mensaje",
+  "data_type": "text",
+  "is_nullable": "NO"
+}, {
+  "table_name": "contactos",
+  "column_name": "status",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "contactos",
+  "column_name": "respuesta",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "contactos",
+  "column_name": "respondido_por",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "contactos",
+  "column_name": "fecha_respuesta",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "contactos",
+  "column_name": "fecha_creacion",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "contactos",
+  "column_name": "fecha_actualizacion",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "contactos",
+  "column_name": "ip_address",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "contactos",
+  "column_name": "user_agent",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "contactos",
+  "column_name": "email_sent",
+  "data_type": "boolean",
+  "is_nullable": "YES"
+}, {
+  "table_name": "contactos",
+  "column_name": "verificado",
+  "data_type": "boolean",
+  "is_nullable": "YES"
+}, {
+  "table_name": "docentes",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "docentes",
+  "column_name": "usuario_id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "docentes",
+  "column_name": "numero_empleado",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "docentes",
+  "column_name": "nombre",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "docentes",
+  "column_name": "apellido_paterno",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "docentes",
+  "column_name": "apellido_materno",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "docentes",
+  "column_name": "especialidad",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "docentes",
+  "column_name": "telefono",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "docentes",
+  "column_name": "email_institucional",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "docentes",
+  "column_name": "status",
+  "data_type": "USER-DEFINED",
+  "is_nullable": "YES"
+}, {
+  "table_name": "docentes",
+  "column_name": "fecha_ingreso",
+  "data_type": "date",
+  "is_nullable": "NO"
+}, {
+  "table_name": "docentes",
+  "column_name": "created_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "docentes",
+  "column_name": "updated_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "egresados",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "egresados",
+  "column_name": "nombre",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "egresados",
+  "column_name": "email",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "egresados",
+  "column_name": "generacion",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "egresados",
+  "column_name": "telefono",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "egresados",
+  "column_name": "ciudad",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "egresados",
+  "column_name": "ocupacion_actual",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "egresados",
+  "column_name": "universidad",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "egresados",
+  "column_name": "carrera",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "egresados",
+  "column_name": "estatus_estudios",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "egresados",
+  "column_name": "anio_egreso",
+  "data_type": "integer",
+  "is_nullable": "YES"
+}, {
+  "table_name": "egresados",
+  "column_name": "historia_exito",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "egresados",
+  "column_name": "autoriza_publicar",
+  "data_type": "boolean",
+  "is_nullable": "YES"
+}, {
+  "table_name": "egresados",
+  "column_name": "verificado",
+  "data_type": "boolean",
+  "is_nullable": "YES"
+}, {
+  "table_name": "egresados",
+  "column_name": "fecha_registro",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "egresados",
+  "column_name": "fecha_actualizacion",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "usuario_id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "matricula",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "nombre",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "apellido_paterno",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "apellido_materno",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "fecha_nacimiento",
+  "data_type": "date",
+  "is_nullable": "YES"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "genero",
+  "data_type": "USER-DEFINED",
+  "is_nullable": "NO"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "telefono",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "direccion",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "semestre",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "especialidad",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "promedio",
+  "data_type": "numeric",
+  "is_nullable": "YES"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "status_academico",
+  "data_type": "USER-DEFINED",
+  "is_nullable": "YES"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "fecha_ingreso",
+  "data_type": "date",
+  "is_nullable": "NO"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "created_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "estudiantes",
+  "column_name": "updated_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "eventos",
+  "column_name": "titulo",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "eventos",
+  "column_name": "descripcion",
+  "data_type": "text",
+  "is_nullable": "NO"
+}, {
+  "table_name": "eventos",
+  "column_name": "imagen_url",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "fecha_inicio",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "NO"
+}, {
+  "table_name": "eventos",
+  "column_name": "fecha_fin",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "ubicacion",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "modalidad",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "link_virtual",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "categoria",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "tipo",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "etiquetas",
+  "data_type": "ARRAY",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "estado",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "fecha_creacion",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "fecha_modificacion",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "organizador",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "organizador_id",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "contacto_email",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "contacto_telefono",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "capacidad_maxima",
+  "data_type": "integer",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "inscripciones_abiertas",
+  "data_type": "boolean",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "requiere_inscripcion",
+  "data_type": "boolean",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "slug",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "destacado",
+  "data_type": "boolean",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "ip_address",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "eventos",
+  "column_name": "user_agent",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "activity_id",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "activity_name",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "student_id",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "student_name",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "student_email",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "student_group",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "emergency_contact",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "additional_info",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "status",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "processed_by",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "admin_notes",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "fecha_solicitud",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "fecha_procesado",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "ip_address",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "inscripciones_actividades",
+  "column_name": "user_agent",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "logs_sistema",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "logs_sistema",
+  "column_name": "nivel",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "logs_sistema",
+  "column_name": "mensaje",
+  "data_type": "text",
+  "is_nullable": "NO"
+}, {
+  "table_name": "logs_sistema",
+  "column_name": "contexto",
+  "data_type": "jsonb",
+  "is_nullable": "YES"
+}, {
+  "table_name": "logs_sistema",
+  "column_name": "usuario_id",
+  "data_type": "integer",
+  "is_nullable": "YES"
+}, {
+  "table_name": "logs_sistema",
+  "column_name": "ip_address",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "logs_sistema",
+  "column_name": "user_agent",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "logs_sistema",
+  "column_name": "created_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "materias",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "materias",
+  "column_name": "codigo",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "materias",
+  "column_name": "nombre",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "materias",
+  "column_name": "descripcion",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "materias",
+  "column_name": "creditos",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "materias",
+  "column_name": "semestre",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "materias",
+  "column_name": "area",
+  "data_type": "USER-DEFINED",
+  "is_nullable": "NO"
+}, {
+  "table_name": "materias",
+  "column_name": "is_active",
+  "data_type": "boolean",
+  "is_nullable": "YES"
+}, {
+  "table_name": "materias",
+  "column_name": "created_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "noticias",
+  "column_name": "titulo",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "noticias",
+  "column_name": "contenido",
+  "data_type": "text",
+  "is_nullable": "NO"
+}, {
+  "table_name": "noticias",
+  "column_name": "resumen",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "imagen_url",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "categoria",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "etiquetas",
+  "data_type": "ARRAY",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "estado",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "fecha_publicacion",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "fecha_creacion",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "fecha_modificacion",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "autor",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "noticias",
+  "column_name": "autor_id",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "slug",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "meta_descripcion",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "vistas",
+  "data_type": "integer",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "destacada",
+  "data_type": "boolean",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "ip_address",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "noticias",
+  "column_name": "user_agent",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "parents",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "parents",
+  "column_name": "email",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "parents",
+  "column_name": "password_hash",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "parents",
+  "column_name": "nombre",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "parents",
+  "column_name": "created_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "parents",
+  "column_name": "updated_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "form_type",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "submission_data",
+  "data_type": "jsonb",
+  "is_nullable": "NO"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "status",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "verification_token",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "email_verified",
+  "data_type": "boolean",
+  "is_nullable": "YES"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "verification_email",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "reviewed_by",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "review_notes",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "rejection_reason",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "created_at",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "verified_at",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "reviewed_at",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "ip_address",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "pending_submissions",
+  "column_name": "user_agent",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "quejas",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "quejas",
+  "column_name": "form_type",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "quejas",
+  "column_name": "nombre",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "quejas",
+  "column_name": "email",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "quejas",
+  "column_name": "subject",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "quejas",
+  "column_name": "message",
+  "data_type": "text",
+  "is_nullable": "NO"
+}, {
+  "table_name": "quejas",
+  "column_name": "status",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "quejas",
+  "column_name": "respuesta",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "quejas",
+  "column_name": "respondido_por",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "quejas",
+  "column_name": "fecha_respuesta",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "quejas",
+  "column_name": "fecha_creacion",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "quejas",
+  "column_name": "fecha_actualizacion",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "quejas",
+  "column_name": "ip_address",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "quejas",
+  "column_name": "user_agent",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "solicitudes_documentos",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "solicitudes_documentos",
+  "column_name": "nombre",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "solicitudes_documentos",
+  "column_name": "email",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "solicitudes_documentos",
+  "column_name": "tipo_usuario",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "solicitudes_documentos",
+  "column_name": "documento_solicitado",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "solicitudes_documentos",
+  "column_name": "motivo",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "solicitudes_documentos",
+  "column_name": "nivel_urgencia",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "solicitudes_documentos",
+  "column_name": "status",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "solicitudes_documentos",
+  "column_name": "fecha_solicitud",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "solicitudes_documentos",
+  "column_name": "fecha_procesado",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "solicitudes_documentos",
+  "column_name": "procesado_por",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "solicitudes_documentos",
+  "column_name": "notas_admin",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "solicitudes_documentos",
+  "column_name": "ip_address",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "solicitudes_documentos",
+  "column_name": "user_agent",
+  "data_type": "text",
+  "is_nullable": "YES"
+}, {
+  "table_name": "student_parents",
+  "column_name": "parent_id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "student_parents",
+  "column_name": "student_id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "suscriptores_notificaciones",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "suscriptores_notificaciones",
+  "column_name": "email",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "suscriptores_notificaciones",
+  "column_name": "nombre",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "suscriptores_notificaciones",
+  "column_name": "tipo_suscripcion",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "suscriptores_notificaciones",
+  "column_name": "estado",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "suscriptores_notificaciones",
+  "column_name": "token_cancelacion",
+  "data_type": "character varying",
+  "is_nullable": "YES"
+}, {
+  "table_name": "suscriptores_notificaciones",
+  "column_name": "emails_enviados",
+  "data_type": "integer",
+  "is_nullable": "YES"
+}, {
+  "table_name": "suscriptores_notificaciones",
+  "column_name": "emails_abiertos",
+  "data_type": "integer",
+  "is_nullable": "YES"
+}, {
+  "table_name": "suscriptores_notificaciones",
+  "column_name": "fecha_suscripcion",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "suscriptores_notificaciones",
+  "column_name": "fecha_cancelacion",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "suscriptores_notificaciones",
+  "column_name": "fecha_ultima_interaccion",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "user_achievements",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "user_achievements",
+  "column_name": "usuario_id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "user_achievements",
+  "column_name": "achievement_id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "user_achievements",
+  "column_name": "unlocked_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "user_achievements",
+  "column_name": "progress",
+  "data_type": "numeric",
+  "is_nullable": "YES"
+}, {
+  "table_name": "user_gamification_stats",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "user_gamification_stats",
+  "column_name": "usuario_id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "user_gamification_stats",
+  "column_name": "level",
+  "data_type": "integer",
+  "is_nullable": "YES"
+}, {
+  "table_name": "user_gamification_stats",
+  "column_name": "xp",
+  "data_type": "integer",
+  "is_nullable": "YES"
+}, {
+  "table_name": "user_gamification_stats",
+  "column_name": "ia_coins",
+  "data_type": "integer",
+  "is_nullable": "YES"
+}, {
+  "table_name": "user_gamification_stats",
+  "column_name": "total_achievements",
+  "data_type": "integer",
+  "is_nullable": "YES"
+}, {
+  "table_name": "user_gamification_stats",
+  "column_name": "streak_days",
+  "data_type": "integer",
+  "is_nullable": "YES"
+}, {
+  "table_name": "user_gamification_stats",
+  "column_name": "last_activity",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "user_gamification_stats",
+  "column_name": "created_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "user_gamification_stats",
+  "column_name": "updated_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "user_sessions",
+  "column_name": "sid",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "user_sessions",
+  "column_name": "sess",
+  "data_type": "json",
+  "is_nullable": "NO"
+}, {
+  "table_name": "user_sessions",
+  "column_name": "expire",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "NO"
+}, {
+  "table_name": "usuarios",
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO"
+}, {
+  "table_name": "usuarios",
+  "column_name": "uuid",
+  "data_type": "uuid",
+  "is_nullable": "NO"
+}, {
+  "table_name": "usuarios",
+  "column_name": "username",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "usuarios",
+  "column_name": "email",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "usuarios",
+  "column_name": "password_hash",
+  "data_type": "character varying",
+  "is_nullable": "NO"
+}, {
+  "table_name": "usuarios",
+  "column_name": "role",
+  "data_type": "USER-DEFINED",
+  "is_nullable": "NO"
+}, {
+  "table_name": "usuarios",
+  "column_name": "status",
+  "data_type": "USER-DEFINED",
+  "is_nullable": "NO"
+}, {
+  "table_name": "usuarios",
+  "column_name": "created_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "usuarios",
+  "column_name": "updated_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "usuarios",
+  "column_name": "last_login",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}, {
+  "table_name": "usuarios",
+  "column_name": "login_attempts",
+  "data_type": "integer",
+  "is_nullable": "YES"
+}, {
+  "table_name": "usuarios",
+  "column_name": "locked_until",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES"
+}]

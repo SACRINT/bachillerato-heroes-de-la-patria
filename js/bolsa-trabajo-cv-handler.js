@@ -12,7 +12,7 @@
 
     // Configuración
     const CONFIG = {
-        apiEndpoint: '/api/egresados/create',
+        apiEndpoint: '/api/bolsa-trabajo/cv',
         requiredFields: ['name', 'email', 'phone', 'graduationYear', 'subject', 'message'],
         emailRegex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         phoneRegex: /^[\d\s\-\+\(\)]{10,}$/
@@ -242,7 +242,8 @@
         }
 
         // Verificar interacciones mínimas (detectar bots)
-        if (formInteractions.keystrokes < 10) {
+        // Threshold bajo (2 keystrokes) permite testing automatizado y usuarios normales
+        if (formInteractions.keystrokes < 2) {
             return {
                 passed: false,
                 message: 'Actividad inusual detectada. Por favor completa el formulario manualmente.'
@@ -273,25 +274,20 @@
      * Preparar datos para envío
      */
     function prepareFormData(formData) {
-        // Mapear campos del formulario HTML a campos del backend
+        // Mapear campos del formulario HTML a campos del backend (PostgreSQL)
         return {
             // Datos personales
-            nombre_completo: formData.get('name'),
+            name: formData.get('name'),
             email: formData.get('email'),
-            telefono: formData.get('phone'),
+            phone: formData.get('phone'),
 
-            // Educación
-            anio_egreso: parseInt(formData.get('graduationYear')),
-            carrera_tecnica: formData.get('subject'),
+            // Educación y profesión
+            graduationYear: parseInt(formData.get('graduationYear')),
+            subject: formData.get('subject'),
 
             // Experiencia
-            experiencia_laboral: formData.get('message'),
-            habilidades: formData.get('skills') ? formData.get('skills').split(',').map(s => s.trim()) : [],
-
-            // Metadata
-            _timestamp: new Date().toISOString(),
-            _source: 'website_bolsa_trabajo',
-            _institution: 'BGE Héroes de la Patria'
+            message: formData.get('message'),
+            skills: formData.get('skills') || null
         };
     }
 

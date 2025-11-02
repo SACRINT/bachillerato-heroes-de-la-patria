@@ -95,7 +95,7 @@ class AnalyticsService extends EventEmitter {
             await executeQuery(`
                 INSERT INTO analytics_events_realtime (
                     event_id, event_type, event_data, user_id, timestamp, priority
-                ) VALUES (?, ?, ?, ?, ?, 'high')
+                ) VALUES ($1, $2, $3, $4, $5, 'high')
             `, [event.id, event.type, JSON.stringify(event.data), event.userId, event.timestamp]);
 
             // Emitir evento para notificaciones en tiempo real
@@ -157,7 +157,11 @@ class AnalyticsService extends EventEmitter {
             Date.now()
         ]);
 
-        const placeholders = values.map(() => '(?, ?, ?, ?, ?, ?, ?, ?, ?)').join(',');
+        let paramIndex = 1;
+        const placeholders = values.map(() => {
+            const params = Array.from({length: 9}, (_, i) => `$${paramIndex++}`).join(', ');
+            return `(${params})`;
+        }).join(',');
 
         await executeQuery(`
             INSERT INTO analytics_events (
@@ -650,7 +654,7 @@ class AnalyticsService extends EventEmitter {
                 COUNT(DISTINCT user_id) as unique_users,
                 COUNT(*) as total_events
             FROM analytics_events
-            WHERE JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.funnelId')) = ?
+            WHERE JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.funnelId')) = $1
             AND event_timestamp >= ${this.getTimeCondition(timeframe)}
             GROUP BY funnel_step
             ORDER BY funnel_step
@@ -747,7 +751,7 @@ class AnalyticsService extends EventEmitter {
             INSERT INTO ab_tests (
                 test_id, test_name, variants, traffic_split,
                 target_metric, created_by, status, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, 'active', NOW())
+            ) VALUES ($1, $2, $3, $4, $5, $6, 'active', NOW())
         `, [
             testId,
             name,
@@ -803,9 +807,9 @@ class AnalyticsService extends EventEmitter {
             if (allowedConfigs.includes(key)) {
                 await executeQuery(`
                     INSERT INTO analytics_config (config_key, config_value, updated_at)
-                    VALUES (?, ?, NOW())
-                    ON DUPLICATE KEY UPDATE
-                    config_value = ?, updated_at = NOW()
+                    VALUES ($1, $2, NOW())
+                    ON CONFLICT (config_key) DO UPDATE SET
+                    config_value = $3, updated_at = NOW()
                 `, [key, JSON.stringify(value), JSON.stringify(value)]);
             }
         }
@@ -847,7 +851,7 @@ class AnalyticsService extends EventEmitter {
 
         const result = await executeQuery(`
             DELETE FROM analytics_events
-            WHERE user_id = ?
+            WHERE user_id = $1
         `, [userId]);
 
         return { deletedCount: result.affectedRows };
@@ -1014,10 +1018,10 @@ class AnalyticsService extends EventEmitter {
                 INSERT INTO analytics_metrics_hourly (
                     hour_timestamp, page_views, user_actions, updated_at
                 ) VALUES (
-                    DATE_FORMAT(NOW(), '%Y-%m-%d %H:00:00'), ?, ?, NOW()
-                ) ON DUPLICATE KEY UPDATE
-                page_views = page_views + ?,
-                user_actions = user_actions + ?,
+                    DATE_TRUNC('hour', NOW()), $1, $2, NOW()
+                ) ON CONFLICT (hour_timestamp) DO UPDATE SET
+                page_views = analytics_metrics_hourly.page_views + $3,
+                user_actions = analytics_metrics_hourly.user_actions + $4,
                 updated_at = NOW()
             `, [pageViews, userActions, pageViews, userActions]);
         }
@@ -1053,9 +1057,9 @@ class AnalyticsService extends EventEmitter {
             await executeQuery(`
                 INSERT INTO course_engagement_metrics (
                     course_id, event_count, last_updated
-                ) VALUES (?, ?, NOW())
-                ON DUPLICATE KEY UPDATE
-                event_count = event_count + ?,
+                ) VALUES ($1, $2, NOW())
+                ON CONFLICT (course_id) DO UPDATE SET
+                event_count = course_engagement_metrics.event_count + $3,
                 last_updated = NOW()
             `, [courseId, count, count]);
         }

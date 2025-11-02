@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Inicializar todos los event listeners
     initializeChatbotEvents();
-    initializeDevCredentialsEvents();
+    // initializeDevCredentialsEvents(); // DESHABILITADO: El archivo dev-credentials.js no existe.
 
     console.log('✅ Todos los eventos de index.html configurados');
 });

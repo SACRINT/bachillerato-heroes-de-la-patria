@@ -1225,6 +1225,7 @@ function toggleChatbot() {
 
 // Exponer la función globalmente
 window.toggleChatbot = toggleChatbot;
+window.sendMessage = sendMessage;
 
 // ✉️ FUNCIÓN PARA AGREGAR MENSAJES CON ANIMACIÓN
 function addMessage(sender, message) {

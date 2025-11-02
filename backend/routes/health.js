@@ -12,7 +12,7 @@ const { promisify } = require('util');
 const execAsync = promisify(exec);
 
 // Importar pool de PostgreSQL
-const pool = require('../config/database');
+const { pool } = require('../config/database');
 
 /**
  * GET /api/health

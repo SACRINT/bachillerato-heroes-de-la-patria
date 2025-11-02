@@ -124,20 +124,56 @@ class StatsCounter {
     }
 
     animateNumber(element, targetValue) {
-        const currentValue = parseInt(element.textContent) || 0;
+        // ✅ VALIDACIÓN: Asegurar que targetValue es un número válido y positivo
+        targetValue = parseInt(targetValue) || 0;
+        if (targetValue < 0 || isNaN(targetValue)) {
+            console.warn(`⚠️ [STATS] Valor inválido detectado: ${targetValue}, usando 0`);
+            targetValue = 0;
+        }
+
+        // ✅ PROTECCIÓN CRÍTICA: Cancelar cualquier animación previa PRIMERO
+        if (element.animationTimer) {
+            clearInterval(element.animationTimer);
+            element.animationTimer = null;
+        }
+
+        // ✅ FIX CRÍTICO: Validar currentValue y resetear si es inválido
+        let currentValue = parseInt(element.textContent);
+        if (isNaN(currentValue) || currentValue < 0 || currentValue > 1000000) {
+            console.warn(`⚠️ [STATS] Valor actual corrupto: ${currentValue}, reseteando a 0`);
+            currentValue = 0;
+            element.textContent = '0';
+        }
+
+        // Si los valores son iguales, no hacer nada
+        if (currentValue === targetValue) {
+            return;
+        }
+
+        // ✅ OPTIMIZACIÓN: Si el cambio es muy grande, actualizar directamente sin animar
+        const diff = Math.abs(targetValue - currentValue);
+        if (diff > 100) {
+            element.textContent = targetValue;
+            console.log(`✅ [STATS] Actualización directa (diff=${diff})`);
+            return;
+        }
+
         const increment = targetValue > currentValue ? 1 : -1;
         const duration = 500; // 500ms
         const steps = Math.abs(targetValue - currentValue);
-        const stepDuration = steps > 0 ? duration / steps : 0;
+
+        // ✅ PROTECCIÓN: Asegurar que stepDuration nunca sea menor a 10ms
+        const stepDuration = steps > 0 ? Math.max(10, duration / steps) : 0;
 
         let current = currentValue;
 
-        const timer = setInterval(() => {
+        element.animationTimer = setInterval(() => {
             current += increment;
             element.textContent = current;
 
             if (current === targetValue) {
-                clearInterval(timer);
+                clearInterval(element.animationTimer);
+                element.animationTimer = null;
             }
         }, stepDuration);
     }
