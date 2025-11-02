@@ -1228,17 +1228,17 @@ const financesRoutes = require('../backend/routes/finances');
 const citasRoutes = require('../backend/routes/citas');
 
 // ✅ 28 RUTAS FALTANTES AGREGADAS (2 NOV 2025)
-// ⏸️ COMENTADAS TEMPORALMENTE PARA DEBUG - UNA TIENE ERROR DE SINTAXIS
-// const aiDatabaseRoutes = require('../backend/routes/ai-database');
-// const analyticsPredictiveRoutes = require('../backend/routes/analytics-predictivo');
-// const analyticsRoutes = require('../backend/routes/analytics');
-// const asistenteVirtualRoutes = require('../backend/routes/asistente-virtual');
-// const backupRoutes = require('../backend/routes/backup');
-// const calendarRoutes = require('../backend/routes/calendar');
-// const chatbotIaRoutes = require('../backend/routes/chatbot-ia');
-// const chatbotRoutes = require('../backend/routes/chatbot');
-// const cmsRoutes = require('../backend/routes/cms');
-// const deteccionRiesgosRoutes = require('../backend/routes/deteccion-riesgos');
+// Debug: Primer grupo de 10 rutas
+const aiDatabaseRoutes = require('../backend/routes/ai-database');
+const analyticsPredictiveRoutes = require('../backend/routes/analytics-predictivo');
+const analyticsRoutes = require('../backend/routes/analytics');
+const asistenteVirtualRoutes = require('../backend/routes/asistente-virtual');
+const backupRoutes = require('../backend/routes/backup');
+const calendarRoutes = require('../backend/routes/calendar');
+const chatbotIaRoutes = require('../backend/routes/chatbot-ia');
+const chatbotRoutes = require('../backend/routes/chatbot');
+const cmsRoutes = require('../backend/routes/cms');
+const deteccionRiesgosRoutes = require('../backend/routes/deteccion-riesgos');
 // const gamificationRoutes = require('../backend/routes/gamification');
 // const googleClassroomRoutes = require('../backend/routes/google-classroom');
 // const gradesRoutes = require('../backend/routes/grades');
@@ -1297,17 +1297,17 @@ app.use('/api/digital-library', digitalLibraryRoutes);
 app.use('/api/support-tickets', supportTicketsRoutes);
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
-// ⏸️ COMENTADAS TEMPORALMENTE PARA DEBUG - UNA TIENE ERROR DE SINTAXIS
-// app.use('/api/ai-database', aiDatabaseRoutes);
-// app.use('/api/analytics-predictivo', analyticsPredictiveRoutes);
-// app.use('/api/analytics-direct', analyticsRoutes);  // analytics (para evitar conflicto con analytics-dashboard)
-// app.use('/api/asistente-virtual', asistenteVirtualRoutes);
-// app.use('/api/backup', backupRoutes);
-// app.use('/api/calendar-direct', calendarRoutes);  // calendar (para evitar conflicto si necesario)
-// app.use('/api/chatbot-ia', chatbotIaRoutes);
-// app.use('/api/chatbot-direct', chatbotRoutes);  // chatbot (para evitar conflicto)
-// app.use('/api/cms', cmsRoutes);
-// app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes);
+// Debug: Primer grupo de 10 rutas
+app.use('/api/ai-database', aiDatabaseRoutes);
+app.use('/api/analytics-predictivo', analyticsPredictiveRoutes);
+app.use('/api/analytics-direct', analyticsRoutes);  // analytics (para evitar conflicto con analytics-dashboard)
+app.use('/api/asistente-virtual', asistenteVirtualRoutes);
+app.use('/api/backup', backupRoutes);
+app.use('/api/calendar-direct', calendarRoutes);  // calendar (para evitar conflicto si necesario)
+app.use('/api/chatbot-ia', chatbotIaRoutes);
+app.use('/api/chatbot-direct', chatbotRoutes);  // chatbot (para evitar conflicto)
+app.use('/api/cms', cmsRoutes);
+app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes);
 // app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para evitar conflicto)
 // app.use('/api/google-classroom', googleClassroomRoutes);
 // app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
