@@ -1316,10 +1316,10 @@ app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para 
 // app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
 // app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
 app.use('/api/information', informationRoutes);
-app.use('/api/maintenance', maintenanceRoutes);
-app.use('/api/migration', migrationRoutes);
-app.use('/api/multi-tenant', multiTenantRoutes);
-app.use('/api/newsletters-pg', newslettersPgRoutes);
+// app.use('/api/maintenance', maintenanceRoutes);
+// app.use('/api/migration', migrationRoutes);
+// app.use('/api/multi-tenant', multiTenantRoutes);
+// app.use('/api/newsletters-pg', newslettersPgRoutes);
 // Mitad B
 // app.use('/api/notifications-direct', notificationsRoutes);  // notifications (para evitar conflicto)
 // app.use('/api/parentTeacherCommunication', parentTeacherCommunicationRoutes);
