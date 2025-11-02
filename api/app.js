@@ -1239,15 +1239,17 @@ const chatbotIaRoutes = require('../backend/routes/chatbot-ia');
 const chatbotRoutes = require('../backend/routes/chatbot');
 const cmsRoutes = require('../backend/routes/cms');
 const deteccionRiesgosRoutes = require('../backend/routes/deteccion-riesgos');
-// const gamificationRoutes = require('../backend/routes/gamification');
-// const googleClassroomRoutes = require('../backend/routes/google-classroom');
-// const gradesRoutes = require('../backend/routes/grades');
-// const gradesAnalyticsRoutes = require('../backend/routes/gradesAnalytics');
-// const informationRoutes = require('../backend/routes/information');
-// const maintenanceRoutes = require('../backend/routes/maintenance');
-// const migrationRoutes = require('../backend/routes/migration');
-// const multiTenantRoutes = require('../backend/routes/multi-tenant');
-// const newslettersPgRoutes = require('../backend/routes/newsletters-pg');
+// Mitad A del segundo grupo (9 rutas)
+const gamificationRoutes = require('../backend/routes/gamification');
+const googleClassroomRoutes = require('../backend/routes/google-classroom');
+const gradesRoutes = require('../backend/routes/grades');
+const gradesAnalyticsRoutes = require('../backend/routes/gradesAnalytics');
+const informationRoutes = require('../backend/routes/information');
+const maintenanceRoutes = require('../backend/routes/maintenance');
+const migrationRoutes = require('../backend/routes/migration');
+const multiTenantRoutes = require('../backend/routes/multi-tenant');
+const newslettersPgRoutes = require('../backend/routes/newsletters-pg');
+// Mitad B del segundo grupo (9 rutas)
 // const notificationsRoutes = require('../backend/routes/notifications');
 // const parentTeacherCommunicationRoutes = require('../backend/routes/parentTeacherCommunication');
 // const realAiRoutes = require('../backend/routes/real-ai');
@@ -1308,15 +1310,17 @@ app.use('/api/chatbot-ia', chatbotIaRoutes);
 app.use('/api/chatbot-direct', chatbotRoutes);  // chatbot (para evitar conflicto)
 app.use('/api/cms', cmsRoutes);
 app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes);
-// app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para evitar conflicto)
-// app.use('/api/google-classroom', googleClassroomRoutes);
-// app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
-// app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
-// app.use('/api/information', informationRoutes);
-// app.use('/api/maintenance', maintenanceRoutes);
-// app.use('/api/migration', migrationRoutes);
-// app.use('/api/multi-tenant', multiTenantRoutes);
-// app.use('/api/newsletters-pg', newslettersPgRoutes);
+// Mitad A
+app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para evitar conflicto)
+app.use('/api/google-classroom', googleClassroomRoutes);
+app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
+app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
+app.use('/api/information', informationRoutes);
+app.use('/api/maintenance', maintenanceRoutes);
+app.use('/api/migration', migrationRoutes);
+app.use('/api/multi-tenant', multiTenantRoutes);
+app.use('/api/newsletters-pg', newslettersPgRoutes);
+// Mitad B
 // app.use('/api/notifications-direct', notificationsRoutes);  // notifications (para evitar conflicto)
 // app.use('/api/parentTeacherCommunication', parentTeacherCommunicationRoutes);
 // app.use('/api/real-ai', realAiRoutes);
