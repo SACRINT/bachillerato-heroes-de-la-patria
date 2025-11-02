@@ -1312,7 +1312,7 @@ app.use('/api/cms', cmsRoutes);
 app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes);
 // Mitad A
 app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para evitar conflicto)
-app.use('/api/google-classroom', googleClassroomRoutes);
+// app.use('/api/google-classroom', googleClassroomRoutes);  // DEBUG: Testing
 app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
 app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
 app.use('/api/information', informationRoutes);
