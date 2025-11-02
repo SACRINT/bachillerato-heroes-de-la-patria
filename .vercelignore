@@ -1,0 +1,43 @@
+node_modules/
+.git/
+.next/
+dist/
+build/
+coverage/
+.env
+.env.local
+.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.DS_Store
+.vscode/
+.idea/
+
+# Debug files en /api/ que no son necesarios para producción
+api/debug-*.js
+api/debug-*.cjs
+
+# Documentación local (no necesaria en producción)
+docs/
+CHANGELOG.md
+CLAUDE.md
+MASTER-CHECKLIST*.md
+SIGUIENTES_PASOS.md
+
+# Archivos de test
+__tests__/
+*.test.js
+jest.config.cjs
+jest.setup.cjs
+
+# Old/backup files
+no_usados/
+*.backup
+*-copy.js
+*~
+
+# Node
+node_modules/
+package-lock.json
