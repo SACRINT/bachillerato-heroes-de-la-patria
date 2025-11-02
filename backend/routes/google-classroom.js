@@ -7,9 +7,12 @@
 
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const googleClassroomService = require('../services/googleClassroomService');
+const { getGoogleClassroomService } = require('../services/googleClassroomService');
 const authMiddleware = require('../middleware/auth');
 const router = express.Router();
+
+// Obtener instancia del servicio
+const googleClassroomService = getGoogleClassroomService();
 
 /**
  * POST /api/google-classroom/sync
