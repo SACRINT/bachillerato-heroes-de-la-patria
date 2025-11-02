@@ -6,7 +6,7 @@
 const express = require('express');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const { getPushNotificationService } = require('../services/pushNotificationService');
-const { logger } = require('../middleware/logger');
+
 const router = express.Router();
 
 /**
@@ -58,7 +58,7 @@ router.post('/subscribe', authenticateToken, async (req, res, next) => {
             ...metadata
         });
 
-        await logger.info('Usuario suscrito a notificaciones push', {
+        console.log('Usuario suscrito a notificaciones push', {
             userId: req.user.id,
             subscriptionId: subscriptionId
         });
@@ -89,7 +89,7 @@ router.delete('/unsubscribe/:subscriptionId', authenticateToken, async (req, res
         const result = await pushService.unsubscribe(subscriptionId);
 
         if (result) {
-            await logger.info('Suscripción cancelada', {
+            console.log('Suscripción cancelada', {
                 userId: req.user.id,
                 subscriptionId: subscriptionId
             });
@@ -152,7 +152,7 @@ router.post('/send', requireAdmin, async (req, res, next) => {
             scheduledAt
         });
 
-        await logger.info('Notificación enviada', {
+        console.log('Notificación enviada', {
             userId: req.user.id,
             title: title,
             targetUsers: userIds.length || 'all',
@@ -190,7 +190,7 @@ router.post('/send-emergency', requireAdmin, async (req, res, next) => {
         const pushService = getPushNotificationService();
         const result = await pushService.sendEmergencyNotification(title, body, userIds);
 
-        await logger.warn('Notificación de emergencia enviada', {
+        console.warn('Notificación de emergencia enviada', {
             userId: req.user.id,
             title: title,
             targetUsers: userIds.length || 'all'
@@ -227,7 +227,7 @@ router.post('/send-grade', requireAdmin, async (req, res, next) => {
         const pushService = getPushNotificationService();
         const result = await pushService.sendGradeNotification(userId, subject, grade);
 
-        await logger.info('Notificación de calificación enviada', {
+        console.log('Notificación de calificación enviada', {
             adminId: req.user.id,
             studentId: userId,
             subject: subject,
@@ -286,7 +286,7 @@ router.post('/test', requireAdmin, async (req, res, next) => {
             type: 'system'
         });
 
-        await logger.info('Notificación de prueba enviada', {
+        console.log('Notificación de prueba enviada', {
             userId: req.user.id,
             targetUser: userId || 'all'
         });
@@ -314,7 +314,7 @@ router.post('/cleanup', requireAdmin, async (req, res, next) => {
         const pushService = getPushNotificationService();
         const removed = await pushService.cleanupInactiveSubscriptions(daysInactive);
 
-        await logger.info('Limpieza de suscripciones completada', {
+        console.log('Limpieza de suscripciones completada', {
             userId: req.user.id,
             removed: removed,
             daysInactive: daysInactive
@@ -410,7 +410,7 @@ router.post('/schedule', requireAdmin, async (req, res, next) => {
             type
         }, userIds, scheduledAt);
 
-        await logger.info('Notificación programada', {
+        console.log('Notificación programada', {
             userId: req.user.id,
             scheduleId: scheduleId,
             scheduledAt: scheduledAt,

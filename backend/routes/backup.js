@@ -6,7 +6,6 @@
 const express = require('express');
 const { requireAdmin } = require('../middleware/auth');
 const { getBackupService } = require('../services/backupService');
-const { logger } = require('../middleware/logger');
 const router = express.Router();
 
 // Aplicar autenticación de admin a todas las rutas de backup
@@ -24,7 +23,7 @@ router.get('/list', async (req, res, next) => {
         const result = await backupService.listBackups();
 
         if (result.success) {
-            await logger.info('Lista de backups consultada', {
+            console.log('Lista de backups consultada', {
                 userId: req.user.id,
                 count: result.count
             });
@@ -126,7 +125,7 @@ router.post('/create', async (req, res, next) => {
         const result = await backupService.createManualBackup();
 
         if (result.success) {
-            await logger.info('Backup manual creado', {
+            console.log('Backup manual creado', {
                 userId: req.user.id,
                 filename: result.filename,
                 size: result.size
@@ -166,7 +165,7 @@ router.post('/data-only', async (req, res, next) => {
         const result = await backupService.createDataBackup();
 
         if (result.success) {
-            await logger.info('Backup de datos creado', {
+            console.log('Backup de datos creado', {
                 userId: req.user.id,
                 filename: result.filename,
                 type: 'data-only'
@@ -215,7 +214,7 @@ router.post('/restore/:filename', async (req, res, next) => {
         const backupService = getBackupService();
         const result = await backupService.restoreFromBackup(filename);
 
-        await logger.warn('Solicitud de restauración de backup', {
+        console.warn('Solicitud de restauración de backup', {
             userId: req.user.id,
             filename: filename,
             confirmed: confirm
@@ -271,7 +270,7 @@ router.delete('/:filename', async (req, res, next) => {
             await fs.access(backupPath);
             await fs.unlink(backupPath);
 
-            await logger.warn('Backup eliminado manualmente', {
+            console.warn('Backup eliminado manualmente', {
                 userId: req.user.id,
                 filename: filename
             });
@@ -327,7 +326,7 @@ router.get('/download/:filename', async (req, res, next) => {
             });
         }
 
-        await logger.info('Backup descargado', {
+        console.log('Backup descargado', {
             userId: req.user.id,
             filename: filename
         });
@@ -399,7 +398,7 @@ router.post('/config', async (req, res, next) => {
             backupService.maxBackups = maxBackups;
         }
 
-        await logger.info('Configuración de backup actualizada', {
+        console.log('Configuración de backup actualizada', {
             userId: req.user.id,
             changes: req.body
         });

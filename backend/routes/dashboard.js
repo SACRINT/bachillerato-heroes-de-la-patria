@@ -5,8 +5,6 @@
 
 const express = require('express');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
-const { executeQuery } = require('../config/database');
-const { logger } = require('../middleware/logger');
 const router = express.Router();
 
 // ============================================
@@ -21,8 +19,9 @@ router.get('/stats', authenticateToken, requireAdmin, async (req, res, next) => 
     try {
         console.log('📊 [DASHBOARD] Obteniendo estadísticas generales...');
 
-        // Obtener usuarios totales por rol
-        const users = await executeQuery('SELECT * FROM usuarios', []);
+        // Simular datos de usuarios
+        const users = [];
+        // const users = await executeQuery('SELECT * FROM usuarios', []);
         const userStats = {
             total: users.length,
             admin: users.filter(u => u.role === 'admin').length,
@@ -57,7 +56,7 @@ router.get('/stats', authenticateToken, requireAdmin, async (req, res, next) => 
             systemAlerts: Math.floor(Math.random() * 3)
         };
 
-        await logger.info('Estadísticas del dashboard consultadas', {
+        console.log('Estadísticas del dashboard consultadas', {
             adminId: req.user.id,
             timestamp: new Date().toISOString()
         });
@@ -268,7 +267,7 @@ router.post('/execute-action', authenticateToken, requireAdmin, async (req, res,
     try {
         const { actionId, parameters } = req.body;
 
-        console.log(`⚡ [DASHBOARD] Ejecutando acción: ${actionId}`);
+        console.log('⚡ [DASHBOARD] Ejecutando acción:', actionId);
 
         // Simulación de ejecución de acciones
         const results = {
@@ -309,7 +308,7 @@ router.post('/execute-action', authenticateToken, requireAdmin, async (req, res,
             message: 'Acción no reconocida'
         };
 
-        await logger.info(`Acción del dashboard ejecutada: ${actionId}`, {
+        console.log('Acción del dashboard ejecutada:', actionId, {
             adminId: req.user.id,
             actionId,
             parameters,
@@ -331,7 +330,10 @@ router.get('/active-users', authenticateToken, requireAdmin, async (req, res, ne
     try {
         console.log('👥 [DASHBOARD] Obteniendo usuarios activos...');
 
-        // Obtener sesiones activas de user_sessions (no expiradas)
+        // Simular sesiones activas
+        const activeSessions = [];
+
+        /* Original query:
         const activeSessions = await executeQuery(`
             SELECT
                 sess,
@@ -340,6 +342,7 @@ router.get('/active-users', authenticateToken, requireAdmin, async (req, res, ne
             WHERE expire > NOW()
             ORDER BY expire DESC
         `, []);
+        */
 
         // Extraer información de usuarios de las sesiones
         const activeUsers = activeSessions.map((session, index) => {

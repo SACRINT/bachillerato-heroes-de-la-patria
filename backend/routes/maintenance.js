@@ -6,7 +6,6 @@
 const express = require('express');
 const { requireAdmin } = require('../middleware/auth');
 const { getMaintenanceTools } = require('../services/maintenanceTools');
-const { logger } = require('../middleware/logger');
 const router = express.Router();
 
 // Aplicar autenticación de admin a todas las rutas de mantenimiento
@@ -23,7 +22,7 @@ router.get('/diagnostic', async (req, res, next) => {
         const maintenanceTools = getMaintenanceTools();
         const diagnostic = await maintenanceTools.systemDiagnostic();
 
-        await logger.info('Diagnóstico del sistema ejecutado', {
+        console.log('Diagnóstico del sistema ejecutado', {
             userId: req.user.id,
             systemHealth: diagnostic.summary.overallHealth
         });
@@ -72,7 +71,7 @@ router.post('/cleanup', async (req, res, next) => {
         const maintenanceTools = getMaintenanceTools();
         const result = await maintenanceTools.cleanupSystem(options);
 
-        await logger.warn('Limpieza del sistema ejecutada', {
+        console.warn('Limpieza del sistema ejecutada', {
             userId: req.user.id,
             spaceFreed: result.spaceFreed,
             operationsCount: result.operations.length
@@ -120,7 +119,7 @@ router.post('/optimize-database', async (req, res, next) => {
         const maintenanceTools = getMaintenanceTools();
         const result = await maintenanceTools.optimizeDatabase();
 
-        await logger.info('Optimización de base de datos ejecutada', {
+        console.log('Optimización de base de datos ejecutada', {
             userId: req.user.id,
             success: result.success,
             operationsCount: result.operations?.length || 0
@@ -147,7 +146,7 @@ router.get('/integrity-check', async (req, res, next) => {
         const maintenanceTools = getMaintenanceTools();
         const integrity = await maintenanceTools.checkSystemIntegrity();
 
-        await logger.info('Verificación de integridad ejecutada', {
+        console.log('Verificación de integridad ejecutada', {
             userId: req.user.id,
             issuesFound: integrity.issues?.length || 0,
             overallStatus: integrity.overall.status
@@ -205,7 +204,7 @@ router.post('/restart-services', async (req, res, next) => {
         const maintenanceTools = getMaintenanceTools();
         const result = await maintenanceTools.restartServices(services);
 
-        await logger.warn('Servicios reiniciados', {
+        console.warn('Servicios reiniciados', {
             userId: req.user.id,
             services: services,
             success: result.success
@@ -274,7 +273,7 @@ router.post('/generate-report', async (req, res, next) => {
             format
         });
 
-        await logger.info('Reporte de mantenimiento generado', {
+        console.log('Reporte de mantenimiento generado', {
             userId: req.user.id,
             format: format,
             includeDetails: includeDetails
@@ -344,7 +343,7 @@ router.post('/schedule-task', async (req, res, next) => {
             enabled
         });
 
-        await logger.info('Nueva tarea programada', {
+        console.log('Nueva tarea programada', {
             userId: req.user.id,
             taskName: name,
             cronExpression: cronExpression

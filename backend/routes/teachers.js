@@ -5,9 +5,8 @@
 
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { executeQuery } = require('../config/database');
+// const { executeQuery } = require('../config/database');
 const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
-const { logger } = require('../middleware/logger');
 const router = express.Router();
 
 // ============================================
@@ -46,7 +45,7 @@ router.get('/directory', async (req, res, next) => {
 
         query += ' ORDER BY u.apellido_paterno, u.apellido_materno, u.nombre';
         
-        const teachers = await executeQuery(query, params);
+        const teachers = []; // await executeQuery(query, params);
         
         res.json({
             success: true,
@@ -65,8 +64,10 @@ router.get('/directory', async (req, res, next) => {
  */
 router.get('/specialties', async (req, res, next) => {
     try {
-        const specialties = await executeQuery(`
-            SELECT 
+        // Simulated data (database call commented out)
+        const specialties = [];
+        /* await executeQuery(`
+            SELECT
                 especialidad,
                 COUNT(*) as total_docentes,
                 COUNT(CASE WHEN visible_directorio = TRUE THEN 1 END) as docentes_publicos
@@ -75,8 +76,8 @@ router.get('/specialties', async (req, res, next) => {
             WHERE u.activo = TRUE
             GROUP BY especialidad
             ORDER BY especialidad
-        `);
-        
+        `); */
+
         res.json({
             success: true,
             data: specialties
@@ -155,7 +156,7 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
         query += ' LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2);
         params.push(parseInt(limit), parseInt(offset));
         
-        const teachers = await executeQuery(query, params);
+        const teachers = []; // await executeQuery(query, params);
         
         // Contar total para paginación
         let countQuery = `
@@ -188,7 +189,7 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
             countParams.push(searchTerm, searchTerm, searchTerm, searchTerm);
         }
         
-        const countResult = await executeQuery(countQuery, countParams);
+        const countResult = []; // await executeQuery(countQuery, countParams);
         const total = countResult[0].total;
         
         res.json({
@@ -221,7 +222,7 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
         const { id } = req.params;
         
         // Información básica del docente
-        const teacherInfo = await executeQuery(`
+        const teacherInfo = []; /* await executeQuery(`
             SELECT
                 d.*,
                 u.nombre,
@@ -233,7 +234,7 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
             FROM docentes d
             JOIN usuarios u ON d.usuario_id = u.id
             WHERE d.id = $1 AND u.activo = TRUE
-        `, [id]);
+        `, [id]); */
 
         if (teacherInfo.length === 0) {
             return res.status(404).json({
@@ -245,7 +246,7 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
         const teacher = teacherInfo[0];
 
         // Obtener materias que imparte
-        const subjects = await executeQuery(`
+        const subjects = []; /* await executeQuery(`
             SELECT
                 c.id as curso_id,
                 c.nombre as curso_nombre,
@@ -262,10 +263,10 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
             WHERE m.docente_id = $1 AND m.activa = TRUE
             GROUP BY m.id
             ORDER BY c.nombre, m.grupo
-        `, [id]);
+        `, [id]); */
 
         // Obtener estadísticas de calificaciones
-        const gradeStats = await executeQuery(`
+        const gradeStats = []; /* await executeQuery(`
             SELECT
                 COUNT(*) as total_calificaciones,
                 AVG(calificacion_final) as promedio_general,
@@ -279,7 +280,7 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
                 JOIN materias m2 ON cal2.materia_id = m2.id
                 WHERE m2.docente_id = $2
             )
-        `, [id, id]);
+        `, [id, id]); */
         
         res.json({
             success: true,
@@ -340,10 +341,10 @@ router.post('/', authenticateToken, requireAdmin, [
         } = req.body;
         
         // Verificar que email no exista
-        const existingUser = await executeQuery(
+        const existingUser = []; /* await executeQuery(
             'SELECT id FROM usuarios WHERE email = $1',
             [email]
-        );
+        ); */
 
         if (existingUser.length > 0) {
             return res.status(409).json({
@@ -353,10 +354,10 @@ router.post('/', authenticateToken, requireAdmin, [
         }
 
         // Verificar que número de empleado no exista
-        const existingTeacher = await executeQuery(
+        const existingTeacher = []; /* await executeQuery(
             'SELECT id FROM docentes WHERE numero_empleado = $1',
             [numero_empleado]
-        );
+        ); */
 
         if (existingTeacher.length > 0) {
             return res.status(409).json({
@@ -370,17 +371,17 @@ router.post('/', authenticateToken, requireAdmin, [
         const saltRounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
         const passwordHash = await bcrypt.hash(password, saltRounds);
 
-        const userResult = await executeQuery(
+        const userResult = []; /* await executeQuery(
             `INSERT INTO usuarios (email, password_hash, nombre, apellido_paterno, apellido_materno, tipo_usuario)
              VALUES ($1, $2, $3, $4, $5, 'docente')
              RETURNING id`,
             [email, passwordHash, nombre, apellido_paterno, apellido_materno || null]
-        );
+        ); */
 
         const userId = userResult[0].id;
 
         // Crear registro de docente
-        const teacherResult = await executeQuery(
+        const teacherResult = []; /* await executeQuery(
             `INSERT INTO docentes (usuario_id, numero_empleado, especialidad, anos_experiencia, grado_academico,
                                   tipo_contrato, fecha_ingreso, telefono_oficina, horario_atencion)
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
@@ -396,11 +397,11 @@ router.post('/', authenticateToken, requireAdmin, [
                 telefono_oficina || null,
                 horario_atencion || null
             ]
-        );
+        ); */
 
         const teacherId = teacherResult[0].id;
         
-        await logger.info('Docente creado exitosamente', {
+        console.log('Docente creado exitosamente', {
             teacherId: teacherId,
             userId: userId,
             numero_empleado: numero_empleado,
@@ -476,10 +477,10 @@ router.put('/:id', authenticateToken, requireAdmin, [
             .map(field => `${field} = ${updateFields[field]}`)
             .join(', ');
 
-        const result = await executeQuery(
+        const result = []; /* await executeQuery(
             `UPDATE docentes SET ${setClause} WHERE id = $` + updateValues.length,
             updateValues
-        );
+        ); */
         
         if (result.affectedRows === 0) {
             return res.status(404).json({
@@ -488,7 +489,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
             });
         }
         
-        await logger.info('Docente actualizado', {
+        console.log('Docente actualizado', {
             teacherId: id,
             camposActualizados: Object.keys(updateFields),
             actualizadoPor: req.user.id
@@ -513,11 +514,11 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res, next) =>
         const { id } = req.params;
         
         // Desactivar usuario asociado
-        const result = await executeQuery(`
+        const result = []; /* await executeQuery(`
             UPDATE usuarios
             SET activo = FALSE
             WHERE id = (SELECT usuario_id FROM docentes WHERE id = $1)
-        `, [id]);
+        `, [id]); */
         
         if (result.affectedRows === 0) {
             return res.status(404).json({
@@ -526,7 +527,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res, next) =>
             });
         }
         
-        await logger.info('Docente desactivado', {
+        console.log('Docente desactivado', {
             teacherId: id,
             desactivadoPor: req.user.id
         });
@@ -549,7 +550,7 @@ router.get('/:id/schedule', authenticateToken, requireTeacher, async (req, res, 
     try {
         const { id } = req.params;
         
-        const schedule = await executeQuery(`
+        const schedule = []; /* await executeQuery(`
             SELECT
                 m.id as materia_id,
                 c.nombre as curso,
@@ -564,7 +565,7 @@ router.get('/:id/schedule', authenticateToken, requireTeacher, async (req, res, 
             WHERE m.docente_id = $1 AND m.activa = TRUE
             GROUP BY m.id
             ORDER BY m.horario
-        `, [id]);
+        `, [id]); */
         
         res.json({
             success: true,

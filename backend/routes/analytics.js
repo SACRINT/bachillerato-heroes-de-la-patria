@@ -5,9 +5,7 @@
 
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { executeQuery } = require('../config/database');
 const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
-const { logger } = require('../middleware/logger');
 const router = express.Router();
 
 // ============================================
@@ -20,7 +18,16 @@ const router = express.Router();
  */
 router.get('/dashboard', authenticateToken, requireTeacher, async (req, res, next) => {
     try {
-        // Estadísticas de estudiantes
+        // Estadísticas de estudiantes (simuladas)
+        const studentStats = [{
+            total_estudiantes: 450,
+            estudiantes_activos: 420,
+            egresados: 85,
+            suspendidos: 5,
+            especialidades_activas: 6
+        }];
+
+        /* Original query:
         const studentStats = await executeQuery(`
             SELECT 
                 COUNT(*) as total_estudiantes,
@@ -32,8 +39,18 @@ router.get('/dashboard', authenticateToken, requireTeacher, async (req, res, nex
             JOIN usuarios u ON e.usuario_id = u.id
             WHERE u.activo = TRUE
         `);
+        */
 
-        // Estadísticas de docentes
+        // Estadísticas de docentes (simuladas)
+        const teacherStats = [{
+            total_docentes: 45,
+            docentes_base: 30,
+            docentes_contrato: 10,
+            docentes_honorarios: 5,
+            promedio_experiencia: 8.5
+        }];
+
+        /* Original query:
         const teacherStats = await executeQuery(`
             SELECT 
                 COUNT(*) as total_docentes,
@@ -45,8 +62,17 @@ router.get('/dashboard', authenticateToken, requireTeacher, async (req, res, nex
             JOIN usuarios u ON d.usuario_id = u.id
             WHERE u.activo = TRUE
         `);
+        */
 
-        // Estadísticas académicas actuales
+        // Estadísticas académicas actuales (simuladas)
+        const academicStats = [{
+            materias_activas: 48,
+            cursos_disponibles: 24,
+            inscripciones_totales: 1250,
+            promedio_general: 8.3
+        }];
+
+        /* Original query:
         const academicStats = await executeQuery(`
             SELECT 
                 COUNT(DISTINCT m.id) as materias_activas,
@@ -60,8 +86,17 @@ router.get('/dashboard', authenticateToken, requireTeacher, async (req, res, nex
             WHERE m.activa = TRUE
             AND cal.periodo = (SELECT MAX(periodo) FROM calificaciones WHERE EXTRACT(YEAR FROM fecha_evaluacion) = EXTRACT(YEAR FROM CURRENT_DATE))
         `);
+        */
 
-        // Actividad del chatbot (últimos 30 días)
+        // Actividad del chatbot (últimos 30 días) - simulada
+        const chatbotStats = [{
+            total_mensajes: 1250,
+            conversaciones_unicas: 380,
+            satisfaccion_promedio: 4.2,
+            mensajes_semana: 285
+        }];
+
+        /* Original query:
         const chatbotStats = await executeQuery(`
             SELECT 
                 COUNT(*) as total_mensajes,
@@ -71,6 +106,7 @@ router.get('/dashboard', authenticateToken, requireTeacher, async (req, res, nex
             FROM chat_messages
             WHERE created_at >= NOW() - INTERVAL '30 days'
         `);
+        */
 
         res.json({
             success: true,
@@ -96,6 +132,10 @@ router.get('/enrollment-trends', authenticateToken, requireTeacher, async (req, 
     try {
         const { months = 12 } = req.query;
 
+        // Datos simulados
+        const trends = [];
+
+        /* Original query:
         const trends = await executeQuery(`
             SELECT
                 TO_CHAR(e.fecha_ingreso, 'YYYY-MM') as periodo,
@@ -109,8 +149,12 @@ router.get('/enrollment-trends', authenticateToken, requireTeacher, async (req, 
             GROUP BY TO_CHAR(e.fecha_ingreso, 'YYYY-MM'), e.especialidad
             ORDER BY periodo DESC, e.especialidad
         `, [parseInt(months)]);
+        */
 
-        // Resumen por especialidad
+        // Resumen por especialidad - simulado
+        const specialtyTrends = [];
+
+        /* Original query:
         const specialtyTrends = await executeQuery(`
             SELECT 
                 e.especialidad,
@@ -124,6 +168,7 @@ router.get('/enrollment-trends', authenticateToken, requireTeacher, async (req, 
             GROUP BY e.especialidad
             ORDER BY total_estudiantes DESC
         `);
+        */
 
         res.json({
             success: true,
@@ -185,7 +230,9 @@ router.get('/academic-performance', authenticateToken, requireTeacher, async (re
             ORDER BY promedio DESC
         `;
 
-        const performance = await executeQuery(performanceQuery, params);
+        // Datos simulados
+        const performance = [];
+        // const performance = await executeQuery(performanceQuery, params);
 
         // Top estudiantes por especialidad
         let topStudentsQuery = `
@@ -217,7 +264,9 @@ router.get('/academic-performance', authenticateToken, requireTeacher, async (re
             LIMIT 10
         `;
 
-        const topStudents = await executeQuery(topStudentsQuery, topParams);
+        // Datos simulados
+        const topStudents = [];
+        // const topStudents = await executeQuery(topStudentsQuery, topParams);
 
         res.json({
             success: true,
@@ -244,7 +293,10 @@ router.get('/chatbot-metrics', authenticateToken, requireAdmin, async (req, res,
     try {
         const { days = 30 } = req.query;
 
-        // Métricas generales
+        // Métricas generales - simuladas
+        const generalMetrics = [{ total_mensajes: 500, conversaciones_totales: 120, satisfaccion_promedio: 4.1, mensajes_hoy: 45, mensajes_semana: 210 }];
+
+        /* Original query:
         const generalMetrics = await executeQuery(`
             SELECT 
                 COUNT(*) as total_mensajes,
@@ -256,8 +308,12 @@ router.get('/chatbot-metrics', authenticateToken, requireAdmin, async (req, res,
             LEFT JOIN chat_conversations cc ON cm.session_id = cc.session_id
             WHERE cm.created_at >= NOW() - ($1 || ' days')::INTERVAL
         `, [parseInt(days)]);
+        */
 
-        // Consultas más frecuentes
+        // Consultas más frecuentes - simuladas
+        const frequentQueries = [];
+
+        /* Original query:
         const frequentQueries = await executeQuery(`
             SELECT 
                 query_text,
@@ -270,8 +326,12 @@ router.get('/chatbot-metrics', authenticateToken, requireAdmin, async (req, res,
             ORDER BY frecuencia DESC
             LIMIT 10
         `, [parseInt(days)]);
+        */
 
-        // Actividad por hora del día
+        // Actividad por hora del día - simulada
+        const hourlyActivity = [];
+
+        /* Original query:
         const hourlyActivity = await executeQuery(`
             SELECT
                 EXTRACT(HOUR FROM created_at) as hora,
@@ -282,8 +342,12 @@ router.get('/chatbot-metrics', authenticateToken, requireAdmin, async (req, res,
             GROUP BY EXTRACT(HOUR FROM created_at)
             ORDER BY hora
         `, [parseInt(days)]);
+        */
 
-        // Tipos de usuario que más usan el chatbot
+        // Tipos de usuario que más usan el chatbot - simulado
+        const userTypeActivity = [];
+
+        /* Original query:
         const userTypeActivity = await executeQuery(`
             SELECT 
                 COALESCE(cc.user_type, 'visitante') as tipo_usuario,
@@ -296,8 +360,12 @@ router.get('/chatbot-metrics', authenticateToken, requireAdmin, async (req, res,
             GROUP BY cc.user_type
             ORDER BY total_mensajes DESC
         `, [parseInt(days)]);
+        */
 
-        // Tendencia diaria
+        // Tendencia diaria - simulada
+        const dailyTrend = [];
+
+        /* Original query:
         const dailyTrend = await executeQuery(`
             SELECT 
                 DATE(created_at) as fecha,
@@ -308,6 +376,7 @@ router.get('/chatbot-metrics', authenticateToken, requireAdmin, async (req, res,
             GROUP BY DATE(created_at)
             ORDER BY fecha
         `, [parseInt(days)]);
+        */
 
         res.json({
             success: true,
@@ -357,7 +426,9 @@ router.get('/attendance-summary', authenticateToken, requireTeacher, async (req,
 
         attendanceQuery += ' GROUP BY e.especialidad ORDER BY porcentaje_asistencia DESC';
 
-        const attendanceSummary = await executeQuery(attendanceQuery, params);
+        // Datos simulados
+        const attendanceSummary = [];
+        // const attendanceSummary = await executeQuery(attendanceQuery, params);
 
         // Estudiantes con mayor ausentismo
         let absenteeismQuery = `
@@ -390,7 +461,9 @@ router.get('/attendance-summary', authenticateToken, requireTeacher, async (req,
             LIMIT 15
         `;
 
-        const highAbsenteeism = await executeQuery(absenteeismQuery, absenteeismParams);
+        // Datos simulados
+        const highAbsenteeism = [];
+        // const highAbsenteeism = await executeQuery(absenteeismQuery, absenteeismParams);
 
         res.json({
             success: true,
@@ -437,6 +510,11 @@ router.get('/system-logs', authenticateToken, requireAdmin, async (req, res, nex
 
         logsQuery += ' GROUP BY nivel ORDER BY total DESC';
 
+        // Datos simulados
+        const logsSummary = [];
+        const frequentErrors = [];
+
+        /* Original queries:
         const logsSummary = await executeQuery(logsQuery, params);
 
         // Errores más frecuentes
@@ -466,6 +544,9 @@ router.get('/system-logs', authenticateToken, requireAdmin, async (req, res, nex
             ORDER BY total_acciones DESC
             LIMIT 10
         `, [parseInt(days)]);
+        */
+
+        const userActivity = [];
 
         res.json({
             success: true,
@@ -523,7 +604,7 @@ router.post('/custom-report', authenticateToken, requireAdmin, [
         }
 
         // Registrar generación del reporte
-        await logger.info('Reporte personalizado generado', {
+        console.log('Reporte personalizado generado', {
             tipo: report_type,
             periodo: `${date_from} - ${date_to}`,
             generadoPor: req.user.id

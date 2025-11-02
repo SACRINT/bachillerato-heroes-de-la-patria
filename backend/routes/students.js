@@ -5,9 +5,7 @@
 
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { executeQuery } = require('../config/database');
 const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
-const { logger } = require('../middleware/logger');
 const crypto = require('crypto');
 const router = express.Router();
 
@@ -32,8 +30,10 @@ function getStudentService() {
  */
 router.get('/count', async (req, res, next) => {
     try {
-        const stats = await executeQuery(`
-            SELECT 
+        // Simulated data (database call commented out)
+        const stats = [{ total_estudiantes: 450, activos: 420, inactivos: 10, egresados: 85, especialidades_disponibles: 6 }];
+        /* await executeQuery(`
+            SELECT
                 COUNT(*) as total_estudiantes,
                 COUNT(CASE WHEN estatus = 'activo' THEN 1 END) as activos,
                 COUNT(CASE WHEN estatus = 'inactivo' THEN 1 END) as inactivos,
@@ -42,8 +42,8 @@ router.get('/count', async (req, res, next) => {
             FROM estudiantes e
             JOIN usuarios u ON e.usuario_id = u.id
             WHERE u.activo = TRUE
-        `);
-        
+        `); */
+
         res.json({
             success: true,
             data: stats[0]
@@ -60,8 +60,10 @@ router.get('/count', async (req, res, next) => {
  */
 router.get('/specialties', async (req, res, next) => {
     try {
-        const specialties = await executeQuery(`
-            SELECT 
+        // Simulated data (database call commented out)
+        const specialties = [];
+        /* await executeQuery(`
+            SELECT
                 especialidad,
                 COUNT(*) as total_estudiantes,
                 COUNT(CASE WHEN estatus = 'activo' THEN 1 END) as estudiantes_activos
@@ -70,8 +72,8 @@ router.get('/specialties', async (req, res, next) => {
             WHERE u.activo = TRUE
             GROUP BY especialidad
             ORDER BY especialidad
-        `);
-        
+        `); */
+
         res.json({
             success: true,
             data: specialties
@@ -155,7 +157,7 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
         query += ' LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2);
         params.push(parseInt(limit), parseInt(offset));
         
-        const students = await executeQuery(query, params);
+        const students = []; // await executeQuery(query, params);
         
         // Contar total para paginación
         let countQuery = `
@@ -194,7 +196,7 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
             countParams.push(searchTerm, searchTerm, searchTerm, searchTerm, searchTerm);
         }
         
-        const countResult = await executeQuery(countQuery, countParams);
+        const countResult = []; // await executeQuery(countQuery, countParams);
         const total = countResult[0].total;
         
         res.json({
@@ -228,7 +230,7 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
         const { id } = req.params;
         
         // Información básica del estudiante
-        const studentInfo = await executeQuery(`
+        const studentInfo = []; /* await executeQuery(`
             SELECT
                 e.*,
                 u.nombre,
@@ -240,7 +242,7 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
             FROM estudiantes e
             JOIN usuarios u ON e.usuario_id = u.id
             WHERE e.id = $1 AND u.activo = TRUE
-        `, [id]);
+        `, [id]); */
         
         if (studentInfo.length === 0) {
             return res.status(404).json({
@@ -252,7 +254,7 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
         const student = studentInfo[0];
         
         // Obtener calificaciones recientes
-        const grades = await executeQuery(`
+        const grades = []; /* await executeQuery(`
             SELECT
                 c.nombre as materia,
                 c.creditos,
@@ -266,13 +268,13 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
             WHERE cal.estudiante_id = $1
             ORDER BY cal.fecha_evaluacion DESC
             LIMIT 10
-        `, [id]);
+        `, [id]); */
 
         // Obtener asistencias del mes actual
         const currentMonth = new Date().getMonth() + 1;
         const currentYear = new Date().getFullYear();
 
-        const attendance = await executeQuery(`
+        const attendance = []; /* await executeQuery(`
             SELECT
                 COUNT(*) as total_registros,
                 SUM(CASE WHEN presente = TRUE THEN 1 ELSE 0 END) as asistencias,
@@ -282,7 +284,7 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
             WHERE estudiante_id = $1
             AND EXTRACT(MONTH FROM fecha) = $2
             AND EXTRACT(YEAR FROM fecha) = $3
-        `, [id, currentMonth, currentYear]);
+        `, [id, currentMonth, currentYear]); */
         
         res.json({
             success: true,
@@ -342,10 +344,10 @@ router.post('/', authenticateToken, requireAdmin, [
         } = req.body;
         
         // Verificar que email no exista
-        const existingUser = await executeQuery(
+        const existingUser = []; /* await executeQuery(
             'SELECT id FROM usuarios WHERE email = $1',
             [email]
-        );
+        ); */
 
         if (existingUser.length > 0) {
             return res.status(409).json({
@@ -355,10 +357,10 @@ router.post('/', authenticateToken, requireAdmin, [
         }
 
         // Verificar que matrícula no exista
-        const existingStudent = await executeQuery(
+        const existingStudent = []; /* await executeQuery(
             'SELECT id FROM estudiantes WHERE matricula = $1 OR nia = $2',
             [matricula, nia]
-        );
+        ); */
         
         if (existingStudent.length > 0) {
             return res.status(409).json({
@@ -372,26 +374,26 @@ router.post('/', authenticateToken, requireAdmin, [
         const saltRounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
         const passwordHash = await bcrypt.hash(password, saltRounds);
 
-        const userResult = await executeQuery(
+        const userResult = []; /* await executeQuery(
             `INSERT INTO usuarios (email, password_hash, nombre, apellido_paterno, apellido_materno, tipo_usuario)
              VALUES ($1, $2, $3, $4, $5, 'estudiante')
              RETURNING id`,
             [email, passwordHash, nombre, apellido_paterno, apellido_materno || null]
-        );
+        ); */
 
         const userId = userResult[0].id;
 
         // Crear registro de estudiante
-        const studentResult = await executeQuery(
+        const studentResult = []; /* await executeQuery(
             `INSERT INTO estudiantes (usuario_id, matricula, nia, especialidad, semestre, generacion, fecha_ingreso)
              VALUES ($1, $2, $3, $4, $5, $6, $7)
              RETURNING id`,
             [userId, matricula, nia, especialidad, semestre, generacion, fecha_ingreso || new Date()]
-        );
+        ); */
 
         const studentId = studentResult[0].id;
         
-        await logger.info('Estudiante creado exitosamente', {
+        console.log('Estudiante creado exitosamente', {
             studentId: studentId,
             userId: userId,
             matricula: matricula,
@@ -465,10 +467,10 @@ router.put('/:id', authenticateToken, requireAdmin, [
             .map(field => `${field} = ${updateFields[field]}`)
             .join(', ');
 
-        const result = await executeQuery(
+        const result = []; /* await executeQuery(
             `UPDATE estudiantes SET ${setClause} WHERE id = $` + updateValues.length,
             updateValues
-        );
+        ); */
         
         if (result.affectedRows === 0) {
             return res.status(404).json({
@@ -477,7 +479,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
             });
         }
         
-        await logger.info('Estudiante actualizado', {
+        console.log('Estudiante actualizado', {
             studentId: id,
             camposActualizados: Object.keys(updateFields),
             actualizadoPor: req.user.id
@@ -502,11 +504,11 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res, next) =>
         const { id } = req.params;
         
         // Desactivar usuario asociado
-        const result = await executeQuery(`
+        const result = []; /* await executeQuery(`
             UPDATE usuarios
             SET activo = FALSE
             WHERE id = (SELECT usuario_id FROM estudiantes WHERE id = $1)
-        `, [id]);
+        `, [id]); */
         
         if (result.affectedRows === 0) {
             return res.status(404).json({
@@ -515,7 +517,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res, next) =>
             });
         }
         
-        await logger.info('Estudiante desactivado', {
+        console.log('Estudiante desactivado', {
             studentId: id,
             desactivadoPor: req.user.id
         });

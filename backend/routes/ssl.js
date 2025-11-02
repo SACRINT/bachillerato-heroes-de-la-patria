@@ -6,7 +6,7 @@
 const express = require('express');
 const { requireAdmin } = require('../middleware/auth');
 const { getSSLManager } = require('../config/ssl');
-const { logger } = require('../middleware/logger');
+
 const router = express.Router();
 
 // Aplicar autenticación de admin a todas las rutas SSL
@@ -23,7 +23,7 @@ router.get('/status', async (req, res, next) => {
         const sslManager = getSSLManager();
         const status = sslManager.getStatus();
 
-        await logger.info('Estado SSL consultado', {
+        console.log('Estado SSL consultado', {
             userId: req.user.id,
             certificatesExist: status.files.certificate.exists
         });
@@ -78,7 +78,7 @@ router.post('/generate-certificates', async (req, res, next) => {
         const sslManager = getSSLManager();
         const result = await sslManager.generateSelfSignedCertificates();
 
-        await logger.warn('Certificados SSL regenerados', {
+        console.warn('Certificados SSL regenerados', {
             userId: req.user.id,
             success: result,
             timestamp: new Date().toISOString()
@@ -128,7 +128,7 @@ router.post('/setup-letsencrypt', async (req, res, next) => {
         const sslManager = getSSLManager();
         const config = await sslManager.setupLetsEncrypt(domain, email);
 
-        await logger.info('Configuración Let\'s Encrypt iniciada', {
+        console.log('Configuración Let\'s Encrypt iniciada', {
             userId: req.user.id,
             domain: domain,
             email: email
@@ -223,7 +223,7 @@ router.post('/test-https', async (req, res, next) => {
             testTimestamp: new Date().toISOString()
         };
 
-        await logger.info('Prueba HTTPS realizada', {
+        console.log('Prueba HTTPS realizada', {
             userId: req.user.id,
             port: port,
             success: true
@@ -334,7 +334,7 @@ router.post('/validate-certificate', async (req, res, next) => {
             validation.warnings.push('Certificado expirado - genere uno nuevo');
         }
 
-        await logger.info('Certificado SSL validado', {
+        console.log('Certificado SSL validado', {
             userId: req.user.id,
             valid: validation.valid,
             expired: validation.expired,

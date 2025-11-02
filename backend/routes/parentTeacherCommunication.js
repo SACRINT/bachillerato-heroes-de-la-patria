@@ -6,7 +6,7 @@
 const express = require('express');
 const { body, query, validationResult } = require('express-validator');
 const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
-const { logger } = require('../middleware/logger');
+
 const router = express.Router();
 
 // Obtener servicio de comunicación padres-docentes
