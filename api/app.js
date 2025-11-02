@@ -1246,7 +1246,7 @@ const gradesRoutes = require('../backend/routes/grades');
 // const gradesAnalyticsRoutes = require('../backend/routes/gradesAnalytics');  // Has logger import
 // const informationRoutes = require('../backend/routes/information');  // Has logger import
 // const maintenanceRoutes = require('../backend/routes/maintenance');  // Has logger import
-const migrationRoutes = require('../backend/routes/migration');
+// const migrationRoutes = require('../backend/routes/migration');  // Requires mysql2/promise
 const multiTenantRoutes = require('../backend/routes/multi-tenant');
 const newslettersPgRoutes = require('../backend/routes/newsletters-pg');
 // Mitad B del segundo grupo (9 rutas)
@@ -1310,10 +1310,10 @@ app.use('/api/chatbot-ia', chatbotIaRoutes);
 app.use('/api/chatbot-direct', chatbotRoutes);  // chatbot (para evitar conflicto)
 app.use('/api/cms', cmsRoutes);
 app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes);
-// Mitad A - Activadas (18 de 28 rutas nuevas)
+// Mitad A - Activadas (14 de 28 rutas nuevas)
 app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para evitar conflicto)
 app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
-app.use('/api/migration', migrationRoutes);
+// app.use('/api/migration', migrationRoutes);  // Requires mysql2/promise
 app.use('/api/multi-tenant', multiTenantRoutes);
 app.use('/api/newsletters-pg', newslettersPgRoutes);
 
