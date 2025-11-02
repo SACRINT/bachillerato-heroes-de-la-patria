@@ -4,7 +4,39 @@
  * Importa y usa la aplicación Express desde app.js
  */
 
-const app = require('./app.js');
+let app;
+
+try {
+    console.log('[api/index.js] Iniciando carga de app.js...');
+    app = require('./app.js');
+    console.log('[api/index.js] ✅ app.js cargado exitosamente');
+} catch (error) {
+    console.error('[api/index.js] ❌ Error al cargar app.js:', error.message);
+    console.error('[api/index.js] Stack:', error.stack);
+
+    // Crear una app de fallback en caso de error
+    const express = require('express');
+    app = express();
+
+    app.get('/api/health', (req, res) => {
+        res.status(500).json({
+            status: 'error',
+            message: 'Main app.js failed to load',
+            error: error.message,
+            timestamp: new Date().toISOString()
+        });
+    });
+
+    // Catch-all para debugging
+    app.use((req, res) => {
+        res.status(404).json({
+            status: 'error',
+            message: 'App.js failed to load, catch-all route',
+            path: req.path,
+            timestamp: new Date().toISOString()
+        });
+    });
+}
 
 /**
  * Vercel Serverless Handler
@@ -13,8 +45,3 @@ const app = require('./app.js');
  * Vercel automáticamente pasa req y res a esta función
  */
 module.exports = app;
-
-// O alternativamente, para ser explícito:
-// module.exports = (req, res) => {
-//     return app(req, res);
-// };
