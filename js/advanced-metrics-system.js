@@ -194,7 +194,7 @@ class AdvancedMetricsSystem {
                     </div>
                 </div>
                 <div class="card-body pt-2">
-                    <canvas id="${id}-chart" height="120"></canvas>
+                    <div style="position: relative; height: 120px;"><canvas id="${id}-chart"></canvas></div>
                     <div class="row mt-3">
                         <div class="col-3 text-center">
                             <small class="text-muted d-block">Aprobación</small>

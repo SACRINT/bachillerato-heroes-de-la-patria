@@ -134,7 +134,7 @@ router.post('/auth/login', async (req, res) => {
                 role: 'teacher',
                 teacher_id: docente.docente_id
             },
-            process.env.JWT_SECRET || 'secret-key',
+            process.env.JWT_SECRET,
             { expiresIn: '7d' }
         );
 

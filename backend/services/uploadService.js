@@ -257,7 +257,7 @@ class UploadService {
                     file_size, mime_type, width, height,
                     webp_url, jpeg_url, file_url, thumbnail_url,
                     uploaded_by, upload_date
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
             `;
 
             const params = [
@@ -304,20 +304,21 @@ class UploadService {
                 WHERE 1=1
             `;
             const params = [];
+            let paramIndex = 1;
 
             // Aplicar filtros
             if (filters.category) {
-                query += ' AND category = ?';
+                query += ` AND category = $${paramIndex++}`;
                 params.push(filters.category);
             }
 
             if (filters.type) {
-                query += ' AND mime_type LIKE ?';
+                query += ` AND mime_type LIKE $${paramIndex++}`;
                 params.push(`${filters.type}%`);
             }
 
             if (filters.search) {
-                query += ' AND (original_name LIKE ? OR title LIKE ?)';
+                query += ` AND (original_name LIKE $${paramIndex++} OR title LIKE $${paramIndex++})`;
                 params.push(`%${filters.search}%`, `%${filters.search}%`);
             }
 
@@ -325,12 +326,12 @@ class UploadService {
 
             // Paginación
             if (filters.limit) {
-                query += ' LIMIT ?';
+                query += ` LIMIT $${paramIndex++}`;
                 params.push(filters.limit);
             }
 
             if (filters.offset) {
-                query += ' OFFSET ?';
+                query += ` OFFSET $${paramIndex++}`;
                 params.push(filters.offset);
             }
 
@@ -339,14 +340,15 @@ class UploadService {
             // Contar total
             let countQuery = 'SELECT COUNT(*) as total FROM cms_files WHERE 1=1';
             const countParams = [];
+            let countParamIndex = 1;
 
             if (filters.category) {
-                countQuery += ' AND category = ?';
+                countQuery += ` AND category = $${countParamIndex++}`;
                 countParams.push(filters.category);
             }
 
             if (filters.type) {
-                countQuery += ' AND mime_type LIKE ?';
+                countQuery += ` AND mime_type LIKE $${countParamIndex++}`;
                 countParams.push(`${filters.type}%`);
             }
 
@@ -368,7 +370,7 @@ class UploadService {
 
         try {
             // Obtener información del archivo antes de eliminarlo
-            const fileQuery = 'SELECT * FROM cms_files WHERE id = ?';
+            const fileQuery = 'SELECT * FROM cms_files WHERE id = $1';
             const [files] = await this.db.execute(fileQuery, [id]);
 
             if (files.length === 0) {
@@ -403,7 +405,7 @@ class UploadService {
             }
 
             // Eliminar registro de la base de datos
-            const deleteQuery = 'DELETE FROM cms_files WHERE id = ?';
+            const deleteQuery = 'DELETE FROM cms_files WHERE id = $1';
             const [result] = await this.db.execute(deleteQuery, [id]);
 
             return result.affectedRows > 0;
@@ -425,7 +427,7 @@ class UploadService {
 
         try {
             // Obtener información del archivo
-            const fileQuery = 'SELECT * FROM cms_files WHERE id = ?';
+            const fileQuery = 'SELECT * FROM cms_files WHERE id = $1';
             const [files] = await this.db.execute(fileQuery, [id]);
 
             if (files.length === 0) {
@@ -474,8 +476,8 @@ class UploadService {
             // Actualizar base de datos con nueva información
             const updateQuery = `
                 UPDATE cms_files
-                SET webp_url = ?, updated_at = NOW()
-                WHERE id = ?
+                SET webp_url = $1, updated_at = NOW()
+                WHERE id = $2
             `;
 
             const newWebpUrl = `/uploads/images/${category}/${fileName}.webp`;

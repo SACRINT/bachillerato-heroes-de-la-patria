@@ -8,9 +8,9 @@
  * - Compatible con Vercel serverless
  */
 
+require('dotenv').config();
 const { Pool } = require('pg');
 // const jsonDb = require('./database-json'); // ⚠️ DESHABILITADO: No disponible en Vercel serverless
-require('dotenv').config();
 
 // Flag para determinar qué sistema usar (deshabilitado en Vercel)
 let useJsonFallback = false;

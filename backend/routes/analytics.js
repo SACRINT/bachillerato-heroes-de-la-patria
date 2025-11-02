@@ -58,7 +58,7 @@ router.get('/dashboard', authenticateToken, requireTeacher, async (req, res, nex
             LEFT JOIN inscripciones_materias im ON m.id = im.materia_id
             LEFT JOIN calificaciones cal ON m.id = cal.materia_id
             WHERE m.activa = TRUE
-            AND cal.periodo = (SELECT MAX(periodo) FROM calificaciones WHERE YEAR(fecha_evaluacion) = YEAR(CURDATE()))
+            AND cal.periodo = (SELECT MAX(periodo) FROM calificaciones WHERE EXTRACT(YEAR FROM fecha_evaluacion) = EXTRACT(YEAR FROM CURRENT_DATE))
         `);
 
         // Actividad del chatbot (últimos 30 días)
@@ -67,9 +67,9 @@ router.get('/dashboard', authenticateToken, requireTeacher, async (req, res, nex
                 COUNT(*) as total_mensajes,
                 COUNT(DISTINCT session_id) as conversaciones_unicas,
                 AVG(CASE WHEN satisfaction_rating IS NOT NULL THEN satisfaction_rating END) as satisfaccion_promedio,
-                COUNT(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 7 DAYS) THEN 1 END) as mensajes_semana
+                COUNT(CASE WHEN created_at >= NOW() - INTERVAL '7 days' THEN 1 END) as mensajes_semana
             FROM chat_messages
-            WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAYS)
+            WHERE created_at >= NOW() - INTERVAL '30 days'
         `);
 
         res.json({
@@ -97,16 +97,16 @@ router.get('/enrollment-trends', authenticateToken, requireTeacher, async (req, 
         const { months = 12 } = req.query;
 
         const trends = await executeQuery(`
-            SELECT 
-                DATE_FORMAT(e.fecha_ingreso, '%Y-%m') as periodo,
+            SELECT
+                TO_CHAR(e.fecha_ingreso, 'YYYY-MM') as periodo,
                 COUNT(*) as nuevos_estudiantes,
                 e.especialidad,
                 COUNT(CASE WHEN e.estatus = 'activo' THEN 1 END) as actualmente_activos
             FROM estudiantes e
             JOIN usuarios u ON e.usuario_id = u.id
-            WHERE e.fecha_ingreso >= DATE_SUB(NOW(), INTERVAL ? MONTH)
+            WHERE e.fecha_ingreso >= NOW() - ($1 || ' months')::INTERVAL
             AND u.activo = TRUE
-            GROUP BY DATE_FORMAT(e.fecha_ingreso, '%Y-%m'), e.especialidad
+            GROUP BY TO_CHAR(e.fecha_ingreso, 'YYYY-MM'), e.especialidad
             ORDER BY periodo DESC, e.especialidad
         `, [parseInt(months)]);
 
@@ -115,7 +115,7 @@ router.get('/enrollment-trends', authenticateToken, requireTeacher, async (req, 
             SELECT 
                 e.especialidad,
                 COUNT(*) as total_estudiantes,
-                COUNT(CASE WHEN e.fecha_ingreso >= DATE_SUB(NOW(), INTERVAL 6 MONTH) THEN 1 END) as nuevos_6_meses,
+                COUNT(CASE WHEN e.fecha_ingreso >= NOW() - INTERVAL '6 months' THEN 1 END) as nuevos_6_meses,
                 COUNT(CASE WHEN e.estatus = 'activo' THEN 1 END) as activos,
                 COUNT(CASE WHEN e.estatus = 'egresado' THEN 1 END) as egresados
             FROM estudiantes e
@@ -250,11 +250,11 @@ router.get('/chatbot-metrics', authenticateToken, requireAdmin, async (req, res,
                 COUNT(*) as total_mensajes,
                 COUNT(DISTINCT cc.session_id) as conversaciones_totales,
                 AVG(cc.satisfaction_rating) as satisfaccion_promedio,
-                COUNT(CASE WHEN cm.created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY) THEN 1 END) as mensajes_hoy,
-                COUNT(CASE WHEN cm.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAYS) THEN 1 END) as mensajes_semana
+                COUNT(CASE WHEN cm.created_at >= NOW() - INTERVAL '1 day' THEN 1 END) as mensajes_hoy,
+                COUNT(CASE WHEN cm.created_at >= NOW() - INTERVAL '7 days' THEN 1 END) as mensajes_semana
             FROM chat_messages cm
             LEFT JOIN chat_conversations cc ON cm.session_id = cc.session_id
-            WHERE cm.created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+            WHERE cm.created_at >= NOW() - ($1 || ' days')::INTERVAL
         `, [parseInt(days)]);
 
         // Consultas más frecuentes
@@ -264,7 +264,7 @@ router.get('/chatbot-metrics', authenticateToken, requireAdmin, async (req, res,
                 COUNT(*) as frecuencia,
                 AVG(response_time_ms) as tiempo_respuesta_promedio
             FROM chat_messages
-            WHERE created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+            WHERE created_at >= NOW() - ($1 || ' days')::INTERVAL
             AND query_text IS NOT NULL
             GROUP BY query_text
             ORDER BY frecuencia DESC
@@ -273,13 +273,13 @@ router.get('/chatbot-metrics', authenticateToken, requireAdmin, async (req, res,
 
         // Actividad por hora del día
         const hourlyActivity = await executeQuery(`
-            SELECT 
-                HOUR(created_at) as hora,
+            SELECT
+                EXTRACT(HOUR FROM created_at) as hora,
                 COUNT(*) as total_mensajes,
                 COUNT(DISTINCT session_id) as conversaciones_unicas
             FROM chat_messages
-            WHERE created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
-            GROUP BY HOUR(created_at)
+            WHERE created_at >= NOW() - ($1 || ' days')::INTERVAL
+            GROUP BY EXTRACT(HOUR FROM created_at)
             ORDER BY hora
         `, [parseInt(days)]);
 
@@ -292,7 +292,7 @@ router.get('/chatbot-metrics', authenticateToken, requireAdmin, async (req, res,
                 AVG(cc.satisfaction_rating) as satisfaccion_promedio
             FROM chat_messages cm
             LEFT JOIN chat_conversations cc ON cm.session_id = cc.session_id
-            WHERE cm.created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+            WHERE cm.created_at >= NOW() - ($1 || ' days')::INTERVAL
             GROUP BY cc.user_type
             ORDER BY total_mensajes DESC
         `, [parseInt(days)]);
@@ -304,7 +304,7 @@ router.get('/chatbot-metrics', authenticateToken, requireAdmin, async (req, res,
                 COUNT(*) as mensajes,
                 COUNT(DISTINCT session_id) as conversaciones
             FROM chat_messages
-            WHERE created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+            WHERE created_at >= NOW() - ($1 || ' days')::INTERVAL
             GROUP BY DATE(created_at)
             ORDER BY fecha
         `, [parseInt(days)]);
@@ -345,7 +345,7 @@ router.get('/attendance-summary', authenticateToken, requireTeacher, async (req,
                 ROUND((COUNT(CASE WHEN a.presente = TRUE THEN 1 END) / COUNT(*)) * 100, 2) as porcentaje_asistencia
             FROM asistencias a
             JOIN estudiantes e ON a.estudiante_id = e.id
-            WHERE MONTH(a.fecha) = ? AND YEAR(a.fecha) = ?
+            WHERE EXTRACT(MONTH FROM a.fecha) = $1 AND EXTRACT(YEAR FROM a.fecha) = $2
         `;
 
         const params = [currentMonth, currentYear];
@@ -373,7 +373,7 @@ router.get('/attendance-summary', authenticateToken, requireTeacher, async (req,
             FROM asistencias a
             JOIN estudiantes e ON a.estudiante_id = e.id
             JOIN usuarios u ON e.usuario_id = u.id
-            WHERE MONTH(a.fecha) = ? AND YEAR(a.fecha) = ?
+            WHERE EXTRACT(MONTH FROM a.fecha) = $1 AND EXTRACT(YEAR FROM a.fecha) = $2
         `;
 
         let absenteeismParams = [currentMonth, currentYear];
@@ -423,9 +423,9 @@ router.get('/system-logs', authenticateToken, requireAdmin, async (req, res, nex
             SELECT 
                 nivel,
                 COUNT(*) as total,
-                COUNT(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY) THEN 1 END) as ultimo_dia
+                COUNT(CASE WHEN created_at >= NOW() - INTERVAL '1 day' THEN 1 END) as ultimo_dia
             FROM logs_sistema
-            WHERE created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+            WHERE created_at >= NOW() - ($1 || ' days')::INTERVAL
         `;
 
         const params = [parseInt(days)];
@@ -446,8 +446,8 @@ router.get('/system-logs', authenticateToken, requireAdmin, async (req, res, nex
                 COUNT(*) as frecuencia,
                 MAX(created_at) as ultima_ocurrencia
             FROM logs_sistema
-            WHERE nivel = 'error' 
-            AND created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+            WHERE nivel = 'error'
+            AND created_at >= NOW() - ($1 || ' days')::INTERVAL
             GROUP BY mensaje
             ORDER BY frecuencia DESC
             LIMIT 10
@@ -461,7 +461,7 @@ router.get('/system-logs', authenticateToken, requireAdmin, async (req, res, nex
                 COUNT(*) as total_acciones
             FROM logs_sistema ls
             JOIN usuarios u ON ls.usuario_id = u.id
-            WHERE ls.created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+            WHERE ls.created_at >= NOW() - ($1 || ' days')::INTERVAL
             GROUP BY ls.usuario_id
             ORDER BY total_acciones DESC
             LIMIT 10

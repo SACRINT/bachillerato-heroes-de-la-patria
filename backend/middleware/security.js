@@ -18,15 +18,16 @@ function securityHeadersMiddleware(req, res, next) {
     // Protección contra Clickjacking
     res.setHeader('X-Frame-Options', 'DENY');
 
-    // Content Security Policy (CSP) - Estricto
+    // Content Security Policy (CSP) - ROBUSTA Y CORREGIDA
     res.setHeader(
         'Content-Security-Policy',
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tiny.cloud; " +
-        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
-        "img-src 'self' data: https:; " +
-        "font-src 'self' data: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
-        "connect-src 'self';"
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud *.tiny.cloud blob:; " +
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://cdn.tiny.cloud *.tiny.cloud; " +
+        "connect-src 'self' http://localhost:3000 ws: wss: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud *.tiny.cloud https://sp.tinymce.com; " +
+        "img-src 'self' data: blob: https: https://cdn.tiny.cloud *.tiny.cloud https://sp.tinymce.com; " +
+        "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.tiny.cloud *.tiny.cloud; " +
+        "frame-src 'self' https://cdn.tiny.cloud *.tiny.cloud https://www.google.com https://accounts.google.com https://maps.google.com https://forms.gle;"
     );
 
     // Strict Transport Security (HSTS)
@@ -40,10 +41,10 @@ function securityHeadersMiddleware(req, res, next) {
     // Referrer Policy
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 
-    // Permissions Policy (Feature Policy)
+    // Permissions Policy (Feature Policy) - CORREGIDO
     res.setHeader(
         'Permissions-Policy',
-        'geolocation=(), microphone=(), camera=(), payment=()'
+        'camera=(self), geolocation=(), microphone=(), payment=()'
     );
 
     next();
@@ -242,15 +243,26 @@ function securityLoggingMiddleware(req, res, next) {
 
 /**
  * Middleware completo de seguridad
+ * 🔧 MODIFICADO: Se excluyen archivos estáticos de las validaciones de seguridad
  */
 function securityMiddleware(req, res, next) {
-    securityHeadersMiddleware(req, res, () => {
-        sanitizeInputs(req, res, () => {
-            attackDetectionMiddleware(req, res, () => {
-                securityLoggingMiddleware(req, res, next);
+    // ✅ SOLUCIÓN: NO aplicar validaciones de seguridad a archivos estáticos
+    const staticExtensions = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.eot', '.json', '.xml'];
+    const isStaticFile = staticExtensions.some(ext => req.path.toLowerCase().endsWith(ext));
+
+    if (isStaticFile) {
+        // Para archivos estáticos, solo aplicar headers de seguridad básicos
+        securityHeadersMiddleware(req, res, next);
+    } else {
+        // Para rutas dinámicas y API, aplicar toda la seguridad
+        securityHeadersMiddleware(req, res, () => {
+            sanitizeInputs(req, res, () => {
+                attackDetectionMiddleware(req, res, () => {
+                    securityLoggingMiddleware(req, res, next);
+                });
             });
         });
-    });
+    }
 }
 
 /**

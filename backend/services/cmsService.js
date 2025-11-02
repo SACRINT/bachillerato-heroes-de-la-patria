@@ -156,31 +156,32 @@ class CMSService {
                 WHERE 1=1
             `;
             const params = [];
+            let paramIndex = 1;
 
             // Aplicar filtros
             if (filters.type) {
-                query += ' AND type = ?';
+                query += ` AND type = $${paramIndex++}`;
                 params.push(filters.type);
             }
 
             if (filters.status) {
-                query += ' AND status = ?';
+                query += ` AND status = $${paramIndex++}`;
                 params.push(filters.status);
             }
 
             if (filters.priority) {
-                query += ' AND priority = ?';
+                query += ` AND priority = $${paramIndex++}`;
                 params.push(filters.priority);
             }
 
             if (filters.search) {
-                query += ' AND (title LIKE ? OR content LIKE ?)';
+                query += ` AND (title LIKE $${paramIndex++} OR content LIKE $${paramIndex++})`;
                 params.push(`%${filters.search}%`, `%${filters.search}%`);
             }
 
             // Solo mostrar contenido publicado y no expirado si no es admin
             if (filters.status !== 'all') {
-                query += ' AND status = "publicado"';
+                query += ' AND status = \'publicado\'';
                 query += ' AND (expire_date IS NULL OR expire_date > NOW())';
             }
 
@@ -189,12 +190,12 @@ class CMSService {
 
             // Paginación
             if (filters.limit) {
-                query += ' LIMIT ?';
+                query += ` LIMIT $${paramIndex++}`;
                 params.push(filters.limit);
             }
 
             if (filters.offset) {
-                query += ' OFFSET ?';
+                query += ` OFFSET $${paramIndex++}`;
                 params.push(filters.offset);
             }
 
@@ -203,14 +204,15 @@ class CMSService {
             // Contar total de resultados
             let countQuery = `SELECT COUNT(*) as total FROM cms_content WHERE 1=1`;
             const countParams = [];
+            let countParamIndex = 1;
 
             if (filters.type) {
-                countQuery += ' AND type = ?';
+                countQuery += ` AND type = $${countParamIndex++}`;
                 countParams.push(filters.type);
             }
 
             if (filters.status && filters.status !== 'all') {
-                countQuery += ' AND status = "publicado"';
+                countQuery += ' AND status = \'publicado\'';
             }
 
             const [countResult] = await this.db.execute(countQuery, countParams);
@@ -307,7 +309,7 @@ class CMSService {
                         status, author_id, publish_date, expire_date,
                         created_at, updated_at, metadata
                     FROM cms_content
-                    WHERE id = ?
+                    WHERE id = $1
                 `;
 
                 const [rows] = await this.db.execute(query, [id]);
@@ -344,7 +346,7 @@ class CMSService {
                 INSERT INTO cms_content (
                     type, title, content, image_url, priority, status,
                     author_id, publish_date, expire_date, metadata
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             `;
 
             const params = [
@@ -436,6 +438,7 @@ class CMSService {
         try {
             const fields = [];
             const params = [];
+            let paramIndex = 1;
 
             // Construir query dinámicamente
             const allowedFields = [
@@ -445,7 +448,7 @@ class CMSService {
 
             allowedFields.forEach(field => {
                 if (updateData.hasOwnProperty(field)) {
-                    fields.push(`${field} = ?`);
+                    fields.push(`${field} = $${paramIndex++}`);
                     params.push(updateData[field]);
                 }
             });
@@ -456,7 +459,7 @@ class CMSService {
 
             fields.push('updated_at = NOW()');
 
-            const query = `UPDATE cms_content SET ${fields.join(', ')} WHERE id = ?`;
+            const query = `UPDATE cms_content SET ${fields.join(', ')} WHERE id = $${paramIndex++}`;
             params.push(id);
 
             const [result] = await this.db.execute(query, params);
@@ -483,7 +486,7 @@ class CMSService {
     async deleteContent(id) {
         if (this.dbAvailable) {
             try {
-                const query = 'DELETE FROM cms_content WHERE id = ?';
+                const query = 'DELETE FROM cms_content WHERE id = $1';
                 const [result] = await this.db.execute(query, [id]);
                 return result.affectedRows > 0;
             } catch (error) {

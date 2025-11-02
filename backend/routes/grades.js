@@ -45,15 +45,15 @@ router.post('/',
             // Verificar si ya existe la calificación
             const existingGrade = await executeQuery(`
                 SELECT id FROM calificaciones
-                WHERE estudiante_id = ? AND materia_id = ? AND parcial = ? AND ciclo_escolar = ?
+                WHERE estudiante_id = $1 AND materia_id = $2 AND parcial = $3 AND ciclo_escolar = $4
             `, [estudiante_id, materia_id, parcial, ciclo_escolar]);
 
             if (existingGrade.length > 0) {
                 // Actualizar calificación existente
                 await executeQuery(`
                     UPDATE calificaciones
-                    SET calificacion = ?, observaciones = ?, docente_id = ?, fecha_captura = NOW()
-                    WHERE estudiante_id = ? AND materia_id = ? AND parcial = ? AND ciclo_escolar = ?
+                    SET calificacion = $1, observaciones = $2, docente_id = $3, fecha_captura = CURRENT_TIMESTAMP
+                    WHERE estudiante_id = $4 AND materia_id = $5 AND parcial = $6 AND ciclo_escolar = $7
                 `, [calificacion, observaciones, docente_id, estudiante_id, materia_id, parcial, ciclo_escolar]);
 
                 res.json({
@@ -65,14 +65,15 @@ router.post('/',
                 // Crear nueva calificación
                 const result = await executeQuery(`
                     INSERT INTO calificaciones (estudiante_id, materia_id, parcial, calificacion, ciclo_escolar, docente_id, observaciones)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7)
+                    RETURNING id
                 `, [estudiante_id, materia_id, parcial, calificacion, ciclo_escolar, docente_id, observaciones]);
 
                 res.json({
                     success: true,
                     message: 'Calificación capturada correctamente',
                     action: 'created',
-                    id: result.insertId
+                    id: result[0].id
                 });
             }
 
@@ -123,15 +124,15 @@ router.post('/batch',
                     // Verificar si existe
                     const existing = await executeQuery(`
                         SELECT id FROM calificaciones
-                        WHERE estudiante_id = ? AND materia_id = ? AND parcial = ? AND ciclo_escolar = ?
+                        WHERE estudiante_id = $1 AND materia_id = $2 AND parcial = $3 AND ciclo_escolar = $4
                     `, [cal.estudiante_id, cal.materia_id, cal.parcial, cal.ciclo_escolar]);
 
                     if (existing.length > 0) {
                         // Actualizar
                         await executeQuery(`
                             UPDATE calificaciones
-                            SET calificacion = ?, observaciones = ?, docente_id = ?, fecha_captura = NOW()
-                            WHERE estudiante_id = ? AND materia_id = ? AND parcial = ? AND ciclo_escolar = ?
+                            SET calificacion = $1, observaciones = $2, docente_id = $3, fecha_captura = CURRENT_TIMESTAMP
+                            WHERE estudiante_id = $4 AND materia_id = $5 AND parcial = $6 AND ciclo_escolar = $7
                         `, [cal.calificacion, cal.observaciones || '', docente_id,
                             cal.estudiante_id, cal.materia_id, cal.parcial, cal.ciclo_escolar]);
 
@@ -140,11 +141,12 @@ router.post('/batch',
                         // Crear
                         const result = await executeQuery(`
                             INSERT INTO calificaciones (estudiante_id, materia_id, parcial, calificacion, ciclo_escolar, docente_id, observaciones)
-                            VALUES (?, ?, ?, ?, ?, ?, ?)
+                            VALUES ($1, $2, $3, $4, $5, $6, $7)
+                            RETURNING id
                         `, [cal.estudiante_id, cal.materia_id, cal.parcial, cal.calificacion,
                             cal.ciclo_escolar, docente_id, cal.observaciones || '']);
 
-                        results.push({ ...cal, action: 'created', success: true, id: result.insertId });
+                        results.push({ ...cal, action: 'created', success: true, id: result[0].id });
                     }
 
                     // Actualizar promedio del estudiante
@@ -209,16 +211,16 @@ router.get('/student/:id',
             const { ciclo_escolar, parcial } = req.query;
 
             // Construir query dinámico
-            let whereClause = 'WHERE c.estudiante_id = ?';
+            let whereClause = 'WHERE c.estudiante_id = $1';
             let params = [id];
 
             if (ciclo_escolar) {
-                whereClause += ' AND c.ciclo_escolar = ?';
+                whereClause += ' AND c.ciclo_escolar = $' + (params.length + 1);
                 params.push(ciclo_escolar);
             }
 
             if (parcial) {
-                whereClause += ' AND c.parcial = ?';
+                whereClause += ' AND c.parcial = $' + (params.length + 1);
                 params.push(parcial);
             }
 
@@ -255,7 +257,7 @@ router.get('/student/:id',
                     e.promedio_general
                 FROM estudiantes e
                 JOIN usuarios u ON e.usuario_id = u.id
-                WHERE e.id = ?
+                WHERE e.id = $1
             `, [id]);
 
             if (estudiante.length === 0) {
@@ -304,21 +306,21 @@ router.get('/group/:grupo',
             const { grupo } = req.params;
             const { materia_id, parcial, ciclo_escolar } = req.query;
 
-            let whereClause = 'WHERE e.grupo = ?';
+            let whereClause = 'WHERE e.grupo = $1';
             let params = [grupo];
 
             if (materia_id) {
-                whereClause += ' AND c.materia_id = ?';
+                whereClause += ' AND c.materia_id = $' + (params.length + 1);
                 params.push(materia_id);
             }
 
             if (parcial) {
-                whereClause += ' AND c.parcial = ?';
+                whereClause += ' AND c.parcial = $' + (params.length + 1);
                 params.push(parcial);
             }
 
             if (ciclo_escolar) {
-                whereClause += ' AND c.ciclo_escolar = ?';
+                whereClause += ' AND c.ciclo_escolar = $' + (params.length + 1);
                 params.push(ciclo_escolar);
             }
 
@@ -385,16 +387,16 @@ router.get('/report/semester',
         try {
             const { ciclo_escolar, semestre, grupo } = req.query;
 
-            let whereClause = 'WHERE c.ciclo_escolar = ?';
+            let whereClause = 'WHERE c.ciclo_escolar = $1';
             let params = [ciclo_escolar];
 
             if (semestre) {
-                whereClause += ' AND e.semestre = ?';
+                whereClause += ' AND e.semestre = $' + (params.length + 1);
                 params.push(semestre);
             }
 
             if (grupo) {
-                whereClause += ' AND e.grupo = ?';
+                whereClause += ' AND e.grupo = $' + (params.length + 1);
                 params.push(grupo);
             }
 
@@ -451,14 +453,14 @@ async function updateStudentAverage(estudiante_id, ciclo_escolar) {
         const promedio = await executeQuery(`
             SELECT AVG(calificacion) as promedio
             FROM calificaciones
-            WHERE estudiante_id = ? AND ciclo_escolar = ?
+            WHERE estudiante_id = $1 AND ciclo_escolar = $2
         `, [estudiante_id, ciclo_escolar]);
 
         if (promedio[0] && promedio[0].promedio) {
             await executeQuery(`
                 UPDATE estudiantes
-                SET promedio_general = ?
-                WHERE id = ?
+                SET promedio_general = $1
+                WHERE id = $2
             `, [Math.round(promedio[0].promedio * 100) / 100, estudiante_id]);
         }
     } catch (error) {

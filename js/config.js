@@ -22,22 +22,11 @@ window.AppConfig = {
         retries: 3
     },
 
-    // Google OAuth 2.0 Configuration
+    // Google OAuth 2.0 Configuration - Se carga dinámicamente
     google: {
-        // 🔑 Client ID para Google Sign-In
-        // Para obtenerlo:
-        // 1. Ve a https://console.cloud.google.com/apis/credentials
-        // 2. Crea "ID de cliente de OAuth 2.0"
-        // 3. Configura los orígenes autorizados:
-        //    - http://localhost:3000
-        //    - http://127.0.0.1:8080
-        //    - https://tu-dominio-produccion.com
-        clientId: null, // Ejemplo: '123456-abc.apps.googleusercontent.com'
-
-        apiKey: null,   // 'TU_GOOGLE_API_KEY' (opcional para otras APIs)
-        enabled: false, // Cambiar a true cuando configures el clientId
-
-        // Configuración avanzada de OAuth
+        clientId: null,
+        apiKey: null,
+        enabled: false, // Se habilitará dinámicamente si la clave se carga correctamente
         oauth: {
             scope: 'email profile',
             cookiePolicy: 'single_host_origin',
@@ -103,7 +92,31 @@ window.AppConfig = {
     }
 };
 
-// Función para verificar si una integración está configurada
+// --- CARGA DINÁMICA DE CONFIGURACIONES ---
+(async function loadRemoteConfig() {
+    try {
+        const response = await fetch(`${window.AppConfig.api.baseURL}/api/config/public-keys`);
+        if (!response.ok) {
+            throw new Error(`Error al cargar la configuración remota: ${response.statusText}`);
+        }
+        const config = await response.json();
+
+        if (config.success && config.keys) {
+            // Configurar Google OAuth
+            if (config.keys.google_oauth_client_id) {
+                window.AppConfig.google.clientId = config.keys.google_oauth_client_id;
+                window.AppConfig.google.enabled = true;
+                console.log('✅ Google OAuth configurado dinámicamente.');
+            } else {
+                 console.warn('⚠️ No se recibió un Client ID de Google desde el backend.');
+            }
+        }
+    } catch (error) {
+        console.error('❌ Error fatal cargando configuración remota. Google OAuth permanecerá deshabilitado.', error);
+        window.AppConfig.google.enabled = false;
+    }
+})();
+// --- FIN DE CARGA DINÁMICA ---
 window.AppConfig.isEnabled = function(service) {
     switch (service) {
         case 'google':

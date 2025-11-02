@@ -215,17 +215,17 @@ router.post('/feedback', [
 
         // Actualizar rating en conversación
         await executeQuery(`
-            UPDATE chat_conversations 
-            SET satisfaction_rating = ? 
-            WHERE id = ?
+            UPDATE chat_conversations
+            SET satisfaction_rating = $1
+            WHERE id = $2
         `, [rating, conversation_id]);
 
         // Registrar feedback detallado si hay comentario
         if (comment) {
             await executeQuery(`
-                INSERT INTO chat_feedback 
-                (conversation_id, feedback_type, rating, comment) 
-                VALUES (?, 'suggestion', ?, ?)
+                INSERT INTO chat_feedback
+                (conversation_id, feedback_type, rating, comment)
+                VALUES ($1, 'suggestion', $2, $3)
             `, [conversation_id, rating, comment]);
         }
 
@@ -254,11 +254,11 @@ router.get('/information/:category', async (req, res) => {
 
         const information = await executeQuery(`
             SELECT id, clave, titulo, contenido, prioridad, updated_at
-            FROM informacion_dinamica 
-            WHERE categoria = ? 
+            FROM informacion_dinamica
+            WHERE categoria = $1
             AND is_active = TRUE
-            AND (tipos_usuario_permitidos IS NULL 
-                 OR JSON_CONTAINS(tipos_usuario_permitidos, ?))
+            AND (tipos_usuario_permitidos IS NULL
+                 OR tipos_usuario_permitidos::jsonb @> $2::jsonb)
             ORDER BY prioridad DESC, updated_at DESC
         `, [category, JSON.stringify(user_type)]);
 
@@ -286,14 +286,14 @@ router.get('/categories', async (req, res) => {
         const { user_type = 'visitante' } = req.query;
 
         const categories = await executeQuery(`
-            SELECT 
+            SELECT
                 categoria,
                 COUNT(*) as total_items,
                 MAX(updated_at) as last_updated
-            FROM informacion_dinamica 
+            FROM informacion_dinamica
             WHERE is_active = TRUE
-            AND (tipos_usuario_permitidos IS NULL 
-                 OR JSON_CONTAINS(tipos_usuario_permitidos, ?))
+            AND (tipos_usuario_permitidos IS NULL
+                 OR tipos_usuario_permitidos::jsonb @> $1::jsonb)
             GROUP BY categoria
             ORDER BY total_items DESC
         `, [JSON.stringify(user_type)]);

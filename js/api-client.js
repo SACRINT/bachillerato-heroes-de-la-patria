@@ -5,11 +5,11 @@
 
 class APIClient {
     constructor(options = {}) {
-        // URLs base para diferentes ambientes
+        // URLs base para diferentes ambientes (SIN /api al final para evitar duplicación)
         this.baseURLs = {
-            development: 'http://localhost:3000/api',
-            production: 'https://your-backend-domain.com/api',
-            local: 'http://127.0.0.1:3000/api'
+            development: 'http://localhost:3000',
+            production: 'https://your-backend-domain.com',
+            local: 'http://127.0.0.1:3000'
         };
 
         // Detectar ambiente y establecer URL base (o usar la proporcionada)
@@ -47,9 +47,66 @@ class APIClient {
     }
 
     /**
-     * Obtener token almacenado
+     * Obtener token almacenado y verificar expiración
      */
     getStoredToken() {
+        // Prioridad 1: Sistema seguro nuevo (secure_admin_session)
+        try {
+            const secureSession = localStorage.getItem('secure_admin_session');
+            if (secureSession) {
+                const sessionData = JSON.parse(secureSession);
+
+                // Validar que el token existe y no está expirado
+                if (sessionData.token) {
+                    // Si tiene expiresAt, validar que no esté expirado
+                    if (sessionData.expiresAt) {
+                        if (Date.now() < sessionData.expiresAt) {
+                            return sessionData.token;
+                        } else {
+                            console.warn('⚠️ Token expirado en secure_admin_session');
+                            // ✅ LIMPIAR TOKEN EXPIRADO
+                            localStorage.removeItem('secure_admin_session');
+                            this.removeToken();
+                        }
+                    } else {
+                        return sessionData.token;
+                    }
+                }
+            }
+        } catch (error) {
+            console.warn('⚠️ Error recuperando secure_admin_session:', error);
+        }
+
+        // ✅ NUEVO: Verificar expiración del token directo (authToken)
+        const directToken = localStorage.getItem('authToken');
+        if (directToken) {
+            try {
+                // Decodificar payload sin verificar firma (solo para leer exp)
+                const payload = JSON.parse(atob(directToken.split('.')[1]));
+                const now = Math.floor(Date.now() / 1000);
+
+                if (payload.exp && payload.exp > now) {
+                    // Token válido y no expirado
+                    return directToken;
+                } else {
+                    // Token expirado
+                    console.warn('⚠️ Token expirado detectado y eliminado');
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userData');
+
+                    // ✅ Redirigir a login si estamos en dashboard
+                    if (window.location.pathname.includes('admin-dashboard')) {
+                        alert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.');
+                        window.location.href = '/index.html';
+                    }
+                    return null;
+                }
+            } catch (error) {
+                console.warn('⚠️ Error verificando expiración de token:', error);
+            }
+        }
+
+        // Fallback: Sistema viejo (heroes_auth_token)
         return localStorage.getItem('heroes_auth_token') || sessionStorage.getItem('heroes_auth_token');
     }
 
@@ -75,11 +132,16 @@ class APIClient {
      */
     getHeaders() {
         const headers = { ...this.defaultHeaders };
-        
-        if (this.token) {
-            headers['Authorization'] = `Bearer ${this.token}`;
+
+        // Obtener token dinámicamente desde localStorage cada vez
+        const token = this.getStoredToken();
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        } else {
+            console.warn('⚠️ No se encontró token de autenticación para la petición');
         }
-        
+
         return headers;
     }
 
@@ -418,7 +480,7 @@ class APIClient {
     async checkConnection() {
         try {
             // Usar el método 'get' que ya construye la URL correctamente
-            const data = await this.get('/api/health');
+            const data = await this.get('/health');
             if (data && data.success) {
                 //console.log('🟢 Backend conectado:', data.message);
                 return true;

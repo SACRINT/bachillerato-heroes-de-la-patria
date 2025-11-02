@@ -1523,6 +1523,19 @@ class BGESecurityModule extends BGEModule {
         };
     }
 
+    // ✅ Detectar URL de la API automáticamente
+    detectApiUrl() {
+        const currentHost = window.location.hostname;
+
+        // En desarrollo local
+        if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
+            return 'http://localhost:3000/api';
+        }
+
+        // En producción, asumimos que la API está en el mismo dominio
+        return `${window.location.protocol}//${window.location.host}/api`;
+    }
+
     // Función handleAdminLogin para autenticación de administradores
     async handleAdminLogin(credentials) {
         try {
@@ -1541,34 +1554,52 @@ class BGESecurityModule extends BGEModule {
                 throw new Error('Cuenta temporalmente bloqueada por múltiples intentos fallidos');
             }
 
-            // Credenciales de administrador (en producción estas estarían en base de datos segura)
-            const adminCredentials = {
-                'admin@bge.edu.mx': {
-                    password: 'HeroesPatria2024!',
-                    roles: ['admin', 'super_admin'],
-                    permissions: ['*:*'] // Todos los permisos
+            // ✅ AUTENTICACIÓN REAL CON BACKEND (Reemplaza credenciales hardcoded)
+            console.log('🔐 Autenticando con backend real en /api/auth/login...');
+
+            const apiBaseUrl = this.detectApiUrl();
+            const response = await fetch(`${apiBaseUrl}/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
-                'director@bge.edu.mx': {
-                    password: 'Director2024!',
-                    roles: ['admin', 'director'],
-                    permissions: ['students:*', 'teachers:*', 'reports:*']
-                }
-            };
+                credentials: 'include',
+                body: JSON.stringify({
+                    username: credentials.username.trim(),
+                    password: credentials.password.trim(),
+                    rememberMe: credentials.remember || false
+                })
+            });
 
-            const adminUser = adminCredentials[credentials.username];
-
-            if (!adminUser || adminUser.password !== credentials.password) {
+            if (!response.ok) {
                 await this.recordFailedAttempt(credentials.username);
-                throw new Error('Credenciales de administrador inválidas');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Credenciales inválidas');
             }
 
-            // Crear sesión de administrador con permisos especiales
+            // ✅ Obtener datos reales del backend
+            const backendData = await response.json();
+
+            console.log('✅ Autenticación exitosa con backend:', {
+                user: backendData.user,
+                hasTokens: !!backendData.tokens
+            });
+
+            // Mapear roles del backend al sistema de permisos local
+            const adminUser = {
+                roles: backendData.user.roles || [backendData.user.role] || ['admin'],
+                permissions: backendData.user.role === 'admin' ? ['*:*'] : []
+            };
+
+            // ✅ Crear sesión usando tokens REALES del backend
             const adminSession = await this.createAdminSession({
-                id: credentials.username,
+                id: backendData.user.id || credentials.username,
                 username: credentials.username,
                 roles: adminUser.roles,
                 permissions: adminUser.permissions,
-                isAdmin: true
+                isAdmin: true,
+                backendTokens: backendData.tokens // ✅ Pasar tokens reales del backend
             });
 
             // Actualizar estado de autenticación
@@ -1656,6 +1687,16 @@ class BGESecurityModule extends BGEModule {
         const sessionId = 'admin_' + this.generateSecureId();
         const now = Date.now();
 
+        // ✅ Si se proporcionan tokens del backend, usarlos (JWT reales)
+        // De lo contrario, generar tokens locales (modo compatibilidad)
+        const tokens = user.backendTokens || await this.generateAdminTokens(user.id);
+
+        console.log('🔐 Creando sesión admin con tokens:', {
+            hasBackendTokens: !!user.backendTokens,
+            tokenType: user.backendTokens ? 'JWT REAL' : 'LOCAL FALLBACK',
+            accessToken: tokens.accessToken?.substring(0, 20) + '...'
+        });
+
         const adminSession = {
             id: sessionId,
             userId: user.id,
@@ -1667,13 +1708,20 @@ class BGESecurityModule extends BGEModule {
             expiresAt: now + (this.policies.sessionPolicy.maxDuration * 2), // Sesiones admin duran más
             ipAddress: 'localhost', // En producción se obtendría del request
             userAgent: navigator.userAgent,
-            tokens: await this.generateAdminTokens(user.id),
+            tokens: {
+                // ✅ Usar tokens reales del backend si están disponibles
+                access: tokens.accessToken || tokens.access,
+                refresh: tokens.refreshToken || tokens.refresh,
+                csrf: tokens.csrf || 'admin_csrf_' + this.generateSecureId(),
+                admin: tokens.admin || 'admin_token_' + this.generateSecureId()
+            },
             isActive: true,
             adminLevel: user.roles.includes('super_admin') ? 'super' : 'standard',
             metadata: {
                 loginMethod: 'admin_password',
                 securityLevel: 'high',
-                requiresReauth: false
+                requiresReauth: false,
+                usingRealJWT: !!user.backendTokens // ✅ Bandera para saber si usa JWT real
             }
         };
 

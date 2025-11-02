@@ -86,10 +86,20 @@ class EgresadosDashboard {
      */
     async loadStats() {
         try {
-            const response = await fetch(`${this.apiBase}/stats/general`);
-            if (!response.ok) throw new Error('Error al cargar estadísticas');
+            // Usar apiClient para autenticación automática
+            if (!window.apiClient) {
+                throw new Error('API Client no disponible');
+            }
 
-            this.stats = await response.json();
+            const response = await window.apiClient.request(`${this.apiBase}/stats/general`);
+
+            // Extraer datos correctamente de la estructura de respuesta
+            if (response && response.success) {
+                this.stats = response.data || {};
+            } else {
+                this.stats = response || {};
+            }
+
             console.log('📊 [EGRESADOS] Estadísticas cargadas:', this.stats);
 
         } catch (error) {
@@ -110,10 +120,22 @@ class EgresadosDashboard {
      */
     async loadEgresados() {
         try {
-            const response = await fetch(this.apiBase);
-            if (!response.ok) throw new Error('Error al cargar egresados');
+            // Usar apiClient para autenticación automática
+            if (!window.apiClient) {
+                throw new Error('API Client no disponible');
+            }
 
-            this.egresados = await response.json();
+            const response = await window.apiClient.request(this.apiBase);
+
+            // Extraer datos correctamente de la estructura de respuesta
+            if (response && response.success && response.data) {
+                this.egresados = Array.isArray(response.data) ? response.data : [];
+            } else if (Array.isArray(response)) {
+                this.egresados = response;
+            } else {
+                this.egresados = [];
+            }
+
             console.log(`📋 [EGRESADOS] ${this.egresados.length} egresados cargados`);
 
         } catch (error) {

@@ -26,17 +26,25 @@ class SuscriptoresManager {
      */
     async cargarSuscriptores() {
         try {
-            const response = await fetch(this.API_BASE);
-            const data = await response.json();
+            // Usar apiClient para autenticación automática
+            if (!window.apiClient) {
+                throw new Error('API Client no disponible');
+            }
+
+            const data = await window.apiClient.request(this.API_BASE);
 
             if (data.success) {
-                this.suscriptores = data.suscriptores;
+                // Backend puede devolver data.data o data.suscriptores
+                this.suscriptores = data.data || data.suscriptores || [];
                 this.renderizarTabla();
-                console.log(`✅ ${data.total} suscriptores cargados`);
+                console.log(`✅ ${data.total || this.suscriptores.length} suscriptores cargados`);
+            } else {
+                throw new Error(data.error || 'Error desconocido');
             }
         } catch (error) {
             console.error('❌ Error al cargar suscriptores:', error);
             this.mostrarError('Error al cargar suscriptores');
+            this.suscriptores = [];
         }
     }
 
@@ -45,11 +53,19 @@ class SuscriptoresManager {
      */
     async cargarEstadisticas() {
         try {
-            const response = await fetch(`${this.API_BASE}/stats/general`);
-            const data = await response.json();
+            // Usar apiClient para autenticación automática
+            if (!window.apiClient) {
+                throw new Error('API Client no disponible');
+            }
+
+            const data = await window.apiClient.request(`${this.API_BASE}/stats/general`);
 
             if (data.success) {
-                this.renderizarEstadisticas(data.stats);
+                // Backend puede devolver data.data o data.stats
+                const stats = data.data || data.stats || {};
+                this.renderizarEstadisticas(stats);
+            } else {
+                throw new Error(data.error || 'Error desconocido');
             }
         } catch (error) {
             console.error('❌ Error al cargar estadísticas:', error);

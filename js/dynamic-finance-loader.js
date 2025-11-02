@@ -5,7 +5,7 @@
 
 class DynamicFinanceLoader {
     constructor() {
-        this.financeFile = '/data/finanzas.json';
+        this.financeFile = '/api/finances';
         this.finances = {};
         this.currentEditingId = null;
         console.log('💰 Dynamic Finance Loader inicializado');

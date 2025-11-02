@@ -73,8 +73,8 @@ const shouldLogToDB = (req, res) => {
 const logToDatabase = async (logData) => {
     try {
         await executeQuery(
-            `INSERT INTO logs_sistema (nivel, mensaje, contexto, usuario_id, ip_address, user_agent) 
-             VALUES (?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO logs_sistema (nivel, mensaje, contexto, usuario_id, ip_address, user_agent)
+             VALUES ($1, $2, $3, $4, $5, $6)`,
             [
                 getLogLevel(logData.statusCode),
                 `${logData.method} ${logData.path}`,
@@ -108,55 +108,55 @@ const getLogLevel = (statusCode) => {
 const logger = {
     info: async (message, context = {}, userId = null) => {
         console.log(`ℹ️  INFO: ${message}`, context);
-        
+
         try {
             await executeQuery(
-                `INSERT INTO logs_sistema (nivel, mensaje, contexto, usuario_id) 
-                 VALUES (?, ?, ?, ?)`,
+                `INSERT INTO logs_sistema (nivel, mensaje, contexto, usuario_id)
+                 VALUES ($1, $2, $3, $4)`,
                 ['info', message, JSON.stringify(context), userId]
             );
         } catch (error) {
             console.error('Error guardando log info:', error);
         }
     },
-    
+
     warning: async (message, context = {}, userId = null) => {
         console.warn(`⚠️  WARNING: ${message}`, context);
-        
+
         try {
             await executeQuery(
-                `INSERT INTO logs_sistema (nivel, mensaje, contexto, usuario_id) 
-                 VALUES (?, ?, ?, ?)`,
+                `INSERT INTO logs_sistema (nivel, mensaje, contexto, usuario_id)
+                 VALUES ($1, $2, $3, $4)`,
                 ['warning', message, JSON.stringify(context), userId]
             );
         } catch (error) {
             console.error('Error guardando log warning:', error);
         }
     },
-    
+
     error: async (message, context = {}, userId = null) => {
         console.error(`❌ ERROR: ${message}`, context);
-        
+
         try {
             await executeQuery(
-                `INSERT INTO logs_sistema (nivel, mensaje, contexto, usuario_id) 
-                 VALUES (?, ?, ?, ?)`,
+                `INSERT INTO logs_sistema (nivel, mensaje, contexto, usuario_id)
+                 VALUES ($1, $2, $3, $4)`,
                 ['error', message, JSON.stringify(context), userId]
             );
         } catch (error) {
             console.error('Error guardando log error:', error);
         }
     },
-    
+
     debug: async (message, context = {}, userId = null) => {
         if (process.env.NODE_ENV === 'development') {
             console.debug(`🐛 DEBUG: ${message}`, context);
         }
-        
+
         try {
             await executeQuery(
-                `INSERT INTO logs_sistema (nivel, mensaje, contexto, usuario_id) 
-                 VALUES (?, ?, ?, ?)`,
+                `INSERT INTO logs_sistema (nivel, mensaje, contexto, usuario_id)
+                 VALUES ($1, $2, $3, $4)`,
                 ['debug', message, JSON.stringify(context), userId]
             );
         } catch (error) {
@@ -172,12 +172,12 @@ const cleanOldLogs = async () => {
     try {
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-        
+
         const result = await executeQuery(
-            'DELETE FROM logs_sistema WHERE created_at < ?',
+            'DELETE FROM logs_sistema WHERE created_at < $1',
             [thirtyDaysAgo.toISOString().slice(0, 19).replace('T', ' ')]
         );
-        
+
         if (result.affectedRows > 0) {
             logger.info(`Limpieza de logs completada: ${result.affectedRows} registros eliminados`);
         }

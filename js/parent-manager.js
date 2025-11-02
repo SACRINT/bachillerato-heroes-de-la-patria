@@ -27,10 +27,13 @@ class ParentManager {
             <p class="mt-2 text-muted">Cargando información de padres...</p></td></tr>`;
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/parents`);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            // Usar apiClient para autenticación automática
+            if (!window.apiClient) {
+                throw new Error('API Client no disponible');
+            }
 
-            const result = await response.json();
+            const result = await window.apiClient.request('/api/parents');
+
             if (result.success) {
                 this.parents = result.data || [];
                 this.filteredParents = [...this.parents];
@@ -50,11 +53,13 @@ class ParentManager {
 
     async loadStudentsForAssociation() {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/students`); // Assuming an /api/students endpoint exists
+            const response = await fetch(`${this.apiBaseUrl}/admin/students`); // Endpoint correcto para estudiantes
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const result = await response.json();
             if (result.success) {
-                this.students = result.data.students || [];
+                // 🔧 FIX: El endpoint /admin/students devuelve en result.data (no result.students)
+                this.students = result.data || result.students || [];
+                console.log(`✅ [ParentManager] ${this.students.length} estudiantes cargados para asociación`);
                 this.populateStudentFilter();
             } else {
                 throw new Error(result.error || 'Error desconocido al cargar estudiantes');
@@ -223,12 +228,14 @@ class ParentManager {
         }
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/parents`, {
+            if (!window.apiClient) {
+                throw new Error('API Client no disponible');
+            }
+
+            const result = await window.apiClient.request('/api/parents', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre, email, password, student_id: student_id || null })
+                body: { nombre, email, password, student_id: student_id || null }  // apiClient will stringify
             });
-            const result = await response.json();
 
             if (result.success) {
                 this.showAlert('Padre creado exitosamente.', 'success');
@@ -268,12 +275,14 @@ class ParentManager {
         updateData.student_id = student_id || null;
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/parents/${parentId}`, {
+            if (!window.apiClient) {
+                throw new Error('API Client no disponible');
+            }
+
+            const result = await window.apiClient.request(`/api/parents/${parentId}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updateData)
+                body: updateData  // apiClient will stringify
             });
-            const result = await response.json();
 
             if (result.success) {
                 this.showAlert('Padre actualizado exitosamente.', 'success');
@@ -290,13 +299,15 @@ class ParentManager {
 
     async confirmDeleteParent(parentId) {
         if (!confirm('¿Estás seguro de que deseas eliminar este padre de familia? Esta acción es irreversible.')) return;
-        
+
         try {
-            const response = await fetch(`${this.apiBaseUrl}/parents/${parentId}`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' }
+            if (!window.apiClient) {
+                throw new Error('API Client no disponible');
+            }
+
+            const result = await window.apiClient.request(`/api/parents/${parentId}`, {
+                method: 'DELETE'
             });
-            const result = await response.json();
 
             if (result.success) {
                 this.showAlert('Padre eliminado exitosamente.', 'success');
@@ -315,7 +326,8 @@ class ParentManager {
         if (window.adminDashboard && typeof window.adminDashboard.showAlert === 'function') {
             window.adminDashboard.showAlert(message, type);
         } else {
-            alert(message);
+            // 🔴 CORRECCIÓN: Nunca usar alert() en producción - bloquea toda la aplicación
+            console.error(`[ParentManager] ${type?.toUpperCase()}: ${message}`);
         }
     }
 

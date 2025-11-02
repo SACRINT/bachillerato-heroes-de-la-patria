@@ -211,6 +211,22 @@ router.get('/stats', async (req, res) => {
 
     } catch (error) {
         console.error('❌ Error al obtener estadísticas:', error);
+
+        // Si la tabla no existe, devolver datos vacíos en lugar de error
+        if (error.code === '42P01') {
+            console.warn('⚠️ Tabla "avisos" no existe - devolviendo datos vacíos');
+            return res.json({
+                success: true,
+                data: {
+                    total: 0,
+                    publicadas: 0,
+                    borradores: 0,
+                    destacadas: 0,
+                    vistas_totales: 0
+                }
+            });
+        }
+
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'

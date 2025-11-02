@@ -1,5 +1,3 @@
-import '../css/style.css';
-
 // Dashboard Administrativo Integrado con API
 class AdminDashboard {
     constructor() {
@@ -43,10 +41,10 @@ class AdminDashboard {
 
     async checkAuthentication() {
         //console.log('🔐 Verificando autenticación en dashboard...');
-        
+
         // Prioridad 1: Sistema de autenticación seguro (nuevo)
         if (window.secureAdminAuth && window.secureAdminAuth.isUserAuthenticated()) {
-            this.currentUser = window.secureAdminAuth.getUserInfo();
+            this.currentUser = window.secureAdminAuth.getCurrentUser();
             this.isLoggedIn = true;
             //console.log('✅ Usuario autenticado con sistema seguro:', this.currentUser);
             return;
@@ -128,6 +126,39 @@ class AdminDashboard {
         }
     }
 
+    showAlert(message, type = 'info') {
+        // Buscar o crear contenedor de alertas
+        let alertContainer = document.getElementById('admin-alert-container');
+
+        if (!alertContainer) {
+            alertContainer = document.createElement('div');
+            alertContainer.id = 'admin-alert-container';
+            alertContainer.style.cssText = 'position: fixed; top: 80px; right: 20px; z-index: 9999; max-width: 400px;';
+            document.body.appendChild(alertContainer);
+        }
+
+        // Crear alerta
+        const alertId = `alert-${Date.now()}`;
+        const alertDiv = document.createElement('div');
+        alertDiv.id = alertId;
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.setAttribute('role', 'alert');
+        alertDiv.innerHTML = `
+            <strong>${type === 'danger' ? 'Error' : type === 'success' ? 'Éxito' : 'Información'}:</strong> ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+
+        alertContainer.appendChild(alertDiv);
+
+        // Auto-cerrar después de 5 segundos
+        setTimeout(() => {
+            if (document.getElementById(alertId)) {
+                const bsAlert = bootstrap.Alert.getOrCreateInstance(alertDiv);
+                bsAlert.close();
+            }
+        }, 5000);
+    }
+
     // ============================================
     // CARGA DE DATOS DESDE API
     // ============================================
@@ -174,7 +205,7 @@ class AdminDashboard {
                 throw new Error('API client no disponible');
             }
 
-            const response = await window.apiClient.request('/analytics/dashboard');
+            const response = await window.apiClient.request('/api/analytics/dashboard');
             
             if (response.success) {
                 return response.data;
@@ -193,7 +224,7 @@ class AdminDashboard {
                 throw new Error('API client no disponible');
             }
 
-            const response = await window.apiClient.request('/students?limit=10');
+            const response = await window.apiClient.request('/api/admin/students?limit=10');
             
             if (response.success) {
                 return response.data;
@@ -212,17 +243,121 @@ class AdminDashboard {
                 throw new Error('API client no disponible');
             }
 
-            const response = await window.apiClient.request('/teachers?limit=10');
-            
+            const response = await window.apiClient.request('/api/admin/teachers?limit=10');
+
             if (response.success) {
                 return response.data;
             }
-            
+
             throw new Error('Error en respuesta de docentes');
         } catch (error) {
             console.warn('👨‍🏫 Teachers API no disponible, usando datos demo');
             return this.getDemoStudents().teachers;
         }
+    }
+
+    async loadActiveUsers() {
+        try {
+            console.log('👥 [AdminDashboard] Cargando usuarios activos...');
+
+            if (!window.apiClient) {
+                throw new Error('API client no disponible');
+            }
+
+            const response = await window.apiClient.request('/api/dashboard/active-users');
+
+            if (response.success) {
+                console.log(`✅ [AdminDashboard] ${response.count} usuarios activos cargados`);
+                this.renderActiveUsersTable(response.data);
+
+                // Actualizar contador
+                const counterEl = document.getElementById('active-users-counter');
+                if (counterEl) {
+                    counterEl.textContent = `${response.count} usuario${response.count !== 1 ? 's' : ''}`;
+                }
+
+                return response.data;
+            }
+
+            throw new Error('Error en respuesta de usuarios activos');
+        } catch (error) {
+            console.error('❌ [AdminDashboard] Error cargando usuarios activos:', error);
+            this.showAlert('Error al cargar usuarios activos', 'danger');
+            this.renderActiveUsersTable([]);
+            return [];
+        }
+    }
+
+    renderActiveUsersTable(users) {
+        const container = document.getElementById('activeUsersContainer');
+        if (!container) {
+            console.warn('⚠️ Contenedor activeUsersContainer no encontrado');
+            return;
+        }
+
+        if (users.length === 0) {
+            container.innerHTML = `
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-user-slash fa-3x mb-3"></i>
+                    <p class="lead">No hay usuarios activos en este momento</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Crear tabla
+        let tableHTML = `
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Última Actividad</th>
+                            <th class="text-center">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        users.forEach(user => {
+            const roleBadge = this.getRoleBadge(user.role);
+            const lastActivity = user.lastActivity ? new Date(user.lastActivity).toLocaleString('es-MX') : 'N/A';
+
+            tableHTML += `
+                <tr>
+                    <td><strong>${user.username}</strong></td>
+                    <td>${user.email}</td>
+                    <td>${roleBadge}</td>
+                    <td><small>${lastActivity}</small></td>
+                    <td class="text-center">
+                        <span class="badge bg-success">
+                            <i class="fas fa-circle"></i> Activo
+                        </span>
+                    </td>
+                </tr>
+            `;
+        });
+
+        tableHTML += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        container.innerHTML = tableHTML;
+    }
+
+    getRoleBadge(role) {
+        const badges = {
+            'admin': '<span class="badge bg-danger">Admin</span>',
+            'teacher': '<span class="badge bg-primary">Docente</span>',
+            'student': '<span class="badge bg-info">Estudiante</span>',
+            'padre': '<span class="badge bg-warning">Padre</span>',
+            'parent': '<span class="badge bg-warning">Padre</span>'
+        };
+        return badges[role] || '<span class="badge bg-secondary">N/A</span>';
     }
 
     // ============================================
@@ -585,7 +720,7 @@ class AdminDashboard {
                 <td><strong>${teacher.name}</strong></td>
                 <td>${teacher.specialty}</td>
                 <td>
-                    <small>${teacher.subjects.join(', ')}</small>
+                    <small>${(Array.isArray(teacher.subjects) && teacher.subjects.length > 0) ? teacher.subjects.join(', ') : 'N/A'}</small>
                 </td>
                 <td class="text-center">
                     <span class="badge bg-info">${teacher.workload}h</span>
@@ -751,7 +886,7 @@ class AdminDashboard {
         try {
             // Intentar cargar desde API primero
             if (window.apiClient) {
-                const response = await window.apiClient.request('/admin/pending-registrations');
+                const response = await window.apiClient.request('/api/admin/pending-registrations');
                 if (response.success) {
                     this.dashboardData.pendingRegistrations = response.data;
                     return;
@@ -846,7 +981,7 @@ class AdminDashboard {
         try {
             // Intentar aprobar via API
             if (window.apiClient) {
-                const response = await window.apiClient.request('/admin/approve-registration', {
+                const response = await window.apiClient.request('/api/admin/approve-registration', {
                     method: 'POST',
                     body: { email }
                 });
@@ -878,7 +1013,7 @@ class AdminDashboard {
         try {
             // Intentar rechazar via API
             if (window.apiClient) {
-                const response = await window.apiClient.request('/admin/reject-registration', {
+                const response = await window.apiClient.request('/api/admin/reject-registration', {
                     method: 'POST',
                     body: { email, reason }
                 });
@@ -955,21 +1090,28 @@ class AdminDashboard {
     }
 
     /**
-     * Iniciar auto-refresh del dashboard cada 5 minutos
+     * Iniciar auto-refresh del dashboard cada 10 minutos (optimizado)
+     * Solo se ejecuta si el tab está activo (Page Visibility API)
      */
     startAutoRefresh() {
         if (this.refreshInterval) {
             clearInterval(this.refreshInterval);
         }
-        
+
         this.refreshInterval = setInterval(async () => {
+            // Solo refrescar si el tab está visible/activo
+            if (document.hidden) {
+                //console.log('⏸️  Auto-refresh pausado (tab no visible)');
+                return;
+            }
+
             //console.log('🔄 Auto-refresh del dashboard...');
             await this.loadDashboardData();
             this.updateDashboardUI();
             this.displayPendingRegistrations();
-        }, 5 * 60 * 1000); // 5 minutos
-        
-        //console.log('⏰ Auto-refresh iniciado (cada 5 minutos)');
+        }, 10 * 60 * 1000); // 10 minutos (aumentado de 5 para reducir requests)
+
+        //console.log('⏰ Auto-refresh iniciado (cada 10 minutos)');
     }
 
     // Funciones de gestión
@@ -1265,16 +1407,16 @@ document.addEventListener('DOMContentLoaded', function() {
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js';
         script.onload = function() {
             //console.log('Chart.js cargado dinámicamente');
-            adminDashboard = new AdminDashboard();
+            window.adminDashboard = new AdminDashboard();
         };
         script.onerror = function() {
             console.error('No se pudo cargar Chart.js. Dashboard funcionará sin gráficos.');
-            adminDashboard = new AdminDashboard();
+            window.adminDashboard = new AdminDashboard();
         };
         document.head.appendChild(script);
     } else {
         //console.log('Chart.js disponible, inicializando dashboard');
-        adminDashboard = new AdminDashboard();
+        window.adminDashboard = new AdminDashboard();
     }
 });
 

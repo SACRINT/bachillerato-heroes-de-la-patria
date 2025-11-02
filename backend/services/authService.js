@@ -12,8 +12,8 @@ const path = require('path');
 class AuthService {
     constructor() {
         this.saltRounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
-        this.jwtSecret = process.env.JWT_SECRET || 'heroes_patria_secret_2024';
-        this.tokenExpiry = process.env.JWT_EXPIRY || '1h';
+        this.jwtSecret = process.env.JWT_SECRET;
+        this.tokenExpiry = process.env.JWT_EXPIRES_IN || '24h';
         this.refreshTokenExpiry = process.env.REFRESH_TOKEN_EXPIRY || '7d';
 
         // Rutas de archivos JSON de respaldo
@@ -92,7 +92,7 @@ class AuthService {
     }
 
     /**
-     * Cargar usuarios desde JSON (fallback si MySQL no está disponible)
+     * Cargar usuarios desde JSON (fallback si PostgreSQL no está disponible)
      */
     async loadUsersFromJson() {
         try {
@@ -130,20 +130,20 @@ class AuthService {
         try {
             let user = null;
 
-            // Intentar primero con MySQL
+            // Intentar primero con PostgreSQL
             try {
-                const users = await executeQuery('SELECT * FROM usuarios WHERE username = ? OR email = ?', [username, username]);
-                console.log('🔍 DEBUG: Usuarios retornados por MySQL:', users);
+                const users = await executeQuery('SELECT * FROM usuarios WHERE username = $1 OR email = $2', [username, username]);
+                console.log('🔍 DEBUG: Usuarios retornados por PostgreSQL:', users);
                 user = users.find(u => u.username === username || u.email === username);
-                console.log('🔍 Usuario encontrado en MySQL:', !!user);
+                console.log('🔍 Usuario encontrado en PostgreSQL:', !!user);
 
-                // Si MySQL no retorna usuarios, también usar JSON fallback
+                // Si PostgreSQL no retorna usuarios, también usar JSON fallback
                 if (!user && users.length === 0) {
-                    console.warn('⚠️ MySQL conectado pero sin usuarios, usando JSON fallback');
-                    throw new Error('No users in MySQL, fallback to JSON');
+                    console.warn('⚠️ PostgreSQL conectado pero sin usuarios, usando JSON fallback');
+                    throw new Error('No users in PostgreSQL, fallback to JSON');
                 }
-            } catch (mysqlError) {
-                console.warn('⚠️ MySQL no disponible o sin datos, usando JSON fallback');
+            } catch (pgError) {
+                console.warn('⚠️ PostgreSQL no disponible o sin datos, usando JSON fallback');
 
                 // Fallback a JSON
                 const jsonUsers = await this.loadUsersFromJson();
@@ -162,7 +162,10 @@ class AuthService {
                 throw new Error('Usuario no encontrado');
             }
 
-            if (!user.active) {
+            // ✅ Validar estado activo - Compatible con PostgreSQL (status='activo') y JSON (active=true)
+            const isActive = user.active === true || user.status === 'activo' || user.status === 'active';
+
+            if (!isActive) {
                 throw new Error('Usuario inactivo');
             }
 
@@ -175,10 +178,10 @@ class AuthService {
             // Actualizar último login
             user.last_login = new Date().toISOString();
 
-            // Intentar actualizar en MySQL, si falla usar JSON
+            // Intentar actualizar en PostgreSQL, si falla usar JSON
             try {
                 await executeQuery(
-                    'UPDATE usuarios SET last_login = ? WHERE id = ?',
+                    'UPDATE usuarios SET last_login = $1 WHERE id = $2',
                     [user.last_login, user.id]
                 );
             } catch {
@@ -272,8 +275,8 @@ class AuthService {
             // Buscar usuario actualizado
             let user = null;
             try {
-                const users = await executeQuery('SELECT * FROM usuarios WHERE id = ?', [decoded.userId]);
-                user = users.find(u => u.id === decoded.userId);
+                const users = await executeQuery('SELECT * FROM usuarios WHERE id = $1', [decoded.userId]);
+                user = users[0];
             } catch {
                 const jsonUsers = await this.loadUsersFromJson();
                 user = jsonUsers.find(u => u.id === decoded.userId);
@@ -320,8 +323,8 @@ class AuthService {
             // Verificar que el email no exista
             let existingUser = null;
             try {
-                const users = await executeQuery('SELECT id FROM usuarios WHERE email = ?', [email]);
-                existingUser = users.find(u => u.email === email);
+                const users = await executeQuery('SELECT id FROM usuarios WHERE email = $1', [email]);
+                existingUser = users[0];
             } catch {
                 const jsonUsers = await this.loadUsersFromJson();
                 existingUser = jsonUsers.find(u => u.email === email);
@@ -352,14 +355,14 @@ class AuthService {
                 last_login: null
             };
 
-            // Intentar guardar en MySQL
+            // Intentar guardar en PostgreSQL
             try {
                 const result = await executeQuery(
                     `INSERT INTO usuarios (email, password_hash, username, nombre, apellido_paterno, apellido_materno, role, active, created_at)
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
                     [email, passwordHash, username, nombre, apellido_paterno, apellido_materno, role, true, newUser.created_at]
                 );
-                newUser.id = result.insertId;
+                newUser.id = result[0].id;
             } catch {
                 // Fallback a JSON
                 const jsonUsers = await this.loadUsersFromJson();
@@ -388,8 +391,8 @@ class AuthService {
             // Buscar usuario
             let user = null;
             try {
-                const users = await executeQuery('SELECT * FROM usuarios WHERE id = ?', [userId]);
-                user = users.find(u => u.id === userId);
+                const users = await executeQuery('SELECT * FROM usuarios WHERE id = $1', [userId]);
+                user = users[0];
             } catch {
                 const jsonUsers = await this.loadUsersFromJson();
                 user = jsonUsers.find(u => u.id === userId);
@@ -411,7 +414,7 @@ class AuthService {
             // Actualizar
             try {
                 await executeQuery(
-                    'UPDATE usuarios SET password_hash = ? WHERE id = ?',
+                    'UPDATE usuarios SET password_hash = $1 WHERE id = $2',
                     [newPasswordHash, userId]
                 );
             } catch {
@@ -448,13 +451,21 @@ class AuthService {
         try {
             let user = null;
 
-            // Intentar MySQL primero
+            // Intentar PostgreSQL primero
             try {
                 const users = await executeQuery(
-                    'SELECT id, email, username, nombre, apellido_paterno, apellido_materno, role, active, created_at, last_login FROM usuarios WHERE id = ?',
+                    'SELECT id, email, username, role, status, created_at, updated_at, last_login FROM usuarios WHERE id = $1',
                     [userId]
                 );
-                user = users.find(u => u.id === userId);
+                user = users[0];
+                if (user) {
+                    // Normalizar el campo role
+                    if (user.role === 'administrativo') {
+                        user.role = 'admin';
+                    }
+                    // ✅ CORRECCIÓN: Normalizar active desde status - Compatible con PostgreSQL (status='activo') y JSON (status='active')
+                    user.active = user.status === 'active' || user.status === 'activo';
+                }
             } catch {
                 // Fallback a JSON
                 const jsonUsers = await this.loadUsersFromJson();

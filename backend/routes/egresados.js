@@ -466,7 +466,8 @@ router.get('/list', async (req, res) => {
             paramCount++;
         }
 
-        query += ' ORDER BY created_at DESC';
+        // ORDER BY usando ID (siempre existe y da orden cronológico)
+        query += ' ORDER BY id DESC';
 
         const result = await pool.query(query, params);
 
@@ -518,6 +519,116 @@ router.get('/stats', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error al obtener estadísticas',
+            error: error.message
+        });
+    }
+});
+
+/**
+ * GET /api/egresados/stats/general - Alias de /stats
+ * Para compatibilidad con frontend que llama a /stats/general
+ */
+router.get('/stats/general', async (req, res) => {
+    try {
+        console.log('📊 [EGRESADOS] Obteniendo estadísticas generales...');
+
+        const stats = await pool.query(`
+            SELECT
+                COUNT(*) as total,
+                COUNT(CASE WHEN verificado = true THEN 1 END) as verificados,
+                COUNT(CASE WHEN verificado = false THEN 1 END) as sin_verificar,
+                COUNT(CASE WHEN estatus_estudios = 'estudiando' THEN 1 END) as estudiando,
+                COUNT(CASE WHEN estatus_estudios = 'trabajando' THEN 1 END) as trabajando,
+                COUNT(CASE WHEN estatus_estudios = 'ambos' THEN 1 END) as estudiando_trabajando,
+                COUNT(CASE WHEN autoriza_publicar = true THEN 1 END) as autorizan_publicar
+            FROM egresados
+        `);
+
+        // Estadísticas por generación
+        const porGeneracion = await pool.query(`
+            SELECT generacion, COUNT(*) as cantidad
+            FROM egresados
+            WHERE generacion IS NOT NULL
+            GROUP BY generacion
+            ORDER BY generacion DESC
+        `);
+
+        const statsData = {
+            ...stats.rows[0],
+            porGeneracion: porGeneracion.rows
+        };
+
+        console.log('✅ [EGRESADOS] Estadísticas obtenidas');
+
+        res.json({
+            success: true,
+            data: statsData
+        });
+
+    } catch (error) {
+        console.error('❌ [EGRESADOS] Error obteniendo estadísticas:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener estadísticas',
+            error: error.message
+        });
+    }
+});
+
+/**
+ * GET /api/egresados - Alias de /list
+ * Para compatibilidad con frontend que llama directamente a /api/egresados
+ */
+router.get('/', async (req, res) => {
+    try {
+        console.log('🎓 [EGRESADOS] Obteniendo lista de egresados...');
+
+        const { estado_perfil, confirmado, anio_egreso } = req.query;
+
+        let query = 'SELECT * FROM egresados WHERE 1=1';
+        const params = [];
+        let paramCount = 1;
+
+        if (estado_perfil) {
+            query += ` AND estado_perfil = $${paramCount}`;
+            params.push(estado_perfil);
+            paramCount++;
+        }
+
+        if (confirmado !== undefined) {
+            query += ` AND confirmado = $${paramCount}`;
+            params.push(confirmado === 'true');
+            paramCount++;
+        }
+
+        if (anio_egreso) {
+            query += ` AND anio_egreso = $${paramCount}`;
+            params.push(anio_egreso);
+            paramCount++;
+        }
+
+        query += ' ORDER BY id DESC';
+
+        const result = await pool.query(query, params);
+
+        console.log(`✅ [EGRESADOS] ${result.rows.length} egresados encontrados`);
+
+        res.json({
+            success: true,
+            total: result.rows.length,
+            data: result.rows.map(row => ({
+                ...row,
+                habilidades: row.habilidades ? JSON.parse(row.habilidades) : [],
+                idiomas: row.idiomas ? JSON.parse(row.idiomas) : [],
+                referencias: row.referencias ? JSON.parse(row.referencias) : []
+            }))
+        });
+
+    } catch (error) {
+        console.error('❌ [EGRESADOS] Error listando egresados:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener la lista de egresados',
             error: error.message
         });
     }
@@ -732,6 +843,155 @@ router.delete('/:id', async (req, res) => {
             message: 'Error al eliminar el perfil',
             error: error.message
         });
+    }
+});
+
+/**
+ * POST /api/egresados
+ * Crear/Actualizar perfil de egresado (sin requerir confirmación por email)
+ * Usado por el formulario de "Actualizar Información" en la página pública
+ */
+router.post('/', async (req, res) => {
+    const client = await pool.connect();
+
+    try {
+        console.log('📝 [POST /api/egresados] Creando perfil de egresado:', req.body);
+
+        const {
+            nombre,
+            email,
+            generacion,
+            telefono,
+            ciudad,
+            ocupacion_actual,
+            universidad,
+            carrera,
+            estatus_estudios,
+            anio_egreso,
+            historia_exito,
+            autoriza_publicar,
+            verificado
+        } = req.body;
+
+        // Validaciones básicas
+        if (!nombre || !email || !generacion) {
+            return res.status(400).json({
+                success: false,
+                error: 'Faltan campos obligatorios: nombre, email, generación'
+            });
+        }
+
+        // Verificar si el email ya existe
+        const existingCheck = await client.query(
+            'SELECT id FROM egresados WHERE email = $1',
+            [email]
+        );
+
+        let result;
+
+        if (existingCheck.rows.length > 0) {
+            // Actualizar si ya existe
+            const updateQuery = `
+                UPDATE egresados
+                SET nombre = $1,
+                    generacion = $2,
+                    telefono = $3,
+                    ciudad = $4,
+                    ocupacion_actual = $5,
+                    universidad = $6,
+                    carrera = $7,
+                    estatus_estudios = $8,
+                    anio_egreso = $9,
+                    historia_exito = $10,
+                    autoriza_publicar = $11,
+                    verificado = $12,
+                    fecha_actualizacion = NOW()
+                WHERE email = $13
+                RETURNING id
+            `;
+
+            result = await client.query(updateQuery, [
+                nombre,
+                generacion,
+                telefono || null,
+                ciudad || null,
+                ocupacion_actual || null,
+                universidad || null,
+                carrera || null,
+                estatus_estudios || null,
+                anio_egreso ? parseInt(anio_egreso) : null,
+                historia_exito || null,
+                autoriza_publicar || false,
+                verificado !== undefined ? verificado : true,
+                email
+            ]);
+
+            console.log('✅ Egresado actualizado:', result.rows[0].id);
+
+            return res.json({
+                success: true,
+                message: 'Datos actualizados exitosamente',
+                id: result.rows[0].id,
+                updated: true
+            });
+        } else {
+            // Insertar nuevo
+            const insertQuery = `
+                INSERT INTO egresados (
+                    nombre,
+                    email,
+                    generacion,
+                    telefono,
+                    ciudad,
+                    ocupacion_actual,
+                    universidad,
+                    carrera,
+                    estatus_estudios,
+                    anio_egreso,
+                    historia_exito,
+                    autoriza_publicar,
+                    verificado,
+                    fecha_registro,
+                    fecha_actualizacion
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW(), NOW())
+                RETURNING id
+            `;
+
+            result = await client.query(insertQuery, [
+                nombre,
+                email,
+                generacion,
+                telefono || null,
+                ciudad || null,
+                ocupacion_actual || null,
+                universidad || null,
+                carrera || null,
+                estatus_estudios || null,
+                anio_egreso ? parseInt(anio_egreso) : null,
+                historia_exito || null,
+                autoriza_publicar || false,
+                verificado !== undefined ? verificado : true
+            ]);
+
+            console.log('✅ Egresado creado:', result.rows[0].id);
+
+            return res.json({
+                success: true,
+                message: 'Datos registrados exitosamente',
+                id: result.rows[0].id,
+                updated: false
+            });
+        }
+
+    } catch (error) {
+        console.error('❌ Error en POST /api/egresados:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al procesar la solicitud',
+            message: error.message
+        });
+    } finally {
+        client.release();
     }
 });
 

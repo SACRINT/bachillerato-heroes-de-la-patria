@@ -1,6 +1,6 @@
 /**
  * 👩‍🏫 DYNAMIC TEACHER LOADER - BGE HEROES DE LA PATRIA
- * Sistema de gestión dinámica de docentes desde JSON
+ * Sistema de gestión dinámica de docentes desde API
  */
 
 class DynamicTeacherLoader {
@@ -8,22 +8,48 @@ class DynamicTeacherLoader {
         this.teachersFile = '/api/admin/teachers';
         this.teachers = {};
         this.currentEditingId = null;
+
+        // Usar la instancia global de APIClient
+        this.apiClient = window.apiClient || new APIClient();
+
         console.log('👩‍🏫 Dynamic Teacher Loader inicializado');
     }
 
     /**
-     * Cargar docentes desde JSON
+     * Cargar docentes desde API (usando APIClient con auth automática)
      */
     async loadTeachers() {
         try {
             console.log('📡 Cargando docentes desde:', this.teachersFile);
-            const response = await fetch(this.teachersFile);
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            // Usar APIClient que incluye automáticamente el token JWT
+            const response = await this.apiClient.get(this.teachersFile);
+
+            // Extraer los docentes del response correctamente
+            let docentesArray = [];
+            if (response && response.data && Array.isArray(response.data)) {
+                // Caso: { success: true, data: [...] }
+                docentesArray = response.data;
+            } else if (response && response.teachers && Array.isArray(response.teachers)) {
+                // Caso: { teachers: [...] }
+                docentesArray = response.teachers;
+            } else if (Array.isArray(response)) {
+                // Caso: respuesta directa es array
+                docentesArray = response;
             }
 
-            this.teachers = await response.json();
+            // Crear estructura esperada por el resto del código
+            this.teachers = {
+                docentes: docentesArray,
+                estadisticas: {
+                    totalDocentes: docentesArray.length,
+                    docentesActivos: docentesArray.filter(d => d.status === 'activo' || d.estado === 'Activo').length,
+                    docentesInactivos: docentesArray.filter(d => d.status === 'inactivo' || d.estado === 'Inactivo').length,
+                    promedioExperiencia: 0,
+                    promedioSalario: 0
+                }
+            };
+
             console.log('✅ Docentes cargados:', this.teachers);
 
             // Actualizar la interfaz
@@ -100,45 +126,67 @@ class DynamicTeacherLoader {
      */
     createTeacherRow(teacher) {
         const row = document.createElement('tr');
+
+        // Construir nombre completo
+        const nombreCompleto = [
+            teacher.nombre,
+            teacher.apellido_paterno,
+            teacher.apellido_materno
+        ].filter(Boolean).join(' ') || 'Sin nombre';
+
+        // Mapear status de BD a estado visual
+        let estado = 'Activo';
+        let estadoBadge = 'bg-success';
+        if (teacher.status === 'inactivo' || teacher.status === 'inactive') {
+            estado = 'Inactivo';
+            estadoBadge = 'bg-warning';
+        }
+
+        // Email institucional o placeholder
+        const email = teacher.email_institucional || teacher.email || `docente${teacher.numero_empleado}@bge.edu.mx`;
+
+        // Especialidad
+        const especialidad = teacher.especialidad || teacher.specialization || 'Sin especialidad';
+
         row.innerHTML = `
             <td>
-                <img src="${teacher.photo || 'images/default-teacher.jpg'}" 
-                     alt="${teacher.nombre || teacher.name}" 
-                     class="teacher-photo" 
+                <img src="${teacher.photo || 'images/default-teacher.jpg'}"
+                     alt="${nombreCompleto}"
+                     class="teacher-photo"
                      style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
             </td>
             <td>
-                <strong>${teacher.nombre || teacher.name}</strong><br>
-                <small class="text-muted">${teacher.email}</small>
+                <strong>${nombreCompleto}</strong><br>
+                <small class="text-muted">${email}</small>
             </td>
-            <td><span class="badge bg-primary">${teacher.specialization}</span></td>
+            <td><span class="badge bg-primary">${especialidad}</span></td>
             <td>
-                ${teacher.subjects?.map(subject => 
+                ${teacher.subjects?.map(subject =>
                     `<span class="badge bg-secondary me-1">${subject}</span>`
-                ).join('') || ''}
+                ).join('') || '<span class="badge bg-secondary">Sin materias asignadas</span>'}
             </td>
             <td>
-                <span class="badge ${teacher.estado === 'Activo' ? 'bg-success' : 'bg-warning'}">
-                    ${teacher.estado || 'Activo'}
+                <span class="badge ${estadoBadge}">
+                    ${estado}
                 </span>
             </td>
             <td>
                 <div class="btn-group btn-group-sm" role="group">
-                    <button type="button" 
-                            class="btn btn-outline-primary" 
-                            onclick="dynamicTeacherLoader.editTeacher(${teacher.id})" 
+                    <button type="button"
+                            class="btn btn-outline-primary"
+                            onclick="dynamicTeacherLoader.editTeacher(${teacher.id})"
                             title="Editar información">
                         <i class="fas fa-edit"></i> Editar
                     </button>
-                    <button type="button" 
-                            class="btn btn-outline-secondary" 
-                            onclick="dynamicTeacherLoader.assignSubjects(${teacher.id})" 
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            onclick="dynamicTeacherLoader.assignSubjects(${teacher.id})"
                             title="Asignar materias">
                         <i class="fas fa-book"></i> Materias
                     </button>
-                    <button type="button" 
-                            class="btn btn-outline-danger" 
-                            onclick="dynamicTeacherLoader.deleteTeacher(${teacher.id})" 
+                    <button type="button"
+                            class="btn btn-outline-danger"
+                            onclick="dynamicTeacherLoader.deleteTeacher(${teacher.id})"
                             title="Eliminar docente">
                         <i class="fas fa-trash"></i>
                     </button>

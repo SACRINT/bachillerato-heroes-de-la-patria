@@ -17,9 +17,275 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { pool } = require('../config/database');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
 const router = express.Router();
+
+// ============================================
+// ENDPOINTS ADMINISTRATIVOS (CRUD)
+// ============================================
+
+/**
+ * GET /api/parents
+ * Obtiene lista de todos los padres (admin only)
+ */
+router.get('/', authenticateToken, requireAdmin, async (req, res) => {
+    const client = await pool.connect();
+
+    try {
+        console.log('👨‍👩‍👧 [PARENTS] Obteniendo lista de padres...');
+
+        const query = `
+            SELECT
+                p.id,
+                p.nombre,
+                p.email,
+                p.student_id,
+                p.created_at,
+                p.updated_at
+            FROM parents p
+            ORDER BY p.created_at DESC
+        `;
+
+        const result = await client.query(query);
+
+        console.log(`✅ [PARENTS] ${result.rows.length} padres encontrados`);
+
+        res.json({
+            success: true,
+            data: result.rows,
+            count: result.rows.length
+        });
+
+    } catch (error) {
+        console.error('❌ [PARENTS] Error obteniendo padres:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener padres',
+            message: error.message
+        });
+    } finally {
+        client.release();
+    }
+});
+
+/**
+ * POST /api/parents
+ * Crea un nuevo padre (admin only)
+ */
+router.post('/', authenticateToken, requireAdmin, async (req, res) => {
+    const client = await pool.connect();
+
+    try {
+        const { nombre, email, password, student_id } = req.body;
+
+        console.log('👨‍👩‍👧 [PARENTS] Creando nuevo padre...');
+
+        // Validaciones
+        if (!nombre || !email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: 'Nombre, email y contraseña son requeridos'
+            });
+        }
+
+        // Verificar si el email ya existe
+        const emailCheck = await client.query(
+            'SELECT id FROM parents WHERE email = $1',
+            [email.toLowerCase()]
+        );
+
+        if (emailCheck.rows.length > 0) {
+            return res.status(409).json({
+                success: false,
+                message: 'El email ya está registrado'
+            });
+        }
+
+        // Hash de la contraseña
+        const password_hash = await bcrypt.hash(password, 10);
+
+        // Insertar padre
+        const insertQuery = `
+            INSERT INTO parents (nombre, email, password_hash, student_id, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, NOW(), NOW())
+            RETURNING id, nombre, email, student_id, created_at
+        `;
+
+        const result = await client.query(insertQuery, [
+            nombre,
+            email.toLowerCase(),
+            password_hash,
+            student_id || null
+        ]);
+
+        const parent = result.rows[0];
+
+        console.log(`✅ [PARENTS] Padre creado con ID: ${parent.id}`);
+
+        res.status(201).json({
+            success: true,
+            message: 'Padre creado exitosamente',
+            data: parent
+        });
+
+    } catch (error) {
+        console.error('❌ [PARENTS] Error creando padre:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al crear padre',
+            error: error.message
+        });
+    } finally {
+        client.release();
+    }
+});
+
+/**
+ * PUT /api/parents/:id
+ * Actualiza un padre existente (admin only)
+ */
+router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
+    const client = await pool.connect();
+
+    try {
+        const parentId = parseInt(req.params.id);
+        const { nombre, email, password, student_id } = req.body;
+
+        console.log(`👨‍👩‍👧 [PARENTS] Actualizando padre ID: ${parentId}`);
+
+        // Verificar que el padre existe
+        const existsCheck = await client.query(
+            'SELECT id FROM parents WHERE id = $1',
+            [parentId]
+        );
+
+        if (existsCheck.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Padre no encontrado'
+            });
+        }
+
+        // Preparar campos a actualizar
+        const updates = [];
+        const values = [];
+        let valueIndex = 1;
+
+        if (nombre) {
+            updates.push(`nombre = $${valueIndex++}`);
+            values.push(nombre);
+        }
+
+        if (email) {
+            // Verificar que el email no esté en uso por otro padre
+            const emailCheck = await client.query(
+                'SELECT id FROM parents WHERE email = $1 AND id != $2',
+                [email.toLowerCase(), parentId]
+            );
+
+            if (emailCheck.rows.length > 0) {
+                return res.status(409).json({
+                    success: false,
+                    message: 'El email ya está en uso'
+                });
+            }
+
+            updates.push(`email = $${valueIndex++}`);
+            values.push(email.toLowerCase());
+        }
+
+        if (password) {
+            const password_hash = await bcrypt.hash(password, 10);
+            updates.push(`password_hash = $${valueIndex++}`);
+            values.push(password_hash);
+        }
+
+        if (student_id !== undefined) {
+            updates.push(`student_id = $${valueIndex++}`);
+            values.push(student_id || null);
+        }
+
+        updates.push(`updated_at = NOW()`);
+
+        // Construir y ejecutar query
+        values.push(parentId);
+        const updateQuery = `
+            UPDATE parents
+            SET ${updates.join(', ')}
+            WHERE id = $${valueIndex}
+            RETURNING id, nombre, email, student_id, updated_at
+        `;
+
+        const result = await client.query(updateQuery, values);
+        const parent = result.rows[0];
+
+        console.log(`✅ [PARENTS] Padre actualizado: ${parent.id}`);
+
+        res.json({
+            success: true,
+            message: 'Padre actualizado exitosamente',
+            data: parent
+        });
+
+    } catch (error) {
+        console.error('❌ [PARENTS] Error actualizando padre:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al actualizar padre',
+            error: error.message
+        });
+    } finally {
+        client.release();
+    }
+});
+
+/**
+ * DELETE /api/parents/:id
+ * Elimina un padre (admin only)
+ */
+router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
+    const client = await pool.connect();
+
+    try {
+        const parentId = parseInt(req.params.id);
+
+        console.log(`👨‍👩‍👧 [PARENTS] Eliminando padre ID: ${parentId}`);
+
+        // Verificar que el padre existe
+        const existsCheck = await client.query(
+            'SELECT id FROM parents WHERE id = $1',
+            [parentId]
+        );
+
+        if (existsCheck.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Padre no encontrado'
+            });
+        }
+
+        // Eliminar padre
+        await client.query('DELETE FROM parents WHERE id = $1', [parentId]);
+
+        console.log(`✅ [PARENTS] Padre eliminado: ${parentId}`);
+
+        res.json({
+            success: true,
+            message: 'Padre eliminado exitosamente'
+        });
+
+    } catch (error) {
+        console.error('❌ [PARENTS] Error eliminando padre:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al eliminar padre',
+            error: error.message
+        });
+    } finally {
+        client.release();
+    }
+});
 
 // ============================================
 // AUTENTICACIÓN DE PADRES

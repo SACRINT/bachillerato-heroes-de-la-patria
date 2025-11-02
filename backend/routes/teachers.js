@@ -38,12 +38,12 @@ router.get('/directory', async (req, res, next) => {
         `;
         
         const params = [];
-        
+
         if (especialidad) {
-            query += ' AND d.especialidad = ?';
+            query += ' AND d.especialidad = $1';
             params.push(especialidad);
         }
-        
+
         query += ' ORDER BY u.apellido_paterno, u.apellido_materno, u.nombre';
         
         const teachers = await executeQuery(query, params);
@@ -129,65 +129,63 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
         `;
         
         const params = [];
-        
+
         if (especialidad) {
-            query += ' AND d.especialidad = ?';
+            query += ' AND d.especialidad = $' + (params.length + 1);
             params.push(especialidad);
         }
-        
+
         if (tipo_contrato) {
-            query += ' AND d.tipo_contrato = ?';
+            query += ' AND d.tipo_contrato = $' + (params.length + 1);
             params.push(tipo_contrato);
         }
-        
+
         if (search) {
-            query += ` AND (
-                u.nombre LIKE ? OR 
-                u.apellido_paterno LIKE ? OR 
-                u.apellido_materno LIKE ? OR 
-                d.numero_empleado LIKE ?
-            )`;
             const searchTerm = `%${search}%`;
+            query += ` AND (
+                u.nombre LIKE $` + (params.length + 1) + ` OR
+                u.apellido_paterno LIKE $` + (params.length + 2) + ` OR
+                u.apellido_materno LIKE $` + (params.length + 3) + ` OR
+                d.numero_empleado LIKE $` + (params.length + 4) + `
+            )`;
             params.push(searchTerm, searchTerm, searchTerm, searchTerm);
         }
-        
+
         query += ' ORDER BY u.apellido_paterno, u.apellido_materno, u.nombre';
-        query += ' LIMIT ? OFFSET ?';
+        query += ' LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2);
         params.push(parseInt(limit), parseInt(offset));
         
         const teachers = await executeQuery(query, params);
         
         // Contar total para paginación
         let countQuery = `
-            SELECT COUNT(*) as total 
+            SELECT COUNT(*) as total
             FROM docentes d
             JOIN usuarios u ON d.usuario_id = u.id
             WHERE u.activo = TRUE
         `;
-        
+
         const countParams = [];
-        let paramIndex = 0;
-        
+
         if (especialidad) {
-            countQuery += ' AND d.especialidad = ?';
-            countParams.push(params[paramIndex++]);
+            countQuery += ' AND d.especialidad = $' + (countParams.length + 1);
+            countParams.push(especialidad);
         }
-        
+
         if (tipo_contrato) {
-            countQuery += ' AND d.tipo_contrato = ?';
-            countParams.push(params[paramIndex++]);
+            countQuery += ' AND d.tipo_contrato = $' + (countParams.length + 1);
+            countParams.push(tipo_contrato);
         }
-        
+
         if (search) {
+            const searchTerm = `%${search}%`;
             countQuery += ` AND (
-                u.nombre LIKE ? OR 
-                u.apellido_paterno LIKE ? OR 
-                u.apellido_materno LIKE ? OR 
-                d.numero_empleado LIKE ?
+                u.nombre LIKE $` + (countParams.length + 1) + ` OR
+                u.apellido_paterno LIKE $` + (countParams.length + 2) + ` OR
+                u.apellido_materno LIKE $` + (countParams.length + 3) + ` OR
+                d.numero_empleado LIKE $` + (countParams.length + 4) + `
             )`;
-            for (let i = 0; i < 4; i++) {
-                countParams.push(params[paramIndex++]);
-            }
+            countParams.push(searchTerm, searchTerm, searchTerm, searchTerm);
         }
         
         const countResult = await executeQuery(countQuery, countParams);
@@ -224,7 +222,7 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
         
         // Información básica del docente
         const teacherInfo = await executeQuery(`
-            SELECT 
+            SELECT
                 d.*,
                 u.nombre,
                 u.apellido_paterno,
@@ -234,21 +232,21 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
                 u.ultimo_acceso
             FROM docentes d
             JOIN usuarios u ON d.usuario_id = u.id
-            WHERE d.id = ? AND u.activo = TRUE
+            WHERE d.id = $1 AND u.activo = TRUE
         `, [id]);
-        
+
         if (teacherInfo.length === 0) {
             return res.status(404).json({
                 error: 'Docente no encontrado',
                 message: 'El docente no existe o no está activo'
             });
         }
-        
+
         const teacher = teacherInfo[0];
-        
+
         // Obtener materias que imparte
         const subjects = await executeQuery(`
-            SELECT 
+            SELECT
                 c.id as curso_id,
                 c.nombre as curso_nombre,
                 c.tipo,
@@ -261,25 +259,25 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
             FROM materias m
             JOIN cursos c ON m.curso_id = c.id
             LEFT JOIN inscripciones_materias im ON m.id = im.materia_id
-            WHERE m.docente_id = ? AND m.activa = TRUE
+            WHERE m.docente_id = $1 AND m.activa = TRUE
             GROUP BY m.id
             ORDER BY c.nombre, m.grupo
         `, [id]);
-        
+
         // Obtener estadísticas de calificaciones
         const gradeStats = await executeQuery(`
-            SELECT 
+            SELECT
                 COUNT(*) as total_calificaciones,
                 AVG(calificacion_final) as promedio_general,
                 COUNT(CASE WHEN calificacion_final >= 7.0 THEN 1 END) as aprobados,
                 COUNT(CASE WHEN calificacion_final < 7.0 THEN 1 END) as reprobados
             FROM calificaciones cal
             JOIN materias m ON cal.materia_id = m.id
-            WHERE m.docente_id = ? 
+            WHERE m.docente_id = $1
             AND cal.periodo = (
-                SELECT MAX(periodo) FROM calificaciones cal2 
-                JOIN materias m2 ON cal2.materia_id = m2.id 
-                WHERE m2.docente_id = ?
+                SELECT MAX(periodo) FROM calificaciones cal2
+                JOIN materias m2 ON cal2.materia_id = m2.id
+                WHERE m2.docente_id = $2
             )
         `, [id, id]);
         
@@ -343,62 +341,64 @@ router.post('/', authenticateToken, requireAdmin, [
         
         // Verificar que email no exista
         const existingUser = await executeQuery(
-            'SELECT id FROM usuarios WHERE email = ?',
+            'SELECT id FROM usuarios WHERE email = $1',
             [email]
         );
-        
+
         if (existingUser.length > 0) {
             return res.status(409).json({
                 error: 'Email ya registrado',
                 message: 'Ya existe un usuario con este email'
             });
         }
-        
+
         // Verificar que número de empleado no exista
         const existingTeacher = await executeQuery(
-            'SELECT id FROM docentes WHERE numero_empleado = ?',
+            'SELECT id FROM docentes WHERE numero_empleado = $1',
             [numero_empleado]
         );
-        
+
         if (existingTeacher.length > 0) {
             return res.status(409).json({
                 error: 'Número de empleado duplicado',
                 message: 'Ya existe un docente con este número de empleado'
             });
         }
-        
+
         // Crear usuario
         const bcrypt = require('bcryptjs');
         const saltRounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
         const passwordHash = await bcrypt.hash(password, saltRounds);
-        
+
         const userResult = await executeQuery(
-            `INSERT INTO usuarios (email, password_hash, nombre, apellido_paterno, apellido_materno, tipo_usuario) 
-             VALUES (?, ?, ?, ?, ?, 'docente')`,
+            `INSERT INTO usuarios (email, password_hash, nombre, apellido_paterno, apellido_materno, tipo_usuario)
+             VALUES ($1, $2, $3, $4, $5, 'docente')
+             RETURNING id`,
             [email, passwordHash, nombre, apellido_paterno, apellido_materno || null]
         );
-        
-        const userId = userResult.insertId;
-        
+
+        const userId = userResult[0].id;
+
         // Crear registro de docente
         const teacherResult = await executeQuery(
-            `INSERT INTO docentes (usuario_id, numero_empleado, especialidad, anos_experiencia, grado_academico, 
-                                  tipo_contrato, fecha_ingreso, telefono_oficina, horario_atencion) 
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO docentes (usuario_id, numero_empleado, especialidad, anos_experiencia, grado_academico,
+                                  tipo_contrato, fecha_ingreso, telefono_oficina, horario_atencion)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+             RETURNING id`,
             [
-                userId, 
-                numero_empleado, 
-                especialidad, 
-                anos_experiencia, 
-                grado_academico || null, 
-                tipo_contrato, 
+                userId,
+                numero_empleado,
+                especialidad,
+                anos_experiencia,
+                grado_academico || null,
+                tipo_contrato,
                 fecha_ingreso || new Date(),
                 telefono_oficina || null,
                 horario_atencion || null
             ]
         );
-        
-        const teacherId = teacherResult.insertId;
+
+        const teacherId = teacherResult[0].id;
         
         await logger.info('Docente creado exitosamente', {
             teacherId: teacherId,
@@ -452,32 +452,32 @@ router.put('/:id', authenticateToken, requireAdmin, [
         const updateValues = [];
         
         const allowedFields = [
-            'especialidad', 'anos_experiencia', 'grado_academico', 
+            'especialidad', 'anos_experiencia', 'grado_academico',
             'tipo_contrato', 'telefono_oficina', 'horario_atencion', 'visible_directorio'
         ];
-        
+
         allowedFields.forEach(field => {
             if (req.body[field] !== undefined) {
-                updateFields[field] = '?';
+                updateFields[field] = '$' + (updateValues.length + 1);
                 updateValues.push(req.body[field]);
             }
         });
-        
+
         if (Object.keys(updateFields).length === 0) {
             return res.status(400).json({
                 error: 'Sin cambios',
                 message: 'No se proporcionaron campos para actualizar'
             });
         }
-        
+
         updateValues.push(id);
-        
+
         const setClause = Object.keys(updateFields)
             .map(field => `${field} = ${updateFields[field]}`)
             .join(', ');
-        
+
         const result = await executeQuery(
-            `UPDATE docentes SET ${setClause} WHERE id = ?`,
+            `UPDATE docentes SET ${setClause} WHERE id = $` + updateValues.length,
             updateValues
         );
         
@@ -514,10 +514,9 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res, next) =>
         
         // Desactivar usuario asociado
         const result = await executeQuery(`
-            UPDATE usuarios u
-            JOIN docentes d ON u.id = d.usuario_id
-            SET u.activo = FALSE
-            WHERE d.id = ?
+            UPDATE usuarios
+            SET activo = FALSE
+            WHERE id = (SELECT usuario_id FROM docentes WHERE id = $1)
         `, [id]);
         
         if (result.affectedRows === 0) {
@@ -551,7 +550,7 @@ router.get('/:id/schedule', authenticateToken, requireTeacher, async (req, res, 
         const { id } = req.params;
         
         const schedule = await executeQuery(`
-            SELECT 
+            SELECT
                 m.id as materia_id,
                 c.nombre as curso,
                 m.grupo,
@@ -562,7 +561,7 @@ router.get('/:id/schedule', authenticateToken, requireTeacher, async (req, res, 
             FROM materias m
             JOIN cursos c ON m.curso_id = c.id
             LEFT JOIN inscripciones_materias im ON m.id = im.materia_id
-            WHERE m.docente_id = ? AND m.activa = TRUE
+            WHERE m.docente_id = $1 AND m.activa = TRUE
             GROUP BY m.id
             ORDER BY m.horario
         `, [id]);
