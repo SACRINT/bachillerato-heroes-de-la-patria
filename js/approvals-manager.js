@@ -18,12 +18,20 @@ async function loadPendingApprovals() {
 
     try {
         const response = await fetch('/api/approvals/pending');
+
+        // Verificar status HTTP
+        if (!response.ok) {
+            console.error('❌ Error HTTP:', response.status, response.statusText);
+            showApprovalsError(`Error del servidor: ${response.status}`);
+            return;
+        }
+
         const result = await response.json();
 
-        if (result.success) {
-            console.log('DEBUG: API result:', result); // Added for debugging
-            pendingApprovals = Array.isArray(result.approvals) ? result.approvals : [];
-            console.log('DEBUG: pendingApprovals after assignment:', pendingApprovals); // Added for debugging
+        if (result && result.success) {
+            console.log('DEBUG: API result:', result);
+            pendingApprovals = Array.isArray(result.data) ? result.data : (Array.isArray(result.approvals) ? result.approvals : []);
+            console.log('DEBUG: pendingApprovals after assignment:', pendingApprovals);
             filteredApprovals = [...pendingApprovals];
 
             console.log(`✅ Cargadas ${pendingApprovals.length} solicitudes pendientes`);
@@ -35,13 +43,14 @@ async function loadPendingApprovals() {
             renderApprovalsList();
 
         } else {
-            console.error('❌ Error al cargar solicitudes:', result.error);
-            showApprovalsError('Error al cargar solicitudes pendientes');
+            const errorMsg = result?.error || 'Error desconocido al cargar solicitudes';
+            console.error('❌ Error al cargar solicitudes:', errorMsg);
+            showApprovalsError(errorMsg);
         }
 
     } catch (error) {
         console.error('❌ Error de conexión:', error);
-        showApprovalsError('Error de conexión con el servidor');
+        showApprovalsError('Error de conexión con el servidor: ' + error.message);
     }
 }
 
