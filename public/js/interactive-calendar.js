@@ -20,24 +20,8 @@ class InteractiveCalendar {
 
     async loadEvents() {
         // Cargar eventos desde el archivo JSON de la PWA
-        try {
-            const response = await fetch('data/eventos_calendario_pwa.json');
-            const pwaEvents = await response.json();
-            
-            // Convertir eventos PWA al formato del calendario
-            const convertedEvents = pwaEvents.map(event => ({
-                id: event.id,
-                title: event.title,
-                date: event.start.split('T')[0], // Extraer solo la fecha
-                endDate: event.end ? event.end.split('T')[0] : event.start.split('T')[0],
-                type: this.mapCategoryToType(event.category),
-                description: `${event.title}${event.location ? ` - ${event.location}` : ''}${event.attendees ? ` | Participantes: ${event.attendees.join(', ')}` : ''}`,
-                color: this.mapColorFromPWA(event.bgColor),
-                important: event.state === 'Confirmado'
-            }));
-            
-            // Combinar con eventos estáticos existentes (si los hay)
-            const staticEvents = [
+        // Definir eventos estáticos fuera del try-catch para que sean accesibles en catch
+        const staticEvents = [
             // Eventos académicos
             {
                 id: 'inicio-clases',
@@ -249,10 +233,26 @@ class InteractiveCalendar {
                 important: true
             }
         ];
-            
+
+        try {
+            const response = await fetch('data/eventos_calendario_pwa.json');
+            const pwaEvents = await response.json();
+
+            // Convertir eventos PWA al formato del calendario
+            const convertedEvents = pwaEvents.map(event => ({
+                id: event.id,
+                title: event.title,
+                date: event.start.split('T')[0], // Extraer solo la fecha
+                endDate: event.end ? event.end.split('T')[0] : event.start.split('T')[0],
+                type: this.mapCategoryToType(event.category),
+                description: `${event.title}${event.location ? ` - ${event.location}` : ''}${event.attendees ? ` | Participantes: ${event.attendees.join(', ')}` : ''}`,
+                color: this.mapColorFromPWA(event.bgColor),
+                important: event.state === 'Confirmado'
+            }));
+
             // Combinar eventos PWA con eventos estáticos
             return [...convertedEvents, ...staticEvents];
-            
+
         } catch (error) {
             console.warn('Error cargando eventos PWA, usando eventos estáticos:', error);
             // Fallback a eventos estáticos si falla la carga
