@@ -1,6 +1,6 @@
 {
   "name": "bachillerato-heroes-patria-website",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sitio web oficial del Bachillerato General Estatal Héroes de la Patria",
   "type": "module",
   "main": "backend/server.js",
