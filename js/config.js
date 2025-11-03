@@ -110,10 +110,20 @@ window.AppConfig = {
             } else {
                  console.warn('⚠️ No se recibió un Client ID de Google desde el backend.');
             }
+
+            // Configurar TinyMCE API Key
+            if (config.keys.tinymce) {
+                window.TINYMCE_API_KEY = config.keys.tinymce;
+                console.log('✅ TinyMCE API Key configurada dinámicamente.');
+            } else {
+                console.warn('⚠️ No se recibió una API Key de TinyMCE desde el backend.');
+                window.TINYMCE_API_KEY = 'no-key-configured';
+            }
         }
     } catch (error) {
-        console.error('❌ Error fatal cargando configuración remota. Google OAuth permanecerá deshabilitado.', error);
+        console.error('❌ Error al cargar configuración remota:', error);
         window.AppConfig.google.enabled = false;
+        window.TINYMCE_API_KEY = 'no-key-configured';
     }
 })();
 // --- FIN DE CARGA DINÁMICA ---
