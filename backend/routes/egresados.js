@@ -85,59 +85,49 @@ router.post('/create', async (req, res) => {
             });
         }
 
-        // Insertar en la base de datos
+        // 📋 FLUJO MEJORADO: Insertar en tabla de pendientes de aprobación (no directamente en egresados)
+        // Esto permite que el admin revise y apruebe la solicitud antes de que aparezca en la BD final
+
+        // Preparar datos en formato JSON para almacenamiento flexible
+        const datosJSON = {
+            nombre_completo,
+            email,
+            telefono,
+            fecha_nacimiento,
+            anio_egreso,
+            carrera_tecnica,
+            generacion,
+            experiencia_laboral,
+            habilidades,
+            idiomas,
+            cv_url,
+            disponibilidad,
+            pretension_salarial,
+            ciudad,
+            estado,
+            linkedin_url,
+            portafolio_url,
+            referencias
+        };
+
+        // Insertar en pendientes_aprobacion
         const insertQuery = `
-            INSERT INTO egresados (
-                egresado_id,
-                nombre_completo,
-                email,
-                telefono,
-                fecha_nacimiento,
-                anio_egreso,
-                carrera_tecnica,
-                generacion,
-                experiencia_laboral,
-                habilidades,
-                idiomas,
-                cv_url,
-                disponibilidad,
-                pretension_salarial,
-                ciudad,
+            INSERT INTO pendientes_aprobacion (
+                tipo_solicitud,
+                email_usuario,
+                datos_json,
                 estado,
-                linkedin_url,
-                portafolio_url,
-                referencias,
-                estado_perfil,
-                confirmado,
-                token_confirmacion
-            ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-                $11, $12, $13, $14, $15, $16, $17, $18, $19,
-                'pendiente', false, $20
-            ) RETURNING id, egresado_id
+                fecha_solicitud
+            )
+            VALUES ($1, $2, $3, $4, NOW())
+            RETURNING id, uuid, fecha_solicitud
         `;
 
         const result = await client.query(insertQuery, [
-            egresadoId,
-            nombre_completo,
-            email,
-            telefono || null,
-            fecha_nacimiento || null,
-            anio_egreso,
-            carrera_tecnica,
-            generacion || null,
-            experiencia_laboral || null,
-            habilidades ? JSON.stringify(habilidades) : null,
-            idiomas ? JSON.stringify(idiomas) : null,
-            cv_url || null,
-            disponibilidad || 'inmediata',
-            pretension_salarial || null,
-            ciudad || null,
-            estado || null,
-            linkedin_url || null,
-            portafolio_url || null,
-            referencias ? JSON.stringify(referencias) : null,
-            confirmationToken
+            'egresado',                     // tipo_solicitud
+            email,                          // email_usuario
+            JSON.stringify(datosJSON),      // datos_json
+            'pendiente'                     // estado
         ]);
 
         console.log('✅ Perfil creado, enviando email de confirmación...');
@@ -223,12 +213,15 @@ router.post('/create', async (req, res) => {
 
         res.json({
             success: true,
-            message: 'Perfil profesional creado. Por favor revisa tu correo para confirmar.',
+            message: '✅ Tu solicitud ha sido recibida y está pendiente de aprobación. Nuestro equipo administrativo la revisará en breve y te notificaremos por email cuando sea aprobada.',
             data: {
-                egresado_id: egresadoId,
+                solicitud_id: result.rows[0].id,
+                uuid: result.rows[0].uuid,
                 nombre: nombre_completo,
                 email: email,
-                confirmacion_requerida: true
+                estado: 'pendiente_aprobacion',
+                fecha_solicitud: result.rows[0].fecha_solicitud,
+                nota: 'Tu perfil está pendiente de aprobación por el administrador. Una vez aprobado, aparecerá en el directorio de egresados.'
             }
         });
 

@@ -1186,6 +1186,7 @@ const digitalLibraryRoutes = require('../backend/routes/digital-library');
 const supportTicketsRoutes = require('../backend/routes/support-tickets');
 const financesRoutes = require('../backend/routes/finances');
 const citasRoutes = require('../backend/routes/citas');
+const pendientesAprobacionRoutes = require('../backend/routes/pendientes-aprobacion');
 
 // ✅ 28 RUTAS FALTANTES AGREGADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
@@ -1257,6 +1258,7 @@ app.use('/api/teachers-portal', teachersPortalRoutes);
 app.use('/api/messaging', messagingRoutes);
 app.use('/api/digital-library', digitalLibraryRoutes);
 app.use('/api/support-tickets', supportTicketsRoutes);
+app.use('/api/pendientes-aprobacion', pendientesAprobacionRoutes);
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas

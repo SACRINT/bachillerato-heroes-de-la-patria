@@ -34,83 +34,62 @@ router.post('/cv', [
     const user_agent = req.get('User-Agent');
 
     try {
-        // Verificar si el email ya existe
-        const checkQuery = 'SELECT id FROM bolsa_trabajo WHERE email = $1';
-        const existingResult = await pool.query(checkQuery, [email]);
+        // 📋 FLUJO MEJORADO: Insertar en tabla de pendientes de aprobación (no directamente en bolsa_trabajo)
+        // Esto permite que el admin revise y apruebe la solicitud antes de que aparezca en la BD final
 
-        if (existingResult.rows.length > 0) {
-            // Actualizar registro existente
-            const updateQuery = `
-                UPDATE bolsa_trabajo
-                SET
-                    nombre_completo = $1,
-                    telefono = $2,
-                    generacion = $3,
-                    experiencia = $4,
-                    habilidades = $5,
-                    fecha_actualizacion = NOW()
-                WHERE email = $6
-                RETURNING *;
-            `;
-
-            const result = await pool.query(updateQuery, [
-                name,
-                phone,
-                graduationYear,
-                message,
-                skills || null,
-                email
-            ]);
-
-            console.log('✅ Perfil CV actualizado:', result.rows[0].id);
-
-            return res.json({
-                success: true,
-                message: 'Tu perfil ha sido actualizado exitosamente',
-                data: {
-                    id: result.rows[0].id,
-                    updated: true
-                }
-            });
-        }
-
-        // Insertar nuevo perfil
-        const insertQuery = `
-            INSERT INTO bolsa_trabajo (
-                nombre_completo, email, telefono, generacion,
-                experiencia, habilidades
-            )
-            VALUES ($1, $2, $3, $4, $5, $6)
-            RETURNING *;
-        `;
-
-        const result = await pool.query(insertQuery, [
+        // Preparar datos en formato JSON para almacenamiento flexible
+        const datosJSON = {
             name,
             email,
             phone,
             graduationYear,
+            subject,
             message,
-            skills || null
+            skills
+        };
+
+        // Insertar en pendientes_aprobacion
+        const insertPendingQuery = `
+            INSERT INTO pendientes_aprobacion (
+                tipo_solicitud,
+                email_usuario,
+                datos_json,
+                estado,
+                fecha_solicitud
+            )
+            VALUES ($1, $2, $3, $4, NOW())
+            RETURNING id, uuid, fecha_solicitud;
+        `;
+
+        const result = await pool.query(insertPendingQuery, [
+            'bolsa_trabajo',           // tipo_solicitud
+            email,                     // email_usuario
+            JSON.stringify(datosJSON), // datos_json
+            'pendiente'                // estado
         ]);
 
-        console.log('✅ Nuevo perfil CV creado:', result.rows[0].id);
+        console.log('✅ Solicitud de Bolsa de Trabajo enviada a aprobación:', result.rows[0].id);
 
         res.status(201).json({
             success: true,
-            message: 'Tu perfil profesional ha sido registrado exitosamente. Te contactaremos pronto.',
+            message: '✅ Tu solicitud ha sido recibida. Nuestro equipo administrativo la revisará en breve. Te notificaremos por email cuando sea aprobada.',
             data: {
-                id: result.rows[0].id,
-                email: result.rows[0].email,
-                nombre: result.rows[0].nombre_completo,
-                fecha: result.rows[0].fecha_registro
+                solicitud_id: result.rows[0].id,
+                uuid: result.rows[0].uuid,
+                email: email,
+                nombre: name,
+                estado: 'pendiente_aprobacion',
+                fecha_solicitud: result.rows[0].fecha_solicitud,
+                nota: 'Tu perfil está pendiente de aprobación por el administrador. Una vez aprobado, aparecerá en la bolsa de trabajo.'
             }
         });
 
     } catch (error) {
-        console.error('❌ Error al guardar CV:', error);
+        console.error('❌ Error al guardar solicitud de CV:', error);
         res.status(500).json({
             success: false,
-            error: 'Error al procesar tu perfil. Por favor intenta nuevamente.'
+            error: 'Error al procesar tu perfil. Por favor intenta nuevamente.',
+            detalle: error.message
         });
     }
 });

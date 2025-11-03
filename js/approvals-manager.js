@@ -11,13 +11,13 @@ let pendingApprovals = [];
 let filteredApprovals = [];
 
 /**
- * Cargar solicitudes pendientes
+ * Cargar solicitudes pendientes desde /api/pendientes-aprobacion
  */
 async function loadPendingApprovals() {
     console.log('📋 Cargando solicitudes pendientes...');
 
     try {
-        const response = await fetch('/api/approvals/pending');
+        const response = await fetch('/api/pendientes-aprobacion?estado=pendiente&limit=100');
 
         // Verificar status HTTP
         if (!response.ok) {
@@ -30,7 +30,17 @@ async function loadPendingApprovals() {
 
         if (result && result.success) {
             console.log('DEBUG: API result:', result);
-            pendingApprovals = Array.isArray(result.data) ? result.data : (Array.isArray(result.approvals) ? result.approvals : []);
+
+            // Transformar datos de la nueva API al formato esperado
+            pendingApprovals = Array.isArray(result.data) ? result.data.map(item => ({
+                id: item.id,
+                form_type: item.tipo_solicitud,
+                data: item.datos_json,
+                verification_email: item.email_usuario,
+                email_verified: true, // Nueva tabla siempre consideramos como verificado
+                created_at: item.fecha_solicitud
+            })) : [];
+
             console.log('DEBUG: pendingApprovals after assignment:', pendingApprovals);
             filteredApprovals = [...pendingApprovals];
 
@@ -272,7 +282,7 @@ function filterApprovals() {
 }
 
 /**
- * Aprobar solicitud
+ * Aprobar solicitud - Usa el nuevo endpoint /api/pendientes-aprobacion/aprobar/:id
  */
 async function approveSubmission(id) {
     if (!confirm('¿Estás seguro de que deseas aprobar esta solicitud?')) {
@@ -285,14 +295,14 @@ async function approveSubmission(id) {
     console.log(`✅ Aprobando solicitud ${id}...`);
 
     try {
-        const response = await fetch(`/api/approvals/approve/${id}`, {
+        const response = await fetch(`/api/pendientes-aprobacion/aprobar/${id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                reviewed_by: 'Administrador',
-                review_notes: 'Aprobado desde el panel administrativo'
+                admin_id: 1, // ID del admin actual (obtener del contexto de sesión)
+                admin_notas: 'Aprobado desde el panel administrativo'
             })
         });
 
@@ -302,7 +312,7 @@ async function approveSubmission(id) {
             console.log('✅ Solicitud aprobada exitosamente');
 
             // Mostrar notificación
-            showNotification('Solicitud aprobada exitosamente. Se envió un email al usuario.', 'success');
+            showNotification('✅ Solicitud aprobada exitosamente. Se movió a la tabla definitiva.', 'success');
 
             // Eliminar de la lista
             pendingApprovals = pendingApprovals.filter(a => a.id !== id);
@@ -324,10 +334,10 @@ async function approveSubmission(id) {
 }
 
 /**
- * Rechazar solicitud
+ * Rechazar solicitud - Usa el nuevo endpoint /api/pendientes-aprobacion/rechazar/:id
  */
 async function rejectSubmission(id) {
-    const reason = prompt('¿Por qué deseas rechazar esta solicitud?\n\nEsta razón se enviará al usuario por email:');
+    const reason = prompt('¿Por qué deseas rechazar esta solicitud?\n\nEsta razón se guardará en la base de datos:');
 
     if (!reason) {
         return; // Usuario canceló
@@ -336,15 +346,14 @@ async function rejectSubmission(id) {
     console.log(`❌ Rechazando solicitud ${id}...`);
 
     try {
-        const response = await fetch(`/api/approvals/reject/${id}`, {
+        const response = await fetch(`/api/pendientes-aprobacion/rechazar/${id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                reviewed_by: 'Administrador',
-                review_notes: '',
-                rejection_reason: reason
+                admin_id: 1, // ID del admin actual (obtener del contexto de sesión)
+                admin_notas: reason
             })
         });
 
@@ -354,7 +363,7 @@ async function rejectSubmission(id) {
             console.log('✅ Solicitud rechazada');
 
             // Mostrar notificación
-            showNotification('Solicitud rechazada. Se envió un email al usuario.', 'warning');
+            showNotification('❌ Solicitud rechazada y marcada como rechazada en la base de datos.', 'warning');
 
             // Eliminar de la lista
             pendingApprovals = pendingApprovals.filter(a => a.id !== id);
