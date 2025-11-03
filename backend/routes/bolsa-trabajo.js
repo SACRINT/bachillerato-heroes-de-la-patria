@@ -18,7 +18,7 @@ router.post('/cv', [
     body('phone').trim().notEmpty().withMessage('Teléfono es requerido'),
     body('graduationYear').notEmpty().withMessage('Año de egreso es requerido'),
     body('subject').trim().notEmpty().withMessage('Área de interés es requerida'),
-    body('message').trim().isLength({ min: 50 }).withMessage('El resumen profesional debe tener al menos 50 caracteres')
+    body('message').trim().isLength({ min: 20 }).withMessage('El resumen profesional debe tener al menos 20 caracteres')
 ], async (req, res) => {
     // Validar datos
     const errors = validationResult(req);
