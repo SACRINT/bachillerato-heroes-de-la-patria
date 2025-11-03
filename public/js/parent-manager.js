@@ -1,0 +1,354 @@
+/**
+ * 👨‍👩‍👧‍👦 GESTOR DE PADRES DE FAMILIA
+ * Sistema para la gestión de credenciales de padres y su asociación con estudiantes.
+ */
+
+class ParentManager {
+    constructor() {
+        this.parents = [];
+        this.filteredParents = [];
+        this.students = []; // To associate parents with students
+        this.apiBaseUrl = '/api';
+        console.log('✅ [ParentManager] Módulo inicializado');
+    }
+
+    async init() {
+        console.log('🚀 [ParentManager] Iniciando módulo de padres...');
+        await this.loadParents();
+        await this.loadStudentsForAssociation();
+        this.setupEventListeners();
+        this.renderTable();
+    }
+
+    async loadParents() {
+        const loadingEl = document.getElementById('parentsTable');
+        if (loadingEl) loadingEl.innerHTML = `<tr><td colspan="4" class="text-center py-4">
+            <div class="spinner-border text-info" role="status"><span class="visually-hidden">Cargando...</span></div>
+            <p class="mt-2 text-muted">Cargando información de padres...</p></td></tr>`;
+
+        try {
+            // Usar apiClient para autenticación automática
+            if (!window.apiClient) {
+                throw new Error('API Client no disponible');
+            }
+
+            const result = await window.apiClient.request('/api/parents');
+
+            if (result.success) {
+                this.parents = result.data || [];
+                this.filteredParents = [...this.parents];
+                console.log(`✅ [ParentManager] ${this.parents.length} padres cargados`);
+            } else {
+                throw new Error(result.error || 'Error desconocido');
+            }
+        } catch (error) {
+            console.error('❌ [ParentManager] Error al cargar padres:', error);
+            this.showAlert(`Error al cargar padres: ${error.message}`, 'danger');
+            this.parents = [];
+            this.filteredParents = [];
+        }
+        this.renderTable();
+        this.updateStats();
+    }
+
+    async loadStudentsForAssociation() {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/admin/students`); // Endpoint correcto para estudiantes
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const result = await response.json();
+            if (result.success) {
+                // 🔧 FIX: El endpoint /admin/students devuelve en result.data (no result.students)
+                this.students = result.data || result.students || [];
+                console.log(`✅ [ParentManager] ${this.students.length} estudiantes cargados para asociación`);
+                this.populateStudentFilter();
+            } else {
+                throw new Error(result.error || 'Error desconocido al cargar estudiantes');
+            }
+        } catch (error) {
+            console.error('❌ [ParentManager] Error al cargar estudiantes para asociación:', error);
+            this.showAlert(`Error al cargar estudiantes para asociación: ${error.message}`, 'danger');
+            this.students = [];
+        }
+    }
+
+    populateStudentFilter() {
+        const select = document.getElementById('parentFilterStudent');
+        if (!select) return;
+        select.innerHTML = '<option value="">Todos los estudiantes</option>';
+        this.students.forEach(student => {
+            const option = document.createElement('option');
+            option.value = student.id;
+            option.textContent = `${student.matricula} - ${student.nombre}`;
+            select.appendChild(option);
+        });
+    }
+
+    renderTable() {
+        const tbody = document.getElementById('parentsTable');
+        if (!tbody) return;
+
+        tbody.innerHTML = '';
+        if (this.filteredParents.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">
+                <i class="fas fa-user-friends fa-3x text-muted mb-3"></i><p>No hay padres registrados</p></td></tr>`;
+            return;
+        }
+
+        this.filteredParents.forEach(parent => {
+            tbody.appendChild(this.createTableRow(parent));
+        });
+    }
+
+    createTableRow(parent) {
+        const tr = document.createElement('tr');
+        const associatedStudent = this.students.find(s => parent.student_id && s.id === parent.student_id);
+        const studentInfo = associatedStudent ? `${associatedStudent.nombre} (${associatedStudent.matricula})` : 'N/A';
+
+        tr.innerHTML = `
+            <td><strong>${this.escapeHtml(parent.nombre)}</strong></td>
+            <td>${this.escapeHtml(parent.email)}</td>
+            <td>${this.escapeHtml(studentInfo)}</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-primary" onclick="parentManager.showEditParentModal(${parent.id})">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="parentManager.confirmDeleteParent(${parent.id})">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                </div>
+            </td>
+        `;
+        return tr;
+    }
+
+    setupEventListeners() {
+        const searchInput = document.getElementById('parentSearchInput');
+        if (searchInput) searchInput.addEventListener('input', () => this.applyFilters());
+
+        const studentFilter = document.getElementById('parentFilterStudent');
+        if (studentFilter) studentFilter.addEventListener('change', () => this.applyFilters());
+    }
+
+    applyFilters() {
+        const search = document.getElementById('parentSearchInput')?.value.toLowerCase() || '';
+        const studentIdFilter = document.getElementById('parentFilterStudent')?.value || '';
+
+        this.filteredParents = this.parents.filter(p => {
+            const matchSearch = !search || p.nombre.toLowerCase().includes(search) || p.email.toLowerCase().includes(search);
+            const matchStudent = !studentIdFilter || (p.student_id && p.student_id.toString() === studentIdFilter);
+            return matchSearch && matchStudent;
+        });
+        this.renderTable();
+    }
+
+    updateStats() {
+        const totalParentsCount = document.getElementById('totalParentsCount');
+        if (totalParentsCount) totalParentsCount.textContent = this.parents.length;
+    }
+
+    async showCreateParentModal(parent = null) {
+        const isEdit = parent !== null;
+        const modalTitle = isEdit ? 'Editar Padre de Familia' : 'Nuevo Padre de Familia';
+        const submitButtonText = isEdit ? 'Guardar Cambios' : 'Crear Padre';
+
+        const studentOptions = this.students.map(student => 
+            `<option value="${student.id}" ${isEdit && parent.student_id === student.id ? 'selected' : ''}>
+                ${student.matricula} - ${student.nombre}
+            </option>`
+        ).join('');
+
+        const modalHtml = `
+            <div class="modal fade" id="parentFormModal" tabindex="-1" aria-labelledby="parentFormModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title" id="parentFormModalLabel"><i class="fas fa-user-plus me-2"></i>${modalTitle}</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="parentForm">
+                                <input type="hidden" id="parentId" value="${isEdit ? parent.id : ''}">
+                                <div class="mb-3">
+                                    <label for="parentName" class="form-label">Nombre Completo *</label>
+                                    <input type="text" class="form-control" id="parentName" value="${isEdit ? this.escapeHtml(parent.nombre) : ''}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="parentEmail" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="parentEmail" value="${isEdit ? this.escapeHtml(parent.email) : ''}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="parentPassword" class="form-label">Contraseña ${isEdit ? '(dejar vacío para no cambiar)' : '*'}</label>
+                                    <input type="password" class="form-control" id="parentPassword" ${isEdit ? '' : 'required'}>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="parentStudentId" class="form-label">Estudiante Asociado (Matrícula)</label>
+                                    <select class="form-select" id="parentStudentId">
+                                        <option value="">Seleccionar estudiante...</option>
+                                        ${studentOptions}
+                                    </select>
+                                    <small class="form-text text-muted">Asocia este padre con un estudiante existente.</small>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-info" id="saveParentBtn">${submitButtonText}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const existingModal = document.getElementById('parentFormModal');
+        if (existingModal) existingModal.remove();
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        const modal = new bootstrap.Modal(document.getElementById('parentFormModal'));
+        modal.show();
+
+        document.getElementById('saveParentBtn').onclick = () => {
+            if (isEdit) {
+                this.updateParent(parent.id);
+            } else {
+                this.createParent();
+            }
+        };
+    }
+
+    async createParent() {
+        const nombre = document.getElementById('parentName').value;
+        const email = document.getElementById('parentEmail').value;
+        const password = document.getElementById('parentPassword').value;
+        const student_id = document.getElementById('parentStudentId').value;
+
+        if (!nombre || !email || !password) {
+            this.showAlert('Por favor, completa todos los campos obligatorios.', 'warning');
+            return;
+        }
+
+        try {
+            if (!window.apiClient) {
+                throw new Error('API Client no disponible');
+            }
+
+            const result = await window.apiClient.request('/api/parents', {
+                method: 'POST',
+                body: { nombre, email, password, student_id: student_id || null }  // apiClient will stringify
+            });
+
+            if (result.success) {
+                this.showAlert('Padre creado exitosamente.', 'success');
+                bootstrap.Modal.getInstance(document.getElementById('parentFormModal')).hide();
+                this.loadParents();
+            } else {
+                throw new Error(result.message || 'Error al crear padre.');
+            }
+        } catch (error) {
+            console.error('Error creating parent:', error);
+            this.showAlert(`Error al crear padre: ${error.message}`, 'danger');
+        }
+    }
+
+    async showEditParentModal(parentId) {
+        const parent = this.parents.find(p => p.id === parentId);
+        if (!parent) {
+            this.showAlert('Padre no encontrado para editar.', 'danger');
+            return;
+        }
+        this.showCreateParentModal(parent); // Reuse create modal for editing
+    }
+
+    async updateParent(parentId) {
+        const nombre = document.getElementById('parentName').value;
+        const email = document.getElementById('parentEmail').value;
+        const password = document.getElementById('parentPassword').value;
+        const student_id = document.getElementById('parentStudentId').value;
+
+        if (!nombre || !email) {
+            this.showAlert('Por favor, completa los campos obligatorios.', 'warning');
+            return;
+        }
+
+        const updateData = { nombre, email };
+        if (password) updateData.password = password;
+        updateData.student_id = student_id || null;
+
+        try {
+            if (!window.apiClient) {
+                throw new Error('API Client no disponible');
+            }
+
+            const result = await window.apiClient.request(`/api/parents/${parentId}`, {
+                method: 'PUT',
+                body: updateData  // apiClient will stringify
+            });
+
+            if (result.success) {
+                this.showAlert('Padre actualizado exitosamente.', 'success');
+                bootstrap.Modal.getInstance(document.getElementById('parentFormModal')).hide();
+                this.loadParents();
+            } else {
+                throw new Error(result.message || 'Error al actualizar padre.');
+            }
+        } catch (error) {
+            console.error('Error updating parent:', error);
+            this.showAlert(`Error al actualizar padre: ${error.message}`, 'danger');
+        }
+    }
+
+    async confirmDeleteParent(parentId) {
+        if (!confirm('¿Estás seguro de que deseas eliminar este padre de familia? Esta acción es irreversible.')) return;
+
+        try {
+            if (!window.apiClient) {
+                throw new Error('API Client no disponible');
+            }
+
+            const result = await window.apiClient.request(`/api/parents/${parentId}`, {
+                method: 'DELETE'
+            });
+
+            if (result.success) {
+                this.showAlert('Padre eliminado exitosamente.', 'success');
+                this.loadParents();
+            } else {
+                throw new Error(result.message || 'Error al eliminar padre.');
+            }
+        } catch (error) {
+            console.error('Error deleting parent:', error);
+            this.showAlert(`Error al eliminar padre: ${error.message}`, 'danger');
+        }
+    }
+
+    showAlert(message, type) {
+        // Re-using the showAlert from admin-dashboard.html or a global utility
+        if (window.adminDashboard && typeof window.adminDashboard.showAlert === 'function') {
+            window.adminDashboard.showAlert(message, type);
+        } else {
+            // 🔴 CORRECCIÓN: Nunca usar alert() en producción - bloquea toda la aplicación
+            console.error(`[ParentManager] ${type?.toUpperCase()}: ${message}`);
+        }
+    }
+
+    escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+}
+
+// Global instance
+window.parentManager = new ParentManager();
+
+// Global functions for onclick handlers
+window.showCreateParentModal = () => window.parentManager.showCreateParentModal();
+window.reloadParents = () => window.parentManager.loadParents();
+window.clearParentFilters = () => {
+    document.getElementById('parentSearchInput').value = '';
+    document.getElementById('parentFilterStudent').value = '';
+    window.parentManager.applyFilters();
+};
