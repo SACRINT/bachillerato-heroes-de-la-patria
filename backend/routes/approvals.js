@@ -22,12 +22,9 @@ router.get('/pending', async (req, res) => {
                 form_type,
                 submission_data,
                 status,
-                email_verified,
-                verification_email,
-                created_at,
-                verified_at
-            FROM pending_submissions
-            WHERE status = 'pending' AND email_verified = true
+                created_at
+            FROM pending_approvals
+            WHERE status = 'pending'
         `;
 
         const params = [];
@@ -45,8 +42,8 @@ router.get('/pending', async (req, res) => {
         // Contar total
         let countQuery = `
             SELECT COUNT(*)
-            FROM pending_submissions
-            WHERE status = 'pending' AND email_verified = true
+            FROM pending_approvals
+            WHERE status = 'pending'
         `;
         const countParams = [];
 
@@ -63,10 +60,7 @@ router.get('/pending', async (req, res) => {
             form_type: row.form_type,
             data: row.submission_data,
             status: row.status,
-            email_verified: row.email_verified,
-            verification_email: row.verification_email,
-            created_at: row.created_at,
-            verified_at: row.verified_at
+            created_at: row.created_at
         }));
 
         res.json({
@@ -100,7 +94,7 @@ router.get('/stats', async (req, res) => {
                 COUNT(*) FILTER (WHERE email_verified = true) as emails_verificados,
                 COUNT(*) FILTER (WHERE DATE(created_at) = CURRENT_DATE) as hoy,
                 COUNT(*) FILTER (WHERE DATE(created_at) >= CURRENT_DATE - INTERVAL '7 days') as esta_semana
-            FROM pending_submissions;
+            FROM pending_approvals;
         `;
 
         const result = await pool.query(query);
@@ -108,7 +102,7 @@ router.get('/stats', async (req, res) => {
         // Estadísticas por tipo de formulario
         const typeQuery = `
             SELECT form_type, status, COUNT(*) as cantidad
-            FROM pending_submissions
+            FROM pending_approvals
             GROUP BY form_type, status
             ORDER BY cantidad DESC;
         `;
@@ -143,7 +137,7 @@ router.post('/approve/:id', async (req, res) => {
 
     try {
         // Obtener la solicitud pendiente
-        const getQuery = 'SELECT * FROM pending_submissions WHERE id = $1 AND status = \'pending\'';
+        const getQuery = 'SELECT * FROM pending_approvals WHERE id = $1 AND status = \'pending\'';
         const submission = await pool.query(getQuery, [id]);
 
         if (submission.rows.length === 0) {
@@ -233,9 +227,9 @@ router.post('/approve/:id', async (req, res) => {
             }
         }
 
-        // Actualizar estado en pending_submissions
+        // Actualizar estado en pending_approvals
         const updateQuery = `
-            UPDATE pending_submissions
+            UPDATE pending_approvals
             SET
                 status = 'approved',
                 reviewed_by = $1,
@@ -327,7 +321,7 @@ router.post('/reject/:id', async (req, res) => {
 
     try {
         // Obtener la solicitud pendiente
-        const getQuery = 'SELECT * FROM pending_submissions WHERE id = $1 AND status = \'pending\'';
+        const getQuery = 'SELECT * FROM pending_approvals WHERE id = $1 AND status = \'pending\'';
         const submission = await pool.query(getQuery, [id]);
 
         if (submission.rows.length === 0) {
@@ -339,9 +333,9 @@ router.post('/reject/:id', async (req, res) => {
 
         const record = submission.rows[0];
 
-        // Actualizar estado en pending_submissions
+        // Actualizar estado en pending_approvals
         const updateQuery = `
-            UPDATE pending_submissions
+            UPDATE pending_approvals
             SET
                 status = 'rejected',
                 reviewed_by = $1,
@@ -438,7 +432,7 @@ router.get('/history', async (req, res) => {
     const { status, form_type, limit = 50, offset = 0 } = req.query;
 
     try {
-        let query = 'SELECT * FROM pending_submissions WHERE status != \'pending\'';
+        let query = 'SELECT * FROM pending_approvals WHERE status != \'pending\'';
         const params = [];
         let paramCount = 0;
 
@@ -460,7 +454,7 @@ router.get('/history', async (req, res) => {
         const result = await pool.query(query, params);
 
         // Contar total
-        let countQuery = 'SELECT COUNT(*) FROM pending_submissions WHERE status != \'pending\'';
+        let countQuery = 'SELECT COUNT(*) FROM pending_approvals WHERE status != \'pending\'';
         const countParams = [];
         let countParamCount = 0;
 
