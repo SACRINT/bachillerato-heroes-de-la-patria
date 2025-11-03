@@ -663,26 +663,38 @@ class AdminDashboard {
 
         tbody.innerHTML = '';
 
+        if (!this.dashboardData.students || this.dashboardData.students.length === 0) {
+            console.warn('⚠️ No hay estudiantes para mostrar');
+            return;
+        }
+
         this.dashboardData.students.forEach(student => {
             const row = document.createElement('tr');
-            
-            const statusBadge = this.getStudentStatusBadge(student.status);
-            const riskBadge = this.getRiskLevelBadge(student.riskLevel);
-            
+
+            // Mapear campos del API: el API devuelve nombre, semestre, matricula
+            const studentName = student.nombre || student.name || 'Sin nombre';
+            const studentSemester = student.semestre || student.semester || 'N/A';
+            const studentMatricula = student.matricula || student.id || 'N/A';
+            const studentAverage = student.promedio || student.average || 0;
+            const studentStatus = student.estado || student.status || 'Activo';
+            const studentRiskLevel = studentAverage < 6.0 ? 'Alto Riesgo' : 'Normal';
+
+            const statusBadge = this.getStudentStatusBadge(studentStatus);
+            const riskBadge = this.getRiskLevelBadge(studentRiskLevel);
+
             row.innerHTML = `
-                <td><strong>${student.id}</strong></td>
-                <td>${student.name}</td>
+                <td><strong>${studentMatricula}</strong></td>
+                <td>${studentName}</td>
                 <td class="text-center">
-                    <span class="badge bg-info">${student.semester}</span>
+                    <span class="badge bg-info">${studentSemester}°</span>
                 </td>
                 <td class="text-center">
-                    <span class="badge ${this.getGradeColorClass(student.average)}">
-                        ${student.average}
+                    <span class="badge ${this.getGradeColorClass(studentAverage)}">
+                        ${studentAverage > 0 ? studentAverage.toFixed(2) : 'S/P'}
                     </span>
                 </td>
                 <td class="text-center">
-                    ${statusBadge}
-                    ${riskBadge}
+                    <span class="badge ${studentStatus === 'Activo' ? 'bg-success' : 'bg-danger'}">${studentStatus}</span>
                 </td>
                 <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group">
@@ -698,7 +710,7 @@ class AdminDashboard {
                     </div>
                 </td>
             `;
-            
+
             tbody.appendChild(row);
         });
     }
