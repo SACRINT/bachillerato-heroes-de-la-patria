@@ -1085,7 +1085,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// --- API Routes ---
+// --- API Routes --- [v2.1]
 app.get('/api/health', handleHealth);
 app.get('/api/students', handleStudents);
 app.get('/api/teachers', handleTeachers);
