@@ -1335,6 +1335,35 @@ app.use('/api/teachers-direct', teachersRoutes);  // teachers (para evitar confl
 // - subscriptions-service (no reparado)
 // - uploads (no reparado)
 
+// --- CONFIG ENDPOINTS ---
+/**
+ * GET /api/config/public-keys
+ * Obtener configuraciones públicas (Google OAuth, etc.)
+ */
+app.get('/api/config/public-keys', (req, res) => {
+    try {
+        // Retornar configuraciones públicas desde variables de entorno
+        const publicConfig = {
+            success: true,
+            keys: {
+                // Google OAuth Client ID desde variable de entorno
+                google_oauth_client_id: process.env.GOOGLE_OAUTH_CLIENT_ID || '',
+                // Otros servicios públicos pueden ser agregados aquí
+            },
+            timestamp: new Date().toISOString()
+        };
+
+        res.json(publicConfig);
+    } catch (error) {
+        console.error('Error en /api/config/public-keys:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener configuración pública',
+            message: error.message
+        });
+    }
+});
+
 // Not implemented routes
 const notImplementedRoutes = [
 ];
