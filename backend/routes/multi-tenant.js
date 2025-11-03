@@ -25,14 +25,30 @@ const CONFIG_DIR = path.join(__dirname, '../../config');
 const TEMPLATES_DIR = path.join(__dirname, '../../templates');
 const GENERATED_DIR = path.join(__dirname, '../../generated');
 
-// Asegurar que los directorios existen
+/**
+ * Detectar si estamos en entorno serverless
+ */
+const isServerlessEnvironment = () => {
+    return process.env.VERCEL === '1' ||
+           process.env.AWS_LAMBDA_FUNCTION_NAME ||
+           process.env.NETLIFY === 'true' ||
+           process.env.NODE_ENV === 'production' && !process.env.HAS_PERSISTENT_FILESYSTEM;
+};
+
+// Asegurar que los directorios existen (solo en entornos con filesystem persistente)
 const ensureDirectories = async () => {
+    if (isServerlessEnvironment()) {
+        console.log('ℹ️ Entorno serverless detectado, saltando creación de directorios');
+        return;
+    }
+
     try {
         await fs.mkdir(CONFIG_DIR, { recursive: true });
         await fs.mkdir(TEMPLATES_DIR, { recursive: true });
         await fs.mkdir(GENERATED_DIR, { recursive: true });
+        console.log('✅ Directorios multi-tenant creados/verificados');
     } catch (error) {
-        console.error('Error creando directorios:', error);
+        console.warn('⚠️ Advertencia creando directorios:', error.message);
     }
 };
 

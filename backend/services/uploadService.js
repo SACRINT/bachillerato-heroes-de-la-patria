@@ -24,7 +24,7 @@ class UploadService {
 
             if (isConnected) {
                 this.dbAvailable = true;
-                console.log('✅ Upload Service: MySQL disponible');
+                console.log('✅ Upload Service: PostgreSQL disponible');
             } else {
                 console.log('⚠️ Upload Service: Sin base de datos');
             }
@@ -32,8 +32,26 @@ class UploadService {
             console.log('⚠️ Upload Service: Sin base de datos -', error.message);
         }
 
-        // Asegurar directorios de uploads
-        await this.ensureDirectories();
+        // Asegurar directorios de uploads (solo en entornos con filesystem persistente)
+        if (!this.isServerlessEnvironment()) {
+            try {
+                await this.ensureDirectories();
+            } catch (error) {
+                console.warn('⚠️ Upload Service: No se pudo crear directorios', error.message);
+            }
+        } else {
+            console.log('ℹ️ Upload Service: Entorno serverless detectado, saltando creación de directorios');
+        }
+    }
+
+    /**
+     * Detectar si estamos en entorno serverless (Vercel, AWS Lambda, etc.)
+     */
+    isServerlessEnvironment() {
+        return process.env.VERCEL === '1' ||
+               process.env.AWS_LAMBDA_FUNCTION_NAME ||
+               process.env.NETLIFY === 'true' ||
+               process.env.NODE_ENV === 'production' && !process.env.HAS_PERSISTENT_FILESYSTEM;
     }
 
     // ============================================
@@ -81,7 +99,13 @@ class UploadService {
             const fileName = `${safeName}_${timestamp}`;
 
             const outputDir = path.join(__dirname, '../../public/uploads/images', category);
-            await fs.mkdir(outputDir, { recursive: true });
+
+            // Intentar crear directorio (puede fallar en Vercel, pero continuamos)
+            try {
+                await fs.mkdir(outputDir, { recursive: true });
+            } catch (mkdirError) {
+                console.warn(`⚠️ No se pudo crear directorio ${category}:`, mkdirError.message);
+            }
 
             // Obtener metadatos de la imagen original
             const metadata = await sharp(file.buffer).metadata();
@@ -204,7 +228,13 @@ class UploadService {
             const fileName = `${safeName}_${timestamp}${extension}`;
 
             const outputDir = path.join(__dirname, '../../public/uploads/documents', category);
-            await fs.mkdir(outputDir, { recursive: true });
+
+            // Intentar crear directorio (puede fallar en Vercel, pero continuamos)
+            try {
+                await fs.mkdir(outputDir, { recursive: true });
+            } catch (mkdirError) {
+                console.warn(`⚠️ No se pudo crear directorio de documentos ${category}:`, mkdirError.message);
+            }
 
             // Guardar archivo
             const filePath = path.join(outputDir, fileName);
