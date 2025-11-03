@@ -76,7 +76,7 @@
 
             // 5. Aprobaciones (pendientes)
             try {
-                const approvalsRes = await fetch('/api/approvals');
+                const approvalsRes = await fetch('/api/approvals/pending');
                 const approvalsData = await approvalsRes.json();
                 const approvalsCount = approvalsData.total || approvalsData.data?.length || 0;
                 updates.push({
