@@ -30,6 +30,9 @@ class DynamicStudentLoader {
             if (response && response.data && Array.isArray(response.data)) {
                 // Caso: { success: true, data: [...] }
                 estudiantesArray = response.data;
+            } else if (response && response.data && response.data.students && Array.isArray(response.data.students)) {
+                // Caso: { success: true, data: { students: [...] } }
+                estudiantesArray = response.data.students;
             } else if (response && response.students && Array.isArray(response.students)) {
                 // Caso: { students: [...] }
                 estudiantesArray = response.students;
