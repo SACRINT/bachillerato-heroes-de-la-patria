@@ -25,20 +25,46 @@ class DynamicStudentLoader {
             // Usar APIClient que incluye automáticamente el token JWT
             const response = await this.apiClient.get(this.studentsFile);
 
+            console.log('📥 Respuesta cruda de API:', {
+                hasSuccess: response?.success,
+                hasData: !!response?.data,
+                dataKeys: response?.data ? Object.keys(response.data) : null,
+                studentsLength: response?.data?.students?.length || 0
+            });
+
             // Extraer los estudiantes del response correctamente
             let estudiantesArray = [];
-            if (response && response.data && Array.isArray(response.data)) {
-                // Caso: { success: true, data: [...] }
-                estudiantesArray = response.data;
-            } else if (response && response.data && response.data.students && Array.isArray(response.data.students)) {
-                // Caso: { success: true, data: { students: [...] } }
+
+            if (response && response.data && response.data.students && Array.isArray(response.data.students)) {
+                // Caso: { success: true, data: { students: [...] } } - LA ESTRUCTURA CORRECTA
+                console.log('✅ Extrayendo estudiantes de response.data.students');
                 estudiantesArray = response.data.students;
+            } else if (response && response.data && Array.isArray(response.data)) {
+                // Caso: { success: true, data: [...] }
+                console.log('✅ Extrayendo estudiantes de response.data (array directo)');
+                estudiantesArray = response.data;
             } else if (response && response.students && Array.isArray(response.students)) {
                 // Caso: { students: [...] }
+                console.log('✅ Extrayendo estudiantes de response.students');
                 estudiantesArray = response.students;
             } else if (Array.isArray(response)) {
                 // Caso: respuesta directa es array
+                console.log('✅ Response es un array directo');
                 estudiantesArray = response;
+            } else {
+                console.warn('⚠️ No se pudo extraer estudiantes de la respuesta');
+                console.warn('Estructura de response:', JSON.stringify(response).substring(0, 200));
+            }
+
+            console.log(`📊 Estudiantes extraídos: ${estudiantesArray.length}`);
+
+            if (estudiantesArray.length > 0) {
+                console.log('👤 Primer estudiante:', {
+                    id: estudiantesArray[0].id,
+                    nombre: estudiantesArray[0].nombre,
+                    matricula: estudiantesArray[0].matricula,
+                    semestre: estudiantesArray[0].semestre
+                });
             }
 
             // Crear estructura esperada por el resto del código
@@ -61,6 +87,7 @@ class DynamicStudentLoader {
             return this.students;
         } catch (error) {
             console.error('❌ Error cargando estudiantes:', error);
+            console.error('Stack:', error.stack);
 
             // Cargar datos por defecto
             this.loadDefaultStudents();
