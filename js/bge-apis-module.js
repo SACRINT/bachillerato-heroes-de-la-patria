@@ -65,7 +65,7 @@ class BGEAPIsModule extends BGEModule {
             curp: 'https://renapo.gob.mx/api/v1/',
             googleClassroom: '/api/google-classroom/',
             internal: '/api/',
-            backup: this.config.developmentMode ? 'http://localhost:3000/api/' : '/api/'
+            backup: this.config.developmentMode ? '/api/' : '/api/'
         };
 
         // Integraciones disponibles

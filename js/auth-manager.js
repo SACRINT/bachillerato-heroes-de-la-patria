@@ -6,7 +6,7 @@
 
 class AuthManager {
     constructor() {
-        this.API_BASE_URL = 'http://localhost:3000/api';
+        this.API_BASE_URL = '/api';
         this.currentUser = null;
         this.token = null;
         this.refreshToken = null;

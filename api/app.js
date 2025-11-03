@@ -323,91 +323,6 @@ async function handleDebugDb(req, res) {
 function handleHealth(req, res) { res.status(200).json({ success: true, message: 'API is alive and healthy.' }); }
 function handleNotImplemented(req, res) { res.status(501).json({ success: false, error: 'Not Implemented' }); }
 
-async function handleFinances(req, res) {
-    try {
-        const client = await pool.connect();
-
-        // Fetch ingresos
-        const ingresosResult = await client.query('SELECT * FROM ingresos');
-        const ingresos = ingresosResult.rows;
-
-        // Fetch gastos
-        const gastosResult = await client.query('SELECT * FROM gastos');
-        const gastos = gastosResult.rows;
-
-        // Fetch pagos_pendientes
-        const pagosPendientesResult = await client.query('SELECT * FROM pagos_pendientes');
-        const pagosPendientes = pagosPendientesResult.rows;
-
-        client.release();
-
-        // Calculate resumen
-        const totalIngresos = ingresos.reduce((sum, item) => sum + parseFloat(item.monto), 0);
-        const totalGastos = gastos.reduce((sum, item) => sum + parseFloat(item.monto), 0);
-        const totalPagosPendientes = pagosPendientes.reduce((sum, item) => sum + parseFloat(item.monto), 0);
-        const utilidadMes = totalIngresos - totalGastos;
-        const tasaCobro = totalIngresos > 0 ? ((totalIngresos / (totalIngresos + totalPagosPendientes)) * 100).toFixed(1) : 0;
-
-        const resumen = {
-            ingresosMes: totalIngresos,
-            pagosPendientes: totalPagosPendientes,
-            tasaCobro: parseFloat(tasaCobro),
-            gastosMes: totalGastos,
-            utilidadMes: utilidadMes,
-            presupuestoAnual: 34170000, // Placeholder, ideally from DB config
-            ingresoAcumulado: 25523250, // Placeholder
-            porcentajePresupuesto: 74.7 // Placeholder
-        };
-
-        // Calculate estadisticas
-        const estadisticas = {
-            totalIngresosMes: totalIngresos,
-            totalGastosMes: totalGastos,
-            utilidadMes: utilidadMes,
-            totalPagosPendientes: totalPagosPendientes,
-            tasaCobroActual: parseFloat(tasaCobro),
-            promedioIngresoDiario: totalIngresos / 30, // Simple average
-            totalEstudiantesPagando: 190, // Placeholder
-            totalEstudiantesMorosos: 12, // Placeholder
-            porcentajeMorosidad: 5.9, // Placeholder
-            ingresoProyectadoAnual: 34170000, // Placeholder
-            avancePresupuestal: 74.7 // Placeholder
-        };
-
-        const categorias = {
-            ingresos: ["Colegiaturas", "Inscripciones", "Servicios", "Trámites", "Eventos", "Otros"],
-            gastos: ["Personal", "Servicios", "Materiales", "Mantenimiento", "Administrativos", "Otros"]
-        };
-
-        const configuracion = {
-            monedaDefault: "MXN",
-            simboloMoneda: "$",
-            periodoFiscal: "2024",
-            fechaCorte: new Date().toISOString().split('T')[0],
-            ultimaActualizacion: new Date().toISOString(),
-            version: "1.0",
-            alertaVencimiento: 5,
-            metaCobroMensual: 95.0,
-            presupuestoAnual: 34170000
-        };
-
-        res.status(200).json({
-            success: true,
-            resumen,
-            ingresos,
-            gastos,
-            pagosPendientes,
-            estadisticas,
-            categorias,
-            configuracion
-        });
-
-    } catch (error) {
-        console.error('Error fetching financial data:', error);
-        res.status(500).json({ success: false, error: 'Internal Server Error fetching financial data.', details: error.message });
-    }
-}
-
 async function handleNoticiasStats(req, res) {
     try {
         const client = await pool.connect();
@@ -540,12 +455,14 @@ async function handleChartQuejasPorTipo(req, res) {
 
 async function handleApprovalsPending(req, res) {
     try {
-        const { rows } = await pool.query("SELECT id, form_type, submission_data, created_at FROM pending_approvals WHERE status = 'pending' ORDER BY created_at ASC");
+        const client = await pool.connect();
+        const { rows } = await client.query("SELECT id, form_type, submission_data, created_at FROM pending_approvals WHERE status = 'pending' ORDER BY created_at ASC");
+        client.release();
         // The frontend expects an array directly.
         res.status(200).json(rows);
     } catch (error) {
         console.error('Error fetching pending approvals:', error);
-        res.status(500).json([]);
+        res.status(500).json({ success: false, error: 'Error fetching pending approvals.', details: error.message });
     }
 }
 

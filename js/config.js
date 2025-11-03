@@ -17,7 +17,7 @@ window.AppConfig = {
     api: {
         baseURL: window.location.hostname.includes('vercel.app')
             ? `${window.location.protocol}//${window.location.host}` // Vercel usa URLs relativas
-            : 'http://localhost:3000', // Desarrollo local
+            : '', // Desarrollo local
         timeout: 10000,
         retries: 3
     },

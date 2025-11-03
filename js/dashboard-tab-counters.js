@@ -20,7 +20,7 @@
 
             // 1. Egresados
             try {
-                const egresadosRes = await fetch('http://localhost:3000/api/egresados');
+                const egresadosRes = await fetch('/api/egresados');
                 const egresadosData = await egresadosRes.json();
                 const egresadosCount = egresadosData.total || egresadosData.data?.length || 0;
                 updates.push({
@@ -34,7 +34,7 @@
 
             // 2. Bolsa de Trabajo
             try {
-                const bolsaRes = await fetch('http://localhost:3000/api/bolsa-trabajo/stats/general');
+                const bolsaRes = await fetch('/api/bolsa-trabajo/stats/general');
                 const bolsaData = await bolsaRes.json();
                 const bolsaCount = bolsaData.data?.total || 0;
                 updates.push({
@@ -48,7 +48,7 @@
 
             // 3. Suscriptores
             try {
-                const suscRes = await fetch('http://localhost:3000/api/suscriptores');
+                const suscRes = await fetch('/api/suscriptores');
                 const suscData = await suscRes.json();
                 const suscCount = suscData.total || suscData.data?.length || 0;
                 updates.push({
@@ -62,7 +62,7 @@
 
             // 4. Citas
             try {
-                const citasRes = await fetch('http://localhost:3000/api/citas/list');
+                const citasRes = await fetch('/api/citas/list');
                 const citasData = await citasRes.json();
                 const citasCount = citasData.total || citasData.citas?.length || 0;
                 updates.push({
@@ -76,7 +76,7 @@
 
             // 5. Aprobaciones (pendientes)
             try {
-                const approvalsRes = await fetch('http://localhost:3000/api/approvals');
+                const approvalsRes = await fetch('/api/approvals');
                 const approvalsData = await approvalsRes.json();
                 const approvalsCount = approvalsData.total || approvalsData.data?.length || 0;
                 updates.push({

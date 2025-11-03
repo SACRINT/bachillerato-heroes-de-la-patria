@@ -7,7 +7,7 @@ class APIClient {
     constructor(options = {}) {
         // URLs base para diferentes ambientes (SIN /api al final para evitar duplicación)
         this.baseURLs = {
-            development: 'http://localhost:3000',
+            development: '',
             production: 'https://your-backend-domain.com',
             local: 'http://127.0.0.1:3000'
         };

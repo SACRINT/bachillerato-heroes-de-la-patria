@@ -35,7 +35,7 @@ class SecureAdminAuth {
         
         // En desarrollo local
         if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
-            return 'http://localhost:3000/api';
+            return '/api';
         }
         
         // En producción, asumimos que la API está en el mismo dominio

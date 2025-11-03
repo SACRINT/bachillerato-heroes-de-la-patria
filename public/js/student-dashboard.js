@@ -7,7 +7,7 @@ class StudentDashboard {
     constructor() {
         try {
             console.log('🎓 [DASHBOARD] Inicializando dashboard estudiantil...');
-            this.apiBase = 'http://localhost:3000/api/students/';
+            this.apiBase = '/api/students/';
             this.authToken = localStorage.getItem('student_auth_token');
             this.currentStudent = JSON.parse(localStorage.getItem('current_student') || 'null');
 
@@ -20,7 +20,7 @@ class StudentDashboard {
 
     fallbackInitialization() {
         console.log('🔄 [DASHBOARD] Iniciando modo de respaldo...');
-        this.apiBase = 'http://localhost:3000/api/students/';
+        this.apiBase = '/api/students/';
         this.authToken = null;
         this.currentStudent = null;
         // NO mostrar modal automáticamente en modo de respaldo

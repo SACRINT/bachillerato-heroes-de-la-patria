@@ -11,7 +11,7 @@ class E2ETestingChromeMCP {
         this.currentTest = null;
         this.results = [];
         this.config = {
-            baseURL: 'http://localhost:3000',
+            baseURL: '',
             timeout: 30000,
             retries: 2,
             screenshots: true,

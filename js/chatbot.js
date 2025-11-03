@@ -22,7 +22,7 @@ const API_CONFIG = {
             return `${window.location.protocol}//${window.location.host}/api`;
         }
         // Desarrollo: localhost
-        return 'http://localhost:3000/api';
+        return '/api';
     },
     endpoints: {
         search: '/chatbot/search',

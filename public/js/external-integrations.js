@@ -8,7 +8,7 @@
 const INTEGRATIONS_API_BASE = (() => {
     const currentHost = window.location.hostname;
     if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
-        return 'http://localhost:3000';  // Backend en desarrollo
+        return '';  // Backend en desarrollo
     }
     return window.location.origin;  // En producción, mismo dominio
 })();
