@@ -1265,7 +1265,8 @@ app.get('/api/config/public-keys', (req, res) => {
             keys: {
                 // Google OAuth Client ID desde variable de entorno
                 google_oauth_client_id: process.env.GOOGLE_OAUTH_CLIENT_ID || '',
-                // Otros servicios públicos pueden ser agregados aquí
+                // TinyMCE API Key - Necesita ser configurada en variables de entorno
+                tinymce: process.env.TINYMCE_API_KEY || 'no-key-configured',
             },
             timestamp: new Date().toISOString()
         };
