@@ -155,28 +155,26 @@ class DynamicStudentLoader {
     createStudentRow(student) {
         const row = document.createElement('tr');
 
-        // Construir nombre completo desde los campos de la BD
-        const nombreCompleto = [
-            student.nombre,
-            student.apellido_paterno,
-            student.apellido_materno
-        ].filter(Boolean).join(' ') || 'Sin nombre';
+        // Construir nombre completo (usar nombre como campo principal)
+        const nombreCompleto = student.nombre || 'Sin nombre';
 
-        // Mapear status_academico de BD a estado visual
+        // Determinar estado (por ahora "Activo" como default si no existe status_academico)
         let estado = 'Activo';
         let estadoBadge = 'bg-success';
         if (student.status_academico === 'baja') {
             estado = 'En Riesgo';
             estadoBadge = 'bg-danger';
-        } else if (student.status_academico === 'suspendido') {
+        } else if (student.status_academico === 'suspendido' || student.estado === 'Inactivo') {
             estado = 'Inactivo';
             estadoBadge = 'bg-secondary';
         }
 
-        // Determinar nivel de riesgo según promedio
-        let nivelRiesgo = 'Bajo Riesgo';
-        let riesgoBadge = 'bg-success';
+        // Obtener promedio (usar 0 como default)
         const promedio = parseFloat(student.promedio) || 0;
+
+        // Determinar nivel de riesgo según promedio
+        let nivelRiesgo = 'Activo';
+        let riesgoBadge = 'bg-success';
         if (promedio < 6.0 && promedio > 0) {
             nivelRiesgo = 'Alto Riesgo';
             riesgoBadge = 'bg-danger';
@@ -188,6 +186,9 @@ class DynamicStudentLoader {
         // Email desde usuario_id si existe, sino placeholder
         const email = student.email || `estudiante${student.matricula}@bge.edu.mx`;
 
+        // Semestre con valor por defecto
+        const semestre = student.semestre || 'N/A';
+
         row.innerHTML = `
             <td><strong>${student.matricula || 'Sin matrícula'}</strong></td>
             <td>
@@ -195,16 +196,15 @@ class DynamicStudentLoader {
                 <small class="text-muted">${email}</small>
             </td>
             <td>
-                <span class="badge bg-info">${student.semestre || 'N/A'}°</span>
+                <span class="badge bg-info">${semestre}°</span>
             </td>
             <td>
                 <span class="badge ${promedio >= 8.0 ? 'bg-success' : promedio >= 7.0 ? 'bg-warning' : promedio > 0 ? 'bg-danger' : 'bg-secondary'}">
-                    ${promedio.toFixed(2)}
+                    ${promedio > 0 ? promedio.toFixed(2) : 'S/P'}
                 </span>
             </td>
             <td>
-                <span class="badge ${estadoBadge}">${estado}</span><br>
-                <small><span class="badge ${riesgoBadge} mt-1">${nivelRiesgo}</span></small>
+                <span class="badge ${estadoBadge}">${estado}</span>
             </td>
             <td>
                 <div class="btn-group btn-group-sm" role="group">
