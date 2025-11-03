@@ -1,0 +1,58 @@
+[
+    {
+        "id": "evt1",
+        "calendarId": "1", 
+        "title": "Clausura Social",
+        "category": "time", 
+        "start": "2025-07-11T11:00:00", 
+        "end": "2025-07-11T14:00:00", 
+        "location": "Cancha de la Presidencia Auxiliar",
+        "attendees": ["Alumnos Graduados", "Padres de Familia", "Personal Docente"],
+        "state": "Confirmado",
+        "color": "#ffffff",
+        "bgColor": "#D32F2F",
+        "borderColor": "#D32F2F"
+    },
+    {
+        "id": "evt2",
+        "calendarId": "1",
+        "title": "Clausura Cívica",
+        "category": "time",
+        "start": "2025-07-16T10:00:00",
+        "end": "2025-07-16T12:00:00",
+        "location": "Interior de la Escuela",
+        "attendees": ["Alumnos Graduados", "Padres de Familia", "Personal Docente"],
+        "state": "Confirmado",
+        "color": "#ffffff",
+        "bgColor": "#1976D2",
+        "borderColor": "#1976D2"
+    },
+    {
+        "id": "evt3",
+        "calendarId": "2", 
+        "title": "Receso Escolar",
+        "category": "allday", 
+        "start": "2025-07-17", 
+        "end": "2025-08-31",
+        "isReadOnly": true,
+        "attendees": ["Comunidad estudiantil", "Padres de Familia", "Personal Docente"],
+        "state": "Confirmado",
+        "color": "#333333",
+        "bgColor": "#FFC107",
+        "borderColor": "#FFC107"
+    },
+    {
+        "id": "evt4",
+        "calendarId": "1",
+        "title": "Inicio de Ciclo Escolar",
+        "category": "allday",
+        "start": "2025-09-01",
+        "end": "2025-09-01",
+        "isReadOnly": true,
+        "attendees": ["Comunidad estudiantil", "Padres de Familia", "Personal Docente"],
+        "state": "Confirmado",
+        "color": "#ffffff",
+        "bgColor": "#388E3C",
+        "borderColor": "#388E3C"
+    }
+]

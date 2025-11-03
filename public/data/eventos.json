@@ -1,0 +1,66 @@
+{
+  "eventos": [
+    {
+      "id": "evento-001",
+      "titulo": "Conferencia: Preparación para la Universidad",
+      "descripcion": "Conferencia magistral sobre estrategias de estudio y preparación para el ingreso a la educación superior, dirigida a estudiantes de 5to y 6to semestre. Expertos en orientación educativa compartirán técnicas de estudio, proceso de selección universitaria y becas disponibles.",
+      "fecha": "2024-10-15",
+      "hora": "10:00",
+      "lugar": "Auditorio Principal",
+      "organizador": "Departamento de Orientación Educativa",
+      "cupoMaximo": 200,
+      "inscripcionRequerida": true,
+      "categoria": "académico",
+      "imagen": "images/eventos/conferencia-universidad.jpg",
+      "contacto": "orientacion@bgeheroes.edu.mx",
+      "requisitos": ["Ser estudiante de 5to o 6to semestre", "Registro previo obligatorio"],
+      "activo": true,
+      "destacado": true,
+      "fechaCreacion": "2024-09-15T09:00:00Z",
+      "tags": ["universidad", "orientación", "estudiantes", "educación superior"]
+    },
+    {
+      "id": "evento-002",
+      "titulo": "Festival Cultural de Otoño",
+      "descripcion": "Celebración de la diversidad cultural con presentaciones artísticas, gastronómicas y exposiciones de los diferentes estados de México. Habrá bailes folclóricos, muestra gastronómica, exposición de artesanías y concursos culturales.",
+      "fecha": "2024-11-20",
+      "hora": "09:00",
+      "lugar": "Explanada Central",
+      "organizador": "Comité Cultural",
+      "cupoMaximo": null,
+      "inscripcionRequerida": false,
+      "categoria": "cultural",
+      "imagen": "images/eventos/festival-cultural.jpg",
+      "contacto": "cultural@bgeheroes.edu.mx",
+      "requisitos": [],
+      "activo": true,
+      "destacado": true,
+      "fechaCreacion": "2024-09-12T16:00:00Z",
+      "tags": ["cultura", "festival", "arte", "tradiciones", "México"]
+    },
+    {
+      "id": "evento-003",
+      "titulo": "Torneo Intersemestral de Futbol",
+      "descripcion": "Competencia deportiva entre todos los semestres del bachillerato. Fomenta el deporte, la sana competencia y el trabajo en equipo entre nuestros estudiantes.",
+      "fecha": "2024-10-05",
+      "hora": "15:00",
+      "lugar": "Cancha de Futbol",
+      "organizador": "Coordinación de Deportes",
+      "cupoMaximo": 120,
+      "inscripcionRequerida": true,
+      "categoria": "deportivo",
+      "imagen": "images/eventos/torneo-futbol.jpg",
+      "contacto": "deportes@bgeheroes.edu.mx",
+      "requisitos": ["Equipos de 11 jugadores por semestre", "Certificado médico vigente"],
+      "activo": true,
+      "destacado": false,
+      "fechaCreacion": "2024-09-08T14:00:00Z",
+      "tags": ["deporte", "futbol", "torneo", "estudiantes", "competencia"]
+    }
+  ],
+  "configuracion": {
+    "ultimaActualizacion": "2024-09-15T16:00:00Z",
+    "version": "1.0",
+    "totalElementos": 3
+  }
+}

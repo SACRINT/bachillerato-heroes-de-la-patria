@@ -1,0 +1,54 @@
+{
+  "avisos": [
+    {
+      "id": "aviso-001",
+      "titulo": "Importante: Cambio de Horarios en Biblioteca",
+      "contenido": "A partir del lunes 18 de septiembre, la biblioteca modificará sus horarios de atención: Lunes a Viernes de 7:00 AM a 7:00 PM, Sábados de 8:00 AM a 2:00 PM. Domingos permanecerá cerrada por mantenimiento del sistema informático.",
+      "tipo": "importante",
+      "fechaInicio": "2024-09-15",
+      "fechaFin": "2024-10-15",
+      "dirigidoA": "toda la comunidad",
+      "prioridad": "alta",
+      "imagen": "images/avisos/horarios-biblioteca.jpg",
+      "contacto": "biblioteca@bgeheroes.edu.mx",
+      "activo": true,
+      "fechaCreacion": "2024-09-15T08:00:00Z",
+      "tags": ["biblioteca", "horarios", "servicios"]
+    },
+    {
+      "id": "aviso-002",
+      "titulo": "Recordatorio: Entrega de Documentos de Beca",
+      "contenido": "Los estudiantes beneficiarios de becas deben entregar la documentación requerida antes del 30 de septiembre en la oficina de Servicios Estudiantiles. Documentos necesarios: constancia de estudios actualizada, comprobante de ingresos familiar y CURP vigente.",
+      "tipo": "recordatorio",
+      "fechaInicio": "2024-09-15",
+      "fechaFin": "2024-09-30",
+      "dirigidoA": "estudiantes becarios",
+      "prioridad": "alta",
+      "imagen": "images/avisos/documentos-beca.jpg",
+      "contacto": "becas@bgeheroes.edu.mx",
+      "activo": true,
+      "fechaCreacion": "2024-09-15T11:00:00Z",
+      "tags": ["becas", "documentos", "estudiantes", "fecha límite"]
+    },
+    {
+      "id": "aviso-003",
+      "titulo": "Suspensión de Clases por Puente",
+      "contenido": "Se informa que el viernes 20 de noviembre no habrá clases por puente del Día de la Revolución Mexicana. Las actividades académicas se reanudarán el lunes 23 de noviembre con normalidad.",
+      "tipo": "informativo",
+      "fechaInicio": "2024-11-15",
+      "fechaFin": "2024-11-20",
+      "dirigidoA": "toda la comunidad",
+      "prioridad": "media",
+      "imagen": "images/avisos/suspension-clases.jpg",
+      "contacto": "direccion@bgeheroes.edu.mx",
+      "activo": true,
+      "fechaCreacion": "2024-09-10T10:00:00Z",
+      "tags": ["suspensión", "clases", "puente", "feriado"]
+    }
+  ],
+  "configuracion": {
+    "ultimaActualizacion": "2024-09-15T16:00:00Z",
+    "version": "1.0",
+    "totalElementos": 3
+  }
+}

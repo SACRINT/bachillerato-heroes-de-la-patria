@@ -1,0 +1,109 @@
+{
+  "noticias": [
+    {
+      "id": "noticia-001",
+      "titulo": "Inicio del Nuevo Ciclo Escolar 2024-2025",
+      "contenido": "El Bachillerato General Estatal Héroes de la Patria da la bienvenida a todos los estudiantes al nuevo ciclo escolar. Las clases iniciarán el próximo lunes con protocolos de seguridad actualizados.",
+      "fecha": "2024-09-15",
+      "autor": "Dirección Académica",
+      "imagen": "images/noticias/inicio-ciclo-2024.jpg",
+      "categoria": "académico",
+      "destacado": true,
+      "activo": true,
+      "fechaCreacion": "2024-09-15T10:00:00Z"
+    },
+    {
+      "id": "noticia-002",
+      "titulo": "Inscripciones Abiertas para Talleres Extracurriculares",
+      "contenido": "Se encuentran abiertas las inscripciones para los talleres de música, danza, teatro, deportes y robótica. Los interesados pueden registrarse en la oficina de actividades estudiantiles.",
+      "fecha": "2024-09-10",
+      "autor": "Coordinación Estudiantil",
+      "imagen": "images/noticias/talleres-extra.jpg",
+      "categoria": "actividades",
+      "destacado": false,
+      "activo": true,
+      "fechaCreacion": "2024-09-10T14:30:00Z"
+    }
+  ],
+  "eventos": [
+    {
+      "id": "evento-001",
+      "titulo": "Conferencia: Preparación para la Universidad",
+      "descripcion": "Conferencia magistral sobre estrategias de estudio y preparación para el ingreso a la educación superior, dirigida a estudiantes de 5to y 6to semestre.",
+      "fecha": "2024-10-15",
+      "hora": "10:00",
+      "lugar": "Auditorio Principal",
+      "organizador": "Departamento de Orientación Educativa",
+      "cupoMaximo": 200,
+      "inscripcionRequerida": true,
+      "categoria": "académico",
+      "activo": true,
+      "fechaCreacion": "2024-09-15T09:00:00Z"
+    },
+    {
+      "id": "evento-002",
+      "titulo": "Festival Cultural de Otoño",
+      "descripcion": "Celebración de la diversidad cultural con presentaciones artísticas, gastronómicas y exposiciones de los diferentes estados de México.",
+      "fecha": "2024-11-20",
+      "hora": "09:00",
+      "lugar": "Explanada Central",
+      "organizador": "Comité Cultural",
+      "cupoMaximo": null,
+      "inscripcionRequerida": false,
+      "categoria": "cultural",
+      "activo": true,
+      "fechaCreacion": "2024-09-12T16:00:00Z"
+    }
+  ],
+  "avisos": [
+    {
+      "id": "aviso-001",
+      "titulo": "Importante: Cambio de Horarios en Biblioteca",
+      "contenido": "A partir del lunes 18 de septiembre, la biblioteca modificará sus horarios de atención: Lunes a Viernes de 7:00 AM a 7:00 PM, Sábados de 8:00 AM a 2:00 PM.",
+      "tipo": "importante",
+      "fechaInicio": "2024-09-15",
+      "fechaFin": "2024-10-15",
+      "dirigidoA": "toda la comunidad",
+      "prioridad": "alta",
+      "activo": true,
+      "fechaCreacion": "2024-09-15T08:00:00Z"
+    },
+    {
+      "id": "aviso-002",
+      "titulo": "Recordatorio: Entrega de Documentos de Beca",
+      "contenido": "Los estudiantes beneficiarios de becas deben entregar la documentación requerida antes del 30 de septiembre en la oficina de Servicios Estudiantiles.",
+      "tipo": "recordatorio",
+      "fechaInicio": "2024-09-15",
+      "fechaFin": "2024-09-30",
+      "dirigidoA": "estudiantes becarios",
+      "prioridad": "media",
+      "activo": true,
+      "fechaCreacion": "2024-09-15T11:00:00Z"
+    }
+  ],
+  "comunicados": [
+    {
+      "id": "comunicado-001",
+      "titulo": "Protocolo de Seguridad y Salud Actualizado",
+      "contenido": "Se informa a toda la comunidad educativa sobre la actualización del protocolo de seguridad y salud en el plantel. Es obligatorio el uso de cubrebocas en espacios cerrados y mantener la sana distancia.",
+      "emisor": "Dirección General",
+      "fechaEmision": "2024-09-14",
+      "vigencia": "permanente",
+      "tipo": "oficial",
+      "destinatarios": ["estudiantes", "docentes", "personal administrativo", "padres de familia"],
+      "adjuntos": ["protocolo-seguridad-2024.pdf"],
+      "activo": true,
+      "fechaCreacion": "2024-09-14T15:00:00Z"
+    }
+  ],
+  "configuracion": {
+    "ultimaActualizacion": "2024-09-15T16:00:00Z",
+    "version": "1.0",
+    "totalElementos": {
+      "noticias": 2,
+      "eventos": 2,
+      "avisos": 2,
+      "comunicados": 1
+    }
+  }
+}
