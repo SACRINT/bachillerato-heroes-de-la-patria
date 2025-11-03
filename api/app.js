@@ -475,8 +475,13 @@ async function handleApprovalsPending(req, res) {
             ];
         }
 
-        // The frontend expects an array directly.
-        res.status(200).json(approvals);
+        // Return structured response matching client expectations
+        res.status(200).json({
+            success: true,
+            data: approvals,
+            total: approvals.length,
+            message: 'Solicitudes pendientes cargadas correctamente'
+        });
     } catch (error) {
         console.error('❌ [APPROVALS] Error fetching pending approvals:', error);
         res.status(500).json({ success: false, error: 'Error fetching pending approvals.', details: error.message });
