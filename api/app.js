@@ -1215,9 +1215,9 @@ const parentTeacherCommunicationRoutes = require('../backend/routes/parentTeache
 // const realAiRoutes = require('../backend/routes/real-ai');
 // const recomendacionesMlRoutes = require('../backend/routes/recomendaciones-ml');
 const sslRoutes = require('../backend/routes/ssl');  // FIXED: logger removed
-// const studentsRoutes = require('../backend/routes/students');  // COMMENTED OUT: Causing Vercel deployment failures
+const studentsRoutes = require('../backend/routes/students');
 // const subscriptionsServiceRoutes = require('../backend/routes/subscriptions-service');
-// const teachersRoutes = require('../backend/routes/teachers');  // COMMENTED OUT: Causing Vercel deployment failures
+const teachersRoutes = require('../backend/routes/teachers');
 // const uploadsRoutes = require('../backend/routes/uploads');
 
 // Register all route modules
@@ -1283,8 +1283,8 @@ app.use('/api/newsletters-pg', newslettersPgRoutes);
 app.use('/api/notifications-direct', notificationsRoutes);  // notifications (para evitar conflicto)
 app.use('/api/parentTeacherCommunication', parentTeacherCommunicationRoutes);
 app.use('/api/ssl', sslRoutes);
-// app.use('/api/students-direct', studentsRoutes);  // COMMENTED OUT: Causing Vercel deployment failures
-// app.use('/api/teachers-direct', teachersRoutes);  // COMMENTED OUT: Causing Vercel deployment failures
+app.use('/api/students-direct', studentsRoutes);
+app.use('/api/teachers-direct', teachersRoutes);
 
 // TODAVÍA DESHABILITADAS:
 // - google-classroom (executeQuery issue - needs revisión)
