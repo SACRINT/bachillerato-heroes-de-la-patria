@@ -1,0 +1,669 @@
+/**
+ * 🎓 ESTILOS DEL PANEL DE GESTIÓN DE EGRESADOS
+ * Dashboard Administrativo - BGE Héroes de la Patria
+ *
+ * @description Estilos personalizados para el módulo de egresados
+ * @version 1.0.0
+ * @date 2025-10-03
+ */
+
+/* ============================================
+   VARIABLES Y COLORES
+   ============================================ */
+
+:root {
+    --egresados-primary: #2c3e50;
+    --egresados-success: #27ae60;
+    --egresados-info: #3498db;
+    --egresados-warning: #f39c12;
+    --egresados-danger: #e74c3c;
+    --egresados-light: #ecf0f1;
+    --egresados-dark: #34495e;
+}
+
+/* ============================================
+   SECCIÓN PRINCIPAL
+   ============================================ */
+
+#egresados-section {
+    padding: 20px 0;
+}
+
+#egresados-section h2 {
+    color: var(--egresados-primary);
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+/* ============================================
+   TARJETAS DE ESTADÍSTICAS
+   ============================================ */
+
+.stat-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card .card-body {
+    padding: 20px;
+}
+
+.stat-card .stat-icon {
+    flex-shrink: 0;
+}
+
+.stat-card .stat-content h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.stat-card .stat-content p {
+    font-size: 0.9rem;
+    margin: 0;
+    opacity: 0.95;
+}
+
+/* Colores de tarjetas */
+.stat-card.bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.stat-card.bg-success {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+}
+
+.stat-card.bg-info {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+}
+
+.stat-card.bg-warning {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
+}
+
+/* ============================================
+   FILTROS
+   ============================================ */
+
+#egresados-filters .card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+}
+
+#egresados-filters .form-control,
+#egresados-filters .form-select {
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+#egresados-filters .form-control:focus,
+#egresados-filters .form-select:focus {
+    border-color: var(--egresados-info);
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+#egresados-filters .input-group-text {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-right: none;
+    color: #6c757d;
+}
+
+#egresados-filters .btn {
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+}
+
+#egresados-filters .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   TABLA DE EGRESADOS
+   ============================================ */
+
+#egresados-table .card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+}
+
+#egresados-table .table {
+    margin-bottom: 0;
+}
+
+#egresados-table .table thead {
+    background-color: var(--egresados-dark);
+    color: white;
+}
+
+#egresados-table .table thead th {
+    border: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 15px 10px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+#egresados-table .table thead th[style*="cursor: pointer"] {
+    user-select: none;
+}
+
+#egresados-table .table thead th[style*="cursor: pointer"]:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+#egresados-table .table tbody tr {
+    transition: all 0.2s ease;
+}
+
+#egresados-table .table tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+    transform: scale(1.01);
+}
+
+#egresados-table .table tbody td {
+    padding: 12px 10px;
+    vertical-align: middle;
+    font-size: 0.9rem;
+}
+
+#egresados-table .badge {
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+#egresados-table .btn-group .btn {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+}
+
+/* Estado vacío */
+#egresados-table .text-center.py-5 {
+    padding: 60px 20px !important;
+}
+
+#egresados-table .text-center.py-5 i {
+    opacity: 0.3;
+}
+
+/* ============================================
+   PAGINACIÓN
+   ============================================ */
+
+.pagination {
+    margin: 0;
+}
+
+.pagination .page-link {
+    border-radius: 6px;
+    margin: 0 2px;
+    border: 1px solid #e0e0e0;
+    color: var(--egresados-primary);
+    transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    background-color: var(--egresados-info);
+    border-color: var(--egresados-info);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--egresados-primary);
+    border-color: var(--egresados-primary);
+    box-shadow: 0 4px 8px rgba(44, 62, 80, 0.3);
+}
+
+.pagination .page-item.disabled .page-link {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   GRÁFICAS
+   ============================================ */
+
+#egresados-section canvas {
+    max-height: 300px;
+}
+
+#egresados-section .card-header {
+    background-color: var(--egresados-light);
+    border-bottom: 2px solid var(--egresados-primary);
+    font-weight: 600;
+    color: var(--egresados-primary);
+}
+
+/* ============================================
+   MODALES
+   ============================================ */
+
+#egresadoDetailsModal .modal-content,
+#egresadoEditModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+#egresadoDetailsModal .modal-header,
+#egresadoEditModal .modal-header {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom: none;
+    padding: 20px 25px;
+}
+
+#egresadoDetailsModal .modal-body,
+#egresadoEditModal .modal-body {
+    padding: 25px;
+}
+
+#egresadoDetailsModal .modal-footer,
+#egresadoEditModal .modal-footer {
+    border-top: 1px solid #e0e0e0;
+    padding: 15px 25px;
+}
+
+/* Labels en modales */
+.modal-body label.fw-bold {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.modal-body p {
+    font-size: 0.95rem;
+    color: var(--egresados-dark);
+}
+
+/* Card de historia en modal */
+.modal-body .card.bg-light {
+    border: none;
+    background-color: #f8f9fa !important;
+}
+
+.modal-body .card.bg-light .card-body {
+    padding: 15px;
+    font-style: italic;
+    color: #495057;
+}
+
+/* Formularios en modal */
+#egresadoEditModal .form-label {
+    font-weight: 600;
+    color: var(--egresados-dark);
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+#egresadoEditModal .form-control,
+#egresadoEditModal .form-select {
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+#egresadoEditModal .form-control:focus,
+#egresadoEditModal .form-select:focus {
+    border-color: var(--egresados-warning);
+    box-shadow: 0 0 0 0.2rem rgba(243, 156, 18, 0.25);
+}
+
+#egresadoEditModal .form-check-input:checked {
+    background-color: var(--egresados-warning);
+    border-color: var(--egresados-warning);
+}
+
+/* ============================================
+   LOADING
+   ============================================ */
+
+#egresados-loading {
+    position: relative;
+    z-index: 10;
+}
+
+#egresados-loading .spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* ============================================
+   TOAST NOTIFICATIONS
+   ============================================ */
+
+#toast-container {
+    z-index: 11000;
+}
+
+#toast-container .toast {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 300px;
+}
+
+#toast-container .toast-body {
+    font-weight: 500;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* Tablets */
+@media (max-width: 992px) {
+    .stat-card .stat-content h3 {
+        font-size: 2rem;
+    }
+
+    #egresados-table .table {
+        font-size: 0.85rem;
+    }
+
+    #egresados-table .table thead th,
+    #egresados-table .table tbody td {
+        padding: 10px 8px;
+    }
+}
+
+/* Móviles */
+@media (max-width: 768px) {
+    #egresados-section h2 {
+        font-size: 1.5rem;
+    }
+
+    .stat-card .card-body {
+        padding: 15px;
+    }
+
+    .stat-card .stat-content h3 {
+        font-size: 1.75rem;
+    }
+
+    .stat-card .stat-icon i {
+        font-size: 2rem !important;
+    }
+
+    #egresados-filters .col-md-3,
+    #egresados-filters .col-md-2 {
+        margin-bottom: 10px;
+    }
+
+    #egresados-filters .btn {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    /* Tabla responsive - Mostrar scroll horizontal */
+    #egresados-table .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #egresados-table .table {
+        min-width: 1000px;
+    }
+
+    /* Alternativa: Cards en móvil */
+    .egresados-mobile-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    .egresados-mobile-card h5 {
+        color: var(--egresados-primary);
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+    }
+
+    .egresados-mobile-card .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .egresados-mobile-card .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .egresados-mobile-card .info-row .label {
+        font-weight: 600;
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
+
+    .egresados-mobile-card .info-row .value {
+        color: var(--egresados-dark);
+        font-size: 0.9rem;
+        text-align: right;
+    }
+
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .pagination .page-link {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+
+    /* Modales en móvil */
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    .modal-body {
+        padding: 15px !important;
+    }
+
+    #toast-container {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+    }
+
+    #toast-container .toast {
+        min-width: auto;
+        width: 100%;
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 576px) {
+    .stat-card .card-body {
+        flex-direction: column !important;
+        text-align: center;
+    }
+
+    .stat-card .stat-icon {
+        margin-bottom: 10px;
+        margin-right: 0 !important;
+    }
+
+    .stat-card .stat-content h3 {
+        font-size: 2rem;
+    }
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+#egresados-stats .stat-card {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+#egresados-stats .stat-card:nth-child(1) { animation-delay: 0.1s; }
+#egresados-stats .stat-card:nth-child(2) { animation-delay: 0.2s; }
+#egresados-stats .stat-card:nth-child(3) { animation-delay: 0.3s; }
+#egresados-stats .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+#egresados-table tbody tr {
+    animation: slideIn 0.3s ease;
+}
+
+/* ============================================
+   UTILIDADES
+   ============================================ */
+
+.opacity-50 {
+    opacity: 0.5 !important;
+}
+
+.opacity-75 {
+    opacity: 0.75 !important;
+}
+
+.opacity-95 {
+    opacity: 0.95 !important;
+}
+
+/* ============================================
+   IMPRESIÓN
+   ============================================ */
+
+@media print {
+    .stat-card {
+        box-shadow: none !important;
+        border: 1px solid #dee2e6 !important;
+    }
+
+    #egresados-filters,
+    .btn-group,
+    .pagination {
+        display: none !important;
+    }
+
+    #egresados-table .table {
+        font-size: 10pt;
+    }
+
+    .modal {
+        position: static;
+        display: block;
+    }
+
+    .modal-dialog {
+        margin: 0;
+    }
+}
+
+/* ============================================
+   ACCESIBILIDAD
+   ============================================ */
+
+/* Focus visible para teclado */
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible,
+.page-link:focus-visible {
+    outline: 2px solid var(--egresados-info);
+    outline-offset: 2px;
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+    .stat-card {
+        border: 2px solid currentColor;
+    }
+
+    .table tbody tr:hover {
+        background-color: rgba(52, 152, 219, 0.2) !important;
+    }
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --egresados-light: #2c3e50;
+        --egresados-dark: #ecf0f1;
+    }
+
+    #egresados-section .card {
+        background-color: #2c3e50;
+        color: #ecf0f1;
+    }
+
+    #egresados-table .table {
+        color: #ecf0f1;
+    }
+
+    #egresados-table .table tbody tr:hover {
+        background-color: rgba(236, 240, 241, 0.1);
+    }
+
+    .modal-content {
+        background-color: #2c3e50;
+        color: #ecf0f1;
+    }
+
+    .form-control,
+    .form-select {
+        background-color: #34495e;
+        color: #ecf0f1;
+        border-color: #4a5f7f;
+    }
+}
+
+/* Reducción de movimiento */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .stat-card:hover {
+        transform: none;
+    }
+
+    #egresados-table tbody tr:hover {
+        transform: none;
+    }
+}
