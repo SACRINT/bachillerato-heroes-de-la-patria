@@ -182,6 +182,45 @@ function generateConfirmationToken() {
 }
 
 // =====================================================
+// 📋 GET /api/citas - Root endpoint (redirect to list)
+// =====================================================
+router.get('/', async (req, res) => {
+    try {
+        // Simplemente redireccionar a /list cuando se accede a la raíz
+        // O retornar un estado general del sistema de citas
+        const query = `
+            SELECT
+                COUNT(*) as total,
+                SUM(CASE WHEN estado = 'pendiente' THEN 1 ELSE 0 END) as pendientes,
+                SUM(CASE WHEN estado = 'aprobada' THEN 1 ELSE 0 END) as aprobadas,
+                SUM(CASE WHEN estado = 'rechazada' THEN 1 ELSE 0 END) as rechazadas
+            FROM citas
+        `;
+
+        const result = await db.executeQuery(query);
+
+        res.json({
+            success: true,
+            status: 'Sistema de Citas Operacional',
+            stats: {
+                total: parseInt(result[0].total || 0),
+                pendientes: parseInt(result[0].pendientes || 0),
+                aprobadas: parseInt(result[0].aprobadas || 0),
+                rechazadas: parseInt(result[0].rechazadas || 0)
+            },
+            message: 'Use /list para obtener listado completo de citas'
+        });
+    } catch (error) {
+        console.error('Error fetching citas stats:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener estadísticas de citas',
+            error: error.message
+        });
+    }
+});
+
+// =====================================================
 // ➕ POST /api/citas/create - CON VALIDACIONES MEJORADAS
 // =====================================================
 router.post('/create', [
