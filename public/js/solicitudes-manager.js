@@ -110,17 +110,24 @@ class SolicitudesManager {
                 <td>${fechaFormato}</td>
                 <td><span class="badge bg-${estadoClass}">${status}</span></td>
                 <td class="text-center">
-                    <div class="btn-group btn-group-sm">
+                    <div class="btn-group btn-group-sm" role="group">
                         ${status === 'pendiente' ? `
-                            <button class="btn btn-outline-success" onclick="solicitudesManager.approveSolicitud(${solicitud.id})" title="Aprobar">
+                            <button class="btn btn-outline-success" onclick="solicitudesManager.approveSolicitud(${solicitud.id})" title="Aprobar solicitud">
                                 <i class="fas fa-check"></i>
                             </button>
-                            <button class="btn btn-outline-danger" onclick="solicitudesManager.rejectSolicitud(${solicitud.id})" title="Rechazar">
+                            <button class="btn btn-outline-danger" onclick="solicitudesManager.rejectSolicitud(${solicitud.id})" title="Rechazar solicitud">
                                 <i class="fas fa-times"></i>
                             </button>
-                        ` : ''}
-                        <button class="btn btn-outline-primary" onclick="solicitudesManager.showSolicitudDetails(${solicitud.id})" title="Detalles">
+                        ` : `
+                            <button class="btn btn-outline-warning" onclick="solicitudesManager.revokeSolicitud(${solicitud.id})" title="Revocar aprobación">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        `}
+                        <button class="btn btn-outline-primary" onclick="solicitudesManager.showSolicitudDetails(${solicitud.id})" title="Ver detalles">
                             <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-outline-dark" onclick="solicitudesManager.deleteSolicitud(${solicitud.id})" title="Eliminar solicitud">
+                            <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 </td>
@@ -267,6 +274,58 @@ class SolicitudesManager {
         } catch (error) {
             console.error('Error rechazando solicitud:', error);
             this.showAlert(`Error al rechazar solicitud: ${error.message}`, 'danger');
+        }
+    }
+
+    async revokeSolicitud(solicitudId) {
+        if (!confirm('¿Estás seguro de que quieres revocar la aprobación de esta solicitud?\n\nLa solicitud volverá a estado "pendiente".')) return;
+
+        try {
+            if (!window.apiClient) {
+                throw new Error('API Client no disponible');
+            }
+
+            const result = await window.apiClient.request(`/api/solicitudes/${solicitudId}`, {
+                method: 'PUT',
+                body: { status: 'pendiente', notas_admin: 'Aprobación revocada por administrador' }
+            });
+
+            if (result.success) {
+                this.showAlert('Aprobación revocada. Solicitud ahora está pendiente.', 'success');
+                this.loadSolicitudes();
+            } else {
+                throw new Error(result.message || 'Error al revocar solicitud.');
+            }
+        } catch (error) {
+            console.error('Error revocando solicitud:', error);
+            this.showAlert(`Error al revocar solicitud: ${error.message}`, 'danger');
+        }
+    }
+
+    async deleteSolicitud(solicitudId) {
+        const solicitud = this.solicitudes.find(s => s.id === solicitudId);
+        const nombre = solicitud ? solicitud.nombre : `Solicitud #${solicitudId}`;
+
+        if (!confirm(`¿ELIMINAR PERMANENTEMENTE la solicitud de "${nombre}"?\n\nEsta acción NO se puede deshacer.`)) return;
+
+        try {
+            if (!window.apiClient) {
+                throw new Error('API Client no disponible');
+            }
+
+            const result = await window.apiClient.request(`/api/solicitudes/${solicitudId}`, {
+                method: 'DELETE'
+            });
+
+            if (result.success) {
+                this.showAlert(`Solicitud de "${nombre}" eliminada permanentemente.`, 'success');
+                this.loadSolicitudes();
+            } else {
+                throw new Error(result.message || 'Error al eliminar solicitud.');
+            }
+        } catch (error) {
+            console.error('Error eliminando solicitud:', error);
+            this.showAlert(`Error al eliminar solicitud: ${error.message}`, 'danger');
         }
     }
 
