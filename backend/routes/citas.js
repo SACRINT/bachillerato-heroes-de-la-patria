@@ -623,7 +623,7 @@ router.get('/list', async (req, res) => {
 
         res.json({
             success: true,
-            citas: result,
+            data: result,
             total: result.length
         });
 

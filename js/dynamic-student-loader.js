@@ -274,7 +274,7 @@ class DynamicStudentLoader {
      */
     editStudent(studentId) {
         console.log('✏️ Editando estudiante:', studentId);
-        
+
         const student = this.students.estudiantes?.find(s => s.id === studentId);
         if (!student) {
             console.error('❌ Estudiante no encontrado:', studentId);
@@ -524,7 +524,7 @@ class DynamicStudentLoader {
      */
     contactStudent(studentId) {
         console.log('📧 Contactando estudiante:', studentId);
-        
+
         const student = this.students.estudiantes?.find(s => s.id === studentId);
         if (!student) {
             console.error('❌ Estudiante no encontrado:', studentId);
@@ -571,11 +571,11 @@ class DynamicStudentLoader {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(modal);
         const bootstrapModal = new bootstrap.Modal(modal);
         bootstrapModal.show();
-        
+
         // Remover modal cuando se cierre
         modal.addEventListener('hidden.bs.modal', () => {
             document.body.removeChild(modal);
@@ -587,7 +587,7 @@ class DynamicStudentLoader {
      */
     showNewStudentModal() {
         console.log('🎓 Creando nuevo estudiante...');
-        
+
         // Crear modal si no existe
         let modal = document.getElementById('newStudentModal');
         if (!modal) {
@@ -729,7 +729,7 @@ class DynamicStudentLoader {
             // Obtener datos del formulario
             const birthDate = document.getElementById('newStudentBirthDate').value;
             const age = birthDate ? new Date().getFullYear() - new Date(birthDate).getFullYear() : 18;
-            
+
             const newStudent = {
                 id: newMatricula,
                 matricula: newMatricula,
@@ -830,7 +830,7 @@ class DynamicStudentLoader {
     exportStudents() {
         try {
             console.log('📊 Exportando estudiantes...');
-            
+
             // Crear datos para exportar
             const exportData = {
                 fechaExportacion: new Date().toISOString(),
@@ -843,16 +843,16 @@ class DynamicStudentLoader {
             const dataStr = JSON.stringify(exportData, null, 2);
             const dataBlob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(dataBlob);
-            
+
             const link = document.createElement('a');
             link.href = url;
             link.download = `estudiantes_${new Date().toISOString().split('T')[0]}.json`;
             link.click();
-            
+
             URL.revokeObjectURL(url);
-            
+
             this.showSuccessMessage('Exportación completada exitosamente');
-            
+
         } catch (error) {
             console.error('❌ Error exportando estudiantes:', error);
             this.showErrorMessage('Error al exportar los datos');
@@ -868,12 +868,12 @@ class DynamicStudentLoader {
         const estudiantes = this.students.estudiantes;
         const activos = estudiantes.filter(e => e.estado === 'Activo');
         const enRiesgo = estudiantes.filter(e => e.estado === 'En Riesgo');
-        
+
         // Calcular promedio general
         const promedios = estudiantes.map(e => e.promedio || 0).filter(p => p > 0);
-        const promedioGeneral = promedios.length > 0 ? 
+        const promedioGeneral = promedios.length > 0 ?
             (promedios.reduce((a, b) => a + b, 0) / promedios.length).toFixed(2) : 0;
-        
+
         // Contar especialidades
         const especialidades = {};
         estudiantes.forEach(e => {
@@ -1041,7 +1041,7 @@ class DynamicStudentLoader {
      */
     filterStudentsBySemester(semester) {
         const rows = document.querySelectorAll('#studentsTable tbody tr');
-        
+
         rows.forEach(row => {
             if (!semester) {
                 row.style.display = '';
@@ -1057,7 +1057,7 @@ class DynamicStudentLoader {
      */
     filterStudentsByStatus(status) {
         const rows = document.querySelectorAll('#studentsTable tbody tr');
-        
+
         rows.forEach(row => {
             if (!status) {
                 row.style.display = '';

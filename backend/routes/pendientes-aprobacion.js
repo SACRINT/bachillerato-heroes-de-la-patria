@@ -135,27 +135,40 @@ router.post('/aprobar/:id', async (req, res) => {
         try {
             // Insertar en la tabla final según el tipo de solicitud
             if (solicitud.tipo_solicitud === 'egresado') {
-                // Insertar en tabla egresados
+                // Insertar en tabla egresados con estructura correcta
+                const egresadoId = `EGR-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9999) + 1).padStart(4, '0')}`;
+
                 await client.query(`
                     INSERT INTO egresados (
-                        nombre, email, telefono, ciudad, trabajo,
-                        universidad, carrera, estatus_estudios, anio_egreso,
-                        generacion, fecha_ingreso
+                        egresado_id, nombre_completo, email, telefono,
+                        fecha_nacimiento, anio_egreso, carrera_tecnica, generacion,
+                        experiencia_laboral, habilidades, idiomas, disponibilidad,
+                        ciudad, estado, linkedin_url, portafolio_url, referencias,
+                        estado_perfil, confirmado, created_at, updated_at
                     ) VALUES (
-                        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW()
+                        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, NOW(), NOW()
                     )
                     ON CONFLICT (email) DO NOTHING
                 `, [
-                    datos.name || datos.nombre || '',
+                    egresadoId,
+                    datos.nombre_completo || datos.name || datos.nombre || '',
                     datos.email,
                     datos.telefono || null,
+                    datos.fecha_nacimiento || null,
+                    datos.anio_egreso || null,
+                    datos.carrera_tecnica || datos.carrera || null,
+                    datos.generacion || null,
+                    datos.experiencia_laboral || datos.trabajo || null,
+                    typeof datos.habilidades === 'string' ? datos.habilidades : JSON.stringify(datos.habilidades || []),
+                    typeof datos.idiomas === 'string' ? datos.idiomas : JSON.stringify(datos.idiomas || []),
+                    datos.disponibilidad || 'inmediata',
                     datos.ciudad || null,
-                    datos.trabajo || null,
-                    datos.universidad || null,
-                    datos.carrera || null,
-                    datos['estatus-estudios'] || null,
-                    datos['anio-egreso'] || datos.generacion || null,
-                    datos.generacion || null
+                    datos.estado || null,
+                    datos.linkedin_url || null,
+                    datos.portafolio_url || null,
+                    typeof datos.referencias === 'string' ? datos.referencias : JSON.stringify(datos.referencias || []),
+                    'aprobado',  // estado_perfil: aprobado automáticamente al aprobar desde admin
+                    true,        // confirmado: marcado como confirmado
                 ]);
 
             } else if (solicitud.tipo_solicitud === 'bolsa_trabajo') {

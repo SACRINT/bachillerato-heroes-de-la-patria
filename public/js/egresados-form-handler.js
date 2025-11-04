@@ -35,20 +35,20 @@
             const formData = new FormData(form);
 
             // Mapear campos del formulario HTML a nombres de API
+            // Estos datos se enviarán al flujo de aprobación en pendientes_aprobacion
             const mappedData = {
-                nombre: formData.get('name'),
+                nombre_completo: formData.get('name'),
                 email: formData.get('email'),
                 generacion: formData.get('generacion'),
                 telefono: formData.get('telefono') || null,
                 ciudad: formData.get('ciudad') || null,
-                ocupacion_actual: formData.get('trabajo') || null,
-                universidad: formData.get('universidad') || null,
-                carrera: formData.get('carrera') || null,
-                estatus_estudios: formData.get('estatus-estudios') || null,
+                carrera_tecnica: formData.get('carrera') || null,
                 anio_egreso: formData.get('anio-egreso') ? parseInt(formData.get('anio-egreso')) : null,
-                historia_exito: formData.get('message') || null,
-                autoriza_publicar: formData.get('publicar-historia') === 'on',
-                verificado: true
+                experiencia_laboral: formData.get('trabajo') || null,
+                disponibilidad: 'inmediata',  // Valor por defecto
+                linkedin_url: formData.get('linkedin') || null,
+                portafolio_url: formData.get('portafolio') || null,
+                estado: formData.get('estado') || null
             };
 
             console.log('📤 Datos mapeados:', mappedData);
@@ -60,8 +60,8 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
 
             try {
-                // Enviar a la API
-                const response = await fetch('/api/egresados', {
+                // Enviar a la API - usa /create para flujo de aprobación
+                const response = await fetch('/api/egresados/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

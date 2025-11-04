@@ -841,8 +841,8 @@ router.delete('/:id', async (req, res) => {
 
 /**
  * POST /api/egresados
- * Crear/Actualizar perfil de egresado (sin requerir confirmación por email)
- * Usado por el formulario de "Actualizar Información" en la página pública
+ * Crear/Actualizar perfil de egresado a través del flujo de aprobación
+ * Mapea los campos del formulario HTML a la tabla de pendientes_aprobacion
  */
 router.post('/', async (req, res) => {
     const client = await pool.connect();
@@ -850,129 +850,181 @@ router.post('/', async (req, res) => {
     try {
         console.log('📝 [POST /api/egresados] Creando perfil de egresado:', req.body);
 
+        // Mapeo flexible de campos que pueden venir con diferentes nombres
         const {
-            nombre,
+            // Campos con alias posibles
+            nombre_completo = req.body.nombre_completo || req.body.nombre,
             email,
             generacion,
             telefono,
             ciudad,
-            ocupacion_actual,
-            universidad,
-            carrera,
-            estatus_estudios,
+            carrera_tecnica = req.body.carrera_tecnica || req.body.carrera,
             anio_egreso,
-            historia_exito,
-            autoriza_publicar,
-            verificado
+            experiencia_laboral,
+            habilidades,
+            idiomas,
+            cv_url,
+            disponibilidad,
+            pretension_salarial,
+            estado,
+            linkedin_url,
+            portafolio_url,
+            referencias,
+            fecha_nacimiento
         } = req.body;
 
         // Validaciones básicas
-        if (!nombre || !email || !generacion) {
+        if (!nombre_completo || !email || !anio_egreso || !carrera_tecnica) {
             return res.status(400).json({
                 success: false,
-                error: 'Faltan campos obligatorios: nombre, email, generación'
+                error: 'Faltan campos obligatorios: nombre completo, email, año de egreso, carrera técnica'
             });
         }
 
-        // Verificar si el email ya existe
-        const existingCheck = await client.query(
-            'SELECT id FROM egresados WHERE email = $1',
+        // Verificar si hay una solicitud pendiente para este email
+        const existingPending = await client.query(
+            `SELECT id FROM pendientes_aprobacion
+             WHERE tipo_solicitud = 'egresado' AND email_usuario = $1 AND estado = 'pendiente'`,
             [email]
         );
 
+        // Preparar datos en formato JSON para almacenamiento flexible
+        const datosJSON = {
+            nombre_completo,
+            email,
+            telefono,
+            fecha_nacimiento,
+            anio_egreso: anio_egreso ? parseInt(anio_egreso) : null,
+            carrera_tecnica,
+            generacion,
+            experiencia_laboral,
+            habilidades: typeof habilidades === 'string' ? JSON.parse(habilidades) : habilidades,
+            idiomas: typeof idiomas === 'string' ? JSON.parse(idiomas) : idiomas,
+            cv_url,
+            disponibilidad,
+            pretension_salarial,
+            ciudad,
+            estado,
+            linkedin_url,
+            portafolio_url,
+            referencias: typeof referencias === 'string' ? JSON.parse(referencias) : referencias
+        };
+
         let result;
 
-        if (existingCheck.rows.length > 0) {
-            // Actualizar si ya existe
+        if (existingPending.rows.length > 0) {
+            // Actualizar solicitud pendiente existente
             const updateQuery = `
-                UPDATE egresados
-                SET nombre = $1,
-                    generacion = $2,
-                    telefono = $3,
-                    ciudad = $4,
-                    ocupacion_actual = $5,
-                    universidad = $6,
-                    carrera = $7,
-                    estatus_estudios = $8,
-                    anio_egreso = $9,
-                    historia_exito = $10,
-                    autoriza_publicar = $11,
-                    verificado = $12,
-                    fecha_actualizacion = NOW()
-                WHERE email = $13
-                RETURNING id
+                UPDATE pendientes_aprobacion
+                SET datos_json = $1,
+                    fecha_solicitud = NOW()
+                WHERE id = $2
+                RETURNING id, uuid, fecha_solicitud
             `;
 
             result = await client.query(updateQuery, [
-                nombre,
-                generacion,
-                telefono || null,
-                ciudad || null,
-                ocupacion_actual || null,
-                universidad || null,
-                carrera || null,
-                estatus_estudios || null,
-                anio_egreso ? parseInt(anio_egreso) : null,
-                historia_exito || null,
-                autoriza_publicar || false,
-                verificado !== undefined ? verificado : true,
-                email
+                JSON.stringify(datosJSON),
+                existingPending.rows[0].id
             ]);
 
-            console.log('✅ Egresado actualizado:', result.rows[0].id);
+            console.log('✅ Solicitud de egresado actualizada:', result.rows[0].id);
 
             return res.json({
                 success: true,
-                message: 'Datos actualizados exitosamente',
-                id: result.rows[0].id,
-                updated: true
+                message: '✅ Tu solicitud ha sido actualizada y está pendiente de aprobación.',
+                data: {
+                    solicitud_id: result.rows[0].id,
+                    uuid: result.rows[0].uuid,
+                    nombre: nombre_completo,
+                    email: email,
+                    estado: 'pendiente_aprobacion',
+                    fecha_solicitud: result.rows[0].fecha_solicitud,
+                    nota: 'Tu perfil está pendiente de aprobación por el administrador.'
+                }
             });
         } else {
-            // Insertar nuevo
+            // Insertar nueva solicitud
             const insertQuery = `
-                INSERT INTO egresados (
-                    nombre,
-                    email,
-                    generacion,
-                    telefono,
-                    ciudad,
-                    ocupacion_actual,
-                    universidad,
-                    carrera,
-                    estatus_estudios,
-                    anio_egreso,
-                    historia_exito,
-                    autoriza_publicar,
-                    verificado,
-                    fecha_registro,
-                    fecha_actualizacion
-                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW(), NOW())
-                RETURNING id
+                INSERT INTO pendientes_aprobacion (
+                    tipo_solicitud,
+                    email_usuario,
+                    datos_json,
+                    estado,
+                    fecha_solicitud
+                )
+                VALUES ($1, $2, $3, $4, NOW())
+                RETURNING id, uuid, fecha_solicitud
             `;
 
             result = await client.query(insertQuery, [
-                nombre,
-                email,
-                generacion,
-                telefono || null,
-                ciudad || null,
-                ocupacion_actual || null,
-                universidad || null,
-                carrera || null,
-                estatus_estudios || null,
-                anio_egreso ? parseInt(anio_egreso) : null,
-                historia_exito || null,
-                autoriza_publicar || false,
-                verificado !== undefined ? verificado : true
+                'egresado',                     // tipo_solicitud
+                email,                          // email_usuario
+                JSON.stringify(datosJSON),      // datos_json
+                'pendiente'                     // estado
             ]);
 
-            console.log('✅ Egresado creado:', result.rows[0].id);
+            console.log('✅ Solicitud de egresado creada:', result.rows[0].id);
+
+            // Enviar email de confirmación (opcional)
+            try {
+                const mailOptions = {
+                    from: `"BGE Héroes de la Patria" <${process.env.EMAIL_USER}>`,
+                    to: email,
+                    subject: '✅ Tu solicitud ha sido recibida - BGE Héroes de la Patria',
+                    html: `
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta charset="UTF-8">
+                            <style>
+                                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                                .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+                                .info-box { background: white; padding: 15px; border-left: 4px solid #667eea; margin: 20px 0; }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="container">
+                                <div class="header">
+                                    <h1>✅ Solicitud Recibida</h1>
+                                </div>
+                                <div class="content">
+                                    <p>Hola <strong>${nombre_completo}</strong>,</p>
+                                    <p>¡Gracias por compartir tu información profesional con BGE Héroes de la Patria!</p>
+                                    <div class="info-box">
+                                        <strong>Datos registrados:</strong><br>
+                                        📧 Email: ${email}<br>
+                                        🎓 Carrera: ${carrera_tecnica}<br>
+                                        📅 Año de egreso: ${anio_egreso}
+                                    </div>
+                                    <p><strong>¿Qué sigue?</strong></p>
+                                    <p>Nuestro equipo administrativo revisará tu solicitud en breve y te notificaremos por email una vez que sea aprobada.</p>
+                                    <p>¡Gracias por tu paciencia! 🚀</p>
+                                </div>
+                            </div>
+                        </body>
+                        </html>
+                    `
+                };
+                await transporter.sendMail(mailOptions);
+            } catch (emailError) {
+                console.warn('⚠️ Error enviando email de confirmación:', emailError.message);
+                // No fallar la solicitud por error de email
+            }
 
             return res.json({
                 success: true,
-                message: 'Datos registrados exitosamente',
-                id: result.rows[0].id,
-                updated: false
+                message: '✅ Tu solicitud ha sido recibida y está pendiente de aprobación. Te notificaremos cuando sea revisada.',
+                data: {
+                    solicitud_id: result.rows[0].id,
+                    uuid: result.rows[0].uuid,
+                    nombre: nombre_completo,
+                    email: email,
+                    estado: 'pendiente_aprobacion',
+                    fecha_solicitud: result.rows[0].fecha_solicitud,
+                    nota: 'Tu perfil está pendiente de aprobación por el administrador. Una vez aprobado, aparecerá en el directorio de egresados.'
+                }
             });
         }
 
