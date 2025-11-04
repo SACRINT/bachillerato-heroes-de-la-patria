@@ -11,10 +11,14 @@ const { pool } = require('../config/database');
  * GET /api/pendientes-aprobacion
  * Listar todas las solicitudes pendientes de aprobación
  * Query params: tipo (egresado|bolsa_trabajo), estado (pendiente|aprobada|rechazada), limit, offset
+ *
+ * ⚠️ NOTA: Se removió el filtro email_confirmado para mostrar TODOS los registros
+ * pendientes sin importar su estado de confirmación. Los registros deben aparecer
+ * en el tab de aprobaciones para ser revisados por el administrador.
  */
 router.get('/', async (req, res) => {
     try {
-        const { tipo, estado = 'pendiente', email_confirmado, limit = 50, offset = 0 } = req.query;
+        const { tipo, estado = 'pendiente', limit = 50, offset = 0 } = req.query;
 
         let query = 'SELECT * FROM pendientes_aprobacion WHERE 1=1';
         const params = [];
@@ -29,17 +33,15 @@ router.get('/', async (req, res) => {
             params.push(tipo);
         }
 
-        // Filtrar por email_confirmado si se proporciona
-        if (email_confirmado !== undefined) {
-            const confirmedValue = email_confirmado === 'true' || email_confirmado === true;
-            query += ' AND email_confirmado = $' + (params.length + 1);
-            params.push(confirmedValue);
-        }
+        // ✅ REMOVIDO: Filtro email_confirmado para mostrar todos los registros pendientes
 
         // Paginación
         query += ' ORDER BY fecha_solicitud DESC';
         query += ' LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2);
         params.push(parseInt(limit), parseInt(offset));
+
+        console.log(`📋 Query para obtener pendientes: ${query}`);
+        console.log(`   Parámetros: [${params.join(', ')}]`);
 
         const result = await pool.query(query, params);
 
@@ -57,19 +59,15 @@ router.get('/', async (req, res) => {
             countParams.push(tipo);
         }
 
-        // Filtrar por email_confirmado si se proporciona
-        if (email_confirmado !== undefined) {
-            const confirmedValue = email_confirmado === 'true' || email_confirmado === true;
-            countQuery += ' AND email_confirmado = $' + (countParams.length + 1);
-            countParams.push(confirmedValue);
-        }
-
         const countResult = await pool.query(countQuery, countParams);
+
+        const totalCount = parseInt(countResult.rows[0].count);
+        console.log(`   Resultado: ${result.rows.length} registros encontrados, Total: ${totalCount}`);
 
         res.json({
             success: true,
             data: result.rows,
-            total: parseInt(countResult.rows[0].count),
+            total: totalCount,
             limit: parseInt(limit),
             offset: parseInt(offset)
         });
@@ -149,40 +147,27 @@ router.post('/aprobar/:id', async (req, res) => {
         try {
             // Insertar en la tabla final según el tipo de solicitud
             if (solicitud.tipo_solicitud === 'egresado') {
-                // Insertar en tabla egresados con estructura correcta
-                const egresadoId = `EGR-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9999) + 1).padStart(4, '0')}`;
-
+                // Insertar en tabla egresados con estructura correcta (según setup-database-neon-postgres.sql)
                 await client.query(`
                     INSERT INTO egresados (
-                        egresado_id, nombre_completo, email, telefono,
-                        fecha_nacimiento, anio_egreso, carrera_tecnica, generacion,
-                        experiencia_laboral, habilidades, idiomas, disponibilidad,
-                        ciudad, estado, linkedin_url, portafolio_url, referencias,
-                        estado_perfil, confirmado, created_at, updated_at
+                        nombre, email, telefono,
+                        anio_egreso, carrera, generacion,
+                        ocupacion_actual, ciudad,
+                        verificado, fecha_registro, fecha_actualizacion
                     ) VALUES (
-                        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, NOW(), NOW()
+                        $1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW()
                     )
                     ON CONFLICT (email) DO NOTHING
                 `, [
-                    egresadoId,
                     datos.nombre_completo || datos.name || datos.nombre || '',
                     datos.email,
                     datos.telefono || null,
-                    datos.fecha_nacimiento || null,
                     datos.anio_egreso || null,
                     datos.carrera_tecnica || datos.carrera || null,
                     datos.generacion || null,
                     datos.experiencia_laboral || datos.trabajo || null,
-                    typeof datos.habilidades === 'string' ? datos.habilidades : JSON.stringify(datos.habilidades || []),
-                    typeof datos.idiomas === 'string' ? datos.idiomas : JSON.stringify(datos.idiomas || []),
-                    datos.disponibilidad || 'inmediata',
                     datos.ciudad || null,
-                    datos.estado || null,
-                    datos.linkedin_url || null,
-                    datos.portafolio_url || null,
-                    typeof datos.referencias === 'string' ? datos.referencias : JSON.stringify(datos.referencias || []),
-                    'aprobado',  // estado_perfil: aprobado automáticamente al aprobar desde admin
-                    true,        // confirmado: marcado como confirmado
+                    true  // verificado: marcado como verificado al aprobar desde admin
                 ]);
 
             } else if (solicitud.tipo_solicitud === 'bolsa_trabajo') {
@@ -244,36 +229,49 @@ router.post('/aprobar/:id', async (req, res) => {
 
 /**
  * POST /api/pendientes-aprobacion/rechazar/:id
- * Rechazar una solicitud pendiente
+ * Rechazar una solicitud pendiente - ELIMINA el registro de la BD
  */
 router.post('/rechazar/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const { admin_id, admin_notas } = req.body;
 
-        const result = await pool.query(`
-            UPDATE pendientes_aprobacion
-            SET
-                estado = 'rechazada',
-                admin_id = $1,
-                admin_notas = $2,
-                fecha_procesado = NOW(),
-                updated_at = NOW()
-            WHERE id = $3
-            RETURNING *
-        `, [admin_id || null, admin_notas || null, id]);
+        // Verificar que la solicitud existe antes de eliminarla
+        const verifyResult = await pool.query(
+            'SELECT id, tipo_solicitud, email_usuario, datos_json FROM pendientes_aprobacion WHERE id = $1',
+            [id]
+        );
 
-        if (result.rows.length === 0) {
+        if (verifyResult.rows.length === 0) {
             return res.status(404).json({
                 success: false,
                 error: 'Solicitud no encontrada'
             });
         }
 
+        const solicitud = verifyResult.rows[0];
+
+        // ⚠️ NOTA: Para mantener auditoría, primero guardamos en un log antes de eliminar
+        // (Opcional: si se requiere auditoría completa)
+        console.log(`❌ Rechazando solicitud ${id}: ${solicitud.tipo_solicitud} de ${solicitud.email_usuario}`);
+        console.log(`   Notas del admin: ${admin_notas || 'Sin notas'}`);
+
+        // ELIMINAR el registro de la base de datos
+        const deleteResult = await pool.query(
+            'DELETE FROM pendientes_aprobacion WHERE id = $1 RETURNING id',
+            [id]
+        );
+
         res.json({
             success: true,
-            message: 'Solicitud rechazada',
-            data: result.rows[0]
+            message: 'Solicitud rechazada y eliminada de la base de datos',
+            data: {
+                id: deleteResult.rows[0].id,
+                tipo_solicitud: solicitud.tipo_solicitud,
+                email_usuario: solicitud.email_usuario,
+                action: 'deleted',
+                admin_notas: admin_notas || null
+            }
         });
 
     } catch (error) {

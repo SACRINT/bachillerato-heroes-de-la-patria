@@ -17,8 +17,9 @@ async function loadPendingApprovals() {
     console.log('📋 Cargando solicitudes pendientes...');
 
     try {
-        // Filtrar por: estado='pendiente' AND email_confirmado=true (solo confirmados)
-        const response = await fetch('/api/pendientes-aprobacion?estado=pendiente&email_confirmado=true&limit=100');
+        // Filtrar por: estado='pendiente' (todos los registros pendientes sin importar confirmación)
+        // ✅ ACTUALIZADO: Remover filtro email_confirmado=true para mostrar TODOS los pendientes
+        const response = await fetch('/api/pendientes-aprobacion?estado=pendiente&limit=100');
 
         // Verificar status HTTP
         if (!response.ok) {
@@ -31,6 +32,7 @@ async function loadPendingApprovals() {
 
         if (result && result.success) {
             console.log('DEBUG: API result:', result);
+            console.log(`DEBUG: Total en BD: ${result.total}, Registros recibidos: ${result.data ? result.data.length : 0}`);
 
             // Transformar datos de la nueva API al formato esperado
             pendingApprovals = Array.isArray(result.data) ? result.data.map(item => ({
@@ -38,14 +40,15 @@ async function loadPendingApprovals() {
                 form_type: item.tipo_solicitud,
                 data: item.datos_json,
                 verification_email: item.email_usuario,
-                email_verified: true, // Nueva tabla siempre consideramos como verificado
-                created_at: item.fecha_solicitud
+                email_verified: item.email_confirmado !== undefined ? item.email_confirmado : true, // Verificar si existe la columna
+                created_at: item.fecha_solicitud,
+                estado: item.estado // Incluir estado para debugging
             })) : [];
 
             console.log('DEBUG: pendingApprovals after assignment:', pendingApprovals);
             filteredApprovals = [...pendingApprovals];
 
-            console.log(`✅ Cargadas ${pendingApprovals.length} solicitudes pendientes`);
+            console.log(`✅ Cargadas ${pendingApprovals.length} solicitudes pendientes (Total en BD: ${result.total})`);
 
             // Actualizar contador en el badge
             updateApprovalsBadge(pendingApprovals.length);
