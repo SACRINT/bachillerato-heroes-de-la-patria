@@ -17,7 +17,8 @@ async function loadPendingApprovals() {
     console.log('📋 Cargando solicitudes pendientes...');
 
     try {
-        const response = await fetch('/api/pendientes-aprobacion?estado=pendiente&limit=100');
+        // Filtrar por: estado='pendiente' AND email_confirmado=true (solo confirmados)
+        const response = await fetch('/api/pendientes-aprobacion?estado=pendiente&email_confirmado=true&limit=100');
 
         // Verificar status HTTP
         if (!response.ok) {

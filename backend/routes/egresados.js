@@ -162,17 +162,18 @@ router.post('/create', async (req, res) => {
                 confirmation_token: confirmationToken  // Token guardado en datos
             };
 
-            // Insertar en pendientes_aprobacion con estado 'no_confirmado'
-            // NO aparecerá en el panel de admin hasta que el usuario confirme su email
+            // Insertar en pendientes_aprobacion con estado 'pendiente'
+            // NO aparecerá en el panel de admin hasta que el usuario confirme su email (email_confirmado=false)
             const insertQuery = `
                 INSERT INTO pendientes_aprobacion (
                     tipo_solicitud,
                     email_usuario,
                     datos_json,
                     estado,
+                    email_confirmado,
                     fecha_solicitud
                 )
-                VALUES ($1, $2, $3, $4, NOW())
+                VALUES ($1, $2, $3, $4, $5, NOW())
                 RETURNING id, uuid, fecha_solicitud
             `;
 
@@ -180,7 +181,8 @@ router.post('/create', async (req, res) => {
                 'egresado',                     // tipo_solicitud
                 email,                          // email_usuario
                 JSON.stringify(datosJSON),      // datos_json
-                'no_confirmado'                 // estado: REQUIERE CONFIRMACION DE EMAIL
+                'pendiente',                    // estado
+                false                           // email_confirmado: No confirmado aún
             ]);
         } else {
             // Si está reenviando, obtener el ID del registro existente
@@ -289,7 +291,8 @@ router.post('/create', async (req, res) => {
                 uuid: result.rows[0].uuid || null,
                 nombre: nombre_completo,
                 email: email,
-                estado: 'no_confirmado',
+                estado: 'pendiente',
+                email_confirmado: false,
                 fecha_solicitud: result.rows[0].fecha_solicitud,
                 reenviado: reenviarConfirmacion,
                 instrucciones: reenviarConfirmacion
@@ -322,10 +325,11 @@ router.get('/confirm/:token', async (req, res) => {
         const { token } = req.params;
 
         // Buscar solicitud pendiente de confirmación con este token
+        // email_confirmado=false significa que aún no confirmó su email
         const result = await client.query(
             `SELECT id, email_usuario, datos_json, estado, fecha_solicitud
              FROM pendientes_aprobacion
-             WHERE tipo_solicitud = 'egresado' AND estado = 'no_confirmado'`
+             WHERE tipo_solicitud = 'egresado' AND estado = 'pendiente' AND email_confirmado = false`
         );
 
         if (result.rows.length === 0) {
@@ -393,10 +397,11 @@ router.get('/confirm/:token', async (req, res) => {
         const datos = solicitudEncontrada.datos;
         const solicitudId = solicitudEncontrada.id;
 
-        // Cambiar estado de 'no_confirmado' a 'pendiente'
+        // Marcar email como confirmado (email_confirmado = true)
+        // Ahora sí aparecerá en el panel de admin para revisión
         await client.query(
             `UPDATE pendientes_aprobacion
-             SET estado = 'pendiente', updated_at = NOW()
+             SET email_confirmado = true, updated_at = NOW()
              WHERE id = $1`,
             [solicitudId]
         );

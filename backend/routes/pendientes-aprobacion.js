@@ -14,7 +14,7 @@ const { pool } = require('../config/database');
  */
 router.get('/', async (req, res) => {
     try {
-        const { tipo, estado = 'pendiente', limit = 50, offset = 0 } = req.query;
+        const { tipo, estado = 'pendiente', email_confirmado, limit = 50, offset = 0 } = req.query;
 
         let query = 'SELECT * FROM pendientes_aprobacion WHERE 1=1';
         const params = [];
@@ -27,6 +27,13 @@ router.get('/', async (req, res) => {
         if (tipo) {
             query += ' AND tipo_solicitud = $' + (params.length + 1);
             params.push(tipo);
+        }
+
+        // Filtrar por email_confirmado si se proporciona
+        if (email_confirmado !== undefined) {
+            const confirmedValue = email_confirmado === 'true' || email_confirmado === true;
+            query += ' AND email_confirmado = $' + (params.length + 1);
+            params.push(confirmedValue);
         }
 
         // Paginación
@@ -48,6 +55,13 @@ router.get('/', async (req, res) => {
         if (tipo) {
             countQuery += ' AND tipo_solicitud = $' + (countParams.length + 1);
             countParams.push(tipo);
+        }
+
+        // Filtrar por email_confirmado si se proporciona
+        if (email_confirmado !== undefined) {
+            const confirmedValue = email_confirmado === 'true' || email_confirmado === true;
+            countQuery += ' AND email_confirmado = $' + (countParams.length + 1);
+            countParams.push(confirmedValue);
         }
 
         const countResult = await pool.query(countQuery, countParams);
