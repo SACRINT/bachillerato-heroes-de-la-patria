@@ -58,6 +58,7 @@ const installParentsRoutes = require('./routes/install-parents');
 const financesRoutes = require('./routes/finances');
 const citasRoutes = require('./routes/citas');
 const pendientesAprobacionRoutes = require('./routes/pendientes-aprobacion');
+const diagnosticoAprobacionesRoutes = require('./routes/diagnostico-aprobaciones');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -233,6 +234,7 @@ app.use('/api/install-parents', installParentsRoutes);
 app.use('/api/finances', financesRoutes);
 app.use('/api/citas', citasRoutes);
 app.use('/api/pendientes-aprobacion', pendientesAprobacionRoutes);
+app.use('/api/diagnostico-aprobaciones', diagnosticoAprobacionesRoutes);
 app.use('/api/teachers-portal', teachersPortalRoutes);
 app.use('/api/messaging', messagingRoutes);
 app.use('/api/digital-library', digitalLibraryRoutes);

@@ -1188,6 +1188,7 @@ const financesRoutes = require('../backend/routes/finances');
 const citasRoutes = require('../backend/routes/citas');
 const pendientesAprobacionRoutes = require('../backend/routes/pendientes-aprobacion');
 const fixAprobacionesAutoRoutes = require('../backend/routes/fix-aprobaciones-auto');
+const diagnosticoAprobacionesRoutes = require('../backend/routes/diagnostico-aprobaciones');
 
 // ✅ 28 RUTAS FALTANTES AGREGADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
@@ -1261,6 +1262,7 @@ app.use('/api/digital-library', digitalLibraryRoutes);
 app.use('/api/support-tickets', supportTicketsRoutes);
 app.use('/api/pendientes-aprobacion', pendientesAprobacionRoutes);
 app.use('/api/fix-aprobaciones', fixAprobacionesAutoRoutes);
+app.use('/api/diagnostico-aprobaciones', diagnosticoAprobacionesRoutes);
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
