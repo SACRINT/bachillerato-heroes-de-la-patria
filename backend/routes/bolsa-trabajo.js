@@ -2,15 +2,19 @@
  * 💼 API CRUD PARA BOLSA DE TRABAJO - PostgreSQL
  * Gestión completa de CVs y candidatos
  * Fecha: 17 Octubre 2025
+ * Actualizado: 3 Noviembre 2025 - Flujo de confirmación de email
  */
 
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
+const emailConfirmationService = require('../services/emailConfirmationService');
 
 // =====================================================
 // POST /api/bolsa-trabajo/cv - Crear perfil de CV
+// FLUJO ACTUALIZADO: 1) Guardar temporal 2) Enviar email confirmación
+//                   3) Usuario confirma email 4) Mover a aprobación admin
 // =====================================================
 router.post('/cv', [
     body('name').trim().notEmpty().withMessage('Nombre es requerido'),
@@ -34,11 +38,17 @@ router.post('/cv', [
     const user_agent = req.get('User-Agent');
 
     try {
-        // 📋 FLUJO MEJORADO: Insertar en tabla de pendientes de aprobación (no directamente en bolsa_trabajo)
-        // Esto permite que el admin revise y apruebe la solicitud antes de que aparezca en la BD final
+        // 📧 NUEVO FLUJO (3 NOVIEMBRE 2025):
+        // 1. Guardar en tabla temporal (bolsa_trabajo_pending_confirmation)
+        // 2. Generar token de confirmación
+        // 3. Enviar email con enlace de confirmación
+        // 4. Usuario confirma → se mueve a pendientes_aprobacion
+        // 5. Admin aprueba → se guarda en bolsa_trabajo final
 
-        // Preparar datos en formato JSON para almacenamiento flexible
-        const datosJSON = {
+        console.log(`📧 [BOLSA-TRABAJO] Iniciando flujo de confirmación para ${email}`);
+
+        // Paso 1: Guardar registro pendiente y generar token
+        const formData = {
             name,
             email,
             phone,
@@ -48,47 +58,101 @@ router.post('/cv', [
             skills
         };
 
-        // Insertar en pendientes_aprobacion
-        const insertPendingQuery = `
-            INSERT INTO pendientes_aprobacion (
-                tipo_solicitud,
-                email_usuario,
-                datos_json,
-                estado,
-                fecha_solicitud
-            )
-            VALUES ($1, $2, $3, $4, NOW())
-            RETURNING id, uuid, fecha_solicitud;
-        `;
+        const pendingRecord = await emailConfirmationService.savePendingConfirmation(
+            formData,
+            ip_address,
+            user_agent
+        );
 
-        const result = await pool.query(insertPendingQuery, [
-            'bolsa_trabajo',           // tipo_solicitud
-            email,                     // email_usuario
-            JSON.stringify(datosJSON), // datos_json
-            'pendiente'                // estado
-        ]);
+        // Paso 2: Enviar email de confirmación
+        const confirmationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/bolsa-trabajo.html#confirm-email`;
 
-        console.log('✅ Solicitud de Bolsa de Trabajo enviada a aprobación:', result.rows[0].id);
+        await emailConfirmationService.sendConfirmationEmail(
+            email,
+            name,
+            pendingRecord.confirmationToken,
+            confirmationUrl
+        );
+
+        console.log(`✅ [BOLSA-TRABAJO] Solicitud de CV en espera de confirmación de email: ${email}`);
 
         res.status(201).json({
             success: true,
-            message: '✅ Tu solicitud ha sido recibida. Nuestro equipo administrativo la revisará en breve. Te notificaremos por email cuando sea aprobada.',
+            message: '📧 ¡Solicitud recibida! Hemos enviado un email de confirmación a tu dirección. Por favor confirma tu email para completar el registro.',
             data: {
-                solicitud_id: result.rows[0].id,
-                uuid: result.rows[0].uuid,
+                uuid: pendingRecord.uuid,
                 email: email,
                 nombre: name,
-                estado: 'pendiente_aprobacion',
-                fecha_solicitud: result.rows[0].fecha_solicitud,
-                nota: 'Tu perfil está pendiente de aprobación por el administrador. Una vez aprobado, aparecerá en la bolsa de trabajo.'
+                estado: 'pendiente_confirmacion_email',
+                fecha_solicitud: new Date().toISOString(),
+                nota: 'Revisa tu email (incluyendo spam) y haz clic en el enlace de confirmación. El enlace vence en 24 horas.'
             }
         });
 
     } catch (error) {
-        console.error('❌ Error al guardar solicitud de CV:', error);
+        console.error('❌ [BOLSA-TRABAJO] Error al guardar solicitud de CV:', error);
+
+        // Verificar si es error de email duplicado
+        if (error.message && error.message.includes('duplicate')) {
+            return res.status(409).json({
+                success: false,
+                error: 'Este email ya tiene un registro pendiente. Por favor revisa tu email para confirmar.',
+                code: 'EMAIL_ALREADY_PENDING'
+            });
+        }
+
         res.status(500).json({
             success: false,
             error: 'Error al procesar tu perfil. Por favor intenta nuevamente.',
+            detalle: error.message
+        });
+    }
+});
+
+// =====================================================
+// POST /api/bolsa-trabajo/confirm-email/:token - Confirmar email
+// =====================================================
+router.post('/confirm-email/:token', async (req, res) => {
+    const { token } = req.params;
+
+    if (!token) {
+        return res.status(400).json({
+            success: false,
+            error: 'Token de confirmación es requerido'
+        });
+    }
+
+    try {
+        console.log(`📧 [BOLSA-TRABAJO] Confirmando email con token: ${token.substring(0, 8)}...`);
+
+        const result = await emailConfirmationService.confirmEmailWithToken(token);
+
+        if (!result.success) {
+            return res.status(400).json({
+                success: false,
+                error: result.error
+            });
+        }
+
+        console.log(`✅ [BOLSA-TRABAJO] Email confirmado: ${result.email}`);
+
+        res.status(200).json({
+            success: true,
+            message: '✅ ¡Email confirmado exitosamente! Tu solicitud ha sido enviada a revisión del administrador. Te notificaremos cuando sea revisada.',
+            data: {
+                uuid: result.uuid,
+                email: result.email,
+                approvalId: result.approvalId,
+                status: 'en_aprobacion',
+                mensaje: 'Tu perfil está pendiente de aprobación por el administrador.'
+            }
+        });
+
+    } catch (error) {
+        console.error('❌ [BOLSA-TRABAJO] Error al confirmar email:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al confirmar email. Por favor intenta nuevamente.',
             detalle: error.message
         });
     }
@@ -445,6 +509,223 @@ router.get('/stats/general', async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas',
+            message: error.message
+        });
+    }
+});
+
+// =====================================================
+// GET /api/bolsa-trabajo/pending-approvals - Obtener solicitudes pendientes de aprobación
+// (PARA ADMIN)
+// =====================================================
+router.get('/pending-approvals', async (req, res) => {
+    const { status = 'pendiente', limit = 50, offset = 0, email_confirmado = true } = req.query;
+
+    try {
+        console.log(`📋 [BOLSA-TRABAJO] Obteniendo solicitudes pendientes de aprobación...`);
+
+        let query = `
+            SELECT
+                id,
+                uuid,
+                tipo_solicitud,
+                email_usuario,
+                datos_json,
+                estado,
+                email_confirmado,
+                fecha_solicitud,
+                admin_id,
+                admin_notas
+            FROM pendientes_aprobacion
+            WHERE tipo_solicitud = 'bolsa_trabajo'
+        `;
+
+        const params = [];
+        let paramCount = 0;
+
+        // Filtrar por estado
+        if (status) {
+            query += ` AND estado = $${++paramCount}`;
+            params.push(status);
+        }
+
+        // Filtrar por email confirmado
+        if (email_confirmado !== undefined && email_confirmado !== 'undefined') {
+            query += ` AND email_confirmado = $${++paramCount}`;
+            params.push(email_confirmado === 'true' || email_confirmado === true);
+        }
+
+        // Orden y paginación
+        query += ` ORDER BY fecha_solicitud DESC LIMIT $${++paramCount} OFFSET $${++paramCount}`;
+        params.push(parseInt(limit), parseInt(offset));
+
+        const result = await pool.query(query, params);
+
+        // Contar total
+        let countQuery = `
+            SELECT COUNT(*) FROM pendientes_aprobacion
+            WHERE tipo_solicitud = 'bolsa_trabajo'
+        `;
+
+        const countParams = [];
+        let countParamIdx = 0;
+
+        if (status) {
+            countQuery += ` AND estado = $${++countParamIdx}`;
+            countParams.push(status);
+        }
+
+        if (email_confirmado !== undefined && email_confirmado !== 'undefined') {
+            countQuery += ` AND email_confirmado = $${++countParamIdx}`;
+            countParams.push(email_confirmado === 'true' || email_confirmado === true);
+        }
+
+        const countResult = await pool.query(countQuery, countParams);
+
+        console.log(`✅ [BOLSA-TRABAJO] ${result.rows.length} solicitudes encontradas`);
+
+        res.json({
+            success: true,
+            data: result.rows,
+            total: parseInt(countResult.rows[0].count),
+            limit: parseInt(limit),
+            offset: parseInt(offset)
+        });
+
+    } catch (error) {
+        console.error('❌ [BOLSA-TRABAJO] Error al obtener solicitudes pendientes:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener las solicitudes',
+            message: error.message
+        });
+    }
+});
+
+// =====================================================
+// POST /api/bolsa-trabajo/approve-solicitud/:id - Aprobar/Rechazar solicitud
+// (PARA ADMIN)
+// =====================================================
+router.post('/approve-solicitud/:id', [
+    body('action').isIn(['approve', 'reject']).withMessage('Acción debe ser "approve" o "reject"'),
+    body('adminNotes').optional().trim()
+], async (req, res) => {
+    const { id } = req.params;
+    const { action, adminNotes } = req.body;
+
+    // Validar
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            errors: errors.array()
+        });
+    }
+
+    try {
+        console.log(`📋 [BOLSA-TRABAJO] Procesando solicitud ID ${id} con acción: ${action}`);
+
+        // 1. Obtener la solicitud pendiente
+        const getQuery = `
+            SELECT id, uuid, email_usuario, datos_json, estado, tipo_solicitud
+            FROM pendientes_aprobacion
+            WHERE id = $1 AND tipo_solicitud = 'bolsa_trabajo'
+        `;
+
+        const getResult = await pool.query(getQuery, [id]);
+
+        if (getResult.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: 'Solicitud no encontrada'
+            });
+        }
+
+        const solicitud = getResult.rows[0];
+
+        // 2. Actualizar estado en pendientes_aprobacion
+        const estado = action === 'approve' ? 'aprobada' : 'rechazada';
+        const updateQuery = `
+            UPDATE pendientes_aprobacion
+            SET
+                estado = $1,
+                admin_notas = $2,
+                admin_id = $3,
+                fecha_procesado = NOW()
+            WHERE id = $4
+            RETURNING id, uuid, estado, email_usuario;
+        `;
+
+        const updateResult = await pool.query(updateQuery, [
+            estado,
+            adminNotes || null,
+            req.user?.id || null, // ID del admin (si está autenticado)
+            id
+        ]);
+
+        if (!updateResult.rows.length) {
+            throw new Error('No se pudo actualizar la solicitud');
+        }
+
+        // 3. Si es aprobada, guardar en tabla bolsa_trabajo
+        let boletinResult = null;
+        if (action === 'approve') {
+            const formData = JSON.parse(solicitud.datos_json);
+
+            const insertQuery = `
+                INSERT INTO bolsa_trabajo (
+                    nombre,
+                    email,
+                    telefono,
+                    anio_egreso,
+                    area_interes,
+                    resumen_profesional,
+                    habilidades,
+                    estado,
+                    verificado,
+                    fecha_creacion
+                )
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())
+                RETURNING id, uuid;
+            `;
+
+            boletinResult = await pool.query(insertQuery, [
+                formData.name,
+                formData.email,
+                formData.phone,
+                formData.graduationYear,
+                formData.subject,
+                formData.message,
+                formData.skills ? JSON.stringify(formData.skills) : null,
+                'activo',
+                true
+            ]);
+
+            console.log(`✅ [BOLSA-TRABAJO] Solicitud aprobada y guardada en bolsa_trabajo: ID ${boletinResult.rows[0].id}`);
+        } else {
+            console.log(`❌ [BOLSA-TRABAJO] Solicitud rechazada: ID ${solicitud.id}`);
+        }
+
+        res.status(200).json({
+            success: true,
+            message: action === 'approve'
+                ? '✅ Solicitud aprobada exitosamente'
+                : '❌ Solicitud rechazada',
+            data: {
+                solicitud_id: id,
+                uuid: solicitud.uuid,
+                email: solicitud.email_usuario,
+                estado: estado,
+                bolsa_trabajo_id: boletinResult?.rows[0]?.id || null,
+                admin_notas: adminNotes || null
+            }
+        });
+
+    } catch (error) {
+        console.error('❌ [BOLSA-TRABAJO] Error al procesar solicitud:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al procesar la solicitud',
             message: error.message
         });
     }

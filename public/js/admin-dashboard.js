@@ -1420,15 +1420,30 @@ document.addEventListener('DOMContentLoaded', function() {
         script.onload = function() {
             //console.log('Chart.js cargado dinámicamente');
             window.adminDashboard = new AdminDashboard();
+            // Inicializar módulo de solicitudes
+            if (window.solicitudesManager && typeof window.solicitudesManager.init === 'function') {
+                window.solicitudesManager.init();
+                console.log('✅ [DASHBOARD] SolicitudesManager inicializado');
+            }
         };
         script.onerror = function() {
             console.error('No se pudo cargar Chart.js. Dashboard funcionará sin gráficos.');
             window.adminDashboard = new AdminDashboard();
+            // Inicializar módulo de solicitudes
+            if (window.solicitudesManager && typeof window.solicitudesManager.init === 'function') {
+                window.solicitudesManager.init();
+                console.log('✅ [DASHBOARD] SolicitudesManager inicializado');
+            }
         };
         document.head.appendChild(script);
     } else {
         //console.log('Chart.js disponible, inicializando dashboard');
         window.adminDashboard = new AdminDashboard();
+        // Inicializar módulo de solicitudes
+        if (window.solicitudesManager && typeof window.solicitudesManager.init === 'function') {
+            window.solicitudesManager.init();
+            console.log('✅ [DASHBOARD] SolicitudesManager inicializado');
+        }
     }
 });
 
