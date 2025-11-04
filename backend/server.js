@@ -274,6 +274,14 @@ app.use('/api/*', (req, res) => {
 app.use(errorHandler);
 
 // ============================================
+// AUTO-FIX APROBACIONES (3 NOV 2025)
+// ============================================
+const { autoFixAprobaciones } = require('./scripts/auto-fix-aprobaciones-on-startup');
+autoFixAprobaciones().catch(err => {
+    console.error('❌ [AUTO-FIX] Error al ejecutar auto-fix:', err.message);
+});
+
+// ============================================
 // SERVER START
 // ============================================
 

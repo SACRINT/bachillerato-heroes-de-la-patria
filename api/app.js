@@ -1187,6 +1187,7 @@ const supportTicketsRoutes = require('../backend/routes/support-tickets');
 const financesRoutes = require('../backend/routes/finances');
 const citasRoutes = require('../backend/routes/citas');
 const pendientesAprobacionRoutes = require('../backend/routes/pendientes-aprobacion');
+const fixAprobacionesAutoRoutes = require('../backend/routes/fix-aprobaciones-auto');
 
 // ✅ 28 RUTAS FALTANTES AGREGADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
@@ -1259,6 +1260,7 @@ app.use('/api/messaging', messagingRoutes);
 app.use('/api/digital-library', digitalLibraryRoutes);
 app.use('/api/support-tickets', supportTicketsRoutes);
 app.use('/api/pendientes-aprobacion', pendientesAprobacionRoutes);
+app.use('/api/fix-aprobaciones', fixAprobacionesAutoRoutes);
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
@@ -1331,6 +1333,13 @@ app.get('/api/config/public-keys', (req, res) => {
 const notImplementedRoutes = [
 ];
 app.all(notImplementedRoutes, handleNotImplemented);
+
+// --- AUTO-FIX APROBACIONES (3 NOV 2025) ---
+// Ejecuta automáticamente al iniciar el servidor para sincronizar BD
+const { autoFixAprobaciones } = require('../backend/scripts/auto-fix-aprobaciones-on-startup');
+autoFixAprobaciones().catch(err => {
+    console.error('❌ [AUTO-FIX] Error al ejecutar auto-fix:', err.message);
+});
 
 // --- Export the app for Vercel ---
 module.exports = app;
