@@ -344,4 +344,99 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+/**
+ * PUT /api/solicitudes/:id/approve
+ * Aprobar una solicitud pendiente
+ */
+router.put('/:id/approve', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { notas_admin } = req.body;
+
+        const result = await pool.query(
+            `UPDATE solicitudes_documentos
+             SET status = 'aprobada',
+                 notas_admin = $1,
+                 fecha_procesado = NOW()
+             WHERE id = $2
+             RETURNING *`,
+            [notas_admin || null, id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Solicitud no encontrada'
+            });
+        }
+
+        console.log(`✅ Solicitud ${id} aprobada`);
+
+        res.json({
+            success: true,
+            message: 'Solicitud aprobada exitosamente',
+            solicitud: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error('Error aprobando solicitud:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al aprobar solicitud',
+            error: error.message
+        });
+    }
+});
+
+/**
+ * PUT /api/solicitudes/:id/reject
+ * Rechazar una solicitud pendiente
+ */
+router.put('/:id/reject', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { motivo } = req.body;
+
+        if (!motivo) {
+            return res.status(400).json({
+                success: false,
+                message: 'Se requiere un motivo de rechazo'
+            });
+        }
+
+        const result = await pool.query(
+            `UPDATE solicitudes_documentos
+             SET status = 'rechazada',
+                 notas_admin = $1,
+                 fecha_procesado = NOW()
+             WHERE id = $2
+             RETURNING *`,
+            [motivo, id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Solicitud no encontrada'
+            });
+        }
+
+        console.log(`❌ Solicitud ${id} rechazada`);
+
+        res.json({
+            success: true,
+            message: 'Solicitud rechazada exitosamente',
+            solicitud: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error('Error rechazando solicitud:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al rechazar solicitud',
+            error: error.message
+        });
+    }
+});
+
 module.exports = router;

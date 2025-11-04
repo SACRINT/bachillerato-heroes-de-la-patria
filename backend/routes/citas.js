@@ -677,4 +677,99 @@ router.get('/stats', async (req, res) => {
     }
 });
 
+/**
+ * PUT /api/citas/:id/approve
+ * Aprobar una cita pendiente
+ */
+router.put('/:id/approve', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { notas_admin } = req.body;
+
+        const result = await db.executeQuery(
+            `UPDATE citas
+             SET estado = 'aprobada',
+                 notas_admin = $1,
+                 updated_at = NOW()
+             WHERE id = $2
+             RETURNING *`,
+            [notas_admin || null, id]
+        );
+
+        if (result.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Cita no encontrada'
+            });
+        }
+
+        console.log(`✅ Cita ${id} aprobada`);
+
+        res.json({
+            success: true,
+            message: 'Cita aprobada exitosamente',
+            cita: result[0]
+        });
+
+    } catch (error) {
+        console.error('Error aprobando cita:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al aprobar cita',
+            error: error.message
+        });
+    }
+});
+
+/**
+ * PUT /api/citas/:id/reject
+ * Rechazar una cita pendiente
+ */
+router.put('/:id/reject', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { motivo_rechazo } = req.body;
+
+        if (!motivo_rechazo) {
+            return res.status(400).json({
+                success: false,
+                message: 'Se requiere un motivo de rechazo'
+            });
+        }
+
+        const result = await db.executeQuery(
+            `UPDATE citas
+             SET estado = 'rechazada',
+                 notas_admin = $1,
+                 updated_at = NOW()
+             WHERE id = $2
+             RETURNING *`,
+            [motivo_rechazo, id]
+        );
+
+        if (result.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Cita no encontrada'
+            });
+        }
+
+        console.log(`❌ Cita ${id} rechazada`);
+
+        res.json({
+            success: true,
+            message: 'Cita rechazada exitosamente',
+            cita: result[0]
+        });
+
+    } catch (error) {
+        console.error('Error rechazando cita:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al rechazar cita',
+            error: error.message
+        });
+    }
+});
+
 module.exports = router;

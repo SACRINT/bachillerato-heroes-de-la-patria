@@ -68,20 +68,30 @@ router.post('/create', async (req, res) => {
             });
         }
 
-        // Generar ID único y token de confirmación
-        const egresadoId = `EGR-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9999) + 1).padStart(4, '0')}`;
+        // Validar email válido
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email inválido'
+            });
+        }
+
+        // Generar token de confirmación ÚNICO
         const confirmationToken = crypto.randomBytes(32).toString('hex');
 
-        // Verificar si el email ya existe
+        // Verificar si el email ya existe en egresados o pendientes_aprobacion
         const existingCheck = await client.query(
-            'SELECT id FROM egresados WHERE email = $1',
+            `SELECT id FROM egresados WHERE email = $1
+             UNION
+             SELECT id FROM pendientes_aprobacion WHERE email_usuario = $1 AND tipo_solicitud = 'egresado'`,
             [email]
         );
 
         if (existingCheck.rows.length > 0) {
             return res.status(400).json({
                 success: false,
-                message: 'Este email ya está registrado'
+                message: 'Este email ya está registrado o tiene una solicitud pendiente'
             });
         }
 
@@ -107,10 +117,12 @@ router.post('/create', async (req, res) => {
             estado,
             linkedin_url,
             portafolio_url,
-            referencias
+            referencias,
+            confirmation_token: confirmationToken  // Token guardado en datos
         };
 
-        // Insertar en pendientes_aprobacion
+        // Insertar en pendientes_aprobacion con estado 'no_confirmado'
+        // NO aparecerá en el panel de admin hasta que el usuario confirme su email
         const insertQuery = `
             INSERT INTO pendientes_aprobacion (
                 tipo_solicitud,
@@ -127,7 +139,7 @@ router.post('/create', async (req, res) => {
             'egresado',                     // tipo_solicitud
             email,                          // email_usuario
             JSON.stringify(datosJSON),      // datos_json
-            'pendiente'                     // estado
+            'no_confirmado'                 // estado: REQUIERE CONFIRMACION DE EMAIL
         ]);
 
         console.log('✅ Perfil creado, enviando email de confirmación...');
@@ -138,7 +150,7 @@ router.post('/create', async (req, res) => {
         const mailOptions = {
             from: `"BGE Héroes de la Patria" <${process.env.EMAIL_USER}>`,
             to: email,
-            subject: '✅ Confirma tu perfil profesional - BGE Héroes de la Patria',
+            subject: '📧 Confirma tu dirección de email - BGE Héroes de la Patria',
             html: `
                 <!DOCTYPE html>
                 <html>
@@ -149,57 +161,62 @@ router.post('/create', async (req, res) => {
                         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
                         .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
                         .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-                        .button { display: inline-block; background: #667eea; color: white !important; padding: 15px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; }
-                        .button:hover { background: #764ba2; }
+                        .button { display: inline-block; background: #27ae60; color: white !important; padding: 15px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; }
+                        .button:hover { background: #229954; }
                         .info-box { background: white; padding: 15px; border-left: 4px solid #667eea; margin: 20px 0; }
-                        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+                        .warning { background: #fff3cd; padding: 15px; border-left: 4px solid #ff9800; margin: 20px 0; color: #856404; }
                     </style>
                 </head>
                 <body>
                     <div class="container">
                         <div class="header">
-                            <h1>🎓 Confirma tu Perfil Profesional</h1>
+                            <h1>📧 Confirmación de Email Requerida</h1>
                         </div>
                         <div class="content">
                             <p>Hola <strong>${nombre_completo}</strong>,</p>
 
-                            <p>¡Gracias por crear tu perfil profesional en BGE Héroes de la Patria!</p>
+                            <p>Hemos recibido tu solicitud para crear un perfil profesional en BGE Héroes de la Patria.</p>
 
-                            <div class="info-box">
-                                <strong>Detalles de tu perfil:</strong><br>
-                                📧 Email: ${email}<br>
-                                🎓 Carrera: ${carrera_tecnica}<br>
-                                📅 Año de egreso: ${anio_egreso}<br>
-                                🆔 ID de perfil: ${egresadoId}
+                            <div class="warning">
+                                <strong>⚠️ IMPORTANTE:</strong> Para continuar, debes confirmar que este email te pertenece haciendo clic en el botón de abajo.
                             </div>
 
-                            <p><strong>⚠️ Paso importante:</strong> Debes confirmar tu dirección de email haciendo clic en el botón de abajo:</p>
+                            <div class="info-box">
+                                <strong>Información de tu perfil:</strong><br>
+                                👤 Nombre: ${nombre_completo}<br>
+                                📧 Email: ${email}<br>
+                                🎓 Carrera: ${carrera_tecnica}<br>
+                                📅 Año de egreso: ${anio_egreso}
+                            </div>
+
+                            <p><strong>Haz clic aquí para confirmar tu email:</strong></p>
 
                             <div style="text-align: center;">
                                 <a href="${confirmationUrl}" class="button">
-                                    ✅ Confirmar mi perfil
+                                    ✅ Confirmar mi Email
                                 </a>
                             </div>
 
                             <p style="font-size: 12px; color: #666;">
                                 Si el botón no funciona, copia y pega este enlace en tu navegador:<br>
-                                <a href="${confirmationUrl}">${confirmationUrl}</a>
+                                <code>${confirmationUrl}</code>
                             </p>
 
                             <div class="info-box">
-                                <strong>¿Qué sigue después de confirmar?</strong><br>
-                                1. Tu perfil será revisado por nuestro equipo administrativo<br>
-                                2. Verificaremos que fuiste alumno de BGE Héroes de la Patria<br>
-                                3. Una vez aprobado, tu perfil estará disponible para empresas<br>
-                                4. Recibirás notificaciones de oportunidades laborales
+                                <strong>¿Qué sucede después?</strong><br>
+                                1. ✅ Confirmas tu email (ESTE PASO)<br>
+                                2. 📋 Tu solicitud va a revisión del equipo administrativo<br>
+                                3. ✅ Se valida que fuiste alumno de BGE<br>
+                                4. 📬 Recibirás email cuando sea aprobado<br>
+                                5. 🌐 Tu perfil estará visible para empresas
                             </div>
 
-                            <p>Si no creaste este perfil, puedes ignorar este mensaje.</p>
-
-                            <p>¡Éxito en tu búsqueda laboral! 🚀</p>
+                            <p style="color: #999; font-size: 11px;">
+                                Si no realizaste esta solicitud, puedes ignorar este email.
+                            </p>
                         </div>
-                        <div class="footer">
-                            <p>BGE Héroes de la Patria - Bolsa de Trabajo<br>
+                        <div style="text-align: center; padding: 20px; color: #666; font-size: 11px;">
+                            <p>BGE Héroes de la Patria - Sistema de Egresados<br>
                             Este es un correo automático, por favor no respondas.</p>
                         </div>
                     </div>
@@ -208,20 +225,24 @@ router.post('/create', async (req, res) => {
             `
         };
 
-        await transporter.sendMail(mailOptions);
-        console.log('📧 Email de confirmación enviado a:', email);
+        try {
+            await transporter.sendMail(mailOptions);
+            console.log('✅ Email de confirmación enviado a:', email);
+        } catch (emailError) {
+            console.error('⚠️ Error enviando email:', emailError.message);
+        }
 
         res.json({
             success: true,
-            message: '✅ Tu solicitud ha sido recibida y está pendiente de aprobación. Nuestro equipo administrativo la revisará en breve y te notificaremos por email cuando sea aprobada.',
+            message: '✅ Te hemos enviado un email de confirmación. Por favor revisa tu bandeja de entrada y haz clic en el enlace para confirmar tu dirección de email. Tu solicitud estará pendiente hasta que confirmes el email.',
             data: {
                 solicitud_id: result.rows[0].id,
                 uuid: result.rows[0].uuid,
                 nombre: nombre_completo,
                 email: email,
-                estado: 'pendiente_aprobacion',
+                estado: 'no_confirmado',
                 fecha_solicitud: result.rows[0].fecha_solicitud,
-                nota: 'Tu perfil está pendiente de aprobación por el administrador. Una vez aprobado, aparecerá en el directorio de egresados.'
+                nota: 'Debes confirmar tu email antes de que tu solicitud sea revisada por el administrador.'
             }
         });
 
@@ -239,7 +260,8 @@ router.post('/create', async (req, res) => {
 
 /**
  * GET /api/egresados/confirm/:token
- * Confirmar email del egresado
+ * Confirmar email del egresado - NUEVO FLUJO
+ * Busca en pendientes_aprobacion, valida token, cambia estado de 'no_confirmado' a 'pendiente'
  */
 router.get('/confirm/:token', async (req, res) => {
     const client = await pool.connect();
@@ -247,10 +269,11 @@ router.get('/confirm/:token', async (req, res) => {
     try {
         const { token } = req.params;
 
-        // Buscar perfil con este token
+        // Buscar solicitud pendiente de confirmación con este token
         const result = await client.query(
-            'SELECT * FROM egresados WHERE token_confirmacion = $1 AND confirmado = false',
-            [token]
+            `SELECT id, email_usuario, datos_json, estado, fecha_solicitud
+             FROM pendientes_aprobacion
+             WHERE tipo_solicitud = 'egresado' AND estado = 'no_confirmado'`
         );
 
         if (result.rows.length === 0) {
@@ -277,21 +300,62 @@ router.get('/confirm/:token', async (req, res) => {
             `);
         }
 
-        const egresado = result.rows[0];
+        // Buscar el registro que coincida con el token
+        let solicitudEncontrada = null;
+        for (const row of result.rows) {
+            try {
+                const datos = typeof row.datos_json === 'string' ? JSON.parse(row.datos_json) : row.datos_json;
+                if (datos.confirmation_token === token) {
+                    solicitudEncontrada = { ...row, datos };
+                    break;
+                }
+            } catch (e) {
+                continue;
+            }
+        }
 
-        // Marcar como confirmado
+        if (!solicitudEncontrada) {
+            return res.status(404).send(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Token inválido</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
+                        .container { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 500px; margin: 0 auto; }
+                        .error { color: #e74c3c; font-size: 60px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="error">❌</div>
+                        <h1>Token inválido o expirado</h1>
+                        <p>Este enlace de confirmación no es válido, ya fue utilizado, o la solicitud no existe.</p>
+                    </div>
+                </body>
+                </html>
+            `);
+        }
+
+        const datos = solicitudEncontrada.datos;
+        const solicitudId = solicitudEncontrada.id;
+
+        // Cambiar estado de 'no_confirmado' a 'pendiente'
         await client.query(
-            'UPDATE egresados SET confirmado = true, fecha_confirmacion = NOW() WHERE id = $1',
-            [egresado.id]
+            `UPDATE pendientes_aprobacion
+             SET estado = 'pendiente', updated_at = NOW()
+             WHERE id = $1`,
+            [solicitudId]
         );
 
-        console.log('✅ Email confirmado para:', egresado.email);
+        console.log('✅ Email confirmado para:', datos.email || solicitudEncontrada.email_usuario);
 
         // Enviar notificación al administrador
         const adminMailOptions = {
             from: `"BGE Sistema" <${process.env.EMAIL_USER}>`,
             to: '21ebh0200x.sep@gmail.com',
-            subject: `🆕 Nuevo perfil profesional confirmado - ${egresado.nombre_completo}`,
+            subject: `🆕 Nuevo perfil profesional confirmado - ${datos.nombre_completo || 'N/A'}`,
             html: `
                 <!DOCTYPE html>
                 <html>
@@ -316,21 +380,20 @@ router.get('/confirm/:token', async (req, res) => {
 
                             <div class="info-box">
                                 <strong>Datos del egresado:</strong><br>
-                                👤 Nombre: ${egresado.nombre_completo}<br>
-                                📧 Email: ${egresado.email}<br>
-                                📞 Teléfono: ${egresado.telefono || 'No proporcionado'}<br>
-                                🎓 Carrera: ${egresado.carrera_tecnica}<br>
-                                📅 Año de egreso: ${egresado.anio_egreso}<br>
-                                🆔 ID: ${egresado.egresado_id}<br>
-                                📍 Ubicación: ${egresado.ciudad || 'N/A'}, ${egresado.estado || 'N/A'}
+                                👤 Nombre: ${datos.nombre_completo || 'N/A'}<br>
+                                📧 Email: ${datos.email || solicitudEncontrada.email_usuario}<br>
+                                📞 Teléfono: ${datos.telefono || 'No proporcionado'}<br>
+                                🎓 Carrera: ${datos.carrera_tecnica || 'No especificada'}<br>
+                                📅 Año de egreso: ${datos.anio_egreso || 'N/A'}<br>
+                                📍 Ubicación: ${datos.ciudad || 'N/A'}, ${datos.estado || 'N/A'}
                             </div>
 
                             <div class="info-box">
                                 <strong>Información profesional:</strong><br>
-                                💼 Experiencia: ${egresado.experiencia_laboral || 'No especificada'}<br>
-                                🎯 Disponibilidad: ${egresado.disponibilidad || 'No especificada'}<br>
-                                💰 Pretensión salarial: ${egresado.pretension_salarial || 'No especificada'}<br>
-                                🔗 LinkedIn: ${egresado.linkedin_url || 'No proporcionado'}
+                                💼 Experiencia: ${datos.experiencia_laboral || 'No especificada'}<br>
+                                🎯 Disponibilidad: ${datos.disponibilidad || 'No especificada'}<br>
+                                💰 Pretensión salarial: ${datos.pretension_salarial || 'No especificada'}<br>
+                                🔗 LinkedIn: ${datos.linkedin_url || 'No proporcionado'}
                             </div>
 
                             <p><strong>⚠️ Acción requerida:</strong> Ingresa al dashboard para revisar y aprobar este perfil.</p>
@@ -351,8 +414,12 @@ router.get('/confirm/:token', async (req, res) => {
             `
         };
 
-        await transporter.sendMail(adminMailOptions);
-        console.log('📧 Notificación enviada al administrador');
+        try {
+            await transporter.sendMail(adminMailOptions);
+            console.log('📧 Notificación enviada al administrador');
+        } catch (emailError) {
+            console.error('⚠️ Error enviando notificación al admin:', emailError.message);
+        }
 
         // Mostrar página de confirmación exitosa
         res.send(`
@@ -386,7 +453,7 @@ router.get('/confirm/:token', async (req, res) => {
                 <div class="container">
                     <div class="success">✅</div>
                     <h1>¡Email confirmado exitosamente!</h1>
-                    <p>Gracias por confirmar tu dirección de email, <strong>${egresado.nombre_completo}</strong>.</p>
+                    <p>Gracias por confirmar tu dirección de email, <strong>${datos.nombre_completo || 'profesional'}</strong>.</p>
 
                     <div class="info-box">
                         <strong>¿Qué sigue ahora?</strong><br><br>
