@@ -129,10 +129,10 @@ function renderApprovalsList() {
                         </div>
                         <div class="col-md-4">
                             <div class="d-grid gap-2">
-                                <button class="btn btn-success" onclick="approveSubmission(${approval.id})">
+                                <button class="btn btn-success" onclick="approveSubmission(event)">
                                     <i class="fas fa-check me-2"></i>Aprobar
                                 </button>
-                                <button class="btn btn-danger" onclick="rejectSubmission(${approval.id})">
+                                <button class="btn btn-danger" onclick="rejectSubmission(event)">
                                     <i class="fas fa-times me-2"></i>Rechazar
                                 </button>
                                 <button class="btn btn-sm btn-outline-primary" onclick="viewFullData(${approval.id})">
@@ -288,7 +288,23 @@ function filterApprovals() {
 /**
  * Aprobar solicitud - Usa el nuevo endpoint /api/pendientes-aprobacion/aprobar/:id
  */
-async function approveSubmission(id) {
+async function approveSubmission(eventOrId) {
+    // Extraer el ID del evento o parámetro
+    let id;
+    if (typeof eventOrId === 'object' && eventOrId.target) {
+        // Es un evento (nuevo método robusto)
+        const card = eventOrId.target.closest('[data-approval-id]');
+        if (!card) {
+            console.error('❌ No se encontró el elemento con data-approval-id');
+            return;
+        }
+        id = parseInt(card.getAttribute('data-approval-id'), 10);
+        console.log(`🔍 [APROBAR] ID extraído del elemento HTML: ${id}`);
+    } else {
+        // Es un ID directo (compatibilidad hacia atrás)
+        id = eventOrId;
+    }
+
     if (!confirm('¿Estás seguro de que deseas aprobar esta solicitud?')) {
         return;
     }
@@ -296,6 +312,9 @@ async function approveSubmission(id) {
     const approval = pendingApprovals.find(a => a.id === id);
     if (!approval) {
         console.error(`❌ Solicitud ${id} no encontrada en la lista local`);
+        console.error(`   Array pendingApprovals:`, pendingApprovals);
+        console.error(`   IDs disponibles:`, pendingApprovals.map(a => a.id));
+        showNotification(`Error: Solicitud ${id} no encontrada. Intenta recargar la página.`, 'error');
         return;
     }
 
@@ -369,14 +388,31 @@ async function approveSubmission(id) {
 /**
  * Rechazar solicitud - Usa el nuevo endpoint /api/pendientes-aprobacion/rechazar/:id
  */
-async function rejectSubmission(id) {
+async function rejectSubmission(eventOrId) {
+    // Extraer el ID del evento o parámetro
+    let id;
+    if (typeof eventOrId === 'object' && eventOrId.target) {
+        // Es un evento (nuevo método robusto)
+        const card = eventOrId.target.closest('[data-approval-id]');
+        if (!card) {
+            console.error('❌ No se encontró el elemento con data-approval-id');
+            return;
+        }
+        id = parseInt(card.getAttribute('data-approval-id'), 10);
+        console.log(`🔍 [RECHAZAR] ID extraído del elemento HTML: ${id}`);
+    } else {
+        // Es un ID directo (compatibilidad hacia atrás)
+        id = eventOrId;
+    }
+
     const reason = prompt('¿Por qué deseas rechazar esta solicitud?\n\nEsta razón se guardará en la base de datos:');
 
     if (!reason) {
         return; // Usuario canceló
     }
 
-    console.log(`❌ Rechazando solicitud ${id}...`);
+    console.log(`❌ [RECHAZAR] Rechazando solicitud ${id}...`);
+    console.log(`   Razón: ${reason}`);
 
     try {
         const response = await fetch(`/api/pendientes-aprobacion/rechazar/${id}`, {
@@ -385,34 +421,41 @@ async function rejectSubmission(id) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                admin_id: 1, // ID del admin actual (obtener del contexto de sesión)
+                admin_id: 1,
                 admin_notas: reason
             })
         });
 
+        console.log(`📥 [RECHAZAR] Respuesta HTTP recibida: ${response.status}`);
+
         const result = await response.json();
+        console.log(`📊 [RECHAZAR] Respuesta del servidor:`, result);
 
         if (result.success) {
-            console.log('✅ Solicitud rechazada');
+            console.log('✅ [RECHAZAR] Solicitud rechazada exitosamente');
 
             // Mostrar notificación
-            showNotification('❌ Solicitud rechazada y marcada como rechazada en la base de datos.', 'warning');
+            showNotification('❌ Solicitud rechazada y eliminada de la base de datos.', 'warning');
 
             // Eliminar de la lista
+            const initialLength = pendingApprovals.length;
             pendingApprovals = pendingApprovals.filter(a => a.id !== id);
             filteredApprovals = filteredApprovals.filter(a => a.id !== id);
+
+            console.log(`✅ [RECHAZAR] Eliminado del array local: ${initialLength} → ${pendingApprovals.length} solicitudes`);
 
             // Actualizar badge y lista
             updateApprovalsBadge(pendingApprovals.length);
             renderApprovalsList();
 
         } else {
-            console.error('❌ Error al rechazar:', result.error);
-            showNotification('Error al rechazar la solicitud: ' + result.error, 'error');
+            const errorMsg = result?.error || result?.message || 'Error desconocido';
+            console.error('❌ [RECHAZAR] Error al rechazar:', errorMsg);
+            showNotification('Error al rechazar la solicitud: ' + errorMsg, 'error');
         }
 
     } catch (error) {
-        console.error('❌ Error de conexión:', error);
+        console.error('❌ [RECHAZAR] Error de conexión:', error);
         showNotification('Error de conexión con el servidor', 'error');
     }
 }

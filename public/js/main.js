@@ -276,8 +276,8 @@ function loadHeaderFooter() {
     // Esta función se ejecuta automáticamente si los scripts están en las páginas
     // Es una función de respaldo en caso de que no estén los scripts inline
     
-    const headerPlaceholder = document.getElementById('header-placeholder');
-    const footerPlaceholder = document.getElementById('footer-placeholder');
+    const headerPlaceholder = document.getElementById('main-header');
+    const footerPlaceholder = document.getElementById('main-footer');
     
     if (headerPlaceholder && !headerPlaceholder.innerHTML.trim()) {
         fetch('partials/header.html')
