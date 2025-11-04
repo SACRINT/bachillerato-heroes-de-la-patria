@@ -18,14 +18,19 @@ const { pool } = require('../config/database');
  */
 router.get('/', async (req, res) => {
     try {
-        const { tipo, estado = 'pendiente', limit = 50, offset = 0 } = req.query;
+        const { tipo, estado, limit = 50, offset = 0, todos } = req.query;
+
+        // Si todos=true, mostrar TODOS los registros sin importar estado
+        // Si no, por defecto solo mostrar pendientes
+        const defaultEstado = todos === 'true' ? null : 'pendiente';
+        const estadoFinal = estado || defaultEstado;
 
         let query = 'SELECT * FROM pendientes_aprobacion WHERE 1=1';
         const params = [];
 
-        if (estado) {
+        if (estadoFinal) {
             query += ' AND estado = $' + (params.length + 1);
-            params.push(estado);
+            params.push(estadoFinal);
         }
 
         if (tipo) {
@@ -49,9 +54,9 @@ router.get('/', async (req, res) => {
         let countQuery = 'SELECT COUNT(*) FROM pendientes_aprobacion WHERE 1=1';
         const countParams = [];
 
-        if (estado) {
+        if (estadoFinal) {
             countQuery += ' AND estado = $' + (countParams.length + 1);
-            countParams.push(estado);
+            countParams.push(estadoFinal);
         }
 
         if (tipo) {
