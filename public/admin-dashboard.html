@@ -5157,6 +5157,7 @@
     <script src="js/parent-manager.js?v=20251027"></script>
     <script src="js/citas-manager.js?v=20251101"></script>
     <script src="js/citas-enhancer.js?v=20251104"></script>
+    <script src="js/solicitudes-manager.js?v=20251103"></script>
     <script src="js/approvals-manager.js?v=20251027"></script>
     <script src="js/bolsa-trabajo-cv-handler.js?v=20251027"></script>
     <script src="js/bolsa-trabajo-manager.js?v=20251027"></script>
@@ -5750,12 +5751,13 @@
                 // Event listener para tab Solicitudes
                 const registrationsTab = document.getElementById('registrations-tab');
                 if (registrationsTab) {
-                    registrationsTab.addEventListener('shown.bs.tab', function () {
+                    registrationsTab.addEventListener('shown.bs.tab', async function () {
                         console.log('📋 [TAB] Cargando solicitudes pendientes...');
-                        if (window.adminDashboard && typeof window.adminDashboard.displayPendingRegistrations === 'function') {
-                            window.adminDashboard.displayPendingRegistrations();
+                        if (!window.solicitudesManager) {
+                            window.solicitudesManager = new SolicitudesManager();
+                            await window.solicitudesManager.init();
                         } else {
-                            console.error('❌ [TAB] displayPendingRegistrations no disponible');
+                            await window.solicitudesManager.loadSolicitudes(); // Reload data if already initialized
                         }
                     });
                     console.log('✅ [TABS] Listener de solicitudes agregado');
