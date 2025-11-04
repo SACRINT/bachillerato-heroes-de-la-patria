@@ -80,67 +80,108 @@ router.post('/create', async (req, res) => {
         // Generar token de confirmación ÚNICO
         const confirmationToken = crypto.randomBytes(32).toString('hex');
 
-        // Verificar si el email ya existe en egresados o pendientes_aprobacion
-        const existingCheck = await client.query(
-            `SELECT id FROM egresados WHERE email = $1
-             UNION
-             SELECT id FROM pendientes_aprobacion WHERE email_usuario = $1 AND tipo_solicitud = 'egresado'`,
+        // Verificar estado del email: ¿ya existe? ¿en qué tabla y estado?
+        const egresadoCheck = await client.query(
+            `SELECT id FROM egresados WHERE email = $1`,
             [email]
         );
 
-        if (existingCheck.rows.length > 0) {
+        // Si ya existe en tabla egresados (aprobado/final), rechazar
+        if (egresadoCheck.rows.length > 0) {
             return res.status(400).json({
                 success: false,
-                message: 'Este email ya está registrado o tiene una solicitud pendiente'
+                message: 'Este email ya está registrado como egresado. Si deseas actualizar tu perfil, contacta al administrador.'
             });
         }
 
-        // 📋 FLUJO MEJORADO: Insertar en tabla de pendientes de aprobación (no directamente en egresados)
-        // Esto permite que el admin revise y apruebe la solicitud antes de que aparezca en la BD final
+        // Verificar si existe en pendientes_aprobacion
+        const pendienteCheck = await client.query(
+            `SELECT id, uuid, estado, datos_json, fecha_solicitud FROM pendientes_aprobacion
+             WHERE email_usuario = $1 AND tipo_solicitud = 'egresado'`,
+            [email]
+        );
 
-        // Preparar datos en formato JSON para almacenamiento flexible
-        const datosJSON = {
-            nombre_completo,
-            email,
-            telefono,
-            fecha_nacimiento,
-            anio_egreso,
-            carrera_tecnica,
-            generacion,
-            experiencia_laboral,
-            habilidades,
-            idiomas,
-            cv_url,
-            disponibilidad,
-            pretension_salarial,
-            ciudad,
-            estado,
-            linkedin_url,
-            portafolio_url,
-            referencias,
-            confirmation_token: confirmationToken  // Token guardado en datos
-        };
+        let reenviarConfirmacion = false;
 
-        // Insertar en pendientes_aprobacion con estado 'no_confirmado'
-        // NO aparecerá en el panel de admin hasta que el usuario confirme su email
-        const insertQuery = `
-            INSERT INTO pendientes_aprobacion (
-                tipo_solicitud,
-                email_usuario,
-                datos_json,
+        // Si ya tiene solicitud pendiente...
+        if (pendienteCheck.rows.length > 0) {
+            const solicitudExistente = pendienteCheck.rows[0];
+
+            // Si está en 'no_confirmado': PERMITIR REENVÍO de confirmación
+            if (solicitudExistente.estado === 'no_confirmado') {
+                console.log(`📧 Reenviar confirmación para email: ${email}`);
+                reenviarConfirmacion = true;
+                // Actualizar con nuevo token
+                await client.query(
+                    `UPDATE pendientes_aprobacion
+                     SET datos_json = jsonb_set(datos_json, '{confirmation_token}', to_jsonb($1::text)),
+                         updated_at = NOW()
+                     WHERE id = $2`,
+                    [confirmationToken, solicitudExistente.id]
+                );
+            } else if (solicitudExistente.estado === 'pendiente' || solicitudExistente.estado === 'aprobada') {
+                // Si está confirmado o aprobado: RECHAZAR
+                return res.status(400).json({
+                    success: false,
+                    message: `Este email ya tiene una solicitud en estado "${solicitudExistente.estado}". Por favor espera a que sea procesada o contacta al administrador.`
+                });
+            }
+        }
+
+        // Si NO está reenviando, preparar e insertar nuevo registro
+        let result;
+
+        if (!reenviarConfirmacion) {
+            // 📋 FLUJO MEJORADO: Insertar en tabla de pendientes de aprobación (no directamente en egresados)
+            // Esto permite que el admin revise y apruebe la solicitud antes de que aparezca en la BD final
+
+            // Preparar datos en formato JSON para almacenamiento flexible
+            const datosJSON = {
+                nombre_completo,
+                email,
+                telefono,
+                fecha_nacimiento,
+                anio_egreso,
+                carrera_tecnica,
+                generacion,
+                experiencia_laboral,
+                habilidades,
+                idiomas,
+                cv_url,
+                disponibilidad,
+                pretension_salarial,
+                ciudad,
                 estado,
-                fecha_solicitud
-            )
-            VALUES ($1, $2, $3, $4, NOW())
-            RETURNING id, uuid, fecha_solicitud
-        `;
+                linkedin_url,
+                portafolio_url,
+                referencias,
+                confirmation_token: confirmationToken  // Token guardado en datos
+            };
 
-        const result = await client.query(insertQuery, [
-            'egresado',                     // tipo_solicitud
-            email,                          // email_usuario
-            JSON.stringify(datosJSON),      // datos_json
-            'no_confirmado'                 // estado: REQUIERE CONFIRMACION DE EMAIL
-        ]);
+            // Insertar en pendientes_aprobacion con estado 'no_confirmado'
+            // NO aparecerá en el panel de admin hasta que el usuario confirme su email
+            const insertQuery = `
+                INSERT INTO pendientes_aprobacion (
+                    tipo_solicitud,
+                    email_usuario,
+                    datos_json,
+                    estado,
+                    fecha_solicitud
+                )
+                VALUES ($1, $2, $3, $4, NOW())
+                RETURNING id, uuid, fecha_solicitud
+            `;
+
+            result = await client.query(insertQuery, [
+                'egresado',                     // tipo_solicitud
+                email,                          // email_usuario
+                JSON.stringify(datosJSON),      // datos_json
+                'no_confirmado'                 // estado: REQUIERE CONFIRMACION DE EMAIL
+            ]);
+        } else {
+            // Si está reenviando, obtener el ID del registro existente
+            result = { rows: [pendienteCheck.rows[0]] };
+        }
 
         console.log('✅ Perfil creado, enviando email de confirmación...');
 
@@ -232,16 +273,21 @@ router.post('/create', async (req, res) => {
             console.error('⚠️ Error enviando email:', emailError.message);
         }
 
+        const respuestaMsg = reenviarConfirmacion
+            ? '📧 Hemos reenviado el email de confirmación. Por favor revisa tu bandeja de entrada (incluyendo spam).'
+            : '✅ Te hemos enviado un email de confirmación. Por favor revisa tu bandeja de entrada y haz clic en el enlace para confirmar tu dirección de email.';
+
         res.json({
             success: true,
-            message: '✅ Te hemos enviado un email de confirmación. Por favor revisa tu bandeja de entrada y haz clic en el enlace para confirmar tu dirección de email. Tu solicitud estará pendiente hasta que confirmes el email.',
+            message: respuestaMsg + ' Tu solicitud estará pendiente de revisión después de que confirmes el email.',
             data: {
                 solicitud_id: result.rows[0].id,
-                uuid: result.rows[0].uuid,
+                uuid: result.rows[0].uuid || null,
                 nombre: nombre_completo,
                 email: email,
                 estado: 'no_confirmado',
                 fecha_solicitud: result.rows[0].fecha_solicitud,
+                reenviado: reenviarConfirmacion,
                 nota: 'Debes confirmar tu email antes de que tu solicitud sea revisada por el administrador.'
             }
         });
