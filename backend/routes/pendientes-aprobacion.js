@@ -20,10 +20,18 @@ router.get('/', async (req, res) => {
     try {
         const { tipo, estado, limit = 50, offset = 0, todos } = req.query;
 
-        // Si todos=true, mostrar TODOS los registros sin importar estado
-        // Si no, por defecto solo mostrar pendientes
-        const defaultEstado = todos === 'true' ? null : 'pendiente';
-        const estadoFinal = estado || defaultEstado;
+        // Lógica de filtrado de estado:
+        // - Si todos=true O todos=1, mostrar TODOS sin filtro de estado
+        // - Si estado está especificado, usarlo
+        // - Si nada se especifica, usar 'pendiente' como default
+        let estadoFinal;
+        if (todos === 'true' || todos === '1') {
+            estadoFinal = null; // Sin filtro de estado
+        } else if (estado) {
+            estadoFinal = estado;
+        } else {
+            estadoFinal = 'pendiente'; // Default
+        }
 
         let query = 'SELECT * FROM pendientes_aprobacion WHERE 1=1';
         const params = [];
@@ -47,6 +55,7 @@ router.get('/', async (req, res) => {
 
         console.log(`📋 Query para obtener pendientes: ${query}`);
         console.log(`   Parámetros: [${params.join(', ')}]`);
+        console.log(`   Filtro estado: ${estadoFinal || 'NINGUNO (mostrando todos)'}`);
 
         const result = await pool.query(query, params);
 
@@ -122,7 +131,10 @@ router.get('/:id', async (req, res) => {
 
 /**
  * POST /api/pendientes-aprobacion/aprobar/:id
- * Aprobar una solicitud pendiente (mover a tabla final)
+ * Aprobar una solicitud pendiente (mover a tabla final y ELIMINAR de pendientes_aprobacion)
+ *
+ * ✅ IMPORTANTE: Después de insertar en tabla final, se ELIMINA de pendientes_aprobacion
+ * Esto asegura que pendientes_aprobacion solo contiene registros con estado='pendiente'
  */
 router.post('/aprobar/:id', async (req, res) => {
     const client = await pool.connect();
@@ -195,24 +207,25 @@ router.post('/aprobar/:id', async (req, res) => {
                 ]);
             }
 
-            // Actualizar estado en pendientes_aprobacion
-            await client.query(`
-                UPDATE pendientes_aprobacion
-                SET
-                    estado = 'aprobada',
-                    admin_id = $1,
-                    admin_notas = $2,
-                    fecha_procesado = NOW(),
-                    updated_at = NOW()
-                WHERE id = $3
-            `, [admin_id || null, admin_notas || null, id]);
+            // ✅ ELIMINAR de pendientes_aprobacion (no solo actualizar estado)
+            // Esto asegura que la tabla solo contiene registros pendientes
+            const deleteResult = await client.query(
+                'DELETE FROM pendientes_aprobacion WHERE id = $1 RETURNING id',
+                [id]
+            );
+
+            if (deleteResult.rows.length === 0) {
+                throw new Error(`No se pudo eliminar el registro ${id} de pendientes_aprobacion`);
+            }
 
             await client.query('COMMIT');
 
+            console.log(`✅ Solicitud ${id} aprobada y movida a tabla final, eliminada de pendientes_aprobacion`);
+
             res.json({
                 success: true,
-                message: 'Solicitud aprobada y movida a tabla final',
-                data: { id, estado: 'aprobada' }
+                message: 'Solicitud aprobada, movida a tabla final y eliminada de pendientes',
+                data: { id, estado: 'aprobada', action: 'deleted_from_pending' }
             });
 
         } catch (innerError) {
