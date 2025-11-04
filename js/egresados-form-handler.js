@@ -82,7 +82,8 @@
                     form.classList.remove('was-validated');
                 } else {
                     console.error('❌ Error en respuesta:', result);
-                    showErrorMessage(result.error || 'Error al procesar la solicitud');
+                    // Usar 'message' porque es lo que retorna el servidor
+                    showErrorMessage(result.message || result.error || 'Error al procesar la solicitud');
                 }
             } catch (error) {
                 console.error('❌ Error al enviar formulario:', error);

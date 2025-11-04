@@ -64,7 +64,7 @@ router.post('/create', async (req, res) => {
         if (!nombre_completo || !email || !anio_egreso || !carrera_tecnica) {
             return res.status(400).json({
                 success: false,
-                message: 'Faltan campos obligatorios: nombre, email, año de egreso y carrera técnica'
+                message: '⚠️ Campos obligatorios faltantes. Por favor completa: Nombre Completo, Email, Año de Egreso y Carrera Técnica.'
             });
         }
 
@@ -73,7 +73,7 @@ router.post('/create', async (req, res) => {
         if (!emailRegex.test(email)) {
             return res.status(400).json({
                 success: false,
-                message: 'Email inválido'
+                message: '❌ El email que ingresaste no es válido. Por favor verifica que esté escrito correctamente (ej: usuario@dominio.com).'
             });
         }
 
@@ -90,7 +90,7 @@ router.post('/create', async (req, res) => {
         if (egresadoCheck.rows.length > 0) {
             return res.status(400).json({
                 success: false,
-                message: 'Este email ya está registrado como egresado. Si deseas actualizar tu perfil, contacta al administrador.'
+                message: '✅ Este email ya está registrado y APROBADO en nuestro sistema como egresado. Tu perfil ya está visible en la plataforma. Si necesitas actualizar tu información, por favor contacta al administrador.'
             });
         }
 
@@ -121,9 +121,13 @@ router.post('/create', async (req, res) => {
                 );
             } else if (solicitudExistente.estado === 'pendiente' || solicitudExistente.estado === 'aprobada') {
                 // Si está confirmado o aprobado: RECHAZAR
+                const estadoMsg = solicitudExistente.estado === 'pendiente'
+                    ? 'PENDIENTE DE REVISIÓN por el equipo administrativo'
+                    : 'APROBADO y será procesado';
+
                 return res.status(400).json({
                     success: false,
-                    message: `Este email ya tiene una solicitud en estado "${solicitudExistente.estado}". Por favor espera a que sea procesada o contacta al administrador.`
+                    message: `⏳ Tu registro con este email ya está ${estadoMsg}. Por favor NO envíes el formulario nuevamente. Si tienes dudas, contacta al administrador.`
                 });
             }
         }
@@ -274,12 +278,12 @@ router.post('/create', async (req, res) => {
         }
 
         const respuestaMsg = reenviarConfirmacion
-            ? '📧 Hemos reenviado el email de confirmación. Por favor revisa tu bandeja de entrada (incluyendo spam).'
-            : '✅ Te hemos enviado un email de confirmación. Por favor revisa tu bandeja de entrada y haz clic en el enlace para confirmar tu dirección de email.';
+            ? '📧 REENVÍO EXITOSO: Hemos reenviado el email de confirmación a ' + email + '. Por favor revisa tu bandeja de entrada (incluyendo carpeta SPAM).'
+            : '✅ REGISTRO EXITOSO: Te hemos enviado un email de confirmación a ' + email + '.\n\nSiguientes pasos:\n1. Revisa tu bandeja de entrada\n2. Haz clic en el botón "Confirmar mi Email"\n3. Una vez confirmado, tu solicitud será revisada por el equipo administrativo';
 
         res.json({
             success: true,
-            message: respuestaMsg + ' Tu solicitud estará pendiente de revisión después de que confirmes el email.',
+            message: respuestaMsg,
             data: {
                 solicitud_id: result.rows[0].id,
                 uuid: result.rows[0].uuid || null,
@@ -288,7 +292,9 @@ router.post('/create', async (req, res) => {
                 estado: 'no_confirmado',
                 fecha_solicitud: result.rows[0].fecha_solicitud,
                 reenviado: reenviarConfirmacion,
-                nota: 'Debes confirmar tu email antes de que tu solicitud sea revisada por el administrador.'
+                instrucciones: reenviarConfirmacion
+                    ? 'Verifica tu email nuevamente'
+                    : 'Necesitas confirmar tu email antes de que tu solicitud sea revisada'
             }
         });
 
