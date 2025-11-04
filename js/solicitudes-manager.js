@@ -98,8 +98,9 @@ class SolicitudesManager {
     }
 
     createTableRow(solicitud) {
-        const fechaFormato = new Date(solicitud.created_at).toLocaleDateString('es-ES');
-        const estadoClass = this.getEstadoClass(solicitud.estado);
+        const fechaFormato = new Date(solicitud.fecha_solicitud).toLocaleDateString('es-ES');
+        const status = solicitud.status || solicitud.estado || 'pendiente';
+        const estadoClass = this.getEstadoClass(status);
 
         return `
             <tr>
@@ -107,10 +108,10 @@ class SolicitudesManager {
                 <td>${this.escapeHtml(solicitud.email)}</td>
                 <td>${this.escapeHtml(solicitud.username || solicitud.usuario || 'N/A')}</td>
                 <td>${fechaFormato}</td>
-                <td><span class="badge bg-${estadoClass}">${solicitud.estado || 'pendiente'}</span></td>
+                <td><span class="badge bg-${estadoClass}">${status}</span></td>
                 <td class="text-center">
                     <div class="btn-group btn-group-sm">
-                        ${solicitud.estado === 'pendiente' ? `
+                        ${status === 'pendiente' ? `
                             <button class="btn btn-outline-success" onclick="solicitudesManager.approveSolicitud(${solicitud.id})" title="Aprobar">
                                 <i class="fas fa-check"></i>
                             </button>
@@ -151,7 +152,7 @@ class SolicitudesManager {
 
         const pendientesCount = document.getElementById('solicitudesPendientesCount');
         if (pendientesCount) {
-            const pendientes = this.solicitudes.filter(s => s.estado === 'pendiente').length;
+            const pendientes = this.solicitudes.filter(s => (s.status || s.estado) === 'pendiente').length;
             pendientesCount.textContent = pendientes;
         }
     }
@@ -163,8 +164,10 @@ class SolicitudesManager {
             return;
         }
 
-        const fechaFormato = new Date(solicitud.created_at).toLocaleDateString('es-ES');
-        const horaFormato = new Date(solicitud.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        const status = solicitud.status || solicitud.estado || 'pendiente';
+        const fecha = solicitud.fecha_solicitud || solicitud.created_at;
+        const fechaFormato = new Date(fecha).toLocaleDateString('es-ES');
+        const horaFormato = new Date(fecha).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
         const modalHtml = `
             <div class="modal fade" id="solicitudDetailsModal" tabindex="-1" aria-labelledby="solicitudDetailsModalLabel" aria-hidden="true">
@@ -182,7 +185,7 @@ class SolicitudesManager {
                                     <strong>Usuario:</strong> ${this.escapeHtml(solicitud.username || solicitud.usuario || 'N/A')}<br>
                                 </div>
                                 <div class="col-md-6">
-                                    <strong>Estado:</strong> <span class="badge bg-${this.getEstadoClass(solicitud.estado)}">${solicitud.estado || 'pendiente'}</span><br>
+                                    <strong>Estado:</strong> <span class="badge bg-${this.getEstadoClass(status)}">${status}</span><br>
                                     <strong>Fecha:</strong> ${fechaFormato} ${horaFormato}<br>
                                     <strong>ID:</strong> ${solicitud.id}<br>
                                 </div>
