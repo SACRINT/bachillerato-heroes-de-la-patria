@@ -137,19 +137,29 @@ router.get('/:id', async (req, res) => {
  * Esto asegura que pendientes_aprobacion solo contiene registros con estado='pendiente'
  */
 router.post('/aprobar/:id', async (req, res) => {
+    const { id } = req.params;
+    const { admin_id, admin_notas } = req.body;
+
+    console.log(`\n🔵 [BACKEND APROBAR] =====================================`);
+    console.log(`📥 [BACKEND APROBAR] POST /aprobar/${id} recibido`);
+    console.log(`   Body:`, { admin_id, admin_notas });
+    console.log(`   Tipo de ID: ${typeof id}, Valor: ${id}`);
+
     const client = await pool.connect();
 
     try {
-        const { id } = req.params;
-        const { admin_id, admin_notas } = req.body;
-
         // Obtener la solicitud pendiente
+        console.log(`🔍 [BACKEND APROBAR] Buscando solicitud con id=${id}`);
         const pendienteResult = await client.query(
             'SELECT * FROM pendientes_aprobacion WHERE id = $1',
             [id]
         );
 
+        console.log(`📊 [BACKEND APROBAR] Resultado de búsqueda:`);
+        console.log(`   Registros encontrados: ${pendienteResult.rows.length}`);
+
         if (pendienteResult.rows.length === 0) {
+            console.warn(`⚠️ [BACKEND APROBAR] Solicitud ${id} NO ENCONTRADA`);
             return res.status(404).json({
                 success: false,
                 error: 'Solicitud no encontrada'
@@ -159,13 +169,22 @@ router.post('/aprobar/:id', async (req, res) => {
         const solicitud = pendienteResult.rows[0];
         const datos = solicitud.datos_json;
 
+        console.log(`✅ [BACKEND APROBAR] Solicitud encontrada:`);
+        console.log(`   ID: ${solicitud.id}`);
+        console.log(`   Tipo: ${solicitud.tipo_solicitud}`);
+        console.log(`   Email usuario: ${solicitud.email_usuario}`);
+        console.log(`   Estado actual: ${solicitud.estado}`);
+        console.log(`   Datos JSON completos:`, datos);
+
+        console.log(`🔄 [BACKEND APROBAR] Iniciando transacción...`);
         await client.query('BEGIN');
 
         try {
             // Insertar en la tabla final según el tipo de solicitud
             if (solicitud.tipo_solicitud === 'egresado') {
-                // Insertar en tabla egresados con estructura correcta (según setup-database-neon-postgres.sql)
-                await client.query(`
+                console.log(`📝 [BACKEND APROBAR] Insertando en tabla EGRESADOS...`);
+
+                const insertResult = await client.query(`
                     INSERT INTO egresados (
                         nombre, email, telefono,
                         anio_egreso, carrera, generacion,
@@ -184,12 +203,16 @@ router.post('/aprobar/:id', async (req, res) => {
                     datos.generacion || null,
                     datos.experiencia_laboral || datos.trabajo || null,
                     datos.ciudad || null,
-                    true  // verificado: marcado como verificado al aprobar desde admin
+                    true
                 ]);
 
+                console.log(`✅ [BACKEND APROBAR] Inserción en egresados completada`);
+                console.log(`   Filas afectadas: ${insertResult.rowCount}`);
+
             } else if (solicitud.tipo_solicitud === 'bolsa_trabajo') {
-                // Insertar en tabla bolsa_trabajo
-                await client.query(`
+                console.log(`📝 [BACKEND APROBAR] Insertando en tabla BOLSA_TRABAJO...`);
+
+                const insertResult = await client.query(`
                     INSERT INTO bolsa_trabajo (
                         nombre_completo, email, telefono, generacion,
                         experiencia, habilidades
@@ -205,22 +228,36 @@ router.post('/aprobar/:id', async (req, res) => {
                     datos.message || datos.experiencia || null,
                     datos.skills || datos.habilidades || null
                 ]);
+
+                console.log(`✅ [BACKEND APROBAR] Inserción en bolsa_trabajo completada`);
+                console.log(`   Filas afectadas: ${insertResult.rowCount}`);
+
+            } else {
+                throw new Error(`Tipo de solicitud desconocido: ${solicitud.tipo_solicitud}`);
             }
 
-            // ✅ ELIMINAR de pendientes_aprobacion (no solo actualizar estado)
-            // Esto asegura que la tabla solo contiene registros pendientes
+            // ✅ ELIMINAR de pendientes_aprobacion
+            console.log(`🗑️ [BACKEND APROBAR] Eliminando de pendientes_aprobacion (id=${id})...`);
             const deleteResult = await client.query(
                 'DELETE FROM pendientes_aprobacion WHERE id = $1 RETURNING id',
                 [id]
             );
 
+            console.log(`📊 [BACKEND APROBAR] Resultado de DELETE:`);
+            console.log(`   Filas eliminadas: ${deleteResult.rowCount}`);
+            console.log(`   IDs retornados:`, deleteResult.rows);
+
             if (deleteResult.rows.length === 0) {
                 throw new Error(`No se pudo eliminar el registro ${id} de pendientes_aprobacion`);
             }
 
+            console.log(`✅ [BACKEND APROBAR] COMMIT de transacción...`);
             await client.query('COMMIT');
 
-            console.log(`✅ Solicitud ${id} aprobada y movida a tabla final, eliminada de pendientes_aprobacion`);
+            console.log(`🎉 [BACKEND APROBAR] ¡Solicitud aprobada exitosamente!`);
+            console.log(`   ID aprobado: ${id}`);
+            console.log(`   Tabla destino: ${solicitud.tipo_solicitud}`);
+            console.log(`🔵 [BACKEND APROBAR] =====================================\n`);
 
             res.json({
                 success: true,
@@ -229,18 +266,26 @@ router.post('/aprobar/:id', async (req, res) => {
             });
 
         } catch (innerError) {
+            console.error(`❌ [BACKEND APROBAR] Error en transacción:`, innerError.message);
+            console.error(`   Stack:`, innerError.stack);
+            console.log(`🔄 [BACKEND APROBAR] Haciendo ROLLBACK...`);
             await client.query('ROLLBACK');
             throw innerError;
         }
 
     } catch (error) {
-        console.error('❌ Error al aprobar:', error);
+        console.error(`❌ [BACKEND APROBAR] Error fatal:`, error.message);
+        console.error(`   Tipo de error:`, error.name);
+        console.error(`   Stack completo:`, error.stack);
+        console.log(`🔵 [BACKEND APROBAR] =====================================\n`);
+
         res.status(500).json({
             success: false,
             error: 'Error al procesar solicitud',
             message: error.message
         });
     } finally {
+        console.log(`🔓 [BACKEND APROBAR] Liberando cliente de conexión...`);
         client.release();
     }
 });

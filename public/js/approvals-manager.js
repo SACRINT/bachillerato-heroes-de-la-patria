@@ -294,46 +294,75 @@ async function approveSubmission(id) {
     }
 
     const approval = pendingApprovals.find(a => a.id === id);
-    if (!approval) return;
+    if (!approval) {
+        console.error(`❌ Solicitud ${id} no encontrada en la lista local`);
+        return;
+    }
 
-    console.log(`✅ Aprobando solicitud ${id}...`);
+    console.log(`✅ [APROBAR] Iniciando aprobación de solicitud ${id}`);
+    console.log(`   Tipo de solicitud: ${approval.form_type}`);
+    console.log(`   Email: ${approval.verification_email}`);
 
     try {
+        const requestBody = {
+            admin_id: 1,
+            admin_notas: 'Aprobado desde el panel administrativo'
+        };
+
+        console.log(`📤 [APROBAR] Enviando POST a /api/pendientes-aprobacion/aprobar/${id}`);
+        console.log(`   Body:`, JSON.stringify(requestBody));
+
         const response = await fetch(`/api/pendientes-aprobacion/aprobar/${id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                admin_id: 1, // ID del admin actual (obtener del contexto de sesión)
-                admin_notas: 'Aprobado desde el panel administrativo'
-            })
+            body: JSON.stringify(requestBody)
         });
 
-        const result = await response.json();
+        console.log(`📥 [APROBAR] Respuesta HTTP recibida`);
+        console.log(`   Status: ${response.status} ${response.statusText}`);
+        console.log(`   OK: ${response.ok}`);
 
-        if (result.success) {
-            console.log('✅ Solicitud aprobada exitosamente');
+        // Verificar si la respuesta HTTP es correcta
+        if (!response.ok) {
+            console.warn(`⚠️ [APROBAR] Status HTTP no es OK (${response.status})`);
+        }
+
+        const result = await response.json();
+        console.log(`📊 [APROBAR] JSON parseado:`, result);
+
+        if (result && result.success) {
+            console.log('✅ [APROBAR] Solicitud aprobada exitosamente en el servidor');
+            console.log(`   Respuesta del servidor:`, result.message);
 
             // Mostrar notificación
             showNotification('✅ Solicitud aprobada exitosamente. Se movió a la tabla definitiva.', 'success');
 
             // Eliminar de la lista
+            const initialLength = pendingApprovals.length;
             pendingApprovals = pendingApprovals.filter(a => a.id !== id);
             filteredApprovals = filteredApprovals.filter(a => a.id !== id);
+
+            console.log(`✅ [APROBAR] Eliminado del array local: ${initialLength} → ${pendingApprovals.length} solicitudes`);
 
             // Actualizar badge y lista
             updateApprovalsBadge(pendingApprovals.length);
             renderApprovalsList();
 
         } else {
-            console.error('❌ Error al aprobar:', result.error);
-            showNotification('Error al aprobar la solicitud: ' + result.error, 'error');
+            const errorMsg = result?.error || result?.message || 'Error desconocido';
+            console.error('❌ [APROBAR] El servidor retornó error:', errorMsg);
+            console.error('   Respuesta completa:', result);
+            showNotification('Error al aprobar la solicitud: ' + errorMsg, 'error');
         }
 
     } catch (error) {
-        console.error('❌ Error de conexión:', error);
-        showNotification('Error de conexión con el servidor', 'error');
+        console.error('❌ [APROBAR] Error de conexión o parsing:', error);
+        console.error('   Tipo de error:', error.name);
+        console.error('   Mensaje:', error.message);
+        console.error('   Stack:', error.stack);
+        showNotification('Error de conexión con el servidor: ' + error.message, 'error');
     }
 }
 
