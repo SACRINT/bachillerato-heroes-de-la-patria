@@ -35,15 +35,28 @@ async function loadPendingApprovals() {
             console.log(`DEBUG: Total en BD: ${result.total}, Registros recibidos: ${result.data ? result.data.length : 0}`);
 
             // Transformar datos de la nueva API al formato esperado
-            pendingApprovals = Array.isArray(result.data) ? result.data.map(item => ({
-                id: item.id,
-                form_type: item.tipo_solicitud,
-                data: item.datos_json,
-                verification_email: item.email_usuario,
-                email_verified: item.email_confirmado !== undefined ? item.email_confirmado : true, // Verificar si existe la columna
-                created_at: item.fecha_solicitud,
-                estado: item.estado // Incluir estado para debugging
-            })) : [];
+            pendingApprovals = Array.isArray(result.data) ? result.data.map(item => {
+                // Parsear datos_json si es string (viene de BD como JSON string)
+                let parsedData;
+                try {
+                    parsedData = typeof item.datos_json === 'string'
+                        ? JSON.parse(item.datos_json)
+                        : item.datos_json;
+                } catch (e) {
+                    console.warn(`⚠️ Error parseando datos_json para ID ${item.id}:`, e);
+                    parsedData = item.datos_json || {};
+                }
+
+                return {
+                    id: parseInt(item.id, 10),  // ✅ CONVERTIR A NÚMERO para sincronizar con elemento HTML
+                    form_type: item.tipo_solicitud,
+                    data: parsedData,  // ✅ OBJETO PARSEADO, no string
+                    verification_email: item.email_usuario,
+                    email_verified: item.email_confirmado !== undefined ? item.email_confirmado : true,
+                    created_at: item.fecha_solicitud,
+                    estado: item.estado
+                };
+            }) : [];
 
             console.log('DEBUG: pendingApprovals after assignment:', pendingApprovals);
             filteredApprovals = [...pendingApprovals];
@@ -312,8 +325,13 @@ async function approveSubmission(eventOrId) {
     const approval = pendingApprovals.find(a => a.id === id);
     if (!approval) {
         console.error(`❌ Solicitud ${id} no encontrada en la lista local`);
+        console.error(`   Tipo de ID buscado: ${typeof id} (${id})`);
         console.error(`   Array pendingApprovals:`, pendingApprovals);
-        console.error(`   IDs disponibles:`, pendingApprovals.map(a => a.id));
+        console.error(`   IDs disponibles:`, pendingApprovals.map(a => `${a.id} (${typeof a.id})`));
+        console.error(`   Comparación detallada:`);
+        pendingApprovals.forEach(a => {
+            console.error(`     - a.id=${a.id} (${typeof a.id}) === id=${id} (${typeof id}) ? ${a.id === id}`);
+        });
         showNotification(`Error: Solicitud ${id} no encontrada. Intenta recargar la página.`, 'error');
         return;
     }

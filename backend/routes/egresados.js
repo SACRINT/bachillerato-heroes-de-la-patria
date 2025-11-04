@@ -136,8 +136,10 @@ router.post('/create', async (req, res) => {
         let result;
 
         if (!reenviarConfirmacion) {
-            // 📋 FLUJO MEJORADO: Insertar en tabla de pendientes de aprobación (no directamente en egresados)
-            // Esto permite que el admin revise y apruebe la solicitud antes de que aparezca en la BD final
+            // 📋 FLUJO CORRECTO DE 3 ETAPAS:
+            // 1. INSERT en egresados_pending_confirmation (tabla temporal) - email NO confirmado
+            // 2. GET /confirm/:token - MOVER a pendientes_aprobacion - email CONFIRMADO
+            // 3. Admin aprueba → INSERT en egresados (tabla final)
 
             // Preparar datos en formato JSON para almacenamiento flexible
             const datosJSON = {
@@ -162,31 +164,42 @@ router.post('/create', async (req, res) => {
                 confirmation_token: confirmationToken  // Token guardado en datos
             };
 
-            // Insertar en pendientes_aprobacion con estado 'pendiente'
-            // NO aparecerá en el panel de admin hasta que el usuario confirme su email (email_confirmado=false)
+            // ✅ ETAPA 1: Insertar en tabla temporal egresados_pending_confirmation
+            // El registro NO aparecerá en el panel de admin hasta que confirme email
             const insertQuery = `
-                INSERT INTO pendientes_aprobacion (
-                    tipo_solicitud,
+                INSERT INTO egresados_pending_confirmation (
                     email_usuario,
                     datos_json,
-                    estado,
-                    email_confirmado,
-                    fecha_solicitud
+                    confirmation_token,
+                    email_confirmado
                 )
-                VALUES ($1, $2, $3, $4, $5, NOW())
-                RETURNING id, uuid, fecha_solicitud
+                VALUES ($1, $2, $3, $4)
+                RETURNING id, confirmation_token, fecha_solicitud
             `;
 
             result = await client.query(insertQuery, [
-                'egresado',                     // tipo_solicitud
                 email,                          // email_usuario
                 JSON.stringify(datosJSON),      // datos_json
-                'pendiente',                    // estado
+                confirmationToken,              // confirmation_token (como campo separado para búsqueda rápida)
                 false                           // email_confirmado: No confirmado aún
             ]);
         } else {
             // Si está reenviando, obtener el ID del registro existente
-            result = { rows: [pendienteCheck.rows[0]] };
+            // Buscar en tabla temporal primero
+            const existentePending = await client.query(
+                `SELECT id, confirmation_token, fecha_solicitud
+                 FROM egresados_pending_confirmation
+                 WHERE email_usuario = $1`,
+                [email]
+            );
+
+            if (existentePending.rows.length > 0) {
+                result = { rows: [existentePending.rows[0]] };
+            } else {
+                // Si no existe en tabla temporal pero existe en pendientes_aprobacion,
+                // usar eso (es una migración de flujo antiguo)
+                result = { rows: [pendienteCheck.rows[0]] };
+            }
         }
 
         console.log('✅ Perfil creado, enviando email de confirmación...');
@@ -315,8 +328,8 @@ router.post('/create', async (req, res) => {
 
 /**
  * GET /api/egresados/confirm/:token
- * Confirmar email del egresado - NUEVO FLUJO
- * Busca en pendientes_aprobacion, valida token, cambia estado de 'no_confirmado' a 'pendiente'
+ * Confirmar email del egresado - ETAPA 2 DEL FLUJO
+ * Busca en egresados_pending_confirmation, valida token, MUEVE a pendientes_aprobacion
  */
 router.get('/confirm/:token', async (req, res) => {
     const client = await pool.connect();
@@ -324,15 +337,18 @@ router.get('/confirm/:token', async (req, res) => {
     try {
         const { token } = req.params;
 
-        // Buscar solicitud pendiente de confirmación con este token
-        // email_confirmado=false significa que aún no confirmó su email
-        const result = await client.query(
-            `SELECT id, email_usuario, datos_json, estado, fecha_solicitud
-             FROM pendientes_aprobacion
-             WHERE tipo_solicitud = 'egresado' AND estado = 'pendiente' AND email_confirmado = false`
+        console.log(`📧 [CONFIRM] Iniciando confirmación de email con token: ${token.substring(0, 10)}...`);
+
+        // ✅ ETAPA 2: Buscar solicitud en tabla temporal (egresados_pending_confirmation)
+        const temporalResult = await client.query(
+            `SELECT id, email_usuario, datos_json, confirmation_token, fecha_solicitud
+             FROM egresados_pending_confirmation
+             WHERE confirmation_token = $1`,
+            [token]
         );
 
-        if (result.rows.length === 0) {
+        if (temporalResult.rows.length === 0) {
+            console.warn(`❌ [CONFIRM] Token no encontrado en tabla temporal`);
             return res.status(404).send(`
                 <!DOCTYPE html>
                 <html>
@@ -356,57 +372,64 @@ router.get('/confirm/:token', async (req, res) => {
             `);
         }
 
-        // Buscar el registro que coincida con el token
-        let solicitudEncontrada = null;
-        for (const row of result.rows) {
-            try {
-                const datos = typeof row.datos_json === 'string' ? JSON.parse(row.datos_json) : row.datos_json;
-                if (datos.confirmation_token === token) {
-                    solicitudEncontrada = { ...row, datos };
-                    break;
-                }
-            } catch (e) {
-                continue;
-            }
+        const registroTemporal = temporalResult.rows[0];
+        const datosJSON = typeof registroTemporal.datos_json === 'string'
+            ? JSON.parse(registroTemporal.datos_json)
+            : registroTemporal.datos_json;
+
+        console.log(`✅ [CONFIRM] Solicitud encontrada en tabla temporal:`);
+        console.log(`   Email: ${registroTemporal.email_usuario}`);
+        console.log(`   Nombre: ${datosJSON.nombre_completo}`);
+
+        // Iniciar transacción para garantizar consistencia
+        await client.query('BEGIN');
+
+        try {
+            // ✅ ETAPA 2 PASO 1: MOVER datos de tabla temporal a pendientes_aprobacion
+            console.log(`📤 [CONFIRM] Moviendo datos a pendientes_aprobacion...`);
+
+            const moveResult = await client.query(
+                `INSERT INTO pendientes_aprobacion (
+                    tipo_solicitud,
+                    email_usuario,
+                    datos_json,
+                    estado,
+                    email_confirmado,
+                    fecha_solicitud
+                )
+                VALUES ($1, $2, $3, $4, $5, NOW())
+                RETURNING id, uuid`,
+                [
+                    'egresado',                             // tipo_solicitud
+                    registroTemporal.email_usuario,        // email_usuario
+                    JSON.stringify(datosJSON),              // datos_json (con confirmation_token incluido)
+                    'pendiente',                            // estado
+                    true                                    // ✅ email_confirmado = TRUE (ya confirmó)
+                ]
+            );
+
+            const solicitudId = moveResult.rows[0].id;
+            console.log(`✅ [CONFIRM] Datos movidos a pendientes_aprobacion con ID: ${solicitudId}`);
+
+            // ✅ ETAPA 2 PASO 2: ELIMINAR registro de tabla temporal
+            console.log(`🗑️ [CONFIRM] Eliminando registro de tabla temporal...`);
+            const deleteResult = await client.query(
+                `DELETE FROM egresados_pending_confirmation WHERE id = $1 RETURNING id`,
+                [registroTemporal.id]
+            );
+
+            console.log(`✅ [CONFIRM] Registro eliminado de tabla temporal`);
+
+            // COMMIT de transacción
+            await client.query('COMMIT');
+            console.log(`✅ [CONFIRM] Transacción completada exitosamente`);
+
+        } catch (innerError) {
+            await client.query('ROLLBACK');
+            throw innerError;
         }
 
-        if (!solicitudEncontrada) {
-            return res.status(404).send(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <title>Token inválido</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
-                        .container { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 500px; margin: 0 auto; }
-                        .error { color: #e74c3c; font-size: 60px; }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="error">❌</div>
-                        <h1>Token inválido o expirado</h1>
-                        <p>Este enlace de confirmación no es válido, ya fue utilizado, o la solicitud no existe.</p>
-                    </div>
-                </body>
-                </html>
-            `);
-        }
-
-        const datos = solicitudEncontrada.datos;
-        const solicitudId = solicitudEncontrada.id;
-
-        // Marcar email como confirmado (email_confirmado = true)
-        // Ahora sí aparecerá en el panel de admin para revisión
-        await client.query(
-            `UPDATE pendientes_aprobacion
-             SET email_confirmado = true, updated_at = NOW()
-             WHERE id = $1`,
-            [solicitudId]
-        );
-
-        console.log('✅ Email confirmado para:', datos.email || solicitudEncontrada.email_usuario);
+        const datos = datosJSON;
 
         // Enviar notificación al administrador
         const adminMailOptions = {
@@ -438,7 +461,7 @@ router.get('/confirm/:token', async (req, res) => {
                             <div class="info-box">
                                 <strong>Datos del egresado:</strong><br>
                                 👤 Nombre: ${datos.nombre_completo || 'N/A'}<br>
-                                📧 Email: ${datos.email || solicitudEncontrada.email_usuario}<br>
+                                📧 Email: ${datos.email || registroTemporal.email_usuario}<br>
                                 📞 Teléfono: ${datos.telefono || 'No proporcionado'}<br>
                                 🎓 Carrera: ${datos.carrera_tecnica || 'No especificada'}<br>
                                 📅 Año de egreso: ${datos.anio_egreso || 'N/A'}<br>

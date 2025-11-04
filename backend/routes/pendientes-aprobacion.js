@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
             estadoFinal = 'pendiente'; // Default
         }
 
-        let query = 'SELECT * FROM pendientes_aprobacion WHERE 1=1';
+        let query = 'SELECT * FROM pendientes_aprobacion WHERE email_confirmado = true';
         const params = [];
 
         if (estadoFinal) {
@@ -46,7 +46,8 @@ router.get('/', async (req, res) => {
             params.push(tipo);
         }
 
-        // ✅ REMOVIDO: Filtro email_confirmado para mostrar todos los registros pendientes
+        // ✅ FILTRO CRÍTICO: Solo mostrar registros con email_confirmado=true
+        // Esto asegura que solo aparecen en el tab de aprobaciones DESPUÉS de confirmar email
 
         // Paginación
         query += ' ORDER BY fecha_solicitud DESC';
@@ -60,7 +61,7 @@ router.get('/', async (req, res) => {
         const result = await pool.query(query, params);
 
         // Contar total
-        let countQuery = 'SELECT COUNT(*) FROM pendientes_aprobacion WHERE 1=1';
+        let countQuery = 'SELECT COUNT(*) FROM pendientes_aprobacion WHERE email_confirmado = true';
         const countParams = [];
 
         if (estadoFinal) {
