@@ -16,6 +16,9 @@ class UnifiedLoginSystem {
     async init() {
         console.log('🔐 Inicializando Login Unificado...');
 
+        // Esperar a que el DOM esté completamente listo (incluyendo header inyectado)
+        await this.waitForDOM();
+
         // 1. Crear UI
         this.createLoginUI();
 
@@ -30,17 +33,40 @@ class UnifiedLoginSystem {
     }
 
     /**
+     * Esperar a que el header esté en el DOM
+     */
+    waitForDOM() {
+        return new Promise((resolve) => {
+            const checkHeader = () => {
+                const header = document.querySelector('header') || document.querySelector('.navbar');
+                if (header) {
+                    console.log('✅ Header encontrado, inicializando UI...');
+                    resolve();
+                } else {
+                    console.log('⏳ Esperando header...');
+                    setTimeout(checkHeader, 300);
+                }
+            };
+            checkHeader();
+        });
+    }
+
+    /**
      * Crear interfaz de login
      */
     createLoginUI() {
-        const header = document.querySelector('header') || document.querySelector('.navbar');
-        if (!header) {
-            setTimeout(() => this.createLoginUI(), 500);
+        // Si ya existe, no crear duplicado
+        if (document.getElementById('unified-auth-container')) {
+            console.log('✅ UI de login ya existe');
             return;
         }
 
-        // Si ya existe, no crear duplicado
-        if (document.getElementById('unified-auth-container')) return;
+        const header = document.querySelector('header') || document.querySelector('.navbar');
+        if (!header) {
+            console.warn('⚠️ Header no encontrado, reintentando...');
+            setTimeout(() => this.createLoginUI(), 500);
+            return;
+        }
 
         const authHTML = `
             <div id="unified-auth-container" class="ms-auto d-flex align-items-center gap-2">
@@ -76,9 +102,33 @@ class UnifiedLoginSystem {
             </div>
         `;
 
-        // Encontrar el contenedor del navbar
-        const navContainer = header.querySelector('.container-fluid') || header.querySelector('.container') || header;
-        navContainer.insertAdjacentHTML('beforeend', authHTML);
+        try {
+            // Intentar encontrar el contenedor correcto
+            let navContainer = header.querySelector('.container-fluid');
+
+            if (!navContainer) {
+                navContainer = header.querySelector('.container');
+            }
+
+            if (!navContainer) {
+                navContainer = header;
+            }
+
+            // Inyectar el HTML
+            navContainer.insertAdjacentHTML('beforeend', authHTML);
+
+            // Verificar que se creó correctamente
+            const authContainer = document.getElementById('unified-auth-container');
+            if (authContainer) {
+                console.log('✅ UI de login creada exitosamente');
+            } else {
+                console.error('❌ Error: El contenedor no se creó correctamente');
+            }
+        } catch (error) {
+            console.error('❌ Error creando UI de login:', error);
+            // Fallback: intentar nuevamente
+            setTimeout(() => this.createLoginUI(), 1000);
+        }
     }
 
     /**
@@ -188,52 +238,65 @@ class UnifiedLoginSystem {
         // Crear modal si no existe
         this.createLoginModal();
 
-        // Email login form
-        document.addEventListener('submit', (e) => {
-            if (e.target.id === 'emailLoginForm') {
-                e.preventDefault();
-                this.handleEmailLogin();
+        // Esperar a que el DOM esté listo para los listeners
+        const setupListeners = () => {
+            try {
+                // Email login form - usar delegación de eventos
+                document.addEventListener('submit', (e) => {
+                    if (e.target && e.target.id === 'emailLoginForm') {
+                        e.preventDefault();
+                        this.handleEmailLogin();
+                    }
+                }, true); // Usar captura para asegurar que se capture
+
+                // Toggle password visibility
+                document.addEventListener('click', (e) => {
+                    if (e.target && e.target.id === 'togglePassword') {
+                        const input = document.getElementById('loginPassword');
+                        const icon = e.target.querySelector('i');
+                        if (input && icon) {
+                            if (input.type === 'password') {
+                                input.type = 'text';
+                                icon.classList.replace('fa-eye', 'fa-eye-slash');
+                            } else {
+                                input.type = 'password';
+                                icon.classList.replace('fa-eye-slash', 'fa-eye');
+                            }
+                        }
+                    }
+                });
+
+                // Demo login
+                document.addEventListener('click', (e) => {
+                    if (e.target && e.target.id === 'demoLoginBtn') {
+                        this.handleDemoLogin();
+                    }
+                });
+
+                // Logout
+                document.addEventListener('click', (e) => {
+                    if (e.target && e.target.id === 'logout-button') {
+                        e.preventDefault();
+                        this.logout();
+                    }
+                });
+
+                // Profile link
+                document.addEventListener('click', (e) => {
+                    if (e.target && e.target.id === 'profile-link') {
+                        e.preventDefault();
+                        alert('👤 Perfil - Próximamente disponible');
+                    }
+                });
+
+                console.log('✅ Event listeners configurados');
+            } catch (error) {
+                console.error('❌ Error configurando event listeners:', error);
             }
-        });
+        };
 
-        // Toggle password visibility
-        const toggleBtn = document.getElementById('togglePassword');
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', () => {
-                const input = document.getElementById('loginPassword');
-                const icon = toggleBtn.querySelector('i');
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.replace('fa-eye', 'fa-eye-slash');
-                } else {
-                    input.type = 'password';
-                    icon.classList.replace('fa-eye-slash', 'fa-eye');
-                }
-            });
-        }
-
-        // Demo login
-        const demoBtn = document.getElementById('demoLoginBtn');
-        if (demoBtn) {
-            demoBtn.addEventListener('click', () => this.handleDemoLogin());
-        }
-
-        // Logout
-        document.addEventListener('click', (e) => {
-            if (e.target.id === 'logout-button') {
-                e.preventDefault();
-                this.logout();
-            }
-        });
-
-        // Profile link
-        const profileLink = document.getElementById('profile-link');
-        if (profileLink) {
-            profileLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                alert('👤 Perfil - Próximamente disponible');
-            });
-        }
+        // Ejecutar inmediatamente usando delegación de eventos
+        setupListeners();
     }
 
     /**
