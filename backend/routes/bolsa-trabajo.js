@@ -9,12 +9,26 @@ const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
-const emailConfirmationService = require('../services/emailConfirmationService');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+
+// Configuración de email
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
 
 // =====================================================
 // POST /api/bolsa-trabajo/cv - Crear perfil de CV
-// FLUJO ACTUALIZADO: 1) Guardar temporal 2) Enviar email confirmación
-//                   3) Usuario confirma email 4) Mover a aprobación admin
+// 🎯 FLUJO MEJORADO (5 NOVIEMBRE 2025):
+// 1) Guardar DIRECTAMENTE en pendientes_aprobacion
+// 2) estado = 'pendiente_confirmacion' (email no confirmado)
+// 3) Enviar email con token de confirmación
+// 4) Usuario confirma email → estado = 'pendiente' (esperando admin)
+// 5) Admin aprueba → se copia a bolsa_trabajo final
 // =====================================================
 router.post('/cv', [
     body('name').trim().notEmpty().withMessage('Nombre es requerido'),
@@ -34,20 +48,15 @@ router.post('/cv', [
     }
 
     const { name, email, phone, graduationYear, subject, message, skills } = req.body;
-    const ip_address = req.ip || req.connection.remoteAddress;
-    const user_agent = req.get('User-Agent');
 
     try {
-        // 📧 NUEVO FLUJO (3 NOVIEMBRE 2025):
-        // 1. Guardar en tabla temporal (bolsa_trabajo_pending_confirmation)
-        // 2. Generar token de confirmación
-        // 3. Enviar email con enlace de confirmación
-        // 4. Usuario confirma → se mueve a pendientes_aprobacion
-        // 5. Admin aprueba → se guarda en bolsa_trabajo final
+        console.log(`💼 [BOLSA-TRABAJO] Recibiendo CV para ${email}`);
 
-        console.log(`📧 [BOLSA-TRABAJO] Iniciando flujo de confirmación para ${email}`);
+        // Generar token de confirmación
+        const confirmationToken = crypto.randomBytes(16).toString('hex');
+        const tokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas
 
-        // Paso 1: Guardar registro pendiente y generar token
+        // Preparar datos del formulario
         const formData = {
             name,
             email,
@@ -58,32 +67,108 @@ router.post('/cv', [
             skills
         };
 
-        const pendingRecord = await emailConfirmationService.savePendingConfirmation(
-            formData,
-            ip_address,
-            user_agent
-        );
+        // 🎯 PASO 1: Guardar DIRECTAMENTE en pendientes_aprobacion con estado = 'pendiente_confirmacion'
+        const insertQuery = `
+            INSERT INTO pendientes_aprobacion (
+                tipo_solicitud,
+                email_usuario,
+                datos_json,
+                estado,
+                email_confirmado,
+                admin_notas,
+                fecha_solicitud
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, NOW())
+            RETURNING id, uuid;
+        `;
 
-        // Paso 2: Enviar email de confirmación
-        const confirmationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/bolsa-trabajo.html#confirm-email`;
-
-        await emailConfirmationService.sendConfirmationEmail(
+        const insertResult = await pool.query(insertQuery, [
+            'bolsa_trabajo',
             email,
-            name,
-            pendingRecord.confirmationToken,
-            confirmationUrl
-        );
+            JSON.stringify(formData),
+            'pendiente_confirmacion',  // 🔴 Estado especial: esperando confirmación de email
+            false,                      // email_confirmado = false
+            `Token de confirmación: ${confirmationToken}`
+        ]);
 
-        console.log(`✅ [BOLSA-TRABAJO] Solicitud de CV en espera de confirmación de email: ${email}`);
+        if (insertResult.rows.length === 0) {
+            throw new Error('No se pudo guardar el registro');
+        }
 
+        const approvalId = insertResult.rows[0].id;
+        const approvalUuid = insertResult.rows[0].uuid;
+
+        console.log(`✅ [BOLSA-TRABAJO] Registro guardado en pendientes_aprobacion (ID: ${approvalId})`);
+
+        // 🎯 PASO 2: Enviar email de confirmación
+        const confirmationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/bolsa-trabajo.html#confirm-email`;
+        const confirmLink = `${confirmationUrl}?token=${confirmationToken}`;
+
+        const htmlContent = `
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Confirma tu Email - Bolsa de Trabajo</title>
+            </head>
+            <body style="font-family: Arial, sans-serif; color: #333;">
+                <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h1 style="color: #1976D2;">¡Bienvenido a la Bolsa de Trabajo!</h1>
+                    </div>
+
+                    <p>Hola <strong>${name}</strong>,</p>
+
+                    <p>Gracias por registrar tu perfil de CV en la Bolsa de Trabajo del Bachillerato General Estatal "Héroes de la Patria".</p>
+
+                    <p><strong>Para completar tu registro, debes confirmar tu dirección de email.</strong></p>
+
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${confirmLink}" style="
+                            display: inline-block;
+                            padding: 12px 30px;
+                            background-color: #1976D2;
+                            color: white;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            font-weight: bold;
+                            font-size: 16px;
+                        ">Confirmar mi Email</a>
+                    </div>
+
+                    <p style="color: #999; font-size: 12px;">
+                        Si no puedes hacer clic en el botón, copia y pega esta URL en tu navegador:<br>
+                        <code>${confirmLink}</code>
+                    </p>
+
+                    <p style="color: #999; font-size: 12px;">
+                        Este enlace expira en 24 horas.
+                    </p>
+                </div>
+            </body>
+            </html>
+        `;
+
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: '✅ Confirma tu Email - Bolsa de Trabajo BGE',
+            html: htmlContent
+        });
+
+        console.log(`📧 [BOLSA-TRABAJO] Email de confirmación enviado a ${email}`);
+
+        // 🎯 PASO 3: Responder al cliente
         res.status(201).json({
             success: true,
-            message: '📧 ¡Solicitud recibida! Hemos enviado un email de confirmación a tu dirección. Por favor confirma tu email para completar el registro.',
+            message: '📧 ¡Solicitud recibida! Hemos enviado un email de confirmación. Por favor confirma tu email para completar el registro.',
             data: {
-                uuid: pendingRecord.uuid,
+                uuid: approvalUuid,
+                approvalId: approvalId,
                 email: email,
                 nombre: name,
-                estado: 'pendiente_confirmacion_email',
+                estado: 'pendiente_confirmacion',
                 fecha_solicitud: new Date().toISOString(),
                 nota: 'Revisa tu email (incluyendo spam) y haz clic en el enlace de confirmación. El enlace vence en 24 horas.'
             }
@@ -111,6 +196,7 @@ router.post('/cv', [
 
 // =====================================================
 // POST /api/bolsa-trabajo/confirm-email/:token - Confirmar email
+// 🎯 NUEVO: Cambiar estado de 'pendiente_confirmacion' a 'pendiente'
 // =====================================================
 router.post('/confirm-email/:token', async (req, res) => {
     const { token } = req.params;
@@ -125,25 +211,63 @@ router.post('/confirm-email/:token', async (req, res) => {
     try {
         console.log(`📧 [BOLSA-TRABAJO] Confirmando email con token: ${token.substring(0, 8)}...`);
 
-        const result = await emailConfirmationService.confirmEmailWithToken(token);
+        // 1. Buscar el registro con este token en admin_notas
+        const findQuery = `
+            SELECT id, uuid, email_usuario, estado, email_confirmado
+            FROM pendientes_aprobacion
+            WHERE tipo_solicitud = 'bolsa_trabajo'
+            AND admin_notas LIKE $1
+            LIMIT 1
+        `;
 
-        if (!result.success) {
+        const findResult = await pool.query(findQuery, [`%${token}%`]);
+
+        if (findResult.rows.length === 0) {
             return res.status(400).json({
                 success: false,
-                error: result.error
+                error: 'Token de confirmación inválido o expirado'
             });
         }
 
-        console.log(`✅ [BOLSA-TRABAJO] Email confirmado: ${result.email}`);
+        const record = findResult.rows[0];
+
+        // 2. Verificar si ya fue confirmado
+        if (record.email_confirmado === true) {
+            return res.status(400).json({
+                success: false,
+                error: 'Este email ya fue confirmado anteriormente'
+            });
+        }
+
+        // 3. Cambiar estado de 'pendiente_confirmacion' a 'pendiente' y marcar email como confirmado
+        const updateQuery = `
+            UPDATE pendientes_aprobacion
+            SET
+                estado = 'pendiente',
+                email_confirmado = true,
+                admin_notas = NULL
+            WHERE id = $1
+            RETURNING uuid, email_usuario;
+        `;
+
+        const updateResult = await pool.query(updateQuery, [record.id]);
+
+        if (updateResult.rows.length === 0) {
+            throw new Error('Error al actualizar registro');
+        }
+
+        const updatedRecord = updateResult.rows[0];
+
+        console.log(`✅ [BOLSA-TRABAJO] Email confirmado para ${updatedRecord.email_usuario}`);
+        console.log(`   Registro movido: 'pendiente_confirmacion' → 'pendiente'`);
 
         res.status(200).json({
             success: true,
             message: '✅ ¡Email confirmado exitosamente! Tu solicitud ha sido enviada a revisión del administrador. Te notificaremos cuando sea revisada.',
             data: {
-                uuid: result.uuid,
-                email: result.email,
-                approvalId: result.approvalId,
-                status: 'en_aprobacion',
+                uuid: updatedRecord.uuid,
+                email: updatedRecord.email_usuario,
+                status: 'pendiente',
                 mensaje: 'Tu perfil está pendiente de aprobación por el administrador.'
             }
         });

@@ -170,10 +170,7 @@ function renderApprovalsList() {
                                     ${approval.verification_email}
                                 </small>
                                 <br>
-                                <small class="${approval.email_verified ? 'text-success' : 'text-warning'}">
-                                    <i class="fas ${approval.email_verified ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-1"></i>
-                                    ${approval.email_verified ? 'Email Verificado' : 'Email No Verificado'}
-                                </small>
+                                ${getEstadoStatus(approval.estado)}
                             </div>
                         </div>
                     </div>
@@ -270,6 +267,37 @@ function getFormTypeBadge(formType) {
         'egresados': 'bg-info'
     };
     return badges[formType] || 'bg-secondary';
+}
+
+/**
+ * 🎯 Mostrar estado de confirmación de email
+ * - pendiente_confirmacion: Rojo/Naranja - esperando confirmación de email
+ * - pendiente: Amarillo - email confirmado, esperando aprobación admin
+ */
+function getEstadoStatus(estado) {
+    if (estado === 'pendiente_confirmacion') {
+        return `<small class="text-danger">
+                    <i class="fas fa-exclamation-circle me-1"></i>
+                    ⏳ Pendiente: Email sin confirmar
+                </small>`;
+    } else if (estado === 'pendiente') {
+        return `<small class="text-success">
+                    <i class="fas fa-check-circle me-1"></i>
+                    ✅ Email Confirmado - Esperando Aprobación
+                </small>`;
+    } else if (estado === 'aprobado') {
+        return `<small class="text-success">
+                    <i class="fas fa-thumbs-up me-1"></i>
+                    ✅ Aprobado
+                </small>`;
+    } else if (estado === 'rechazado') {
+        return `<small class="text-danger">
+                    <i class="fas fa-thumbs-down me-1"></i>
+                    ❌ Rechazado
+                </small>`;
+    } else {
+        return `<small class="text-muted">${estado}</small>`;
+    }
 }
 
 /**

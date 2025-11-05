@@ -20,25 +20,33 @@ router.get('/', async (req, res) => {
     try {
         const { tipo, estado, limit = 50, offset = 0, todos } = req.query;
 
-        // Lógica de filtrado de estado:
-        // - Si todos=true O todos=1, mostrar TODOS sin filtro de estado
+        // 🎯 LÓGICA MEJORADA (5 NOVIEMBRE 2025):
+        // - Mostrar registros en estados: 'pendiente_confirmacion' Y 'pendiente'
+        // - Estos son los que aparecen en el admin dashboard
         // - Si estado está especificado, usarlo
-        // - Si nada se especifica, usar 'pendiente' como default
-        let estadoFinal;
-        if (todos === 'true' || todos === '1') {
-            estadoFinal = null; // Sin filtro de estado
-        } else if (estado) {
-            estadoFinal = estado;
+        // - Si nada se especifica, mostrar AMBOS estados
+
+        let estadoFilter;
+        if (estado) {
+            // Usuario pidió estado específico
+            estadoFilter = estado;
         } else {
-            estadoFinal = 'pendiente'; // Default
+            // Default: mostrar 'pendiente_confirmacion' Y 'pendiente'
+            estadoFilter = null; // Sin filtro de estado (mostrará ambos)
         }
 
-        let query = 'SELECT * FROM pendientes_aprobacion WHERE email_confirmado = true';
+        // 🎯 NUEVA LÓGICA: Mostrar registros donde estado IN ('pendiente_confirmacion', 'pendiente')
+        // NO usar el filtro email_confirmado porque ahora el estado lo indica
+        let query = `
+            SELECT *
+            FROM pendientes_aprobacion
+            WHERE estado IN ('pendiente_confirmacion', 'pendiente')
+        `;
         const params = [];
 
-        if (estadoFinal) {
+        if (estadoFilter) {
             query += ' AND estado = $' + (params.length + 1);
-            params.push(estadoFinal);
+            params.push(estadoFilter);
         }
 
         if (tipo) {
@@ -46,27 +54,28 @@ router.get('/', async (req, res) => {
             params.push(tipo);
         }
 
-        // ✅ FILTRO CRÍTICO: Solo mostrar registros con email_confirmado=true
-        // Esto asegura que solo aparecen en el tab de aprobaciones DESPUÉS de confirmar email
-
         // Paginación
         query += ' ORDER BY fecha_solicitud DESC';
         query += ' LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2);
         params.push(parseInt(limit), parseInt(offset));
 
-        console.log(`📋 Query para obtener pendientes: ${query}`);
+        console.log(`📋 [GET /pendientes-aprobacion] Query:`);
+        console.log(`   ${query}`);
         console.log(`   Parámetros: [${params.join(', ')}]`);
-        console.log(`   Filtro estado: ${estadoFinal || 'NINGUNO (mostrando todos)'}`);
 
         const result = await pool.query(query, params);
 
         // Contar total
-        let countQuery = 'SELECT COUNT(*) FROM pendientes_aprobacion WHERE email_confirmado = true';
+        let countQuery = `
+            SELECT COUNT(*) as count
+            FROM pendientes_aprobacion
+            WHERE estado IN ('pendiente_confirmacion', 'pendiente')
+        `;
         const countParams = [];
 
-        if (estadoFinal) {
+        if (estadoFilter) {
             countQuery += ' AND estado = $' + (countParams.length + 1);
-            countParams.push(estadoFinal);
+            countParams.push(estadoFilter);
         }
 
         if (tipo) {
@@ -77,7 +86,7 @@ router.get('/', async (req, res) => {
         const countResult = await pool.query(countQuery, countParams);
 
         const totalCount = parseInt(countResult.rows[0].count);
-        console.log(`   Resultado: ${result.rows.length} registros encontrados, Total: ${totalCount}`);
+        console.log(`   ✅ Encontrados ${result.rows.length} registros, Total: ${totalCount}`);
 
         res.json({
             success: true,
