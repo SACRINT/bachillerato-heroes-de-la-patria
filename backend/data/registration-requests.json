@@ -41,7 +41,31 @@
       "reviewedBy": "admin@bge.edu.mx",
       "reviewNotes": "Docente aprobado",
       "userId": 456
+    },
+    {
+      "id": 5,
+      "email": "demo@bge.edu.mx",
+      "fullName": "Usuario Demo",
+      "requestedRole": "estudiante",
+      "status": "approved",
+      "createdAt": "2025-11-04T00:00:00.000Z",
+      "approvedAt": "2025-11-04T00:00:00.000Z",
+      "reviewedBy": "system",
+      "reviewNotes": "Cuenta demo para testing del Centro de IA Académica",
+      "userId": 9999
+    },
+    {
+      "id": 6,
+      "email": "usuario.demo@bge.edu.mx",
+      "fullName": "Usuario Demo BGE",
+      "requestedRole": "estudiante",
+      "status": "approved",
+      "createdAt": "2025-11-04T00:00:00.000Z",
+      "approvedAt": "2025-11-04T00:00:00.000Z",
+      "reviewedBy": "system",
+      "reviewNotes": "Cuenta demo BGE para Centro de IA Académica",
+      "userId": 9998
     }
   ],
-  "lastId": 4
+  "lastId": 6
 }

@@ -272,33 +272,133 @@ function formatResponse(responseData) {
 // ==========================================
 // CARGA DE HEADER Y FOOTER
 // ==========================================
-function loadHeaderFooter() {
-    // Esta función se ejecuta automáticamente si los scripts están en las páginas
-    // Es una función de respaldo en caso de que no estén los scripts inline
-    
-    const headerPlaceholder = document.getElementById('header-placeholder');
-    const footerPlaceholder = document.getElementById('footer-placeholder');
-    
-    if (headerPlaceholder && !headerPlaceholder.innerHTML.trim()) {
-        fetch('partials/header.html')
-            .then(response => response.text())
-            .then(data => {
-                headerPlaceholder.innerHTML = data;
-                // El modo oscuro ahora se maneja via script.js
-                // setTimeout(initializeDarkMode, 500);
-            })
-            .catch(error => { /*console.log('Header no encontrado:', error);*/ });
+// Función auxiliar para cargar scripts dinámicamente de forma segura
+function loadScriptDynamically(src, timeout = 5000) {
+    return new Promise((resolve, reject) => {
+        // NOTA: No verificamos si el script ya existe en el DOM porque los scripts
+        // inyectados vía innerHTML no se ejecutan automáticamente. Siempre necesitamos
+        // cargar dinámicamente usando createElement + appendChild.
+
+        const script = document.createElement('script');
+        script.src = src;
+        script.type = 'text/javascript';
+        script.async = false;  // Cargar en orden
+
+        const timer = setTimeout(() => {
+            console.warn(`⚠️ Timeout cargando script: ${src}`);
+            reject(new Error(`Timeout loading ${src}`));
+        }, timeout);
+
+        script.onload = () => {
+            clearTimeout(timer);
+            console.log(`✅ Script cargado exitosamente: ${src}`);
+            resolve();
+        };
+
+        script.onerror = () => {
+            clearTimeout(timer);
+            console.error(`❌ Error cargando script: ${src}`);
+            reject(new Error(`Error loading ${src}`));
+        };
+
+        // Asegurar que document.body existe
+        if (document.body) {
+            document.body.appendChild(script);
+        } else {
+            console.warn(`⚠️ document.body no existe, esperando...`);
+            document.addEventListener('DOMContentLoaded', () => {
+                document.body.appendChild(script);
+            });
+        }
+    });
+}
+
+// Función para cargar múltiples scripts en secuencia
+async function loadScriptsSequentially(scripts) {
+    console.log(`📦 Cargando ${scripts.length} scripts en secuencia...`);
+    for (const src of scripts) {
+        try {
+            await loadScriptDynamically(src);
+        } catch (error) {
+            console.error(`❌ Error en secuencia: ${error.message}`);
+        }
     }
-    
-    if (footerPlaceholder && !footerPlaceholder.innerHTML.trim()) {
-        fetch('partials/footer.html')
-            .then(response => response.text())
-            .then(data => {
-                footerPlaceholder.innerHTML = data;
+    console.log(`✅ Todos los scripts cargados`);
+}
+
+function loadHeaderFooter() {
+    console.log('🔍 [MAIN.JS] loadHeaderFooter() iniciando...');
+
+    // Buscar por el ID correcto: main-header (no header-placeholder)
+    const headerContainer = document.getElementById('main-header');
+    const footerContainer = document.getElementById('main-footer');
+
+    console.log(`🔍 [MAIN.JS] headerContainer encontrado: ${!!headerContainer}, footerContainer encontrado: ${!!footerContainer}`);
+
+    if (headerContainer && !headerContainer.innerHTML.trim()) {
+        console.log('📥 [MAIN.JS] Iniciando fetch de header.html...');
+
+        fetch('partials/header.html')
+            .then(response => {
+                console.log(`📥 [MAIN.JS] Fetch response status: ${response.status}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                return response.text();
             })
-            .catch(error => { /*console.log('Footer no encontrado:', error);*/ });
+            .then((data) => {
+                console.log(`✅ [MAIN.JS] Header HTML recibido (${data.length} caracteres)`);
+                headerContainer.innerHTML = data;
+                console.log('✅ [MAIN.JS] Header HTML inyectado en el DOM');
+
+                // IMPORTANTE: Los scripts en el HTML no se ejecutan con innerHTML
+                // Necesitamos cargar los scripts críticos manualmente en secuencia
+                const criticalScripts = [
+                    'js/unified-auth-system-v2.js?v=2025110401',  // NUEVO: Sistema de autenticación unificado V2
+                    'js/admin-auth.js?v=2024091401',
+                    'js/responsive-nav.js?v=2024091401',
+                    'js/nested-dropdowns.js?v=2024091401',
+                    'js/theme-manager.js?v=2024092101'
+                ];
+
+                console.log(`📦 [MAIN.JS] Iniciando carga de ${criticalScripts.length} scripts críticos...`);
+
+                // Usar loadScriptsSequentially que ya retorna una Promise
+                return loadScriptsSequentially(criticalScripts).then(() => {
+                    // Disparar evento para que otros scripts sepan que el header está listo
+                    console.log('📡 [MAIN.JS] Disparando evento headerLoaded...');
+                    document.dispatchEvent(new Event('headerLoaded'));
+                    console.log('✅ [MAIN.JS] loadHeaderFooter() completado exitosamente');
+                });
+            })
+            .catch(error => {
+                console.error('❌ [MAIN.JS] Error en loadHeaderFooter:', error);
+                console.error('❌ [MAIN.JS] Error stack:', error.stack);
+            });
+    } else {
+        console.log('⚠️ [MAIN.JS] Header container no encontrado o ya contiene datos');
+    }
+
+    if (footerContainer && !footerContainer.innerHTML.trim()) {
+        console.log('📥 [MAIN.JS] Iniciando fetch de footer.html...');
+
+        fetch('partials/footer.html')
+            .then(response => {
+                console.log(`📥 [MAIN.JS] Footer fetch status: ${response.status}`);
+                return response.text();
+            })
+            .then(data => {
+                footerContainer.innerHTML = data;
+                console.log('✅ [MAIN.JS] Footer cargado dinámicamente');
+            })
+            .catch(error => {
+                console.error('❌ [MAIN.JS] Error en footer:', error);
+            });
+    } else {
+        console.log('⚠️ [MAIN.JS] Footer container no encontrado o ya contiene datos');
     }
 }
+
 
 // ==========================================
 // ESTILOS CSS PARA CHATBOT Y MODO OSCURO

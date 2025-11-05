@@ -1,0 +1,552 @@
+/**
+ * 🎨 ESTILOS DEL SISTEMA DE AUTENTICACIÓN UNIFICADO V2
+ * Diseño moderno, profesional y de clase mundial
+ */
+
+/* ============================================
+   MODAL BASE
+   ============================================ */
+
+#unified-auth-modal .modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#unified-auth-modal .modal-header {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, rgba(0, 123, 255, 0.8) 100%);
+    padding: 1.5rem;
+    border: none;
+}
+
+#unified-auth-modal .modal-title {
+    color: white;
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+}
+
+#unified-auth-modal .modal-header p {
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+#unified-auth-modal .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+#unified-auth-modal .btn-close:hover {
+    opacity: 0.8;
+}
+
+/* ============================================
+   TABS
+   ============================================ */
+
+#unified-auth-modal .nav-pills {
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+#unified-auth-modal .nav-pills .nav-link {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    color: #6c757d;
+    border: 2px solid transparent;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 0.75rem 1.25rem;
+    flex: 1;
+}
+
+#unified-auth-modal .nav-pills .nav-link:hover {
+    background-color: #e9ecef;
+    border-color: var(--bs-primary);
+    color: var(--bs-primary);
+}
+
+#unified-auth-modal .nav-pills .nav-link.active {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* ============================================
+   GOOGLE LOGIN TAB
+   ============================================ */
+
+#google-login {
+    animation: fadeIn 0.4s ease;
+}
+
+#google-login i.fab {
+    font-size: 3rem;
+    color: #ea4335;
+}
+
+#google-signin-btn {
+    border: 2px solid #ea4335;
+    color: #ea4335;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+#google-signin-btn:hover {
+    background-color: #ea4335;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(234, 67, 53, 0.3);
+}
+
+#google-login .alert {
+    border-radius: 8px;
+    border: none;
+    background-color: #e7f3ff;
+    color: #0066cc;
+    font-size: 0.85rem;
+}
+
+/* ============================================
+   EMAIL LOGIN TAB
+   ============================================ */
+
+#email-login {
+    animation: fadeIn 0.4s ease;
+}
+
+#email-login .input-group {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+#email-login .input-group:focus-within {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+#email-login .input-group-text {
+    background-color: #f8f9fa;
+    border: none;
+    color: #6c757d;
+}
+
+#email-login .form-control {
+    border: none;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+}
+
+#email-login .form-control:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+#email-login .form-check {
+    margin-top: 1rem;
+}
+
+#email-login .form-check-input {
+    width: 1.25em;
+    height: 1.25em;
+    margin-right: 0.5rem;
+    cursor: pointer;
+    border: 2px solid #dee2e6;
+    border-radius: 4px;
+}
+
+#email-login .form-check-input:checked {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+#email-login button[type="submit"] {
+    padding: 0.85rem 1.5rem;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+#email-login button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+#email-login button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+#email-login .form-label {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+#toggle-password {
+    cursor: pointer;
+    color: #6c757d;
+}
+
+#toggle-password:hover {
+    color: var(--bs-primary);
+}
+
+#email-login hr {
+    opacity: 0.2;
+    margin: 1.5rem 0;
+}
+
+#email-login .small.text-muted {
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+#email-login a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+#email-login a:hover {
+    text-decoration: underline;
+}
+
+/* ============================================
+   ALERTAS
+   ============================================ */
+
+#auth-alerts-container {
+    margin-bottom: 1rem;
+}
+
+#auth-alerts-container .alert {
+    border-radius: 10px;
+    border: none;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    animation: slideInDown 0.3s ease;
+}
+
+#auth-alerts-container .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+#auth-alerts-container .alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+#auth-alerts-container .alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+#auth-alerts-container .alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+#auth-alerts-container .btn-close {
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+#auth-alerts-container .btn-close:hover {
+    opacity: 0.75;
+}
+
+/* ============================================
+   MODAL FOOTER
+   ============================================ */
+
+#unified-auth-modal .modal-footer {
+    padding: 1rem 1.5rem;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+#unified-auth-modal .modal-footer .text-muted {
+    font-size: 0.8rem;
+    color: #adb5bd !important;
+}
+
+/* ============================================
+   MODAL BODY
+   ============================================ */
+
+#unified-auth-modal .modal-body {
+    padding: 2rem;
+    background-color: #ffffff;
+}
+
+/* ============================================
+   BOTONES DE ESTADO
+   ============================================ */
+
+#login-button-state .btn {
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+#login-button-state .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+#login-button-state .btn-primary {
+    background: linear-gradient(135deg, var(--bs-primary), rgba(0, 123, 255, 0.8));
+    border: none;
+}
+
+/* ============================================
+   MENÚ DE USUARIO
+   ============================================ */
+
+#user-menu-state .dropdown-toggle {
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+#user-menu-state .dropdown-toggle:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+#user-menu-state .dropdown-menu {
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
+}
+
+#user-menu-state .dropdown-item {
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+}
+
+#user-menu-state .dropdown-item:hover {
+    background-color: #f8f9fa;
+    padding-left: 1.5rem;
+}
+
+#user-menu-state .dropdown-item.text-danger:hover {
+    background-color: #f8d7da;
+    color: #721c24 !important;
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 576px) {
+    #unified-auth-modal .modal-dialog {
+        margin: 1rem;
+    }
+
+    #unified-auth-modal .modal-body {
+        padding: 1.5rem;
+    }
+
+    #unified-auth-modal .modal-title {
+        font-size: 1.1rem;
+    }
+
+    #unified-auth-modal .nav-pills .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    #google-login i.fab {
+        font-size: 2.5rem;
+    }
+
+    #email-login input,
+    #email-login button {
+        font-size: 16px; /* Prevenir zoom en iOS */
+    }
+}
+
+/* ============================================
+   DARK MODE
+   ============================================ */
+
+.dark-mode #unified-auth-modal .modal-content {
+    background-color: #2d3748;
+    color: #f8f9fa;
+}
+
+.dark-mode #unified-auth-modal .modal-body {
+    background-color: #2d3748;
+}
+
+.dark-mode #unified-auth-modal .nav-pills .nav-link {
+    background-color: #4a5568;
+    color: #cbd5e0;
+}
+
+.dark-mode #unified-auth-modal .nav-pills .nav-link:hover {
+    background-color: #5a6b7a;
+    color: white;
+}
+
+.dark-mode #unified-auth-modal .nav-pills .nav-link.active {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+.dark-mode #unified-auth-modal .form-label {
+    color: #e2e8f0;
+}
+
+.dark-mode #unified-auth-modal .input-group {
+    border-color: #4a5568;
+}
+
+.dark-mode #unified-auth-modal .input-group-text {
+    background-color: #4a5568;
+    color: #cbd5e0;
+    border-color: #4a5568;
+}
+
+.dark-mode #unified-auth-modal .form-control {
+    background-color: #4a5568;
+    color: #f8f9fa;
+    border-color: #4a5568;
+}
+
+.dark-mode #unified-auth-modal .form-control:focus {
+    background-color: #4a5568;
+    color: #f8f9fa;
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.dark-mode #unified-auth-modal .form-check-input {
+    background-color: #4a5568;
+    border-color: #718096;
+}
+
+.dark-mode #unified-auth-modal .form-check-input:checked {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.dark-mode #unified-auth-modal hr {
+    border-color: #4a5568;
+}
+
+.dark-mode #unified-auth-modal .modal-footer {
+    background-color: #4a5568;
+    border-top-color: #718096;
+}
+
+.dark-mode #unified-auth-modal .small.text-muted {
+    color: #cbd5e0 !important;
+}
+
+.dark-mode #user-menu-state .dropdown-menu {
+    background-color: #4a5568;
+    border-color: #718096;
+}
+
+.dark-mode #user-menu-state .dropdown-item {
+    color: #cbd5e0;
+}
+
+.dark-mode #user-menu-state .dropdown-item:hover {
+    background-color: #5a6b7a;
+    color: #f8f9fa;
+}
+
+.dark-mode #user-menu-state .dropdown-item.text-danger {
+    color: #fc8181 !important;
+}
+
+.dark-mode #user-menu-state .dropdown-item.text-danger:hover {
+    background-color: #742a2a;
+}
+
+/* ============================================
+   SPINNER CUSTOM
+   ============================================ */
+
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.2em;
+}
+
+#email-login button[type="submit"]:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+#unified-auth-modal :focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+#unified-auth-modal .nav-link:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: -2px;
+}
+
+/* ============================================
+   PSEUDO-ELEMENTOS
+   ============================================ */
+
+#unified-auth-modal .bg-gradient {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, rgba(0, 123, 255, 0.8) 100%) !important;
+}
+
+/* Helper para transiciones suaves */
+#unified-auth-modal * {
+    transition-property: color, background-color, border-color, box-shadow, transform;
+    transition-duration: 0.2s;
+    transition-timing-function: ease;
+}
+
+/* Desactivar transiciones en animaciones específicas */
+#unified-auth-modal .tab-pane {
+    transition: none;
+}
