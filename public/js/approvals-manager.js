@@ -39,11 +39,22 @@ async function loadPendingApprovals() {
                 // Parsear datos_json si es string (viene de BD como JSON string)
                 let parsedData;
                 try {
+                    console.log(`🔍 [LOAD] Procesando registro ID ${item.id}:`);
+                    console.log(`   Tipo: ${item.tipo_solicitud}`);
+                    console.log(`   datos_json tipo: ${typeof item.datos_json}`);
+                    console.log(`   datos_json es null: ${item.datos_json === null}`);
+                    console.log(`   datos_json es undefined: ${item.datos_json === undefined}`);
+                    console.log(`   datos_json length: ${typeof item.datos_json === 'string' ? item.datos_json.length : 'N/A'}`);
+                    console.log(`   datos_json primeros 100 chars: ${typeof item.datos_json === 'string' ? item.datos_json.substring(0, 100) : String(item.datos_json).substring(0, 100)}`);
+
                     parsedData = typeof item.datos_json === 'string'
                         ? JSON.parse(item.datos_json)
                         : item.datos_json;
+
+                    console.log(`   ✅ Parseado exitosamente:`, parsedData);
                 } catch (e) {
                     console.warn(`⚠️ Error parseando datos_json para ID ${item.id}:`, e);
+                    console.warn(`   Raw datos_json:`, item.datos_json);
                     parsedData = item.datos_json || {};
                 }
 

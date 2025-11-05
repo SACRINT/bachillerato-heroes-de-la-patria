@@ -164,6 +164,10 @@ router.post('/create', async (req, res) => {
                 confirmation_token: confirmationToken  // Token guardado en datos
             };
 
+            console.log(`📝 [ETAPA 1] Preparando datos para tabla temporal:`);
+            console.log(`   datosJSON keys:`, Object.keys(datosJSON));
+            console.log(`   datosJSON completo:`, JSON.stringify(datosJSON, null, 2));
+
             // ✅ ETAPA 1: Insertar en tabla temporal egresados_pending_confirmation
             // El registro NO aparecerá en el panel de admin hasta que confirme email
             const insertQuery = `
@@ -177,12 +181,17 @@ router.post('/create', async (req, res) => {
                 RETURNING id, confirmation_token, fecha_solicitud
             `;
 
+            const datosJsonStr = JSON.stringify(datosJSON);
+            console.log(`   STRING a guardar (length: ${datosJsonStr.length}):`, datosJsonStr.substring(0, 200));
+
             result = await client.query(insertQuery, [
                 email,                          // email_usuario
-                JSON.stringify(datosJSON),      // datos_json
+                datosJsonStr,                   // datos_json
                 confirmationToken,              // confirmation_token (como campo separado para búsqueda rápida)
                 false                           // email_confirmado: No confirmado aún
             ]);
+
+            console.log(`✅ [ETAPA 1] Insertado en egresados_pending_confirmation con ID: ${result.rows[0].id}`);
         } else {
             // Si está reenviando, obtener el ID del registro existente
             // Buscar en tabla temporal primero
@@ -373,6 +382,15 @@ router.get('/confirm/:token', async (req, res) => {
         }
 
         const registroTemporal = temporalResult.rows[0];
+
+        console.log(`📊 [ETAPA 2] Datos recuperados de tabla temporal:`);
+        console.log(`   ID: ${registroTemporal.id}`);
+        console.log(`   Email: ${registroTemporal.email_usuario}`);
+        console.log(`   datos_json tipo: ${typeof registroTemporal.datos_json}`);
+        console.log(`   datos_json null: ${registroTemporal.datos_json === null}`);
+        console.log(`   datos_json length: ${typeof registroTemporal.datos_json === 'string' ? registroTemporal.datos_json.length : 'N/A'}`);
+        console.log(`   datos_json preview:`, typeof registroTemporal.datos_json === 'string' ? registroTemporal.datos_json.substring(0, 200) : registroTemporal.datos_json);
+
         const datosJSON = typeof registroTemporal.datos_json === 'string'
             ? JSON.parse(registroTemporal.datos_json)
             : registroTemporal.datos_json;
@@ -380,6 +398,7 @@ router.get('/confirm/:token', async (req, res) => {
         console.log(`✅ [CONFIRM] Solicitud encontrada en tabla temporal:`);
         console.log(`   Email: ${registroTemporal.email_usuario}`);
         console.log(`   Nombre: ${datosJSON.nombre_completo}`);
+        console.log(`   datosJSON parseado:`, Object.keys(datosJSON));
 
         // Iniciar transacción para garantizar consistencia
         await client.query('BEGIN');
@@ -387,6 +406,10 @@ router.get('/confirm/:token', async (req, res) => {
         try {
             // ✅ ETAPA 2 PASO 1: MOVER datos de tabla temporal a pendientes_aprobacion
             console.log(`📤 [CONFIRM] Moviendo datos a pendientes_aprobacion...`);
+
+            const datosJsonStr = JSON.stringify(datosJSON);
+            console.log(`   datos_json a mover (length: ${datosJsonStr.length}):`, datosJsonStr.substring(0, 300));
+            console.log(`   datosJSON keys siendo guardadas:`, Object.keys(datosJSON));
 
             const moveResult = await client.query(
                 `INSERT INTO pendientes_aprobacion (
@@ -402,7 +425,7 @@ router.get('/confirm/:token', async (req, res) => {
                 [
                     'egresado',                             // tipo_solicitud
                     registroTemporal.email_usuario,        // email_usuario
-                    JSON.stringify(datosJSON),              // datos_json (con confirmation_token incluido)
+                    datosJsonStr,                           // datos_json (con confirmation_token incluido)
                     'pendiente',                            // estado
                     true                                    // ✅ email_confirmado = TRUE (ya confirmó)
                 ]
