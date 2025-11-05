@@ -6,6 +6,11 @@
 
 class ProfessionalFormsManager {
     constructor() {
+        // Detectar si estamos en localhost para configuración de development
+        const isLocalhost = window.location.hostname === 'localhost' ||
+                           window.location.hostname === '127.0.0.1' ||
+                           window.location.hostname === '::1';
+
         this.config = {
             // Configuración del servidor de formularios
             apiEndpoint: '/api/contact/send',  // Endpoint del backend propio
@@ -14,7 +19,7 @@ class ProfessionalFormsManager {
 
             // Anti-spam y seguridad
             honeypotField: '_gotcha',
-            maxSubmissions: 3, // Por IP por hora
+            maxSubmissions: isLocalhost ? 100 : 3, // 100 en localhost para testing, 3 en producción
             requiredDelay: 3000, // Tiempo mínimo antes de envío (ms)
 
             // Email institucional
@@ -371,6 +376,12 @@ class ProfessionalFormsManager {
                 return await this.handleAppointmentSubmit(form, formData);
             }
 
+            // 💼 NUEVO: Detectar formularios de bolsa de trabajo
+            if (formType === 'Registro Bolsa de Trabajo') {
+                console.log('💼 Detectado formulario de bolsa de trabajo, usando endpoint especializado');
+                return await this.handleBolsaTrabajoSubmit(form, formData);
+            }
+
             // ✅ FIX BUG CRÍTICO: Mapeo de campos inglés → español
             // El backend espera: nombre, asunto, mensaje, telefono
             // Los formularios envían: name, subject, message, phone
@@ -635,6 +646,137 @@ class ProfessionalFormsManager {
 
         } catch (error) {
             console.error('❌ [CITAS] Error en agendamiento:', error);
+            return {
+                success: false,
+                message: 'Error de conexión. Por favor intenta nuevamente.'
+            };
+        }
+    }
+
+    // ==========================================
+    // MANEJO ESPECIALIZADO DE BOLSA DE TRABAJO
+    // ==========================================
+
+    async handleBolsaTrabajoSubmit(form, formData) {
+        try {
+            // Extraer datos del formulario
+            const name = formData.get('name') || formData.get('nombre') || '';
+            const email = formData.get('email') || '';
+            const phone = formData.get('phone') || formData.get('telefono') || '';
+            const graduationYear = formData.get('graduationYear') || '';
+            const subject = formData.get('subject') || '';
+            const message = formData.get('message') || '';
+            const skills = formData.get('skills') || '';
+            const experience = formData.get('experience') || '';
+
+            // Validaciones básicas
+            if (!name.trim()) {
+                return {
+                    success: false,
+                    message: 'El nombre es requerido'
+                };
+            }
+            if (!email.trim() || !email.includes('@')) {
+                return {
+                    success: false,
+                    message: 'El email es requerido y debe ser válido'
+                };
+            }
+            if (!phone.trim()) {
+                return {
+                    success: false,
+                    message: 'El teléfono es requerido'
+                };
+            }
+            if (!subject.trim()) {
+                return {
+                    success: false,
+                    message: 'El área de especialidad es requerida'
+                };
+            }
+            if (!message.trim() || message.trim().length < 20) {
+                return {
+                    success: false,
+                    message: 'El resumen profesional debe tener al menos 20 caracteres'
+                };
+            }
+
+            console.log('💼 [BOLSA-TRABAJO] Procesando registro CV:', {
+                nombre: name,
+                email: email,
+                telefono: phone,
+                subject: subject,
+                year: graduationYear
+            });
+
+            // Datos para el endpoint de bolsa de trabajo
+            const cvData = {
+                name: name.trim(),
+                email: email.trim(),
+                phone: phone.trim(),
+                graduationYear: graduationYear.trim(),
+                subject: subject.trim(),
+                message: message.trim(),
+                skills: skills.trim(),
+                experience: experience.trim(),
+                form_type: 'bolsa_trabajo'
+            };
+
+            console.log('📤 [BOLSA-TRABAJO] Enviando datos al endpoint /api/bolsa-trabajo/cv:', cvData);
+
+            // Enviar al endpoint correcto de bolsa de trabajo
+            const response = await fetch('/api/bolsa-trabajo/cv', {
+                method: 'POST',
+                body: JSON.stringify(cvData),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            const result = await response.json();
+            console.log('📥 [BOLSA-TRABAJO] Respuesta del servidor:', result);
+
+            if (response.ok && result.success) {
+                return {
+                    success: true,
+                    requiresVerification: true,
+                    message: '¡Tu CV ha sido registrado! Por favor revisa tu email para confirmar tu registro.',
+                    data: result
+                };
+            }
+
+            // Manejo de errores específicos
+            if (result.errors && result.errors.length > 0) {
+                const errorMessages = result.errors.map(err => err.msg || err.message).join(', ');
+                return {
+                    success: false,
+                    message: `Errores de validación: ${errorMessages}`
+                };
+            }
+
+            // Manejo de errores del servidor
+            if (result.message) {
+                return {
+                    success: false,
+                    message: result.message
+                };
+            }
+
+            if (result.error) {
+                return {
+                    success: false,
+                    message: result.error
+                };
+            }
+
+            return {
+                success: false,
+                message: 'Error al registrar CV. Por favor intenta nuevamente.'
+            };
+
+        } catch (error) {
+            console.error('❌ [BOLSA-TRABAJO] Error en registro:', error);
             return {
                 success: false,
                 message: 'Error de conexión. Por favor intenta nuevamente.'
