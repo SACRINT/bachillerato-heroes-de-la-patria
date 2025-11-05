@@ -250,12 +250,44 @@ app.use('/api/support-tickets', supportTicketsRoutes);
  * No requiere autenticación (API keys públicas de CDNs)
  */
 app.get('/api/config/public-keys', (req, res) => {
+    const isDevelopment = process.env.NODE_ENV === 'development';
+
     res.json({
         success: true,
+        environment: isDevelopment ? 'development' : 'production',
         keys: {
             tinymce: process.env.TINYMCE_API_KEY || 'no-api-key',
-            google_oauth_client_id: process.env.GOOGLE_OAUTH_CLIENT_ID_PROD || ''
+            // 🔑 Google OAuth Client ID - Se lee según el entorno (dev o prod)
+            google_oauth_client_id: isDevelopment
+                ? (process.env.GOOGLE_OAUTH_CLIENT_ID_DEV || '')
+                : (process.env.GOOGLE_OAUTH_CLIENT_ID_PROD || '')
         }
+    });
+});
+
+/**
+ * GET /api/config/google-client-id
+ * Devuelve SOLO el Google Client ID según el entorno
+ * Usado por unified-auth-system-v2.js
+ */
+app.get('/api/config/google-client-id', (req, res) => {
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const clientId = isDevelopment
+        ? process.env.GOOGLE_OAUTH_CLIENT_ID_DEV
+        : process.env.GOOGLE_OAUTH_CLIENT_ID_PROD;
+
+    if (!clientId) {
+        return res.status(500).json({
+            success: false,
+            error: 'Google OAuth no configurado',
+            environment: isDevelopment ? 'development' : 'production'
+        });
+    }
+
+    res.json({
+        success: true,
+        clientId: clientId,
+        environment: isDevelopment ? 'development' : 'production'
     });
 });
 

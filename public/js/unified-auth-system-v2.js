@@ -23,7 +23,7 @@ class UnifiedAuthSystem {
     constructor(config = {}) {
         this.config = {
             apiBaseUrl: config.apiBaseUrl || '/api',
-            googleClientId: config.googleClientId || this.getGoogleClientId(),
+            googleClientId: config.googleClientId || null, // Se carga de forma asíncrona
             enableDemo: config.enableDemo !== false, // Demo como fallback
             sessionTimeout: config.sessionTimeout || 30 * 60 * 1000, // 30 minutos
             ...config
@@ -43,19 +43,46 @@ class UnifiedAuthSystem {
     }
 
     /**
-     * OBTENER GOOGLE CLIENT ID
+     * CARGAR GOOGLE CLIENT ID DESDE SERVIDOR
+     * Lee la variable de entorno .env desde el backend
      */
-    getGoogleClientId() {
+    async loadGoogleClientIdFromServer() {
+        try {
+            console.log('🔑 Cargando Google Client ID desde servidor...');
+
+            const response = await fetch(`${this.config.apiBaseUrl}/config/google-client-id`);
+            const data = await response.json();
+
+            if (data.success && data.clientId) {
+                this.config.googleClientId = data.clientId;
+                console.log('✅ Google Client ID cargado desde .env');
+                return data.clientId;
+            } else {
+                console.warn('⚠️ Google Client ID no disponible en servidor:', data.error);
+                return null;
+            }
+        } catch (error) {
+            console.warn('⚠️ Error cargando Google Client ID:', error.message);
+            return null;
+        }
+    }
+
+    /**
+     * OBTENER GOOGLE CLIENT ID (FALLBACK)
+     * Solo se usa si el servidor no lo proporciona
+     */
+    getGoogleClientIdFallback() {
         // Intentar obtener del AppConfig si está disponible
         if (window.AppConfig && typeof window.AppConfig.getGoogleClientId === 'function') {
             return window.AppConfig.getGoogleClientId();
         }
 
-        // Client ID real de BGE (registrado en Google Cloud Console)
+        // Fallback: hardcoded (NO RECOMENDADO)
+        console.warn('⚠️ Usando Google Client ID hardcoded (se recomienda usar .env)');
         const isDev = this.isDevelopment();
         return isDev
             ? '411638938693-87nmapmm146kci8i0p80jo745cost08h.apps.googleusercontent.com'
-            : '411638938693-87nmapmm146kci8i0p80jo745cost08h.apps.googleusercontent.com'; // Mismo para producción (debe ser autorizado en Console)
+            : '411638938693-87nmapmm146kci8i0p80jo745cost08h.apps.googleusercontent.com';
     }
 
     /**
@@ -76,22 +103,29 @@ class UnifiedAuthSystem {
             // 1. Esperar DOM
             await this.waitForDOM();
 
-            // 2. Inicializar managers
+            // 2. Cargar Google Client ID desde servidor (.env)
+            const clientId = await this.loadGoogleClientIdFromServer();
+            if (!clientId) {
+                console.log('⚠️ Google Client ID no disponible, intentando fallback...');
+                this.config.googleClientId = this.getGoogleClientIdFallback();
+            }
+
+            // 3. Inicializar managers
             this.initializeManagers();
 
-            // 3. Cargar sesión guardada
+            // 4. Cargar sesión guardada
             await this.loadStoredSession();
 
-            // 4. Crear UI
+            // 5. Crear UI
             this.createLoginUI();
 
-            // 5. Cargar Google Services
+            // 6. Cargar Google Services
             await this.initializeGoogleOAuth();
 
-            // 6. Setup listeners
+            // 7. Setup listeners
             this.setupEventListeners();
 
-            // 7. Monitor actividad
+            // 8. Monitor actividad
             this.setupActivityMonitor();
 
             this.state.isInitialized = true;
