@@ -22,39 +22,30 @@ const transporter = nodemailer.createTransport({
  * POST /api/egresados/create
  * Crear nuevo perfil profesional (requiere confirmación por email)
  */
-router.post('/create', async (req, res) => {
-    const client = await pool.connect();
+// 🎓 ALMACENAMIENTO EN MEMORIA (temporal mientras se espera confirmación de email)
+// Esto es seguro porque los tokens expiran en 24 horas
+const pendingEgresadosMap = new Map();
 
+router.post('/create', async (req, res) => {
     try {
-        console.log('📝 Creando perfil profesional:', req.body);
+        console.log('📝 [EGRESADOS CREATE] Recibido formulario de egresado');
 
         const {
-            // Datos personales
             nombre_completo,
             email,
             telefono,
             fecha_nacimiento,
-
-            // Educación
             anio_egreso,
             carrera_tecnica,
             generacion,
-
-            // Experiencia
             experiencia_laboral,
             habilidades,
             idiomas,
-
-            // Profesional
             cv_url,
             disponibilidad,
             pretension_salarial,
-
-            // Ubicación
             ciudad,
             estado,
-
-            // Adicionales
             linkedin_url,
             portafolio_url,
             referencias
@@ -73,148 +64,48 @@ router.post('/create', async (req, res) => {
         if (!emailRegex.test(email)) {
             return res.status(400).json({
                 success: false,
-                message: '❌ El email que ingresaste no es válido. Por favor verifica que esté escrito correctamente (ej: usuario@dominio.com).'
+                message: '❌ El email que ingresaste no es válido.'
             });
         }
 
-        // Generar token de confirmación ÚNICO
+        // Generar token de confirmación
         const confirmationToken = crypto.randomBytes(32).toString('hex');
 
-        // Verificar estado del email: ¿ya existe? ¿en qué tabla y estado?
-        const egresadoCheck = await client.query(
-            `SELECT id FROM egresados WHERE email = $1`,
-            [email]
-        );
+        // Preparar datos
+        const datosJSON = {
+            nombre_completo,
+            email,
+            telefono,
+            fecha_nacimiento,
+            anio_egreso,
+            carrera_tecnica,
+            generacion,
+            experiencia_laboral,
+            habilidades,
+            idiomas,
+            cv_url,
+            disponibilidad,
+            pretension_salarial,
+            ciudad,
+            estado,
+            linkedin_url,
+            portafolio_url,
+            referencias
+        };
 
-        // Si ya existe en tabla egresados (aprobado/final), rechazar
-        if (egresadoCheck.rows.length > 0) {
-            return res.status(400).json({
-                success: false,
-                message: '✅ Este email ya está registrado y APROBADO en nuestro sistema como egresado. Tu perfil ya está visible en la plataforma. Si necesitas actualizar tu información, por favor contacta al administrador.'
-            });
-        }
+        // ✅ ALMACENAR EN MEMORIA (NO en BD)
+        // El token expira en 24 horas
+        pendingEgresadosMap.set(confirmationToken, {
+            datos: datosJSON,
+            email: email,
+            timestamp: Date.now(),
+            expires: Date.now() + (24 * 60 * 60 * 1000)  // 24 horas
+        });
 
-        // Verificar si existe en pendientes_aprobacion
-        const pendienteCheck = await client.query(
-            `SELECT id, uuid, estado, datos_json, fecha_solicitud FROM pendientes_aprobacion
-             WHERE email_usuario = $1 AND tipo_solicitud = 'egresado'`,
-            [email]
-        );
+        console.log(`✅ [EGRESADOS CREATE] Datos almacenados en memoria con token: ${confirmationToken.substring(0, 8)}...`);
 
-        let reenviarConfirmacion = false;
-
-        // Si ya tiene solicitud pendiente...
-        if (pendienteCheck.rows.length > 0) {
-            const solicitudExistente = pendienteCheck.rows[0];
-
-            // Si está en 'no_confirmado': PERMITIR REENVÍO de confirmación
-            if (solicitudExistente.estado === 'no_confirmado') {
-                console.log(`📧 Reenviar confirmación para email: ${email}`);
-                reenviarConfirmacion = true;
-                // Actualizar con nuevo token
-                await client.query(
-                    `UPDATE pendientes_aprobacion
-                     SET datos_json = jsonb_set(datos_json, '{confirmation_token}', to_jsonb($1::text)),
-                         updated_at = NOW()
-                     WHERE id = $2`,
-                    [confirmationToken, solicitudExistente.id]
-                );
-            } else if (solicitudExistente.estado === 'pendiente' || solicitudExistente.estado === 'aprobada') {
-                // Si está confirmado o aprobado: RECHAZAR
-                const estadoMsg = solicitudExistente.estado === 'pendiente'
-                    ? 'PENDIENTE DE REVISIÓN por el equipo administrativo'
-                    : 'APROBADO y será procesado';
-
-                return res.status(400).json({
-                    success: false,
-                    message: `⏳ Tu registro con este email ya está ${estadoMsg}. Por favor NO envíes el formulario nuevamente. Si tienes dudas, contacta al administrador.`
-                });
-            }
-        }
-
-        // Si NO está reenviando, preparar e insertar nuevo registro
-        let result;
-
-        if (!reenviarConfirmacion) {
-            // 📋 FLUJO CORRECTO DE 3 ETAPAS:
-            // 1. INSERT en egresados_pending_confirmation (tabla temporal) - email NO confirmado
-            // 2. GET /confirm/:token - MOVER a pendientes_aprobacion - email CONFIRMADO
-            // 3. Admin aprueba → INSERT en egresados (tabla final)
-
-            // Preparar datos en formato JSON para almacenamiento flexible
-            const datosJSON = {
-                nombre_completo,
-                email,
-                telefono,
-                fecha_nacimiento,
-                anio_egreso,
-                carrera_tecnica,
-                generacion,
-                experiencia_laboral,
-                habilidades,
-                idiomas,
-                cv_url,
-                disponibilidad,
-                pretension_salarial,
-                ciudad,
-                estado,
-                linkedin_url,
-                portafolio_url,
-                referencias,
-                confirmation_token: confirmationToken  // Token guardado en datos
-            };
-
-            console.log(`📝 [ETAPA 1] Preparando datos para tabla temporal:`);
-            console.log(`   datosJSON keys:`, Object.keys(datosJSON));
-            console.log(`   datosJSON completo:`, JSON.stringify(datosJSON, null, 2));
-
-            // ✅ ETAPA 1: Insertar en tabla temporal egresados_pending_confirmation
-            // El registro NO aparecerá en el panel de admin hasta que confirme email
-            const insertQuery = `
-                INSERT INTO egresados_pending_confirmation (
-                    email_usuario,
-                    datos_json,
-                    confirmation_token,
-                    email_confirmado
-                )
-                VALUES ($1, $2, $3, $4)
-                RETURNING id, confirmation_token, fecha_solicitud
-            `;
-
-            const datosJsonStr = JSON.stringify(datosJSON);
-            console.log(`   STRING a guardar (length: ${datosJsonStr.length}):`, datosJsonStr.substring(0, 200));
-
-            result = await client.query(insertQuery, [
-                email,                          // email_usuario
-                datosJsonStr,                   // datos_json
-                confirmationToken,              // confirmation_token (como campo separado para búsqueda rápida)
-                false                           // email_confirmado: No confirmado aún
-            ]);
-
-            console.log(`✅ [ETAPA 1] Insertado en egresados_pending_confirmation con ID: ${result.rows[0].id}`);
-        } else {
-            // Si está reenviando, obtener el ID del registro existente
-            // Buscar en tabla temporal primero
-            const existentePending = await client.query(
-                `SELECT id, confirmation_token, fecha_solicitud
-                 FROM egresados_pending_confirmation
-                 WHERE email_usuario = $1`,
-                [email]
-            );
-
-            if (existentePending.rows.length > 0) {
-                result = { rows: [existentePending.rows[0]] };
-            } else {
-                // Si no existe en tabla temporal pero existe en pendientes_aprobacion,
-                // usar eso (es una migración de flujo antiguo)
-                result = { rows: [pendienteCheck.rows[0]] };
-            }
-        }
-
-        console.log('✅ Perfil creado, enviando email de confirmación...');
-
-        // Enviar email de confirmación al usuario
-        const confirmationUrl = `${process.env.BASE_URL || 'http://localhost:3000'}/api/egresados/confirm/${confirmationToken}`;
+        // Enviar email de confirmación
+        const confirmationUrl = `${process.env.BASE_URL || 'http://localhost:3000'}/egresados.html#confirm-email?token=${confirmationToken}`;
 
         const mailOptions = {
             from: `"BGE Héroes de la Patria" <${process.env.EMAIL_USER}>`,
@@ -243,13 +134,10 @@ router.post('/create', async (req, res) => {
                         </div>
                         <div class="content">
                             <p>Hola <strong>${nombre_completo}</strong>,</p>
-
                             <p>Hemos recibido tu solicitud para crear un perfil profesional en BGE Héroes de la Patria.</p>
-
                             <div class="warning">
                                 <strong>⚠️ IMPORTANTE:</strong> Para continuar, debes confirmar que este email te pertenece haciendo clic en el botón de abajo.
                             </div>
-
                             <div class="info-box">
                                 <strong>Información de tu perfil:</strong><br>
                                 👤 Nombre: ${nombre_completo}<br>
@@ -257,20 +145,16 @@ router.post('/create', async (req, res) => {
                                 🎓 Carrera: ${carrera_tecnica}<br>
                                 📅 Año de egreso: ${anio_egreso}
                             </div>
-
-                            <p><strong>Haz clic aquí para confirmar tu email:</strong></p>
-
                             <div style="text-align: center;">
                                 <a href="${confirmationUrl}" class="button">
                                     ✅ Confirmar mi Email
                                 </a>
                             </div>
-
                             <p style="font-size: 12px; color: #666;">
+                                Este enlace expira en 24 horas.<br>
                                 Si el botón no funciona, copia y pega este enlace en tu navegador:<br>
                                 <code>${confirmationUrl}</code>
                             </p>
-
                             <div class="info-box">
                                 <strong>¿Qué sucede después?</strong><br>
                                 1. ✅ Confirmas tu email (ESTE PASO)<br>
@@ -279,14 +163,6 @@ router.post('/create', async (req, res) => {
                                 4. 📬 Recibirás email cuando sea aprobado<br>
                                 5. 🌐 Tu perfil estará visible para empresas
                             </div>
-
-                            <p style="color: #999; font-size: 11px;">
-                                Si no realizaste esta solicitud, puedes ignorar este email.
-                            </p>
-                        </div>
-                        <div style="text-align: center; padding: 20px; color: #666; font-size: 11px;">
-                            <p>BGE Héroes de la Patria - Sistema de Egresados<br>
-                            Este es un correo automático, por favor no respondas.</p>
                         </div>
                     </div>
                 </body>
@@ -296,49 +172,35 @@ router.post('/create', async (req, res) => {
 
         try {
             await transporter.sendMail(mailOptions);
-            console.log('✅ Email de confirmación enviado a:', email);
+            console.log('✅ [EGRESADOS CREATE] Email enviado a:', email);
         } catch (emailError) {
-            console.error('⚠️ Error enviando email:', emailError.message);
+            console.error('⚠️ [EGRESADOS CREATE] Error enviando email:', emailError.message);
         }
-
-        const respuestaMsg = reenviarConfirmacion
-            ? '📧 REENVÍO EXITOSO: Hemos reenviado el email de confirmación a ' + email + '. Por favor revisa tu bandeja de entrada (incluyendo carpeta SPAM).'
-            : '✅ REGISTRO EXITOSO: Te hemos enviado un email de confirmación a ' + email + '.\n\nSiguientes pasos:\n1. Revisa tu bandeja de entrada\n2. Haz clic en el botón "Confirmar mi Email"\n3. Una vez confirmado, tu solicitud será revisada por el equipo administrativo';
 
         res.json({
             success: true,
-            message: respuestaMsg,
+            message: `✅ REGISTRO EXITOSO: Te hemos enviado un email de confirmación a ${email}. Por favor revisa tu bandeja de entrada (incluyendo carpeta SPAM) y haz clic en el enlace para confirmar tu email.`,
             data: {
-                solicitud_id: result.rows[0].id,
-                uuid: result.rows[0].uuid || null,
-                nombre: nombre_completo,
                 email: email,
-                estado: 'pendiente',
-                email_confirmado: false,
-                fecha_solicitud: result.rows[0].fecha_solicitud,
-                reenviado: reenviarConfirmacion,
-                instrucciones: reenviarConfirmacion
-                    ? 'Verifica tu email nuevamente'
-                    : 'Necesitas confirmar tu email antes de que tu solicitud sea revisada'
+                nombre: nombre_completo,
+                instrucciones: 'Necesitas confirmar tu email en los próximos 24 horas'
             }
         });
 
     } catch (error) {
-        console.error('❌ Error creando perfil:', error);
+        console.error('❌ [EGRESADOS CREATE] Error:', error);
         res.status(500).json({
             success: false,
-            message: 'Error al crear el perfil profesional',
+            message: 'Error al crear el perfil',
             error: error.message
         });
-    } finally {
-        client.release();
     }
 });
 
 /**
  * GET /api/egresados/confirm/:token
  * Confirmar email del egresado - ETAPA 2 DEL FLUJO
- * Busca en egresados_pending_confirmation, valida token, MUEVE a pendientes_aprobacion
+ * Lee datos del Map en memoria, INSERTA directamente en pendientes_aprobacion
  */
 router.get('/confirm/:token', async (req, res) => {
     const client = await pool.connect();
@@ -346,72 +208,47 @@ router.get('/confirm/:token', async (req, res) => {
     try {
         const { token } = req.params;
 
-        console.log(`📧 [CONFIRM] Iniciando confirmación de email con token: ${token.substring(0, 10)}...`);
+        console.log(`📧 [EGRESADOS CONFIRM] Confirmando email con token: ${token.substring(0, 8)}...`);
 
-        // ✅ ETAPA 2: Buscar solicitud en tabla temporal (egresados_pending_confirmation)
-        const temporalResult = await client.query(
-            `SELECT id, email_usuario, datos_json, confirmation_token, fecha_solicitud
-             FROM egresados_pending_confirmation
-             WHERE confirmation_token = $1`,
-            [token]
-        );
-
-        if (temporalResult.rows.length === 0) {
-            console.warn(`❌ [CONFIRM] Token no encontrado en tabla temporal`);
-            return res.status(404).send(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <title>Token inválido</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
-                        .container { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 500px; margin: 0 auto; }
-                        .error { color: #e74c3c; font-size: 60px; }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="error">❌</div>
-                        <h1>Token inválido o expirado</h1>
-                        <p>Este enlace de confirmación no es válido o ya fue utilizado.</p>
-                    </div>
-                </body>
-                </html>
-            `);
+        // ✅ ETAPA 2: Buscar datos EN MEMORIA (Map)
+        if (!pendingEgresadosMap.has(token)) {
+            console.warn(`❌ [EGRESADOS CONFIRM] Token no encontrado en memoria`);
+            return res.status(404).json({
+                success: false,
+                error: 'Token inválido o expirado. Este enlace no es válido o ya fue utilizado.'
+            });
         }
 
-        const registroTemporal = temporalResult.rows[0];
+        const pendingData = pendingEgresadosMap.get(token);
 
-        console.log(`📊 [ETAPA 2] Datos recuperados de tabla temporal:`);
-        console.log(`   ID: ${registroTemporal.id}`);
-        console.log(`   Email: ${registroTemporal.email_usuario}`);
-        console.log(`   datos_json tipo: ${typeof registroTemporal.datos_json}`);
-        console.log(`   datos_json null: ${registroTemporal.datos_json === null}`);
-        console.log(`   datos_json length: ${typeof registroTemporal.datos_json === 'string' ? registroTemporal.datos_json.length : 'N/A'}`);
-        console.log(`   datos_json preview:`, typeof registroTemporal.datos_json === 'string' ? registroTemporal.datos_json.substring(0, 200) : registroTemporal.datos_json);
+        // Validar que no haya expirado
+        if (Date.now() > pendingData.expires) {
+            console.warn(`❌ [EGRESADOS CONFIRM] Token expirado`);
+            pendingEgresadosMap.delete(token);
+            return res.status(404).json({
+                success: false,
+                error: 'Token expirado. El enlace de confirmación tiene validez de 24 horas.'
+            });
+        }
 
-        const datosJSON = typeof registroTemporal.datos_json === 'string'
-            ? JSON.parse(registroTemporal.datos_json)
-            : registroTemporal.datos_json;
+        const datosJSON = pendingData.datos;
+        const email = pendingData.email;
 
-        console.log(`✅ [CONFIRM] Solicitud encontrada en tabla temporal:`);
-        console.log(`   Email: ${registroTemporal.email_usuario}`);
+        console.log(`✅ [EGRESADOS CONFIRM] Datos encontrados en memoria`);
+        console.log(`   Email: ${email}`);
         console.log(`   Nombre: ${datosJSON.nombre_completo}`);
-        console.log(`   datosJSON parseado:`, Object.keys(datosJSON));
 
-        // Iniciar transacción para garantizar consistencia
+        // Iniciar transacción
         await client.query('BEGIN');
 
         try {
-            // ✅ ETAPA 2 PASO 1: MOVER datos de tabla temporal a pendientes_aprobacion
-            console.log(`📤 [CONFIRM] Moviendo datos a pendientes_aprobacion...`);
+            // ✅ ETAPA 2: INSERT directamente en pendientes_aprobacion
+            console.log(`📤 [EGRESADOS CONFIRM] Insertando en pendientes_aprobacion...`);
 
             const datosJsonStr = JSON.stringify(datosJSON);
-            console.log(`   datos_json a mover (length: ${datosJsonStr.length}):`, datosJsonStr.substring(0, 300));
-            console.log(`   datosJSON keys siendo guardadas:`, Object.keys(datosJSON));
+            console.log(`   datos_json length: ${datosJsonStr.length}`);
 
-            const moveResult = await client.query(
+            const insertResult = await client.query(
                 `INSERT INTO pendientes_aprobacion (
                     tipo_solicitud,
                     email_usuario,
@@ -423,42 +260,35 @@ router.get('/confirm/:token', async (req, res) => {
                 VALUES ($1, $2, $3, $4, $5, NOW())
                 RETURNING id, uuid`,
                 [
-                    'egresado',                             // tipo_solicitud
-                    registroTemporal.email_usuario,        // email_usuario
-                    datosJsonStr,                           // datos_json (con confirmation_token incluido)
-                    'pendiente',                            // estado
-                    true                                    // ✅ email_confirmado = TRUE (ya confirmó)
+                    'egresados',                    // tipo_solicitud
+                    email,                          // email_usuario
+                    datosJsonStr,                   // datos_json
+                    'pendiente',                    // estado (esperando revisión del admin)
+                    true                            // email_confirmado = TRUE
                 ]
             );
 
-            const solicitudId = moveResult.rows[0].id;
-            console.log(`✅ [CONFIRM] Datos movidos a pendientes_aprobacion con ID: ${solicitudId}`);
+            const solicitudId = insertResult.rows[0].id;
+            console.log(`✅ [EGRESADOS CONFIRM] Insertado en pendientes_aprobacion con ID: ${solicitudId}`);
 
-            // ✅ ETAPA 2 PASO 2: ELIMINAR registro de tabla temporal
-            console.log(`🗑️ [CONFIRM] Eliminando registro de tabla temporal...`);
-            const deleteResult = await client.query(
-                `DELETE FROM egresados_pending_confirmation WHERE id = $1 RETURNING id`,
-                [registroTemporal.id]
-            );
+            // ✅ Eliminar del Map (token ya usado)
+            pendingEgresadosMap.delete(token);
+            console.log(`🗑️ [EGRESADOS CONFIRM] Token eliminado del Map`);
 
-            console.log(`✅ [CONFIRM] Registro eliminado de tabla temporal`);
-
-            // COMMIT de transacción
+            // COMMIT
             await client.query('COMMIT');
-            console.log(`✅ [CONFIRM] Transacción completada exitosamente`);
+            console.log(`✅ [EGRESADOS CONFIRM] Transacción completada`);
 
         } catch (innerError) {
             await client.query('ROLLBACK');
             throw innerError;
         }
 
-        const datos = datosJSON;
-
-        // Enviar notificación al administrador
+        // Enviar notificación al admin
         const adminMailOptions = {
             from: `"BGE Sistema" <${process.env.EMAIL_USER}>`,
             to: '21ebh0200x.sep@gmail.com',
-            subject: `🆕 Nuevo perfil profesional confirmado - ${datos.nombre_completo || 'N/A'}`,
+            subject: `🆕 Nuevo perfil de egresado confirmado - ${datosJSON.nombre_completo}`,
             html: `
                 <!DOCTYPE html>
                 <html>
@@ -470,43 +300,23 @@ router.get('/confirm/:token', async (req, res) => {
                         .header { background: #667eea; color: white; padding: 20px; border-radius: 10px 10px 0 0; }
                         .content { background: #f9f9f9; padding: 20px; border-radius: 0 0 10px 10px; }
                         .info-box { background: white; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea; }
-                        .button { display: inline-block; background: #667eea; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin: 10px 0; }
                     </style>
                 </head>
                 <body>
                     <div class="container">
                         <div class="header">
-                            <h2>🆕 Nuevo Perfil Profesional Confirmado</h2>
+                            <h2>🆕 Nuevo Perfil de Egresado Confirmado</h2>
                         </div>
                         <div class="content">
                             <p><strong>Se ha confirmado un nuevo perfil profesional que requiere revisión:</strong></p>
-
                             <div class="info-box">
                                 <strong>Datos del egresado:</strong><br>
-                                👤 Nombre: ${datos.nombre_completo || 'N/A'}<br>
-                                📧 Email: ${datos.email || registroTemporal.email_usuario}<br>
-                                📞 Teléfono: ${datos.telefono || 'No proporcionado'}<br>
-                                🎓 Carrera: ${datos.carrera_tecnica || 'No especificada'}<br>
-                                📅 Año de egreso: ${datos.anio_egreso || 'N/A'}<br>
-                                📍 Ubicación: ${datos.ciudad || 'N/A'}, ${datos.estado || 'N/A'}
+                                👤 Nombre: ${datosJSON.nombre_completo}<br>
+                                📧 Email: ${email}<br>
+                                📞 Teléfono: ${datosJSON.telefono || 'No proporcionado'}<br>
+                                🎓 Carrera: ${datosJSON.carrera_tecnica}<br>
+                                📅 Año de egreso: ${datosJSON.anio_egreso}
                             </div>
-
-                            <div class="info-box">
-                                <strong>Información profesional:</strong><br>
-                                💼 Experiencia: ${datos.experiencia_laboral || 'No especificada'}<br>
-                                🎯 Disponibilidad: ${datos.disponibilidad || 'No especificada'}<br>
-                                💰 Pretensión salarial: ${datos.pretension_salarial || 'No especificada'}<br>
-                                🔗 LinkedIn: ${datos.linkedin_url || 'No proporcionado'}
-                            </div>
-
-                            <p><strong>⚠️ Acción requerida:</strong> Ingresa al dashboard para revisar y aprobar este perfil.</p>
-
-                            <div style="text-align: center;">
-                                <a href="http://localhost:3000/admin-dashboard.html" class="button">
-                                    🖥️ Ir al Dashboard
-                                </a>
-                            </div>
-
                             <p style="font-size: 11px; color: #666;">
                                 Fecha de confirmación: ${new Date().toLocaleString('es-MX')}
                             </p>
@@ -519,81 +329,31 @@ router.get('/confirm/:token', async (req, res) => {
 
         try {
             await transporter.sendMail(adminMailOptions);
-            console.log('📧 Notificación enviada al administrador');
+            console.log('📧 [EGRESADOS CONFIRM] Notificación enviada al admin');
         } catch (emailError) {
-            console.error('⚠️ Error enviando notificación al admin:', emailError.message);
+            console.error('⚠️ [EGRESADOS CONFIRM] Error enviando email al admin:', emailError.message);
         }
 
-        // Mostrar página de confirmación exitosa
-        res.send(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <title>Email confirmado</title>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        text-align: center;
-                        padding: 50px;
-                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    }
-                    .container {
-                        background: white;
-                        padding: 40px;
-                        border-radius: 10px;
-                        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-                        max-width: 500px;
-                        margin: 0 auto;
-                    }
-                    .success { color: #27ae60; font-size: 80px; margin: 0; }
-                    h1 { color: #333; margin: 20px 0; }
-                    p { color: #666; line-height: 1.6; }
-                    .info-box { background: #f0f0f0; padding: 15px; margin: 20px 0; border-radius: 5px; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="success">✅</div>
-                    <h1>¡Email confirmado exitosamente!</h1>
-                    <p>Gracias por confirmar tu dirección de email, <strong>${datos.nombre_completo || 'profesional'}</strong>.</p>
-
-                    <div class="info-box">
-                        <strong>¿Qué sigue ahora?</strong><br><br>
-                        1. Tu perfil será revisado por nuestro equipo administrativo<br>
-                        2. Verificaremos que fuiste alumno de BGE Héroes de la Patria<br>
-                        3. Recibirás un email cuando tu perfil sea aprobado<br>
-                        4. Una vez aprobado, tu perfil estará visible para empresas
-                    </div>
-
-                    <p>Te notificaremos cuando tu perfil haya sido revisado.</p>
-                    <p style="font-size: 12px; color: #999;">Puedes cerrar esta ventana.</p>
-                </div>
-            </body>
-            </html>
-        `);
+        // Respuesta exitosa
+        res.json({
+            success: true,
+            message: `✅ ¡Email confirmado exitosamente, ${datosJSON.nombre_completo}! Tu solicitud ha sido enviada a revisión del equipo administrativo.`,
+            data: {
+                solicitud_id: solicitudId,
+                email: email,
+                nombre: datosJSON.nombre_completo,
+                estado: 'pendiente',
+                email_confirmado: true
+            }
+        });
 
     } catch (error) {
-        console.error('❌ Error confirmando email:', error);
-        res.status(500).send(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <title>Error</title>
-                <style>
-                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
-                    .container { background: white; padding: 40px; border-radius: 10px; max-width: 500px; margin: 0 auto; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <h1>❌ Error</h1>
-                    <p>Hubo un problema al confirmar tu email. Por favor contacta al administrador.</p>
-                </div>
-            </body>
-            </html>
-        `);
+        console.error('❌ [EGRESADOS CONFIRM] Error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al confirmar email. Por favor intenta nuevamente o contacta al administrador.',
+            message: error.message
+        });
     } finally {
         client.release();
     }
@@ -1054,7 +814,7 @@ router.post('/', async (req, res) => {
         // Verificar si hay una solicitud pendiente para este email
         const existingPending = await client.query(
             `SELECT id FROM pendientes_aprobacion
-             WHERE tipo_solicitud = 'egresado' AND email_usuario = $1 AND estado = 'pendiente'`,
+             WHERE tipo_solicitud = 'egresados' AND email_usuario = $1 AND estado = 'pendiente'`,
             [email]
         );
 
@@ -1127,7 +887,7 @@ router.post('/', async (req, res) => {
             `;
 
             result = await client.query(insertQuery, [
-                'egresado',                     // tipo_solicitud
+                'egresados',                    // tipo_solicitud (CORREGIDO: usar 'egresados' consistente con frontend)
                 email,                          // email_usuario
                 JSON.stringify(datosJSON),      // datos_json
                 'pendiente'                     // estado
