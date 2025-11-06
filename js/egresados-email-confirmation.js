@@ -11,6 +11,9 @@
 
     console.log('📧 [EGRESADOS EMAIL CONFIRMATION] Script cargado');
 
+    // Flag para evitar múltiples ejecuciones con el mismo token
+    let processingToken = null;
+
     /**
      * Obtener token de confirmación de la URL
      * Busca en:
@@ -167,6 +170,15 @@
         const token = getConfirmationToken();
 
         if (token) {
+            // IMPORTANTE: Evitar procesar el mismo token múltiples veces
+            if (processingToken === token) {
+                console.log(`📧 [EGRESADOS EMAIL CONFIRMATION] Token ya está siendo procesado: ${token.substring(0, 8)}...`);
+                return;
+            }
+
+            // Marcar que estamos procesando este token
+            processingToken = token;
+
             console.log(`📧 [EGRESADOS EMAIL CONFIRMATION] Token encontrado: ${token.substring(0, 8)}...`);
             confirmEmail(token);
         } else {
