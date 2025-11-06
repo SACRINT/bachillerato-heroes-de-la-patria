@@ -1,55 +1,54 @@
 const { pool } = require('../config/database');
+const { logAction } = require('../utils/logger');
 
-const cleanupTable = async (tableName) => {
-    const client = await pool.connect();
+/**
+ * Elimina registros de una tabla que tienen más de 24 horas.
+ * La tabla debe tener una columna 'created_at'.
+ * @param {string} tableName - El nombre de la tabla a limpiar.
+ */
+async function cleanupTable(tableName) {
+    const query = `
+        DELETE FROM ${tableName}
+        WHERE created_at < NOW() - INTERVAL '24 hours';
+    `;
     try {
-        console.log(`🧹 [Cleanup Service] Ejecutando limpieza para la tabla: ${tableName}...`);
-        const query = `DELETE FROM ${tableName} WHERE token_expires_at < NOW();`;
-        const result = await client.query(query);
-
-        if (result.rowCount > 0) {
-            console.log(`✅ [Cleanup Service] Se eliminaron ${result.rowCount} registros expirados de ${tableName}.`);
-        } else {
-            console.log(`ℹ️ [Cleanup Service] No se encontraron registros para limpiar en ${tableName}.`);
+        const { rowCount } = await pool.query(query);
+        if (rowCount > 0) {
+            const message = `Limpieza automática: ${rowCount} registro(s) eliminado(s) de la tabla '${tableName}'.`;
+            console.log(message);
+            await logAction('auto_cleanup', { table: tableName, count: rowCount, status: 'success' });
         }
+        return { table: tableName, cleaned: rowCount };
     } catch (error) {
-        // Ignorar error si la tabla no existe, ya que puede no estar en uso en todos los despliegues
-        if (error.code === '42P01') { // 42P01: undefined_table
-            console.warn(`⚠️ [Cleanup Service] La tabla ${tableName} no fue encontrada, omitiendo limpieza.`);
-        } else {
-            console.error(`❌ [Cleanup Service] Error al limpiar la tabla ${tableName}:`, error);
-        }
-    } finally {
-        client.release();
+        const errorMessage = `Error durante la limpieza de la tabla '${tableName}': ${error.message}`;
+        console.error(errorMessage);
+        await logAction('auto_cleanup_error', { table: tableName, error: error.message, status: 'error' });
+        // Lanzar el error para que Promise.all lo capture si es necesario
+        throw error;
     }
+}
+
+/**
+ * Ejecuta todas las tareas de limpieza de la base de datos en paralelo.
+ */
+async function runAllCleanups() {
+    console.log('Iniciando todas las tareas de limpieza de la base de datos...');
+    try {
+        const results = await Promise.all([
+            cleanupTable('pending_inscriptions'),
+            cleanupTable('pending_registrations')
+        ]);
+        console.log('Todas las tareas de limpieza de la base de datos han finalizado.');
+        await logAction('run_all_cleanups', { status: 'success', results });
+        return results;
+    } catch (error) {
+        console.error('Una o más tareas de limpieza fallaron:', error);
+        await logAction('run_all_cleanups_error', { status: 'error', error: error.message });
+        // El proceso puede continuar aunque la limpieza falle, así que no relanzamos el error.
+    }
+}
+
+module.exports = {
+    cleanupTable,
+    runAllCleanups,
 };
-
-const runCleanupCycle = async () => {
-    console.log('\n═══════════════════════════════════════════════════════');
-    console.log('🔄 [Cleanup Service] Iniciando ciclo de limpieza...');
-    console.log('═══════════════════════════════════════════════════════');
-    
-    await cleanupTable('egresados_pending_confirmation');
-    await cleanupTable('bolsa_trabajo_pending_confirmation');
-
-    console.log('\n✅ [Cleanup Service] Ciclo de limpieza completado exitosamente.');
-    console.log('═══════════════════════════════════════════════════════\n');
-};
-
-const startCleanupService = (intervalInHours = 12) => {
-    const intervalInMs = intervalInHours * 60 * 60 * 1000;
-    
-    console.log(`🚀 [Cleanup Service] El servicio de limpieza se ejecutará cada ${intervalInHours} horas.`);
-    console.log(`📊 [Cleanup Service] Se limpiarán:
-       1. Tokens de egresados expirados (egresados_pending_confirmation)
-       2. Tokens de bolsa de trabajo expirados (bolsa_trabajo_pending_confirmation)
-`);
-
-    // Ejecutar una vez al iniciar, después de un breve retraso para no colisionar con el arranque del servidor
-    setTimeout(runCleanupCycle, 10000); // 10 segundos de retraso
-
-    // Establecer el intervalo para ejecuciones futuras
-    setInterval(runCleanupCycle, intervalInMs);
-};
-
-module.exports = { startCleanupService };
