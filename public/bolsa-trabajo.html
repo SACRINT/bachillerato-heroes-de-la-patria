@@ -404,7 +404,7 @@
                 <div class="modal-body p-4">
                     <p class="lead mb-4">Completa tu perfil profesional para acceder a oportunidades laborales</p>
                     
-                    <form id="cvUploadForm" class="professional-form" method="POST" action="/api/bolsa-trabajo/cv">
+                    <form id="cvUploadForm" class="professional-form" method="POST">
                         <input type="hidden" name="form_type" value="Registro Bolsa de Trabajo">
 
                         <!-- Información Personal -->
@@ -1103,14 +1103,14 @@
     </script>
     <!-- Scripts de autenticación admin -->
         <!-- 🔒 Seguridad y autenticación (mismo que index.html) -->
+    <!-- 🎓 MANEJADOR ESPECÍFICO PARA CV - DEBE CARGAR ANTES que professional-forms.js -->
+    <script src="js/bolsa-trabajo-cv-handler.js"></script>
+
     <!-- Sistema de formularios profesionales -->
     <script src="js/professional-forms.js"></script>
 
     <!-- 📧 Manejador de confirmación de email para bolsa de trabajo -->
     <script src="js/bolsa-trabajo-email-confirmation.js"></script>
-
-    <!-- Handler específico para formulario de CV (bolsa de trabajo) -->
-    <script src="js/bolsa-trabajo-cv-handler.js"></script>
 
     <!-- CSP Universal Fixer - Debe cargar al final -->
     <script src="js/csp-universal-fixer.js"></script>
