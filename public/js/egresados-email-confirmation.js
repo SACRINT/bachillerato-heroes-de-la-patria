@@ -38,6 +38,9 @@
         return token;
     }
 
+    // Flag para evitar procesamiento doble
+    let isProcessingConfirmation = false;
+
     /**
      * Mostrar modal con mensaje de estado
      */
@@ -115,7 +118,7 @@
 
         try {
             const response = await fetch(`/api/egresados/confirm/${token}`, {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },

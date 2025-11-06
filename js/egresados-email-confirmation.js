@@ -38,6 +38,7 @@
         return token;
     }
 
+
     /**
      * Mostrar modal con mensaje de estado
      */
@@ -97,9 +98,7 @@
 
         // Redirigir después de 3 segundos
         setTimeout(() => {
-            // Limpiar hash
             window.location.hash = '';
-            // Redirigir a página de egresados sin hash
             window.location.href = window.location.pathname;
         }, 3000);
     }
@@ -115,7 +114,7 @@
 
         try {
             const response = await fetch(`/api/egresados/confirm/${token}`, {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },

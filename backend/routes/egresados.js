@@ -198,11 +198,11 @@ router.post('/create', async (req, res) => {
 });
 
 /**
- * GET /api/egresados/confirm/:token
+ * POST /api/egresados/confirm/:token
  * Confirmar email del egresado - ETAPA 2 DEL FLUJO
  * Lee datos del Map en memoria, INSERTA directamente en pendientes_aprobacion
  */
-router.get('/confirm/:token', async (req, res) => {
+router.post('/confirm/:token', async (req, res) => {
     const client = await pool.connect();
 
     try {
