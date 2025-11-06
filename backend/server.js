@@ -59,6 +59,7 @@ const financesRoutes = require('./routes/finances');
 const citasRoutes = require('./routes/citas');
 const pendientesAprobacionRoutes = require('./routes/pendientes-aprobacion');
 const diagnosticoAprobacionesRoutes = require('./routes/diagnostico-aprobaciones');
+const { startCleanupService } = require('./services/cleanupService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -314,6 +315,13 @@ const { autoFixAprobaciones } = require('./scripts/auto-fix-aprobaciones-on-star
 autoFixAprobaciones().catch(err => {
     console.error('❌ [AUTO-FIX] Error al ejecutar auto-fix:', err.message);
 });
+
+// ============================================
+// INICIAR SERVICIOS DE FONDO
+// ============================================
+
+// Iniciar el servicio de limpieza de tokens expirados (cada 12 horas)
+startCleanupService(12);
 
 // ============================================
 // SERVER START

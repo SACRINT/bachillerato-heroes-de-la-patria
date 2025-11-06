@@ -24,42 +24,35 @@ const transporter = nodemailer.createTransport({
  */
 // 🎓 ALMACENAMIENTO EN MEMORIA (temporal mientras se espera confirmación de email)
 // Esto es seguro porque los tokens expiran en 24 horas
-const pendingEgresadosMap = new Map();
-
+/**
+ * POST /api/egresados/create
+ * Crea una solicitud de perfil profesional, la guarda en la tabla de pendientes de confirmación por email
+ * y envía un correo de confirmación.
+ *
+ * @author BGE
+ * @version 2.0.0
+ * @since 6-NOV-2025
+ */
 router.post('/create', async (req, res) => {
+    const client = await pool.connect();
     try {
-        console.log('📝 [EGRESADOS CREATE] Recibido formulario de egresado');
+        console.log('📝 [EGRESADOS CREATE v2] Recibido formulario de egresado para confirmación en BD.');
 
         const {
-            nombre_completo,
-            email,
-            telefono,
-            fecha_nacimiento,
-            anio_egreso,
-            carrera_tecnica,
-            generacion,
-            experiencia_laboral,
-            habilidades,
-            idiomas,
-            cv_url,
-            disponibilidad,
-            pretension_salarial,
-            ciudad,
-            estado,
-            linkedin_url,
-            portafolio_url,
-            referencias
+            nombre_completo, email, telefono, fecha_nacimiento, anio_egreso,
+            carrera_tecnica, generacion, experiencia_laboral, habilidades, idiomas,
+            cv_url, disponibilidad, pretension_salarial, ciudad, estado,
+            linkedin_url, portafolio_url, referencias
         } = req.body;
 
         // Validaciones básicas
         if (!nombre_completo || !email || !anio_egreso || !carrera_tecnica) {
             return res.status(400).json({
                 success: false,
-                message: '⚠️ Campos obligatorios faltantes. Por favor completa: Nombre Completo, Email, Año de Egreso y Carrera Técnica.'
+                message: '⚠️ Campos obligatorios faltantes: Nombre, Email, Año de Egreso y Carrera.'
             });
         }
 
-        // Validar email válido
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             return res.status(400).json({
@@ -71,41 +64,33 @@ router.post('/create', async (req, res) => {
         // Generar token de confirmación
         const confirmationToken = crypto.randomBytes(32).toString('hex');
 
-        // Preparar datos
         const datosJSON = {
-            nombre_completo,
-            email,
-            telefono,
-            fecha_nacimiento,
-            anio_egreso,
-            carrera_tecnica,
-            generacion,
-            experiencia_laboral,
-            habilidades,
-            idiomas,
-            cv_url,
-            disponibilidad,
-            pretension_salarial,
-            ciudad,
-            estado,
-            linkedin_url,
-            portafolio_url,
-            referencias
+            nombre_completo, email, telefono, fecha_nacimiento, anio_egreso,
+            carrera_tecnica, generacion, experiencia_laboral, habilidades, idiomas,
+            cv_url, disponibilidad, pretension_salarial, ciudad, estado,
+            linkedin_url, portafolio_url, referencias
         };
 
-        // ✅ ALMACENAR EN MEMORIA (NO en BD)
-        // El token expira en 24 horas
-        pendingEgresadosMap.set(confirmationToken, {
-            datos: datosJSON,
-            email: email,
-            timestamp: Date.now(),
-            expires: Date.now() + (24 * 60 * 60 * 1000)  // 24 horas
-        });
+        // Insertar en la tabla de pendientes de confirmación
+        const insertQuery = `
+            INSERT INTO egresados_pending_confirmation
+            (email_usuario, datos_json, confirmation_token)
+            VALUES ($1, $2, $3)
+            ON CONFLICT (email_usuario) DO UPDATE SET
+                datos_json = EXCLUDED.datos_json,
+                confirmation_token = EXCLUDED.confirmation_token,
+                token_expires_at = (now() + '24 hours'::interval),
+                fecha_actualizacion = now()
+            RETURNING confirmation_token;
+        `;
 
-        console.log(`✅ [EGRESADOS CREATE] Datos almacenados en memoria con token: ${confirmationToken.substring(0, 8)}...`);
+        const result = await client.query(insertQuery, [email, JSON.stringify(datosJSON), confirmationToken]);
+        const finalToken = result.rows[0].confirmation_token;
+
+        console.log(`✅ [EGRESADOS CREATE v2] Solicitud guardada en 'egresados_pending_confirmation' para ${email}.`);
 
         // Enviar email de confirmación
-        const confirmationUrl = `${process.env.BASE_URL || 'http://localhost:3000'}/egresados.html#confirm-email?token=${confirmationToken}`;
+        const confirmationUrl = `${process.env.BASE_URL || 'http://localhost:3000'}/egresados.html#confirm-email?token=${finalToken}`;
 
         const mailOptions = {
             from: `"BGE Héroes de la Patria" <${process.env.EMAIL_USER}>`,
@@ -170,189 +155,142 @@ router.post('/create', async (req, res) => {
             `
         };
 
-        try {
-            await transporter.sendMail(mailOptions);
-            console.log('✅ [EGRESADOS CREATE] Email enviado a:', email);
-        } catch (emailError) {
-            console.error('⚠️ [EGRESADOS CREATE] Error enviando email:', emailError.message);
-        }
+        await transporter.sendMail(mailOptions);
+        console.log('✅ [EGRESADOS CREATE v2] Email de confirmación enviado a:', email);
 
         res.json({
             success: true,
-            message: `✅ REGISTRO EXITOSO: Te hemos enviado un email de confirmación a ${email}. Por favor revisa tu bandeja de entrada (incluyendo carpeta SPAM) y haz clic en el enlace para confirmar tu email.`,
-            data: {
-                email: email,
-                nombre: nombre_completo,
-                instrucciones: 'Necesitas confirmar tu email en los próximos 24 horas'
-            }
+            message: `✅ REGISTRO EXITOSO: Te hemos enviado un email de confirmación a ${email}. Por favor revisa tu bandeja de entrada (incluyendo carpeta SPAM) y haz clic en el enlace para confirmar tu email.`
         });
 
     } catch (error) {
-        console.error('❌ [EGRESADOS CREATE] Error:', error);
+        console.error('❌ [EGRESADOS CREATE v2] Error:', error);
         res.status(500).json({
             success: false,
-            message: 'Error al crear el perfil',
+            message: 'Error al procesar la solicitud de perfil.',
             error: error.message
         });
+    } finally {
+        client.release();
     }
 });
 
 /**
  * POST /api/egresados/confirm/:token
- * Confirmar email del egresado - ETAPA 2 DEL FLUJO
- * Lee datos del Map en memoria, INSERTA directamente en pendientes_aprobacion
+ * Confirma el email del egresado usando el token de la tabla `egresados_pending_confirmation`,
+ * mueve los datos a `pendientes_aprobacion` y limpia el registro temporal.
+ *
+ * @author BGE
+ * @version 2.0.0
+ * @since 6-NOV-2025
  */
 router.post('/confirm/:token', async (req, res) => {
+    const { token } = req.params;
     const client = await pool.connect();
 
     try {
-        const { token } = req.params;
+        console.log(`📧 [DEBUG] Iniciando confirmación con token: ${token ? token.substring(0, 8) : 'N/A'}...`);
 
-        console.log(`📧 [EGRESADOS CONFIRM] Confirmando email con token: ${token.substring(0, 8)}...`);
+        // 1. Buscar el token en la tabla de pendientes
+        const selectQuery = `
+            SELECT id, email_usuario, datos_json, token_expires_at
+            FROM egresados_pending_confirmation
+            WHERE confirmation_token = $1;
+        `;
+        const pendingResult = await client.query(selectQuery, [token]);
 
-        // ✅ ETAPA 2: Buscar datos EN MEMORIA (Map)
-        if (!pendingEgresadosMap.has(token)) {
-            console.warn(`❌ [EGRESADOS CONFIRM] Token no encontrado en memoria`);
+        if (pendingResult.rows.length === 0) {
+            console.warn(`❌ [DEBUG] Token no encontrado en la BD.`);
             return res.status(404).json({
                 success: false,
-                error: 'Token inválido o expirado. Este enlace no es válido o ya fue utilizado.'
+                error: 'DEBUG: El token proporcionado no fue encontrado en la base de datos. Puede que ya haya sido utilizado.'
             });
         }
 
-        const pendingData = pendingEgresadosMap.get(token);
+        const pendingData = pendingResult.rows[0];
 
-        // Validar que no haya expirado
-        if (Date.now() > pendingData.expires) {
-            console.warn(`❌ [EGRESADOS CONFIRM] Token expirado`);
-            pendingEgresadosMap.delete(token);
+        // 2. Validar que no haya expirado
+        if (new Date() > new Date(pendingData.token_expires_at)) {
+            console.warn(`❌ [DEBUG] Token expirado.`);
+            // Limpiar el token expirado
+            await client.query('DELETE FROM egresados_pending_confirmation WHERE id = $1', [pendingData.id]);
             return res.status(404).json({
                 success: false,
-                error: 'Token expirado. El enlace de confirmación tiene validez de 24 horas.'
+                error: 'DEBUG: El token ha expirado. La solicitud de limpieza se ha ejecutado.'
             });
         }
 
-        const datosJSON = pendingData.datos;
-        const email = pendingData.email;
+        const datosJSON = pendingData.datos_json;
+        const email = pendingData.email_usuario;
 
-        console.log(`✅ [EGRESADOS CONFIRM] Datos encontrados en memoria`);
-        console.log(`   Email: ${email}`);
-        console.log(`   Nombre: ${datosJSON.nombre_completo}`);
-
-        // Iniciar transacción
+        // 3. Iniciar transacción para mover los datos (UPSERT)
         await client.query('BEGIN');
 
         try {
-            // ✅ ETAPA 2: INSERT directamente en pendientes_aprobacion
-            console.log(`📤 [EGRESADOS CONFIRM] Insertando en pendientes_aprobacion...`);
-
-            const datosJsonStr = JSON.stringify(datosJSON);
-            console.log(`   datos_json length: ${datosJsonStr.length}`);
-
-            const insertResult = await client.query(
-                `INSERT INTO pendientes_aprobacion (
-                    tipo_solicitud,
-                    email_usuario,
-                    datos_json,
-                    estado,
-                    email_confirmado,
-                    fecha_solicitud
-                )
-                VALUES ($1, $2, $3, $4, $5, NOW())
-                RETURNING id, uuid`,
-                [
-                    'egresados',                    // tipo_solicitud
-                    email,                          // email_usuario
-                    datosJsonStr,                   // datos_json
-                    'pendiente',                    // estado (esperando revisión del admin)
-                    true                            // email_confirmado = TRUE
-                ]
+            // UPSERT Logic: Check if a pending approval for this user already exists
+            const existingApproval = await client.query(
+                'SELECT id FROM pendientes_aprobacion WHERE email_usuario = $1 AND tipo_solicitud = $2',
+                [email, 'egresados']
             );
 
-            const solicitudId = insertResult.rows[0].id;
-            console.log(`✅ [EGRESADOS CONFIRM] Insertado en pendientes_aprobacion con ID: ${solicitudId}`);
+            if (existingApproval.rows.length > 0) {
+                // UPDATE existing pending approval
+                const existingId = existingApproval.rows[0].id;
+                console.log(`[DEBUG] Found existing pending approval with ID: ${existingId}. Updating it.`);
+                const updateQuery = `
+                    UPDATE pendientes_aprobacion
+                    SET datos_json = $1, fecha_solicitud = NOW(), email_confirmado = $2, estado = $3
+                    WHERE id = $4;
+                `;
+                await client.query(updateQuery, [JSON.stringify(datosJSON), true, 'pendiente', existingId]);
+            } else {
+                // INSERT new pending approval
+                console.log(`[DEBUG] No existing pending approval found. Inserting new one.`);
+                const insertFinalQuery = `
+                    INSERT INTO pendientes_aprobacion
+                    (tipo_solicitud, email_usuario, datos_json, estado, email_confirmado, fecha_solicitud)
+                    VALUES ($1, $2, $3, $4, $5, NOW());
+                `;
+                await client.query(insertFinalQuery, ['egresados', email, JSON.stringify(datosJSON), 'pendiente', true]);
+            }
 
-            // ✅ Eliminar del Map (token ya usado)
-            pendingEgresadosMap.delete(token);
-            console.log(`🗑️ [EGRESADOS CONFIRM] Token eliminado del Map`);
+            // Delete from the temporary table
+            await client.query('DELETE FROM egresados_pending_confirmation WHERE id = $1', [pendingData.id]);
 
-            // COMMIT
             await client.query('COMMIT');
-            console.log(`✅ [EGRESADOS CONFIRM] Transacción completada`);
+
+            // 4. Enviar notificación al admin (opcional, pero buena práctica)
+            const adminMailOptions = {
+                from: `"BGE Sistema" <${process.env.EMAIL_USER}>`,
+                to: '21ebh0200x.sep@gmail.com',
+                subject: `🆕 Nuevo perfil de egresado confirmado - ${datosJSON.nombre_completo}`,
+                html: `<p>Se ha confirmado un nuevo perfil profesional de egresado que requiere revisión para: <strong>${datosJSON.nombre_completo}</strong> (${email}).</p>`
+            };
+            await transporter.sendMail(adminMailOptions);
+            console.log('📧 [EGRESADOS CONFIRM v2] Notificación enviada al admin.');
+
+            // 5. Respuesta exitosa
+            res.json({
+                success: true,
+                message: `✅ ¡Email confirmado exitosamente, ${datosJSON.nombre_completo}! Tu solicitud ha sido enviada a revisión del equipo administrativo.`
+            });
 
         } catch (innerError) {
             await client.query('ROLLBACK');
-            throw innerError;
+            console.error('❌ [DEBUG] Error en transacción UPSERT:', innerError);
+            return res.status(500).json({
+                success: false,
+                error: 'DEBUG: Ocurrió un error durante la transacción UPSERT en la base de datos.',
+                detail: innerError.message
+            });
         }
-
-        // Enviar notificación al admin
-        const adminMailOptions = {
-            from: `"BGE Sistema" <${process.env.EMAIL_USER}>`,
-            to: '21ebh0200x.sep@gmail.com',
-            subject: `🆕 Nuevo perfil de egresado confirmado - ${datosJSON.nombre_completo}`,
-            html: `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <style>
-                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                        .header { background: #667eea; color: white; padding: 20px; border-radius: 10px 10px 0 0; }
-                        .content { background: #f9f9f9; padding: 20px; border-radius: 0 0 10px 10px; }
-                        .info-box { background: white; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea; }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="header">
-                            <h2>🆕 Nuevo Perfil de Egresado Confirmado</h2>
-                        </div>
-                        <div class="content">
-                            <p><strong>Se ha confirmado un nuevo perfil profesional que requiere revisión:</strong></p>
-                            <div class="info-box">
-                                <strong>Datos del egresado:</strong><br>
-                                👤 Nombre: ${datosJSON.nombre_completo}<br>
-                                📧 Email: ${email}<br>
-                                📞 Teléfono: ${datosJSON.telefono || 'No proporcionado'}<br>
-                                🎓 Carrera: ${datosJSON.carrera_tecnica}<br>
-                                📅 Año de egreso: ${datosJSON.anio_egreso}
-                            </div>
-                            <p style="font-size: 11px; color: #666;">
-                                Fecha de confirmación: ${new Date().toLocaleString('es-MX')}
-                            </p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-            `
-        };
-
-        try {
-            await transporter.sendMail(adminMailOptions);
-            console.log('📧 [EGRESADOS CONFIRM] Notificación enviada al admin');
-        } catch (emailError) {
-            console.error('⚠️ [EGRESADOS CONFIRM] Error enviando email al admin:', emailError.message);
-        }
-
-        // Respuesta exitosa
-        res.json({
-            success: true,
-            message: `✅ ¡Email confirmado exitosamente, ${datosJSON.nombre_completo}! Tu solicitud ha sido enviada a revisión del equipo administrativo.`,
-            data: {
-                solicitud_id: solicitudId,
-                email: email,
-                nombre: datosJSON.nombre_completo,
-                estado: 'pendiente',
-                email_confirmado: true
-            }
-        });
 
     } catch (error) {
-        console.error('❌ [EGRESADOS CONFIRM] Error:', error);
+        console.error('❌ [DEBUG] Error general en /confirm:', error);
         res.status(500).json({
             success: false,
-            error: 'Error al confirmar email. Por favor intenta nuevamente o contacta al administrador.',
-            message: error.message
+            error: 'DEBUG: Ocurrió un error inesperado en el servidor.',
+            detail: error.message
         });
     } finally {
         client.release();
