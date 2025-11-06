@@ -21,22 +21,18 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// 📋 ALMACENAMIENTO TEMPORAL DE DATOS (En memoria, sin BD)
-// Estructura: { token: { formData, expiresAt } }
-const pendingConfirmations = new Map();
-
 // =====================================================
 // POST /api/bolsa-trabajo/cv - Crear perfil de CV
-// 🎯 FLUJO CORRECTO (5 NOVIEMBRE 2025):
+// 🎯 FLUJO CORRECTO (6 NOVIEMBRE 2025):
 // 1) Validar datos del formulario
 // 2) Generar token de confirmación
-// 3) Guardar TEMPORALMENTE en memoria (NO en BD)
+// 3) Guardar TEMPORALMENTE en BD (tabla bolsa_trabajo_pending_confirmation)
 // 4) Enviar email con link de confirmación
-// 5) RESPONDER AL CLIENTE (sin guardar en BD aún)
+// 5) RESPONDER AL CLIENTE (sin guardar en pendientes_aprobacion aún)
 //
-// ✅ Usuario confirma email → ENTONCES se guarda en pendientes_aprobacion
-// ❌ Si token expira → Sin registros huérfanos en BD
-// ❌ Sin conflictos de email duplicado
+// ✅ Usuario confirma email → ENTONCES se mueve a pendientes_aprobacion
+// ✅ Si token expira → Cleanup service lo borra automáticamente cada 12 horas
+// ✅ Sin conflictos de email duplicado (UPSERT logic)
 // =====================================================
 router.post('/cv', [
     body('name').trim().notEmpty().withMessage('Nombre es requerido'),
@@ -56,12 +52,13 @@ router.post('/cv', [
     }
 
     const { name, email, phone, graduationYear, subject, message, skills } = req.body;
+    const client = await pool.connect();
 
     try {
-        console.log(`💼 [BOLSA-TRABAJO] Recibiendo CV para ${email}`);
+        console.log(`💼 [BOLSA-TRABAJO CV v2] Recibiendo CV para ${email}`);
 
         // 🎯 PASO 1: Generar token de confirmación
-        const confirmationToken = crypto.randomBytes(16).toString('hex');
+        const confirmationToken = crypto.randomBytes(32).toString('hex');
 
         // 🎯 PASO 2: Preparar datos del formulario
         const formData = {
@@ -74,19 +71,32 @@ router.post('/cv', [
             skills
         };
 
-        // 🎯 PASO 3: Guardar TEMPORALMENTE en memoria (24 horas)
-        const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 24 horas
-        pendingConfirmations.set(confirmationToken, {
-            formData,
-            email,
-            expiresAt
-        });
+        // 🎯 PASO 3: Guardar TEMPORALMENTE en BD con UPSERT (reemplaza si ya existe)
+        const upsertQuery = `
+            INSERT INTO bolsa_trabajo_pending_confirmation
+            (email_usuario, datos_json, confirmation_token)
+            VALUES ($1, $2, $3)
+            ON CONFLICT (email_usuario) DO UPDATE SET
+                datos_json = EXCLUDED.datos_json,
+                confirmation_token = EXCLUDED.confirmation_token,
+                token_expires_at = (now() + '24 hours'::interval),
+                fecha_actualizacion = now()
+            RETURNING confirmation_token;
+        `;
 
-        console.log(`⏳ [BOLSA-TRABAJO] Datos guardados TEMPORALMENTE en memoria (token: ${confirmationToken.substring(0, 8)}...) - Esperando confirmación de email`);
+        const result = await client.query(upsertQuery, [
+            email,
+            JSON.stringify(formData),
+            confirmationToken
+        ]);
+
+        const finalToken = result.rows[0].confirmation_token;
+
+        console.log(`⏳ [BOLSA-TRABAJO CV v2] Datos guardados en BD temporal (token: ${confirmationToken.substring(0, 8)}...) - Esperando confirmación de email`);
 
         // 🎯 PASO 4: Enviar email de confirmación
         const confirmationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/bolsa-trabajo.html#confirm-email`;
-        const confirmLink = `${confirmationUrl}?token=${confirmationToken}`;
+        const confirmLink = `${confirmationUrl}?token=${finalToken}`;
 
         const htmlContent = `
             <!DOCTYPE html>
@@ -141,9 +151,9 @@ router.post('/cv', [
             html: htmlContent
         });
 
-        console.log(`📧 [BOLSA-TRABAJO] Email de confirmación enviado a ${email}`);
+        console.log(`📧 [BOLSA-TRABAJO CV v2] Email de confirmación enviado a ${email}`);
 
-        // 🎯 PASO 5: Responder al cliente (SIN guardar en BD)
+        // 🎯 PASO 5: Responder al cliente (datos aún NO guardados en pendientes_aprobacion)
         res.status(201).json({
             success: true,
             message: '📧 ¡Solicitud recibida! Hemos enviado un email de confirmación. Por favor confirma tu email para completar el registro.',
@@ -157,29 +167,33 @@ router.post('/cv', [
         });
 
     } catch (error) {
-        console.error('❌ [BOLSA-TRABAJO] Error al procesar solicitud de CV:', error);
+        console.error('❌ [BOLSA-TRABAJO CV v2] Error al procesar solicitud de CV:', error);
 
         res.status(500).json({
             success: false,
             error: 'Error al procesar tu perfil. Por favor intenta nuevamente.',
             detalle: error.message
         });
+    } finally {
+        client.release();
     }
 });
 
 // =====================================================
 // POST /api/bolsa-trabajo/confirm-email/:token - Confirmar email
-// 🎯 FLUJO CORRECTO (5 NOVIEMBRE 2025):
-// 1️⃣ Buscar datos temporales por token (en memoria)
+// 🎯 FLUJO CORRECTO (6 NOVIEMBRE 2025):
+// 1️⃣ Buscar datos temporales por token en BD
 // 2️⃣ Verificar que el token no haya expirado
-// 3️⃣ INSERT en pendientes_aprobacion (ahora sí guardamos)
-// 4️⃣ Limpiar de memoria
+// 3️⃣ Usar TRANSACTION: mover a pendientes_aprobacion
+// 4️⃣ Limpiar de bolsa_trabajo_pending_confirmation
 // 5️⃣ Responder al cliente
 // =====================================================
 router.post('/confirm-email/:token', async (req, res) => {
     const { token } = req.params;
+    const client = await pool.connect();
 
     if (!token) {
+        client.release();
         return res.status(400).json({
             success: false,
             error: 'Token de confirmación es requerido'
@@ -187,83 +201,156 @@ router.post('/confirm-email/:token', async (req, res) => {
     }
 
     try {
-        console.log(`📧 [BOLSA-TRABAJO] Confirmando email con token: ${token.substring(0, 8)}...`);
+        console.log(`📧 [BOLSA-TRABAJO CONFIRM v2] Confirmando email con token: ${token.substring(0, 8)}...`);
 
-        // 1️⃣ PASO 1: Buscar datos temporales en memoria
-        const pendingData = pendingConfirmations.get(token);
+        // 1️⃣ PASO 1: Buscar datos temporales en BD
+        const selectQuery = `
+            SELECT id, email_usuario, datos_json, token_expires_at
+            FROM bolsa_trabajo_pending_confirmation
+            WHERE confirmation_token = $1;
+        `;
 
-        if (!pendingData) {
-            return res.status(400).json({
+        const pendingResult = await client.query(selectQuery, [token]);
+
+        if (pendingResult.rows.length === 0) {
+            client.release();
+            return res.status(404).json({
                 success: false,
-                error: 'Token de confirmación inválido o expirado'
+                error: 'Token de confirmación inválido o no encontrado'
             });
         }
 
+        const pendingData = pendingResult.rows[0];
+
         // 2️⃣ PASO 2: Verificar que el token no haya expirado
-        if (Date.now() > pendingData.expiresAt) {
-            pendingConfirmations.delete(token); // Limpiar token expirado
-            return res.status(400).json({
+        if (new Date() > new Date(pendingData.token_expires_at)) {
+            // Limpiar token expirado de la BD
+            await client.query('DELETE FROM bolsa_trabajo_pending_confirmation WHERE id = $1', [pendingData.id]);
+            client.release();
+            return res.status(404).json({
                 success: false,
                 error: 'El token de confirmación ha expirado. Por favor intenta registrarte nuevamente.'
             });
         }
 
-        // 3️⃣ PASO 3: INSERT en pendientes_aprobacion (con email_confirmado=true)
-        const insertQuery = `
-            INSERT INTO pendientes_aprobacion (
-                email_usuario,
-                tipo_solicitud,
-                datos_json,
-                estado,
-                email_confirmado,
-                fecha_solicitud
-            )
-            VALUES ($1, $2, $3, $4, $5, NOW())
-            RETURNING id, uuid, email_usuario, estado;
-        `;
+        const { email_usuario: email, datos_json: formDataJSON } = pendingData;
+        const formData = formDataJSON;
 
-        const { formData, email } = pendingData;
+        // 3️⃣ PASO 3: Iniciar TRANSACTION
+        await client.query('BEGIN');
 
-        const insertResult = await pool.query(insertQuery, [
-            email,
-            'bolsa_trabajo',
-            JSON.stringify(formData),
-            'pendiente',
-            true
-        ]);
+        try {
+            // Verificar si ya existe un registro pendiente para este email
+            const existingApproval = await client.query(
+                `SELECT id FROM pendientes_aprobacion
+                 WHERE email_usuario = $1 AND tipo_solicitud = $2`,
+                [email, 'bolsa_trabajo']
+            );
 
-        if (insertResult.rows.length === 0) {
-            throw new Error('Error al guardar registro');
+            if (existingApproval.rows.length > 0) {
+                // UPDATE registro existente
+                const existingId = existingApproval.rows[0].id;
+                const updateQuery = `
+                    UPDATE pendientes_aprobacion
+                    SET datos_json = $1, fecha_solicitud = NOW(), email_confirmado = $2, estado = $3
+                    WHERE id = $4
+                    RETURNING id, uuid, email_usuario, estado;
+                `;
+                const updateResult = await client.query(updateQuery, [
+                    JSON.stringify(formData),
+                    true,
+                    'pendiente',
+                    existingId
+                ]);
+
+                const savedRecord = updateResult.rows[0];
+
+                // Limpiar de tabla temporal
+                await client.query('DELETE FROM bolsa_trabajo_pending_confirmation WHERE id = $1', [pendingData.id]);
+
+                await client.query('COMMIT');
+
+                console.log(`✅ [BOLSA-TRABAJO CONFIRM v2] Email confirmado para ${email}`);
+                console.log(`   Registro ACTUALIZADO en pendientes_aprobacion (ID: ${savedRecord.id})`);
+                console.log(`   Estado: '${savedRecord.estado}', email_confirmado=true`);
+
+                res.status(200).json({
+                    success: true,
+                    message: '✅ ¡Email confirmado exitosamente! Tu solicitud ha sido enviada a revisión del administrador. Te notificaremos cuando sea revisada.',
+                    data: {
+                        uuid: savedRecord.uuid,
+                        approvalId: savedRecord.id,
+                        email: savedRecord.email_usuario,
+                        status: savedRecord.estado,
+                        mensaje: 'Tu perfil está pendiente de aprobación por el administrador.'
+                    }
+                });
+
+            } else {
+                // INSERT registro nuevo
+                const insertQuery = `
+                    INSERT INTO pendientes_aprobacion (
+                        email_usuario,
+                        tipo_solicitud,
+                        datos_json,
+                        estado,
+                        email_confirmado,
+                        fecha_solicitud
+                    )
+                    VALUES ($1, $2, $3, $4, $5, NOW())
+                    RETURNING id, uuid, email_usuario, estado;
+                `;
+
+                const insertResult = await client.query(insertQuery, [
+                    email,
+                    'bolsa_trabajo',
+                    JSON.stringify(formData),
+                    'pendiente',
+                    true
+                ]);
+
+                if (insertResult.rows.length === 0) {
+                    throw new Error('Error al guardar registro en pendientes_aprobacion');
+                }
+
+                const savedRecord = insertResult.rows[0];
+
+                // Limpiar de tabla temporal
+                await client.query('DELETE FROM bolsa_trabajo_pending_confirmation WHERE id = $1', [pendingData.id]);
+
+                await client.query('COMMIT');
+
+                console.log(`✅ [BOLSA-TRABAJO CONFIRM v2] Email confirmado para ${email}`);
+                console.log(`   Registro GUARDADO en pendientes_aprobacion (ID: ${savedRecord.id})`);
+                console.log(`   Estado: '${savedRecord.estado}', email_confirmado=true`);
+
+                res.status(200).json({
+                    success: true,
+                    message: '✅ ¡Email confirmado exitosamente! Tu solicitud ha sido enviada a revisión del administrador. Te notificaremos cuando sea revisada.',
+                    data: {
+                        uuid: savedRecord.uuid,
+                        approvalId: savedRecord.id,
+                        email: savedRecord.email_usuario,
+                        status: savedRecord.estado,
+                        mensaje: 'Tu perfil está pendiente de aprobación por el administrador.'
+                    }
+                });
+            }
+
+        } catch (innerError) {
+            await client.query('ROLLBACK');
+            throw innerError;
         }
 
-        const savedRecord = insertResult.rows[0];
-
-        // 4️⃣ PASO 4: Limpiar de memoria
-        pendingConfirmations.delete(token);
-
-        console.log(`✅ [BOLSA-TRABAJO] Email confirmado para ${email}`);
-        console.log(`   Registro GUARDADO en pendientes_aprobacion (ID: ${savedRecord.id})`);
-        console.log(`   Estado: '${savedRecord.estado}', email_confirmado=true`);
-
-        res.status(200).json({
-            success: true,
-            message: '✅ ¡Email confirmado exitosamente! Tu solicitud ha sido enviada a revisión del administrador. Te notificaremos cuando sea revisada.',
-            data: {
-                uuid: savedRecord.uuid,
-                approvalId: savedRecord.id,
-                email: savedRecord.email_usuario,
-                status: savedRecord.estado,
-                mensaje: 'Tu perfil está pendiente de aprobación por el administrador.'
-            }
-        });
-
     } catch (error) {
-        console.error('❌ [BOLSA-TRABAJO] Error al confirmar email:', error);
+        console.error('❌ [BOLSA-TRABAJO CONFIRM v2] Error al confirmar email:', error);
         res.status(500).json({
             success: false,
             error: 'Error al confirmar email. Por favor intenta nuevamente.',
             detalle: error.message
         });
+    } finally {
+        client.release();
     }
 });
 
