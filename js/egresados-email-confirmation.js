@@ -109,8 +109,7 @@
     async function confirmEmail(token) {
         console.log(`📧 [EGRESADOS EMAIL CONFIRMATION] Confirmando email con token: ${token.substring(0, 8)}...`);
 
-        // Mostrar estado inicial
-        showConfirmationStatus('Confirmando tu email...', true);
+        // IMPORTANTE: NO mostrar modal aquí, esperar respuesta del servidor PRIMERO
 
         try {
             const response = await fetch(`/api/egresados/confirm/${token}`, {

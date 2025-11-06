@@ -176,4 +176,7 @@
         init();
     }
 
+    // Escuchar cambios en el hash (cuando usuario hace clic en enlace de confirmación)
+    window.addEventListener('hashchange', init);
+
 })();

@@ -77,7 +77,7 @@ app.use(helmet({
         directives: {
             defaultSrc: ["'self'"],
             scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://accounts.google.com", "https://www.googleapis.com", "https://cdn.tiny.cloud", "*.tiny.cloud", "blob:", "https://vercel.live", "https://*.vercel.live"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://cdn.tiny.cloud", "*.tiny.cloud"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://cdn.tiny.cloud", "*.tiny.cloud", "https://accounts.google.com"],
             connectSrc: ["'self'", "http://localhost:3000", "ws:", "wss:", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://www.google-analytics.com", "https://www.googletagmanager.com", "https://accounts.google.com", "https://www.googleapis.com", "https://cdn.tiny.cloud", "*.tiny.cloud", "https://sp.tinymce.com", "https://vercel.live", "https://*.vercel.live"],
             imgSrc: ["'self'", "data:", "blob:", "https:", "https://cdn.tiny.cloud", "*.tiny.cloud", "https://sp.tinymce.com"],
             fontSrc: ["'self'", "data:", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com", "https://cdn.tiny.cloud", "*.tiny.cloud"],

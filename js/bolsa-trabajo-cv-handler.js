@@ -39,8 +39,8 @@
 
         console.log('✅ [BOLSA TRABAJO CV] Formulario encontrado, configurando...');
 
-        // IMPORTANTE: Remover la clase 'professional-form' para evitar conflictos
-        form.classList.remove('professional-form');
+        // IMPORTANTE: Marcar este formulario como ya manejado para evitar que professional-forms.js lo procese
+        form.setAttribute('data-handled-by', 'bolsa-trabajo-cv-handler');
 
         // Registrar tiempo de inicio
         formStartTime = Date.now();
@@ -104,6 +104,7 @@
     async function handleFormSubmit(e) {
         e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation();  // IMPORTANTE: Prevenir que professional-forms.js también procese este evento
 
         console.log('📝 [BOLSA TRABAJO CV] Procesando envío de formulario...');
 
@@ -256,7 +257,8 @@
         const now = Date.now();
         const recentSubmissions = submissions.filter(time => now - time < 3600000); // 1 hora
 
-        if (recentSubmissions.length >= 2) {
+        // NOTA: Aumentado a 5 para testing. Reducir a 2 en producción.
+        if (recentSubmissions.length >= 5) {
             return {
                 passed: false,
                 message: 'Demasiados intentos. Intenta nuevamente en una hora.'

@@ -21,14 +21,22 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// 📋 ALMACENAMIENTO TEMPORAL DE DATOS (En memoria, sin BD)
+// Estructura: { token: { formData, expiresAt } }
+const pendingConfirmations = new Map();
+
 // =====================================================
 // POST /api/bolsa-trabajo/cv - Crear perfil de CV
-// 🎯 FLUJO MEJORADO (5 NOVIEMBRE 2025):
-// 1) Guardar DIRECTAMENTE en pendientes_aprobacion
-// 2) estado = 'pendiente_confirmacion' (email no confirmado)
-// 3) Enviar email con token de confirmación
-// 4) Usuario confirma email → estado = 'pendiente' (esperando admin)
-// 5) Admin aprueba → se copia a bolsa_trabajo final
+// 🎯 FLUJO CORRECTO (5 NOVIEMBRE 2025):
+// 1) Validar datos del formulario
+// 2) Generar token de confirmación
+// 3) Guardar TEMPORALMENTE en memoria (NO en BD)
+// 4) Enviar email con link de confirmación
+// 5) RESPONDER AL CLIENTE (sin guardar en BD aún)
+//
+// ✅ Usuario confirma email → ENTONCES se guarda en pendientes_aprobacion
+// ❌ Si token expira → Sin registros huérfanos en BD
+// ❌ Sin conflictos de email duplicado
 // =====================================================
 router.post('/cv', [
     body('name').trim().notEmpty().withMessage('Nombre es requerido'),
@@ -52,11 +60,10 @@ router.post('/cv', [
     try {
         console.log(`💼 [BOLSA-TRABAJO] Recibiendo CV para ${email}`);
 
-        // Generar token de confirmación
+        // 🎯 PASO 1: Generar token de confirmación
         const confirmationToken = crypto.randomBytes(16).toString('hex');
-        const tokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas
 
-        // Preparar datos del formulario
+        // 🎯 PASO 2: Preparar datos del formulario
         const formData = {
             name,
             email,
@@ -67,40 +74,17 @@ router.post('/cv', [
             skills
         };
 
-        // 🎯 PASO 1: Guardar DIRECTAMENTE en pendientes_aprobacion con estado = 'pendiente_confirmacion'
-        const insertQuery = `
-            INSERT INTO pendientes_aprobacion (
-                tipo_solicitud,
-                email_usuario,
-                datos_json,
-                estado,
-                email_confirmado,
-                admin_notas,
-                fecha_solicitud
-            )
-            VALUES ($1, $2, $3, $4, $5, $6, NOW())
-            RETURNING id, uuid;
-        `;
-
-        const insertResult = await pool.query(insertQuery, [
-            'bolsa_trabajo',
+        // 🎯 PASO 3: Guardar TEMPORALMENTE en memoria (24 horas)
+        const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 24 horas
+        pendingConfirmations.set(confirmationToken, {
+            formData,
             email,
-            JSON.stringify(formData),
-            'pendiente_confirmacion',  // 🔴 Estado especial: esperando confirmación de email
-            false,                      // email_confirmado = false
-            `Token de confirmación: ${confirmationToken}`
-        ]);
+            expiresAt
+        });
 
-        if (insertResult.rows.length === 0) {
-            throw new Error('No se pudo guardar el registro');
-        }
+        console.log(`⏳ [BOLSA-TRABAJO] Datos guardados TEMPORALMENTE en memoria (token: ${confirmationToken.substring(0, 8)}...) - Esperando confirmación de email`);
 
-        const approvalId = insertResult.rows[0].id;
-        const approvalUuid = insertResult.rows[0].uuid;
-
-        console.log(`✅ [BOLSA-TRABAJO] Registro guardado en pendientes_aprobacion (ID: ${approvalId})`);
-
-        // 🎯 PASO 2: Enviar email de confirmación
+        // 🎯 PASO 4: Enviar email de confirmación
         const confirmationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/bolsa-trabajo.html#confirm-email`;
         const confirmLink = `${confirmationUrl}?token=${confirmationToken}`;
 
@@ -159,32 +143,21 @@ router.post('/cv', [
 
         console.log(`📧 [BOLSA-TRABAJO] Email de confirmación enviado a ${email}`);
 
-        // 🎯 PASO 3: Responder al cliente
+        // 🎯 PASO 5: Responder al cliente (SIN guardar en BD)
         res.status(201).json({
             success: true,
             message: '📧 ¡Solicitud recibida! Hemos enviado un email de confirmación. Por favor confirma tu email para completar el registro.',
             data: {
-                uuid: approvalUuid,
-                approvalId: approvalId,
                 email: email,
                 nombre: name,
-                estado: 'pendiente_confirmacion',
+                estado: 'esperando_confirmacion',
                 fecha_solicitud: new Date().toISOString(),
-                nota: 'Revisa tu email (incluyendo spam) y haz clic en el enlace de confirmación. El enlace vence en 24 horas.'
+                nota: 'Revisa tu email (incluyendo spam) y haz clic en el enlace de confirmación. El enlace vence en 24 horas. Tu registro se guardará en la base de datos una vez que confirmes tu email.'
             }
         });
 
     } catch (error) {
-        console.error('❌ [BOLSA-TRABAJO] Error al guardar solicitud de CV:', error);
-
-        // Verificar si es error de email duplicado
-        if (error.message && error.message.includes('duplicate')) {
-            return res.status(409).json({
-                success: false,
-                error: 'Este email ya tiene un registro pendiente. Por favor revisa tu email para confirmar.',
-                code: 'EMAIL_ALREADY_PENDING'
-            });
-        }
+        console.error('❌ [BOLSA-TRABAJO] Error al procesar solicitud de CV:', error);
 
         res.status(500).json({
             success: false,
@@ -196,7 +169,12 @@ router.post('/cv', [
 
 // =====================================================
 // POST /api/bolsa-trabajo/confirm-email/:token - Confirmar email
-// 🎯 NUEVO: Cambiar estado de 'pendiente_confirmacion' a 'pendiente'
+// 🎯 FLUJO CORRECTO (5 NOVIEMBRE 2025):
+// 1️⃣ Buscar datos temporales por token (en memoria)
+// 2️⃣ Verificar que el token no haya expirado
+// 3️⃣ INSERT en pendientes_aprobacion (ahora sí guardamos)
+// 4️⃣ Limpiar de memoria
+// 5️⃣ Responder al cliente
 // =====================================================
 router.post('/confirm-email/:token', async (req, res) => {
     const { token } = req.params;
@@ -211,63 +189,70 @@ router.post('/confirm-email/:token', async (req, res) => {
     try {
         console.log(`📧 [BOLSA-TRABAJO] Confirmando email con token: ${token.substring(0, 8)}...`);
 
-        // 1. Buscar el registro con este token en admin_notas
-        const findQuery = `
-            SELECT id, uuid, email_usuario, estado, email_confirmado
-            FROM pendientes_aprobacion
-            WHERE tipo_solicitud = 'bolsa_trabajo'
-            AND admin_notas LIKE $1
-            LIMIT 1
-        `;
+        // 1️⃣ PASO 1: Buscar datos temporales en memoria
+        const pendingData = pendingConfirmations.get(token);
 
-        const findResult = await pool.query(findQuery, [`%${token}%`]);
-
-        if (findResult.rows.length === 0) {
+        if (!pendingData) {
             return res.status(400).json({
                 success: false,
                 error: 'Token de confirmación inválido o expirado'
             });
         }
 
-        const record = findResult.rows[0];
-
-        // 2. Verificar si ya fue confirmado
-        if (record.email_confirmado === true) {
+        // 2️⃣ PASO 2: Verificar que el token no haya expirado
+        if (Date.now() > pendingData.expiresAt) {
+            pendingConfirmations.delete(token); // Limpiar token expirado
             return res.status(400).json({
                 success: false,
-                error: 'Este email ya fue confirmado anteriormente'
+                error: 'El token de confirmación ha expirado. Por favor intenta registrarte nuevamente.'
             });
         }
 
-        // 3. Cambiar estado de 'pendiente_confirmacion' a 'pendiente' y marcar email como confirmado
-        const updateQuery = `
-            UPDATE pendientes_aprobacion
-            SET
-                estado = 'pendiente',
-                email_confirmado = true,
-                admin_notas = NULL
-            WHERE id = $1
-            RETURNING uuid, email_usuario;
+        // 3️⃣ PASO 3: INSERT en pendientes_aprobacion (con email_confirmado=true)
+        const insertQuery = `
+            INSERT INTO pendientes_aprobacion (
+                email_usuario,
+                tipo_solicitud,
+                datos_json,
+                estado,
+                email_confirmado,
+                fecha_solicitud
+            )
+            VALUES ($1, $2, $3, $4, $5, NOW())
+            RETURNING id, uuid, email_usuario, estado;
         `;
 
-        const updateResult = await pool.query(updateQuery, [record.id]);
+        const { formData, email } = pendingData;
 
-        if (updateResult.rows.length === 0) {
-            throw new Error('Error al actualizar registro');
+        const insertResult = await pool.query(insertQuery, [
+            email,
+            'bolsa_trabajo',
+            JSON.stringify(formData),
+            'pendiente',
+            true
+        ]);
+
+        if (insertResult.rows.length === 0) {
+            throw new Error('Error al guardar registro');
         }
 
-        const updatedRecord = updateResult.rows[0];
+        const savedRecord = insertResult.rows[0];
 
-        console.log(`✅ [BOLSA-TRABAJO] Email confirmado para ${updatedRecord.email_usuario}`);
-        console.log(`   Registro movido: 'pendiente_confirmacion' → 'pendiente'`);
+        // 4️⃣ PASO 4: Limpiar de memoria
+        pendingConfirmations.delete(token);
+
+        console.log(`✅ [BOLSA-TRABAJO] Email confirmado para ${email}`);
+        console.log(`   Registro GUARDADO en pendientes_aprobacion (ID: ${savedRecord.id})`);
+        console.log(`   Estado: '${savedRecord.estado}', email_confirmado=true`);
 
         res.status(200).json({
             success: true,
             message: '✅ ¡Email confirmado exitosamente! Tu solicitud ha sido enviada a revisión del administrador. Te notificaremos cuando sea revisada.',
             data: {
-                uuid: updatedRecord.uuid,
-                email: updatedRecord.email_usuario,
-                status: 'pendiente',
+                uuid: savedRecord.uuid,
+                approvalId: savedRecord.id,
+                email: savedRecord.email_usuario,
+                status: savedRecord.estado,
                 mensaje: 'Tu perfil está pendiente de aprobación por el administrador.'
             }
         });

@@ -38,8 +38,6 @@
         return token;
     }
 
-    // Flag para evitar procesamiento doble
-    let isProcessingConfirmation = false;
 
     /**
      * Mostrar modal con mensaje de estado
@@ -100,9 +98,7 @@
 
         // Redirigir después de 3 segundos
         setTimeout(() => {
-            // Limpiar hash
             window.location.hash = '';
-            // Redirigir a página de egresados sin hash
             window.location.href = window.location.pathname;
         }, 3000);
     }
@@ -113,8 +109,7 @@
     async function confirmEmail(token) {
         console.log(`📧 [EGRESADOS EMAIL CONFIRMATION] Confirmando email con token: ${token.substring(0, 8)}...`);
 
-        // Mostrar estado inicial
-        showConfirmationStatus('Confirmando tu email...', true);
+        // IMPORTANTE: NO mostrar modal aquí, esperar respuesta del servidor PRIMERO
 
         try {
             const response = await fetch(`/api/egresados/confirm/${token}`, {

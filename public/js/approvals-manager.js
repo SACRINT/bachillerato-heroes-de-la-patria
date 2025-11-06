@@ -17,9 +17,10 @@ async function loadPendingApprovals() {
     console.log('📋 Cargando solicitudes pendientes...');
 
     try {
-        // Filtrar por: estado='pendiente' (todos los registros pendientes sin importar confirmación)
-        // ✅ ACTUALIZADO: Remover filtro email_confirmado=true para mostrar TODOS los pendientes
-        const response = await fetch('/api/pendientes-aprobacion?estado=pendiente&limit=100');
+        // 🔄 ACTUALIZADO (5 NOV): Sin filtro estado en frontend
+        // El backend ya filtra: WHERE estado IN ('pendiente_confirmacion', 'pendiente')
+        // Mostramos AMBOS: registros sin confirmar email + registros confirmados esperando aprobación
+        const response = await fetch('/api/pendientes-aprobacion?limit=100');
 
         // Verificar status HTTP
         if (!response.ok) {
@@ -200,14 +201,17 @@ function renderApprovalData(approval) {
             <dt class="col-sm-4">Teléfono:</dt>
             <dd class="col-sm-8">${data.phone || data.telefono || 'No especificado'}</dd>
 
-            <dt class="col-sm-4">Puesto Deseado:</dt>
-            <dd class="col-sm-8">${data.position || data.puesto_deseado || 'No especificado'}</dd>
+            <dt class="col-sm-4">Año de Egreso:</dt>
+            <dd class="col-sm-8">${data.graduationYear || data.ano_egreso || 'No especificado'}</dd>
 
-            <dt class="col-sm-4">Experiencia:</dt>
-            <dd class="col-sm-8">${data.experience || data.nivel_experiencia || 'No especificado'}</dd>
+            <dt class="col-sm-4">Área de Interés:</dt>
+            <dd class="col-sm-8">${data.subject || data.area_interes || 'No especificado'}</dd>
 
-            <dt class="col-sm-4">Disponibilidad:</dt>
-            <dd class="col-sm-8">${data.availability || data.disponibilidad || 'No especificado'}</dd>
+            <dt class="col-sm-4">Resumen Profesional:</dt>
+            <dd class="col-sm-8">${data.message || data.resumen || 'No especificado'}</dd>
+
+            <dt class="col-sm-4">Habilidades:</dt>
+            <dd class="col-sm-8">${data.skills || 'No especificadas'}</dd>
         `;
 
     } else if (approval.form_type === 'egresados') {

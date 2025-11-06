@@ -354,11 +354,11 @@ function loadHeaderFooter() {
                 // IMPORTANTE: Los scripts en el HTML no se ejecutan con innerHTML
                 // Necesitamos cargar los scripts críticos manualmente en secuencia
                 const criticalScripts = [
-                    'js/unified-auth-system-v2.js?v=2025110401',  // NUEVO: Sistema de autenticación unificado V2
+                    'js/unified-auth-system-v2.js?v=2025110503',  // NUEVO: Sistema de autenticación unificado V2 - Google OAuth + Close btn
                     'js/admin-auth.js?v=2024091401',
                     'js/responsive-nav.js?v=2024091401',
-                    'js/nested-dropdowns.js?v=2024091401',
-                    'js/theme-manager.js?v=2024092101'
+                    'js/nested-dropdowns.js?v=2024091401'
+                    // ❌ ELIMINADO: theme-manager.js ya se carga desde header.html
                 ];
 
                 console.log(`📦 [MAIN.JS] Iniciando carga de ${criticalScripts.length} scripts críticos...`);

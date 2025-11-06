@@ -183,18 +183,44 @@ class UnifiedAuthSystem {
             if (!this.isValidGoogleClientId()) {
                 console.warn('⚠️ Google Client ID no válido');
                 console.log('💡 Para Google OAuth real: Configura en Google Cloud Console');
+                this.state.googleReady = false;
                 return;
             }
 
-            // Cargar Google Identity Services
+            // ✅ HABILITADO: Google Identity Services con CSP corregido
             await this.managers.google.loadServices();
 
-            this.state.googleReady = true;
-            console.log('✅ Google OAuth listo');
+            this.state.googleReady = true; // Ahora habilitado
+            console.log('✅ Google OAuth habilitado y listo');
 
         } catch (error) {
             console.warn('⚠️ Google OAuth no disponible:', error.message);
             this.state.googleReady = false;
+        }
+    }
+
+    /**
+     * ACTUALIZAR STATUS DE GOOGLE EN MODAL
+     */
+    updateModalGoogleStatus() {
+        try {
+            // Ocultar alerta de "Google no disponible"
+            const googleAlert = document.querySelector('#unified-auth-modal .alert-info');
+            if (googleAlert) {
+                googleAlert.style.display = 'none';
+                console.log('✅ Alerta de Google deshabilitado ocultada');
+            }
+
+            // Habilitar botón de Google
+            const googleBtn = document.getElementById('google-signin-btn');
+            if (googleBtn) {
+                googleBtn.disabled = false;
+                googleBtn.style.opacity = '1';
+                googleBtn.style.pointerEvents = 'auto';
+                console.log('✅ Botón de Google habilitado');
+            }
+        } catch (error) {
+            console.error('⚠️ Error actualizando status de Google:', error);
         }
     }
 
@@ -346,6 +372,20 @@ class UnifiedAuthSystem {
         }));
 
         return true;
+    }
+
+    /**
+     * MOSTRAR MODAL DE LOGIN
+     */
+    showModal() {
+        this.managers.ui.showModal();
+    }
+
+    /**
+     * OCULTAR MODAL DE LOGIN
+     */
+    hideModal() {
+        this.managers.ui.hideModal();
     }
 
     /**
@@ -658,6 +698,46 @@ class ManualLoginManager {
      * SETUP LISTENERS
      */
     setupListeners() {
+        // ✅ LISTENER PARA BOTÓN DE INICIAR SESIÓN
+        document.addEventListener('click', (e) => {
+            if (e.target?.getAttribute('data-bs-target') === '#unified-auth-modal' ||
+                e.target?.closest('[data-bs-target="#unified-auth-modal"]')) {
+                e.preventDefault();
+                console.log('📁 Botón de login clickeado, abriendo modal...');
+
+                // 🔧 MANIPULACIÓN DIRECTA DEL DOM - Evitar llamadas a métodos
+                const modal = document.getElementById('unified-auth-modal');
+                if (!modal) {
+                    console.error('❌ Modal element not found in DOM');
+                    return;
+                }
+
+                try {
+                    // Mostrar el modal manipulando el DOM directamente
+                    modal.classList.add('show');
+                    modal.style.display = 'block';
+                    modal.setAttribute('aria-modal', 'true');
+                    document.body.classList.add('modal-open');
+
+                    // Crear o mostrar el backdrop
+                    let backdrop = document.querySelector('.modal-backdrop');
+                    if (!backdrop) {
+                        backdrop = document.createElement('div');
+                        backdrop.className = 'modal-backdrop fade show';
+                        document.body.appendChild(backdrop);
+                        console.log('✅ Backdrop creado');
+                    } else {
+                        backdrop.classList.add('show');
+                    }
+
+                    console.log('✅ Modal mostrado exitosamente (DOM directo)');
+                } catch (error) {
+                    console.error('❌ Error abriendo modal:', error);
+                }
+            }
+        });
+
+        // ✅ LISTENER PARA SUBMIT DEL FORMULARIO DE LOGIN
         document.addEventListener('submit', (e) => {
             if (e.target?.id === 'manual-login-form') {
                 e.preventDefault();
@@ -665,10 +745,27 @@ class ManualLoginManager {
             }
         });
 
-        // Toggle password visibility
+        // ✅ LISTENER PARA TOGGLE DE VISIBILIDAD DE CONTRASEÑA
         document.addEventListener('click', (e) => {
             if (e.target?.id === 'toggle-password' || e.target?.closest('#toggle-password')) {
                 this.togglePasswordVisibility();
+            }
+        });
+
+        // ✅ LISTENER PARA CERRAR MODAL CON BOTÓN X
+        document.addEventListener('click', (e) => {
+            if (e.target?.id === 'modal-close-btn' || e.target?.closest('#modal-close-btn')) {
+                e.preventDefault();
+                console.log('🔴 Botón de cerrar clickeado, cerrando modal...');
+                this.auth.managers.ui.hideModal();
+            }
+        });
+
+        // ✅ LISTENER PARA CERRAR MODAL CLICKEANDO EN EL BACKDROP
+        document.addEventListener('click', (e) => {
+            if (e.target?.classList?.contains('modal-backdrop')) {
+                console.log('🔴 Backdrop clickeado, cerrando modal...');
+                this.auth.managers.ui.hideModal();
             }
         });
     }
@@ -882,7 +979,7 @@ class UIManager {
                                 </h5>
                                 <p class="text-muted small mb-0">Accede a tu cuenta de BGE</p>
                             </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            <button type="button" class="btn-close" id="modal-close-btn" aria-label="Cerrar"></button>
                         </div>
 
                         <!-- Contenido -->
@@ -986,7 +1083,7 @@ class UIManager {
 
             <!-- Estado de Autenticación -->
             <div id="login-button-state" class="d-flex align-items-center">
-                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#unified-auth-modal">
+                <button class="btn btn-primary btn-sm" data-bs-target="#unified-auth-modal">
                     <i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión
                 </button>
             </div>
@@ -1053,25 +1150,83 @@ class UIManager {
      * CERRAR MODAL
      */
     closeModal() {
-        const modal = document.getElementById('unified-auth-modal');
-        if (modal) {
-            const bsModal = bootstrap.Modal.getInstance(modal);
-            if (bsModal) {
-                bsModal.hide();
-            } else {
-                modal.style.display = 'none';
-            }
-        }
+        // Usar el nuevo método hideModal() que manipula el DOM directamente
+        this.auth.hideModal();
     }
 
     /**
      * MOSTRAR MODAL
      */
     showModal() {
-        const modal = document.getElementById('unified-auth-modal');
-        if (modal) {
-            const bsModal = new bootstrap.Modal(modal);
-            bsModal.show();
+        try {
+            const modal = document.getElementById('unified-auth-modal');
+            if (!modal) {
+                console.error('❌ Modal element not found');
+                return;
+            }
+
+            console.log('📂 Modal encontrado en DOM, mostrando...');
+
+            // SOLUCIÓN SIMPLE: Manipular el DOM directamente sin Bootstrap.Modal
+            // Esto evita completamente el error "Cannot read properties of undefined (reading 'backdrop')"
+
+            // Agregar clases Bootstrap para mostrar el modal
+            modal.classList.add('show');
+            modal.style.display = 'block';
+            modal.setAttribute('aria-modal', 'true');
+
+            // Agregar clase modal-open al body para deshabilitar scroll
+            document.body.classList.add('modal-open');
+
+            // Crear y agregar el backdrop (fondo oscuro)
+            let backdrop = document.querySelector('.modal-backdrop');
+            if (!backdrop) {
+                backdrop = document.createElement('div');
+                backdrop.className = 'modal-backdrop fade show';
+                document.body.appendChild(backdrop);
+                console.log('✅ Backdrop creado');
+            }
+
+            console.log('✅ Modal mostrado exitosamente (sin Bootstrap.Modal)');
+
+            // Agregar evento para cerrar el modal al hacer clic en el botón close
+            const closeBtn = modal.querySelector('[data-bs-dismiss="modal"]');
+            if (closeBtn && !closeBtn.hasAttribute('data-close-bound')) {
+                closeBtn.setAttribute('data-close-bound', 'true');
+                closeBtn.addEventListener('click', () => this.hideModal());
+                console.log('✅ Evento de cierre agregado al botón close');
+            }
+
+        } catch (error) {
+            console.error('❌ Error abriendo modal:', error);
+        }
+    }
+
+    /**
+     * OCULTAR MODAL
+     */
+    hideModal() {
+        try {
+            const modal = document.getElementById('unified-auth-modal');
+            const backdrop = document.querySelector('.modal-backdrop');
+
+            if (modal) {
+                modal.classList.remove('show');
+                modal.style.display = 'none';
+                modal.removeAttribute('aria-modal');
+                console.log('✅ Modal ocultado');
+            }
+
+            if (backdrop) {
+                backdrop.remove();
+                console.log('✅ Backdrop eliminado');
+            }
+
+            document.body.classList.remove('modal-open');
+            console.log('✅ Modal cerrado completamente');
+
+        } catch (error) {
+            console.error('❌ Error cerrando modal:', error);
         }
     }
 }
@@ -1108,11 +1263,18 @@ class ErrorHandler {
 }
 
 // 🚀 INICIALIZAR SISTEMA
-window.addEventListener('DOMContentLoaded', () => {
-    if (!window.bgeAuth) {
-        window.bgeAuth = new UnifiedAuthSystem();
-    }
-});
+// Se inicializa inmediatamente (no esperar DOMContentLoaded)
+// porque main.js carga el script dinámicamente DESPUÉS de que DOMContentLoaded ya ocurrió
+if (!window.unifiedLogin) {
+    console.log('🔐 Inicializando Sistema de Autenticación V2 (Instancia Global)...');
+    window.unifiedLogin = new UnifiedAuthSystem();
+    console.log('✅ Sistema de Autenticación V2 disponible en window.unifiedLogin');
+}
+
+// Mantener backward compatibility si algo usa window.bgeAuth
+if (!window.bgeAuth) {
+    window.bgeAuth = window.unifiedLogin;
+}
 
 // Exportar para usar en otros scripts
 window.UnifiedAuthSystem = UnifiedAuthSystem;

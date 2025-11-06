@@ -17,12 +17,20 @@
 
         console.log('✅ Handler de formulario egresados inicializado');
 
+        // Marcar formulario como manejado por este handler específico
+        form.setAttribute('data-handled-by', 'egresados-form-handler');
+
         // Interceptar el envío del formulario
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();  // IMPORTANTE: Prevenir que professional-forms.js también procese este evento
 
             console.log('📝 Formulario egresados enviado');
+
+            // Obtener botón de envío PRIMERO
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
 
             // Validación HTML5
             if (!form.checkValidity()) {
@@ -42,8 +50,8 @@
                 generacion: formData.get('generacion'),
                 telefono: formData.get('telefono') || null,
                 ciudad: formData.get('ciudad') || null,
-                carrera_tecnica: formData.get('carrera') || null,
-                anio_egreso: formData.get('anio-egreso') ? parseInt(formData.get('anio-egreso')) : null,
+                carrera_tecnica: formData.get('carrera'),  // CAMPO OBLIGATORIO
+                anio_egreso: formData.get('anio-egreso') ? parseInt(formData.get('anio-egreso')) : null,  // CAMPO OBLIGATORIO
                 experiencia_laboral: formData.get('trabajo') || null,
                 disponibilidad: 'inmediata',  // Valor por defecto
                 linkedin_url: formData.get('linkedin') || null,
@@ -51,11 +59,18 @@
                 estado: formData.get('estado') || null
             };
 
+            // Validar campos obligatorios ANTES de enviar
+            if (!mappedData.nombre_completo || !mappedData.email || !mappedData.anio_egreso || !mappedData.carrera_tecnica) {
+                console.error('❌ Validación fallida - Campos faltantes:', mappedData);
+                showErrorMessage('Por favor completa: Nombre Completo, Email, Año de Egreso y Carrera Técnica.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                return;
+            }
+
             console.log('📤 Datos mapeados:', mappedData);
 
             // Deshabilitar botón de envío
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
 

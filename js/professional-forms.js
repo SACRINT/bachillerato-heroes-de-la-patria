@@ -80,6 +80,11 @@ class ProfessionalFormsManager {
 
         // También buscar formularios por clase
         document.querySelectorAll('.professional-form').forEach(form => {
+            // IMPORTANTE: Saltar formularios que ya son manejados por handlers específicos
+            if (form.getAttribute('data-handled-by')) {
+                console.log(`📝 [FORMS] Formulario #${form.id} ya es manejado por: ${form.getAttribute('data-handled-by')}. Saltando...`);
+                return;
+            }
             this.setupProfessionalForm(form);
         });
     }
@@ -376,11 +381,12 @@ class ProfessionalFormsManager {
                 return await this.handleAppointmentSubmit(form, formData);
             }
 
-            // 💼 NUEVO: Detectar formularios de bolsa de trabajo
-            if (formType === 'Registro Bolsa de Trabajo') {
-                console.log('💼 Detectado formulario de bolsa de trabajo, usando endpoint especializado');
-                return await this.handleBolsaTrabajoSubmit(form, formData);
-            }
+            // 💼 DESACTIVADO: Bolsa de trabajo ahora manejada por bolsa-trabajo-cv-handler.js
+            // Este handler no debe procesar formularios de bolsa-trabajo para evitar envíos duplicados
+            // if (formType === 'Registro Bolsa de Trabajo') {
+            //     console.log('💼 Detectado formulario de bolsa de trabajo, usando endpoint especializado');
+            //     return await this.handleBolsaTrabajoSubmit(form, formData);
+            // }
 
             // ✅ FIX BUG CRÍTICO: Mapeo de campos inglés → español
             // El backend espera: nombre, asunto, mensaje, telefono
