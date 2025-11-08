@@ -1140,6 +1140,178 @@ async function deleteCourse(courseId) {
 
 /**
  * ============================================
+ * FUNCIONES DE ACCESO A DATOS - TENANTS
+ * ============================================
+ */
+
+/**
+ * Obtener tenant por dominio (CRÍTICO para routing multi-tenant)
+ * @param {string} domain - Dominio del tenant (ej: 'localhost:3000')
+ * @returns {Promise<Object|null>} Objeto tenant o null si no existe
+ * @throws {Error} Si ocurre un error en la consulta
+ */
+async function getTenantByDomain(domain) {
+    try {
+        console.log('[DAL] Ejecutando: getTenantByDomain', { domain });
+        const result = await pool.query(
+            'SELECT * FROM tenants WHERE domain = $1 LIMIT 1',
+            [domain]
+        );
+
+        const tenant = result.rows[0] || null;
+        console.log(`[DAL] ✅ getTenantByDomain: ${tenant ? 'encontrado' : 'no encontrado'}`);
+
+        return tenant;
+    } catch (error) {
+        console.error('[DAL] ❌ Error en getTenantByDomain:', error);
+        throw error;
+    }
+}
+
+/**
+ * Obtener tenant por ID
+ * @param {number} tenantId - ID del tenant
+ * @returns {Promise<Object|null>} Objeto tenant o null
+ * @throws {Error} Si ocurre un error en la consulta
+ */
+async function getTenantById(tenantId) {
+    try {
+        console.log('[DAL] Ejecutando: getTenantById', { tenantId });
+        const result = await pool.query(
+            'SELECT * FROM tenants WHERE id = $1 LIMIT 1',
+            [tenantId]
+        );
+
+        const tenant = result.rows[0] || null;
+        console.log(`[DAL] ✅ getTenantById: ${tenant ? 'encontrado' : 'no encontrado'}`);
+
+        return tenant;
+    } catch (error) {
+        console.error('[DAL] ❌ Error en getTenantById:', error);
+        throw error;
+    }
+}
+
+/**
+ * Obtener todos los tenants
+ * @returns {Promise<Array>} Array de tenants
+ * @throws {Error} Si ocurre un error en la consulta
+ */
+async function getAllTenants() {
+    try {
+        console.log('[DAL] Ejecutando: getAllTenants');
+        const result = await pool.query(
+            'SELECT id, uuid, schema_name, school_name, domain, status, created_at FROM tenants ORDER BY school_name ASC'
+        );
+
+        const tenants = result.rows || [];
+        console.log(`[DAL] ✅ getAllTenants: ${tenants.length} tenants encontrados`);
+
+        return tenants;
+    } catch (error) {
+        console.error('[DAL] ❌ Error en getAllTenants:', error);
+        throw error;
+    }
+}
+
+/**
+ * Crear nuevo tenant
+ * @param {Object} tenantData - Datos del tenant {school_name, domain, schema_name, config_json, admin_email}
+ * @returns {Promise<Object>} Tenant creado
+ * @throws {Error} Si ocurre un error en la consulta
+ */
+async function createTenant(tenantData) {
+    try {
+        console.log('[DAL] Ejecutando: createTenant', { domain: tenantData.domain });
+        const {
+            school_name,
+            domain,
+            schema_name,
+            config_json,
+            admin_email,
+            admin_phone,
+            status = 'activo'
+        } = tenantData;
+
+        const result = await pool.query(
+            `INSERT INTO tenants (school_name, domain, schema_name, config_json, admin_email, admin_phone, status)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)
+             RETURNING id, uuid, schema_name, school_name, domain, status, created_at`,
+            [school_name, domain, schema_name, config_json, admin_email, admin_phone, status]
+        );
+
+        const tenant = result.rows[0];
+        console.log(`[DAL] ✅ createTenant: tenant creado con ID ${tenant.id}`);
+
+        return tenant;
+    } catch (error) {
+        console.error('[DAL] ❌ Error en createTenant:', error);
+        throw error;
+    }
+}
+
+/**
+ * Actualizar tenant
+ * @param {number} tenantId - ID del tenant
+ * @param {Object} updateData - Datos a actualizar {school_name, status, admin_email, config_json}
+ * @returns {Promise<Object>} Tenant actualizado
+ * @throws {Error} Si ocurre un error en la consulta
+ */
+async function updateTenant(tenantId, updateData) {
+    try {
+        console.log('[DAL] Ejecutando: updateTenant', { tenantId });
+
+        const { school_name, status, admin_email, admin_phone, config_json } = updateData;
+
+        // Construir query dinámica (solo actualizar campos proporcionados)
+        const updates = [];
+        const values = [];
+        let paramCount = 1;
+
+        if (school_name !== undefined) {
+            updates.push(`school_name = $${paramCount++}`);
+            values.push(school_name);
+        }
+        if (status !== undefined) {
+            updates.push(`status = $${paramCount++}`);
+            values.push(status);
+        }
+        if (admin_email !== undefined) {
+            updates.push(`admin_email = $${paramCount++}`);
+            values.push(admin_email);
+        }
+        if (admin_phone !== undefined) {
+            updates.push(`admin_phone = $${paramCount++}`);
+            values.push(admin_phone);
+        }
+        if (config_json !== undefined) {
+            updates.push(`config_json = $${paramCount++}`);
+            values.push(config_json);
+        }
+
+        if (updates.length === 0) {
+            return null; // No hay campos para actualizar
+        }
+
+        values.push(tenantId);
+
+        const result = await pool.query(
+            `UPDATE tenants SET ${updates.join(', ')} WHERE id = $${paramCount} RETURNING *`,
+            values
+        );
+
+        const tenant = result.rows[0] || null;
+        console.log(`[DAL] ✅ updateTenant: tenant actualizado`);
+
+        return tenant;
+    } catch (error) {
+        console.error('[DAL] ❌ Error en updateTenant:', error);
+        throw error;
+    }
+}
+
+/**
+ * ============================================
  * FUNCIONES DE ACCESO A DATOS - USUARIOS
  * ============================================
  */
@@ -1276,4 +1448,11 @@ module.exports = {
     // Usuarios
     getUserByEmail,
     createUserFromGoogle,
+
+    // Tenants (Multi-Tenant)
+    getTenantByDomain,
+    getTenantById,
+    getAllTenants,
+    createTenant,
+    updateTenant,
 };

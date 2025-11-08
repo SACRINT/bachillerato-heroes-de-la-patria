@@ -6,6 +6,7 @@
 
 const express = require('express');
 const router = express.Router();
+const { getTenantByDomain } = require('../data/database-access');
 
 /**
  * GET /api/config/google-client-id
@@ -79,6 +80,70 @@ router.get('/public', (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Error al obtener configuración',
+            message: error.message
+        });
+    }
+});
+
+/**
+ * GET /api/config/tenant
+ * NUEVO ENDPOINT MULTI-TENANT
+ * Obtiene la configuración del tenant desde la base de datos usando el dominio
+ * Este endpoint es CRÍTICO para arquitectura multi-tenant
+ */
+router.get('/tenant', async (req, res) => {
+    try {
+        // Obtener el dominio de la solicitud
+        const hostname = req.hostname;  // ej: 'localhost:3000' o 'heroes.localhost'
+
+        console.log('[CONFIG] Buscando configuración de tenant para dominio:', hostname);
+
+        // Consultar la BD usando la función DAL
+        const tenant = await getTenantByDomain(hostname);
+
+        // Si no encuentra el tenant, retornar error
+        if (!tenant) {
+            console.warn(`[CONFIG] ⚠️ Tenant no encontrado para dominio: ${hostname}`);
+            return res.status(404).json({
+                success: false,
+                error: 'Tenant no encontrado',
+                message: `No hay configuración para el dominio: ${hostname}`,
+                hostname: hostname
+            });
+        }
+
+        // Si el tenant existe pero está inactivo, retornar error
+        if (tenant.status !== 'activo') {
+            console.warn(`[CONFIG] ⚠️ Tenant inactivo: ${hostname} (status: ${tenant.status})`);
+            return res.status(403).json({
+                success: false,
+                error: 'Tenant inactivo',
+                message: `El tenant está ${tenant.status}`,
+                status: tenant.status
+            });
+        }
+
+        console.log(`[CONFIG] ✅ Configuración de tenant encontrada: ${tenant.school_name}`);
+
+        // Retornar la configuración JSON del tenant
+        res.json({
+            success: true,
+            tenant: {
+                id: tenant.id,
+                uuid: tenant.uuid,
+                school_name: tenant.school_name,
+                schema_name: tenant.schema_name,
+                domain: tenant.domain,
+                status: tenant.status
+            },
+            config: tenant.config_json  // La configuración completa JSON
+        });
+
+    } catch (error) {
+        console.error('[CONFIG] ❌ Error obteniendo configuración de tenant:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener configuración del tenant',
             message: error.message
         });
     }
