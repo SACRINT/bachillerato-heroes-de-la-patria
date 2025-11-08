@@ -1248,7 +1248,7 @@ app.use('/api/approvals', approvalsRoutes);
 app.use('/api/noticias', noticiasRoutes);
 app.use('/api/eventos', eventosRoutes);
 app.use('/api/avisos', avisosRoutes);
-app.use('/api/tenants', tenantsRoutes);  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
+app.use('/api/admin/tenants', tenantsRoutes);  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
 app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/health', healthRoutes);
