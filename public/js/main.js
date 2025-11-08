@@ -700,8 +700,9 @@ function updateHeaderWithTenantConfig(event) {
             return;
         }
 
-        console.log('[MAIN.JS] 🏢 Actualizando header con configuración del tenant...');
+        console.log('[MAIN.JS] 🏢 Actualizando header, footer y contacto con configuración del tenant...');
 
+        // ========== HEADER UPDATES ==========
         // 1. Actualizar nombre de la escuela en el header
         const schoolNameElements = document.querySelectorAll('[data-tenant="school-name"]');
         if (schoolNameElements.length > 0 && config.school && config.school.name) {
@@ -734,9 +735,77 @@ function updateHeaderWithTenantConfig(event) {
             console.log('[MAIN.JS] ✅ Título de página actualizado');
         }
 
-        console.log('[MAIN.JS] ✅ Header actualizado exitosamente con configuración de tenant');
+        // ========== FOOTER UPDATES ==========
+        // 5. Actualizar nombre de escuela en copyright del footer
+        const schoolNameCopyrightElements = document.querySelectorAll('[data-tenant="school-name-copyright"]');
+        if (schoolNameCopyrightElements.length > 0 && config.school && config.school.name) {
+            schoolNameCopyrightElements.forEach(element => {
+                element.textContent = config.school.name;
+                console.log('[MAIN.JS] ✅ Nombre de escuela en copyright actualizado');
+            });
+        }
+
+        // 6. Actualizar dirección en footer
+        const addressElements = document.querySelectorAll('[data-tenant="school-address"]');
+        if (addressElements.length > 0 && config.contact && config.contact.address) {
+            addressElements.forEach(element => {
+                element.textContent = config.contact.address;
+                console.log('[MAIN.JS] ✅ Dirección en footer actualizada');
+            });
+        }
+
+        // 7. Actualizar teléfono en footer
+        const phoneElements = document.querySelectorAll('[data-tenant="school-phone"]');
+        if (phoneElements.length > 0 && config.contact && config.contact.phone) {
+            phoneElements.forEach(element => {
+                element.textContent = config.contact.phone;
+                element.href = `tel:${config.contact.phone}`;
+                console.log('[MAIN.JS] ✅ Teléfono en footer actualizado');
+            });
+        }
+
+        // 8. Actualizar email en footer
+        const emailElements = document.querySelectorAll('[data-tenant="school-email"]');
+        if (emailElements.length > 0 && config.contact && config.contact.email) {
+            emailElements.forEach(element => {
+                element.textContent = config.contact.email;
+                element.href = `mailto:${config.contact.email}`;
+                console.log('[MAIN.JS] ✅ Email en footer actualizado');
+            });
+        }
+
+        // 9. Actualizar horario en footer
+        const hoursElements = document.querySelectorAll('[data-tenant="school-hours"]');
+        if (hoursElements.length > 0 && config.contact && config.contact.hours) {
+            hoursElements.forEach(element => {
+                element.textContent = config.contact.hours;
+                console.log('[MAIN.JS] ✅ Horario en footer actualizado');
+            });
+        }
+
+        // ========== CONTACT PAGE UPDATES ==========
+        // 10. Actualizar dirección en página de contacto
+        const contactAddressElements = document.querySelectorAll('[data-tenant="contact-address"]');
+        if (contactAddressElements.length > 0 && config.contact && config.contact.address) {
+            contactAddressElements.forEach(element => {
+                element.textContent = config.contact.address;
+                console.log('[MAIN.JS] ✅ Dirección en página de contacto actualizada');
+            });
+        }
+
+        // 11. Actualizar email en página de contacto
+        const contactEmailElements = document.querySelectorAll('[data-tenant="contact-email"]');
+        if (contactEmailElements.length > 0 && config.contact && config.contact.email) {
+            contactEmailElements.forEach(element => {
+                element.textContent = config.contact.email;
+                element.href = `mailto:${config.contact.email}`;
+                console.log('[MAIN.JS] ✅ Email en página de contacto actualizado');
+            });
+        }
+
+        console.log('[MAIN.JS] ✅ Todos los elementos dinámicos actualizados exitosamente con configuración de tenant');
 
     } catch (error) {
-        console.error('[MAIN.JS] ❌ Error actualizando header con tenant config:', error);
+        console.error('[MAIN.JS] ❌ Error actualizando elementos con tenant config:', error);
     }
 }

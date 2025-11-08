@@ -9,12 +9,14 @@
                     <div class="card-header-custom mb-2">
                         <div class="footer-brand d-flex align-items-start">
                             <div class="logo-container me-2">
-                                <img src="images/logo-bachillerato-HDLP2.webp" alt="Logo BGE Héroes de la Patria" 
+                                <!-- 🏢 TENANT-AWARE: Logo dinámico desde config de base de datos -->
+                                <img data-tenant="school-logo" src="images/logo-bachillerato-HDLP2.webp" alt="Logo BGE Héroes de la Patria"
                                      width="45" height="45" class="footer-logo">
                             </div>
                             <div>
                                 <h5 class="footer-title fw-bold mb-1">Bachillerato General Estatal</h5>
-                                <h6 class="footer-subtitle mb-0">"Héroes de la Patria"</h6>
+                                <!-- 🏢 TENANT-AWARE: Nombre de escuela dinámico desde config -->
+                                <h6 class="footer-subtitle mb-0" data-tenant="school-name">"Héroes de la Patria"</h6>
                             </div>
                         </div>
                     </div>
@@ -95,30 +97,36 @@
                         </h6>
                     </div>
                     <div class="contact-info">
+                        <!-- 🏢 TENANT-AWARE: Dirección dinámico desde config -->
                         <div class="contact-item d-flex align-items-center mb-1">
                             <i class="fas fa-map-marker-alt footer-icon me-2"></i>
                             <div class="footer-contact-text">
-                                <strong class="footer-label">Dirección:</strong> C. Manuel Ávila Camacho #7, Coronel Tito Hernández, V. Carranza, Puebla
+                                <strong class="footer-label">Dirección:</strong>
+                                <span data-tenant="school-address">C. Manuel Ávila Camacho #7, Coronel Tito Hernández, V. Carranza, Puebla</span>
                             </div>
                         </div>
+                        <!-- 🏢 TENANT-AWARE: Teléfono dinámico desde config -->
                         <div class="contact-item d-flex align-items-center mb-1">
                             <i class="fas fa-phone footer-icon me-2"></i>
                             <div class="footer-contact-text">
-                                <strong class="footer-label">Teléfono:</strong> 
-                                <a href="tel:+52-xxx-xxx-xxxx" class="footer-contact-link">Disponible próximamente</a>
+                                <strong class="footer-label">Teléfono:</strong>
+                                <a data-tenant="school-phone" href="tel:+52-xxx-xxx-xxxx" class="footer-contact-link">Disponible próximamente</a>
                             </div>
                         </div>
+                        <!-- 🏢 TENANT-AWARE: Email dinámico desde config -->
                         <div class="contact-item d-flex align-items-center mb-1">
                             <i class="fas fa-envelope footer-icon me-2"></i>
                             <div class="footer-contact-text">
-                                <strong class="footer-label">Email:</strong> 
-                                <a href="mailto:21ebh0200x.sep@gmail.com" class="footer-contact-link">21ebh0200x.sep@gmail.com</a>
+                                <strong class="footer-label">Email:</strong>
+                                <a data-tenant="school-email" href="mailto:21ebh0200x.sep@gmail.com" class="footer-contact-link">21ebh0200x.sep@gmail.com</a>
                             </div>
                         </div>
+                        <!-- 🏢 TENANT-AWARE: Horario dinámico desde config -->
                         <div class="contact-item d-flex align-items-center">
                             <i class="fas fa-clock footer-icon me-2"></i>
                             <div class="footer-contact-text">
-                                <strong class="footer-label">Horario:</strong> Lun - Vie: 8:00 AM - 1:30 PM
+                                <strong class="footer-label">Horario:</strong>
+                                <span data-tenant="school-hours">Lun - Vie: 8:00 AM - 1:30 PM</span>
                             </div>
                         </div>
                     </div>
@@ -135,7 +143,8 @@
                 <div class="copyright-section text-center">
                     <p class="footer-copyright mb-1">
                         <i class="fas fa-copyright me-1"></i>
-                        <span id="currentYear">2024</span> Bachillerato General Estatal "Héroes de la Patria" 
+                        <!-- 🏢 TENANT-AWARE: Año dinámico + Nombre de escuela dinámico -->
+                        <span id="currentYear">2024</span> <span data-tenant="school-name-copyright">Bachillerato General Estatal "Héroes de la Patria"</span>
                         Todos los derechos reservados                  
                         <span class="footer-legal-links" style="margin-left: 3rem;">
                             <a href="aviso-privacidad.html" class="footer-legal-simple">Aviso de Privacidad</a>

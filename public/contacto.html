@@ -82,6 +82,8 @@
         }
     }
     </script>
+    <!-- 🎨 Estilos Personalizados (Refactored from inline styles) -->
+    <link rel="stylesheet" href="css/contacto-styles.css">
 </head>
 <body>
     <!-- Skip Links -->
@@ -161,6 +163,7 @@
                                     Nuestra Información
                                 </h3>
                                 
+                                <!-- 🏢 TENANT-AWARE: Dirección dinámica desde config -->
                                 <div class="contact-info-item mb-4">
                                     <div class="d-flex align-items-start">
                                         <div class="contact-icon me-3">
@@ -168,7 +171,7 @@
                                         </div>
                                         <div>
                                             <h5 class="mb-2">Dirección</h5>
-                                            <p class="text-muted mb-0">
+                                            <p class="text-muted mb-0" data-tenant="contact-address">
                                                 C. Manuel Ávila Camacho #7, Col. Centro<br>
                                                 C.P. 73030, Coronel Tito Hernández (María Andrea)<br>
                                                 Venustiano Carranza, Puebla
@@ -177,6 +180,7 @@
                                     </div>
                                 </div>
 
+                                <!-- 🏢 TENANT-AWARE: Email dinámico desde config -->
                                 <div class="contact-info-item mb-4">
                                     <div class="d-flex align-items-start">
                                         <div class="contact-icon me-3">
@@ -185,7 +189,7 @@
                                         <div>
                                             <h5 class="mb-2">Correo Electrónico</h5>
                                             <p class="text-muted mb-0">
-                                                <a href="mailto:21ebh0200x.sep@gmail.com" class="text-decoration-none">
+                                                <a data-tenant="contact-email" href="mailto:21ebh0200x.sep@gmail.com" class="text-decoration-none">
                                                     21ebh0200x.sep@gmail.com
                                                 </a>
                                             </p>
@@ -359,12 +363,11 @@
                         <div class="card border-0 shadow-sm">
                             <div class="card-body p-0">
                                 <!-- Mapa Interactivo de Google Maps -->
-                                <div class="map-container position-relative" style="height: 400px;">
+                                <div class="map-container position-relative">
                                     <iframe
                                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3767.2!2d-97.8736!3d19.0435!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cfc0a123b456c7%3A0x9876543210abcdef!2sCoronel%20Tito%20Hern%C3%A1ndez%2C%20Venustiano%20Carranza%2C%20Puebla%2C%20M%C3%A9xico!5e0!3m2!1ses!2smx!4v1694561234567!5m2!1ses!2smx"
                                         width="100%" 
                                         height="400" 
-                                        style="border:0;" 
                                         allowfullscreen="" 
                                         loading="lazy" 
                                         referrerpolicy="no-referrer-when-downgrade"
@@ -372,7 +375,7 @@
                                     </iframe>
                                     
                                     <!-- Overlay de controles del mapa -->
-                                    <div class="map-controls position-absolute" style="top: 10px; right: 10px; z-index: 10;">
+                                    <div class="map-controls position-absolute">
                                         <div class="btn-group-vertical shadow-sm" role="group">
                                             <a href="https://maps.google.com/?q=Coronel+Tito+Hernández+Venustiano+Carranza+Puebla+Bachillerato+Héroes+de+la+Patria" 
                                                target="_blank" 
@@ -383,19 +386,19 @@
                                             </a>
                                             <button type="button" 
                                                     class="btn btn-success btn-sm"
-                                                    onclick="getDirections()"
+                                                    data-action="getDirections()"
                                                     title="Obtener direcciones">
                                                 <i class="fas fa-route"></i>
                                             </button>
                                             <button type="button"
                                                     class="btn btn-info btn-sm"
-                                                    onclick="shareLocation()"
+                                                    data-action="shareLocation()"
                                                     title="Compartir ubicación">
                                                 <i class="fas fa-share-alt"></i>
                                             </button>
                                             <button type="button"
                                                     class="btn btn-warning btn-sm"
-                                                    onclick="openMapModal()"
+                                                    data-action="openMapModal()"
                                                     title="Ver mapa grande">
                                                 <i class="fas fa-expand"></i>
                                             </button>
@@ -669,13 +672,12 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-0">
-                    <div class="map-full-container" style="height: 500px; position: relative;">
+                    <div class="map-full-container">
                         <iframe
                             id="mapFullIframe"
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3767.2!2d-97.8736!3d19.0435!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cfc0a123b456c7%3A0x9876543210abcdef!2sCoronel%20Tito%20Hern%C3%A1ndez%2C%20Venustiano%20Carranza%2C%20Puebla%2C%20M%C3%A9xico!5e0!3m2!1ses!2smx!4v1694561234567!5m2!1ses!2smx"
                             width="100%"
                             height="500"
-                            style="border:0;"
                             allowfullscreen=""
                             loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade"
@@ -712,7 +714,7 @@
                                         </a>
                                         <button type="button"
                                                 class="btn btn-success btn-sm"
-                                                onclick="getDirections()">
+                                                data-action="getDirections()">
                                             <i class="fas fa-route me-1"></i>
                                             Cómo llegar
                                         </button>
@@ -744,9 +746,9 @@
         <div class="chatbot-header">
             <div>
                 <strong>Asistente Virtual</strong>
-                <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
+                <div>Héroes de la Patria</div>
             </div>
-            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+            <button data-action="toggleChatbot()" aria-label="Cerrar chat">×</button>
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
@@ -766,15 +768,14 @@
         
         <div class="chatbot-input">
             <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
-            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+            <button data-action="sendMessage()" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>
     </div>
 
     <!-- Back to Top -->
-    <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none" 
-            style="bottom: 2rem; right: 2rem; width: 50px; height: 50px; z-index: 1000;"
+    <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none"
             aria-label="Volver arriba" title="Volver arriba">
         <i class="fas fa-arrow-up"></i>
     </button>
@@ -1243,5 +1244,7 @@
     <!-- CSP Universal Fixer - Debe cargar al final -->
     <script src="js/csp-universal-fixer.js"></script>
 
+    <!-- 🎯 REFACTORIZACIÓN CSP: Event Listeners Centralizados -->
+    <script defer src="js/contacto-events.js"></script>
 </body>
 </html>

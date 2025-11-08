@@ -1223,6 +1223,9 @@ const studentsRoutes = require('../backend/routes/students');
 const teachersRoutes = require('../backend/routes/teachers');
 // const uploadsRoutes = require('../backend/routes/uploads');
 
+// 🎓 RUTAS RECIENTEMENTE REGISTRADAS (8 NOV 2025)
+const cursosRoutes = require('../backend/routes/cursos');  // ✅ Gestión de cursos educativos
+
 // Register all route modules
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -1291,6 +1294,7 @@ app.use('/api/parentTeacherCommunication', parentTeacherCommunicationRoutes);
 app.use('/api/ssl', sslRoutes);
 app.use('/api/students-direct', studentsRoutes);
 app.use('/api/teachers-direct', teachersRoutes);
+app.use('/api/cursos', cursosRoutes);  // ✅ RECIENTEMENTE REGISTRADA (8 NOV 2025)
 
 // TODAVÍA DESHABILITADAS:
 // - google-classroom (executeQuery issue - needs revisión)
