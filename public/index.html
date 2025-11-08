@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" style="margin: 0; padding: 0;">
+<html lang="es">
 <head>
     <style>
         body {
@@ -68,20 +68,22 @@
       "educationalLevel": "Upper Secondary Education"
     }
     </script>
+    <!-- 🎨 Estilos Personalizados (Refactored from inline styles) -->
+    <link rel="stylesheet" href="css/index-styles.css">
 </head>
 <body>
     <!-- Skip link for accessibility -->
     <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
     
     <!-- Header will be injected here -->
-    <header id="main-header" style="padding: 0 !important; margin: 0 !important;"></header>
+    <header id="main-header"></header>
     
     <!-- Main Content -->
-    <main id="main-content" style="padding-top: 0 !important; margin-top: 0 !important;">
+    <main id="main-content">
         <!-- Hero Section - Enhanced -->
-        <section class="hero-section position-relative overflow-hidden" style="padding: 0 !important; margin: 0 !important;">
+        <section class="hero-section position-relative overflow-hidden">
             <!-- Animated Background Elements -->
-            <div class="position-absolute w-100 h-100" style="top: 0; left: 0; z-index: 1; background: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cdefs%3E%3Cpattern id=%22grid%22 width=%2210%22 height=%2210%22 patternUnits=%22userSpaceOnUse%22%3E%3Cpath d=%22M 10 0 L 0 0 0 10%22 fill=%22none%22 stroke=%22rgba(255,255,255,0.1)%22 stroke-width=%220.5%22/%3E%3C/pattern%3E%3C/defs%3E%3Crect width=%22100%22 height=%22100%22 fill=%22url(%23grid)%22/%3E%3C/svg%3E'); opacity: 0.3;">
+            <div class="position-absolute w-100 h-100"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cdefs%3E%3Cpattern id=%22grid%22 width=%2210%22 height=%2210%22 patternUnits=%22userSpaceOnUse%22%3E%3Cpath d=%22M 10 0 L 0 0 0 10%22 fill=%22none%22 stroke=%22rgba(255,255,255,0.1)%22 stroke-width=%220.5%22/%3E%3C/pattern%3E%3C/defs%3E%3Crect width=%22100%22 height=%22100%22 fill=%22url(%23grid)%22/%3E%3C/svg%3E'); opacity: 0.3;">
                 <div class="floating-shapes">
                     <div class="shape shape-1"></div>
                     <div class="shape shape-2"></div>
@@ -89,8 +91,8 @@
                 </div>
             </div>
             
-            <div class="container-fluid p-0 position-relative" style="z-index: 2;">
-                <div class="row g-0 align-items-center" style="min-height: 90vh; margin: 0 !important; padding: 6rem 0 2rem 0;">
+            <div class="container-fluid p-0 position-relative">
+                <div class="row g-0 align-items-center">
                     <div class="col-lg-6 order-lg-2">
                         <div class="hero-image position-relative">
                             <div class="image-wrapper hero-image-hover">
@@ -115,7 +117,7 @@
                                 </span>
                             </div>
                             
-                            <h1 class="display-3 fw-bold mb-3 text-white" style="line-height: 1.1;">
+                            <h1 class="display-3 fw-bold mb-3 text-white">
                                 <span class="position-relative">
                                     Bachillerato General Estatal
                                     <div class="position-absolute bottom-0 start-0 w-100 h-1 bg-warning opacity-75 rounded"></div>
@@ -131,19 +133,19 @@
                             <!-- Success Metrics -->
                             <div class="row g-3 mb-4">
                                 <div class="col-4">
-                                    <div class="text-center p-3 rounded-3" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                                    <div class="text-center p-3 rounded-3">
                                         <h3 class="display-6 fw-bold text-warning mb-1 counter" data-target="27">0</h3>
                                         <small class="text-white">Años de experiencia</small>
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <div class="text-center p-3 rounded-3" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                                    <div class="text-center p-3 rounded-3">
                                         <h3  class="display-6 fw-bold text-warning mb-1 counter" data-target="+1000">0</h3>
                                         <small class="text-white">Egresados exitosos</small>
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <div class="text-center p-3 rounded-3" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                                    <div class="text-center p-3 rounded-3">
                                         <h3 class="display-6 fw-bold text-warning mb-1 counter" data-target="97">0</h3>
                                         <small class="text-white">% Aprobación</small>
                                     </div>
@@ -193,9 +195,9 @@
                 </div>
                 <div class="row g-4">
                     <div class="col-lg-4 col-md-6">
-                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3" style="transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3">
                             <div class="feature-icon mb-4">
-                                <div class="bg-primary bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <div class="bg-primary bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center">
                                     <i class="fas fa-award fa-2x text-white"></i>
                                 </div>
                             </div>
@@ -207,9 +209,9 @@
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
-                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3" style="transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3">
                             <div class="feature-icon mb-4">
-                                <div class="bg-success bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <div class="bg-success bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center">
                                     <i class="fas fa-users fa-2x text-white"></i>
                                 </div>
                             </div>
@@ -221,9 +223,9 @@
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
-                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3" style="transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3">
                             <div class="feature-icon mb-4">
-                                <div class="bg-warning bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <div class="bg-warning bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center">
                                     <i class="fas fa-rocket fa-2x text-white"></i>
                                 </div>
                             </div>
@@ -235,9 +237,9 @@
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
-                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3" style="transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3">
                             <div class="feature-icon mb-4">
-                                <div class="bg-info bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <div class="bg-info bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center">
                                     <i class="fas fa-heart fa-2x text-white"></i>
                                 </div>
                             </div>
@@ -249,9 +251,9 @@
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
-                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3" style="transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3">
                             <div class="feature-icon mb-4">
-                                <div class="bg-secondary bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <div class="bg-secondary bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center">
                                     <i class="fas fa-graduation-cap fa-2x text-white"></i>
                                 </div>
                             </div>
@@ -263,9 +265,9 @@
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
-                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3" style="transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3">
                             <div class="feature-icon mb-4">
-                                <div class="bg-danger bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <div class="bg-danger bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center">
                                     <i class="fas fa-laptop fa-2x text-white"></i>
                                 </div>
                             </div>
@@ -293,8 +295,7 @@
                     <div class="col-md-6 col-lg-3">
                         <div class="card h-100 border-0 shadow-sm hover-lift">
                             <div class="card-body text-center p-4">
-                                <div class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
-                                     style="width: 80px; height: 80px;">
+                                <div class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
                                     <i class="fas fa-users fa-2x"></i>
                                 </div>
                                 <h4 class="card-title h5 mb-3">Conócenos</h4>
@@ -308,8 +309,7 @@
                     <div class="col-md-6 col-lg-3">
                         <div class="card h-100 border-0 shadow-sm hover-lift">
                             <div class="card-body text-center p-4">
-                                <div class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
-                                     style="width: 80px; height: 80px;">
+                                <div class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
                                     <i class="fas fa-graduation-cap fa-2x"></i>
                                 </div>
                                 <h4 class="card-title h5 mb-3">Oferta Educativa</h4>
@@ -323,8 +323,7 @@
                     <div class="col-md-6 col-lg-3">
                         <div class="card h-100 border-0 shadow-sm hover-lift">
                             <div class="card-body text-center p-4">
-                                <div class="feature-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
-                                     style="width: 80px; height: 80px;">
+                                <div class="feature-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
                                     <i class="fas fa-cogs fa-2x"></i>
                                 </div>
                                 <h4 class="card-title h5 mb-3">Servicios</h4>
@@ -338,8 +337,7 @@
                     <div class="col-md-6 col-lg-3">
                         <div class="card h-100 border-0 shadow-sm hover-lift">
                             <div class="card-body text-center p-4">
-                                <div class="feature-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
-                                     style="width: 80px; height: 80px;">
+                                <div class="feature-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
                                     <i class="fas fa-heart fa-2x"></i>
                                 </div>
                                 <h4 class="card-title h5 mb-3">Comunidad</h4>
@@ -423,7 +421,7 @@
                 <div class="row align-items-center">
                     <div class="col-lg-8">
                         <div class="d-flex align-items-center mb-3">
-                            <div class="feature-icon bg-light text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                            <div class="feature-icon bg-light text-primary rounded-circle d-flex align-items-center justify-content-center me-3">
                                 <i class="fas fa-mobile-alt fa-2x"></i>
                             </div>
                             <div>
@@ -1163,8 +1161,7 @@
                     <div class="col-lg-4">
                         <div class="card h-100 border-0 shadow-sm text-center">
                             <div class="card-body p-4">
-                                <div class="contact-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
-                                     style="width: 80px; height: 80px;">
+                                <div class="contact-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
                                     <i class="fas fa-map-marker-alt fa-2x"></i>
                                 </div>
                                 <h5 class="card-title">Dirección</h5>
@@ -1181,8 +1178,7 @@
                     <div class="col-lg-4">
                         <div class="card h-100 border-0 shadow-sm text-center">
                             <div class="card-body p-4">
-                                <div class="contact-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
-                                     style="width: 80px; height: 80px;">
+                                <div class="contact-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
                                     <i class="fas fa-envelope fa-2x"></i>
                                 </div>
                                 <h5 class="card-title">Email</h5>
@@ -1196,8 +1192,7 @@
                     <div class="col-lg-4">
                         <div class="card h-100 border-0 shadow-sm text-center">
                             <div class="card-body p-4">
-                                <div class="contact-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
-                                     style="width: 80px; height: 80px;">
+                                <div class="contact-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
                                     <i class="fas fa-clock fa-2x"></i>
                                 </div>
                                 <h5 class="card-title">Horarios</h5>
@@ -1267,11 +1262,11 @@
         </section>
 
         <!-- Sección Mapa del Sitio Mejorada -->
-        <section id="mapa-sitio" class="py-5" role="region" aria-labelledby="mapa-title" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+        <section id="mapa-sitio" class="py-5" role="region" aria-labelledby="mapa-title">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-10 mx-auto text-center mb-4">
-                        <h2 class="fw-bold mb-2" id="mapa-title" style="background: linear-gradient(135deg, #1976D2, #1565C0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        <h2 class="fw-bold mb-2" id="mapa-title">
                             <i class="fas fa-sitemap me-2"></i>Mapa del Sitio
                         </h2>
                         <p class="text-muted mb-0">Navegación rápida y organizada de todas nuestras secciones</p>
@@ -1530,16 +1525,16 @@
         <div class="chatbot-header">
             <div>
                 <strong>Asistente Virtual</strong>
-                <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
+                <div>Héroes de la Patria</div>
             </div>
-            <button style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+            <button aria-label="Cerrar chat">×</button>
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
             <!-- Los mensajes se cargarán dinámicamente -->
         </div>
         
-        <div id="typingIndicator" class="typing-indicator" style="display: none;">
+        <div id="typingIndicator" class="typing-indicator">
             <div class="typing-dots">
                 <div></div>
                 <div></div>
@@ -1565,6 +1560,9 @@
 
     <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
     <script src="js/main.js"></script>
+
+    <!-- 🏢 TENANT CONFIG MANAGER - Carga configuración dinámica desde BD -->
+    <script src="js/tenant-config-manager.js" defer></script>
 
     <!-- 🔧 SISTEMA CORE (OBLIGATORIO - NO CONSOLIDADO) -->
     <!-- Estos scripts DEBEN mantenerse separados por dependencias críticas -->
@@ -2262,11 +2260,11 @@
                         animation: fadeInSlide 1s ease-out;
                     `;
                     banner.innerHTML = `
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-rocket" style="font-size: 1.2em;"></i>
+                        <div>
+                            <i class="fas fa-rocket"></i>
                             <div>
-                                <div style="font-size: 0.9em;">BGE Héroes de la Patria</div>
-                                <div style="font-size: 0.8em; opacity: 0.9;">Ecosistema Digital ✅ ACTIVO</div>
+                                <div>BGE Héroes de la Patria</div>
+                                <div>Ecosistema Digital ✅ ACTIVO</div>
                             </div>
                         </div>
                     `;

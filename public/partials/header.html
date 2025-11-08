@@ -5,10 +5,12 @@
         <!-- Logo y Nombre de la Escuela con Botón Hamburguesa integrado -->
         <div class="d-flex align-items-center justify-content-between w-100">
             <a class="navbar-brand d-flex align-items-center" href="index.html" style="margin-right: 0;">
-                <img src="/images/logo-bachillerato-HDLP.webp" alt="Logo Bachillerato Héroes de la Patria" style="height: 45px; width: auto;">
+                <!-- 🏢 TENANT-AWARE: Logo cargado dinámicamente desde config -->
+                <img data-tenant="school-logo" src="/images/logo-bachillerato-HDLP.webp" alt="Logo Bachillerato Héroes de la Patria" style="height: 45px; width: auto;">
                 <div class="ms-2">
                     <div class="fw-bold text-primary logo-main-text" style="font-size: 0.85rem; line-height: 1.1;">Bachillerato General Estatal</div>
-                    <div class="text-secondary fw-semibold logo-sub-text" style="font-size: 0.75rem; line-height: 1.1;">"Héroes de la Patria"</div>
+                    <!-- 🏢 TENANT-AWARE: Nombre de escuela cargado dinámicamente desde config -->
+                    <div class="text-secondary fw-semibold logo-sub-text" data-tenant="school-name" style="font-size: 0.75rem; line-height: 1.1;">"Héroes de la Patria"</div>
                 </div>
             </a>
 

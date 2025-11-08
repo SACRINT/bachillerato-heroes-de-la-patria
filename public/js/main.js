@@ -3,7 +3,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar componentes principales
     initializeChatbot();
     loadHeaderFooter();
-    
+
+    // 🏢 LISTENER: Cuando el tenant config esté cargado, actualizar header
+    document.addEventListener('tenantConfigLoaded', updateHeaderWithTenantConfig);
+
     // El modo oscuro ahora se maneja via script.js y header.html
     // setTimeout(() => {
     //     initializeDarkMode();
@@ -679,3 +682,61 @@ styles.textContent = `
     }
 `;
 document.head.appendChild(styles);
+
+// ==========================================
+// 🏢 TENANT CONFIG INTEGRATION
+// ==========================================
+
+/**
+ * Actualizar header con configuración dinámica del tenant
+ * Se ejecuta cuando el evento 'tenantConfigLoaded' se dispara
+ */
+function updateHeaderWithTenantConfig(event) {
+    try {
+        const config = event.detail || TenantConfigManager.getConfig();
+
+        if (!config) {
+            console.warn('[MAIN.JS] ⚠️ No hay configuración de tenant disponible');
+            return;
+        }
+
+        console.log('[MAIN.JS] 🏢 Actualizando header con configuración del tenant...');
+
+        // 1. Actualizar nombre de la escuela en el header
+        const schoolNameElements = document.querySelectorAll('[data-tenant="school-name"]');
+        if (schoolNameElements.length > 0 && config.school && config.school.name) {
+            schoolNameElements.forEach(element => {
+                element.textContent = config.school.name;
+                console.log('[MAIN.JS] ✅ Nombre de escuela actualizado:', config.school.name);
+            });
+        }
+
+        // 2. Actualizar logo en el header
+        const logoElements = document.querySelectorAll('[data-tenant="school-logo"]');
+        if (logoElements.length > 0 && config.branding && config.branding.logoUrl) {
+            logoElements.forEach(element => {
+                element.src = config.branding.logoUrl;
+                element.alt = config.school?.name || 'Logo de la escuela';
+                console.log('[MAIN.JS] ✅ Logo actualizado:', config.branding.logoUrl);
+            });
+        }
+
+        // 3. Actualizar colores primarios si existen
+        if (config.branding && config.branding.primaryColor) {
+            const root = document.documentElement;
+            root.style.setProperty('--primary-color', config.branding.primaryColor);
+            console.log('[MAIN.JS] ✅ Color primario actualizado:', config.branding.primaryColor);
+        }
+
+        // 4. Actualizar título de la página
+        if (config.school && config.school.name) {
+            document.title = config.school.name;
+            console.log('[MAIN.JS] ✅ Título de página actualizado');
+        }
+
+        console.log('[MAIN.JS] ✅ Header actualizado exitosamente con configuración de tenant');
+
+    } catch (error) {
+        console.error('[MAIN.JS] ❌ Error actualizando header con tenant config:', error);
+    }
+}
