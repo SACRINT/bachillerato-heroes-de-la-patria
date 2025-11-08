@@ -1,3 +1,43 @@
+## [2.23.1] - 2025-11-08 (TENANTS CRUD ENDPOINTS - ALINEACIÓN DE RUTAS)
+
+### SaaS - Administración de Tenants (Alineación)
+- **✅ ALINEACIÓN DE RUTAS: Endpoints CRUD Tenants**
+  - **Objetivo:** Asegurar que las rutas backend coincidan con lo que el frontend espera
+  - **Estado:** COMPLETADO - Listo para testing de extremo a extremo
+  - **Fecha:** 8 de Noviembre de 2025
+  - **Commit:** 4d1af85
+
+- **✅ Cambios Realizados**
+  - **Ruta corregida en backend/server.js (línea 214)**
+    - Antes: `app.use('/api/tenants', tenantsRoutes);`
+    - Después: `app.use('/api/admin/tenants', tenantsRoutes);`
+  - **Ruta corregida en api/app.js (línea 1251)**
+    - Antes: `app.use('/api/tenants', tenantsRoutes);`
+    - Después: `app.use('/api/admin/tenants', tenantsRoutes);`
+
+- **📊 Ciclo de Administración de Tenants - Estado Actual**
+  - ✅ Frontend Panel: `public/tenants-admin.html` (800+ líneas)
+  - ✅ Frontend Manager: `public/js/tenants-admin-manager.js` (540+ líneas)
+  - ✅ Backend Endpoints: `backend/routes/tenants.js` (540+ líneas)
+  - ✅ Middleware SuperAdmin: `backend/middleware/auth.js` (requireSuperAdmin)
+  - ✅ Rutas Registradas: `/api/admin/tenants` (GET, GET:id, POST, PUT, DELETE)
+  - ✅ Validaciones: Data validation + Dominio único + Errores completos
+  - ✅ Seguridad: JWT + SuperAdmin role required
+  - ✅ Documentación: IMPLEMENTACION_ENDPOINTS_TENANTS_08NOV2025.md
+
+- **🎯 Endpoints Disponibles en /api/admin/tenants**
+  - `GET /api/admin/tenants` - Obtener todos los tenants
+  - `GET /api/admin/tenants/:id` - Obtener tenant específico
+  - `POST /api/admin/tenants` - Crear nuevo tenant
+  - `PUT /api/admin/tenants/:id` - Actualizar tenant
+  - `DELETE /api/admin/tenants/:id` - Eliminar tenant
+
+- **📝 Validación**
+  - ✅ backend/server.js sintaxis válida (node -c)
+  - ✅ api/app.js sintaxis válida (node -c)
+
+---
+
 ## [2.20.1] - 2025-11-08 (GOOGLE OAUTH IMPLEMENTATION - BACKEND COMPLETE)
 
 ### Authentication - Google OAuth Integration
