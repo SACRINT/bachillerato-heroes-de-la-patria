@@ -706,4 +706,119 @@ router.post('/request-registration', registrationRequestLimiter, requestRegistra
     }
 });
 
+// ============================================
+// GOOGLE OAUTH - VERIFICACIÓN DE TOKEN
+// ============================================
+
+/**
+ * POST /api/auth/google
+ * Verifica el token de Google y crea/autentica al usuario
+ *
+ * Flujo:
+ * 1. Frontend envía JWT de Google
+ * 2. Backend verifica con Google Auth Library
+ * 3. Si es válido, busca/crea usuario en BD
+ * 4. Genera token JWT propio (de nuestra app)
+ * 5. Devuelve token al frontend
+ */
+router.post('/google', async (req, res) => {
+    try {
+        const { credential, email, name } = req.body;
+
+        if (!credential) {
+            return res.status(400).json({
+                success: false,
+                error: 'Token de Google requerido'
+            });
+        }
+
+        console.log('🔐 [GOOGLE-AUTH] Verificando token de Google para:', email);
+
+        // Importar google-auth-library
+        const { OAuth2Client } = require('google-auth-library');
+
+        // Crear cliente OAuth2 (IMPORTANTE: usar client ID del .env)
+        const clientId = process.env.GOOGLE_CLIENT_ID || '411638938693-87nmapmm146kci8i0p80jo745cost08h.apps.googleusercontent.com';
+        const client = new OAuth2Client(clientId);
+
+        // Verificar el token JWT de Google
+        let googleTicket;
+        try {
+            googleTicket = await client.verifyIdToken({
+                idToken: credential,
+                audience: clientId
+            });
+        } catch (error) {
+            console.error('❌ [GOOGLE-AUTH] Token inválido:', error.message);
+            return res.status(401).json({
+                success: false,
+                error: 'Token de Google inválido',
+                message: error.message
+            });
+        }
+
+        // Extraer datos del token verificado
+        const payload = googleTicket.getPayload();
+        const { email: googleEmail, name: googleName, picture, sub } = payload;
+
+        console.log('✅ [GOOGLE-AUTH] Token verificado para:', googleEmail);
+
+        // Importar DAL
+        const { getUserByEmail, createUserFromGoogle } = require('../data/database-access');
+
+        // Buscar usuario existente
+        let user = await getUserByEmail(googleEmail);
+
+        if (!user) {
+            // Crear usuario nuevo desde Google
+            console.log('👤 [GOOGLE-AUTH] Creando nuevo usuario desde Google...');
+
+            user = await createUserFromGoogle({
+                email: googleEmail,
+                name: googleName,
+                picture: picture,
+                sub: sub
+            });
+
+            console.log('✅ [GOOGLE-AUTH] Usuario creado:', user.id);
+        } else {
+            console.log('✅ [GOOGLE-AUTH] Usuario existente encontrado:', user.id);
+        }
+
+        // Generar JWT propio de nuestra aplicación
+        const token = jwtUtils.generateToken(
+            user.id,
+            user.email,
+            user.role
+        );
+
+        console.log('🔑 [GOOGLE-AUTH] Token JWT generado para:', user.email);
+
+        // Devolver respuesta exitosa
+        res.json({
+            success: true,
+            message: 'Autenticación con Google exitosa',
+            data: {
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    username: user.username,
+                    role: user.role,
+                    profilePicture: user.profile_picture || picture
+                }
+            },
+            token: token,
+            expiresIn: 3600
+        });
+
+    } catch (error) {
+        console.error('❌ [GOOGLE-AUTH] Error procesando autenticación:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error procesando autenticación con Google',
+            message: error.message
+        });
+    }
+});
+
 module.exports = router;
