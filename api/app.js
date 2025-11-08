@@ -1170,6 +1170,7 @@ const approvalsRoutes = require('../backend/routes/approvals');
 const noticiasRoutes = require('../backend/routes/noticias');
 const eventosRoutes = require('../backend/routes/eventos');
 const avisosRoutes = require('../backend/routes/avisos');
+const tenantsRoutes = require('../backend/routes/tenants');  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
 const comunicadosRoutes = require('../backend/routes/comunicados');
 const uploadRoutes = require('../backend/routes/upload');
 const healthRoutes = require('../backend/routes/health');
@@ -1247,6 +1248,7 @@ app.use('/api/approvals', approvalsRoutes);
 app.use('/api/noticias', noticiasRoutes);
 app.use('/api/eventos', eventosRoutes);
 app.use('/api/avisos', avisosRoutes);
+app.use('/api/tenants', tenantsRoutes);  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
 app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/health', healthRoutes);

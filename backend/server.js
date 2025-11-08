@@ -15,6 +15,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const { pool } = require('./config/database');
+const cspConfig = require('./config/csp-config');
 
 // Middleware
 const { errorHandler } = require('./middleware/errorHandler');
@@ -41,6 +42,7 @@ const approvalsRoutes = require('./routes/approvals');
 const noticiasRoutes = require('./routes/noticias');
 const eventosRoutes = require('./routes/eventos');
 const avisosRoutes = require('./routes/avisos');
+const tenantsRoutes = require('./routes/tenants');  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
 const comunicadosRoutes = require('./routes/comunicados');
 const uploadRoutes = require('./routes/upload');
 const healthRoutes = require('./routes/health');
@@ -74,20 +76,7 @@ app.use(helmet({
     permissionsPolicy: {
         camera: ["'self'"],
     },
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://accounts.google.com", "https://www.googleapis.com", "https://cdn.tiny.cloud", "*.tiny.cloud", "blob:", "https://vercel.live", "https://*.vercel.live"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://cdn.tiny.cloud", "*.tiny.cloud", "https://accounts.google.com"],
-            connectSrc: ["'self'", "http://localhost:3000", "ws:", "wss:", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://www.google-analytics.com", "https://www.googletagmanager.com", "https://accounts.google.com", "https://www.googleapis.com", "https://cdn.tiny.cloud", "*.tiny.cloud", "https://sp.tinymce.com", "https://vercel.live", "https://*.vercel.live"],
-            imgSrc: ["'self'", "data:", "blob:", "https:", "https://cdn.tiny.cloud", "*.tiny.cloud", "https://sp.tinymce.com"],
-            fontSrc: ["'self'", "data:", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com", "https://cdn.tiny.cloud", "*.tiny.cloud"],
-            frameSrc: ["'self'", "https://cdn.tiny.cloud", "*.tiny.cloud", "https://www.google.com", "https://maps.google.com", "https://forms.gle"],
-            objectSrc: ["'none'"],
-            baseUri: ["'self'"],
-            formAction: ["'self'"]
-        }
-    }
+    contentSecurityPolicy: cspConfig
 }));
 
 // CORS Configuration
@@ -222,6 +211,7 @@ app.use('/api/approvals', approvalsRoutes);
 app.use('/api/noticias', noticiasRoutes);
 app.use('/api/eventos', eventosRoutes);
 app.use('/api/avisos', avisosRoutes);
+app.use('/api/tenants', tenantsRoutes);  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
 app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/health', healthRoutes);

@@ -196,6 +196,11 @@ const requirePermission = (requiredPermissions) => {
 const requireAdmin = requireRole(['admin']);
 
 /**
+ * Middleware para verificar si es superadministrador (SaaS tenant management)
+ */
+const requireSuperAdmin = requireRole(['superadmin']);
+
+/**
  * Middleware para verificar si es docente o superior
  */
 const requireTeacher = requireRole(['docente', 'admin']);
@@ -290,6 +295,7 @@ module.exports = {
     requireRole,
     requirePermission,
     requireAdmin,
+    requireSuperAdmin,
     requireTeacher,
     requireStudent,
     requireParent,
