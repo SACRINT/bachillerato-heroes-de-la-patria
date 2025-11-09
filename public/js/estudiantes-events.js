@@ -64,6 +64,12 @@
     // ============================================
 
     function registerQuickAccessButtons() {
+        // Botón "Iniciar Sesión" del login prompt
+        const studentLoginBtn = document.querySelector('#loginPrompt .btn-primary');
+        if (studentLoginBtn) {
+            studentLoginBtn.addEventListener('click', showStudentLogin);
+        }
+
         // Botón "Ver Tareas"
         const tasksBtn = document.querySelector('[data-action="showTasksModal"]');
         if (tasksBtn) {
@@ -184,9 +190,20 @@
     // ============================================
 
     function registerChatbotHandlers() {
-        const chatbotInput = document.getElementById('chatbotInput');
-        const chatbotSendBtn = document.querySelector('[data-action="sendMessage"]');
+        // Botón toggle del chatbot (abrir/cerrar)
+        const chatbotToggleBtn = document.getElementById('chatbotToggle');
+        if (chatbotToggleBtn) {
+            chatbotToggleBtn.addEventListener('click', toggleChatbot);
+        }
 
+        // Botón cerrar chatbot (dentro del header)
+        const chatbotCloseBtn = document.querySelector('.chatbot-header button[aria-label="Cerrar chat"]');
+        if (chatbotCloseBtn) {
+            chatbotCloseBtn.addEventListener('click', toggleChatbot);
+        }
+
+        // Input del chatbot - Enter para enviar
+        const chatbotInput = document.getElementById('chatbotInput');
         if (chatbotInput) {
             chatbotInput.addEventListener('keypress', function(event) {
                 if (event.key === 'Enter') {
@@ -195,6 +212,8 @@
             });
         }
 
+        // Botón enviar mensaje
+        const chatbotSendBtn = document.querySelector('[data-action="sendMessage"]');
         if (chatbotSendBtn) {
             chatbotSendBtn.addEventListener('click', sendMessage);
         }
@@ -303,6 +322,24 @@
         }
     }
 
+    /**
+     * Mostrar modal de login del estudiante
+     */
+    function showStudentLogin() {
+        if (window.showStudentLogin) {
+            window.showStudentLogin();
+        }
+    }
+
+    /**
+     * Alternar visibilidad del chatbot
+     */
+    function toggleChatbot() {
+        if (window.toggleChatbot) {
+            window.toggleChatbot();
+        }
+    }
+
     // ============================================
     // EXPORT (if needed by other modules)
     // ============================================
@@ -319,7 +356,9 @@
         printSchedule,
         contactForRegistration,
         deleteClass,
-        sendMessage
+        sendMessage,
+        showStudentLogin,
+        toggleChatbot
     };
 
 })();

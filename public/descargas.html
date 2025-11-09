@@ -163,7 +163,7 @@
                                 <p class="card-text text-muted">Fechas importantes del ciclo escolar actual</p>
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <small class="text-muted">PDF • 2.1 MB</small>
-                                    <button class="btn btn-primary btn-sm" onclick="downloadCenter.downloadDocument('calendario-escolar-2024')">
+                                    <button class="btn btn-primary btn-sm download-document-btn" data-document="calendario-escolar-2024">
                                         <i class="fas fa-download me-1"></i>Descargar
                                     </button>
                                 </div>
@@ -180,7 +180,7 @@
                                 <p class="card-text text-muted">Normas y reglamentos de la institución</p>
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <small class="text-muted">PDF • 1.5 MB</small>
-                                    <button class="btn btn-success btn-sm" onclick="downloadCenter.downloadDocument('reglamento-escolar')">
+                                    <button class="btn btn-success btn-sm download-document-btn" data-document="reglamento-escolar">
                                         <i class="fas fa-download me-1"></i>Descargar
                                     </button>
                                 </div>
@@ -197,7 +197,7 @@
                                 <p class="card-text text-muted">Proceso de nuevo ingreso y requisitos</p>
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <small class="text-muted">PDF • 3.2 MB</small>
-                                    <button class="btn btn-info btn-sm" onclick="downloadCenter.downloadDocument('manual-estudiante-2024')">
+                                    <button class="btn btn-info btn-sm download-document-btn" data-document="manual-estudiante-2024">
                                         <i class="fas fa-download me-1"></i>Descargar
                                     </button>
                                 </div>
@@ -214,7 +214,7 @@
                                 <p class="card-text text-muted">Formatos para servicios escolares</p>
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <small class="text-muted">ZIP • 5.8 MB</small>
-                                    <button class="btn btn-warning btn-sm" onclick="downloadCenter.downloadDocument('formato-inscripcion')">
+                                    <button class="btn btn-warning btn-sm download-document-btn" data-document="formato-inscripcion">
                                         <i class="fas fa-download me-1"></i>Descargar
                                     </button>
                                 </div>
@@ -231,7 +231,7 @@
                                 <p class="card-text text-muted">Materias y programa académico</p>
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <small class="text-muted">PDF • 4.1 MB</small>
-                                    <button class="btn btn-danger btn-sm" onclick="downloadCenter.downloadDocument('plan-estudios-bge')">
+                                    <button class="btn btn-danger btn-sm download-document-btn" data-document="plan-estudios-bge">
                                         <i class="fas fa-download me-1"></i>Descargar
                                     </button>
                                 </div>
@@ -248,7 +248,7 @@
                                 <p class="card-text text-muted">Valores y principios institucionales</p>
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <small class="text-muted">PDF • 2.7 MB</small>
-                                    <button class="btn btn-secondary btn-sm" onclick="downloadCenter.downloadDocument('codigo-conducta')">
+                                    <button class="btn btn-secondary btn-sm download-document-btn" data-document="codigo-conducta">
                                         <i class="fas fa-download me-1"></i>Descargar
                                     </button>
                                 </div>
@@ -277,7 +277,7 @@
                             </div>
                             <h5 class="fw-bold">Académicos</h5>
                             <p class="text-muted">Planes de estudio, programas, guías académicas</p>
-                            <button class="btn btn-outline-primary btn-sm" onclick="filterCategory('academicos')">
+                            <button class="btn btn-outline-primary btn-sm filter-category-btn" data-category="academicos">
                                 Ver documentos
                             </button>
                         </div>
@@ -290,7 +290,7 @@
                             </div>
                             <h5 class="fw-bold">Administrativos</h5>
                             <p class="text-muted">Formatos, solicitudes, trámites escolares</p>
-                            <button class="btn btn-outline-success btn-sm" onclick="filterCategory('administrativos')">
+                            <button class="btn btn-outline-success btn-sm filter-category-btn" data-category="administrativos">
                                 Ver documentos
                             </button>
                         </div>
@@ -303,7 +303,7 @@
                             </div>
                             <h5 class="fw-bold">Normativos</h5>
                             <p class="text-muted">Reglamentos, lineamientos, políticas</p>
-                            <button class="btn btn-outline-info btn-sm" onclick="filterCategory('normativos')">
+                            <button class="btn btn-outline-info btn-sm filter-category-btn" data-category="normativos">
                                 Ver documentos
                             </button>
                         </div>
@@ -316,7 +316,7 @@
                             </div>
                             <h5 class="fw-bold">Recursos Educativos</h5>
                             <p class="text-muted">Guías de estudio, material didáctico</p>
-                            <button class="btn btn-outline-warning btn-sm" onclick="filterCategory('recursos')">
+                            <button class="btn btn-outline-warning btn-sm filter-category-btn" data-category="recursos">
                                 Ver documentos
                             </button>
                         </div>
@@ -413,7 +413,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <button class="btn btn-primary w-100" onclick="searchDocuments()">
+                                    <button class="btn btn-primary w-100 search-documents-btn">
                                         <i class="fas fa-search me-1"></i>
                                         Buscar
                                     </button>
@@ -536,13 +536,13 @@
                             </p>
                             <div class="row g-3 justify-content-center">
                                 <div class="col-md-4">
-                                    <button class="btn btn-outline-primary w-100" onclick="showHelp()">
+                                    <button class="btn btn-outline-primary w-100 show-help-btn">
                                         <i class="fas fa-life-ring me-2"></i>
                                         Guía de Uso
                                     </button>
                                 </div>
                                 <div class="col-md-4">
-                                    <button class="btn btn-outline-success w-100" onclick="requestDocument()">
+                                    <button class="btn btn-outline-success w-100 request-document-btn">
                                         <i class="fas fa-plus-circle me-2"></i>
                                         Solicitar Documento
                                     </button>
@@ -764,7 +764,7 @@
                 <strong>Asistente Virtual</strong>
                 <div style="font-size: 12px; opacity: 0.8;">Centro de Descargas</div>
             </div>
-            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+            <button id="chatbotCloseBtn" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
@@ -783,8 +783,8 @@
         </div>
         
         <div class="chatbot-input">
-            <input type="text" id="chatbotInput" placeholder="Ej: formato de inscripción, reglamento escolar..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
-            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+            <input type="text" id="chatbotInput" placeholder="Ej: formato de inscripción, reglamento escolar..." aria-label="Escribe tu pregunta">
+            <button id="chatbotSendBtn" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>
@@ -1032,6 +1032,9 @@
     </style>
     <!-- Scripts de autenticación admin -->
         <!-- 🔒 Seguridad y autenticación (mismo que index.html) -->
+
+    <!-- 🎯 EVENT HANDLERS CSP-COMPLIANT - DESCARGAS -->
+    <script src="js/descargas-events.js"></script>
 
 </body>
 </html>

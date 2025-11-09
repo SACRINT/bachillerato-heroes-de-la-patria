@@ -66,7 +66,7 @@
             </div>
             <div class="row g-4">
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm payment-service-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="scrollToSection('metodos-pago')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="card h-100 border-0 shadow-sm payment-service-card" style="cursor: pointer; transition: transform 0.2s ease;" data-action="scrollToSection" data-target="metodos-pago">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-graduation-cap fa-3x text-primary"></i>
@@ -77,7 +77,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm payment-service-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="scrollToSection('ventajas')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="card h-100 border-0 shadow-sm payment-service-card" style="cursor: pointer; transition: transform 0.2s ease;" data-action="scrollToSection" data-target="ventajas">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-clipboard-list fa-3x text-success"></i>
@@ -88,7 +88,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm payment-service-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="showLoginModal()" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="card h-100 border-0 shadow-sm payment-service-card" style="cursor: pointer; transition: transform 0.2s ease;" data-action="showLoginModal">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-sign-in-alt fa-3x text-warning"></i>
@@ -99,7 +99,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm payment-service-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="showConsultModal()" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="card h-100 border-0 shadow-sm payment-service-card" style="cursor: pointer; transition: transform 0.2s ease;" data-action="showConsultModal">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-search fa-3x text-info"></i>
@@ -259,7 +259,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="loginPaymentSystem()">Acceder</button>
+                    <button type="button" id="loginPaymentBtn" class="btn btn-primary">Acceder</button>
                 </div>
             </div>
         </div>
@@ -303,7 +303,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" onclick="consultPaymentStatus()">Consultar</button>
+                    <button type="button" id="consultPaymentBtn" class="btn btn-primary">Consultar</button>
                 </div>
             </div>
         </div>
@@ -317,7 +317,7 @@
                     <div class="col-12 mb-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <h2>Panel de Pagos - <span id="studentName"></span></h2>
-                            <button class="btn btn-outline-secondary" onclick="logoutPaymentSystem()">
+                            <button id="logoutPaymentBtn" class="btn btn-outline-secondary">
                                 <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
                             </button>
                         </div>
@@ -436,7 +436,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success" onclick="processPayment()">
+                    <button type="button" id="processPaymentBtn" class="btn btn-success">
                         <i class="fas fa-lock me-2"></i>Pagar Ahora
                     </button>
                 </div>
@@ -464,7 +464,7 @@
                 <strong>Asistente Virtual</strong>
                 <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
             </div>
-            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+            <button id="chatbotCloseBtn" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
@@ -492,8 +492,8 @@
         </div>
         
         <div class="chatbot-input">
-            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
-            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." aria-label="Escribe tu pregunta">
+            <button id="chatbotSendBtn" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>
@@ -889,6 +889,9 @@
     <script src="js/bge-performance-module.js"></script><script src="js/bge-security-module.js"></script><!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DE PAGOS -->
     <script src="js/auth-interface.js"></script>
     <script src="js/chatbot.js"></script>
+
+    <!-- 💳 EVENT HANDLERS CSP-COMPLIANT - PAGOS -->
+    <script src="js/pagos-events.js"></script>
 
 </body>
 </html>
