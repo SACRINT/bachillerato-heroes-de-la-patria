@@ -164,17 +164,9 @@ app.use(session({
 // Security Middleware - ✅ CONFIGURADO para no interferir con archivos estáticos
 app.use(securityMiddleware);
 
-// --- CORRECT & COMPLETE STATIC FILE SERVING ---
+// --- UNIFIED STATIC FILE SERVING FROM /public ---
 console.log('🌍 Configurando servidor de archivos estáticos...');
 app.use(express.static(path.join(__dirname, '../public')));
-app.use('/js', express.static(path.join(__dirname, '../js')));
-app.use('/css', express.static(path.join(__dirname, '../css')));
-app.use('/images', express.static(path.join(__dirname, '../images')));
-app.use('/documents', express.static(path.join(__dirname, '../documents')));
-app.use('/videos', express.static(path.join(__dirname, '../videos')));
-app.use('/data', express.static(path.join(__dirname, '../data')));
-app.use('/partials', express.static(path.join(__dirname, '../partials')));
-app.use('/sw-offline-first.js', express.static(path.join(__dirname, '../sw-offline-first.js')));
 
 
 // ============================================
