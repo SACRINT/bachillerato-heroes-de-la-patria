@@ -24,6 +24,7 @@ const { securityMiddleware } = require('./middleware/security');
 // Routes
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
+const configRoutes = require('./routes/config');  // ✅ CONFIG ROUTES - Multi-tenant configuration (9 NOV 2025)
 const dashboardRoutes = require('./routes/dashboard');
 const contactRoutes = require('./routes/contact');
 const inscriptionsRoutes = require('./routes/inscriptions');
@@ -193,6 +194,7 @@ app.use('/sw-offline-first.js', express.static(path.join(__dirname, '../sw-offli
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/config', configRoutes);  // ✅ CONFIG ROUTES - Tenant config, OAuth, health (9 NOV 2025)
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/inscriptions', inscriptionsRoutes);
