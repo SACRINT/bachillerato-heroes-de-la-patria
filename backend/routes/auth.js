@@ -9,6 +9,7 @@ const { body, validationResult } = require('express-validator');
 const { getAuthService } = require('../services/authService');
 const { getJWTUtils } = require('../utils/jwtUtils');
 const { authenticateToken, requireAdmin, requireRole } = require('../middleware/auth');
+const devLog = require('../utils/devLogger'); // 🔐 Logging seguro (GDPR compliant)
 const router = express.Router();
 
 // Instancias de servicios
@@ -129,7 +130,7 @@ router.post('/login', loginLimiter, loginValidation, async (req, res, next) => {
         const { username, password, rememberMe = false } = req.body;
         const clientIP = req.ip || req.connection.remoteAddress;
 
-        console.log(`🔐 Intento de login: ${username} desde ${clientIP}`);
+        devLog.log('Intento de login');
 
         // Autenticar usuario
         const user = await authService.authenticateUser(username, password);
@@ -146,7 +147,7 @@ router.post('/login', loginLimiter, loginValidation, async (req, res, next) => {
         const tokenPair = jwtUtils.generateTokenPair(userPayload, rememberMe);
 
         // Log de login exitoso
-        console.log(`✅ Login exitoso: ${user.email} (${user.role})`);
+        devLog.log('Login exitoso');
 
         // Respuesta exitosa
         res.json({
@@ -233,7 +234,7 @@ router.post('/logout', authenticateToken, async (req, res, next) => {
         // Invalidar sesiones del usuario
         await authService.invalidateUserSessions(req.user.id);
 
-        console.log(`🚪 Logout exitoso: ${req.user.email}`);
+        devLog.log('Logout exitoso');
 
         res.json({
             success: true,
@@ -276,7 +277,7 @@ router.post('/register', authenticateToken, requireAdmin, registerLimiter, regis
             role
         } = req.body;
 
-        console.log(`👤 Admin ${req.user.email} creando usuario: ${email} (${role})`);
+        devLog.log('Admin creando usuario');
 
         // Crear usuario usando el servicio
         const newUser = await authService.createUser({
@@ -289,7 +290,7 @@ router.post('/register', authenticateToken, requireAdmin, registerLimiter, regis
             role
         });
 
-        console.log(`✅ Usuario creado exitosamente: ${newUser.email}`);
+        devLog.log('Usuario creado exitosamente');
 
         res.status(201).json({
             success: true,
@@ -359,7 +360,7 @@ router.put('/change-password', authenticateToken, passwordChangeValidation, asyn
 
         const { currentPassword, newPassword } = req.body;
 
-        console.log(`🔐 Usuario ${req.user.email} cambiando contraseña`);
+        devLog.log('Usuario cambiando contraseña');
 
         // Cambiar contraseña usando el servicio
         await authService.changePassword(req.user.id, currentPassword, newPassword);
@@ -367,7 +368,7 @@ router.put('/change-password', authenticateToken, passwordChangeValidation, asyn
         // Invalidar todas las sesiones del usuario por seguridad
         await authService.invalidateUserSessions(req.user.id);
 
-        console.log(`✅ Contraseña cambiada exitosamente: ${req.user.email}`);
+        devLog.log('Contraseña cambiada exitosamente');
 
         res.json({
             success: true,
@@ -495,7 +496,7 @@ router.post('/invalidate-user-sessions', authenticateToken, requireAdmin, [
 
         await authService.invalidateUserSessions(userId);
 
-        console.log(`🚫 Admin ${req.user.email} invalidó sesiones del usuario ID: ${userId}`);
+        devLog.log('Admin invalidó sesiones de usuario');
 
         res.json({
             success: true,
@@ -682,7 +683,7 @@ router.post('/request-registration', registrationRequestLimiter, requestRegistra
         // Guardar
         await RegistrationHelpers.writeRegistrationRequests(data);
 
-        console.log(`📝 Nueva solicitud de registro: ${email} (${requestedRole})`);
+        devLog.log('Nueva solicitud de registro');
 
         res.status(201).json({
             success: true,
@@ -732,7 +733,7 @@ router.post('/google', async (req, res) => {
             });
         }
 
-        console.log('🔐 [GOOGLE-AUTH] Verificando token de Google para:', email);
+        devLog.log('[GOOGLE-AUTH] Verificando token de Google');
 
         // Importar google-auth-library
         const { OAuth2Client } = require('google-auth-library');
@@ -761,7 +762,7 @@ router.post('/google', async (req, res) => {
         const payload = googleTicket.getPayload();
         const { email: googleEmail, name: googleName, picture, sub } = payload;
 
-        console.log('✅ [GOOGLE-AUTH] Token verificado para:', googleEmail);
+        devLog.log('[GOOGLE-AUTH] Token verificado');
 
         // Importar DAL
         const { getUserByEmail, createUserFromGoogle } = require('../data/database-access');
@@ -771,7 +772,7 @@ router.post('/google', async (req, res) => {
 
         if (!user) {
             // Crear usuario nuevo desde Google
-            console.log('👤 [GOOGLE-AUTH] Creando nuevo usuario desde Google...');
+            devLog.log('[GOOGLE-AUTH] Creando nuevo usuario');
 
             user = await createUserFromGoogle({
                 email: googleEmail,
@@ -780,9 +781,9 @@ router.post('/google', async (req, res) => {
                 sub: sub
             });
 
-            console.log('✅ [GOOGLE-AUTH] Usuario creado:', user.id);
+            devLog.log('[GOOGLE-AUTH] Usuario creado exitosamente');
         } else {
-            console.log('✅ [GOOGLE-AUTH] Usuario existente encontrado:', user.id);
+            devLog.log('[GOOGLE-AUTH] Usuario existente encontrado');
         }
 
         // Generar JWT propio de nuestra aplicación
@@ -792,7 +793,7 @@ router.post('/google', async (req, res) => {
             user.role
         );
 
-        console.log('🔑 [GOOGLE-AUTH] Token JWT generado para:', user.email);
+        devLog.log('[GOOGLE-AUTH] Token JWT generado');
 
         // Devolver respuesta exitosa
         res.json({
