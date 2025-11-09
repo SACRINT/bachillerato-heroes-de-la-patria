@@ -230,7 +230,7 @@
                     <li>📈 Estadísticas Visuales</li>
                     <li>🧮 Álgebra Interactiva</li>
                 </ul>
-                <button class="launch-btn" onclick="launchARExperience('mathematics')" disabled>
+                <button class="launch-btn" data-subject-launch="mathematics" disabled>
                     Iniciar Experiencia AR
                 </button>
             </div>
@@ -246,7 +246,7 @@
                     <li>🧪 Experimentos de Física</li>
                     <li>🧬 Laboratorio de Química</li>
                 </ul>
-                <button class="launch-btn" onclick="launchARExperience('sciences')" disabled>
+                <button class="launch-btn" data-subject-launch="sciences" disabled>
                     Iniciar Laboratorio AR
                 </button>
             </div>
@@ -262,7 +262,7 @@
                     <li>🇲🇽 Independencia de México</li>
                     <li>⚔️ Revolución Mexicana</li>
                 </ul>
-                <button class="launch-btn" onclick="launchARExperience('history')" disabled>
+                <button class="launch-btn" data-subject-launch="history" disabled>
                     Explorar Historia AR
                 </button>
             </div>
@@ -278,7 +278,7 @@
                     <li>🏛️ Tours Arquitectónicos</li>
                     <li>🎵 Visualización Musical</li>
                 </ul>
-                <button class="launch-btn" onclick="launchARExperience('arts')" disabled>
+                <button class="launch-btn" data-subject-launch="arts" disabled>
                     Entrar a Galería AR
                 </button>
             </div>
@@ -294,7 +294,7 @@
                     <li>🌡️ Mediciones Precisas</li>
                     <li>📊 Análisis de Datos</li>
                 </ul>
-                <button class="launch-btn" onclick="launchVirtualLab()" disabled>
+                <button class="launch-btn" data-action="launchVirtualLab" disabled>
                     Abrir Laboratorio 3D
                 </button>
             </div>
@@ -310,7 +310,7 @@
                     <li>🏔️ Ecosistemas Naturales</li>
                     <li>🏛️ Museos Virtuales</li>
                 </ul>
-                <button class="launch-btn" onclick="launchVRExperience()" disabled>
+                <button class="launch-btn" data-action="launchVRExperience" disabled>
                     Entrar a VR
                 </button>
             </div>
@@ -330,9 +330,9 @@
     <div class="ar-viewer" id="arViewer">
         <canvas id="arCanvas"></canvas>
         <div class="ar-controls">
-            <button class="ar-btn" onclick="toggleARRecording()">📹 Grabar</button>
-            <button class="ar-btn" onclick="takeARScreenshot()">📸 Captura</button>
-            <button class="ar-btn" onclick="closeARViewer()">❌ Cerrar</button>
+            <button class="ar-btn" data-action="toggleARRecording">📹 Grabar</button>
+            <button class="ar-btn" data-action="takeARScreenshot">📸 Captura</button>
+            <button class="ar-btn" data-action="closeARViewer">❌ Cerrar</button>
         </div>
     </div>
 
@@ -647,6 +647,9 @@
     <script src="js/ar-education-system.js"></script>
     <script src="js/lab-simulator-3d.js"></script>
     <script src="js/virtual-labs-system.js"></script>
+
+    <!-- 🥽 AR/VR LAB - EVENT HANDLERS (CSP-COMPLIANT) -->
+    <script src="js/ar-vr-lab-events.js"></script>
 
 </body>
 </html>

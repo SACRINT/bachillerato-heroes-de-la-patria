@@ -681,14 +681,14 @@
                                     <i class="fas fa-video fa-4x mb-3"></i>
                                     <h5 class="mb-3">Video Institucional</h5>
                                     <p class="mb-4">Conoce nuestras instalaciones y comunidad educativa</p>
-                                    <button class="btn btn-light btn-lg rounded-pill" 
-                                            onclick="agregarVideo()" 
+                                    <button class="btn btn-light btn-lg rounded-pill"
+                                            data-action="agregarVideo"
                                             style="box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                                         <i class="fas fa-play me-2"></i>Ver Video
                                     </button>
                                     <div class="mt-3">
                                         <small class="opacity-75">Administrador: 
-                                            <a href="#" class="text-white" onclick="mostrarFormularioVideo()" style="text-decoration: underline;">
+                                            <a href="#" class="text-white" data-action="mostrarFormularioVideo" style="text-decoration: underline;">
                                                 Agregar Video
                                             </a>
                                         </small>
@@ -781,10 +781,10 @@
                     <div class="row mb-4">
                         <div class="col-12 text-center">
                             <div class="btn-group" role="group" aria-label="Vista del organigrama">
-                                <button type="button" class="btn btn-primary active" id="vistaCards" onclick="toggleOrganigramaView('cards')">
+                                <button type="button" class="btn btn-primary active" id="vistaCards" data-action="toggleOrganigramaView" data-view-type="cards">
                                     <i class="fas fa-th-large me-1"></i>Vista de Tarjetas
                                 </button>
-                                <button type="button" class="btn btn-outline-primary" id="vistaJerarquica" onclick="toggleOrganigramaView('jerarquica')">
+                                <button type="button" class="btn btn-outline-primary" id="vistaJerarquica" data-action="toggleOrganigramaView" data-view-type="jerarquica">
                                     <i class="fas fa-sitemap me-1"></i>Vista Jerárquica
                                 </button>
                             </div>
@@ -1857,7 +1857,7 @@
                 <strong>Asistente Virtual</strong>
                 <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
             </div>
-            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+            <button data-action="toggleChatbot" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
@@ -1876,8 +1876,8 @@
         </div>
         
         <div class="chatbot-input">
-            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
-            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." data-handler="keypress" aria-label="Escribe tu pregunta">
+            <button data-action="sendMessage" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>
@@ -1895,7 +1895,10 @@
     <script src="js/script.js"></script><script src="js/chatbot.js"></script>
     <script src="js/search-simple.js"></script>
     <script src="js/organigrama-popup-fix.js"></script>
-    
+
+    <!-- 👥 CONÓCENOS - EVENT HANDLERS (CSP-COMPLIANT) -->
+    <script src="js/conocenos-events.js"></script>
+
     <!-- Organigrama Interactive Script -->
     <script>
         function toggleOrganigramaView(view) {
@@ -2005,7 +2008,7 @@
                     <div class="modal-content">
                         <div class="modal-header bg-primary text-white">
                             <h5 class="modal-title"><i class="fas fa-video me-2"></i>Video Institucional</h5>
-                            <button type="button" class="btn-close btn-close-white" onclick="cerrarModalVideo()"></button>
+                            <button type="button" class="btn-close btn-close-white" data-action="cerrarModalVideo"></button>
                         </div>
                         <div class="modal-body p-0">
                             <div class="ratio ratio-16x9">
@@ -2021,7 +2024,7 @@
                                 <small><i class="fas fa-graduation-cap me-1"></i>
                                 Bachillerato General Estatal "Héroes de la Patria"</small>
                             </p>
-                            <button type="button" class="btn btn-secondary" onclick="cerrarModalVideo()">Cerrar</button>
+                            <button type="button" class="btn btn-secondary" data-action="cerrarModalVideo">Cerrar</button>
                         </div>
                     </div>
                 </div>
