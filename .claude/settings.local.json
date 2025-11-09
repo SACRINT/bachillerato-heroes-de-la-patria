@@ -1,15 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find \"C:\\03_BachilleratoHeroesWeb\\public\" -name \"*.html\" -exec sh -c 'count=$(grep -o \"\"\"\"onclick\\|onchange\\|onsubmit\\|onkeyup\\|onblur\\|onfocus\\|onmouseover\\|onmouseout\"\"\"\" \"\"\"\"$1\"\"\"\" | wc -l); echo \"\"\"\"$count $1\"\"\"\"' _ {})",
-      "Bash(npm start)",
-      "mcp__chrome-devtools__handle_dialog",
-      "mcp__chrome-devtools__click",
-      "mcp__chrome-devtools__fill",
-      "mcp__chrome-devtools__hover",
-      "Bash(findstr:*)",
-      "Bash(netstat:*)",
-      "mcp__chrome-devtools__take_screenshot"
+      "Bash(powershell -Command \"\n(Select-String -Path ''C:\\03_BachilleratoHeroesWeb\\public\\admin-dashboard.html'' -Pattern ''on(click|change|submit|keyup|blur|focus|mouseover|mouseout|load|input|dblclick|contextmenu)='' | Measure-Object).Count\n\")",
+      "Bash(powershell -Command:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []
