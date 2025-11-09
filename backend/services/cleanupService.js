@@ -48,7 +48,24 @@ async function runAllCleanups() {
     }
 }
 
+/**
+ * Inicia el servicio de limpieza automática
+ * Ejecuta tareas de limpieza cada N horas
+ * @param {number} intervalHours - Intervalo en horas para ejecutar la limpieza
+ */
+function startCleanupService(intervalHours = 12) {
+    const intervalMs = intervalHours * 60 * 60 * 1000; // Convertir horas a milisegundos
+    console.log(`[CLEANUP] Servicio de limpieza iniciado. Se ejecutará cada ${intervalHours} horas.`);
+
+    // Ejecutar inmediatamente
+    runAllCleanups();
+
+    // Luego ejecutar periódicamente
+    setInterval(runAllCleanups, intervalMs);
+}
+
 module.exports = {
     cleanupTable,
     runAllCleanups,
+    startCleanupService,
 };
