@@ -195,28 +195,28 @@
             <div class="container">
                 <div class="row g-3">
                     <div class="col-lg-3 col-sm-6">
-                        <button class="btn btn-outline-success w-100 p-3" onclick="showUploadCV()">
+                        <button class="btn btn-outline-success w-100 p-3 quick-action-btn" data-action="showUploadCV">
                             <i class="fas fa-file-upload fa-2x mb-2 d-block"></i>
                             <strong>Subir CV</strong>
                             <small class="d-block text-muted">Crea tu perfil profesional</small>
                         </button>
                     </div>
                     <div class="col-lg-3 col-sm-6">
-                        <button class="btn btn-outline-info w-100 p-3" onclick="showSavedJobs()">
+                        <button class="btn btn-outline-info w-100 p-3 quick-action-btn" data-action="showSavedJobs">
                             <i class="fas fa-bookmark fa-2x mb-2 d-block"></i>
                             <strong>Empleos Guardados</strong>
                             <small class="d-block text-muted">Ver mis favoritos</small>
                         </button>
                     </div>
                     <div class="col-lg-3 col-sm-6">
-                        <button class="btn btn-outline-warning w-100 p-3" onclick="showApplications()">
+                        <button class="btn btn-outline-warning w-100 p-3 quick-action-btn" data-action="showApplications">
                             <i class="fas fa-paper-plane fa-2x mb-2 d-block"></i>
                             <strong>Postulaciones</strong>
                             <small class="d-block text-muted">Seguimiento de solicitudes</small>
                         </button>
                     </div>
                     <div class="col-lg-3 col-sm-6">
-                        <button class="btn btn-outline-secondary w-100 p-3" onclick="showCareerTips()">
+                        <button class="btn btn-outline-secondary w-100 p-3 quick-action-btn" data-action="showCareerTips">
                             <i class="fas fa-lightbulb fa-2x mb-2 d-block"></i>
                             <strong>Consejos</strong>
                             <small class="d-block text-muted">Tips para el éxito laboral</small>
@@ -250,7 +250,7 @@
                 </div>
 
                 <div class="text-center mt-4">
-                    <button class="btn btn-outline-primary" onclick="showAllJobs()">
+                    <button class="btn btn-outline-primary" id="showAllJobsBtn">
                         Ver Todas las Ofertas
                         <i class="fas fa-arrow-right ms-2"></i>
                     </button>
@@ -659,6 +659,9 @@
 
     <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
     <script src="js/main.js"></script>
+
+    <!-- 🎯 EVENT HANDLERS - BOLSA DE TRABAJO (CSP-COMPLIANT) -->
+    <script src="js/bolsa-trabajo-events.js"></script>
 
     <!-- 🔧 SISTEMA CORE (OBLIGATORIO) -->
     <script src="js/context-manager.js"></script>        <!-- 🔒 Base del sistema -->

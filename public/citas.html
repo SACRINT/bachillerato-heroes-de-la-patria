@@ -144,7 +144,7 @@
                                     <small class="text-muted d-block">Horario: 8:00 AM - 1:00 PM</small>
                                     <small class="text-muted">Duración: 30 min</small>
                                 </div>
-                                <button class="btn btn-primary btn-sm mt-3" onclick="selectDepartment('direccion')">
+                                <button class="btn btn-primary btn-sm mt-3 dept-selector" data-department="direccion">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -163,7 +163,7 @@
                                     <small class="text-muted d-block">Horario: 9:00 AM - 1:00 PM</small>
                                     <small class="text-muted">Duración: 20 min</small>
                                 </div>
-                                <button class="btn btn-success btn-sm mt-3" onclick="selectDepartment('servicios')">
+                                <button class="btn btn-success btn-sm mt-3 dept-selector" data-department="servicios">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -182,7 +182,7 @@
                                     <small class="text-muted d-block">Horario: 8:00 AM - 12:30 PM</small>
                                     <small class="text-muted">Duración: 45 min</small>
                                 </div>
-                                <button class="btn btn-info btn-sm mt-3" onclick="selectDepartment('orientacion')">
+                                <button class="btn btn-info btn-sm mt-3 dept-selector" data-department="orientacion">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -201,7 +201,7 @@
                                     <small class="text-muted d-block">Horario: 8:30 AM - 12:30 PM</small>
                                     <small class="text-muted">Duración: 15 min</small>
                                 </div>
-                                <button class="btn btn-warning btn-sm mt-3" onclick="selectDepartment('administracion')">
+                                <button class="btn btn-warning btn-sm mt-3 dept-selector" data-department="administracion">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -220,7 +220,7 @@
                                     <small class="text-muted d-block">Horario: 8:00 AM - 1:00 PM</small>
                                     <small class="text-muted">Duración: 30 min</small>
                                 </div>
-                                <button class="btn btn-dark btn-sm mt-3" onclick="selectDepartment('trabajo-social')">
+                                <button class="btn btn-dark btn-sm mt-3 dept-selector" data-department="trabajo-social">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -239,7 +239,7 @@
                                     <small class="text-muted d-block">Horario: 9:00 AM - 12:00 PM</small>
                                     <small class="text-muted">Duración: 40 min</small>
                                 </div>
-                                <button class="btn btn-danger btn-sm mt-3" onclick="selectDepartment('nuevo-ingreso')">
+                                <button class="btn btn-danger btn-sm mt-3 dept-selector" data-department="nuevo-ingreso">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -258,7 +258,7 @@
                                     <small class="text-muted d-block">Horario: 8:00 AM - 12:30 PM</small>
                                     <small class="text-muted">Duración: 25 min</small>
                                 </div>
-                                <button class="btn btn-info btn-sm mt-3" onclick="selectDepartment('becas')">
+                                <button class="btn btn-info btn-sm mt-3 dept-selector" data-department="becas">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -277,7 +277,7 @@
                                     <small class="text-muted d-block">Horario: 8:00 AM - 1:00 PM</small>
                                     <small class="text-muted">Duración: 30 min</small>
                                 </div>
-                                <button class="btn btn-success btn-sm mt-3" onclick="selectDepartment('inscripciones')">
+                                <button class="btn btn-success btn-sm mt-3 dept-selector" data-department="inscripciones">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -542,7 +542,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <button class="btn btn-info w-100" onclick="consultarCita()">
+                                        <button class="btn btn-info w-100" id="consultarCitaBtn">
                                             <i class="fas fa-search me-2"></i>
                                             Consultar
                                         </button>
@@ -720,7 +720,7 @@
                 <strong>Asistente Virtual</strong>
                 <div class="chatbot-subtitle">Héroes de la Patria</div>
             </div>
-            <button onclick="toggleChatbot()" class="chatbot-close-btn" aria-label="Cerrar chat">×</button>
+            <button class="chatbot-close-btn" id="chatbotCloseBtn" aria-label="Cerrar chat">×</button>
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
@@ -739,8 +739,8 @@
         </div>
         
         <div class="chatbot-input">
-            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
-            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." aria-label="Escribe tu pregunta">
+            <button id="chatbotSendBtn" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>
@@ -762,6 +762,9 @@
 
     <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
     <script src="js/main.js"></script>
+
+    <!-- 🎯 EVENT HANDLERS - SISTEMA DE CITAS (CSP-COMPLIANT) -->
+    <script src="js/citas-events.js"></script>
 
     <!-- 🔧 SISTEMA CORE (OBLIGATORIO) -->
     <script src="js/context-manager.js"></script>        <!-- 🔒 Base del sistema -->
