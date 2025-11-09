@@ -94,10 +94,11 @@ router.get('/public', (req, res) => {
 router.get('/tenant', async (req, res) => {
     try {
         // Obtener el dominio de la solicitud (INCLUIR PUERTO)
-        // ✅ FIX (9 NOV 2025): Usar req.host en lugar de req.hostname
-        // req.hostname retorna solo 'localhost' (sin puerto)
-        // req.host retorna 'localhost:3000' (CON puerto - lo que buscamos en BD)
-        const hostname = req.host;  // ej: 'localhost:3000' o 'heroes.localhost'
+        // ✅ FIX (9 NOV 2025 - REVISADO): Usar req.headers.host en lugar de req.host
+        // req.hostname retorna solo 'localhost' (sin puerto) ❌
+        // req.host retorna 'localhost:3000' pero está deprecado ⚠️
+        // req.headers.host retorna el valor EXACTO del header Host: 'localhost:3000' ✅
+        const hostname = req.headers.host || req.host || 'localhost';  // ej: 'localhost:3000' o 'heroes.localhost'
 
         console.log('[CONFIG] Buscando configuración de tenant para dominio:', hostname);
 

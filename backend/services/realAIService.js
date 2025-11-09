@@ -7,6 +7,8 @@
 const OpenAI = require('openai');
 const Anthropic = require('@anthropic-ai/sdk');
 const { getLocalIAProcessor } = require('./localIAProcessor');
+// ✅ FIX (9 NOV 2025): Agregar importación de logger para evitar ReferenceError
+const console_log = console.log;  // Usar console.log nativo en lugar de devLog
 
 class RealAIService {
     constructor() {
