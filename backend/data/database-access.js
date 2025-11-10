@@ -38,17 +38,18 @@ async function getAllStudents() {
 
         // NIVEL 2 OPTIMIZATION: Proyección de columnas específicas
         // Solo traemos los 9 campos necesarios para dashboard
+        // ⚠️ CORRECCIÓN: Usar columnas que existen en tabla estudiantes
         const result = await pool.query(`
             SELECT
                 id,
                 matricula,
+                nombre,
                 apellido_paterno,
                 apellido_materno,
-                nombre,
                 especialidad,
                 semestre,
-                generacion,
-                estatus
+                promedio,
+                status_academico
             FROM estudiantes
             ORDER BY apellido_paterno, apellido_materno, nombre ASC
         `);
