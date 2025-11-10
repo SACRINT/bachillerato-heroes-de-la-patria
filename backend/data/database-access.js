@@ -51,7 +51,7 @@ async function getAllStudents() {
                 promedio,
                 status_academico
             FROM estudiantes
-            ORDER BY apellido_paterno, apellido_materno, nombre ASC
+            ORDER BY apellido_paterno COLLATE "C" ASC, apellido_materno COLLATE "C" ASC, nombre COLLATE "C" ASC
         `);
 
         const students = result.rows || [];
