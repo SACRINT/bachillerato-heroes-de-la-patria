@@ -9,21 +9,24 @@
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bachillerato General Estatal "Héroes de la Patria"</title>
-    
+    <title id="page-title" data-base-title="Inicio">Bachillerato General Estatal "Héroes de la Patria"</title>
+
     <!-- Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    
+
     <!-- Preload critical resources -->
     <link rel="preload" href="images/hero/fachada1.webp" as="image" type="image/webp">
     <link rel="preload" href="css/style.css" as="style">
-    
+
     <!-- Meta tags -->
-    <meta name="description" content="Bachillerato General Estatal 'Héroes de la Patria' en Coronel Tito Hernández, Venustiano Carranza, Puebla. Educación media superior de calidad con formación integral.">
+    <meta name="description" id="page-description" content="Bachillerato General Estatal 'Héroes de la Patria' en Coronel Tito Hernández, Venustiano Carranza, Puebla. Educación media superior de calidad con formación integral.">
     <meta name="keywords" content="bachillerato, heroes de la patria, puebla, venustiano carranza, coronel tito hernandez, educacion media superior, prepa">
     <meta name="theme-color" content="#1976D2">
+
+    <!-- Script para actualización dinámica de metadatos -->
+    <script src="js/meta-updater.js" defer></script>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -69,7 +72,7 @@
     }
     </script>
     <!-- 🎨 Estilos Personalizados (Refactored from inline styles) -->
-    <link rel="stylesheet" href="css/index-styles.css">
+    <!-- ELIMINADO: css/index-styles.css (archivo no existe) -->
 </head>
 <body>
     <!-- Skip link for accessibility -->
@@ -1561,8 +1564,8 @@
     <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
     <script src="js/main.js"></script>
 
-    <!-- 🏢 TENANT CONFIG MANAGER - Carga configuración dinámica desde BD -->
-    <script src="js/tenant-config-manager.js" defer></script>
+    <!-- 🏢 TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
+    <script src="js/tenant-config-loader.js"></script>
 
     <!-- 🔧 SISTEMA CORE (OBLIGATORIO - NO CONSOLIDADO) -->
     <!-- Estos scripts DEBEN mantenerse separados por dependencias críticas -->
@@ -1613,14 +1616,11 @@
 
     <script src="js/csp-universal-fixer.js"></script>          <!-- 🔒 CSP compliance (último) -->
 
-    <!-- 🚀 SCRIPTS EMPAQUETADOS POR WEBPACK (PAUSADO TEMPORALMENTE) -->
-    <!-- 
-    <script src="/dist/runtime.ddd013cd210e8450e64c.bundle.js" defer></script>
-    <script src="/dist/vendors.a5f2ea00d5becaf9af80.bundle.js" defer></script>
-    <script src="/dist/main.60e9526fff68d039a47f.bundle.js" defer></script>
-    -->
+    <!-- 🚀 SCRIPTS EMPAQUETADOS POR WEBPACK (ELIMINADOS - LEGACY BUILD SYSTEM) -->
+    <!-- Bundles webpack legacy removidos: runtime, vendors, main (artefactos de antiguo build system) -->
 
-    <!-- Service Worker Registration - CORREGIDO Y REACTIVADO -->
+    <!-- Service Worker Registration - DESACTIVADO (archivo sw-offline-first.js no existe) -->
+    <!--
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', async () => {
@@ -1668,6 +1668,7 @@
             });
         }
     </script>
+    -->
 
     <!-- Enhanced Index Styles and Animations -->
     <style>
