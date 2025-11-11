@@ -146,10 +146,10 @@ class AdminDashboard {
         alertDiv.id = alertId;
         alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
         alertDiv.setAttribute('role', 'alert');
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             <strong>${type === 'danger' ? 'Error' : type === 'success' ? 'Éxito' : 'Información'}:</strong> ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        `;
+        `);
 
         alertContainer.appendChild(alertDiv);
 
@@ -299,12 +299,12 @@ class AdminDashboard {
         }
 
         if (users.length === 0) {
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="text-center text-muted py-5">
                     <i class="fas fa-user-slash fa-3x mb-3"></i>
                     <p class="lead">No hay usuarios activos en este momento</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -685,7 +685,7 @@ class AdminDashboard {
             const statusBadge = this.getStudentStatusBadge(studentStatus);
             const riskBadge = this.getRiskLevelBadge(studentRiskLevel);
 
-            row.innerHTML = `
+            row.innerHTML = sanitizeHTML(`
                 <td><strong>${studentMatricula}</strong></td>
                 <td>${studentName}</td>
                 <td class="text-center">
@@ -712,7 +712,7 @@ class AdminDashboard {
                         </button>
                     </div>
                 </td>
-            `;
+            `);
 
             tbody.appendChild(row);
         });
@@ -731,7 +731,7 @@ class AdminDashboard {
                 '<span class="badge bg-success">Activo</span>' : 
                 '<span class="badge bg-secondary">Inactivo</span>';
             
-            row.innerHTML = `
+            row.innerHTML = sanitizeHTML(`
                 <td><strong>${teacher.name}</strong></td>
                 <td>${teacher.specialty}</td>
                 <td>
@@ -754,7 +754,7 @@ class AdminDashboard {
                         </button>
                     </div>
                 </td>
-            `;
+            `);
             
             tbody.appendChild(row);
         });
@@ -801,7 +801,7 @@ class AdminDashboard {
         // Verificar que Chart.js esté disponible
         if (typeof Chart === 'undefined') {
             console.warn('⚠️ Chart.js no está disponible, mostrando mensaje alternativo');
-            ctx.parentElement.innerHTML = `
+            ctx.parentElement.innerHTML = sanitizeHTML(`
                 <div class="text-center py-4">
                     <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
                     <p class="text-muted">Gráficos no disponibles</p>
@@ -811,7 +811,7 @@ class AdminDashboard {
                         <i class="fas fa-refresh me-1"></i>Reintentar
                     </button>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -927,12 +927,12 @@ class AdminDashboard {
         const registrations = this.dashboardData.pendingRegistrations || [];
         
         if (registrations.length === 0) {
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="text-center py-4">
                     <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                     <p class="text-muted">No hay solicitudes pendientes</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -1317,12 +1317,12 @@ class AdminDashboard {
 
         const toastElement = document.createElement('div');
         toastElement.className = `toast align-items-center text-bg-${type} border-0`;
-        toastElement.innerHTML = `
+        toastElement.innerHTML = sanitizeHTML(`
             <div class="d-flex">
                 <div class="toast-body">${message}</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-        `;
+        `);
 
         toastContainer.appendChild(toastElement);
         

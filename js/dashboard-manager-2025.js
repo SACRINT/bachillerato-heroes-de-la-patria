@@ -768,7 +768,7 @@ class AdminDashboard {
             const statusBadge = this.getStudentStatusBadge(student.estado || student.status);
             const riskBadge = this.getRiskLevelBadge(student.nivelRiesgo || 'Bajo');
 
-            row.innerHTML = `
+            row.innerHTML = sanitizeHTML(`
                 <td class="text-center">
                     <strong>${student.matricula || student.id}</strong>
                 </td>
@@ -801,7 +801,7 @@ class AdminDashboard {
                         </button>
                     </div>
                 </td>
-            `;
+            `);
 
             tbody.appendChild(row);
         });
@@ -851,7 +851,7 @@ class AdminDashboard {
             const statusBadge = this.getStudentStatusBadge(student.status);
             const riskBadge = this.getRiskLevelBadge(student.riskLevel);
 
-            row.innerHTML = `
+            row.innerHTML = sanitizeHTML(`
                 <td><strong>${student.id}</strong></td>
                 <td>${student.name}</td>
                 <td class="text-center">
@@ -879,7 +879,7 @@ class AdminDashboard {
                         </button>
                     </div>
                 </td>
-            `;
+            `);
 
             tbody.appendChild(row);
         });
@@ -935,7 +935,7 @@ class AdminDashboard {
 
             const subjects = Array.isArray(teacher.subjects) ? teacher.subjects.join(', ') : (teacher.specialization || 'No especificado');
 
-            row.innerHTML = `
+            row.innerHTML = sanitizeHTML(`
                 <td>
                     <div class="d-flex align-items-center">
                         <img src="${teacher.photo || 'images/default-avatar.png'}" class="rounded-circle me-3" width="40" height="40" onerror="this.src='images/default-avatar.png'">
@@ -966,7 +966,7 @@ class AdminDashboard {
                         </button>
                     </div>
                 </td>
-            `;
+            `);
 
             tbody.appendChild(row);
         });
@@ -988,7 +988,7 @@ class AdminDashboard {
                 '<span class="badge bg-success">Activo</span>' :
                 '<span class="badge bg-secondary">Inactivo</span>';
 
-            row.innerHTML = `
+            row.innerHTML = sanitizeHTML(`
                 <td><strong>${teacher.name}</strong></td>
                 <td>${teacher.specialty}</td>
                 <td>
@@ -1011,7 +1011,7 @@ class AdminDashboard {
                         </button>
                     </div>
                 </td>
-            `;
+            `);
 
             tbody.appendChild(row);
         });
@@ -1161,7 +1161,7 @@ class AdminDashboard {
         // Verificar que Chart.js esté disponible
         if (typeof Chart === 'undefined') {
             console.warn('⚠️ Chart.js no está disponible, mostrando mensaje alternativo');
-            ctx.parentElement.innerHTML = `
+            ctx.parentElement.innerHTML = sanitizeHTML(`
                 <div class="text-center py-4">
                     <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
                     <p class="text-muted">Gráficos no disponibles</p>
@@ -1171,7 +1171,7 @@ class AdminDashboard {
                         <i class="fas fa-refresh me-1"></i>Reintentar
                     </button>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -1425,12 +1425,12 @@ class AdminDashboard {
         const registrations = this.dashboardData.pendingRegistrations || [];
 
         if (registrations.length === 0) {
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="text-center py-5">
                     <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                     <p class="text-muted">No hay solicitudes pendientes</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -1558,7 +1558,7 @@ class AdminDashboard {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.id = 'requestDetailsModal';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header bg-primary text-white">
@@ -1607,7 +1607,7 @@ class AdminDashboard {
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="fas fa-times me-1"></i>Cerrar
                         </button>
-                        <button type="button" class="btn btn-success" onclick="adminDashboard.approveRequest('${id}'); bootstrap.Modal.getInstance(document.getElementById('requestDetailsModal')).hide();">
+                        <button type="button" class="btn btn-success" onclick="adminDashboard.approveRequest('${id}')); bootstrap.Modal.getInstance(document.getElementById('requestDetailsModal')).hide();">
                             <i class="fas fa-check me-2"></i>Aprobar Solicitud
                         </button>
                         <button type="button" class="btn btn-danger" onclick="adminDashboard.rejectRequest('${id}'); bootstrap.Modal.getInstance(document.getElementById('requestDetailsModal')).hide();">
@@ -1720,7 +1720,7 @@ class AdminDashboard {
         modal.id = 'passwordModal';
         modal.setAttribute('data-bs-backdrop', 'static');
         modal.setAttribute('data-bs-keyboard', 'false');
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-success text-white">
@@ -1751,7 +1751,7 @@ class AdminDashboard {
                                     <button class="btn btn-outline-primary"
                                             type="button"
                                             onclick="
-                                                navigator.clipboard.writeText('${password}');
+                                                navigator.clipboard.writeText('${password}'));
                                                 this.innerHTML = sanitizeHTML('<i class=\\')fas fa-check\\'></i> Copiado';
                                                 setTimeout(() => {
                                                     this.innerHTML = sanitizeHTML('<i class=\\')fas fa-copy\\'></i> Copiar';
@@ -1913,7 +1913,7 @@ class AdminDashboard {
         // Mostrar modal con simulación
         const modal = document.createElement('div');
         modal.className = 'modal fade';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-info text-white">
@@ -1927,7 +1927,7 @@ class AdminDashboard {
                         <div class="alert alert-info">
                             <strong>📧 MODO DESARROLLO:</strong> En producción esto sería un email automático real.
                         </div>
-                        <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; white-space: pre-wrap;">${emailContent}</pre>
+                        <pre style="background: #f8f9fa); padding: 15px; border-radius: 5px; white-space: pre-wrap;">${emailContent}</pre>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
@@ -2067,12 +2067,12 @@ class AdminDashboard {
         }
 
         if (allUsers.length === 0) {
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="text-center py-4">
                     <i class="fas fa-users fa-3x text-muted mb-3"></i>
                     <p class="text-muted">No hay usuarios registrados</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -2214,7 +2214,7 @@ class AdminDashboard {
 
         const modal = document.createElement('div');
         modal.className = 'modal fade';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -2238,7 +2238,7 @@ class AdminDashboard {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
         const bootstrapModal = new bootstrap.Modal(modal);
@@ -2611,12 +2611,12 @@ class AdminDashboard {
 
         const toastElement = document.createElement('div');
         toastElement.className = `toast align-items-center text-bg-${type} border-0`;
-        toastElement.innerHTML = `
+        toastElement.innerHTML = sanitizeHTML(`
             <div class="d-flex">
                 <div class="toast-body">${message}</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-        `;
+        `);
 
         toastContainer.appendChild(toastElement);
 
@@ -2898,7 +2898,7 @@ function updateSystemInfo() {
 
     console.log('📊 [INFO] Datos estadísticos:', {estudiantes, docentes, materias, promedio});
 
-    modalBody.innerHTML = `
+    modalBody.innerHTML = sanitizeHTML(`
         <div class="row">
             <div class="col-md-6">
                 <h6><i class="fas fa-school me-2 text-primary"></i>Información del Sistema</h6>
@@ -2957,7 +2957,7 @@ function updateSystemInfo() {
                 </div>
             </div>
         </div>
-    `;
+    `);
 
     const endTime = performance.now();
     console.log(`⚡ [INFO] updateSystemInfo() completado en ${(endTime - startTime).toFixed(2)}ms`);
@@ -3140,13 +3140,13 @@ window.legacyContentManager = {
         }
 
         if (filteredItems.length === 0) {
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="text-center text-muted py-4">
                     <i class="fas fa-inbox fa-3x mb-3"></i>
                     <p>No hay contenido de este tipo</p>
                     <small>Usa el formulario para crear contenido</small>
                 </div>
-            `;
+            `);
             return;
         }
 

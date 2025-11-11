@@ -125,7 +125,7 @@ class BGENotificationAdmin {
         adminPanel.id = 'bge-notification-admin';
         adminPanel.className = 'notification-admin-panel';
 
-        adminPanel.innerHTML = `
+        adminPanel.innerHTML = sanitizeHTML(`
             <div class="admin-header">
                 <h2>🔔 Panel de Notificaciones BGE</h2>
                 <div class="admin-user-info">
@@ -149,7 +149,7 @@ class BGENotificationAdmin {
                 ${this.createRecipientsTab()}
                 ${this.createSettingsTab()}
             </div>
-        `;
+        `);
 
         // Agregar estilos
         this.addAdminStyles();
@@ -685,11 +685,11 @@ class BGENotificationAdmin {
         // Crear vista previa modal
         const modal = document.createElement('div');
         modal.className = 'preview-modal';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="preview-content">
                 <div class="preview-header">
                     <h3>👁️ Vista Previa de Notificación</h3>
-                    <button onclick="this.closest('.preview-modal').remove()" class="close-btn">&times;</button>
+                    <button onclick="this.closest('.preview-modal').remove()" class="close-btn">&times);</button>
                 </div>
                 <div class="preview-notification">
                     <div class="notification-icon">🔔</div>
@@ -752,7 +752,7 @@ class BGENotificationAdmin {
             return;
         }
 
-        container.innerHTML = this.scheduledNotifications.map(notif => `
+        container.innerHTML = sanitizeHTML(this.scheduledNotifications.map(notif => `
             <div class="scheduled-item">
                 <div class="scheduled-info">
                     <h4>${notif.title}</h4>
@@ -764,7 +764,7 @@ class BGENotificationAdmin {
                     <button onclick="bgeNotificationAdmin.deleteScheduled('${notif.id}')" class="btn btn-sm btn-danger">🗑️ Eliminar</button>
                 </div>
             </div>
-        `).join('');
+        `).join(''));
     }
 
     loadNotificationHistoryDisplay() {
@@ -776,7 +776,7 @@ class BGENotificationAdmin {
             return;
         }
 
-        container.innerHTML = this.notificationHistory.map(notif => `
+        container.innerHTML = sanitizeHTML(this.notificationHistory.map(notif => `
             <div class="history-item">
                 <div class="history-info">
                     <h4>${notif.title}</h4>
@@ -792,7 +792,7 @@ class BGENotificationAdmin {
                     <button onclick="bgeNotificationAdmin.viewDetails('${notif.id}')" class="btn btn-sm btn-secondary">👁️ Detalles</button>
                 </div>
             </div>
-        `).join('');
+        `).join(''));
     }
 
     addAdminStyles() {
@@ -950,8 +950,8 @@ class BGENotificationAdmin {
 
     showAccessDenied() {
         const denied = document.createElement('div');
-        denied.innerHTML = `
-            <div style="text-align: center; padding: 3rem; color: #dc3545;">
+        denied.innerHTML = sanitizeHTML(`
+            <div style="text-align: center); padding: 3rem; color: #dc3545;">
                 <h2>🚫 Acceso Denegado</h2>
                 <p>No tienes permisos para acceder al panel de administración de notificaciones.</p>
                 <p>Contacta al administrador del sistema si crees que esto es un error.</p>

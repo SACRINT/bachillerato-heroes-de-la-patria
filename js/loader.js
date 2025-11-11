@@ -20,12 +20,12 @@ class LoaderSystem {
         if (!document.getElementById('global-loader')) {
             const loader = document.createElement('div');
             loader.id = 'global-loader';
-            loader.innerHTML = `
+            loader.innerHTML = sanitizeHTML(`
                 <div class="loader-content">
                     <div class="spinner"></div>
                     <p>Cargando...</p>
                 </div>
-            `;
+            `);
             loader.style.cssText = `
                 position: fixed;
                 top: 0;
@@ -62,7 +62,7 @@ class LoaderSystem {
             const loaderId = 'loader-' + Date.now();
             const loader = document.createElement('div');
             loader.id = loaderId;
-            loader.innerHTML = `<div class="inline-loader">${message}</div>`;
+            loader.innerHTML = sanitizeHTML(`<div class="inline-loader">${message}</div>`);
             loader.style.cssText = 'text-align: center; padding: 20px;';
 
             element.appendChild(loader);

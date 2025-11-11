@@ -139,7 +139,7 @@ class PWAModernFeatures {
     showShareModal(data) {
         const modal = document.createElement('div');
         modal.className = 'pwa-share-modal';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="pwa-share-overlay" onclick="this.parentElement.remove()"></div>
             <div class="pwa-share-content">
                 <div class="pwa-share-header">
@@ -161,7 +161,7 @@ class PWAModernFeatures {
                     </button>
                 </div>
             </div>
-        `;
+        `);
 
         this.injectShareStyles();
         document.body.appendChild(modal);
@@ -252,7 +252,7 @@ class PWAModernFeatures {
 
         const banner = document.createElement('div');
         banner.className = 'pwa-install-banner';
-        banner.innerHTML = `
+        banner.innerHTML = sanitizeHTML(`
             <div class="pwa-install-content">
                 <div class="pwa-install-icon">
                     <img src="./images/app_icons/icon-192x192.webp" alt="App Icon" width="48" height="48">
@@ -270,7 +270,7 @@ class PWAModernFeatures {
                     </button>
                 </div>
             </div>
-        `;
+        `);
 
         this.injectInstallStyles();
         document.body.appendChild(banner);
@@ -297,12 +297,12 @@ class PWAModernFeatures {
     createOfflineIndicator() {
         const indicator = document.createElement('div');
         indicator.className = 'pwa-offline-indicator';
-        indicator.innerHTML = `
+        indicator.innerHTML = sanitizeHTML(`
             <div class="pwa-offline-content">
                 <i class="fas fa-wifi"></i>
                 <span>Sin conexión - Modo offline activo</span>
             </div>
-        `;
+        `);
         document.body.appendChild(indicator);
     }
 
@@ -336,13 +336,13 @@ class PWAModernFeatures {
         if (window.pwaNotifications && !document.querySelector('.pwa-offline-notification')) {
             const notification = document.createElement('div');
             notification.className = 'pwa-offline-notification';
-            notification.innerHTML = `
+            notification.innerHTML = sanitizeHTML(`
                 <div class="pwa-offline-notification-content">
                     <i class="fas fa-info-circle"></i>
                     <span>Estás navegando sin conexión. Algunas funciones pueden no estar disponibles.</span>
                     <button onclick="this.parentElement.parentElement.remove()">×</button>
                 </div>
-            `;
+            `);
             document.body.appendChild(notification);
             
             setTimeout(() => notification.remove(), 10000);

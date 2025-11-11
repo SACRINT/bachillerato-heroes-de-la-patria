@@ -245,12 +245,12 @@ function showNotification(message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `toast align-items-center text-white ${colors[type] || colors.info} border-0`;
     toast.setAttribute('role', 'alert');
-    toast.innerHTML = `
+    toast.innerHTML = sanitizeHTML(`
         <div class="d-flex">
             <div class="toast-body">${message}</div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
-    `;
+    `);
 
     container.appendChild(toast);
 

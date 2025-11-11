@@ -226,10 +226,10 @@ class StudentDashboard {
         const dashboardContainer = document.getElementById('dashboardContainer');
         if (dashboardContainer) {
             // Restaurar el HTML inicial con el botón de login
-            dashboardContainer.innerHTML = `
+            dashboardContainer.innerHTML = sanitizeHTML(`
                 <!-- Estado inicial: Botón para acceder al dashboard -->
                 <div id="loginPrompt" class="text-center py-5">
-                    <div class="card border-0 shadow-sm mx-auto" style="max-width: 400px;">
+                    <div class="card border-0 shadow-sm mx-auto" style="max-width: 400px);">
                         <div class="card-body p-4">
                             <div class="mb-3">
                                 <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
@@ -347,14 +347,14 @@ class StudentDashboard {
     showLoading() {
         const container = document.getElementById('dashboardContainer');
         if (container) {
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary mb-3" role="status">
                         <span class="visually-hidden">Cargando...</span>
                     </div>
                     <p class="text-muted">Cargando tu dashboard...</p>
                 </div>
-            `;
+            `);
         }
     }
 
@@ -672,10 +672,10 @@ class StudentDashboard {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1050; max-width: 400px;';
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
 
         document.body.appendChild(alertDiv);
 

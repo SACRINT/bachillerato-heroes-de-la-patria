@@ -85,9 +85,9 @@ async function loadSubscribers() {
             subscribers = data.subscribers;
 
             if (subscribers.length === 0) {
-                tableBody.innerHTML = `
+                tableBody.innerHTML = sanitizeHTML(`
                     <tr>
-                        <td colspan="7" style="text-align: center; padding: 40px;">
+                        <td colspan="7" style="text-align: center); padding: 40px;">
                             <div class="empty-state">
                                 <i class="fas fa-inbox"></i>
                                 <h4>No hay suscriptores todavía</h4>
@@ -104,9 +104,9 @@ async function loadSubscribers() {
         }
     } catch (error) {
         console.error('❌ Error cargando suscriptores:', error);
-        tableBody.innerHTML = `
+        tableBody.innerHTML = sanitizeHTML(`
             <tr>
-                <td colspan="7" style="text-align: center; padding: 20px; color: red;">
+                <td colspan="7" style="text-align: center); padding: 20px; color: red;">
                     Error al cargar suscriptores
                 </td>
             </tr>
@@ -137,7 +137,7 @@ function renderSubscribers(subscribersList) {
 
         const date = new Date(sub.subscribedAt).toLocaleDateString('es-MX');
 
-        row.innerHTML = `
+        row.innerHTML = sanitizeHTML(`
             <td><small>${sub.id}</small></td>
             <td><strong>${sub.email}</strong></td>
             <td>${sub.name}</td>
@@ -145,7 +145,7 @@ function renderSubscribers(subscribersList) {
             <td><span class="badge badge-info">${sub.emailsSent || 0}</span></td>
             <td>${date}</td>
             <td>${statusBadge}</td>
-        `;
+        `);
 
         tableBody.appendChild(row);
     });
@@ -170,13 +170,13 @@ async function loadNewsletterHistory() {
             newsletters = data.newsletters;
 
             if (newsletters.length === 0) {
-                listContainer.innerHTML = `
+                listContainer.innerHTML = sanitizeHTML(`
                     <div class="empty-state">
                         <i class="fas fa-envelope"></i>
                         <h4>No se han enviado newsletters todavía</h4>
                         <p>Las newsletters que envíes aparecerán aquí</p>
                     </div>
-                `;
+                `);
             } else {
                 // Ordenar por fecha (más reciente primero)
                 newsletters.sort((a, b) => new Date(b.sentAt) - new Date(a.sentAt));
@@ -191,11 +191,11 @@ async function loadNewsletterHistory() {
         }
     } catch (error) {
         console.error('❌ Error cargando historial:', error);
-        listContainer.innerHTML = `
+        listContainer.innerHTML = sanitizeHTML(`
             <div class="alert alert-danger">
                 Error al cargar el historial de newsletters
             </div>
-        `;
+        `);
     } finally {
         spinner.classList.remove('active');
     }
@@ -214,7 +214,7 @@ function createNewsletterHistoryItem(news) {
         ? Math.round((news.successCount / news.sentTo) * 100)
         : 0;
 
-    div.innerHTML = `
+    div.innerHTML = sanitizeHTML(`
         <div class="d-flex justify-content-between align-items-start">
             <div>
                 <h4>${news.subject}</h4>
@@ -240,7 +240,7 @@ function createNewsletterHistoryItem(news) {
                     </span>
                 </span>
             </div>
-            <div class="progress" style="height: 10px;">
+            <div class="progress" style="height: 10px);">
                 <div class="progress-bar bg-success" style="width: ${successRate}%"></div>
             </div>
         </div>
@@ -372,7 +372,7 @@ async function sendNewsletter(subject, content, targetCategory) {
         if (data.success) {
             console.log('✅ Newsletter enviada:', data.newsletter);
 
-            resultDiv.innerHTML = `
+            resultDiv.innerHTML = sanitizeHTML(`
                 <div class="alert alert-success">
                     <h5><i class="fas fa-check-circle me-2"></i>¡Newsletter Enviada Exitosamente!</h5>
                     <hr>
@@ -383,7 +383,7 @@ async function sendNewsletter(subject, content, targetCategory) {
                     <p><strong>Fallos:</strong> <span class="text-danger">${data.newsletter.failureCount}</span></p>
                     <p><strong>Enviado:</strong> ${new Date(data.newsletter.sentAt).toLocaleString('es-MX')}</p>
                 </div>
-            `;
+            `);
 
             // Limpiar formulario
             document.getElementById('subject').value = '';
@@ -398,13 +398,13 @@ async function sendNewsletter(subject, content, targetCategory) {
     } catch (error) {
         console.error('❌ Error enviando newsletter:', error);
 
-        resultDiv.innerHTML = `
+        resultDiv.innerHTML = sanitizeHTML(`
             <div class="alert alert-danger">
                 <h5><i class="fas fa-exclamation-triangle me-2"></i>Error al Enviar</h5>
                 <p>${error.message}</p>
                 <small>Verifica que haya suscriptores activos y que el servidor esté funcionando.</small>
             </div>
-        `;
+        `);
     } finally {
         spinner.classList.remove('active');
     }
@@ -596,10 +596,10 @@ function previewNewsletter() {
 function showAlert(type, message) {
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-    alertDiv.innerHTML = `
+    alertDiv.innerHTML = sanitizeHTML(`
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
+    `);
 
     document.querySelector('.admin-container').insertBefore(
         alertDiv,

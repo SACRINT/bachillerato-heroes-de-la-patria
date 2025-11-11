@@ -418,10 +418,10 @@ class AppointmentSystem {
             </button>
         `).join('');
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <h6 class="mb-3">Horarios disponibles:</h6>
             <div class="time-slots-grid">${slotsHTML}</div>
-        `;
+        `);
     }
 
     getAvailableSlots(date, startTime, endTime, duration) {
@@ -799,10 +799,10 @@ Coronel Tito Hernández, Venustiano Carranza, Puebla
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1060; max-width: 400px;';
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
         
         document.body.appendChild(alertDiv);
         

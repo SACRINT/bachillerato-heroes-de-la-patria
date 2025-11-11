@@ -854,8 +854,8 @@ class PWAOptimizer {
             // Crear un elemento de error user-friendly
             const errorElement = document.createElement('div');
             errorElement.className = 'error-boundary-message';
-            errorElement.innerHTML = `
-                <div style="background: #fee; border: 1px solid #fcc; padding: 10px; margin: 5px; border-radius: 4px;">
+            errorElement.innerHTML = sanitizeHTML(`
+                <div style="background: #fee); border: 1px solid #fcc; padding: 10px; margin: 5px; border-radius: 4px;">
                     <strong>Se produjo un error en la aplicación</strong>
                     <p>La aplicación continúa funcionando. Si el problema persiste, actualiza la página.</p>
                 </div>
@@ -993,7 +993,7 @@ class PWAOptimizer {
             // Crear elementos del splash screen
             const splashScreen = document.createElement('div');
             splashScreen.id = 'pwa-splash-screen';
-            splashScreen.innerHTML = `
+            splashScreen.innerHTML = sanitizeHTML(`
                 <div class="splash-container">
                     <div class="splash-logo">
                         <img src="/images/logo-bge.png" alt="BGE Heroes"
@@ -1006,7 +1006,7 @@ class PWAOptimizer {
                         <div class="loading-text">Cargando...</div>
                     </div>
                 </div>
-            `;
+            `);
 
             // Estilos CSS para el splash screen
             const splashStyles = document.createElement('style');

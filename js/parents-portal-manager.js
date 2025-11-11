@@ -195,7 +195,7 @@ class ParentsPortalManager {
         this.students.forEach(student => {
             const card = document.createElement('div');
             card.className = 'col-md-6 col-lg-4 mb-3';
-            card.innerHTML = `
+            card.innerHTML = sanitizeHTML(`
                 <div class="card student-card h-100">
                     <div class="card-body">
                         <h5 class="card-title">${student.nombre_completo}</h5>
@@ -210,7 +210,7 @@ class ParentsPortalManager {
                         </button>
                     </div>
                 </div>
-            `;
+            `);
             container.appendChild(card);
         });
     }

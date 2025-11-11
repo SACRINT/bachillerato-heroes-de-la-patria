@@ -201,7 +201,7 @@ class AIProgressDashboard {
         dashboardContainer.id = 'ai-progress-dashboard';
         dashboardContainer.className = 'ai-dashboard-container hidden';
 
-        dashboardContainer.innerHTML = `
+        dashboardContainer.innerHTML = sanitizeHTML(`
             <div class="dashboard-header">
                 <div class="header-content">
                     <h2 class="dashboard-title">
@@ -320,7 +320,7 @@ class AIProgressDashboard {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         // Agregar al DOM
         document.body.appendChild(dashboardContainer);
@@ -336,10 +336,10 @@ class AIProgressDashboard {
         const activationBtn = document.createElement('div');
         activationBtn.id = 'ai-dashboard-activation';
         activationBtn.className = 'ai-dashboard-activation';
-        activationBtn.innerHTML = `
+        activationBtn.innerHTML = sanitizeHTML(`
             <div class="activation-content">
                 <div class="dashboard-icon">📊</div>
-                <div class="notification-dot" style="display: none;"></div>
+                <div class="notification-dot" style="display: none);"></div>
             </div>
         `;
 
@@ -554,7 +554,7 @@ class AIProgressDashboard {
             const progressPercentage = Math.round((goal.current / goal.target) * 100);
             const isCompleted = progressPercentage >= 100;
 
-            goalElement.innerHTML = `
+            goalElement.innerHTML = sanitizeHTML(`
                 <div class="goal-header">
                     <h4 class="goal-title">${goal.title}</h4>
                     <span class="goal-status ${isCompleted ? 'completed' : ''}">
@@ -572,7 +572,7 @@ class AIProgressDashboard {
                     <span class="goal-target">${goal.target}</span>
                     <span class="goal-deadline">📅 ${new Date(goal.deadline).toLocaleDateString('es-ES')}</span>
                 </div>
-            `;
+            `);
 
             container.appendChild(goalElement);
         });
@@ -628,7 +628,7 @@ class AIProgressDashboard {
             const recElement = document.createElement('div');
             recElement.className = `recommendation-item priority-${rec.priority}`;
 
-            recElement.innerHTML = `
+            recElement.innerHTML = sanitizeHTML(`
                 <div class="rec-icon">
                     ${this.getRecommendationIcon(rec.type)}
                 </div>
@@ -639,7 +639,7 @@ class AIProgressDashboard {
                         ${rec.action || 'Ver más'}
                     </button>
                 </div>
-            `;
+            `);
 
             container.appendChild(recElement);
         });
@@ -653,13 +653,13 @@ class AIProgressDashboard {
             const achElement = document.createElement('div');
             achElement.className = 'achievement-item';
 
-            achElement.innerHTML = `
+            achElement.innerHTML = sanitizeHTML(`
                 <div class="achievement-icon">${achievement.icon}</div>
                 <div class="achievement-content">
                     <h4 class="achievement-title">${achievement.title}</h4>
                     <span class="achievement-date">${new Date(achievement.date).toLocaleDateString('es-ES')}</span>
                 </div>
-            `;
+            `);
 
             container.appendChild(achElement);
         });

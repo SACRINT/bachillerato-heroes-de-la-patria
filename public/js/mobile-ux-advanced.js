@@ -503,8 +503,8 @@ class MobileUXAdvanced {
                 transition: background-color 0.2s ease;
             `;
 
-            button.innerHTML = `
-                <span style="font-size: 20px;">${item.icon}</span>
+            button.innerHTML = sanitizeHTML(`
+                <span style="font-size: 20px);">${item.icon}</span>
                 <span>${item.label}</span>
             `;
 

@@ -24,12 +24,12 @@ class SolicitudesManager {
     async loadSolicitudes() {
         const containerEl = document.getElementById('pending-registrations-container');
         if (containerEl) {
-            containerEl.innerHTML = `
+            containerEl.innerHTML = sanitizeHTML(`
                 <div class="text-center py-4">
                     <div class="spinner-border text-info" role="status"><span class="visually-hidden">Cargando...</span></div>
                     <p class="mt-2 text-muted">Cargando solicitudes...</p>
                 </div>
-            `;
+            `);
         }
 
         try {
@@ -61,13 +61,13 @@ class SolicitudesManager {
         if (!containerEl) return;
 
         if (this.filteredSolicitudes.length === 0) {
-            containerEl.innerHTML = `
+            containerEl.innerHTML = sanitizeHTML(`
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle me-2"></i>
                     <strong>Sin solicitudes pendientes</strong>
                     <p class="mb-0">No hay solicitudes de registro en este momento.</p>
                 </div>
-            `;
+            `);
             return;
         }
 

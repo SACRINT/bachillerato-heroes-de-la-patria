@@ -136,13 +136,13 @@ class MobileUXManager {
         if (!togglerIcon) return;
 
         // Reemplazar con icono animado personalizado
-        togglerIcon.innerHTML = `
+        togglerIcon.innerHTML = sanitizeHTML(`
             <div class="hamburger-lines">
                 <span class="line line1"></span>
                 <span class="line line2"></span>
                 <span class="line line3"></span>
             </div>
-        `;
+        `);
 
         // Añadir estilos CSS dinámicamente
         this.addHamburgerStyles();
@@ -444,7 +444,7 @@ class MobileUXManager {
 
         const bottomNav = document.createElement('nav');
         bottomNav.className = 'bottom-nav';
-        bottomNav.innerHTML = `
+        bottomNav.innerHTML = sanitizeHTML(`
             <a href="#" class="bottom-nav-item active" data-page="home">
                 <i class="fas fa-home"></i>
                 <span>Inicio</span>
@@ -461,7 +461,7 @@ class MobileUXManager {
                 <i class="fas fa-envelope"></i>
                 <span>Contacto</span>
             </a>
-        `;
+        `);
 
         document.body.appendChild(bottomNav);
         this.bottomNav = bottomNav;

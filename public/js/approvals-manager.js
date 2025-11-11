@@ -120,13 +120,13 @@ function renderApprovalsList() {
     if (!container) return;
 
     if (filteredApprovals.length === 0) {
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="text-center py-5">
                 <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
                 <h5>No hay solicitudes pendientes</h5>
                 <p class="text-muted">Todas las solicitudes han sido procesadas.</p>
             </div>
-        `;
+        `);
         return;
     }
 
@@ -579,7 +579,7 @@ function showApprovalsError(message) {
     const container = document.getElementById('approvals-list');
     if (!container) return;
 
-    container.innerHTML = `
+    container.innerHTML = sanitizeHTML(`
         <div class="alert alert-danger">
             <i class="fas fa-exclamation-circle me-2"></i>
             ${message}
@@ -587,7 +587,7 @@ function showApprovalsError(message) {
                 <i class="fas fa-sync-alt me-1"></i>Reintentar
             </button>
         </div>
-    `;
+    `);
 }
 
 /**
@@ -614,12 +614,12 @@ function showNotification(message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `toast align-items-center text-white ${colors[type] || colors.info} border-0`;
     toast.setAttribute('role', 'alert');
-    toast.innerHTML = `
+    toast.innerHTML = sanitizeHTML(`
         <div class="d-flex">
             <div class="toast-body">${message}</div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
-    `;
+    `);
 
     container.appendChild(toast);
 

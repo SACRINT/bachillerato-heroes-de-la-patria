@@ -426,7 +426,7 @@ class DownloadCenter {
         const container = document.getElementById('categoriesContainer');
         
         if (documents.length === 0) {
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="col-12 text-center py-5">
                     <i class="fas fa-search fa-3x text-muted mb-3"></i>
                     <h4 class="text-muted">No se encontraron documentos</h4>
@@ -435,7 +435,7 @@ class DownloadCenter {
                         <i class="fas fa-arrow-left me-2"></i>Volver al catálogo
                     </button>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -778,10 +778,10 @@ class DownloadCenter {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1060; max-width: 400px;';
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
         
         document.body.appendChild(alertDiv);
         

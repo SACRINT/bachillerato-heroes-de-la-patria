@@ -364,7 +364,7 @@ function renderTickets(tickets) {
 
     emptyState?.classList.add('hidden');
 
-    container.innerHTML = tickets.map(ticket => `
+    container.innerHTML = sanitizeHTML(tickets.map(ticket => `
         <div class="ticket-card" onclick="showTicketDetail('${ticket.ticket_number}')">
             <div class="ticket-header">
                 <div>
@@ -411,7 +411,7 @@ function renderTickets(tickets) {
                 </div>
             </div>
         </div>
-    `).join('');
+    `).join(''));
 }
 
 /**
@@ -601,7 +601,7 @@ function renderTicketDetail(ticket) {
     const container = document.getElementById('ticketDetailBody');
     if (!container) return;
 
-    container.innerHTML = `
+    container.innerHTML = sanitizeHTML(`
         <div class="ticket-detail">
             <!-- Header del ticket -->
             <div class="ticket-detail-header">
@@ -700,7 +700,7 @@ function renderTicketDetail(ticket) {
                 </div>
             ` : ''}
         </div>
-    `;
+    `);
 }
 
 /**

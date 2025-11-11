@@ -1005,7 +1005,7 @@ class AdvancedGamificationSystem {
         gameInterface.id = 'gamification-interface';
         gameInterface.className = 'gamification-interface hidden';
 
-        gameInterface.innerHTML = `
+        gameInterface.innerHTML = sanitizeHTML(`
             <div class="game-header">
                 <h2>🎮 Centro de Gamificación</h2>
                 <button class="close-game" id="close-game">×</button>
@@ -1066,7 +1066,7 @@ class AdvancedGamificationSystem {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(gameInterface);
         this.setupGameEventListeners();
@@ -1077,12 +1077,12 @@ class AdvancedGamificationSystem {
         const activationBtn = document.createElement('div');
         activationBtn.id = 'game-activation';
         activationBtn.className = 'game-activation';
-        activationBtn.innerHTML = `
+        activationBtn.innerHTML = sanitizeHTML(`
             <div class="activation-content">
                 <div class="game-icon">🎮</div>
                 <div class="level-badge">${this.playerProfile.level}</div>
             </div>
-        `;
+        `);
 
         activationBtn.addEventListener('click', () => this.toggleGameInterface());
         document.body.appendChild(activationBtn);
@@ -1123,7 +1123,7 @@ class AdvancedGamificationSystem {
             const achievementElement = document.createElement('div');
             achievementElement.className = `achievement-item ${isUnlocked ? 'unlocked' : 'locked'}`;
 
-            achievementElement.innerHTML = `
+            achievementElement.innerHTML = sanitizeHTML(`
                 <div class="achievement-icon">${achievement.icon}</div>
                 <div class="achievement-details">
                     <div class="achievement-name">${achievement.name}</div>
@@ -1131,7 +1131,7 @@ class AdvancedGamificationSystem {
                     <div class="achievement-reward">+${achievement.reward} XP</div>
                 </div>
                 ${isUnlocked ? '<div class="achievement-badge">✓</div>' : ''}
-            `;
+            `);
 
             achievementsContainer.appendChild(achievementElement);
         });
@@ -1150,7 +1150,7 @@ class AdvancedGamificationSystem {
             const powerUpElement = document.createElement('div');
             powerUpElement.className = `powerup-item ${isOwned ? 'owned' : canAfford ? 'available' : 'locked'}`;
 
-            powerUpElement.innerHTML = `
+            powerUpElement.innerHTML = sanitizeHTML(`
                 <div class="powerup-icon">${powerUp.icon}</div>
                 <div class="powerup-details">
                     <div class="powerup-name">${powerUp.name}</div>
@@ -1160,7 +1160,7 @@ class AdvancedGamificationSystem {
                 ${isOwned ? '<div class="powerup-status">✓ Owned</div>' :
                   canAfford ? `<button onclick="gamificationSystem.buyPowerUp('${key}')" class="buy-powerup-btn">Comprar</button>` :
                   '<div class="powerup-status">🔒 Locked</div>'}
-            `;
+            `);
 
             powerUpsContainer.appendChild(powerUpElement);
         });
@@ -1189,7 +1189,7 @@ class AdvancedGamificationSystem {
 
         const stats = this.getUserStats();
 
-        statsContainer.innerHTML = `
+        statsContainer.innerHTML = sanitizeHTML(`
             <div class="stat-item">
                 <div class="stat-icon">⭐</div>
                 <div class="stat-details">
@@ -1218,7 +1218,7 @@ class AdvancedGamificationSystem {
                     <div class="stat-label">Monedas</div>
                 </div>
             </div>
-        `;
+        `);
     }
 
     updatePlayerProfile() {
@@ -1241,13 +1241,13 @@ class AdvancedGamificationSystem {
     showNotification(message, type = 'info', source = '') {
         const notification = document.createElement('div');
         notification.className = `game-notification ${type}`;
-        notification.innerHTML = `
+        notification.innerHTML = sanitizeHTML(`
             <div class="notification-icon">${this.getNotificationIcon(type)}</div>
             <div class="notification-content">
                 <div class="notification-message">${message}</div>
                 ${source ? `<div class="notification-source">${source}</div>` : ''}
             </div>
-        `;
+        `);
 
         this.notificationContainer.appendChild(notification);
 
@@ -1424,7 +1424,7 @@ class AdvancedGamificationSystem {
             }
         ];
 
-        questsContainer.innerHTML = dailyQuests.map(quest => `
+        questsContainer.innerHTML = sanitizeHTML(dailyQuests.map(quest => `
             <div class="quest-item ${quest.completed ? 'completed' : ''}">
                 <div class="quest-info">
                     <h5>${quest.title}</h5>
@@ -1441,7 +1441,7 @@ class AdvancedGamificationSystem {
                     <span class="coin-reward">+${quest.reward.coins} 🪙</span>
                 </div>
             </div>
-        `).join('');
+        `).join(''));
     }
 
     getUserStats() {
@@ -1567,7 +1567,7 @@ class AdvancedGamificationSystem {
     showAchievementNotification(achievement) {
         const notification = document.createElement('div');
         notification.className = 'achievement-notification';
-        notification.innerHTML = `
+        notification.innerHTML = sanitizeHTML(`
             <div class="achievement-content">
                 <div class="achievement-icon">${achievement.icon}</div>
                 <div class="achievement-text">
@@ -1576,7 +1576,7 @@ class AdvancedGamificationSystem {
                     <p>${achievement.description}</p>
                 </div>
             </div>
-        `;
+        `);
 
         // Agregar estilos dinámicos - Reubicado para evitar conflictos con otros botones
         notification.style.cssText = `

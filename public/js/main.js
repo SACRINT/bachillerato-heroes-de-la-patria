@@ -95,7 +95,7 @@ function createChatbot() {
     const chatWindow = document.createElement('div');
     chatWindow.id = 'chatbot-window';
     chatWindow.className = 'chatbot-window d-none';
-    chatWindow.innerHTML = `
+    chatWindow.innerHTML = sanitizeHTML(`
         <div class="chatbot-header">
             <h5 class="mb-0">
                 <i class="fas fa-robot me-2"></i>Asistente Virtual BGE
@@ -120,7 +120,7 @@ function createChatbot() {
                 </button>
             </div>
         </div>
-    `;
+    `);
     
     // Añadir al body
     document.body.appendChild(chatButton);
@@ -194,11 +194,11 @@ function addMessage(message, sender) {
     const messageDiv = document.createElement('div');
     
     messageDiv.className = `message ${sender}-message`;
-    messageDiv.innerHTML = `
+    messageDiv.innerHTML = sanitizeHTML(`
         <div class="message-content">
             ${message}
         </div>
-    `;
+    `);
     
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;

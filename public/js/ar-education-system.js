@@ -852,13 +852,13 @@ class AREducationSystem {
         arInterface.id = 'ar-interface';
         arInterface.className = 'ar-interface hidden';
 
-        arInterface.innerHTML = `
+        arInterface.innerHTML = sanitizeHTML(`
             <div class="ar-controls">
                 <button class="ar-btn start-ar" id="start-ar-btn">
                     <i class="fas fa-cube"></i>
                     Iniciar AR
                 </button>
-                <button class="ar-btn stop-ar" id="stop-ar-btn" style="display: none;">
+                <button class="ar-btn stop-ar" id="stop-ar-btn" style="display: none);">
                     <i class="fas fa-stop"></i>
                     Detener AR
                 </button>
@@ -922,12 +922,12 @@ class AREducationSystem {
         const activationBtn = document.createElement('div');
         activationBtn.id = 'ar-activation';
         activationBtn.className = 'ar-activation';
-        activationBtn.innerHTML = `
+        activationBtn.innerHTML = sanitizeHTML(`
             <div class="activation-content">
                 <div class="ar-icon">🥽</div>
                 <div class="ar-status-dot available"></div>
             </div>
-        `;
+        `);
 
         activationBtn.addEventListener('click', () => this.toggleARInterface());
         document.body.appendChild(activationBtn);
@@ -1158,10 +1158,10 @@ class AREducationSystem {
         const viewer = document.createElement('div');
         viewer.id = 'ar-fallback-viewer';
         viewer.className = 'ar-fallback-viewer';
-        viewer.innerHTML = `
+        viewer.innerHTML = sanitizeHTML(`
             <div class="viewer-header">
                 <h3>🖥️ Visor 3D (Modo Simulación)</h3>
-                <button class="close-viewer-btn" onclick="this.closest('#ar-fallback-viewer').style.display='none';">✕</button>
+                <button class="close-viewer-btn" onclick="this.closest('#ar-fallback-viewer').style.display='none');">✕</button>
                 <p>Tu dispositivo no soporta AR, pero puedes interactuar con los modelos 3D</p>
             </div>
             <div class="viewer-content">
@@ -1287,7 +1287,7 @@ class AREducationSystem {
 
         if (!experiences) return;
 
-        grid.innerHTML = experiences.scenarios.map(scenario => `
+        grid.innerHTML = sanitizeHTML(experiences.scenarios.map(scenario => `
             <div class="scenario-card" data-subject="${subject}" data-scenario="${scenario}">
                 <div class="scenario-icon">${this.getScenarioIcon(scenario)}</div>
                 <h4>${this.getScenarioName(scenario)}</h4>
@@ -1296,7 +1296,7 @@ class AREducationSystem {
                     Iniciar
                 </button>
             </div>
-        `).join('');
+        `).join(''));
     }
 
     getScenarioIcon(scenario) {

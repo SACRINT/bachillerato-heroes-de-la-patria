@@ -334,7 +334,7 @@ class PaymentSystemManager {
             const isOverdue = dueDate < new Date();
             const dueDateClass = isOverdue ? 'text-danger fw-bold' : '';
 
-            row.innerHTML = `
+            row.innerHTML = sanitizeHTML(`
                 <td>${payment.concept}</td>
                 <td>${payment.period}</td>
                 <td class="${dueDateClass}">${this.formatDate(payment.dueDate)}</td>
@@ -345,7 +345,7 @@ class PaymentSystemManager {
                         <i class="fas fa-credit-card me-1"></i>Pagar
                     </button>
                 </td>
-            `;
+            `);
             tbody.appendChild(row);
         });
     }
@@ -358,7 +358,7 @@ class PaymentSystemManager {
         
         // Llenar detalles del pago
         const paymentDetails = document.getElementById('paymentDetails');
-        paymentDetails.innerHTML = `
+        paymentDetails.innerHTML = sanitizeHTML(`
             <div class="card border-primary">
                 <div class="card-header bg-primary text-white">
                     <h6 class="mb-0">Detalles del Pago</h6>
@@ -376,7 +376,7 @@ class PaymentSystemManager {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         // Inicializar formulario de pago
         this.updatePaymentForm('credit');
@@ -466,11 +466,11 @@ class PaymentSystemManager {
 
     showLoadingState() {
         const paymentModal = document.querySelector('#paymentModal .modal-footer');
-        paymentModal.innerHTML = `
+        paymentModal.innerHTML = sanitizeHTML(`
             <button class="btn btn-primary" disabled>
                 <i class="fas fa-spinner fa-spin me-2"></i>Procesando pago...
             </button>
-        `;
+        `);
     }
 
     completePayment() {
@@ -602,12 +602,12 @@ class PaymentSystemManager {
         const toastElement = document.createElement('div');
         toastElement.className = `toast align-items-center text-bg-${type} border-0`;
         toastElement.setAttribute('role', 'alert');
-        toastElement.innerHTML = `
+        toastElement.innerHTML = sanitizeHTML(`
             <div class="d-flex">
                 <div class="toast-body">${message}</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-        `;
+        `);
 
         toastContainer.appendChild(toastElement);
         
@@ -966,7 +966,7 @@ PaymentSystemManager.prototype.handlePaymentMethodChange = function(method) {
     switch (method) {
         case 'credit_card':
         case 'debit_card':
-            fieldsContainer.innerHTML = `
+            fieldsContainer.innerHTML = sanitizeHTML(`
                 <div class="row g-3 mb-3">
                     <div class="col-12">
                         <label class="form-label">Número de tarjeta</label>
@@ -988,37 +988,37 @@ PaymentSystemManager.prototype.handlePaymentMethodChange = function(method) {
                         <input type="text" class="form-control" name="cardholder_name" required>
                     </div>
                 </div>
-            `;
+            `);
             this.setupCardFormatting(fieldsContainer);
             break;
 
         case 'oxxo':
-            fieldsContainer.innerHTML = `
+            fieldsContainer.innerHTML = sanitizeHTML(`
                 <div class="alert alert-warning">
                     <i class="fas fa-store me-2"></i>
                     Se generará un código de barras para pagar en cualquier tienda OXXO.
                     <br><small>El código será válido por 3 días.</small>
                 </div>
-            `;
+            `);
             break;
 
         case 'spei':
-            fieldsContainer.innerHTML = `
+            fieldsContainer.innerHTML = sanitizeHTML(`
                 <div class="alert alert-info">
                     <i class="fas fa-university me-2"></i>
                     Se generará una referencia SPEI para transferencia bancaria.
                     <br><small>Transferencia disponible 24/7 desde tu banco en línea.</small>
                 </div>
-            `;
+            `);
             break;
 
         case 'paypal':
-            fieldsContainer.innerHTML = `
+            fieldsContainer.innerHTML = sanitizeHTML(`
                 <div class="alert alert-warning">
                     <i class="fab fa-paypal me-2"></i>
                     Serás redirigido a PayPal para completar el pago de forma segura.
                 </div>
-            `;
+            `);
             break;
     }
 };
@@ -1081,14 +1081,14 @@ PaymentSystemManager.prototype.showPaymentLoader = function(show) {
             const loaderEl = document.createElement('div');
             loaderEl.className = 'advanced-payment-loader position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center';
             loaderEl.style.cssText = 'background: rgba(0,0,0,0.7); z-index: 2000;';
-            loaderEl.innerHTML = `
+            loaderEl.innerHTML = sanitizeHTML(`
                 <div class="text-center text-white">
                     <div class="spinner-border mb-3" role="status">
                         <span class="visually-hidden">Procesando...</span>
                     </div>
                     <p>💳 Procesando tu pago...</p>
                 </div>
-            `;
+            `);
             document.body.appendChild(loaderEl);
         }
     } else {
@@ -1133,7 +1133,7 @@ PaymentSystemManager.prototype.showAdvancedPaymentResult = function(success, res
     const iconClass = success ? 'fa-check-circle text-success' : 'fa-times-circle text-danger';
     const title = success ? '¡Pago Exitoso!' : 'Error en el Pago';
     
-    modal.innerHTML = `
+    modal.innerHTML = sanitizeHTML(`
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0 text-center">
@@ -1154,7 +1154,7 @@ PaymentSystemManager.prototype.showAdvancedPaymentResult = function(success, res
                 </div>
             </div>
         </div>
-    `;
+    `);
     
     document.body.appendChild(modal);
 };

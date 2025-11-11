@@ -154,7 +154,7 @@ class PWAAdvancedFeatures {
         const modal = document.createElement('div');
         modal.className = 'modal fade show d-block';
         modal.style.backgroundColor = 'rgba(0,0,0,0.9)';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content bg-dark text-white">
                     <div class="modal-header border-0">
@@ -162,7 +162,7 @@ class PWAAdvancedFeatures {
                         <button type="button" class="btn-close btn-close-white" onclick="this.closest('.modal').remove()"></button>
                     </div>
                     <div class="modal-body p-0 position-relative">
-                        <video autoplay playsinline style="width: 100%; height: auto;"></video>
+                        <video autoplay playsinline style="width: 100%); height: auto;"></video>
                         <div class="position-absolute top-50 start-50 translate-middle">
                             <div style="width: 200px; height: 200px; border: 2px solid #00ff00; border-radius: 10px;"></div>
                         </div>
@@ -383,7 +383,7 @@ class PWAAdvancedFeatures {
             backdrop-filter: blur(10px); animation: fadeInScale 0.3s ease;
         `;
         
-        menu.innerHTML = `
+        menu.innerHTML = sanitizeHTML(`
             <div class="text-center">
                 <h6 class="mb-3">Acciones Rápidas</h6>
                 <div class="d-grid gap-2">
@@ -401,7 +401,7 @@ class PWAAdvancedFeatures {
                     </button>
                 </div>
             </div>
-        `;
+        `);
         
         document.body.appendChild(menu);
         
@@ -469,7 +469,7 @@ class PWAAdvancedFeatures {
             color: white; z-index: 1040; animation: slideUp 0.5s ease;
         `;
         
-        installBtn.innerHTML = `
+        installBtn.innerHTML = sanitizeHTML(`
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-auto">
@@ -489,7 +489,7 @@ class PWAAdvancedFeatures {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         
         document.body.appendChild(installBtn);
     }
@@ -634,10 +634,10 @@ class PWAAdvancedFeatures {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; left: 50%; transform: translateX(-50%); z-index: 1060; min-width: 300px;';
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             ${message}
             <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
-        `;
+        `);
         
         document.body.appendChild(alertDiv);
         setTimeout(() => alertDiv.remove(), 5000);
@@ -652,7 +652,7 @@ class PWAAdvancedFeatures {
         const modal = document.createElement('div');
         modal.className = 'modal fade show d-block';
         modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -690,7 +690,7 @@ class PWAAdvancedFeatures {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         
         document.body.appendChild(modal);
     }

@@ -140,10 +140,10 @@ class GoogleAuthIntegration {
         const loginBtn = document.getElementById('googleLoginBtn');
         if (loginBtn) {
             // Cambiar el texto del botón para indicar modo offline
-            loginBtn.innerHTML = `
+            loginBtn.innerHTML = sanitizeHTML(`
                 <i class="fas fa-user-circle me-1"></i>
                 Acceso Local
-            `;
+            `);
 
             // Configurar click para mostrar opciones locales
             loginBtn.onclick = () => {
@@ -157,7 +157,7 @@ class GoogleAuthIntegration {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.id = 'localLoginModal';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -183,7 +183,7 @@ class GoogleAuthIntegration {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
         const bootstrapModal = new bootstrap.Modal(modal);
@@ -204,8 +204,8 @@ class GoogleAuthIntegration {
         modal.className = 'modal fade';
         modal.id = 'googleSignInModal';
         modal.setAttribute('data-bs-backdrop', 'static');
-        modal.innerHTML = `
-            <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+        modal.innerHTML = sanitizeHTML(`
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 400px);">
                 <div class="modal-content" style="border: none; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
                     <div class="modal-header border-0 text-center" style="padding: 2rem 2rem 1rem 2rem;">
                         <div class="w-100">
@@ -302,8 +302,8 @@ class GoogleAuthIntegration {
         modal.className = 'modal fade';
         modal.id = 'googleErrorModal';
         modal.setAttribute('data-bs-backdrop', 'static');
-        modal.innerHTML = `
-            <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+        modal.innerHTML = sanitizeHTML(`
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 400px);">
                 <div class="modal-content" style="border: none; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
                     <div class="modal-header border-0 text-center" style="padding: 2rem 2rem 1rem 2rem;">
                         <div class="w-100">
@@ -390,7 +390,7 @@ class GoogleAuthIntegration {
         authContainer.className = 'nav-item';
         authContainer.id = 'googleLoginContainer';
 
-        authContainer.innerHTML = `
+        authContainer.innerHTML = sanitizeHTML(`
             <!-- Dropdown de opciones de login -->
             <div class="dropdown" id="loginDropdownContainer">
                 <button class="btn btn-primary btn-sm dropdown-toggle ms-2" type="button" id="loginDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -433,7 +433,7 @@ class GoogleAuthIntegration {
             </div>
 
             <!-- Dropdown de perfil completo (reemplaza el botón de login cuando hay sesión activa) -->
-            <div id="userProfileDropdown" class="dropdown" style="display: none;">
+            <div id="userProfileDropdown" class="dropdown" style="display: none);">
                 <button class="btn btn-success btn-sm dropdown-toggle ms-2" type="button" data-bs-toggle="dropdown">
                     <img id="userProfileImage" src="" alt="Perfil" style="width: 24px; height: 24px; border-radius: 50%; margin-right: 8px;">
                     <span id="userProfileName">Usuario</span>
@@ -614,7 +614,7 @@ class GoogleAuthIntegration {
         // Crear botón de login temporal
         const loginBtn = document.getElementById('googleLoginBtn');
         if (loginBtn) {
-            loginBtn.innerHTML = `
+            loginBtn.innerHTML = sanitizeHTML(`
                 <svg width="16" height="16" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#ffffff"/>
                     <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#ffffff"/>
@@ -622,7 +622,7 @@ class GoogleAuthIntegration {
                     <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#ffffff"/>
                 </svg>
                 <span>Login Temporal</span>
-            `;
+            `);
 
             // Cambiar el evento para login temporal
             loginBtn.removeEventListener('click', this.handleGoogleLogin.bind(this));
@@ -857,7 +857,7 @@ class GoogleAuthIntegration {
         const loginBtn = document.getElementById('googleLoginBtn');
         if (loginBtn) {
             loginBtn.style.display = 'flex';
-            loginBtn.innerHTML = `
+            loginBtn.innerHTML = sanitizeHTML(`
                 <svg width="16" height="16" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#ffffff"/>
                     <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#ffffff"/>
@@ -865,7 +865,7 @@ class GoogleAuthIntegration {
                     <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#ffffff"/>
                 </svg>
                 <span>Pendiente Aprobación</span>
-            `;
+            `);
         }
     }
 
@@ -914,7 +914,7 @@ class GoogleAuthIntegration {
             currentUserName.textContent = user.name || 'Usuario';
 
             // CREAR MENÚ COMPLETO CON SUBELEMENTOS
-            userSessionStatus.innerHTML = `
+            userSessionStatus.innerHTML = sanitizeHTML(`
                 <hr class="dropdown-divider">
                 <span class="dropdown-item-text text-success">
                     <i class="fas fa-check-circle me-2"></i>
@@ -939,7 +939,7 @@ class GoogleAuthIntegration {
                 <li><a class="dropdown-item text-danger" href="#" onclick="googleLogout()">
                     <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
                 </a></li>
-            `;
+            `);
 
             // Mostrar el menú completo
             userSessionStatus.classList.remove('d-none');
@@ -950,10 +950,10 @@ class GoogleAuthIntegration {
             // Cambiar el botón a estado "conectado"
             const loginButton = document.getElementById('loginDropdown');
             if (loginButton) {
-                loginButton.innerHTML = `
+                loginButton.innerHTML = sanitizeHTML(`
                     <i class="fas fa-user-check me-1"></i>
                     ${user.name || 'Usuario Conectado'}
-                `;
+                `);
                 loginButton.className = 'btn btn-success btn-sm dropdown-toggle ms-2';
                 console.log('✅ Botón de login actualizado correctamente');
             } else {
@@ -1038,10 +1038,10 @@ class GoogleAuthIntegration {
         const notification = document.createElement('div');
         notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
         notification.style.cssText = 'top: 100px; right: 20px; z-index: 1060; max-width: 400px;';
-        notification.innerHTML = `
+        notification.innerHTML = sanitizeHTML(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
 
         document.body.appendChild(notification);
 
@@ -1070,10 +1070,10 @@ class GoogleAuthIntegration {
 
         // Restaurar botón de login a estado inicial
         if (loginButton) {
-            loginButton.innerHTML = `
+            loginButton.innerHTML = sanitizeHTML(`
                 <i class="fas fa-sign-in-alt me-1"></i>
                 Iniciar Sesión
-            `;
+            `);
             loginButton.className = 'btn btn-primary btn-sm dropdown-toggle ms-2';
         }
 
@@ -1206,7 +1206,7 @@ class GoogleAuthIntegration {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.id = 'registrationModal';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header bg-info text-white">
@@ -1252,7 +1252,7 @@ class GoogleAuthIntegration {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
         const bsModal = new bootstrap.Modal(modal);
@@ -1317,7 +1317,7 @@ function initiateManualLogin() {
     const modal = document.createElement('div');
     modal.className = 'modal fade';
     modal.id = 'secureLoginModal';
-    modal.innerHTML = `
+    modal.innerHTML = sanitizeHTML(`
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
@@ -1361,7 +1361,7 @@ function initiateManualLogin() {
                 </div>
             </div>
         </div>
-    `;
+    `);
 
     document.body.appendChild(modal);
     const bootstrapModal = new bootstrap.Modal(modal);

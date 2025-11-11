@@ -261,14 +261,14 @@ Este ejercicio refuerza nuestro compromiso con la seguridad y nos permite mejora
         const newsToShow = this.filteredNews.slice(0, this.currentPage * this.newsPerPage);
         
         if (newsToShow.length === 0) {
-            this.newsContainer.innerHTML = `
+            this.newsContainer.innerHTML = sanitizeHTML(`
                 <div class="col-12 text-center">
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle me-2"></i>
                         No se encontraron noticias que coincidan con los criterios de búsqueda.
                     </div>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -289,10 +289,10 @@ Este ejercicio refuerza nuestro compromiso con la seguridad y nos permite mejora
         if (loadMoreBtn) {
             if (newsToShow.length < this.filteredNews.length) {
                 loadMoreBtn.style.display = 'block';
-                loadMoreBtn.innerHTML = `
+                loadMoreBtn.innerHTML = sanitizeHTML(`
                     <i class="fas fa-plus me-2"></i>
                     Cargar más noticias (${this.filteredNews.length - newsToShow.length} restantes)
-                `;
+                `);
             } else {
                 loadMoreBtn.style.display = 'none';
             }
@@ -467,7 +467,7 @@ Este ejercicio refuerza nuestro compromiso con la seguridad y nos permite mejora
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.tabIndex = -1;
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -503,7 +503,7 @@ Este ejercicio refuerza nuestro compromiso con la seguridad y nos permite mejora
                     </div>
                 </div>
             </div>
-        `;
+        `);
         return modal;
     }
 
@@ -558,7 +558,7 @@ Este ejercicio refuerza nuestro compromiso con la seguridad y nos permite mejora
         toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : 'danger'} border-0`;
         toast.setAttribute('role', 'alert');
         
-        toast.innerHTML = `
+        toast.innerHTML = sanitizeHTML(`
             <div class="d-flex">
                 <div class="toast-body">
                     <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
@@ -566,7 +566,7 @@ Este ejercicio refuerza nuestro compromiso con la seguridad y nos permite mejora
                 </div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-        `;
+        `);
         
         toastContainer.appendChild(toast);
         const bootstrapToast = new bootstrap.Toast(toast);

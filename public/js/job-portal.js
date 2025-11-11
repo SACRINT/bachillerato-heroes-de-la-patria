@@ -471,7 +471,7 @@ class JobPortal {
         if (!container) return;
 
         if (jobs.length === 0) {
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="col-12 text-center">
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle me-2"></i>
@@ -479,7 +479,7 @@ class JobPortal {
                         <a href="#" onclick="jobPortal.renderFeaturedJobs()" class="alert-link">Ver todos los empleos</a>
                     </div>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -742,10 +742,10 @@ class JobPortal {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1060; max-width: 400px;';
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
         
         document.body.appendChild(alertDiv);
         
@@ -803,7 +803,7 @@ function showApplications() {
     
     const modal = document.createElement('div');
     modal.className = 'modal fade';
-    modal.innerHTML = `
+    modal.innerHTML = sanitizeHTML(`
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -818,7 +818,7 @@ function showApplications() {
                 </div>
             </div>
         </div>
-    `;
+    `);
     
     document.body.appendChild(modal);
     const bootstrapModal = new bootstrap.Modal(modal);
@@ -830,7 +830,7 @@ function showApplications() {
 function showCareerTips() {
     const tipsModal = document.createElement('div');
     tipsModal.className = 'modal fade';
-    tipsModal.innerHTML = `
+    tipsModal.innerHTML = sanitizeHTML(`
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-info text-white">
@@ -905,7 +905,7 @@ function showCareerTips() {
                 </div>
             </div>
         </div>
-    `;
+    `);
     
     document.body.appendChild(tipsModal);
     const modal = new bootstrap.Modal(tipsModal);

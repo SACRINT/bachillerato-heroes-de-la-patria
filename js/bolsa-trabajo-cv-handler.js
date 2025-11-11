@@ -299,10 +299,10 @@
     function showLoadingState(button, message = 'Enviando...') {
         if (!button) return;
         button.disabled = true;
-        button.innerHTML = `
+        button.innerHTML = sanitizeHTML(`
             <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
             ${message}
-        `;
+        `);
     }
 
     /**
@@ -322,7 +322,7 @@
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed';
         alertDiv.style.cssText = 'top: 80px; right: 20px; z-index: 999999; max-width: 400px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             <div class="d-flex align-items-center">
                 <i class="fas fa-exclamation-triangle fa-lg me-3"></i>
                 <div>
@@ -331,7 +331,7 @@
                 </div>
             </div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-        `;
+        `);
 
         document.body.appendChild(alertDiv);
 
@@ -354,7 +354,7 @@
         modal.className = 'modal fade cv-success-modal';
         modal.setAttribute('data-bs-backdrop', sanitizeText('static'));
         modal.setAttribute('data-bs-keyboard', sanitizeText('false'));
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header bg-success text-white">
@@ -427,7 +427,7 @@
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
 

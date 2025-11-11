@@ -115,10 +115,10 @@ class AdminDashboardAdvanced {
         const toggle = document.createElement('div');
         toggle.id = 'admin-dashboard-toggle';
         toggle.className = 'admin-dashboard-toggle';
-        toggle.innerHTML = `
+        toggle.innerHTML = sanitizeHTML(`
             <i class="fas fa-tachometer-alt"></i>
             <span class="toggle-text">Admin</span>
-        `;
+        `);
         
         toggle.style.cssText = `
             position: fixed;
@@ -154,7 +154,7 @@ class AdminDashboardAdvanced {
         const dashboard = document.createElement('div');
         dashboard.id = 'admin-dashboard-main';
         dashboard.className = 'admin-dashboard-main';
-        dashboard.innerHTML = `
+        dashboard.innerHTML = sanitizeHTML(`
             <div class="dashboard-container">
                 <div class="dashboard-header">
                     <div class="dashboard-title">
@@ -209,7 +209,7 @@ class AdminDashboardAdvanced {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         
         dashboard.style.cssText = `
             position: fixed;
@@ -610,7 +610,7 @@ class AdminDashboardAdvanced {
         const modal = document.createElement('div');
         modal.id = 'dashboard-settings-modal';
         modal.className = 'modal fade';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -670,7 +670,7 @@ class AdminDashboardAdvanced {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         
         document.body.appendChild(modal);
     }
@@ -679,7 +679,7 @@ class AdminDashboardAdvanced {
         const modal = document.createElement('div');
         modal.id = 'dashboard-logs-modal';
         modal.className = 'modal fade';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -707,7 +707,7 @@ class AdminDashboardAdvanced {
                                 </div>
                             </div>
                         </div>
-                        <div class="logs-content" style="max-height: 400px; overflow-y: auto;">
+                        <div class="logs-content" style="max-height: 400px); overflow-y: auto;">
                             <div class="logs-list">
                                 <!-- Los logs se cargarán aquí -->
                             </div>
@@ -1124,13 +1124,13 @@ class AdminDashboardAdvanced {
         
         logs.sort((a, b) => b.timestamp - a.timestamp);
         
-        logsList.innerHTML = logs.slice(0, 100).map(log => `
+        logsList.innerHTML = sanitizeHTML(logs.slice(0, 100).map(log => `
             <div class="log-entry">
                 <span class="log-time">${new Date(log.timestamp).toLocaleTimeString()}</span>
                 <span class="log-level ${log.level}">${log.level.toUpperCase()}</span>
                 <span class="log-message">${log.message}</span>
             </div>
-        `).join('');
+        `).join(''));
     }
 
     getConsoleLogsType() {

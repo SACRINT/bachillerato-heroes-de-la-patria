@@ -81,7 +81,7 @@ class ImageGallery {
         const container = document.querySelector(this.container);
         if (!container) return;
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="gallery-header">
                 <h2>Galería de Imágenes</h2>
                 ${this.renderUploadButton()}
@@ -99,7 +99,7 @@ class ImageGallery {
             <div class="gallery-pagination">
                 ${this.renderPagination()}
             </div>
-        `;
+        `);
     }
 
     renderUploadButton() {
@@ -209,9 +209,9 @@ class ImageGallery {
         const lightbox = document.createElement('div');
         lightbox.id = 'image-lightbox';
         lightbox.className = 'lightbox';
-        lightbox.innerHTML = `
+        lightbox.innerHTML = sanitizeHTML(`
             <div class="lightbox-content">
-                <button class="lightbox-close">&times;</button>
+                <button class="lightbox-close">&times);</button>
                 <button class="lightbox-prev">&#10094;</button>
                 <button class="lightbox-next">&#10095;</button>
                 <img src="" alt="" id="lightbox-image">

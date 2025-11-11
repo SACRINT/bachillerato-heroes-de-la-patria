@@ -76,7 +76,7 @@ class AcademicReportsManager {
         const container = document.getElementById('academic-reports-container');
         if (!container) return;
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="academic-reports-system">
                 <!-- Header del Sistema -->
                 <div class="reports-header bg-primary text-white p-4 rounded-top">
@@ -194,7 +194,7 @@ class AcademicReportsManager {
                                 <div class="card">
                                     <div class="card-header d-flex justify-content-between align-items-center">
                                         <h5 class="mb-0" id="reportTitle">Selecciona un tipo de reporte</h5>
-                                        <div class="btn-group" id="exportButtons" style="display: none;">
+                                        <div class="btn-group" id="exportButtons" style="display: none);">
                                             <button type="button" class="btn btn-sm btn-outline-primary" data-format="pdf">
                                                 <i class="fas fa-file-pdf me-1"></i>PDF
                                             </button>
@@ -972,12 +972,12 @@ class AcademicReportsManager {
         const historyContainer = document.getElementById('reportHistory');
 
         if (history.length === 0) {
-            historyContainer.innerHTML = `
+            historyContainer.innerHTML = sanitizeHTML(`
                 <div class="text-center text-muted py-5">
                     <i class="fas fa-history fa-3x mb-3"></i>
                     <p>No hay reportes generados anteriormente</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -1082,10 +1082,10 @@ class AcademicReportsManager {
         // Crear toast notification
         const toast = document.createElement('div');
         toast.className = `toast-notification ${type}`;
-        toast.innerHTML = `
+        toast.innerHTML = sanitizeHTML(`
             <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
             ${message}
-        `;
+        `);
 
         document.body.appendChild(toast);
 

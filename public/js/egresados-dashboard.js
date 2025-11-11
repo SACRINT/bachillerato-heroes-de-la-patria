@@ -156,7 +156,7 @@ class EgresadosDashboard {
         const publicables = this.stats.publicables || 0;
         const ultimos30 = this.stats.ultimos30Dias || 0;
 
-        statsContainer.innerHTML = `
+        statsContainer.innerHTML = sanitizeHTML(`
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="card stat-card bg-primary text-white h-100">
                     <div class="card-body d-flex align-items-center">
@@ -215,7 +215,7 @@ class EgresadosDashboard {
                     </div>
                 </div>
             </div>
-        `;
+        `);
     }
 
     /**
@@ -246,7 +246,7 @@ class EgresadosDashboard {
         const estatus = [...new Set(this.egresados.map(e => e.estatus_academico).filter(Boolean))];
         const ciudades = [...new Set(this.egresados.map(e => e.ciudad).filter(Boolean))].sort();
 
-        filtersContainer.innerHTML = `
+        filtersContainer.innerHTML = sanitizeHTML(`
             <div class="row g-3">
                 <div class="col-md-3">
                     <div class="input-group">
@@ -291,7 +291,7 @@ class EgresadosDashboard {
                     </button>
                 </div>
             </div>
-        `;
+        `);
     }
 
     /**
@@ -369,22 +369,22 @@ class EgresadosDashboard {
         const pageData = this.filteredEgresados.slice(start, end);
 
         if (pageData.length === 0) {
-            tableContainer.innerHTML = `
+            tableContainer.innerHTML = sanitizeHTML(`
                 <div class="text-center py-5">
                     <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
                     <h5 class="text-muted">No se encontraron egresados</h5>
                     <p class="text-muted">Intenta ajustar los filtros de búsqueda</p>
                 </div>
-            `;
+            `);
             return;
         }
 
-        tableContainer.innerHTML = `
+        tableContainer.innerHTML = sanitizeHTML(`
             <div class="table-responsive">
                 <table class="table table-hover table-striped align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th onclick="egresadosApp.sortBy('id')" style="cursor: pointer;">
+                            <th onclick="egresadosApp.sortBy('id')" style="cursor: pointer);">
                                 ID ${this.getSortIcon('id')}
                             </th>
                             <th onclick="egresadosApp.sortBy('nombre')" style="cursor: pointer;">
@@ -901,7 +901,7 @@ class EgresadosDashboard {
         modal.id = 'egresadoDetailsModal';
         modal.setAttribute('tabindex', '-1');
 
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header bg-primary text-white">
@@ -1017,7 +1017,7 @@ class EgresadosDashboard {
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-warning" onclick="egresadosApp.editEgresado(${egresado.id}); bootstrap.Modal.getInstance(document.getElementById('egresadoDetailsModal')).hide();">
+                        <button type="button" class="btn btn-warning" onclick="egresadosApp.editEgresado(${egresado.id})); bootstrap.Modal.getInstance(document.getElementById('egresadoDetailsModal')).hide();">
                             <i class="fas fa-edit"></i> Editar
                         </button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -1063,7 +1063,7 @@ class EgresadosDashboard {
         modal.id = 'egresadoEditModal';
         modal.setAttribute('tabindex', '-1');
 
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header bg-warning text-dark">
@@ -1168,7 +1168,7 @@ class EgresadosDashboard {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         return modal;
     }
@@ -1320,12 +1320,12 @@ class EgresadosDashboard {
             const loading = document.createElement('div');
             loading.id = 'egresados-loading';
             loading.className = 'text-center py-5';
-            loading.innerHTML = `
+            loading.innerHTML = sanitizeHTML(`
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Cargando...</span>
                 </div>
                 <p class="mt-3 text-muted">Cargando datos de egresados...</p>
-            `;
+            `);
             container.appendChild(loading);
         } else {
             document.getElementById('egresados-loading')?.remove();
@@ -1353,7 +1353,7 @@ class EgresadosDashboard {
         const toast = document.createElement('div');
         toast.className = `toast align-items-center text-white ${colors[type]} border-0`;
         toast.setAttribute('role', 'alert');
-        toast.innerHTML = `
+        toast.innerHTML = sanitizeHTML(`
             <div class="d-flex">
                 <div class="toast-body">
                     <i class="fas ${icons[type]} me-2"></i>
@@ -1361,7 +1361,7 @@ class EgresadosDashboard {
                 </div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-        `;
+        `);
 
         let container = document.getElementById('toast-container');
         if (!container) {

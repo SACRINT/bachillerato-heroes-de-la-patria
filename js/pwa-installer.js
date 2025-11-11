@@ -84,10 +84,10 @@ class PWAInstaller {
         this.installButton = document.createElement('button');
         this.installButton.id = 'pwa-install-button';
         this.installButton.className = 'pwa-install-btn hidden';
-        this.installButton.innerHTML = `
+        this.installButton.innerHTML = sanitizeHTML(`
             <i class="fas fa-download"></i>
             <span>Instalar App</span>
-        `;
+        `);
 
         // Estilos del botón
         this.installButton.style.cssText = `
@@ -120,7 +120,7 @@ class PWAInstaller {
         this.installModal.id = 'pwa-install-modal';
         this.installModal.className = 'pwa-modal hidden';
 
-        this.installModal.innerHTML = `
+        this.installModal.innerHTML = sanitizeHTML(`
             <div class="pwa-modal-backdrop" onclick="pwaInstaller.hideInstallModal()"></div>
             <div class="pwa-modal-content">
                 <div class="pwa-modal-header">
@@ -179,7 +179,7 @@ class PWAInstaller {
                     </button>
                 </div>
             </div>
-        `;
+        `);
 
         // Estilos del modal
         const modalStyles = document.createElement('style');
@@ -407,7 +407,7 @@ class PWAInstaller {
         banner.id = 'pwa-install-banner';
         banner.className = 'pwa-banner hidden';
 
-        banner.innerHTML = `
+        banner.innerHTML = sanitizeHTML(`
             <div class="pwa-banner-content">
                 <div class="pwa-banner-icon">
                     <i class="fas fa-mobile-alt"></i>
@@ -423,7 +423,7 @@ class PWAInstaller {
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-        `;
+        `);
 
         const bannerStyles = document.createElement('style');
         bannerStyles.textContent = `
@@ -732,7 +732,7 @@ class PWAInstaller {
     showInstallSuccessMessage() {
         const toast = document.createElement('div');
         toast.className = 'pwa-success-toast';
-        toast.innerHTML = `
+        toast.innerHTML = sanitizeHTML(`
             <div class="pwa-toast-content">
                 <i class="fas fa-check-circle text-success"></i>
                 <span>¡App instalada exitosamente!</span>
@@ -740,7 +740,7 @@ class PWAInstaller {
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-        `;
+        `);
 
         const toastStyles = document.createElement('style');
         toastStyles.textContent = `

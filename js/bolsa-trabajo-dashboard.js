@@ -474,7 +474,7 @@ class BolsaTrabajoManager {
         modal.id = 'bolsaTrabajoDetailsModal';
         modal.setAttribute('tabindex', '-1');
 
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header bg-primary text-white">
@@ -574,7 +574,7 @@ class BolsaTrabajoManager {
                         ` : ''}
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-warning" onclick="bolsaTrabajoManager.edit(${candidato.id}); bootstrap.Modal.getInstance(document.getElementById('bolsaTrabajoDetailsModal')).hide();">
+                        <button type="button" class="btn btn-warning" onclick="bolsaTrabajoManager.edit(${candidato.id})); bootstrap.Modal.getInstance(document.getElementById('bolsaTrabajoDetailsModal')).hide();">
                             <i class="fas fa-edit"></i> Editar
                         </button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -620,7 +620,7 @@ class BolsaTrabajoManager {
         modal.id = 'bolsaTrabajoEditModal';
         modal.setAttribute('tabindex', '-1');
 
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header bg-warning text-dark">
@@ -713,7 +713,7 @@ class BolsaTrabajoManager {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         return modal;
     }
@@ -893,7 +893,7 @@ class BolsaTrabajoManager {
         const toast = document.createElement('div');
         toast.className = `toast align-items-center text-white ${colors[type]} border-0`;
         toast.setAttribute('role', 'alert');
-        toast.innerHTML = `
+        toast.innerHTML = sanitizeHTML(`
             <div class="d-flex">
                 <div class="toast-body">
                     <i class="fas ${icons[type]} me-2"></i>
@@ -901,7 +901,7 @@ class BolsaTrabajoManager {
                 </div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-        `;
+        `);
 
         let container = document.getElementById('toast-container');
         if (!container) {

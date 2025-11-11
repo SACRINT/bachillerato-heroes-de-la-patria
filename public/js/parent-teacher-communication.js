@@ -1040,11 +1040,11 @@ class ParentTeacherCommunicationSystem {
         if (!messagesList) return;
 
         if (messages.length === 0) {
-            messagesList.innerHTML = `
+            messagesList.innerHTML = sanitizeHTML(`
                 <div class="text-center py-4">
                     <p class="text-muted">No hay mensajes aún. ¡Inicia la conversación!</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -1188,10 +1188,10 @@ class ParentTeacherCommunicationSystem {
         alertDiv.id = alertId;
         alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1070; max-width: 400px;';
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
 
         document.body.appendChild(alertDiv);
 

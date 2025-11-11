@@ -552,12 +552,12 @@ class BGEChatbotIAAvanzado {
             minute: '2-digit'
         });
 
-        messageElement.innerHTML = `
+        messageElement.innerHTML = sanitizeHTML(`
             <div class="message-content">
                 <div class="message-text">${this.formatMessage(message)}</div>
                 <div class="message-time">${timestamp}</div>
             </div>
-        `;
+        `);
 
         this.chatContainer.appendChild(messageElement);
 
@@ -589,7 +589,7 @@ class BGEChatbotIAAvanzado {
         const indicator = document.createElement('div');
         indicator.id = 'chatbot-typing-indicator';
         indicator.className = 'chatbot-message assistant typing';
-        indicator.innerHTML = `
+        indicator.innerHTML = sanitizeHTML(`
             <div class="message-content">
                 <div class="typing-dots">
                     <span></span>
@@ -597,7 +597,7 @@ class BGEChatbotIAAvanzado {
                     <span></span>
                 </div>
             </div>
-        `;
+        `);
 
         this.chatContainer?.appendChild(indicator);
         this.scrollToBottom();

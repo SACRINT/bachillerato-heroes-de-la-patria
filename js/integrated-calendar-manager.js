@@ -539,13 +539,13 @@ class IntegratedCalendarManager {
         const filteredEvents = this.filterEvents(this.events);
 
         if (filteredEvents.length === 0) {
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="text-center py-5">
                     <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
                     <h5 class="text-muted">No hay eventos para mostrar</h5>
                     <p class="text-muted">Prueba cambiar el filtro o crear un nuevo evento</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -841,10 +841,10 @@ class IntegratedCalendarManager {
         alertDiv.id = alertId;
         alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1060; max-width: 400px;';
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
 
         document.body.appendChild(alertDiv);
 
@@ -862,7 +862,7 @@ class IntegratedCalendarManager {
         const modalTitle = modal.querySelector('.modal-title');
         const modalBody = modal.querySelector('.modal-body');
 
-        if (modalTitle) modalTitle.innerHTML = `<i class="fas fa-calendar-day me-2"></i>${title}`;
+        if (modalTitle) modalTitle.innerHTML = sanitizeHTML(`<i class="fas fa-calendar-day me-2"></i>${title}`);
         if (modalBody) modalBody.innerHTML = body;
 
         const bootstrapModal = new bootstrap.Modal(modal);
@@ -873,7 +873,7 @@ class IntegratedCalendarManager {
         const modal = document.createElement('div');
         modal.id = 'eventModal';
         modal.className = 'modal fade';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -886,7 +886,7 @@ class IntegratedCalendarManager {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         document.body.appendChild(modal);
         return modal;
     }
