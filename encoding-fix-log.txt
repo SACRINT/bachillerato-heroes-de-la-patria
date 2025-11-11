@@ -1,47 +1,47 @@
 === CORRECCION DE ENCODING UTF-8 EN ARCHIVOS HTML ===
-Fecha: 2025-11-11T01:18:49.405Z
+Fecha: 2025-11-11T01:33:50.324Z
 Directorio: C:\03_BachilleratoHeroesWeb\public
 
 Total de archivos HTML encontrados: 34
 
   ⏭️  admin-dashboard.html (sin cambios necesarios)
   ⏭️  ar-vr-lab.html (sin cambios necesarios)
-  ✅ aviso-privacidad.html (encoding corregido)
-  ✅ biblioteca.html (encoding corregido)
-  ✅ bolsa-trabajo.html (encoding corregido)
-  ✅ calendario.html (encoding corregido)
-  ✅ calificaciones.html (encoding corregido)
-  ✅ chatbot.html (encoding corregido)
-  ✅ citas.html (encoding corregido)
-  ✅ comunidad.html (encoding corregido)
-  ✅ conocenos.html (encoding corregido)
-  ✅ contacto.html (encoding corregido)
-  ✅ convocatorias.html (encoding corregido)
-  ✅ descargas.html (encoding corregido)
+  ⏭️  aviso-privacidad.html (sin cambios necesarios)
+  ⏭️  biblioteca.html (sin cambios necesarios)
+  ⏭️  bolsa-trabajo.html (sin cambios necesarios)
+  ⏭️  calendario.html (sin cambios necesarios)
+  ⏭️  calificaciones.html (sin cambios necesarios)
+  ⏭️  chatbot.html (sin cambios necesarios)
+  ⏭️  citas.html (sin cambios necesarios)
+  ⏭️  comunidad.html (sin cambios necesarios)
+  ⏭️  conocenos.html (sin cambios necesarios)
+  ⏭️  contacto.html (sin cambios necesarios)
+  ⏭️  convocatorias.html (sin cambios necesarios)
+  ⏭️  descargas.html (sin cambios necesarios)
   ⏭️  docentes.html (sin cambios necesarios)
-  ✅ egresados.html (encoding corregido)
-  ✅ encuestas.html (encoding corregido)
+  ⏭️  egresados.html (sin cambios necesarios)
+  ⏭️  encuestas.html (sin cambios necesarios)
   ⏭️  estudiantes.html (sin cambios necesarios)
   ⏭️  index.html (sin cambios necesarios)
-  ✅ mensajeria.html (encoding corregido)
-  ✅ normatividad.html (encoding corregido)
-  ✅ oferta-educativa.html (encoding corregido)
-  ✅ offline.html (encoding corregido)
+  ⏭️  mensajeria.html (sin cambios necesarios)
+  ⏭️  normatividad.html (sin cambios necesarios)
+  ⏭️  oferta-educativa.html (sin cambios necesarios)
+  ⏭️  offline.html (sin cambios necesarios)
   ⏭️  padres.html (sin cambios necesarios)
-  ✅ pagos.html (encoding corregido)
-  ✅ privacidad.html (encoding corregido)
-  ✅ reglamento.html (encoding corregido)
-  ✅ servicios.html (encoding corregido)
-  ✅ sitios-interes.html (encoding corregido)
-  ✅ soporte.html (encoding corregido)
-  ✅ tenants-admin.html (encoding corregido)
-  ✅ terminos.html (encoding corregido)
+  ⏭️  pagos.html (sin cambios necesarios)
+  ⏭️  privacidad.html (sin cambios necesarios)
+  ⏭️  reglamento.html (sin cambios necesarios)
+  ⏭️  servicios.html (sin cambios necesarios)
+  ⏭️  sitios-interes.html (sin cambios necesarios)
+  ⏭️  soporte.html (sin cambios necesarios)
+  ⏭️  tenants-admin.html (sin cambios necesarios)
+  ⏭️  terminos.html (sin cambios necesarios)
   ⏭️  test-dashboard.html (sin cambios necesarios)
-  ✅ transparencia.html (encoding corregido)
+  ⏭️  transparencia.html (sin cambios necesarios)
 
 === RESUMEN ===
 Archivos procesados: 34
-Archivos corregidos: 27
-Archivos sin cambios: 7
-Tasa de éxito: 79.41%
+Archivos corregidos: 0
+Archivos sin cambios: 34
+Tasa de éxito: 0.00%
 

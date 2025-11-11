@@ -18,7 +18,11 @@
       "Bash(git add:*)",
       "mcp__chrome-devtools__take_snapshot",
       "mcp__chrome-devtools__click",
-      "mcp__chrome-devtools__take_screenshot"
+      "mcp__chrome-devtools__take_screenshot",
+      "Bash(printf:*)",
+      "Bash(docs/AUDITORIA_ERRORES_HTML_BGE_2025-11-10.md)",
+      "Bash(cat:*)",
+      "Bash(docs/RESUMEN_AUDITORIA_VISUAL_BGE.txt)"
     ],
     "deny": [],
     "ask": []

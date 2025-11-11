@@ -2387,3 +2387,55 @@ Una vez que el usuario ejecute la limpieza de localStorage:
     *   `DIAGNOSTICO_ESTADO_ACTUAL_16_OCT_2025.md` (nuevo)
     *   `CORRECCION_VERCEL_API_ROUTING_16_OCT_2025.md` (nuevo)
     *   `RESTAURACION_SISTEMA_VERIFICACION_EMAIL_16_OCT_2025.md` (nuevo)
+## [Auditoría Exhaustiva HTML] - 2025-11-10
+
+### Tipo: Audit / Quality Assessment
+
+### Descripción
+Auditoría exhaustiva de todas las 35 páginas HTML del proyecto BGE para identificar errores comunes: encoding, scripts, recursos faltantes.
+
+### Hallazgos Críticos
+
+#### 1. UTF-8 Encoding Corruption (31 páginas - 88.6%)
+- Emojis rotos: `ðŸ` en lugar de `🚀`, `📧`, etc.
+- Acentos corruptos: `Ã` en lugar de `Á`, `Ã‰` en lugar de `É`
+- BOM UTF-8 al inicio en 28 páginas
+
+**Impacto:** Hace ilegibles comentarios y contenido, reduce SEO
+
+#### 2. Script Loading Issues (3 páginas)
+- admin-dashboard.html: Scripts duplicados (línea 6214-6217)
+- estudiantes.html, padres.html: Loading order
+
+**Impacto:** Memory leak, event listeners duplicados, race conditions
+
+#### 3. Bootstrap Mismatch (1 página)
+- docentes.html: Bootstrap 5.3.0 vs 5.3.2 en proyecto
+
+**Impacto:** Responsive layout inconsistencia
+
+#### 4. Missing main.js (1 página)
+- offline.html: Sin `<script src="js/main.js"></script>`
+
+**Impacto:** Header/footer no inyectados
+
+### Estadísticas
+- **Total páginas:** 35
+- **Páginas con errores:** 31 (88.6%)
+- **Tasa de éxito:** 11.4%
+- **Tiempo estimado de fix:** 4-6 horas
+
+### Archivos Generados
+1. `docs/AUDITORIA_ERRORES_HTML_BGE_2025-11-10.md` (Reporte detallado, 300+ líneas)
+2. `docs/TABLA_ERRORES_PAGINAS_BGE.md` (Matriz comparativa, 35 páginas)
+
+### Prioridad
+🔴 CRÍTICA - Requiere acción inmediata
+
+### Próximos Pasos
+1. Recodificar UTF-8 en 31 páginas
+2. Remover BOM UTF-8 en 28 páginas
+3. Limpiar scripts duplicados (admin-dashboard)
+4. Agregar main.js a offline.html
+5. Actualizar Bootstrap docentes.html (5.3.0 → 5.3.2)
+
