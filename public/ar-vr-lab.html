@@ -3,17 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title" data-base-title="🥽 Laboratorio AR/VR - BGE Héroes de la Patria">🥽 Laboratorio AR/VR - BGE Héroes de la Patria</title>
+    <meta name="description" id="page-description" content="Laboratorio AR/VR - Experiencias inmersivas de aprendizaje">
+    <meta name="keywords" content="AR, VR, realidad aumentada, realidad virtual, educación">
+    <title id="page-title" data-base-title="🥽 Laboratorio AR/VR | BGE Héroes de la Patria">🥽 Laboratorio AR/VR | BGE Héroes de la Patria</title>
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <!-- CSS Principal -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/themes.css">
 
     <style>
-        .ar-vr-container {
-            min-height: 100vh;
+        /* Main Content Container */
+        #main-content {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: calc(100vh - 200px);
             padding: 2rem;
+        }
+
+        /* Dark Mode Support */
+        body.dark-mode #main-content {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
         }
 
         .ar-vr-header {
@@ -31,6 +43,26 @@
         .ar-vr-header p {
             font-size: 1.2rem;
             opacity: 0.9;
+        }
+
+        /* Breadcrumb Styling */
+        .breadcrumb-nav {
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb-nav .breadcrumb {
+            margin-bottom: 0;
+            padding: 0.75rem 0;
+        }
+
+        .breadcrumb-nav .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb-nav .breadcrumb-item a:hover {
+            color: white;
         }
 
         .experiences-grid {
@@ -184,7 +216,24 @@
     <script src="js/meta-updater.js" defer></script>
 </head>
 <body>
-    <div class="ar-vr-container">
+    <!-- Skip Links para accesibilidad -->
+    <a href="#main-content" class="skip-link visually-hidden-focusable">Saltar al contenido principal</a>
+
+    <!-- CRITICAL: Header placeholder para inyección dinámica -->
+    <div id="main-header"></div>
+
+    <!-- CRITICAL: Main content wrapper -->
+    <main id="main-content" class="main-content">
+        <!-- Breadcrumb Navigation -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+            <div class="container">
+                <ol class="breadcrumb bg-transparent">
+                    <li class="breadcrumb-item"><a href="index.html" class="text-white"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active text-white">Laboratorio AR/VR</li>
+                </ol>
+            </div>
+        </nav>
+
         <!-- Header del Laboratorio AR/VR -->
         <div class="ar-vr-header">
             <h1>🥽 Laboratorio AR/VR</h1>
@@ -325,7 +374,10 @@
             <p><strong>VR Headsets:</strong> Meta Quest, HTC Vive, Valve Index</p>
             <p><strong>Recomendado:</strong> Dispositivo con giroscopio y acelerómetro</p>
         </div>
-    </div>
+    </main>
+
+    <!-- Footer placeholder para inyección dinámica -->
+    <div id="main-footer"></div>
 
     <!-- Visor AR/VR (Modal) -->
     <div class="ar-viewer" id="arViewer">

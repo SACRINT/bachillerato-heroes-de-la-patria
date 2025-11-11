@@ -1,0 +1,47 @@
+=== CORRECCION DE ENCODING UTF-8 EN ARCHIVOS HTML ===
+Fecha: 2025-11-11T01:18:49.405Z
+Directorio: C:\03_BachilleratoHeroesWeb\public
+
+Total de archivos HTML encontrados: 34
+
+  ⏭️  admin-dashboard.html (sin cambios necesarios)
+  ⏭️  ar-vr-lab.html (sin cambios necesarios)
+  ✅ aviso-privacidad.html (encoding corregido)
+  ✅ biblioteca.html (encoding corregido)
+  ✅ bolsa-trabajo.html (encoding corregido)
+  ✅ calendario.html (encoding corregido)
+  ✅ calificaciones.html (encoding corregido)
+  ✅ chatbot.html (encoding corregido)
+  ✅ citas.html (encoding corregido)
+  ✅ comunidad.html (encoding corregido)
+  ✅ conocenos.html (encoding corregido)
+  ✅ contacto.html (encoding corregido)
+  ✅ convocatorias.html (encoding corregido)
+  ✅ descargas.html (encoding corregido)
+  ⏭️  docentes.html (sin cambios necesarios)
+  ✅ egresados.html (encoding corregido)
+  ✅ encuestas.html (encoding corregido)
+  ⏭️  estudiantes.html (sin cambios necesarios)
+  ⏭️  index.html (sin cambios necesarios)
+  ✅ mensajeria.html (encoding corregido)
+  ✅ normatividad.html (encoding corregido)
+  ✅ oferta-educativa.html (encoding corregido)
+  ✅ offline.html (encoding corregido)
+  ⏭️  padres.html (sin cambios necesarios)
+  ✅ pagos.html (encoding corregido)
+  ✅ privacidad.html (encoding corregido)
+  ✅ reglamento.html (encoding corregido)
+  ✅ servicios.html (encoding corregido)
+  ✅ sitios-interes.html (encoding corregido)
+  ✅ soporte.html (encoding corregido)
+  ✅ tenants-admin.html (encoding corregido)
+  ✅ terminos.html (encoding corregido)
+  ⏭️  test-dashboard.html (sin cambios necesarios)
+  ✅ transparencia.html (encoding corregido)
+
+=== RESUMEN ===
+Archivos procesados: 34
+Archivos corregidos: 27
+Archivos sin cambios: 7
+Tasa de éxito: 79.41%
+

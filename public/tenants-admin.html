@@ -195,7 +195,7 @@
                     try {
                         const user = JSON.parse(userData);
                         if (user && (user.role === 'superadmin' || user.role === 'admin')) {
-                            console.log('âœ… [TENANTS-ADMIN AUTH] Acceso concedido:', user.role);
+                            console.log('✅ [TENANTS-ADMIN AUTH] Acceso concedido:', user.role);
                             return true;
                         }
                     } catch (e) {
@@ -271,7 +271,7 @@
                                 </tr>
                             </thead>
                             <tbody id="tenantTableBody">
-                                <!-- Se llena dinÃ¡micamente -->
+                                <!-- Se llena dinámicamente -->
                             </tbody>
                         </table>
                     </div>
@@ -381,7 +381,7 @@
                             <option value="activo">Activo</option>
                             <option value="inactivo">Inactivo</option>
                         </select>
-                        <small class="form-text text-muted">Determina si el tenant estÃ¡ operativo</small>
+                        <small class="form-text text-muted">Determina si el tenant está operativo</small>
                     </div>
 
                     <!-- Botones de Acción -->

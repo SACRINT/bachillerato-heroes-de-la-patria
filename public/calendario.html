@@ -417,7 +417,7 @@
                 </div>
                 <div class="calendar-container">
                     <div id="interactiveCalendar">
-                        <!-- El calendario se generarÃ¡ aquí dinÃ¡micamente -->
+                        <!-- El calendario se generará aquí dinámicamente -->
                     </div>
                 </div>
             </div>
@@ -427,7 +427,7 @@
         <section class="py-5 d-none" id="listView">
             <div class="container">
                 <div id="eventsList">
-                    <!-- Los eventos en lista se generarÃ¡n aquí -->
+                    <!-- Los eventos en lista se generarán aquí -->
                 </div>
             </div>
         </section>
@@ -528,12 +528,12 @@
             </div>
         </section>
 
-        <!-- Acciones RÃ¡pidas -->
+        <!-- Acciones Rápidas -->
         <section class="py-5 bg-light">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 mx-auto text-center mb-4">
-                        <h3 class="section-title">Acciones RÃ¡pidas</h3>
+                        <h3 class="section-title">Acciones Rápidas</h3>
                     </div>
                 </div>
                 <div class="row g-3 justify-content-center">
@@ -582,7 +582,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="eventModalBody">
-                    <!-- Contenido del evento se cargarÃ¡ aquí -->
+                    <!-- Contenido del evento se cargará aquí -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary" onclick="addToPersonalCalendar()">
@@ -676,7 +676,7 @@
                 <strong>Asistente Virtual</strong>
                 <div style="font-size: 12px; opacity: 0.8;">Calendario Escolar</div>
             </div>
-            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">Ã—</button>
+            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
@@ -685,17 +685,17 @@
                     <div class="response-title">ðŸŽ“ Asistente Virtual BGE</div>
                     <div class="response-content">
                         <div class="response-section">
-                            <div class="response-subtitle">Â¡Hola! Soy tu asistente inteligente</div>
+                            <div class="response-subtitle">¡Hola! Soy tu asistente inteligente</div>
                             <div class="response-text">Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.</div>
                         </div>
                     </div>
-                    <div class="response-footer">Â¿En qué puedo ayudarte hoy?</div>
+                    <div class="response-footer">¿En qué puedo ayudarte hoy?</div>
                 </div>
             </div>
         </div>
         
         <div class="chatbot-input">
-            <input type="text" id="chatbotInput" placeholder="Ej: Â¿CuÃ¡ndo son las vacaciones de invierno?" onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
+            <input type="text" id="chatbotInput" placeholder="Ej: ¿Cuándo son las vacaciones de invierno?" onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
             <button onclick="sendMessage()" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -747,9 +747,9 @@
     <script>
         let integratedCalendarInstance = null;
 
-        // Inicializar cuando se cargue la pÃ¡gina
+        // Inicializar cuando se cargue la página
         document.addEventListener('DOMContentLoaded', function() {
-            // Verificar si el usuario estÃ¡ autenticado (mock)
+            // Verificar si el usuario está autenticado (mock)
             const userData = localStorage.getItem('userData');
             const authToken = localStorage.getItem('authToken');
 
@@ -757,8 +757,8 @@
                 // Usuario autenticado - mostrar sistema avanzado
                 initIntegratedCalendar();
             } else {
-                // Usuario no autenticado - mantener calendario bÃ¡sico
-                console.log('Usuario no autenticado - usando calendario bÃ¡sico');
+                // Usuario no autenticado - mantener calendario básico
+                console.log('Usuario no autenticado - usando calendario básico');
             }
         });
 
@@ -767,7 +767,7 @@
                 if (typeof IntegratedCalendarManager !== 'undefined') {
                     integratedCalendarInstance = new IntegratedCalendarManager();
 
-                    // Ocultar calendario bÃ¡sico si existe
+                    // Ocultar calendario básico si existe
                     const basicCalendar = document.getElementById('calendar-container');
                     if (basicCalendar) {
                         basicCalendar.style.display = 'none';
@@ -779,7 +779,7 @@
                         advancedContainer.classList.remove('d-none');
                     }
 
-                    console.log('âœ… Sistema integrado de calendario inicializado');
+                    console.log('✅ Sistema integrado de calendario inicializado');
                 } else {
                     console.warn('âŒ IntegratedCalendarManager no disponible');
                 }
