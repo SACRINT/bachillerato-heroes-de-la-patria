@@ -4,11 +4,12 @@
  */
 
 const fs = require('fs');
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const db = require('../config/database');
 
 async function runScript() {
-    console.log('🚀 Iniciando creación de tablas...\n');
+    devLogger.log('🚀 Iniciando creación de tablas...\n');
 
     try {
         // Leer archivo SQL
@@ -21,7 +22,7 @@ async function runScript() {
             .map(s => s.trim())
             .filter(s => s.length > 0 && !s.startsWith('--'));
 
-        console.log(`📄 ${statements.length} statements SQL encontrados\n`);
+        devLogger.log(`📄 ${statements.length} statements SQL encontrados\n`);
 
         // Ejecutar cada statement
         for (let i = 0; i < statements.length; i++) {
@@ -34,32 +35,32 @@ async function runScript() {
 
             // Saltar USE database (ya estamos conectados)
             if (statement.toUpperCase().startsWith('USE ')) {
-                console.log(`⏭️  Saltando: ${statement.substring(0, 50)}...`);
+                devLogger.log(`⏭️  Saltando: ${statement.substring(0, 50)}...`);
                 continue;
             }
 
             try {
-                console.log(`⚙️  Ejecutando statement ${i + 1}/${statements.length}...`);
+                devLogger.log(`⚙️  Ejecutando statement ${i + 1}/${statements.length}...`);
 
                 await db.query(statement);
 
-                console.log(`   ✅ Exitoso\n`);
+                devLogger.log(`   ✅ Exitoso\n`);
 
             } catch (error) {
                 // Ignorar errores de "ya existe"
                 if (error.code === 'ER_TABLE_EXISTS_ERROR') {
-                    console.log(`   ℹ️  Tabla ya existe, continuando...\n`);
+                    devLogger.log(`   ℹ️  Tabla ya existe, continuando...\n`);
                 } else if (error.code === 'ER_DUP_FIELDNAME') {
-                    console.log(`   ℹ️  Campo ya existe, continuando...\n`);
+                    devLogger.log(`   ℹ️  Campo ya existe, continuando...\n`);
                 } else {
-                    console.error(`   ❌ Error:`, error.message);
-                    console.error(`   Statement: ${statement.substring(0, 100)}...\n`);
+                    devLogger.error(`   ❌ Error:`, error.message);
+                    devLogger.error(`   Statement: ${statement.substring(0, 100)}...\n`);
                 }
             }
         }
 
         // Verificar tablas creadas
-        console.log('\n📊 Verificando tablas creadas:\n');
+        devLogger.log('\n📊 Verificando tablas creadas:\n');
 
         const [tables] = await db.query(`
             SHOW TABLES LIKE 'bolsa_trabajo'
@@ -73,30 +74,30 @@ async function runScript() {
 
         tables.forEach(table => {
             const tableName = Object.values(table)[0];
-            console.log(`   ✅ ${tableName}`);
+            devLogger.log(`   ✅ ${tableName}`);
         });
 
         // Mostrar estadísticas
-        console.log('\n📈 Estadísticas iniciales:\n');
+        devLogger.log('\n📈 Estadísticas iniciales:\n');
 
         const [bolsaStats] = await db.query('SELECT COUNT(*) as total FROM bolsa_trabajo');
-        console.log(`   📄 Bolsa de Trabajo: ${bolsaStats[0].total} registros`);
+        devLogger.log(`   📄 Bolsa de Trabajo: ${bolsaStats[0].total} registros`);
 
         const [subsStats] = await db.query('SELECT COUNT(*) as total FROM suscriptores_notificaciones');
-        console.log(`   📧 Suscriptores: ${subsStats[0].total} registros`);
+        devLogger.log(`   📧 Suscriptores: ${subsStats[0].total} registros`);
 
         const [empresasStats] = await db.query('SELECT COUNT(*) as total FROM empresas_asociadas');
-        console.log(`   🏢 Empresas: ${empresasStats[0].total} registros`);
+        devLogger.log(`   🏢 Empresas: ${empresasStats[0].total} registros`);
 
         const [historialStats] = await db.query('SELECT COUNT(*) as total FROM historial_compartidos');
-        console.log(`   📋 Historial Compartidos: ${historialStats[0].total} registros`);
+        devLogger.log(`   📋 Historial Compartidos: ${historialStats[0].total} registros`);
 
-        console.log('\n✅ ¡Tablas creadas exitosamente!\n');
+        devLogger.log('\n✅ ¡Tablas creadas exitosamente!\n');
 
         process.exit(0);
 
     } catch (error) {
-        console.error('\n❌ Error fatal:', error);
+        devLogger.error('\n❌ Error fatal:', error);
         process.exit(1);
     }
 }

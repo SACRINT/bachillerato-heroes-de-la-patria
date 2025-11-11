@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
@@ -94,7 +95,7 @@ router.post('/', [
             fecha_pub
         ]);
 
-        console.log('✅ Nueva comunicado creada:', result.rows[0].id);
+        devLogger.log('✅ Nueva comunicado creada:', result.rows[0].id);
 
         res.status(201).json({
             success: true,
@@ -103,7 +104,7 @@ router.post('/', [
         });
 
     } catch (error) {
-        console.error('❌ Error al crear comunicado:', error);
+        devLogger.error('❌ Error al crear comunicado:', error);
         res.status(500).json({
             success: false,
             error: 'Error al crear la comunicado'
@@ -179,7 +180,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener comunicados:', error);
+        devLogger.error('❌ Error al obtener comunicados:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener comunicados'
@@ -210,7 +211,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener estadísticas:', error);
+        devLogger.error('❌ Error al obtener estadísticas:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -243,7 +244,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener comunicado:', error);
+        devLogger.error('❌ Error al obtener comunicado:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener la comunicado'
@@ -276,7 +277,7 @@ router.get('/slug/:slug', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener comunicado:', error);
+        devLogger.error('❌ Error al obtener comunicado:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener la comunicado'
@@ -344,7 +345,7 @@ router.put('/:id', async (req, res) => {
             });
         }
 
-        console.log(`✅ Comunicado ${id} actualizada`);
+        devLogger.log(`✅ Comunicado ${id} actualizada`);
 
         res.json({
             success: true,
@@ -353,7 +354,7 @@ router.put('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar comunicado:', error);
+        devLogger.error('❌ Error al actualizar comunicado:', error);
         res.status(500).json({
             success: false,
             error: 'Error al actualizar la comunicado'
@@ -389,7 +390,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al archivar comunicado:', error);
+        devLogger.error('❌ Error al archivar comunicado:', error);
         res.status(500).json({
             success: false,
             error: 'Error al archivar la comunicado'

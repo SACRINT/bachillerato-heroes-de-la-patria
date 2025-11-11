@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const { body, query, validationResult } = require('express-validator');
 const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
 
@@ -15,7 +16,7 @@ function getParentTeacherService() {
         const { getParentTeacherCommunicationService } = require('../services/parentTeacherCommunicationService');
         return getParentTeacherCommunicationService();
     } catch (error) {
-        console.error('❌ Error obteniendo servicio de comunicación:', error.message);
+        devLogger.error('❌ Error obteniendo servicio de comunicación:', error.message);
         return null;
     }
 }
@@ -58,7 +59,7 @@ router.get('/conversations', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo conversaciones:', error);
+        devLogger.error('❌ Error obteniendo conversaciones:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo conversaciones',
@@ -140,7 +141,7 @@ router.post('/conversations', authenticateToken, [
         });
 
     } catch (error) {
-        console.error('❌ Error creando conversación:', error);
+        devLogger.error('❌ Error creando conversación:', error);
         res.status(500).json({
             success: false,
             message: 'Error creando conversación',
@@ -194,7 +195,7 @@ router.get('/conversations/:conversationId', authenticateToken, async (req, res)
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo conversación:', error);
+        devLogger.error('❌ Error obteniendo conversación:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo conversación',
@@ -291,7 +292,7 @@ router.post('/messages', authenticateToken, [
                 });
             }
         } catch (wsError) {
-            console.log('⚠️ WebSocket no disponible para notificación de mensaje');
+            devLogger.log('⚠️ WebSocket no disponible para notificación de mensaje');
         }
 
         res.status(201).json({
@@ -301,7 +302,7 @@ router.post('/messages', authenticateToken, [
         });
 
     } catch (error) {
-        console.error('❌ Error enviando mensaje:', error);
+        devLogger.error('❌ Error enviando mensaje:', error);
         res.status(500).json({
             success: false,
             message: 'Error enviando mensaje',
@@ -381,7 +382,7 @@ router.get('/conversations/:conversationId/messages', authenticateToken, [
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo mensajes:', error);
+        devLogger.error('❌ Error obteniendo mensajes:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo mensajes',
@@ -463,7 +464,7 @@ router.get('/appointments', authenticateToken, [
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo citas:', error);
+        devLogger.error('❌ Error obteniendo citas:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo citas',
@@ -567,7 +568,7 @@ router.post('/appointments', authenticateToken, [
         });
 
     } catch (error) {
-        console.error('❌ Error programando cita:', error);
+        devLogger.error('❌ Error programando cita:', error);
         res.status(500).json({
             success: false,
             message: 'Error programando cita',
@@ -623,7 +624,7 @@ router.put('/appointments/:appointmentId', authenticateToken, async (req, res) =
         });
 
     } catch (error) {
-        console.error('❌ Error actualizando cita:', error);
+        devLogger.error('❌ Error actualizando cita:', error);
         res.status(500).json({
             success: false,
             message: 'Error actualizando cita',
@@ -677,7 +678,7 @@ router.post('/appointments/:appointmentId/cancel', authenticateToken, async (req
         });
 
     } catch (error) {
-        console.error('❌ Error cancelando cita:', error);
+        devLogger.error('❌ Error cancelando cita:', error);
         res.status(500).json({
             success: false,
             message: 'Error cancelando cita',
@@ -743,7 +744,7 @@ router.get('/reports', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo reportes:', error);
+        devLogger.error('❌ Error obteniendo reportes:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo reportes',
@@ -804,7 +805,7 @@ router.post('/reports', authenticateToken, requireTeacher, [
         });
 
     } catch (error) {
-        console.error('❌ Error creando reporte:', error);
+        devLogger.error('❌ Error creando reporte:', error);
         res.status(500).json({
             success: false,
             message: 'Error creando reporte',
@@ -848,7 +849,7 @@ router.get('/stats', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo estadísticas:', error);
+        devLogger.error('❌ Error obteniendo estadísticas:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo estadísticas',
@@ -911,7 +912,7 @@ router.get('/upcoming-appointments', authenticateToken, [
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo próximas citas:', error);
+        devLogger.error('❌ Error obteniendo próximas citas:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo próximas citas',
@@ -925,7 +926,7 @@ router.get('/upcoming-appointments', authenticateToken, [
 // ============================================
 
 router.use((error, req, res, next) => {
-    console.error('❌ Error en rutas de comunicación padres-docentes:', error);
+    devLogger.error('❌ Error en rutas de comunicación padres-docentes:', error);
 
     res.status(500).json({
         success: false,

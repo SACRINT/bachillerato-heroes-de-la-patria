@@ -4,6 +4,7 @@
  */
 
 const fs = require('fs');
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 
 const cmsFilePath = path.join(__dirname, '../../js/cms-manager.js');
@@ -76,7 +77,7 @@ if (avisosTableEnd !== -1) {
     // Encontrar el siguiente } catch para avisos
     let searchStart = avisosTableEnd + 30;
     let catchIndex = content.indexOf("} catch (error) {", searchStart);
-    let errorLogIndex = content.indexOf("console.error('Error cargando avisos:", catchIndex);
+    let errorLogIndex = content.indexOf("devLogger.error('Error cargando avisos:", catchIndex);
 
     if (catchIndex !== -1 && errorLogIndex !== -1) {
         const beforeCatch = content.substring(0, catchIndex);
@@ -131,7 +132,7 @@ const comunicadosTableEnd = content.indexOf("container.innerHTML = html;", conte
 if (comunicadosTableEnd !== -1) {
     let searchStart = comunicadosTableEnd + 30;
     let catchIndex = content.indexOf("} catch (error) {", searchStart);
-    let errorLogIndex = content.indexOf("console.error('Error cargando comunicados:", catchIndex);
+    let errorLogIndex = content.indexOf("devLogger.error('Error cargando comunicados:", catchIndex);
 
     if (catchIndex !== -1 && errorLogIndex !== -1) {
         const beforeCatch = content.substring(0, catchIndex);
@@ -169,10 +170,10 @@ if (comunicadosTableEnd !== -1) {
 // Guardar el archivo modificado
 fs.writeFileSync(cmsFilePath, content, 'utf8');
 
-console.log('✅ Paginación aplicada a cms-manager.js');
-console.log('📁 Archivo modificado:', cmsFilePath);
+devLogger.log('✅ Paginación aplicada a cms-manager.js');
+devLogger.log('📁 Archivo modificado:', cmsFilePath);
 
 // Copiar a public
 const publicCmsFilePath = path.join(__dirname, '../../public/js/cms-manager.js');
 fs.copyFileSync(cmsFilePath, publicCmsFilePath);
-console.log('✅ Archivo copiado a:', publicCmsFilePath);
+devLogger.log('✅ Archivo copiado a:', publicCmsFilePath);

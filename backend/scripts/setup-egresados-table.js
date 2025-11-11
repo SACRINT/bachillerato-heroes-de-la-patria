@@ -4,6 +4,7 @@
  */
 
 const mysql = require('mysql2/promise');
+const devLogger = require('../utils/devLogger');
 require('dotenv').config();
 
 const createEgresadosTable = `
@@ -47,7 +48,7 @@ async function setupDatabase() {
     let connection;
 
     try {
-        console.log('🔌 Conectando a la base de datos...');
+        devLogger.log('🔌 Conectando a la base de datos...');
 
         // Crear conexión
         connection = await mysql.createConnection({
@@ -58,31 +59,31 @@ async function setupDatabase() {
             database: process.env.DB_NAME || 'heroes_patria_db'
         });
 
-        console.log('✅ Conexión establecida');
+        devLogger.log('✅ Conexión establecida');
 
         // Crear tabla de egresados
-        console.log('📋 Creando tabla egresados...');
+        devLogger.log('📋 Creando tabla egresados...');
         await connection.query(createEgresadosTable);
-        console.log('✅ Tabla egresados creada exitosamente');
+        devLogger.log('✅ Tabla egresados creada exitosamente');
 
         // Verificar que la tabla existe
         const [tables] = await connection.query('SHOW TABLES LIKE "egresados"');
         if (tables.length > 0) {
-            console.log('✅ Verificación: Tabla egresados existe en la base de datos');
+            devLogger.log('✅ Verificación: Tabla egresados existe en la base de datos');
 
             // Mostrar estructura de la tabla
             const [columns] = await connection.query('DESCRIBE egresados');
-            console.log('\n📊 Estructura de la tabla egresados:');
+            devLogger.log('\n📊 Estructura de la tabla egresados:');
             console.table(columns);
         }
 
     } catch (error) {
-        console.error('❌ Error al configurar la base de datos:', error.message);
+        devLogger.error('❌ Error al configurar la base de datos:', error.message);
         process.exit(1);
     } finally {
         if (connection) {
             await connection.end();
-            console.log('\n🔌 Conexión cerrada');
+            devLogger.log('\n🔌 Conexión cerrada');
         }
     }
 }

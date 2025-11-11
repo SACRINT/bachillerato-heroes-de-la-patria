@@ -4,6 +4,7 @@
  */
 
 const bcrypt = require('bcryptjs');
+const devLogger = require('../utils/devLogger');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -17,7 +18,7 @@ class StudentService {
         this.notificationsFile = path.join(this.dataPath, 'notifications.json');
         this.scheduleFile = path.join(this.dataPath, 'schedule.json');
 
-        console.log('🎓 [STUDENT SERVICE] Inicializando servicio de estudiantes...');
+        devLogger.log('🎓 [STUDENT SERVICE] Inicializando servicio de estudiantes...');
         this.ensureDataDirectory();
         this.initializeSampleData();
     }
@@ -26,7 +27,7 @@ class StudentService {
         try {
             await fs.mkdir(this.dataPath, { recursive: true });
         } catch (error) {
-            console.error('❌ Error creando directorio de datos:', error);
+            devLogger.error('❌ Error creando directorio de datos:', error);
         }
     }
 
@@ -37,14 +38,14 @@ class StudentService {
             this.dbAvailable = result;
             return result;
         } catch (error) {
-            console.log('⚠️ Student Service: Fallback a JSON');
+            devLogger.log('⚠️ Student Service: Fallback a JSON');
             this.dbAvailable = false;
             return false;
         }
     }
 
     async initializeSampleData() {
-        console.log('📊 [STUDENT SERVICE] Inicializando datos de ejemplo...');
+        devLogger.log('📊 [STUDENT SERVICE] Inicializando datos de ejemplo...');
 
         // Datos de estudiantes de ejemplo
         const sampleStudents = {
@@ -240,9 +241,9 @@ class StudentService {
             await this.writeJsonFile(this.assignmentsFile, sampleAssignments);
             await this.writeJsonFile(this.notificationsFile, sampleNotifications);
             await this.writeJsonFile(this.scheduleFile, sampleSchedule);
-            console.log('✅ [STUDENT SERVICE] Datos de ejemplo inicializados');
+            devLogger.log('✅ [STUDENT SERVICE] Datos de ejemplo inicializados');
         } catch (error) {
-            console.error('❌ Error inicializando datos de ejemplo:', error);
+            devLogger.error('❌ Error inicializando datos de ejemplo:', error);
         }
     }
 
@@ -251,7 +252,7 @@ class StudentService {
             const data = await fs.readFile(filePath, 'utf8');
             return JSON.parse(data);
         } catch (error) {
-            console.log(`📄 Archivo no encontrado, creando: ${path.basename(filePath)}`);
+            devLogger.log(`📄 Archivo no encontrado, creando: ${path.basename(filePath)}`);
             return null;
         }
     }
@@ -261,14 +262,14 @@ class StudentService {
             await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf8');
             return true;
         } catch (error) {
-            console.error(`❌ Error escribiendo archivo ${filePath}:`, error);
+            devLogger.error(`❌ Error escribiendo archivo ${filePath}:`, error);
             return false;
         }
     }
 
     async authenticateStudent(matricula, password) {
         try {
-            console.log(`🔐 [STUDENT SERVICE] Autenticando estudiante: ${matricula}`);
+            devLogger.log(`🔐 [STUDENT SERVICE] Autenticando estudiante: ${matricula}`);
 
             const studentsData = await this.readJsonFile(this.studentsFile);
             if (!studentsData || !studentsData.students) {
@@ -293,7 +294,7 @@ class StudentService {
                 student: studentData
             };
         } catch (error) {
-            console.error('❌ Error en autenticación:', error);
+            devLogger.error('❌ Error en autenticación:', error);
             return { success: false, message: 'Error interno' };
         }
     }
@@ -314,14 +315,14 @@ class StudentService {
             const { password: _, ...profile } = student;
             return profile;
         } catch (error) {
-            console.error('❌ Error obteniendo perfil:', error);
+            devLogger.error('❌ Error obteniendo perfil:', error);
             throw error;
         }
     }
 
     async getDashboardData(studentId) {
         try {
-            console.log(`📊 [STUDENT SERVICE] Obteniendo dashboard para: ${studentId}`);
+            devLogger.log(`📊 [STUDENT SERVICE] Obteniendo dashboard para: ${studentId}`);
 
             const [profile, grades, assignments, notifications] = await Promise.all([
                 this.getStudentProfile(studentId),
@@ -365,7 +366,7 @@ class StudentService {
                 recent_notifications: notifications.slice(0, 3)
             };
         } catch (error) {
-            console.error('❌ Error obteniendo dashboard:', error);
+            devLogger.error('❌ Error obteniendo dashboard:', error);
             throw error;
         }
     }
@@ -389,7 +390,7 @@ class StudentService {
 
             return grades;
         } catch (error) {
-            console.error('❌ Error obteniendo calificaciones:', error);
+            devLogger.error('❌ Error obteniendo calificaciones:', error);
             return [];
         }
     }
@@ -403,7 +404,7 @@ class StudentService {
 
             return scheduleData.schedule.filter(s => s.student_id === studentId);
         } catch (error) {
-            console.error('❌ Error obteniendo horario:', error);
+            devLogger.error('❌ Error obteniendo horario:', error);
             return [];
         }
     }
@@ -427,7 +428,7 @@ class StudentService {
 
             return assignments;
         } catch (error) {
-            console.error('❌ Error obteniendo tareas:', error);
+            devLogger.error('❌ Error obteniendo tareas:', error);
             return [];
         }
     }
@@ -454,7 +455,7 @@ class StudentService {
 
             return notifications;
         } catch (error) {
-            console.error('❌ Error obteniendo notificaciones:', error);
+            devLogger.error('❌ Error obteniendo notificaciones:', error);
             return [];
         }
     }
@@ -479,7 +480,7 @@ class StudentService {
 
             return true;
         } catch (error) {
-            console.error('❌ Error marcando notificación:', error);
+            devLogger.error('❌ Error marcando notificación:', error);
             throw error;
         }
     }

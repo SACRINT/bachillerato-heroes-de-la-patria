@@ -4,6 +4,7 @@
  */
 
 const nodemailer = require('nodemailer');
+const devLogger = require('../utils/devLogger');
 require('dotenv').config();
 
 class SubscriptionEmailService {
@@ -17,11 +18,11 @@ class SubscriptionEmailService {
      */
     createTransporter() {
         if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-            console.warn('⚠️ [SUBSCRIPTION EMAIL] EMAIL_USER/EMAIL_PASS no configuradas');
+            devLogger.warn('⚠️ [SUBSCRIPTION EMAIL] EMAIL_USER/EMAIL_PASS no configuradas');
             return null;
         }
 
-        console.log('📧 [SUBSCRIPTION EMAIL] Configurando transporter Gmail...');
+        devLogger.log('📧 [SUBSCRIPTION EMAIL] Configurando transporter Gmail...');
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -34,9 +35,9 @@ class SubscriptionEmailService {
         // Verificar conexión
         transporter.verify((error, success) => {
             if (error) {
-                console.error('❌ [SUBSCRIPTION EMAIL] Error al conectar con Gmail:', error);
+                devLogger.error('❌ [SUBSCRIPTION EMAIL] Error al conectar con Gmail:', error);
             } else {
-                console.log('✅ [SUBSCRIPTION EMAIL] Conexión con Gmail exitosa');
+                devLogger.log('✅ [SUBSCRIPTION EMAIL] Conexión con Gmail exitosa');
             }
         });
 
@@ -52,7 +53,7 @@ class SubscriptionEmailService {
      */
     async sendVerificationEmail(email, nombre, token) {
         if (!this.transporter) {
-            console.error('❌ [SUBSCRIPTION EMAIL] Transporter no configurado');
+            devLogger.error('❌ [SUBSCRIPTION EMAIL] Transporter no configurado');
             return false;
         }
 
@@ -68,11 +69,11 @@ class SubscriptionEmailService {
             };
 
             const info = await this.transporter.sendMail(mailOptions);
-            console.log(`✅ [SUBSCRIPTION EMAIL] Email de verificación enviado a ${email} (Message ID: ${info.messageId})`);
+            devLogger.log(`✅ [SUBSCRIPTION EMAIL] Email de verificación enviado a ${email} (Message ID: ${info.messageId})`);
             return true;
 
         } catch (error) {
-            console.error(`❌ [SUBSCRIPTION EMAIL] Error al enviar email a ${email}:`, error);
+            devLogger.error(`❌ [SUBSCRIPTION EMAIL] Error al enviar email a ${email}:`, error);
             return false;
         }
     }
@@ -223,7 +224,7 @@ class SubscriptionEmailService {
      */
     async sendWelcomeEmail(email, nombre, token) {
         if (!this.transporter) {
-            console.error('❌ [SUBSCRIPTION EMAIL] Transporter no configurado');
+            devLogger.error('❌ [SUBSCRIPTION EMAIL] Transporter no configurado');
             return false;
         }
 
@@ -238,11 +239,11 @@ class SubscriptionEmailService {
             };
 
             const info = await this.transporter.sendMail(mailOptions);
-            console.log(`✅ [SUBSCRIPTION EMAIL] Email de bienvenida enviado a ${email} (Message ID: ${info.messageId})`);
+            devLogger.log(`✅ [SUBSCRIPTION EMAIL] Email de bienvenida enviado a ${email} (Message ID: ${info.messageId})`);
             return true;
 
         } catch (error) {
-            console.error(`❌ [SUBSCRIPTION EMAIL] Error al enviar email de bienvenida a ${email}:`, error);
+            devLogger.error(`❌ [SUBSCRIPTION EMAIL] Error al enviar email de bienvenida a ${email}:`, error);
             return false;
         }
     }

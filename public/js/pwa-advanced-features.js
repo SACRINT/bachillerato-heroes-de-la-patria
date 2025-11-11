@@ -476,7 +476,7 @@ class PWAAdvancedFeatures {
                         <img src="images/app_icons/icon-48x48.png" width="40" height="40" class="rounded">
                     </div>
                     <div class="col">
-                        <div class="small fw-bold">Héroes de la Patria</div>
+                        <div class="small fw-bold">window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria')</div>
                         <div class="small opacity-75">Instalar aplicación</div>
                     </div>
                     <div class="col-auto">

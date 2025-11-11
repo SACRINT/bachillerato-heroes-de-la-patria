@@ -4,6 +4,7 @@
  */
 
 const path = require('path');
+const devLogger = require('../utils/devLogger');
 
 // Mock de express request/response
 function createMockRequest(email) {
@@ -67,7 +68,7 @@ async function checkApprovalEndpoint(req, res) {
         });
 
     } catch (error) {
-        console.error('❌ Error verificando aprobación:', error);
+        devLogger.error('❌ Error verificando aprobación:', error);
         res.status(500).json({
             success: false,
             approved: false
@@ -77,8 +78,8 @@ async function checkApprovalEndpoint(req, res) {
 
 // TESTS
 async function runTests() {
-    console.log('🧪 EJECUTANDO TESTS DEL ENDPOINT check-approval\n');
-    console.log('='.repeat(60));
+    devLogger.log('🧪 EJECUTANDO TESTS DEL ENDPOINT check-approval\n');
+    devLogger.log('='.repeat(60));
 
     const tests = [
         {
@@ -129,8 +130,8 @@ async function runTests() {
     let failed = 0;
 
     for (const test of tests) {
-        console.log(`\n📝 ${test.name}`);
-        console.log(`   Email: ${test.email}`);
+        devLogger.log(`\n📝 ${test.name}`);
+        devLogger.log(`   Email: ${test.email}`);
 
         const req = createMockRequest(test.email);
         const res = createMockResponse();
@@ -148,35 +149,35 @@ async function runTests() {
             (approved === false || role === test.expectedRole);
 
         if (isCorrect) {
-            console.log(`   ✅ PASÓ`);
-            console.log(`      - Aprobado: ${approved} (esperado: ${test.expectedApproved})`);
-            console.log(`      - Rol: ${role} (esperado: ${test.expectedRole})`);
+            devLogger.log(`   ✅ PASÓ`);
+            devLogger.log(`      - Aprobado: ${approved} (esperado: ${test.expectedApproved})`);
+            devLogger.log(`      - Rol: ${role} (esperado: ${test.expectedRole})`);
             passed++;
         } else {
-            console.log(`   ❌ FALLÓ`);
-            console.log(`      - Respuesta completa:`, JSON.stringify(response.data, null, 2));
-            console.log(`      - Esperado: approved=${test.expectedApproved}, role=${test.expectedRole}`);
+            devLogger.log(`   ❌ FALLÓ`);
+            devLogger.log(`      - Respuesta completa:`, JSON.stringify(response.data, null, 2));
+            devLogger.log(`      - Esperado: approved=${test.expectedApproved}, role=${test.expectedRole}`);
             failed++;
         }
     }
 
-    console.log('\n' + '='.repeat(60));
-    console.log(`\n📊 RESULTADOS:`);
-    console.log(`   ✅ Pasaron: ${passed}/${tests.length}`);
-    console.log(`   ❌ Fallaron: ${failed}/${tests.length}`);
-    console.log(`   📈 Porcentaje: ${((passed/tests.length)*100).toFixed(1)}%`);
+    devLogger.log('\n' + '='.repeat(60));
+    devLogger.log(`\n📊 RESULTADOS:`);
+    devLogger.log(`   ✅ Pasaron: ${passed}/${tests.length}`);
+    devLogger.log(`   ❌ Fallaron: ${failed}/${tests.length}`);
+    devLogger.log(`   📈 Porcentaje: ${((passed/tests.length)*100).toFixed(1)}%`);
 
     if (failed === 0) {
-        console.log('\n🎉 ¡TODOS LOS TESTS PASARON!');
+        devLogger.log('\n🎉 ¡TODOS LOS TESTS PASARON!');
     } else {
-        console.log(`\n⚠️  ${failed} test(s) fallaron`);
+        devLogger.log(`\n⚠️  ${failed} test(s) fallaron`);
     }
 
-    console.log('\n' + '='.repeat(60));
+    devLogger.log('\n' + '='.repeat(60));
 }
 
 // Ejecutar tests
 runTests().catch(error => {
-    console.error('❌ Error ejecutando tests:', error);
+    devLogger.error('❌ Error ejecutando tests:', error);
     process.exit(1);
 });

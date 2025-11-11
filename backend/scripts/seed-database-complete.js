@@ -5,6 +5,7 @@
  */
 
 const path = require('path');
+const devLogger = require('../utils/devLogger');
 const fs = require('fs').promises;
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 const { pool } = require('../config/database');
@@ -76,14 +77,14 @@ const seedData = {
 // ============================================
 
 async function seedDatabase() {
-    console.log('🌱 SEED DATABASE - INSERCIÓN MASIVA DE DATOS');
-    console.log('='.repeat(60));
+    devLogger.log('🌱 SEED DATABASE - INSERCIÓN MASIVA DE DATOS');
+    devLogger.log('='.repeat(60));
 
     const client = await pool.connect();
 
     try {
         // NO usar transacción - insertar lo que se pueda
-        console.log('🔄 Iniciando inserción (modo tolerante a errores)\n');
+        devLogger.log('🔄 Iniciando inserción (modo tolerante a errores)\n');
 
         let totalInserted = 0;
 
@@ -91,7 +92,7 @@ async function seedDatabase() {
         for (const [tableName, rows] of Object.entries(seedData)) {
             if (rows.length === 0) continue;
 
-            console.log(`📊 Insertando en ${tableName}...`);
+            devLogger.log(`📊 Insertando en ${tableName}...`);
 
             // Verificar si la tabla existe
             const tableCheck = await client.query(`
@@ -103,7 +104,7 @@ async function seedDatabase() {
             `, [tableName]);
 
             if (!tableCheck.rows[0].exists) {
-                console.log(`  ⚠️  Tabla ${tableName} no existe, saltando...`);
+                devLogger.log(`  ⚠️  Tabla ${tableName} no existe, saltando...`);
                 continue;
             }
 
@@ -123,7 +124,7 @@ async function seedDatabase() {
                 const validColumns = Object.keys(row).filter(col => tableColumns.includes(col));
 
                 if (validColumns.length === 0) {
-                    console.log(`  ⚠️  No hay columnas válidas para insertar`);
+                    devLogger.log(`  ⚠️  No hay columnas válidas para insertar`);
                     continue;
                 }
 
@@ -143,7 +144,7 @@ async function seedDatabase() {
                     await client.query(insertQuery, values);
                     totalInserted++;
                 } catch (err) {
-                    console.log(`  ⚠️  Error en fila: ${err.message}`);
+                    devLogger.log(`  ⚠️  Error en fila: ${err.message}`);
                 }
             }
 
@@ -156,44 +157,44 @@ async function seedDatabase() {
                 }
             }
 
-            console.log(`  ✅ ${tableName}: ${rows.length} registros procesados`);
+            devLogger.log(`  ✅ ${tableName}: ${rows.length} registros procesados`);
         }
 
-        console.log(`\n✅ INSERCIÓN COMPLETADA - ${totalInserted} registros insertados exitosamente`);
+        devLogger.log(`\n✅ INSERCIÓN COMPLETADA - ${totalInserted} registros insertados exitosamente`);
 
         // Verificar inserciones
-        console.log('\n📊 VERIFICACIÓN FINAL:');
-        console.log('='.repeat(60));
+        devLogger.log('\n📊 VERIFICACIÓN FINAL:');
+        devLogger.log('='.repeat(60));
 
         for (const tableName of Object.keys(seedData)) {
             try {
                 const countResult = await client.query(`SELECT COUNT(*) as count FROM ${tableName}`);
                 const count = parseInt(countResult.rows[0].count);
-                console.log(`  ${tableName.padEnd(30)} ${count} registros`);
+                devLogger.log(`  ${tableName.padEnd(30)} ${count} registros`);
             } catch (err) {
-                console.log(`  ${tableName.padEnd(30)} Tabla no existe`);
+                devLogger.log(`  ${tableName.padEnd(30)} Tabla no existe`);
             }
         }
 
         // Mostrar estudiantes insertados
-        console.log('\n🎓 ESTUDIANTES INSERTADOS:');
-        console.log('='.repeat(60));
+        devLogger.log('\n🎓 ESTUDIANTES INSERTADOS:');
+        devLogger.log('='.repeat(60));
         const estudiantesResult = await client.query(`
             SELECT id, matricula, nombre, apellido_paterno, semestre
             FROM estudiantes
             ORDER BY id
         `);
         estudiantesResult.rows.forEach(row => {
-            console.log(`  ${row.id}. ${row.matricula} - ${row.nombre} ${row.apellido_paterno} (Semestre ${row.semestre})`);
+            devLogger.log(`  ${row.id}. ${row.matricula} - ${row.nombre} ${row.apellido_paterno} (Semestre ${row.semestre})`);
         });
 
-        console.log('\n✅ SEED COMPLETADO EXITOSAMENTE');
+        devLogger.log('\n✅ SEED COMPLETADO EXITOSAMENTE');
         process.exit(0);
 
     } catch (error) {
-        console.error('\n❌ ERROR FATAL');
-        console.error('Error:', error.message);
-        console.error('Stack:', error.stack);
+        devLogger.error('\n❌ ERROR FATAL');
+        devLogger.error('Error:', error.message);
+        devLogger.error('Stack:', error.stack);
         process.exit(1);
     } finally {
         client.release();

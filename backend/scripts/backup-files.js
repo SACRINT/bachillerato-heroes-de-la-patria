@@ -5,6 +5,7 @@
  */
 
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const archiver = require('archiver');
 const { createWriteStream, createReadStream } = require('fs');
@@ -24,7 +25,7 @@ class FilesBackup {
      * Ejecutar backup de archivos
      */
     async runBackup() {
-        console.log('📁 Iniciando backup de archivos...\n');
+        devLogger.log('📁 Iniciando backup de archivos...\n');
 
         try {
             // Crear directorio de backups
@@ -46,7 +47,7 @@ class FilesBackup {
             };
 
         } catch (error) {
-            console.error('❌ Error en backup de archivos:', error);
+            devLogger.error('❌ Error en backup de archivos:', error);
             throw error;
         }
     }
@@ -57,7 +58,7 @@ class FilesBackup {
     async ensureBackupDirectory() {
         try {
             await fs.mkdir(this.backupDir, { recursive: true });
-            console.log(`✅ Directorio de backups: ${this.backupDir}`);
+            devLogger.log(`✅ Directorio de backups: ${this.backupDir}`);
         } catch (error) {
             throw new Error(`Error al crear directorio: ${error.message}`);
         }
@@ -78,7 +79,7 @@ class FilesBackup {
 
             output.on('close', () => {
                 const sizeMB = (archive.pointer() / 1024 / 1024).toFixed(2);
-                console.log(`✅ Backup creado: ${path.basename(backupFile)} (${sizeMB} MB)`);
+                devLogger.log(`✅ Backup creado: ${path.basename(backupFile)} (${sizeMB} MB)`);
                 resolve(backupFile);
             });
 
@@ -97,21 +98,21 @@ class FilesBackup {
                         const stats = await fs.stat(sourceDir);
 
                         if (stats.isDirectory()) {
-                            console.log(`📂 Agregando directorio: ${path.basename(sourceDir)}`);
+                            devLogger.log(`📂 Agregando directorio: ${path.basename(sourceDir)}`);
                             archive.directory(sourceDir, path.basename(sourceDir));
                             filesAdded++;
                         } else if (stats.isFile()) {
-                            console.log(`📄 Agregando archivo: ${path.basename(sourceDir)}`);
+                            devLogger.log(`📄 Agregando archivo: ${path.basename(sourceDir)}`);
                             archive.file(sourceDir, { name: path.basename(sourceDir) });
                             filesAdded++;
                         }
                     } catch (error) {
-                        console.warn(`⚠️ No se pudo agregar: ${sourceDir} (${error.message})`);
+                        devLogger.warn(`⚠️ No se pudo agregar: ${sourceDir} (${error.message})`);
                     }
                 }
 
                 if (filesAdded === 0) {
-                    console.warn('⚠️ Advertencia: No se agregó ningún archivo al backup');
+                    devLogger.warn('⚠️ Advertencia: No se agregó ningún archivo al backup');
                 }
 
                 await archive.finalize();
@@ -123,7 +124,7 @@ class FilesBackup {
      * Aplicar política de retención
      */
     async applyRetentionPolicy() {
-        console.log('\n🗑️ Aplicando política de retención...');
+        devLogger.log('\n🗑️ Aplicando política de retención...');
 
         try {
             const files = await fs.readdir(this.backupDir);
@@ -141,14 +142,14 @@ class FilesBackup {
                 if (ageInDays > this.retentionDays) {
                     await fs.unlink(filePath);
                     deleted++;
-                    console.log(`  🗑️ Eliminado: ${file} (${Math.floor(ageInDays)} días)`);
+                    devLogger.log(`  🗑️ Eliminado: ${file} (${Math.floor(ageInDays)} días)`);
                 }
             }
 
-            console.log(`✅ ${deleted} backup(s) antiguos eliminados\n`);
+            devLogger.log(`✅ ${deleted} backup(s) antiguos eliminados\n`);
 
         } catch (error) {
-            console.error('❌ Error al aplicar retención:', error);
+            devLogger.error('❌ Error al aplicar retención:', error);
         }
     }
 
@@ -168,20 +169,20 @@ class FilesBackup {
                 retentionDays: this.retentionDays
             };
 
-            console.log('\n' + '='.repeat(60));
-            console.log('📊 REPORTE DE BACKUP DE ARCHIVOS');
-            console.log('='.repeat(60));
-            console.log(`Archivo: ${report.backupFile}`);
-            console.log(`Tamaño: ${report.sizeMB} MB`);
-            console.log(`Timestamp: ${report.timestamp}`);
-            console.log('='.repeat(60) + '\n');
+            devLogger.log('\n' + '='.repeat(60));
+            devLogger.log('📊 REPORTE DE BACKUP DE ARCHIVOS');
+            devLogger.log('='.repeat(60));
+            devLogger.log(`Archivo: ${report.backupFile}`);
+            devLogger.log(`Tamaño: ${report.sizeMB} MB`);
+            devLogger.log(`Timestamp: ${report.timestamp}`);
+            devLogger.log('='.repeat(60) + '\n');
 
             // Guardar reporte
             const reportPath = path.join(this.backupDir, 'last-backup-report.json');
             await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
 
         } catch (error) {
-            console.error('Error al generar reporte:', error);
+            devLogger.error('Error al generar reporte:', error);
         }
     }
 
@@ -209,7 +210,7 @@ class FilesBackup {
             return backups.sort((a, b) => new Date(b.created) - new Date(a.created));
 
         } catch (error) {
-            console.error('Error al listar backups:', error);
+            devLogger.error('Error al listar backups:', error);
             return [];
         }
     }
@@ -222,11 +223,11 @@ if (require.main === module) {
             const backup = new FilesBackup();
             await backup.runBackup();
 
-            console.log('✅ Backup de archivos completado exitosamente\n');
+            devLogger.log('✅ Backup de archivos completado exitosamente\n');
             process.exit(0);
 
         } catch (error) {
-            console.error('❌ Error fatal en backup:', error);
+            devLogger.error('❌ Error fatal en backup:', error);
             process.exit(1);
         }
     })();

@@ -1,5 +1,6 @@
 const { pool } = require('../config/database');
 const { logAction } = require('../utils/logger');
+const devLogger = require('../utils/devLogger');
 
 /**
  * Elimina registros de una tabla que tienen más de 24 horas.
@@ -15,13 +16,13 @@ async function cleanupTable(tableName) {
         const { rowCount } = await pool.query(query);
         if (rowCount > 0) {
             const message = `Limpieza automática: ${rowCount} registro(s) eliminado(s) de la tabla '${tableName}'.`;
-            console.log(message);
+            devLogger.log(message);
             await logAction('auto_cleanup', { table: tableName, count: rowCount, status: 'success' });
         }
         return { table: tableName, cleaned: rowCount };
     } catch (error) {
         const errorMessage = `Error durante la limpieza de la tabla '${tableName}': ${error.message}`;
-        console.error(errorMessage);
+        devLogger.error(errorMessage);
         await logAction('auto_cleanup_error', { table: tableName, error: error.message, status: 'error' });
         // Lanzar el error para que Promise.all lo capture si es necesario
         throw error;
@@ -32,17 +33,17 @@ async function cleanupTable(tableName) {
  * Ejecuta todas las tareas de limpieza de la base de datos en paralelo.
  */
 async function runAllCleanups() {
-    console.log('Iniciando todas las tareas de limpieza de la base de datos...');
+    devLogger.log('Iniciando todas las tareas de limpieza de la base de datos...');
     try {
         const results = await Promise.all([
             cleanupTable('pending_inscriptions'),
             cleanupTable('pending_registrations')
         ]);
-        console.log('Todas las tareas de limpieza de la base de datos han finalizado.');
+        devLogger.log('Todas las tareas de limpieza de la base de datos han finalizado.');
         await logAction('run_all_cleanups', { status: 'success', results });
         return results;
     } catch (error) {
-        console.error('Una o más tareas de limpieza fallaron:', error);
+        devLogger.error('Una o más tareas de limpieza fallaron:', error);
         await logAction('run_all_cleanups_error', { status: 'error', error: error.message });
         // El proceso puede continuar aunque la limpieza falle, así que no relanzamos el error.
     }
@@ -55,7 +56,7 @@ async function runAllCleanups() {
  */
 function startCleanupService(intervalHours = 12) {
     const intervalMs = intervalHours * 60 * 60 * 1000; // Convertir horas a milisegundos
-    console.log(`[CLEANUP] Servicio de limpieza iniciado. Se ejecutará cada ${intervalHours} horas.`);
+    devLogger.log(`[CLEANUP] Servicio de limpieza iniciado. Se ejecutará cada ${intervalHours} horas.`);
 
     // Ejecutar inmediatamente
     runAllCleanups();

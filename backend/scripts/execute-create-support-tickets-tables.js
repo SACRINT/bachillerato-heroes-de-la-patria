@@ -5,6 +5,7 @@
 
 require('dotenv').config();
 const fs = require('fs');
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const { Pool } = require('pg');
 
@@ -58,24 +59,24 @@ async function installSupportTicketsTables() {
     const client = await pool.connect();
 
     try {
-        console.log('============================================');
-        console.log('🎫 INSTALANDO SISTEMA DE TICKETS DE SOPORTE');
-        console.log('============================================\n');
+        devLogger.log('============================================');
+        devLogger.log('🎫 INSTALANDO SISTEMA DE TICKETS DE SOPORTE');
+        devLogger.log('============================================\n');
 
-        console.log('1️⃣  Verificando conexión a la base de datos...');
+        devLogger.log('1️⃣  Verificando conexión a la base de datos...');
         const connectionTest = await client.query('SELECT NOW()');
-        console.log(`   ✅ Conexión exitosa: ${connectionTest.rows[0].now}\n`);
+        devLogger.log(`   ✅ Conexión exitosa: ${connectionTest.rows[0].now}\n`);
 
-        console.log('2️⃣  Leyendo script SQL...');
+        devLogger.log('2️⃣  Leyendo script SQL...');
         const sqlPath = path.join(__dirname, 'create-support-tickets-tables.sql');
         const sqlScript = fs.readFileSync(sqlPath, 'utf8');
-        console.log(`   ✅ Script leído: ${sqlScript.length} caracteres\n`);
+        devLogger.log(`   ✅ Script leído: ${sqlScript.length} caracteres\n`);
 
-        console.log('3️⃣  Ejecutando script SQL...');
+        devLogger.log('3️⃣  Ejecutando script SQL...');
         await client.query(sqlScript);
-        console.log('   ✅ Script ejecutado exitosamente\n');
+        devLogger.log('   ✅ Script ejecutado exitosamente\n');
 
-        console.log('4️⃣  Verificando tablas creadas...');
+        devLogger.log('4️⃣  Verificando tablas creadas...');
         const tables = [
             'support_departments',
             'support_ticket_categories',
@@ -92,15 +93,15 @@ async function installSupportTicketsTables() {
             const exists = await tableExists(client, table);
             const count = await countRecords(client, table);
             if (exists) {
-                console.log(`   ✅ Tabla "${table}" creada (${count} registros)`);
+                devLogger.log(`   ✅ Tabla "${table}" creada (${count} registros)`);
                 tablesCreated++;
             } else {
-                console.log(`   ❌ Tabla "${table}" NO encontrada`);
+                devLogger.log(`   ❌ Tabla "${table}" NO encontrada`);
             }
         }
-        console.log(`   📊 Total: ${tablesCreated}/${tables.length} tablas creadas\n`);
+        devLogger.log(`   📊 Total: ${tablesCreated}/${tables.length} tablas creadas\n`);
 
-        console.log('5️⃣  Verificando vistas creadas...');
+        devLogger.log('5️⃣  Verificando vistas creadas...');
         const views = [
             'v_support_tickets_full',
             'v_support_department_stats',
@@ -111,15 +112,15 @@ async function installSupportTicketsTables() {
         for (const view of views) {
             const exists = await viewExists(client, view);
             if (exists) {
-                console.log(`   ✅ Vista "${view}" creada`);
+                devLogger.log(`   ✅ Vista "${view}" creada`);
                 viewsCreated++;
             } else {
-                console.log(`   ❌ Vista "${view}" NO encontrada`);
+                devLogger.log(`   ❌ Vista "${view}" NO encontrada`);
             }
         }
-        console.log(`   📊 Total: ${viewsCreated}/${views.length} vistas creadas\n`);
+        devLogger.log(`   📊 Total: ${viewsCreated}/${views.length} vistas creadas\n`);
 
-        console.log('6️⃣  Verificando funciones creadas...');
+        devLogger.log('6️⃣  Verificando funciones creadas...');
         const functions = [
             'update_support_updated_at',
             'generate_ticket_number',
@@ -134,15 +135,15 @@ async function installSupportTicketsTables() {
         for (const func of functions) {
             const exists = await functionExists(client, func);
             if (exists) {
-                console.log(`   ✅ Función "${func}" creada`);
+                devLogger.log(`   ✅ Función "${func}" creada`);
                 functionsCreated++;
             } else {
-                console.log(`   ❌ Función "${func}" NO encontrada`);
+                devLogger.log(`   ❌ Función "${func}" NO encontrada`);
             }
         }
-        console.log(`   📊 Total: ${functionsCreated}/${functions.length} funciones creadas\n`);
+        devLogger.log(`   📊 Total: ${functionsCreated}/${functions.length} funciones creadas\n`);
 
-        console.log('7️⃣  Verificando triggers creados...');
+        devLogger.log('7️⃣  Verificando triggers creados...');
         const triggers = [
             { name: 'trigger_tickets_updated_at', table: 'support_tickets' },
             { name: 'trigger_departments_updated_at', table: 'support_departments' },
@@ -161,54 +162,54 @@ async function installSupportTicketsTables() {
         for (const trigger of triggers) {
             const exists = await triggerExists(client, trigger.name, trigger.table);
             if (exists) {
-                console.log(`   ✅ Trigger "${trigger.name}" creado en "${trigger.table}"`);
+                devLogger.log(`   ✅ Trigger "${trigger.name}" creado en "${trigger.table}"`);
                 triggersCreated++;
             } else {
-                console.log(`   ❌ Trigger "${trigger.name}" NO encontrado en "${trigger.table}"`);
+                devLogger.log(`   ❌ Trigger "${trigger.name}" NO encontrado en "${trigger.table}"`);
             }
         }
-        console.log(`   📊 Total: ${triggersCreated}/${triggers.length} triggers creados\n`);
+        devLogger.log(`   📊 Total: ${triggersCreated}/${triggers.length} triggers creados\n`);
 
-        console.log('8️⃣  Verificando datos iniciales...');
+        devLogger.log('8️⃣  Verificando datos iniciales...');
         const deptCount = await countRecords(client, 'support_departments');
         const catCount = await countRecords(client, 'support_ticket_categories');
-        console.log(`   ✅ Departamentos: ${deptCount} registros`);
-        console.log(`   ✅ Categorías: ${catCount} registros\n`);
+        devLogger.log(`   ✅ Departamentos: ${deptCount} registros`);
+        devLogger.log(`   ✅ Categorías: ${catCount} registros\n`);
 
-        console.log('============================================');
-        console.log('📊 RESUMEN DE INSTALACIÓN');
-        console.log('============================================');
-        console.log(`✅ Tablas:       ${tablesCreated}/${tables.length}`);
-        console.log(`✅ Vistas:       ${viewsCreated}/${views.length}`);
-        console.log(`✅ Funciones:    ${functionsCreated}/${functions.length}`);
-        console.log(`✅ Triggers:     ${triggersCreated}/${triggers.length}`);
-        console.log(`✅ Departamentos: ${deptCount}`);
-        console.log(`✅ Categorías:   ${catCount}`);
-        console.log('============================================\n');
+        devLogger.log('============================================');
+        devLogger.log('📊 RESUMEN DE INSTALACIÓN');
+        devLogger.log('============================================');
+        devLogger.log(`✅ Tablas:       ${tablesCreated}/${tables.length}`);
+        devLogger.log(`✅ Vistas:       ${viewsCreated}/${views.length}`);
+        devLogger.log(`✅ Funciones:    ${functionsCreated}/${functions.length}`);
+        devLogger.log(`✅ Triggers:     ${triggersCreated}/${triggers.length}`);
+        devLogger.log(`✅ Departamentos: ${deptCount}`);
+        devLogger.log(`✅ Categorías:   ${catCount}`);
+        devLogger.log('============================================\n');
 
         const totalExpected = tables.length + views.length + functions.length + triggers.length;
         const totalCreated = tablesCreated + viewsCreated + functionsCreated + triggersCreated;
 
         if (totalCreated === totalExpected) {
-            console.log('🎉 ¡INSTALACIÓN COMPLETADA EXITOSAMENTE!');
-            console.log(`   Se instalaron correctamente ${totalCreated}/${totalExpected} estructuras\n`);
-            console.log('📋 PRÓXIMOS PASOS:');
-            console.log('   1. Revisar departamentos y categorías creados');
-            console.log('   2. Configurar agentes de soporte');
-            console.log('   3. Personalizar respuestas predefinidas');
-            console.log('   4. Ajustar SLA según necesidades institucionales');
-            console.log('   5. Acceder al sistema en /soporte.html\n');
+            devLogger.log('🎉 ¡INSTALACIÓN COMPLETADA EXITOSAMENTE!');
+            devLogger.log(`   Se instalaron correctamente ${totalCreated}/${totalExpected} estructuras\n`);
+            devLogger.log('📋 PRÓXIMOS PASOS:');
+            devLogger.log('   1. Revisar departamentos y categorías creados');
+            devLogger.log('   2. Configurar agentes de soporte');
+            devLogger.log('   3. Personalizar respuestas predefinidas');
+            devLogger.log('   4. Ajustar SLA según necesidades institucionales');
+            devLogger.log('   5. Acceder al sistema en /soporte.html\n');
             return true;
         } else {
-            console.log('⚠️  INSTALACIÓN PARCIAL');
-            console.log(`   Se instalaron ${totalCreated}/${totalExpected} estructuras`);
-            console.log(`   Faltaron ${totalExpected - totalCreated} estructuras\n`);
+            devLogger.log('⚠️  INSTALACIÓN PARCIAL');
+            devLogger.log(`   Se instalaron ${totalCreated}/${totalExpected} estructuras`);
+            devLogger.log(`   Faltaron ${totalExpected - totalCreated} estructuras\n`);
             return false;
         }
 
     } catch (error) {
-        console.error('❌ ERROR durante la instalación:', error.message);
-        console.error('   Stack:', error.stack);
+        devLogger.error('❌ ERROR durante la instalación:', error.message);
+        devLogger.error('   Stack:', error.stack);
         return false;
     } finally {
         client.release();
@@ -220,7 +221,7 @@ if (require.main === module) {
     installSupportTicketsTables()
         .then(success => process.exit(success ? 0 : 1))
         .catch(error => {
-            console.error('❌ ERROR FATAL:', error);
+            devLogger.error('❌ ERROR FATAL:', error);
             process.exit(1);
         });
 } else {

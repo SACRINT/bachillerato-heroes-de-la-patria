@@ -214,7 +214,7 @@ class AIEducationalSystem {
                             <div class="bot-message">
                                 <div class="message-avatar">🤖</div>
                                 <div class="message-content">
-                                    ¡Hola! Soy el asistente virtual del Bachillerato Héroes de la Patria. 
+                                    ¡Hola! Soy el asistente virtual del Bachillerato window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria'). 
                                     ¿En qué puedo ayudarte hoy?
                                 </div>
                                 <div class="message-time">${new Date().toLocaleTimeString()}</div>

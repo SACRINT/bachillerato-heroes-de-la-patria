@@ -258,7 +258,7 @@ class PWAModernFeatures {
                     <img src="./images/app_icons/icon-192x192.webp" alt="App Icon" width="48" height="48">
                 </div>
                 <div class="pwa-install-text">
-                    <strong>Instalar Héroes de la Patria</strong>
+                    <strong>Instalar window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria')</strong>
                     <p>Accede más rápido desde tu dispositivo</p>
                 </div>
                 <div class="pwa-install-actions">

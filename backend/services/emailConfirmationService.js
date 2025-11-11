@@ -5,6 +5,7 @@
  */
 
 const crypto = require('crypto');
+const devLogger = require('../utils/devLogger');
 const nodemailer = require('nodemailer');
 const { pool } = require('../config/database');
 
@@ -85,7 +86,7 @@ async function savePendingConfirmation(formData, ipAddress, userAgent) {
 
         const record = result.rows[0];
 
-        console.log(`📧 Registro pendiente de confirmación guardado para ${email}`);
+        devLogger.log(`📧 Registro pendiente de confirmación guardado para ${email}`);
 
         return {
             success: true,
@@ -96,7 +97,7 @@ async function savePendingConfirmation(formData, ipAddress, userAgent) {
         };
 
     } catch (error) {
-        console.error('❌ Error al guardar registro pendiente:', error);
+        devLogger.error('❌ Error al guardar registro pendiente:', error);
         throw error;
     }
 }
@@ -194,7 +195,7 @@ Bachillerato General Estatal "Héroes de la Patria"
 
         await transporter.sendMail(mailOptions);
 
-        console.log(`✅ Email de confirmación enviado a ${email}`);
+        devLogger.log(`✅ Email de confirmación enviado a ${email}`);
 
         return {
             success: true,
@@ -202,7 +203,7 @@ Bachillerato General Estatal "Héroes de la Patria"
         };
 
     } catch (error) {
-        console.error('❌ Error al enviar email:', error);
+        devLogger.error('❌ Error al enviar email:', error);
         throw error;
     }
 }
@@ -286,7 +287,7 @@ async function confirmEmailWithToken(confirmationToken) {
             true
         ]);
 
-        console.log(`✅ Email confirmado para ${confirmedRecord.email}. Solicitud movida a aprobación (ID: ${insertResult.rows[0].id})`);
+        devLogger.log(`✅ Email confirmado para ${confirmedRecord.email}. Solicitud movida a aprobación (ID: ${insertResult.rows[0].id})`);
 
         return {
             success: true,
@@ -298,7 +299,7 @@ async function confirmEmailWithToken(confirmationToken) {
         };
 
     } catch (error) {
-        console.error('❌ Error al confirmar email:', error);
+        devLogger.error('❌ Error al confirmar email:', error);
         throw error;
     }
 }
@@ -354,7 +355,7 @@ async function getPendingConfirmations(limit = 50, offset = 0) {
         };
 
     } catch (error) {
-        console.error('❌ Error al obtener registros pendientes:', error);
+        devLogger.error('❌ Error al obtener registros pendientes:', error);
         throw error;
     }
 }
@@ -377,12 +378,12 @@ async function cleanExpiredTokens() {
 
         const result = await pool.query(query);
 
-        console.log(`✅ ${result.rows.length} registros con tokens expirados eliminados`);
+        devLogger.log(`✅ ${result.rows.length} registros con tokens expirados eliminados`);
 
         return result.rows.length;
 
     } catch (error) {
-        console.error('❌ Error al limpiar tokens expirados:', error);
+        devLogger.error('❌ Error al limpiar tokens expirados:', error);
         throw error;
     }
 }

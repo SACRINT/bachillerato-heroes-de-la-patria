@@ -5,6 +5,7 @@
  */
 
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const { execSync } = require('child_process');
 
@@ -25,7 +26,7 @@ class SecurityAuditor {
      * Ejecutar auditoría completa
      */
     async runAudit() {
-        console.log('🔍 Iniciando Auditoría de Seguridad AppSec...\n');
+        devLogger.log('🔍 Iniciando Auditoría de Seguridad AppSec...\n');
 
         await this.checkSQLInjection();
         await this.checkXSS();
@@ -48,7 +49,7 @@ class SecurityAuditor {
      * A1: Inyección SQL
      */
     async checkSQLInjection() {
-        console.log('📋 [1/10] Verificando protección contra Inyección SQL...');
+        devLogger.log('📋 [1/10] Verificando protección contra Inyección SQL...');
 
         try {
             // Buscar queries sin parametrizar
@@ -97,7 +98,7 @@ class SecurityAuditor {
             }
 
         } catch (error) {
-            console.error('Error al verificar inyección SQL:', error.message);
+            devLogger.error('Error al verificar inyección SQL:', error.message);
         }
     }
 
@@ -105,7 +106,7 @@ class SecurityAuditor {
      * A2: Autenticación Rota
      */
     async checkAuthentication() {
-        console.log('📋 [4/10] Verificando Autenticación y Gestión de Sesiones...');
+        devLogger.log('📋 [4/10] Verificando Autenticación y Gestión de Sesiones...');
 
         const checks = [];
 
@@ -175,7 +176,7 @@ class SecurityAuditor {
      * A3: Exposición de Datos Sensibles
      */
     async checkSensitiveDataExposure() {
-        console.log('📋 [5/10] Verificando Exposición de Datos Sensibles...');
+        devLogger.log('📋 [5/10] Verificando Exposición de Datos Sensibles...');
 
         const issues = [];
 
@@ -245,7 +246,7 @@ class SecurityAuditor {
      * A5: Control de Acceso Roto
      */
     async checkAccessControl() {
-        console.log('📋 [6/10] Verificando Control de Acceso...');
+        devLogger.log('📋 [6/10] Verificando Control de Acceso...');
 
         try {
             const routesPath = path.join(__dirname, '../routes');
@@ -290,7 +291,7 @@ class SecurityAuditor {
             }
 
         } catch (error) {
-            console.error('Error al verificar control de acceso:', error.message);
+            devLogger.error('Error al verificar control de acceso:', error.message);
         }
     }
 
@@ -298,7 +299,7 @@ class SecurityAuditor {
      * A6: Configuración de Seguridad Incorrecta
      */
     async checkSecurityMisconfiguration() {
-        console.log('📋 [7/10] Verificando Configuración de Seguridad...');
+        devLogger.log('📋 [7/10] Verificando Configuración de Seguridad...');
 
         const checks = [];
 
@@ -357,7 +358,7 @@ class SecurityAuditor {
      * A7: XSS (Cross-Site Scripting)
      */
     async checkXSS() {
-        console.log('📋 [2/10] Verificando protección contra XSS...');
+        devLogger.log('📋 [2/10] Verificando protección contra XSS...');
 
         // Verificar uso de express-validator
         try {
@@ -385,7 +386,7 @@ class SecurityAuditor {
             }
 
         } catch (error) {
-            console.error('Error al verificar XSS:', error.message);
+            devLogger.error('Error al verificar XSS:', error.message);
         }
     }
 
@@ -393,7 +394,7 @@ class SecurityAuditor {
      * A8: Deserialización Insegura
      */
     async checkInsecureDeserialization() {
-        console.log('📋 [8/10] Verificando Deserialización Insegura...');
+        devLogger.log('📋 [8/10] Verificando Deserialización Insegura...');
 
         try {
             const routesPath = path.join(__dirname, '../routes');
@@ -428,7 +429,7 @@ class SecurityAuditor {
             }
 
         } catch (error) {
-            console.error('Error al verificar deserialización:', error.message);
+            devLogger.error('Error al verificar deserialización:', error.message);
         }
     }
 
@@ -436,7 +437,7 @@ class SecurityAuditor {
      * A9: Componentes con Vulnerabilidades Conocidas
      */
     async checkDependencyVulnerabilities() {
-        console.log('📋 [9/10] Verificando Vulnerabilidades en Dependencias...');
+        devLogger.log('📋 [9/10] Verificando Vulnerabilidades en Dependencias...');
 
         try {
             // Ejecutar npm audit
@@ -491,7 +492,7 @@ class SecurityAuditor {
                     });
                 }
             } catch (parseError) {
-                console.error('Error al parsear npm audit:', parseError.message);
+                devLogger.error('Error al parsear npm audit:', parseError.message);
             }
         }
     }
@@ -500,7 +501,7 @@ class SecurityAuditor {
      * A10: Logging y Monitoreo Insuficiente
      */
     async checkLogging() {
-        console.log('📋 [10/10] Verificando Logging y Monitoreo...');
+        devLogger.log('📋 [10/10] Verificando Logging y Monitoreo...');
 
         const checks = [];
 
@@ -552,7 +553,7 @@ class SecurityAuditor {
      * A4: CSRF (Cross-Site Request Forgery)
      */
     async checkCSRF() {
-        console.log('📋 [3/10] Verificando protección contra CSRF...');
+        devLogger.log('📋 [3/10] Verificando protección contra CSRF...');
 
         try {
             const serverFile = await fs.readFile(
@@ -576,7 +577,7 @@ class SecurityAuditor {
             }
 
         } catch (error) {
-            console.error('Error al verificar CSRF:', error.message);
+            devLogger.error('Error al verificar CSRF:', error.message);
         }
     }
 
@@ -605,47 +606,47 @@ class SecurityAuditor {
      * Generar reporte
      */
     async generateReport() {
-        console.log('\n' + '='.repeat(70));
-        console.log('📊 REPORTE DE AUDITORÍA DE SEGURIDAD APPSEC');
-        console.log('='.repeat(70));
-        console.log(`Fecha: ${this.results.timestamp}`);
-        console.log(`Puntuación: ${this.results.score}/${this.results.maxScore} (${this.results.percentage}%)`);
-        console.log(`Calificación: ${this.results.grade}`);
-        console.log('='.repeat(70));
+        devLogger.log('\n' + '='.repeat(70));
+        devLogger.log('📊 REPORTE DE AUDITORÍA DE SEGURIDAD APPSEC');
+        devLogger.log('='.repeat(70));
+        devLogger.log(`Fecha: ${this.results.timestamp}`);
+        devLogger.log(`Puntuación: ${this.results.score}/${this.results.maxScore} (${this.results.percentage}%)`);
+        devLogger.log(`Calificación: ${this.results.grade}`);
+        devLogger.log('='.repeat(70));
 
-        console.log(`\n✅ Verificaciones Pasadas: ${this.results.passed.length}`);
+        devLogger.log(`\n✅ Verificaciones Pasadas: ${this.results.passed.length}`);
         this.results.passed.forEach(p => {
-            console.log(`  ✓ ${p.check}`);
+            devLogger.log(`  ✓ ${p.check}`);
         });
 
         if (this.results.warnings.length > 0) {
-            console.log(`\n⚠️  Advertencias: ${this.results.warnings.length}`);
+            devLogger.log(`\n⚠️  Advertencias: ${this.results.warnings.length}`);
             this.results.warnings.forEach(w => {
-                console.log(`  • [${w.severity}] ${w.category}: ${w.message}`);
+                devLogger.log(`  • [${w.severity}] ${w.category}: ${w.message}`);
                 if (w.recommendation) {
-                    console.log(`    Recomendación: ${w.recommendation}`);
+                    devLogger.log(`    Recomendación: ${w.recommendation}`);
                 }
             });
         }
 
         if (this.results.vulnerabilities.length > 0) {
-            console.log(`\n🚨 Vulnerabilidades Críticas: ${this.results.vulnerabilities.length}`);
+            devLogger.log(`\n🚨 Vulnerabilidades Críticas: ${this.results.vulnerabilities.length}`);
             this.results.vulnerabilities.forEach(v => {
-                console.log(`  ⚠️  [${v.severity}] ${v.category}: ${v.message}`);
+                devLogger.log(`  ⚠️  [${v.severity}] ${v.category}: ${v.message}`);
                 if (v.recommendation) {
-                    console.log(`    Recomendación: ${v.recommendation}`);
+                    devLogger.log(`    Recomendación: ${v.recommendation}`);
                 }
             });
         }
 
-        console.log('\n' + '='.repeat(70));
+        devLogger.log('\n' + '='.repeat(70));
 
         // Guardar reporte en archivo JSON
         const reportPath = path.join(__dirname, '../reports/security-audit-report.json');
         await fs.mkdir(path.dirname(reportPath), { recursive: true });
         await fs.writeFile(reportPath, JSON.stringify(this.results, null, 2));
 
-        console.log(`\n📄 Reporte guardado en: ${reportPath}`);
+        devLogger.log(`\n📄 Reporte guardado en: ${reportPath}`);
     }
 }
 
@@ -660,7 +661,7 @@ class SecurityAuditor {
         process.exit(exitCode);
 
     } catch (error) {
-        console.error('❌ Error fatal en auditoría:', error);
+        devLogger.error('❌ Error fatal en auditoría:', error);
         process.exit(1);
     }
 })();

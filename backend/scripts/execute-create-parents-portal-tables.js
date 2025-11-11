@@ -5,6 +5,7 @@
  */
 
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const { pool } = require('../config/database');
 
@@ -15,20 +16,20 @@ async function createParentsPortalTables() {
     const client = await pool.connect();
 
     try {
-        console.log('🚀 Iniciando creación de tablas del Portal de Padres...\n');
+        devLogger.log('🚀 Iniciando creación de tablas del Portal de Padres...\n');
 
         // Leer el archivo SQL
         const sqlPath = path.join(__dirname, 'create-parents-portal-tables.sql');
         const sql = await fs.readFile(sqlPath, 'utf-8');
 
-        console.log('📄 Archivo SQL cargado:', sqlPath);
-        console.log('📏 Tamaño:', sql.length, 'caracteres\n');
+        devLogger.log('📄 Archivo SQL cargado:', sqlPath);
+        devLogger.log('📏 Tamaño:', sql.length, 'caracteres\n');
 
         // Ejecutar el script
-        console.log('⚙️  Ejecutando script SQL...\n');
+        devLogger.log('⚙️  Ejecutando script SQL...\n');
         await client.query(sql);
 
-        console.log('\n✅ Tablas creadas exitosamente!\n');
+        devLogger.log('\n✅ Tablas creadas exitosamente!\n');
 
         // Verificar tablas creadas
         const tablesQuery = `
@@ -47,12 +48,12 @@ async function createParentsPortalTables() {
 
         const result = await client.query(tablesQuery);
 
-        console.log('📊 Tablas del Portal de Padres:');
-        console.log('═════════════════════════════════════\n');
+        devLogger.log('📊 Tablas del Portal de Padres:');
+        devLogger.log('═════════════════════════════════════\n');
         result.rows.forEach((row, index) => {
-            console.log(`  ${index + 1}. ${row.table_name}`);
+            devLogger.log(`  ${index + 1}. ${row.table_name}`);
         });
-        console.log();
+        devLogger.log();
 
         // Verificar vistas creadas
         const viewsQuery = `
@@ -64,12 +65,12 @@ async function createParentsPortalTables() {
         `;
         const viewsResult = await client.query(viewsQuery);
 
-        console.log('📈 Vistas creadas:');
-        console.log('═════════════════════════════════════\n');
+        devLogger.log('📈 Vistas creadas:');
+        devLogger.log('═════════════════════════════════════\n');
         viewsResult.rows.forEach((row, index) => {
-            console.log(`  ${index + 1}. ${row.table_name}`);
+            devLogger.log(`  ${index + 1}. ${row.table_name}`);
         });
-        console.log();
+        devLogger.log();
 
         // Verificar datos de ejemplo
         const parentsCountQuery = 'SELECT COUNT(*) as count FROM parents';
@@ -80,32 +81,32 @@ async function createParentsPortalTables() {
         const studentsCount = await client.query(studentsCountQuery);
         const relationsCount = await client.query(relationsCountQuery);
 
-        console.log('📁 Datos de ejemplo insertados:');
-        console.log('═════════════════════════════════════\n');
-        console.log(`  Padres: ${parentsCount.rows[0].count}`);
-        console.log(`  Estudiantes: ${studentsCount.rows[0].count}`);
-        console.log(`  Relaciones: ${relationsCount.rows[0].count}`);
-        console.log();
+        devLogger.log('📁 Datos de ejemplo insertados:');
+        devLogger.log('═════════════════════════════════════\n');
+        devLogger.log(`  Padres: ${parentsCount.rows[0].count}`);
+        devLogger.log(`  Estudiantes: ${studentsCount.rows[0].count}`);
+        devLogger.log(`  Relaciones: ${relationsCount.rows[0].count}`);
+        devLogger.log();
 
         // Resumen final
-        console.log('═════════════════════════════════════');
-        console.log('✅ PORTAL DE PADRES INSTALADO');
-        console.log('═════════════════════════════════════');
-        console.log(`📊 Tablas: ${result.rows.length}`);
-        console.log(`📈 Vistas: ${viewsResult.rows.length}`);
-        console.log(`📁 Registros de ejemplo: ${parseInt(parentsCount.rows[0].count) + parseInt(studentsCount.rows[0].count)}`);
-        console.log('═════════════════════════════════════\n');
+        devLogger.log('═════════════════════════════════════');
+        devLogger.log('✅ PORTAL DE PADRES INSTALADO');
+        devLogger.log('═════════════════════════════════════');
+        devLogger.log(`📊 Tablas: ${result.rows.length}`);
+        devLogger.log(`📈 Vistas: ${viewsResult.rows.length}`);
+        devLogger.log(`📁 Registros de ejemplo: ${parseInt(parentsCount.rows[0].count) + parseInt(studentsCount.rows[0].count)}`);
+        devLogger.log('═════════════════════════════════════\n');
 
-        console.log('🎯 Próximos pasos:');
-        console.log('  1. Crear API REST en /api/parents');
-        console.log('  2. Desarrollar interfaz de portal (padres.html)');
-        console.log('  3. Implementar sistema de autenticación');
-        console.log('  4. Integrar con sistema escolar existente\n');
+        devLogger.log('🎯 Próximos pasos:');
+        devLogger.log('  1. Crear API REST en /api/parents');
+        devLogger.log('  2. Desarrollar interfaz de portal (padres.html)');
+        devLogger.log('  3. Implementar sistema de autenticación');
+        devLogger.log('  4. Integrar con sistema escolar existente\n');
 
     } catch (error) {
-        console.error('\n❌ Error al crear las tablas:', error.message);
-        console.error('\n📋 Detalles del error:');
-        console.error(error);
+        devLogger.error('\n❌ Error al crear las tablas:', error.message);
+        devLogger.error('\n📋 Detalles del error:');
+        devLogger.error(error);
         throw error;
     } finally {
         client.release();
@@ -118,10 +119,10 @@ async function createParentsPortalTables() {
 async function main() {
     try {
         await createParentsPortalTables();
-        console.log('🎉 Proceso completado exitosamente!\n');
+        devLogger.log('🎉 Proceso completado exitosamente!\n');
         process.exit(0);
     } catch (error) {
-        console.error('\n💥 Error fatal:', error.message);
+        devLogger.error('\n💥 Error fatal:', error.message);
         process.exit(1);
     }
 }

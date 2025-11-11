@@ -1,29 +1,30 @@
 const path = require('path');
+const devLogger = require('../utils/devLogger');
 
-console.log('--- Debug de Entorno --- ');
-console.log(`Directorio actual (cwd): ${process.cwd()}`);
-console.log(`__dirname: ${__dirname}`);
+devLogger.log('--- Debug de Entorno --- ');
+devLogger.log(`Directorio actual (cwd): ${process.cwd()}`);
+devLogger.log(`__dirname: ${__dirname}`);
 
 const envPath = path.resolve(__dirname, '../.env');
-console.log(`Ruta calculada para .env: ${envPath}`);
+devLogger.log(`Ruta calculada para .env: ${envPath}`);
 
-console.log('\nIntentando cargar .env con dotenv...');
+devLogger.log('\nIntentando cargar .env con dotenv...');
 const result = require('dotenv').config({
     path: envPath,
     debug: true // Habilita el log de depuración de dotenv
 });
 
 if (result.error) {
-    console.error('\n❌ ERROR DE DOTENV:', result.error);
+    devLogger.error('\n❌ ERROR DE DOTENV:', result.error);
 }
 
-console.log('\n--- Contenido parseado por dotenv ---');
-console.log(result.parsed);
+devLogger.log('\n--- Contenido parseado por dotenv ---');
+devLogger.log(result.parsed);
 
-console.log('\n--- Valor de process.env.DATABASE_URL ---');
-console.log(process.env.DATABASE_URL);
+devLogger.log('\n--- Valor de process.env.DATABASE_URL ---');
+devLogger.log(process.env.DATABASE_URL);
 
-console.log('\n--- Valor de process.env.JWT_EXPIRES_IN ---');
-console.log(process.env.JWT_EXPIRES_IN);
+devLogger.log('\n--- Valor de process.env.JWT_EXPIRES_IN ---');
+devLogger.log(process.env.JWT_EXPIRES_IN);
 
-console.log('\n--- Fin del Debug ---');
+devLogger.log('\n--- Fin del Debug ---');

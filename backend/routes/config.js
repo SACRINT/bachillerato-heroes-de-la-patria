@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { getTenantByDomain } = require('../data/database-access');
 
@@ -38,7 +39,7 @@ router.get('/google-client-id', (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo Google Client ID:', error);
+        devLogger.error('❌ Error obteniendo Google Client ID:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener configuración',
@@ -76,7 +77,7 @@ router.get('/public', (req, res) => {
         res.json(config);
 
     } catch (error) {
-        console.error('❌ Error obteniendo configuración pública:', error);
+        devLogger.error('❌ Error obteniendo configuración pública:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener configuración',
@@ -100,14 +101,14 @@ router.get('/tenant', async (req, res) => {
         // req.headers.host retorna el valor EXACTO del header Host: 'localhost:3000' ✅
         const hostname = req.headers.host || req.host || 'localhost';  // ej: 'localhost:3000' o 'heroes.localhost'
 
-        console.log('[CONFIG] Buscando configuración de tenant para dominio:', hostname);
+        devLogger.log('[CONFIG] Buscando configuración de tenant para dominio:', hostname);
 
         // Consultar la BD usando la función DAL
         const tenant = await getTenantByDomain(hostname);
 
         // Si no encuentra el tenant, retornar error
         if (!tenant) {
-            console.warn(`[CONFIG] ⚠️ Tenant no encontrado para dominio: ${hostname}`);
+            devLogger.warn(`[CONFIG] ⚠️ Tenant no encontrado para dominio: ${hostname}`);
             return res.status(404).json({
                 success: false,
                 error: 'Tenant no encontrado',
@@ -118,7 +119,7 @@ router.get('/tenant', async (req, res) => {
 
         // Si el tenant existe pero está inactivo, retornar error
         if (tenant.status !== 'activo') {
-            console.warn(`[CONFIG] ⚠️ Tenant inactivo: ${hostname} (status: ${tenant.status})`);
+            devLogger.warn(`[CONFIG] ⚠️ Tenant inactivo: ${hostname} (status: ${tenant.status})`);
             return res.status(403).json({
                 success: false,
                 error: 'Tenant inactivo',
@@ -127,7 +128,7 @@ router.get('/tenant', async (req, res) => {
             });
         }
 
-        console.log(`[CONFIG] ✅ Configuración de tenant encontrada: ${tenant.school_name}`);
+        devLogger.log(`[CONFIG] ✅ Configuración de tenant encontrada: ${tenant.school_name}`);
 
         // Retornar la configuración JSON del tenant
         res.json({
@@ -144,7 +145,7 @@ router.get('/tenant', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('[CONFIG] ❌ Error obteniendo configuración de tenant:', error);
+        devLogger.error('[CONFIG] ❌ Error obteniendo configuración de tenant:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener configuración del tenant',
@@ -181,7 +182,7 @@ router.get('/health', (req, res) => {
         res.json(config);
 
     } catch (error) {
-        console.error('❌ Error en health check de configuración:', error);
+        devLogger.error('❌ Error en health check de configuración:', error);
         res.status(500).json({
             success: false,
             error: 'Error en health check',

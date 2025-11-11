@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const { authenticateToken } = require('../middleware/auth');
 const router = express.Router();
 
@@ -27,7 +28,7 @@ router.get('/profile/:userId', authenticateToken, async (req, res, next) => {
             });
         }
 
-        console.log(`🎮 [GAMIFICATION] Obteniendo perfil de gamificación para usuario ${userId}`);
+        devLogger.log(`🎮 [GAMIFICATION] Obteniendo perfil de gamificación para usuario ${userId}`);
 
         // Simular datos de gamificación (hasta tener base de datos real)
         const gamificationProfile = {
@@ -87,7 +88,7 @@ router.get('/profile/:userId', authenticateToken, async (req, res, next) => {
             }
         };
 
-        console.log('✅ Perfil de gamificación consultado', {
+        devLogger.log('✅ Perfil de gamificación consultado', {
             userId: userId,
             requestedBy: req.user.id
         });
@@ -110,7 +111,7 @@ router.get('/leaderboard', authenticateToken, async (req, res, next) => {
     try {
         const { type = 'weekly', limit = 10 } = req.query;
 
-        console.log(`🏆 [GAMIFICATION] Obteniendo leaderboard tipo: ${type}`);
+        devLogger.log(`🏆 [GAMIFICATION] Obteniendo leaderboard tipo: ${type}`);
 
         // Simular leaderboard
         const leaderboard = [];
@@ -163,7 +164,7 @@ router.post('/award-points', authenticateToken, async (req, res, next) => {
     try {
         const { activity, points, metadata } = req.body;
 
-        console.log(`⭐ [GAMIFICATION] Otorgando ${points} puntos por actividad: ${activity}`);
+        devLogger.log(`⭐ [GAMIFICATION] Otorgando ${points} puntos por actividad: ${activity}`);
 
         // Validar actividad
         const validActivities = [
@@ -232,7 +233,7 @@ router.post('/award-points', authenticateToken, async (req, res, next) => {
             }
         });
 
-        console.log('⭐ Puntos otorgados en gamificación', {
+        devLogger.log('⭐ Puntos otorgados en gamificación', {
             userId: req.user.id,
             activity: activity,
             points: earnedPoints,
@@ -252,7 +253,7 @@ router.post('/award-points', authenticateToken, async (req, res, next) => {
  */
 router.get('/achievements', authenticateToken, async (req, res, next) => {
     try {
-        console.log('🏅 [GAMIFICATION] Obteniendo lista de logros disponibles');
+        devLogger.log('🏅 [GAMIFICATION] Obteniendo lista de logros disponibles');
 
         const achievements = [
             {
@@ -361,7 +362,7 @@ router.get('/achievements', authenticateToken, async (req, res, next) => {
  */
 router.get('/daily-challenges', authenticateToken, async (req, res, next) => {
     try {
-        console.log('📅 [GAMIFICATION] Obteniendo desafíos diarios');
+        devLogger.log('📅 [GAMIFICATION] Obteniendo desafíos diarios');
 
         // Generar desafíos dinámicos basados en el día
         const today = new Date();
@@ -457,7 +458,7 @@ router.post('/complete-challenge', authenticateToken, async (req, res, next) => 
     try {
         const { challengeId, evidence } = req.body;
 
-        console.log(`🎯 [GAMIFICATION] Completando desafío: ${challengeId}`);
+        devLogger.log(`🎯 [GAMIFICATION] Completando desafío: ${challengeId}`);
 
         // Simular verificación y completado del desafío
         const challenge = {
@@ -470,7 +471,7 @@ router.post('/complete-challenge', authenticateToken, async (req, res, next) => 
 
         const totalPoints = challenge.pointsEarned * challenge.bonusMultiplier;
 
-        console.log('🎯 Desafío completado', {
+        devLogger.log('🎯 Desafío completado', {
             userId: req.user.id,
             challengeId: challengeId,
             points: totalPoints
@@ -484,6 +485,101 @@ router.post('/complete-challenge', authenticateToken, async (req, res, next) => 
                 totalPointsEarned: totalPoints,
                 newTotalPoints: Math.floor(Math.random() * 5000) + totalPoints,
                 bonusApplied: challenge.bonusMultiplier > 1
+            }
+        });
+
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * GET /api/gamification/profile/:userId (Versión Pública)
+ * Obtener perfil de gamificación sin autenticación requerida
+ */
+router.get('/profile/:userId', async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+
+        devLogger.log(`🎮 [GAMIFICATION PUBLIC] Obteniendo perfil de gamificación para usuario ${userId}`);
+
+        // Datos simulados públicos
+        const gamificationProfile = {
+            userId: parseInt(userId),
+            level: Math.floor(Math.random() * 20) + 1,
+            totalPoints: Math.floor(Math.random() * 5000) + 500,
+            weeklyPoints: Math.floor(Math.random() * 200) + 50,
+            streak: Math.floor(Math.random() * 30) + 1,
+            rank: Math.floor(Math.random() * 100) + 1,
+            badges: [
+                {
+                    id: 'early_bird',
+                    name: 'Madrugador',
+                    description: 'Accede al sistema antes de las 8:00 AM',
+                    icon: '🌅',
+                    rarity: 'common',
+                    earnedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+                }
+            ]
+        };
+
+        res.json({
+            success: true,
+            data: gamificationProfile
+        });
+
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * GET /api/gamification/daily-challenges (Versión Pública)
+ * Obtener desafíos diarios sin autenticación requerida
+ */
+router.get('/daily-challenges', async (req, res, next) => {
+    try {
+        devLogger.log('🎯 [GAMIFICATION PUBLIC] Obteniendo desafíos diarios');
+
+        const challenges = [
+            {
+                id: 'login_daily',
+                title: 'Acceso Diario',
+                description: 'Inicia sesión en el sistema',
+                icon: '🔐',
+                points: 5,
+                difficulty: 'easy',
+                completed: false,
+                completedAt: null
+            },
+            {
+                id: 'lesson_complete',
+                title: 'Completar Lección',
+                description: 'Completa al menos una lección',
+                icon: '📚',
+                points: 25,
+                difficulty: 'medium',
+                completed: false,
+                completedAt: null
+            },
+            {
+                id: 'quiz_challenge',
+                title: 'Quiz Magistral',
+                description: 'Obtén 100% en un quiz',
+                icon: '🧠',
+                points: 50,
+                difficulty: 'hard',
+                completed: false,
+                completedAt: null
+            }
+        ];
+
+        res.json({
+            success: true,
+            data: {
+                date: new Date().toISOString().split('T')[0],
+                challenges: challenges,
+                totalPointsAvailable: challenges.reduce((sum, c) => sum + c.points, 0)
             }
         });
 

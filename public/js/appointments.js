@@ -1,4 +1,4 @@
-// Sistema de citas en línea para Bachillerato Héroes de la Patria
+// Sistema de citas en línea para Bachillerato window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria')
 
 // Helper para Bootstrap seguro
 class BootstrapHelper {

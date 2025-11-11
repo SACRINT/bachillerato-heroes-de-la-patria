@@ -5,11 +5,12 @@
 
 const { pool } = require('../config/database');
 const fs = require('fs');
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 
 async function createInscripcionesActividadesTable() {
     try {
-        console.log('📝 Creando tabla inscripciones_actividades...');
+        devLogger.log('📝 Creando tabla inscripciones_actividades...');
 
         // Leer el archivo SQL
         const sqlPath = path.join(__dirname, 'create-inscripciones-actividades-table.sql');
@@ -18,7 +19,7 @@ async function createInscripcionesActividadesTable() {
         // Ejecutar el SQL
         await pool.query(sql);
 
-        console.log('✅ Tabla inscripciones_actividades creada exitosamente');
+        devLogger.log('✅ Tabla inscripciones_actividades creada exitosamente');
 
         // Verificar que la tabla existe
         const checkQuery = `
@@ -31,7 +32,7 @@ async function createInscripcionesActividadesTable() {
         const result = await pool.query(checkQuery);
 
         if (result.rows.length > 0) {
-            console.log('✅ Verificación: La tabla existe en la base de datos');
+            devLogger.log('✅ Verificación: La tabla existe en la base de datos');
 
             // Mostrar estructura de la tabla
             const structureQuery = `
@@ -42,17 +43,17 @@ async function createInscripcionesActividadesTable() {
             `;
 
             const structure = await pool.query(structureQuery);
-            console.log('\n📊 Estructura de la tabla:');
+            devLogger.log('\n📊 Estructura de la tabla:');
             console.table(structure.rows);
         } else {
-            console.error('❌ Error: La tabla no fue creada correctamente');
+            devLogger.error('❌ Error: La tabla no fue creada correctamente');
         }
 
         process.exit(0);
 
     } catch (error) {
-        console.error('❌ Error al crear la tabla:', error.message);
-        console.error(error);
+        devLogger.error('❌ Error al crear la tabla:', error.message);
+        devLogger.error(error);
         process.exit(1);
     }
 }

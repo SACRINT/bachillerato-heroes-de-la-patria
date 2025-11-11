@@ -1,12 +1,13 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Test Dashboard Debug</title>
+    <title id="page-title" data-base-title="Test Dashboard Debug">Test Dashboard Debug</title>
+    <script src="js/meta-updater.js" defer></script>
 </head>
 <body>
     <h1>Test Dashboard API</h1>
-    <button onclick="testAuth()">1. Test Autenticación</button>
+    <button onclick="testAuth()">1. Test AutenticaciÃ³n</button>
     <button onclick="testBolsaTrabajo()">2. Test Bolsa Trabajo</button>
     <button onclick="testStudents()">3. Test Estudiantes</button>
     <button onclick="testParents()">4. Test Padres</button>
@@ -25,7 +26,7 @@
 
         async function testAuth() {
             output.textContent = '';
-            log('=== TEST AUTENTICACIÓN ===');
+            log('=== TEST AUTENTICACIÃ“N ===');
             log('secureAdminAuth disponible: ' + (!!window.secureAdminAuth));
             log('apiClient disponible: ' + (!!window.apiClient));
 
@@ -97,21 +98,26 @@
 
             if (window.bgeFramework) {
                 log('Framework inicializado: ' + window.bgeFramework.initialized);
-                log('Módulos cargados: ' + Array.from(window.bgeFramework.modules.keys()).join(', '));
+                log('MÃ³dulos cargados: ' + Array.from(window.bgeFramework.modules.keys()).join(', '));
             }
 
-            // Esperar a que el módulo de seguridad cargue
+            // Esperar a que el mÃ³dulo de seguridad cargue
             setTimeout(() => {
-                log('\n--- DESPUÉS DE 2 SEGUNDOS ---');
+                log('\n--- DESPUÃ‰S DE 2 SEGUNDOS ---');
                 log('secureAdminAuth ahora disponible: ' + (!!window.secureAdminAuth));
                 if (window.bgeFramework) {
-                    log('Módulos cargados ahora: ' + Array.from(window.bgeFramework.modules.keys()).join(', '));
+                    log('MÃ³dulos cargados ahora: ' + Array.from(window.bgeFramework.modules.keys()).join(', '));
                 }
             }, 2000);
         }
     </script>
 
-    <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
+    <!-- ðŸ”§ MAIN.JS - CARGA DINÃMICA DE HEADER Y FOOTER -->
     <script src="js/main.js"></script>
-</body>
+    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuraciÃ³n multi-tenancy desde BD -->
+    <script src="js/tenant-config-loader.js" defer></script>
+
+    </body>
 </html>
+
+

@@ -7,6 +7,7 @@
  */
 
 const path = require('path');
+const devLogger = require('../utils/devLogger');
 const { Pool } = require('pg');
 require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
@@ -115,7 +116,7 @@ const createQueries = [
 async function createFinancesTables() {
     const client = await pool.connect();
     try {
-        console.log('🚀 [FINANCES] Iniciando creación de tablas financieras en Neon...\n');
+        devLogger.log('🚀 [FINANCES] Iniciando creación de tablas financieras en Neon...\n');
 
         let successCount = 0;
         let skipCount = 0;
@@ -124,24 +125,24 @@ async function createFinancesTables() {
             try {
                 await client.query(query);
                 const queryType = query.split(' ')[0] + ' ' + query.split(' ')[1];
-                console.log(`✅ ${queryType} ejecutado exitosamente`);
+                devLogger.log(`✅ ${queryType} ejecutado exitosamente`);
                 successCount++;
             } catch (error) {
                 if (error.message.includes('already exists') || error.message.includes('already_exists')) {
                     skipCount++;
                 } else {
-                    console.error(`❌ Error: ${error.message}`);
+                    devLogger.error(`❌ Error: ${error.message}`);
                 }
             }
         }
 
-        console.log(`\n📊 [RESUMEN]`);
-        console.log(`✅ Operaciones completadas: ${successCount}`);
-        console.log(`⏭️  Elementos ya existentes: ${skipCount}`);
-        console.log(`\n✨ [FINANCES] Tablas y índices listos!\n`);
+        devLogger.log(`\n📊 [RESUMEN]`);
+        devLogger.log(`✅ Operaciones completadas: ${successCount}`);
+        devLogger.log(`⏭️  Elementos ya existentes: ${skipCount}`);
+        devLogger.log(`\n✨ [FINANCES] Tablas y índices listos!\n`);
 
         // Verificar tablas creadas
-        console.log('📋 [VERIFICACIÓN] Listando tablas creadas:\n');
+        devLogger.log('📋 [VERIFICACIÓN] Listando tablas creadas:\n');
         const result = await client.query(`
             SELECT table_name
             FROM information_schema.tables
@@ -151,17 +152,17 @@ async function createFinancesTables() {
         `);
 
         if (result.rows.length > 0) {
-            console.log('Tablas encontradas:');
+            devLogger.log('Tablas encontradas:');
             result.rows.forEach(row => {
-                console.log(`  ✅ ${row.table_name}`);
+                devLogger.log(`  ✅ ${row.table_name}`);
             });
-            console.log('\n✨ ¡Base de datos lista para producción!\n');
+            devLogger.log('\n✨ ¡Base de datos lista para producción!\n');
         } else {
-            console.log('❌ No se encontraron las tablas esperadas');
+            devLogger.log('❌ No se encontraron las tablas esperadas');
         }
 
     } catch (error) {
-        console.error('❌ [FATAL ERROR]', error);
+        devLogger.error('❌ [FATAL ERROR]', error);
         process.exit(1);
     } finally {
         await client.release();
@@ -171,6 +172,6 @@ async function createFinancesTables() {
 
 // Ejecutar
 createFinancesTables().catch(err => {
-    console.error('❌ Error fatal:', err);
+    devLogger.error('❌ Error fatal:', err);
     process.exit(1);
 });

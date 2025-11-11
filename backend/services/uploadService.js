@@ -5,6 +5,7 @@
  */
 
 const sharp = require('sharp');
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const fs = require('fs').promises;
 
@@ -24,12 +25,12 @@ class UploadService {
 
             if (isConnected) {
                 this.dbAvailable = true;
-                console.log('✅ Upload Service: PostgreSQL disponible');
+                devLogger.log('✅ Upload Service: PostgreSQL disponible');
             } else {
-                console.log('⚠️ Upload Service: Sin base de datos');
+                devLogger.log('⚠️ Upload Service: Sin base de datos');
             }
         } catch (error) {
-            console.log('⚠️ Upload Service: Sin base de datos -', error.message);
+            devLogger.log('⚠️ Upload Service: Sin base de datos -', error.message);
         }
 
         // Asegurar directorios de uploads (solo en entornos con filesystem persistente)
@@ -37,10 +38,10 @@ class UploadService {
             try {
                 await this.ensureDirectories();
             } catch (error) {
-                console.warn('⚠️ Upload Service: No se pudo crear directorios', error.message);
+                devLogger.warn('⚠️ Upload Service: No se pudo crear directorios', error.message);
             }
         } else {
-            console.log('ℹ️ Upload Service: Entorno serverless detectado, saltando creación de directorios');
+            devLogger.log('ℹ️ Upload Service: Entorno serverless detectado, saltando creación de directorios');
         }
     }
 
@@ -82,7 +83,7 @@ class UploadService {
                 await fs.access(fullPath);
             } catch {
                 await fs.mkdir(fullPath, { recursive: true });
-                console.log(`📁 Creado directorio: ${dir}`);
+                devLogger.log(`📁 Creado directorio: ${dir}`);
             }
         }
     }
@@ -104,7 +105,7 @@ class UploadService {
             try {
                 await fs.mkdir(outputDir, { recursive: true });
             } catch (mkdirError) {
-                console.warn(`⚠️ No se pudo crear directorio ${category}:`, mkdirError.message);
+                devLogger.warn(`⚠️ No se pudo crear directorio ${category}:`, mkdirError.message);
             }
 
             // Obtener metadatos de la imagen original
@@ -214,7 +215,7 @@ class UploadService {
             };
 
         } catch (error) {
-            console.error('Error procesando imagen:', error);
+            devLogger.error('Error procesando imagen:', error);
             throw error;
         }
     }
@@ -233,7 +234,7 @@ class UploadService {
             try {
                 await fs.mkdir(outputDir, { recursive: true });
             } catch (mkdirError) {
-                console.warn(`⚠️ No se pudo crear directorio de documentos ${category}:`, mkdirError.message);
+                devLogger.warn(`⚠️ No se pudo crear directorio de documentos ${category}:`, mkdirError.message);
             }
 
             // Guardar archivo
@@ -265,7 +266,7 @@ class UploadService {
             };
 
         } catch (error) {
-            console.error('Error procesando documento:', error);
+            devLogger.error('Error procesando documento:', error);
             throw error;
         }
     }
@@ -276,7 +277,7 @@ class UploadService {
 
     async saveFileInfo(fileInfo) {
         if (!this.dbAvailable) {
-            console.log('⚠️ No se pudo guardar info del archivo: DB no disponible');
+            devLogger.log('⚠️ No se pudo guardar info del archivo: DB no disponible');
             return { id: null };
         }
 
@@ -313,7 +314,7 @@ class UploadService {
             return { id: result.insertId };
 
         } catch (error) {
-            console.error('Error guardando información del archivo:', error);
+            devLogger.error('Error guardando información del archivo:', error);
             return { id: null };
         }
     }
@@ -388,7 +389,7 @@ class UploadService {
             return { files, total };
 
         } catch (error) {
-            console.error('Error obteniendo archivos:', error);
+            devLogger.error('Error obteniendo archivos:', error);
             throw error;
         }
     }
@@ -430,7 +431,7 @@ class UploadService {
                 try {
                     await fs.unlink(filePath);
                 } catch (error) {
-                    console.warn(`No se pudo eliminar archivo físico: ${filePath}`);
+                    devLogger.warn(`No se pudo eliminar archivo físico: ${filePath}`);
                 }
             }
 
@@ -441,7 +442,7 @@ class UploadService {
             return result.affectedRows > 0;
 
         } catch (error) {
-            console.error('Error eliminando archivo:', error);
+            devLogger.error('Error eliminando archivo:', error);
             throw error;
         }
     }
@@ -525,7 +526,7 @@ class UploadService {
             };
 
         } catch (error) {
-            console.error('Error optimizando imagen:', error);
+            devLogger.error('Error optimizando imagen:', error);
             throw error;
         }
     }
@@ -578,21 +579,21 @@ class UploadService {
                                 results.filesDeleted++;
                                 results.spaceFreed += stats.size;
                             } catch (deleteError) {
-                                console.warn(`No se pudo eliminar archivo huérfano: ${filePath}`);
+                                devLogger.warn(`No se pudo eliminar archivo huérfano: ${filePath}`);
                             }
                         }
                     }
                 } catch (dirError) {
-                    console.warn(`No se pudo escanear directorio: ${dir}`);
+                    devLogger.warn(`No se pudo escanear directorio: ${dir}`);
                 }
             }
 
-            console.log(`🧹 Limpieza completada: ${results.filesDeleted} archivos eliminados, ${(results.spaceFreed / 1024 / 1024).toFixed(2)} MB liberados`);
+            devLogger.log(`🧹 Limpieza completada: ${results.filesDeleted} archivos eliminados, ${(results.spaceFreed / 1024 / 1024).toFixed(2)} MB liberados`);
 
             return results;
 
         } catch (error) {
-            console.error('Error en limpieza de archivos:', error);
+            devLogger.error('Error en limpieza de archivos:', error);
             throw error;
         }
     }
@@ -615,7 +616,7 @@ class UploadService {
 
             return outputPath;
         } catch (error) {
-            console.error('Error creando thumbnail:', error);
+            devLogger.error('Error creando thumbnail:', error);
             throw error;
         }
     }
@@ -635,7 +636,7 @@ class UploadService {
                 fileSize: stats.size
             };
         } catch (error) {
-            console.error('Error obteniendo metadatos de imagen:', error);
+            devLogger.error('Error obteniendo metadatos de imagen:', error);
             throw error;
         }
     }
@@ -652,7 +653,7 @@ class UploadService {
 
             return outputPath;
         } catch (error) {
-            console.error('Error convirtiendo a WebP:', error);
+            devLogger.error('Error convirtiendo a WebP:', error);
             throw error;
         }
     }

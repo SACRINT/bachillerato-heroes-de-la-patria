@@ -1,4 +1,4 @@
-// Sistema dinámico de noticias para Bachillerato Héroes de la Patria
+// Sistema dinámico de noticias para Bachillerato window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria')
 class NewsManager {
     constructor() {
         this.newsContainer = document.getElementById('noticiasContainer');

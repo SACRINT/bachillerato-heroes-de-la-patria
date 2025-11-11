@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const router = express.Router();
 
@@ -17,7 +18,7 @@ const router = express.Router();
  */
 router.get('/stats', authenticateToken, requireAdmin, async (req, res, next) => {
     try {
-        console.log('📊 [DASHBOARD] Obteniendo estadísticas generales...');
+        devLogger.log('📊 [DASHBOARD] Obteniendo estadísticas generales...');
 
         // Simular datos de usuarios
         const users = [];
@@ -56,7 +57,7 @@ router.get('/stats', authenticateToken, requireAdmin, async (req, res, next) => 
             systemAlerts: Math.floor(Math.random() * 3)
         };
 
-        console.log('Estadísticas del dashboard consultadas', {
+        devLogger.log('Estadísticas del dashboard consultadas', {
             adminId: req.user.id,
             timestamp: new Date().toISOString()
         });
@@ -83,7 +84,7 @@ router.get('/stats', authenticateToken, requireAdmin, async (req, res, next) => 
  */
 router.get('/recent-activity', authenticateToken, requireAdmin, async (req, res, next) => {
     try {
-        console.log('🔄 [DASHBOARD] Obteniendo actividad reciente...');
+        devLogger.log('🔄 [DASHBOARD] Obteniendo actividad reciente...');
 
         // Simulación de actividad reciente
         const activities = [
@@ -150,7 +151,7 @@ router.get('/recent-activity', authenticateToken, requireAdmin, async (req, res,
  */
 router.get('/system-health', authenticateToken, requireAdmin, async (req, res, next) => {
     try {
-        console.log('🏥 [DASHBOARD] Verificando salud del sistema...');
+        devLogger.log('🏥 [DASHBOARD] Verificando salud del sistema...');
 
         const health = {
             database: {
@@ -267,7 +268,7 @@ router.post('/execute-action', authenticateToken, requireAdmin, async (req, res,
     try {
         const { actionId, parameters } = req.body;
 
-        console.log('⚡ [DASHBOARD] Ejecutando acción:', actionId);
+        devLogger.log('⚡ [DASHBOARD] Ejecutando acción:', actionId);
 
         // Simulación de ejecución de acciones
         const results = {
@@ -308,7 +309,7 @@ router.post('/execute-action', authenticateToken, requireAdmin, async (req, res,
             message: 'Acción no reconocida'
         };
 
-        console.log('Acción del dashboard ejecutada:', actionId, {
+        devLogger.log('Acción del dashboard ejecutada:', actionId, {
             adminId: req.user.id,
             actionId,
             parameters,
@@ -328,7 +329,7 @@ router.post('/execute-action', authenticateToken, requireAdmin, async (req, res,
  */
 router.get('/active-users', authenticateToken, requireAdmin, async (req, res, next) => {
     try {
-        console.log('👥 [DASHBOARD] Obteniendo usuarios activos...');
+        devLogger.log('👥 [DASHBOARD] Obteniendo usuarios activos...');
 
         // Simular sesiones activas
         const activeSessions = [];
@@ -361,12 +362,12 @@ router.get('/active-users', authenticateToken, requireAdmin, async (req, res, ne
                     sessionExpires: session.expire
                 };
             } catch (error) {
-                console.error('Error procesando sesión:', error);
+                devLogger.error('Error procesando sesión:', error);
                 return null;
             }
         }).filter(user => user !== null);
 
-        console.log(`✅ [DASHBOARD] ${activeUsers.length} usuarios activos encontrados`);
+        devLogger.log(`✅ [DASHBOARD] ${activeUsers.length} usuarios activos encontrados`);
 
         res.json({
             success: true,
@@ -376,7 +377,7 @@ router.get('/active-users', authenticateToken, requireAdmin, async (req, res, ne
         });
 
     } catch (error) {
-        console.error('❌ [DASHBOARD] Error obteniendo usuarios activos:', error);
+        devLogger.error('❌ [DASHBOARD] Error obteniendo usuarios activos:', error);
         next(error);
     }
 });

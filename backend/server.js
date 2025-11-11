@@ -5,6 +5,7 @@
 
 // 🔴 CORRECCIÓN: Cargar .env desde el directorio raíz del proyecto
 const path = require('path');
+const devLogger = require('./utils/devLogger');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env'), override: true });
 
 const express = require('express');
@@ -60,8 +61,10 @@ const supportTicketsRoutes = require('./routes/support-tickets');
 const installParentsRoutes = require('./routes/install-parents');
 const financesRoutes = require('./routes/finances');
 const citasRoutes = require('./routes/citas');
+const calendarRoutes = require('./routes/calendar');  // ✅ CALENDAR ROUTES - Eventos del calendario interactivo
 const pendientesAprobacionRoutes = require('./routes/pendientes-aprobacion');
 const diagnosticoAprobacionesRoutes = require('./routes/diagnostico-aprobaciones');
+const gamificationRoutes = require('./routes/gamification');  // ✅ GAMIFICATION ROUTES - Sistema de logros y puntuaciones
 const { startCleanupService } = require('./services/cleanupService');
 
 const app = express();
@@ -95,12 +98,12 @@ const corsOptions = {
         if (allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
-            console.warn(`🚫 CORS blocked origin: ${origin}`);
+            devLogger.warn(`🚫 CORS blocked origin: ${origin}`);
             // ⚠️ Solo advertir pero permitir en desarrollo
             if (process.env.NODE_ENV === 'production') {
                 callback(new Error('CORS: Origin not allowed'));
             } else {
-                console.warn(`⚠️  Permitiendo origin no autorizado en modo desarrollo: ${origin}`);
+                devLogger.warn(`⚠️  Permitiendo origin no autorizado en modo desarrollo: ${origin}`);
                 callback(null, true);
             }
         }
@@ -139,7 +142,7 @@ app.use(cookieParser());
 // Session Configuration - Obligatoria SESSION_SECRET
 const SESSION_SECRET = process.env.SESSION_SECRET;
 if (!SESSION_SECRET) {
-    console.error('❌ ERROR: SESSION_SECRET environment variable is required');
+    devLogger.error('❌ ERROR: SESSION_SECRET environment variable is required');
     process.exit(1);
 }
 
@@ -165,7 +168,7 @@ app.use(session({
 app.use(securityMiddleware);
 
 // --- UNIFIED STATIC FILE SERVING FROM /public ---
-console.log('🌍 Configurando servidor de archivos estáticos...');
+devLogger.log('🌍 Configurando servidor de archivos estáticos...');
 app.use(express.static(path.join(__dirname, '../public')));
 
 
@@ -218,12 +221,14 @@ app.use('/api/install-polls', installPollsRoutes);
 app.use('/api/install-parents', installParentsRoutes);
 app.use('/api/finances', financesRoutes);
 app.use('/api/citas', citasRoutes);
+app.use('/api/calendar', calendarRoutes);  // ✅ CALENDAR ROUTES - Eventos del calendario interactivo
 app.use('/api/pendientes-aprobacion', pendientesAprobacionRoutes);
 app.use('/api/diagnostico-aprobaciones', diagnosticoAprobacionesRoutes);
 app.use('/api/teachers-portal', teachersPortalRoutes);
 app.use('/api/messaging', messagingRoutes);
 app.use('/api/digital-library', digitalLibraryRoutes);
 app.use('/api/support-tickets', supportTicketsRoutes);
+app.use('/api/gamification', gamificationRoutes);  // ✅ GAMIFICATION ROUTES - Sistema de logros y puntuaciones
 
 // ============================================
 // CONFIGURACIÓN PÚBLICA (API KEYS PARA FRONTEND)
@@ -297,7 +302,7 @@ app.use(errorHandler);
 // ============================================
 const { autoFixAprobaciones } = require('./scripts/auto-fix-aprobaciones-on-startup');
 autoFixAprobaciones().catch(err => {
-    console.error('❌ [AUTO-FIX] Error al ejecutar auto-fix:', err.message);
+    devLogger.error('❌ [AUTO-FIX] Error al ejecutar auto-fix:', err.message);
 });
 
 // ============================================
@@ -313,8 +318,8 @@ startCleanupService(12);
 
 if (require.main === module) {
     app.listen(PORT, () => {
-        console.log(`🚀 Servidor backend iniciado en http://localhost:${PORT}`);
-        console.log('✅✅✅ ¡VERSIÓN CORRECTA DEL SERVIDOR EN EJECUCIÓN! ✅✅✅');
+        devLogger.log(`🚀 Servidor backend iniciado en http://localhost:${PORT}`);
+        devLogger.log('✅✅✅ ¡VERSIÓN CORRECTA DEL SERVIDOR EN EJECUCIÓN! ✅✅✅');
     });
 }
 

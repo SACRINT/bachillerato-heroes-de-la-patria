@@ -5,6 +5,7 @@
  */
 
 const rateLimit = require('express-rate-limit');
+const devLogger = require('../utils/devLogger');
 const { body, param, query, validationResult } = require('express-validator');
 
 /**
@@ -132,8 +133,8 @@ function attackDetectionMiddleware(req, res, next) {
 
     for (const pattern of suspiciousPatterns) {
         if (pattern.test(checkString)) {
-            console.warn(`🚨 Ataque detectado desde IP ${req.ip}: ${pattern}`);
-            console.warn(`Request: ${req.method} ${req.originalUrl}`);
+            devLogger.warn(`🚨 Ataque detectado desde IP ${req.ip}: ${pattern}`);
+            devLogger.warn(`Request: ${req.method} ${req.originalUrl}`);
 
             return res.status(403).json({
                 success: false,
@@ -227,15 +228,15 @@ function securityLoggingMiddleware(req, res, next) {
     const userAgent = (req.get('User-Agent') || '').toLowerCase();
 
     if (suspiciousUserAgents.some(agent => userAgent.includes(agent))) {
-        console.warn(`🚨 User-Agent sospechoso detectado:`);
-        console.warn(`  IP: ${req.ip}`);
-        console.warn(`  User-Agent: ${req.get('User-Agent')}`);
-        console.warn(`  Request: ${req.method} ${req.originalUrl}`);
+        devLogger.warn(`🚨 User-Agent sospechoso detectado:`);
+        devLogger.warn(`  IP: ${req.ip}`);
+        devLogger.warn(`  User-Agent: ${req.get('User-Agent')}`);
+        devLogger.warn(`  Request: ${req.method} ${req.originalUrl}`);
     }
 
     // Log de intentos de acceso a paths administrativos
     if (req.path.includes('admin') && !req.path.includes('api')) {
-        console.log(`🔐 Acceso a ruta administrativa: ${req.method} ${req.originalUrl} desde ${req.ip}`);
+        devLogger.log(`🔐 Acceso a ruta administrativa: ${req.method} ${req.originalUrl} desde ${req.ip}`);
     }
 
     next();

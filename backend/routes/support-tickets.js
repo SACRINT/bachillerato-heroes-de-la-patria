@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
@@ -81,7 +82,7 @@ router.get('/departments', authenticateToken, async (req, res) => {
             departments: result.rows
         });
     } catch (error) {
-        console.error('Error al obtener departamentos:', error);
+        devLogger.error('Error al obtener departamentos:', error);
         res.status(500).json({ error: 'Error al obtener departamentos' });
     } finally {
         client.release();
@@ -118,7 +119,7 @@ router.get('/categories', authenticateToken, async (req, res) => {
             categories: result.rows
         });
     } catch (error) {
-        console.error('Error al obtener categorías:', error);
+        devLogger.error('Error al obtener categorías:', error);
         res.status(500).json({ error: 'Error al obtener categorías' });
     } finally {
         client.release();
@@ -312,7 +313,7 @@ router.get('/tickets', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error al obtener tickets:', error);
+        devLogger.error('Error al obtener tickets:', error);
         res.status(500).json({ error: 'Error al obtener tickets' });
     } finally {
         client.release();
@@ -391,7 +392,7 @@ router.get('/tickets/:id', authenticateToken, async (req, res) => {
             ticket: ticket
         });
     } catch (error) {
-        console.error('Error al obtener ticket:', error);
+        devLogger.error('Error al obtener ticket:', error);
         res.status(500).json({ error: 'Error al obtener ticket' });
     } finally {
         client.release();
@@ -479,7 +480,7 @@ router.post('/tickets', authenticateToken, upload.array('attachments', 5), async
         });
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Error al crear ticket:', error);
+        devLogger.error('Error al crear ticket:', error);
 
         // Eliminar archivos subidos si hubo error
         if (req.files) {
@@ -536,7 +537,7 @@ router.put('/tickets/:id', authenticateToken, async (req, res) => {
             ticket: result.rows[0]
         });
     } catch (error) {
-        console.error('Error al actualizar ticket:', error);
+        devLogger.error('Error al actualizar ticket:', error);
         res.status(500).json({ error: 'Error al actualizar ticket' });
     } finally {
         client.release();
@@ -590,7 +591,7 @@ router.post('/tickets/:id/assign', authenticateToken, async (req, res) => {
             message: `Ticket asignado a ${agent_name}`
         });
     } catch (error) {
-        console.error('Error al asignar ticket:', error);
+        devLogger.error('Error al asignar ticket:', error);
         res.status(500).json({ error: 'Error al asignar ticket' });
     } finally {
         client.release();
@@ -632,7 +633,7 @@ router.post('/tickets/:id/comments', authenticateToken, async (req, res) => {
             comment: result.rows[0]
         });
     } catch (error) {
-        console.error('Error al crear comentario:', error);
+        devLogger.error('Error al crear comentario:', error);
         res.status(500).json({ error: 'Error al crear comentario' });
     } finally {
         client.release();
@@ -671,7 +672,7 @@ router.put('/comments/:id', authenticateToken, async (req, res) => {
             comment: result.rows[0]
         });
     } catch (error) {
-        console.error('Error al actualizar comentario:', error);
+        devLogger.error('Error al actualizar comentario:', error);
         res.status(500).json({ error: 'Error al actualizar comentario' });
     } finally {
         client.release();
@@ -705,7 +706,7 @@ router.delete('/comments/:id', authenticateToken, async (req, res) => {
             message: 'Comentario eliminado'
         });
     } catch (error) {
-        console.error('Error al eliminar comentario:', error);
+        devLogger.error('Error al eliminar comentario:', error);
         res.status(500).json({ error: 'Error al eliminar comentario' });
     } finally {
         client.release();
@@ -756,7 +757,7 @@ router.post('/tickets/:id/attachments', authenticateToken, upload.array('files',
             attachments: attachments
         });
     } catch (error) {
-        console.error('Error al subir attachments:', error);
+        devLogger.error('Error al subir attachments:', error);
 
         // Eliminar archivos subidos si hubo error
         if (req.files) {
@@ -810,7 +811,7 @@ router.post('/tickets/:id/resolve', authenticateToken, async (req, res) => {
             message: 'Ticket marcado como resuelto'
         });
     } catch (error) {
-        console.error('Error al resolver ticket:', error);
+        devLogger.error('Error al resolver ticket:', error);
         res.status(500).json({ error: 'Error al resolver ticket' });
     } finally {
         client.release();
@@ -848,7 +849,7 @@ router.post('/tickets/:id/close', authenticateToken, async (req, res) => {
             message: 'Ticket cerrado'
         });
     } catch (error) {
-        console.error('Error al cerrar ticket:', error);
+        devLogger.error('Error al cerrar ticket:', error);
         res.status(500).json({ error: 'Error al cerrar ticket' });
     } finally {
         client.release();
@@ -884,7 +885,7 @@ router.post('/tickets/:id/reopen', authenticateToken, async (req, res) => {
             message: 'Ticket reabierto'
         });
     } catch (error) {
-        console.error('Error al reabrir ticket:', error);
+        devLogger.error('Error al reabrir ticket:', error);
         res.status(500).json({ error: 'Error al reabrir ticket' });
     } finally {
         client.release();
@@ -920,7 +921,7 @@ router.post('/tickets/:id/watch', authenticateToken, async (req, res) => {
             message: 'Ahora estás siguiendo este ticket'
         });
     } catch (error) {
-        console.error('Error al seguir ticket:', error);
+        devLogger.error('Error al seguir ticket:', error);
         res.status(500).json({ error: 'Error al seguir ticket' });
     } finally {
         client.release();
@@ -948,7 +949,7 @@ router.delete('/tickets/:id/watch', authenticateToken, async (req, res) => {
             message: 'Has dejado de seguir este ticket'
         });
     } catch (error) {
-        console.error('Error al dejar de seguir ticket:', error);
+        devLogger.error('Error al dejar de seguir ticket:', error);
         res.status(500).json({ error: 'Error al dejar de seguir ticket' });
     } finally {
         client.release();
@@ -1006,7 +1007,7 @@ router.get('/search', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error en búsqueda:', error);
+        devLogger.error('Error en búsqueda:', error);
         res.status(500).json({ error: 'Error en búsqueda' });
     } finally {
         client.release();
@@ -1073,7 +1074,7 @@ router.get('/stats', authenticateToken, async (req, res) => {
             stats: stats
         });
     } catch (error) {
-        console.error('Error al obtener estadísticas:', error);
+        devLogger.error('Error al obtener estadísticas:', error);
         res.status(500).json({ error: 'Error al obtener estadísticas' });
     } finally {
         client.release();
@@ -1122,7 +1123,7 @@ router.get('/my-stats', authenticateToken, async (req, res) => {
             stats: stats
         });
     } catch (error) {
-        console.error('Error al obtener estadísticas:', error);
+        devLogger.error('Error al obtener estadísticas:', error);
         res.status(500).json({ error: 'Error al obtener estadísticas' });
     } finally {
         client.release();
@@ -1180,7 +1181,7 @@ router.post('/tickets/:id/rate', authenticateToken, async (req, res) => {
             message: 'Calificación registrada'
         });
     } catch (error) {
-        console.error('Error al calificar ticket:', error);
+        devLogger.error('Error al calificar ticket:', error);
         res.status(500).json({ error: 'Error al calificar ticket' });
     } finally {
         client.release();

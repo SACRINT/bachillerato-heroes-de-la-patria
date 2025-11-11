@@ -4,6 +4,7 @@
  */
 
 const axios = require('axios');
+const devLogger = require('../utils/devLogger');
 
 // Configuración
 const BASE_URL = 'http://localhost:3000';
@@ -23,7 +24,7 @@ const colors = {
 };
 
 function log(message, color = 'reset') {
-    console.log(`${colors[color]}${message}${colors.reset}`);
+    devLogger.log(`${colors[color]}${message}${colors.reset}`);
 }
 
 function logSuccess(message) {
@@ -292,7 +293,7 @@ async function testApproveRequest() {
     } catch (error) {
         logError(`Error aprobando solicitud: ${error.response?.data?.message || error.message}`);
         if (error.response?.data?.details) {
-            console.log(error.response.data.details);
+            devLogger.log(error.response.data.details);
         }
         return false;
     }

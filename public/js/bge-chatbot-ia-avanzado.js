@@ -419,7 +419,7 @@ class BGEChatbotIAAvanzado {
         // Respuestas por intención
         switch (intent) {
             case 'greeting':
-                response = `¡Hola! Soy el asistente virtual del Bachillerato Héroes de la Patria. ¿En qué puedo ayudarte hoy?`;
+                response = `¡Hola! Soy el asistente virtual del Bachillerato window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria'). ¿En qué puedo ayudarte hoy?`;
                 break;
 
             case 'admission':

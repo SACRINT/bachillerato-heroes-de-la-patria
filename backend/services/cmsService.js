@@ -5,6 +5,7 @@
  */
 
 const path = require('path');
+const devLogger = require('../utils/devLogger');
 const fs = require('fs').promises;
 
 class CMSService {
@@ -23,15 +24,15 @@ class CMSService {
 
             if (isConnected && typeof this.db.execute === 'function') {
                 this.dbAvailable = true;
-                console.log('✅ CMS Service: MySQL disponible');
+                devLogger.log('✅ CMS Service: MySQL disponible');
                 await this.ensureTablesExist();
             } else {
-                console.log('⚠️ CMS Service: Fallback a JSON');
+                devLogger.log('⚠️ CMS Service: Fallback a JSON');
                 this.dbAvailable = false;
                 await this.ensureJsonStructure();
             }
         } catch (error) {
-            console.log('⚠️ CMS Service: Fallback a JSON -', error.message);
+            devLogger.log('⚠️ CMS Service: Fallback a JSON -', error.message);
             this.dbAvailable = false;
             await this.ensureJsonStructure();
         }
@@ -69,7 +70,7 @@ class CMSService {
             `;
 
             await this.db.execute(createContentTable);
-            console.log('✅ CMS Service: Tabla cms_content verificada');
+            devLogger.log('✅ CMS Service: Tabla cms_content verificada');
 
             // Crear tabla de archivos si no existe
             const createFilesTable = `
@@ -98,10 +99,10 @@ class CMSService {
             `;
 
             await this.db.execute(createFilesTable);
-            console.log('✅ CMS Service: Tabla cms_files verificada');
+            devLogger.log('✅ CMS Service: Tabla cms_files verificada');
 
         } catch (error) {
-            console.error('Error creando tablas CMS:', error);
+            devLogger.error('Error creando tablas CMS:', error);
             throw error;
         }
     }
@@ -128,7 +129,7 @@ class CMSService {
                 await fs.access(filePath);
             } catch {
                 await fs.writeFile(filePath, JSON.stringify(file.structure, null, 2));
-                console.log(`✅ Creado: ${file.name}`);
+                devLogger.log(`✅ Creado: ${file.name}`);
             }
         }
     }
@@ -227,7 +228,7 @@ class CMSService {
             return { content: processedContent, total };
 
         } catch (error) {
-            console.error('Error obteniendo contenido de DB:', error);
+            devLogger.error('Error obteniendo contenido de DB:', error);
             throw error;
         }
     }
@@ -263,7 +264,7 @@ class CMSService {
 
                     allContent.push(...processedItems);
                 } catch (fileError) {
-                    console.warn(`No se pudo leer ${fileName}:`, fileError.message);
+                    devLogger.warn(`No se pudo leer ${fileName}:`, fileError.message);
                 }
             }
 
@@ -295,7 +296,7 @@ class CMSService {
             return { content: paginatedContent, total };
 
         } catch (error) {
-            console.error('Error obteniendo contenido de JSON:', error);
+            devLogger.error('Error obteniendo contenido de JSON:', error);
             throw error;
         }
     }
@@ -322,7 +323,7 @@ class CMSService {
                 return content;
 
             } catch (error) {
-                console.error('Error obteniendo contenido por ID:', error);
+                devLogger.error('Error obteniendo contenido por ID:', error);
                 throw error;
             }
         } else {
@@ -368,7 +369,7 @@ class CMSService {
             return this.getContentById(result.insertId);
 
         } catch (error) {
-            console.error('Error creando contenido en DB:', error);
+            devLogger.error('Error creando contenido en DB:', error);
             throw error;
         }
     }
@@ -421,7 +422,7 @@ class CMSService {
             };
 
         } catch (error) {
-            console.error('Error creando contenido en JSON:', error);
+            devLogger.error('Error creando contenido en JSON:', error);
             throw error;
         }
     }
@@ -471,7 +472,7 @@ class CMSService {
             return this.getContentById(id);
 
         } catch (error) {
-            console.error('Error actualizando contenido en DB:', error);
+            devLogger.error('Error actualizando contenido en DB:', error);
             throw error;
         }
     }
@@ -479,7 +480,7 @@ class CMSService {
     async updateContentInJSON(id, updateData) {
         // Implementación simplificada para JSON
         // En un entorno de producción, esto sería más complejo
-        console.warn('Actualización de contenido JSON no implementada completamente');
+        devLogger.warn('Actualización de contenido JSON no implementada completamente');
         return null;
     }
 
@@ -490,7 +491,7 @@ class CMSService {
                 const [result] = await this.db.execute(query, [id]);
                 return result.affectedRows > 0;
             } catch (error) {
-                console.error('Error eliminando contenido:', error);
+                devLogger.error('Error eliminando contenido:', error);
                 throw error;
             }
         } else {
@@ -574,7 +575,7 @@ class CMSService {
                 };
 
             } catch (error) {
-                console.error('Error obteniendo estadísticas CMS:', error);
+                devLogger.error('Error obteniendo estadísticas CMS:', error);
                 throw error;
             }
         } else {

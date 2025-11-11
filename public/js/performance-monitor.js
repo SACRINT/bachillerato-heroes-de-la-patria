@@ -1,6 +1,6 @@
 /**
  * 📊 PERFORMANCE MONITOR - FASE 4.3
- * Sistema de monitoreo de Core Web Vitals y performance para BGE Héroes de la Patria
+ * Sistema de monitoreo de Core Web Vitals y performance para window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Seguimiento de métricas críticas de usuario y optimización automática
  */
 

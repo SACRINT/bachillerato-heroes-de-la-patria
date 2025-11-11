@@ -7,6 +7,7 @@
  * Fecha: 26 Septiembre 2025
  */
 
+const devLogger = require('../utils/devLogger');
 const { executeQuery } = require('../config/database');
 const { getLocalIAProcessor } = require('./localIAProcessor');
 
@@ -87,7 +88,7 @@ class AIDatabaseIntegration {
             return enrichedData;
 
         } catch (error) {
-            console.error('❌ Error obteniendo datos de estudiantes:', error);
+            devLogger.error('❌ Error obteniendo datos de estudiantes:', error);
 
             // Fallback a datos mock si la DB falla
             return this.getMockStudentData(studentId);
@@ -144,7 +145,7 @@ class AIDatabaseIntegration {
             return enrichedData;
 
         } catch (error) {
-            console.error('❌ Error obteniendo datos académicos:', error);
+            devLogger.error('❌ Error obteniendo datos académicos:', error);
             return this.getMockAcademicData(materia, grado);
         }
     }
@@ -195,7 +196,7 @@ class AIDatabaseIntegration {
             return enrichedData;
 
         } catch (error) {
-            console.error('❌ Error obteniendo datos de docentes:', error);
+            devLogger.error('❌ Error obteniendo datos de docentes:', error);
             return this.getMockTeacherData(teacherId);
         }
     }
@@ -282,7 +283,7 @@ class AIDatabaseIntegration {
             return result;
 
         } catch (error) {
-            console.error('❌ Error obteniendo datos de rendimiento:', error);
+            devLogger.error('❌ Error obteniendo datos de rendimiento:', error);
             return this.getMockPerformanceData(filters);
         }
     }
@@ -320,7 +321,7 @@ class AIDatabaseIntegration {
             return enrichedData;
 
         } catch (error) {
-            console.error('❌ Error en análisis AI:', error);
+            devLogger.error('❌ Error en análisis AI:', error);
             // Retornar datos sin enriquecimiento si falla
             return data;
         }
@@ -361,7 +362,7 @@ class AIDatabaseIntegration {
             };
 
         } catch (error) {
-            console.error('❌ Error analizando patrones:', error);
+            devLogger.error('❌ Error analizando patrones:', error);
             return null;
         }
     }
@@ -556,7 +557,7 @@ class AIDatabaseIntegration {
 
     clearCache() {
         this.cache.clear();
-        console.log('🗑️ Cache de integración AI-Database limpiado');
+        devLogger.log('🗑️ Cache de integración AI-Database limpiado');
     }
 
     /**
@@ -578,7 +579,7 @@ class AIDatabaseIntegration {
      * 🔧 Datos mock para fallback
      */
     getMockStudentData(studentId) {
-        console.log('📝 Usando datos mock de estudiantes');
+        devLogger.log('📝 Usando datos mock de estudiantes');
 
         const mockData = [
             {
@@ -602,7 +603,7 @@ class AIDatabaseIntegration {
     }
 
     getMockAcademicData(materia, grado) {
-        console.log('📝 Usando datos mock académicos');
+        devLogger.log('📝 Usando datos mock académicos');
 
         return [
             {
@@ -622,7 +623,7 @@ class AIDatabaseIntegration {
     }
 
     getMockTeacherData(teacherId) {
-        console.log('📝 Usando datos mock de docentes');
+        devLogger.log('📝 Usando datos mock de docentes');
 
         return [
             {
@@ -643,7 +644,7 @@ class AIDatabaseIntegration {
     }
 
     getMockPerformanceData(filters) {
-        console.log('📝 Usando datos mock de rendimiento');
+        devLogger.log('📝 Usando datos mock de rendimiento');
 
         return {
             rawData: [

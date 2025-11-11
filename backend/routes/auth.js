@@ -9,7 +9,7 @@ const { body, validationResult } = require('express-validator');
 const { getAuthService } = require('../services/authService');
 const { getJWTUtils } = require('../utils/jwtUtils');
 const { authenticateToken, requireAdmin, requireRole } = require('../middleware/auth');
-const devLog = require('../utils/devLogger'); // 🔐 Logging seguro (GDPR compliant)
+const devLogger = require('../utils/devLogger'); // 🔐 Logging seguro (GDPR compliant)
 const router = express.Router();
 
 // Instancias de servicios
@@ -130,7 +130,7 @@ router.post('/login', loginLimiter, loginValidation, async (req, res, next) => {
         const { username, password, rememberMe = false } = req.body;
         const clientIP = req.ip || req.connection.remoteAddress;
 
-        devLog.log('Intento de login');
+        devLogger.log('Intento de login');
 
         // Autenticar usuario
         const user = await authService.authenticateUser(username, password);
@@ -147,7 +147,7 @@ router.post('/login', loginLimiter, loginValidation, async (req, res, next) => {
         const tokenPair = jwtUtils.generateTokenPair(userPayload, rememberMe);
 
         // Log de login exitoso
-        devLog.log('Login exitoso');
+        devLogger.log('Login exitoso');
 
         // Respuesta exitosa
         res.json({
@@ -171,7 +171,7 @@ router.post('/login', loginLimiter, loginValidation, async (req, res, next) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en login:', error);
+        devLogger.error('❌ Error en login:');
 
         // Respuesta genérica por seguridad
         res.status(401).json({
@@ -201,7 +201,7 @@ router.post('/refresh', refreshLimiter, async (req, res, next) => {
         // Renovar tokens
         const newTokenPair = jwtUtils.renewTokenPair(refreshToken);
 
-        console.log('🔄 Tokens renovados exitosamente');
+        devLogger.log('🔄 Tokens renovados exitosamente');
 
         res.json({
             success: true,
@@ -210,7 +210,7 @@ router.post('/refresh', refreshLimiter, async (req, res, next) => {
         });
 
     } catch (error) {
-        console.error('❌ Error renovando token:', error);
+        devLogger.error('Error renovando token', error);
         res.status(403).json({
             success: false,
             error: 'Token de refresh inválido',
@@ -234,7 +234,7 @@ router.post('/logout', authenticateToken, async (req, res, next) => {
         // Invalidar sesiones del usuario
         await authService.invalidateUserSessions(req.user.id);
 
-        devLog.log('Logout exitoso');
+        devLogger.log('Logout exitoso');
 
         res.json({
             success: true,
@@ -242,7 +242,7 @@ router.post('/logout', authenticateToken, async (req, res, next) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en logout:', error);
+        devLogger.error('❌ Error en logout:');
         res.status(500).json({
             success: false,
             error: 'Error cerrando sesión',
@@ -277,7 +277,7 @@ router.post('/register', authenticateToken, requireAdmin, registerLimiter, regis
             role
         } = req.body;
 
-        devLog.log('Admin creando usuario');
+        devLogger.log('Admin creando usuario');
 
         // Crear usuario usando el servicio
         const newUser = await authService.createUser({
@@ -290,7 +290,7 @@ router.post('/register', authenticateToken, requireAdmin, registerLimiter, regis
             role
         });
 
-        devLog.log('Usuario creado exitosamente');
+        devLogger.log('Usuario creado exitosamente');
 
         res.status(201).json({
             success: true,
@@ -299,7 +299,7 @@ router.post('/register', authenticateToken, requireAdmin, registerLimiter, regis
         });
 
     } catch (error) {
-        console.error('❌ Error registrando usuario:', error);
+        devLogger.error('❌ Error registrando usuario:');
 
         if (error.message.includes('ya está registrado')) {
             return res.status(409).json({
@@ -333,7 +333,7 @@ router.get('/profile', authenticateToken, async (req, res, next) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo perfil:', error);
+        devLogger.error('❌ Error obteniendo perfil:');
         res.status(404).json({
             success: false,
             error: 'Usuario no encontrado',
@@ -360,7 +360,7 @@ router.put('/change-password', authenticateToken, passwordChangeValidation, asyn
 
         const { currentPassword, newPassword } = req.body;
 
-        devLog.log('Usuario cambiando contraseña');
+        devLogger.log('Usuario cambiando contraseña');
 
         // Cambiar contraseña usando el servicio
         await authService.changePassword(req.user.id, currentPassword, newPassword);
@@ -368,7 +368,7 @@ router.put('/change-password', authenticateToken, passwordChangeValidation, asyn
         // Invalidar todas las sesiones del usuario por seguridad
         await authService.invalidateUserSessions(req.user.id);
 
-        devLog.log('Contraseña cambiada exitosamente');
+        devLogger.log('Contraseña cambiada exitosamente');
 
         res.json({
             success: true,
@@ -376,7 +376,7 @@ router.put('/change-password', authenticateToken, passwordChangeValidation, asyn
         });
 
     } catch (error) {
-        console.error('❌ Error cambiando contraseña:', error);
+        devLogger.error('❌ Error cambiando contraseña:');
 
         if (error.message.includes('incorrecta')) {
             return res.status(400).json({
@@ -496,7 +496,7 @@ router.post('/invalidate-user-sessions', authenticateToken, requireAdmin, [
 
         await authService.invalidateUserSessions(userId);
 
-        devLog.log('Admin invalidó sesiones de usuario');
+        devLogger.log('Admin invalidó sesiones de usuario');
 
         res.json({
             success: true,
@@ -504,7 +504,7 @@ router.post('/invalidate-user-sessions', authenticateToken, requireAdmin, [
         });
 
     } catch (error) {
-        console.error('❌ Error invalidando sesiones:', error);
+        devLogger.error('❌ Error invalidando sesiones:');
         res.status(500).json({
             success: false,
             error: 'Error interno',
@@ -655,7 +655,7 @@ router.post('/request-registration', registrationRequestLimiter, requestRegistra
                 });
             }
         } catch (error) {
-            console.warn('⚠️ No se pudo verificar usuarios existentes:', error.message);
+            devLogger.warn('⚠️ No se pudo verificar usuarios existentes:', error.message);
         }
 
         // Cargar solicitudes existentes
@@ -683,7 +683,7 @@ router.post('/request-registration', registrationRequestLimiter, requestRegistra
         // Guardar
         await RegistrationHelpers.writeRegistrationRequests(data);
 
-        devLog.log('Nueva solicitud de registro');
+        devLogger.log('Nueva solicitud de registro');
 
         res.status(201).json({
             success: true,
@@ -698,7 +698,7 @@ router.post('/request-registration', registrationRequestLimiter, requestRegistra
         });
 
     } catch (error) {
-        console.error('❌ Error procesando solicitud de registro:', error);
+        devLogger.error('❌ Error procesando solicitud de registro:');
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -733,7 +733,7 @@ router.post('/google', async (req, res) => {
             });
         }
 
-        devLog.log('[GOOGLE-AUTH] Verificando token de Google');
+        devLogger.log('[GOOGLE-AUTH] Verificando token de Google');
 
         // Importar google-auth-library
         const { OAuth2Client } = require('google-auth-library');
@@ -750,7 +750,7 @@ router.post('/google', async (req, res) => {
                 audience: clientId
             });
         } catch (error) {
-            console.error('❌ [GOOGLE-AUTH] Token inválido:', error.message);
+            devLogger.error('[GOOGLE-AUTH] Token inválido', error);
             return res.status(401).json({
                 success: false,
                 error: 'Token de Google inválido',
@@ -762,7 +762,7 @@ router.post('/google', async (req, res) => {
         const payload = googleTicket.getPayload();
         const { email: googleEmail, name: googleName, picture, sub } = payload;
 
-        devLog.log('[GOOGLE-AUTH] Token verificado');
+        devLogger.log('[GOOGLE-AUTH] Token verificado');
 
         // Importar DAL
         const { getUserByEmail, createUserFromGoogle } = require('../data/database-access');
@@ -772,7 +772,7 @@ router.post('/google', async (req, res) => {
 
         if (!user) {
             // Crear usuario nuevo desde Google
-            devLog.log('[GOOGLE-AUTH] Creando nuevo usuario');
+            devLogger.log('[GOOGLE-AUTH] Creando nuevo usuario');
 
             user = await createUserFromGoogle({
                 email: googleEmail,
@@ -781,9 +781,9 @@ router.post('/google', async (req, res) => {
                 sub: sub
             });
 
-            devLog.log('[GOOGLE-AUTH] Usuario creado exitosamente');
+            devLogger.log('[GOOGLE-AUTH] Usuario creado exitosamente');
         } else {
-            devLog.log('[GOOGLE-AUTH] Usuario existente encontrado');
+            devLogger.log('[GOOGLE-AUTH] Usuario existente encontrado');
         }
 
         // Generar JWT propio de nuestra aplicación
@@ -793,7 +793,7 @@ router.post('/google', async (req, res) => {
             user.role
         );
 
-        devLog.log('[GOOGLE-AUTH] Token JWT generado');
+        devLogger.log('[GOOGLE-AUTH] Token JWT generado');
 
         // Devolver respuesta exitosa
         res.json({
@@ -813,7 +813,7 @@ router.post('/google', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ [GOOGLE-AUTH] Error procesando autenticación:', error);
+        devLogger.error('❌ [GOOGLE-AUTH] Error procesando autenticación:');
         res.status(500).json({
             success: false,
             error: 'Error procesando autenticación con Google',

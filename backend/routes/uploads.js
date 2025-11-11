@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const multer = require('multer');
 const sharp = require('sharp');
@@ -226,7 +227,7 @@ router.post('/image', authenticateToken, requireAdmin, upload.single('image'), a
         });
 
     } catch (error) {
-        console.error('Error subiendo imagen:', error);
+        devLogger.error('Error subiendo imagen:', error);
         res.status(500).json({
             success: false,
             error: 'Error procesando imagen',
@@ -315,7 +316,7 @@ router.post('/document', authenticateToken, requireAdmin, upload.single('documen
         });
 
     } catch (error) {
-        console.error('Error subiendo documento:', error);
+        devLogger.error('Error subiendo documento:', error);
         res.status(500).json({
             success: false,
             error: 'Error procesando documento',
@@ -375,7 +376,7 @@ router.post('/multiple', authenticateToken, requireAdmin, upload.array('files', 
         });
 
     } catch (error) {
-        console.error('Error en upload múltiple:', error);
+        devLogger.error('Error en upload múltiple:', error);
         res.status(500).json({
             success: false,
             error: 'Error procesando archivos',
@@ -429,7 +430,7 @@ router.get('/files', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error obteniendo archivos:', error);
+        devLogger.error('Error obteniendo archivos:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -465,7 +466,7 @@ router.delete('/files/:id', authenticateToken, requireAdmin, async (req, res) =>
             message: 'Archivo eliminado exitosamente'
         });
     } catch (error) {
-        console.error('Error eliminando archivo:', error);
+        devLogger.error('Error eliminando archivo:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -511,7 +512,7 @@ router.post('/optimize/:id', authenticateToken, requireAdmin, async (req, res) =
             data: result
         });
     } catch (error) {
-        console.error('Error reoptimizando imagen:', error);
+        devLogger.error('Error reoptimizando imagen:', error);
         res.status(500).json({
             success: false,
             error: 'Error procesando imagen',
@@ -542,7 +543,7 @@ router.post('/cleanup', authenticateToken, requireAdmin, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error en limpieza:', error);
+        devLogger.error('Error en limpieza:', error);
         res.status(500).json({
             success: false,
             error: 'Error en limpieza',

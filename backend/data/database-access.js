@@ -13,6 +13,7 @@
  */
 
 const { pool } = require('../config/database');
+const devLogger = require('../utils/devLogger');
 
 /**
  * ============================================
@@ -34,7 +35,7 @@ const { pool } = require('../config/database');
  */
 async function getAllStudents() {
     try {
-        console.log('[DAL] Ejecutando: getAllStudents (optimized v1.1.0)');
+        devLogger.log('Operación DAL iniciada');
 
         // NIVEL 2 OPTIMIZATION: Proyección de columnas específicas
         // Solo traemos los 9 campos necesarios para dashboard
@@ -55,11 +56,11 @@ async function getAllStudents() {
         `);
 
         const students = result.rows || [];
-        console.log(`[DAL] ✅ getAllStudents: ${students.length} estudiantes encontrados (optimized)`);
+        devLogger.log('Operación completada exitosamente');
 
         return students;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getAllStudents:', error);
+        devLogger.error('Error durante operación DAL');
         throw error; // Relanzar el error para que el controlador de la ruta lo maneje
     }
 }
@@ -72,18 +73,18 @@ async function getAllStudents() {
  */
 async function getStudentById(studentId) {
     try {
-        console.log('[DAL] Ejecutando: getStudentById', { studentId });
+        devLogger.log('Operación DAL iniciada');
         const result = await pool.query(
             'SELECT * FROM estudiantes WHERE id = $1',
             [studentId]
         );
 
         const student = result.rows[0] || null;
-        console.log(`[DAL] ✅ getStudentById: ${student ? 'encontrado' : 'no encontrado'}`);
+        devLogger.log(`[DAL] ✅ getStudentById: ${student ? 'encontrado' : 'no encontrado'}`);
 
         return student;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getStudentById:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -96,18 +97,18 @@ async function getStudentById(studentId) {
  */
 async function getStudentsByGrade(grado) {
     try {
-        console.log('[DAL] Ejecutando: getStudentsByGrade', { grado });
+        devLogger.log('Operación DAL iniciada');
         const result = await pool.query(
             'SELECT * FROM estudiantes WHERE grado = $1 ORDER BY apellido_paterno, apellido_materno, nombre ASC',
             [grado]
         );
 
         const students = result.rows || [];
-        console.log(`[DAL] ✅ getStudentsByGrade: ${students.length} estudiantes encontrados`);
+        devLogger.log('Operación completada exitosamente');
 
         return students;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getStudentsByGrade:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -125,7 +126,7 @@ async function createStudent(studentData) {
             numero_telefono, grado, seccion
         } = studentData;
 
-        console.log('[DAL] Ejecutando: createStudent', { email });
+        devLogger.log('Operación DAL iniciada');
 
         const result = await pool.query(
             `INSERT INTO estudiantes
@@ -136,11 +137,11 @@ async function createStudent(studentData) {
         );
 
         const newStudent = result.rows[0];
-        console.log(`[DAL] ✅ createStudent: estudiante creado con ID ${newStudent.id}`);
+        devLogger.log('Operación completada exitosamente');
 
         return newStudent;
     } catch (error) {
-        console.error('[DAL] ❌ Error en createStudent:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -154,7 +155,7 @@ async function createStudent(studentData) {
  */
 async function updateStudent(studentId, updateData) {
     try {
-        console.log('[DAL] Ejecutando: updateStudent', { studentId });
+        devLogger.log('Operación DAL iniciada');
 
         // Construir dinámicamente la query según los campos proporcionados
         const fields = [];
@@ -187,16 +188,16 @@ async function updateStudent(studentId, updateData) {
         const result = await pool.query(query, values);
 
         if (result.rows.length === 0) {
-            console.log('[DAL] ⚠️ updateStudent: estudiante no encontrado');
+            devLogger.log('[DAL] ⚠️ updateStudent: estudiante no encontrado');
             return null;
         }
 
         const updatedStudent = result.rows[0];
-        console.log(`[DAL] ✅ updateStudent: estudiante ${studentId} actualizado`);
+        devLogger.log('Operación completada exitosamente');
 
         return updatedStudent;
     } catch (error) {
-        console.error('[DAL] ❌ Error en updateStudent:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -209,7 +210,7 @@ async function updateStudent(studentId, updateData) {
  */
 async function deleteStudent(studentId) {
     try {
-        console.log('[DAL] Ejecutando: deleteStudent', { studentId });
+        devLogger.log('Operación DAL iniciada');
 
         const result = await pool.query(
             'DELETE FROM estudiantes WHERE id = $1 RETURNING id',
@@ -217,11 +218,11 @@ async function deleteStudent(studentId) {
         );
 
         const deleted = result.rows.length > 0;
-        console.log(`[DAL] ✅ deleteStudent: ${deleted ? 'eliminado' : 'no encontrado'}`);
+        devLogger.log(`[DAL] ✅ deleteStudent: ${deleted ? 'eliminado' : 'no encontrado'}`);
 
         return deleted;
     } catch (error) {
-        console.error('[DAL] ❌ Error en deleteStudent:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -233,7 +234,7 @@ async function deleteStudent(studentId) {
  */
 async function getStudentStats() {
     try {
-        console.log('[DAL] Ejecutando: getStudentStats');
+        devLogger.log('Operación DAL iniciada');
 
         const result = await pool.query(`
             SELECT
@@ -245,11 +246,11 @@ async function getStudentStats() {
         `);
 
         const stats = result.rows[0];
-        console.log(`[DAL] ✅ getStudentStats:`, stats);
+        devLogger.log(`[DAL] ✅ getStudentStats:`, stats);
 
         return stats;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getStudentStats:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -267,17 +268,17 @@ async function getStudentStats() {
  */
 async function getAllTeachers() {
     try {
-        console.log('[DAL] Ejecutando: getAllTeachers');
+        devLogger.log('Operación DAL iniciada');
         const result = await pool.query(
             'SELECT * FROM docentes ORDER BY apellido_paterno, apellido_materno, nombre ASC'
         );
 
         const teachers = result.rows || [];
-        console.log(`[DAL] ✅ getAllTeachers: ${teachers.length} docentes encontrados`);
+        devLogger.log('Operación completada exitosamente');
 
         return teachers;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getAllTeachers:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -290,18 +291,18 @@ async function getAllTeachers() {
  */
 async function getTeacherById(teacherId) {
     try {
-        console.log('[DAL] Ejecutando: getTeacherById', { teacherId });
+        devLogger.log('Operación DAL iniciada');
         const result = await pool.query(
             'SELECT * FROM docentes WHERE id = $1',
             [teacherId]
         );
 
         const teacher = result.rows[0] || null;
-        console.log(`[DAL] ✅ getTeacherById: ${teacher ? 'encontrado' : 'no encontrado'}`);
+        devLogger.log(`[DAL] ✅ getTeacherById: ${teacher ? 'encontrado' : 'no encontrado'}`);
 
         return teacher;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getTeacherById:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -319,7 +320,7 @@ async function createTeacher(teacherData) {
             numero_telefono, especialidad, departamento
         } = teacherData;
 
-        console.log('[DAL] Ejecutando: createTeacher', { email });
+        devLogger.log('Operación DAL iniciada');
 
         const result = await pool.query(
             `INSERT INTO docentes
@@ -330,11 +331,11 @@ async function createTeacher(teacherData) {
         );
 
         const newTeacher = result.rows[0];
-        console.log(`[DAL] ✅ createTeacher: docente creado con ID ${newTeacher.id}`);
+        devLogger.log('Operación completada exitosamente');
 
         return newTeacher;
     } catch (error) {
-        console.error('[DAL] ❌ Error en createTeacher:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -348,7 +349,7 @@ async function createTeacher(teacherData) {
  */
 async function updateTeacher(teacherId, updateData) {
     try {
-        console.log('[DAL] Ejecutando: updateTeacher', { teacherId });
+        devLogger.log('Operación DAL iniciada');
 
         const fields = [];
         const values = [];
@@ -377,16 +378,16 @@ async function updateTeacher(teacherId, updateData) {
         const result = await pool.query(query, values);
 
         if (result.rows.length === 0) {
-            console.log('[DAL] ⚠️ updateTeacher: docente no encontrado');
+            devLogger.log('[DAL] ⚠️ updateTeacher: docente no encontrado');
             return null;
         }
 
         const updatedTeacher = result.rows[0];
-        console.log(`[DAL] ✅ updateTeacher: docente ${teacherId} actualizado`);
+        devLogger.log('Operación completada exitosamente');
 
         return updatedTeacher;
     } catch (error) {
-        console.error('[DAL] ❌ Error en updateTeacher:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -399,7 +400,7 @@ async function updateTeacher(teacherId, updateData) {
  */
 async function deleteTeacher(teacherId) {
     try {
-        console.log('[DAL] Ejecutando: deleteTeacher', { teacherId });
+        devLogger.log('Operación DAL iniciada');
 
         const result = await pool.query(
             'DELETE FROM docentes WHERE id = $1 RETURNING id',
@@ -407,11 +408,11 @@ async function deleteTeacher(teacherId) {
         );
 
         const deleted = result.rows.length > 0;
-        console.log(`[DAL] ✅ deleteTeacher: ${deleted ? 'eliminado' : 'no encontrado'}`);
+        devLogger.log(`[DAL] ✅ deleteTeacher: ${deleted ? 'eliminado' : 'no encontrado'}`);
 
         return deleted;
     } catch (error) {
-        console.error('[DAL] ❌ Error en deleteTeacher:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -429,17 +430,17 @@ async function deleteTeacher(teacherId) {
  */
 async function getAllEgresados() {
     try {
-        console.log('[DAL] Ejecutando: getAllEgresados');
+        devLogger.log('Operación DAL iniciada');
         const result = await pool.query(
             'SELECT * FROM egresados ORDER BY created_at DESC'
         );
 
         const egresados = result.rows || [];
-        console.log(`[DAL] ✅ getAllEgresados: ${egresados.length} egresados encontrados`);
+        devLogger.log('Operación completada exitosamente');
 
         return egresados;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getAllEgresados:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -452,18 +453,18 @@ async function getAllEgresados() {
  */
 async function getEgresadoById(egresadoId) {
     try {
-        console.log('[DAL] Ejecutando: getEgresadoById', { egresadoId });
+        devLogger.log('Operación DAL iniciada');
         const result = await pool.query(
             'SELECT * FROM egresados WHERE id = $1',
             [egresadoId]
         );
 
         const egresado = result.rows[0] || null;
-        console.log(`[DAL] ✅ getEgresadoById: ${egresado ? 'encontrado' : 'no encontrado'}`);
+        devLogger.log(`[DAL] ✅ getEgresadoById: ${egresado ? 'encontrado' : 'no encontrado'}`);
 
         return egresado;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getEgresadoById:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -476,7 +477,7 @@ async function getEgresadoById(egresadoId) {
  */
 async function createEgresado(egresadoData) {
     try {
-        console.log('[DAL] Ejecutando: createEgresado', { email: egresadoData.email });
+        devLogger.log('Operación DAL iniciada');
 
         const {
             nombre_completo, email, empresa, puesto, anio_graduacion, datos_json
@@ -491,11 +492,11 @@ async function createEgresado(egresadoData) {
         );
 
         const newEgresado = result.rows[0];
-        console.log(`[DAL] ✅ createEgresado: egresado creado con ID ${newEgresado.id}`);
+        devLogger.log('Operación completada exitosamente');
 
         return newEgresado;
     } catch (error) {
-        console.error('[DAL] ❌ Error en createEgresado:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -509,7 +510,7 @@ async function createEgresado(egresadoData) {
  */
 async function updateEgresado(egresadoId, updateData) {
     try {
-        console.log('[DAL] Ejecutando: updateEgresado', { egresadoId });
+        devLogger.log('Operación DAL iniciada');
 
         const fields = [];
         const values = [];
@@ -544,16 +545,16 @@ async function updateEgresado(egresadoId, updateData) {
         const result = await pool.query(query, values);
 
         if (result.rows.length === 0) {
-            console.log('[DAL] ⚠️ updateEgresado: egresado no encontrado');
+            devLogger.log('[DAL] ⚠️ updateEgresado: egresado no encontrado');
             return null;
         }
 
         const updatedEgresado = result.rows[0];
-        console.log(`[DAL] ✅ updateEgresado: egresado ${egresadoId} actualizado`);
+        devLogger.log('Operación completada exitosamente');
 
         return updatedEgresado;
     } catch (error) {
-        console.error('[DAL] ❌ Error en updateEgresado:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -566,7 +567,7 @@ async function updateEgresado(egresadoId, updateData) {
  */
 async function deleteEgresado(egresadoId) {
     try {
-        console.log('[DAL] Ejecutando: deleteEgresado', { egresadoId });
+        devLogger.log('Operación DAL iniciada');
 
         const result = await pool.query(
             'DELETE FROM egresados WHERE id = $1 RETURNING id',
@@ -574,11 +575,11 @@ async function deleteEgresado(egresadoId) {
         );
 
         const deleted = result.rows.length > 0;
-        console.log(`[DAL] ✅ deleteEgresado: ${deleted ? 'eliminado' : 'no encontrado'}`);
+        devLogger.log(`[DAL] ✅ deleteEgresado: ${deleted ? 'eliminado' : 'no encontrado'}`);
 
         return deleted;
     } catch (error) {
-        console.error('[DAL] ❌ Error en deleteEgresado:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -590,7 +591,7 @@ async function deleteEgresado(egresadoId) {
  */
 async function getEgresadoStats() {
     try {
-        console.log('[DAL] Ejecutando: getEgresadoStats');
+        devLogger.log('Operación DAL iniciada');
 
         const result = await pool.query(`
             SELECT
@@ -602,11 +603,11 @@ async function getEgresadoStats() {
         `);
 
         const stats = result.rows[0];
-        console.log(`[DAL] ✅ getEgresadoStats:`, stats);
+        devLogger.log(`[DAL] ✅ getEgresadoStats:`, stats);
 
         return stats;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getEgresadoStats:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -624,17 +625,17 @@ async function getEgresadoStats() {
  */
 async function getAllParents() {
     try {
-        console.log('[DAL] Ejecutando: getAllParents');
+        devLogger.log('Operación DAL iniciada');
         const result = await pool.query(
             'SELECT id, nombre, email, student_id, created_at, updated_at FROM parents ORDER BY created_at DESC'
         );
 
         const parents = result.rows || [];
-        console.log(`[DAL] ✅ getAllParents: ${parents.length} padres encontrados`);
+        devLogger.log('Operación completada exitosamente');
 
         return parents;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getAllParents:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -647,18 +648,18 @@ async function getAllParents() {
  */
 async function getParentById(parentId) {
     try {
-        console.log('[DAL] Ejecutando: getParentById', { parentId });
+        devLogger.log('Operación DAL iniciada');
         const result = await pool.query(
             'SELECT id, nombre, email, student_id, created_at, updated_at FROM parents WHERE id = $1',
             [parentId]
         );
 
         const parent = result.rows[0] || null;
-        console.log(`[DAL] ✅ getParentById: ${parent ? 'encontrado' : 'no encontrado'}`);
+        devLogger.log(`[DAL] ✅ getParentById: ${parent ? 'encontrado' : 'no encontrado'}`);
 
         return parent;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getParentById:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -673,7 +674,7 @@ async function createParent(parentData) {
     try {
         const { nombre, email, password_hash, student_id } = parentData;
 
-        console.log('[DAL] Ejecutando: createParent', { email });
+        devLogger.log('Operación DAL iniciada');
 
         const result = await pool.query(
             `INSERT INTO parents (nombre, email, password_hash, student_id, created_at, updated_at)
@@ -683,11 +684,11 @@ async function createParent(parentData) {
         );
 
         const newParent = result.rows[0];
-        console.log(`[DAL] ✅ createParent: padre creado con ID ${newParent.id}`);
+        devLogger.log('Operación completada exitosamente');
 
         return newParent;
     } catch (error) {
-        console.error('[DAL] ❌ Error en createParent:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -701,7 +702,7 @@ async function createParent(parentData) {
  */
 async function updateParent(parentId, updateData) {
     try {
-        console.log('[DAL] Ejecutando: updateParent', { parentId });
+        devLogger.log('Operación DAL iniciada');
 
         const fields = [];
         const values = [];
@@ -730,16 +731,16 @@ async function updateParent(parentId, updateData) {
         const result = await pool.query(query, values);
 
         if (result.rows.length === 0) {
-            console.log('[DAL] ⚠️ updateParent: padre no encontrado');
+            devLogger.log('[DAL] ⚠️ updateParent: padre no encontrado');
             return null;
         }
 
         const updatedParent = result.rows[0];
-        console.log(`[DAL] ✅ updateParent: padre ${parentId} actualizado`);
+        devLogger.log('Operación completada exitosamente');
 
         return updatedParent;
     } catch (error) {
-        console.error('[DAL] ❌ Error en updateParent:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -752,7 +753,7 @@ async function updateParent(parentId, updateData) {
  */
 async function deleteParent(parentId) {
     try {
-        console.log('[DAL] Ejecutando: deleteParent', { parentId });
+        devLogger.log('Operación DAL iniciada');
 
         const result = await pool.query(
             'DELETE FROM parents WHERE id = $1 RETURNING id',
@@ -760,11 +761,11 @@ async function deleteParent(parentId) {
         );
 
         const deleted = result.rows.length > 0;
-        console.log(`[DAL] ✅ deleteParent: ${deleted ? 'eliminado' : 'no encontrado'}`);
+        devLogger.log(`[DAL] ✅ deleteParent: ${deleted ? 'eliminado' : 'no encontrado'}`);
 
         return deleted;
     } catch (error) {
-        console.error('[DAL] ❌ Error en deleteParent:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -785,7 +786,7 @@ async function getAllNews(filters = {}) {
     try {
         const { estado, categoria, destacada, limit = 50, offset = 0 } = filters;
 
-        console.log('[DAL] Ejecutando: getAllNews', filters);
+        devLogger.log('[DAL] Ejecutando: getAllNews');
 
         let query = 'SELECT * FROM noticias WHERE 1=1';
         const params = [];
@@ -815,11 +816,11 @@ async function getAllNews(filters = {}) {
         const result = await pool.query(query, params);
         const news = result.rows || [];
 
-        console.log(`[DAL] ✅ getAllNews: ${news.length} noticias encontradas`);
+        devLogger.log('Operación completada exitosamente');
 
         return news;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getAllNews:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -832,18 +833,18 @@ async function getAllNews(filters = {}) {
  */
 async function getNewsById(newsId) {
     try {
-        console.log('[DAL] Ejecutando: getNewsById', { newsId });
+        devLogger.log('Operación DAL iniciada');
         const result = await pool.query(
             'SELECT * FROM noticias WHERE id = $1',
             [newsId]
         );
 
         const news = result.rows[0] || null;
-        console.log(`[DAL] ✅ getNewsById: ${news ? 'encontrada' : 'no encontrada'}`);
+        devLogger.log(`[DAL] ✅ getNewsById: ${news ? 'encontrada' : 'no encontrada'}`);
 
         return news;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getNewsById:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -862,7 +863,7 @@ async function createNews(newsData) {
             ip_address, user_agent
         } = newsData;
 
-        console.log('[DAL] Ejecutando: createNews', { titulo });
+        devLogger.log('Operación DAL iniciada');
 
         const fecha_pub = estado === 'publicada' ? new Date() : null;
 
@@ -882,11 +883,11 @@ async function createNews(newsData) {
         );
 
         const newNews = result.rows[0];
-        console.log(`[DAL] ✅ createNews: noticia creada con ID ${newNews.id}`);
+        devLogger.log('Operación completada exitosamente');
 
         return newNews;
     } catch (error) {
-        console.error('[DAL] ❌ Error en createNews:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -900,7 +901,7 @@ async function createNews(newsData) {
  */
 async function updateNews(newsId, updateData) {
     try {
-        console.log('[DAL] Ejecutando: updateNews', { newsId });
+        devLogger.log('Operación DAL iniciada');
 
         const fields = [];
         const values = [];
@@ -933,16 +934,16 @@ async function updateNews(newsId, updateData) {
         const result = await pool.query(query, values);
 
         if (result.rows.length === 0) {
-            console.log('[DAL] ⚠️ updateNews: noticia no encontrada');
+            devLogger.log('[DAL] ⚠️ updateNews: noticia no encontrada');
             return null;
         }
 
         const updatedNews = result.rows[0];
-        console.log(`[DAL] ✅ updateNews: noticia ${newsId} actualizada`);
+        devLogger.log('Operación completada exitosamente');
 
         return updatedNews;
     } catch (error) {
-        console.error('[DAL] ❌ Error en updateNews:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -955,7 +956,7 @@ async function updateNews(newsId, updateData) {
  */
 async function deleteNews(newsId) {
     try {
-        console.log('[DAL] Ejecutando: deleteNews', { newsId });
+        devLogger.log('Operación DAL iniciada');
 
         const result = await pool.query(
             'DELETE FROM noticias WHERE id = $1 RETURNING id',
@@ -963,11 +964,11 @@ async function deleteNews(newsId) {
         );
 
         const deleted = result.rows.length > 0;
-        console.log(`[DAL] ✅ deleteNews: ${deleted ? 'eliminada' : 'no encontrada'}`);
+        devLogger.log(`[DAL] ✅ deleteNews: ${deleted ? 'eliminada' : 'no encontrada'}`);
 
         return deleted;
     } catch (error) {
-        console.error('[DAL] ❌ Error en deleteNews:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -985,16 +986,16 @@ async function deleteNews(newsId) {
  */
 async function getAllCourses() {
     try {
-        console.log('[DAL] Ejecutando: getAllCourses');
+        devLogger.log('Operación DAL iniciada');
 
         const result = await pool.query(
             'SELECT * FROM cursos ORDER BY nombre ASC'
         );
 
-        console.log(`[DAL] ✅ getAllCourses: ${result.rows.length} cursos obtenidos`);
+        devLogger.log('Operación completada exitosamente');
         return result.rows || [];
     } catch (error) {
-        console.error('[DAL] ❌ Error en getAllCourses:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -1007,7 +1008,7 @@ async function getAllCourses() {
  */
 async function getCourseById(courseId) {
     try {
-        console.log('[DAL] Ejecutando: getCourseById', { courseId });
+        devLogger.log('Operación DAL iniciada');
 
         const result = await pool.query(
             'SELECT * FROM cursos WHERE id = $1',
@@ -1015,11 +1016,11 @@ async function getCourseById(courseId) {
         );
 
         const curso = result.rows[0] || null;
-        console.log(`[DAL] ✅ getCourseById: ${curso ? 'encontrado' : 'no encontrado'}`);
+        devLogger.log(`[DAL] ✅ getCourseById: ${curso ? 'encontrado' : 'no encontrado'}`);
 
         return curso;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getCourseById:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -1032,7 +1033,7 @@ async function getCourseById(courseId) {
  */
 async function createCourse(courseData) {
     try {
-        console.log('[DAL] Ejecutando: createCourse', { courseData });
+        devLogger.log('Operación DAL iniciada');
 
         const {
             nombre,
@@ -1065,11 +1066,11 @@ async function createCourse(courseData) {
         );
 
         const curso = result.rows[0];
-        console.log(`[DAL] ✅ createCourse: curso creado con ID ${curso.id}`);
+        devLogger.log('Operación completada exitosamente');
 
         return curso;
     } catch (error) {
-        console.error('[DAL] ❌ Error en createCourse:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -1083,7 +1084,7 @@ async function createCourse(courseData) {
  */
 async function updateCourse(courseId, updateData) {
     try {
-        console.log('[DAL] Ejecutando: updateCourse', { courseId, updateData });
+        devLogger.log('Operación DAL iniciada');
 
         // Construcción dinámica de SET
         const fields = [];
@@ -1108,7 +1109,7 @@ async function updateCourse(courseId, updateData) {
 
         if (fields.length === 1) {
             // Solo updated_at, no hay cambios
-            console.log('[DAL] ⚠️ updateCourse: sin cambios para aplicar');
+            devLogger.log('[DAL] ⚠️ updateCourse: sin cambios para aplicar');
             return await getCourseById(courseId);
         }
 
@@ -1123,14 +1124,14 @@ async function updateCourse(courseId, updateData) {
         const curso = result.rows[0] || null;
 
         if (curso) {
-            console.log(`[DAL] ✅ updateCourse: curso ${courseId} actualizado`);
+            devLogger.log('Operación completada exitosamente');
         } else {
-            console.log(`[DAL] ⚠️ updateCourse: curso ${courseId} no encontrado`);
+            devLogger.log(`[DAL] ⚠️ updateCourse: curso ${courseId} no encontrado`);
         }
 
         return curso;
     } catch (error) {
-        console.error('[DAL] ❌ Error en updateCourse:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -1143,7 +1144,7 @@ async function updateCourse(courseId, updateData) {
  */
 async function deleteCourse(courseId) {
     try {
-        console.log('[DAL] Ejecutando: deleteCourse', { courseId });
+        devLogger.log('Operación DAL iniciada');
 
         const result = await pool.query(
             'DELETE FROM cursos WHERE id = $1 RETURNING id',
@@ -1151,11 +1152,11 @@ async function deleteCourse(courseId) {
         );
 
         const deleted = result.rows.length > 0;
-        console.log(`[DAL] ✅ deleteCourse: ${deleted ? 'eliminado' : 'no encontrado'}`);
+        devLogger.log(`[DAL] ✅ deleteCourse: ${deleted ? 'eliminado' : 'no encontrado'}`);
 
         return deleted;
     } catch (error) {
-        console.error('[DAL] ❌ Error en deleteCourse:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -1174,18 +1175,18 @@ async function deleteCourse(courseId) {
  */
 async function getTenantByDomain(domain) {
     try {
-        console.log('[DAL] Ejecutando: getTenantByDomain', { domain });
+        devLogger.log('Operación DAL iniciada');
         const result = await pool.query(
             'SELECT * FROM tenants WHERE domain = $1 LIMIT 1',
             [domain]
         );
 
         const tenant = result.rows[0] || null;
-        console.log(`[DAL] ✅ getTenantByDomain: ${tenant ? 'encontrado' : 'no encontrado'}`);
+        devLogger.log(`[DAL] ✅ getTenantByDomain: ${tenant ? 'encontrado' : 'no encontrado'}`);
 
         return tenant;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getTenantByDomain:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -1198,18 +1199,18 @@ async function getTenantByDomain(domain) {
  */
 async function getTenantById(tenantId) {
     try {
-        console.log('[DAL] Ejecutando: getTenantById', { tenantId });
+        devLogger.log('Operación DAL iniciada');
         const result = await pool.query(
             'SELECT * FROM tenants WHERE id = $1 LIMIT 1',
             [tenantId]
         );
 
         const tenant = result.rows[0] || null;
-        console.log(`[DAL] ✅ getTenantById: ${tenant ? 'encontrado' : 'no encontrado'}`);
+        devLogger.log(`[DAL] ✅ getTenantById: ${tenant ? 'encontrado' : 'no encontrado'}`);
 
         return tenant;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getTenantById:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -1221,17 +1222,17 @@ async function getTenantById(tenantId) {
  */
 async function getAllTenants() {
     try {
-        console.log('[DAL] Ejecutando: getAllTenants');
+        devLogger.log('Operación DAL iniciada');
         const result = await pool.query(
             'SELECT id, uuid, schema_name, school_name, domain, status, created_at FROM tenants ORDER BY school_name ASC'
         );
 
         const tenants = result.rows || [];
-        console.log(`[DAL] ✅ getAllTenants: ${tenants.length} tenants encontrados`);
+        devLogger.log('Operación completada exitosamente');
 
         return tenants;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getAllTenants:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -1244,7 +1245,7 @@ async function getAllTenants() {
  */
 async function createTenant(tenantData) {
     try {
-        console.log('[DAL] Ejecutando: createTenant', { domain: tenantData.domain });
+        devLogger.log('Operación DAL iniciada');
         const {
             school_name,
             domain,
@@ -1263,11 +1264,11 @@ async function createTenant(tenantData) {
         );
 
         const tenant = result.rows[0];
-        console.log(`[DAL] ✅ createTenant: tenant creado con ID ${tenant.id}`);
+        devLogger.log('Operación completada exitosamente');
 
         return tenant;
     } catch (error) {
-        console.error('[DAL] ❌ Error en createTenant:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -1281,7 +1282,7 @@ async function createTenant(tenantData) {
  */
 async function updateTenant(tenantId, updateData) {
     try {
-        console.log('[DAL] Ejecutando: updateTenant', { tenantId });
+        devLogger.log('Operación DAL iniciada');
 
         const { school_name, status, admin_email, admin_phone, config_json } = updateData;
 
@@ -1323,11 +1324,11 @@ async function updateTenant(tenantId, updateData) {
         );
 
         const tenant = result.rows[0] || null;
-        console.log(`[DAL] ✅ updateTenant: tenant actualizado`);
+        devLogger.log('Operación completada exitosamente');
 
         return tenant;
     } catch (error) {
-        console.error('[DAL] ❌ Error en updateTenant:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -1345,7 +1346,7 @@ async function updateTenant(tenantId, updateData) {
  */
 async function getUserByEmail(email) {
     try {
-        console.log('[DAL] Ejecutando: getUserByEmail', { email });
+        devLogger.log('Operación DAL iniciada');
 
         const result = await pool.query(
             'SELECT * FROM usuarios WHERE email = $1 LIMIT 1',
@@ -1353,11 +1354,11 @@ async function getUserByEmail(email) {
         );
 
         const user = result.rows[0] || null;
-        console.log(`[DAL] ✅ getUserByEmail: ${user ? 'encontrado' : 'no encontrado'}`);
+        devLogger.log(`[DAL] ✅ getUserByEmail: ${user ? 'encontrado' : 'no encontrado'}`);
 
         return user;
     } catch (error) {
-        console.error('[DAL] ❌ Error en getUserByEmail:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }
@@ -1373,7 +1374,7 @@ async function getUserByEmail(email) {
  */
 async function createUserFromGoogle(googleData) {
     try {
-        console.log('[DAL] Ejecutando: createUserFromGoogle', { email: googleData.email });
+        devLogger.log('Operación DAL iniciada');
 
         const { email, name, picture = null, sub } = googleData;
 
@@ -1406,11 +1407,11 @@ async function createUserFromGoogle(googleData) {
         );
 
         const user = result.rows[0];
-        console.log(`[DAL] ✅ createUserFromGoogle: usuario creado con ID ${user.id}`);
+        devLogger.log('Operación completada exitosamente');
 
         return user;
     } catch (error) {
-        console.error('[DAL] ❌ Error en createUserFromGoogle:', error);
+        devLogger.error('Error durante operación DAL');
         throw error;
     }
 }

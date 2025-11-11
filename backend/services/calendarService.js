@@ -5,6 +5,7 @@
  */
 
 const path = require('path');
+const devLogger = require('../utils/devLogger');
 const fs = require('fs').promises;
 
 class CalendarService {
@@ -24,15 +25,15 @@ class CalendarService {
 
             if (isConnected && typeof this.db.execute === 'function') {
                 this.dbAvailable = true;
-                console.log('✅ Calendar Service: MySQL disponible');
+                devLogger.log('✅ Calendar Service: MySQL disponible');
                 await this.ensureTablesExist();
             } else {
-                console.log('⚠️ Calendar Service: Fallback a JSON');
+                devLogger.log('⚠️ Calendar Service: Fallback a JSON');
                 this.dbAvailable = false;
                 await this.ensureJsonStructure();
             }
         } catch (error) {
-            console.log('⚠️ Calendar Service: Fallback a JSON -', error.message);
+            devLogger.log('⚠️ Calendar Service: Fallback a JSON -', error.message);
             this.dbAvailable = false;
             await this.ensureJsonStructure();
         }
@@ -41,7 +42,7 @@ class CalendarService {
         try {
             await this.initializeGoogleCalendar();
         } catch (error) {
-            console.log('⚠️ Google Calendar no disponible:', error.message);
+            devLogger.log('⚠️ Google Calendar no disponible:', error.message);
         }
     }
 
@@ -82,7 +83,7 @@ class CalendarService {
             `;
 
             await this.db.execute(createEventsTable);
-            console.log('✅ Calendar Service: Tabla calendar_events verificada');
+            devLogger.log('✅ Calendar Service: Tabla calendar_events verificada');
 
             // Crear tabla de asistentes
             const createAttendeesTable = `
@@ -103,7 +104,7 @@ class CalendarService {
             `;
 
             await this.db.execute(createAttendeesTable);
-            console.log('✅ Calendar Service: Tabla event_attendees verificada');
+            devLogger.log('✅ Calendar Service: Tabla event_attendees verificada');
 
             // Crear tabla de recordatorios
             const createRemindersTable = `
@@ -125,10 +126,10 @@ class CalendarService {
             `;
 
             await this.db.execute(createRemindersTable);
-            console.log('✅ Calendar Service: Tabla event_reminders verificada');
+            devLogger.log('✅ Calendar Service: Tabla event_reminders verificada');
 
         } catch (error) {
-            console.error('Error creando tablas Calendar:', error);
+            devLogger.error('Error creando tablas Calendar:', error);
             throw error;
         }
     }
@@ -150,14 +151,14 @@ class CalendarService {
                 version: '1.0'
             };
             await fs.writeFile(this.jsonPath, JSON.stringify(initialData, null, 2));
-            console.log('✅ Creado: eventos.json');
+            devLogger.log('✅ Creado: eventos.json');
         }
     }
 
     async initializeGoogleCalendar() {
         // Placeholder para integración Google Calendar
         // En implementación real, aquí iría la configuración de Google Calendar API
-        console.log('📅 Google Calendar: Configuración pendiente');
+        devLogger.log('📅 Google Calendar: Configuración pendiente');
     }
 
     // ============================================
@@ -265,7 +266,7 @@ class CalendarService {
             return { events: processedEvents, total };
 
         } catch (error) {
-            console.error('Error obteniendo eventos de DB:', error);
+            devLogger.error('Error obteniendo eventos de DB:', error);
             throw error;
         }
     }
@@ -320,7 +321,7 @@ class CalendarService {
             return { events: paginatedEvents, total };
 
         } catch (error) {
-            console.error('Error obteniendo eventos de JSON:', error);
+            devLogger.error('Error obteniendo eventos de JSON:', error);
             throw error;
         }
     }
@@ -348,7 +349,7 @@ class CalendarService {
                 return event;
 
             } catch (error) {
-                console.error('Error obteniendo evento por ID:', error);
+                devLogger.error('Error obteniendo evento por ID:', error);
                 throw error;
             }
         } else {
@@ -395,7 +396,7 @@ class CalendarService {
             return this.getEventById(result.insertId);
 
         } catch (error) {
-            console.error('Error creando evento en DB:', error);
+            devLogger.error('Error creando evento en DB:', error);
             throw error;
         }
     }
@@ -444,7 +445,7 @@ class CalendarService {
             };
 
         } catch (error) {
-            console.error('Error creando evento en JSON:', error);
+            devLogger.error('Error creando evento en JSON:', error);
             throw error;
         }
     }
@@ -494,13 +495,13 @@ class CalendarService {
             return this.getEventById(id);
 
         } catch (error) {
-            console.error('Error actualizando evento en DB:', error);
+            devLogger.error('Error actualizando evento en DB:', error);
             throw error;
         }
     }
 
     async updateEventInJSON(id, updateData) {
-        console.warn('Actualización de eventos JSON no implementada completamente');
+        devLogger.warn('Actualización de eventos JSON no implementada completamente');
         return null;
     }
 
@@ -518,7 +519,7 @@ class CalendarService {
                 return result.affectedRows > 0;
 
             } catch (error) {
-                console.error('Error eliminando evento:', error);
+                devLogger.error('Error eliminando evento:', error);
                 throw error;
             }
         } else {
@@ -608,7 +609,7 @@ class CalendarService {
             if (error.code === 'ER_DUP_ENTRY') {
                 return { success: false, message: 'Ya estás registrado en este evento' };
             }
-            console.error('Error registrando asistencia:', error);
+            devLogger.error('Error registrando asistencia:', error);
             throw error;
         }
     }
@@ -631,7 +632,7 @@ class CalendarService {
             return attendees;
 
         } catch (error) {
-            console.error('Error obteniendo asistentes:', error);
+            devLogger.error('Error obteniendo asistentes:', error);
             throw error;
         }
     }
@@ -642,12 +643,12 @@ class CalendarService {
 
     async syncWithGoogleCalendar(event) {
         // Placeholder para sincronización con Google Calendar
-        console.log('📅 Sincronización Google Calendar pendiente para evento:', event.id);
+        devLogger.log('📅 Sincronización Google Calendar pendiente para evento:', event.id);
         return { synced: false, message: 'Google Calendar no configurado' };
     }
 
     async syncAllWithGoogle(options = {}) {
-        console.log('📅 Sincronización masiva Google Calendar pendiente');
+        devLogger.log('📅 Sincronización masiva Google Calendar pendiente');
         return {
             eventsSynced: 0,
             eventsCreated: 0,
@@ -704,7 +705,7 @@ class CalendarService {
             };
 
         } catch (error) {
-            console.error('Error obteniendo estadísticas:', error);
+            devLogger.error('Error obteniendo estadísticas:', error);
             throw error;
         }
     }
@@ -778,7 +779,7 @@ class CalendarService {
             return { success: true, count: reminders.length };
 
         } catch (error) {
-            console.error('Error configurando recordatorios:', error);
+            devLogger.error('Error configurando recordatorios:', error);
             throw error;
         }
     }

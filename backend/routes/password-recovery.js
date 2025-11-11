@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
@@ -59,7 +60,7 @@ router.post('/', [
             user_agent
         ]);
 
-        console.log('✅ Nueva solicitud de recuperación creada:', result.rows[0].id);
+        devLogger.log('✅ Nueva solicitud de recuperación creada:', result.rows[0].id);
 
         // Generar token de recuperación único
         const recoveryToken = crypto.randomBytes(32).toString('hex');
@@ -133,10 +134,10 @@ router.post('/', [
                 `
             });
 
-            console.log(`📧 Email de recuperación enviado a: ${email}`);
+            devLogger.log(`📧 Email de recuperación enviado a: ${email}`);
 
         } catch (emailError) {
-            console.error('❌ Error al enviar email de recuperación:', emailError);
+            devLogger.error('❌ Error al enviar email de recuperación:', emailError);
             // No fallar la solicitud si el email falla, el token está guardado en BD
         }
 
@@ -150,7 +151,7 @@ router.post('/', [
         });
 
     } catch (error) {
-        console.error('❌ Error al crear solicitud de recuperación:', error);
+        devLogger.error('❌ Error al crear solicitud de recuperación:', error);
         res.status(500).json({
             success: false,
             error: 'Error al procesar tu solicitud. Por favor intenta nuevamente.'
@@ -194,7 +195,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener solicitudes:', error);
+        devLogger.error('❌ Error al obtener solicitudes:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener los datos'
@@ -226,7 +227,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener estadísticas:', error);
+        devLogger.error('❌ Error al obtener estadísticas:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -269,7 +270,7 @@ router.put('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar solicitud:', error);
+        devLogger.error('❌ Error al actualizar solicitud:', error);
         res.status(500).json({
             success: false,
             error: 'Error al actualizar la solicitud'

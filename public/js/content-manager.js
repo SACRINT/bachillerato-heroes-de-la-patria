@@ -1,6 +1,6 @@
 /**
  * SISTEMA DE GESTIÓN DE CONTENIDO DINÁMICO (CMS)
- * BGE Héroes de la Patria - 2024
+ * window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria') - 2024
  *
  * Este sistema permite la gestión completa de contenido dinámico:
  * - Noticias

@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca Digital - BGE Héroes de la Patria</title>
+    <title id="page-title" data-base-title="Biblioteca Digital - BGE HÃ©roes de la Patria">Biblioteca Digital - BGE HÃ©roes de la Patria</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -542,6 +542,7 @@
             display: none !important;
         }
     </style>
+    <script src="js/meta-updater.js" defer></script>
 </head>
 <body>
     <!-- Navbar -->
@@ -584,7 +585,7 @@
     <div class="library-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h6>Categorías</h6>
+            <h6>CategorÃ­as</h6>
             <div class="filter-group" id="categoriesFilter">
                 <!-- Categories will be loaded here -->
             </div>
@@ -603,7 +604,7 @@
                 </div>
                 <div class="filter-item" data-type="recurso">
                     <input type="checkbox" id="type-recurso">
-                    <label for="type-recurso">Recurso Académico</label>
+                    <label for="type-recurso">Recurso AcadÃ©mico</label>
                     <span class="badge bg-secondary">0</span>
                 </div>
                 <div class="filter-item" data-type="formulario">
@@ -618,7 +619,7 @@
                 </div>
             </div>
 
-            <h6>Calificación</h6>
+            <h6>CalificaciÃ³n</h6>
             <div class="filter-group">
                 <div class="filter-item" data-rating="5">
                     <input type="checkbox" id="rating-5">
@@ -661,10 +662,10 @@
             <h6>Ordenar por</h6>
             <div class="filter-group">
                 <select class="form-select" id="sortBy">
-                    <option value="created_at">Más reciente</option>
-                    <option value="title">Título (A-Z)</option>
-                    <option value="total_downloads">Más descargados</option>
-                    <option value="total_views">Más vistos</option>
+                    <option value="created_at">MÃ¡s reciente</option>
+                    <option value="title">TÃ­tulo (A-Z)</option>
+                    <option value="total_downloads">MÃ¡s descargados</option>
+                    <option value="total_views">MÃ¡s vistos</option>
                     <option value="avg_rating">Mejor calificados</option>
                 </select>
             </div>
@@ -676,7 +677,7 @@
             <div class="content-header">
                 <div>
                     <h2 id="contentTitle">Todos los documentos</h2>
-                    <p class="text-muted" id="contentSubtitle">Explora nuestra colección de recursos digitales</p>
+                    <p class="text-muted" id="contentSubtitle">Explora nuestra colecciÃ³n de recursos digitales</p>
                 </div>
                 <div class="view-toggles">
                     <button class="btn-toggle active" id="gridViewBtn">
@@ -710,12 +711,12 @@
             <div class="empty-state hidden" id="emptyState">
                 <i class="bi bi-inbox"></i>
                 <h4>No se encontraron documentos</h4>
-                <p class="text-muted">Intenta ajustar los filtros de búsqueda</p>
+                <p class="text-muted">Intenta ajustar los filtros de bÃºsqueda</p>
             </div>
 
             <!-- Pagination -->
             <div class="pagination-container">
-                <nav aria-label="Paginación de documentos">
+                <nav aria-label="PaginaciÃ³n de documentos">
                     <ul class="pagination" id="pagination">
                         <!-- Pagination will be loaded here -->
                     </ul>
@@ -750,16 +751,16 @@
                 <div class="modal-body">
                     <form id="uploadDocumentForm">
                         <div class="mb-3">
-                            <label for="docTitle" class="form-label">Título *</label>
+                            <label for="docTitle" class="form-label">TÃ­tulo *</label>
                             <input type="text" class="form-control" id="docTitle" required>
                         </div>
                         <div class="mb-3">
-                            <label for="docDescription" class="form-label">Descripción</label>
+                            <label for="docDescription" class="form-label">DescripciÃ³n</label>
                             <textarea class="form-control" id="docDescription" rows="3"></textarea>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="docCategory" class="form-label">Categoría *</label>
+                                <label for="docCategory" class="form-label">CategorÃ­a *</label>
                                 <select class="form-select" id="docCategory" required>
                                     <!-- Categories will be loaded here -->
                                 </select>
@@ -769,7 +770,7 @@
                                 <select class="form-select" id="docType" required>
                                     <option value="reglamento">Reglamento</option>
                                     <option value="manual">Manual</option>
-                                    <option value="recurso">Recurso Académico</option>
+                                    <option value="recurso">Recurso AcadÃ©mico</option>
                                     <option value="formulario">Formulario</option>
                                     <option value="otro">Otro</option>
                                 </select>
@@ -778,7 +779,7 @@
                         <div class="mb-3">
                             <label for="docFile" class="form-label">Archivo *</label>
                             <input type="file" class="form-control" id="docFile" required>
-                            <div class="form-text">Máximo 50MB. Formatos: PDF, Word, Excel, PowerPoint, imágenes</div>
+                            <div class="form-text">MÃ¡ximo 50MB. Formatos: PDF, Word, Excel, PowerPoint, imÃ¡genes</div>
                         </div>
                         <div class="mb-3">
                             <label for="docTags" class="form-label">Etiquetas</label>
@@ -806,7 +807,7 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
+    <!-- ðŸ”§ MAIN.JS - CARGA DINÃMICA DE HEADER Y FOOTER -->
     <script src="js/main.js"></script>
     <!-- Library Manager -->
     <script src="js/digital-library-manager.js"></script>
@@ -818,5 +819,10 @@
             });
         });
     </script>
-</body>
+    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuraciÃ³n multi-tenancy desde BD -->
+    <script src="js/tenant-config-loader.js" defer></script>
+
+    </body>
 </html>
+
+

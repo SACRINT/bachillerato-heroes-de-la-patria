@@ -4,6 +4,7 @@
  */
 
 const WebSocket = require('ws');
+const devLogger = require('../utils/devLogger');
 const { v4: uuidv4 } = require('uuid');
 const { logger } = require('../middleware/logger');
 
@@ -22,7 +23,7 @@ class WebSocketService {
      */
     initialize(server) {
         try {
-            console.log('🌐 [WEBSOCKET] Inicializando servidor WebSocket...');
+            devLogger.log('🌐 [WEBSOCKET] Inicializando servidor WebSocket...');
 
             this.wss = new WebSocket.Server({ server, path: '/ws' });
 
@@ -31,11 +32,11 @@ class WebSocketService {
             });
 
             this.startHeartbeat();
-            console.log('✅ [WEBSOCKET] Servidor WebSocket inicializado correctamente');
+            devLogger.log('✅ [WEBSOCKET] Servidor WebSocket inicializado correctamente');
 
             return true;
         } catch (error) {
-            console.error('❌ [WEBSOCKET] Error inicializando servidor:', error);
+            devLogger.error('❌ [WEBSOCKET] Error inicializando servidor:', error);
             return false;
         }
     }
@@ -48,7 +49,7 @@ class WebSocketService {
         const userAgent = req.headers['user-agent'] || 'Unknown';
         const ip = req.socket.remoteAddress;
 
-        console.log(`🔗 [WEBSOCKET] Nueva conexión: ${clientId} desde ${ip}`);
+        devLogger.log(`🔗 [WEBSOCKET] Nueva conexión: ${clientId} desde ${ip}`);
 
         const clientInfo = {
             id: clientId,
@@ -75,7 +76,7 @@ class WebSocketService {
         });
 
         ws.on('error', (error) => {
-            console.error(`❌ [WEBSOCKET] Error en cliente ${clientId}:`, error);
+            devLogger.error(`❌ [WEBSOCKET] Error en cliente ${clientId}:`, error);
         });
 
         ws.on('pong', () => {
@@ -103,11 +104,11 @@ class WebSocketService {
             const client = this.clients.get(clientId);
 
             if (!client) {
-                console.warn(`⚠️ [WEBSOCKET] Cliente ${clientId} no encontrado`);
+                devLogger.warn(`⚠️ [WEBSOCKET] Cliente ${clientId} no encontrado`);
                 return;
             }
 
-            console.log(`📨 [WEBSOCKET] Mensaje de ${clientId}:`, data.type);
+            devLogger.log(`📨 [WEBSOCKET] Mensaje de ${clientId}:`, data.type);
 
             switch (data.type) {
                 case 'auth':
@@ -139,7 +140,7 @@ class WebSocketService {
                     break;
 
                 default:
-                    console.warn(`⚠️ [WEBSOCKET] Tipo de mensaje desconocido: ${data.type}`);
+                    devLogger.warn(`⚠️ [WEBSOCKET] Tipo de mensaje desconocido: ${data.type}`);
                     this.sendToClient(clientId, {
                         type: 'error',
                         message: 'Tipo de mensaje no soportado',
@@ -147,7 +148,7 @@ class WebSocketService {
                     });
             }
         } catch (error) {
-            console.error(`❌ [WEBSOCKET] Error procesando mensaje de ${clientId}:`, error);
+            devLogger.error(`❌ [WEBSOCKET] Error procesando mensaje de ${clientId}:`, error);
             this.sendToClient(clientId, {
                 type: 'error',
                 message: 'Error procesando mensaje',
@@ -171,7 +172,7 @@ class WebSocketService {
         client.userId = userId;
         client.userType = userType;
 
-        console.log(`🔐 [WEBSOCKET] Cliente ${clientId} autenticado como ${userType}: ${userId}`);
+        devLogger.log(`🔐 [WEBSOCKET] Cliente ${clientId} autenticado como ${userType}: ${userId}`);
 
         // Unirse a sala personal
         this.joinRoom(clientId, `user_${userId}`);
@@ -330,7 +331,7 @@ class WebSocketService {
         }
         this.rooms.get(room).add(clientId);
 
-        console.log(`🏠 [WEBSOCKET] Cliente ${clientId} se unió a sala: ${room}`);
+        devLogger.log(`🏠 [WEBSOCKET] Cliente ${clientId} se unió a sala: ${room}`);
         return true;
     }
 
@@ -352,7 +353,7 @@ class WebSocketService {
             }
         }
 
-        console.log(`🚪 [WEBSOCKET] Cliente ${clientId} salió de sala: ${room}`);
+        devLogger.log(`🚪 [WEBSOCKET] Cliente ${clientId} salió de sala: ${room}`);
         return true;
     }
 
@@ -369,7 +370,7 @@ class WebSocketService {
             client.ws.send(JSON.stringify(data));
             return true;
         } catch (error) {
-            console.error(`❌ [WEBSOCKET] Error enviando a cliente ${clientId}:`, error);
+            devLogger.error(`❌ [WEBSOCKET] Error enviando a cliente ${clientId}:`, error);
             return false;
         }
     }
@@ -446,7 +447,7 @@ class WebSocketService {
             queuedAt: new Date().toISOString()
         });
 
-        console.log(`📮 [WEBSOCKET] Mensaje encolado para usuario: ${userId}`);
+        devLogger.log(`📮 [WEBSOCKET] Mensaje encolado para usuario: ${userId}`);
     }
 
     /**
@@ -456,7 +457,7 @@ class WebSocketService {
         if (!this.messageQueue.has(userId)) return;
 
         const messages = this.messageQueue.get(userId);
-        console.log(`📬 [WEBSOCKET] Entregando ${messages.length} mensajes en cola para: ${userId}`);
+        devLogger.log(`📬 [WEBSOCKET] Entregando ${messages.length} mensajes en cola para: ${userId}`);
 
         messages.forEach(message => {
             this.sendToUser(userId, message);
@@ -507,7 +508,7 @@ class WebSocketService {
         const client = this.clients.get(clientId);
         if (!client) return;
 
-        console.log(`🔌 [WEBSOCKET] Cliente ${clientId} desconectado - Código: ${code}`);
+        devLogger.log(`🔌 [WEBSOCKET] Cliente ${clientId} desconectado - Código: ${code}`);
 
         // Salir de todas las salas
         client.rooms.forEach(room => {
@@ -543,7 +544,7 @@ class WebSocketService {
         this.heartbeatInterval = setInterval(() => {
             this.clients.forEach((client, clientId) => {
                 if (!client.isAlive) {
-                    console.log(`💔 [WEBSOCKET] Cliente ${clientId} sin respuesta - Terminando conexión`);
+                    devLogger.log(`💔 [WEBSOCKET] Cliente ${clientId} sin respuesta - Terminando conexión`);
                     client.ws.terminate();
                     return;
                 }
@@ -553,14 +554,14 @@ class WebSocketService {
             });
         }, 30000); // Cada 30 segundos
 
-        console.log('💓 [WEBSOCKET] Sistema de heartbeat iniciado');
+        devLogger.log('💓 [WEBSOCKET] Sistema de heartbeat iniciado');
     }
 
     /**
      * Detener servicio WebSocket
      */
     shutdown() {
-        console.log('🛑 [WEBSOCKET] Cerrando servidor WebSocket...');
+        devLogger.log('🛑 [WEBSOCKET] Cerrando servidor WebSocket...');
 
         if (this.heartbeatInterval) {
             clearInterval(this.heartbeatInterval);
@@ -578,7 +579,7 @@ class WebSocketService {
         this.messageQueue.clear();
         this.presenceTracker.clear();
 
-        console.log('✅ [WEBSOCKET] Servidor WebSocket cerrado');
+        devLogger.log('✅ [WEBSOCKET] Servidor WebSocket cerrado');
     }
 
     /**

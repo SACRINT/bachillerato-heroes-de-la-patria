@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Padres de Familia - Bachillerato General Estatal "Héroes de la Patria"</title>
+    <title id="page-title" data-base-title="Portal de Padres de Familia - Bachillerato General Estatal "Héroes de la Patria"">Portal de Padres de Familia - Bachillerato General Estatal "Héroes de la Patria"</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Portal exclusivo para padres de familia del BGE Héroes de la Patria. Consulta calificaciones, comunicación con docentes, eventos y recursos educativos.">
+    <meta name="description" id="page-description" content="Portal exclusivo para padres de familia del BGE Héroes de la Patria. Consulta calificaciones, comunicación con docentes, eventos y recursos educativos.">
     <meta name="keywords" content="portal padres, calificaciones, comunicación docentes, eventos escolares, recursos padres">
     <meta name="author" content="BGE Héroes de la Patria">
     
@@ -59,6 +59,7 @@
         ]
     }
     </script>
+    <script src="js/meta-updater.js" defer></script>
 </head>
 <body>
     <!-- Skip Links -->
@@ -682,6 +683,9 @@
 
     <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
     <script src="js/main.js"></script>
+
+    <!-- 🏢 TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
+    <script src="js/tenant-config-loader.js"></script>
 
     <!-- 🔧 SISTEMA CORE (OBLIGATORIO) -->
     <script src="js/context-manager.js"></script>        <!-- 🔒 Base del sistema -->

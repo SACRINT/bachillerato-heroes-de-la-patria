@@ -9,6 +9,7 @@ const helmet = require('helmet');
 const validator = require('validator');
 const nodemailer = require('nodemailer');
 const { pool } = require('../config/database');
+const devLogger = require('../utils/devLogger'); // 🔐 Logging seguro (GDPR compliant)
 const router = express.Router();
 
 // ============================================
@@ -26,9 +27,9 @@ const transporter = nodemailer.createTransport({
 // Verificar conexión al iniciar
 transporter.verify((error, success) => {
     if (error) {
-        console.error('❌ Error configurando transporter de email:', error);
+        devLogger.error('❌ Error configurando transporter de email:');
     } else {
-        console.log('✅ [CONTACT] Transporter de Gmail configurado y listo');
+        devLogger.log('✅ [CONTACT] Transporter de Gmail configurado y listo');
     }
 });
 
@@ -233,7 +234,7 @@ Enviado: ${new Date().toLocaleString('es-MX')}
     ]);
 
     const savedMessage = result.rows[0];
-    console.log('✅ Mensaje guardado en BD con ID:', savedMessage.id);
+    devLogger.log('✅ Mensaje guardado en BD con ID:', savedMessage.id);
 
     return {
         success: true,
@@ -257,7 +258,7 @@ router.post('/send', contactLimiter, validateContactForm, async (req, res) => {
         const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
         const userAgent = req.get('User-Agent') || 'unknown';
 
-        console.log('📧 Nuevo mensaje de contacto recibido (verificación requerida):', {
+        devLogger.log('📧 Nuevo mensaje de contacto recibido (verificación requerida):', {
             nombre: nombre.substring(0, 20),
             email: email.substring(0, 30),
             asunto: asunto.substring(0, 50),
@@ -286,7 +287,7 @@ router.post('/send', contactLimiter, validateContactForm, async (req, res) => {
         const verificationService = require('../services/verificationService');
         const token = await verificationService.createVerification(formData);
 
-        console.log(`✅ Email de verificación enviado a: ${email} - Token: ${token.substring(0, 8)}...`);
+        devLog.log('Email de verificación enviado exitosamente');
 
         res.json({
             success: true,
@@ -296,7 +297,7 @@ router.post('/send', contactLimiter, validateContactForm, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error enviando email de verificación:', error);
+        devLogger.error('❌ Error enviando email de verificación:');
 
         res.status(500).json({
             success: false,
@@ -374,7 +375,7 @@ router.get('/verify/:token', async (req, res) => {
                     user_agent || null
                 ]);
 
-                console.log(`✅ [PENDING APPROVAL] Formulario ${form_type} guardado para aprobación. ID: ${result.rows[0].id}`);
+                devLogger.log('✅ [PENDING APPROVAL] Formulario ${form_type} guardado para aprobación. ID: ${result.rows[0].id}');
 
                 // Página de confirmación - PENDIENTE DE APROBACIÓN
                 res.send(`
@@ -448,7 +449,7 @@ router.get('/verify/:token', async (req, res) => {
                 `);
 
             } catch (error) {
-                console.error('❌ Error al guardar en pending_submissions:', error);
+                devLogger.error('❌ Error al guardar en pending_submissions:');
                 throw error;
             }
 
@@ -470,7 +471,7 @@ router.get('/verify/:token', async (req, res) => {
             });
 
             if (result.success) {
-                console.log(`✅ [VERIFIED] Mensaje enviado a la escuela desde: ${formData.email}`);
+                devLogger.log('✅ [VERIFIED] Mensaje enviado a la escuela desde: ${formData.email}');
 
                 // Página de confirmación
                 res.send(`
@@ -578,7 +579,7 @@ router.get('/verify/:token', async (req, res) => {
         } // Fin del bloque else (FLUJO NORMAL)
 
     } catch (error) {
-        console.error('❌ Error en verificación:', error);
+        devLogger.error('❌ Error en verificación:');
         res.status(500).send(`
             <!DOCTYPE html>
             <html>
@@ -646,7 +647,7 @@ router.get('/messages', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo mensajes:', error);
+        devLogger.error('❌ Error obteniendo mensajes:');
         res.status(500).json({
             success: false,
             message: 'Error obteniendo mensajes'
@@ -702,7 +703,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo estadísticas:', error);
+        devLogger.error('❌ Error obteniendo estadísticas:');
         res.status(500).json({
             success: false,
             message: 'Error obteniendo estadísticas'

@@ -17,6 +17,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 
 // Base de datos simulada para sistema de riesgos
@@ -81,7 +82,7 @@ router.post('/analyze', async (req, res) => {
     try {
         const { studentId, data, forceReanalysis = false } = req.body;
 
-        console.log(`🚨 Análisis de riesgo - Estudiante: ${studentId}`);
+        devLogger.log(`🚨 Análisis de riesgo - Estudiante: ${studentId}`);
 
         if (!studentId) {
             return res.status(400).json({
@@ -137,7 +138,7 @@ router.post('/analyze', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en análisis de riesgos:', error);
+        devLogger.error('❌ Error en análisis de riesgos:', error);
         res.status(500).json({
             success: false,
             error: 'Error en análisis de riesgos',
@@ -151,7 +152,7 @@ router.post('/analyze-batch', async (req, res) => {
     try {
         const { studentIds, criteria } = req.body;
 
-        console.log(`📊 Análisis masivo - ${studentIds.length} estudiantes`);
+        devLogger.log(`📊 Análisis masivo - ${studentIds.length} estudiantes`);
 
         const batchResults = [];
         const alerts = [];
@@ -175,7 +176,7 @@ router.post('/analyze-batch', async (req, res) => {
                 }
 
             } catch (error) {
-                console.error(`❌ Error analizando estudiante ${studentId}:`, error);
+                devLogger.error(`❌ Error analizando estudiante ${studentId}:`, error);
                 batchResults.push({
                     studentId,
                     success: false,
@@ -212,7 +213,7 @@ router.post('/analyze-batch', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en análisis masivo:', error);
+        devLogger.error('❌ Error en análisis masivo:', error);
         res.status(500).json({
             success: false,
             error: 'Error en análisis masivo'
@@ -266,7 +267,7 @@ router.get('/alerts', (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo alertas:', error);
+        devLogger.error('❌ Error obteniendo alertas:', error);
         res.status(500).json({
             success: false,
             error: 'Error obteniendo alertas'
@@ -287,7 +288,7 @@ router.post('/intervention', async (req, res) => {
             timeline
         } = req.body;
 
-        console.log(`🎯 Creando intervención - Estudiante: ${studentId}, Tipo: ${type}`);
+        devLogger.log(`🎯 Creando intervención - Estudiante: ${studentId}, Tipo: ${type}`);
 
         const intervention = {
             id: generateInterventionId(),
@@ -328,7 +329,7 @@ router.post('/intervention', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error creando intervención:', error);
+        devLogger.error('❌ Error creando intervención:', error);
         res.status(500).json({
             success: false,
             error: 'Error creando intervención'
@@ -342,7 +343,7 @@ router.put('/intervention/:interventionId', async (req, res) => {
         const { interventionId } = req.params;
         const { progress, notes, status, milestones } = req.body;
 
-        console.log(`📈 Actualizando intervención: ${interventionId}`);
+        devLogger.log(`📈 Actualizando intervención: ${interventionId}`);
 
         const intervention = interventions.get(interventionId);
         if (!intervention) {
@@ -376,7 +377,7 @@ router.put('/intervention/:interventionId', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error actualizando intervención:', error);
+        devLogger.error('❌ Error actualizando intervención:', error);
         res.status(500).json({
             success: false,
             error: 'Error actualizando intervención'
@@ -440,7 +441,7 @@ router.get('/dashboard', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en dashboard de riesgos:', error);
+        devLogger.error('❌ Error en dashboard de riesgos:', error);
         res.status(500).json({
             success: false,
             error: 'Error en dashboard de riesgos'
@@ -473,7 +474,7 @@ router.get('/student/:studentId/profile', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo perfil de riesgo:', error);
+        devLogger.error('❌ Error obteniendo perfil de riesgo:', error);
         res.status(500).json({
             success: false,
             error: 'Error obteniendo perfil de riesgo'
@@ -486,7 +487,7 @@ router.post('/predict', async (req, res) => {
     try {
         const { criteria, timeHorizon = '30d', confidence = 0.7 } = req.body;
 
-        console.log('🔍 Realizando predicción de riesgos...');
+        devLogger.log('🔍 Realizando predicción de riesgos...');
 
         // Realizar predicción basada en criterios
         const predictions = await performRiskPrediction(criteria, timeHorizon, confidence);
@@ -509,7 +510,7 @@ router.post('/predict', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en predicción de riesgos:', error);
+        devLogger.error('❌ Error en predicción de riesgos:', error);
         res.status(500).json({
             success: false,
             error: 'Error en predicción de riesgos'
@@ -523,7 +524,7 @@ router.get('/reports/:type', async (req, res) => {
         const { type } = req.params;
         const { format = 'json', period = '1m' } = req.query;
 
-        console.log(`📊 Generando reporte: ${type} - Formato: ${format}`);
+        devLogger.log(`📊 Generando reporte: ${type} - Formato: ${format}`);
 
         let reportData;
 
@@ -564,7 +565,7 @@ router.get('/reports/:type', async (req, res) => {
         }
 
     } catch (error) {
-        console.error('❌ Error generando reporte:', error);
+        devLogger.error('❌ Error generando reporte:', error);
         res.status(500).json({
             success: false,
             error: 'Error generando reporte'
@@ -593,7 +594,7 @@ router.get('/config', (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo configuración:', error);
+        devLogger.error('❌ Error obteniendo configuración:', error);
         res.status(500).json({
             success: false,
             error: 'Error obteniendo configuración'

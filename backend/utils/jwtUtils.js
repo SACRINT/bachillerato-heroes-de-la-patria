@@ -4,6 +4,7 @@
  */
 
 const jwt = require('jsonwebtoken');
+const devLogger = require('../utils/devLogger');
 const crypto = require('crypto');
 
 class JWTUtils {
@@ -202,10 +203,10 @@ class JWTUtils {
                 }
             }
 
-            console.log(`🚫 Token agregado a blacklist: ${tokenId}`);
+            devLogger.log(`🚫 Token agregado a blacklist: ${tokenId}`);
             return true;
         } catch (error) {
-            console.error('❌ Error agregando token a blacklist:', error);
+            devLogger.error('❌ Error agregando token a blacklist:', error);
             return false;
         }
     }
@@ -353,7 +354,7 @@ class JWTUtils {
             }
         }
 
-        console.log('🧹 Limpieza de JWT Utils completada');
+        devLogger.log('🧹 Limpieza de JWT Utils completada');
     }
 
     /**

@@ -4,6 +4,7 @@
  */
 
 const fs = require('fs');
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const https = require('https');
 const { execSync } = require('child_process');
@@ -47,7 +48,7 @@ class SSLManager {
             rejectUnauthorized: false
         };
 
-        console.log('🔒 [SSL] SSL Manager inicializado');
+        devLogger.log('🔒 [SSL] SSL Manager inicializado');
         this.init();
     }
 
@@ -58,9 +59,9 @@ class SSLManager {
         try {
             await this.ensureCertDirectory();
             await this.checkCertificates();
-            console.log('✅ [SSL] SSL Manager configurado correctamente');
+            devLogger.log('✅ [SSL] SSL Manager configurado correctamente');
         } catch (error) {
-            console.error('❌ [SSL] Error inicializando SSL Manager:', error.message);
+            devLogger.error('❌ [SSL] Error inicializando SSL Manager:', error.message);
         }
     }
 
@@ -70,7 +71,7 @@ class SSLManager {
     async ensureCertDirectory() {
         if (!fs.existsSync(this.certDir)) {
             fs.mkdirSync(this.certDir, { recursive: true });
-            console.log(`📁 [SSL] Directorio de certificados creado: ${this.certDir}`);
+            devLogger.log(`📁 [SSL] Directorio de certificados creado: ${this.certDir}`);
         }
     }
 
@@ -82,11 +83,11 @@ class SSLManager {
         const certPath = path.join(this.certDir, this.config.certFile);
 
         if (!fs.existsSync(keyPath) || !fs.existsSync(certPath)) {
-            console.log('⚠️ [SSL] Certificados SSL no encontrados');
-            console.log('🔧 [SSL] Generando certificados auto-firmados para desarrollo...');
+            devLogger.log('⚠️ [SSL] Certificados SSL no encontrados');
+            devLogger.log('🔧 [SSL] Generando certificados auto-firmados para desarrollo...');
             await this.generateSelfSignedCertificates();
         } else {
-            console.log('✅ [SSL] Certificados SSL encontrados');
+            devLogger.log('✅ [SSL] Certificados SSL encontrados');
             await this.validateCertificates();
         }
     }
@@ -116,7 +117,7 @@ class SSLManager {
             const configPath = path.join(this.certDir, 'openssl.conf');
             fs.writeFileSync(configPath, opensslConfig);
 
-            console.log('🔑 [SSL] Generando clave privada...');
+            devLogger.log('🔑 [SSL] Generando clave privada...');
 
             // Generar clave privada
             execSync(`openssl genrsa -out "${keyPath}" 2048`, {
@@ -124,7 +125,7 @@ class SSLManager {
                 stdio: 'inherit'
             });
 
-            console.log('📝 [SSL] Generando solicitud de certificado...');
+            devLogger.log('📝 [SSL] Generando solicitud de certificado...');
 
             // Generar CSR
             execSync(`openssl req -new -key "${keyPath}" -out "${csrPath}" -config "${configPath}"`, {
@@ -132,7 +133,7 @@ class SSLManager {
                 stdio: 'inherit'
             });
 
-            console.log('📜 [SSL] Generando certificado auto-firmado...');
+            devLogger.log('📜 [SSL] Generando certificado auto-firmado...');
 
             // Generar certificado auto-firmado válido por 365 días
             execSync(`openssl x509 -req -days 365 -in "${csrPath}" -signkey "${keyPath}" -out "${certPath}" -extensions v3_req -extfile "${configPath}"`, {
@@ -141,7 +142,7 @@ class SSLManager {
             });
 
             // Generar parámetros DH para mayor seguridad
-            console.log('🔐 [SSL] Generando parámetros Diffie-Hellman...');
+            devLogger.log('🔐 [SSL] Generando parámetros Diffie-Hellman...');
             const dhParamPath = path.join(this.certDir, this.config.dhParamFile);
             execSync(`openssl dhparam -out "${dhParamPath}" 2048`, {
                 cwd: this.certDir,
@@ -152,18 +153,18 @@ class SSLManager {
             fs.unlinkSync(csrPath);
             fs.unlinkSync(configPath);
 
-            console.log('✅ [SSL] Certificados auto-firmados generados exitosamente');
-            console.log(`🔑 Clave privada: ${keyPath}`);
-            console.log(`📜 Certificado: ${certPath}`);
-            console.log(`🔐 DH Params: ${dhParamPath}`);
+            devLogger.log('✅ [SSL] Certificados auto-firmados generados exitosamente');
+            devLogger.log(`🔑 Clave privada: ${keyPath}`);
+            devLogger.log(`📜 Certificado: ${certPath}`);
+            devLogger.log(`🔐 DH Params: ${dhParamPath}`);
 
             return true;
         } catch (error) {
-            console.error('❌ [SSL] Error generando certificados:', error.message);
-            console.log('💡 [SSL] Para generar certificados manualmente:');
-            console.log('   1. Instalar OpenSSL');
-            console.log('   2. Ejecutar: npm run generate-certs');
-            console.log('   3. O usar certificados de Let\'s Encrypt para producción');
+            devLogger.error('❌ [SSL] Error generando certificados:', error.message);
+            devLogger.log('💡 [SSL] Para generar certificados manualmente:');
+            devLogger.log('   1. Instalar OpenSSL');
+            devLogger.log('   2. Ejecutar: npm run generate-certs');
+            devLogger.log('   3. O usar certificados de Let\'s Encrypt para producción');
             return false;
         }
     }
@@ -222,17 +223,17 @@ IP.2 = ::1
                 const daysUntilExpiration = Math.floor((expirationDate - new Date()) / (1000 * 60 * 60 * 24));
 
                 if (daysUntilExpiration < 0) {
-                    console.log('⚠️ [SSL] Certificado SSL expirado');
-                    console.log('🔧 [SSL] Regenerando certificados...');
+                    devLogger.log('⚠️ [SSL] Certificado SSL expirado');
+                    devLogger.log('🔧 [SSL] Regenerando certificados...');
                     await this.generateSelfSignedCertificates();
                 } else if (daysUntilExpiration < 30) {
-                    console.log(`⚠️ [SSL] Certificado SSL expira en ${daysUntilExpiration} días`);
+                    devLogger.log(`⚠️ [SSL] Certificado SSL expira en ${daysUntilExpiration} días`);
                 } else {
-                    console.log(`✅ [SSL] Certificado SSL válido por ${daysUntilExpiration} días más`);
+                    devLogger.log(`✅ [SSL] Certificado SSL válido por ${daysUntilExpiration} días más`);
                 }
             }
         } catch (error) {
-            console.warn('⚠️ [SSL] No se pudo validar el certificado:', error.message);
+            devLogger.warn('⚠️ [SSL] No se pudo validar el certificado:', error.message);
         }
     }
 
@@ -266,7 +267,7 @@ IP.2 = ::1
 
             return options;
         } catch (error) {
-            console.error('❌ [SSL] Error cargando opciones SSL:', error.message);
+            devLogger.error('❌ [SSL] Error cargando opciones SSL:', error.message);
             return null;
         }
     }
@@ -286,22 +287,22 @@ IP.2 = ::1
 
             server.on('error', (error) => {
                 if (error.code === 'EADDRINUSE') {
-                    console.log(`⚠️ [SSL] Puerto ${port} en uso, intentando puerto alternativo...`);
+                    devLogger.log(`⚠️ [SSL] Puerto ${port} en uso, intentando puerto alternativo...`);
                     server.listen(port + 1);
                 } else {
-                    console.error('❌ [SSL] Error en servidor HTTPS:', error);
+                    devLogger.error('❌ [SSL] Error en servidor HTTPS:', error);
                 }
             });
 
             server.on('listening', () => {
                 const address = server.address();
-                console.log(`🔒 [SSL] Servidor HTTPS iniciado en puerto ${address.port}`);
-                console.log(`🌐 [SSL] URL: https://localhost:${address.port}`);
+                devLogger.log(`🔒 [SSL] Servidor HTTPS iniciado en puerto ${address.port}`);
+                devLogger.log(`🌐 [SSL] URL: https://localhost:${address.port}`);
             });
 
             return server;
         } catch (error) {
-            console.error('❌ [SSL] Error creando servidor HTTPS:', error.message);
+            devLogger.error('❌ [SSL] Error creando servidor HTTPS:', error.message);
             return null;
         }
     }
@@ -358,7 +359,7 @@ IP.2 = ::1
      * Configurar Let's Encrypt para producción
      */
     async setupLetsEncrypt(domain, email) {
-        console.log('🔒 [SSL] Configurando Let\'s Encrypt para producción...');
+        devLogger.log('🔒 [SSL] Configurando Let\'s Encrypt para producción...');
 
         const letsEncryptConfig = {
             domains: [domain],
@@ -371,11 +372,11 @@ IP.2 = ::1
             challengeType: 'http-01'
         };
 
-        console.log('💡 [SSL] Para configurar Let\'s Encrypt:');
-        console.log('   1. npm install --save letsencrypt-express');
-        console.log('   2. Configurar dominio en DNS');
-        console.log('   3. Abrir puerto 80 para validación');
-        console.log('   4. Ejecutar certificación automática');
+        devLogger.log('💡 [SSL] Para configurar Let\'s Encrypt:');
+        devLogger.log('   1. npm install --save letsencrypt-express');
+        devLogger.log('   2. Configurar dominio en DNS');
+        devLogger.log('   3. Abrir puerto 80 para validación');
+        devLogger.log('   4. Ejecutar certificación automática');
 
         return letsEncryptConfig;
     }

@@ -6,6 +6,7 @@
  */
 
 const sharp = require('sharp');
+const devLogger = require('../utils/devLogger');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -39,9 +40,9 @@ class ImageOptimizationService {
             await fs.mkdir(this.uploadsDir, { recursive: true });
             await fs.mkdir(this.thumbnailsDir, { recursive: true });
             await fs.mkdir(this.webpDir, { recursive: true });
-            console.log('✅ Directorios de optimización de imágenes creados');
+            devLogger.log('✅ Directorios de optimización de imágenes creados');
         } catch (error) {
-            console.error('❌ Error al crear directorios:', error);
+            devLogger.error('❌ Error al crear directorios:', error);
             throw error;
         }
     }
@@ -65,7 +66,7 @@ class ImageOptimizationService {
 
             // Leer metadata de la imagen
             const metadata = await sharp(inputPath).metadata();
-            console.log(`📸 Procesando imagen: ${filename} (${metadata.width}x${metadata.height})`);
+            devLogger.log(`📸 Procesando imagen: ${filename} (${metadata.width}x${metadata.height})`);
 
             // 1. Generar versión optimizada del tamaño original
             const optimizedPath = path.join(this.uploadsDir, `${baseName}_optimized${ext}`);
@@ -97,11 +98,11 @@ class ImageOptimizationService {
                 results.webp[sizeName] = webpThumbPath;
             }
 
-            console.log(`✅ Imagen ${filename} optimizada exitosamente`);
+            devLogger.log(`✅ Imagen ${filename} optimizada exitosamente`);
             return results;
 
         } catch (error) {
-            console.error(`❌ Error optimizando imagen ${filename}:`, error);
+            devLogger.error(`❌ Error optimizando imagen ${filename}:`, error);
             throw error;
         }
     }
@@ -225,7 +226,7 @@ class ImageOptimizationService {
                 ratio: (optimizedSize / originalSize).toFixed(2)
             };
         } catch (error) {
-            console.error('Error calculando estadísticas:', error);
+            devLogger.error('Error calculando estadísticas:', error);
             return null;
         }
     }
@@ -255,11 +256,11 @@ class ImageOptimizationService {
                 }
             }
 
-            console.log(`🗑️ Limpiados ${deletedCount} archivos antiguos (> ${daysOld} días)`);
+            devLogger.log(`🗑️ Limpiados ${deletedCount} archivos antiguos (> ${daysOld} días)`);
             return deletedCount;
 
         } catch (error) {
-            console.error('Error limpiando archivos antiguos:', error);
+            devLogger.error('Error limpiando archivos antiguos:', error);
             throw error;
         }
     }

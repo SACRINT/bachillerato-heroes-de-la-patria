@@ -6,6 +6,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 const crypto = require('crypto');
@@ -15,7 +16,7 @@ const crypto = require('crypto');
 // ============================================
 router.get('/', async (req, res) => {
     try {
-        console.log('📧 [SUSCRIPTORES] Obteniendo lista de suscriptores...');
+        devLogger.log('📧 [SUSCRIPTORES] Obteniendo lista de suscriptores...');
 
         const result = await pool.query(`
             SELECT
@@ -40,7 +41,7 @@ router.get('/', async (req, res) => {
             ORDER BY fecha_registro DESC
         `);
 
-        console.log(`✅ [SUSCRIPTORES] ${result.rows.length} suscriptores encontrados`);
+        devLogger.log(`✅ [SUSCRIPTORES] ${result.rows.length} suscriptores encontrados`);
 
         res.json({
             success: true,
@@ -49,11 +50,11 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener suscriptores:', error);
+        devLogger.error('❌ Error al obtener suscriptores:', error);
 
         // Si la tabla/columna no existe, devolver datos vacíos en lugar de error
         if (error.code === '42P01' || error.code === '42703') {
-            console.warn('⚠️ Tabla/columna "suscriptores_notificaciones" no existe - devolviendo datos vacíos');
+            devLogger.warn('⚠️ Tabla/columna "suscriptores_notificaciones" no existe - devolviendo datos vacíos');
             return res.json({
                 success: true,
                 total: 0,
@@ -89,7 +90,7 @@ router.get('/estado/:estado', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al filtrar por estado:', error);
+        devLogger.error('❌ Error al filtrar por estado:', error);
         res.status(500).json({
             success: false,
             error: 'Error al filtrar suscriptores'
@@ -130,7 +131,7 @@ router.get('/activos/email', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener emails activos:', error);
+        devLogger.error('❌ Error al obtener emails activos:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener emails activos'
@@ -143,7 +144,7 @@ router.get('/activos/email', async (req, res) => {
 // ============================================
 router.get('/stats/general', async (req, res) => {
     try {
-        console.log('📊 [SUSCRIPTORES] Obteniendo estadísticas generales...');
+        devLogger.log('📊 [SUSCRIPTORES] Obteniendo estadísticas generales...');
 
         // Total de suscriptores
         const totalResult = await pool.query('SELECT COUNT(*) as total FROM suscriptores_notificaciones');
@@ -201,7 +202,7 @@ router.get('/stats/general', async (req, res) => {
             tasaAperturaPromedio: Math.round(parseFloat(tasaAperturaResult.rows[0].tasa_promedio) || 0)
         };
 
-        console.log('✅ [SUSCRIPTORES] Estadísticas obtenidas');
+        devLogger.log('✅ [SUSCRIPTORES] Estadísticas obtenidas');
 
         res.json({
             success: true,
@@ -209,11 +210,11 @@ router.get('/stats/general', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener estadísticas:', error);
+        devLogger.error('❌ Error al obtener estadísticas:', error);
 
         // Si la tabla/columna no existe, devolver datos vacíos en lugar de error
         if (error.code === '42P01' || error.code === '42703') {
-            console.warn('⚠️ Tabla/columna "suscriptores_notificaciones" no existe - devolviendo datos vacíos');
+            devLogger.warn('⚠️ Tabla/columna "suscriptores_notificaciones" no existe - devolviendo datos vacíos');
             return res.json({
                 success: true,
                 data: {
@@ -260,7 +261,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener suscriptor:', error);
+        devLogger.error('❌ Error al obtener suscriptor:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener datos del suscriptor'
@@ -400,7 +401,7 @@ router.post('/', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al crear suscriptor:', error);
+        devLogger.error('❌ Error al crear suscriptor:', error);
         res.status(500).json({
             success: false,
             error: 'Error al registrar suscriptor',
@@ -468,7 +469,7 @@ router.put('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar suscriptor:', error);
+        devLogger.error('❌ Error al actualizar suscriptor:', error);
         res.status(500).json({
             success: false,
             error: 'Error al actualizar suscriptor'
@@ -504,7 +505,7 @@ router.patch('/verificar/:token', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al verificar email:', error);
+        devLogger.error('❌ Error al verificar email:', error);
         res.status(500).json({
             success: false,
             error: 'Error al verificar email'
@@ -540,7 +541,7 @@ router.patch('/cancelar/:email', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al cancelar suscripción:', error);
+        devLogger.error('❌ Error al cancelar suscripción:', error);
         res.status(500).json({
             success: false,
             error: 'Error al cancelar suscripción'
@@ -578,7 +579,7 @@ router.post('/:id/envio', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al registrar envío:', error);
+        devLogger.error('❌ Error al registrar envío:', error);
         res.status(500).json({
             success: false,
             error: 'Error al registrar envío'
@@ -611,7 +612,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al eliminar suscriptor:', error);
+        devLogger.error('❌ Error al eliminar suscriptor:', error);
         res.status(500).json({
             success: false,
             error: 'Error al eliminar suscriptor'

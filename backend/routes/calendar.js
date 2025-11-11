@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
 
@@ -96,7 +97,7 @@ router.get('/events', async (req, res) => {
             view: view
         });
     } catch (error) {
-        console.error('Error obteniendo eventos:', error);
+        devLogger.error('Error obteniendo eventos:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -136,7 +137,7 @@ router.get('/events/:id', async (req, res) => {
             data: event
         });
     } catch (error) {
-        console.error('Error obteniendo evento:', error);
+        devLogger.error('Error obteniendo evento:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -272,7 +273,7 @@ router.post('/events', authenticateToken, requireAdmin, async (req, res) => {
         try {
             await calendarService.syncWithGoogleCalendar(newEvent);
         } catch (syncError) {
-            console.warn('No se pudo sincronizar con Google Calendar:', syncError.message);
+            devLogger.warn('No se pudo sincronizar con Google Calendar:', syncError.message);
         }
 
         res.status(201).json({
@@ -281,7 +282,7 @@ router.post('/events', authenticateToken, requireAdmin, async (req, res) => {
             data: newEvent
         });
     } catch (error) {
-        console.error('Error creando evento:', error);
+        devLogger.error('Error creando evento:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -332,7 +333,7 @@ router.put('/events/:id', authenticateToken, requireAdmin, async (req, res) => {
             data: updatedEvent
         });
     } catch (error) {
-        console.error('Error actualizando evento:', error);
+        devLogger.error('Error actualizando evento:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -368,7 +369,7 @@ router.delete('/events/:id', authenticateToken, requireAdmin, async (req, res) =
             message: 'Evento eliminado exitosamente'
         });
     } catch (error) {
-        console.error('Error eliminando evento:', error);
+        devLogger.error('Error eliminando evento:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -403,7 +404,7 @@ router.get('/events/upcoming', async (req, res) => {
             data: upcomingEvents
         });
     } catch (error) {
-        console.error('Error obteniendo eventos próximos:', error);
+        devLogger.error('Error obteniendo eventos próximos:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -429,7 +430,7 @@ router.get('/events/today', async (req, res) => {
             count: todayEvents.length
         });
     } catch (error) {
-        console.error('Error obteniendo eventos de hoy:', error);
+        devLogger.error('Error obteniendo eventos de hoy:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -467,7 +468,7 @@ router.post('/events/:id/attend', authenticateToken, async (req, res) => {
             data: result.attendance
         });
     } catch (error) {
-        console.error('Error registrando asistencia:', error);
+        devLogger.error('Error registrando asistencia:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -497,7 +498,7 @@ router.get('/events/:id/attendees', authenticateToken, requireAdmin, async (req,
             count: attendees.length
         });
     } catch (error) {
-        console.error('Error obteniendo asistentes:', error);
+        devLogger.error('Error obteniendo asistentes:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -539,7 +540,7 @@ router.post('/google/sync', authenticateToken, requireAdmin, async (req, res) =>
             }
         });
     } catch (error) {
-        console.error('Error en sincronización:', error);
+        devLogger.error('Error en sincronización:', error);
         res.status(500).json({
             success: false,
             error: 'Error en sincronización',
@@ -568,7 +569,7 @@ router.get('/google/auth', authenticateToken, requireAdmin, async (req, res) => 
             }
         });
     } catch (error) {
-        console.error('Error obteniendo URL de autorización:', error);
+        devLogger.error('Error obteniendo URL de autorización:', error);
         res.status(500).json({
             success: false,
             error: 'Error de autorización',
@@ -601,7 +602,7 @@ router.get('/stats', authenticateToken, requireAdmin, async (req, res) => {
             data: stats
         });
     } catch (error) {
-        console.error('Error obteniendo estadísticas:', error);
+        devLogger.error('Error obteniendo estadísticas:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -631,7 +632,7 @@ router.get('/export', async (req, res) => {
         res.setHeader('Content-Disposition', 'attachment; filename="calendario-bge.ics"');
         res.send(icsData);
     } catch (error) {
-        console.error('Error exportando calendario:', error);
+        devLogger.error('Error exportando calendario:', error);
         res.status(500).json({
             success: false,
             error: 'Error exportando calendario',
@@ -675,7 +676,7 @@ router.post('/reminders/:id', authenticateToken, requireAdmin, async (req, res) 
             data: result
         });
     } catch (error) {
-        console.error('Error configurando recordatorios:', error);
+        devLogger.error('Error configurando recordatorios:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',

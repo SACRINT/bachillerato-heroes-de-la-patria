@@ -5,6 +5,7 @@
  */
 
 const OpenAI = require('openai');
+const devLogger = require('../utils/devLogger');
 const Anthropic = require('@anthropic-ai/sdk');
 const { getLocalIAProcessor } = require('./localIAProcessor');
 // ✅ FIX (9 NOV 2025): Agregar importación de logger para evitar ReferenceError
@@ -43,7 +44,7 @@ class RealAIService {
      * 🔧 Inicializar proveedores de IA
      */
     async initialize() {
-        console.log('🚀 Inicializando servicio de IA real...');
+        devLogger.log('🚀 Inicializando servicio de IA real...');
 
         // Configurar OpenAI
         if (process.env.OPENAI_API_KEY) {
@@ -56,13 +57,13 @@ class RealAIService {
                 // Test de conectividad
                 await this.testOpenAIConnection();
                 this.providerStatus.openai = true;
-                console.log('✅ OpenAI GPT-4 configurado correctamente');
+                devLogger.log('✅ OpenAI GPT-4 configurado correctamente');
             } catch (error) {
-                console.warn('⚠️ Error configurando OpenAI:', error.message);
+                devLogger.warn('⚠️ Error configurando OpenAI:', error.message);
                 this.providerStatus.openai = false;
             }
         } else {
-            console.warn('⚠️ OPENAI_API_KEY no configurada');
+            devLogger.warn('⚠️ OPENAI_API_KEY no configurada');
         }
 
         // Configurar Anthropic Claude
@@ -76,27 +77,27 @@ class RealAIService {
                 // Test de conectividad
                 await this.testAnthropicConnection();
                 this.providerStatus.anthropic = true;
-                console.log('✅ Anthropic Claude configurado correctamente');
+                devLogger.log('✅ Anthropic Claude configurado correctamente');
             } catch (error) {
-                console.warn('⚠️ Error configurando Anthropic:', error.message);
+                devLogger.warn('⚠️ Error configurando Anthropic:', error.message);
                 this.providerStatus.anthropic = false;
             }
         } else {
-            console.warn('⚠️ ANTHROPIC_API_KEY no configurada');
+            devLogger.warn('⚠️ ANTHROPIC_API_KEY no configurada');
         }
 
         // Configurar procesador local como respaldo
         try {
             this.providers.local = getLocalIAProcessor();
             this.providerStatus.local = true;
-            console.log('✅ Procesador local IA configurado como respaldo');
+            devLogger.log('✅ Procesador local IA configurado como respaldo');
         } catch (error) {
-            console.error('❌ Error configurando procesador local:', error);
+            devLogger.error('❌ Error configurando procesador local:', error);
             this.providerStatus.local = false;
         }
 
         this.isInitialized = true;
-        console.log('🎯 Servicio de IA real inicializado:', this.getProviderSummary());
+        devLogger.log('🎯 Servicio de IA real inicializado:', this.getProviderSummary());
     }
 
     /**
@@ -138,7 +139,7 @@ class RealAIService {
         // Determinar mejor proveedor disponible
         const provider = this.selectBestProvider(requestData, preferredProvider);
 
-        console.log(`🤖 Procesando con proveedor: ${provider.toUpperCase()}`);
+        devLogger.log(`🤖 Procesando con proveedor: ${provider.toUpperCase()}`);
 
         try {
             let response;
@@ -172,7 +173,7 @@ class RealAIService {
             // Registrar error
             this.usage[provider].errors++;
 
-            console.error(`❌ Error con proveedor ${provider}:`, error.message);
+            devLogger.error(`❌ Error con proveedor ${provider}:`, error.message);
 
             // Intentar con proveedor de respaldo
             return await this.processWithFallback(requestData, provider);
@@ -304,7 +305,7 @@ class RealAIService {
      * 🔄 Procesamiento con respaldo
      */
     async processWithFallback(requestData, failedProvider) {
-        console.log(`🔄 Activando respaldo después de falla en ${failedProvider}`);
+        devLogger.log(`🔄 Activando respaldo después de falla en ${failedProvider}`);
 
         const availableProviders = Object.keys(this.providerStatus)
             .filter(p => p !== failedProvider && this.providerStatus[p]);
@@ -328,7 +329,7 @@ class RealAIService {
                 originalProvider: failedProvider
             };
         } catch (error) {
-            console.error('❌ Error en proveedor de respaldo:', error);
+            devLogger.error('❌ Error en proveedor de respaldo:', error);
             throw new Error('Falla en todos los proveedores de IA');
         }
     }
@@ -433,7 +434,7 @@ class RealAIService {
      * 🔄 Recargar configuración
      */
     async reload() {
-        console.log('🔄 Recargando configuración de IA real...');
+        devLogger.log('🔄 Recargando configuración de IA real...');
         this.isInitialized = false;
         await this.initialize();
         return this.getStats();
@@ -446,7 +447,7 @@ class RealAIService {
         Object.keys(this.usage).forEach(provider => {
             this.usage[provider] = { requests: 0, tokens: 0, errors: 0 };
         });
-        console.log('📊 Estadísticas de uso limpiadas');
+        devLogger.log('📊 Estadísticas de uso limpiadas');
     }
 }
 

@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 
@@ -143,7 +144,7 @@ router.get('/global', async (req, res) => {
             results
         });
     } catch (error) {
-        console.error('Error en búsqueda global:', error);
+        devLogger.error('Error en búsqueda global:', error);
         res.status(500).json({
             success: false,
             error: 'Error al realizar la búsqueda'
@@ -186,7 +187,7 @@ router.get('/suggestions', async (req, res) => {
             suggestions: result.rows
         });
     } catch (error) {
-        console.error('Error en sugerencias:', error);
+        devLogger.error('Error en sugerencias:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener sugerencias'

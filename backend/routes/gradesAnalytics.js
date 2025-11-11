@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const { body, query, validationResult } = require('express-validator');
 const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
 const router = express.Router();
@@ -14,7 +15,7 @@ function getGradesAnalyticsService() {
         const { getGradesAnalyticsService } = require('../services/gradesAnalyticsService');
         return getGradesAnalyticsService();
     } catch (error) {
-        console.error('❌ Error obteniendo servicio de análisis:', error.message);
+        devLogger.error('❌ Error obteniendo servicio de análisis:', error.message);
         return null;
     }
 }
@@ -85,7 +86,7 @@ router.get('/student/:studentId', [
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo análisis de estudiante:', error);
+        devLogger.error('❌ Error obteniendo análisis de estudiante:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo análisis de estudiante',
@@ -136,7 +137,7 @@ router.get('/student/:studentId/progress', async (req, res, next) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo datos de progreso:', error);
+        devLogger.error('❌ Error obteniendo datos de progreso:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo datos de progreso',
@@ -217,7 +218,7 @@ router.get('/group', [
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo análisis grupal:', error);
+        devLogger.error('❌ Error obteniendo análisis grupal:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo análisis grupal',
@@ -281,7 +282,7 @@ router.get('/performance-distribution', [
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo distribución de rendimiento:', error);
+        devLogger.error('❌ Error obteniendo distribución de rendimiento:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo distribución de rendimiento',
@@ -322,7 +323,7 @@ router.get('/subject-rankings', async (req, res, next) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo ranking de materias:', error);
+        devLogger.error('❌ Error obteniendo ranking de materias:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo ranking de materias',
@@ -397,7 +398,7 @@ router.get('/top-performers', [
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo mejores estudiantes:', error);
+        devLogger.error('❌ Error obteniendo mejores estudiantes:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo mejores estudiantes',
@@ -461,7 +462,7 @@ router.get('/struggling-students', [
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo estudiantes en riesgo:', error);
+        devLogger.error('❌ Error obteniendo estudiantes en riesgo:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo estudiantes en riesgo',
@@ -525,7 +526,7 @@ router.get('/institutional-report', authenticateToken, requireAdmin, async (req,
         });
 
     } catch (error) {
-        console.error('❌ Error generando reporte institucional:', error);
+        devLogger.error('❌ Error generando reporte institucional:', error);
         res.status(500).json({
             success: false,
             message: 'Error generando reporte institucional',
@@ -539,7 +540,7 @@ router.get('/institutional-report', authenticateToken, requireAdmin, async (req,
 // ============================================
 
 router.use((error, req, res, next) => {
-    console.error('❌ Error en rutas de análisis de calificaciones:', error);
+    devLogger.error('❌ Error en rutas de análisis de calificaciones:', error);
 
     res.status(500).json({
         success: false,

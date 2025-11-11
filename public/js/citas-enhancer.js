@@ -197,7 +197,7 @@ function printCitasReport() {
 
                 <div class="footer">
                     <p>Este reporte ha sido generado automáticamente desde el Sistema de Gestión Integral</p>
-                    <p>© 2025 Bachillerato General Estatal "Héroes de la Patria"</p>
+                    <p>© 2025 Bachillerato General Estatal "window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria')"</p>
                 </div>
             </body>
             </html>

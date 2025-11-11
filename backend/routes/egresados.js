@@ -8,6 +8,7 @@ const router = express.Router();
 const { pool } = require('../config/database');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const devLog = require('../utils/devLogger'); // 🔐 Logging seguro (GDPR compliant)
 
 // Configuración de nodemailer
 const transporter = nodemailer.createTransport({
@@ -25,7 +26,7 @@ const transporter = nodemailer.createTransport({
 router.post('/create', async (req, res) => {
     const client = await pool.connect();
     try {
-        console.log('📝 [EGRESADOS CREATE v2] Recibido formulario de egresado.');
+        devLog.log('[EGRESADOS CREATE v2] Recibido formulario de egresado');
         const { nombre_completo, email, ...otherData } = req.body;
 
         if (!nombre_completo || !email) {
@@ -48,7 +49,7 @@ router.post('/create', async (req, res) => {
         const result = await client.query(insertQuery, [email, JSON.stringify(datosJSON), confirmationToken]);
         const finalToken = result.rows[0].confirmation_token;
 
-        console.log(`✅ [EGRESADOS CREATE v2] Solicitud guardada en tabla temporal para ${email}.`);
+        devLog.log('[EGRESADOS CREATE v2] Solicitud guardada en tabla temporal');
 
         const confirmLink = `${process.env.BASE_URL || 'http://localhost:3000'}/egresados.html?token=${finalToken}#confirm-email`;
         const mailOptions = {
@@ -89,12 +90,12 @@ router.post('/create', async (req, res) => {
         };
 
         await transporter.sendMail(mailOptions);
-        console.log('✅ [EGRESADOS CREATE v2] Email de confirmación enviado a:', email);
+        devLog.log('[EGRESADOS CREATE v2] Email de confirmación enviado exitosamente');
 
         res.status(201).json({ success: true, message: `✅ REGISTRO EXITOSO: Se ha enviado un email de confirmación a ${email}.` });
 
     } catch (error) {
-        console.error('❌ [EGRESADOS CREATE v2] Error:', error);
+        devLog.error('[EGRESADOS CREATE v2] Error al procesar solicitud', error);
         res.status(500).json({ success: false, message: 'Error al procesar la solicitud.', error: error.message });
     } finally {
         client.release();
@@ -150,14 +151,143 @@ router.post('/confirm/:token', async (req, res) => {
         }
 
     } catch (error) {
-        console.error('❌ [EGRESADOS CONFIRM v2] Error:', error);
+        devLog.error('[EGRESADOS CONFIRM v2] Error al confirmar email', error);
         res.status(500).json({ success: false, error: 'Error al confirmar email.', detail: error.message });
     } finally {
         client.release();
     }
 });
 
-// Mantener las otras rutas de GET, PUT, DELETE, etc. que ya existían en el archivo original.
-// ... (el resto de las rutas como /list, /stats, etc. irían aquí)
+/**
+ * GET /api/egresados
+ * Obtiene lista de egresados aprobados
+ */
+router.get('/', async (req, res) => {
+    try {
+        const limit = Math.min(parseInt(req.query.limit) || 50, 1000);
+        const offset = parseInt(req.query.offset) || 0;
+
+        const query = `
+            SELECT * FROM pendientes_aprobacion
+            WHERE tipo_solicitud = 'egresados' AND estado = 'aprobado'
+            ORDER BY fecha_solicitud DESC
+            LIMIT $1 OFFSET $2
+        `;
+
+        const result = await pool.query(query, [limit, offset]);
+
+        res.json({
+            success: true,
+            count: result.rows.length,
+            data: result.rows
+        });
+    } catch (error) {
+        devLog.error('[EGRESADOS GET] Error al obtener egresados', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener egresados'
+        });
+    }
+});
+
+/**
+ * GET /api/egresados/stats
+ * Obtiene estadísticas de egresados
+ */
+router.get('/stats', async (req, res) => {
+    try {
+        const query = `
+            SELECT
+                COUNT(*) as total,
+                SUM(CASE WHEN estado = 'aprobado' THEN 1 ELSE 0 END) as aprobados,
+                SUM(CASE WHEN estado = 'pendiente' THEN 1 ELSE 0 END) as pendientes
+            FROM pendientes_aprobacion
+            WHERE tipo_solicitud = 'egresados'
+        `;
+
+        const result = await pool.query(query);
+
+        res.json({
+            success: true,
+            stats: result.rows[0] || {
+                total: 0,
+                aprobados: 0,
+                pendientes: 0
+            }
+        });
+    } catch (error) {
+        devLog.error('[EGRESADOS STATS] Error al obtener estadísticas', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener estadísticas'
+        });
+    }
+});
+
+/**
+ * GET /api/egresados/stats/general
+ * Alias para obtener estadísticas generales (compatible con frontend)
+ */
+router.get('/stats/general', async (req, res) => {
+    try {
+        const query = `
+            SELECT
+                COUNT(*) as total,
+                SUM(CASE WHEN estado = 'aprobado' THEN 1 ELSE 0 END) as aprobados,
+                SUM(CASE WHEN estado = 'pendiente' THEN 1 ELSE 0 END) as pendientes
+            FROM pendientes_aprobacion
+            WHERE tipo_solicitud = 'egresados'
+        `;
+
+        const result = await pool.query(query);
+
+        res.json({
+            success: true,
+            data: result.rows[0] || {
+                total: 0,
+                aprobados: 0,
+                pendientes: 0
+            }
+        });
+    } catch (error) {
+        devLog.error('[EGRESADOS STATS GENERAL] Error al obtener estadísticas', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener estadísticas'
+        });
+    }
+});
+
+/**
+ * GET /api/egresados/list
+ * Alias para obtener lista de egresados (compatible con frontend)
+ */
+router.get('/list', async (req, res) => {
+    try {
+        const limit = Math.min(parseInt(req.query.limit) || 50, 1000);
+        const offset = parseInt(req.query.offset) || 0;
+
+        const query = `
+            SELECT * FROM pendientes_aprobacion
+            WHERE tipo_solicitud = 'egresados' AND estado = 'aprobado'
+            ORDER BY fecha_solicitud DESC
+            LIMIT $1 OFFSET $2
+        `;
+
+        const result = await pool.query(query, [limit, offset]);
+
+        res.json({
+            success: true,
+            count: result.rows.length,
+            data: result.rows
+        });
+    } catch (error) {
+        devLog.error('[EGRESADOS LIST] Error al obtener egresados', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener egresados'
+        });
+    }
+});
 
 module.exports = router;

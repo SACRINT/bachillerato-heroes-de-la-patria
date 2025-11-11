@@ -1,4 +1,5 @@
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const { pool } = require('../config/database');
@@ -42,7 +43,7 @@ router.post('/', [
             user_agent
         ]);
 
-        console.log('✅ Queja/sugerencia guardada:', result.rows[0].id);
+        devLogger.log('✅ Queja/sugerencia guardada:', result.rows[0].id);
 
         res.status(201).json({
             success: true,
@@ -54,7 +55,7 @@ router.post('/', [
         });
 
     } catch (error) {
-        console.error('❌ Error al guardar queja:', error);
+        devLogger.error('❌ Error al guardar queja:', error);
         res.status(500).json({
             success: false,
             error: 'Error al procesar tu mensaje. Por favor intenta nuevamente.'
@@ -89,7 +90,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener quejas:', error);
+        devLogger.error('❌ Error al obtener quejas:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener los datos'
@@ -124,7 +125,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener estadísticas:', error);
+        devLogger.error('❌ Error al obtener estadísticas:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -154,7 +155,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener queja:', error);
+        devLogger.error('❌ Error al obtener queja:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener la queja'
@@ -202,7 +203,7 @@ router.put('/:id', [
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar queja:', error);
+        devLogger.error('❌ Error al actualizar queja:', error);
         res.status(500).json({
             success: false,
             error: 'Error al actualizar la queja'
@@ -232,7 +233,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al eliminar queja:', error);
+        devLogger.error('❌ Error al eliminar queja:', error);
         res.status(500).json({
             success: false,
             error: 'Error al eliminar la queja'

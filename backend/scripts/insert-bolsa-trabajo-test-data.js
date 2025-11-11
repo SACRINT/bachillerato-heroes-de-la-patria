@@ -10,10 +10,10 @@ async function insertTestData() {
     const client = await pool.connect();
 
     try {
-        console.log('🔄 Iniciando inserción de datos de prueba...\n');
+        devLogger.log('🔄 Iniciando inserción de datos de prueba...\n');
 
         // 1. Insertar registros pendientes de confirmación
-        console.log('📝 Insertando registros pendientes de confirmación...');
+        devLogger.log('📝 Insertando registros pendientes de confirmación...');
 
         const pendingRecords = [
             {
@@ -69,13 +69,13 @@ async function insertTestData() {
                 'Mozilla/5.0 (Testing)'
             ]);
 
-            console.log(`  ✓ ${record.email}`);
+            devLogger.log(`  ✓ ${record.email}`);
         }
 
-        console.log('✅ Registros pendientes insertados\n');
+        devLogger.log('✅ Registros pendientes insertados\n');
 
         // 2. Insertar solicitudes CONFIRMADAS en pendientes_aprobacion
-        console.log('📝 Insertando solicitudes confirmadas pendientes de aprobación...');
+        devLogger.log('📝 Insertando solicitudes confirmadas pendientes de aprobación...');
 
         const approvalRecords = [
             {
@@ -136,13 +136,13 @@ async function insertTestData() {
                 true
             ]);
 
-            console.log(`  ✓ ${record.email}`);
+            devLogger.log(`  ✓ ${record.email}`);
         }
 
-        console.log('✅ Solicitudes confirmadas insertadas\n');
+        devLogger.log('✅ Solicitudes confirmadas insertadas\n');
 
         // 3. Mostrar resumen
-        console.log('📊 RESUMEN DE DATOS INSERTADOS:\n');
+        devLogger.log('📊 RESUMEN DE DATOS INSERTADOS:\n');
 
         const pendingCount = await client.query(`
             SELECT COUNT(*) as count FROM bolsa_trabajo_pending_confirmation
@@ -158,23 +158,23 @@ async function insertTestData() {
             WHERE tipo_solicitud = 'bolsa_trabajo' AND estado = 'pendiente' AND email_confirmado = true
         `);
 
-        console.log(`📋 Registros pendientes de confirmación: ${pendingCount.rows[0].count}`);
-        console.log(`📋 Solicitudes en aprobación: ${approvalCount.rows[0].count}`);
-        console.log(`📋 Solicitudes PENDIENTES de aprobación: ${approvalPendingCount.rows[0].count}\n`);
+        devLogger.log(`📋 Registros pendientes de confirmación: ${pendingCount.rows[0].count}`);
+        devLogger.log(`📋 Solicitudes en aprobación: ${approvalCount.rows[0].count}`);
+        devLogger.log(`📋 Solicitudes PENDIENTES de aprobación: ${approvalPendingCount.rows[0].count}\n`);
 
-        console.log('✅ ¡Datos de prueba insertados exitosamente!');
-        console.log('\n🚀 Próximos pasos:');
-        console.log('   1. Ir al dashboard en http://localhost:3000/admin-dashboard.html');
-        console.log('   2. Hacer clic en el tab "Aprobaciones"');
-        console.log('   3. Deberías ver las 4 solicitudes pendientes de aprobación');
-        console.log('   4. Puedes aprobar/rechazar cada solicitud');
-        console.log('   5. Las confirmaciones de email pueden testearse manualmente con el token\n');
+        devLogger.log('✅ ¡Datos de prueba insertados exitosamente!');
+        devLogger.log('\n🚀 Próximos pasos:');
+        devLogger.log('   1. Ir al dashboard en http://localhost:3000/admin-dashboard.html');
+        devLogger.log('   2. Hacer clic en el tab "Aprobaciones"');
+        devLogger.log('   3. Deberías ver las 4 solicitudes pendientes de aprobación');
+        devLogger.log('   4. Puedes aprobar/rechazar cada solicitud');
+        devLogger.log('   5. Las confirmaciones de email pueden testearse manualmente con el token\n');
 
         process.exit(0);
 
     } catch (error) {
-        console.error('\n❌ Error al insertar datos:', error.message);
-        console.error('\nDetalles:', error);
+        devLogger.error('\n❌ Error al insertar datos:', error.message);
+        devLogger.error('\nDetalles:', error);
         process.exit(1);
 
     } finally {

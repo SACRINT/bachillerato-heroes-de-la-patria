@@ -5,6 +5,7 @@
  */
 
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const { pool } = require('../config/database');
 
@@ -15,20 +16,20 @@ async function createPollsTables() {
     const client = await pool.connect();
 
     try {
-        console.log('🚀 Iniciando creación de tablas del Sistema de Encuestas...\n');
+        devLogger.log('🚀 Iniciando creación de tablas del Sistema de Encuestas...\n');
 
         // Leer el archivo SQL
         const sqlPath = path.join(__dirname, 'create-polls-tables.sql');
         const sql = await fs.readFile(sqlPath, 'utf-8');
 
-        console.log('📄 Archivo SQL cargado:', sqlPath);
-        console.log('📏 Tamaño:', sql.length, 'caracteres\n');
+        devLogger.log('📄 Archivo SQL cargado:', sqlPath);
+        devLogger.log('📏 Tamaño:', sql.length, 'caracteres\n');
 
         // Ejecutar el script
-        console.log('⚙️ Ejecutando script SQL...\n');
+        devLogger.log('⚙️ Ejecutando script SQL...\n');
         await client.query(sql);
 
-        console.log('\n✅ Tablas creadas exitosamente!\n');
+        devLogger.log('\n✅ Tablas creadas exitosamente!\n');
 
         // Verificar tablas creadas
         const tablesQuery = `
@@ -41,19 +42,19 @@ async function createPollsTables() {
 
         const result = await client.query(tablesQuery);
 
-        console.log('📊 Tablas del sistema de encuestas:');
-        console.log('═════════════════════════════════════\n');
+        devLogger.log('📊 Tablas del sistema de encuestas:');
+        devLogger.log('═════════════════════════════════════\n');
         result.rows.forEach((row, index) => {
-            console.log(`  ${index + 1}. ${row.table_name}`);
+            devLogger.log(`  ${index + 1}. ${row.table_name}`);
         });
-        console.log();
+        devLogger.log();
 
         // Verificar categorías insertadas
         const categoriesQuery = 'SELECT COUNT(*) as count FROM poll_categories';
         const categoriesResult = await client.query(categoriesQuery);
         const categoriesCount = categoriesResult.rows[0].count;
 
-        console.log(`📁 Categorías iniciales insertadas: ${categoriesCount}`);
+        devLogger.log(`📁 Categorías iniciales insertadas: ${categoriesCount}`);
 
         // Mostrar las categorías
         const categoriesListQuery = `
@@ -63,12 +64,12 @@ async function createPollsTables() {
         `;
         const categoriesList = await client.query(categoriesListQuery);
 
-        console.log('\n📋 Categorías disponibles:');
-        console.log('═════════════════════════════════════\n');
+        devLogger.log('\n📋 Categorías disponibles:');
+        devLogger.log('═════════════════════════════════════\n');
         categoriesList.rows.forEach((cat, index) => {
-            console.log(`  ${index + 1}. ${cat.icon} ${cat.name} (${cat.slug}) - ${cat.color}`);
+            devLogger.log(`  ${index + 1}. ${cat.icon} ${cat.name} (${cat.slug}) - ${cat.color}`);
         });
-        console.log();
+        devLogger.log();
 
         // Verificar funciones y triggers
         const functionsQuery = `
@@ -81,11 +82,11 @@ async function createPollsTables() {
         `;
         const functionsResult = await client.query(functionsQuery);
 
-        console.log(`🔧 Funciones creadas: ${functionsResult.rows.length}`);
+        devLogger.log(`🔧 Funciones creadas: ${functionsResult.rows.length}`);
         functionsResult.rows.forEach((func, index) => {
-            console.log(`  ${index + 1}. ${func.routine_name}()`);
+            devLogger.log(`  ${index + 1}. ${func.routine_name}()`);
         });
-        console.log();
+        devLogger.log();
 
         // Verificar vistas
         const viewsQuery = `
@@ -97,32 +98,32 @@ async function createPollsTables() {
         `;
         const viewsResult = await client.query(viewsQuery);
 
-        console.log(`📈 Vistas creadas: ${viewsResult.rows.length}`);
+        devLogger.log(`📈 Vistas creadas: ${viewsResult.rows.length}`);
         viewsResult.rows.forEach((view, index) => {
-            console.log(`  ${index + 1}. ${view.table_name}`);
+            devLogger.log(`  ${index + 1}. ${view.table_name}`);
         });
-        console.log();
+        devLogger.log();
 
         // Resumen final
-        console.log('═════════════════════════════════════');
-        console.log('✅ SISTEMA DE ENCUESTAS INSTALADO');
-        console.log('═════════════════════════════════════');
-        console.log(`📊 Tablas: ${result.rows.length}`);
-        console.log(`🔧 Funciones: ${functionsResult.rows.length}`);
-        console.log(`📈 Vistas: ${viewsResult.rows.length}`);
-        console.log(`📁 Categorías: ${categoriesCount}`);
-        console.log('═════════════════════════════════════\n');
+        devLogger.log('═════════════════════════════════════');
+        devLogger.log('✅ SISTEMA DE ENCUESTAS INSTALADO');
+        devLogger.log('═════════════════════════════════════');
+        devLogger.log(`📊 Tablas: ${result.rows.length}`);
+        devLogger.log(`🔧 Funciones: ${functionsResult.rows.length}`);
+        devLogger.log(`📈 Vistas: ${viewsResult.rows.length}`);
+        devLogger.log(`📁 Categorías: ${categoriesCount}`);
+        devLogger.log('═════════════════════════════════════\n');
 
-        console.log('🎯 Próximos pasos:');
-        console.log('  1. Crear API REST en /api/polls');
-        console.log('  2. Desarrollar interfaz de gestión');
-        console.log('  3. Implementar sistema de votación');
-        console.log('  4. Integrar visualización de resultados\n');
+        devLogger.log('🎯 Próximos pasos:');
+        devLogger.log('  1. Crear API REST en /api/polls');
+        devLogger.log('  2. Desarrollar interfaz de gestión');
+        devLogger.log('  3. Implementar sistema de votación');
+        devLogger.log('  4. Integrar visualización de resultados\n');
 
     } catch (error) {
-        console.error('\n❌ Error al crear las tablas:', error.message);
-        console.error('\n📋 Detalles del error:');
-        console.error(error);
+        devLogger.error('\n❌ Error al crear las tablas:', error.message);
+        devLogger.error('\n📋 Detalles del error:');
+        devLogger.error(error);
         throw error;
     } finally {
         client.release();
@@ -135,10 +136,10 @@ async function createPollsTables() {
 async function main() {
     try {
         await createPollsTables();
-        console.log('🎉 Proceso completado exitosamente!\n');
+        devLogger.log('🎉 Proceso completado exitosamente!\n');
         process.exit(0);
     } catch (error) {
-        console.error('\n💥 Error fatal:', error.message);
+        devLogger.error('\n💥 Error fatal:', error.message);
         process.exit(1);
     }
 }

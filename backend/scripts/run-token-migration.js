@@ -4,12 +4,13 @@
  */
 
 const fs = require('fs');
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const db = require('../config/database');
 
 async function runMigration() {
     try {
-        console.log('🚀 [MIGRATION] Iniciando migración de token_verificacion...\n');
+        devLogger.log('🚀 [MIGRATION] Iniciando migración de token_verificacion...\n');
 
         // Leer el archivo SQL simplificado (sin bloques PL/pgSQL)
         const sqlFilePath = path.join(__dirname, '../seeds/add_token_verificacion_column_simple.sql');
@@ -19,7 +20,7 @@ async function runMigration() {
         }
 
         const sqlContent = fs.readFileSync(sqlFilePath, 'utf8');
-        console.log('📄 [MIGRATION] Archivo SQL cargado exitosamente\n');
+        devLogger.log('📄 [MIGRATION] Archivo SQL cargado exitosamente\n');
 
         // Separar las sentencias SQL por punto y coma
         const statements = sqlContent
@@ -27,7 +28,7 @@ async function runMigration() {
             .map(stmt => stmt.trim())
             .filter(stmt => stmt.length > 0 && !stmt.startsWith('--'));
 
-        console.log(`📊 [MIGRATION] Se ejecutarán ${statements.length} sentencias SQL\n`);
+        devLogger.log(`📊 [MIGRATION] Se ejecutarán ${statements.length} sentencias SQL\n`);
 
         // Ejecutar cada sentencia
         for (let i = 0; i < statements.length; i++) {
@@ -36,30 +37,30 @@ async function runMigration() {
             // Saltar comentarios y líneas vacías
             if (!statement || statement.startsWith('--')) continue;
 
-            console.log(`⚙️ [MIGRATION] Ejecutando sentencia ${i + 1}/${statements.length}...`);
+            devLogger.log(`⚙️ [MIGRATION] Ejecutando sentencia ${i + 1}/${statements.length}...`);
 
             try {
                 const result = await db.executeQuery(statement);
-                console.log(`✅ [MIGRATION] Sentencia ${i + 1} ejecutada exitosamente`);
+                devLogger.log(`✅ [MIGRATION] Sentencia ${i + 1} ejecutada exitosamente`);
 
                 // Mostrar resultados si existen
                 if (result && result.length > 0) {
-                    console.log(`   📋 Resultados:`, result);
+                    devLogger.log(`   📋 Resultados:`, result);
                 }
             } catch (error) {
                 // Algunos errores son esperados (como que la columna ya exista)
                 if (error.message.includes('already exists') || error.code === '42701') {
-                    console.log(`⚠️ [MIGRATION] Advertencia en sentencia ${i + 1}: ${error.message}`);
+                    devLogger.log(`⚠️ [MIGRATION] Advertencia en sentencia ${i + 1}: ${error.message}`);
                 } else {
                     throw error;
                 }
             }
         }
 
-        console.log('\n✅ [MIGRATION] Migración completada exitosamente\n');
+        devLogger.log('\n✅ [MIGRATION] Migración completada exitosamente\n');
 
         // Verificar la estructura final de la tabla
-        console.log('🔍 [MIGRATION] Verificando estructura de la tabla...\n');
+        devLogger.log('🔍 [MIGRATION] Verificando estructura de la tabla...\n');
 
         const verifyQuery = `
             SELECT column_name, data_type, is_nullable, character_maximum_length
@@ -71,16 +72,16 @@ async function runMigration() {
 
         const columns = await db.executeQuery(verifyQuery);
 
-        console.log('📋 [MIGRATION] Columnas relevantes en suscriptores_notificaciones:');
+        devLogger.log('📋 [MIGRATION] Columnas relevantes en suscriptores_notificaciones:');
         console.table(columns);
 
-        console.log('\n🎉 [MIGRATION] ¡Todo listo! El sistema de verificación está completamente configurado.\n');
+        devLogger.log('\n🎉 [MIGRATION] ¡Todo listo! El sistema de verificación está completamente configurado.\n');
 
         process.exit(0);
 
     } catch (error) {
-        console.error('\n❌ [MIGRATION] Error durante la migración:', error);
-        console.error('Stack trace:', error.stack);
+        devLogger.error('\n❌ [MIGRATION] Error durante la migración:', error);
+        devLogger.error('Stack trace:', error.stack);
         process.exit(1);
     }
 }

@@ -8,6 +8,7 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 const crypto = require('crypto');
+const devLogger = require('../utils/devLogger');
 const { v4: uuidv4 } = require('uuid');
 
 const pool = new Pool({
@@ -19,13 +20,13 @@ async function insertTestData() {
     const client = await pool.connect();
 
     try {
-        console.log('🚀 Iniciando inserción de datos de prueba (VERSIÓN SIMPLIFICADA)...\n');
+        devLogger.log('🚀 Iniciando inserción de datos de prueba (VERSIÓN SIMPLIFICADA)...\n');
 
         // BEGIN TRANSACTION
         await client.query('BEGIN');
 
         // ===== 1. CREAR USUARIOS PARA DOCENTES =====
-        console.log('👤 Creando usuarios para docentes...');
+        devLogger.log('👤 Creando usuarios para docentes...');
         const teacherUsers = [
             { username: 'jmartinez', email: 'juan.martinez@heroes.edu.mx', nombre: 'Juan', apellido_paterno: 'Martínez', apellido_materno: 'Pérez' },
             { username: 'mgonzalez', email: 'maria.gonzalez@heroes.edu.mx', nombre: 'María', apellido_paterno: 'González', apellido_materno: 'López' },
@@ -51,10 +52,10 @@ async function insertTestData() {
                 teacherUserIds.push({ id: result.rows[0].id, ...user });
             }
         }
-        console.log(`✅ ${teacherUserIds.length} usuarios de docentes creados\n`);
+        devLogger.log(`✅ ${teacherUserIds.length} usuarios de docentes creados\n`);
 
         // ===== 2. INSERTAR DOCENTES (TEACHERS) =====
-        console.log('📚 Insertando docentes...');
+        devLogger.log('📚 Insertando docentes...');
         const teachers = [
             { usuario_id: teacherUserIds[0]?.id, especialidad: 'Matemáticas', telefono: '2221234567' },
             { usuario_id: teacherUserIds[1]?.id, especialidad: 'Lengua Española', telefono: '2221234568' },
@@ -77,10 +78,10 @@ async function insertTestData() {
                 );
             }
         }
-        console.log(`✅ ${teachers.filter(t => t.usuario_id).length} docentes insertados\n`);
+        devLogger.log(`✅ ${teachers.filter(t => t.usuario_id).length} docentes insertados\n`);
 
         // ===== 3. CREAR USUARIOS Y INSERTAR ESTUDIANTES =====
-        console.log('👤 Creando usuarios para estudiantes...');
+        devLogger.log('👤 Creando usuarios para estudiantes...');
         const studentUsers = [
             { username: 'lhernandez', email: 'luis.hernandez@heroes.edu.mx', nombre: 'Luis', apellido_paterno: 'Hernández', apellido_materno: 'García' },
             { username: 'sflores', email: 'sofia.flores@heroes.edu.mx', nombre: 'Sofia', apellido_paterno: 'Flores', apellido_materno: 'López' },
@@ -108,9 +109,9 @@ async function insertTestData() {
                 studentUserIds.push({ id: result.rows[0].id, ...user });
             }
         }
-        console.log(`✅ ${studentUserIds.length} usuarios de estudiantes creados\n`);
+        devLogger.log(`✅ ${studentUserIds.length} usuarios de estudiantes creados\n`);
 
-        console.log('👥 Insertando estudiantes...');
+        devLogger.log('👥 Insertando estudiantes...');
         const additionalStudents = [
             { usuario_id: studentUserIds[0]?.id, matricula: '20250003', semestre: 1, promedio: 8.5, status_academico: 'regular', genero: 'M' },
             { usuario_id: studentUserIds[1]?.id, matricula: '20250004', semestre: 1, promedio: 9.0, status_academico: 'regular', genero: 'F' },
@@ -133,23 +134,23 @@ async function insertTestData() {
                 );
             }
         }
-        console.log(`✅ ${additionalStudents.filter(s => s.usuario_id).length} estudiantes insertados\n`);
+        devLogger.log(`✅ ${additionalStudents.filter(s => s.usuario_id).length} estudiantes insertados\n`);
 
         // COMMIT TRANSACTION
         await client.query('COMMIT');
 
-        console.log('✅ ¡Datos de prueba insertados exitosamente!');
-        console.log('\n📊 RESUMEN:');
-        console.log(`  • Usuarios de docentes: ${teacherUserIds.length}`);
-        console.log(`  • Docentes: ${teachers.filter(t => t.usuario_id).length}`);
-        console.log(`  • Usuarios de estudiantes: ${studentUserIds.length}`);
-        console.log(`  • Estudiantes: ${additionalStudents.filter(s => s.usuario_id).length}`);
-        console.log('\n✨ Ahora puedes ir al dashboard y verás datos reales en los tabs de Estudiantes y Docentes');
+        devLogger.log('✅ ¡Datos de prueba insertados exitosamente!');
+        devLogger.log('\n📊 RESUMEN:');
+        devLogger.log(`  • Usuarios de docentes: ${teacherUserIds.length}`);
+        devLogger.log(`  • Docentes: ${teachers.filter(t => t.usuario_id).length}`);
+        devLogger.log(`  • Usuarios de estudiantes: ${studentUserIds.length}`);
+        devLogger.log(`  • Estudiantes: ${additionalStudents.filter(s => s.usuario_id).length}`);
+        devLogger.log('\n✨ Ahora puedes ir al dashboard y verás datos reales en los tabs de Estudiantes y Docentes');
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('❌ Error al insertar datos:', error.message);
-        console.error('Stack:', error.stack);
+        devLogger.error('❌ Error al insertar datos:', error.message);
+        devLogger.error('Stack:', error.stack);
         process.exit(1);
     } finally {
         client.release();
@@ -159,9 +160,9 @@ async function insertTestData() {
 
 // Ejecutar
 insertTestData().then(() => {
-    console.log('\n✅ Proceso completado');
+    devLogger.log('\n✅ Proceso completado');
     process.exit(0);
 }).catch((err) => {
-    console.error('❌ Error fatal:', err);
+    devLogger.error('❌ Error fatal:', err);
     process.exit(1);
 });

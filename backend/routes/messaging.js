@@ -20,6 +20,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 const multer = require('multer');
@@ -110,7 +111,7 @@ async function notifyConversationParticipants(conversationId, senderId, senderRo
         );
 
         // TODO: Integrar con WebSocket server para notificaciones en tiempo real
-        console.log(`📨 Notificar a ${participants.rows.length} participantes de conversación ${conversationId}`);
+        devLogger.log(`📨 Notificar a ${participants.rows.length} participantes de conversación ${conversationId}`);
 
     } finally {
         client.release();
@@ -185,7 +186,7 @@ router.get('/conversations', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al obtener conversaciones:', error);
+        devLogger.error('Error al obtener conversaciones:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener conversaciones',
@@ -255,7 +256,7 @@ router.get('/conversations/:id', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al obtener conversación:', error);
+        devLogger.error('Error al obtener conversación:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener conversación',
@@ -368,7 +369,7 @@ router.post('/conversations', authenticateToken, async (req, res) => {
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Error al crear conversación:', error);
+        devLogger.error('Error al crear conversación:', error);
         res.status(500).json({
             success: false,
             error: 'Error al crear conversación',
@@ -420,7 +421,7 @@ router.put('/conversations/:id', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al actualizar conversación:', error);
+        devLogger.error('Error al actualizar conversación:', error);
         res.status(500).json({
             success: false,
             error: 'Error al actualizar conversación',
@@ -479,7 +480,7 @@ router.delete('/conversations/:id', authenticateToken, async (req, res) => {
         }
 
     } catch (error) {
-        console.error('Error al eliminar/archivar conversación:', error);
+        devLogger.error('Error al eliminar/archivar conversación:', error);
         res.status(500).json({
             success: false,
             error: 'Error al eliminar/archivar conversación',
@@ -555,7 +556,7 @@ router.post('/conversations/:id/participants', authenticateToken, async (req, re
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Error al agregar participante:', error);
+        devLogger.error('Error al agregar participante:', error);
         res.status(500).json({
             success: false,
             error: 'Error al agregar participante',
@@ -619,7 +620,7 @@ router.delete('/conversations/:id/participants/:userId/:userRole', authenticateT
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Error al remover participante:', error);
+        devLogger.error('Error al remover participante:', error);
         res.status(500).json({
             success: false,
             error: 'Error al remover participante',
@@ -686,7 +687,7 @@ router.get('/conversations/:id/messages', authenticateToken, async (req, res) =>
         });
 
     } catch (error) {
-        console.error('Error al obtener mensajes:', error);
+        devLogger.error('Error al obtener mensajes:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener mensajes',
@@ -765,7 +766,7 @@ router.post('/conversations/:id/messages', authenticateToken, async (req, res) =
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Error al enviar mensaje:', error);
+        devLogger.error('Error al enviar mensaje:', error);
         res.status(500).json({
             success: false,
             error: 'Error al enviar mensaje',
@@ -822,7 +823,7 @@ router.put('/messages/:id', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al editar mensaje:', error);
+        devLogger.error('Error al editar mensaje:', error);
         res.status(500).json({
             success: false,
             error: 'Error al editar mensaje',
@@ -876,7 +877,7 @@ router.delete('/messages/:id', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al eliminar mensaje:', error);
+        devLogger.error('Error al eliminar mensaje:', error);
         res.status(500).json({
             success: false,
             error: 'Error al eliminar mensaje',
@@ -919,7 +920,7 @@ router.post('/messages/:id/read', authenticateToken, async (req, res) => {
         }
 
     } catch (error) {
-        console.error('Error al marcar mensaje como leído:', error);
+        devLogger.error('Error al marcar mensaje como leído:', error);
         res.status(500).json({
             success: false,
             error: 'Error al marcar mensaje como leído',
@@ -970,7 +971,7 @@ router.post('/conversations/:id/mark-all-read', authenticateToken, async (req, r
         });
 
     } catch (error) {
-        console.error('Error al marcar mensajes como leídos:', error);
+        devLogger.error('Error al marcar mensajes como leídos:', error);
         res.status(500).json({
             success: false,
             error: 'Error al marcar mensajes como leídos',
@@ -1050,7 +1051,7 @@ router.post('/messages/:id/attachments', authenticateToken, upload.single('file'
         });
 
     } catch (error) {
-        console.error('Error al subir archivo adjunto:', error);
+        devLogger.error('Error al subir archivo adjunto:', error);
         // Eliminar archivo si hubo error
         if (req.file) {
             fs.unlinkSync(req.file.path);
@@ -1121,7 +1122,7 @@ router.get('/search', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error en búsqueda:', error);
+        devLogger.error('Error en búsqueda:', error);
         res.status(500).json({
             success: false,
             error: 'Error en búsqueda',
@@ -1186,7 +1187,7 @@ router.post('/conversations/:id/typing', authenticateToken, async (req, res) => 
         });
 
     } catch (error) {
-        console.error('Error al actualizar estado de escritura:', error);
+        devLogger.error('Error al actualizar estado de escritura:', error);
         res.status(500).json({
             success: false,
             error: 'Error al actualizar estado de escritura',
@@ -1233,7 +1234,7 @@ router.get('/conversations/:id/typing', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al obtener estado de escritura:', error);
+        devLogger.error('Error al obtener estado de escritura:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener estado de escritura',
@@ -1292,7 +1293,7 @@ router.get('/settings/:conversationId', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al obtener configuraciones:', error);
+        devLogger.error('Error al obtener configuraciones:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener configuraciones',
@@ -1349,7 +1350,7 @@ router.put('/settings/:conversationId', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al actualizar configuraciones:', error);
+        devLogger.error('Error al actualizar configuraciones:', error);
         res.status(500).json({
             success: false,
             error: 'Error al actualizar configuraciones',
@@ -1388,7 +1389,7 @@ router.get('/stats', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al obtener estadísticas:', error);
+        devLogger.error('Error al obtener estadísticas:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas',

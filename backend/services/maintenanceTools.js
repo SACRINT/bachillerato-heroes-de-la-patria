@@ -4,6 +4,7 @@
  */
 
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const { execSync } = require('child_process');
 const os = require('os');
@@ -14,7 +15,7 @@ class MaintenanceTools {
         this.reportsDir = path.join(this.maintenanceDir, 'reports');
         this.scriptsDir = path.join(this.maintenanceDir, 'scripts');
 
-        console.log('🔧 [MAINTENANCE] Herramientas de mantenimiento inicializadas');
+        devLogger.log('🔧 [MAINTENANCE] Herramientas de mantenimiento inicializadas');
         this.init();
     }
 
@@ -24,9 +25,9 @@ class MaintenanceTools {
     async init() {
         try {
             await this.ensureDirectories();
-            console.log('✅ [MAINTENANCE] Herramientas configuradas correctamente');
+            devLogger.log('✅ [MAINTENANCE] Herramientas configuradas correctamente');
         } catch (error) {
-            console.error('❌ [MAINTENANCE] Error inicializando herramientas:', error);
+            devLogger.error('❌ [MAINTENANCE] Error inicializando herramientas:', error);
         }
     }
 
@@ -41,7 +42,7 @@ class MaintenanceTools {
                 await fs.access(dir);
             } catch (error) {
                 await fs.mkdir(dir, { recursive: true });
-                console.log(`📁 [MAINTENANCE] Directorio creado: ${dir}`);
+                devLogger.log(`📁 [MAINTENANCE] Directorio creado: ${dir}`);
             }
         }
     }
@@ -50,7 +51,7 @@ class MaintenanceTools {
      * Diagnóstico completo del sistema
      */
     async systemDiagnostic() {
-        console.log('🔍 [MAINTENANCE] Ejecutando diagnóstico completo del sistema...');
+        devLogger.log('🔍 [MAINTENANCE] Ejecutando diagnóstico completo del sistema...');
 
         const diagnostic = {
             timestamp: new Date().toISOString(),
@@ -69,7 +70,7 @@ class MaintenanceTools {
         const reportPath = path.join(this.reportsDir, `system-diagnostic-${Date.now()}.json`);
         await fs.writeFile(reportPath, JSON.stringify(diagnostic, null, 2));
 
-        console.log(`📊 [MAINTENANCE] Diagnóstico completado: ${reportPath}`);
+        devLogger.log(`📊 [MAINTENANCE] Diagnóstico completado: ${reportPath}`);
         return diagnostic;
     }
 
@@ -450,7 +451,7 @@ class MaintenanceTools {
      * Limpiar archivos temporales y cache
      */
     async cleanupSystem() {
-        console.log('🧹 [MAINTENANCE] Ejecutando limpieza del sistema...');
+        devLogger.log('🧹 [MAINTENANCE] Ejecutando limpieza del sistema...');
 
         const results = {
             timestamp: new Date().toISOString(),
@@ -505,7 +506,7 @@ class MaintenanceTools {
 
         results.totalSpaceFreedFormatted = this.formatBytes(results.totalSpaceFreed);
 
-        console.log(`✅ [MAINTENANCE] Limpieza completada: ${results.totalSpaceFreedFormatted} liberados`);
+        devLogger.log(`✅ [MAINTENANCE] Limpieza completada: ${results.totalSpaceFreedFormatted} liberados`);
         return results;
     }
 
@@ -513,7 +514,7 @@ class MaintenanceTools {
      * Optimizar base de datos
      */
     async optimizeDatabase() {
-        console.log('🔧 [MAINTENANCE] Optimizando base de datos...');
+        devLogger.log('🔧 [MAINTENANCE] Optimizando base de datos...');
 
         const results = {
             timestamp: new Date().toISOString(),
@@ -552,7 +553,7 @@ class MaintenanceTools {
             results.errors.push(`Error de base de datos: ${error.message}`);
         }
 
-        console.log(`✅ [MAINTENANCE] Optimización de BD completada: ${results.optimizations.length} optimizaciones`);
+        devLogger.log(`✅ [MAINTENANCE] Optimización de BD completada: ${results.optimizations.length} optimizaciones`);
         return results;
     }
 
@@ -560,7 +561,7 @@ class MaintenanceTools {
      * Verificar integridad del sistema
      */
     async checkSystemIntegrity() {
-        console.log('🔍 [MAINTENANCE] Verificando integridad del sistema...');
+        devLogger.log('🔍 [MAINTENANCE] Verificando integridad del sistema...');
 
         const results = {
             timestamp: new Date().toISOString(),
@@ -620,7 +621,7 @@ class MaintenanceTools {
             results.checks.push('✅ Uso de memoria normal');
         }
 
-        console.log(`✅ [MAINTENANCE] Verificación completada: ${results.overall}`);
+        devLogger.log(`✅ [MAINTENANCE] Verificación completada: ${results.overall}`);
         return results;
     }
 
@@ -628,7 +629,7 @@ class MaintenanceTools {
      * Generar reporte de mantenimiento
      */
     async generateMaintenanceReport() {
-        console.log('📊 [MAINTENANCE] Generando reporte de mantenimiento...');
+        devLogger.log('📊 [MAINTENANCE] Generando reporte de mantenimiento...');
 
         const report = {
             timestamp: new Date().toISOString(),
@@ -640,7 +641,7 @@ class MaintenanceTools {
         const reportPath = path.join(this.reportsDir, `maintenance-report-${Date.now()}.json`);
         await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
 
-        console.log(`📊 [MAINTENANCE] Reporte generado: ${reportPath}`);
+        devLogger.log(`📊 [MAINTENANCE] Reporte generado: ${reportPath}`);
         return { report, reportPath };
     }
 

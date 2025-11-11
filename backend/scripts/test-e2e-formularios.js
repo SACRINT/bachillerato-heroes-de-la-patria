@@ -5,6 +5,7 @@
  */
 
 const http = require('http');
+const devLogger = require('../utils/devLogger');
 
 const BASE_URL = 'localhost';
 const PORT = 3000;
@@ -146,9 +147,9 @@ const tests = [
 
 // Ejecutar tests
 async function runTests() {
-    console.log(colors.cyan + '\n==============================================');
-    console.log('  TESTING END-TO-END - FORMULARIOS BGE');
-    console.log('==============================================\n' + colors.reset);
+    devLogger.log(colors.cyan + '\n==============================================');
+    devLogger.log('  TESTING END-TO-END - FORMULARIOS BGE');
+    devLogger.log('==============================================\n' + colors.reset);
 
     let passed = 0;
     let failed = 0;
@@ -169,37 +170,37 @@ async function runTests() {
             });
 
             if (success) {
-                console.log(colors.green + '✅ PASS' + colors.reset + ' ' + test.nombre);
+                devLogger.log(colors.green + '✅ PASS' + colors.reset + ' ' + test.nombre);
                 passed++;
             } else {
-                console.log(colors.red + '❌ FAIL' + colors.reset + ' ' + test.nombre);
-                console.log(colors.yellow + '   Status: ' + response.status + colors.reset);
+                devLogger.log(colors.red + '❌ FAIL' + colors.reset + ' ' + test.nombre);
+                devLogger.log(colors.yellow + '   Status: ' + response.status + colors.reset);
                 if (response.data.error) {
-                    console.log(colors.yellow + '   Error: ' + response.data.error + colors.reset);
+                    devLogger.log(colors.yellow + '   Error: ' + response.data.error + colors.reset);
                 }
                 if (response.data.errors) {
-                    console.log(colors.yellow + '   Errors: ' + JSON.stringify(response.data.errors).substring(0, 100) + colors.reset);
+                    devLogger.log(colors.yellow + '   Errors: ' + JSON.stringify(response.data.errors).substring(0, 100) + colors.reset);
                 }
                 failed++;
             }
         } catch (error) {
-            console.log(colors.red + '❌ ERROR' + colors.reset + ' ' + test.nombre);
-            console.log(colors.yellow + '   ' + error.message + colors.reset);
+            devLogger.log(colors.red + '❌ ERROR' + colors.reset + ' ' + test.nombre);
+            devLogger.log(colors.yellow + '   ' + error.message + colors.reset);
             failed++;
         }
     }
 
     // Resumen
-    console.log(colors.cyan + '\n==============================================');
-    console.log('  RESUMEN DE PRUEBAS');
-    console.log('==============================================' + colors.reset);
-    console.log(colors.green + `✅ Tests exitosos: ${passed}/${tests.length}` + colors.reset);
-    console.log(colors.red + `❌ Tests fallidos: ${failed}/${tests.length}` + colors.reset);
+    devLogger.log(colors.cyan + '\n==============================================');
+    devLogger.log('  RESUMEN DE PRUEBAS');
+    devLogger.log('==============================================' + colors.reset);
+    devLogger.log(colors.green + `✅ Tests exitosos: ${passed}/${tests.length}` + colors.reset);
+    devLogger.log(colors.red + `❌ Tests fallidos: ${failed}/${tests.length}` + colors.reset);
 
     const successRate = ((passed / tests.length) * 100).toFixed(1);
-    console.log(colors.blue + `📊 Tasa de éxito: ${successRate}%` + colors.reset);
+    devLogger.log(colors.blue + `📊 Tasa de éxito: ${successRate}%` + colors.reset);
 
-    console.log(colors.cyan + '==============================================\n' + colors.reset);
+    devLogger.log(colors.cyan + '==============================================\n' + colors.reset);
 
     return {
         total: tests.length,
@@ -216,6 +217,6 @@ runTests()
         process.exit(results.failed === 0 ? 0 : 1);
     })
     .catch(error => {
-        console.error(colors.red + '❌ Error ejecutando tests:', error.message + colors.reset);
+        devLogger.error(colors.red + '❌ Error ejecutando tests:', error.message + colors.reset);
         process.exit(1);
     });

@@ -6,6 +6,7 @@
  */
 
 const mysql = require('mysql2/promise');
+const devLogger = require('../utils/devLogger');
 const fs = require('fs').promises;
 const path = require('path');
 const bcrypt = require('bcrypt');
@@ -32,7 +33,7 @@ async function readJsonFile(filePath) {
         const data = await fs.readFile(absolutePath, 'utf8');
         return JSON.parse(data);
     } catch (error) {
-        console.error(`❌ Error leyendo ${filePath}:`, error.message);
+        devLogger.error(`❌ Error leyendo ${filePath}:`, error.message);
         return null;
     }
 }
@@ -55,10 +56,10 @@ function generateUUID() {
  * @param {Object} docentesData - Datos de docentes desde JSON
  */
 async function migrateDocentes(connection, docentesData) {
-    console.log('🔄 Migrando docentes...');
+    devLogger.log('🔄 Migrando docentes...');
 
     if (!docentesData || !docentesData.docentes) {
-        console.log('❌ No se encontraron datos de docentes');
+        devLogger.log('❌ No se encontraron datos de docentes');
         return;
     }
 
@@ -109,12 +110,12 @@ async function migrateDocentes(connection, docentesData) {
             }
 
         } catch (error) {
-            console.error(`❌ Error migrando docente ${docente.id}:`, error.message);
+            devLogger.error(`❌ Error migrando docente ${docente.id}:`, error.message);
             errores++;
         }
     }
 
-    console.log(`✅ Docentes migrados: ${migrados}, Errores: ${errores}`);
+    devLogger.log(`✅ Docentes migrados: ${migrados}, Errores: ${errores}`);
 }
 
 /**
@@ -123,10 +124,10 @@ async function migrateDocentes(connection, docentesData) {
  * @param {Object} estudiantesData - Datos de estudiantes desde JSON
  */
 async function migrateEstudiantes(connection, estudiantesData) {
-    console.log('🔄 Migrando estudiantes...');
+    devLogger.log('🔄 Migrando estudiantes...');
 
     if (!estudiantesData || !estudiantesData.estudiantes) {
-        console.log('❌ No se encontraron datos de estudiantes');
+        devLogger.log('❌ No se encontraron datos de estudiantes');
         return;
     }
 
@@ -197,12 +198,12 @@ async function migrateEstudiantes(connection, estudiantesData) {
             }
 
         } catch (error) {
-            console.error(`❌ Error migrando estudiante ${estudiante.id}:`, error.message);
+            devLogger.error(`❌ Error migrando estudiante ${estudiante.id}:`, error.message);
             errores++;
         }
     }
 
-    console.log(`✅ Estudiantes migrados: ${migrados}, Errores: ${errores}`);
+    devLogger.log(`✅ Estudiantes migrados: ${migrados}, Errores: ${errores}`);
 }
 
 /**
@@ -211,10 +212,10 @@ async function migrateEstudiantes(connection, estudiantesData) {
  * @param {Object} noticiasData - Datos de noticias desde JSON
  */
 async function migrateNoticias(connection, noticiasData) {
-    console.log('🔄 Migrando noticias...');
+    devLogger.log('🔄 Migrando noticias...');
 
     if (!noticiasData || !noticiasData.noticias) {
-        console.log('❌ No se encontraron datos de noticias');
+        devLogger.log('❌ No se encontraron datos de noticias');
         return;
     }
 
@@ -224,7 +225,7 @@ async function migrateNoticias(connection, noticiasData) {
     );
 
     if (adminRows.length === 0) {
-        console.log('❌ No se encontró usuario administrador para asignar noticias');
+        devLogger.log('❌ No se encontró usuario administrador para asignar noticias');
         return;
     }
 
@@ -250,27 +251,27 @@ async function migrateNoticias(connection, noticiasData) {
             migradas++;
 
         } catch (error) {
-            console.error(`❌ Error migrando noticia ${noticia.id}:`, error.message);
+            devLogger.error(`❌ Error migrando noticia ${noticia.id}:`, error.message);
             errores++;
         }
     }
 
-    console.log(`✅ Noticias migradas: ${migradas}, Errores: ${errores}`);
+    devLogger.log(`✅ Noticias migradas: ${migradas}, Errores: ${errores}`);
 }
 
 /**
  * Función principal de migración
  */
 async function runMigration() {
-    console.log('🚀 Iniciando migración de datos JSON a MySQL');
-    console.log('================================================');
+    devLogger.log('🚀 Iniciando migración de datos JSON a MySQL');
+    devLogger.log('================================================');
 
     let connection;
 
     try {
         // Conectar a MySQL
         connection = await mysql.createConnection(dbConfig);
-        console.log('✅ Conexión a MySQL establecida');
+        devLogger.log('✅ Conexión a MySQL establecida');
 
         // Verificar que las tablas existan
         const [tables] = await connection.execute(`
@@ -279,8 +280,8 @@ async function runMigration() {
         `, [dbConfig.database]);
 
         if (tables.length < 4) {
-            console.log('❌ No se encontraron todas las tablas necesarias');
-            console.log('💡 Ejecuta primero: mysql -u bge_user -p heroes_patria_db < backend/scripts/create-database.sql');
+            devLogger.log('❌ No se encontraron todas las tablas necesarias');
+            devLogger.log('💡 Ejecuta primero: mysql -u bge_user -p heroes_patria_db < backend/scripts/create-database.sql');
             return;
         }
 
@@ -295,40 +296,40 @@ async function runMigration() {
         if (noticiasData) await migrateNoticias(connection, noticiasData);
 
         // Mostrar estadísticas finales
-        console.log('\n📊 ESTADÍSTICAS FINALES:');
-        console.log('========================');
+        devLogger.log('\n📊 ESTADÍSTICAS FINALES:');
+        devLogger.log('========================');
 
         const [usuariosCount] = await connection.execute('SELECT COUNT(*) as count FROM usuarios');
         const [docentesCount] = await connection.execute('SELECT COUNT(*) as count FROM docentes');
         const [estudiantesCount] = await connection.execute('SELECT COUNT(*) as count FROM estudiantes');
         const [avisosCount] = await connection.execute('SELECT COUNT(*) as count FROM avisos');
 
-        console.log(`👥 Total usuarios: ${usuariosCount[0].count}`);
-        console.log(`👨‍🏫 Total docentes: ${docentesCount[0].count}`);
-        console.log(`🎓 Total estudiantes: ${estudiantesCount[0].count}`);
-        console.log(`📢 Total avisos: ${avisosCount[0].count}`);
+        devLogger.log(`👥 Total usuarios: ${usuariosCount[0].count}`);
+        devLogger.log(`👨‍🏫 Total docentes: ${docentesCount[0].count}`);
+        devLogger.log(`🎓 Total estudiantes: ${estudiantesCount[0].count}`);
+        devLogger.log(`📢 Total avisos: ${avisosCount[0].count}`);
 
-        console.log('\n✅ MIGRACIÓN COMPLETADA EXITOSAMENTE');
-        console.log('====================================');
-        console.log('💡 Credenciales por defecto:');
-        console.log('   - Admin: admin / [password en create-database.sql]');
-        console.log('   - Docentes: [email] / BGE2025!');
-        console.log('   - Estudiantes: [email] / Estudiante2025!');
+        devLogger.log('\n✅ MIGRACIÓN COMPLETADA EXITOSAMENTE');
+        devLogger.log('====================================');
+        devLogger.log('💡 Credenciales por defecto:');
+        devLogger.log('   - Admin: admin / [password en create-database.sql]');
+        devLogger.log('   - Docentes: [email] / BGE2025!');
+        devLogger.log('   - Estudiantes: [email] / Estudiante2025!');
 
     } catch (error) {
-        console.error('❌ Error durante la migración:', error);
+        devLogger.error('❌ Error durante la migración:', error);
 
         if (error.code === 'ECONNREFUSED') {
-            console.log('\n💡 SOLUCIÓN:');
-            console.log('1. Verificar que MySQL esté ejecutándose: net start MySQL80');
-            console.log('2. Verificar credenciales en .env.database');
-            console.log('3. Crear base de datos: mysql -u root -p < backend/scripts/create-database.sql');
+            devLogger.log('\n💡 SOLUCIÓN:');
+            devLogger.log('1. Verificar que MySQL esté ejecutándose: net start MySQL80');
+            devLogger.log('2. Verificar credenciales en .env.database');
+            devLogger.log('3. Crear base de datos: mysql -u root -p < backend/scripts/create-database.sql');
         }
 
     } finally {
         if (connection) {
             await connection.end();
-            console.log('📝 Conexión MySQL cerrada');
+            devLogger.log('📝 Conexión MySQL cerrada');
         }
     }
 }

@@ -4,13 +4,14 @@
  */
 
 const db = require('../config/database');
+const devLogger = require('../utils/devLogger');
 
 async function createTables() {
-    console.log('🚀 Iniciando creación de tablas...\n');
+    devLogger.log('🚀 Iniciando creación de tablas...\n');
 
     try {
         // ===== TABLA 1: bolsa_trabajo =====
-        console.log('📄 Creando tabla bolsa_trabajo...');
+        devLogger.log('📄 Creando tabla bolsa_trabajo...');
         await db.query(`
             CREATE TABLE IF NOT EXISTS bolsa_trabajo (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -49,10 +50,10 @@ async function createTables() {
 
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
-        console.log('   ✅ Tabla bolsa_trabajo creada\n');
+        devLogger.log('   ✅ Tabla bolsa_trabajo creada\n');
 
         // ===== TABLA 2: suscriptores_notificaciones =====
-        console.log('📧 Creando tabla suscriptores_notificaciones...');
+        devLogger.log('📧 Creando tabla suscriptores_notificaciones...');
         await db.query(`
             CREATE TABLE IF NOT EXISTS suscriptores_notificaciones (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -90,10 +91,10 @@ async function createTables() {
 
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
-        console.log('   ✅ Tabla suscriptores_notificaciones creada\n');
+        devLogger.log('   ✅ Tabla suscriptores_notificaciones creada\n');
 
         // ===== TABLA 3: empresas_asociadas (opcional) =====
-        console.log('🏢 Creando tabla empresas_asociadas...');
+        devLogger.log('🏢 Creando tabla empresas_asociadas...');
         await db.query(`
             CREATE TABLE IF NOT EXISTS empresas_asociadas (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -124,22 +125,22 @@ async function createTables() {
 
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
-        console.log('   ✅ Tabla empresas_asociadas creada\n');
+        devLogger.log('   ✅ Tabla empresas_asociadas creada\n');
 
         // ===== VERIFICACIÓN =====
-        console.log('📊 Verificando tablas:\n');
+        devLogger.log('📊 Verificando tablas:\n');
 
         const [bolsaCount] = await db.query('SELECT COUNT(*) as total FROM bolsa_trabajo');
-        console.log(`   📄 bolsa_trabajo: ${bolsaCount[0].total} registros`);
+        devLogger.log(`   📄 bolsa_trabajo: ${bolsaCount[0].total} registros`);
 
         const [subsCount] = await db.query('SELECT COUNT(*) as total FROM suscriptores_notificaciones');
-        console.log(`   📧 suscriptores_notificaciones: ${subsCount[0].total} registros`);
+        devLogger.log(`   📧 suscriptores_notificaciones: ${subsCount[0].total} registros`);
 
         const [empresasCount] = await db.query('SELECT COUNT(*) as total FROM empresas_asociadas');
-        console.log(`   🏢 empresas_asociadas: ${empresasCount[0].total} registros`);
+        devLogger.log(`   🏢 empresas_asociadas: ${empresasCount[0].total} registros`);
 
         // ===== INSERTAR REGISTRO DE PRUEBA (el que el usuario ya envió) =====
-        console.log('\n📝 Insertando registro de prueba (formulario ya enviado)...');
+        devLogger.log('\n📝 Insertando registro de prueba (formulario ya enviado)...');
 
         await db.query(`
             INSERT IGNORE INTO bolsa_trabajo (
@@ -170,14 +171,14 @@ async function createTables() {
             )
         `);
 
-        console.log('   ✅ Registros de prueba insertados\n');
+        devLogger.log('   ✅ Registros de prueba insertados\n');
 
-        console.log('✅ ¡Todas las tablas creadas exitosamente!\n');
+        devLogger.log('✅ ¡Todas las tablas creadas exitosamente!\n');
 
         process.exit(0);
 
     } catch (error) {
-        console.error('\n❌ Error:', error.message);
+        devLogger.error('\n❌ Error:', error.message);
         process.exit(1);
     }
 }

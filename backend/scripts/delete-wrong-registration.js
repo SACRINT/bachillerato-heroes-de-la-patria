@@ -12,7 +12,7 @@ const pool = new Pool({
 
 (async () => {
   try {
-    console.log('🔍 Buscando registro incorrecto...');
+    devLogger.log('🔍 Buscando registro incorrecto...');
 
     const result = await pool.query(
       `SELECT id, tipo_solicitud, email_usuario, estado FROM pendientes_aprobacion
@@ -21,11 +21,11 @@ const pool = new Pool({
     );
 
     if (result.rows.length === 0) {
-      console.log('✅ No hay registros con ese email');
+      devLogger.log('✅ No hay registros con ese email');
     } else {
-      console.log('📋 Registros encontrados:');
+      devLogger.log('📋 Registros encontrados:');
       result.rows.forEach(row => {
-        console.log(`  ID: ${row.id}, Tipo: ${row.tipo_solicitud}, Email: ${row.email_usuario}, Estado: ${row.estado}`);
+        devLogger.log(`  ID: ${row.id}, Tipo: ${row.tipo_solicitud}, Email: ${row.email_usuario}, Estado: ${row.estado}`);
       });
 
       // Eliminar solo los registros que tienen tipo_solicitud = 'bolsa_trabajo'
@@ -35,11 +35,11 @@ const pool = new Pool({
         ['samuelci6377@gmail.com', 'bolsa_trabajo']
       );
 
-      console.log(`\n✅ ${deleteResult.rowCount} registro(s) eliminado(s)`);
+      devLogger.log(`\n✅ ${deleteResult.rowCount} registro(s) eliminado(s)`);
     }
 
   } catch (err) {
-    console.error('❌ Error:', err.message);
+    devLogger.error('❌ Error:', err.message);
   } finally {
     await pool.end();
   }

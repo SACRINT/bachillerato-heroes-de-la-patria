@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
 
@@ -100,7 +101,7 @@ router.get('/content', async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error obteniendo contenido:', error);
+        devLogger.error('Error obteniendo contenido:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -148,7 +149,7 @@ router.get('/content/:id', async (req, res) => {
             data: content
         });
     } catch (error) {
-        console.error('Error obteniendo contenido:', error);
+        devLogger.error('Error obteniendo contenido:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -264,7 +265,7 @@ router.post('/content', authenticateToken, requireAdmin, async (req, res) => {
             data: newContent
         });
     } catch (error) {
-        console.error('Error creando contenido:', error);
+        devLogger.error('Error creando contenido:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -323,7 +324,7 @@ router.put('/content/:id', authenticateToken, requireAdmin, async (req, res) => 
             data: updatedContent
         });
     } catch (error) {
-        console.error('Error actualizando contenido:', error);
+        devLogger.error('Error actualizando contenido:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -359,7 +360,7 @@ router.delete('/content/:id', authenticateToken, requireAdmin, async (req, res) 
             message: 'Contenido eliminado exitosamente'
         });
     } catch (error) {
-        console.error('Error eliminando contenido:', error);
+        devLogger.error('Error eliminando contenido:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -400,7 +401,7 @@ router.patch('/content/:id/publish', authenticateToken, requireAdmin, async (req
             data: published
         });
     } catch (error) {
-        console.error('Error publicando contenido:', error);
+        devLogger.error('Error publicando contenido:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -437,7 +438,7 @@ router.patch('/content/:id/archive', authenticateToken, requireAdmin, async (req
             data: archived
         });
     } catch (error) {
-        console.error('Error archivando contenido:', error);
+        devLogger.error('Error archivando contenido:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -468,7 +469,7 @@ router.get('/stats', authenticateToken, requireAdmin, async (req, res) => {
             data: stats
         });
     } catch (error) {
-        console.error('Error obteniendo estadísticas:', error);
+        devLogger.error('Error obteniendo estadísticas:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -499,7 +500,7 @@ router.get('/content/recent', async (req, res) => {
             data: recentContent
         });
     } catch (error) {
-        console.error('Error obteniendo contenido reciente:', error);
+        devLogger.error('Error obteniendo contenido reciente:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -524,7 +525,7 @@ router.get('/content/urgent', async (req, res) => {
             data: urgentContent
         });
     } catch (error) {
-        console.error('Error obteniendo contenido urgente:', error);
+        devLogger.error('Error obteniendo contenido urgente:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',

@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 const verificationService = require('../services/verificationService');
@@ -72,7 +73,7 @@ router.get('/pending', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener solicitudes pendientes:', error);
+        devLogger.error('❌ Error al obtener solicitudes pendientes:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener solicitudes pendientes'
@@ -120,7 +121,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener estadísticas:', error);
+        devLogger.error('❌ Error al obtener estadísticas:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -151,7 +152,7 @@ router.post('/approve/:id', async (req, res) => {
         const formType = record.form_type;
         const data = record.submission_data;
 
-        console.log(`📋 Aprobando solicitud ${id} de tipo: ${formType}`);
+        devLogger.log(`📋 Aprobando solicitud ${id} de tipo: ${formType}`);
 
         // Según el tipo de formulario, guardar en la tabla correspondiente
         let savedToFinalTable = false;
@@ -185,10 +186,10 @@ router.post('/approve/:id', async (req, res) => {
 
                 finalTableId = result.rows[0].id;
                 savedToFinalTable = true;
-                console.log(`✅ Guardado en bolsa_trabajo_cv con ID: ${finalTableId}`);
+                devLogger.log(`✅ Guardado en bolsa_trabajo_cv con ID: ${finalTableId}`);
 
             } catch (error) {
-                console.error('❌ Error al guardar en bolsa_trabajo_cv:', error);
+                devLogger.error('❌ Error al guardar en bolsa_trabajo_cv:', error);
             }
 
         } else if (formType === 'egresados') {
@@ -220,10 +221,10 @@ router.post('/approve/:id', async (req, res) => {
 
                 finalTableId = result.rows[0].id;
                 savedToFinalTable = true;
-                console.log(`✅ Guardado en egresados con ID: ${finalTableId}`);
+                devLogger.log(`✅ Guardado en egresados con ID: ${finalTableId}`);
 
             } catch (error) {
-                console.error('❌ Error al guardar en egresados:', error);
+                devLogger.error('❌ Error al guardar en egresados:', error);
             }
         }
 
@@ -286,10 +287,10 @@ router.post('/approve/:id', async (req, res) => {
             };
 
             await verificationService.transporter.sendMail(emailOptions);
-            console.log(`📧 Email de aprobación enviado a: ${record.verification_email}`);
+            devLogger.log(`📧 Email de aprobación enviado a: ${record.verification_email}`);
 
         } catch (emailError) {
-            console.error('❌ Error al enviar email de aprobación:', emailError);
+            devLogger.error('❌ Error al enviar email de aprobación:', emailError);
         }
 
         res.json({
@@ -304,7 +305,7 @@ router.post('/approve/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al aprobar solicitud:', error);
+        devLogger.error('❌ Error al aprobar solicitud:', error);
         res.status(500).json({
             success: false,
             error: 'Error al aprobar solicitud'
@@ -353,7 +354,7 @@ router.post('/reject/:id', async (req, res) => {
             id
         ]);
 
-        console.log(`❌ Solicitud ${id} rechazada por: ${reviewed_by || 'Administrador'}`);
+        devLogger.log(`❌ Solicitud ${id} rechazada por: ${reviewed_by || 'Administrador'}`);
 
         // Enviar email de notificación al usuario
         try {
@@ -404,10 +405,10 @@ router.post('/reject/:id', async (req, res) => {
             };
 
             await verificationService.transporter.sendMail(emailOptions);
-            console.log(`📧 Email de rechazo enviado a: ${record.verification_email}`);
+            devLogger.log(`📧 Email de rechazo enviado a: ${record.verification_email}`);
 
         } catch (emailError) {
-            console.error('❌ Error al enviar email de rechazo:', emailError);
+            devLogger.error('❌ Error al enviar email de rechazo:', emailError);
         }
 
         res.json({
@@ -417,7 +418,7 @@ router.post('/reject/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al rechazar solicitud:', error);
+        devLogger.error('❌ Error al rechazar solicitud:', error);
         res.status(500).json({
             success: false,
             error: 'Error al rechazar solicitud'
@@ -481,7 +482,7 @@ router.get('/history', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener historial:', error);
+        devLogger.error('❌ Error al obtener historial:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener historial'

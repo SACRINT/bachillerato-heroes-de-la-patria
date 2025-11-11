@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
@@ -67,7 +68,7 @@ router.post('/login', [
             loginAt: new Date().toISOString()
         };
 
-        console.log(`✅ [STUDENT LOGIN] ${student.nombre_completo} (${student.matricula}) ha iniciado sesión.`);
+        devLogger.log(`✅ [STUDENT LOGIN] ${student.nombre_completo} (${student.matricula}) ha iniciado sesión.`);
 
         res.json({
             success: true,
@@ -81,7 +82,7 @@ router.post('/login', [
         });
 
     } catch (error) {
-        console.error('❌ Error en login de estudiante:', error);
+        devLogger.error('❌ Error en login de estudiante:', error);
         res.status(500).json({ success: false, message: 'Error interno al procesar el login.' });
     }
 });
@@ -95,10 +96,10 @@ router.post('/logout', (req, res) => {
         const studentName = req.session.student.name;
         req.session.destroy((err) => {
             if (err) {
-                console.error('❌ Error cerrando sesión de estudiante:', err);
+                devLogger.error('❌ Error cerrando sesión de estudiante:', err);
                 return res.status(500).json({ success: false, message: 'Error al cerrar sesión' });
             }
-            console.log(`👋 [STUDENT LOGOUT] ${studentName}`);
+            devLogger.log(`👋 [STUDENT LOGOUT] ${studentName}`);
             res.clearCookie('connect.sid'); // Limpiar la cookie de sesión
             res.json({ success: true, message: 'Sesión cerrada exitosamente' });
         });

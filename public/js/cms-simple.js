@@ -1,5 +1,5 @@
 /**
- * Sistema CMS Simple para Bachillerato Héroes de la Patria
+ * Sistema CMS Simple para Bachillerato window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria')
  * Gestión de contenido básico local
  */
 

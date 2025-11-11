@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
 const JSONToMySQLMigrator = require('../scripts/migrate-json-to-mysql');
@@ -23,17 +24,17 @@ router.post('/start', authenticateToken, async (req, res) => {
             });
         }
 
-        console.log(`🔄 Iniciando migración JSON→MySQL por: ${req.user.email}`);
+        devLogger.log(`🔄 Iniciando migración JSON→MySQL por: ${req.user.email}`);
 
         const migrator = new JSONToMySQLMigrator();
 
         // Ejecutar migración de forma asíncrona
         migrator.runMigration()
             .then((stats) => {
-                console.log('✅ Migración completada exitosamente');
+                devLogger.log('✅ Migración completada exitosamente');
             })
             .catch((error) => {
-                console.error('❌ Error en migración:', error.message);
+                devLogger.error('❌ Error en migración:', error.message);
             });
 
         res.json({
@@ -47,7 +48,7 @@ router.post('/start', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error iniciando migración:', error);
+        devLogger.error('❌ Error iniciando migración:', error);
         res.status(500).json({
             success: false,
             error: 'Error iniciando migración',
@@ -124,7 +125,7 @@ router.get('/status', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo estado de migración:', error);
+        devLogger.error('❌ Error obteniendo estado de migración:', error);
         res.status(500).json({
             success: false,
             error: 'Error obteniendo estado',
@@ -201,7 +202,7 @@ router.get('/preview', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error generando vista previa:', error);
+        devLogger.error('❌ Error generando vista previa:', error);
         res.status(500).json({
             success: false,
             error: 'Error generando vista previa',
@@ -239,7 +240,7 @@ router.post('/force-mysql', authenticateToken, async (req, res) => {
         // Forzar uso de MySQL
         await db.forceMySQL();
 
-        console.log(`✅ Forzado uso de MySQL por: ${req.user.email}`);
+        devLogger.log(`✅ Forzado uso de MySQL por: ${req.user.email}`);
 
         res.json({
             success: true,
@@ -253,7 +254,7 @@ router.post('/force-mysql', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error forzando MySQL:', error);
+        devLogger.error('❌ Error forzando MySQL:', error);
         res.status(500).json({
             success: false,
             error: 'Error configurando MySQL',
@@ -280,7 +281,7 @@ router.post('/enable-fallback', authenticateToken, async (req, res) => {
         // Habilitar modo híbrido
         await db.enableFallback();
 
-        console.log(`✅ Habilitado fallback JSON por: ${req.user.email}`);
+        devLogger.log(`✅ Habilitado fallback JSON por: ${req.user.email}`);
 
         res.json({
             success: true,
@@ -294,7 +295,7 @@ router.post('/enable-fallback', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error habilitando fallback:', error);
+        devLogger.error('❌ Error habilitando fallback:', error);
         res.status(500).json({
             success: false,
             error: 'Error configurando fallback',
@@ -360,7 +361,7 @@ router.get('/tables-info', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo info de tablas:', error);
+        devLogger.error('❌ Error obteniendo info de tablas:', error);
         res.status(500).json({
             success: false,
             error: 'Error obteniendo información de tablas',

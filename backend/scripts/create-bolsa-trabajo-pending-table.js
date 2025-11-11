@@ -10,7 +10,7 @@ const { pool } = require('../config/database');
 const createBolsaTrabajoPendingTable = async () => {
     const client = await pool.connect();
     try {
-        console.log('🚀 Iniciando creación de tabla bolsa_trabajo_pending_confirmation...\n');
+        devLogger.log('🚀 Iniciando creación de tabla bolsa_trabajo_pending_confirmation...\n');
 
         // 1. Crear tabla temporal para CVs pendientes de confirmación
         const createTableQuery = `
@@ -26,10 +26,10 @@ const createBolsaTrabajoPendingTable = async () => {
         `;
 
         await client.query(createTableQuery);
-        console.log('✅ Tabla bolsa_trabajo_pending_confirmation creada exitosamente!');
+        devLogger.log('✅ Tabla bolsa_trabajo_pending_confirmation creada exitosamente!');
 
         // 2. Crear índices para optimización
-        console.log('\n📊 Creando índices de optimización...');
+        devLogger.log('\n📊 Creando índices de optimización...');
 
         const indexQueries = [
             {
@@ -52,27 +52,27 @@ const createBolsaTrabajoPendingTable = async () => {
         for (const idx of indexQueries) {
             try {
                 await client.query(idx.query);
-                console.log(`   ✅ Índice ${idx.name} creado`);
+                devLogger.log(`   ✅ Índice ${idx.name} creado`);
             } catch (idxError) {
-                console.log(`   ⚠️  Índice ${idx.name} ya existe o error: ${idxError.code}`);
+                devLogger.log(`   ⚠️  Índice ${idx.name} ya existe o error: ${idxError.code}`);
             }
         }
 
-        console.log('\n🎉 ¡TABLA Y ÍNDICES CREADOS EXITOSAMENTE!');
-        console.log('\nEstructura de la tabla:');
-        console.log('  - id: Identificador único');
-        console.log('  - email_usuario: Email del usuario (único)');
-        console.log('  - datos_json: Datos del CV en formato JSON');
-        console.log('  - confirmation_token: Token de confirmación único');
-        console.log('  - token_expires_at: Fecha de expiración del token (24 horas)');
-        console.log('  - fecha_creacion: Timestamp de creación');
-        console.log('  - fecha_actualizacion: Timestamp de última actualización');
+        devLogger.log('\n🎉 ¡TABLA Y ÍNDICES CREADOS EXITOSAMENTE!');
+        devLogger.log('\nEstructura de la tabla:');
+        devLogger.log('  - id: Identificador único');
+        devLogger.log('  - email_usuario: Email del usuario (único)');
+        devLogger.log('  - datos_json: Datos del CV en formato JSON');
+        devLogger.log('  - confirmation_token: Token de confirmación único');
+        devLogger.log('  - token_expires_at: Fecha de expiración del token (24 horas)');
+        devLogger.log('  - fecha_creacion: Timestamp de creación');
+        devLogger.log('  - fecha_actualizacion: Timestamp de última actualización');
 
     } catch (error) {
         if (error.code === '42P07') {
-            console.log('⚠️  La tabla bolsa_trabajo_pending_confirmation ya existe');
+            devLogger.log('⚠️  La tabla bolsa_trabajo_pending_confirmation ya existe');
         } else {
-            console.error('❌ Error al crear tabla:', error.message);
+            devLogger.error('❌ Error al crear tabla:', error.message);
             throw error;
         }
     } finally {

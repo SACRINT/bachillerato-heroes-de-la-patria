@@ -4,6 +4,8 @@
  * Fecha: 18 de Octubre, 2025
  */
 
+const devLogger = require('../utils/devLogger');
+
 // Almacenamiento de caché en memoria
 const cache = new Map();
 
@@ -48,14 +50,14 @@ function cacheMiddleware(options = {}) {
 
         if (cachedData && Date.now() < cachedData.expires) {
             // Caché válido encontrado
-            console.log(`🟢 [CACHE HIT] ${cacheKey}`);
+            devLogger.log(`🟢 [CACHE HIT] ${cacheKey}`);
             res.setHeader('X-Cache', 'HIT');
             res.setHeader('X-Cache-Expires', new Date(cachedData.expires).toISOString());
             return res.json(cachedData.data);
         }
 
         // Caché no encontrado o expirado
-        console.log(`🔴 [CACHE MISS] ${cacheKey}`);
+        devLogger.log(`🔴 [CACHE MISS] ${cacheKey}`);
         res.setHeader('X-Cache', 'MISS');
 
         // Interceptar res.json para almacenar en caché
@@ -69,7 +71,7 @@ function cacheMiddleware(options = {}) {
                     created: Date.now()
                 });
 
-                console.log(`💾 [CACHE SAVED] ${cacheKey} (TTL: ${ttl / 1000}s)`);
+                devLogger.log(`💾 [CACHE SAVED] ${cacheKey} (TTL: ${ttl / 1000}s)`);
             }
 
             return originalJson(data);
@@ -106,7 +108,7 @@ function invalidateCache(pattern) {
         cache.clear();
     }
 
-    console.log(`🧹 [CACHE INVALIDATED] ${count} entradas eliminadas`);
+    devLogger.log(`🧹 [CACHE INVALIDATED] ${count} entradas eliminadas`);
     return count;
 }
 
@@ -153,7 +155,7 @@ function cleanExpiredCache() {
     }
 
     if (cleaned > 0) {
-        console.log(`🧹 [CACHE CLEANUP] ${cleaned} entradas expiradas eliminadas`);
+        devLogger.log(`🧹 [CACHE CLEANUP] ${cleaned} entradas expiradas eliminadas`);
     }
 
     return cleaned;

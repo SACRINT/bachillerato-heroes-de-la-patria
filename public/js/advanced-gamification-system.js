@@ -1,6 +1,6 @@
 /**
  * 🎮 ADVANCED GAMIFICATION SYSTEM - FASE 7.3
- * Sistema avanzado de gamificación para BGE Héroes de la Patria
+ * Sistema avanzado de gamificación para window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Mecánicas de juego, logros, niveles, insignias y competencias educativas
  */
 

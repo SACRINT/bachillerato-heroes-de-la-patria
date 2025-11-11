@@ -1,6 +1,6 @@
 /**
  * 🥽 AR EDUCATION SYSTEM - FASE 7.1
- * Sistema de Realidad Aumentada para BGE Héroes de la Patria
+ * Sistema de Realidad Aumentada para window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Experiencias inmersivas de aprendizaje con AR y tecnologías emergentes
  */
 

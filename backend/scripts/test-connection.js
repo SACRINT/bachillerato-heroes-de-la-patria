@@ -6,6 +6,7 @@
  */
 
 const mysql = require('mysql2/promise');
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env.database') });
 
@@ -23,44 +24,44 @@ const dbConfig = {
  * Probar conexión básica a MySQL
  */
 async function testBasicConnection() {
-    console.log('🔍 Probando conexión básica a MySQL...');
-    console.log(`📍 Host: ${dbConfig.host}:${dbConfig.port}`);
-    console.log(`👤 Usuario: ${dbConfig.user}`);
-    console.log(`🗄️ Base de datos: ${dbConfig.database}`);
-    console.log('=====================================');
+    devLogger.log('🔍 Probando conexión básica a MySQL...');
+    devLogger.log(`📍 Host: ${dbConfig.host}:${dbConfig.port}`);
+    devLogger.log(`👤 Usuario: ${dbConfig.user}`);
+    devLogger.log(`🗄️ Base de datos: ${dbConfig.database}`);
+    devLogger.log('=====================================');
 
     try {
         const connection = await mysql.createConnection(dbConfig);
-        console.log('✅ Conexión exitosa a MySQL');
+        devLogger.log('✅ Conexión exitosa a MySQL');
 
         // Verificar versión
         const [versionRows] = await connection.execute('SELECT VERSION() as version');
-        console.log(`📊 MySQL Version: ${versionRows[0].version}`);
+        devLogger.log(`📊 MySQL Version: ${versionRows[0].version}`);
 
         // Verificar configuración
         const [charsetRows] = await connection.execute('SELECT @@character_set_database as charset, @@collation_database as collation');
-        console.log(`🔤 Charset: ${charsetRows[0].charset}`);
-        console.log(`🔤 Collation: ${charsetRows[0].collation}`);
+        devLogger.log(`🔤 Charset: ${charsetRows[0].charset}`);
+        devLogger.log(`🔤 Collation: ${charsetRows[0].collation}`);
 
         await connection.end();
         return true;
 
     } catch (error) {
-        console.error('❌ Error de conexión básica:', error.message);
+        devLogger.error('❌ Error de conexión básica:', error.message);
 
         // Diagnósticos específicos
         if (error.code === 'ECONNREFUSED') {
-            console.log('\n🔧 DIAGNÓSTICO:');
-            console.log('   - El servidor MySQL no está ejecutándose');
-            console.log('   - Comandos para iniciar: net start MySQL80');
+            devLogger.log('\n🔧 DIAGNÓSTICO:');
+            devLogger.log('   - El servidor MySQL no está ejecutándose');
+            devLogger.log('   - Comandos para iniciar: net start MySQL80');
         } else if (error.code === 'ER_ACCESS_DENIED_ERROR') {
-            console.log('\n🔧 DIAGNÓSTICO:');
-            console.log('   - Usuario o contraseña incorrectos');
-            console.log('   - Verificar credenciales en .env.database');
+            devLogger.log('\n🔧 DIAGNÓSTICO:');
+            devLogger.log('   - Usuario o contraseña incorrectos');
+            devLogger.log('   - Verificar credenciales en .env.database');
         } else if (error.code === 'ER_BAD_DB_ERROR') {
-            console.log('\n🔧 DIAGNÓSTICO:');
-            console.log('   - La base de datos no existe');
-            console.log('   - Ejecutar: mysql -u root -p < backend/scripts/create-database.sql');
+            devLogger.log('\n🔧 DIAGNÓSTICO:');
+            devLogger.log('   - La base de datos no existe');
+            devLogger.log('   - Ejecutar: mysql -u root -p < backend/scripts/create-database.sql');
         }
 
         return false;
@@ -71,8 +72,8 @@ async function testBasicConnection() {
  * Verificar estructura de la base de datos
  */
 async function checkDatabaseStructure() {
-    console.log('\n🏗️ Verificando estructura de la base de datos...');
-    console.log('==============================================');
+    devLogger.log('\n🏗️ Verificando estructura de la base de datos...');
+    devLogger.log('==============================================');
 
     try {
         const connection = await mysql.createConnection(dbConfig);
@@ -86,17 +87,17 @@ async function checkDatabaseStructure() {
         `, [dbConfig.database]);
 
         if (tables.length === 0) {
-            console.log('❌ No se encontraron tablas en la base de datos');
-            console.log('💡 Ejecutar: mysql -u bge_user -p heroes_patria_db < backend/scripts/create-database.sql');
+            devLogger.log('❌ No se encontraron tablas en la base de datos');
+            devLogger.log('💡 Ejecutar: mysql -u bge_user -p heroes_patria_db < backend/scripts/create-database.sql');
             return false;
         }
 
-        console.log(`📋 Total de tablas encontradas: ${tables.length}`);
-        console.log('\n📊 ESTRUCTURA DE TABLAS:');
+        devLogger.log(`📋 Total de tablas encontradas: ${tables.length}`);
+        devLogger.log('\n📊 ESTRUCTURA DE TABLAS:');
 
         tables.forEach(table => {
             const sizeKB = Math.round((parseInt(table.data_length) + parseInt(table.index_length)) / 1024);
-            console.log(`   📄 ${table.table_name.padEnd(25)} | Filas: ${String(table.table_rows).padStart(6)} | Tamaño: ${sizeKB} KB`);
+            devLogger.log(`   📄 ${table.table_name.padEnd(25)} | Filas: ${String(table.table_rows).padStart(6)} | Tamaño: ${sizeKB} KB`);
         });
 
         // Verificar tablas críticas
@@ -105,16 +106,16 @@ async function checkDatabaseStructure() {
         const missingTables = criticalTables.filter(t => !existingTables.includes(t));
 
         if (missingTables.length > 0) {
-            console.log(`\n⚠️ Tablas críticas faltantes: ${missingTables.join(', ')}`);
+            devLogger.log(`\n⚠️ Tablas críticas faltantes: ${missingTables.join(', ')}`);
         } else {
-            console.log('\n✅ Todas las tablas críticas están presentes');
+            devLogger.log('\n✅ Todas las tablas críticas están presentes');
         }
 
         await connection.end();
         return true;
 
     } catch (error) {
-        console.error('❌ Error verificando estructura:', error.message);
+        devLogger.error('❌ Error verificando estructura:', error.message);
         return false;
     }
 }
@@ -123,8 +124,8 @@ async function checkDatabaseStructure() {
  * Verificar datos iniciales
  */
 async function checkInitialData() {
-    console.log('\n📊 Verificando datos iniciales...');
-    console.log('================================');
+    devLogger.log('\n📊 Verificando datos iniciales...');
+    devLogger.log('================================');
 
     try {
         const connection = await mysql.createConnection(dbConfig);
@@ -145,18 +146,18 @@ async function checkInitialData() {
                 const [result] = await connection.execute(query);
                 const count = result[0].count;
                 const status = count > 0 ? '✅' : '⚠️';
-                console.log(`   ${status} ${name.padEnd(15)}: ${count}`);
+                devLogger.log(`   ${status} ${name.padEnd(15)}: ${count}`);
             } catch (error) {
-                console.log(`   ❌ ${name.padEnd(15)}: Error - ${error.message}`);
+                devLogger.log(`   ❌ ${name.padEnd(15)}: Error - ${error.message}`);
             }
         }
 
         // Verificar usuario administrador
         const [adminUsers] = await connection.execute('SELECT username, email FROM usuarios WHERE role = "admin"');
         if (adminUsers.length > 0) {
-            console.log('\n👨‍💼 USUARIOS ADMINISTRADORES:');
+            devLogger.log('\n👨‍💼 USUARIOS ADMINISTRADORES:');
             adminUsers.forEach(admin => {
-                console.log(`   🔑 ${admin.username} (${admin.email})`);
+                devLogger.log(`   🔑 ${admin.username} (${admin.email})`);
             });
         }
 
@@ -164,7 +165,7 @@ async function checkInitialData() {
         return true;
 
     } catch (error) {
-        console.error('❌ Error verificando datos iniciales:', error.message);
+        devLogger.error('❌ Error verificando datos iniciales:', error.message);
         return false;
     }
 }
@@ -173,54 +174,54 @@ async function checkInitialData() {
  * Probar operaciones CRUD básicas
  */
 async function testCRUDOperations() {
-    console.log('\n🧪 Probando operaciones CRUD básicas...');
-    console.log('======================================');
+    devLogger.log('\n🧪 Probando operaciones CRUD básicas...');
+    devLogger.log('======================================');
 
     try {
         const connection = await mysql.createConnection(dbConfig);
 
         // Test CREATE
-        console.log('   🔧 Probando INSERT...');
+        devLogger.log('   🔧 Probando INSERT...');
         const testId = `test_${Date.now()}`;
         await connection.execute(`
             INSERT INTO system_metrics (metric_name, metric_value, metric_type)
             VALUES (?, 1.0, 'counter')
         `, [testId]);
-        console.log('   ✅ INSERT exitoso');
+        devLogger.log('   ✅ INSERT exitoso');
 
         // Test READ
-        console.log('   🔍 Probando SELECT...');
+        devLogger.log('   🔍 Probando SELECT...');
         const [selectResult] = await connection.execute(
             'SELECT * FROM system_metrics WHERE metric_name = ?',
             [testId]
         );
         if (selectResult.length > 0) {
-            console.log('   ✅ SELECT exitoso');
+            devLogger.log('   ✅ SELECT exitoso');
         } else {
-            console.log('   ❌ SELECT falló');
+            devLogger.log('   ❌ SELECT falló');
         }
 
         // Test UPDATE
-        console.log('   ✏️ Probando UPDATE...');
+        devLogger.log('   ✏️ Probando UPDATE...');
         await connection.execute(
             'UPDATE system_metrics SET metric_value = 2.0 WHERE metric_name = ?',
             [testId]
         );
-        console.log('   ✅ UPDATE exitoso');
+        devLogger.log('   ✅ UPDATE exitoso');
 
         // Test DELETE
-        console.log('   🗑️ Probando DELETE...');
+        devLogger.log('   🗑️ Probando DELETE...');
         await connection.execute(
             'DELETE FROM system_metrics WHERE metric_name = ?',
             [testId]
         );
-        console.log('   ✅ DELETE exitoso');
+        devLogger.log('   ✅ DELETE exitoso');
 
         await connection.end();
         return true;
 
     } catch (error) {
-        console.error('❌ Error en operaciones CRUD:', error.message);
+        devLogger.error('❌ Error en operaciones CRUD:', error.message);
         return false;
     }
 }
@@ -229,10 +230,10 @@ async function testCRUDOperations() {
  * Función principal de pruebas
  */
 async function runConnectionTest() {
-    console.log('🚀 BGE DATABASE CONNECTION TEST');
-    console.log('===============================');
-    console.log(`⏰ Fecha: ${new Date().toLocaleString()}`);
-    console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
+    devLogger.log('🚀 BGE DATABASE CONNECTION TEST');
+    devLogger.log('===============================');
+    devLogger.log(`⏰ Fecha: ${new Date().toLocaleString()}`);
+    devLogger.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
 
     let allTestsPassed = true;
 
@@ -245,7 +246,7 @@ async function runConnectionTest() {
     ];
 
     for (const { name, fn } of tests) {
-        console.log(`\n🔍 Ejecutando prueba: ${name}`);
+        devLogger.log(`\n🔍 Ejecutando prueba: ${name}`);
         const result = await fn();
         if (!result) {
             allTestsPassed = false;
@@ -253,17 +254,17 @@ async function runConnectionTest() {
     }
 
     // Resultado final
-    console.log('\n' + '='.repeat(50));
+    devLogger.log('\n' + '='.repeat(50));
     if (allTestsPassed) {
-        console.log('🎉 TODAS LAS PRUEBAS EXITOSAS');
-        console.log('✅ La base de datos MySQL está completamente configurada');
-        console.log('🚀 El sistema está listo para producción');
+        devLogger.log('🎉 TODAS LAS PRUEBAS EXITOSAS');
+        devLogger.log('✅ La base de datos MySQL está completamente configurada');
+        devLogger.log('🚀 El sistema está listo para producción');
     } else {
-        console.log('⚠️ ALGUNAS PRUEBAS FALLARON');
-        console.log('🔧 Revisar los mensajes de error arriba');
-        console.log('📖 Consultar: docs/SETUP_MYSQL_INSTALLATION.md');
+        devLogger.log('⚠️ ALGUNAS PRUEBAS FALLARON');
+        devLogger.log('🔧 Revisar los mensajes de error arriba');
+        devLogger.log('📖 Consultar: docs/SETUP_MYSQL_INSTALLATION.md');
     }
-    console.log('='.repeat(50));
+    devLogger.log('='.repeat(50));
 }
 
 // Ejecutar pruebas si se llama directamente
@@ -271,7 +272,7 @@ if (require.main === module) {
     runConnectionTest().then(() => {
         process.exit(0);
     }).catch(error => {
-        console.error('💥 Error fatal:', error);
+        devLogger.error('💥 Error fatal:', error);
         process.exit(1);
     });
 }

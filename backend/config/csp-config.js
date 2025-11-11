@@ -27,7 +27,7 @@ const cspConfig = {
             "https://accounts.google.com",     // Google OAuth
             "https://www.googleapis.com",      // Google APIs
             "https://cdn.tiny.cloud",          // TinyMCE editor CDN
-            "*.tiny.cloud",                    // TinyMCE subdomains
+            "https://*.tiny.cloud",            // TinyMCE subdomains
             "https://sp.tinymce.com",          // TinyMCE Spark plugin server
             "https://vercel.live"              // Vercel analytics
         ],
@@ -43,7 +43,7 @@ const cspConfig = {
             "https://accounts.google.com",     // Google OAuth button styles
             "https://accounts.google.com/gsi/style",  // Google OAuth GSI styles (CRÍTICO)
             "https://cdn.tiny.cloud",          // TinyMCE styles
-            "*.tiny.cloud"                     // TinyMCE subdomains
+            "https://*.tiny.cloud"             // TinyMCE subdomains
         ],
 
         // 4. FONTS - Solo desde whitelist de dominios
@@ -51,8 +51,9 @@ const cspConfig = {
             "'self'",
             "https://fonts.gstatic.com",       // Google Fonts
             "https://cdnjs.cloudflare.com",    // Font Awesome
+            "https://cdn.jsdelivr.net",        // Bootstrap Icons
             "https://cdn.tiny.cloud",          // TinyMCE fonts
-            "*.tiny.cloud"
+            "https://*.tiny.cloud"
         ],
 
         // 5. IMÁGENES - Whitelist de dominios (no wildcard https:)
@@ -63,7 +64,7 @@ const cspConfig = {
             "https://cdn.jsdelivr.net",        // CDN images
             "https://cdnjs.cloudflare.com",    // CDN images
             "https://cdn.tiny.cloud",          // TinyMCE images
-            "*.tiny.cloud"
+            "https://*.tiny.cloud"
         ],
 
         // 6. CONEXIONES - Endpoints específicos (no wildcard ws:/wss:)
@@ -108,7 +109,7 @@ const cspConfig = {
             "https://accounts.google.com",
             "https://www.googleapis.com",
             "https://cdn.tiny.cloud",
-            "*.tiny.cloud",
+            "https://*.tiny.cloud",
             "https://sp.tinymce.com",          // TinyMCE Spark plugin server
             "https://vercel.live"
         ],
@@ -122,7 +123,7 @@ const cspConfig = {
             "https://fonts.googleapis.com",
             "https://accounts.google.com",     // Google OAuth button styles
             "https://cdn.tiny.cloud",
-            "*.tiny.cloud"
+            "https://*.tiny.cloud"
         ]
     },
 

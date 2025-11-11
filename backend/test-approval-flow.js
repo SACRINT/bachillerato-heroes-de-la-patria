@@ -10,6 +10,7 @@
  */
 
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 
 // Colores para la consola
@@ -46,7 +47,7 @@ class TestUtils {
             const data = await fs.readFile(CONFIG.registrationFile, 'utf8');
             return JSON.parse(data);
         } catch (error) {
-            console.error(`${colors.red}❌ Error leyendo archivo de registros:${colors.reset}`, error.message);
+            devLogger.error(`${colors.red}❌ Error leyendo archivo de registros:${colors.reset}`, error.message);
             return { requests: [], lastId: 0 };
         }
     }
@@ -60,7 +61,7 @@ class TestUtils {
             );
             return true;
         } catch (error) {
-            console.error(`${colors.red}❌ Error escribiendo archivo de registros:${colors.reset}`, error.message);
+            devLogger.error(`${colors.red}❌ Error escribiendo archivo de registros:${colors.reset}`, error.message);
             return false;
         }
     }
@@ -84,7 +85,7 @@ class TestUtils {
             warning: colors.yellow,
             test: colors.cyan
         };
-        console.log(`${typeColors[type] || colors.reset}${message}${colors.reset}`);
+        devLogger.log(`${typeColors[type] || colors.reset}${message}${colors.reset}`);
     }
 
     static logTestResult(testName, passed, details = '') {
@@ -519,6 +520,6 @@ async function runAllTests() {
 
 // Ejecutar tests
 runAllTests().catch(error => {
-    console.error(`${colors.red}💥 ERROR CRÍTICO EN TESTS:${colors.reset}`, error);
+    devLogger.error(`${colors.red}💥 ERROR CRÍTICO EN TESTS:${colors.reset}`, error);
     process.exit(1);
 });

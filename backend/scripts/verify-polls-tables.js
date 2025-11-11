@@ -9,10 +9,10 @@ async function verifyPollsTables() {
     const client = await pool.connect();
 
     try {
-        console.log('\n🔍 Verificando Sistema de Encuestas en PostgreSQL...\n');
+        devLogger.log('\n🔍 Verificando Sistema de Encuestas en PostgreSQL...\n');
 
         // 1. Verificar tablas
-        console.log('📊 VERIFICANDO TABLAS:');
+        devLogger.log('📊 VERIFICANDO TABLAS:');
         const tablesQuery = `
             SELECT table_name
             FROM information_schema.tables
@@ -33,11 +33,11 @@ async function verifyPollsTables() {
 
         expectedTables.forEach(tableName => {
             const found = tablesResult.rows.some(row => row.table_name === tableName);
-            console.log(`  ${found ? '✅' : '❌'} ${tableName}`);
+            devLogger.log(`  ${found ? '✅' : '❌'} ${tableName}`);
         });
 
         // 2. Verificar funciones
-        console.log('\n🔧 VERIFICANDO FUNCIONES:');
+        devLogger.log('\n🔧 VERIFICANDO FUNCIONES:');
         const functionsQuery = `
             SELECT routine_name
             FROM information_schema.routines
@@ -56,11 +56,11 @@ async function verifyPollsTables() {
 
         expectedFunctions.forEach(funcName => {
             const found = functionsResult.rows.some(row => row.routine_name === funcName);
-            console.log(`  ${found ? '✅' : '❌'} ${funcName}`);
+            devLogger.log(`  ${found ? '✅' : '❌'} ${funcName}`);
         });
 
         // 3. Verificar triggers
-        console.log('\n⚡ VERIFICANDO TRIGGERS:');
+        devLogger.log('\n⚡ VERIFICANDO TRIGGERS:');
         const triggersQuery = `
             SELECT trigger_name
             FROM information_schema.triggers
@@ -78,19 +78,19 @@ async function verifyPollsTables() {
 
         expectedTriggers.forEach(triggerName => {
             const found = triggersResult.rows.some(row => row.trigger_name === triggerName);
-            console.log(`  ${found ? '✅' : '❌'} ${triggerName}`);
+            devLogger.log(`  ${found ? '✅' : '❌'} ${triggerName}`);
         });
 
         // 4. Verificar categorías iniciales
-        console.log('\n📁 VERIFICANDO CATEGORÍAS INICIALES:');
+        devLogger.log('\n📁 VERIFICANDO CATEGORÍAS INICIALES:');
         const categoriesQuery = 'SELECT COUNT(*) as count FROM poll_categories';
         const categoriesResult = await client.query(categoriesQuery);
         const categoriesCount = parseInt(categoriesResult.rows[0].count);
 
-        console.log(`  ${categoriesCount > 0 ? '✅' : '❌'} Categorías encontradas: ${categoriesCount}`);
+        devLogger.log(`  ${categoriesCount > 0 ? '✅' : '❌'} Categorías encontradas: ${categoriesCount}`);
 
         // 5. Verificar vistas
-        console.log('\n👁️  VERIFICANDO VISTAS:');
+        devLogger.log('\n👁️  VERIFICANDO VISTAS:');
         const viewsQuery = `
             SELECT table_name
             FROM information_schema.views
@@ -108,14 +108,14 @@ async function verifyPollsTables() {
 
         expectedViews.forEach(viewName => {
             const found = viewsResult.rows.some(row => row.table_name === viewName);
-            console.log(`  ${found ? '✅' : '❌'} ${viewName}`);
+            devLogger.log(`  ${found ? '✅' : '❌'} ${viewName}`);
         });
 
-        console.log('\n✅ Verificación completada.\n');
+        devLogger.log('\n✅ Verificación completada.\n');
 
     } catch (error) {
-        console.error('\n❌ Error durante la verificación:', error.message);
-        console.error('Stack:', error.stack);
+        devLogger.error('\n❌ Error durante la verificación:', error.message);
+        devLogger.error('Stack:', error.stack);
         process.exit(1);
     } finally {
         client.release();

@@ -6,6 +6,7 @@
  */
 
 const WebSocket = require('ws');
+const devLogger = require('../utils/devLogger');
 const EventEmitter = require('events');
 const pool = require('../config/database');
 
@@ -34,14 +35,14 @@ class NotificationService extends EventEmitter {
             this.handleConnection(ws, req);
         });
 
-        console.log('✅ WebSocket Notification Service inicializado');
+        devLogger.log('✅ WebSocket Notification Service inicializado');
     }
 
     /**
      * Manejar nueva conexión WebSocket
      */
     handleConnection(ws, req) {
-        console.log(`🔌 Nueva conexión WebSocket desde ${req.socket.remoteAddress}`);
+        devLogger.log(`🔌 Nueva conexión WebSocket desde ${req.socket.remoteAddress}`);
 
         // Configurar ping-pong para mantener conexión viva
         ws.isAlive = true;
@@ -61,7 +62,7 @@ class NotificationService extends EventEmitter {
 
         // Manejar errores
         ws.on('error', (error) => {
-            console.error('❌ WebSocket error:', error);
+            devLogger.error('❌ WebSocket error:', error);
         });
 
         // Enviar confirmación de conexión
@@ -101,10 +102,10 @@ class NotificationService extends EventEmitter {
                     break;
 
                 default:
-                    console.warn(`Tipo de mensaje desconocido: ${data.type}`);
+                    devLogger.warn(`Tipo de mensaje desconocido: ${data.type}`);
             }
         } catch (error) {
-            console.error('Error procesando mensaje:', error);
+            devLogger.error('Error procesando mensaje:', error);
             this.sendToClient(ws, {
                 type: 'error',
                 message: 'Error procesando mensaje'
@@ -138,7 +139,7 @@ class NotificationService extends EventEmitter {
             userId
         });
 
-        console.log(`✅ Cliente autenticado: User ${userId}`);
+        devLogger.log(`✅ Cliente autenticado: User ${userId}`);
     }
 
     /**
@@ -157,7 +158,7 @@ class NotificationService extends EventEmitter {
             roomId
         });
 
-        console.log(`👥 Cliente unido a sala: ${roomId}`);
+        devLogger.log(`👥 Cliente unido a sala: ${roomId}`);
     }
 
     /**
@@ -193,9 +194,9 @@ class NotificationService extends EventEmitter {
                 }
             });
 
-            console.log(`📨 Notificación enviada a User ${userId}`);
+            devLogger.log(`📨 Notificación enviada a User ${userId}`);
         } else {
-            console.log(`💾 Notificación guardada para User ${userId} (offline)`);
+            devLogger.log(`💾 Notificación guardada para User ${userId} (offline)`);
         }
 
         return savedNotification;
@@ -229,7 +230,7 @@ class NotificationService extends EventEmitter {
             }
         });
 
-        console.log(`📢 Broadcast a sala ${roomId}: ${room.size} clientes`);
+        devLogger.log(`📢 Broadcast a sala ${roomId}: ${room.size} clientes`);
     }
 
     /**
@@ -245,7 +246,7 @@ class NotificationService extends EventEmitter {
             }
         });
 
-        console.log(`📡 Broadcast global: ${this.wss.clients.size} clientes`);
+        devLogger.log(`📡 Broadcast global: ${this.wss.clients.size} clientes`);
     }
 
     /**
@@ -300,7 +301,7 @@ class NotificationService extends EventEmitter {
                 data: notifications
             });
 
-            console.log(`📬 Enviadas ${notifications.length} notificaciones pendientes a User ${userId}`);
+            devLogger.log(`📬 Enviadas ${notifications.length} notificaciones pendientes a User ${userId}`);
         }
     }
 
@@ -315,7 +316,7 @@ class NotificationService extends EventEmitter {
         `;
 
         await pool.query(query, [notificationId, userId]);
-        console.log(`✅ Notificación ${notificationId} marcada como leída`);
+        devLogger.log(`✅ Notificación ${notificationId} marcada como leída`);
     }
 
     /**
@@ -365,7 +366,7 @@ class NotificationService extends EventEmitter {
             clients.delete(ws);
         });
 
-        console.log(`🔌 Cliente desconectado: User ${ws.userId || 'unknown'}`);
+        devLogger.log(`🔌 Cliente desconectado: User ${ws.userId || 'unknown'}`);
     }
 
     /**
@@ -414,7 +415,7 @@ class NotificationService extends EventEmitter {
         this.clients.clear();
         this.rooms.clear();
 
-        console.log('🗑️ NotificationService destruido');
+        devLogger.log('🗑️ NotificationService destruido');
     }
 }
 

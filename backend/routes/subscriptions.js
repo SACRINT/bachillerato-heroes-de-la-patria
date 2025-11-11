@@ -9,6 +9,7 @@ const { body, validationResult } = require('express-validator');
 const crypto = require('crypto');
 const db = require('../config/database');
 const subscriptionEmailService = require('../services/subscriptionEmailService');
+const devLogger = require('../utils/devLogger'); // 🔐 Logging seguro (GDPR compliant)
 
 /**
  * 🆔 Generar ID único para suscriptor
@@ -125,7 +126,7 @@ router.post('/subscribe', [
         } catch (tokenError) {
             // Si la columna token_verificacion no existe, insertar sin ella y marcar como verificado
             if (tokenError.code === '42703') { // Column does not exist
-                console.warn('⚠️ Columna token_verificacion no existe, insertando sin token y verificando automáticamente');
+                devLog.warn('Columna token_verificacion no existe, insertando sin token y verificando automáticamente');
                 const insertQueryWithoutToken = `
                     INSERT INTO suscriptores_notificaciones (
                         email, nombre, notif_convocatorias, notif_becas, notif_eventos,
@@ -151,7 +152,7 @@ router.post('/subscribe', [
             }
         }
 
-        console.log(`✅ Nuevo suscriptor: ${email} (ID: ${result[0].id}, Token: ${verificationToken.substring(0, 10)}...)`);
+        devLog.log('Nuevo suscriptor agregado exitosamente');
 
         // 📧 ENVIAR EMAIL DE VERIFICACIÓN
         const emailSent = await subscriptionEmailService.sendVerificationEmail(
@@ -161,9 +162,9 @@ router.post('/subscribe', [
         );
 
         if (emailSent) {
-            console.log(`📧 Email de verificación enviado a ${email}`);
+            devLogger.log('📧 Email de verificación enviado a ${email}');
         } else {
-            console.warn(`⚠️ No se pudo enviar email de verificación a ${email}`);
+            devLogger.warn(`⚠️ No se pudo enviar email de verificación a ${email}`);
         }
 
         res.json({
@@ -188,7 +189,7 @@ router.post('/subscribe', [
         });
 
     } catch (error) {
-        console.error('Error agregando suscriptor:', error);
+        devLogger.error('Error agregando suscriptor:');
         res.status(500).json({
             success: false,
             message: 'Error al procesar suscripción',
@@ -229,7 +230,7 @@ router.get('/list', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error listando suscriptores:', error);
+        devLogger.error('Error listando suscriptores:');
         res.status(500).json({
             success: false,
             message: 'Error al obtener suscriptores'
@@ -266,7 +267,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error obteniendo estadísticas:', error);
+        devLogger.error('Error obteniendo estadísticas:');
         res.status(500).json({
             success: false,
             message: 'Error al obtener estadísticas'
@@ -313,7 +314,7 @@ router.get('/verify/:token', async (req, res) => {
             `);
         }
 
-        console.log(`✅ Suscripción verificada: ${result[0].email}`);
+        devLogger.log('✅ Suscripción verificada: ${result[0].email}');
 
         // 📧 ENVIAR EMAIL DE BIENVENIDA
         const welcomeEmailSent = await subscriptionEmailService.sendWelcomeEmail(
@@ -323,9 +324,9 @@ router.get('/verify/:token', async (req, res) => {
         );
 
         if (welcomeEmailSent) {
-            console.log(`📧 Email de bienvenida enviado a ${result[0].email}`);
+            devLogger.log('📧 Email de bienvenida enviado a ${result[0].email}');
         } else {
-            console.warn(`⚠️ No se pudo enviar email de bienvenida a ${result[0].email}`);
+            devLogger.warn(`⚠️ No se pudo enviar email de bienvenida a ${result[0].email}`);
         }
 
         res.send(`
@@ -356,7 +357,7 @@ router.get('/verify/:token', async (req, res) => {
         `);
 
     } catch (error) {
-        console.error('Error verificando suscripción:', error);
+        devLogger.error('Error verificando suscripción:');
         res.status(500).send(`
             <html>
             <head><title>Error</title></head>
@@ -398,7 +399,7 @@ router.get('/unsubscribe/:token', async (req, res) => {
             `);
         }
 
-        console.log(`🚫 Suscripción cancelada: ${result[0].email}`);
+        devLogger.log('🚫 Suscripción cancelada: ${result[0].email}');
 
         res.send(`
             <html>
@@ -413,7 +414,7 @@ router.get('/unsubscribe/:token', async (req, res) => {
         `);
 
     } catch (error) {
-        console.error('Error cancelando suscripción:', error);
+        devLogger.error('Error cancelando suscripción:');
         res.status(500).send('Error al cancelar suscripción');
     }
 });

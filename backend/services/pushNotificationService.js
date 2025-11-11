@@ -4,6 +4,7 @@
  */
 
 const webpush = require('web-push');
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const fs = require('fs').promises;
 const cron = require('node-cron');
@@ -41,7 +42,7 @@ class PushNotificationService {
 
     async init() {
         try {
-            console.log('📱 [PUSH SERVICE] Inicializando servicio de notificaciones push...');
+            devLogger.log('📱 [PUSH SERVICE] Inicializando servicio de notificaciones push...');
 
             // Configurar VAPID
             webpush.setVapidDetails(
@@ -60,10 +61,10 @@ class PushNotificationService {
             this.startQueueProcessor();
 
             this.isInitialized = true;
-            console.log('✅ [PUSH SERVICE] Servicio de notificaciones push inicializado correctamente');
+            devLogger.log('✅ [PUSH SERVICE] Servicio de notificaciones push inicializado correctamente');
 
         } catch (error) {
-            console.error('❌ [PUSH SERVICE] Error inicializando:', error);
+            devLogger.error('❌ [PUSH SERVICE] Error inicializando:', error);
             throw error;
         }
     }
@@ -71,10 +72,10 @@ class PushNotificationService {
     generateVAPIDKeys() {
         // Generate VAPID keys (should be done once and stored securely)
         const vapidKeys = webpush.generateVAPIDKeys();
-        console.log('🔑 [PUSH SERVICE] VAPID Keys generadas:');
-        console.log('Public Key:', vapidKeys.publicKey);
-        console.log('Private Key:', vapidKeys.privateKey);
-        console.log('⚠️  [PUSH SERVICE] Guarde estas claves en variables de entorno');
+        devLogger.log('🔑 [PUSH SERVICE] VAPID Keys generadas:');
+        devLogger.log('Public Key:', vapidKeys.publicKey);
+        devLogger.log('Private Key:', vapidKeys.privateKey);
+        devLogger.log('⚠️  [PUSH SERVICE] Guarde estas claves en variables de entorno');
         return vapidKeys;
     }
 
@@ -87,9 +88,9 @@ class PushNotificationService {
                 this.subscribers.set(sub.id, sub);
             }
 
-            console.log(`📱 [PUSH SERVICE] ${subscriptions.length} suscripciones cargadas`);
+            devLogger.log(`📱 [PUSH SERVICE] ${subscriptions.length} suscripciones cargadas`);
         } catch (error) {
-            console.log('📱 [PUSH SERVICE] No hay suscripciones previas, iniciando desde cero');
+            devLogger.log('📱 [PUSH SERVICE] No hay suscripciones previas, iniciando desde cero');
             await this.saveSubscriptions(); // Create empty file
         }
     }
@@ -99,7 +100,7 @@ class PushNotificationService {
             const subscriptions = Array.from(this.subscribers.values());
             await fs.writeFile(this.subscriptionsFile, JSON.stringify(subscriptions, null, 2));
         } catch (error) {
-            console.error('❌ [PUSH SERVICE] Error guardando suscripciones:', error);
+            devLogger.error('❌ [PUSH SERVICE] Error guardando suscripciones:', error);
         }
     }
 
@@ -122,11 +123,11 @@ class PushNotificationService {
             this.subscribers.set(subscriptionData.id, subscriptionData);
             await this.saveSubscriptions();
 
-            console.log(`📱 [PUSH SERVICE] Nueva suscripción: Usuario ${userId}`);
+            devLogger.log(`📱 [PUSH SERVICE] Nueva suscripción: Usuario ${userId}`);
             return subscriptionData.id;
 
         } catch (error) {
-            console.error('❌ [PUSH SERVICE] Error en suscripción:', error);
+            devLogger.error('❌ [PUSH SERVICE] Error en suscripción:', error);
             throw error;
         }
     }
@@ -136,12 +137,12 @@ class PushNotificationService {
             if (this.subscribers.has(subscriptionId)) {
                 this.subscribers.delete(subscriptionId);
                 await this.saveSubscriptions();
-                console.log(`📱 [PUSH SERVICE] Suscripción eliminada: ${subscriptionId}`);
+                devLogger.log(`📱 [PUSH SERVICE] Suscripción eliminada: ${subscriptionId}`);
                 return true;
             }
             return false;
         } catch (error) {
-            console.error('❌ [PUSH SERVICE] Error eliminando suscripción:', error);
+            devLogger.error('❌ [PUSH SERVICE] Error eliminando suscripción:', error);
             throw error;
         }
     }
@@ -189,7 +190,7 @@ class PushNotificationService {
             return await this.sendImmediateNotification(notificationPayload, userIds, priority);
 
         } catch (error) {
-            console.error('❌ [PUSH SERVICE] Error enviando notificación:', error);
+            devLogger.error('❌ [PUSH SERVICE] Error enviando notificación:', error);
             throw error;
         }
     }
@@ -204,7 +205,7 @@ class PushNotificationService {
         // Obtener suscripciones de usuarios específicos
         const targetSubscriptions = this.getSubscriptionsForUsers(userIds);
 
-        console.log(`📱 [PUSH SERVICE] Enviando a ${targetSubscriptions.length} suscripciones`);
+        devLogger.log(`📱 [PUSH SERVICE] Enviando a ${targetSubscriptions.length} suscripciones`);
 
         // Procesar en lotes para mejor rendimiento
         const batches = this.chunkArray(targetSubscriptions, this.config.batchSize);
@@ -231,7 +232,7 @@ class PushNotificationService {
             await Promise.allSettled(batchPromises);
         }
 
-        console.log(`📱 [PUSH SERVICE] Enviadas: ${results.sent}, Fallidas: ${results.failed}`);
+        devLogger.log(`📱 [PUSH SERVICE] Enviadas: ${results.sent}, Fallidas: ${results.failed}`);
         return results;
     }
 
@@ -257,7 +258,7 @@ class PushNotificationService {
                 return;
 
             } catch (error) {
-                console.log(`📱 [PUSH SERVICE] Intento ${attempt}/${this.config.retryAttempts} falló para ${subscriptionData.id}`);
+                devLogger.log(`📱 [PUSH SERVICE] Intento ${attempt}/${this.config.retryAttempts} falló para ${subscriptionData.id}`);
 
                 if (attempt === this.config.retryAttempts) {
                     throw error;
@@ -290,7 +291,7 @@ class PushNotificationService {
         };
 
         this.notificationQueue.push(scheduledNotification);
-        console.log(`📅 [PUSH SERVICE] Notificación programada para ${scheduledAt}`);
+        devLogger.log(`📅 [PUSH SERVICE] Notificación programada para ${scheduledAt}`);
 
         return scheduledNotification.id;
     }
@@ -321,7 +322,7 @@ class PushNotificationService {
             } catch (error) {
                 notification.status = 'failed';
                 notification.error = error.message;
-                console.error(`❌ [PUSH SERVICE] Error procesando notificación programada:`, error);
+                devLogger.error(`❌ [PUSH SERVICE] Error procesando notificación programada:`, error);
             }
         }
 
@@ -354,9 +355,9 @@ class PushNotificationService {
             };
 
             await this.sendNotification(notification);
-            console.log('📱 [PUSH SERVICE] Recordatorios diarios enviados');
+            devLogger.log('📱 [PUSH SERVICE] Recordatorios diarios enviados');
         } catch (error) {
-            console.error('❌ [PUSH SERVICE] Error enviando recordatorios diarios:', error);
+            devLogger.error('❌ [PUSH SERVICE] Error enviando recordatorios diarios:', error);
         }
     }
 
@@ -370,9 +371,9 @@ class PushNotificationService {
             };
 
             await this.sendNotification(notification);
-            console.log('📱 [PUSH SERVICE] Eventos semanales enviados');
+            devLogger.log('📱 [PUSH SERVICE] Eventos semanales enviados');
         } catch (error) {
-            console.error('❌ [PUSH SERVICE] Error enviando eventos semanales:', error);
+            devLogger.error('❌ [PUSH SERVICE] Error enviando eventos semanales:', error);
         }
     }
 
@@ -444,7 +445,7 @@ class PushNotificationService {
 
         if (removed > 0) {
             await this.saveSubscriptions();
-            console.log(`📱 [PUSH SERVICE] ${removed} suscripciones inactivas eliminadas`);
+            devLogger.log(`📱 [PUSH SERVICE] ${removed} suscripciones inactivas eliminadas`);
         }
 
         return removed;

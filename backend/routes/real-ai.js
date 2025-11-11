@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { getRealAIService } = require('../services/realAIService');
 const { authenticateToken } = require('../middleware/auth');
@@ -49,7 +50,7 @@ router.get('/health', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en health check Real AI:', error);
+        devLogger.error('❌ Error en health check Real AI:', error);
         res.status(500).json({
             status: 'error',
             message: 'Health check failed',
@@ -81,7 +82,7 @@ router.post('/process', authenticateToken, async (req, res) => {
             });
         }
 
-        console.log(`🤖 Procesando solicitud de IA para usuario: ${req.user.email}`);
+        devLogger.log(`🤖 Procesando solicitud de IA para usuario: ${req.user.email}`);
 
         // Preparar datos de la solicitud
         const requestData = {
@@ -123,7 +124,7 @@ router.post('/process', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error procesando con IA real:', error);
+        devLogger.error('❌ Error procesando con IA real:', error);
         res.status(500).json({
             success: false,
             error: 'Error procesando solicitud de IA',
@@ -153,7 +154,7 @@ router.post('/chat', authenticateToken, async (req, res) => {
             });
         }
 
-        console.log(`💬 Chat IA para usuario: ${req.user.email}`);
+        devLogger.log(`💬 Chat IA para usuario: ${req.user.email}`);
 
         // Construir contexto de conversación
         let context = '';
@@ -206,7 +207,7 @@ router.post('/chat', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en chat IA:', error);
+        devLogger.error('❌ Error en chat IA:', error);
         res.status(500).json({
             success: false,
             error: 'Error en chat con IA',
@@ -235,7 +236,7 @@ router.post('/analyze', authenticateToken, async (req, res) => {
             });
         }
 
-        console.log(`📊 Análisis IA para usuario: ${req.user.email}, tipo: ${analysisType}`);
+        devLogger.log(`📊 Análisis IA para usuario: ${req.user.email}, tipo: ${analysisType}`);
 
         // Prompts especializados por tipo de análisis
         const analysisPrompts = {
@@ -289,7 +290,7 @@ router.post('/analyze', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en análisis IA:', error);
+        devLogger.error('❌ Error en análisis IA:', error);
         res.status(500).json({
             success: false,
             error: 'Error en análisis con IA',
@@ -325,7 +326,7 @@ router.get('/providers', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo info de proveedores:', error);
+        devLogger.error('❌ Error obteniendo info de proveedores:', error);
         res.status(500).json({
             success: false,
             error: 'Error obteniendo información de proveedores',
@@ -349,7 +350,7 @@ router.post('/reload', authenticateToken, async (req, res) => {
             });
         }
 
-        console.log(`🔄 Recargando configuración IA por: ${req.user.email}`);
+        devLogger.log(`🔄 Recargando configuración IA por: ${req.user.email}`);
 
         const stats = await realAIService.reload();
 
@@ -362,7 +363,7 @@ router.post('/reload', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error recargando configuración IA:', error);
+        devLogger.error('❌ Error recargando configuración IA:', error);
         res.status(500).json({
             success: false,
             error: 'Error recargando configuración',
@@ -400,7 +401,7 @@ router.get('/stats', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo estadísticas IA:', error);
+        devLogger.error('❌ Error obteniendo estadísticas IA:', error);
         res.status(500).json({
             success: false,
             error: 'Error obteniendo estadísticas',

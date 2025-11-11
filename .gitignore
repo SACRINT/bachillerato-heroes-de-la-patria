@@ -40,13 +40,16 @@ node_modules/
 # Directorio de archivos no usados (COMPLETO)
 no_usados/
 
+# Subdirectorios de docs (ignorar toda la carpeta docs/)
+# docs/
+
 # Documentación local (no subir a GitHub ni a Vercel para despliegue)
 # Generalizado para ignorar todos los archivos Markdown excepto README.md
-*.md
+# *.md
 !README.md # Mantener README.md en GitHub para referencia del repositorio
 
 # Reportes de texto (ya cubierto por *.log, pero se mantiene si hay otros .txt)
-*.txt
+# *.txt
 
 # Backups
 *.backup
@@ -61,9 +64,6 @@ fix-*.sh
 test-*.sh
 update-*.py
 SCRIPT_*.js
-
-# Subdirectorios de docs (ignorar toda la carpeta docs/)
-docs/
 
 # Otros Subdirectorios
 actualizacion/

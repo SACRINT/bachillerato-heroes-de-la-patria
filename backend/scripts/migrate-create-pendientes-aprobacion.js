@@ -9,6 +9,7 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 const fs = require('fs');
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 
 const pool = new Pool({
@@ -20,28 +21,28 @@ async function migratePendientesAprobacion() {
     const client = await pool.connect();
 
     try {
-        console.log('🚀 Iniciando migración: Crear tabla pendientes_aprobacion...\n');
+        devLogger.log('🚀 Iniciando migración: Crear tabla pendientes_aprobacion...\n');
 
         // Leer el SQL del archivo
         const sqlFilePath = path.join(__dirname, 'create-pendientes-aprobacion-table.sql');
         const sqlContent = fs.readFileSync(sqlFilePath, 'utf8');
 
         // Ejecutar el SQL
-        console.log('📝 Ejecutando SQL...\n');
+        devLogger.log('📝 Ejecutando SQL...\n');
         await client.query(sqlContent);
 
-        console.log('✅ ¡Tabla pendientes_aprobacion creada exitosamente!');
-        console.log('\n📊 INFORMACIÓN DE LA TABLA:');
-        console.log('  • id: Identificador único (BIGSERIAL)');
-        console.log('  • uuid: UUID único para referencias');
-        console.log('  • tipo_solicitud: egresado | bolsa_trabajo');
-        console.log('  • email_usuario: Email de quien envía la solicitud');
-        console.log('  • datos_json: Datos del formulario en JSON');
-        console.log('  • estado: pendiente | aprobada | rechazada');
-        console.log('  • fecha_solicitud: Timestamp de envío');
-        console.log('  • fecha_procesado: Timestamp de aprobación/rechazo');
-        console.log('  • admin_id: ID del administrador que aprueba/rechaza');
-        console.log('  • admin_notas: Comentarios del administrador');
+        devLogger.log('✅ ¡Tabla pendientes_aprobacion creada exitosamente!');
+        devLogger.log('\n📊 INFORMACIÓN DE LA TABLA:');
+        devLogger.log('  • id: Identificador único (BIGSERIAL)');
+        devLogger.log('  • uuid: UUID único para referencias');
+        devLogger.log('  • tipo_solicitud: egresado | bolsa_trabajo');
+        devLogger.log('  • email_usuario: Email de quien envía la solicitud');
+        devLogger.log('  • datos_json: Datos del formulario en JSON');
+        devLogger.log('  • estado: pendiente | aprobada | rechazada');
+        devLogger.log('  • fecha_solicitud: Timestamp de envío');
+        devLogger.log('  • fecha_procesado: Timestamp de aprobación/rechazo');
+        devLogger.log('  • admin_id: ID del administrador que aprueba/rechaza');
+        devLogger.log('  • admin_notas: Comentarios del administrador');
 
         // Verificar la tabla
         const result = await client.query(`
@@ -51,10 +52,10 @@ async function migratePendientesAprobacion() {
             ORDER BY ordinal_position
         `);
 
-        console.log('\n📋 COLUMNAS CREADAS:');
+        devLogger.log('\n📋 COLUMNAS CREADAS:');
         result.rows.forEach(row => {
             const nullable = row.is_nullable === 'YES' ? '(NULL)' : '(NOT NULL)';
-            console.log(`  • ${row.column_name.padEnd(20)} ${row.data_type.padEnd(20)} ${nullable}`);
+            devLogger.log(`  • ${row.column_name.padEnd(20)} ${row.data_type.padEnd(20)} ${nullable}`);
         });
 
         // Verificar índices
@@ -64,15 +65,15 @@ async function migratePendientesAprobacion() {
             ORDER BY indexname
         `);
 
-        console.log('\n🔍 ÍNDICES CREADOS:');
+        devLogger.log('\n🔍 ÍNDICES CREADOS:');
         indexResult.rows.forEach(row => {
-            console.log(`  • ${row.indexname}`);
+            devLogger.log(`  • ${row.indexname}`);
         });
 
     } catch (error) {
-        console.error('❌ Error durante la migración:', error.message);
-        console.error('\n📌 Detalles del error:');
-        console.error(error);
+        devLogger.error('❌ Error durante la migración:', error.message);
+        devLogger.error('\n📌 Detalles del error:');
+        devLogger.error(error);
         process.exit(1);
     } finally {
         client.release();
@@ -82,9 +83,9 @@ async function migratePendientesAprobacion() {
 
 // Ejecutar
 migratePendientesAprobacion().then(() => {
-    console.log('\n✅ Proceso de migración completado exitosamente');
+    devLogger.log('\n✅ Proceso de migración completado exitosamente');
     process.exit(0);
 }).catch((err) => {
-    console.error('❌ Error fatal:', err);
+    devLogger.error('❌ Error fatal:', err);
     process.exit(1);
 });

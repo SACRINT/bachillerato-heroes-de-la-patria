@@ -1,6 +1,6 @@
 /**
  * 🔄 LOADER JS - Sistema de Carga Dinámica
- * Portal BGE Héroes de la Patria
+ * Portal window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Archivo faltante identificado - referenciado en chatbot.html línea 571
  */
 

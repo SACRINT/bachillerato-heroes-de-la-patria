@@ -6,6 +6,7 @@
  */
 
 const path = require('path');
+const devLogger = require('../utils/devLogger');
 const fs = require('fs').promises;
 
 // Colores
@@ -24,24 +25,24 @@ function test(name, passed, details = '') {
     results.total++;
     if (passed) {
         results.passed++;
-        console.log(`${c.green}✅ PASS:${c.reset} ${name}`);
+        devLogger.log(`${c.green}✅ PASS:${c.reset} ${name}`);
     } else {
         results.failed++;
-        console.log(`${c.red}❌ FAIL:${c.reset} ${name}`);
+        devLogger.log(`${c.red}❌ FAIL:${c.reset} ${name}`);
     }
-    if (details) console.log(`   ${c.cyan}${details}${c.reset}`);
+    if (details) devLogger.log(`   ${c.cyan}${details}${c.reset}`);
     results.details.push({ name, passed, details });
 }
 
 async function runTests() {
-    console.log(`\n${c.cyan}${'='.repeat(70)}${c.reset}`);
-    console.log(`${c.cyan}🧪 TEST DIRECTO DEL SISTEMA DE APROBACIÓN${c.reset}`);
-    console.log(`${c.cyan}${'='.repeat(70)}${c.reset}\n`);
+    devLogger.log(`\n${c.cyan}${'='.repeat(70)}${c.reset}`);
+    devLogger.log(`${c.cyan}🧪 TEST DIRECTO DEL SISTEMA DE APROBACIÓN${c.reset}`);
+    devLogger.log(`${c.cyan}${'='.repeat(70)}${c.reset}\n`);
 
     // ==============================================
     // TEST 1: Archivo de datos existe y es válido
     // ==============================================
-    console.log(`${c.blue}📋 TEST 1: Verificar archivo de datos${c.reset}\n`);
+    devLogger.log(`${c.blue}📋 TEST 1: Verificar archivo de datos${c.reset}\n`);
 
     const dataFile = path.join(__dirname, 'data', 'registration-requests.json');
 
@@ -72,13 +73,13 @@ async function runTests() {
             `lastId: ${data.lastId}`
         );
 
-        console.log(`\n   ${c.yellow}📊 Contenido del archivo:${c.reset}`);
-        console.log(`   ${JSON.stringify(data, null, 2)}\n`);
+        devLogger.log(`\n   ${c.yellow}📊 Contenido del archivo:${c.reset}`);
+        devLogger.log(`   ${JSON.stringify(data, null, 2)}\n`);
 
         // ==============================================
         // TEST 2: Verificar usuarios de prueba
         // ==============================================
-        console.log(`${c.blue}📋 TEST 2: Verificar usuarios de prueba${c.reset}\n`);
+        devLogger.log(`${c.blue}📋 TEST 2: Verificar usuarios de prueba${c.reset}\n`);
 
         const approvedUser = data.requests.find(r => r.email === 'aprobado@test.com');
         test(
@@ -109,7 +110,7 @@ async function runTests() {
         // ==============================================
         // TEST 3: Verificar lógica de aprobación
         // ==============================================
-        console.log(`\n${c.blue}📋 TEST 3: Lógica de aprobación (simulada)${c.reset}\n`);
+        devLogger.log(`\n${c.blue}📋 TEST 3: Lógica de aprobación (simulada)${c.reset}\n`);
 
         // Simular la lógica del endpoint /check-approval
         function checkApproval(email) {
@@ -144,7 +145,7 @@ async function runTests() {
         // ==============================================
         // TEST 4: Case insensitive
         // ==============================================
-        console.log(`\n${c.blue}📋 TEST 4: Case insensitive email${c.reset}\n`);
+        devLogger.log(`\n${c.blue}📋 TEST 4: Case insensitive email${c.reset}\n`);
 
         const caseVariants = [
             'MAYUSCULAS@TEST.COM',
@@ -172,7 +173,7 @@ async function runTests() {
         // ==============================================
         // TEST 5: Verificar frontend integration
         // ==============================================
-        console.log(`\n${c.blue}📋 TEST 5: Frontend Integration${c.reset}\n`);
+        devLogger.log(`\n${c.blue}📋 TEST 5: Frontend Integration${c.reset}\n`);
 
         const frontendFile = path.join(__dirname, '..', 'js', 'google-auth-integration.js');
         const frontendCode = await fs.readFile(frontendFile, 'utf8');
@@ -211,7 +212,7 @@ async function runTests() {
         // ==============================================
         // TEST 6: Verificar backend route
         // ==============================================
-        console.log(`\n${c.blue}📋 TEST 6: Backend Route Configuration${c.reset}\n`);
+        devLogger.log(`\n${c.blue}📋 TEST 6: Backend Route Configuration${c.reset}\n`);
 
         const adminRouteFile = path.join(__dirname, 'routes', 'admin.js');
         const adminCode = await fs.readFile(adminRouteFile, 'utf8');
@@ -250,39 +251,39 @@ async function runTests() {
     // ==============================================
     // REPORTE FINAL
     // ==============================================
-    console.log(`\n${c.cyan}${'='.repeat(70)}${c.reset}`);
-    console.log(`${c.cyan}📊 REPORTE FINAL${c.reset}`);
-    console.log(`${c.cyan}${'='.repeat(70)}${c.reset}\n`);
+    devLogger.log(`\n${c.cyan}${'='.repeat(70)}${c.reset}`);
+    devLogger.log(`${c.cyan}📊 REPORTE FINAL${c.reset}`);
+    devLogger.log(`${c.cyan}${'='.repeat(70)}${c.reset}\n`);
 
     const passRate = (results.passed / results.total * 100).toFixed(1);
 
-    console.log(`   Total tests: ${results.total}`);
-    console.log(`   ${c.green}✅ Pasados: ${results.passed}${c.reset}`);
-    console.log(`   ${c.red}❌ Fallidos: ${results.failed}${c.reset}`);
-    console.log(`   📊 Tasa de éxito: ${passRate}%\n`);
+    devLogger.log(`   Total tests: ${results.total}`);
+    devLogger.log(`   ${c.green}✅ Pasados: ${results.passed}${c.reset}`);
+    devLogger.log(`   ${c.red}❌ Fallidos: ${results.failed}${c.reset}`);
+    devLogger.log(`   📊 Tasa de éxito: ${passRate}%\n`);
 
     const status = results.failed === 0 ? `${c.green}TODOS LOS TESTS PASARON ✅${c.reset}` : `${c.red}HAY TESTS FALLIDOS ❌${c.reset}`;
-    console.log(`   🏁 Estado: ${status}\n`);
+    devLogger.log(`   🏁 Estado: ${status}\n`);
 
     // Conclusiones específicas
-    console.log(`${c.yellow}🎯 CONCLUSIONES:${c.reset}\n`);
+    devLogger.log(`${c.yellow}🎯 CONCLUSIONES:${c.reset}\n`);
 
     if (results.failed === 0) {
-        console.log(`   ${c.green}✅ Sistema de aprobación correctamente implementado${c.reset}`);
-        console.log(`   ${c.green}✅ Datos de prueba configurados correctamente${c.reset}`);
-        console.log(`   ${c.green}✅ Frontend integrado con backend${c.reset}`);
-        console.log(`   ${c.green}✅ Case sensitivity manejada correctamente${c.reset}`);
-        console.log(`   ${c.green}✅ Seguridad: errores retornan false (denegar acceso)${c.reset}`);
+        devLogger.log(`   ${c.green}✅ Sistema de aprobación correctamente implementado${c.reset}`);
+        devLogger.log(`   ${c.green}✅ Datos de prueba configurados correctamente${c.reset}`);
+        devLogger.log(`   ${c.green}✅ Frontend integrado con backend${c.reset}`);
+        devLogger.log(`   ${c.green}✅ Case sensitivity manejada correctamente${c.reset}`);
+        devLogger.log(`   ${c.green}✅ Seguridad: errores retornan false (denegar acceso)${c.reset}`);
     } else {
-        console.log(`   ${c.yellow}⚠️  Hay ${results.failed} problema(s) que requieren atención${c.reset}`);
-        console.log(`\n   ${c.yellow}Tests fallidos:${c.reset}`);
+        devLogger.log(`   ${c.yellow}⚠️  Hay ${results.failed} problema(s) que requieren atención${c.reset}`);
+        devLogger.log(`\n   ${c.yellow}Tests fallidos:${c.reset}`);
         results.details.filter(d => !d.passed).forEach(d => {
-            console.log(`   ${c.red}  • ${d.name}${c.reset}`);
-            if (d.details) console.log(`     ${d.details}`);
+            devLogger.log(`   ${c.red}  • ${d.name}${c.reset}`);
+            if (d.details) devLogger.log(`     ${d.details}`);
         });
     }
 
-    console.log(`\n${c.cyan}${'='.repeat(70)}${c.reset}\n`);
+    devLogger.log(`\n${c.cyan}${'='.repeat(70)}${c.reset}\n`);
 
     // Guardar reporte
     const reportFile = path.join(__dirname, 'test-report-direct.json');
@@ -297,12 +298,12 @@ async function runTests() {
         }
     }, null, 2));
 
-    console.log(`${c.blue}📄 Reporte guardado en: ${reportFile}${c.reset}\n`);
+    devLogger.log(`${c.blue}📄 Reporte guardado en: ${reportFile}${c.reset}\n`);
 
     process.exit(results.failed === 0 ? 0 : 1);
 }
 
 runTests().catch(err => {
-    console.error(`${c.red}💥 ERROR CRÍTICO:${c.reset}`, err);
+    devLogger.error(`${c.red}💥 ERROR CRÍTICO:${c.reset}`, err);
     process.exit(1);
 });

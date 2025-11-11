@@ -4,6 +4,7 @@
  */
 
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 
 // Directorio de datos JSON
@@ -17,7 +18,7 @@ async function ensureDataDir() {
         await fs.access(DB_DIR);
     } catch {
         await fs.mkdir(DB_DIR, { recursive: true });
-        console.log('📁 Directorio de datos creado:', DB_DIR);
+        devLogger.log('📁 Directorio de datos creado:', DB_DIR);
     }
 }
 
@@ -42,11 +43,11 @@ async function executeQuery(query, params = []) {
         }
 
         // Fallback para otros queries
-        console.log('📝 Query simulado:', query);
+        devLogger.log('📝 Query simulado:', query);
         return [];
 
     } catch (error) {
-        console.error('❌ Error en query JSON:', error.message);
+        devLogger.error('❌ Error en query JSON:', error.message);
         throw error;
     }
 }
@@ -97,7 +98,7 @@ async function getUsuarios(params) {
         ];
 
         await fs.writeFile(filePath, JSON.stringify(usuariosDefault, null, 2));
-        console.log('✅ Archivo usuarios.json creado');
+        devLogger.log('✅ Archivo usuarios.json creado');
         return usuariosDefault;
     }
 }
@@ -186,7 +187,7 @@ async function getInformacionDinamica(params) {
         ];
 
         await fs.writeFile(filePath, JSON.stringify(datosIniciales, null, 2));
-        console.log('✅ Archivo informacion_dinamica.json creado');
+        devLogger.log('✅ Archivo informacion_dinamica.json creado');
         return datosIniciales;
     }
 }
@@ -200,11 +201,11 @@ async function testConnection() {
         await getUsuarios([]);
         await getInformacionDinamica([]);
 
-        console.log('✅ Sistema JSON funcionando correctamente');
-        console.log('📊 Modo: Base de datos temporal (archivos JSON)');
+        devLogger.log('✅ Sistema JSON funcionando correctamente');
+        devLogger.log('📊 Modo: Base de datos temporal (archivos JSON)');
         return true;
     } catch (error) {
-        console.error('❌ Error en sistema JSON:', error.message);
+        devLogger.error('❌ Error en sistema JSON:', error.message);
         return false;
     }
 }
@@ -213,7 +214,7 @@ async function testConnection() {
  * Cerrar "conexión" (no hace nada en JSON)
  */
 async function closePool() {
-    console.log('✅ Sistema JSON cerrado correctamente');
+    devLogger.log('✅ Sistema JSON cerrado correctamente');
 }
 
 /**

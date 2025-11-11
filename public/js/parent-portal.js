@@ -1,4 +1,4 @@
-// Portal de Padres - BGE Héroes de la Patria
+// Portal de Padres - window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
 class ParentPortal {
     constructor() {
         this.currentSession = null;

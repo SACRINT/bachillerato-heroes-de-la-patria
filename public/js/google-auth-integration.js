@@ -222,7 +222,7 @@ class GoogleAuthIntegration {
                                 Iniciar sesión
                             </h4>
                             <p style="color: #5f6368; font-size: 14px; margin-top: 8px;">
-                                Continuar con BGE Héroes de la Patria
+                                Continuar con window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
                             </p>
                         </div>
                     </div>

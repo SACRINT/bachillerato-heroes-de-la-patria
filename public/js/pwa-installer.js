@@ -128,7 +128,7 @@ class PWAInstaller {
                         <img src="/images/app_icons/icon-192x192.png" alt="BGE App" />
                     </div>
                     <div class="pwa-app-info">
-                        <h3>Héroes de la Patria</h3>
+                        <h3>window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria')</h3>
                         <p>Bachillerato General Estatal</p>
                     </div>
                     <button class="pwa-modal-close" onclick="pwaInstaller.hideInstallModal()">

@@ -4,6 +4,7 @@
  */
 
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const crypto = require('crypto');
 
@@ -32,10 +33,10 @@ async function initializeSubscribersFile() {
                 lastId: 0
             };
             await fs.writeFile(SUBSCRIBERS_FILE, JSON.stringify(initialData, null, 2));
-            console.log('✅ Archivo subscribers.json creado');
+            devLogger.log('✅ Archivo subscribers.json creado');
         }
     } catch (error) {
-        console.error('❌ Error inicializando archivo subscribers:', error);
+        devLogger.error('❌ Error inicializando archivo subscribers:', error);
     }
 }
 
@@ -50,7 +51,7 @@ async function readSubscribers() {
         const data = await fs.readFile(SUBSCRIBERS_FILE, 'utf8');
         return JSON.parse(data);
     } catch (error) {
-        console.error('Error leyendo suscriptores:', error);
+        devLogger.error('Error leyendo suscriptores:', error);
         return { subscribers: [], lastId: 0 };
     }
 }
@@ -63,7 +64,7 @@ async function saveSubscribers(data) {
         await fs.writeFile(SUBSCRIBERS_FILE, JSON.stringify(data, null, 2));
         return true;
     } catch (error) {
-        console.error('Error guardando suscriptores:', error);
+        devLogger.error('Error guardando suscriptores:', error);
         return false;
     }
 }
@@ -102,7 +103,7 @@ async function addSubscriber({ email, name, categories, source }) {
         );
 
         if (existingSubscriber) {
-            console.log(`ℹ️  Suscriptor ya existe: ${email}`);
+            devLogger.log(`ℹ️  Suscriptor ya existe: ${email}`);
             return {
                 success: true,
                 message: 'Ya estás suscrito',
@@ -133,7 +134,7 @@ async function addSubscriber({ email, name, categories, source }) {
 
         await saveSubscribers(subscribersData);
 
-        console.log(`✅ Nuevo suscriptor agregado: ${email} (${subscriberId})`);
+        devLogger.log(`✅ Nuevo suscriptor agregado: ${email} (${subscriberId})`);
 
         return {
             success: true,
@@ -147,7 +148,7 @@ async function addSubscriber({ email, name, categories, source }) {
         };
 
     } catch (error) {
-        console.error('Error agregando suscriptor:', error);
+        devLogger.error('Error agregando suscriptor:', error);
         throw error;
     }
 }
@@ -161,7 +162,7 @@ async function getActiveSubscribers() {
         const subscribersData = await readSubscribers();
         return subscribersData.subscribers.filter(sub => sub.active);
     } catch (error) {
-        console.error('Error obteniendo suscriptores activos:', error);
+        devLogger.error('Error obteniendo suscriptores activos:', error);
         return [];
     }
 }
@@ -190,7 +191,7 @@ async function getSubscriberStats() {
         };
 
     } catch (error) {
-        console.error('Error obteniendo estadísticas:', error);
+        devLogger.error('Error obteniendo estadísticas:', error);
         return {
             total: 0,
             active: 0,

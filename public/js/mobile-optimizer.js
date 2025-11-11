@@ -1,6 +1,6 @@
 /**
  * 📱 MOBILE OPTIMIZER - FASE 4.2
- * Sistema de optimización móvil y touch gestures para BGE Héroes de la Patria
+ * Sistema de optimización móvil y touch gestures para window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Experiencia mobile-first con gestos táctiles avanzados
  */
 

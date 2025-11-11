@@ -9,30 +9,31 @@
 require('dotenv').config();
 const { pool } = require('../config/database');
 const fs = require('fs');
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 
 /**
  * Ejecutar script SQL para crear tabla de sesiones
  */
 async function createUserSessionsTable() {
-    console.log('🚀 Iniciando creación de tabla user_sessions...\n');
+    devLogger.log('🚀 Iniciando creación de tabla user_sessions...\n');
 
     try {
         // Leer archivo SQL
         const sqlFilePath = path.join(__dirname, 'create-user-sessions-table.sql');
         const sqlContent = fs.readFileSync(sqlFilePath, 'utf8');
 
-        console.log('📄 Leyendo script SQL:', sqlFilePath);
+        devLogger.log('📄 Leyendo script SQL:', sqlFilePath);
 
         // Conectar a la base de datos
         const client = await pool.connect();
-        console.log('✅ Conectado a PostgreSQL');
+        devLogger.log('✅ Conectado a PostgreSQL');
 
         // Ejecutar el script SQL
-        console.log('\n⚙️  Ejecutando script SQL...\n');
+        devLogger.log('\n⚙️  Ejecutando script SQL...\n');
         await client.query(sqlContent);
 
-        console.log('✅ Tabla user_sessions creada exitosamente!\n');
+        devLogger.log('✅ Tabla user_sessions creada exitosamente!\n');
 
         // Verificar que la tabla existe
         const verifyResult = await client.query(`
@@ -42,7 +43,7 @@ async function createUserSessionsTable() {
             ORDER BY ordinal_position
         `);
 
-        console.log('📋 Estructura de la tabla user_sessions:');
+        devLogger.log('📋 Estructura de la tabla user_sessions:');
         console.table(verifyResult.rows);
 
         // Verificar índices
@@ -52,22 +53,22 @@ async function createUserSessionsTable() {
             WHERE tablename = 'user_sessions'
         `);
 
-        console.log('\n🔍 Índices creados:');
+        devLogger.log('\n🔍 Índices creados:');
         console.table(indexResult.rows);
 
         // Liberar conexión
         client.release();
-        console.log('\n✅ Script ejecutado exitosamente');
-        console.log('🎉 La tabla user_sessions está lista para usar con connect-pg-simple');
+        devLogger.log('\n✅ Script ejecutado exitosamente');
+        devLogger.log('🎉 La tabla user_sessions está lista para usar con connect-pg-simple');
 
     } catch (error) {
-        console.error('\n❌ Error al crear tabla user_sessions:', error.message);
-        console.error('\nDetalles del error:', error);
+        devLogger.error('\n❌ Error al crear tabla user_sessions:', error.message);
+        devLogger.error('\nDetalles del error:', error);
         process.exit(1);
     } finally {
         // Cerrar pool de conexiones
         await pool.end();
-        console.log('\n🔒 Conexión a base de datos cerrada');
+        devLogger.log('\n🔒 Conexión a base de datos cerrada');
     }
 }
 

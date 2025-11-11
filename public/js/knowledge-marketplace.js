@@ -1,6 +1,6 @@
 /**
  * 🏪 MARKETPLACE DE CONOCIMIENTO
- * Portal BGE Héroes de la Patria
+ * Portal window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Sistema de intercambio de conocimiento donde estudiantes comparten y monetizan su aprendizaje
  */
 

@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const { pool } = require('../config/database');
 const fs = require('fs').promises;
 const path = require('path');
@@ -16,13 +17,13 @@ router.post('/install', async (req, res) => {
     const client = await pool.connect();
 
     try {
-        console.log('\n🚀 Instalando Sistema de Encuestas desde endpoint...\n');
+        devLogger.log('\n🚀 Instalando Sistema de Encuestas desde endpoint...\n');
 
         // Leer el archivo SQL
         const sqlPath = path.join(__dirname, '..', 'scripts', 'create-polls-tables.sql');
         const sql = await fs.readFile(sqlPath, 'utf-8');
 
-        console.log('📄 Archivo SQL cargado, tamaño:', sql.length, 'caracteres');
+        devLogger.log('📄 Archivo SQL cargado, tamaño:', sql.length, 'caracteres');
 
         // Ejecutar el script
         await client.query(sql);
@@ -43,7 +44,7 @@ router.post('/install', async (req, res) => {
         const categoriesResult = await client.query(categoriesQuery);
         const categoriesCount = categoriesResult.rows[0].count;
 
-        console.log('✅ Sistema de Encuestas instalado correctamente');
+        devLogger.log('✅ Sistema de Encuestas instalado correctamente');
 
         res.json({
             success: true,
@@ -54,7 +55,7 @@ router.post('/install', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error durante instalación:', error.message);
+        devLogger.error('❌ Error durante instalación:', error.message);
         res.status(500).json({
             success: false,
             error: 'Error al instalar Sistema de Encuestas',
@@ -72,7 +73,7 @@ router.post('/add-options', async (req, res) => {
     try {
         const { poll_id, options } = req.body;
 
-        console.log(`\n🔧 Agregando ${options.length} opciones a la encuesta ${poll_id}...\n`);
+        devLogger.log(`\n🔧 Agregando ${options.length} opciones a la encuesta ${poll_id}...\n`);
 
         // Insertar opciones
         for (let i = 0; i < options.length; i++) {
@@ -88,7 +89,7 @@ router.post('/add-options', async (req, res) => {
         const verifyQuery = `SELECT * FROM poll_options WHERE poll_id = $1`;
         const verifyResult = await client.query(verifyQuery, [poll_id]);
 
-        console.log(`✅ ${verifyResult.rows.length} opciones agregadas correctamente`);
+        devLogger.log(`✅ ${verifyResult.rows.length} opciones agregadas correctamente`);
 
         res.json({
             success: true,
@@ -98,7 +99,7 @@ router.post('/add-options', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error agregando opciones:', error.message);
+        devLogger.error('❌ Error agregando opciones:', error.message);
         res.status(500).json({
             success: false,
             error: 'Error al agregar opciones',

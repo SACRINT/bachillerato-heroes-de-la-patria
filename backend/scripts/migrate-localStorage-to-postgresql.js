@@ -15,7 +15,7 @@
  */
 
 async function migrateLocalStorageToPG() {
-    console.log('🔄 [MIGRACIÓN] Iniciando migración de localStorage a PostgreSQL...');
+    devLogger.log('🔄 [MIGRACIÓN] Iniciando migración de localStorage a PostgreSQL...');
 
     const apiBase = '/api/';
     let stats = {
@@ -50,7 +50,7 @@ async function migrateLocalStorageToPG() {
 
             return result;
         } catch (error) {
-            console.error(`❌ [MIGRACIÓN] Error en API ${endpoint}:`, error);
+            devLogger.error(`❌ [MIGRACIÓN] Error en API ${endpoint}:`, error);
             throw error;
         }
     }
@@ -63,7 +63,7 @@ async function migrateLocalStorageToPG() {
         if (noticiasData) {
             const noticias = JSON.parse(noticiasData);
             stats.noticias.encontradas = noticias.length;
-            console.log(`📰 [MIGRACIÓN] Encontradas ${noticias.length} noticias en localStorage`);
+            devLogger.log(`📰 [MIGRACIÓN] Encontradas ${noticias.length} noticias en localStorage`);
 
             for (const noticia of noticias) {
                 try {
@@ -82,17 +82,17 @@ async function migrateLocalStorageToPG() {
 
                     await fetchAPI('noticias', 'POST', noticiaData);
                     stats.noticias.migradas++;
-                    console.log(`✅ [MIGRACIÓN] Noticia migrada: "${noticiaData.titulo}"`);
+                    devLogger.log(`✅ [MIGRACIÓN] Noticia migrada: "${noticiaData.titulo}"`);
                 } catch (error) {
                     stats.noticias.errores++;
-                    console.error(`❌ [MIGRACIÓN] Error migrando noticia:`, error);
+                    devLogger.error(`❌ [MIGRACIÓN] Error migrando noticia:`, error);
                 }
             }
         } else {
-            console.log('ℹ️ [MIGRACIÓN] No se encontraron noticias en localStorage');
+            devLogger.log('ℹ️ [MIGRACIÓN] No se encontraron noticias en localStorage');
         }
     } catch (error) {
-        console.error('❌ [MIGRACIÓN] Error procesando noticias:', error);
+        devLogger.error('❌ [MIGRACIÓN] Error procesando noticias:', error);
     }
 
     // ==========================================
@@ -103,7 +103,7 @@ async function migrateLocalStorageToPG() {
         if (eventosData) {
             const eventos = JSON.parse(eventosData);
             stats.eventos.encontradas = eventos.length;
-            console.log(`📅 [MIGRACIÓN] Encontrados ${eventos.length} eventos en localStorage`);
+            devLogger.log(`📅 [MIGRACIÓN] Encontrados ${eventos.length} eventos en localStorage`);
 
             for (const evento of eventos) {
                 try {
@@ -131,17 +131,17 @@ async function migrateLocalStorageToPG() {
 
                     await fetchAPI('eventos', 'POST', eventoData);
                     stats.eventos.migradas++;
-                    console.log(`✅ [MIGRACIÓN] Evento migrado: "${eventoData.titulo}"`);
+                    devLogger.log(`✅ [MIGRACIÓN] Evento migrado: "${eventoData.titulo}"`);
                 } catch (error) {
                     stats.eventos.errores++;
-                    console.error(`❌ [MIGRACIÓN] Error migrando evento:`, error);
+                    devLogger.error(`❌ [MIGRACIÓN] Error migrando evento:`, error);
                 }
             }
         } else {
-            console.log('ℹ️ [MIGRACIÓN] No se encontraron eventos en localStorage');
+            devLogger.log('ℹ️ [MIGRACIÓN] No se encontraron eventos en localStorage');
         }
     } catch (error) {
-        console.error('❌ [MIGRACIÓN] Error procesando eventos:', error);
+        devLogger.error('❌ [MIGRACIÓN] Error procesando eventos:', error);
     }
 
     // ==========================================
@@ -152,7 +152,7 @@ async function migrateLocalStorageToPG() {
         if (avisosData) {
             const avisos = JSON.parse(avisosData);
             stats.avisos.encontradas = avisos.length;
-            console.log(`📢 [MIGRACIÓN] Encontrados ${avisos.length} avisos en localStorage`);
+            devLogger.log(`📢 [MIGRACIÓN] Encontrados ${avisos.length} avisos en localStorage`);
 
             for (const aviso of avisos) {
                 try {
@@ -169,17 +169,17 @@ async function migrateLocalStorageToPG() {
 
                     await fetchAPI('avisos', 'POST', avisoData);
                     stats.avisos.migradas++;
-                    console.log(`✅ [MIGRACIÓN] Aviso migrado: "${avisoData.titulo}"`);
+                    devLogger.log(`✅ [MIGRACIÓN] Aviso migrado: "${avisoData.titulo}"`);
                 } catch (error) {
                     stats.avisos.errores++;
-                    console.error(`❌ [MIGRACIÓN] Error migrando aviso:`, error);
+                    devLogger.error(`❌ [MIGRACIÓN] Error migrando aviso:`, error);
                 }
             }
         } else {
-            console.log('ℹ️ [MIGRACIÓN] No se encontraron avisos en localStorage');
+            devLogger.log('ℹ️ [MIGRACIÓN] No se encontraron avisos en localStorage');
         }
     } catch (error) {
-        console.error('❌ [MIGRACIÓN] Error procesando avisos:', error);
+        devLogger.error('❌ [MIGRACIÓN] Error procesando avisos:', error);
     }
 
     // ==========================================
@@ -190,7 +190,7 @@ async function migrateLocalStorageToPG() {
         if (comunicadosData) {
             const comunicados = JSON.parse(comunicadosData);
             stats.comunicados.encontradas = comunicados.length;
-            console.log(`📨 [MIGRACIÓN] Encontrados ${comunicados.length} comunicados en localStorage`);
+            devLogger.log(`📨 [MIGRACIÓN] Encontrados ${comunicados.length} comunicados en localStorage`);
 
             for (const comunicado of comunicados) {
                 try {
@@ -207,57 +207,57 @@ async function migrateLocalStorageToPG() {
 
                     await fetchAPI('comunicados', 'POST', comunicadoData);
                     stats.comunicados.migradas++;
-                    console.log(`✅ [MIGRACIÓN] Comunicado migrado: "${comunicadoData.titulo}"`);
+                    devLogger.log(`✅ [MIGRACIÓN] Comunicado migrado: "${comunicadoData.titulo}"`);
                 } catch (error) {
                     stats.comunicados.errores++;
-                    console.error(`❌ [MIGRACIÓN] Error migrando comunicado:`, error);
+                    devLogger.error(`❌ [MIGRACIÓN] Error migrando comunicado:`, error);
                 }
             }
         } else {
-            console.log('ℹ️ [MIGRACIÓN] No se encontraron comunicados en localStorage');
+            devLogger.log('ℹ️ [MIGRACIÓN] No se encontraron comunicados en localStorage');
         }
     } catch (error) {
-        console.error('❌ [MIGRACIÓN] Error procesando comunicados:', error);
+        devLogger.error('❌ [MIGRACIÓN] Error procesando comunicados:', error);
     }
 
     // ==========================================
     // RESUMEN FINAL
     // ==========================================
-    console.log('\n📊 [MIGRACIÓN] RESUMEN FINAL:');
-    console.log('=====================================');
-    console.log('📰 NOTICIAS:');
-    console.log(`   Encontradas: ${stats.noticias.encontradas}`);
-    console.log(`   Migradas: ${stats.noticias.migradas}`);
-    console.log(`   Errores: ${stats.noticias.errores}`);
-    console.log('');
-    console.log('📅 EVENTOS:');
-    console.log(`   Encontrados: ${stats.eventos.encontradas}`);
-    console.log(`   Migrados: ${stats.eventos.migradas}`);
-    console.log(`   Errores: ${stats.eventos.errores}`);
-    console.log('');
-    console.log('📢 AVISOS:');
-    console.log(`   Encontrados: ${stats.avisos.encontradas}`);
-    console.log(`   Migrados: ${stats.avisos.migradas}`);
-    console.log(`   Errores: ${stats.avisos.errores}`);
-    console.log('');
-    console.log('📨 COMUNICADOS:');
-    console.log(`   Encontrados: ${stats.comunicados.encontradas}`);
-    console.log(`   Migrados: ${stats.comunicados.migradas}`);
-    console.log(`   Errores: ${stats.comunicados.errores}`);
-    console.log('=====================================');
+    devLogger.log('\n📊 [MIGRACIÓN] RESUMEN FINAL:');
+    devLogger.log('=====================================');
+    devLogger.log('📰 NOTICIAS:');
+    devLogger.log(`   Encontradas: ${stats.noticias.encontradas}`);
+    devLogger.log(`   Migradas: ${stats.noticias.migradas}`);
+    devLogger.log(`   Errores: ${stats.noticias.errores}`);
+    devLogger.log('');
+    devLogger.log('📅 EVENTOS:');
+    devLogger.log(`   Encontrados: ${stats.eventos.encontradas}`);
+    devLogger.log(`   Migrados: ${stats.eventos.migradas}`);
+    devLogger.log(`   Errores: ${stats.eventos.errores}`);
+    devLogger.log('');
+    devLogger.log('📢 AVISOS:');
+    devLogger.log(`   Encontrados: ${stats.avisos.encontradas}`);
+    devLogger.log(`   Migrados: ${stats.avisos.migradas}`);
+    devLogger.log(`   Errores: ${stats.avisos.errores}`);
+    devLogger.log('');
+    devLogger.log('📨 COMUNICADOS:');
+    devLogger.log(`   Encontrados: ${stats.comunicados.encontradas}`);
+    devLogger.log(`   Migrados: ${stats.comunicados.migradas}`);
+    devLogger.log(`   Errores: ${stats.comunicados.errores}`);
+    devLogger.log('=====================================');
 
     const totalEncontradas = stats.noticias.encontradas + stats.eventos.encontradas + stats.avisos.encontradas + stats.comunicados.encontradas;
     const totalMigradas = stats.noticias.migradas + stats.eventos.migradas + stats.avisos.migradas + stats.comunicados.migradas;
     const totalErrores = stats.noticias.errores + stats.eventos.errores + stats.avisos.errores + stats.comunicados.errores;
 
-    console.log(`\n✅ TOTAL: ${totalMigradas}/${totalEncontradas} registros migrados exitosamente`);
+    devLogger.log(`\n✅ TOTAL: ${totalMigradas}/${totalEncontradas} registros migrados exitosamente`);
     if (totalErrores > 0) {
-        console.log(`⚠️ ${totalErrores} errores durante la migración`);
+        devLogger.log(`⚠️ ${totalErrores} errores durante la migración`);
     }
 
-    console.log('\n💡 NOTA: Los datos originales en localStorage NO han sido eliminados.');
-    console.log('Si la migración fue exitosa y deseas limpiar localStorage, ejecuta:');
-    console.log('cleanupLocalStorage()');
+    devLogger.log('\n💡 NOTA: Los datos originales en localStorage NO han sido eliminados.');
+    devLogger.log('Si la migración fue exitosa y deseas limpiar localStorage, ejecuta:');
+    devLogger.log('cleanupLocalStorage()');
 
     return stats;
 }
@@ -278,20 +278,20 @@ function cleanupLocalStorage() {
         localStorage.removeItem('avisos');
         localStorage.removeItem('comunicados');
 
-        console.log('✅ [LIMPIEZA] Datos del CMS eliminados de localStorage');
-        console.log('ℹ️ Los datos ahora solo existen en PostgreSQL');
+        devLogger.log('✅ [LIMPIEZA] Datos del CMS eliminados de localStorage');
+        devLogger.log('ℹ️ Los datos ahora solo existen en PostgreSQL');
     } else {
-        console.log('ℹ️ [LIMPIEZA] Operación cancelada');
+        devLogger.log('ℹ️ [LIMPIEZA] Operación cancelada');
     }
 }
 
 // Mensaje de bienvenida
-console.log('=====================================');
-console.log('📦 SCRIPT DE MIGRACIÓN CMS');
-console.log('localStorage → PostgreSQL');
-console.log('=====================================');
-console.log('\n🚀 Para iniciar la migración, ejecuta:');
-console.log('   migrateLocalStorageToPG()');
-console.log('\n🧹 Para limpiar localStorage después de migrar, ejecuta:');
-console.log('   cleanupLocalStorage()');
-console.log('=====================================\n');
+devLogger.log('=====================================');
+devLogger.log('📦 SCRIPT DE MIGRACIÓN CMS');
+devLogger.log('localStorage → PostgreSQL');
+devLogger.log('=====================================');
+devLogger.log('\n🚀 Para iniciar la migración, ejecuta:');
+devLogger.log('   migrateLocalStorageToPG()');
+devLogger.log('\n🧹 Para limpiar localStorage después de migrar, ejecuta:');
+devLogger.log('   cleanupLocalStorage()');
+devLogger.log('=====================================\n');

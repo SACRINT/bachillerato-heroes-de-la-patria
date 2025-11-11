@@ -5,6 +5,7 @@
  */
 
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const { pool } = require('../config/database');
 require('dotenv').config({ path: path.join(__dirname, '../../.env') });
@@ -19,16 +20,16 @@ class SQLDatabaseBackup {
      * Ejecutar backup SQL directo
      */
     async runBackup() {
-        console.log('💾 Iniciando backup de base de datos (SQL directo)...\n');
+        devLogger.log('💾 Iniciando backup de base de datos (SQL directo)...\n');
 
         try {
             // Crear directorio de backups
             await fs.mkdir(this.backupDir, { recursive: true });
-            console.log(`✅ Directorio de backups: ${this.backupDir}`);
+            devLogger.log(`✅ Directorio de backups: ${this.backupDir}`);
 
             // Obtener todas las tablas
             const tables = await this.getAllTables();
-            console.log(`📊 ${tables.length} tablas encontradas\n`);
+            devLogger.log(`📊 ${tables.length} tablas encontradas\n`);
 
             // Generar SQL de backup
             const backupSQL = await this.generateBackupSQL(tables);
@@ -50,7 +51,7 @@ class SQLDatabaseBackup {
             };
 
         } catch (error) {
-            console.error('❌ Error en backup SQL:', error);
+            devLogger.error('❌ Error en backup SQL:', error);
             throw error;
         }
     }
@@ -88,7 +89,7 @@ class SQLDatabaseBackup {
         sql += `-- ========================================\n\n`;
 
         for (const table of tables) {
-            console.log(`📥 Procesando tabla: ${table}...`);
+            devLogger.log(`📥 Procesando tabla: ${table}...`);
 
             // Obtener estructura de la tabla
             const createTableSQL = await this.getCreateTableSQL(table);
@@ -107,7 +108,7 @@ class SQLDatabaseBackup {
         sql += `-- ENABLE TRIGGERS\n`;
         sql += `-- ========================================\n\n`;
 
-        console.log('✅ SQL de backup generado\n');
+        devLogger.log('✅ SQL de backup generado\n');
 
         return sql;
     }
@@ -202,7 +203,7 @@ class SQLDatabaseBackup {
             return sql;
 
         } catch (error) {
-            console.warn(`⚠️ Error al obtener datos de ${tableName}:`, error.message);
+            devLogger.warn(`⚠️ Error al obtener datos de ${tableName}:`, error.message);
             return `-- Error backing up data for ${tableName}\n`;
         }
     }
@@ -216,7 +217,7 @@ class SQLDatabaseBackup {
 
         await fs.writeFile(backupFile, sql, 'utf-8');
 
-        console.log(`✅ Backup guardado: ${path.basename(backupFile)}`);
+        devLogger.log(`✅ Backup guardado: ${path.basename(backupFile)}`);
 
         return backupFile;
     }
@@ -225,7 +226,7 @@ class SQLDatabaseBackup {
      * Aplicar política de retención
      */
     async applyRetentionPolicy() {
-        console.log('\n🗑️ Aplicando política de retención...');
+        devLogger.log('\n🗑️ Aplicando política de retención...');
 
         try {
             const files = await fs.readdir(this.backupDir);
@@ -243,14 +244,14 @@ class SQLDatabaseBackup {
                 if (ageInDays > this.retentionDays) {
                     await fs.unlink(filePath);
                     deleted++;
-                    console.log(`  🗑️ Eliminado: ${file} (${Math.floor(ageInDays)} días)`);
+                    devLogger.log(`  🗑️ Eliminado: ${file} (${Math.floor(ageInDays)} días)`);
                 }
             }
 
-            console.log(`✅ ${deleted} backup(s) antiguos eliminados\n`);
+            devLogger.log(`✅ ${deleted} backup(s) antiguos eliminados\n`);
 
         } catch (error) {
-            console.error('❌ Error al aplicar retención:', error);
+            devLogger.error('❌ Error al aplicar retención:', error);
         }
     }
 
@@ -271,22 +272,22 @@ class SQLDatabaseBackup {
                 retentionDays: this.retentionDays
             };
 
-            console.log('\n' + '='.repeat(60));
-            console.log('📊 REPORTE DE BACKUP SQL');
-            console.log('='.repeat(60));
-            console.log(`Archivo: ${report.backupFile}`);
-            console.log(`Tamaño: ${report.sizeMB} MB`);
-            console.log(`Tablas: ${report.tablesBackedUp}`);
-            console.log(`Método: ${report.method}`);
-            console.log(`Timestamp: ${report.timestamp}`);
-            console.log('='.repeat(60) + '\n');
+            devLogger.log('\n' + '='.repeat(60));
+            devLogger.log('📊 REPORTE DE BACKUP SQL');
+            devLogger.log('='.repeat(60));
+            devLogger.log(`Archivo: ${report.backupFile}`);
+            devLogger.log(`Tamaño: ${report.sizeMB} MB`);
+            devLogger.log(`Tablas: ${report.tablesBackedUp}`);
+            devLogger.log(`Método: ${report.method}`);
+            devLogger.log(`Timestamp: ${report.timestamp}`);
+            devLogger.log('='.repeat(60) + '\n');
 
             // Guardar reporte
             const reportPath = path.join(this.backupDir, 'last-backup-report.json');
             await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
 
         } catch (error) {
-            console.error('Error al generar reporte:', error);
+            devLogger.error('Error al generar reporte:', error);
         }
     }
 }
@@ -298,11 +299,11 @@ if (require.main === module) {
             const backup = new SQLDatabaseBackup();
             await backup.runBackup();
 
-            console.log('✅ Backup SQL completado exitosamente\n');
+            devLogger.log('✅ Backup SQL completado exitosamente\n');
             process.exit(0);
 
         } catch (error) {
-            console.error('❌ Error fatal en backup SQL:', error);
+            devLogger.error('❌ Error fatal en backup SQL:', error);
             process.exit(1);
         }
     })();

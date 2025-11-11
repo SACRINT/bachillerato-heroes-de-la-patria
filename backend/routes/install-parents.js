@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const { pool } = require('../config/database');
 const fs = require('fs').promises;
 const path = require('path');
@@ -16,13 +17,13 @@ router.post('/install', async (req, res) => {
     const client = await pool.connect();
 
     try {
-        console.log('\n🚀 Instalando Portal de Padres desde endpoint...\n');
+        devLogger.log('\n🚀 Instalando Portal de Padres desde endpoint...\n');
 
         // Leer el archivo SQL
         const sqlPath = path.join(__dirname, '..', 'scripts', 'create-parents-portal-tables.sql');
         const sql = await fs.readFile(sqlPath, 'utf-8');
 
-        console.log('📄 Archivo SQL cargado, tamaño:', sql.length, 'caracteres');
+        devLogger.log('📄 Archivo SQL cargado, tamaño:', sql.length, 'caracteres');
 
         // Ejecutar el script
         await client.query(sql);
@@ -58,7 +59,7 @@ router.post('/install', async (req, res) => {
         const parentsCount = await client.query('SELECT COUNT(*) as count FROM parents');
         const studentsCount = await client.query('SELECT COUNT(*) as count FROM students');
 
-        console.log('✅ Portal de Padres instalado correctamente');
+        devLogger.log('✅ Portal de Padres instalado correctamente');
 
         res.json({
             success: true,
@@ -73,7 +74,7 @@ router.post('/install', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error durante instalación:', error.message);
+        devLogger.error('❌ Error durante instalación:', error.message);
         res.status(500).json({
             success: false,
             error: 'Error al instalar Portal de Padres',

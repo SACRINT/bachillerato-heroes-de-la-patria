@@ -1,6 +1,6 @@
 /**
  * 🎯 PANEL DE ACCESO A FUNCIONALIDADES IA
- * Portal BGE Héroes de la Patria
+ * Portal window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Interfaz visual para acceder a todos los sistemas avanzados
  */
 

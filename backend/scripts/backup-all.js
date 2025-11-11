@@ -5,6 +5,7 @@
  */
 
 const DatabaseBackup = require('./backup-database');
+const devLogger = require('../utils/devLogger');
 const FilesBackup = require('./backup-files');
 const path = require('path');
 const fs = require('fs').promises;
@@ -20,8 +21,8 @@ class MasterBackup {
      * Ejecutar todos los backups
      */
     async runAllBackups() {
-        console.log('🔄 INICIANDO BACKUP MAESTRO');
-        console.log('='.repeat(70) + '\n');
+        devLogger.log('🔄 INICIANDO BACKUP MAESTRO');
+        devLogger.log('='.repeat(70) + '\n');
 
         const startTime = Date.now();
         const results = {
@@ -34,13 +35,13 @@ class MasterBackup {
 
         try {
             // Backup de base de datos
-            console.log('1️⃣ BACKUP DE BASE DE DATOS\n');
+            devLogger.log('1️⃣ BACKUP DE BASE DE DATOS\n');
             results.database = await this.databaseBackup.runBackup();
 
-            console.log('\n' + '-'.repeat(70) + '\n');
+            devLogger.log('\n' + '-'.repeat(70) + '\n');
 
             // Backup de archivos
-            console.log('2️⃣ BACKUP DE ARCHIVOS\n');
+            devLogger.log('2️⃣ BACKUP DE ARCHIVOS\n');
             results.files = await this.filesBackup.runBackup();
 
             // Calcular tiempo total
@@ -53,15 +54,15 @@ class MasterBackup {
             // Log del backup
             await this.logBackup(results);
 
-            console.log('\n' + '='.repeat(70));
-            console.log('✅ BACKUP MAESTRO COMPLETADO EXITOSAMENTE');
-            console.log(`⏱️ Tiempo total: ${results.totalTime}s`);
-            console.log('='.repeat(70) + '\n');
+            devLogger.log('\n' + '='.repeat(70));
+            devLogger.log('✅ BACKUP MAESTRO COMPLETADO EXITOSAMENTE');
+            devLogger.log(`⏱️ Tiempo total: ${results.totalTime}s`);
+            devLogger.log('='.repeat(70) + '\n');
 
             return results;
 
         } catch (error) {
-            console.error('\n❌ ERROR EN BACKUP MAESTRO:', error);
+            devLogger.error('\n❌ ERROR EN BACKUP MAESTRO:', error);
 
             results.success = false;
             results.error = error.message;
@@ -91,19 +92,19 @@ class MasterBackup {
             }
         };
 
-        console.log('\n' + '='.repeat(70));
-        console.log('📊 RESUMEN DE BACKUPS');
-        console.log('='.repeat(70));
-        console.log(`Timestamp: ${summary.timestamp}`);
-        console.log(`Estado General: ${summary.success ? '✅ EXITOSO' : '❌ FALLIDO'}`);
-        console.log(`Tiempo Total: ${summary.totalTime}`);
-        console.log('\nBase de Datos:');
-        console.log(`  Estado: ${summary.database.status}`);
-        console.log(`  Archivo: ${summary.database.file}`);
-        console.log('\nArchivos:');
-        console.log(`  Estado: ${summary.files.status}`);
-        console.log(`  Archivo: ${summary.files.file}`);
-        console.log('='.repeat(70));
+        devLogger.log('\n' + '='.repeat(70));
+        devLogger.log('📊 RESUMEN DE BACKUPS');
+        devLogger.log('='.repeat(70));
+        devLogger.log(`Timestamp: ${summary.timestamp}`);
+        devLogger.log(`Estado General: ${summary.success ? '✅ EXITOSO' : '❌ FALLIDO'}`);
+        devLogger.log(`Tiempo Total: ${summary.totalTime}`);
+        devLogger.log('\nBase de Datos:');
+        devLogger.log(`  Estado: ${summary.database.status}`);
+        devLogger.log(`  Archivo: ${summary.database.file}`);
+        devLogger.log('\nArchivos:');
+        devLogger.log(`  Estado: ${summary.files.status}`);
+        devLogger.log(`  Archivo: ${summary.files.file}`);
+        devLogger.log('='.repeat(70));
 
         // Guardar resumen JSON
         const summaryPath = path.join(__dirname, '../../backups/last-backup-summary.json');
@@ -121,7 +122,7 @@ class MasterBackup {
             await fs.appendFile(this.logFile, logEntry);
 
         } catch (error) {
-            console.error('Error al escribir log:', error);
+            devLogger.error('Error al escribir log:', error);
         }
     }
 
@@ -129,18 +130,18 @@ class MasterBackup {
      * Listar todos los backups
      */
     async listAllBackups() {
-        console.log('📋 BACKUPS DISPONIBLES\n');
+        devLogger.log('📋 BACKUPS DISPONIBLES\n');
 
-        console.log('Base de Datos:');
+        devLogger.log('Base de Datos:');
         const dbBackups = await this.databaseBackup.listBackups();
         dbBackups.forEach((backup, i) => {
-            console.log(`  ${i + 1}. ${backup.file} (${backup.size}) - ${backup.created}`);
+            devLogger.log(`  ${i + 1}. ${backup.file} (${backup.size}) - ${backup.created}`);
         });
 
-        console.log('\nArchivos:');
+        devLogger.log('\nArchivos:');
         const fileBackups = await this.filesBackup.listBackups();
         fileBackups.forEach((backup, i) => {
-            console.log(`  ${i + 1}. ${backup.file} (${backup.size}) - ${backup.created}`);
+            devLogger.log(`  ${i + 1}. ${backup.file} (${backup.size}) - ${backup.created}`);
         });
 
         return { database: dbBackups, files: fileBackups };
@@ -151,7 +152,7 @@ class MasterBackup {
      */
     async checkDiskSpace() {
         // Esta función podría implementarse para verificar espacio disponible
-        console.log('⚠️ Verificación de espacio en disco no implementada (requiere módulo adicional)');
+        devLogger.log('⚠️ Verificación de espacio en disco no implementada (requiere módulo adicional)');
     }
 }
 
@@ -173,7 +174,7 @@ if (require.main === module) {
             process.exit(0);
 
         } catch (error) {
-            console.error('❌ Error fatal:', error);
+            devLogger.error('❌ Error fatal:', error);
             process.exit(1);
         }
     })();

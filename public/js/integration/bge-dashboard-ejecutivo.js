@@ -100,7 +100,7 @@ class BGEDashboardEjecutivo {
                     <img src="images/logo-bge.png" alt="BGE Logo" class="bge-logo">
                     <div class="bge-header-info">
                         <h1>BGE Dashboard Ejecutivo</h1>
-                        <p>Bachillerato General Estatal Héroes de la Patria</p>
+                        <p>window.getTenantConfigValue('school_full_name', 'Bachillerato General Estatal Héroes de la Patria')</p>
                     </div>
                 </div>
                 <div class="bge-header-controls">

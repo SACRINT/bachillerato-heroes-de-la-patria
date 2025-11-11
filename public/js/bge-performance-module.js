@@ -567,7 +567,7 @@ class BGEPerformanceModule extends BGEModule {
     async loadWebVitalsLibrary() {
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
-            script.src = 'https://unpkg.com/web-vitals@3/dist/web-vitals.iife.js';
+            script.src = 'https://unpkg.com/web-vitals@3.5.2/dist/web-vitals.iife.js';
             script.onload = () => {
                 this.browserCapabilities.webVitals = true;
                 this.log('✅ Web Vitals library cargada');

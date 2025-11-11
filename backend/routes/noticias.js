@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
@@ -95,7 +96,7 @@ router.post('/', [
             fecha_pub
         ]);
 
-        console.log('✅ Nueva noticia creada:', result.rows[0].id);
+        devLogger.log('✅ Nueva noticia creada:', result.rows[0].id);
 
         res.status(201).json({
             success: true,
@@ -104,7 +105,7 @@ router.post('/', [
         });
 
     } catch (error) {
-        console.error('❌ Error al crear noticia:', error);
+        devLogger.error('❌ Error al crear noticia:', error);
         res.status(500).json({
             success: false,
             error: 'Error al crear la noticia'
@@ -180,7 +181,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener noticias:', error);
+        devLogger.error('❌ Error al obtener noticias:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener noticias'
@@ -211,7 +212,7 @@ router.get('/stats', cacheMiddleware({ ttl: TTL_CONFIG.stats }), async (req, res
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener estadísticas:', error);
+        devLogger.error('❌ Error al obtener estadísticas:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -244,7 +245,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener noticia:', error);
+        devLogger.error('❌ Error al obtener noticia:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener la noticia'
@@ -277,7 +278,7 @@ router.get('/slug/:slug', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener noticia:', error);
+        devLogger.error('❌ Error al obtener noticia:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener la noticia'
@@ -345,7 +346,7 @@ router.put('/:id', async (req, res) => {
             });
         }
 
-        console.log(`✅ Noticia ${id} actualizada`);
+        devLogger.log(`✅ Noticia ${id} actualizada`);
 
         res.json({
             success: true,
@@ -354,7 +355,7 @@ router.put('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar noticia:', error);
+        devLogger.error('❌ Error al actualizar noticia:', error);
         res.status(500).json({
             success: false,
             error: 'Error al actualizar la noticia'
@@ -390,7 +391,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al archivar noticia:', error);
+        devLogger.error('❌ Error al archivar noticia:', error);
         res.status(500).json({
             success: false,
             error: 'Error al archivar la noticia'

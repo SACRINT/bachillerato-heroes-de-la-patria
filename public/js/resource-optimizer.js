@@ -1,6 +1,6 @@
 /**
  * 🔧 RESOURCE OPTIMIZER - FASE 4.1
- * Sistema de optimización de recursos CSS/JS para BGE Héroes de la Patria
+ * Sistema de optimización de recursos CSS/JS para window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Minificación dinámica y compresión de recursos
  */
 

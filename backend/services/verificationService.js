@@ -6,6 +6,7 @@
 
 const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
+const devLogger = require('../utils/devLogger');
 require('dotenv').config();
 
 class VerificationService {
@@ -24,7 +25,7 @@ class VerificationService {
     createTransporter() {
         // Verificar si tenemos credenciales reales de Gmail configuradas
         if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-            console.log('📧 [VERIFICATION SERVICE] Configurando transporter Gmail...');
+            devLogger.log('📧 [VERIFICATION SERVICE] Configurando transporter Gmail...');
 
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
@@ -36,15 +37,15 @@ class VerificationService {
 
             transporter.verify((error, success) => {
                 if (error) {
-                    console.error('❌ [VERIFICATION SERVICE] Error al conectar con Gmail:', error);
+                    devLogger.error('❌ [VERIFICATION SERVICE] Error al conectar con Gmail:', error);
                 } else {
-                    console.log('✅ [VERIFICATION SERVICE] Conexión con Gmail exitosa');
+                    devLogger.log('✅ [VERIFICATION SERVICE] Conexión con Gmail exitosa');
                 }
             });
             return transporter;
         }
 
-        console.warn('⚠️ [VERIFICATION SERVICE] EMAIL_USER/EMAIL_PASS no configuradas');
+        devLogger.warn('⚠️ [VERIFICATION SERVICE] EMAIL_USER/EMAIL_PASS no configuradas');
         return null;
     }
 

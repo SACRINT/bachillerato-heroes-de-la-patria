@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const emailService = require('../services/emailService');
 
@@ -126,7 +127,7 @@ router.post('/test', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al enviar email de prueba:', error);
+        devLogger.error('❌ Error al enviar email de prueba:', error);
         res.status(500).json({
             success: false,
             error: 'Error al enviar email de prueba',
@@ -158,7 +159,7 @@ router.post('/welcome', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al enviar email de bienvenida:', error);
+        devLogger.error('❌ Error al enviar email de bienvenida:', error);
         res.status(500).json({
             success: false,
             error: 'Error al enviar email de bienvenida'
@@ -189,7 +190,7 @@ router.post('/event-notification', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al enviar notificación de evento:', error);
+        devLogger.error('❌ Error al enviar notificación de evento:', error);
         res.status(500).json({
             success: false,
             error: 'Error al enviar notificación de evento'
@@ -223,7 +224,7 @@ router.post('/password-recovery', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al enviar email de recuperación:', error);
+        devLogger.error('❌ Error al enviar email de recuperación:', error);
         res.status(500).json({
             success: false,
             error: 'Error al enviar email de recuperación'
@@ -254,7 +255,7 @@ router.post('/bulk', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en envío masivo:', error);
+        devLogger.error('❌ Error en envío masivo:', error);
         res.status(500).json({
             success: false,
             error: 'Error en envío masivo de emails'
@@ -275,7 +276,7 @@ router.post('/clear-cache', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al limpiar caché:', error);
+        devLogger.error('❌ Error al limpiar caché:', error);
         res.status(500).json({
             success: false,
             error: 'Error al limpiar caché'
@@ -300,7 +301,7 @@ router.get('/status', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al verificar estado:', error);
+        devLogger.error('❌ Error al verificar estado:', error);
         res.status(500).json({
             success: false,
             error: 'Error al verificar estado del servicio'

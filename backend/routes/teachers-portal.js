@@ -13,6 +13,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { pool } = require('../config/database');
@@ -51,7 +52,7 @@ const requireTeacher = async (req, res, next) => {
             client.release();
         }
     } catch (error) {
-        console.error('Error en requireTeacher:', error);
+        devLogger.error('Error en requireTeacher:', error);
         res.status(500).json({
             success: false,
             error: 'Error verificando permisos de docente'
@@ -152,7 +153,7 @@ router.post('/auth/login', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error en login de docente:', error);
+        devLogger.error('Error en login de docente:', error);
         res.status(500).json({
             success: false,
             error: 'Error al iniciar sesión'
@@ -253,7 +254,7 @@ router.get('/dashboard', authenticateToken, requireTeacher, async (req, res) => 
         });
 
     } catch (error) {
-        console.error('Error en dashboard de docente:', error);
+        devLogger.error('Error en dashboard de docente:', error);
         res.status(500).json({
             success: false,
             error: 'Error al cargar dashboard'
@@ -305,7 +306,7 @@ router.get('/classes', authenticateToken, requireTeacher, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error obteniendo clases:', error);
+        devLogger.error('Error obteniendo clases:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener clases'
@@ -362,7 +363,7 @@ router.get('/classes/:id', authenticateToken, requireTeacher, async (req, res) =
         });
 
     } catch (error) {
-        console.error('Error obteniendo detalle de clase:', error);
+        devLogger.error('Error obteniendo detalle de clase:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener detalle de clase'
@@ -418,7 +419,7 @@ router.post('/classes', authenticateToken, requireTeacher, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error creando clase:', error);
+        devLogger.error('Error creando clase:', error);
 
         if (error.code === '23505') { // Duplicate key
             return res.status(409).json({
@@ -500,7 +501,7 @@ router.put('/classes/:id', authenticateToken, requireTeacher, async (req, res) =
         });
 
     } catch (error) {
-        console.error('Error actualizando clase:', error);
+        devLogger.error('Error actualizando clase:', error);
         res.status(500).json({
             success: false,
             error: 'Error al actualizar clase'
@@ -589,7 +590,7 @@ router.get('/classes/:id/grades', authenticateToken, requireTeacher, async (req,
         });
 
     } catch (error) {
-        console.error('Error obteniendo calificaciones:', error);
+        devLogger.error('Error obteniendo calificaciones:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener calificaciones'
@@ -673,7 +674,7 @@ router.post('/grades', authenticateToken, requireTeacher, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error guardando calificación:', error);
+        devLogger.error('Error guardando calificación:', error);
         res.status(500).json({
             success: false,
             error: 'Error al guardar calificación'
@@ -732,7 +733,7 @@ router.post('/attendance/sessions', authenticateToken, requireTeacher, async (re
         });
 
     } catch (error) {
-        console.error('Error creando sesión de asistencia:', error);
+        devLogger.error('Error creando sesión de asistencia:', error);
 
         if (error.code === '23505') {
             return res.status(409).json({
@@ -833,7 +834,7 @@ router.post('/attendance', authenticateToken, requireTeacher, async (req, res) =
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Error registrando asistencias:', error);
+        devLogger.error('Error registrando asistencias:', error);
         res.status(500).json({
             success: false,
             error: 'Error al registrar asistencias'
@@ -876,7 +877,7 @@ router.put('/attendance/sessions/:id/close', authenticateToken, requireTeacher, 
         });
 
     } catch (error) {
-        console.error('Error cerrando sesión:', error);
+        devLogger.error('Error cerrando sesión:', error);
         res.status(500).json({
             success: false,
             error: 'Error al cerrar sesión'
@@ -930,7 +931,7 @@ router.get('/resources', authenticateToken, requireTeacher, async (req, res) => 
         });
 
     } catch (error) {
-        console.error('Error obteniendo recursos:', error);
+        devLogger.error('Error obteniendo recursos:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener recursos'
@@ -988,7 +989,7 @@ router.post('/resources', authenticateToken, requireTeacher, async (req, res) =>
         });
 
     } catch (error) {
-        console.error('Error creando recurso:', error);
+        devLogger.error('Error creando recurso:', error);
         res.status(500).json({
             success: false,
             error: 'Error al crear recurso'
@@ -1033,7 +1034,7 @@ router.get('/notifications', authenticateToken, requireTeacher, async (req, res)
         });
 
     } catch (error) {
-        console.error('Error obteniendo notificaciones:', error);
+        devLogger.error('Error obteniendo notificaciones:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener notificaciones'
@@ -1075,7 +1076,7 @@ router.put('/notifications/:id/read', authenticateToken, requireTeacher, async (
         });
 
     } catch (error) {
-        console.error('Error marcando notificación:', error);
+        devLogger.error('Error marcando notificación:', error);
         res.status(500).json({
             success: false,
             error: 'Error al marcar notificación'
@@ -1127,7 +1128,7 @@ router.get('/messages', authenticateToken, requireTeacher, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error obteniendo mensajes:', error);
+        devLogger.error('Error obteniendo mensajes:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener mensajes'
@@ -1178,7 +1179,7 @@ router.post('/messages', authenticateToken, requireTeacher, async (req, res) => 
         });
 
     } catch (error) {
-        console.error('Error enviando mensaje:', error);
+        devLogger.error('Error enviando mensaje:', error);
         res.status(500).json({
             success: false,
             error: 'Error al enviar mensaje'

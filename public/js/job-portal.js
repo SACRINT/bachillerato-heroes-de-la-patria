@@ -1,4 +1,4 @@
-// Sistema de Bolsa de Trabajo para Bachillerato Héroes de la Patria
+// Sistema de Bolsa de Trabajo para Bachillerato window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria')
 class JobPortal {
     constructor() {
         this.jobs = this.loadJobs();

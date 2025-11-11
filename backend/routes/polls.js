@@ -17,6 +17,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const { pool } = require('../config/database');
 
 const router = express.Router();
@@ -221,7 +222,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al listar encuestas:', error);
+        devLogger.error('Error al listar encuestas:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener las encuestas',
@@ -312,7 +313,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al obtener encuesta:', error);
+        devLogger.error('Error al obtener encuesta:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener la encuesta',
@@ -478,7 +479,7 @@ router.post('/', async (req, res) => {
         }
 
     } catch (error) {
-        console.error('Error al crear encuesta:', error);
+        devLogger.error('Error al crear encuesta:', error);
         res.status(500).json({
             success: false,
             error: 'Error al crear la encuesta',
@@ -578,7 +579,7 @@ router.put('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al actualizar encuesta:', error);
+        devLogger.error('Error al actualizar encuesta:', error);
         res.status(500).json({
             success: false,
             error: 'Error al actualizar la encuesta',
@@ -624,7 +625,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al eliminar encuesta:', error);
+        devLogger.error('Error al eliminar encuesta:', error);
         res.status(500).json({
             success: false,
             error: 'Error al eliminar la encuesta',
@@ -749,7 +750,7 @@ router.post('/:id/vote', async (req, res) => {
             });
         }
 
-        console.error('Error al registrar voto:', error);
+        devLogger.error('Error al registrar voto:', error);
         res.status(500).json({
             success: false,
             error: 'Error al registrar el voto',
@@ -827,7 +828,7 @@ router.get('/:id/results', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al obtener resultados:', error);
+        devLogger.error('Error al obtener resultados:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener los resultados',
@@ -867,7 +868,7 @@ router.post('/:id/close', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al cerrar encuesta:', error);
+        devLogger.error('Error al cerrar encuesta:', error);
         res.status(500).json({
             success: false,
             error: 'Error al cerrar la encuesta',
@@ -897,7 +898,7 @@ router.get('/categories/list', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al obtener categorías:', error);
+        devLogger.error('Error al obtener categorías:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener las categorías',
@@ -974,7 +975,7 @@ router.get('/:id/export', async (req, res) => {
         }
 
     } catch (error) {
-        console.error('Error al exportar resultados:', error);
+        devLogger.error('Error al exportar resultados:', error);
         res.status(500).json({
             success: false,
             error: 'Error al exportar los resultados',

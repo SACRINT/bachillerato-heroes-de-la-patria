@@ -6,6 +6,7 @@
 
 const { executeQuery } = require('../config/database');
 const EventEmitter = require('events');
+const devLogger = require('../utils/devLogger');
 
 class AnalyticsService extends EventEmitter {
     constructor() {
@@ -18,7 +19,7 @@ class AnalyticsService extends EventEmitter {
         // Inicializar procesamiento en lotes
         this.initializeBatchProcessing();
 
-        console.log('📊 [ANALYTICS-SERVICE] Servicio inicializado');
+        devLogger.log('📊 [ANALYTICS-SERVICE] Servicio inicializado');
     }
 
     // =====================================================
@@ -29,7 +30,7 @@ class AnalyticsService extends EventEmitter {
         const processed = [];
         const failed = [];
 
-        console.log(`📊 [ANALYTICS-SERVICE] Procesando lote de ${events.length} eventos`);
+        devLogger.log(`📊 [ANALYTICS-SERVICE] Procesando lote de ${events.length} eventos`);
 
         for (const event of events) {
             try {
@@ -53,7 +54,7 @@ class AnalyticsService extends EventEmitter {
                 }
 
             } catch (error) {
-                console.error(`❌ [ANALYTICS-SERVICE] Error procesando evento ${event.id}:`, error);
+                devLogger.error(`❌ [ANALYTICS-SERVICE] Error procesando evento ${event.id}:`, error);
                 failed.push({ event, reason: error.message });
             }
         }
@@ -102,7 +103,7 @@ class AnalyticsService extends EventEmitter {
             this.emit('critical_event', event);
 
         } catch (error) {
-            console.error('❌ [ANALYTICS-SERVICE] Error en procesamiento tiempo real:', error);
+            devLogger.error('❌ [ANALYTICS-SERVICE] Error en procesamiento tiempo real:', error);
         }
     }
 
@@ -122,7 +123,7 @@ class AnalyticsService extends EventEmitter {
         this.eventBuffer = [];
 
         try {
-            console.log(`🔄 [ANALYTICS-SERVICE] Procesando ${eventsToProcess.length} eventos en lote`);
+            devLogger.log(`🔄 [ANALYTICS-SERVICE] Procesando ${eventsToProcess.length} eventos en lote`);
 
             // Insertar eventos en batch
             await this.insertEventsBatch(eventsToProcess);
@@ -133,10 +134,10 @@ class AnalyticsService extends EventEmitter {
             // Procesar análisis específicos
             await this.processAnalytics(eventsToProcess);
 
-            console.log(`✅ [ANALYTICS-SERVICE] Lote procesado exitosamente`);
+            devLogger.log(`✅ [ANALYTICS-SERVICE] Lote procesado exitosamente`);
 
         } catch (error) {
-            console.error('❌ [ANALYTICS-SERVICE] Error procesando lote:', error);
+            devLogger.error('❌ [ANALYTICS-SERVICE] Error procesando lote:', error);
             // Reencolar eventos fallidos
             this.eventBuffer.unshift(...eventsToProcess);
         } finally {
@@ -178,7 +179,7 @@ class AnalyticsService extends EventEmitter {
     async getMetrics(category, options = {}) {
         const { timeframe = '24h', granularity = 'hour', userId, userRole } = options;
 
-        console.log(`📈 [ANALYTICS-SERVICE] Obteniendo métricas: ${category} - ${timeframe}`);
+        devLogger.log(`📈 [ANALYTICS-SERVICE] Obteniendo métricas: ${category} - ${timeframe}`);
 
         switch (category) {
             case 'realtime':
@@ -582,7 +583,7 @@ class AnalyticsService extends EventEmitter {
     async getDashboardData(dashboardType, options = {}) {
         const { period = 'today', userId, userRole } = options;
 
-        console.log(`🎛️ [ANALYTICS-SERVICE] Cargando dashboard: ${dashboardType} - ${period}`);
+        devLogger.log(`🎛️ [ANALYTICS-SERVICE] Cargando dashboard: ${dashboardType} - ${period}`);
 
         switch (dashboardType) {
             case 'realtime':
@@ -624,7 +625,7 @@ class AnalyticsService extends EventEmitter {
     async generateReport(type, options = {}) {
         const { dateRange, filters, userId, userRole } = options;
 
-        console.log(`📋 [ANALYTICS-SERVICE] Generando reporte: ${type}`);
+        devLogger.log(`📋 [ANALYTICS-SERVICE] Generando reporte: ${type}`);
 
         switch (type) {
             case 'executive_summary':
@@ -820,7 +821,7 @@ class AnalyticsService extends EventEmitter {
     async exportData(options = {}) {
         const { format, dateRange, includeFields, userId, userRole } = options;
 
-        console.log(`💾 [ANALYTICS-SERVICE] Exportando datos: ${format}`);
+        devLogger.log(`💾 [ANALYTICS-SERVICE] Exportando datos: ${format}`);
 
         const timeCondition = dateRange?.start ?
             `event_timestamp >= ${new Date(dateRange.start).getTime()} AND event_timestamp <= ${new Date(dateRange.end).getTime()}` :
@@ -847,7 +848,7 @@ class AnalyticsService extends EventEmitter {
     }
 
     async deleteUserData(userId) {
-        console.log(`🗑️ [ANALYTICS-SERVICE] Eliminando datos de usuario: ${userId}`);
+        devLogger.log(`🗑️ [ANALYTICS-SERVICE] Eliminando datos de usuario: ${userId}`);
 
         const result = await executeQuery(`
             DELETE FROM analytics_events

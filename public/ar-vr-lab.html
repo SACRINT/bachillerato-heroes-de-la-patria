@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🥽 Laboratorio AR/VR - BGE Héroes de la Patria</title>
+    <title id="page-title" data-base-title="ðŸ¥½ Laboratorio AR/VR - BGE HÃ©roes de la Patria">ðŸ¥½ Laboratorio AR/VR - BGE HÃ©roes de la Patria</title>
 
     <!-- CSS Principal -->
     <link rel="stylesheet" href="css/style.css">
@@ -181,37 +181,38 @@
             color: #10b981;
         }
     </style>
+    <script src="js/meta-updater.js" defer></script>
 </head>
 <body>
     <div class="ar-vr-container">
         <!-- Header del Laboratorio AR/VR -->
         <div class="ar-vr-header">
-            <h1>🥽 Laboratorio AR/VR</h1>
+            <h1>ðŸ¥½ Laboratorio AR/VR</h1>
             <p>Experiencias de aprendizaje inmersivas para el Bachillerato General Estatal</p>
         </div>
 
         <!-- Estado de Compatibilidad AR/VR -->
         <div class="ar-status" id="arStatus">
-            <h3>🔍 Estado del Sistema AR/VR</h3>
+            <h3>ðŸ” Estado del Sistema AR/VR</h3>
             <div id="compatibilityResults">
                 <p><span class="status-indicator status-unavailable"></span>Detectando capacidades del dispositivo...</p>
             </div>
 
             <div class="device-icons">
                 <div class="device-icon" id="webxr-icon">
-                    <div>🥽</div>
+                    <div>ðŸ¥½</div>
                     <small>WebXR</small>
                 </div>
                 <div class="device-icon" id="webgl-icon">
-                    <div>🎮</div>
+                    <div>ðŸŽ®</div>
                     <small>WebGL</small>
                 </div>
                 <div class="device-icon" id="camera-icon">
-                    <div>📷</div>
-                    <small>Cámara</small>
+                    <div>ðŸ“·</div>
+                    <small>CÃ¡mara</small>
                 </div>
                 <div class="device-icon" id="sensors-icon">
-                    <div>📱</div>
+                    <div>ðŸ“±</div>
                     <small>Sensores</small>
                 </div>
             </div>
@@ -219,16 +220,16 @@
 
         <!-- Grid de Experiencias AR/VR -->
         <div class="experiences-grid">
-            <!-- Matemáticas AR -->
+            <!-- MatemÃ¡ticas AR -->
             <div class="experience-card" data-subject="mathematics">
-                <div class="experience-icon">🔢</div>
-                <h3>Matemáticas AR</h3>
-                <p>Explora geometría 3D, funciones y estadísticas en realidad aumentada</p>
+                <div class="experience-icon">ðŸ”¢</div>
+                <h3>MatemÃ¡ticas AR</h3>
+                <p>Explora geometrÃ­a 3D, funciones y estadÃ­sticas en realidad aumentada</p>
                 <ul class="experience-scenarios">
-                    <li>📐 Geometría 3D Interactiva</li>
-                    <li>📊 Gráficas de Funciones</li>
-                    <li>📈 Estadísticas Visuales</li>
-                    <li>🧮 Álgebra Interactiva</li>
+                    <li>ðŸ“ GeometrÃ­a 3D Interactiva</li>
+                    <li>ðŸ“Š GrÃ¡ficas de Funciones</li>
+                    <li>ðŸ“ˆ EstadÃ­sticas Visuales</li>
+                    <li>ðŸ§® Ãlgebra Interactiva</li>
                 </ul>
                 <button class="launch-btn" data-subject-launch="mathematics" disabled>
                     Iniciar Experiencia AR
@@ -237,14 +238,14 @@
 
             <!-- Ciencias AR -->
             <div class="experience-card" data-subject="sciences">
-                <div class="experience-icon">🔬</div>
+                <div class="experience-icon">ðŸ”¬</div>
                 <h3>Ciencias AR</h3>
                 <p>Laboratorio virtual con modelos moleculares y experimentos 3D</p>
                 <ul class="experience-scenarios">
-                    <li>⚛️ Modelos Moleculares</li>
-                    <li>🫀 Anatomía 3D</li>
-                    <li>🧪 Experimentos de Física</li>
-                    <li>🧬 Laboratorio de Química</li>
+                    <li>âš›ï¸ Modelos Moleculares</li>
+                    <li>ðŸ«€ AnatomÃ­a 3D</li>
+                    <li>ðŸ§ª Experimentos de FÃ­sica</li>
+                    <li>ðŸ§¬ Laboratorio de QuÃ­mica</li>
                 </ul>
                 <button class="launch-btn" data-subject-launch="sciences" disabled>
                     Iniciar Laboratorio AR
@@ -253,14 +254,14 @@
 
             <!-- Historia AR -->
             <div class="experience-card" data-subject="history">
-                <div class="experience-icon">🏛️</div>
+                <div class="experience-icon">ðŸ›ï¸</div>
                 <h3>Historia AR</h3>
-                <p>Viaja en el tiempo y explora civilizaciones y eventos históricos</p>
+                <p>Viaja en el tiempo y explora civilizaciones y eventos histÃ³ricos</p>
                 <ul class="experience-scenarios">
-                    <li>🗿 Sitios Históricos</li>
-                    <li>🏺 Civilizaciones Antiguas</li>
-                    <li>🇲🇽 Independencia de México</li>
-                    <li>⚔️ Revolución Mexicana</li>
+                    <li>ðŸ—¿ Sitios HistÃ³ricos</li>
+                    <li>ðŸº Civilizaciones Antiguas</li>
+                    <li>ðŸ‡²ðŸ‡½ Independencia de MÃ©xico</li>
+                    <li>âš”ï¸ RevoluciÃ³n Mexicana</li>
                 </ul>
                 <button class="launch-btn" data-subject-launch="history" disabled>
                     Explorar Historia AR
@@ -269,30 +270,30 @@
 
             <!-- Artes AR -->
             <div class="experience-card" data-subject="arts">
-                <div class="experience-icon">🎨</div>
+                <div class="experience-icon">ðŸŽ¨</div>
                 <h3>Artes AR</h3>
-                <p>Galería virtual con obras de arte y experiencias creativas</p>
+                <p>GalerÃ­a virtual con obras de arte y experiencias creativas</p>
                 <ul class="experience-scenarios">
-                    <li>🗿 Vista de Esculturas</li>
-                    <li>🖼️ Análisis de Pinturas</li>
-                    <li>🏛️ Tours Arquitectónicos</li>
-                    <li>🎵 Visualización Musical</li>
+                    <li>ðŸ—¿ Vista de Esculturas</li>
+                    <li>ðŸ–¼ï¸ AnÃ¡lisis de Pinturas</li>
+                    <li>ðŸ›ï¸ Tours ArquitectÃ³nicos</li>
+                    <li>ðŸŽµ VisualizaciÃ³n Musical</li>
                 </ul>
                 <button class="launch-btn" data-subject-launch="arts" disabled>
-                    Entrar a Galería AR
+                    Entrar a GalerÃ­a AR
                 </button>
             </div>
 
             <!-- Laboratorio Virtual 3D -->
             <div class="experience-card" data-subject="virtual-lab">
-                <div class="experience-icon">🥽</div>
+                <div class="experience-icon">ðŸ¥½</div>
                 <h3>Laboratorio Virtual 3D</h3>
-                <p>Simulador completo de laboratorio con herramientas científicas</p>
+                <p>Simulador completo de laboratorio con herramientas cientÃ­ficas</p>
                 <ul class="experience-scenarios">
-                    <li>🔬 Microscopía Virtual</li>
-                    <li>⚗️ Reacciones Químicas</li>
-                    <li>🌡️ Mediciones Precisas</li>
-                    <li>📊 Análisis de Datos</li>
+                    <li>ðŸ”¬ MicroscopÃ­a Virtual</li>
+                    <li>âš—ï¸ Reacciones QuÃ­micas</li>
+                    <li>ðŸŒ¡ï¸ Mediciones Precisas</li>
+                    <li>ðŸ“Š AnÃ¡lisis de Datos</li>
                 </ul>
                 <button class="launch-btn" data-action="launchVirtualLab" disabled>
                     Abrir Laboratorio 3D
@@ -301,14 +302,14 @@
 
             <!-- Realidad Virtual Inmersiva -->
             <div class="experience-card" data-subject="vr-immersive">
-                <div class="experience-icon">🌐</div>
+                <div class="experience-icon">ðŸŒ</div>
                 <h3>VR Inmersiva</h3>
-                <p>Experiencias de realidad virtual completa para exploración educativa</p>
+                <p>Experiencias de realidad virtual completa para exploraciÃ³n educativa</p>
                 <ul class="experience-scenarios">
-                    <li>🌌 Exploración Espacial</li>
-                    <li>🌊 Mundo Submarino</li>
-                    <li>🏔️ Ecosistemas Naturales</li>
-                    <li>🏛️ Museos Virtuales</li>
+                    <li>ðŸŒŒ ExploraciÃ³n Espacial</li>
+                    <li>ðŸŒŠ Mundo Submarino</li>
+                    <li>ðŸ”ï¸ Ecosistemas Naturales</li>
+                    <li>ðŸ›ï¸ Museos Virtuales</li>
                 </ul>
                 <button class="launch-btn" data-action="launchVRExperience" disabled>
                     Entrar a VR
@@ -316,13 +317,13 @@
             </div>
         </div>
 
-        <!-- Información de Compatibilidad -->
+        <!-- InformaciÃ³n de Compatibilidad -->
         <div class="compatibility-info">
-            <h4>📱 Compatibilidad de Dispositivos</h4>
-            <p><strong>Móviles:</strong> iOS 12+, Android 8+ con ARCore</p>
+            <h4>ðŸ“± Compatibilidad de Dispositivos</h4>
+            <p><strong>MÃ³viles:</strong> iOS 12+, Android 8+ con ARCore</p>
             <p><strong>Navegadores:</strong> Chrome 67+, Firefox 55+, Safari 11.1+</p>
             <p><strong>VR Headsets:</strong> Meta Quest, HTC Vive, Valve Index</p>
-            <p><strong>Recomendado:</strong> Dispositivo con giroscopio y acelerómetro</p>
+            <p><strong>Recomendado:</strong> Dispositivo con giroscopio y acelerÃ³metro</p>
         </div>
     </div>
 
@@ -330,9 +331,9 @@
     <div class="ar-viewer" id="arViewer">
         <canvas id="arCanvas"></canvas>
         <div class="ar-controls">
-            <button class="ar-btn" data-action="toggleARRecording">📹 Grabar</button>
-            <button class="ar-btn" data-action="takeARScreenshot">📸 Captura</button>
-            <button class="ar-btn" data-action="closeARViewer">❌ Cerrar</button>
+            <button class="ar-btn" data-action="toggleARRecording">ðŸ“¹ Grabar</button>
+            <button class="ar-btn" data-action="takeARScreenshot">ðŸ“¸ Captura</button>
+            <button class="ar-btn" data-action="closeARViewer">âŒ Cerrar</button>
         </div>
     </div>
 
@@ -344,9 +345,9 @@
         let labSimulator = null;
         let virtualLabs = null;
 
-        // Inicialización del sistema AR/VR
+        // InicializaciÃ³n del sistema AR/VR
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('🥽 Inicializando Laboratorio AR/VR...');
+            console.log('ðŸ¥½ Inicializando Laboratorio AR/VR...');
 
             try {
                 // Inicializar sistemas
@@ -357,12 +358,12 @@
                 // Verificar compatibilidad
                 await checkARVRCompatibility();
 
-                // Activar interfaz según capacidades
+                // Activar interfaz segÃºn capacidades
                 activateAvailableFeatures();
 
-                console.log('✅ Laboratorio AR/VR inicializado correctamente');
+                console.log('âœ… Laboratorio AR/VR inicializado correctamente');
             } catch (error) {
-                console.error('❌ Error inicializando AR/VR:', error);
+                console.error('âŒ Error inicializando AR/VR:', error);
                 showCompatibilityError();
             }
         });
@@ -381,18 +382,18 @@
             const webglSupported = !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
             updateDeviceIcon('webgl-icon', webglSupported);
 
-            // Verificar cámara
+            // Verificar cÃ¡mara
             let cameraSupported = false;
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 cameraSupported = true;
                 stream.getTracks().forEach(track => track.stop());
             } catch (e) {
-                console.log('📷 Cámara no disponible');
+                console.log('ðŸ“· CÃ¡mara no disponible');
             }
             updateDeviceIcon('camera-icon', cameraSupported);
 
-            // Verificar sensores de orientación
+            // Verificar sensores de orientaciÃ³n
             const sensorsSupported = 'DeviceOrientationEvent' in window;
             updateDeviceIcon('sensors-icon', sensorsSupported);
 
@@ -401,18 +402,18 @@
 
             if (overallSupport) {
                 results.innerHTML = `
-                    <p><span class="status-indicator status-available"></span>✅ Sistema AR/VR listo para usar</p>
-                    <p>Todas las funcionalidades están disponibles en este dispositivo</p>
+                    <p><span class="status-indicator status-available"></span>âœ… Sistema AR/VR listo para usar</p>
+                    <p>Todas las funcionalidades estÃ¡n disponibles en este dispositivo</p>
                 `;
             } else if (webglSupported) {
                 results.innerHTML = `
-                    <p><span class="status-indicator status-partial"></span>⚡ Funcionalidad limitada disponible</p>
-                    <p>Algunas características AR requieren permisos de cámara</p>
+                    <p><span class="status-indicator status-partial"></span>âš¡ Funcionalidad limitada disponible</p>
+                    <p>Algunas caracterÃ­sticas AR requieren permisos de cÃ¡mara</p>
                 `;
             } else {
                 results.innerHTML = `
-                    <p><span class="status-indicator status-unavailable"></span>❌ AR/VR no compatible</p>
-                    <p>Este dispositivo/navegador no soporta las tecnologías requeridas</p>
+                    <p><span class="status-indicator status-unavailable"></span>âŒ AR/VR no compatible</p>
+                    <p>Este dispositivo/navegador no soporta las tecnologÃ­as requeridas</p>
                 `;
             }
 
@@ -438,7 +439,7 @@
                     btn.style.opacity = '1';
                 });
             } else {
-                // Modo demo/simulación
+                // Modo demo/simulaciÃ³n
                 buttons.forEach(btn => {
                     btn.disabled = false;
                     btn.style.opacity = '0.8';
@@ -449,7 +450,7 @@
 
         // Lanzar experiencia AR por materia
         async function launchARExperience(subject) {
-            console.log(`🚀 Lanzando experiencia AR: ${subject}`);
+            console.log(`ðŸš€ Lanzando experiencia AR: ${subject}`);
 
             try {
                 // Mostrar visor AR
@@ -460,23 +461,23 @@
                 const experience = await arSystem.startExperience(subject, 'basic');
 
                 if (experience.success) {
-                    console.log(`✅ Experiencia AR iniciada: ${subject}`);
-                    // Aquí se renderizaría la experiencia AR real
+                    console.log(`âœ… Experiencia AR iniciada: ${subject}`);
+                    // AquÃ­ se renderizarÃ­a la experiencia AR real
                     simulateARExperience(subject);
                 } else {
                     throw new Error(experience.error);
                 }
 
             } catch (error) {
-                console.error('❌ Error lanzando AR:', error);
-                alert('Error al iniciar la experiencia AR. Verifique los permisos de cámara.');
+                console.error('âŒ Error lanzando AR:', error);
+                alert('Error al iniciar la experiencia AR. Verifique los permisos de cÃ¡mara.');
                 closeARViewer();
             }
         }
 
         // Lanzar laboratorio virtual 3D
         async function launchVirtualLab() {
-            console.log('🔬 Lanzando Laboratorio Virtual 3D...');
+            console.log('ðŸ”¬ Lanzando Laboratorio Virtual 3D...');
 
             try {
                 const viewer = document.getElementById('arViewer');
@@ -484,12 +485,12 @@
 
                 // Inicializar laboratorio 3D
                 await labSimulator.initializeEnvironment();
-                console.log('✅ Laboratorio 3D inicializado');
+                console.log('âœ… Laboratorio 3D inicializado');
 
                 simulateLabExperience();
 
             } catch (error) {
-                console.error('❌ Error lanzando laboratorio 3D:', error);
+                console.error('âŒ Error lanzando laboratorio 3D:', error);
                 alert('Error al iniciar el laboratorio virtual.');
                 closeARViewer();
             }
@@ -497,23 +498,23 @@
 
         // Lanzar experiencia VR inmersiva
         async function launchVRExperience() {
-            console.log('🌐 Lanzando experiencia VR inmersiva...');
+            console.log('ðŸŒ Lanzando experiencia VR inmersiva...');
 
             try {
                 // Verificar soporte VR
                 if ('xr' in navigator) {
                     const session = await navigator.xr.requestSession('immersive-vr');
-                    console.log('✅ Sesión VR iniciada');
-                    // Aquí se inicializaría la experiencia VR real
+                    console.log('âœ… SesiÃ³n VR iniciada');
+                    // AquÃ­ se inicializarÃ­a la experiencia VR real
                 } else {
-                    // Modo simulación
+                    // Modo simulaciÃ³n
                     const viewer = document.getElementById('arViewer');
                     viewer.style.display = 'block';
                     simulateVRExperience();
                 }
 
             } catch (error) {
-                console.error('❌ Error lanzando VR:', error);
+                console.error('âŒ Error lanzando VR:', error);
                 alert('VR no disponible. Mostrando experiencia simulada.');
                 const viewer = document.getElementById('arViewer');
                 viewer.style.display = 'block';
@@ -536,8 +537,8 @@
             ctx.fillStyle = '#fff';
             ctx.font = '24px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText(`🥽 Experiencia AR: ${subject.toUpperCase()}`, canvas.width/2, canvas.height/2 - 50);
-            ctx.fillText('(Simulación - Configurar cámaras reales para AR completo)', canvas.width/2, canvas.height/2);
+            ctx.fillText(`ðŸ¥½ Experiencia AR: ${subject.toUpperCase()}`, canvas.width/2, canvas.height/2 - 50);
+            ctx.fillText('(SimulaciÃ³n - Configurar cÃ¡maras reales para AR completo)', canvas.width/2, canvas.height/2);
             ctx.fillText('Mueva su dispositivo para explorar el entorno virtual', canvas.width/2, canvas.height/2 + 50);
         }
 
@@ -554,8 +555,8 @@
             ctx.fillStyle = '#00ffff';
             ctx.font = '24px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('🔬 LABORATORIO VIRTUAL 3D', canvas.width/2, canvas.height/2 - 50);
-            ctx.fillText('Entorno de simulación científica avanzada', canvas.width/2, canvas.height/2);
+            ctx.fillText('ðŸ”¬ LABORATORIO VIRTUAL 3D', canvas.width/2, canvas.height/2 - 50);
+            ctx.fillText('Entorno de simulaciÃ³n cientÃ­fica avanzada', canvas.width/2, canvas.height/2);
             ctx.fillText('Use los controles para interactuar con equipos', canvas.width/2, canvas.height/2 + 50);
         }
 
@@ -572,19 +573,19 @@
             ctx.fillStyle = '#ffffff';
             ctx.font = '24px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('🌐 REALIDAD VIRTUAL INMERSIVA', canvas.width/2, canvas.height/2 - 50);
-            ctx.fillText('Exploración 360° del entorno educativo', canvas.width/2, canvas.height/2);
+            ctx.fillText('ðŸŒ REALIDAD VIRTUAL INMERSIVA', canvas.width/2, canvas.height/2 - 50);
+            ctx.fillText('ExploraciÃ³n 360Â° del entorno educativo', canvas.width/2, canvas.height/2);
             ctx.fillText('Conecte un visor VR para experiencia completa', canvas.width/2, canvas.height/2 + 50);
         }
 
         // Controles AR/VR
         function toggleARRecording() {
-            console.log('📹 Toggle grabación AR');
-            alert('Función de grabación AR activada (simulada)');
+            console.log('ðŸ“¹ Toggle grabaciÃ³n AR');
+            alert('FunciÃ³n de grabaciÃ³n AR activada (simulada)');
         }
 
         function takeARScreenshot() {
-            console.log('📸 Captura de pantalla AR');
+            console.log('ðŸ“¸ Captura de pantalla AR');
             alert('Captura de pantalla guardada (simulada)');
         }
 
@@ -602,7 +603,7 @@
         function showCompatibilityError() {
             const results = document.getElementById('compatibilityResults');
             results.innerHTML = `
-                <p><span class="status-indicator status-unavailable"></span>❌ Error de inicialización</p>
+                <p><span class="status-indicator status-unavailable"></span>âŒ Error de inicializaciÃ³n</p>
                 <p>No se pudieron cargar los sistemas AR/VR</p>
             `;
         }
@@ -626,30 +627,34 @@
         });
     </script>
 
-    <!-- 🚀 BGE FRAMEWORK MODULAR - PÁGINA AR/VR LAB -->
+    <!-- ðŸš€ BGE FRAMEWORK MODULAR - PÃGINA AR/VR LAB -->
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
+    <!-- ðŸ”§ MAIN.JS - CARGA DINÃMICA DE HEADER Y FOOTER -->
     <script src="js/main.js"></script>
 
-    <!-- 🔧 SISTEMA CORE (OBLIGATORIO) -->
+    <!-- ðŸ”§ SISTEMA CORE (OBLIGATORIO) -->
     <script src="js/context-manager.js"></script>
     <script src="js/config.js?v=2024091401"></script>
     <script src="js/theme-manager.js"></script>
     <script src="js/script.js"></script>
 
-    <!-- 🎯 BGE FRAMEWORK CORE -->
+    <!-- ðŸŽ¯ BGE FRAMEWORK CORE -->
     <script src="js/bge-framework-core.js"></script>
 
-    <!-- 📊 MÓDULOS BGE PARA AR/VR LAB --><!-- 🔧 FUNCIONALIDADES ESPECÍFICAS DE AR/VR LAB -->
+    <!-- ðŸ“Š MÃ“DULOS BGE PARA AR/VR LAB --><!-- ðŸ”§ FUNCIONALIDADES ESPECÃFICAS DE AR/VR LAB -->
     <script src="js/ar-education-system.js"></script>
     <script src="js/lab-simulator-3d.js"></script>
     <script src="js/virtual-labs-system.js"></script>
 
-    <!-- 🥽 AR/VR LAB - EVENT HANDLERS (CSP-COMPLIANT) -->
+    <!-- ðŸ¥½ AR/VR LAB - EVENT HANDLERS (CSP-COMPLIANT) -->
     <script src="js/ar-vr-lab-events.js"></script>
 
-</body>
+    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuraciÃ³n multi-tenancy desde BD -->
+    <script src="js/tenant-config-loader.js" defer></script>
+
+    </body>
 </html>
+

@@ -4,6 +4,7 @@
  */
 
 const path = require('path');
+const devLogger = require('../utils/devLogger');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 const { pool } = require('../config/database');
 
@@ -11,8 +12,8 @@ async function checkStructure() {
     try {
         const client = await pool.connect();
 
-        console.log('📋 ESTRUCTURA DE TABLA ESTUDIANTES:');
-        console.log('='.repeat(60));
+        devLogger.log('📋 ESTRUCTURA DE TABLA ESTUDIANTES:');
+        devLogger.log('='.repeat(60));
 
         const result = await client.query(`
             SELECT column_name, data_type, is_nullable, column_default
@@ -23,13 +24,13 @@ async function checkStructure() {
         `);
 
         result.rows.forEach(col => {
-            console.log(`  ${col.column_name.padEnd(25)} ${col.data_type.padEnd(20)} ${col.is_nullable === 'YES' ? 'NULL' : 'NOT NULL'}`);
+            devLogger.log(`  ${col.column_name.padEnd(25)} ${col.data_type.padEnd(20)} ${col.is_nullable === 'YES' ? 'NULL' : 'NOT NULL'}`);
         });
 
         client.release();
         process.exit(0);
     } catch (error) {
-        console.error('❌ Error:', error.message);
+        devLogger.error('❌ Error:', error.message);
         process.exit(1);
     }
 }

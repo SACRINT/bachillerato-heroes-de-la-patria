@@ -1,6 +1,6 @@
 /**
  * IMAGE GALLERY - Sistema de Galería de Imágenes Avanzado
- * BGE Héroes de la Patria
+ * window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Fecha: 19 de Octubre, 2025
  */
 

@@ -15,6 +15,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 
 // Simulación de base de datos en memoria para el asistente
@@ -129,7 +130,7 @@ router.post('/chat', async (req, res) => {
             context
         } = req.body;
 
-        console.log(`💬 Chat asistente - Estudiante: ${studentId}, Mensaje: ${message}`);
+        devLogger.log(`💬 Chat asistente - Estudiante: ${studentId}, Mensaje: ${message}`);
 
         // Validación de entrada
         if (!message || message.trim().length === 0) {
@@ -146,7 +147,7 @@ router.post('/chat', async (req, res) => {
 
         // Analizar intención del mensaje
         const intent = analyzeMessageIntent(message);
-        console.log(`🧠 Intención detectada: ${intent.primary} (confianza: ${intent.confidence})`);
+        devLogger.log(`🧠 Intención detectada: ${intent.primary} (confianza: ${intent.confidence})`);
 
         // Obtener contexto del estudiante
         const studentContext = getStudentContext(studentId, subject);
@@ -193,7 +194,7 @@ router.post('/chat', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en chat del asistente:', error);
+        devLogger.error('❌ Error en chat del asistente:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del asistente',
@@ -223,7 +224,7 @@ router.get('/conversation/:sessionId', (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo historial:', error);
+        devLogger.error('❌ Error obteniendo historial:', error);
         res.status(500).json({
             success: false,
             error: 'Error obteniendo historial'
@@ -236,7 +237,7 @@ router.post('/subject-help', (req, res) => {
     try {
         const { subject, topic, level, question } = req.body;
 
-        console.log(`📚 Ayuda especializada - Materia: ${subject}, Tema: ${topic}`);
+        devLogger.log(`📚 Ayuda especializada - Materia: ${subject}, Tema: ${topic}`);
 
         // Obtener conocimiento especializado
         const subjectKnowledge = educationalKnowledge[subject] || {};
@@ -256,7 +257,7 @@ router.post('/subject-help', (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en ayuda especializada:', error);
+        devLogger.error('❌ Error en ayuda especializada:', error);
         res.status(500).json({
             success: false,
             error: 'Error en ayuda especializada'
@@ -296,7 +297,7 @@ router.post('/learning-analysis', (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en análisis de aprendizaje:', error);
+        devLogger.error('❌ Error en análisis de aprendizaje:', error);
         res.status(500).json({
             success: false,
             error: 'Error en análisis de aprendizaje'
@@ -322,7 +323,7 @@ router.post('/follow-up-questions', (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error generando preguntas de seguimiento:', error);
+        devLogger.error('❌ Error generando preguntas de seguimiento:', error);
         res.status(500).json({
             success: false,
             error: 'Error generando preguntas'
@@ -374,7 +375,7 @@ router.get('/statistics', (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo estadísticas:', error);
+        devLogger.error('❌ Error obteniendo estadísticas:', error);
         res.status(500).json({
             success: false,
             error: 'Error obteniendo estadísticas'

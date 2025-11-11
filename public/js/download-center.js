@@ -1,4 +1,4 @@
-// Centro de Descargas - BGE Héroes de la Patria
+// Centro de Descargas - window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
 class DownloadCenter {
     constructor() {
         this.documents = this.loadDocuments();

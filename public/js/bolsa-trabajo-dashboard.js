@@ -1,6 +1,6 @@
 /**
  * 💼 PANEL DE GESTIÓN DE BOLSA DE TRABAJO
- * Dashboard Administrativo - BGE Héroes de la Patria
+ * Dashboard Administrativo - window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  *
  * @description Sistema completo de visualización y gestión de candidatos de bolsa de trabajo
  * @version 1.0.0

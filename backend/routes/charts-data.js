@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 
@@ -44,7 +45,7 @@ router.get('/noticias-por-mes', async (req, res) => {
             }]
         });
     } catch (error) {
-        console.error('Error en /noticias-por-mes:', error);
+        devLogger.error('Error en /noticias-por-mes:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener datos de noticias por mes'
@@ -98,7 +99,7 @@ router.get('/eventos-por-categoria', async (req, res) => {
             }]
         });
     } catch (error) {
-        console.error('Error en /eventos-por-categoria:', error);
+        devLogger.error('Error en /eventos-por-categoria:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener eventos por categoría'
@@ -150,7 +151,7 @@ router.get('/quejas-por-tipo', async (req, res) => {
             }]
         });
     } catch (error) {
-        console.error('Error en /quejas-por-tipo:', error);
+        devLogger.error('Error en /quejas-por-tipo:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener quejas por tipo'
@@ -207,11 +208,11 @@ router.get('/suscriptores-crecimiento', async (req, res) => {
             ]
         });
     } catch (error) {
-        console.error('Error en /suscriptores-crecimiento:', error);
+        devLogger.error('Error en /suscriptores-crecimiento:', error);
 
         // Si la tabla no existe, devolver datos vacíos en lugar de error
         if (error.code === '42P01') {
-            console.warn('⚠️ Tabla "suscriptores" no existe - devolviendo datos vacíos');
+            devLogger.warn('⚠️ Tabla "suscriptores" no existe - devolviendo datos vacíos');
             return res.json({
                 success: true,
                 labels: [],
@@ -317,7 +318,7 @@ router.get('/resumen-general', async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error en /resumen-general:', error);
+        devLogger.error('Error en /resumen-general:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener resumen general'

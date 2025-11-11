@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
@@ -112,7 +113,7 @@ router.post('/', [
             user_agent
         ]);
 
-        console.log('✅ Nuevo evento creado:', result.rows[0].id);
+        devLogger.log('✅ Nuevo evento creado:', result.rows[0].id);
 
         res.status(201).json({
             success: true,
@@ -121,7 +122,7 @@ router.post('/', [
         });
 
     } catch (error) {
-        console.error('❌ Error al crear evento:', error);
+        devLogger.error('❌ Error al crear evento:', error);
         res.status(500).json({
             success: false,
             error: 'Error al crear el evento'
@@ -209,7 +210,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener eventos:', error);
+        devLogger.error('❌ Error al obtener eventos:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener eventos'
@@ -244,7 +245,7 @@ router.get('/stats', cacheMiddleware({ ttl: TTL_CONFIG.stats }), async (req, res
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener estadísticas:', error);
+        devLogger.error('❌ Error al obtener estadísticas:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -274,7 +275,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener evento:', error);
+        devLogger.error('❌ Error al obtener evento:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener el evento'
@@ -304,7 +305,7 @@ router.get('/slug/:slug', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener evento:', error);
+        devLogger.error('❌ Error al obtener evento:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener el evento'
@@ -397,7 +398,7 @@ router.put('/:id', async (req, res) => {
             });
         }
 
-        console.log(`✅ Evento ${id} actualizado`);
+        devLogger.log(`✅ Evento ${id} actualizado`);
 
         res.json({
             success: true,
@@ -406,7 +407,7 @@ router.put('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar evento:', error);
+        devLogger.error('❌ Error al actualizar evento:', error);
         res.status(500).json({
             success: false,
             error: 'Error al actualizar el evento'
@@ -442,7 +443,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al cancelar evento:', error);
+        devLogger.error('❌ Error al cancelar evento:', error);
         res.status(500).json({
             success: false,
             error: 'Error al cancelar el evento'
@@ -537,7 +538,7 @@ router.get('/calendar', async (req, res) => {
             events
         });
     } catch (error) {
-        console.error('Error en /calendar:', error);
+        devLogger.error('Error en /calendar:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener eventos para calendario'

@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const { body, validationResult } = require('express-validator');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const { getAuthService } = require('../services/authService');
@@ -75,7 +76,7 @@ router.get('/pending-registrations', authenticateToken, requireAdmin, async (req
         // Ordenar por fecha de creación (más reciente primero)
         pendingRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-        console.log(`📋 Admin ${req.user.email} consultó solicitudes pendientes: ${pendingRequests.length}`);
+        devLogger.log('📋 Admin ${req.user.email} consultó solicitudes pendientes: ${pendingRequests.length}');
 
         res.json({
             success: true,
@@ -86,7 +87,7 @@ router.get('/pending-registrations', authenticateToken, requireAdmin, async (req
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo solicitudes pendientes:', error);
+        devLogger.error('❌ Error obteniendo solicitudes pendientes:');
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -123,7 +124,7 @@ router.get('/all-registrations', authenticateToken, requireAdmin, async (req, re
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo todas las solicitudes:', error);
+        devLogger.error('❌ Error obteniendo todas las solicitudes:');
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -157,7 +158,7 @@ router.get('/check-approval/:email', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error verificando aprobación:', error);
+        devLogger.error('❌ Error verificando aprobación:');
         res.status(500).json({
             success: false,
             approved: false
@@ -268,7 +269,7 @@ router.post('/approve-registration', authenticateToken, requireAdmin, [
             // Guardar cambios
             await RegistrationHelpers.writeRegistrationRequests(data);
 
-            console.log(`✅ Admin ${req.user.email} aprobó solicitud ${requestId} - Usuario creado: ${newUser.email}`);
+            devLogger.log('✅ Admin ${req.user.email} aprobó solicitud ${requestId} - Usuario creado: ${newUser.email}');
 
             res.status(201).json({
                 success: true,
@@ -289,7 +290,7 @@ router.post('/approve-registration', authenticateToken, requireAdmin, [
             });
 
         } catch (userError) {
-            console.error('❌ Error creando usuario:', userError);
+            devLogger.error('❌ Error creando usuario:', userError);
 
             // Si falla la creación del usuario, revertir el cambio de estado
             return res.status(500).json({
@@ -300,7 +301,7 @@ router.post('/approve-registration', authenticateToken, requireAdmin, [
         }
 
     } catch (error) {
-        console.error('❌ Error aprobando solicitud:', error);
+        devLogger.error('❌ Error aprobando solicitud:');
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -365,7 +366,7 @@ router.post('/reject-registration', authenticateToken, requireAdmin, [
         // Guardar cambios
         await RegistrationHelpers.writeRegistrationRequests(data);
 
-        console.log(`🚫 Admin ${req.user.email} rechazó solicitud ${requestId}`);
+        devLogger.log('🚫 Admin ${req.user.email} rechazó solicitud ${requestId}');
 
         res.json({
             success: true,
@@ -381,7 +382,7 @@ router.post('/reject-registration', authenticateToken, requireAdmin, [
         });
 
     } catch (error) {
-        console.error('❌ Error rechazando solicitud:', error);
+        devLogger.error('❌ Error rechazando solicitud:');
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -430,7 +431,7 @@ router.get('/registration-stats', authenticateToken, requireAdmin, async (req, r
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo estadísticas:', error);
+        devLogger.error('❌ Error obteniendo estadísticas:');
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -450,7 +451,7 @@ router.get('/teachers', authenticateToken, requireAdmin, async (req, res) => {
         const teachers = result.rows || [];
         res.json({ success: true, data: teachers });
     } catch (error) {
-        console.error('❌ Error al obtener docentes:', error);
+        devLogger.error('❌ Error al obtener docentes:');
         res.status(500).json({ success: false, error: 'Error interno del servidor al obtener docentes' });
     }
 });
@@ -463,18 +464,18 @@ router.get('/teachers', authenticateToken, requireAdmin, async (req, res) => {
 router.get('/students', authenticateToken, requireAdmin, async (req, res) => {
     try {
         // 🔍 LOGS DE DIAGNÓSTICO - Verificar conexión a BD
-        console.log(`[DB_DEBUG] DATABASE_URL presente: ${!!process.env.DATABASE_URL}`);
-        console.log(`[DB_DEBUG] Pool configurado - Total connections: ${pool.totalCount}, Idle: ${pool.idleCount}`);
-        console.log(`[DB_DEBUG] Ejecutando consulta: SELECT * FROM estudiantes`);
+        devLogger.log('[DB_DEBUG] DATABASE_URL presente: ${!!process.env.DATABASE_URL}');
+        devLogger.log('[DB_DEBUG] Pool configurado - Total connections: ${pool.totalCount}, Idle: ${pool.idleCount}');
+        devLogger.log('[DB_DEBUG] Ejecutando consulta: SELECT * FROM estudiantes');
 
         const result = await pool.query('SELECT * FROM estudiantes ORDER BY apellido_paterno, apellido_materno, nombre ASC');
         const students = result.rows || [];
 
-        console.log(`[DB_DEBUG] ✅ Consulta exitosa: ${students.length} estudiantes encontrados`);
+        devLogger.log('[DB_DEBUG] ✅ Consulta exitosa: ${students.length} estudiantes encontrados');
 
         res.json({ success: true, data: students });
     } catch (error) {
-        console.error('❌ Error al obtener estudiantes:', error);
+        devLogger.error('❌ Error al obtener estudiantes:');
         res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estudiantes' });
     }
 });
@@ -500,7 +501,7 @@ router.get('/parents', authenticateToken, requireAdmin, async (req, res) => {
         const parents = result.rows || [];
         res.json({ success: true, data: parents, total: parents.length });
     } catch (error) {
-        console.error('❌ Error al obtener padres:', error);
+        devLogger.error('❌ Error al obtener padres:');
         res.status(500).json({ success: false, error: 'Error interno del servidor al obtener padres' });
     }
 });

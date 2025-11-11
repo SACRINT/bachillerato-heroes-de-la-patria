@@ -7,6 +7,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { getAIDatabaseIntegration } = require('../services/aiDatabaseIntegration');
 const { authenticateToken } = require('../middleware/auth');
@@ -42,7 +43,7 @@ router.get('/health', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en health check AI-Database:', error);
+        devLogger.error('❌ Error en health check AI-Database:', error);
         res.status(500).json({
             status: 'error',
             message: 'Health check failed',
@@ -59,7 +60,7 @@ router.get('/students/:studentId?', authenticateToken, async (req, res) => {
     try {
         const { studentId } = req.params;
 
-        console.log(`🎓 Obteniendo datos de estudiantes con AI: ${studentId || 'todos'}`);
+        devLogger.log(`🎓 Obteniendo datos de estudiantes con AI: ${studentId || 'todos'}`);
 
         const studentData = await aiDbIntegration.getStudentData(
             studentId ? parseInt(studentId) : null
@@ -77,7 +78,7 @@ router.get('/students/:studentId?', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo datos de estudiantes:', error);
+        devLogger.error('❌ Error obteniendo datos de estudiantes:', error);
         res.status(500).json({
             success: false,
             error: 'Error obteniendo datos de estudiantes',
@@ -94,7 +95,7 @@ router.get('/academic', authenticateToken, async (req, res) => {
     try {
         const { materia, grado } = req.query;
 
-        console.log(`📚 Obteniendo datos académicos con AI: materia=${materia}, grado=${grado}`);
+        devLogger.log(`📚 Obteniendo datos académicos con AI: materia=${materia}, grado=${grado}`);
 
         const academicData = await aiDbIntegration.getAcademicData(materia, grado);
 
@@ -109,7 +110,7 @@ router.get('/academic', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo datos académicos:', error);
+        devLogger.error('❌ Error obteniendo datos académicos:', error);
         res.status(500).json({
             success: false,
             error: 'Error obteniendo datos académicos',
@@ -126,7 +127,7 @@ router.get('/teachers/:teacherId?', authenticateToken, async (req, res) => {
     try {
         const { teacherId } = req.params;
 
-        console.log(`👨‍🏫 Obteniendo datos de docentes con AI: ${teacherId || 'todos'}`);
+        devLogger.log(`👨‍🏫 Obteniendo datos de docentes con AI: ${teacherId || 'todos'}`);
 
         const teacherData = await aiDbIntegration.getTeacherData(
             teacherId ? parseInt(teacherId) : null
@@ -144,7 +145,7 @@ router.get('/teachers/:teacherId?', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo datos de docentes:', error);
+        devLogger.error('❌ Error obteniendo datos de docentes:', error);
         res.status(500).json({
             success: false,
             error: 'Error obteniendo datos de docentes',
@@ -161,7 +162,7 @@ router.post('/performance-analysis', authenticateToken, async (req, res) => {
     try {
         const filters = req.body || {};
 
-        console.log(`📊 Ejecutando análisis de rendimiento con AI:`, filters);
+        devLogger.log(`📊 Ejecutando análisis de rendimiento con AI:`, filters);
 
         const performanceData = await aiDbIntegration.getPerformanceData(filters);
 
@@ -180,7 +181,7 @@ router.post('/performance-analysis', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en análisis de rendimiento:', error);
+        devLogger.error('❌ Error en análisis de rendimiento:', error);
         res.status(500).json({
             success: false,
             error: 'Error en análisis de rendimiento',
@@ -198,7 +199,7 @@ router.get('/recommendations/:studentId', authenticateToken, async (req, res) =>
         const { studentId } = req.params;
         const { includePerformance = true, includePredictive = true } = req.query;
 
-        console.log(`💡 Generando recomendaciones AI para estudiante ${studentId}`);
+        devLogger.log(`💡 Generando recomendaciones AI para estudiante ${studentId}`);
 
         // Obtener datos del estudiante
         const studentData = await aiDbIntegration.getStudentData(parseInt(studentId));
@@ -238,7 +239,7 @@ router.get('/recommendations/:studentId', authenticateToken, async (req, res) =>
         });
 
     } catch (error) {
-        console.error('❌ Error generando recomendaciones:', error);
+        devLogger.error('❌ Error generando recomendaciones:', error);
         res.status(500).json({
             success: false,
             error: 'Error generando recomendaciones',
@@ -263,7 +264,7 @@ router.post('/batch-analysis', authenticateToken, async (req, res) => {
             });
         }
 
-        console.log(`📊 Análisis en lote de ${studentIds.length} estudiantes`);
+        devLogger.log(`📊 Análisis en lote de ${studentIds.length} estudiantes`);
 
         const batchResults = [];
 
@@ -317,7 +318,7 @@ router.post('/batch-analysis', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en análisis en lote:', error);
+        devLogger.error('❌ Error en análisis en lote:', error);
         res.status(500).json({
             success: false,
             error: 'Error en análisis en lote',
@@ -343,7 +344,7 @@ router.get('/stats', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error obteniendo estadísticas:', error);
+        devLogger.error('❌ Error obteniendo estadísticas:', error);
         res.status(500).json({
             success: false,
             error: 'Error obteniendo estadísticas',
@@ -377,7 +378,7 @@ router.post('/clear-cache', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error limpiando cache:', error);
+        devLogger.error('❌ Error limpiando cache:', error);
         res.status(500).json({
             success: false,
             error: 'Error limpiando cache',
@@ -394,7 +395,7 @@ router.get('/subjects/analysis', authenticateToken, async (req, res) => {
     try {
         const { grado } = req.query;
 
-        console.log(`📚 Análisis AI de materias: grado=${grado}`);
+        devLogger.log(`📚 Análisis AI de materias: grado=${grado}`);
 
         const academicData = await aiDbIntegration.getAcademicData(null, grado);
 
@@ -435,7 +436,7 @@ router.get('/subjects/analysis', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en análisis de materias:', error);
+        devLogger.error('❌ Error en análisis de materias:', error);
         res.status(500).json({
             success: false,
             error: 'Error en análisis de materias',

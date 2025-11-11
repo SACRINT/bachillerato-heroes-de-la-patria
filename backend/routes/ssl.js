@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const { requireAdmin } = require('../middleware/auth');
 const { getSSLManager } = require('../config/ssl');
 
@@ -18,12 +19,12 @@ router.use(requireAdmin);
  */
 router.get('/status', async (req, res, next) => {
     try {
-        console.log('🔒 [SSL API] Consultando estado SSL');
+        devLogger.log('🔒 [SSL API] Consultando estado SSL');
 
         const sslManager = getSSLManager();
         const status = sslManager.getStatus();
 
-        console.log('Estado SSL consultado', {
+        devLogger.log('Estado SSL consultado', {
             userId: req.user.id,
             certificatesExist: status.files.certificate.exists
         });
@@ -44,7 +45,7 @@ router.get('/status', async (req, res, next) => {
  */
 router.get('/certificate-info', async (req, res, next) => {
     try {
-        console.log('📜 [SSL API] Obteniendo información del certificado');
+        devLogger.log('📜 [SSL API] Obteniendo información del certificado');
 
         const sslManager = getSSLManager();
         const certificateInfo = sslManager.getCertificateInfo();
@@ -73,12 +74,12 @@ router.get('/certificate-info', async (req, res, next) => {
  */
 router.post('/generate-certificates', async (req, res, next) => {
     try {
-        console.log('🔧 [SSL API] Generando nuevos certificados SSL');
+        devLogger.log('🔧 [SSL API] Generando nuevos certificados SSL');
 
         const sslManager = getSSLManager();
         const result = await sslManager.generateSelfSignedCertificates();
 
-        console.warn('Certificados SSL regenerados', {
+        devLogger.warn('Certificados SSL regenerados', {
             userId: req.user.id,
             success: result,
             timestamp: new Date().toISOString()
@@ -123,12 +124,12 @@ router.post('/setup-letsencrypt', async (req, res, next) => {
             });
         }
 
-        console.log(`🌐 [SSL API] Configurando Let's Encrypt para ${domain}`);
+        devLogger.log(`🌐 [SSL API] Configurando Let's Encrypt para ${domain}`);
 
         const sslManager = getSSLManager();
         const config = await sslManager.setupLetsEncrypt(domain, email);
 
-        console.log('Configuración Let\'s Encrypt iniciada', {
+        devLogger.log('Configuración Let\'s Encrypt iniciada', {
             userId: req.user.id,
             domain: domain,
             email: email
@@ -161,7 +162,7 @@ router.post('/setup-letsencrypt', async (req, res, next) => {
  */
 router.get('/security-headers', async (req, res, next) => {
     try {
-        console.log('🛡️ [SSL API] Consultando headers de seguridad');
+        devLogger.log('🛡️ [SSL API] Consultando headers de seguridad');
 
         const securityHeaders = {
             'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
@@ -198,7 +199,7 @@ router.post('/test-https', async (req, res, next) => {
     try {
         const { port = 443 } = req.body;
 
-        console.log(`🧪 [SSL API] Probando configuración HTTPS en puerto ${port}`);
+        devLogger.log(`🧪 [SSL API] Probando configuración HTTPS en puerto ${port}`);
 
         const sslManager = getSSLManager();
         const sslOptions = sslManager.getSSLOptions();
@@ -223,7 +224,7 @@ router.post('/test-https', async (req, res, next) => {
             testTimestamp: new Date().toISOString()
         };
 
-        console.log('Prueba HTTPS realizada', {
+        devLogger.log('Prueba HTTPS realizada', {
             userId: req.user.id,
             port: port,
             success: true
@@ -251,7 +252,7 @@ router.post('/test-https', async (req, res, next) => {
  */
 router.get('/cipher-suites', async (req, res, next) => {
     try {
-        console.log('🔐 [SSL API] Consultando cipher suites');
+        devLogger.log('🔐 [SSL API] Consultando cipher suites');
 
         const sslManager = getSSLManager();
         const cipherSuites = sslManager.config.ciphers.split(':');
@@ -294,7 +295,7 @@ router.get('/cipher-suites', async (req, res, next) => {
  */
 router.post('/validate-certificate', async (req, res, next) => {
     try {
-        console.log('✅ [SSL API] Validando certificado SSL');
+        devLogger.log('✅ [SSL API] Validando certificado SSL');
 
         const sslManager = getSSLManager();
         await sslManager.validateCertificates();
@@ -334,7 +335,7 @@ router.post('/validate-certificate', async (req, res, next) => {
             validation.warnings.push('Certificado expirado - genere uno nuevo');
         }
 
-        console.log('Certificado SSL validado', {
+        devLogger.log('Certificado SSL validado', {
             userId: req.user.id,
             valid: validation.valid,
             expired: validation.expired,

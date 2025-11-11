@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const { requireAdmin } = require('../middleware/auth');
 const { getMaintenanceTools } = require('../services/maintenanceTools');
 const router = express.Router();
@@ -17,12 +18,12 @@ router.use(requireAdmin);
  */
 router.get('/diagnostic', async (req, res, next) => {
     try {
-        console.log('🔧 [MAINTENANCE API] Ejecutando diagnóstico del sistema');
+        devLogger.log('🔧 [MAINTENANCE API] Ejecutando diagnóstico del sistema');
 
         const maintenanceTools = getMaintenanceTools();
         const diagnostic = await maintenanceTools.systemDiagnostic();
 
-        console.log('Diagnóstico del sistema ejecutado', {
+        devLogger.log('Diagnóstico del sistema ejecutado', {
             userId: req.user.id,
             systemHealth: diagnostic.summary.overallHealth
         });
@@ -43,7 +44,7 @@ router.get('/diagnostic', async (req, res, next) => {
  */
 router.get('/health', async (req, res, next) => {
     try {
-        console.log('💚 [MAINTENANCE API] Verificando salud del sistema');
+        devLogger.log('💚 [MAINTENANCE API] Verificando salud del sistema');
 
         const maintenanceTools = getMaintenanceTools();
         const health = await maintenanceTools.quickHealthCheck();
@@ -66,12 +67,12 @@ router.post('/cleanup', async (req, res, next) => {
     try {
         const { options = {} } = req.body;
 
-        console.log('🧹 [MAINTENANCE API] Ejecutando limpieza del sistema');
+        devLogger.log('🧹 [MAINTENANCE API] Ejecutando limpieza del sistema');
 
         const maintenanceTools = getMaintenanceTools();
         const result = await maintenanceTools.cleanupSystem(options);
 
-        console.warn('Limpieza del sistema ejecutada', {
+        devLogger.warn('Limpieza del sistema ejecutada', {
             userId: req.user.id,
             spaceFreed: result.spaceFreed,
             operationsCount: result.operations.length
@@ -93,7 +94,7 @@ router.post('/cleanup', async (req, res, next) => {
  */
 router.get('/performance', async (req, res, next) => {
     try {
-        console.log('📊 [MAINTENANCE API] Analizando rendimiento del sistema');
+        devLogger.log('📊 [MAINTENANCE API] Analizando rendimiento del sistema');
 
         const maintenanceTools = getMaintenanceTools();
         const performance = await maintenanceTools.performanceAnalysis();
@@ -114,12 +115,12 @@ router.get('/performance', async (req, res, next) => {
  */
 router.post('/optimize-database', async (req, res, next) => {
     try {
-        console.log('🗃️ [MAINTENANCE API] Optimizando base de datos');
+        devLogger.log('🗃️ [MAINTENANCE API] Optimizando base de datos');
 
         const maintenanceTools = getMaintenanceTools();
         const result = await maintenanceTools.optimizeDatabase();
 
-        console.log('Optimización de base de datos ejecutada', {
+        devLogger.log('Optimización de base de datos ejecutada', {
             userId: req.user.id,
             success: result.success,
             operationsCount: result.operations?.length || 0
@@ -141,12 +142,12 @@ router.post('/optimize-database', async (req, res, next) => {
  */
 router.get('/integrity-check', async (req, res, next) => {
     try {
-        console.log('🔍 [MAINTENANCE API] Verificando integridad del sistema');
+        devLogger.log('🔍 [MAINTENANCE API] Verificando integridad del sistema');
 
         const maintenanceTools = getMaintenanceTools();
         const integrity = await maintenanceTools.checkSystemIntegrity();
 
-        console.log('Verificación de integridad ejecutada', {
+        devLogger.log('Verificación de integridad ejecutada', {
             userId: req.user.id,
             issuesFound: integrity.issues?.length || 0,
             overallStatus: integrity.overall.status
@@ -168,7 +169,7 @@ router.get('/integrity-check', async (req, res, next) => {
  */
 router.get('/storage-analysis', async (req, res, next) => {
     try {
-        console.log('💾 [MAINTENANCE API] Analizando almacenamiento');
+        devLogger.log('💾 [MAINTENANCE API] Analizando almacenamiento');
 
         const maintenanceTools = getMaintenanceTools();
         const storage = await maintenanceTools.storageAnalysis();
@@ -199,12 +200,12 @@ router.post('/restart-services', async (req, res, next) => {
             });
         }
 
-        console.log(`🔄 [MAINTENANCE API] Reiniciando servicios: ${services.join(', ')}`);
+        devLogger.log(`🔄 [MAINTENANCE API] Reiniciando servicios: ${services.join(', ')}`);
 
         const maintenanceTools = getMaintenanceTools();
         const result = await maintenanceTools.restartServices(services);
 
-        console.warn('Servicios reiniciados', {
+        devLogger.warn('Servicios reiniciados', {
             userId: req.user.id,
             services: services,
             success: result.success
@@ -233,7 +234,7 @@ router.get('/system-logs', async (req, res, next) => {
             since = null
         } = req.query;
 
-        console.log(`📋 [MAINTENANCE API] Obteniendo logs del sistema (${level}/${category})`);
+        devLogger.log(`📋 [MAINTENANCE API] Obteniendo logs del sistema (${level}/${category})`);
 
         const maintenanceTools = getMaintenanceTools();
         const logs = await maintenanceTools.getSystemLogs({
@@ -265,7 +266,7 @@ router.post('/generate-report', async (req, res, next) => {
     try {
         const { includeDetails = true, format = 'json' } = req.body;
 
-        console.log('📊 [MAINTENANCE API] Generando reporte de mantenimiento');
+        devLogger.log('📊 [MAINTENANCE API] Generando reporte de mantenimiento');
 
         const maintenanceTools = getMaintenanceTools();
         const report = await maintenanceTools.generateMaintenanceReport({
@@ -273,7 +274,7 @@ router.post('/generate-report', async (req, res, next) => {
             format
         });
 
-        console.log('Reporte de mantenimiento generado', {
+        devLogger.log('Reporte de mantenimiento generado', {
             userId: req.user.id,
             format: format,
             includeDetails: includeDetails
@@ -295,7 +296,7 @@ router.post('/generate-report', async (req, res, next) => {
  */
 router.get('/scheduled-tasks', async (req, res, next) => {
     try {
-        console.log('⏰ [MAINTENANCE API] Consultando tareas programadas');
+        devLogger.log('⏰ [MAINTENANCE API] Consultando tareas programadas');
 
         const maintenanceTools = getMaintenanceTools();
         const tasks = await maintenanceTools.getScheduledTasks();
@@ -332,7 +333,7 @@ router.post('/schedule-task', async (req, res, next) => {
             });
         }
 
-        console.log(`⏰ [MAINTENANCE API] Programando nueva tarea: ${name}`);
+        devLogger.log(`⏰ [MAINTENANCE API] Programando nueva tarea: ${name}`);
 
         const maintenanceTools = getMaintenanceTools();
         const result = await maintenanceTools.scheduleMaintenanceTask({
@@ -343,7 +344,7 @@ router.post('/schedule-task', async (req, res, next) => {
             enabled
         });
 
-        console.log('Nueva tarea programada', {
+        devLogger.log('Nueva tarea programada', {
             userId: req.user.id,
             taskName: name,
             cronExpression: cronExpression

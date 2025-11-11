@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
@@ -88,7 +89,7 @@ router.post('/image', upload.single('image'), async (req, res) => {
         const contentType = req.body.contentType || 'general';
         const imageUrl = `/uploads/${contentType}/${req.file.filename}`;
 
-        console.log('✅ Imagen subida:', imageUrl);
+        devLogger.log('✅ Imagen subida:', imageUrl);
 
         res.status(201).json({
             success: true,
@@ -104,7 +105,7 @@ router.post('/image', upload.single('image'), async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al subir imagen:', error);
+        devLogger.error('❌ Error al subir imagen:', error);
         res.status(500).json({
             success: false,
             error: 'Error al subir la imagen'
@@ -133,7 +134,7 @@ router.post('/multiple', upload.array('images', 10), async (req, res) => {
             mimetype: file.mimetype
         }));
 
-        console.log(`✅ ${uploadedFiles.length} imágenes subidas`);
+        devLogger.log(`✅ ${uploadedFiles.length} imágenes subidas`);
 
         res.status(201).json({
             success: true,
@@ -142,7 +143,7 @@ router.post('/multiple', upload.array('images', 10), async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al subir imágenes:', error);
+        devLogger.error('❌ Error al subir imágenes:', error);
         res.status(500).json({
             success: false,
             error: 'Error al subir las imágenes'
@@ -178,7 +179,7 @@ router.delete('/image/:contentType/:filename', async (req, res) => {
         // Eliminar archivo
         fs.unlinkSync(filePath);
 
-        console.log('✅ Imagen eliminada:', filename);
+        devLogger.log('✅ Imagen eliminada:', filename);
 
         res.json({
             success: true,
@@ -186,7 +187,7 @@ router.delete('/image/:contentType/:filename', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al eliminar imagen:', error);
+        devLogger.error('❌ Error al eliminar imagen:', error);
         res.status(500).json({
             success: false,
             error: 'Error al eliminar la imagen'
@@ -238,7 +239,7 @@ router.get('/list/:contentType', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al listar imágenes:', error);
+        devLogger.error('❌ Error al listar imágenes:', error);
         res.status(500).json({
             success: false,
             error: 'Error al listar las imágenes'

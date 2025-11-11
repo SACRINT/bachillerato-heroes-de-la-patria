@@ -1,6 +1,6 @@
 /**
  * PARENTS PORTAL MANAGER
- * BGE Héroes de la Patria
+ * window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Fecha: 19 de Octubre, 2025
  *
  * Gestor completo del Portal de Padres

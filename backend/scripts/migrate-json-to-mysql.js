@@ -4,6 +4,7 @@
  */
 
 const mysql = require('mysql2/promise');
+const devLogger = require('../utils/devLogger');
 const fs = require('fs/promises');
 const path = require('path');
 require('dotenv').config();
@@ -47,15 +48,15 @@ class JSONToMySQLMigrator {
 
     async initialize() {
         try {
-            console.log('🔧 Conectando a MySQL...');
+            devLogger.log('🔧 Conectando a MySQL...');
             this.connection = await mysql.createConnection(dbConfig);
-            console.log('✅ Conexión MySQL establecida');
+            devLogger.log('✅ Conexión MySQL establecida');
 
             await this.createDatabase();
             await this.createTables();
 
         } catch (error) {
-            console.error('❌ Error inicializando migrador:', error.message);
+            devLogger.error('❌ Error inicializando migrador:', error.message);
             throw error;
         }
     }
@@ -64,9 +65,9 @@ class JSONToMySQLMigrator {
         try {
             await this.connection.execute(`CREATE DATABASE IF NOT EXISTS ${dbConfig.database} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
             await this.connection.execute(`USE ${dbConfig.database}`);
-            console.log('✅ Base de datos preparada');
+            devLogger.log('✅ Base de datos preparada');
         } catch (error) {
-            console.error('❌ Error creando base de datos:', error.message);
+            devLogger.error('❌ Error creando base de datos:', error.message);
             throw error;
         }
     }
@@ -285,10 +286,10 @@ class JSONToMySQLMigrator {
         try {
             for (const [tableName, sql] of Object.entries(tables)) {
                 await this.connection.execute(sql);
-                console.log(`✅ Tabla ${tableName} creada/verificada`);
+                devLogger.log(`✅ Tabla ${tableName} creada/verificada`);
             }
         } catch (error) {
-            console.error('❌ Error creando tablas:', error.message);
+            devLogger.error('❌ Error creando tablas:', error.message);
             throw error;
         }
     }
@@ -299,17 +300,17 @@ class JSONToMySQLMigrator {
             const data = await fs.readFile(filePath, 'utf8');
             return JSON.parse(data);
         } catch (error) {
-            console.error(`❌ Error leyendo ${filename}:`, error.message);
+            devLogger.error(`❌ Error leyendo ${filename}:`, error.message);
             return null;
         }
     }
 
     async migrateUsers() {
-        console.log('👥 Migrando usuarios...');
+        devLogger.log('👥 Migrando usuarios...');
         const users = await this.readJSONFile(jsonFiles.users);
 
         if (!users || !Array.isArray(users)) {
-            console.log('⚠️ No se encontraron usuarios o formato inválido');
+            devLogger.log('⚠️ No se encontraron usuarios o formato inválido');
             return;
         }
 
@@ -334,20 +335,20 @@ class JSONToMySQLMigrator {
                 );
                 this.migrationStats.migratedRecords++;
             } catch (error) {
-                console.error(`❌ Error migrando usuario ${user.email}:`, error.message);
+                devLogger.error(`❌ Error migrando usuario ${user.email}:`, error.message);
                 this.migrationStats.errors.push(`Usuario ${user.email}: ${error.message}`);
             }
         }
 
-        console.log(`✅ ${users.length} usuarios procesados`);
+        devLogger.log(`✅ ${users.length} usuarios procesados`);
     }
 
     async migrateEstudiantes() {
-        console.log('🎓 Migrando estudiantes...');
+        devLogger.log('🎓 Migrando estudiantes...');
         const data = await this.readJSONFile(jsonFiles.estudiantes);
 
         if (!data || !data.estudiantes || !Array.isArray(data.estudiantes)) {
-            console.log('⚠️ No se encontraron estudiantes o formato inválido');
+            devLogger.log('⚠️ No se encontraron estudiantes o formato inválido');
             return;
         }
 
@@ -377,20 +378,20 @@ class JSONToMySQLMigrator {
                 );
                 this.migrationStats.migratedRecords++;
             } catch (error) {
-                console.error(`❌ Error migrando estudiante ${estudiante.matricula}:`, error.message);
+                devLogger.error(`❌ Error migrando estudiante ${estudiante.matricula}:`, error.message);
                 this.migrationStats.errors.push(`Estudiante ${estudiante.matricula}: ${error.message}`);
             }
         }
 
-        console.log(`✅ ${estudiantes.length} estudiantes procesados`);
+        devLogger.log(`✅ ${estudiantes.length} estudiantes procesados`);
     }
 
     async migrateDocentes() {
-        console.log('👨‍🏫 Migrando docentes...');
+        devLogger.log('👨‍🏫 Migrando docentes...');
         const data = await this.readJSONFile(jsonFiles.docentes);
 
         if (!data || !data.docentes || !Array.isArray(data.docentes)) {
-            console.log('⚠️ No se encontraron docentes o formato inválido');
+            devLogger.log('⚠️ No se encontraron docentes o formato inválido');
             return;
         }
 
@@ -416,20 +417,20 @@ class JSONToMySQLMigrator {
                 );
                 this.migrationStats.migratedRecords++;
             } catch (error) {
-                console.error(`❌ Error migrando docente ${docente.nombre}:`, error.message);
+                devLogger.error(`❌ Error migrando docente ${docente.nombre}:`, error.message);
                 this.migrationStats.errors.push(`Docente ${docente.nombre}: ${error.message}`);
             }
         }
 
-        console.log(`✅ ${docentes.length} docentes procesados`);
+        devLogger.log(`✅ ${docentes.length} docentes procesados`);
     }
 
     async migrateNoticias() {
-        console.log('📰 Migrando noticias...');
+        devLogger.log('📰 Migrando noticias...');
         const data = await this.readJSONFile(jsonFiles.noticias);
 
         if (!data || !data.noticias || !Array.isArray(data.noticias)) {
-            console.log('⚠️ No se encontraron noticias o formato inválido');
+            devLogger.log('⚠️ No se encontraron noticias o formato inválido');
             return;
         }
 
@@ -454,20 +455,20 @@ class JSONToMySQLMigrator {
                 );
                 this.migrationStats.migratedRecords++;
             } catch (error) {
-                console.error(`❌ Error migrando noticia "${noticia.titulo}":`, error.message);
+                devLogger.error(`❌ Error migrando noticia "${noticia.titulo}":`, error.message);
                 this.migrationStats.errors.push(`Noticia "${noticia.titulo}": ${error.message}`);
             }
         }
 
-        console.log(`✅ ${noticias.length} noticias procesadas`);
+        devLogger.log(`✅ ${noticias.length} noticias procesadas`);
     }
 
     async migrateEventos() {
-        console.log('📅 Migrando eventos...');
+        devLogger.log('📅 Migrando eventos...');
         const data = await this.readJSONFile(jsonFiles.eventos);
 
         if (!data || !data.eventos || !Array.isArray(data.eventos)) {
-            console.log('⚠️ No se encontraron eventos o formato inválido');
+            devLogger.log('⚠️ No se encontraron eventos o formato inválido');
             return;
         }
 
@@ -493,20 +494,20 @@ class JSONToMySQLMigrator {
                 );
                 this.migrationStats.migratedRecords++;
             } catch (error) {
-                console.error(`❌ Error migrando evento "${evento.titulo}":`, error.message);
+                devLogger.error(`❌ Error migrando evento "${evento.titulo}":`, error.message);
                 this.migrationStats.errors.push(`Evento "${evento.titulo}": ${error.message}`);
             }
         }
 
-        console.log(`✅ ${eventos.length} eventos procesados`);
+        devLogger.log(`✅ ${eventos.length} eventos procesados`);
     }
 
     async migrateDashboardStats() {
-        console.log('📊 Migrando estadísticas...');
+        devLogger.log('📊 Migrando estadísticas...');
         const stats = await this.readJSONFile(jsonFiles.estadisticas);
 
         if (!stats) {
-            console.log('⚠️ No se encontraron estadísticas');
+            devLogger.log('⚠️ No se encontraron estadísticas');
             return;
         }
 
@@ -541,17 +542,17 @@ class JSONToMySQLMigrator {
                 recordCount++;
                 this.migrationStats.migratedRecords++;
             } catch (error) {
-                console.error(`❌ Error migrando estadística ${key}:`, error.message);
+                devLogger.error(`❌ Error migrando estadística ${key}:`, error.message);
                 this.migrationStats.errors.push(`Estadística ${key}: ${error.message}`);
             }
         }
 
-        console.log(`✅ ${recordCount} estadísticas procesadas`);
+        devLogger.log(`✅ ${recordCount} estadísticas procesadas`);
     }
 
     async runMigration() {
-        console.log('🚀 INICIANDO MIGRACIÓN JSON → MySQL');
-        console.log('=====================================');
+        devLogger.log('🚀 INICIANDO MIGRACIÓN JSON → MySQL');
+        devLogger.log('=====================================');
 
         const startTime = Date.now();
 
@@ -569,26 +570,26 @@ class JSONToMySQLMigrator {
             const endTime = Date.now();
             const duration = (endTime - startTime) / 1000;
 
-            console.log('\n📈 RESUMEN DE MIGRACIÓN');
-            console.log('=======================');
-            console.log(`✅ Registros migrados: ${this.migrationStats.migratedRecords}`);
-            console.log(`⏱️ Tiempo transcurrido: ${duration}s`);
-            console.log(`❌ Errores: ${this.migrationStats.errors.length}`);
+            devLogger.log('\n📈 RESUMEN DE MIGRACIÓN');
+            devLogger.log('=======================');
+            devLogger.log(`✅ Registros migrados: ${this.migrationStats.migratedRecords}`);
+            devLogger.log(`⏱️ Tiempo transcurrido: ${duration}s`);
+            devLogger.log(`❌ Errores: ${this.migrationStats.errors.length}`);
 
             if (this.migrationStats.errors.length > 0) {
-                console.log('\n🚨 ERRORES ENCONTRADOS:');
-                this.migrationStats.errors.forEach(error => console.log(`  • ${error}`));
+                devLogger.log('\n🚨 ERRORES ENCONTRADOS:');
+                this.migrationStats.errors.forEach(error => devLogger.log(`  • ${error}`));
             }
 
-            console.log('\n🎉 MIGRACIÓN COMPLETADA EXITOSAMENTE');
+            devLogger.log('\n🎉 MIGRACIÓN COMPLETADA EXITOSAMENTE');
 
         } catch (error) {
-            console.error('💥 ERROR CRÍTICO EN MIGRACIÓN:', error.message);
+            devLogger.error('💥 ERROR CRÍTICO EN MIGRACIÓN:', error.message);
             throw error;
         } finally {
             if (this.connection) {
                 await this.connection.end();
-                console.log('🔌 Conexión MySQL cerrada');
+                devLogger.log('🔌 Conexión MySQL cerrada');
             }
         }
     }
@@ -599,11 +600,11 @@ if (require.main === module) {
     const migrator = new JSONToMySQLMigrator();
     migrator.runMigration()
         .then(() => {
-            console.log('✅ Script de migración terminado exitosamente');
+            devLogger.log('✅ Script de migración terminado exitosamente');
             process.exit(0);
         })
         .catch((error) => {
-            console.error('❌ Script de migración falló:', error.message);
+            devLogger.error('❌ Script de migración falló:', error.message);
             process.exit(1);
         });
 }

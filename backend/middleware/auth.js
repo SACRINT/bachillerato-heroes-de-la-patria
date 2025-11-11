@@ -5,6 +5,7 @@
 
 const { getJWTUtils } = require('../utils/jwtUtils');
 const { getAuthService } = require('../services/authService');
+const devLogger = require('../utils/devLogger'); // 🔐 Logging seguro
 
 // Instancias de servicios
 const jwtUtils = getJWTUtils();
@@ -16,15 +17,15 @@ const authService = getAuthService();
 const authenticateToken = async (req, res, next) => {
     try {
         // 🔬 DEBUG: Loguear TODAS las peticiones que llegan al middleware
-        console.log(`\n🔍 [AUTH DEBUG] Request recibido: ${req.method} ${req.originalUrl}`);
-        console.log(`🔍 [AUTH DEBUG] IP: ${req.ip}`);
+        devLogger.log(`\n🔍 [AUTH DEBUG] Request recibido: ${req.method} ${req.originalUrl}`);
+        devLogger.log(`🔍 [AUTH DEBUG] IP: ${req.ip}`);
 
         // Extraer token del header
         const authHeader = req.headers['authorization'];
-        console.log(`🔍 [AUTH DEBUG] Authorization header presente: ${!!authHeader}`);
+        devLogger.log(`🔍 [AUTH DEBUG] Authorization header presente: ${!!authHeader}`);
 
         if (!authHeader) {
-            console.log('❌ [AUTH DEBUG] No hay Authorization header');
+            devLogger.log('❌ [AUTH DEBUG] No hay Authorization header');
             return res.status(401).json({
                 success: false,
                 error: 'Token de acceso requerido',
@@ -49,8 +50,8 @@ const authenticateToken = async (req, res, next) => {
             decoded = jwtUtils.verifyToken(token);
         } catch (error) {
             // 🔬 DEBUG: Loguear error exacto de validación del token
-            console.error('❌ [AUTH MIDDLEWARE] Error verificando token:', error.message);
-            console.error('🔍 [AUTH MIDDLEWARE] Token recibido (primeros 50 chars):', token.substring(0, 50));
+            devLogger.error('❌ [AUTH MIDDLEWARE] Error verificando token:', error.message);
+            devLogger.error('🔍 [AUTH MIDDLEWARE] Token recibido (primeros 50 chars):', token.substring(0, 50));
             return res.status(403).json({
                 success: false,
                 error: 'Token inválido',
@@ -106,12 +107,12 @@ const authenticateToken = async (req, res, next) => {
             shouldRefresh: decoded.shouldRefresh
         };
 
-        console.log(`👤 Usuario autenticado: ${userProfile.username} (${userProfile.role})`);
+        devLogger.log(`👤 Usuario autenticado: ${userProfile.username} (${userProfile.role})`);
 
         next();
 
     } catch (error) {
-        console.error('❌ Error en middleware de autenticación:', error);
+        devLogger.error('❌ Error en middleware de autenticación:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -146,7 +147,7 @@ const requireRole = (allowedRoles) => {
             });
         }
 
-        console.log(`✅ Acceso autorizado: ${req.user.role} para roles: ${roles.join(', ')}`);
+        devLogger.log(`✅ Acceso autorizado: ${req.user.role} para roles: ${roles.join(', ')}`);
         next();
     };
 };
@@ -185,7 +186,7 @@ const requirePermission = (requiredPermissions) => {
             });
         }
 
-        console.log(`✅ Permiso autorizado: ${permissions.join(', ')} para usuario: ${req.user.role}`);
+        devLogger.log(`✅ Permiso autorizado: ${permissions.join(', ')} para usuario: ${req.user.role}`);
         next();
     };
 };
@@ -273,12 +274,12 @@ const optionalAuth = async (req, res, next) => {
                         permissions: userProfile.permissions || [],
                         active: userProfile.active
                     };
-                    console.log(`👤 Usuario opcional autenticado: ${userProfile.username}`);
+                    devLogger.log(`👤 Usuario opcional autenticado: ${userProfile.username}`);
                 }
             }
         } catch (error) {
             // En auth opcional, los errores no bloquean el acceso
-            console.log(`⚠️ Token opcional inválido: ${error.message}`);
+            devLogger.log(`⚠️ Token opcional inválido: ${error.message}`);
         }
 
         req.user = req.user || null;

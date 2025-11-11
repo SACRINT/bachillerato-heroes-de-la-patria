@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
@@ -75,7 +76,7 @@ router.post('/', [
             user_agent
         ]);
 
-        console.log('✅ Nueva solicitud de documento creada:', result.rows[0].id);
+        devLogger.log('✅ Nueva solicitud de documento creada:', result.rows[0].id);
 
         res.status(201).json({
             success: true,
@@ -87,7 +88,7 @@ router.post('/', [
         });
 
     } catch (error) {
-        console.error('❌ Error al crear solicitud:', error);
+        devLogger.error('❌ Error al crear solicitud:', error);
         res.status(500).json({
             success: false,
             error: 'Error al procesar tu solicitud. Por favor intenta nuevamente.'
@@ -163,7 +164,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener solicitudes:', error);
+        devLogger.error('❌ Error al obtener solicitudes:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener los datos'
@@ -233,7 +234,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener estadísticas:', error);
+        devLogger.error('❌ Error al obtener estadísticas:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -263,7 +264,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener solicitud:', error);
+        devLogger.error('❌ Error al obtener solicitud:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener la solicitud'
@@ -306,7 +307,7 @@ router.put('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar solicitud:', error);
+        devLogger.error('❌ Error al actualizar solicitud:', error);
         res.status(500).json({
             success: false,
             error: 'Error al actualizar la solicitud'
@@ -336,7 +337,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al eliminar solicitud:', error);
+        devLogger.error('❌ Error al eliminar solicitud:', error);
         res.status(500).json({
             success: false,
             error: 'Error al eliminar la solicitud'
@@ -370,7 +371,7 @@ router.put('/:id/approve', async (req, res) => {
             });
         }
 
-        console.log(`✅ Solicitud ${id} aprobada`);
+        devLogger.log(`✅ Solicitud ${id} aprobada`);
 
         res.json({
             success: true,
@@ -379,7 +380,7 @@ router.put('/:id/approve', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error aprobando solicitud:', error);
+        devLogger.error('Error aprobando solicitud:', error);
         res.status(500).json({
             success: false,
             message: 'Error al aprobar solicitud',
@@ -421,7 +422,7 @@ router.put('/:id/reject', async (req, res) => {
             });
         }
 
-        console.log(`❌ Solicitud ${id} rechazada`);
+        devLogger.log(`❌ Solicitud ${id} rechazada`);
 
         res.json({
             success: true,
@@ -430,7 +431,7 @@ router.put('/:id/reject', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error rechazando solicitud:', error);
+        devLogger.error('Error rechazando solicitud:', error);
         res.status(500).json({
             success: false,
             message: 'Error al rechazar solicitud',

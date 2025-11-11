@@ -400,7 +400,7 @@
                                         Una vez confirmado, tu perfil será <strong>revisado por nuestro equipo</strong>
                                     </li>
                                     <li class="mb-2">
-                                        Verificaremos que fuiste alumno de <strong>BGE Héroes de la Patria</strong>
+                                        Verificaremos que fuiste alumno de <strong>window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')</strong>
                                     </li>
                                     <li class="mb-0">
                                         Recibirás un email cuando tu perfil sea <strong>aprobado</strong>

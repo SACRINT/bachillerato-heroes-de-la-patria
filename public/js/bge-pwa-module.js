@@ -343,7 +343,7 @@ class BGEPWAModule extends BGEModule {
                     <div class="install-content">
                         <div class="install-icon">📱</div>
                         <div class="install-text">
-                            <h4>Instalar BGE Héroes</h4>
+                            <h4>Instalar window.getTenantConfigValue('school_short_form', 'BGE Héroes')</h4>
                             <p>Accede rápidamente desde tu pantalla de inicio</p>
                         </div>
                         <div class="install-actions">

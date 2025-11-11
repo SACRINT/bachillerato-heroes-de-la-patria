@@ -1,6 +1,6 @@
 /**
  * 🎯 AI RECOMMENDATION ENGINE - FASE 5
- * Sistema de recomendaciones personalizadas para estudiantes de BGE Héroes de la Patria
+ * Sistema de recomendaciones personalizadas para estudiantes de window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Análisis de patrones de aprendizaje y sugerencias inteligentes
  */
 

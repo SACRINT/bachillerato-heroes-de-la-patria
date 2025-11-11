@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -231,12 +232,12 @@ app.use(errorHandler);
 
 // Manejo de errores no capturados
 process.on('uncaughtException', (error) => {
-    console.error('💥 [HTTPS] Uncaught Exception:', error);
+    devLogger.error('💥 [HTTPS] Uncaught Exception:', error);
     process.exit(1);
 });
 
 process.on('unhandledRejection', (error) => {
-    console.error('💥 [HTTPS] Unhandled Rejection:', error);
+    devLogger.error('💥 [HTTPS] Unhandled Rejection:', error);
     process.exit(1);
 });
 
@@ -250,8 +251,8 @@ async function startHTTPSServer() {
         const sslOptions = sslManager.getSSLOptions();
 
         if (!sslOptions) {
-            console.log('❌ [HTTPS] No se pudieron cargar certificados SSL');
-            console.log('💡 [HTTPS] Ejecute: node generate-certs.js para generar certificados');
+            devLogger.log('❌ [HTTPS] No se pudieron cargar certificados SSL');
+            devLogger.log('💡 [HTTPS] Ejecute: node generate-certs.js para generar certificados');
             process.exit(1);
         }
 
@@ -259,44 +260,44 @@ async function startHTTPSServer() {
         const httpsServer = sslManager.createHTTPSServer(app, HTTPS_PORT);
 
         if (!httpsServer) {
-            console.log('❌ [HTTPS] No se pudo crear servidor HTTPS');
+            devLogger.log('❌ [HTTPS] No se pudo crear servidor HTTPS');
             process.exit(1);
         }
 
         httpsServer.listen(HTTPS_PORT, async () => {
-            console.log('🔒 ═══════════════════════════════════════════════════════════');
-            console.log('🔒 SERVIDOR HTTPS BGE HÉROES DE LA PATRIA');
-            console.log('🔒 ═══════════════════════════════════════════════════════════');
-            console.log(`🔒 Puerto HTTPS: ${HTTPS_PORT}`);
-            console.log(`🌐 Ambiente: ${process.env.NODE_ENV || 'development'}`);
-            console.log(`📡 API Base URL: https://localhost:${HTTPS_PORT}/api`);
-            console.log(`❤️  Health Check: https://localhost:${HTTPS_PORT}/health`);
-            console.log(`📚 API Docs: https://localhost:${HTTPS_PORT}/api-docs`);
-            console.log('🔒 ═══════════════════════════════════════════════════════════');
+            devLogger.log('🔒 ═══════════════════════════════════════════════════════════');
+            devLogger.log('🔒 SERVIDOR HTTPS BGE HÉROES DE LA PATRIA');
+            devLogger.log('🔒 ═══════════════════════════════════════════════════════════');
+            devLogger.log(`🔒 Puerto HTTPS: ${HTTPS_PORT}`);
+            devLogger.log(`🌐 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+            devLogger.log(`📡 API Base URL: https://localhost:${HTTPS_PORT}/api`);
+            devLogger.log(`❤️  Health Check: https://localhost:${HTTPS_PORT}/health`);
+            devLogger.log(`📚 API Docs: https://localhost:${HTTPS_PORT}/api-docs`);
+            devLogger.log('🔒 ═══════════════════════════════════════════════════════════');
 
             // Inicializar servicios adicionales
             try {
                 const { getBackupService } = require('./services/backupService');
                 getBackupService();
-                console.log('💾 [HTTPS] Sistema de backup inicializado');
+                devLogger.log('💾 [HTTPS] Sistema de backup inicializado');
             } catch (error) {
-                console.log('⚠️  [HTTPS] Sistema de backup no disponible:', error.message);
+                devLogger.log('⚠️  [HTTPS] Sistema de backup no disponible:', error.message);
             }
 
             try {
                 const { getAdvancedLogger } = require('./services/advancedLogger');
                 getAdvancedLogger();
-                console.log('📝 [HTTPS] Sistema de logs avanzado inicializado');
+                devLogger.log('📝 [HTTPS] Sistema de logs avanzado inicializado');
             } catch (error) {
-                console.log('⚠️  [HTTPS] Sistema de logs no disponible:', error.message);
+                devLogger.log('⚠️  [HTTPS] Sistema de logs no disponible:', error.message);
             }
 
             try {
                 const { getPushNotificationService } = require('./services/pushNotificationService');
                 getPushNotificationService();
-                console.log('📱 [HTTPS] Sistema de notificaciones push inicializado');
+                devLogger.log('📱 [HTTPS] Sistema de notificaciones push inicializado');
             } catch (error) {
-                console.log('⚠️  [HTTPS] Sistema de notificaciones no disponible:', error.message);
+                devLogger.log('⚠️  [HTTPS] Sistema de notificaciones no disponible:', error.message);
             }
 
             // Test de conexión a base de datos
@@ -305,40 +306,40 @@ async function startHTTPSServer() {
                 const isConnected = await db.testConnection();
 
                 if (isConnected) {
-                    console.log('✅ [HTTPS] Base de datos conectada');
+                    devLogger.log('✅ [HTTPS] Base de datos conectada');
                     app.locals.dbAvailable = true;
                 } else {
-                    console.log('⚠️  [HTTPS] MySQL no disponible - Funcionando en modo degradado');
+                    devLogger.log('⚠️  [HTTPS] MySQL no disponible - Funcionando en modo degradado');
                     app.locals.dbAvailable = false;
                 }
             } catch (error) {
-                console.log('⚠️  [HTTPS] MySQL no disponible - Funcionando en modo degradado');
-                console.log('🔧 [HTTPS] Error:', error.message);
+                devLogger.log('⚠️  [HTTPS] MySQL no disponible - Funcionando en modo degradado');
+                devLogger.log('🔧 [HTTPS] Error:', error.message);
                 app.locals.dbAvailable = false;
             }
 
             // Información del certificado
             const certInfo = sslManager.getCertificateInfo();
             if (!certInfo.error) {
-                console.log('📜 [HTTPS] Certificado SSL cargado:');
-                console.log(`    Subject: ${certInfo.subject}`);
-                console.log(`    Válido hasta: ${certInfo.validTo}`);
-                console.log(`    Días restantes: ${certInfo.daysUntilExpiration}`);
+                devLogger.log('📜 [HTTPS] Certificado SSL cargado:');
+                devLogger.log(`    Subject: ${certInfo.subject}`);
+                devLogger.log(`    Válido hasta: ${certInfo.validTo}`);
+                devLogger.log(`    Días restantes: ${certInfo.daysUntilExpiration}`);
                 if (certInfo.selfSigned) {
-                    console.log('    ⚠️  Certificado auto-firmado (solo para desarrollo)');
+                    devLogger.log('    ⚠️  Certificado auto-firmado (solo para desarrollo)');
                 }
             }
 
-            console.log('🔒 ═══════════════════════════════════════════════════════════');
-            console.log('✅ [HTTPS] Servidor HTTPS completamente funcional');
-            console.log('🔒 ═══════════════════════════════════════════════════════════');
+            devLogger.log('🔒 ═══════════════════════════════════════════════════════════');
+            devLogger.log('✅ [HTTPS] Servidor HTTPS completamente funcional');
+            devLogger.log('🔒 ═══════════════════════════════════════════════════════════');
         });
 
         // Graceful shutdown
         process.on('SIGTERM', () => {
-            console.log('🛑 [HTTPS] SIGTERM recibido, cerrando servidor...');
+            devLogger.log('🛑 [HTTPS] SIGTERM recibido, cerrando servidor...');
             httpsServer.close(() => {
-                console.log('✅ [HTTPS] Servidor HTTPS cerrado correctamente');
+                devLogger.log('✅ [HTTPS] Servidor HTTPS cerrado correctamente');
                 process.exit(0);
             });
         });
@@ -346,7 +347,7 @@ async function startHTTPSServer() {
         return httpsServer;
 
     } catch (error) {
-        console.error('❌ [HTTPS] Error iniciando servidor HTTPS:', error);
+        devLogger.error('❌ [HTTPS] Error iniciando servidor HTTPS:', error);
         process.exit(1);
     }
 }
@@ -361,12 +362,12 @@ function startRedirectServer() {
     // Middleware de redirección HTTP a HTTPS
     redirectApp.use('*', (req, res) => {
         const httpsUrl = `https://${req.get('host').replace(/:\d+$/, `:${HTTPS_PORT}`)}${req.originalUrl}`;
-        console.log(`🔄 [REDIRECT] ${req.originalUrl} -> ${httpsUrl}`);
+        devLogger.log(`🔄 [REDIRECT] ${req.originalUrl} -> ${httpsUrl}`);
         res.redirect(301, httpsUrl);
     });
 
     const redirectServer = redirectApp.listen(HTTP_PORT, () => {
-        console.log(`🔄 [REDIRECT] Servidor de redirección HTTP -> HTTPS en puerto ${HTTP_PORT}`);
+        devLogger.log(`🔄 [REDIRECT] Servidor de redirección HTTP -> HTTPS en puerto ${HTTP_PORT}`);
     });
 
     return redirectServer;
@@ -377,7 +378,7 @@ function startRedirectServer() {
 // ============================================
 
 if (require.main === module) {
-    console.log('🚀 [HTTPS] Iniciando servidor HTTPS BGE...');
+    devLogger.log('🚀 [HTTPS] Iniciando servidor HTTPS BGE...');
 
     // Verificar argumentos de línea de comandos
     const args = process.argv.slice(2);
@@ -385,7 +386,7 @@ if (require.main === module) {
 
     startHTTPSServer().then(httpsServer => {
         if (withRedirect && HTTP_PORT !== HTTPS_PORT) {
-            console.log('🔄 [HTTPS] Iniciando servidor de redirección HTTP...');
+            devLogger.log('🔄 [HTTPS] Iniciando servidor de redirección HTTP...');
             startRedirectServer();
         }
     });

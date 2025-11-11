@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
@@ -104,7 +105,7 @@ async function checkDocumentPermission(req, res, next) {
         req.isDocumentAuthor = isAuthor;
         next();
     } catch (error) {
-        console.error('Error verificando permisos:', error);
+        devLogger.error('Error verificando permisos:', error);
         res.status(500).json({ error: 'Error al verificar permisos' });
     } finally {
         client.release();
@@ -133,7 +134,7 @@ router.get('/categories', authenticateToken, async (req, res) => {
             total: result.rows.length
         });
     } catch (error) {
-        console.error('Error al obtener categorías:', error);
+        devLogger.error('Error al obtener categorías:', error);
         res.status(500).json({ error: 'Error al obtener categorías' });
     } finally {
         client.release();
@@ -169,7 +170,7 @@ router.post('/categories', authenticateToken, async (req, res) => {
             category: result.rows[0]
         });
     } catch (error) {
-        console.error('Error al crear categoría:', error);
+        devLogger.error('Error al crear categoría:', error);
         if (error.code === '23505') { // Unique violation
             res.status(409).json({ error: 'Ya existe una categoría con ese slug' });
         } else {
@@ -214,7 +215,7 @@ router.put('/categories/:id', authenticateToken, async (req, res) => {
             category: result.rows[0]
         });
     } catch (error) {
-        console.error('Error al actualizar categoría:', error);
+        devLogger.error('Error al actualizar categoría:', error);
         res.status(500).json({ error: 'Error al actualizar categoría' });
     } finally {
         client.release();
@@ -260,7 +261,7 @@ router.delete('/categories/:id', authenticateToken, async (req, res) => {
             message: 'Categoría eliminada exitosamente'
         });
     } catch (error) {
-        console.error('Error al eliminar categoría:', error);
+        devLogger.error('Error al eliminar categoría:', error);
         res.status(500).json({ error: 'Error al eliminar categoría' });
     } finally {
         client.release();
@@ -386,7 +387,7 @@ router.get('/documents', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error al obtener documentos:', error);
+        devLogger.error('Error al obtener documentos:', error);
         res.status(500).json({ error: 'Error al obtener documentos' });
     } finally {
         client.release();
@@ -441,7 +442,7 @@ router.get('/documents/:id', authenticateToken, checkDocumentPermission, async (
             document: document
         });
     } catch (error) {
-        console.error('Error al obtener documento:', error);
+        devLogger.error('Error al obtener documento:', error);
         res.status(500).json({ error: 'Error al obtener documento' });
     } finally {
         client.release();
@@ -581,7 +582,7 @@ router.post('/documents', authenticateToken, upload.single('file'), async (req, 
         });
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Error al crear documento:', error);
+        devLogger.error('Error al crear documento:', error);
 
         // Eliminar archivo subido si hubo error
         if (req.file) {
@@ -638,7 +639,7 @@ router.put('/documents/:id', authenticateToken, checkDocumentPermission, async (
             document: result.rows[0]
         });
     } catch (error) {
-        console.error('Error al actualizar documento:', error);
+        devLogger.error('Error al actualizar documento:', error);
         res.status(500).json({ error: 'Error al actualizar documento' });
     } finally {
         client.release();
@@ -670,7 +671,7 @@ router.delete('/documents/:id', authenticateToken, checkDocumentPermission, asyn
             message: 'Documento eliminado exitosamente'
         });
     } catch (error) {
-        console.error('Error al eliminar documento:', error);
+        devLogger.error('Error al eliminar documento:', error);
         res.status(500).json({ error: 'Error al eliminar documento' });
     } finally {
         client.release();
@@ -702,7 +703,7 @@ router.get('/documents/:id/versions', authenticateToken, checkDocumentPermission
             total: result.rows.length
         });
     } catch (error) {
-        console.error('Error al obtener versiones:', error);
+        devLogger.error('Error al obtener versiones:', error);
         res.status(500).json({ error: 'Error al obtener versiones' });
     } finally {
         client.release();
@@ -778,7 +779,7 @@ router.post('/documents/:id/versions', authenticateToken, checkDocumentPermissio
         });
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Error al crear versión:', error);
+        devLogger.error('Error al crear versión:', error);
 
         if (req.file) {
             await fs.unlink(req.file.path).catch(console.error);
@@ -853,14 +854,14 @@ router.get('/documents/:id/download', authenticateToken, checkDocumentPermission
         // Enviar archivo
         res.download(version.file_path, version.file_name, (err) => {
             if (err) {
-                console.error('Error al enviar archivo:', err);
+                devLogger.error('Error al enviar archivo:', err);
                 if (!res.headersSent) {
                     res.status(500).json({ error: 'Error al descargar archivo' });
                 }
             }
         });
     } catch (error) {
-        console.error('Error al descargar documento:', error);
+        devLogger.error('Error al descargar documento:', error);
         if (!res.headersSent) {
             res.status(500).json({ error: 'Error al descargar documento' });
         }
@@ -896,7 +897,7 @@ router.post('/documents/:id/favorite', authenticateToken, async (req, res) => {
             message: 'Documento agregado a favoritos'
         });
     } catch (error) {
-        console.error('Error al agregar favorito:', error);
+        devLogger.error('Error al agregar favorito:', error);
         res.status(500).json({ error: 'Error al agregar favorito' });
     } finally {
         client.release();
@@ -924,7 +925,7 @@ router.delete('/documents/:id/favorite', authenticateToken, async (req, res) => 
             message: 'Documento eliminado de favoritos'
         });
     } catch (error) {
-        console.error('Error al eliminar favorito:', error);
+        devLogger.error('Error al eliminar favorito:', error);
         res.status(500).json({ error: 'Error al eliminar favorito' });
     } finally {
         client.release();
@@ -971,7 +972,7 @@ router.get('/favorites', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error al obtener favoritos:', error);
+        devLogger.error('Error al obtener favoritos:', error);
         res.status(500).json({ error: 'Error al obtener favoritos' });
     } finally {
         client.release();
@@ -1013,7 +1014,7 @@ router.post('/documents/:id/rating', authenticateToken, async (req, res) => {
             rating: result.rows[0]
         });
     } catch (error) {
-        console.error('Error al calificar documento:', error);
+        devLogger.error('Error al calificar documento:', error);
         res.status(500).json({ error: 'Error al calificar documento' });
     } finally {
         client.release();
@@ -1071,7 +1072,7 @@ router.get('/documents/:id/comments', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error al obtener comentarios:', error);
+        devLogger.error('Error al obtener comentarios:', error);
         res.status(500).json({ error: 'Error al obtener comentarios' });
     } finally {
         client.release();
@@ -1107,7 +1108,7 @@ router.post('/documents/:id/comments', authenticateToken, checkDocumentPermissio
             comment: result.rows[0]
         });
     } catch (error) {
-        console.error('Error al crear comentario:', error);
+        devLogger.error('Error al crear comentario:', error);
         res.status(500).json({ error: 'Error al crear comentario' });
     } finally {
         client.release();
@@ -1146,7 +1147,7 @@ router.put('/comments/:id', authenticateToken, async (req, res) => {
             comment: result.rows[0]
         });
     } catch (error) {
-        console.error('Error al actualizar comentario:', error);
+        devLogger.error('Error al actualizar comentario:', error);
         res.status(500).json({ error: 'Error al actualizar comentario' });
     } finally {
         client.release();
@@ -1179,7 +1180,7 @@ router.delete('/comments/:id', authenticateToken, async (req, res) => {
             message: 'Comentario eliminado exitosamente'
         });
     } catch (error) {
-        console.error('Error al eliminar comentario:', error);
+        devLogger.error('Error al eliminar comentario:', error);
         res.status(500).json({ error: 'Error al eliminar comentario' });
     } finally {
         client.release();
@@ -1248,7 +1249,7 @@ router.get('/search', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error en búsqueda:', error);
+        devLogger.error('Error en búsqueda:', error);
         res.status(500).json({ error: 'Error en búsqueda' });
     } finally {
         client.release();
@@ -1280,7 +1281,7 @@ router.get('/tags', authenticateToken, async (req, res) => {
             total: result.rows.length
         });
     } catch (error) {
-        console.error('Error al obtener tags:', error);
+        devLogger.error('Error al obtener tags:', error);
         res.status(500).json({ error: 'Error al obtener tags' });
     } finally {
         client.release();
@@ -1333,7 +1334,7 @@ router.post('/documents/:id/tags', authenticateToken, checkDocumentPermission, a
         });
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Error al asignar tags:', error);
+        devLogger.error('Error al asignar tags:', error);
         res.status(500).json({ error: 'Error al asignar tags' });
     } finally {
         client.release();
@@ -1372,7 +1373,7 @@ router.get('/recent', authenticateToken, async (req, res) => {
             documents: result.rows
         });
     } catch (error) {
-        console.error('Error al obtener documentos recientes:', error);
+        devLogger.error('Error al obtener documentos recientes:', error);
         res.status(500).json({ error: 'Error al obtener documentos recientes' });
     } finally {
         client.release();
@@ -1407,7 +1408,7 @@ router.get('/popular', authenticateToken, async (req, res) => {
             documents: result.rows
         });
     } catch (error) {
-        console.error('Error al obtener documentos populares:', error);
+        devLogger.error('Error al obtener documentos populares:', error);
         res.status(500).json({ error: 'Error al obtener documentos populares' });
     } finally {
         client.release();
@@ -1460,7 +1461,7 @@ router.get('/history', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error al obtener historial:', error);
+        devLogger.error('Error al obtener historial:', error);
         res.status(500).json({ error: 'Error al obtener historial' });
     } finally {
         client.release();
@@ -1521,7 +1522,7 @@ router.post('/documents/:id/permissions', authenticateToken, async (req, res) =>
         });
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Error al actualizar permisos:', error);
+        devLogger.error('Error al actualizar permisos:', error);
         res.status(500).json({ error: 'Error al actualizar permisos' });
     } finally {
         client.release();

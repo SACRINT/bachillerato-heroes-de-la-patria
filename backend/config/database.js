@@ -11,6 +11,7 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 // const jsonDb = require('./database-json'); // ⚠️ DESHABILITADO: No disponible en Vercel serverless
+const devLogger = require('../utils/devLogger');
 
 // Flag para determinar qué sistema usar (deshabilitado en Vercel)
 let useJsonFallback = false;
@@ -43,7 +44,7 @@ const poolConfig = process.env.DATABASE_URL
 const pool = new Pool(poolConfig);
 
 // Log de configuración (solo muestra DATABASE_URL presente o no, no el valor completo)
-console.log('🔧 Configuración PostgreSQL:', {
+devLogger.log('🔧 Configuración PostgreSQL:', {
     source: process.env.DATABASE_URL ? 'DATABASE_URL (Neon/Vercel)' : 'Variables individuales',
     ssl: poolConfig.ssl ? 'Habilitado' : 'Deshabilitado',
     maxConnections: poolConfig.max
@@ -65,8 +66,8 @@ async function executeQuery(query, params = []) {
         const result = await pool.query(query, params);
         return result.rows;
     } catch (error) {
-        console.error('❌ Error en PostgreSQL:', error.message);
-        console.error('⚠️ Fallback JSON no disponible en Vercel');
+        devLogger.error('❌ Error en PostgreSQL:', error.message);
+        devLogger.error('⚠️ Fallback JSON no disponible en Vercel');
 
         // En Vercel, lanzar error directamente
         throw error;
@@ -94,7 +95,7 @@ async function executeTransaction(queries) {
         return results;
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('❌ Error en transacción PostgreSQL:', error.message);
+        devLogger.error('❌ Error en transacción PostgreSQL:', error.message);
         throw error;
     } finally {
         client.release();
@@ -112,11 +113,11 @@ async function testConnection() {
 
     try {
         const client = await pool.connect();
-        console.log('✅ Conexión a PostgreSQL (Neon) establecida correctamente');
+        devLogger.log('✅ Conexión a PostgreSQL (Neon) establecida correctamente');
 
         // Verificar versión de PostgreSQL
         const result = await client.query('SELECT version()');
-        console.log(`📊 PostgreSQL Version: ${result.rows[0].version}`);
+        devLogger.log(`📊 PostgreSQL Version: ${result.rows[0].version}`);
 
         // Verificar tablas existentes
         const tablesResult = await client.query(`
@@ -126,14 +127,14 @@ async function testConnection() {
             ORDER BY table_name
         `);
 
-        console.log(`📋 Tablas disponibles (${tablesResult.rows.length}):`,
+        devLogger.log(`📋 Tablas disponibles (${tablesResult.rows.length}):`,
             tablesResult.rows.map(r => r.table_name).join(', '));
 
         client.release();
         return true;
     } catch (error) {
-        console.error('❌ Error conectando a PostgreSQL:', error.message);
-        console.error('🔧 Config:', {
+        devLogger.error('❌ Error conectando a PostgreSQL:', error.message);
+        devLogger.error('🔧 Config:', {
             source: process.env.DATABASE_URL ? 'DATABASE_URL' : 'Variables individuales',
             host: poolConfig.host || 'N/A (usando DATABASE_URL)',
             port: poolConfig.port || 'N/A',
@@ -157,9 +158,9 @@ async function closePool() {
 
     try {
         await pool.end();
-        console.log('✅ Pool de conexiones PostgreSQL cerrado');
+        devLogger.log('✅ Pool de conexiones PostgreSQL cerrado');
     } catch (error) {
-        console.error('❌ Error cerrando pool:', error.message);
+        devLogger.error('❌ Error cerrando pool:', error.message);
     }
 }
 
@@ -193,7 +194,7 @@ async function getPoolStats() {
  * Forzar uso de PostgreSQL (deshabilitar fallback JSON)
  */
 async function forcePostgreSQL() {
-    console.log('🔧 Forzando uso exclusivo de PostgreSQL...');
+    devLogger.log('🔧 Forzando uso exclusivo de PostgreSQL...');
 
     // Verificar que PostgreSQL esté disponible
     const client = await pool.connect();
@@ -201,10 +202,10 @@ async function forcePostgreSQL() {
     try {
         await client.query('SELECT 1');
         useJsonFallback = false;
-        console.log('✅ Modo PostgreSQL forzado activado');
+        devLogger.log('✅ Modo PostgreSQL forzado activado');
         return true;
     } catch (error) {
-        console.error('❌ No se puede forzar PostgreSQL - no está disponible:', error.message);
+        devLogger.error('❌ No se puede forzar PostgreSQL - no está disponible:', error.message);
         throw new Error('PostgreSQL no disponible para modo forzado');
     } finally {
         client.release();
@@ -215,9 +216,9 @@ async function forcePostgreSQL() {
  * Habilitar fallback JSON (modo híbrido)
  */
 async function enableFallback() {
-    console.log('🔧 Habilitando modo híbrido (PostgreSQL + JSON fallback)...');
+    devLogger.log('🔧 Habilitando modo híbrido (PostgreSQL + JSON fallback)...');
     useJsonFallback = false; // Intentar usar PostgreSQL primero, JSON como fallback automático
-    console.log('✅ Modo híbrido activado - PostgreSQL con fallback JSON automático');
+    devLogger.log('✅ Modo híbrido activado - PostgreSQL con fallback JSON automático');
     return true;
 }
 

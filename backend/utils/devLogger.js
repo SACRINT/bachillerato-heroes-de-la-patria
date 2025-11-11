@@ -12,7 +12,7 @@
  *   devLog.error('Error en la consulta', error);
  *
  * Ejemplo INCORRECTO (que evitar):
- *   console.log('Usuario:', user.email); // ❌ EXPONE EMAIL
+ *   devLog.log('Usuario:', user.email); // ❌ EXPONE EMAIL
  *   devLog.log('Usuario:', user.email); // ❌ SIGUE SIENDO INSEGURO
  *
  * Ejemplo CORRECTO:
@@ -136,13 +136,13 @@ class DevLogger {
 PROHIBIDO EN LOGS (GDPR VIOLATION):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-❌ Emails: console.log('Email:', user.email)
-❌ Tokens: console.log('JWT:', token)
-❌ Contraseñas: console.log('Password:', password)
-❌ IDs de Usuario: console.log('User ID:', user.id)
-❌ Números de Tarjeta: console.log('Card:', cardNumber)
-❌ Números Telefónicos: console.log('Phone:', phone)
-❌ Direcciones: console.log('Address:', address)
+❌ Emails: devLogger.log('Email:', user.email)
+❌ Tokens: devLogger.log('JWT:', token)
+❌ Contraseñas: devLogger.log('Password:', password)
+❌ IDs de Usuario: devLogger.log('User ID:', user.id)
+❌ Números de Tarjeta: devLogger.log('Card:', cardNumber)
+❌ Números Telefónicos: devLogger.log('Phone:', phone)
+❌ Direcciones: devLogger.log('Address:', address)
 
 PERMITIDO EN LOGS (SEGURO):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

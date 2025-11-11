@@ -635,7 +635,7 @@ router.get('/', async (req, res) => {
  */
 router.get('/stats/general', async (req, res) => {
     try {
-        console.log('📊 [BOLSA-TRABAJO] Obteniendo estadísticas generales...');
+        devLog.log('📊 [BOLSA-TRABAJO] Obteniendo estadísticas generales...');
 
         const query = `
             SELECT
@@ -690,7 +690,7 @@ router.get('/stats/general', async (req, res) => {
             byExperiencia
         };
 
-        console.log('✅ [BOLSA-TRABAJO] Estadísticas obtenidas');
+        devLog.log('✅ [BOLSA-TRABAJO] Estadísticas obtenidas');
 
         res.json({
             success: true,
@@ -698,7 +698,7 @@ router.get('/stats/general', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ [BOLSA-TRABAJO] Error al obtener estadísticas:', error);
+        devLog.error('❌ [BOLSA-TRABAJO] Error al obtener estadísticas:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas',
@@ -715,7 +715,7 @@ router.get('/pending-approvals', async (req, res) => {
     const { status = 'pendiente', limit = 50, offset = 0, email_confirmado = true } = req.query;
 
     try {
-        console.log(`📋 [BOLSA-TRABAJO] Obteniendo solicitudes pendientes de aprobación...`);
+        devLog.log(`📋 [BOLSA-TRABAJO] Obteniendo solicitudes pendientes de aprobación...`);
 
         let query = `
             SELECT
@@ -775,7 +775,7 @@ router.get('/pending-approvals', async (req, res) => {
 
         const countResult = await pool.query(countQuery, countParams);
 
-        console.log(`✅ [BOLSA-TRABAJO] ${result.rows.length} solicitudes encontradas`);
+        devLog.log(`✅ [BOLSA-TRABAJO] ${result.rows.length} solicitudes encontradas`);
 
         res.json({
             success: true,
@@ -786,7 +786,7 @@ router.get('/pending-approvals', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ [BOLSA-TRABAJO] Error al obtener solicitudes pendientes:', error);
+        devLog.error('❌ [BOLSA-TRABAJO] Error al obtener solicitudes pendientes:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener las solicitudes',
@@ -816,7 +816,7 @@ router.post('/approve-solicitud/:id', [
     }
 
     try {
-        console.log(`📋 [BOLSA-TRABAJO] Procesando solicitud ID ${id} con acción: ${action}`);
+        devLog.log(`📋 [BOLSA-TRABAJO] Procesando solicitud ID ${id} con acción: ${action}`);
 
         // 1. Obtener la solicitud pendiente
         const getQuery = `
@@ -894,9 +894,9 @@ router.post('/approve-solicitud/:id', [
                 true
             ]);
 
-            console.log(`✅ [BOLSA-TRABAJO] Solicitud aprobada y guardada en bolsa_trabajo: ID ${boletinResult.rows[0].id}`);
+            devLog.log(`✅ [BOLSA-TRABAJO] Solicitud aprobada y guardada en bolsa_trabajo: ID ${boletinResult.rows[0].id}`);
         } else {
-            console.log(`❌ [BOLSA-TRABAJO] Solicitud rechazada: ID ${solicitud.id}`);
+            devLog.log(`❌ [BOLSA-TRABAJO] Solicitud rechazada: ID ${solicitud.id}`);
         }
 
         res.status(200).json({
@@ -915,7 +915,7 @@ router.post('/approve-solicitud/:id', [
         });
 
     } catch (error) {
-        console.error('❌ [BOLSA-TRABAJO] Error al procesar solicitud:', error);
+        devLog.error('❌ [BOLSA-TRABAJO] Error al procesar solicitud:', error);
         res.status(500).json({
             success: false,
             error: 'Error al procesar la solicitud',

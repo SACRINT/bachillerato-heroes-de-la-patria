@@ -1,6 +1,6 @@
 /**
  * 🚀 ADVANCED LAZY LOADER - FASE 4.1
- * Sistema de carga diferida inteligente para BGE Héroes de la Patria
+ * Sistema de carga diferida inteligente para window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Optimización de performance y Core Web Vitals
  */
 

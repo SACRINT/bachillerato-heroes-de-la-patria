@@ -374,7 +374,7 @@ class AIEducationalSystem {
 
     generateGreeting(profile) {
         const greetings = [
-            `¡Hola${profile.name !== 'Estudiante' ? ', ' + profile.name : ''}! 🎓 Soy tu asistente educativo de Héroes de la Patria.`,
+            `¡Hola${profile.name !== 'Estudiante' ? ', ' + profile.name : ''}! 🎓 Soy tu asistente educativo de window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria').`,
             `¡Buenos días${profile.name !== 'Estudiante' ? ', ' + profile.name : ''}! ¿En qué materia puedo ayudarte hoy?`,
             `¡Hola! Estoy aquí para ayudarte con tus estudios. ¿Qué tema te interesa?`
         ];

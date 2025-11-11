@@ -4,6 +4,7 @@
  */
 
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const { createWriteStream } = require('fs');
 const archiver = require('archiver');
@@ -15,7 +16,7 @@ class BackupService {
         this.maxBackups = 30; // Mantener últimos 30 backups
         this.isRunning = false;
 
-        console.log('💾 [BACKUP] Servicio de backup inicializado');
+        devLogger.log('💾 [BACKUP] Servicio de backup inicializado');
         this.init();
     }
 
@@ -33,9 +34,9 @@ class BackupService {
             // Limpiar backups antiguos al iniciar
             await this.cleanOldBackups();
 
-            console.log('✅ [BACKUP] Servicio configurado correctamente');
+            devLogger.log('✅ [BACKUP] Servicio configurado correctamente');
         } catch (error) {
-            console.error('❌ [BACKUP] Error inicializando servicio:', error);
+            devLogger.error('❌ [BACKUP] Error inicializando servicio:', error);
         }
     }
 
@@ -47,7 +48,7 @@ class BackupService {
             await fs.access(this.backupDir);
         } catch (error) {
             await fs.mkdir(this.backupDir, { recursive: true });
-            console.log(`📁 [BACKUP] Directorio creado: ${this.backupDir}`);
+            devLogger.log(`📁 [BACKUP] Directorio creado: ${this.backupDir}`);
         }
     }
 
@@ -57,23 +58,23 @@ class BackupService {
     scheduleBackups() {
         // Backup diario a las 2:00 AM
         cron.schedule('0 2 * * *', async () => {
-            console.log('🕐 [BACKUP] Iniciando backup automático diario');
+            devLogger.log('🕐 [BACKUP] Iniciando backup automático diario');
             await this.createFullBackup('daily');
         });
 
         // Backup semanal los domingos a las 3:00 AM
         cron.schedule('0 3 * * 0', async () => {
-            console.log('📅 [BACKUP] Iniciando backup automático semanal');
+            devLogger.log('📅 [BACKUP] Iniciando backup automático semanal');
             await this.createFullBackup('weekly');
         });
 
         // Backup de datos cada 6 horas
         cron.schedule('0 */6 * * *', async () => {
-            console.log('🔄 [BACKUP] Iniciando backup de datos cada 6 horas');
+            devLogger.log('🔄 [BACKUP] Iniciando backup de datos cada 6 horas');
             await this.createDataBackup();
         });
 
-        console.log('⏰ [BACKUP] Programación automática configurada');
+        devLogger.log('⏰ [BACKUP] Programación automática configurada');
     }
 
     /**
@@ -81,7 +82,7 @@ class BackupService {
      */
     async createFullBackup(type = 'manual') {
         if (this.isRunning) {
-            console.log('⚠️ [BACKUP] Backup ya en ejecución, saltando...');
+            devLogger.log('⚠️ [BACKUP] Backup ya en ejecución, saltando...');
             return false;
         }
 
@@ -91,7 +92,7 @@ class BackupService {
         const backupPath = path.join(this.backupDir, backupName);
 
         try {
-            console.log(`🚀 [BACKUP] Iniciando backup completo: ${backupName}`);
+            devLogger.log(`🚀 [BACKUP] Iniciando backup completo: ${backupName}`);
 
             const output = createWriteStream(backupPath);
             const archive = archiver('zip', { zlib: { level: 9 } });
@@ -99,12 +100,12 @@ class BackupService {
             // Configurar eventos del archiver
             output.on('close', () => {
                 const sizeInMB = (archive.pointer() / 1024 / 1024).toFixed(2);
-                console.log(`✅ [BACKUP] Backup completo creado: ${sizeInMB} MB`);
+                devLogger.log(`✅ [BACKUP] Backup completo creado: ${sizeInMB} MB`);
                 this.isRunning = false;
             });
 
             archive.on('error', (err) => {
-                console.error('❌ [BACKUP] Error creando archivo:', err);
+                devLogger.error('❌ [BACKUP] Error creando archivo:', err);
                 this.isRunning = false;
                 throw err;
             });
@@ -131,7 +132,7 @@ class BackupService {
             };
 
         } catch (error) {
-            console.error('❌ [BACKUP] Error creando backup completo:', error);
+            devLogger.error('❌ [BACKUP] Error creando backup completo:', error);
             this.isRunning = false;
             return { success: false, error: error.message };
         }
@@ -146,14 +147,14 @@ class BackupService {
         const backupPath = path.join(this.backupDir, backupName);
 
         try {
-            console.log(`📊 [BACKUP] Iniciando backup de datos: ${backupName}`);
+            devLogger.log(`📊 [BACKUP] Iniciando backup de datos: ${backupName}`);
 
             const output = createWriteStream(backupPath);
             const archive = archiver('zip', { zlib: { level: 9 } });
 
             output.on('close', () => {
                 const sizeInMB = (archive.pointer() / 1024 / 1024).toFixed(2);
-                console.log(`✅ [BACKUP] Backup de datos creado: ${sizeInMB} MB`);
+                devLogger.log(`✅ [BACKUP] Backup de datos creado: ${sizeInMB} MB`);
             });
 
             archive.pipe(output);
@@ -171,7 +172,7 @@ class BackupService {
             };
 
         } catch (error) {
-            console.error('❌ [BACKUP] Error creando backup de datos:', error);
+            devLogger.error('❌ [BACKUP] Error creando backup de datos:', error);
             return { success: false, error: error.message };
         }
     }
@@ -199,9 +200,9 @@ class BackupService {
                 } else {
                     archive.file(fullPath, { name: path.basename(fullPath) });
                 }
-                console.log(`📁 [BACKUP] Agregado: ${path.basename(fullPath)}`);
+                devLogger.log(`📁 [BACKUP] Agregado: ${path.basename(fullPath)}`);
             } catch (error) {
-                console.log(`⚠️ [BACKUP] No se pudo agregar: ${systemPath}`);
+                devLogger.log(`⚠️ [BACKUP] No se pudo agregar: ${systemPath}`);
             }
         }
     }
@@ -222,10 +223,10 @@ class BackupService {
                 const stats = await fs.stat(fullPath);
                 if (stats.isDirectory()) {
                     archive.directory(fullPath, `data_${path.basename(fullPath)}`);
-                    console.log(`📊 [BACKUP] Datos agregados: ${path.basename(fullPath)}`);
+                    devLogger.log(`📊 [BACKUP] Datos agregados: ${path.basename(fullPath)}`);
                 }
             } catch (error) {
-                console.log(`⚠️ [BACKUP] Directorio de datos no encontrado: ${dataPath}`);
+                devLogger.log(`⚠️ [BACKUP] Directorio de datos no encontrado: ${dataPath}`);
             }
         }
 
@@ -234,9 +235,9 @@ class BackupService {
         try {
             await fs.access(usersFile);
             archive.file(usersFile, { name: 'usuarios_backup.json' });
-            console.log('👥 [BACKUP] Usuarios agregados al backup');
+            devLogger.log('👥 [BACKUP] Usuarios agregados al backup');
         } catch (error) {
-            console.log('⚠️ [BACKUP] Archivo de usuarios no encontrado');
+            devLogger.log('⚠️ [BACKUP] Archivo de usuarios no encontrado');
         }
     }
 
@@ -255,9 +256,9 @@ class BackupService {
             try {
                 await fs.access(fullPath);
                 archive.file(fullPath, { name: path.basename(configFile) });
-                console.log(`⚙️ [BACKUP] Config agregado: ${path.basename(configFile)}`);
+                devLogger.log(`⚙️ [BACKUP] Config agregado: ${path.basename(configFile)}`);
             } catch (error) {
-                console.log(`⚠️ [BACKUP] Config no encontrado: ${configFile}`);
+                devLogger.log(`⚠️ [BACKUP] Config no encontrado: ${configFile}`);
             }
         }
     }
@@ -289,13 +290,13 @@ class BackupService {
                 const toDelete = backupFiles.slice(this.maxBackups);
                 for (const backup of toDelete) {
                     await fs.unlink(backup.path);
-                    console.log(`🗑️ [BACKUP] Backup antiguo eliminado: ${backup.name}`);
+                    devLogger.log(`🗑️ [BACKUP] Backup antiguo eliminado: ${backup.name}`);
                 }
             }
 
-            console.log(`🧹 [BACKUP] Limpieza completada. Backups actuales: ${Math.min(backupFiles.length, this.maxBackups)}`);
+            devLogger.log(`🧹 [BACKUP] Limpieza completada. Backups actuales: ${Math.min(backupFiles.length, this.maxBackups)}`);
         } catch (error) {
-            console.error('❌ [BACKUP] Error limpiando backups antiguos:', error);
+            devLogger.error('❌ [BACKUP] Error limpiando backups antiguos:', error);
         }
     }
 
@@ -307,11 +308,11 @@ class BackupService {
 
         try {
             await fs.access(backupPath);
-            console.log(`🔄 [BACKUP] Iniciando restauración desde: ${backupFilename}`);
+            devLogger.log(`🔄 [BACKUP] Iniciando restauración desde: ${backupFilename}`);
 
             // Aquí implementarías la lógica de restauración
             // Por seguridad, solo registramos la acción
-            console.log('⚠️ [BACKUP] Restauración manual requerida por seguridad');
+            devLogger.log('⚠️ [BACKUP] Restauración manual requerida por seguridad');
 
             return {
                 success: true,
@@ -319,7 +320,7 @@ class BackupService {
                 backupPath: backupPath
             };
         } catch (error) {
-            console.error('❌ [BACKUP] Error accediendo al backup:', error);
+            devLogger.error('❌ [BACKUP] Error accediendo al backup:', error);
             return { success: false, error: 'Backup no encontrado' };
         }
     }
@@ -356,7 +357,7 @@ class BackupService {
                 count: backupFiles.length
             };
         } catch (error) {
-            console.error('❌ [BACKUP] Error listando backups:', error);
+            devLogger.error('❌ [BACKUP] Error listando backups:', error);
             return { success: false, error: error.message };
         }
     }
@@ -405,7 +406,7 @@ class BackupService {
                 stats: stats
             };
         } catch (error) {
-            console.error('❌ [BACKUP] Error obteniendo estadísticas:', error);
+            devLogger.error('❌ [BACKUP] Error obteniendo estadísticas:', error);
             return { success: false, error: error.message };
         }
     }
@@ -414,7 +415,7 @@ class BackupService {
      * Crear backup manual inmediato
      */
     async createManualBackup() {
-        console.log('👤 [BACKUP] Backup manual solicitado');
+        devLogger.log('👤 [BACKUP] Backup manual solicitado');
         return await this.createFullBackup('manual');
     }
 
@@ -484,7 +485,7 @@ class BackupService {
     stop() {
         // Detener tareas programadas (cron jobs se detienen automáticamente)
         this.isRunning = false;
-        console.log('🛑 [BACKUP] Servicio de backup detenido');
+        devLogger.log('🛑 [BACKUP] Servicio de backup detenido');
     }
 }
 

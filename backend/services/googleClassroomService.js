@@ -6,6 +6,8 @@
  * Puede ser extendido con funcionalidad real posteriormente.
  */
 
+const devLogger = require('../utils/devLogger');
+
 class GoogleClassroomService {
     constructor() {
         this.initialized = false;
@@ -15,7 +17,7 @@ class GoogleClassroomService {
      * Inicializar el servicio
      */
     async initialize() {
-        console.log('[GoogleClassroomService] Inicializando...');
+        devLogger.log('[GoogleClassroomService] Inicializando...');
         this.initialized = true;
         return this;
     }
@@ -24,7 +26,7 @@ class GoogleClassroomService {
      * Sincronizar datos de Google Classroom
      */
     async syncCourses(userData, courses) {
-        console.log('[GoogleClassroomService] Sincronizando', courses.length, 'cursos');
+        devLogger.log('[GoogleClassroomService] Sincronizando', courses.length, 'cursos');
         return {
             success: true,
             message: 'Courses synchronized',
@@ -37,7 +39,7 @@ class GoogleClassroomService {
      * Obtener cursos del usuario
      */
     async getUserCourses(userId) {
-        console.log('[GoogleClassroomService] Obteniendo cursos para usuario:', userId);
+        devLogger.log('[GoogleClassroomService] Obteniendo cursos para usuario:', userId);
         return {
             success: true,
             courses: [],
@@ -49,7 +51,7 @@ class GoogleClassroomService {
      * Obtener tareas de un curso
      */
     async getCourseAssignments(courseId) {
-        console.log('[GoogleClassroomService] Obteniendo tareas del curso:', courseId);
+        devLogger.log('[GoogleClassroomService] Obteniendo tareas del curso:', courseId);
         return {
             success: true,
             assignments: [],

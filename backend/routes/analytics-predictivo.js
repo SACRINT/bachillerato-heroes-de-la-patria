@@ -7,6 +7,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 
 // Configuración del sistema de analytics predictivo
@@ -112,7 +113,7 @@ router.get('/health', async (req, res) => {
         res.json(health);
 
     } catch (error) {
-        console.error('Analytics health check error:', error);
+        devLogger.error('Analytics health check error:', error);
         res.status(500).json({
             status: 'error',
             message: 'Analytics system health check failed',
@@ -150,7 +151,7 @@ router.post('/risk-prediction', async (req, res) => {
             });
         }
 
-        console.log(`🎯 [ANALYTICS-API] Generando predicción de riesgo para estudiante ${studentId}`);
+        devLogger.log(`🎯 [ANALYTICS-API] Generando predicción de riesgo para estudiante ${studentId}`);
 
         // Obtener o usar datos del estudiante
         const student = studentData || await getStudentData(studentId);
@@ -190,13 +191,13 @@ router.post('/risk-prediction', async (req, res) => {
         systemStats.lastUpdate = new Date().toISOString();
 
         // Log del resultado
-        console.log(`✅ [ANALYTICS-API] Predicción de riesgo generada en ${processingTime}ms - Riesgo: ${riskPrediction.riskLevel} (${(riskPrediction.overallRisk * 100).toFixed(1)}%)`);
+        devLogger.log(`✅ [ANALYTICS-API] Predicción de riesgo generada en ${processingTime}ms - Riesgo: ${riskPrediction.riskLevel} (${(riskPrediction.overallRisk * 100).toFixed(1)}%)`);
 
         res.json(result);
 
     } catch (error) {
         const processingTime = Date.now() - startTime;
-        console.error('Risk prediction error:', error);
+        devLogger.error('Risk prediction error:', error);
 
         res.status(500).json({
             error: 'Error generating risk prediction',
@@ -233,7 +234,7 @@ router.post('/performance-trends', async (req, res) => {
             });
         }
 
-        console.log(`📈 [ANALYTICS-API] Generando análisis de tendencias para estudiante ${studentId}`);
+        devLogger.log(`📈 [ANALYTICS-API] Generando análisis de tendencias para estudiante ${studentId}`);
 
         const student = await getStudentData(studentId);
         if (!student) {
@@ -263,13 +264,13 @@ router.post('/performance-trends', async (req, res) => {
         setCachedResult(cacheKey, result);
         dataStore.trends.set(`${studentId}_trends`, result);
 
-        console.log(`✅ [ANALYTICS-API] Análisis de tendencias generado en ${processingTime}ms`);
+        devLogger.log(`✅ [ANALYTICS-API] Análisis de tendencias generado en ${processingTime}ms`);
 
         res.json(result);
 
     } catch (error) {
         const processingTime = Date.now() - startTime;
-        console.error('Performance trends error:', error);
+        devLogger.error('Performance trends error:', error);
 
         res.status(500).json({
             error: 'Error generating performance trends',
@@ -293,7 +294,7 @@ router.get('/dashboard', async (req, res) => {
             includeRecommendations = true
         } = req.query;
 
-        console.log('📊 [ANALYTICS-API] Generando dashboard de analytics...');
+        devLogger.log('📊 [ANALYTICS-API] Generando dashboard de analytics...');
 
         const filters = { grade, group, timeRange };
         const dashboard = await generateRealTimeDashboard(filters);
@@ -318,7 +319,7 @@ router.get('/dashboard', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Dashboard generation error:', error);
+        devLogger.error('Dashboard generation error:', error);
         res.status(500).json({
             error: 'Error generating dashboard',
             message: error.message
@@ -353,7 +354,7 @@ router.get('/alerts', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Alerts retrieval error:', error);
+        devLogger.error('Alerts retrieval error:', error);
         res.status(500).json({
             error: 'Error retrieving alerts',
             message: error.message
@@ -396,7 +397,7 @@ router.post('/alerts', async (req, res) => {
         // Procesar la alerta
         await processAlert(alert);
 
-        console.log(`🚨 [ANALYTICS-API] Alerta creada: ${type} para estudiante ${studentId} (${severity})`);
+        devLogger.log(`🚨 [ANALYTICS-API] Alerta creada: ${type} para estudiante ${studentId} (${severity})`);
 
         res.json({
             success: true,
@@ -405,7 +406,7 @@ router.post('/alerts', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Alert creation error:', error);
+        devLogger.error('Alert creation error:', error);
         res.status(500).json({
             error: 'Error creating alert',
             message: error.message
@@ -459,7 +460,7 @@ router.get('/stats', async (req, res) => {
         res.json(stats);
 
     } catch (error) {
-        console.error('Stats retrieval error:', error);
+        devLogger.error('Stats retrieval error:', error);
         res.status(500).json({
             error: 'Error retrieving statistics',
             message: error.message
@@ -483,7 +484,7 @@ router.get('/group-analysis', async (req, res) => {
         const subjectsArray = subjects ? subjects.split(',') : ['all'];
         const metricsArray = metrics.split(',');
 
-        console.log(`👥 [ANALYTICS-API] Generando análisis comparativo de grupos: ${groupsArray.join(', ')}`);
+        devLogger.log(`👥 [ANALYTICS-API] Generando análisis comparativo de grupos: ${groupsArray.join(', ')}`);
 
         const analysis = await generateGroupComparison({
             groups: groupsArray,
@@ -507,7 +508,7 @@ router.get('/group-analysis', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Group analysis error:', error);
+        devLogger.error('Group analysis error:', error);
         res.status(500).json({
             error: 'Error generating group analysis',
             message: error.message
@@ -529,7 +530,7 @@ router.post('/batch-predictions', async (req, res) => {
             });
         }
 
-        console.log(`📊 [ANALYTICS-API] Procesando batch de predicciones para ${studentIds.length} estudiantes`);
+        devLogger.log(`📊 [ANALYTICS-API] Procesando batch de predicciones para ${studentIds.length} estudiantes`);
 
         const results = [];
         const errors = [];
@@ -578,7 +579,7 @@ router.post('/batch-predictions', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Batch predictions error:', error);
+        devLogger.error('Batch predictions error:', error);
         res.status(500).json({
             error: 'Error processing batch predictions',
             message: error.message
@@ -648,7 +649,7 @@ async function generateRiskPrediction(student, options = {}) {
         };
 
     } catch (error) {
-        console.error('Error generating risk prediction:', error);
+        devLogger.error('Error generating risk prediction:', error);
         return getFallbackRiskPrediction(student);
     }
 }
@@ -693,7 +694,7 @@ async function generatePerformanceTrends(student, timeRange, options = {}) {
         };
 
     } catch (error) {
-        console.error('Error generating performance trends:', error);
+        devLogger.error('Error generating performance trends:', error);
         return getFallbackTrends(student);
     }
 }
@@ -732,7 +733,7 @@ async function generateRealTimeDashboard(filters = {}) {
         };
 
     } catch (error) {
-        console.error('Error generating dashboard:', error);
+        devLogger.error('Error generating dashboard:', error);
         return getFallbackDashboard();
     }
 }

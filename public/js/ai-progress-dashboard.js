@@ -1,6 +1,6 @@
 /**
  * 📊 AI PROGRESS DASHBOARD - FASE 5.3
- * Dashboard inteligente de progreso educativo para BGE Héroes de la Patria
+ * Dashboard inteligente de progreso educativo para window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Análisis visual del desempeño académico con IA
  */
 

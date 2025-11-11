@@ -5,6 +5,7 @@
 
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 
 class ParentTeacherCommunicationService {
@@ -26,9 +27,9 @@ class ParentTeacherCommunicationService {
         try {
             await this.ensureDataDirectory();
             await this.loadData();
-            console.log('👨‍👩‍👧‍👦 [PARENT-TEACHER] Servicio de comunicación inicializado');
+            devLogger.log('👨‍👩‍👧‍👦 [PARENT-TEACHER] Servicio de comunicación inicializado');
         } catch (error) {
-            console.error('❌ [PARENT-TEACHER] Error inicializando servicio:', error);
+            devLogger.error('❌ [PARENT-TEACHER] Error inicializando servicio:', error);
         }
     }
 
@@ -93,7 +94,7 @@ class ParentTeacherCommunicationService {
             }
 
         } catch (error) {
-            console.error('❌ Error cargando datos:', error);
+            devLogger.error('❌ Error cargando datos:', error);
         }
     }
 

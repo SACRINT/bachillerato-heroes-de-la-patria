@@ -4,6 +4,7 @@
  */
 
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 
 class GradesAnalyticsService {
@@ -14,7 +15,7 @@ class GradesAnalyticsService {
         this.studentsFile = path.join(this.dataPath, 'students.json');
         this.analyticsFile = path.join(this.dataPath, 'grades_analytics.json');
 
-        console.log('📊 [GRADES ANALYTICS] Inicializando servicio de análisis...');
+        devLogger.log('📊 [GRADES ANALYTICS] Inicializando servicio de análisis...');
         this.ensureDataDirectory();
         this.initializeAnalyticsData();
     }
@@ -23,12 +24,12 @@ class GradesAnalyticsService {
         try {
             await fs.mkdir(this.dataPath, { recursive: true });
         } catch (error) {
-            console.error('❌ Error creando directorio de datos:', error);
+            devLogger.error('❌ Error creando directorio de datos:', error);
         }
     }
 
     async initializeAnalyticsData() {
-        console.log('📈 [GRADES ANALYTICS] Inicializando datos de análisis...');
+        devLogger.log('📈 [GRADES ANALYTICS] Inicializando datos de análisis...');
 
         // Datos de análisis extendidos para demo
         const analyticsData = {
@@ -109,9 +110,9 @@ class GradesAnalyticsService {
 
         try {
             await this.writeJsonFile(this.analyticsFile, analyticsData);
-            console.log('✅ [GRADES ANALYTICS] Datos de análisis inicializados');
+            devLogger.log('✅ [GRADES ANALYTICS] Datos de análisis inicializados');
         } catch (error) {
-            console.error('❌ Error inicializando datos de análisis:', error);
+            devLogger.error('❌ Error inicializando datos de análisis:', error);
         }
     }
 
@@ -120,7 +121,7 @@ class GradesAnalyticsService {
             const data = await fs.readFile(filePath, 'utf8');
             return JSON.parse(data);
         } catch (error) {
-            console.log(`📄 Archivo no encontrado: ${path.basename(filePath)}`);
+            devLogger.log(`📄 Archivo no encontrado: ${path.basename(filePath)}`);
             return null;
         }
     }
@@ -130,7 +131,7 @@ class GradesAnalyticsService {
             await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf8');
             return true;
         } catch (error) {
-            console.error(`❌ Error escribiendo archivo ${filePath}:`, error);
+            devLogger.error(`❌ Error escribiendo archivo ${filePath}:`, error);
             return false;
         }
     }
@@ -171,7 +172,7 @@ class GradesAnalyticsService {
             };
 
         } catch (error) {
-            console.error('❌ Error en análisis de estudiante:', error);
+            devLogger.error('❌ Error en análisis de estudiante:', error);
             throw error;
         }
     }
@@ -433,7 +434,7 @@ class GradesAnalyticsService {
             return this.calculateGroupAnalytics(grades, students, analyticsData);
 
         } catch (error) {
-            console.error('❌ Error en análisis grupal:', error);
+            devLogger.error('❌ Error en análisis grupal:', error);
             throw error;
         }
     }

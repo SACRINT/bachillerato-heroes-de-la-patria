@@ -7,6 +7,8 @@
  * Fecha: 26 Septiembre 2025
  */
 
+const devLogger = require('../utils/devLogger');
+
 class LocalIAProcessor {
     constructor() {
         this.knowledgeBase = new Map();
@@ -18,14 +20,14 @@ class LocalIAProcessor {
     }
 
     init() {
-        console.log('🧠 Inicializando LocalIAProcessor...');
+        devLogger.log('🧠 Inicializando LocalIAProcessor...');
 
         this.loadKnowledgeBase();
         this.setupResponseTemplates();
         this.setupIntentClassifier();
         this.setupContextPatterns();
 
-        console.log('✅ LocalIAProcessor inicializado correctamente');
+        devLogger.log('✅ LocalIAProcessor inicializado correctamente');
     }
 
     /**
@@ -114,7 +116,7 @@ class LocalIAProcessor {
             context: 'orientacion_estudiantil'
         });
 
-        console.log(`📚 Base de conocimiento cargada: ${this.knowledgeBase.size} temas`);
+        devLogger.log(`📚 Base de conocimiento cargada: ${this.knowledgeBase.size} temas`);
     }
 
     /**
@@ -145,7 +147,7 @@ class LocalIAProcessor {
             'Mi especialidad es brindarte información educativa sobre nuestro bachillerato. ¿En qué área específica te puedo ayudar?'
         ]);
 
-        console.log(`📝 Plantillas de respuesta configuradas: ${this.responseTemplates.size} tipos`);
+        devLogger.log(`📝 Plantillas de respuesta configuradas: ${this.responseTemplates.size} tipos`);
     }
 
     /**
@@ -185,7 +187,7 @@ class LocalIAProcessor {
             confidence: 0.8
         });
 
-        console.log(`🎯 Clasificador de intenciones configurado: ${this.intentClassifier.size} intenciones`);
+        devLogger.log(`🎯 Clasificador de intenciones configurado: ${this.intentClassifier.size} intenciones`);
     }
 
     /**
@@ -212,7 +214,7 @@ class LocalIAProcessor {
             modifier: 'preocupacion'
         });
 
-        console.log(`🎭 Patrones de contexto configurados: ${this.contextPatterns.size} patrones`);
+        devLogger.log(`🎭 Patrones de contexto configurados: ${this.contextPatterns.size} patrones`);
     }
 
     /**
@@ -240,7 +242,7 @@ class LocalIAProcessor {
 
             const processingTime = Date.now() - startTime;
 
-            console.log(`🧠 LocalIA procesó: "${message.substring(0, 30)}..." en ${processingTime}ms (confianza: ${(confidence * 100).toFixed(1)}%)`);
+            devLogger.log(`🧠 LocalIA procesó: "${message.substring(0, 30)}..." en ${processingTime}ms (confianza: ${(confidence * 100).toFixed(1)}%)`);
 
             return {
                 text: response,
@@ -253,7 +255,7 @@ class LocalIAProcessor {
             };
 
         } catch (error) {
-            console.error('Error en LocalIAProcessor:', error);
+            devLogger.error('Error en LocalIAProcessor:', error);
             return this.generateErrorResponse(message);
         }
     }
@@ -494,7 +496,7 @@ class LocalIAProcessor {
      */
     addKnowledge(topic, data) {
         this.knowledgeBase.set(topic, data);
-        console.log(`📚 Nuevo conocimiento agregado: ${topic}`);
+        devLogger.log(`📚 Nuevo conocimiento agregado: ${topic}`);
     }
 
     /**
@@ -502,7 +504,7 @@ class LocalIAProcessor {
      */
     updateTemplate(templateType, responses) {
         this.responseTemplates.set(templateType, responses);
-        console.log(`📝 Plantilla actualizada: ${templateType}`);
+        devLogger.log(`📝 Plantilla actualizada: ${templateType}`);
     }
 }
 

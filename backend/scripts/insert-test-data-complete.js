@@ -26,13 +26,13 @@ async function insertTestData() {
     const client = await pool.connect();
 
     try {
-        console.log('🚀 Iniciando inserción de datos de prueba...\n');
+        devLogger.log('🚀 Iniciando inserción de datos de prueba...\n');
 
         // BEGIN TRANSACTION
         await client.query('BEGIN');
 
         // ===== 1. INSERTAR DOCENTES (TEACHERS) =====
-        console.log('📚 Insertando docentes...');
+        devLogger.log('📚 Insertando docentes...');
         const teachers = [
             { nombre: 'Juan', apellido_paterno: 'Martínez', apellido_materno: 'Pérez', especialidad: 'Matemáticas', email: 'juan.martinez@heroes.edu.mx', telefono: '2221234567', status: 'activo' },
             { nombre: 'María', apellido_paterno: 'González', apellido_materno: 'López', especialidad: 'Lengua Española', email: 'maria.gonzalez@heroes.edu.mx', telefono: '2221234568', status: 'activo' },
@@ -50,10 +50,10 @@ async function insertTestData() {
                 [teacher.nombre, teacher.apellido_paterno, teacher.apellido_materno, teacher.especialidad, teacher.email, teacher.telefono, teacher.status]
             );
         }
-        console.log(`✅ ${teachers.length} docentes insertados\n`);
+        devLogger.log(`✅ ${teachers.length} docentes insertados\n`);
 
         // ===== 2. INSERTAR ESTUDIANTES ADICIONALES =====
-        console.log('👥 Insertando estudiantes adicionales...');
+        devLogger.log('👥 Insertando estudiantes adicionales...');
         const additionalStudents = [
             { nombre: 'Luis', apellido_paterno: 'Hernández', apellido_materno: 'García', matricula: '20250003', semestre: 1, promedio: 8.5, status_academico: 'regular' },
             { nombre: 'Sofia', apellido_paterno: 'Flores', apellido_materno: 'López', matricula: '20250004', semestre: 1, promedio: 9.0, status_academico: 'regular' },
@@ -73,11 +73,12 @@ async function insertTestData() {
                 [student.nombre, student.apellido_paterno, student.apellido_materno, student.matricula, student.semestre, student.promedio, student.status_academico]
             );
         }
-        console.log(`✅ ${additionalStudents.length} estudiantes adicionales insertados\n`);
+        devLogger.log(`✅ ${additionalStudents.length} estudiantes adicionales insertados\n`);
 
         // ===== 3. INSERTAR PADRES (PARENTS) =====
-        console.log('👨‍👩‍👧 Insertando padres de familia...');
+        devLogger.log('👨‍👩‍👧 Insertando padres de familia...');
         const crypto = require('crypto');
+const devLogger = require('../utils/devLogger');
         const parents = [
             { nombre: 'Dr. Pedro Hernández', email: 'pedro.hernandez@email.com', password: 'Padres123!', student_id: 1 },
             { nombre: 'Sra. Patricia Flores', email: 'patricia.flores@email.com', password: 'Padres123!', student_id: 2 },
@@ -97,10 +98,10 @@ async function insertTestData() {
                 [parent.nombre, parent.email, passwordHash, parent.student_id]
             );
         }
-        console.log(`✅ ${parents.length} padres insertados\n`);
+        devLogger.log(`✅ ${parents.length} padres insertados\n`);
 
         // ===== 4. INSERTAR CITAS ADICIONALES (APPOINTMENTS) =====
-        console.log('📅 Insertando citas adicionales...');
+        devLogger.log('📅 Insertando citas adicionales...');
         const appointments = [
             { nombre_completo: 'Luis Hernández', email: 'luis.hernandez@email.com', telefono: '2221234501', tipo_persona: 'Estudiante', motivo: 'Consulta Académica', descripcion: 'Consulta sobre calificaciones', fecha_solicitada: '2025-11-10', hora_solicitada: '10:00', estado: 'Pendiente' },
             { nombre_completo: 'Sofia Flores', email: 'sofia.flores@email.com', telefono: '2221234502', tipo_persona: 'Estudiante', motivo: 'Revisión de Tareas', descripcion: 'Revisar tareas pendientes', fecha_solicitada: '2025-11-11', hora_solicitada: '11:00', estado: 'Pendiente' },
@@ -117,10 +118,10 @@ async function insertTestData() {
                 [apt.nombre_completo, apt.email, apt.telefono, apt.tipo_persona, apt.motivo, apt.descripcion, apt.fecha_solicitada, apt.hora_solicitada, apt.estado]
             );
         }
-        console.log(`✅ ${appointments.length} citas insertadas\n`);
+        devLogger.log(`✅ ${appointments.length} citas insertadas\n`);
 
         // ===== 5. INSERTAR EGRESADOS (GRADUATES) =====
-        console.log('🎓 Insertando egresados...');
+        devLogger.log('🎓 Insertando egresados...');
         const graduates = [
             { nombre: 'Alejandro Pérez', email: 'alejandro.perez@email.com', generacion: '2024', telefono: '2221234601', ciudad: 'Puebla', ocupacion_actual: 'Estudiante Universitario', universidad: 'BUAP', carrera: 'Ingeniería en Sistemas', estatus_estudios: 'Estudiando', anio_egreso: 2024 },
             { nombre: 'Sofía Jiménez', email: 'sofia.jimenez@email.com', generacion: '2024', telefono: '2221234602', ciudad: 'Puebla', ocupacion_actual: 'Ingeniera de Software', universidad: 'IPN', carrera: 'Ingeniería Informática', estatus_estudios: 'Empleado', anio_egreso: 2024 },
@@ -136,10 +137,10 @@ async function insertTestData() {
                 [grad.nombre, grad.email, grad.generacion, grad.telefono, grad.ciudad, grad.ocupacion_actual, grad.universidad, grad.carrera, grad.estatus_estudios, grad.anio_egreso]
             );
         }
-        console.log(`✅ ${graduates.length} egresados insertados\n`);
+        devLogger.log(`✅ ${graduates.length} egresados insertados\n`);
 
         // ===== 6. INSERTAR BOLSA DE TRABAJO (JOB SEEKERS) =====
-        console.log('💼 Insertando registros en bolsa de trabajo...');
+        devLogger.log('💼 Insertando registros en bolsa de trabajo...');
         const jobSeekers = [
             { nombre_completo: 'Alejandro Pérez Sánchez', email: 'alejandro.perez@email.com', telefono: '2221234601', generacion: '2024', habilidades: 'Programación Java, Python, Base de datos', experiencia: 'Practicante en TechSoft Solutions', estado: 'Activo' },
             { nombre_completo: 'Sofía Jiménez López', email: 'sofia.jimenez@email.com', telefono: '2221234602', generacion: '2024', habilidades: 'Marketing Digital, Social Media, Analytics', experiencia: 'Community Manager en Digital Marketing Pro', estado: 'Activo' },
@@ -155,24 +156,24 @@ async function insertTestData() {
                 [seeker.nombre_completo, seeker.email, seeker.telefono, seeker.generacion, seeker.habilidades, seeker.experiencia, seeker.estado]
             );
         }
-        console.log(`✅ ${jobSeekers.length} registros en bolsa de trabajo insertados\n`);
+        devLogger.log(`✅ ${jobSeekers.length} registros en bolsa de trabajo insertados\n`);
 
         // COMMIT TRANSACTION
         await client.query('COMMIT');
 
-        console.log('✅ ¡Datos de prueba insertados exitosamente!');
-        console.log('\n📊 RESUMEN:');
-        console.log(`  • Docentes: ${teachers.length}`);
-        console.log(`  • Estudiantes adicionales: ${additionalStudents.length}`);
-        console.log(`  • Padres: ${parents.length}`);
-        console.log(`  • Citas: ${appointments.length}`);
-        console.log(`  • Egresados: ${graduates.length}`);
-        console.log(`  • Registros en bolsa de trabajo: ${jobSeekers.length}`);
+        devLogger.log('✅ ¡Datos de prueba insertados exitosamente!');
+        devLogger.log('\n📊 RESUMEN:');
+        devLogger.log(`  • Docentes: ${teachers.length}`);
+        devLogger.log(`  • Estudiantes adicionales: ${additionalStudents.length}`);
+        devLogger.log(`  • Padres: ${parents.length}`);
+        devLogger.log(`  • Citas: ${appointments.length}`);
+        devLogger.log(`  • Egresados: ${graduates.length}`);
+        devLogger.log(`  • Registros en bolsa de trabajo: ${jobSeekers.length}`);
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('❌ Error al insertar datos:', error.message);
-        console.error('Stack:', error.stack);
+        devLogger.error('❌ Error al insertar datos:', error.message);
+        devLogger.error('Stack:', error.stack);
         process.exit(1);
     } finally {
         client.release();
@@ -182,9 +183,9 @@ async function insertTestData() {
 
 // Ejecutar
 insertTestData().then(() => {
-    console.log('\n✅ Proceso completado');
+    devLogger.log('\n✅ Proceso completado');
     process.exit(0);
 }).catch((err) => {
-    console.error('❌ Error fatal:', err);
+    devLogger.error('❌ Error fatal:', err);
     process.exit(1);
 });

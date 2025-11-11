@@ -1,6 +1,6 @@
 /**
  * 🔬 SIMULADOR 3D INTERACTIVO DE LABORATORIOS
- * Portal BGE Héroes de la Patria
+ * Portal window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Sistema de laboratorios virtuales 3D para experimentos científicos interactivos
  */
 

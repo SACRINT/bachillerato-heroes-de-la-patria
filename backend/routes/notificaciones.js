@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
@@ -74,7 +75,7 @@ router.post('/', [
                 email
             ]);
 
-            console.log('✅ Suscripción reactivada:', result.rows[0].id);
+            devLogger.log('✅ Suscripción reactivada:', result.rows[0].id);
 
             return res.json({
                 success: true,
@@ -103,7 +104,7 @@ router.post('/', [
             user_agent
         ]);
 
-        console.log('✅ Nueva suscripción creada:', result.rows[0].id);
+        devLogger.log('✅ Nueva suscripción creada:', result.rows[0].id);
 
         res.status(201).json({
             success: true,
@@ -115,7 +116,7 @@ router.post('/', [
         });
 
     } catch (error) {
-        console.error('❌ Error al crear suscripción:', error);
+        devLogger.error('❌ Error al crear suscripción:', error);
 
         // Error de constraint (email duplicado)
         if (error.code === '23505') {
@@ -168,7 +169,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener suscripciones:', error);
+        devLogger.error('❌ Error al obtener suscripciones:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener los datos'
@@ -221,7 +222,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener estadísticas:', error);
+        devLogger.error('❌ Error al obtener estadísticas:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -251,7 +252,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener suscripción:', error);
+        devLogger.error('❌ Error al obtener suscripción:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener la suscripción'
@@ -294,7 +295,7 @@ router.put('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar suscripción:', error);
+        devLogger.error('❌ Error al actualizar suscripción:', error);
         res.status(500).json({
             success: false,
             error: 'Error al actualizar la suscripción'
@@ -330,7 +331,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al cancelar suscripción:', error);
+        devLogger.error('❌ Error al cancelar suscripción:', error);
         res.status(500).json({
             success: false,
             error: 'Error al cancelar la suscripción'
@@ -375,7 +376,7 @@ router.post('/unsubscribe', [
         });
 
     } catch (error) {
-        console.error('❌ Error al dar de baja:', error);
+        devLogger.error('❌ Error al dar de baja:', error);
         res.status(500).json({
             success: false,
             error: 'Error al procesar la solicitud'

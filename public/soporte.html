@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soporte - BGE Héroes de la Patria</title>
+    <title id="page-title" data-base-title="Soporte - BGE HÃ©roes de la Patria">Soporte - BGE HÃ©roes de la Patria</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -362,6 +362,7 @@
             }
         }
     </style>
+    <script src="js/meta-updater.js" defer></script>
 </head>
 <body>
     <!-- Navbar -->
@@ -369,13 +370,13 @@
         <div class="container-fluid">
             <div class="d-flex align-items-center justify-content-between">
                 <a href="/" class="navbar-brand">
-                    <i class="bi bi-headset"></i> Soporte Técnico
+                    <i class="bi bi-headset"></i> Soporte TÃ©cnico
                 </a>
                 <div class="d-flex gap-2">
                     <button class="btn btn-icon" id="newTicketBtn" title="Nuevo Ticket">
                         <i class="bi bi-plus-lg"></i>
                     </button>
-                    <button class="btn btn-icon" id="statsBtn" title="Estadísticas">
+                    <button class="btn btn-icon" id="statsBtn" title="EstadÃ­sticas">
                         <i class="bi bi-graph-up"></i>
                     </button>
                 </div>
@@ -387,7 +388,7 @@
     <div class="support-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h6>Filtros Rápidos</h6>
+            <h6>Filtros RÃ¡pidos</h6>
             <div class="sidebar-item active" data-filter="all">
                 <i class="bi bi-inbox me-2"></i> Todos los Tickets
                 <span class="badge bg-secondary" id="badge-all">0</span>
@@ -397,7 +398,7 @@
                 <span class="badge bg-primary" id="badge-my">0</span>
             </div>
             <div class="sidebar-item" data-filter="assigned">
-                <i class="bi bi-person-check me-2"></i> Asignados a mí
+                <i class="bi bi-person-check me-2"></i> Asignados a mÃ­
                 <span class="badge bg-info" id="badge-assigned">0</span>
             </div>
             <div class="sidebar-item" data-filter="watching">
@@ -453,7 +454,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="stat-assigned">0</div>
-                    <div class="stat-label">Asignados a Mí</div>
+                    <div class="stat-label">Asignados a MÃ­</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="stat-watching">0</div>
@@ -483,7 +484,7 @@
 
             <!-- Pagination -->
             <div class="pagination-container">
-                <nav aria-label="Paginación">
+                <nav aria-label="PaginaciÃ³n">
                     <ul class="pagination justify-content-center" id="pagination">
                         <!-- Pagination will be loaded here -->
                     </ul>
@@ -507,7 +508,7 @@
                             <input type="text" class="form-control" id="ticketSubject" required>
                         </div>
                         <div class="mb-3">
-                            <label for="ticketDescription" class="form-label">Descripción *</label>
+                            <label for="ticketDescription" class="form-label">DescripciÃ³n *</label>
                             <textarea class="form-control" id="ticketDescription" rows="5" required></textarea>
                         </div>
                         <div class="row">
@@ -518,7 +519,7 @@
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="ticketCategory" class="form-label">Categoría</label>
+                                <label for="ticketCategory" class="form-label">CategorÃ­a</label>
                                 <select class="form-select" id="ticketCategory">
                                     <!-- Categories will be loaded here -->
                                 </select>
@@ -536,7 +537,7 @@
                         <div class="mb-3">
                             <label for="ticketAttachments" class="form-label">Archivos Adjuntos</label>
                             <input type="file" class="form-control" id="ticketAttachments" multiple>
-                            <div class="form-text">Máximo 10MB por archivo. Hasta 5 archivos.</div>
+                            <div class="form-text">MÃ¡ximo 10MB por archivo. Hasta 5 archivos.</div>
                         </div>
                     </form>
                 </div>
@@ -567,7 +568,7 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
+    <!-- ðŸ”§ MAIN.JS - CARGA DINÃMICA DE HEADER Y FOOTER -->
     <script src="js/main.js"></script>
     <!-- Support Manager -->
     <script src="js/support-tickets-manager.js"></script>
@@ -579,5 +580,10 @@
             });
         });
     </script>
-</body>
+    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuraciÃ³n multi-tenancy desde BD -->
+    <script src="js/tenant-config-loader.js" defer></script>
+
+    </body>
 </html>
+
+

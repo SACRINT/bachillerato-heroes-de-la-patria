@@ -999,7 +999,7 @@ class SPEIProvider {
                 </div>
                 <div class="bank-info">
                     <h6>Datos bancarios:</h6>
-                    <p><strong>Beneficiario:</strong> Bachillerato Héroes de la Patria A.C.</p>
+                    <p><strong>Beneficiario:</strong> Bachillerato window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria') A.C.</p>
                     <p><strong>Banco:</strong> Banco Ejemplo</p>
                     <p><strong>CLABE:</strong> 123456789012345678</p>
                     <p><strong>Concepto:</strong> Pago servicios educativos</p>

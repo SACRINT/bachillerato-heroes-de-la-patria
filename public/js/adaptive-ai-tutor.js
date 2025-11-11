@@ -1,6 +1,6 @@
 /**
  * 🧠 TUTOR IA PERSONALIZADO ADAPTATIVO
- * Portal BGE Héroes de la Patria
+ * Portal window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Sistema de tutoría inteligente que se adapta al estilo y ritmo de aprendizaje del estudiante
  */
 

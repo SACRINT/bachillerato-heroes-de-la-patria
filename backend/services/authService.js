@@ -4,6 +4,7 @@
  */
 
 const bcrypt = require('bcryptjs');
+const devLogger = require('../utils/devLogger');
 const jwt = require('jsonwebtoken');
 const { executeQuery } = require('../config/database');
 const fs = require('fs').promises;
@@ -76,7 +77,7 @@ class AuthService {
                     }
                 ];
                 await fs.writeFile(this.usersJsonPath, JSON.stringify(defaultUsers, null, 2));
-                console.log('✅ Archivo users.json inicializado con usuario admin');
+                devLogger.log('✅ Archivo users.json inicializado con usuario admin');
             }
 
             // Inicializar sessions.json
@@ -84,10 +85,10 @@ class AuthService {
                 await fs.access(this.sessionsJsonPath);
             } catch {
                 await fs.writeFile(this.sessionsJsonPath, JSON.stringify([], null, 2));
-                console.log('✅ Archivo sessions.json inicializado');
+                devLogger.log('✅ Archivo sessions.json inicializado');
             }
         } catch (error) {
-            console.error('❌ Error inicializando archivos de datos:', error);
+            devLogger.error('❌ Error inicializando archivos de datos:', error);
         }
     }
 
@@ -96,16 +97,16 @@ class AuthService {
      */
     async loadUsersFromJson() {
         try {
-            console.log('🔍 DEBUG: Intentando cargar usuarios desde:', this.usersJsonPath);
+            devLogger.log('🔍 DEBUG: Intentando cargar usuarios desde:', this.usersJsonPath);
             const data = await fs.readFile(this.usersJsonPath, 'utf8');
-            console.log('🔍 DEBUG: Datos leídos del archivo JSON:', data);
+            devLogger.log('🔍 DEBUG: Datos leídos del archivo JSON:', data);
             const parsedData = JSON.parse(data);
-            console.log('🔍 DEBUG: Usuarios parseados:', JSON.stringify(parsedData, null, 2));
-            console.log('🔍 DEBUG: Número de usuarios encontrados:', parsedData.length);
+            devLogger.log('🔍 DEBUG: Usuarios parseados:', JSON.stringify(parsedData, null, 2));
+            devLogger.log('🔍 DEBUG: Número de usuarios encontrados:', parsedData.length);
             return parsedData;
         } catch (error) {
-            console.warn('⚠️ No se pudieron cargar usuarios desde JSON:', error.message);
-            console.error('🔍 DEBUG: Error completo:', error);
+            devLogger.warn('⚠️ No se pudieron cargar usuarios desde JSON:', error.message);
+            devLogger.error('🔍 DEBUG: Error completo:', error);
             return [];
         }
     }
@@ -118,7 +119,7 @@ class AuthService {
             await fs.writeFile(this.usersJsonPath, JSON.stringify(users, null, 2));
             return true;
         } catch (error) {
-            console.error('❌ Error guardando usuarios en JSON:', error);
+            devLogger.error('❌ Error guardando usuarios en JSON:', error);
             return false;
         }
     }
@@ -133,28 +134,28 @@ class AuthService {
             // Intentar primero con PostgreSQL
             try {
                 const users = await executeQuery('SELECT * FROM usuarios WHERE username = $1 OR email = $2', [username, username]);
-                console.log('🔍 DEBUG: Usuarios retornados por PostgreSQL:', users);
+                devLogger.log('🔍 DEBUG: Usuarios retornados por PostgreSQL:', users);
                 user = users.find(u => u.username === username || u.email === username);
-                console.log('🔍 Usuario encontrado en PostgreSQL:', !!user);
+                devLogger.log('🔍 Usuario encontrado en PostgreSQL:', !!user);
 
                 // Si PostgreSQL no retorna usuarios, también usar JSON fallback
                 if (!user && users.length === 0) {
-                    console.warn('⚠️ PostgreSQL conectado pero sin usuarios, usando JSON fallback');
+                    devLogger.warn('⚠️ PostgreSQL conectado pero sin usuarios, usando JSON fallback');
                     throw new Error('No users in PostgreSQL, fallback to JSON');
                 }
             } catch (pgError) {
-                console.warn('⚠️ PostgreSQL no disponible o sin datos, usando JSON fallback');
+                devLogger.warn('⚠️ PostgreSQL no disponible o sin datos, usando JSON fallback');
 
                 // Fallback a JSON
                 const jsonUsers = await this.loadUsersFromJson();
-                console.log('🔍 DEBUG: Buscando usuario:', username);
-                console.log('🔍 DEBUG: Lista de usuarios JSON:', jsonUsers.map(u => ({id: u.id, username: u.username, email: u.email})));
+                devLogger.log('🔍 DEBUG: Buscando usuario:', username);
+                devLogger.log('🔍 DEBUG: Lista de usuarios JSON:', jsonUsers.map(u => ({id: u.id, username: u.username, email: u.email})));
                 user = jsonUsers.find(u => u.username === username || u.email === username);
-                console.log('🔍 Usuario encontrado en JSON:', !!user);
+                devLogger.log('🔍 Usuario encontrado en JSON:', !!user);
                 if (user) {
-                    console.log('🔍 DEBUG: Usuario encontrado:', {id: user.id, username: user.username, email: user.email, role: user.role});
+                    devLogger.log('🔍 DEBUG: Usuario encontrado:', {id: user.id, username: user.username, email: user.email, role: user.role});
                 } else {
-                    console.log('🔍 DEBUG: Usuario NO encontrado. Criterio de búsqueda:', username);
+                    devLogger.log('🔍 DEBUG: Usuario NO encontrado. Criterio de búsqueda:', username);
                 }
             }
 
@@ -197,11 +198,11 @@ class AuthService {
             // Remover contraseña del objeto retornado
             const { password_hash, ...userWithoutPassword } = user;
 
-            console.log(`✅ Login exitoso: ${user.username || user.email} (${user.role})`);
+            devLogger.log(`✅ Login exitoso: ${user.username || user.email} (${user.role})`);
             return userWithoutPassword;
 
         } catch (error) {
-            console.error('❌ Error en autenticación:', error);
+            devLogger.error('❌ Error en autenticación:', error);
             throw error;
         }
     }
@@ -371,14 +372,14 @@ class AuthService {
                 await this.saveUsersToJson(jsonUsers);
             }
 
-            console.log(`✅ Usuario creado: ${email} (${role})`);
+            devLogger.log(`✅ Usuario creado: ${email} (${role})`);
 
             // Retornar sin contraseña
             const { password_hash, ...userWithoutPassword } = newUser;
             return userWithoutPassword;
 
         } catch (error) {
-            console.error('❌ Error creando usuario:', error);
+            devLogger.error('❌ Error creando usuario:', error);
             throw error;
         }
     }
@@ -427,11 +428,11 @@ class AuthService {
                 }
             }
 
-            console.log(`✅ Contraseña cambiada para usuario ID: ${userId}`);
+            devLogger.log(`✅ Contraseña cambiada para usuario ID: ${userId}`);
             return true;
 
         } catch (error) {
-            console.error('❌ Error cambiando contraseña:', error);
+            devLogger.error('❌ Error cambiando contraseña:', error);
             throw error;
         }
     }
@@ -487,7 +488,7 @@ class AuthService {
             return user;
 
         } catch (error) {
-            console.error('❌ Error obteniendo perfil:', error);
+            devLogger.error('❌ Error obteniendo perfil:', error);
             throw error;
         }
     }
@@ -498,10 +499,10 @@ class AuthService {
     async invalidateUserSessions(userId) {
         try {
             // En un sistema completo, aquí se invalidarían los tokens en una blacklist
-            console.log(`🚫 Sesiones invalidadas para usuario ID: ${userId}`);
+            devLogger.log(`🚫 Sesiones invalidadas para usuario ID: ${userId}`);
             return true;
         } catch (error) {
-            console.error('❌ Error invalidando sesiones:', error);
+            devLogger.error('❌ Error invalidando sesiones:', error);
             throw error;
         }
     }

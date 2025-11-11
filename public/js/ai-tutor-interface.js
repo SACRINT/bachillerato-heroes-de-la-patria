@@ -1,6 +1,6 @@
 /**
  * 🤖 AI TUTOR INTERFACE - FASE 5.1
- * Interfaz inteligente de tutor AI para BGE Héroes de la Patria
+ * Interfaz inteligente de tutor AI para window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
  * Conexión entre estudiantes y sistemas de IA educativa
  */
 

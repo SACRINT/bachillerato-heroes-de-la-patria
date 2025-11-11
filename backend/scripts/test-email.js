@@ -5,48 +5,49 @@
  */
 
 const emailService = require('../services/emailService');
+const devLogger = require('../utils/devLogger');
 require('dotenv').config({ path: require('path').join(__dirname, '../../.env') });
 
 async function testEmail() {
-    console.log('📧 VERIFICACIÓN DE CONFIGURACIÓN DE EMAIL\n');
-    console.log('='.repeat(60));
+    devLogger.log('📧 VERIFICACIÓN DE CONFIGURACIÓN DE EMAIL\n');
+    devLogger.log('='.repeat(60));
 
     try {
         // Verificar variables de entorno
-        console.log('🔍 Verificando variables de entorno...');
+        devLogger.log('🔍 Verificando variables de entorno...');
 
         if (!process.env.SMTP_HOST) {
-            console.log('⚠️  SMTP_HOST no configurado');
+            devLogger.log('⚠️  SMTP_HOST no configurado');
         } else {
-            console.log(`✅ SMTP_HOST: ${process.env.SMTP_HOST}`);
+            devLogger.log(`✅ SMTP_HOST: ${process.env.SMTP_HOST}`);
         }
 
         if (!process.env.SMTP_PORT) {
-            console.log('⚠️  SMTP_PORT no configurado');
+            devLogger.log('⚠️  SMTP_PORT no configurado');
         } else {
-            console.log(`✅ SMTP_PORT: ${process.env.SMTP_PORT}`);
+            devLogger.log(`✅ SMTP_PORT: ${process.env.SMTP_PORT}`);
         }
 
         if (!process.env.SMTP_USER) {
-            console.log('⚠️  SMTP_USER no configurado');
+            devLogger.log('⚠️  SMTP_USER no configurado');
         } else {
-            console.log(`✅ SMTP_USER: ${process.env.SMTP_USER}`);
+            devLogger.log(`✅ SMTP_USER: ${process.env.SMTP_USER}`);
         }
 
         if (!process.env.SMTP_PASS) {
-            console.log('⚠️  SMTP_PASS no configurado');
+            devLogger.log('⚠️  SMTP_PASS no configurado');
         } else {
-            console.log(`✅ SMTP_PASS: ****** (configurado)`);
+            devLogger.log(`✅ SMTP_PASS: ****** (configurado)`);
         }
 
-        console.log('\n' + '='.repeat(60));
+        devLogger.log('\n' + '='.repeat(60));
 
         // Inicializar servicio de email
-        console.log('\n📬 Inicializando servicio de email...');
+        devLogger.log('\n📬 Inicializando servicio de email...');
         await emailService.init();
 
-        console.log('✅ Servicio de email inicializado\n');
-        console.log('='.repeat(60));
+        devLogger.log('✅ Servicio de email inicializado\n');
+        devLogger.log('='.repeat(60));
 
         // Obtener email de prueba
         const readline = require('readline').createInterface({
@@ -61,7 +62,7 @@ async function testEmail() {
             });
         });
 
-        console.log(`\n🚀 Enviando email de prueba a: ${testEmail}...\n`);
+        devLogger.log(`\n🚀 Enviando email de prueba a: ${testEmail}...\n`);
 
         // Enviar email de bienvenida de prueba
         const result = await emailService.sendWelcomeEmail({
@@ -69,49 +70,49 @@ async function testEmail() {
             nombre: 'Usuario de Prueba'
         });
 
-        console.log('='.repeat(60));
-        console.log('✅ EMAIL ENVIADO EXITOSAMENTE\n');
-        console.log(`📧 Destinatario: ${testEmail}`);
-        console.log(`📬 Message ID: ${result.messageId}`);
+        devLogger.log('='.repeat(60));
+        devLogger.log('✅ EMAIL ENVIADO EXITOSAMENTE\n');
+        devLogger.log(`📧 Destinatario: ${testEmail}`);
+        devLogger.log(`📬 Message ID: ${result.messageId}`);
 
         if (result.previewUrl) {
-            console.log(`\n🔗 Vista Previa (Ethereal Email):`);
-            console.log(`   ${result.previewUrl}\n`);
-            console.log(`   Copia este link en tu navegador para ver el email`);
+            devLogger.log(`\n🔗 Vista Previa (Ethereal Email):`);
+            devLogger.log(`   ${result.previewUrl}\n`);
+            devLogger.log(`   Copia este link en tu navegador para ver el email`);
         } else {
-            console.log(`\n📫 Email enviado a tu bandeja de entrada`);
-            console.log(`   Revisa tu email (puede tardar unos segundos)\n`);
+            devLogger.log(`\n📫 Email enviado a tu bandeja de entrada`);
+            devLogger.log(`   Revisa tu email (puede tardar unos segundos)\n`);
         }
 
-        console.log('='.repeat(60));
+        devLogger.log('='.repeat(60));
 
-        console.log('\n✅ CONFIGURACIÓN DE EMAIL CORRECTA\n');
+        devLogger.log('\n✅ CONFIGURACIÓN DE EMAIL CORRECTA\n');
 
         process.exit(0);
 
     } catch (error) {
-        console.error('\n' + '='.repeat(60));
-        console.error('❌ ERROR EN CONFIGURACIÓN DE EMAIL\n');
-        console.error('Detalles:', error.message);
+        devLogger.error('\n' + '='.repeat(60));
+        devLogger.error('❌ ERROR EN CONFIGURACIÓN DE EMAIL\n');
+        devLogger.error('Detalles:', error.message);
 
         if (error.code === 'ECONNREFUSED') {
-            console.error('\n🔧 Posibles causas:');
-            console.error('  • SMTP_HOST incorrecto');
-            console.error('  • SMTP_PORT incorrecto');
-            console.error('  • Firewall bloqueando la conexión');
+            devLogger.error('\n🔧 Posibles causas:');
+            devLogger.error('  • SMTP_HOST incorrecto');
+            devLogger.error('  • SMTP_PORT incorrecto');
+            devLogger.error('  • Firewall bloqueando la conexión');
         } else if (error.message.includes('auth')) {
-            console.error('\n🔧 Posibles causas:');
-            console.error('  • SMTP_USER incorrecto');
-            console.error('  • SMTP_PASS incorrecto');
-            console.error('  • Autenticación de 2 factores activa (usa contraseña de aplicación)');
+            devLogger.error('\n🔧 Posibles causas:');
+            devLogger.error('  • SMTP_USER incorrecto');
+            devLogger.error('  • SMTP_PASS incorrecto');
+            devLogger.error('  • Autenticación de 2 factores activa (usa contraseña de aplicación)');
         }
 
-        console.error('\n📝 Verifica tu archivo .env:');
-        console.error('  SMTP_HOST=smtp.gmail.com');
-        console.error('  SMTP_PORT=587');
-        console.error('  SMTP_USER=tu_email@gmail.com');
-        console.error('  SMTP_PASS=tu_contraseña_de_aplicación');
-        console.error('='.repeat(60) + '\n');
+        devLogger.error('\n📝 Verifica tu archivo .env:');
+        devLogger.error('  SMTP_HOST=smtp.gmail.com');
+        devLogger.error('  SMTP_PORT=587');
+        devLogger.error('  SMTP_USER=tu_email@gmail.com');
+        devLogger.error('  SMTP_PASS=tu_contraseña_de_aplicación');
+        devLogger.error('='.repeat(60) + '\n');
 
         process.exit(1);
     }

@@ -80,7 +80,7 @@ class PerformanceIntegration {
         if (typeof webVitals === 'undefined') {
             try {
                 const script = document.createElement('script');
-                script.src = 'https://unpkg.com/web-vitals@3/dist/web-vitals.iife.js';
+                script.src = 'https://unpkg.com/web-vitals@3.5.2/dist/web-vitals.iife.js';
                 script.onload = () => {
                     this.initWebVitalsTracking();
                 };

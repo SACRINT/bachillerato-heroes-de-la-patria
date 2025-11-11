@@ -5,6 +5,7 @@
  */
 
 const nodemailer = require('nodemailer');
+const devLogger = require('../utils/devLogger');
 const handlebars = require('handlebars');
 const fs = require('fs').promises;
 const path = require('path');
@@ -50,20 +51,20 @@ class EmailService {
                         pass: testAccount.pass
                     }
                 });
-                console.log('📧 Email Service en modo desarrollo (Ethereal Email)');
-                console.log(`👤 Usuario: ${testAccount.user}`);
+                devLogger.log('📧 Email Service en modo desarrollo (Ethereal Email)');
+                devLogger.log(`👤 Usuario: ${testAccount.user}`);
             }
 
             // Verificar conexión
             await this.transporter.verify();
             this.initialized = true;
-            console.log('✅ Email Service inicializado correctamente');
+            devLogger.log('✅ Email Service inicializado correctamente');
 
             // Registrar helpers de Handlebars
             this.registerHandlebarsHelpers();
 
         } catch (error) {
-            console.error('❌ Error al inicializar Email Service:', error);
+            devLogger.error('❌ Error al inicializar Email Service:', error);
             throw error;
         }
     }
@@ -109,7 +110,7 @@ class EmailService {
             return `${baseUrl}${path}`;
         });
 
-        console.log('✅ Handlebars helpers registrados');
+        devLogger.log('✅ Handlebars helpers registrados');
     }
 
     /**
@@ -131,7 +132,7 @@ class EmailService {
 
             return compiledTemplate;
         } catch (error) {
-            console.error(`❌ Error al cargar plantilla ${templateName}:`, error);
+            devLogger.error(`❌ Error al cargar plantilla ${templateName}:`, error);
             throw new Error(`No se pudo cargar la plantilla de email: ${templateName}`);
         }
     }
@@ -161,11 +162,11 @@ class EmailService {
             // Enviar email
             const info = await this.transporter.sendMail(mailOptions);
 
-            console.log(`✅ Email enviado a ${to}: ${info.messageId}`);
+            devLogger.log(`✅ Email enviado a ${to}: ${info.messageId}`);
 
             // En desarrollo, mostrar URL de previsualización
             if (process.env.NODE_ENV !== 'production') {
-                console.log(`🔗 Vista previa: ${nodemailer.getTestMessageUrl(info)}`);
+                devLogger.log(`🔗 Vista previa: ${nodemailer.getTestMessageUrl(info)}`);
             }
 
             return {
@@ -175,7 +176,7 @@ class EmailService {
             };
 
         } catch (error) {
-            console.error(`❌ Error al enviar email a ${to}:`, error);
+            devLogger.error(`❌ Error al enviar email a ${to}:`, error);
             throw error;
         }
     }
@@ -321,7 +322,7 @@ class EmailService {
         const successful = results.filter(r => r.success).length;
         const failed = results.filter(r => !r.success).length;
 
-        console.log(`📊 Envío en lote completado: ${successful} exitosos, ${failed} fallidos`);
+        devLogger.log(`📊 Envío en lote completado: ${successful} exitosos, ${failed} fallidos`);
 
         return {
             total: emails.length,
@@ -336,7 +337,7 @@ class EmailService {
      */
     clearTemplateCache() {
         this.templatesCache = {};
-        console.log('🗑️ Caché de plantillas limpiado');
+        devLogger.log('🗑️ Caché de plantillas limpiado');
     }
 }
 

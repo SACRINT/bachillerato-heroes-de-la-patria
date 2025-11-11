@@ -1,4 +1,4 @@
-// Main JavaScript para el sitio web BGE Héroes de la Patria
+// Main JavaScript para el sitio web window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializar componentes principales
     initializeChatbot();
@@ -107,7 +107,7 @@ function createChatbot() {
         <div class="chatbot-body" id="chatbot-messages">
             <div class="message bot-message">
                 <div class="message-content">
-                    ¡Hola! Soy el asistente virtual del BGE Héroes de la Patria. 
+                    ¡Hola! Soy el asistente virtual del window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria'). 
                     ¿En qué puedo ayudarte hoy?
                 </div>
             </div>
@@ -357,9 +357,9 @@ function loadHeaderFooter() {
                 // IMPORTANTE: Los scripts en el HTML no se ejecutan con innerHTML
                 // Necesitamos cargar los scripts críticos manualmente en secuencia
                 const criticalScripts = [
-                    'js/unified-auth-system-v2.js?v=2025110503',  // NUEVO: Sistema de autenticación unificado V2 - Google OAuth + Close btn
+                    // ❌ ELIMINADO: 'js/unified-auth-system-v2.js' - No existe en /public/js/
                     'js/admin-auth.js?v=2024091401',
-                    'js/responsive-nav.js?v=2024091401',
+                    // ❌ ELIMINADO: 'js/responsive-nav.js' - No existe en /public/js/
                     'js/nested-dropdowns.js?v=2024091401'
                     // ❌ ELIMINADO: theme-manager.js ya se carga desde header.html
                 ];

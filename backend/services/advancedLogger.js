@@ -4,6 +4,7 @@
  */
 
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const { createWriteStream } = require('fs');
 
@@ -39,7 +40,7 @@ class AdvancedLogger {
         this.currentLevel = options.level || (this.environment === 'production' ? 'info' : 'debug');
         this.streams = new Map();
 
-        console.log('📝 [LOGGER] Sistema de logs avanzado inicializado');
+        devLogger.log('📝 [LOGGER] Sistema de logs avanzado inicializado');
         this.init();
     }
 
@@ -52,7 +53,7 @@ class AdvancedLogger {
             await this.setupFileStreams();
             await this.cleanOldLogs();
 
-            console.log('✅ [LOGGER] Sistema configurado correctamente');
+            devLogger.log('✅ [LOGGER] Sistema configurado correctamente');
 
             // Log de inicio del sistema
             this.info('Sistema de logs avanzado iniciado', {
@@ -61,7 +62,7 @@ class AdvancedLogger {
                 logDir: this.logDir
             });
         } catch (error) {
-            console.error('❌ [LOGGER] Error inicializando sistema:', error);
+            devLogger.error('❌ [LOGGER] Error inicializando sistema:', error);
         }
     }
 
@@ -73,7 +74,7 @@ class AdvancedLogger {
             await fs.access(this.logDir);
         } catch (error) {
             await fs.mkdir(this.logDir, { recursive: true });
-            console.log(`📁 [LOGGER] Directorio creado: ${this.logDir}`);
+            devLogger.log(`📁 [LOGGER] Directorio creado: ${this.logDir}`);
         }
     }
 
@@ -153,7 +154,7 @@ class AdvancedLogger {
      */
     writeToConsole(level, formattedLog) {
         const color = this.colors[level] || this.colors.reset;
-        console.log(`${color}${formattedLog}${this.colors.reset}`);
+        devLogger.log(`${color}${formattedLog}${this.colors.reset}`);
     }
 
     /**
@@ -199,7 +200,7 @@ class AdvancedLogger {
                 }
             }
         } catch (error) {
-            console.error('❌ [LOGGER] Error escribiendo en archivo:', error);
+            devLogger.error('❌ [LOGGER] Error escribiendo en archivo:', error);
         }
     }
 
@@ -324,7 +325,7 @@ class AdvancedLogger {
                 try {
                     file.stat = await fs.stat(file.path);
                 } catch (error) {
-                    console.warn(`No se pudo acceder al archivo: ${file.name}`);
+                    devLogger.warn(`No se pudo acceder al archivo: ${file.name}`);
                 }
             }
 
@@ -338,13 +339,13 @@ class AdvancedLogger {
                 const filesToDelete = validFiles.slice(this.maxFiles);
                 for (let file of filesToDelete) {
                     await fs.unlink(file.path);
-                    console.log(`🗑️ [LOGGER] Log antiguo eliminado: ${file.name}`);
+                    devLogger.log(`🗑️ [LOGGER] Log antiguo eliminado: ${file.name}`);
                 }
             }
 
-            console.log(`🧹 [LOGGER] Limpieza completada. Logs actuales: ${Math.min(validFiles.length, this.maxFiles)}`);
+            devLogger.log(`🧹 [LOGGER] Limpieza completada. Logs actuales: ${Math.min(validFiles.length, this.maxFiles)}`);
         } catch (error) {
-            console.error('❌ [LOGGER] Error limpiando logs antiguos:', error);
+            devLogger.error('❌ [LOGGER] Error limpiando logs antiguos:', error);
         }
     }
 
@@ -382,7 +383,7 @@ class AdvancedLogger {
                 }
             }
         } catch (error) {
-            console.error('❌ [LOGGER] Error durante rotación de logs:', error);
+            devLogger.error('❌ [LOGGER] Error durante rotación de logs:', error);
         }
     }
 
@@ -411,7 +412,7 @@ class AdvancedLogger {
                         modified: stat.mtime
                     });
                 } catch (error) {
-                    console.warn(`Error obteniendo stats de ${file}:`, error.message);
+                    devLogger.warn(`Error obteniendo stats de ${file}:`, error.message);
                 }
             }
 
@@ -531,13 +532,13 @@ class AdvancedLogger {
         for (let [category, stream] of this.streams) {
             try {
                 stream.end();
-                console.log(`📝 [LOGGER] Stream cerrado: ${category}`);
+                devLogger.log(`📝 [LOGGER] Stream cerrado: ${category}`);
             } catch (error) {
-                console.error(`Error cerrando stream ${category}:`, error);
+                devLogger.error(`Error cerrando stream ${category}:`, error);
             }
         }
         this.streams.clear();
-        console.log('🛑 [LOGGER] Sistema de logs detenido');
+        devLogger.log('🛑 [LOGGER] Sistema de logs detenido');
     }
 }
 

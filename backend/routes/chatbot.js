@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { executeQuery, executeTransaction } = require('../config/database');
 const { body, validationResult } = require('express-validator');
@@ -86,7 +87,7 @@ router.post('/search', validateSearch, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error en búsqueda de chatbot:', error);
+        devLogger.error('Error en búsqueda de chatbot:', error);
         res.status(500).json({
             error: 'Error interno del servidor',
             message: 'No se pudo procesar la búsqueda'
@@ -129,7 +130,7 @@ router.post('/message', validateMessage, async (req, res) => {
             timestamp: new Date().toISOString()
         };
 
-        console.log(`💬 Mensaje registrado: ${sender_type} - "${message.substring(0, 50)}..."`);
+        devLogger.log(`💬 Mensaje registrado: ${sender_type} - "${message.substring(0, 50)}..."`);
 
         const conversationId = Date.now();
 
@@ -141,7 +142,7 @@ router.post('/message', validateMessage, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error registrando mensaje:', error);
+        devLogger.error('Error registrando mensaje:', error);
         res.status(500).json({
             error: 'Error interno del servidor',
             message: 'No se pudo registrar el mensaje'
@@ -185,7 +186,7 @@ router.get('/analytics/daily', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error obteniendo analytics:', error);
+        devLogger.error('Error obteniendo analytics:', error);
         res.status(500).json({
             error: 'Error interno del servidor',
             message: 'No se pudieron obtener las estadísticas'
@@ -235,7 +236,7 @@ router.post('/feedback', [
         });
 
     } catch (error) {
-        console.error('Error registrando feedback:', error);
+        devLogger.error('Error registrando feedback:', error);
         res.status(500).json({
             error: 'Error interno del servidor',
             message: 'No se pudo registrar el feedback'
@@ -269,7 +270,7 @@ router.get('/information/:category', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error obteniendo información por categoría:', error);
+        devLogger.error('Error obteniendo información por categoría:', error);
         res.status(500).json({
             error: 'Error interno del servidor',
             message: 'No se pudo obtener la información'
@@ -304,7 +305,7 @@ router.get('/categories', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error obteniendo categorías:', error);
+        devLogger.error('Error obteniendo categorías:', error);
         res.status(500).json({
             error: 'Error interno del servidor',
             message: 'No se pudieron obtener las categorías'

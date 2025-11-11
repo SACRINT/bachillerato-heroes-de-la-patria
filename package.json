@@ -79,6 +79,7 @@
     "@babel/core": "^7.28.4",
     "@babel/plugin-transform-runtime": "^7.28.3",
     "@babel/preset-env": "^7.28.3",
+    "@faker-js/faker": "^10.1.0",
     "@types/jest": "^30.0.0",
     "babel-loader": "^10.0.0",
     "compression-webpack-plugin": "^11.1.0",

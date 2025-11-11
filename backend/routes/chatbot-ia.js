@@ -7,6 +7,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 
 // Configuración de IA (se configurará con variables de entorno)
@@ -58,7 +59,7 @@ router.get('/health', async (req, res) => {
                     healthStatus.availableModel = AI_CONFIG.openai.model;
                 }
             } catch (error) {
-                console.warn('OpenAI health check failed:', error.message);
+                devLogger.warn('OpenAI health check failed:', error.message);
             }
         }
 
@@ -71,7 +72,7 @@ router.get('/health', async (req, res) => {
                     healthStatus.availableModel = AI_CONFIG.claude.model;
                 }
             } catch (error) {
-                console.warn('Claude health check failed:', error.message);
+                devLogger.warn('Claude health check failed:', error.message);
             }
         }
 
@@ -85,7 +86,7 @@ router.get('/health', async (req, res) => {
         res.json(healthStatus);
 
     } catch (error) {
-        console.error('Health check error:', error);
+        devLogger.error('Health check error:', error);
         res.status(500).json({
             status: 'error',
             message: 'Health check failed',
@@ -166,7 +167,7 @@ router.post('/chat', async (req, res) => {
     } catch (error) {
         const responseTime = Date.now() - startTime;
 
-        console.error('Chat endpoint error:', error);
+        devLogger.error('Chat endpoint error:', error);
 
         // Log de error
         logChatResponse(
@@ -210,7 +211,7 @@ async function processWithAvailableIA(params) {
             };
 
         } catch (error) {
-            console.warn('OpenAI failed, trying Claude:', error.message);
+            devLogger.warn('OpenAI failed, trying Claude:', error.message);
         }
     }
 
@@ -231,7 +232,7 @@ async function processWithAvailableIA(params) {
             };
 
         } catch (error) {
-            console.warn('Claude failed, using local IA:', error.message);
+            devLogger.warn('Claude failed, using local IA:', error.message);
         }
     }
 
@@ -503,14 +504,14 @@ function generateRequestId() {
 }
 
 function logChatQuery(context, message) {
-    console.log(`📝 [CHAT-IA] Query from ${context.userType || 'guest'}: "${message.substring(0, 50)}..."`);
+    devLogger.log(`📝 [CHAT-IA] Query from ${context.userType || 'guest'}: "${message.substring(0, 50)}..."`);
 }
 
 function logChatResponse(context, response, responseTime, success, error = null) {
     if (success) {
-        console.log(`✅ [CHAT-IA] Response sent (${responseTime}ms) - Model: ${response?.model || 'unknown'}`);
+        devLogger.log(`✅ [CHAT-IA] Response sent (${responseTime}ms) - Model: ${response?.model || 'unknown'}`);
     } else {
-        console.log(`❌ [CHAT-IA] Response failed (${responseTime}ms) - Error: ${error}`);
+        devLogger.log(`❌ [CHAT-IA] Response failed (${responseTime}ms) - Error: ${error}`);
     }
 }
 
@@ -542,7 +543,7 @@ router.get('/stats', async (req, res) => {
         res.json(stats);
 
     } catch (error) {
-        console.error('Stats endpoint error:', error);
+        devLogger.error('Stats endpoint error:', error);
         res.status(500).json({
             error: 'Error retrieving stats',
             message: error.message
@@ -573,7 +574,7 @@ router.post('/config', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Config endpoint error:', error);
+        devLogger.error('Config endpoint error:', error);
         res.status(500).json({
             error: 'Error updating configuration',
             message: error.message

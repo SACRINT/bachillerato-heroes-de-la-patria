@@ -6,6 +6,7 @@
 
 const { exec } = require('child_process');
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
@@ -23,7 +24,7 @@ class DatabaseBackup {
      * Ejecutar backup completo
      */
     async runBackup() {
-        console.log('💾 Iniciando backup de base de datos PostgreSQL...\n');
+        devLogger.log('💾 Iniciando backup de base de datos PostgreSQL...\n');
 
         try {
             // Verificar variables de entorno
@@ -48,7 +49,7 @@ class DatabaseBackup {
             };
 
         } catch (error) {
-            console.error('❌ Error en backup de base de datos:', error);
+            devLogger.error('❌ Error en backup de base de datos:', error);
             throw error;
         }
     }
@@ -61,7 +62,7 @@ class DatabaseBackup {
             throw new Error('DATABASE_URL no está configurada en .env');
         }
 
-        console.log('✅ Variables de entorno validadas');
+        devLogger.log('✅ Variables de entorno validadas');
     }
 
     /**
@@ -70,7 +71,7 @@ class DatabaseBackup {
     async ensureBackupDirectory() {
         try {
             await fs.mkdir(this.backupDir, { recursive: true });
-            console.log(`✅ Directorio de backups: ${this.backupDir}`);
+            devLogger.log(`✅ Directorio de backups: ${this.backupDir}`);
         } catch (error) {
             throw new Error(`Error al crear directorio de backups: ${error.message}`);
         }
@@ -96,7 +97,7 @@ class DatabaseBackup {
             const pgDumpCommand = `pg_dump -h ${host} -p ${port} -U ${username} -d ${database} -F p -f "${backupFile}"`;
 
             // Ejecutar pg_dump
-            console.log(`📥 Ejecutando backup de: ${database}@${host}...`);
+            devLogger.log(`📥 Ejecutando backup de: ${database}@${host}...`);
 
             const env = {
                 ...process.env,
@@ -105,18 +106,18 @@ class DatabaseBackup {
 
             exec(pgDumpCommand, { env }, (error, stdout, stderr) => {
                 if (error) {
-                    console.error('❌ Error al ejecutar pg_dump:', stderr);
+                    devLogger.error('❌ Error al ejecutar pg_dump:', stderr);
                     reject(new Error(`pg_dump falló: ${error.message}`));
                     return;
                 }
 
-                console.log(`✅ Backup creado: ${path.basename(backupFile)}`);
+                devLogger.log(`✅ Backup creado: ${path.basename(backupFile)}`);
 
                 // Comprimir backup
                 this.compressBackup(backupFile)
                     .then(compressedFile => resolve(compressedFile))
                     .catch(compressError => {
-                        console.warn('⚠️ Advertencia: No se pudo comprimir el backup');
+                        devLogger.warn('⚠️ Advertencia: No se pudo comprimir el backup');
                         resolve(backupFile);
                     });
             });
@@ -136,7 +137,7 @@ class DatabaseBackup {
                     return;
                 }
 
-                console.log(`🗜️ Backup comprimido: ${path.basename(compressedFile)}`);
+                devLogger.log(`🗜️ Backup comprimido: ${path.basename(compressedFile)}`);
                 resolve(compressedFile);
             });
         });
@@ -146,7 +147,7 @@ class DatabaseBackup {
      * Aplicar política de retención
      */
     async applyRetentionPolicy() {
-        console.log('\n🗑️ Aplicando política de retención...');
+        devLogger.log('\n🗑️ Aplicando política de retención...');
 
         try {
             const files = await fs.readdir(this.backupDir);
@@ -165,14 +166,14 @@ class DatabaseBackup {
                 if (shouldDelete) {
                     await fs.unlink(filePath);
                     deleted++;
-                    console.log(`  🗑️ Eliminado: ${file} (${Math.floor(ageInDays)} días)`);
+                    devLogger.log(`  🗑️ Eliminado: ${file} (${Math.floor(ageInDays)} días)`);
                 }
             }
 
-            console.log(`✅ ${deleted} backup(s) antiguos eliminados\n`);
+            devLogger.log(`✅ ${deleted} backup(s) antiguos eliminados\n`);
 
         } catch (error) {
-            console.error('❌ Error al aplicar retención:', error);
+            devLogger.error('❌ Error al aplicar retención:', error);
         }
     }
 
@@ -214,20 +215,20 @@ class DatabaseBackup {
                 retentionPolicy: this.retentionDays
             };
 
-            console.log('\n' + '='.repeat(60));
-            console.log('📊 REPORTE DE BACKUP');
-            console.log('='.repeat(60));
-            console.log(`Archivo: ${report.backupFile}`);
-            console.log(`Tamaño: ${report.sizeMB} MB`);
-            console.log(`Timestamp: ${report.timestamp}`);
-            console.log('='.repeat(60) + '\n');
+            devLogger.log('\n' + '='.repeat(60));
+            devLogger.log('📊 REPORTE DE BACKUP');
+            devLogger.log('='.repeat(60));
+            devLogger.log(`Archivo: ${report.backupFile}`);
+            devLogger.log(`Tamaño: ${report.sizeMB} MB`);
+            devLogger.log(`Timestamp: ${report.timestamp}`);
+            devLogger.log('='.repeat(60) + '\n');
 
             // Guardar reporte JSON
             const reportPath = path.join(this.backupDir, 'last-backup-report.json');
             await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
 
         } catch (error) {
-            console.error('Error al generar reporte:', error);
+            devLogger.error('Error al generar reporte:', error);
         }
     }
 
@@ -255,7 +256,7 @@ class DatabaseBackup {
             return backups.sort((a, b) => new Date(b.created) - new Date(a.created));
 
         } catch (error) {
-            console.error('Error al listar backups:', error);
+            devLogger.error('Error al listar backups:', error);
             return [];
         }
     }
@@ -268,11 +269,11 @@ if (require.main === module) {
             const backup = new DatabaseBackup();
             await backup.runBackup();
 
-            console.log('✅ Backup de base de datos completado exitosamente\n');
+            devLogger.log('✅ Backup de base de datos completado exitosamente\n');
             process.exit(0);
 
         } catch (error) {
-            console.error('❌ Error fatal en backup:', error);
+            devLogger.error('❌ Error fatal en backup:', error);
             process.exit(1);
         }
     })();

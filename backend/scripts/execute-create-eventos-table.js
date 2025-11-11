@@ -5,18 +5,19 @@
 
 const { pool } = require('../config/database');
 const fs = require('fs');
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 
 async function createEventosTable() {
     try {
-        console.log('📝 Creando tabla eventos...');
+        devLogger.log('📝 Creando tabla eventos...');
 
         const sqlPath = path.join(__dirname, 'create-eventos-table.sql');
         const sql = fs.readFileSync(sqlPath, 'utf8');
 
         await pool.query(sql);
 
-        console.log('✅ Tabla eventos creada exitosamente');
+        devLogger.log('✅ Tabla eventos creada exitosamente');
 
         const checkQuery = `
             SELECT table_name
@@ -28,7 +29,7 @@ async function createEventosTable() {
         const result = await pool.query(checkQuery);
 
         if (result.rows.length > 0) {
-            console.log('✅ Verificación: La tabla existe en la base de datos');
+            devLogger.log('✅ Verificación: La tabla existe en la base de datos');
 
             const structureQuery = `
                 SELECT column_name, data_type, is_nullable, column_default
@@ -38,17 +39,17 @@ async function createEventosTable() {
             `;
 
             const structure = await pool.query(structureQuery);
-            console.log('\n📊 Estructura de la tabla:');
+            devLogger.log('\n📊 Estructura de la tabla:');
             console.table(structure.rows);
         } else {
-            console.error('❌ Error: La tabla no fue creada correctamente');
+            devLogger.error('❌ Error: La tabla no fue creada correctamente');
         }
 
         process.exit(0);
 
     } catch (error) {
-        console.error('❌ Error al crear la tabla:', error.message);
-        console.error(error);
+        devLogger.error('❌ Error al crear la tabla:', error.message);
+        devLogger.error(error);
         process.exit(1);
     }
 }

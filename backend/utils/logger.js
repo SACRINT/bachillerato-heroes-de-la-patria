@@ -3,20 +3,21 @@
  * Proporciona funciones de logging condicionales
  */
 
+const devLogger = require('./devLogger');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const logAction = (action, details = '') => {
     if (isDevelopment) {
-        console.log(`[${new Date().toISOString()}] ${action}${details ? ': ' + details : ''}`);
+        devLogger.log(`[${new Date().toISOString()}] ${action}${details ? ': ' + details : ''}`);
     }
 };
 
 const logError = (action, error = '') => {
-    console.error(`[ERROR] ${action}${error ? ': ' + error : ''}`);
+    devLogger.error(`[ERROR] ${action}${error ? ': ' + error : ''}`);
 };
 
 const logWarning = (action, details = '') => {
-    console.warn(`[WARN] ${action}${details ? ': ' + details : ''}`);
+    devLogger.warn(`[WARN] ${action}${details ? ': ' + details : ''}`);
 };
 
 module.exports = {

@@ -6,6 +6,7 @@
  */
 
 const fs = require('fs');
+const devLogger = require('../utils/devLogger');
 const path = require('path');
 const { Client } = require('pg');
 require('dotenv').config({ path: path.join(__dirname, '../../.env') });
@@ -14,7 +15,7 @@ require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
-    console.error('❌ Error: DATABASE_URL no está configurada en el archivo .env');
+    devLogger.error('❌ Error: DATABASE_URL no está configurada en el archivo .env');
     process.exit(1);
 }
 
@@ -25,16 +26,16 @@ async function createIndexes() {
     });
 
     try {
-        console.log('🔗 Conectando a la base de datos...');
+        devLogger.log('🔗 Conectando a la base de datos...');
         await client.connect();
-        console.log('✅ Conexión establecida\n');
+        devLogger.log('✅ Conexión establecida\n');
 
         // Leer el archivo SQL
         const sqlFilePath = path.join(__dirname, 'create-database-indexes.sql');
         const sqlContent = fs.readFileSync(sqlFilePath, 'utf8');
 
-        console.log('📄 Archivo SQL cargado correctamente');
-        console.log('📊 Creando índices de optimización...\n');
+        devLogger.log('📄 Archivo SQL cargado correctamente');
+        devLogger.log('📊 Creando índices de optimización...\n');
 
         // Separar el contenido en statements individuales
         // Eliminar comentarios de línea
@@ -73,14 +74,14 @@ async function createIndexes() {
                 }
 
                 await client.query(statement);
-                console.log(`✅ ${entityName}`);
+                devLogger.log(`✅ ${entityName}`);
                 successCount++;
             } catch (error) {
                 // Ignorar errores de índice ya existente
                 if (error.code === '42P07' || error.message.includes('already exists')) {
-                    console.log(`⏭️  Índice ya existe (omitiendo)`);
+                    devLogger.log(`⏭️  Índice ya existe (omitiendo)`);
                 } else {
-                    console.error(`❌ Error: ${error.message}`);
+                    devLogger.error(`❌ Error: ${error.message}`);
                     errorCount++;
                     errors.push({
                         statement: statement.substring(0, 100),
@@ -90,24 +91,24 @@ async function createIndexes() {
             }
         }
 
-        console.log('\n' + '='.repeat(60));
-        console.log('📊 RESUMEN DE CREACIÓN DE ÍNDICES');
-        console.log('='.repeat(60));
-        console.log(`✅ Índices creados exitosamente: ${successCount}`);
-        console.log(`❌ Errores encontrados: ${errorCount}`);
-        console.log('='.repeat(60));
+        devLogger.log('\n' + '='.repeat(60));
+        devLogger.log('📊 RESUMEN DE CREACIÓN DE ÍNDICES');
+        devLogger.log('='.repeat(60));
+        devLogger.log(`✅ Índices creados exitosamente: ${successCount}`);
+        devLogger.log(`❌ Errores encontrados: ${errorCount}`);
+        devLogger.log('='.repeat(60));
 
         if (errors.length > 0) {
-            console.log('\n⚠️  ERRORES DETALLADOS:');
+            devLogger.log('\n⚠️  ERRORES DETALLADOS:');
             errors.forEach((err, index) => {
-                console.log(`\n${index + 1}. ${err.statement}...`);
-                console.log(`   Error: ${err.error}`);
+                devLogger.log(`\n${index + 1}. ${err.statement}...`);
+                devLogger.log(`   Error: ${err.error}`);
             });
         }
 
         // Ejecutar consulta de verificación de índices
-        console.log('\n📋 ÍNDICES CREADOS EN EL SISTEMA:');
-        console.log('='.repeat(60));
+        devLogger.log('\n📋 ÍNDICES CREADOS EN EL SISTEMA:');
+        devLogger.log('='.repeat(60));
 
         const indexQuery = `
             SELECT
@@ -132,19 +133,19 @@ async function createIndexes() {
         });
 
         Object.keys(indexesByTable).sort().forEach(tableName => {
-            console.log(`\n📁 ${tableName}:`);
+            devLogger.log(`\n📁 ${tableName}:`);
             indexesByTable[tableName].forEach(indexName => {
-                console.log(`   - ${indexName}`);
+                devLogger.log(`   - ${indexName}`);
             });
         });
 
-        console.log('\n' + '='.repeat(60));
-        console.log(`✅ Total de índices en el sistema: ${result.rows.length}`);
-        console.log('='.repeat(60));
+        devLogger.log('\n' + '='.repeat(60));
+        devLogger.log(`✅ Total de índices en el sistema: ${result.rows.length}`);
+        devLogger.log('='.repeat(60));
 
         // Estadísticas de tamaño de índices
-        console.log('\n💾 TAMAÑO DE ÍNDICES:');
-        console.log('='.repeat(60));
+        devLogger.log('\n💾 TAMAÑO DE ÍNDICES:');
+        devLogger.log('='.repeat(60));
 
         const sizeQuery = `
             SELECT
@@ -161,26 +162,26 @@ async function createIndexes() {
 
         const sizeResult = await client.query(sizeQuery);
         sizeResult.rows.forEach((row, index) => {
-            console.log(`${index + 1}. ${row.indexname.padEnd(40)} ${row.index_size}`);
+            devLogger.log(`${index + 1}. ${row.indexname.padEnd(40)} ${row.index_size}`);
         });
 
-        console.log('\n✅ Índices de optimización creados correctamente');
+        devLogger.log('\n✅ Índices de optimización creados correctamente');
 
     } catch (error) {
-        console.error('\n❌ Error fatal:', error.message);
-        console.error(error.stack);
+        devLogger.error('\n❌ Error fatal:', error.message);
+        devLogger.error(error.stack);
         process.exit(1);
     } finally {
         await client.end();
-        console.log('\n🔌 Conexión cerrada');
+        devLogger.log('\n🔌 Conexión cerrada');
     }
 }
 
 // Ejecutar
-console.log('🚀 SCRIPT DE CREACIÓN DE ÍNDICES DE OPTIMIZACIÓN');
-console.log('='.repeat(60));
-console.log(`📅 Fecha: ${new Date().toLocaleString('es-MX')}`);
-console.log(`🔗 Connection String configurada: ✅`);
-console.log('='.repeat(60) + '\n');
+devLogger.log('🚀 SCRIPT DE CREACIÓN DE ÍNDICES DE OPTIMIZACIÓN');
+devLogger.log('='.repeat(60));
+devLogger.log(`📅 Fecha: ${new Date().toLocaleString('es-MX')}`);
+devLogger.log(`🔗 Connection String configurada: ✅`);
+devLogger.log('='.repeat(60) + '\n');
 
 createIndexes();

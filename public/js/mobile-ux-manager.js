@@ -1,6 +1,6 @@
 /**
  * MOBILE UX MANAGER - MEJORAS DE EXPERIENCIA MÓVIL AVANZADAS
- * BGE Héroes de la Patria - Fase A: Optimización Móvil Avanzada
+ * window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria') - Fase A: Optimización Móvil Avanzada
  *
  * Mejoras específicas de UX móvil:
  * - Animaciones avanzadas del menú hamburguesa

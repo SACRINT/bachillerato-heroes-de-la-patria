@@ -5,10 +5,11 @@
 
 require('dotenv').config();
 const axios = require('axios');
+const devLogger = require('../utils/devLogger');
 
 async function testSubscription() {
     try {
-        console.log('🧪 [TEST] Probando endpoint de suscripción...\n');
+        devLogger.log('🧪 [TEST] Probando endpoint de suscripción...\n');
 
         const testData = {
             email: 'test@example.com',
@@ -17,7 +18,7 @@ async function testSubscription() {
             // categories omitido intencionalmente - el backend usará ['all'] por defecto
         };
 
-        console.log('📤 [TEST] Enviando datos:', JSON.stringify(testData, null, 2));
+        devLogger.log('📤 [TEST] Enviando datos:', JSON.stringify(testData, null, 2));
 
         const response = await axios.post('http://localhost:3000/api/subscriptions/subscribe', testData, {
             headers: {
@@ -26,22 +27,22 @@ async function testSubscription() {
             validateStatus: () => true // No lanzar error en status 4xx o 5xx
         });
 
-        console.log('\n📥 [TEST] Respuesta recibida:');
-        console.log('   Status:', response.status);
-        console.log('   Data:', JSON.stringify(response.data, null, 2));
+        devLogger.log('\n📥 [TEST] Respuesta recibida:');
+        devLogger.log('   Status:', response.status);
+        devLogger.log('   Data:', JSON.stringify(response.data, null, 2));
 
         if (response.status === 200) {
-            console.log('\n✅ [TEST] ¡Prueba exitosa!');
+            devLogger.log('\n✅ [TEST] ¡Prueba exitosa!');
         } else {
-            console.log('\n❌ [TEST] Error en la prueba');
-            console.log('   Detalles:', response.data);
+            devLogger.log('\n❌ [TEST] Error en la prueba');
+            devLogger.log('   Detalles:', response.data);
         }
 
     } catch (error) {
-        console.error('\n❌ [TEST] Error durante la prueba:', error.message);
+        devLogger.error('\n❌ [TEST] Error durante la prueba:', error.message);
         if (error.response) {
-            console.error('   Status:', error.response.status);
-            console.error('   Data:', error.response.data);
+            devLogger.error('   Status:', error.response.status);
+            devLogger.error('   Data:', error.response.data);
         }
     }
 }

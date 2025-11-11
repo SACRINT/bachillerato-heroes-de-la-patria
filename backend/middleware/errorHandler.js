@@ -4,13 +4,14 @@
  */
 
 const { executeQuery } = require('../config/database');
+const devLogger = require('../utils/devLogger');
 
 /**
  * Middleware principal de manejo de errores
  */
 const errorHandler = async (error, req, res, next) => {
     // Log del error
-    console.error('🚨 Error capturado:', {
+    devLogger.error('🚨 Error capturado:', {
         message: error.message,
         stack: error.stack,
         path: req.path,
@@ -41,7 +42,7 @@ const errorHandler = async (error, req, res, next) => {
             ]
         );
     } catch (logError) {
-        console.error('Error guardando log en base de datos:', logError);
+        devLogger.error('Error guardando log en base de datos:', logError);
     }
     
     // Determinar tipo de error y respuesta

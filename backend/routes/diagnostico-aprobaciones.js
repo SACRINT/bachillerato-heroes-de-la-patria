@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 
@@ -13,7 +14,7 @@ const { pool } = require('../config/database');
  * Ver TODOS los registros de la tabla sin filtros
  */
 router.get('/todos-registros', async (req, res) => {
-    console.log('\n🔍 [DIAGNÓSTICO] Consultando TODOS los registros sin filtros...\n');
+    devLogger.log('\n🔍 [DIAGNÓSTICO] Consultando TODOS los registros sin filtros...\n');
 
     try {
         // QUERY 1: Resumen
@@ -29,13 +30,13 @@ router.get('/todos-registros', async (req, res) => {
         `);
 
         const stats = resumen.rows[0];
-        console.log('📊 [DIAGNÓSTICO] Estadísticas generales:');
-        console.log(`   - Total registros: ${stats.total_registros}`);
-        console.log(`   - Estado pendiente: ${stats.pendiente_count}`);
-        console.log(`   - Estado aprobada: ${stats.aprobada_count}`);
-        console.log(`   - Estado rechazada: ${stats.rechazada_count}`);
-        console.log(`   - Email confirmados: ${stats.confirmados_count}`);
-        console.log(`   - Email NO confirmados: ${stats.no_confirmados_count}`);
+        devLogger.log('📊 [DIAGNÓSTICO] Estadísticas generales:');
+        devLogger.log(`   - Total registros: ${stats.total_registros}`);
+        devLogger.log(`   - Estado pendiente: ${stats.pendiente_count}`);
+        devLogger.log(`   - Estado aprobada: ${stats.aprobada_count}`);
+        devLogger.log(`   - Estado rechazada: ${stats.rechazada_count}`);
+        devLogger.log(`   - Email confirmados: ${stats.confirmados_count}`);
+        devLogger.log(`   - Email NO confirmados: ${stats.no_confirmados_count}`);
 
         // QUERY 2: Desglose por estado
         const porEstado = await pool.query(`
@@ -45,9 +46,9 @@ router.get('/todos-registros', async (req, res) => {
             ORDER BY cantidad DESC
         `);
 
-        console.log('\n📋 [DIAGNÓSTICO] Desglose por estado:');
+        devLogger.log('\n📋 [DIAGNÓSTICO] Desglose por estado:');
         porEstado.rows.forEach(row => {
-            console.log(`   - ${row.estado}: ${row.cantidad}`);
+            devLogger.log(`   - ${row.estado}: ${row.cantidad}`);
         });
 
         // QUERY 3: TODOS los registros
@@ -64,9 +65,9 @@ router.get('/todos-registros', async (req, res) => {
             ORDER BY fecha_solicitud DESC
         `);
 
-        console.log(`\n📋 [DIAGNÓSTICO] LISTADO COMPLETO (${todos.rows.length} registros):`);
+        devLogger.log(`\n📋 [DIAGNÓSTICO] LISTADO COMPLETO (${todos.rows.length} registros):`);
         todos.rows.forEach((row, idx) => {
-            console.log(`   ${idx+1}. ID ${row.id}: ${row.tipo_solicitud} | ${row.estado} | ${row.email_usuario}`);
+            devLogger.log(`   ${idx+1}. ID ${row.id}: ${row.tipo_solicitud} | ${row.estado} | ${row.email_usuario}`);
         });
 
         res.json({
@@ -77,10 +78,10 @@ router.get('/todos-registros', async (req, res) => {
             total: todos.rows.length
         });
 
-        console.log('\n✅ [DIAGNÓSTICO] Completado\n');
+        devLogger.log('\n✅ [DIAGNÓSTICO] Completado\n');
 
     } catch (error) {
-        console.error('❌ [DIAGNÓSTICO] Error:', error.message);
+        devLogger.error('❌ [DIAGNÓSTICO] Error:', error.message);
         res.status(500).json({
             success: false,
             error: error.message
@@ -93,7 +94,7 @@ router.get('/todos-registros', async (req, res) => {
  * Ver SOLO registros con estado='pendiente' (lo que debería mostrar el dashboard)
  */
 router.get('/pendientes-solo', async (req, res) => {
-    console.log('\n🔍 [DIAGNÓSTICO] Consultando SOLO registros pendientes...\n');
+    devLogger.log('\n🔍 [DIAGNÓSTICO] Consultando SOLO registros pendientes...\n');
 
     try {
         const pendientes = await pool.query(`
@@ -109,9 +110,9 @@ router.get('/pendientes-solo', async (req, res) => {
             ORDER BY fecha_solicitud DESC
         `);
 
-        console.log(`📊 [DIAGNÓSTICO] Registros pendientes: ${pendientes.rows.length}`);
+        devLogger.log(`📊 [DIAGNÓSTICO] Registros pendientes: ${pendientes.rows.length}`);
         pendientes.rows.forEach((row, idx) => {
-            console.log(`   ${idx+1}. ID ${row.id}: ${row.tipo_solicitud} | ${row.email_usuario} | Confirmado: ${row.email_confirmado}`);
+            devLogger.log(`   ${idx+1}. ID ${row.id}: ${row.tipo_solicitud} | ${row.email_usuario} | Confirmado: ${row.email_confirmado}`);
         });
 
         res.json({
@@ -120,10 +121,10 @@ router.get('/pendientes-solo', async (req, res) => {
             total: pendientes.rows.length
         });
 
-        console.log('\n✅ [DIAGNÓSTICO] Completado\n');
+        devLogger.log('\n✅ [DIAGNÓSTICO] Completado\n');
 
     } catch (error) {
-        console.error('❌ [DIAGNÓSTICO] Error:', error.message);
+        devLogger.error('❌ [DIAGNÓSTICO] Error:', error.message);
         res.status(500).json({
             success: false,
             error: error.message
@@ -136,7 +137,7 @@ router.get('/pendientes-solo', async (req, res) => {
  * Comparar lo que la BD tiene vs lo que el endpoint normal retorna
  */
 router.get('/comparar', async (req, res) => {
-    console.log('\n🔍 [DIAGNÓSTICO] Comparando BD vs endpoint GET...\n');
+    devLogger.log('\n🔍 [DIAGNÓSTICO] Comparando BD vs endpoint GET...\n');
 
     try {
         // BD real
@@ -154,8 +155,8 @@ router.get('/comparar', async (req, res) => {
             LIMIT 100
         `);
 
-        console.log(`📊 [DIAGNÓSTICO] BD real: ${bdReal.rows[0].total} pendientes`);
-        console.log(`📊 [DIAGNÓSTICO] Endpoint retorna: ${endpointNormal.rows.length} registros`);
+        devLogger.log(`📊 [DIAGNÓSTICO] BD real: ${bdReal.rows[0].total} pendientes`);
+        devLogger.log(`📊 [DIAGNÓSTICO] Endpoint retorna: ${endpointNormal.rows.length} registros`);
 
         res.json({
             success: true,
@@ -165,10 +166,10 @@ router.get('/comparar', async (req, res) => {
             corresponden: bdReal.rows[0].total === endpointNormal.rows.length
         });
 
-        console.log('\n✅ [DIAGNÓSTICO] Completado\n');
+        devLogger.log('\n✅ [DIAGNÓSTICO] Completado\n');
 
     } catch (error) {
-        console.error('❌ [DIAGNÓSTICO] Error:', error.message);
+        devLogger.error('❌ [DIAGNÓSTICO] Error:', error.message);
         res.status(500).json({
             success: false,
             error: error.message

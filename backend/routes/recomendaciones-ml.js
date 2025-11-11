@@ -7,6 +7,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 
 // Configuración del sistema ML
@@ -106,7 +107,7 @@ router.get('/health', async (req, res) => {
         res.json(health);
 
     } catch (error) {
-        console.error('ML Health check error:', error);
+        devLogger.error('ML Health check error:', error);
         res.status(500).json({
             status: 'error',
             message: 'ML system health check failed',
@@ -141,7 +142,7 @@ router.post('/recommendations', async (req, res) => {
         const cachedResult = getCachedResult(cacheKey);
 
         if (cachedResult) {
-            console.log(`🎯 [ML-API] Cache hit para usuario ${userId}`);
+            devLogger.log(`🎯 [ML-API] Cache hit para usuario ${userId}`);
             return res.json({
                 ...cachedResult,
                 fromCache: true,
@@ -149,7 +150,7 @@ router.post('/recommendations', async (req, res) => {
             });
         }
 
-        console.log(`🤖 [ML-API] Generando recomendaciones para usuario ${userId}`);
+        devLogger.log(`🤖 [ML-API] Generando recomendaciones para usuario ${userId}`);
 
         // Obtener o crear perfil del usuario
         const profile = userProfile || await getUserProfile(userId);
@@ -203,7 +204,7 @@ router.post('/recommendations', async (req, res) => {
     } catch (error) {
         const processingTime = Date.now() - startTime;
 
-        console.error('ML Recommendations error:', error);
+        devLogger.error('ML Recommendations error:', error);
 
         res.status(500).json({
             error: 'Error generating recommendations',
@@ -239,7 +240,7 @@ router.put('/profile/:userId', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Profile update error:', error);
+        devLogger.error('Profile update error:', error);
         res.status(500).json({
             error: 'Error updating user profile',
             message: error.message
@@ -285,7 +286,7 @@ router.post('/interaction', async (req, res) => {
         clearUserCache(userId);
 
         // Log de la interacción
-        console.log(`📝 [ML-API] Interacción registrada: ${userId} -> ${itemId} (${interactionType})`);
+        devLogger.log(`📝 [ML-API] Interacción registrada: ${userId} -> ${itemId} (${interactionType})`);
 
         res.json({
             success: true,
@@ -294,7 +295,7 @@ router.post('/interaction', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Interaction recording error:', error);
+        devLogger.error('Interaction recording error:', error);
         res.status(500).json({
             error: 'Error recording interaction',
             message: error.message
@@ -317,7 +318,7 @@ router.post('/train', async (req, res) => {
             });
         }
 
-        console.log('🎓 [ML-API] Iniciando entrenamiento de modelos ML');
+        devLogger.log('🎓 [ML-API] Iniciando entrenamiento de modelos ML');
 
         const trainingResult = await trainModels();
 
@@ -328,7 +329,7 @@ router.post('/train', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Model training error:', error);
+        devLogger.error('Model training error:', error);
         res.status(500).json({
             error: 'Error training models',
             message: error.message
@@ -345,7 +346,7 @@ router.get('/stats', async (req, res) => {
         res.json(stats);
 
     } catch (error) {
-        console.error('Stats retrieval error:', error);
+        devLogger.error('Stats retrieval error:', error);
         res.status(500).json({
             error: 'Error retrieving system statistics',
             message: error.message
@@ -371,7 +372,7 @@ router.get('/recommendations/:userId/:category', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Category recommendations error:', error);
+        devLogger.error('Category recommendations error:', error);
         res.status(500).json({
             error: 'Error getting category recommendations',
             message: error.message
@@ -432,7 +433,7 @@ async function generateRecommendations(userProfile, options) {
         };
 
     } catch (error) {
-        console.error('Error generando recomendaciones:', error);
+        devLogger.error('Error generando recomendaciones:', error);
         return generateFallbackRecommendations(userProfile, options);
     }
 }
@@ -479,7 +480,7 @@ async function generateCollaborativeRecommendations(userProfile, options) {
             .slice(0, 20);
 
     } catch (error) {
-        console.error('Error en filtrado colaborativo:', error);
+        devLogger.error('Error en filtrado colaborativo:', error);
         return [];
     }
 }
@@ -516,7 +517,7 @@ async function generateContentBasedRecommendations(userProfile, options) {
             .slice(0, 20);
 
     } catch (error) {
-        console.error('Error en filtrado basado en contenido:', error);
+        devLogger.error('Error en filtrado basado en contenido:', error);
         return [];
     }
 }
@@ -540,7 +541,7 @@ async function getUserProfile(userId) {
         return mockProfile;
 
     } catch (error) {
-        console.error(`Error obteniendo perfil de ${userId}:`, error);
+        devLogger.error(`Error obteniendo perfil de ${userId}:`, error);
         return null;
     }
 }
@@ -655,7 +656,7 @@ function categorizeRecommendations(recommendations) {
 }
 
 function logRecommendationGenerated(userId, result) {
-    console.log(`✅ [ML-API] Recomendación generada para ${userId}: ` +
+    devLogger.log(`✅ [ML-API] Recomendación generada para ${userId}: ` +
                 `${result.recommendations.length} items, ` +
                 `confianza promedio: ${(result.metadata.confidence * 100).toFixed(1)}%, ` +
                 `tiempo: ${result.metadata.processingTime}ms`);

@@ -5,6 +5,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 
@@ -13,7 +14,7 @@ const { pool } = require('../config/database');
  * Fix automático: Asegura que todos los registros pendientes sean visibles
  */
 router.post('/sincronizar', async (req, res) => {
-    console.log('🔧 [FIX AUTO] Iniciando sincronización de aprobaciones...');
+    devLogger.log('🔧 [FIX AUTO] Iniciando sincronización de aprobaciones...');
 
     try {
         // PASO 1: Ver estado actual
@@ -27,7 +28,7 @@ router.post('/sincronizar', async (req, res) => {
         `);
 
         const antes = estadoActual.rows[0];
-        console.log('📊 [FIX AUTO] Estado ANTES:', antes);
+        devLogger.log('📊 [FIX AUTO] Estado ANTES:', antes);
 
         // PASO 2: FORZAR email_confirmado=true para TODOS los pendientes
         const updateResult = await pool.query(`
@@ -37,7 +38,7 @@ router.post('/sincronizar', async (req, res) => {
             RETURNING id
         `);
 
-        console.log(`🔄 [FIX AUTO] Actualizados ${updateResult.rows.length} registros`);
+        devLogger.log(`🔄 [FIX AUTO] Actualizados ${updateResult.rows.length} registros`);
 
         // PASO 3: Verificar estado después
         const estadoFinal = await pool.query(`
@@ -50,7 +51,7 @@ router.post('/sincronizar', async (req, res) => {
         `);
 
         const despues = estadoFinal.rows[0];
-        console.log('📊 [FIX AUTO] Estado DESPUÉS:', despues);
+        devLogger.log('📊 [FIX AUTO] Estado DESPUÉS:', despues);
 
         // PASO 4: Listar registros actualizados
         const listado = await pool.query(`
@@ -76,10 +77,10 @@ router.post('/sincronizar', async (req, res) => {
             registros_pendientes: listado.rows
         });
 
-        console.log('✅ [FIX AUTO] Sincronización completada exitosamente');
+        devLogger.log('✅ [FIX AUTO] Sincronización completada exitosamente');
 
     } catch (error) {
-        console.error('❌ [FIX AUTO] Error durante sincronización:', error);
+        devLogger.error('❌ [FIX AUTO] Error durante sincronización:', error);
         res.status(500).json({
             success: false,
             error: 'Error al sincronizar aprobaciones',
@@ -111,7 +112,7 @@ router.get('/estado', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener estado:', error);
+        devLogger.error('❌ Error al obtener estado:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener estado'

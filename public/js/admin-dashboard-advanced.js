@@ -159,7 +159,7 @@ class AdminDashboardAdvanced {
                 <div class="dashboard-header">
                     <div class="dashboard-title">
                         <h4><i class="fas fa-tachometer-alt"></i> Panel de Administración</h4>
-                        <div class="dashboard-subtitle">Bachillerato Héroes de la Patria</div>
+                        <div class="dashboard-subtitle">Bachillerato window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria')</div>
                     </div>
                     <div class="dashboard-controls">
                         <button class="btn btn-sm btn-outline-light dashboard-settings">

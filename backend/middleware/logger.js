@@ -4,6 +4,7 @@
  */
 
 const { executeQuery } = require('../config/database');
+const devLogger = require('../utils/devLogger');
 
 /**
  * Middleware para registrar requests
@@ -28,7 +29,7 @@ const requestLogger = async (req, res, next) => {
         const responseTime = endTime - startTime;
         
         // Log a consola
-        console.log(`${req.method} ${req.path} - ${res.statusCode} - ${responseTime}ms`);
+        devLogger.log(`${req.method} ${req.path} - ${res.statusCode} - ${responseTime}ms`);
         
         // Registrar en base de datos para requests importantes
         if (shouldLogToDB(req, res)) {
@@ -38,7 +39,7 @@ const requestLogger = async (req, res, next) => {
                 responseTime: responseTime,
                 userId: req.user?.id || null
             }).catch(error => {
-                console.error('Error guardando log:', error);
+                devLogger.error('Error guardando log:', error);
             });
         }
         
@@ -89,7 +90,7 @@ const logToDatabase = async (logData) => {
             ]
         );
     } catch (error) {
-        console.error('Error en logToDatabase:', error);
+        devLogger.error('Error en logToDatabase:', error);
     }
 };
 
@@ -107,7 +108,7 @@ const getLogLevel = (statusCode) => {
  */
 const logger = {
     info: async (message, context = {}, userId = null) => {
-        console.log(`ℹ️  INFO: ${message}`, context);
+        devLogger.log(`ℹ️  INFO: ${message}`, context);
 
         try {
             await executeQuery(
@@ -116,12 +117,12 @@ const logger = {
                 ['info', message, JSON.stringify(context), userId]
             );
         } catch (error) {
-            console.error('Error guardando log info:', error);
+            devLogger.error('Error guardando log info:', error);
         }
     },
 
     warning: async (message, context = {}, userId = null) => {
-        console.warn(`⚠️  WARNING: ${message}`, context);
+        devLogger.warn(`⚠️  WARNING: ${message}`, context);
 
         try {
             await executeQuery(
@@ -130,12 +131,12 @@ const logger = {
                 ['warning', message, JSON.stringify(context), userId]
             );
         } catch (error) {
-            console.error('Error guardando log warning:', error);
+            devLogger.error('Error guardando log warning:', error);
         }
     },
 
     error: async (message, context = {}, userId = null) => {
-        console.error(`❌ ERROR: ${message}`, context);
+        devLogger.error(`❌ ERROR: ${message}`, context);
 
         try {
             await executeQuery(
@@ -144,13 +145,13 @@ const logger = {
                 ['error', message, JSON.stringify(context), userId]
             );
         } catch (error) {
-            console.error('Error guardando log error:', error);
+            devLogger.error('Error guardando log error:', error);
         }
     },
 
     debug: async (message, context = {}, userId = null) => {
         if (process.env.NODE_ENV === 'development') {
-            console.debug(`🐛 DEBUG: ${message}`, context);
+            devLogger.debug(`🐛 DEBUG: ${message}`, context);
         }
 
         try {
@@ -160,7 +161,7 @@ const logger = {
                 ['debug', message, JSON.stringify(context), userId]
             );
         } catch (error) {
-            console.error('Error guardando log debug:', error);
+            devLogger.error('Error guardando log debug:', error);
         }
     }
 };

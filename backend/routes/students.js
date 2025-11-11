@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const devLogger = require('../utils/devLogger');
 const { body, validationResult } = require('express-validator');
 const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
 const crypto = require('crypto');
@@ -15,7 +16,7 @@ function getStudentService() {
         const { getStudentService } = require('../services/studentService');
         return getStudentService();
     } catch (error) {
-        console.error('❌ Error obteniendo servicio de estudiantes:', error.message);
+        devLogger.error('❌ Error obteniendo servicio de estudiantes:', error.message);
         return null;
     }
 }
@@ -393,7 +394,7 @@ router.post('/', authenticateToken, requireAdmin, [
 
         const studentId = studentResult[0].id;
         
-        console.log('Estudiante creado exitosamente', {
+        devLogger.log('Estudiante creado exitosamente', {
             studentId: studentId,
             userId: userId,
             matricula: matricula,
@@ -479,7 +480,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
             });
         }
         
-        console.log('Estudiante actualizado', {
+        devLogger.log('Estudiante actualizado', {
             studentId: id,
             camposActualizados: Object.keys(updateFields),
             actualizadoPor: req.user.id
@@ -517,7 +518,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res, next) =>
             });
         }
         
-        console.log('Estudiante desactivado', {
+        devLogger.log('Estudiante desactivado', {
             studentId: id,
             desactivadoPor: req.user.id
         });
@@ -581,7 +582,7 @@ router.post('/auth/login', async (req, res, next) => {
             });
         }
     } catch (error) {
-        console.error('❌ Error en login de estudiante:', error);
+        devLogger.error('❌ Error en login de estudiante:', error);
         res.status(500).json({
             success: false,
             message: 'Error interno del servidor',
@@ -611,7 +612,7 @@ router.get('/dashboard', authenticateToken, async (req, res, next) => {
             data: dashboardData
         });
     } catch (error) {
-        console.error('❌ Error obteniendo dashboard:', error);
+        devLogger.error('❌ Error obteniendo dashboard:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo datos del dashboard',
@@ -641,7 +642,7 @@ router.get('/profile', authenticateToken, async (req, res, next) => {
             data: profile
         });
     } catch (error) {
-        console.error('❌ Error obteniendo perfil:', error);
+        devLogger.error('❌ Error obteniendo perfil:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo perfil del estudiante',
@@ -673,7 +674,7 @@ router.get('/grades', authenticateToken, async (req, res, next) => {
             data: grades
         });
     } catch (error) {
-        console.error('❌ Error obteniendo calificaciones:', error);
+        devLogger.error('❌ Error obteniendo calificaciones:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo calificaciones',
@@ -703,7 +704,7 @@ router.get('/schedule', authenticateToken, async (req, res, next) => {
             data: schedule
         });
     } catch (error) {
-        console.error('❌ Error obteniendo horario:', error);
+        devLogger.error('❌ Error obteniendo horario:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo horario',
@@ -735,7 +736,7 @@ router.get('/assignments', authenticateToken, async (req, res, next) => {
             data: assignments
         });
     } catch (error) {
-        console.error('❌ Error obteniendo tareas:', error);
+        devLogger.error('❌ Error obteniendo tareas:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo tareas',
@@ -769,7 +770,7 @@ router.get('/notifications', authenticateToken, async (req, res, next) => {
             data: notifications
         });
     } catch (error) {
-        console.error('❌ Error obteniendo notificaciones:', error);
+        devLogger.error('❌ Error obteniendo notificaciones:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo notificaciones',
