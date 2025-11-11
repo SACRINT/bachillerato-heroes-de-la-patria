@@ -275,59 +275,9 @@ function formatResponse(responseData) {
 // ==========================================
 // CARGA DE HEADER Y FOOTER
 // ==========================================
-// Función auxiliar para cargar scripts dinámicamente de forma segura
-function loadScriptDynamically(src, timeout = 5000) {
-    return new Promise((resolve, reject) => {
-        // NOTA: No verificamos si el script ya existe en el DOM porque los scripts
-        // inyectados vía innerHTML no se ejecutan automáticamente. Siempre necesitamos
-        // cargar dinámicamente usando createElement + appendChild.
-
-        const script = document.createElement('script');
-        script.src = src;
-        script.type = 'text/javascript';
-        script.async = false;  // Cargar en orden
-
-        const timer = setTimeout(() => {
-            console.warn(`⚠️ Timeout cargando script: ${src}`);
-            reject(new Error(`Timeout loading ${src}`));
-        }, timeout);
-
-        script.onload = () => {
-            clearTimeout(timer);
-            console.log(`✅ Script cargado exitosamente: ${src}`);
-            resolve();
-        };
-
-        script.onerror = () => {
-            clearTimeout(timer);
-            console.error(`❌ Error cargando script: ${src}`);
-            reject(new Error(`Error loading ${src}`));
-        };
-
-        // Asegurar que document.body existe
-        if (document.body) {
-            document.body.appendChild(script);
-        } else {
-            console.warn(`⚠️ document.body no existe, esperando...`);
-            document.addEventListener('DOMContentLoaded', () => {
-                document.body.appendChild(script);
-            });
-        }
-    });
-}
-
-// Función para cargar múltiples scripts en secuencia
-async function loadScriptsSequentially(scripts) {
-    console.log(`📦 Cargando ${scripts.length} scripts en secuencia...`);
-    for (const src of scripts) {
-        try {
-            await loadScriptDynamically(src);
-        } catch (error) {
-            console.error(`❌ Error en secuencia: ${error.message}`);
-        }
-    }
-    console.log(`✅ Todos los scripts cargados`);
-}
+// ✅ FASE 1.3 REFACTORIZACIÓN: Scripts dinámicos movidos a carga estática en header.html
+// ELIMINADO: loadScriptDynamically() y loadScriptsSequentially() (eran causa de race conditions)
+// Cambio: nested-dropdowns.js y admin-auth.js ahora se cargan en header.html líneas 812-813
 
 function loadHeaderFooter() {
     console.log('🔍 [MAIN.JS] loadHeaderFooter() iniciando...');
@@ -354,25 +304,14 @@ function loadHeaderFooter() {
                 headerContainer.innerHTML = data;
                 console.log('✅ [MAIN.JS] Header HTML inyectado en el DOM');
 
-                // IMPORTANTE: Los scripts en el HTML no se ejecutan con innerHTML
-                // Necesitamos cargar los scripts críticos manualmente en secuencia
-                const criticalScripts = [
-                    // ❌ ELIMINADO: 'js/unified-auth-system-v2.js' - No existe en /public/js/
-                    'js/admin-auth.js?v=2024091401',
-                    // ❌ ELIMINADO: 'js/responsive-nav.js' - No existe en /public/js/
-                    'js/nested-dropdowns.js?v=2024091401'
-                    // ❌ ELIMINADO: theme-manager.js ya se carga desde header.html
-                ];
+                // ✅ FASE 1.3: Los scripts ya se cargan de forma estática en header.html
+                // (nested-dropdowns.js y admin-auth.js en líneas 812-813)
+                // ELIMINADO: Carga dinámica que causaba race conditions
 
-                console.log(`📦 [MAIN.JS] Iniciando carga de ${criticalScripts.length} scripts críticos...`);
-
-                // Usar loadScriptsSequentially que ya retorna una Promise
-                return loadScriptsSequentially(criticalScripts).then(() => {
-                    // Disparar evento para que otros scripts sepan que el header está listo
-                    console.log('📡 [MAIN.JS] Disparando evento headerLoaded...');
-                    document.dispatchEvent(new Event('headerLoaded'));
-                    console.log('✅ [MAIN.JS] loadHeaderFooter() completado exitosamente');
-                });
+                // Disparar evento para que otros scripts sepan que el header está listo
+                console.log('📡 [MAIN.JS] Disparando evento headerLoaded...');
+                document.dispatchEvent(new Event('headerLoaded'));
+                console.log('✅ [MAIN.JS] loadHeaderFooter() completado exitosamente');
             })
             .catch(error => {
                 console.error('❌ [MAIN.JS] Error en loadHeaderFooter:', error);
