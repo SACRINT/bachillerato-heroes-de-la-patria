@@ -45,13 +45,15 @@
         }
 
         // Modal: Panel de Notificaciones
-        const openNotifPanelBtn = document.querySelector('button[onclick*="openNotificationPanel"]');
-        if (openNotifPanelBtn) {
-            openNotifPanelBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                openNotificationPanel();
-            });
-        }
+        // ⚠️ DESHABILITADO (11 NOV 2025): El listener se agrega ahora en admin-dashboard-events.js
+        // para evitar duplicación (modal abierto 2 veces)
+        // const openNotifPanelBtn = document.querySelector('button[onclick*="openNotificationPanel"]');
+        // if (openNotifPanelBtn) {
+        //     openNotifPanelBtn.addEventListener('click', function(e) {
+        //         e.preventDefault();
+        //         openNotificationPanel();
+        //     });
+        // }
 
         // Modal: Crear Padre
         const createParentBtn = document.querySelector('button[onclick*="showCreateParentModal"]');

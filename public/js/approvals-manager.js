@@ -4,7 +4,8 @@
  * Fecha: 17 Octubre 2025
  */
 
-import DOMPurify from 'isomorphic-dompurify';
+// NOTA: DOMPurify se asume disponible globalmente desde script anterior
+// O usar: const DOMPurify = window.DOMPurify || { sanitize: (str) => str };
 
 console.log('📋 [APPROVALS MANAGER] Cargando sistema de aprobaciones...');
 

@@ -1,5 +1,6 @@
 // Dashboard Administrativo Integrado con API
-import DOMPurify from 'isomorphic-dompurify';
+// NOTA: DOMPurify se asume disponible globalmente desde script anterior
+// O usar: const DOMPurify = window.DOMPurify || { sanitize: (str) => str };
 
 class AdminDashboard {
     constructor() {

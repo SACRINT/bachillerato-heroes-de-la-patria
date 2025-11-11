@@ -3,7 +3,8 @@
  * Sistema para la gestión de solicitudes de registro de nuevos usuarios
  */
 
-import DOMPurify from 'isomorphic-dompurify';
+// NOTA: DOMPurify se asume disponible globalmente desde script anterior
+// O usar: const DOMPurify = window.DOMPurify || { sanitize: (str) => str };
 
 class SolicitudesManager {
     constructor() {
