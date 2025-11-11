@@ -689,35 +689,13 @@ class GoogleAuthIntegration {
     }
 
     validateUserPassword(email, password) {
-        // BASE DE DATOS DE CONTRASEÑAS PREDEFINIDAS
-        const userPasswords = {
-            // Formato: email: contraseña
-            'samuelci6377@gmail.com': 'admin123',
-            'admin@bge.edu.mx': 'admin2024',
-            'director@bge.edu.mx': 'director123',
-            'subdirector@bge.edu.mx': 'subdirector123',
-
-            // Docentes
-            'docente.matematicas@bge.edu.mx': 'mate2024',
-            'docente.fisica@bge.edu.mx': 'fisica2024',
-            'docente.quimica@bge.edu.mx': 'quimica2024',
-            'profesor.historia@bge.edu.mx': 'historia2024',
-
-            // Estudiantes
-            'usuario.demo@bge.edu.mx': 'demo123',
-            'estudiante.ejemplo@bge.edu.mx': 'estudiante123',
-            'sci@gmail.com': 'sci123', // Para tus pruebas
-
-            // Padres
-            'padre.responsable@bge.edu.mx': 'padre123',
-            'tutor.familiar@bge.edu.mx': 'tutor123'
-        };
+        // ⚠️ FASE 1.4: Credenciales removidas por seguridad
+        // Validación ahora debe hacerse contra backend API: /api/auth/validate-password
 
         // AGREGAR USUARIOS APROBADOS DINÁMICAMENTE
         const approvedPasswords = JSON.parse(localStorage.getItem('bge_user_passwords') || '{}');
-        const allPasswords = { ...userPasswords, ...approvedPasswords };
 
-        return allPasswords[email.toLowerCase()] === password;
+        return approvedPasswords[email.toLowerCase()] === password;
     }
 
     isUserRevoked(email) {
@@ -781,7 +759,7 @@ class GoogleAuthIntegration {
     async isAccountApproved(email, role) {
         try {
             // NUEVO: Verificar aprobación contra el backend
-            console.log('🔍 Verificando aprobación para:', email);
+            console.log('[USER_ACTION]');
 
             const response = await fetch(`/api/admin/check-approval/${encodeURIComponent(email)}`, {
                 method: 'GET',
@@ -799,7 +777,7 @@ class GoogleAuthIntegration {
             const data = await response.json();
 
             if (data.success && data.approved !== undefined) {
-                console.log(`✅ Aprobación verificada para ${email}:`, data.approved);
+                console.log(`✅ Aprobación verificada`);
                 return data.approved;
             }
 
@@ -916,12 +894,12 @@ class GoogleAuthIntegration {
     }
 
     notifyAdminNewRequest(user) {
-        console.log(`🔔 Nueva solicitud de acceso: ${user.name} (${user.email})`);
+        console.log(`🔔 Nueva solicitud de acceso`);
         // Aquí se podría enviar una notificación real al administrador
     }
 
     updateUIAfterLogin(user) {
-        console.log('🔧 Actualizando UI después del login para:', user.name);
+        console.log('🔧 Actualizando UI después del login');
 
         const loginDropdownContainer = document.getElementById('loginDropdownContainer');
         const profileDropdown = document.getElementById('userProfileDropdown');
@@ -1215,33 +1193,13 @@ class GoogleAuthIntegration {
     // ===== FUNCIONES PARA REGISTRO DE NUEVOS USUARIOS =====
 
     userExists(email) {
-        // Verificar si el usuario existe en la base de datos local
-        const userPasswords = {
-            // Administradores
-            'samuelci6377@gmail.com': 'admin123',
-            'admin@bge.edu.mx': 'admin2024',
-            'director@bge.edu.mx': 'director123',
-            'subdirector@bge.edu.mx': 'subdirector123',
+        // ⚠️ FASE 1.4: Credenciales removidas por seguridad
+        // Validación ahora debe hacerse contra backend API: /api/auth/check-user
 
-            // Docentes
-            'docente.matematicas@bge.edu.mx': 'mate2024',
-            'docente.fisica@bge.edu.mx': 'fisica2024',
-            'docente.quimica@bge.edu.mx': 'quimica2024',
-            'profesor.historia@bge.edu.mx': 'historia2024',
+        // USUARIOS APROBADOS DINÁMICAMENTE (desde localStorage)
+        const approvedUsers = JSON.parse(localStorage.getItem('bge_approved_users') || '[]');
 
-            // Estudiantes
-            'usuario.demo@bge.edu.mx': 'demo123',
-            'estudiante.ejemplo@bge.edu.mx': 'estudiante123',
-            'sci@gmail.com': 'sci123',
-            'padre.responsable@bge.edu.mx': 'padre123',
-            'tutor.familiar@bge.edu.mx': 'tutor123'
-        };
-
-        // INCLUIR USUARIOS APROBADOS DINÁMICAMENTE
-        const approvedPasswords = JSON.parse(localStorage.getItem('bge_user_passwords') || '{}');
-        const allPasswords = { ...userPasswords, ...approvedPasswords };
-
-        return allPasswords.hasOwnProperty(email.toLowerCase());
+        return approvedUsers.includes(email.toLowerCase());
     }
 
     showRegistrationDialog(email, password) {

@@ -1689,7 +1689,7 @@ class AdminDashboard {
                     this.loadActiveUsers();
                 }
 
-                console.log(`✅ [APPROVE] Usuario creado: ${data.user.email}`);
+                console.log('[USER_ACTION]');
             } else {
                 throw new Error('Respuesta inválida del servidor');
             }
@@ -2182,7 +2182,7 @@ class AdminDashboard {
                     const count = data[contentType.key] ? data[contentType.key].length : 0;
 
                     this.updateContentCounter(contentType.elementId, count);
-                    console.log(`✅ ${contentType.name}: ${count} elementos`);
+                    console.log('[USER_ACTION]');
 
                 } catch (error) {
                     console.error(`❌ Error cargando ${contentType.name}:`, error);
