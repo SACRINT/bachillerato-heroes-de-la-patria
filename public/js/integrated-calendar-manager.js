@@ -34,7 +34,7 @@ class IntegratedCalendarManager {
         try {
             await this.loadUserAuth();
             await this.loadEvents();
-            this.renderCalendar();
+            this.renderCurrentView();  // ✅ FIJO 11 NOV: Cambiar renderCalendar() a renderCurrentView()
             this.setupEventListeners();
             this.updateCurrentMonthDisplay();
             this.setupAutoRefresh();

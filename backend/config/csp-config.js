@@ -122,6 +122,7 @@ const cspConfig = {
             "https://unpkg.com",
             "https://fonts.googleapis.com",
             "https://accounts.google.com",     // Google OAuth button styles
+            "https://accounts.google.com/gsi/style",  // ✅ Google Sign-In button styles (FIJO 11 NOV)
             "https://cdn.tiny.cloud",
             "https://*.tiny.cloud"
         ]
