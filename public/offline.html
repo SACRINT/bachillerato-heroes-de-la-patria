@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title" data-base-title="Sin conexiÃ³n - Bachillerato HÃ©roes de la Patria">Sin conexiÃ³n - Bachillerato HÃ©roes de la Patria</title>
+    <title id="page-title" data-base-title="Sin conexión - Bachillerato Héroes de la Patria">Sin conexión - Bachillerato Héroes de la Patria</title>
     
     <!-- Inline critical styles for offline page -->
     <style>
@@ -293,28 +293,28 @@
     <div class="offline-container">
         <div class="offline-icon" id="connectionIcon">ðŸ“¡</div>
         
-        <h1 class="offline-title">Sin conexiÃ³n a Internet</h1>
+        <h1 class="offline-title">Sin conexión a Internet</h1>
         <h2 class="offline-subtitle">Â¡Pero no te preocupes!</h2>
         
         <p class="offline-message">
-            Aunque no tienes conexiÃ³n a Internet en este momento, algunas funciones 
-            de nuestro sitio siguen disponibles gracias a nuestra tecnologÃ­a PWA.
+            Aunque no tienes conexión a Internet en este momento, algunas funciones 
+            de nuestro sitio siguen disponibles gracias a nuestra tecnología PWA.
         </p>
         
         <div class="offline-features">
-            <h3>ðŸš€ Funciones disponibles sin conexiÃ³n:</h3>
+            <h3>ðŸš€ Funciones disponibles sin conexión:</h3>
             <ul class="feature-list">
                 <li>Navegar por pÃ¡ginas ya visitadas</li>
-                <li>Consultar informaciÃ³n institucional</li>
+                <li>Consultar información institucional</li>
                 <li>Usar el asistente virtual (respuestas bÃ¡sicas)</li>
-                <li>Ver contenido guardado en cachÃ©</li>
+                <li>Ver contenido guardado en caché</li>
                 <li>Acceder a documentos descargados</li>
             </ul>
         </div>
         
         <div class="button-group">
             <button class="btn btn-primary" onclick="checkConnection()">
-                <span>ðŸ”„</span> Verificar conexiÃ³n
+                <span>ðŸ”„</span> Verificar conexión
             </button>
             <a href="/" class="btn btn-secondary">
                 <span>ðŸ </span> Ir al inicio
@@ -322,7 +322,7 @@
         </div>
         
         <div class="connection-status status-offline" id="connectionStatus">
-            <strong>Estado:</strong> Sin conexiÃ³n a Internet
+            <strong>Estado:</strong> Sin conexión a Internet
         </div>
         
         <div class="brand-info">
@@ -330,8 +330,8 @@
                 BGE
             </div>
             <p class="brand-text">
-                <strong>Bachillerato General Estatal<br>"HÃ©roes de la Patria"</strong><br>
-                EducaciÃ³n de calidad con valores sÃ³lidos<br>
+                <strong>Bachillerato General Estatal<br>"Héroes de la Patria"</strong><br>
+                Educación de calidad con valores sólidos<br>
                 Coronel Tito HernÃ¡ndez, Puebla
             </p>
         </div>
@@ -380,7 +380,7 @@
                 if (isOnline) {
                     icon.textContent = 'âœ…';
                     status.className = 'connection-status status-online';
-                    status.innerHTML = '<strong>Estado:</strong> Â¡ConexiÃ³n restaurada! Redirigiendo...';
+                    status.innerHTML = '<strong>Estado:</strong> Â¡Conexión restaurada! Redirigiendo...';
 
                     // BGE Analytics - Track connection restored
                     if (window.BGEAnalytics) {
@@ -393,7 +393,7 @@
                 } else {
                     icon.textContent = 'ðŸ“¡';
                     status.className = 'connection-status status-offline';
-                    status.innerHTML = '<strong>Estado:</strong> Sin conexiÃ³n a Internet';
+                    status.innerHTML = '<strong>Estado:</strong> Sin conexión a Internet';
 
                     // BGE Analytics - Track offline state
                     if (window.BGEAnalytics) {
@@ -413,7 +413,7 @@
                 // Update UI to show checking state
                 icon.textContent = 'ðŸ”„';
                 status.className = 'connection-status status-checking';
-                status.innerHTML = '<strong>Estado:</strong> Verificando conexiÃ³n...';
+                status.innerHTML = '<strong>Estado:</strong> Verificando conexión...';
                 button.disabled = true;
                 button.innerHTML = '<span>â³</span> Verificando...';
 
@@ -438,7 +438,7 @@
                 .finally(() => {
                     this.isCheckingConnection = false;
                     button.disabled = false;
-                    button.innerHTML = '<span>ðŸ”„</span> Verificar conexiÃ³n';
+                    button.innerHTML = '<span>ðŸ”„</span> Verificar conexión';
                 });
             }
 
@@ -480,7 +480,7 @@
                         if (event.data && event.data.type === 'CACHE_UPDATED') {
                             const status = document.getElementById('connectionStatus');
                             status.className = 'connection-status status-online';
-                            status.innerHTML = '<strong>ActualizaciÃ³n:</strong> Contenido actualizado en segundo plano';
+                            status.innerHTML = '<strong>Actualización:</strong> Contenido actualizado en segundo plano';
                         }
                     });
                 }
@@ -525,7 +525,7 @@
 
     <!-- ðŸ”§ MAIN.JS - CARGA DINÃMICA DE HEADER Y FOOTER -->
     <script src="js/main.js"></script>
-    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuraciÃ³n multi-tenancy desde BD -->
+    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
     <script src="js/tenant-config-loader.js" defer></script>
 
     </body>
