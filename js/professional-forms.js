@@ -408,7 +408,7 @@ class ProfessionalFormsManager {
                 // Metadata profesional
                 _timestamp: new Date().toISOString(),
                 _source: 'website_contact',
-                _institution: window.getTenantConfigValue('school_name', 'window.getTenantConfigValue('school_name', 'window.getTenantConfigValue('school_short_form', 'window.getTenantConfigValue('school_short_form', 'window.getTenantConfigValue('school_short_form', 'window.getTenantConfigValue('school_short_form', 'window.getTenantConfigValue('school_short_form', 'window.getTenantConfigValue('school_short_form', 'window.getTenantConfigValue('school_short_form', 'BGE Héroes')')')')')')') de la Patria')'),
+                _institution: window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria'),
                 _verified: 'true'
             };
 
