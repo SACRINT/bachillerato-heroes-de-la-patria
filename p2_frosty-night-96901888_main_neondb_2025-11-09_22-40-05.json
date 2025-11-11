@@ -1,8 +1,0 @@
-[{
-  "indexname": "idx_estudiantes_apellidos_nombre_collate",
-  "indexdef": "CREATE INDEX idx_estudiantes_apellidos_nombre_collate ON public.estudiantes USING btree (apellido_paterno COLLATE \"C\", apellido_materno COLLATE \"C\", nombre COLLATE \"C\")",
-  "index_size": "3144 kB",
-  "times_used": 4,
-  "tuples_read": 200000,
-  "tuples_fetched": 200000
-}]

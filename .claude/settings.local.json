@@ -24,7 +24,15 @@
       "Bash(cat:*)",
       "Bash(docs/RESUMEN_AUDITORIA_VISUAL_BGE.txt)",
       "Bash(node backend/scripts/fix-calificaciones.js:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(dir \"C:\\03_BachilleratoHeroesWeb\\backend\")",
+      "Bash(done)",
+      "Bash(powershell -Command:*)",
+      "Bash(comm -23:*)",
+      "Bash(for file in ai-database.js analytics-predictivo.js asistente-virtual.js backup.js chatbot.js chatbot-ia.js cms.js deteccion-riesgos.js fix-aprobaciones-auto.js google-classroom.js grades.js gradesAnalytics.js information.js maintenance.js migration.js multi-tenant.js newsletters-pg.js notifications.js real-ai.js recomendaciones-ml.js ssl.js students.js subscriptions-service.js teachers.js uploads.js)",
+      "Bash(do)",
+      "Bash(echo:*)",
+      "Bash(\"C:/03_BachilleratoHeroesWeb/docs/AUDITORIA_BACKEND_COMPLETA.txt\")"
     ],
     "deny": [],
     "ask": []
