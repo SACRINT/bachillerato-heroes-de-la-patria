@@ -1,4 +1,6 @@
 // Dashboard Administrativo Integrado con API
+import DOMPurify from 'isomorphic-dompurify';
+
 class AdminDashboard {
     constructor() {
         this.currentUser = null;

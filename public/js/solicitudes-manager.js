@@ -3,6 +3,8 @@
  * Sistema para la gestión de solicitudes de registro de nuevos usuarios
  */
 
+import DOMPurify from 'isomorphic-dompurify';
+
 class SolicitudesManager {
     constructor() {
         this.solicitudes = [];

@@ -1,0 +1,21 @@
+Rank,Archivo,innerHTML_Count,Risk_Level,Data_Type,Pattern,Escenario_Ataque,Tiempo_Remediacion
+1,admin-newsletters.js,16,CRITICO,User Subscriber Data,Template String Variables,$interpolation_sin_sanitizar,2h
+2,admin-dashboard.js,11,CRITICO,Student Information,Template String Variables,$student_names_sin_sanitizar,1.5h
+3,bge-notification-admin.js,12,CRITICO,Notification Content,API Response,notif.content_sin_validar,1.5h
+4,messaging-manager.js,5,CRITICO,Chat Messages,Loop innerHTML,chat_messages_sin_sanitizar,1h
+5,academic-reports-manager.js,10,CRITICO,Academic Records,Template Variables,$grades_sin_sanitizar,2h
+6,parent-teacher-communication.js,?,CRITICO,Communication Data,API Response,messages_sin_validar,1h
+7,appointments.js,8,ALTO,Appointment Data,Template Variables,$appointment_info_sin_sanitizar,1h
+8,approvals-manager.js,3,CRITICO,Approval Records,HTML Templates,approval_data_sin_sanitizar,0.5h
+9,support-tickets-manager.js,?,CRITICO,Ticket Content,API Response,ticket_content_sin_validar,1h
+10,citas-manager.js,?,CRITICO,Cita Information,HTML Templates,cita_data_sin_sanitizar,0.5h
+11,parent-manager.js,?,CRITICO,Parent Information,API Response,parent_data_sin_validar,0.5h
+12,solicitudes-manager.js,?,CRITICO,Request Data,HTML Templates,request_data_sin_sanitizar,1h
+13,interactive-calendar.js,5,ALTO,Event Information,Template Variables,$event_description_sin_sanitizar,1h
+14,bge-dashboard-monitor.js,8,ALTO,System Status,API Response,system_data_sin_validar,1.5h
+15,ai-machine-learning.js,10,ALTO,Predictions,Template Variables,$prediction_text_sin_sanitizar,1.5h
+16,advanced-gamification-system.js,8,ALTO,Achievement Data,Template Variables,$achievement_desc_sin_sanitizar,1h
+17,ai-progress-dashboard.js,10,ALTO,Student Progress,API Response,progress_data_sin_validar,1h
+18,ar-education-system.js,8,ALTO,AR Scenario Data,Template Variables,$scenario_data_sin_sanitizar,1h
+19,bge-security-module.js,4,ALTO,Admin Username,Direct Variable,user.username_sin_escaping,0.5h
+20,bge-chatbot-ia-avanzado.js,4,ALTO,AI Response,API Response,ai_response_sin_sanitizar,1h

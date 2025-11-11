@@ -4,6 +4,8 @@
  * Integra calificaciones, asistencias, estadísticas y análisis de rendimiento
  */
 
+import DOMPurify from 'isomorphic-dompurify';
+
 class AcademicReportsManager {
     constructor() {
         this.currentUser = null;

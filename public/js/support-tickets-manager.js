@@ -12,6 +12,8 @@
 // CONFIGURACIÓN Y CONSTANTES
 // ============================================
 
+import DOMPurify from 'isomorphic-dompurify';
+
 const API_BASE = '/api/support-tickets';
 
 // Estado global de la aplicación

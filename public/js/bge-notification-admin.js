@@ -9,6 +9,8 @@
  * - Notificaciones programadas
  */
 
+import DOMPurify from 'isomorphic-dompurify';
+
 class BGENotificationAdmin {
     constructor() {
         this.currentUser = null;

@@ -1,6 +1,8 @@
 // Sistema de citas en línea para Bachillerato window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria')
 
 // Helper para Bootstrap seguro
+import DOMPurify from 'isomorphic-dompurify';
+
 class BootstrapHelper {
     static isAvailable() {
         return typeof bootstrap !== 'undefined' && bootstrap.Modal;

@@ -8,6 +8,8 @@
 // VARIABLES GLOBALES
 // ============================================
 
+import DOMPurify from 'isomorphic-dompurify';
+
 let subscribers = [];
 let newsletters = [];
 let statistics = {};

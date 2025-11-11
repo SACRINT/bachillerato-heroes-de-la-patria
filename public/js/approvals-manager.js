@@ -4,6 +4,8 @@
  * Fecha: 17 Octubre 2025
  */
 
+import DOMPurify from 'isomorphic-dompurify';
+
 console.log('📋 [APPROVALS MANAGER] Cargando sistema de aprobaciones...');
 
 // Variable global para almacenar las solicitudes

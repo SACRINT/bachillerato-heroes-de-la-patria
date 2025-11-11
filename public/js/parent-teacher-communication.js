@@ -4,6 +4,8 @@
  * Integración completa con backend API
  */
 
+import DOMPurify from 'isomorphic-dompurify';
+
 class ParentTeacherCommunicationSystem {
     constructor() {
         this.currentUser = null;
