@@ -200,7 +200,7 @@ class FormValidator {
         const errorDiv = document.createElement('div');
         errorDiv.className = 'invalid-feedback';
         errorDiv.textContent = message;
-        errorDiv.setAttribute('data-validator-error', 'true');
+        errorDiv.setAttribute('data-validator-error', sanitizeText('true'));
 
         // Insertar después del campo
         field.parentNode.insertBefore(errorDiv, field.nextSibling);

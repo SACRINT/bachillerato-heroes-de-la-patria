@@ -198,7 +198,7 @@ class SimpleCMS {
         const exportFileDefaultName = 'cms-backup-' + new Date().toISOString().split('T')[0] + '.json';
         
         const linkElement = document.createElement('a');
-        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('href', sanitizeURL(dataUri));
         linkElement.setAttribute('download', exportFileDefaultName);
         linkElement.click();
     }

@@ -40,7 +40,7 @@
         console.log('✅ [BOLSA TRABAJO CV] Formulario encontrado, configurando...');
 
         // IMPORTANTE: Marcar este formulario como ya manejado para evitar que professional-forms.js lo procese
-        form.setAttribute('data-handled-by', 'bolsa-trabajo-cv-handler');
+        form.setAttribute('data-handled-by', sanitizeText('bolsa-trabajo-cv-handler'));
 
         // Registrar tiempo de inicio
         formStartTime = Date.now();
@@ -352,8 +352,8 @@
 
         const modal = document.createElement('div');
         modal.className = 'modal fade cv-success-modal';
-        modal.setAttribute('data-bs-backdrop', 'static');
-        modal.setAttribute('data-bs-keyboard', 'false');
+        modal.setAttribute('data-bs-backdrop', sanitizeText('static'));
+        modal.setAttribute('data-bs-keyboard', sanitizeText('false'));
         modal.innerHTML = `
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">

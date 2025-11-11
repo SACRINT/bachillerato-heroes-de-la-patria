@@ -29,7 +29,9 @@
       "Bash(__NEW_LINE__ node -c \"C:\\03_BachilleratoHeroesWeb\\backend\\server.js\")",
       "Bash(grep:*)",
       "Bash(npm install:*)",
-      "Bash(for file in admin-dashboard.js solicitudes-manager.js professional-forms.js admin-dashboard-modal-manager.js)"
+      "Bash(for file in admin-dashboard.js solicitudes-manager.js professional-forms.js admin-dashboard-modal-manager.js)",
+      "mcp__chrome-devtools__fill",
+      "Bash(tee:*)"
     ],
     "deny": [],
     "ask": []
