@@ -119,10 +119,12 @@
         }
 
         // onclick="openNotificationPanel()"
-        const notifPanelBtn = document.querySelector('[data-action="openNotificationPanel"]');
-        if (notifPanelBtn) {
-            notifPanelBtn.addEventListener('click', openNotificationPanel);
-        }
+        // ⚠️ DESHABILITADO (11 NOV 2025): El evento delegado en admin-dashboard.html línea 6327-6349
+        // ya está manejando openNotificationPanel. Agregar listener aquí causa duplicación (modal abierto 2 veces)
+        // const notifPanelBtn = document.querySelector('[data-action="openNotificationPanel"]');
+        // if (notifPanelBtn) {
+        //     notifPanelBtn.addEventListener('click', openNotificationPanel);
+        // }
 
         // onclick="reloadStudents()"
         const reloadStudentsBtn = document.querySelector('[data-action="reloadStudents"]');
