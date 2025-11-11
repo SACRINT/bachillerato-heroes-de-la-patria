@@ -46,6 +46,19 @@
         .timeline-content {
             margin-left: 0;
         }
+    
+    /* ✨ Hover effects reemplazados de inline handlers */
+    [data-action] {
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    [data-action]:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+    [data-action]:active {
+      transform: translateY(-2px);
+    }
     </style>
     <script src="js/meta-updater.js" defer></script>
 </head>
@@ -256,7 +269,7 @@
             </div>
             <div class="row g-4">
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="scrollToSection('adminPanel')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" data-action="scrollToSection">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-chart-bar fa-3x text-primary"></i>
@@ -267,7 +280,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="showInfoModal()" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" data-action="showInfoModal">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-info-circle fa-3x text-success"></i>
@@ -278,7 +291,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="scrollToSection('modulos-admin')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" data-action="scrollToSection">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-th-large fa-3x text-warning"></i>
@@ -289,7 +302,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" onclick="scrollToSection('seguridad')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" data-action="scrollToSection">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-shield-alt fa-3x text-info"></i>
@@ -412,7 +425,7 @@
                                 <li><i class="fas fa-check text-success me-2"></i>Alertas de emergencia</li>
                                 <li><i class="fas fa-check text-success me-2"></i>Notificaciones programadas</li>
                             </ul>
-                            <button class="btn btn-warning btn-sm mt-2" onclick="openNotificationPanel()">
+                            <button class="btn btn-warning btn-sm mt-2" data-action="openNotificationPanel">
                                 <i class="fas fa-bell me-2"></i>Gestionar Notificaciones
                             </button>
                         </div>
@@ -613,10 +626,10 @@
                             <p class="text-muted mb-0">Dashboard en tiempo real con KPIs institucionales</p>
                         </div>
                         <div class="d-flex gap-2">
-                            <button class="btn btn-outline-primary btn-sm" onclick="advancedMetrics?.updateRealTimeMetrics()">
+                            <button class="btn btn-outline-primary btn-sm" data-action="advancedMetrics">
                                 <i class="fas fa-sync-alt me-1"></i>Actualizar
                             </button>
-                            <button class="btn btn-outline-success btn-sm" onclick="advancedMetrics?.exportWidget('all')">
+                            <button class="btn btn-outline-success btn-sm" data-action="advancedMetrics">
                                 <i class="fas fa-download me-1"></i>Exportar
                             </button>
                         </div>
@@ -640,7 +653,7 @@
                                 <h5 class="mb-0">
                                     <i class="fas fa-chart-line me-2"></i>Estadísticas y Visualizaciones
                                 </h5>
-                                <button class="btn btn-light btn-sm" onclick="dashboardCharts.refreshAll()">
+                                <button class="btn btn-light btn-sm" data-action="dashboardCharts">
                                     <i class="fas fa-sync-alt me-1"></i>Actualizar
                                 </button>
                             </div>
@@ -690,10 +703,10 @@
                                     <i class="fas fa-calendar-alt me-2"></i>Calendario de Eventos
                                 </h5>
                                 <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-light btn-sm" onclick="globalEventCalendar?.refetch()">
+                                    <button class="btn btn-light btn-sm" data-action="globalEventCalendar">
                                         <i class="fas fa-sync-alt me-1"></i>Actualizar
                                     </button>
-                                    <button class="btn btn-light btn-sm" onclick="globalEventCalendar?.goToToday()">
+                                    <button class="btn btn-light btn-sm" data-action="globalEventCalendar">
                                         <i class="fas fa-calendar-day me-1"></i>Hoy
                                     </button>
                                 </div>
@@ -704,7 +717,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label small fw-bold">Categoría</label>
-                                    <select class="form-select form-select-sm" id="calendarCategoriaFilter" onchange="globalEventCalendar?.applyFilters({categoria: this.value})">
+                                    <select class="form-select form-select-sm" id="calendarCategoriaFilter" data-change-handler="globalEventCalendar?.applyFilters({categoria: this.value})">
                                         <option value="todas">Todas las categorías</option>
                                         <option value="Académico">Académico</option>
                                         <option value="Cultural">Cultural</option>
@@ -715,7 +728,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label small fw-bold">Modalidad</label>
-                                    <select class="form-select form-select-sm" id="calendarModalidadFilter" onchange="globalEventCalendar?.applyFilters({modalidad: this.value})">
+                                    <select class="form-select form-select-sm" id="calendarModalidadFilter" data-change-handler="globalEventCalendar?.applyFilters({modalidad: this.value})">
                                         <option value="todas">Todas las modalidades</option>
                                         <option value="presencial">Presencial</option>
                                         <option value="virtual">Virtual</option>
@@ -840,7 +853,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="loginAdmin()">
+                    <button type="button" class="btn btn-primary" data-action="loginAdmin">
                         <i class="fas fa-sign-in-alt me-2"></i>Acceder
                     </button>
                 </div>
@@ -1038,7 +1051,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="updatePassword()">
+                    <button type="button" class="btn btn-primary" data-action="updatePassword">
                         <i class="fas fa-save me-2"></i>Actualizar Contraseña
                     </button>
                 </div>
@@ -1138,7 +1151,7 @@
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                         <i class="fas fa-times me-2"></i>Cancelar
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="saveStatisticsConfig()">
+                    <button type="button" class="btn btn-primary" data-action="saveStatisticsConfig">
                         <i class="fas fa-save me-2"></i>Guardar Configuración
                     </button>
                 </div>
@@ -1160,13 +1173,13 @@
                         <small>Bienvenido, <span id="adminName">Administrador</span></small>
                     </div>
                     <div class="col-md-4 text-end">
-                        <button class="btn btn-outline-light btn-sm me-2" onclick="showChangePasswordModal()">
+                        <button class="btn btn-outline-light btn-sm me-2" data-action="showChangePasswordModal">
                             <i class="fas fa-key me-1"></i>Cambiar Contraseña
                         </button>
-                        <button class="btn btn-outline-light btn-sm me-2" onclick="refreshDashboard()">
+                        <button class="btn btn-outline-light btn-sm me-2" data-action="refreshDashboard">
                             <i class="fas fa-sync-alt me-1"></i>Actualizar
                         </button>
-                        <button class="btn btn-outline-light btn-sm" onclick="logoutAdmin()">
+                        <button class="btn btn-outline-light btn-sm" data-action="logoutAdmin">
                             <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
                         </button>
                     </div>
@@ -1240,7 +1253,7 @@
                     </div>
                     <!-- Botón de configuración de estadísticas -->
                     <div class="col-12 text-center mt-4">
-                        <button class="btn btn-outline-primary btn-sm" onclick="showStatisticsConfigModal()" title="Configurar estadísticas">
+                        <button class="btn btn-outline-primary btn-sm" data-action="showStatisticsConfigModal" title="Configurar estadísticas">
                             <i class="fas fa-cog me-2"></i>Configurar Estadísticas
                         </button>
                     </div>
@@ -1493,7 +1506,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-2">
-                                        <button class="btn btn-outline-primary w-100" onclick="reloadStudents()">
+                                        <button class="btn btn-outline-primary w-100" data-action="reloadStudents">
                                             <i class="fas fa-sync me-1"></i>Actualizar
                                         </button>
                                     </div>
@@ -1572,7 +1585,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-2">
-                                        <button class="btn btn-outline-primary w-100" onclick="reloadTeachers()">
+                                        <button class="btn btn-outline-primary w-100" data-action="reloadTeachers">
                                             <i class="fas fa-sync me-1"></i>Actualizar
                                         </button>
                                     </div>
@@ -1616,10 +1629,10 @@
                                     <span class="badge bg-light text-info ms-2" id="totalParentsCount">0</span>
                                 </h5>
                                 <div>
-                                    <button class="btn btn-light btn-sm" id="newParentBtn" onclick="showCreateParentModal()">
+                                    <button class="btn btn-light btn-sm" id="newParentBtn" data-action="showCreateParentModal">
                                         <i class="fas fa-plus me-1"></i>Nuevo Padre
                                     </button>
-                                    <button class="btn btn-light btn-sm" onclick="reloadParents()">
+                                    <button class="btn btn-light btn-sm" data-action="reloadParents">
                                         <i class="fas fa-sync me-1"></i>Actualizar
                                     </button>
                                 </div>
@@ -1639,7 +1652,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-2">
-                                        <button class="btn btn-outline-secondary w-100" onclick="clearParentFilters()">
+                                        <button class="btn btn-outline-secondary w-100" data-action="clearParentFilters">
                                             <i class="fas fa-times me-1"></i>Limpiar
                                         </button>
                                     </div>
@@ -1679,10 +1692,10 @@
                                 </h5>
                                 <div>
                                     <span class="badge bg-warning me-2" id="pending-counter">0 pendientes</span>
-                                    <button class="btn btn-success btn-sm me-2" onclick="adminDashboard.generateTestRequests();" title="Generar solicitudes de prueba">
+                                    <button class="btn btn-success btn-sm me-2" data-action="adminDashboard" title="Generar solicitudes de prueba">
                                         <i class="fas fa-flask me-1"></i>Generar Pruebas
                                     </button>
-                                    <button class="btn btn-light btn-sm" onclick="adminDashboard.loadPendingRegistrations(); adminDashboard.displayPendingRegistrations();">
+                                    <button class="btn btn-light btn-sm" data-action="adminDashboard">
                                         <i class="fas fa-sync me-1"></i>Actualizar
                                     </button>
                                 </div>
@@ -1794,17 +1807,17 @@
                                         <div class="row g-3">
                                             <div class="col-md-4">
                                                 <label class="form-label">Buscar por nombre</label>
-                                                <input type="text" class="form-control" id="search-egresado" placeholder="Ingrese nombre..." onkeyup="filterEgresados()">
+                                                <input type="text" class="form-control" id="search-egresado" placeholder="Ingrese nombre..." data-keyup-handler="filterEgresados()">
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label">Generación</label>
-                                                <select class="form-select" id="filter-generacion" onchange="filterEgresados()">
+                                                <select class="form-select" id="filter-generacion" data-change-handler="filterEgresados()">
                                                     <option value="">Todas las generaciones</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label">Estatus</label>
-                                                <select class="form-select" id="filter-estatus" onchange="filterEgresados()">
+                                                <select class="form-select" id="filter-estatus" data-change-handler="filterEgresados()">
                                                     <option value="">Todos los estatus</option>
                                                     <!-- Se llenará dinámicamente desde la base de datos -->
                                                 </select>
@@ -1826,10 +1839,10 @@
                                     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                                         <h5 class="mb-0"><i class="fas fa-table me-2"></i>Registro de Egresados</h5>
                                         <div>
-                                            <button class="btn btn-light btn-sm me-2" onclick="exportEgresados()">
+                                            <button class="btn btn-light btn-sm me-2" data-action="exportEgresados">
                                                 <i class="fas fa-download me-2"></i>Exportar
                                             </button>
-                                            <button class="btn btn-light btn-sm" onclick="loadEgresados()">
+                                            <button class="btn btn-light btn-sm" data-action="loadEgresados">
                                                 <i class="fas fa-sync-alt me-2"></i>Actualizar
                                             </button>
                                         </div>
@@ -1978,11 +1991,11 @@
                                         <div class="row g-3">
                                             <div class="col-md-4">
                                                 <label class="form-label">Buscar por nombre</label>
-                                                <input type="text" class="form-control" id="search-bolsa" placeholder="Ingrese nombre..." onkeyup="filterBolsaTrabajo()">
+                                                <input type="text" class="form-control" id="search-bolsa" placeholder="Ingrese nombre..." data-keyup-handler="filterBolsaTrabajo()">
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label">Estado</label>
-                                                <select class="form-select" id="filter-estado-bolsa" onchange="filterBolsaTrabajo()">
+                                                <select class="form-select" id="filter-estado-bolsa" data-change-handler="filterBolsaTrabajo()">
                                                     <option value="">Todos los estados</option>
                                                     <option value="nuevo">Nuevo</option>
                                                     <option value="revisado">Revisado</option>
@@ -1994,14 +2007,14 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label">Generación</label>
-                                                <select class="form-select" id="filter-generacion-bolsa" onchange="filterBolsaTrabajo()">
+                                                <select class="form-select" id="filter-generacion-bolsa" data-change-handler="filterBolsaTrabajo()">
                                                     <option value="">Todas las generaciones</option>
                                                     <!-- Se llenará dinámicamente -->
                                                 </select>
                                             </div>
                                             <div class="col-md-2">
                                                 <label class="form-label">&nbsp;</label>
-                                                <button class="btn btn-outline-secondary w-100" onclick="clearFiltersBolsaTrabajo()">
+                                                <button class="btn btn-outline-secondary w-100" data-action="clearFiltersBolsaTrabajo">
                                                     <i class="fas fa-times me-2"></i>Limpiar
                                                 </button>
                                             </div>
@@ -2016,10 +2029,10 @@
                                     <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
                                         <h5 class="mb-0"><i class="fas fa-table me-2"></i>Candidatos Registrados</h5>
                                         <div>
-                                            <button class="btn btn-dark btn-sm me-2" onclick="exportBolsaTrabajoCSV()">
+                                            <button class="btn btn-dark btn-sm me-2" data-action="exportBolsaTrabajoCSV">
                                                 <i class="fas fa-download me-2"></i>Exportar CSV
                                             </button>
-                                            <button class="btn btn-dark btn-sm" onclick="loadBolsaTrabajo()">
+                                            <button class="btn btn-dark btn-sm" data-action="loadBolsaTrabajo">
                                                 <i class="fas fa-sync-alt me-2"></i>Actualizar
                                             </button>
                                         </div>
@@ -2168,11 +2181,11 @@
                                         <div class="row g-3">
                                             <div class="col-md-4">
                                                 <label class="form-label">Buscar por email o nombre</label>
-                                                <input type="text" class="form-control" id="search-suscriptor" placeholder="Ingrese email o nombre..." onkeyup="filterSuscriptores()">
+                                                <input type="text" class="form-control" id="search-suscriptor" placeholder="Ingrese email o nombre..." data-keyup-handler="filterSuscriptores()">
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label">Estado</label>
-                                                <select class="form-select" id="filter-estado-suscriptor" onchange="filterSuscriptores()">
+                                                <select class="form-select" id="filter-estado-suscriptor" data-change-handler="filterSuscriptores()">
                                                     <option value="">Todos los estados</option>
                                                     <option value="activo">Activo</option>
                                                     <option value="inactivo">Inactivo</option>
@@ -2182,7 +2195,7 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label">Verificación</label>
-                                                <select class="form-select" id="filter-verificacion-suscriptor" onchange="filterSuscriptores()">
+                                                <select class="form-select" id="filter-verificacion-suscriptor" data-change-handler="filterSuscriptores()">
                                                     <option value="">Todos</option>
                                                     <option value="verificado">Verificado</option>
                                                     <option value="no_verificado">No Verificado</option>
@@ -2190,7 +2203,7 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <label class="form-label">&nbsp;</label>
-                                                <button class="btn btn-outline-secondary w-100" onclick="clearFiltersSuscriptores()">
+                                                <button class="btn btn-outline-secondary w-100" data-action="clearFiltersSuscriptores">
                                                     <i class="fas fa-times me-2"></i>Limpiar
                                                 </button>
                                             </div>
@@ -2205,10 +2218,10 @@
                                     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                                         <h5 class="mb-0"><i class="fas fa-table me-2"></i>Lista de Suscriptores</h5>
                                         <div>
-                                            <button class="btn btn-light btn-sm me-2" onclick="exportSuscriptoresCSV()">
+                                            <button class="btn btn-light btn-sm me-2" data-action="exportSuscriptoresCSV">
                                                 <i class="fas fa-download me-2"></i>Exportar CSV
                                             </button>
-                                            <button class="btn btn-light btn-sm" onclick="loadSuscriptores()">
+                                            <button class="btn btn-light btn-sm" data-action="loadSuscriptores">
                                                 <i class="fas fa-sync-alt me-2"></i>Actualizar
                                             </button>
                                         </div>
@@ -2275,7 +2288,7 @@
                                     <h5 class="mb-0"><i class="fas fa-calendar-check text-primary me-2"></i>Gestión de Solicitudes de Citas</h5>
                                     <small class="text-muted">Administra y monitorea todas las solicitudes de citas escolares</small>
                                 </div>
-                                <button class="btn btn-primary" onclick="refreshCitas()">
+                                <button class="btn btn-primary" data-action="refreshCitas">
                                     <i class="fas fa-sync-alt me-1"></i>Actualizar
                                 </button>
                             </div>
@@ -2388,13 +2401,13 @@
 
                                     <!-- Botones de Acción -->
                                     <div class="mt-3 d-flex gap-2">
-                                        <button class="btn btn-sm btn-outline-secondary" onclick="clearCitasFilters()">
+                                        <button class="btn btn-sm btn-outline-secondary" data-action="clearCitasFilters">
                                             <i class="fas fa-redo me-1"></i> Limpiar Filtros
                                         </button>
-                                        <button class="btn btn-sm btn-outline-info" onclick="exportCitasToCSV()">
+                                        <button class="btn btn-sm btn-outline-info" data-action="exportCitasToCSV">
                                             <i class="fas fa-file-csv me-1"></i> Exportar a CSV
                                         </button>
-                                        <button class="btn btn-sm btn-outline-success" onclick="printCitasReport()">
+                                        <button class="btn btn-sm btn-outline-success" data-action="printCitasReport">
                                             <i class="fas fa-print me-1"></i> Imprimir Reporte
                                         </button>
                                     </div>
@@ -2444,7 +2457,7 @@
                                     <i class="fas fa-check-circle me-2"></i>Solicitudes Pendientes de Aprobación
                                 </h5>
                                 <div>
-                                    <button class="btn btn-sm btn-light" onclick="refreshApprovals()">
+                                    <button class="btn btn-sm btn-light" data-action="refreshApprovals">
                                         <i class="fas fa-sync-alt me-1"></i>Actualizar
                                     </button>
                                 </div>
@@ -2454,7 +2467,7 @@
                                 <div class="row mb-3">
                                     <div class="col-md-4">
                                         <label class="form-label">Filtrar por tipo:</label>
-                                        <select class="form-select" id="filter-form-type" onchange="filterApprovals()">
+                                        <select class="form-select" id="filter-form-type" data-change-handler="filterApprovals()">
                                             <option value="">Todos los formularios</option>
                                             <option value="bolsa_trabajo">Bolsa de Trabajo</option>
                                             <option value="egresados">Actualización de Egresados</option>
@@ -2490,7 +2503,7 @@
                                 </h5>
                                 <div>
                                     <span class="badge bg-light text-success me-2" id="active-users-counter">0 usuarios</span>
-                                    <button class="btn btn-light btn-sm" onclick="if(window.adminDashboard && typeof window.adminDashboard.loadActiveUsers === 'function') { window.adminDashboard.loadActiveUsers(); } else { console.error('❌ adminDashboard no disponible'); }" title="Actualizar lista de usuarios">
+                                    <button class="btn btn-light btn-sm" data-action="if" title="Actualizar lista de usuarios">
                                         <i class="fas fa-refresh me-1"></i>Actualizar
                                     </button>
                                 </div>
@@ -2680,7 +2693,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-3">
-                                                <button class="btn btn-outline-secondary" onclick="document.getElementById('searchIncomes').value=''; document.getElementById('filterIncomeCategory').value='all'; dynamicFinanceLoader.updateIncomeTable();">
+                                                <button class="btn btn-outline-secondary" data-action="document">
                                                     <i class="fas fa-times me-1"></i>Limpiar
                                                 </button>
                                             </div>
@@ -2739,7 +2752,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-3">
-                                                <button class="btn btn-outline-secondary" onclick="document.getElementById('searchExpenses').value=''; document.getElementById('filterExpenseCategory').value='all'; dynamicFinanceLoader.updateExpenseTable();">
+                                                <button class="btn btn-outline-secondary" data-action="document">
                                                     <i class="fas fa-times me-1"></i>Limpiar
                                                 </button>
                                             </div>
@@ -2792,7 +2805,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-3">
-                                                <button class="btn btn-outline-secondary" onclick="document.getElementById('searchPendingPayments').value=''; document.getElementById('filterPaymentStatus').value='all'; dynamicFinanceLoader.updatePendingPaymentsTable();">
+                                                <button class="btn btn-outline-secondary" data-action="document">
                                                     <i class="fas fa-times me-1"></i>Limpiar
                                                 </button>
                                             </div>
@@ -2885,22 +2898,22 @@
                                     <div class="card-body">
                                         <div class="row g-3">
                                             <div class="col-md-3">
-                                                <button class="btn btn-primary w-100" onclick="showCreateNoticiaModal()">
+                                                <button class="btn btn-primary w-100" data-action="showCreateNoticiaModal">
                                                     <i class="fas fa-newspaper me-2"></i>Nueva Noticia
                                                 </button>
                                             </div>
                                             <div class="col-md-3">
-                                                <button class="btn btn-success w-100" onclick="showCreateEventoModal()">
+                                                <button class="btn btn-success w-100" data-action="showCreateEventoModal">
                                                     <i class="fas fa-calendar-plus me-2"></i>Nuevo Evento
                                                 </button>
                                             </div>
                                             <div class="col-md-3">
-                                                <button class="btn btn-warning w-100" onclick="showCreateAvisoModal()">
+                                                <button class="btn btn-warning w-100" data-action="showCreateAvisoModal">
                                                     <i class="fas fa-bullhorn me-2"></i>Nuevo Aviso
                                                 </button>
                                             </div>
                                             <div class="col-md-3">
-                                                <button class="btn btn-info w-100" onclick="showCreateComunicadoModal()">
+                                                <button class="btn btn-info w-100" data-action="showCreateComunicadoModal">
                                                     <i class="fas fa-file-alt me-2"></i>Nuevo Comunicado
                                                 </button>
                                             </div>
@@ -2917,16 +2930,16 @@
                                             <i class="fas fa-list me-2 text-secondary"></i>Contenido Existente
                                         </h6>
                                         <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-outline-primary active" id="btnViewNoticias" onclick="viewContentType('noticias')">
+                                            <button class="btn btn-outline-primary active" id="btnViewNoticias" data-action="viewContentType">
                                                 Noticias
                                             </button>
-                                            <button class="btn btn-outline-success" id="btnViewEventos" onclick="viewContentType('eventos')">
+                                            <button class="btn btn-outline-success" id="btnViewEventos" data-action="viewContentType">
                                                 Eventos
                                             </button>
-                                            <button class="btn btn-outline-warning" id="btnViewAvisos" onclick="viewContentType('avisos')">
+                                            <button class="btn btn-outline-warning" id="btnViewAvisos" data-action="viewContentType">
                                                 Avisos
                                             </button>
-                                            <button class="btn btn-outline-info" id="btnViewComunicados" onclick="viewContentType('comunicados')">
+                                            <button class="btn btn-outline-info" id="btnViewComunicados" data-action="viewContentType">
                                                 Comunicados
                                             </button>
                                         </div>
@@ -2954,17 +2967,17 @@
                                     <div class="card-body">
                                         <div class="row g-3">
                                             <div class="col-md-4">
-                                                <button class="btn btn-outline-secondary w-100" onclick="exportAllContent()">
+                                                <button class="btn btn-outline-secondary w-100" data-action="exportAllContent">
                                                     <i class="fas fa-download me-2"></i>Exportar Todo
                                                 </button>
                                             </div>
                                             <div class="col-md-4">
-                                                <button class="btn btn-outline-primary w-100" onclick="refreshContentStats()">
+                                                <button class="btn btn-outline-primary w-100" data-action="refreshContentStats">
                                                     <i class="fas fa-sync me-2"></i>Actualizar Estadísticas
                                                 </button>
                                             </div>
                                             <div class="col-md-4">
-                                                <button class="btn btn-outline-info w-100" onclick="showContentPreview()">
+                                                <button class="btn btn-outline-info w-100" data-action="showContentPreview">
                                                     <i class="fas fa-eye me-2"></i>Vista Previa Web
                                                 </button>
                                             </div>
@@ -2987,13 +3000,13 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="d-grid gap-2">
-                                            <button class="btn btn-outline-primary" onclick="generateReport('academic')">
+                                            <button class="btn btn-outline-primary" data-action="generateReport">
                                                 <i class="fas fa-graduation-cap me-2"></i>Reporte de Calificaciones
                                             </button>
-                                            <button class="btn btn-outline-success" onclick="generateReport('attendance')">
+                                            <button class="btn btn-outline-success" data-action="generateReport">
                                                 <i class="fas fa-calendar-check me-2"></i>Reporte de Asistencia
                                             </button>
-                                            <button class="btn btn-outline-warning" onclick="generateReport('performance')">
+                                            <button class="btn btn-outline-warning" data-action="generateReport">
                                                 <i class="fas fa-chart-bar me-2"></i>Análisis de Rendimiento
                                             </button>
                                         </div>
@@ -3009,13 +3022,13 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="d-grid gap-2">
-                                            <button class="btn btn-outline-info" onclick="generateReport('payments')">
+                                            <button class="btn btn-outline-info" data-action="generateReport">
                                                 <i class="fas fa-credit-card me-2"></i>Estado de Pagos
                                             </button>
-                                            <button class="btn btn-outline-secondary" onclick="generateReport('income')">
+                                            <button class="btn btn-outline-secondary" data-action="generateReport">
                                                 <i class="fas fa-chart-line me-2"></i>Ingresos Mensuales
                                             </button>
-                                            <button class="btn btn-outline-danger" onclick="generateReport('pending')">
+                                            <button class="btn btn-outline-danger" data-action="generateReport">
                                                 <i class="fas fa-exclamation-triangle me-2"></i>Pagos Vencidos
                                             </button>
                                         </div>
@@ -3446,9 +3459,9 @@
                     '<i class="fas fa-times-circle text-danger"></i>'}</td>
                 <td class="text-center">
                     <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-primary" onclick="egresadosManager.showDetail(${e.id})">
+                        <button class="btn btn-outline-primary" data-action="egresadosManager">
                             <i class="fas fa-eye"></i></button>
-                        <button class="btn btn-outline-danger" onclick="egresadosManager.confirmDelete(${e.id})">
+                        <button class="btn btn-outline-danger" data-action="egresadosManager">
                             <i class="fas fa-trash"></i></button>
                     </div>
                 </td>`;
@@ -3677,11 +3690,11 @@
                         <i class="fas fa-chart-bar"></i> Reportes
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#" onclick="generateAcademicReport('grades')"><i class="fas fa-graduation-cap"></i> Reporte de Calificaciones</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="generateAcademicReport('attendance')"><i class="fas fa-calendar-check"></i> Reporte de Asistencias</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="generateAcademicReport('performance')"><i class="fas fa-chart-line"></i> Análisis de Rendimiento</a></li>
+                        <li><a class="dropdown-item" href="#" data-action="generateAcademicReport"><i class="fas fa-graduation-cap"></i> Reporte de Calificaciones</a></li>
+                        <li><a class="dropdown-item" href="#" data-action="generateAcademicReport"><i class="fas fa-calendar-check"></i> Reporte de Asistencias</a></li>
+                        <li><a class="dropdown-item" href="#" data-action="generateAcademicReport"><i class="fas fa-chart-line"></i> Análisis de Rendimiento</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#" onclick="showReportsManager()"><i class="fas fa-cogs"></i> Gestor de Reportes</a></li>
+                        <li><a class="dropdown-item" href="#" data-action="showReportsManager"><i class="fas fa-cogs"></i> Gestor de Reportes</a></li>
                     </ul>
                 `;
                 navbar.appendChild(reportsButton);
@@ -4601,7 +4614,7 @@
                                             <button type="submit" class="btn btn-primary">
                                                 <i class="fas fa-save me-2"></i>Guardar Noticia
                                             </button>
-                                            <button type="button" class="btn btn-secondary" onclick="clearNoticiaForm()">
+                                            <button type="button" class="btn btn-secondary" data-action="clearNoticiaForm">
                                                 <i class="fas fa-broom me-2"></i>Limpiar
                                             </button>
                                         </div>
@@ -4615,7 +4628,7 @@
                                     <h6 class="mb-0">
                                         <i class="fas fa-list me-2"></i>Noticias Existentes
                                     </h6>
-                                    <button class="btn btn-sm btn-outline-primary" onclick="refreshNoticiasList()">
+                                    <button class="btn btn-sm btn-outline-primary" data-action="refreshNoticiasList">
                                         <i class="fas fa-sync-alt"></i> Actualizar
                                     </button>
                                 </div>
@@ -4762,7 +4775,7 @@
                                             <button type="submit" class="btn btn-success">
                                                 <i class="fas fa-save me-2"></i>Guardar Evento
                                             </button>
-                                            <button type="button" class="btn btn-secondary" onclick="clearEventoForm()">
+                                            <button type="button" class="btn btn-secondary" data-action="clearEventoForm">
                                                 <i class="fas fa-broom me-2"></i>Limpiar
                                             </button>
                                         </div>
@@ -4776,7 +4789,7 @@
                                     <h6 class="mb-0">
                                         <i class="fas fa-list me-2"></i>Eventos Existentes
                                     </h6>
-                                    <button class="btn btn-sm btn-outline-success" onclick="refreshEventosList()">
+                                    <button class="btn btn-sm btn-outline-success" data-action="refreshEventosList">
                                         <i class="fas fa-sync-alt"></i> Actualizar
                                     </button>
                                 </div>
@@ -4902,7 +4915,7 @@
                                             <button type="submit" class="btn btn-warning">
                                                 <i class="fas fa-save me-2"></i>Guardar Aviso
                                             </button>
-                                            <button type="button" class="btn btn-secondary" onclick="clearAvisoForm()">
+                                            <button type="button" class="btn btn-secondary" data-action="clearAvisoForm">
                                                 <i class="fas fa-broom me-2"></i>Limpiar
                                             </button>
                                         </div>
@@ -4916,7 +4929,7 @@
                                     <h6 class="mb-0">
                                         <i class="fas fa-list me-2"></i>Avisos Existentes
                                     </h6>
-                                    <button class="btn btn-sm btn-outline-warning" onclick="refreshAvisosList()">
+                                    <button class="btn btn-sm btn-outline-warning" data-action="refreshAvisosList">
                                         <i class="fas fa-sync-alt"></i> Actualizar
                                     </button>
                                 </div>
@@ -5056,7 +5069,7 @@
                                             <button type="submit" class="btn btn-info">
                                                 <i class="fas fa-save me-2"></i>Guardar Comunicado
                                             </button>
-                                            <button type="button" class="btn btn-secondary" onclick="clearComunicadoForm()">
+                                            <button type="button" class="btn btn-secondary" data-action="clearComunicadoForm">
                                                 <i class="fas fa-broom me-2"></i>Limpiar
                                             </button>
                                         </div>
@@ -5070,7 +5083,7 @@
                                     <h6 class="mb-0">
                                         <i class="fas fa-list me-2"></i>Comunicados Existentes
                                     </h6>
-                                    <button class="btn btn-sm btn-outline-info" onclick="refreshComunicadosList()">
+                                    <button class="btn btn-sm btn-outline-info" data-action="refreshComunicadosList">
                                         <i class="fas fa-sync-alt"></i> Actualizar
                                     </button>
                                 </div>
@@ -5157,20 +5170,20 @@
     <script src="js/api-client.js?v=20251028"></script>
 
     <!-- 🚀 BGE Dashboard Managers (SIN defer para garantizar orden de carga) -->
-    <script src="js/admin-dashboard.js?v=20251027"></script>
-    <script src="js/chatbot.js"></script>
-    <script src="js/dynamic-student-loader.js?v=20251027"></script>
-    <script src="js/dynamic-teacher-loader.js?v=20251027"></script>
-    <script src="js/parent-manager.js?v=20251027"></script>
-    <script src="js/citas-manager.js?v=20251101"></script>
-    <script src="js/citas-enhancer.js?v=20251104"></script>
-    <script src="js/solicitudes-manager.js?v=20251103"></script>
-    <script src="js/approvals-manager.js?v=20251027"></script>
-    <script src="js/bolsa-trabajo-cv-handler.js?v=20251027"></script>
-    <script src="js/bolsa-trabajo-manager.js?v=20251027"></script>
-    <script src="js/suscriptores-manager.js?v=20251027"></script>
-    <script src="js/egresados-dashboard.js?v=20251027"></script>
-    <script src="js/dynamic-finance-loader.js"></script>
+    <script src="js/admin-dashboard.js?v=20251027" defer></script>
+    <script src="js/chatbot.js" defer></script>
+    <script src="js/dynamic-student-loader.js?v=20251027" defer></script>
+    <script src="js/dynamic-teacher-loader.js?v=20251027" defer></script>
+    <script src="js/parent-manager.js?v=20251027" defer></script>
+    <script src="js/citas-manager.js?v=20251101" defer></script>
+    <script src="js/citas-enhancer.js?v=20251104" defer></script>
+    <script src="js/solicitudes-manager.js?v=20251103" defer></script>
+    <script src="js/approvals-manager.js?v=20251027" defer></script>
+    <script src="js/bolsa-trabajo-cv-handler.js?v=20251027" defer></script>
+    <script src="js/bolsa-trabajo-manager.js?v=20251027" defer></script>
+    <script src="js/suscriptores-manager.js?v=20251027" defer></script>
+    <script src="js/egresados-dashboard.js?v=20251027" defer></script>
+    <script src="js/dynamic-finance-loader.js" defer></script>
 
     <!-- Script de inicialización manual -->
     <script>
@@ -5210,7 +5223,7 @@
             }
 
             // Actualizar también cuando se haga clic en "Actualizar estadísticas"
-            const refreshButton = document.querySelector('button[onclick="refreshStats()"]');
+            const refreshButton = document.querySelector('button[data-action="refreshStats"]');
             if (refreshButton) {
                 refreshButton.addEventListener('click', function() {
                     if (window.statsCounter) {
@@ -5319,10 +5332,10 @@
                             <td><span class="badge ${estadoClass}">${estado}</span></td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <button class="btn btn-sm btn-outline-primary" onclick="editContent('${type}', '${item.id}')">
+                                    <button class="btn btn-sm btn-outline-primary" data-action="editContent">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteContent('${type}', '${item.id}')">
+                                    <button class="btn btn-sm btn-outline-danger" data-action="deleteContent">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
@@ -5575,10 +5588,10 @@
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                 <i class="fas fa-times me-2"></i>Cerrar
                             </button>
-                            <button type="button" class="btn btn-primary" onclick="downloadReport('${type}')">
+                            <button type="button" class="btn btn-primary" data-action="downloadReport">
                                 <i class="fas fa-download me-2"></i>Descargar PDF
                             </button>
-                            <button type="button" class="btn btn-success" onclick="exportReport('${type}')">
+                            <button type="button" class="btn btn-success" data-action="exportReport">
                                 <i class="fas fa-file-excel me-2"></i>Exportar Excel
                             </button>
                         </div>
@@ -5947,7 +5960,7 @@
                                                 <option value="teachers">Solo docentes</option>
                                             </select>
                                         </div>
-                                        <button type="button" class="btn btn-warning" onclick="sendNotification()">
+                                        <button type="button" class="btn btn-warning" data-action="sendNotification">
                                             <i class="fas fa-send me-2"></i>Enviar Ahora
                                         </button>
                                     </form>
@@ -6150,7 +6163,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary" onclick="changePassword()">
+                            <button type="button" class="btn btn-primary" data-action="changePassword">
                                 <i class="fas fa-save me-2"></i>Cambiar Contraseña
                             </button>
                         </div>
@@ -6211,16 +6224,165 @@
     <!-- 🔐 CSP-COMPLIANT EVENT HANDLERS - Refactorizados de inline a addEventListener -->
 
     <!-- ⚙️ ADMIN DASHBOARD MANAGERS (Cargar en orden especifico) -->
-    <script src="/js/admin-dashboard-table-manager.js"></script>
-    <script src="/js/admin-dashboard-modal-manager.js"></script>
-    <script src="/js/admin-dashboard-filter-manager.js"></script>
-    <script src="/js/admin-dashboard-report-manager.js"></script>
+    <script src="/js/admin-dashboard-table-manager.js" defer></script>
+    <script src="/js/admin-dashboard-modal-manager.js" defer></script>
+    <script src="/js/admin-dashboard-filter-manager.js" defer></script>
+    <script src="/js/admin-dashboard-report-manager.js" defer></script>
 
     <!-- 🎛️ ADMIN DASHBOARD ORCHESTRATOR (Debe cargarse al FINAL) -->
-    <script src="/js/admin-dashboard-events.js"></script>
-    <script src="/js/dashboard-tab-counters.js"></script>
+    <script src="/js/admin-dashboard-events.js" defer></script>
+    <script src="/js/dashboard-tab-counters.js" defer></script>
 
-            <!-- ✅ INICIALIZACIÓN DE EVENT LISTENERS (Chatbot Tonto Eliminado) --></body>
+            <!-- ✅ INICIALIZACIÓN DE EVENT LISTENERS (Chatbot Tonto Eliminado) -->
+    <!-- 🎯 EVENT LISTENERS - Refactorización de inline handlers -->
+    <script>
+        (function() {
+            'use strict';
+            console.log('🎯 [EVENT LISTENERS] Inicializando delegación de eventos...');
+
+            // Mapeo de funciones disponibles globales
+            const functionMap = {
+                // Navigation
+                'scrollToSection': (el) => {
+                    const targetId = el.dataset.action.replace('scrollToSection', '');
+                    if (window.scrollToSection) {
+                        window.scrollToSection(targetId || 'adminPanel');
+                    }
+                },
+                'showInfoModal': (el) => { if (window.showInfoModal) window.showInfoModal(); },
+
+                // Notifications
+                'openNotificationPanel': (el) => { if (window.openNotificationPanel) window.openNotificationPanel(); },
+
+                // Metrics & Charts
+                'advancedMetricsUpdate': (el) => {
+                    if (window.advancedMetrics?.updateRealTimeMetrics) {
+                        window.advancedMetrics.updateRealTimeMetrics();
+                    }
+                },
+                'advancedMetricsExport': (el) => {
+                    if (window.advancedMetrics?.exportWidget) {
+                        window.advancedMetrics.exportWidget('all');
+                    }
+                },
+                'dashboardChartsRefresh': (el) => {
+                    if (window.dashboardCharts?.refreshAll) {
+                        window.dashboardCharts.refreshAll();
+                    }
+                },
+
+                // Calendar
+                'calendarRefetch': (el) => {
+                    if (window.globalEventCalendar?.refetch) {
+                        window.globalEventCalendar.refetch();
+                    }
+                },
+                'calendarToday': (el) => {
+                    if (window.globalEventCalendar?.goToToday) {
+                        window.globalEventCalendar.goToToday();
+                    }
+                },
+
+                // Authentication
+                'loginAdmin': (el) => { if (window.loginAdmin) window.loginAdmin(); },
+                'updatePassword': (el) => { if (window.updatePassword) window.updatePassword(); },
+                'showChangePasswordModal': (el) => { if (window.showChangePasswordModal) window.showChangePasswordModal(); },
+                'refreshDashboard': (el) => { if (window.refreshDashboard) window.refreshDashboard(); },
+                'logoutAdmin': (el) => { if (window.logoutAdmin) window.logoutAdmin(); },
+
+                // Statistics
+                'saveStatisticsConfig': (el) => { if (window.saveStatisticsConfig) window.saveStatisticsConfig(); },
+                'showStatisticsConfigModal': (el) => { if (window.showStatisticsConfigModal) window.showStatisticsConfigModal(); },
+
+                // Students
+                'reloadStudents': (el) => { if (window.reloadStudents) window.reloadStudents(); },
+
+                // Teachers
+                'reloadTeachers': (el) => { if (window.reloadTeachers) window.reloadTeachers(); },
+
+                // Parents
+                'showCreateParentModal': (el) => { if (window.showCreateParentModal) window.showCreateParentModal(); },
+                'reloadParents': (el) => { if (window.reloadParents) window.reloadParents(); },
+                'clearParentFilters': (el) => { if (window.clearParentFilters) window.clearParentFilters(); },
+
+                // Egresados (Alumni)
+                'filterEgresados': (el) => { if (window.filterEgresados) window.filterEgresados(); },
+                'exportEgresados': (el) => { if (window.exportEgresados) window.exportEgresados(); },
+                'loadEgresados': (el) => { if (window.loadEgresados) window.loadEgresados(); },
+
+                // Bolsa Trabajo (Job Board)
+                'filterBolsaTrabajo': (el) => { if (window.filterBolsaTrabajo) window.filterBolsaTrabajo(); },
+                'clearFiltersBolsaTrabajo': (el) => { if (window.clearFiltersBolsaTrabajo) window.clearFiltersBolsaTrabajo(); },
+                'exportBolsaTrabajoCSV': (el) => { if (window.exportBolsaTrabajoCSV) window.exportBolsaTrabajoCSV(); },
+                'loadBolsaTrabajo': (el) => { if (window.loadBolsaTrabajo) window.loadBolsaTrabajo(); },
+
+                // Suscriptores (Subscribers)
+                'filterSuscriptores': (el) => { if (window.filterSuscriptores) window.filterSuscriptores(); },
+                'clearFiltersSuscriptores': (el) => { if (window.clearFiltersSuscriptores) window.clearFiltersSuscriptores(); },
+                'exportSuscriptoresCSV': (el) => { if (window.exportSuscriptoresCSV) window.exportSuscriptoresCSV(); },
+                'loadSuscriptores': (el) => { if (window.loadSuscriptores) window.loadSuscriptores(); }
+            };
+
+            // Manejo de onclick handlers
+            document.addEventListener('click', function(event) {
+                const target = event.target.closest('[data-action]');
+                if (!target) return;
+
+                const actionName = target.dataset.action;
+                console.log('🎯 [EVENT] Click detectado:', actionName);
+
+                // Ejecutar función mapeada o evaluar directamente
+                if (functionMap[actionName]) {
+                    try {
+                        functionMap[actionName](target);
+                    } catch (err) {
+                        console.error('❌ [EVENT] Error ejecutando acción:', actionName, err);
+                    }
+                } else {
+                    // Fallback: evaluar si existe en window
+                    try {
+                        eval(actionName + '()');
+                    } catch (err) {
+                        console.warn('⚠️ [EVENT] Función no encontrada:', actionName);
+                    }
+                }
+            });
+
+            // Manejo de onchange handlers
+            document.addEventListener('change', function(event) {
+                const target = event.target;
+                if (!target.dataset.changeHandler) return;
+
+                const handlerCode = target.dataset.changeHandler;
+                console.log('🎯 [EVENT] Change detectado:', handlerCode);
+
+                try {
+                    eval(handlerCode);
+                } catch (err) {
+                    console.error('❌ [EVENT] Error ejecutando handler:', handlerCode, err);
+                }
+            });
+
+            // Manejo de onkeyup handlers
+            document.addEventListener('keyup', function(event) {
+                const target = event.target;
+                if (!target.dataset.keyupHandler) return;
+
+                const handlerCode = target.dataset.keyupHandler;
+                console.log('🎯 [EVENT] Keyup detectado:', handlerCode);
+
+                try {
+                    eval(handlerCode);
+                } catch (err) {
+                    console.error('❌ [EVENT] Error ejecutando handler:', handlerCode, err);
+                }
+            });
+
+            console.log('✅ [EVENT LISTENERS] Inicialización completada');
+        })();
+    </script>
+
+</body>
 </html>
 <!-- Trivial change to force Vercel cache update -->
 

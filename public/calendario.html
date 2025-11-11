@@ -538,28 +538,28 @@
                 </div>
                 <div class="row g-3 justify-content-center">
                     <div class="col-md-6 col-lg-3">
-                        <button class="btn btn-outline-primary w-100 p-3" onclick="downloadCalendar()">
+                        <button class="btn btn-outline-primary w-100 p-3" data-action="downloadCalendar()">
                             <i class="fas fa-download fa-2x d-block mb-2"></i>
                             <strong>Descargar</strong>
                             <small class="d-block text-muted">Calendario PDF</small>
                         </button>
                     </div>
                     <div class="col-md-6 col-lg-3">
-                        <button class="btn btn-outline-success w-100 p-3" onclick="exportToGoogle()">
+                        <button class="btn btn-outline-success w-100 p-3" data-action="exportToGoogle()">
                             <i class="fab fa-google fa-2x d-block mb-2"></i>
                             <strong>Google Calendar</strong>
                             <small class="d-block text-muted">Sincronizar eventos</small>
                         </button>
                     </div>
                     <div class="col-md-6 col-lg-3">
-                        <button class="btn btn-outline-info w-100 p-3" onclick="shareCalendar()">
+                        <button class="btn btn-outline-info w-100 p-3" data-action="shareCalendar()">
                             <i class="fas fa-share-alt fa-2x d-block mb-2"></i>
                             <strong>Compartir</strong>
                             <small class="d-block text-muted">Enviar a contactos</small>
                         </button>
                     </div>
                     <div class="col-md-6 col-lg-3">
-                        <button class="btn btn-outline-warning w-100 p-3" onclick="setReminders()">
+                        <button class="btn btn-outline-warning w-100 p-3" data-action="setReminders()">
                             <i class="fas fa-bell fa-2x d-block mb-2"></i>
                             <strong>Recordatorios</strong>
                             <small class="d-block text-muted">Configurar alertas</small>
@@ -585,7 +585,7 @@
                     <!-- Contenido del evento se cargará aquí -->
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-primary" onclick="addToPersonalCalendar()">
+                    <button type="button" class="btn btn-outline-primary" data-action="addToPersonalCalendar()">
                         <i class="fas fa-plus me-2"></i>
                         Añadir a mi Calendario
                     </button>
@@ -647,7 +647,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-warning" onclick="saveReminders()">
+                    <button type="button" class="btn btn-warning" data-action="saveReminders()">
                         <i class="fas fa-save me-2"></i>
                         Guardar Recordatorios
                     </button>
@@ -676,13 +676,13 @@
                 <strong>Asistente Virtual</strong>
                 <div style="font-size: 12px; opacity: 0.8;">Calendario Escolar</div>
             </div>
-            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+            <button data-action="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
             <div class="chatbot-message bot">
                 <div class="response-professional">
-                    <div class="response-title">ðŸŽ“ Asistente Virtual BGE</div>
+                    <div class="response-title">🏷Ž“ Asistente Virtual BGE</div>
                     <div class="response-content">
                         <div class="response-section">
                             <div class="response-subtitle">¡Hola! Soy tu asistente inteligente</div>
@@ -696,7 +696,7 @@
         
         <div class="chatbot-input">
             <input type="text" id="chatbotInput" placeholder="Ej: ¿Cuándo son las vacaciones de invierno?" onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
-            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+            <button data-action="sendMessage()" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>
@@ -709,36 +709,36 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- ðŸš€ BGE FRAMEWORK MODULAR - PÃGINA CALENDARIO -->
+    <!-- 🏷š€ BGE FRAMEWORK MODULAR - PÃGINA CALENDARIO -->
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
 
-    <!-- ðŸ”§ MAIN.JS - CARGA DINÃMICA DE HEADER Y FOOTER -->
+    <!-- 🏷”§ MAIN.JS - CARGA DINÃMICA DE HEADER Y FOOTER -->
     <script src="js/main.js"></script>
 
-    <!-- ðŸ”§ SISTEMA CORE (OBLIGATORIO) -->
-    <script src="js/context-manager.js"></script>        <!-- ðŸ”’ Base del sistema -->
-    <script src="js/config.js?v=2024091401"></script>    <!-- ðŸ”§ Configuración global -->
-    <script src="js/theme-manager.js"></script>          <!-- ðŸŽ¨ Gestión de temas -->
-    <script src="js/script.js"></script>                 <!-- ðŸ”’ Script principal -->
+    <!-- 🏷”§ SISTEMA CORE (OBLIGATORIO) -->
+    <script src="js/context-manager.js"></script>        <!-- 🏷”’ Base del sistema -->
+    <script src="js/config.js?v=2024091401"></script>    <!-- 🏷”§ Configuración global -->
+    <script src="js/theme-manager.js"></script>          <!-- 🏷Ž¨ Gestión de temas -->
+    <script src="js/script.js"></script>                 <!-- 🏷”’ Script principal -->
 
-    <!-- ðŸŽ¯ BGE FRAMEWORK CORE -->
+    <!-- 🏷Ž¯ BGE FRAMEWORK CORE -->
     <script src="js/bge-framework-core.js"></script>
-    <script src="js/bge-security-module.js"></script>    <!-- ðŸ”’ Seguridad y autenticación admin -->
+    <script src="js/bge-security-module.js"></script>    <!-- 🏷”’ Seguridad y autenticación admin -->
 
-    <!-- ðŸ“Š MÃ“DULOS BGE PARA CALENDARIO -->
-      <!-- âš¡ Performance optimizado --><!-- ðŸ“Š Analytics calendario -->
-        <!-- ðŸ”’ Auth y seguridad --><!-- ðŸ“± PWA features -->
+    <!-- 🏷“Š MÃ“DULOS BGE PARA CALENDARIO -->
+      <!-- âš¡ Performance optimizado --><!-- 🏷“Š Analytics calendario -->
+        <!-- 🏷”’ Auth y seguridad --><!-- 🏷“± PWA features -->
 
-    <!-- ðŸ”§ FUNCIONALIDADES ESPECÃFICAS DE CALENDARIO -->
-    <script src="js/chatbot.js"></script>                <!-- ðŸ¤– Chatbot soporte -->
-    <script src="js/search-simple.js"></script>          <!-- ðŸ” Búsqueda -->
-    <script src="js/api-client.js"></script>             <!-- ðŸ”— Cliente API -->
-    <script src="js/interactive-calendar.js"></script>   <!-- ðŸ“… Calendario interactivo -->
-    <script src="js/integrated-calendar-manager.js?v=20251015"></script> <!-- ðŸ“… Gestor calendario -->
+    <!-- 🏷”§ FUNCIONALIDADES ESPECÃFICAS DE CALENDARIO -->
+    <script src="js/chatbot.js"></script>                <!-- 🏷¤– Chatbot soporte -->
+    <script src="js/search-simple.js"></script>          <!-- 🏷” Búsqueda -->
+    <script src="js/api-client.js"></script>             <!-- 🏷”— Cliente API -->
+    <script src="js/interactive-calendar.js"></script>   <!-- 🏷“… Calendario interactivo -->
+    <script src="js/integrated-calendar-manager.js?v=20251015"></script> <!-- 🏷“… Gestor calendario -->
 
     <!-- Contenedor para Sistema Integrado de Calendario -->
     <div id="integrated-calendar-container" class="d-none"></div>
@@ -861,7 +861,7 @@
     </style>
 
     <!-- Dark mode handled by global script.js -->
-    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
+    <!-- 🏷¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
     <script src="js/tenant-config-loader.js" defer></script>
 
     </body>
