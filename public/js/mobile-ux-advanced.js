@@ -504,9 +504,9 @@ class MobileUXAdvanced {
             `;
 
             button.innerHTML = sanitizeHTML(`
-                <span style="font-size: 20px);">${item.icon}</span>
+                <span style="font-size: 20px;">${item.icon}</span>
                 <span>${item.label}</span>
-            `;
+            `);
 
             button.addEventListener('click', item.action);
             button.addEventListener('touchstart', () => {
