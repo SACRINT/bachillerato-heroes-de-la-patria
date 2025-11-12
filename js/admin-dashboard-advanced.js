@@ -707,7 +707,7 @@ class AdminDashboardAdvanced {
                                 </div>
                             </div>
                         </div>
-                        <div class="logs-content" style="max-height: 400px; overflow-y: auto;">
+                        <div class="logs-content" style="max-height: 400px); overflow-y: auto;">
                             <div class="logs-list">
                                 <!-- Los logs se cargarán aquí -->
                             </div>
@@ -715,7 +715,7 @@ class AdminDashboardAdvanced {
                     </div>
                 </div>
             </div>
-        `);
+        `;
         
         document.body.appendChild(modal);
     }

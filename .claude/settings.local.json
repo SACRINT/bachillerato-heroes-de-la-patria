@@ -31,15 +31,7 @@
       "Bash(npm install:*)",
       "Bash(for file in admin-dashboard.js solicitudes-manager.js professional-forms.js admin-dashboard-modal-manager.js)",
       "mcp__chrome-devtools__fill",
-      "Bash(tee:*)",
-      "Bash(for file in accessibility-auditor-system advanced-filters advanced-metrics-system bge-analytics-module bge-apis-module bge-asistente-virtual-educativo bge-dashboard-monitor bge-deteccion-riesgos bge-security-manager bge-security-module bolsa-trabajo-events citas-manager contacto-events csp-universal-fixer dashboard-personalizer digital-library-manager dynamic-finance-loader dynamic-student-loader dynamic-teacher-loader gamification-system grades-platform messaging-manager pagination-manager parent-manager pwa-optimizer security-manager tenants-admin-manager)",
-      "Bash(do)",
-      "Bash(if grep -q \"js/$file.js\" /tmp/loaded.txt)",
-      "Bash(then)",
-      "Bash(fi)",
-      "Bash(for file in advanced-filters advanced-metrics-system bge-security-module bolsa-trabajo-events citas-manager contacto-events csp-universal-fixer dashboard-personalizer digital-library-manager dynamic-finance-loader dynamic-student-loader dynamic-teacher-loader gamification-system messaging-manager pagination-manager parent-manager pwa-optimizer security-manager tenants-admin-manager)",
-      "Bash(do grep -l js/$file.js public/*.html)",
-      "Bash(for file in public/js/advanced-filters.js public/js/advanced-metrics-system.js public/js/citas-manager.js public/js/dashboard-personalizer.js public/js/digital-library-manager.js public/js/dynamic-finance-loader.js public/js/dynamic-student-loader.js public/js/dynamic-teacher-loader.js public/js/gamification-system.js public/js/pagination-manager.js public/js/parent-manager.js public/js/tenants-admin-manager.js public/js/security-manager.js public/js/messaging-manager.js)"
+      "Bash(tee:*)"
     ],
     "deny": [],
     "ask": []

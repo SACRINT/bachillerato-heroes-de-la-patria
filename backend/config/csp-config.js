@@ -80,8 +80,7 @@ const cspConfig = {
         // 7. FRAMES - Solo embeds específicos (no wildcard *.tiny.cloud)
         frameSrc: [
             "'self'",
-            "https://accounts.google.com",     // Google OAuth login iframe (CRÍTICO para GSI)
-            "https://accounts.google.com/gsi/", // Google Sign-In iframe
+            "https://accounts.google.com",     // Google OAuth login iframe
             "https://www.google.com",          // Google OAuth login
             "https://maps.google.com",         // Google Maps
             "https://forms.gle"                // Google Forms
@@ -102,7 +101,6 @@ const cspConfig = {
         // 12. Elementos de script inline (explicitar)
         scriptSrcElem: [
             "'self'",
-            "'unsafe-eval'",                   // Requerido para TinyMCE
             "https://cdn.jsdelivr.net",
             "https://cdnjs.cloudflare.com",
             "https://unpkg.com",
@@ -123,8 +121,8 @@ const cspConfig = {
             "https://cdnjs.cloudflare.com",
             "https://unpkg.com",
             "https://fonts.googleapis.com",
-            "https://accounts.google.com",     // Google OAuth button styles (CRÍTICO)
-            "https://accounts.google.com/gsi/style",  // ✅ Google Sign-In button styles
+            "https://accounts.google.com",     // Google OAuth button styles
+            "https://accounts.google.com/gsi/style",  // ✅ Google Sign-In button styles (FIJO 11 NOV)
             "https://cdn.tiny.cloud",
             "https://*.tiny.cloud"
         ]
