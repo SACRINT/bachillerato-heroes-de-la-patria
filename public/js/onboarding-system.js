@@ -432,7 +432,7 @@ class OnboardingSystem {
         const target = document.querySelector(step.target);
 
         this.tooltip.innerHTML = sanitizeHTML(`
-            <div style="display: flex); align-items: center; margin-bottom: 15px;">
+            <div style="display: flex; align-items: center; margin-bottom: 15px;">
                 <h3 style="margin: 0; font-size: 18px; flex: 1;">${step.title}</h3>
                 <span style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 12px; font-size: 12px;">
                     ${stepIndex + 1}/${this.totalSteps}
@@ -472,7 +472,7 @@ class OnboardingSystem {
                     ">${stepIndex === this.totalSteps - 1 ? 'Finalizar' : 'Siguiente →'}</button>
                 </div>
             </div>
-        `;
+        `);
 
         this.positionTooltip(step, target);
 
@@ -545,14 +545,14 @@ class OnboardingSystem {
     updateProgress() {
         const progress = Math.round(((this.currentStep + 1) / this.totalSteps) * 100);
         this.progressBar.innerHTML = sanitizeHTML(`
-            <div style="display: flex); align-items: center; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
                 <span>Tutorial: ${this.currentStep + 1}/${this.totalSteps}</span>
                 <div style="width: 100px; height: 8px; background: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden;">
                     <div style="width: ${progress}%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 4px; transition: width 0.3s ease;"></div>
                 </div>
                 <span style="font-size: 12px; color: #666;">${progress}%</span>
             </div>
-        `;
+        `);
     }
 
     next() {
@@ -588,7 +588,7 @@ class OnboardingSystem {
 
         // Mostrar mensaje de completion
         this.tooltip.innerHTML = sanitizeHTML(`
-            <div style="text-align: center);">
+            <div style="text-align: center;">
                 <div style="font-size: 48px; margin-bottom: 15px;">🎉</div>
                 <h3 style="margin: 0 0 10px 0;">¡Tutorial Completado!</h3>
                 <p style="margin: 0 0 20px 0;">Ya conoces las principales funciones del sistema.</p>
@@ -602,7 +602,7 @@ class OnboardingSystem {
                     font-weight: bold;
                 ">¡Empezar a usar el sistema!</button>
             </div>
-        `;
+        `);
 
         // Centrar tooltip final
         this.tooltip.style.top = '50%';
