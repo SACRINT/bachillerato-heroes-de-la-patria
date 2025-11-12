@@ -989,7 +989,7 @@ const jobPortalStyles = `
 `;
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', jobPortalStyles);
+document.head.insertAdjacentHTML('beforeend', sanitizeHTML(jobPortalStyles));
 
 // Inicializar el portal cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {

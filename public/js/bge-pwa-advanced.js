@@ -522,7 +522,7 @@ class BGEAdvancedPWA {
 
         // Insertar en el header o footer
         const targetElement = document.querySelector('header') || document.querySelector('.header') || document.body;
-        targetElement.insertAdjacentHTML('beforeend', pwaPanelHTML);
+        targetElement.insertAdjacentHTML('beforeend', sanitizeHTML(pwaPanelHTML));
 
         this.initializePWAControls();
     }
@@ -607,13 +607,13 @@ class BGEAdvancedPWA {
             indicator = document.createElement('div');
             indicator.id = 'offline-indicator';
             indicator.className = 'offline-indicator';
-            indicator.innerHTML = `
+            indicator.innerHTML = sanitizeHTML(`
                 <div class="offline-content">
                     <span class="offline-icon">📡</span>
                     <span class="offline-text">Modo Offline</span>
                     <span class="offline-queue" id="offline-queue-count"></span>
                 </div>
-            `;
+            `);
             document.body.appendChild(indicator);
         }
 
@@ -692,7 +692,7 @@ class BGEAdvancedPWA {
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', updateHTML);
+        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(updateHTML));
 
         // Configurar botones
         document.getElementById('update-now-btn').addEventListener('click', () => {
@@ -813,12 +813,12 @@ class BGEAdvancedPWA {
     showToast(message, type = 'info', duration = 5000) {
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
-        toast.innerHTML = `
+        toast.innerHTML = sanitizeHTML(`
             <div class="toast-content">
                 <span class="toast-message">${message}</span>
                 <button class="toast-close" onclick="this.parentElement.parentElement.remove()">×</button>
             </div>
-        `;
+        `);
 
         document.body.appendChild(toast);
 

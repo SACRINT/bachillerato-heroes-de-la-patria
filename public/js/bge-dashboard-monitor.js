@@ -754,7 +754,7 @@ class BGEDashboardMonitor {
         const dashboardPanel = document.createElement('div');
         dashboardPanel.id = 'bge-dashboard-monitor';
         dashboardPanel.className = 'bge-dashboard-monitor';
-        dashboardPanel.innerHTML = `
+        dashboardPanel.innerHTML = sanitizeHTML(`
             <div class="dashboard-header">
                 <h3>📊 Dashboard BGE v${this.version}</h3>
                 <div class="dashboard-controls">
@@ -824,7 +824,7 @@ class BGEDashboardMonitor {
                     <div class="systems-grid" id="systems-grid"></div>
                 </div>
             </div>
-        `;
+        `);
 
         // Estilos CSS
         const dashboardStyles = document.createElement('style');
@@ -1282,7 +1282,7 @@ class BGEDashboardMonitor {
         const statusContainer = document.getElementById('systems-status');
         if (!statusContainer) return;
 
-        statusContainer.innerHTML = '';
+        statusContainer.innerHTML = sanitizeHTML('');
 
         for (const [systemKey, status] of this.state.systemsStatus) {
             const dot = document.createElement('div');
@@ -1356,20 +1356,20 @@ class BGEDashboardMonitor {
         const systemsGrid = document.getElementById('systems-grid');
         if (!systemsGrid) return;
 
-        systemsGrid.innerHTML = '';
+        systemsGrid.innerHTML = sanitizeHTML('');
 
         for (const [systemKey, systemConfig] of Object.entries(this.config.systems)) {
             const status = this.state.systemsStatus.get(systemKey) || { status: 'unknown', health: 0 };
 
             const systemItem = document.createElement('div');
             systemItem.className = 'system-item';
-            systemItem.innerHTML = `
+            systemItem.innerHTML = sanitizeHTML(`
                 <div class="system-name">${systemConfig.name}</div>
                 <div class="system-status">
                     <span class="status-dot ${status.status}"></span>
                     <span>${status.status.toUpperCase()} - ${status.health}%</span>
                 </div>
-            `;
+            `);
 
             systemItem.addEventListener('click', () => {
                 this.showSystemDetails(systemKey);

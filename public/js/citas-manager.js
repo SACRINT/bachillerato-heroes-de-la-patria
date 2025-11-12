@@ -31,9 +31,9 @@ class CitasManager {
 
     async loadCitas() {
         const loadingEl = document.getElementById('citasTable');
-        if (loadingEl) loadingEl.innerHTML = `<tr><td colspan="7" class="text-center py-4">
+        if (loadingEl) loadingEl.innerHTML = sanitizeHTML(`<tr><td colspan="7" class="text-center py-4">
             <div class="spinner-border text-info" role="status"><span class="visually-hidden">Cargando...</span></div>
-            <p class="mt-2 text-muted">Cargando solicitudes de citas...</p></td></tr>`;
+            <p class="mt-2 text-muted">Cargando solicitudes de citas...</p></td></tr>`);
 
         try {
             if (!window.apiClient) {
@@ -63,10 +63,10 @@ class CitasManager {
         const tbody = document.getElementById('citasTable');
         if (!tbody) return;
 
-        tbody.innerHTML = '';
+        tbody.innerHTML = sanitizeHTML('');
         if (this.filteredCitas.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">
-                <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i><p>No hay solicitudes de citas</p></td></tr>`;
+            tbody.innerHTML = sanitizeHTML(`<tr><td colspan="7" class="text-center text-muted py-4">
+                <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i><p>No hay solicitudes de citas</p></td></tr>`);
             return;
         }
 
@@ -81,7 +81,7 @@ class CitasManager {
         const fechaFormato = new Date(cita.fecha_solicitada).toLocaleDateString('es-ES');
         const horaFormato = cita.hora_solicitada.substring(0, 5);
 
-        tr.innerHTML = `
+        tr.innerHTML = sanitizeHTML(`
             <td><strong>${this.escapeHtml(cita.nombre_completo)}</strong></td>
             <td>${this.escapeHtml(cita.email)}</td>
             <td>${this.escapeHtml(cita.motivo)}</td>
@@ -89,7 +89,7 @@ class CitasManager {
             <td><span class="badge bg-${estadoClass}">${cita.estado}</span></td>
             <td>
                 <div class="btn-group btn-group-sm">
-                    ${cita.estado === 'pendiente' ? `
+                    ${cita.estado === 'pendiente' ? `)
                         <button class="btn btn-outline-success" onclick="citasManager.approveCita(${cita.id})">
                             <i class="fas fa-check"></i>
                         </button>
@@ -221,7 +221,7 @@ class CitasManager {
         const existingModal = document.getElementById('citaDetailsModal');
         if (existingModal) existingModal.remove();
 
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHtml));
         const modal = new bootstrap.Modal(document.getElementById('citaDetailsModal'));
         modal.show();
     }
@@ -281,7 +281,7 @@ class CitasManager {
         const existingModal = document.getElementById('rejectCitaModal');
         if (existingModal) existingModal.remove();
 
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHtml));
         const modal = new bootstrap.Modal(document.getElementById('rejectCitaModal'));
         modal.show();
     }

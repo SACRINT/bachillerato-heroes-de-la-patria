@@ -277,7 +277,7 @@ class CompetitionsSystem {
             animation: bounceIn 0.5s ease;
         `;
 
-        badge.innerHTML = `
+        badge.innerHTML = sanitizeHTML(`
             <div class="d-flex align-items-center">
                 <i class="fas fa-trophy me-2"></i>
                 <div>
@@ -285,7 +285,7 @@ class CompetitionsSystem {
                     <strong>${activeCount} disponibles</strong>
                 </div>
             </div>
-        `;
+        `);
 
         badge.onclick = () => this.showCompetitionsModal();
 
@@ -323,7 +323,7 @@ class CompetitionsSystem {
         modal.id = 'competitionsModal';
         modal.setAttribute('tabindex', '-1');
 
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-xl">
                 <div class="modal-content" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px;">
                     <div class="modal-header border-0 text-white">
@@ -335,7 +335,7 @@ class CompetitionsSystem {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         // Remover modal existente
         const existing = document.getElementById('competitionsModal');

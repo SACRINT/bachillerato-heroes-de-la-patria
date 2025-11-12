@@ -529,7 +529,7 @@ class AdvancedWebAPIs {
     addAPIButtons() {
         const buttonContainer = document.createElement('div');
         buttonContainer.className = 'advanced-apis-panel';
-        buttonContainer.innerHTML = `
+        buttonContainer.innerHTML = sanitizeHTML(`
             <div class="api-buttons">
                 <h4>🔮 APIs Avanzadas</h4>
                 <div class="button-grid">
@@ -552,7 +552,7 @@ class AdvancedWebAPIs {
                     <button onclick="advancedAPIs.showAPISupport()" class="api-btn">🔧 Soporte APIs</button>
                 </div>
             </div>
-        `;
+        `);
 
         // Add styles
         this.injectAPIStyles();
@@ -597,7 +597,7 @@ class AdvancedWebAPIs {
     createModal(title, content) {
         const modal = document.createElement('div');
         modal.className = 'modal advanced-api-modal';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-overlay" onclick="this.parentElement.remove()"></div>
             <div class="modal-content">
                 <div class="modal-header">
@@ -608,7 +608,7 @@ class AdvancedWebAPIs {
                     ${content}
                 </div>
             </div>
-        `;
+        `);
         
         document.body.appendChild(modal);
         return modal;

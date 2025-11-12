@@ -79,7 +79,7 @@ function showConfirmationModal(activityName) {
     const oldModal = document.getElementById('activityModal');
     if (oldModal) oldModal.remove();
 
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
 
     // Mostrar modal
     const modalElement = document.getElementById('activityModal');
@@ -165,7 +165,7 @@ function showRegistrationFormModal(activityName) {
     const oldModal = document.getElementById('activityModal');
     if (oldModal) oldModal.remove();
 
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
 
     // Mostrar modal
     const modalElement = document.getElementById('activityModal');
@@ -308,7 +308,7 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `toast align-items-center text-white ${colors[type] || colors.info} border-0`;
     notification.setAttribute('role', 'alert');
-    notification.innerHTML = `
+    notification.innerHTML = sanitizeHTML(`
         <div class="d-flex">
             <div class="toast-body">
                 <i class="fas ${icons[type] || icons.info} me-2"></i>
@@ -316,7 +316,7 @@ function showNotification(message, type = 'info') {
             </div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
-    `;
+    `);
 
     container.appendChild(notification);
 

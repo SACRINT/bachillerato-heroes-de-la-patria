@@ -94,7 +94,7 @@ class BGEDashboardEjecutivo {
         dashboardContainer.id = 'bge-dashboard-ejecutivo';
         dashboardContainer.className = 'bge-dashboard-container';
 
-        dashboardContainer.innerHTML = `
+        dashboardContainer.innerHTML = sanitizeHTML(`
             <div class="bge-dashboard-header">
                 <div class="bge-header-brand">
                     <img src="images/logo-bge.png" alt="BGE Logo" class="bge-logo">
@@ -193,7 +193,7 @@ class BGEDashboardEjecutivo {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         // Agregar estilos CSS
         await this.aplicarEstilosCSS();
@@ -528,7 +528,7 @@ class BGEDashboardEjecutivo {
             </style>
         `;
 
-        document.head.insertAdjacentHTML('beforeend', styles);
+        document.head.insertAdjacentHTML('beforeend', sanitizeHTML(styles));
     }
 
     // ==========================================
@@ -587,11 +587,11 @@ class BGEDashboardEjecutivo {
             kpiCard.style.background = kpi.color;
             kpiCard.id = `kpi-${kpi.id}`;
 
-            kpiCard.innerHTML = `
+            kpiCard.innerHTML = sanitizeHTML(`
                 <div class="bge-kpi-title">${kpi.titulo}</div>
                 <div class="bge-kpi-value">${kpi.valor}</div>
                 <div class="bge-kpi-change">${kpi.cambio}</div>
-            `;
+            `);
 
             kpiGrid.appendChild(kpiCard);
             this.componentes.kpiCards.set(kpi.id, kpiCard);
@@ -629,7 +629,7 @@ class BGEDashboardEjecutivo {
             const statusColor = sistema.estado === 'ACTIVO' ? '#10b981' : '#ef4444';
             const statusIcon = sistema.estado === 'ACTIVO' ? '✅' : '❌';
 
-            systemCard.innerHTML = `
+            systemCard.innerHTML = sanitizeHTML(`
                 <div class="bge-system-name">${sistema.nombre}</div>
                 <div class="bge-system-status">
                     <span style="color: ${statusColor}">${statusIcon}</span>
@@ -641,7 +641,7 @@ class BGEDashboardEjecutivo {
                     </div>
                     <span style="font-size: 12px; color: #6b7280; margin-top: 0.25rem; display: block;">${sistema.salud}% Salud</span>
                 </div>
-            `;
+            `);
 
             systemsGrid.appendChild(systemCard);
         });
@@ -842,10 +842,10 @@ class BGEDashboardEjecutivo {
         alertas.forEach(alerta => {
             const alertaItem = document.createElement('div');
             alertaItem.className = 'bge-alert-item';
-            alertaItem.innerHTML = `
+            alertaItem.innerHTML = sanitizeHTML(`
                 <div style="font-weight: 600; margin-bottom: 0.25rem;">${alerta.mensaje}</div>
                 <div style="font-size: 12px; opacity: 0.7;">Hace ${alerta.tiempo}</div>
-            `;
+            `);
             alertasList.appendChild(alertaItem);
         });
     }
@@ -864,10 +864,10 @@ class BGEDashboardEjecutivo {
         estadisticas.forEach(stat => {
             const statItem = document.createElement('div');
             statItem.className = 'bge-stat-item';
-            statItem.innerHTML = `
+            statItem.innerHTML = sanitizeHTML(`
                 <span class="bge-stat-label">${stat.label}</span>
                 <span class="bge-stat-value">${stat.value}</span>
-            `;
+            `);
             statsList.appendChild(statItem);
         });
     }

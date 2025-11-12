@@ -130,11 +130,11 @@ class DynamicFinanceLoader {
         const tableBody = document.querySelector('#incomesTable tbody');
         if (!tableBody) return;
 
-        tableBody.innerHTML = '';
+        tableBody.innerHTML = sanitizeHTML('');
         
         this.finances.ingresos?.forEach(income => {
             const row = document.createElement('tr');
-            row.innerHTML = `
+            row.innerHTML = sanitizeHTML(`
                 <td><strong>${income.concepto}</strong></td>
                 <td><span class="badge bg-primary">${income.categoria}</span></td>
                 <td>${this.formatCurrency(income.monto)}</td>
@@ -152,7 +152,7 @@ class DynamicFinanceLoader {
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
-            `;
+            `);
             tableBody.appendChild(row);
         });
     }
@@ -164,11 +164,11 @@ class DynamicFinanceLoader {
         const tableBody = document.querySelector('#expensesTable tbody');
         if (!tableBody) return;
 
-        tableBody.innerHTML = '';
+        tableBody.innerHTML = sanitizeHTML('');
         
         this.finances.gastos?.forEach(expense => {
             const row = document.createElement('tr');
-            row.innerHTML = `
+            row.innerHTML = sanitizeHTML(`
                 <td><strong>${expense.concepto}</strong></td>
                 <td><span class="badge bg-secondary">${expense.categoria}</span></td>
                 <td>${this.formatCurrency(expense.monto)}</td>
@@ -186,7 +186,7 @@ class DynamicFinanceLoader {
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
-            `;
+            `);
             tableBody.appendChild(row);
         });
     }
@@ -198,14 +198,14 @@ class DynamicFinanceLoader {
         const tableBody = document.querySelector('#pendingPaymentsTable tbody');
         if (!tableBody) return;
 
-        tableBody.innerHTML = '';
+        tableBody.innerHTML = sanitizeHTML('');
         
         this.finances.pagosPendientes?.forEach(payment => {
             const row = document.createElement('tr');
             const statusClass = payment.estado === 'Vencido' ? 'bg-danger' : 
                                payment.estado === 'Próximo' ? 'bg-warning' : 'bg-success';
             
-            row.innerHTML = `
+            row.innerHTML = sanitizeHTML(`
                 <td>
                     <strong>${payment.estudiante}</strong><br>
                     <small class="text-muted">${payment.matricula}</small>
@@ -215,7 +215,7 @@ class DynamicFinanceLoader {
                 <td>${this.formatDate(payment.fechaVencimiento)}</td>
                 <td>
                     <span class="badge ${statusClass}">${payment.estado}</span>
-                    ${payment.diasVencido > 0 ? `<br><small class="text-danger">${payment.diasVencido} días</small>` : ''}
+                    ${payment.diasVencido > 0 ? `)<br><small class="text-danger">${payment.diasVencido} días</small>` : ''}
                 </td>
                 <td>
                     <button class="btn btn-sm btn-outline-success" onclick="dynamicFinanceLoader.markAsPaid('${payment.id}')">
@@ -263,7 +263,7 @@ class DynamicFinanceLoader {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.id = 'financeConfigModal';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -363,7 +363,7 @@ class DynamicFinanceLoader {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         return modal;
     }
 
@@ -714,7 +714,7 @@ class DynamicFinanceLoader {
     showSimpleContactModal(matricula) {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -739,7 +739,7 @@ class DynamicFinanceLoader {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         
         document.body.appendChild(modal);
         const bootstrapModal = new bootstrap.Modal(modal);
@@ -800,11 +800,11 @@ class DynamicFinanceLoader {
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 350px;';
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             <i class="fas fa-check-circle me-2"></i>
             <strong>¡Éxito!</strong> ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
 
         document.body.appendChild(alertDiv);
 
@@ -822,11 +822,11 @@ class DynamicFinanceLoader {
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed';
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 350px;';
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             <i class="fas fa-exclamation-circle me-2"></i>
             <strong>Error:</strong> ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
 
         document.body.appendChild(alertDiv);
 
@@ -1031,7 +1031,7 @@ class DynamicFinanceLoader {
             if (!noResultsRow) {
                 noResultsRow = document.createElement('tr');
                 noResultsRow.className = 'no-results-row';
-                noResultsRow.innerHTML = `
+                noResultsRow.innerHTML = sanitizeHTML(`
                     <td colspan="6" class="text-center py-4">
                         <div class="text-muted">
                             <i class="fas fa-search fa-2x mb-2"></i>
@@ -1039,7 +1039,7 @@ class DynamicFinanceLoader {
                             <small>Intenta con otros términos de búsqueda</small>
                         </div>
                     </td>
-                `;
+                `);
                 tbody.appendChild(noResultsRow);
             } else {
                 noResultsRow.style.display = '';

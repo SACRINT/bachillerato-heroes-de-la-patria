@@ -530,7 +530,7 @@ class BGEMobileStudentDashboard {
         // Crear estructura base del dashboard
         const container = document.createElement('div');
         container.className = 'bge-student-dashboard';
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="dashboard-header">
                 <div class="student-info">
                     <div class="avatar">
@@ -558,7 +558,7 @@ class BGEMobileStudentDashboard {
                     <!-- Widgets se renderizan aquí -->
                 </div>
             </div>
-        `;
+        `);
 
         // Agregar al DOM
         const targetElement = document.getElementById('dashboard-root') || document.body;

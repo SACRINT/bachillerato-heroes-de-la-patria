@@ -286,7 +286,7 @@ function showStudentLoginModal() {
     }
 
     // Agregar modal al DOM
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
 
     // Mostrar modal
     const modal = new bootstrap.Modal(document.getElementById('studentLoginModal'));

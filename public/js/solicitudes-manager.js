@@ -224,7 +224,7 @@ class SolicitudesManager {
         const existingModal = document.getElementById('solicitudDetailsModal');
         if (existingModal) existingModal.remove();
 
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHtml));
         const modal = new bootstrap.Modal(document.getElementById('solicitudDetailsModal'));
         modal.show();
     }

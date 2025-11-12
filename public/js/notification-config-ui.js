@@ -56,10 +56,10 @@ class NotificationConfigUI {
         const button = document.createElement('button');
         button.id = 'notificationConfigBtn';
         button.className = 'notification-config-btn';
-        button.innerHTML = `
+        button.innerHTML = sanitizeHTML(`
             <i class="fas fa-bell"></i>
             <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
-        `;
+        `);
         button.title = 'Configurar notificaciones';
 
         document.body.appendChild(button);
@@ -454,7 +454,7 @@ class NotificationConfigUI {
         panel.id = 'notificationConfigPanel';
         panel.className = 'notification-config-panel';
 
-        panel.innerHTML = `
+        panel.innerHTML = sanitizeHTML(`
             <div class="config-panel-content">
                 <div class="config-panel-header">
                     <div>
@@ -472,7 +472,7 @@ class NotificationConfigUI {
                     <button class="btn-secondary" onclick="window.notificationConfigUI.closeConfigPanel()">❌ Cancelar</button>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(panel);
 

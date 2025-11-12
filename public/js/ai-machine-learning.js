@@ -62,7 +62,7 @@ class AIEducationalSystem {
         const ui = document.createElement('div');
         ui.id = 'ai-system-manager';
         ui.className = 'pwa-feature-panel ai-panel';
-        ui.innerHTML = `
+        ui.innerHTML = sanitizeHTML(`
             <div class="panel-header">
                 <h3>🤖 Sistema IA Educativo</h3>
                 <div class="panel-controls">
@@ -624,7 +624,7 @@ class AIEducationalSystem {
                     }
                 }
             </style>
-        `;
+        `);
 
         document.body.appendChild(ui);
         this.ui = ui;
@@ -1052,12 +1052,12 @@ class AIEducationalSystem {
         if (!panel) return;
 
         if (predictions.length === 0) {
-            panel.innerHTML = `
+            panel.innerHTML = sanitizeHTML(`
                 <div class="no-data">
                     <div class="no-data-icon">📊</div>
                     <p>No hay predicciones disponibles</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -1107,12 +1107,12 @@ class AIEducationalSystem {
         if (!panel) return;
 
         if (alerts.length === 0) {
-            panel.innerHTML = `
+            panel.innerHTML = sanitizeHTML(`
                 <div class="no-data">
                     <div class="no-data-icon">📋</div>
                     <p>No hay alertas de asistencia</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -1156,12 +1156,12 @@ class AIEducationalSystem {
         if (!panel) return;
 
         if (recommendations.length === 0) {
-            panel.innerHTML = `
+            panel.innerHTML = sanitizeHTML(`
                 <div class="no-data">
                     <div class="no-data-icon">💡</div>
                     <p>No hay recomendaciones disponibles</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -1292,11 +1292,11 @@ class AIEducationalSystem {
         const avatar = sender === 'user' ? '👤' : '🤖';
         const time = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
         
-        messageDiv.innerHTML = `
+        messageDiv.innerHTML = sanitizeHTML(`
             <div class="message-avatar">${avatar}</div>
             <div class="message-content">${message}</div>
             <div class="message-time">${time}</div>
-        `;
+        `);
 
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1439,14 +1439,14 @@ class AIEducationalSystem {
     showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `ai-notification ${type}`;
-        notification.innerHTML = `
+        notification.innerHTML = sanitizeHTML(`
             <div class="notification-content">
                 <span class="notification-icon">
                     ${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}
                 </span>
                 <span class="notification-message">${message}</span>
             </div>
-        `;
+        `);
 
         document.body.appendChild(notification);
 

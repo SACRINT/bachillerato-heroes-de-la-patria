@@ -185,7 +185,7 @@ class AdvancedPersonalizationSystem {
         if (!document.getElementById('personalization-btn')) {
             const personalizationBtn = document.createElement('button');
             personalizationBtn.id = 'personalization-btn';
-            personalizationBtn.innerHTML = '🎨';
+            personalizationBtn.innerHTML = sanitizeHTML('🎨');
             personalizationBtn.title = 'Personalizar interfaz';
             personalizationBtn.style.cssText = `
                 position: fixed;
@@ -243,7 +243,7 @@ class AdvancedPersonalizationSystem {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         `;
 
-        panel.innerHTML = `
+        panel.innerHTML = sanitizeHTML(`
             <div style="padding: 20px; border-bottom: 1px solid rgba(0,0,0,0.1);">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <h2 style="margin: 0; font-size: 24px; color: #333;">🎨 Personalización</h2>
@@ -269,7 +269,7 @@ class AdvancedPersonalizationSystem {
                 <div class="personalization-section" style="margin-bottom: 30px;">
                     <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">🌈 Temas</h3>
                     <div id="theme-selector" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        ${Object.entries(this.themes).map(([key, theme]) => `
+                        ${Object.entries(this.themes).map(([key, theme]) => `)
                             <div class="theme-option ${this.preferences.theme === key ? 'active' : ''}"
                                  onclick="advancedPersonalization.setTheme('${key}')"
                                  style="
@@ -657,7 +657,7 @@ class AdvancedPersonalizationSystem {
         const dashboardContainer = document.querySelector('.dashboard-widgets');
         if (dashboardContainer) {
             // Limpiar widgets existentes
-            dashboardContainer.innerHTML = '';
+            dashboardContainer.innerHTML = sanitizeHTML('');
 
             // Agregar widgets seleccionados
             this.preferences.dashboardWidgets.forEach(widgetId => {
@@ -681,7 +681,7 @@ class AdvancedPersonalizationSystem {
             margin-bottom: 20px;
         `;
 
-        element.innerHTML = `
+        element.innerHTML = sanitizeHTML(`
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
                 <span style="font-size: 24px;">${widget.icon}</span>
                 <h3 style="margin: 0; font-size: 18px;">${widget.name}</h3>
@@ -689,7 +689,7 @@ class AdvancedPersonalizationSystem {
             <div class="widget-content">
                 <p>Contenido del widget ${widget.name}</p>
             </div>
-        `;
+        `);
 
         return element;
     }

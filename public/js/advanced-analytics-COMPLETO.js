@@ -497,7 +497,7 @@ class AdvancedAnalyticsManager {
             transform: translateX(100%); transition: transform 0.3s ease;
         `;
 
-        dashboard.innerHTML = `
+        dashboard.innerHTML = sanitizeHTML(`
             <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
                 <h5 class="mb-0">📊 Analytics Dashboard</h5>
                 <button class="btn-close analytics-dashboard-toggle"></button>
@@ -505,7 +505,7 @@ class AdvancedAnalyticsManager {
             <div class="p-3">
                 ${this.getDashboardHTML()}
             </div>
-        `;
+        `);
 
         document.body.appendChild(dashboard);
 

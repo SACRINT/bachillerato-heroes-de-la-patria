@@ -39,14 +39,14 @@ function checkFontAwesome() {
 // Función opcional para mostrar notificación a admin
 function showAdminNotification(message) {
     const notification = document.createElement('div');
-    notification.innerHTML = `
+    notification.innerHTML = sanitizeHTML(`
         <div style="position: fixed; top: 20px; right: 20px; background: #ff9800; color: white; 
                     padding: 10px 15px; border-radius: 5px; z-index: 9999; font-size: 14px;">
             <strong>Aviso Técnico:</strong> ${message}
             <button onclick="this.parentElement.remove()" style="margin-left: 10px; background: none; 
                     border: none; color: white; cursor: pointer; font-weight: bold;">&times;</button>
         </div>
-    `;
+    `);
     document.body.appendChild(notification.firstElementChild);
     
     // Auto-remover después de 10 segundos

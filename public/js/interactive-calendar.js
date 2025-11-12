@@ -1156,7 +1156,7 @@ const calendarStyles = `
 `;
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', calendarStyles);
+document.head.insertAdjacentHTML('beforeend', sanitizeHTML(calendarStyles));
 
 // Inicializar el calendario cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {

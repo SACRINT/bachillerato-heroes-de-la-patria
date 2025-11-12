@@ -727,7 +727,7 @@ ${formData.get('reason')}
         `;
 
         // Insertar y mostrar modal
-        document.body.insertAdjacentHTML('beforeend', confirmationHTML);
+        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(confirmationHTML));
         const modal = BootstrapHelper.showModal(document.getElementById('confirmationModal'));
 
         // Remover modal al cerrar
@@ -931,7 +931,7 @@ Coronel Tito Hernández, Venustiano Carranza, Puebla
         if (existingModal) {
             existingModal.remove();
         }
-        document.body.insertAdjacentHTML('beforeend', html);
+        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(html));
 
         // Mostrar modal
         const modal = BootstrapHelper.showModal(document.getElementById('appointmentsViewModal'));
@@ -1263,7 +1263,7 @@ function selectDepartment(departmentId) {
 }
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', appointmentStyles);
+document.head.insertAdjacentHTML('beforeend', sanitizeHTML(appointmentStyles));
 
 // Inicializar el sistema cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {

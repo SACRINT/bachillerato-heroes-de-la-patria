@@ -680,7 +680,7 @@ class VirtualLabsSystem {
         labInterface.id = 'virtual-labs-interface';
         labInterface.className = 'virtual-labs-interface hidden';
 
-        labInterface.innerHTML = `
+        labInterface.innerHTML = sanitizeHTML(`
             <div class="labs-header">
                 <h2>🧪 Laboratorios Virtuales</h2>
                 <div class="labs-controls">
@@ -692,7 +692,7 @@ class VirtualLabsSystem {
                 <div class="lab-selector" id="lab-selector">
                     <h3>Selecciona un Laboratorio</h3>
                     <div class="labs-grid">
-                        ${Object.entries(this.laboratories).map(([key, lab]) => `
+                        ${Object.entries(this.laboratories).map(([key, lab]) => `)
                             <div class="lab-card" data-lab="${key}">
                                 <div class="lab-icon">${this.getLabIcon(key)}</div>
                                 <h4>${lab.name}</h4>
@@ -771,12 +771,12 @@ class VirtualLabsSystem {
         const activationBtn = document.createElement('div');
         activationBtn.id = 'labs-activation';
         activationBtn.className = 'labs-activation';
-        activationBtn.innerHTML = `
+        activationBtn.innerHTML = sanitizeHTML(`
             <div class="activation-content">
                 <div class="lab-icon">🧪</div>
                 <div class="lab-status-dot active"></div>
             </div>
-        `;
+        `);
 
         activationBtn.addEventListener('click', () => this.toggleLabInterface());
         document.body.appendChild(activationBtn);

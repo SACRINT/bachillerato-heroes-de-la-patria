@@ -154,7 +154,7 @@ class BGEPerformanceOptimizer {
     createOptimizerInterface() {
         const optimizerPanel = document.createElement('div');
         optimizerPanel.id = 'bge-optimizer-panel';
-        optimizerPanel.innerHTML = `
+        optimizerPanel.innerHTML = sanitizeHTML(`
             <div class="performance-optimizer-panel">
                 <div class="optimizer-header">
                     <div class="optimizer-title">
@@ -225,7 +225,7 @@ class BGEPerformanceOptimizer {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         // Añadir estilos
         this.addOptimizerStyles();
@@ -556,12 +556,12 @@ class BGEPerformanceOptimizer {
             const systemCard = document.createElement('div');
             systemCard.className = 'system-perf-card';
 
-            systemCard.innerHTML = `
+            systemCard.innerHTML = sanitizeHTML(`
                 <div class="system-perf-info">
                     <span class="system-perf-name">${system.name}</span>
                 </div>
                 <div class="system-perf-score excellent" id="score-${key}">100%</div>
-            `;
+            `);
 
             grid.appendChild(systemCard);
         });

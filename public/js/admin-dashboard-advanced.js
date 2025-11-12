@@ -974,7 +974,7 @@ class AdminDashboardAdvanced {
                 </div>
             `;
             
-            activityList.insertAdjacentHTML('afterbegin', activityHTML);
+            activityList.insertAdjacentHTML('afterbegin', sanitizeHTML(activityHTML));
         }
     }
 
@@ -1015,7 +1015,7 @@ class AdminDashboardAdvanced {
             </div>
         `;
         
-        alertsContainer.insertAdjacentHTML('afterbegin', alertHTML);
+        alertsContainer.insertAdjacentHTML('afterbegin', sanitizeHTML(alertHTML));
     }
 
     loadTabData(tabName) {

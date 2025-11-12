@@ -511,7 +511,7 @@ class AdminDashboard {
                                  document.body;
         
         if (dashboardContainer) {
-            dashboardContainer.insertAdjacentHTML('afterbegin', errorMessage);
+            dashboardContainer.insertAdjacentHTML('afterbegin', sanitizeHTML(errorMessage));
         }
     }
 
@@ -1288,7 +1288,7 @@ class AdminDashboard {
             existingModal.remove();
         }
         
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
         const modal = new bootstrap.Modal(document.getElementById('dynamicModal'));
         modal.show();
     }

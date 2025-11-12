@@ -142,7 +142,7 @@ class GamificationSystem {
         const widget = document.createElement('div');
         widget.id = 'gamification-widget';
         widget.className = 'gamification-widget';
-        widget.innerHTML = `
+        widget.innerHTML = sanitizeHTML(`
             <div class="widget-content" onclick="gamificationSystem.openMainModal()">
                 <div class="level-display">
                     <span class="level-number">${this.userProfile?.level || 1}</span>
@@ -162,7 +162,7 @@ class GamificationSystem {
                     ${this.dailyChallenges.filter(c => !c.completed).length} desafíos pendientes
                 </div>
             </div>
-        `;
+        `);
 
         // Añadir estilos
         const styles = `
@@ -241,7 +241,7 @@ class GamificationSystem {
             </style>
         `;
 
-        document.head.insertAdjacentHTML('beforeend', styles);
+        document.head.insertAdjacentHTML('beforeend', sanitizeHTML(styles));
         document.body.appendChild(widget);
     }
 
@@ -249,7 +249,7 @@ class GamificationSystem {
         const modal = document.createElement('div');
         modal.id = 'gamification-modal';
         modal.className = 'modal fade';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header bg-gradient-primary text-white">
@@ -332,7 +332,7 @@ class GamificationSystem {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
     }
@@ -341,7 +341,7 @@ class GamificationSystem {
         const container = document.createElement('div');
         container.id = 'gamification-notifications';
         container.className = 'gamification-notifications';
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <style>
                 .gamification-notifications {
                     position: fixed;
@@ -386,7 +386,7 @@ class GamificationSystem {
                     }
                 }
             </style>
-        `;
+        `);
 
         document.body.appendChild(container);
     }
@@ -399,7 +399,7 @@ class GamificationSystem {
         const content = document.getElementById('profile-content');
         if (!content || !this.userProfile) return;
 
-        content.innerHTML = `
+        content.innerHTML = sanitizeHTML(`
             <div class="row">
                 <div class="col-md-8">
                     <div class="card">
@@ -445,7 +445,7 @@ class GamificationSystem {
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                ${this.userProfile.recentAchievements.map(achievement => `
+                                ${this.userProfile.recentAchievements.map(achievement => `)
                                     <div class="col-md-6 mb-3">
                                         <div class="achievement-item">
                                             <div class="d-flex align-items-center">
@@ -519,13 +519,13 @@ class GamificationSystem {
         const content = document.getElementById('challenges-content');
         if (!content || !this.dailyChallenges.length) {
             if (content) {
-                content.innerHTML = `
+                content.innerHTML = sanitizeHTML(`
                     <div class="text-center py-5">
                         <i class="fas fa-calendar-check fa-3x text-muted mb-3"></i>
                         <h5>No hay desafíos disponibles</h5>
                         <p class="text-muted">Los desafíos diarios se actualizan cada 24 horas</p>
                     </div>
-                `;
+                `);
             }
             return;
         }
@@ -533,7 +533,7 @@ class GamificationSystem {
         const completedCount = this.dailyChallenges.filter(c => c.completed).length;
         const totalPoints = this.dailyChallenges.reduce((sum, c) => sum + c.points, 0);
 
-        content.innerHTML = `
+        content.innerHTML = sanitizeHTML(`
             <div class="challenges-header mb-4">
                 <div class="row">
                     <div class="col-md-8">
@@ -556,7 +556,7 @@ class GamificationSystem {
             </div>
 
             <div class="challenges-grid">
-                ${this.dailyChallenges.map(challenge => `
+                ${this.dailyChallenges.map(challenge => `)
                     <div class="challenge-card ${challenge.completed ? 'completed' : ''}" data-challenge-id="${challenge.id}">
                         <div class="challenge-header">
                             <div class="challenge-icon">${challenge.icon}</div>
@@ -715,7 +715,7 @@ class GamificationSystem {
 
         const notificationElement = document.createElement('div');
         notificationElement.className = `notification ${notification.type}`;
-        notificationElement.innerHTML = `
+        notificationElement.innerHTML = sanitizeHTML(`
             <div class="d-flex align-items-center">
                 <div class="notification-icon me-3">
                     ${notification.icon ? notification.icon :
@@ -724,7 +724,7 @@ class GamificationSystem {
                 <div class="flex-grow-1">
                     <h6 class="mb-1">${notification.title}</h6>
                     <p class="mb-0 small">${notification.message}</p>
-                    ${notification.points ? `<small class="text-success">+${notification.points} puntos</small>` : ''}
+                    ${notification.points ? `)<small class="text-success">+${notification.points} puntos</small>` : ''}
                 </div>
                 <button class="btn-close btn-close-sm" onclick="this.parentElement.parentElement.remove()"></button>
             </div>

@@ -1080,7 +1080,7 @@ class ParentTeacherCommunicationSystem {
             </div>
         `;
 
-        messagesList.insertAdjacentHTML('beforeend', messageHtml);
+        messagesList.insertAdjacentHTML('beforeend', sanitizeHTML(messageHtml));
         messagesList.scrollTop = messagesList.scrollHeight;
     }
 
@@ -1361,7 +1361,7 @@ const communicationStyles = `
 `;
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', communicationStyles);
+document.head.insertAdjacentHTML('beforeend', sanitizeHTML(communicationStyles));
 
 // Inicialización automática
 document.addEventListener('DOMContentLoaded', function() {

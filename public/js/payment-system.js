@@ -511,7 +511,7 @@ class PaymentSystemManager {
         `;
 
         const paymentPanel = document.getElementById('paymentPanel');
-        paymentPanel.insertAdjacentHTML('afterbegin', confirmationHTML);
+        paymentPanel.insertAdjacentHTML('afterbegin', sanitizeHTML(confirmationHTML));
 
         // Auto-remove after 10 seconds
         setTimeout(() => {
@@ -949,7 +949,7 @@ PaymentSystemManager.prototype.showAdvancedPaymentModal = function(paymentId) {
     if (existingModal) existingModal.remove();
     
     // Add new modal
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
     
     // Show modal
     const modal = new bootstrap.Modal(document.getElementById('advancedPaymentModal'));

@@ -73,9 +73,9 @@ class AIChatRealtime {
             animation: pulse 2s infinite;
         `;
 
-        chatButton.innerHTML = `
+        chatButton.innerHTML = sanitizeHTML(`
             <i class="fas fa-robot text-white" style="font-size: 1.5rem;"></i>
-        `;
+        `);
 
         chatButton.onclick = () => this.toggleChat();
 
@@ -467,7 +467,7 @@ class AIChatRealtime {
             </div>
         `;
 
-        messagesContainer.insertAdjacentHTML('beforeend', messageHTML);
+        messagesContainer.insertAdjacentHTML('beforeend', sanitizeHTML(messageHTML));
         this.scrollToBottom();
 
         // Guardar historial

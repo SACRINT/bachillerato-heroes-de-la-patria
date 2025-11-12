@@ -104,7 +104,7 @@ class IntelligentLoginSystem {
         // Crear badge de IA sin modificar el botón original
         const aiBadge = document.createElement('span');
         aiBadge.className = 'ai-indicator-badge';
-        aiBadge.innerHTML = '🧠';
+        aiBadge.innerHTML = sanitizeHTML('🧠');
         aiBadge.title = 'Sistema IA de Recompensas Académicas';
 
         // Estilos del badge
@@ -253,7 +253,7 @@ class IntelligentLoginSystem {
         // Crear modal de bienvenida elegante
         const welcomeModal = document.createElement('div');
         welcomeModal.className = 'welcome-modal-overlay';
-        welcomeModal.innerHTML = `
+        welcomeModal.innerHTML = sanitizeHTML(`
             <div class="welcome-modal-content">
                 <div class="welcome-header">
                     <div class="welcome-icon">${config.icon}</div>
@@ -270,7 +270,7 @@ class IntelligentLoginSystem {
                         <h4>🎯 Funcionalidades Desbloqueadas:</h4>
                         <ul class="features-list">
                             ${profile.unlockedPrompts.map(prompt =>
-                                `<li><i class="fas fa-check text-success"></i> ${this.getPromptDisplayName(prompt)}</li>`
+                                `)<li><i class="fas fa-check text-success"></i> ${this.getPromptDisplayName(prompt)}</li>`
                             ).join('')}
                         </ul>
                     </div>
@@ -352,12 +352,12 @@ class IntelligentLoginSystem {
         const config = this.userProfiles[profile.type];
 
         // Cambiar texto y estilo del botón
-        loginButton.innerHTML = `
+        loginButton.innerHTML = sanitizeHTML(`
             <img src="${profile.picture}" alt="Avatar" class="user-avatar">
             <span class="user-name">${profile.name.split(' ')[0]}</span>
             <span class="user-level">Nv.${profile.level}</span>
             <span class="user-xp">${profile.xp} XP</span>
-        `;
+        `);
 
         loginButton.style.cssText = `
             background: linear-gradient(135deg, ${config.color}, ${this.darkenColor(config.color, 20)});
@@ -623,7 +623,7 @@ class IntelligentLoginSystem {
         const loadingModal = document.createElement('div');
         loadingModal.id = 'loading-modal';
         loadingModal.className = 'welcome-modal-overlay';
-        loadingModal.innerHTML = `
+        loadingModal.innerHTML = sanitizeHTML(`
             <div class="welcome-modal-content" style="max-width: 400px; text-align: center; padding: 40px;">
                 <div class="loading-spinner">
                     <i class="fas fa-robot fa-3x text-primary mb-3"></i>
@@ -632,7 +632,7 @@ class IntelligentLoginSystem {
                 <h4>Activando IA...</h4>
                 <p>Preparando tu experiencia personalizada</p>
             </div>
-        `;
+        `);
 
         document.body.appendChild(loadingModal);
         setTimeout(() => loadingModal.classList.add('show'), 100);
@@ -868,7 +868,7 @@ class IntelligentLoginSystem {
         return new Promise((resolve) => {
             const modal = document.createElement('div');
             modal.className = 'welcome-modal-overlay';
-            modal.innerHTML = `
+            modal.innerHTML = sanitizeHTML(`
                 <div class="welcome-modal-content" style="max-width: 600px;">
                     <div class="welcome-header">
                         <div class="welcome-icon">🤖</div>
@@ -903,7 +903,7 @@ class IntelligentLoginSystem {
                         </button>
                     </div>
                 </div>
-            `;
+            `);
 
             // Agregar funciones al contexto del modal
             modal.querySelector('.btn-primary').onclick = () => {
@@ -937,7 +937,7 @@ class IntelligentLoginSystem {
     showAILoadingModal(promptName) {
         const loadingModal = document.createElement('div');
         loadingModal.className = 'welcome-modal-overlay';
-        loadingModal.innerHTML = `
+        loadingModal.innerHTML = sanitizeHTML(`
             <div class="welcome-modal-content" style="max-width: 400px; text-align: center; padding: 40px;">
                 <div class="loading-spinner">
                     <div class="ai-brain-animation">🧠</div>
@@ -949,7 +949,7 @@ class IntelligentLoginSystem {
                     <small class="text-muted">Analizando tu solicitud...</small>
                 </div>
             </div>
-        `;
+        `);
 
         // Agregar estilos de animación
         const style = document.createElement('style');
@@ -1004,7 +1004,7 @@ class IntelligentLoginSystem {
     showAIResponseModal(responseData, prompt) {
         const modal = document.createElement('div');
         modal.className = 'welcome-modal-overlay';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="welcome-modal-content ai-response-modal" style="max-width: 800px; max-height: 90vh;">
                 <div class="welcome-header" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
                     <div class="welcome-icon">✨</div>
@@ -1050,7 +1050,7 @@ class IntelligentLoginSystem {
                     </button>
                 </div>
             </div>
-        `;
+        `);
 
         // Funciones del modal
         modal.querySelector('.btn-success').onclick = () => {
@@ -1137,7 +1137,7 @@ class IntelligentLoginSystem {
     showErrorModal(errorMessage) {
         const modal = document.createElement('div');
         modal.className = 'welcome-modal-overlay';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="welcome-modal-content" style="max-width: 500px;">
                 <div class="welcome-header" style="background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);">
                     <div class="welcome-icon">⚠️</div>
@@ -1157,7 +1157,7 @@ class IntelligentLoginSystem {
                     </button>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
         setTimeout(() => modal.classList.add('show'), 100);

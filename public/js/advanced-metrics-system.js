@@ -67,7 +67,7 @@ class AdvancedMetricsSystem {
         }
 
         // Limpiar contenedor
-        widgetsContainer.innerHTML = '';
+        widgetsContainer.innerHTML = sanitizeHTML('');
 
         const widgets = [
             this.createKPIWidget('institutional-efficiency', 'Eficiencia Institucional',
@@ -108,7 +108,7 @@ class AdvancedMetricsSystem {
     createKPIWidget(id, title, value, unit, color, icon) {
         const widget = document.createElement('div');
         widget.className = 'col-xl-3 col-lg-4 col-md-6 mb-4';
-        widget.innerHTML = `
+        widget.innerHTML = sanitizeHTML(`
             <div class="card border-0 shadow-sm h-100 kpi-widget" data-widget-id="${id}">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between mb-3">
@@ -139,14 +139,14 @@ class AdvancedMetricsSystem {
                     </small>
                 </div>
             </div>
-        `;
+        `);
         return widget;
     }
 
     createRealtimeWidget(id, title, value, unit, color, icon) {
         const widget = document.createElement('div');
         widget.className = 'col-xl-3 col-lg-4 col-md-6 mb-4';
-        widget.innerHTML = `
+        widget.innerHTML = sanitizeHTML(`
             <div class="card border-0 shadow-sm h-100 realtime-widget" data-widget-id="${id}">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between mb-3">
@@ -168,7 +168,7 @@ class AdvancedMetricsSystem {
                     </small>
                 </div>
             </div>
-        `;
+        `);
         return widget;
     }
 
@@ -179,7 +179,7 @@ class AdvancedMetricsSystem {
         const trendValue = this.calculateTrend(data);
         const trendIcon = trendValue > 0 ? 'fa-arrow-up text-success' : 'fa-arrow-down text-danger';
 
-        widget.innerHTML = `
+        widget.innerHTML = sanitizeHTML(`
             <div class="card border-0 shadow-sm h-100 trend-widget" data-widget-id="${id}">
                 <div class="card-header bg-transparent border-0 pb-0">
                     <div class="d-flex align-items-center justify-content-between">
@@ -215,14 +215,14 @@ class AdvancedMetricsSystem {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         return widget;
     }
 
     createOperationalWidget(id, title, data, color, icon) {
         const widget = document.createElement('div');
         widget.className = 'col-xl-6 col-lg-8 col-md-12 mb-4';
-        widget.innerHTML = `
+        widget.innerHTML = sanitizeHTML(`
             <div class="card border-0 shadow-sm h-100 operational-widget" data-widget-id="${id}">
                 <div class="card-header bg-transparent border-0 pb-0">
                     <h6 class="mb-0 text-${color}">
@@ -280,7 +280,7 @@ class AdvancedMetricsSystem {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         return widget;
     }
 
@@ -291,7 +291,7 @@ class AdvancedMetricsSystem {
         const healthStatus = this.calculateSystemHealth(data);
         const statusColor = healthStatus > 90 ? 'success' : healthStatus > 70 ? 'warning' : 'danger';
 
-        widget.innerHTML = `
+        widget.innerHTML = sanitizeHTML(`
             <div class="card border-0 shadow-sm h-100 system-health-widget" data-widget-id="${id}">
                 <div class="card-header bg-transparent border-0 pb-0">
                     <div class="d-flex align-items-center justify-content-between">
@@ -353,7 +353,7 @@ class AdvancedMetricsSystem {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         return widget;
     }
 
@@ -613,12 +613,12 @@ class AdvancedMetricsSystem {
         const toast = document.createElement('div');
         toast.className = `toast align-items-center text-bg-${type} border-0`;
         toast.setAttribute('role', 'alert');
-        toast.innerHTML = `
+        toast.innerHTML = sanitizeHTML(`
             <div class="d-flex">
                 <div class="toast-body">${message}</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-        `;
+        `);
 
         // Agregar al contenedor de toasts
         let toastContainer = document.querySelector('.toast-container');
@@ -714,7 +714,7 @@ const additionalCSS = `
 `;
 
 // Inyectar CSS
-document.head.insertAdjacentHTML('beforeend', additionalCSS);
+document.head.insertAdjacentHTML('beforeend', sanitizeHTML(additionalCSS));
 
 // Instancia global
 let advancedMetrics = null;

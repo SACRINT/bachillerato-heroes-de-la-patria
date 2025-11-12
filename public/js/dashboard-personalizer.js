@@ -179,7 +179,7 @@ class DashboardPersonalizer {
     createQuickStatsWidget(container, size = 'medium') {
         const stats = this.getQuickStats();
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="widget-content quick-stats-content">
                 <div class="stats-grid stats-${size}">
                     <div class="stat-item">
@@ -209,7 +209,7 @@ class DashboardPersonalizer {
                             <span class="stat-label">Eventos</span>
                         </div>
                     </div>
-                    ${size === 'large' ? `
+                    ${size === 'large' ? `)
                     <div class="stat-item">
                         <div class="stat-icon">
                             <i class="fas fa-download"></i>
@@ -229,10 +229,10 @@ class DashboardPersonalizer {
         this.fetchRecentNews().then(news => {
             const itemsToShow = size === 'large' ? 5 : 3;
 
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="widget-content news-content">
                     <div class="news-list">
-                        ${news.slice(0, itemsToShow).map(item => `
+                        ${news.slice(0, itemsToShow).map(item => `)
                             <div class="news-item" onclick="window.open('${item.url}', '_blank')">
                                 <div class="news-meta">
                                     <span class="news-date">${this.formatDate(item.fecha)}</span>
@@ -255,10 +255,10 @@ class DashboardPersonalizer {
         this.fetchUpcomingEvents().then(events => {
             const itemsToShow = size === 'large' ? 4 : 2;
 
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="widget-content events-content">
                     <div class="events-list">
-                        ${events.slice(0, itemsToShow).map(event => `
+                        ${events.slice(0, itemsToShow).map(event => `)
                             <div class="event-item">
                                 <div class="event-date">
                                     <span class="event-day">${new Date(event.fecha).getDate()}</span>
@@ -289,7 +289,7 @@ class DashboardPersonalizer {
             location: 'Guadalajara, JAL'
         };
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="widget-content weather-content">
                 <div class="weather-main">
                     <div class="weather-icon">
@@ -302,7 +302,7 @@ class DashboardPersonalizer {
                 </div>
                 <div class="weather-info">
                     <p class="weather-location">${weather.location}</p>
-                    ${size === 'medium' ? `
+                    ${size === 'medium' ? `)
                     <div class="weather-details">
                         <span>Humedad: ${weather.humidity}%</span>
                     </div>
@@ -317,7 +317,7 @@ class DashboardPersonalizer {
         const currentMonth = currentDate.getMonth();
         const currentYear = currentDate.getFullYear();
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="widget-content calendar-content">
                 <div class="calendar-header">
                     <h5>${this.getMonthName(currentMonth)} ${currentYear}</h5>
@@ -329,17 +329,17 @@ class DashboardPersonalizer {
                     <a href="./calendario.html" class="view-all-link">Ver calendario completo</a>
                 </div>
             </div>
-        `;
+        `);
     }
 
     createNotificationsWidget(container, size = 'medium') {
         const notifications = this.getRecentNotifications();
         const itemsToShow = size === 'large' ? 5 : 3;
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="widget-content notifications-content">
                 <div class="notifications-list">
-                    ${notifications.slice(0, itemsToShow).map(notif => `
+                    ${notifications.slice(0, itemsToShow).map(notif => `)
                         <div class="notification-item ${notif.read ? 'read' : 'unread'}">
                             <div class="notif-icon">
                                 <i class="${notif.icon}"></i>
@@ -362,10 +362,10 @@ class DashboardPersonalizer {
     createQuickAccessWidget(container, size = 'small') {
         const quickAccess = this.userPreferences.quickAccess;
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="widget-content quick-access-content">
                 <div class="quick-access-grid quick-access-${size}">
-                    ${quickAccess.map(item => `
+                    ${quickAccess.map(item => `)
                         <a href="${item.url}" class="quick-access-item" title="${item.title}">
                             <i class="${item.icon}"></i>
                             <span>${item.title}</span>
@@ -382,7 +382,7 @@ class DashboardPersonalizer {
     createPerformanceWidget(container, size = 'medium') {
         const performance = this.getPerformanceMetrics();
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="widget-content performance-content">
                 <div class="performance-metrics">
                     <div class="metric-item">
@@ -399,7 +399,7 @@ class DashboardPersonalizer {
                         </div>
                         <span class="metric-value">${performance.performance}%</span>
                     </div>
-                    ${size === 'large' ? `
+                    ${size === 'large' ? `)
                     <div class="metric-item">
                         <span class="metric-label">Lighthouse Score</span>
                         <div class="metric-bar">
@@ -425,7 +425,7 @@ class DashboardPersonalizer {
         dashboardContainer.className = `dashboard-widgets-container layout-${this.userPreferences.layout}`;
 
         // Clear existing widgets
-        dashboardContainer.innerHTML = '';
+        dashboardContainer.innerHTML = sanitizeHTML('');
 
         // Sort widgets by position
         const enabledWidgets = Object.entries(this.userPreferences.widgets)
@@ -472,7 +472,7 @@ class DashboardPersonalizer {
         widgetElement.dataset.widgetId = widgetId;
         widgetElement.dataset.position = config.position;
 
-        widgetElement.innerHTML = `
+        widgetElement.innerHTML = sanitizeHTML(`
             <div class="widget-header">
                 <div class="widget-title">
                     <i class="${widgetDef.icon}"></i>
@@ -496,7 +496,7 @@ class DashboardPersonalizer {
                     <span>Cargando...</span>
                 </div>
             </div>
-        `;
+        `);
 
         container.appendChild(widgetElement);
 
@@ -706,7 +706,7 @@ class DashboardPersonalizer {
     showWidgetConfigModal(widgetId, widgetDef, config) {
         const modal = document.createElement('div');
         modal.className = 'widget-config-modal';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-overlay">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -718,7 +718,7 @@ class DashboardPersonalizer {
                             <label>Tamaño del widget:</label>
                             <select id="widgetSize-${widgetId}">
                                 ${widgetDef.sizes.map(size =>
-                                    `<option value="${size}" ${config.size === size ? 'selected' : ''}>${this.getSizeLabel(size)}</option>`
+                                    `)<option value="${size}" ${config.size === size ? 'selected' : ''}>${this.getSizeLabel(size)}</option>`
                                 ).join('')}
                             </select>
                         </div>
@@ -768,9 +768,9 @@ class DashboardPersonalizer {
         const button = document.createElement('button');
         button.id = 'dashboardPersonalizerBtn';
         button.className = 'dashboard-personalizer-btn';
-        button.innerHTML = `
+        button.innerHTML = sanitizeHTML(`
             <i class="fas fa-palette"></i>
-        `;
+        `);
         button.title = 'Personalizar Dashboard';
 
         document.body.appendChild(button);
@@ -787,7 +787,7 @@ class DashboardPersonalizer {
     openPersonalizationPanel() {
         const panel = document.createElement('div');
         panel.className = 'personalization-panel';
-        panel.innerHTML = `
+        panel.innerHTML = sanitizeHTML(`
             <div class="panel-overlay">
                 <div class="panel-content">
                     <div class="panel-header">
@@ -803,7 +803,7 @@ class DashboardPersonalizer {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(panel);
     }

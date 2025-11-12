@@ -438,7 +438,7 @@ class DigitalLibraryManager {
             const modalBody = document.getElementById('documentDetailBody');
             if (!modalBody) return;
 
-            modalBody.innerHTML = `
+            modalBody.innerHTML = sanitizeHTML(`
                 <div class="document-detail-header">
                     <div class="document-detail-icon">
                         ${this.getDocumentIcon(doc.document_type)}
@@ -451,7 +451,7 @@ class DigitalLibraryManager {
                             <span class="badge bg-secondary">${this.escapeHtml(doc.document_type)}</span>
                             <span class="badge bg-info">v${doc.current_version_number || '1.0'}</span>
                         </div>
-                        ${doc.tags && doc.tags.length > 0 ? `
+                        ${doc.tags && doc.tags.length > 0 ? `)
                             <div class="document-tags mt-3">
                                 ${doc.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('')}
                             </div>
@@ -923,7 +923,7 @@ class DigitalLibraryManager {
         const { page, totalPages } = pagination;
 
         if (totalPages <= 1) {
-            container.innerHTML = '';
+            container.innerHTML = sanitizeHTML('');
             return;
         }
 
@@ -1147,10 +1147,10 @@ class DigitalLibraryManager {
         const toast = document.createElement('div');
         toast.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
         toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-        toast.innerHTML = `
+        toast.innerHTML = sanitizeHTML(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
 
         document.body.appendChild(toast);
 

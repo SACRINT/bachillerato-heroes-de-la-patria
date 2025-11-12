@@ -488,7 +488,7 @@ class AdminAuth {
         toast.className = `toast position-fixed top-0 end-0 m-3`;
         toast.style.zIndex = '9999';
         
-        toast.innerHTML = `
+        toast.innerHTML = sanitizeHTML(`
             <div class="toast-header ${colors[type]} text-white">
                 <i class="fas fa-shield-alt me-2"></i>
                 <strong class="me-auto">${title}</strong>
@@ -497,7 +497,7 @@ class AdminAuth {
             <div class="toast-body">
                 ${message}
             </div>
-        `;
+        `);
 
         const bsToast = new bootstrap.Toast(toast);
         bsToast.show();

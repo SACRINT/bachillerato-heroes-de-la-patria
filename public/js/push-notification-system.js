@@ -226,7 +226,7 @@ class BGEPushNotificationSystem {
         const modal = document.createElement('div');
         modal.className = 'modal fade show';
         modal.style.cssText = 'display: block; background: rgba(0,0,0,0.5); z-index: 2000;';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px;">
                     <div class="modal-header border-0">
@@ -256,7 +256,7 @@ class BGEPushNotificationSystem {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
         this.permissionModal = modal;
@@ -527,10 +527,10 @@ class BGEPushNotificationSystem {
         const notification = document.createElement('div');
         notification.className = 'alert alert-info alert-dismissible fade show position-fixed';
         notification.style.cssText = 'top: 100px; right: 20px; z-index: 1060; max-width: 350px;';
-        notification.innerHTML = `
+        notification.innerHTML = sanitizeHTML(`
             <strong>🔔 BGE:</strong> ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
 
         document.body.appendChild(notification);
 
@@ -586,7 +586,7 @@ class BGEPushNotificationSystem {
         const modal = document.createElement('div');
         modal.className = 'modal fade show';
         modal.style.cssText = 'display: block; background: rgba(0,0,0,0.5); z-index: 2000;';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -632,7 +632,7 @@ class BGEPushNotificationSystem {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
     }

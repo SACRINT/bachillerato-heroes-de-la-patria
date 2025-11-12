@@ -689,7 +689,7 @@ class BGESecurityManager {
         const securityPanel = document.createElement('div');
         securityPanel.id = 'bge-security-panel';
         securityPanel.className = 'bge-security-panel';
-        securityPanel.innerHTML = `
+        securityPanel.innerHTML = sanitizeHTML(`
             <div class="security-header">
                 <h3>🔐 Seguridad BGE v${this.version}</h3>
                 <div class="security-controls">
@@ -733,7 +733,7 @@ class BGESecurityManager {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         // Estilos CSS para el panel
         const securityStyles = document.createElement('style');

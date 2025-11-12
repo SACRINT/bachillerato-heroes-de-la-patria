@@ -124,7 +124,7 @@ class StudentDashboard {
             existingModal.remove();
         }
 
-        document.body.insertAdjacentHTML('beforeend', loginModalHtml);
+        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(loginModalHtml));
 
         // Mostrar modal de forma segura
         try {

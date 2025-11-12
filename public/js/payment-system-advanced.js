@@ -92,7 +92,7 @@ class PaymentSystemAdvanced {
         const modal = document.createElement('div');
         modal.id = 'payment-modal';
         modal.className = 'modal fade';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -104,7 +104,7 @@ class PaymentSystemAdvanced {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         
         document.body.appendChild(modal);
     }
@@ -307,7 +307,7 @@ class PaymentSystemAdvanced {
         const modal = document.createElement('div');
         modal.id = 'receipt-modal';
         modal.className = 'modal fade';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -325,7 +325,7 @@ class PaymentSystemAdvanced {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         
         document.body.appendChild(modal);
     }

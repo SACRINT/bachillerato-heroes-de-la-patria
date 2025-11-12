@@ -88,7 +88,7 @@ class AutomatedTestingSystem {
         // Crear botón de testing flotante
         const testingBtn = document.createElement('button');
         testingBtn.id = 'testing-btn';
-        testingBtn.innerHTML = '🧪';
+        testingBtn.innerHTML = sanitizeHTML('🧪');
         testingBtn.title = 'Ejecutar tests automáticos';
         testingBtn.style.cssText = `
             position: fixed;

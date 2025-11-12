@@ -140,9 +140,9 @@ class ContentGeneratorAI {
             transition: all 0.3s ease;
         `;
 
-        button.innerHTML = `
+        button.innerHTML = sanitizeHTML(`
             <i class="fas fa-magic text-white" style="font-size: 1.3rem;"></i>
-        `;
+        `);
 
         button.onclick = () => this.showContentGeneratorModal();
 
@@ -205,7 +205,7 @@ class ContentGeneratorAI {
         modal.id = 'contentGeneratorModal';
         modal.setAttribute('tabindex', '-1');
 
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-xl">
                 <div class="modal-content" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px;">
                     <div class="modal-header border-0 text-white">
@@ -217,7 +217,7 @@ class ContentGeneratorAI {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         // Remover modal existente
         const existing = document.getElementById('contentGeneratorModal');

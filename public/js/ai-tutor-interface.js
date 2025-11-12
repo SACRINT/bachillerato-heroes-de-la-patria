@@ -163,7 +163,7 @@ class AITutorInterface {
         tutorWidget.id = 'ai-tutor-widget';
         tutorWidget.className = 'ai-tutor-widget hidden';
 
-        tutorWidget.innerHTML = `
+        tutorWidget.innerHTML = sanitizeHTML(`
             <div class="tutor-header">
                 <div class="tutor-avatar">
                     <div class="avatar-image">🤖</div>
@@ -227,7 +227,7 @@ class AITutorInterface {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         // Agregar al DOM
         document.body.appendChild(tutorWidget);
@@ -240,12 +240,12 @@ class AITutorInterface {
         const activationBtn = document.createElement('div');
         activationBtn.id = 'ai-tutor-activation';
         activationBtn.className = 'ai-tutor-activation';
-        activationBtn.innerHTML = `
+        activationBtn.innerHTML = sanitizeHTML(`
             <div class="activation-content">
                 <div class="tutor-icon">🤖</div>
                 <div class="notification-badge" style="display: none;">1</div>
             </div>
-        `;
+        `);
 
         activationBtn.addEventListener('click', () => this.toggleTutorWidget());
         document.body.appendChild(activationBtn);
@@ -410,10 +410,10 @@ class AITutorInterface {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}-message ${emotion}`;
 
-        messageDiv.innerHTML = `
+        messageDiv.innerHTML = sanitizeHTML(`
             <div class="message-content">${content}</div>
             <div class="message-time">${new Date().toLocaleTimeString()}</div>
-        `;
+        `);
 
         container.appendChild(messageDiv);
         this.scrollToBottom();

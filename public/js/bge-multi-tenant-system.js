@@ -525,12 +525,12 @@ class BGEMultiTenantSystem {
     showLoadingIndicator() {
         const loader = document.createElement('div');
         loader.id = 'tenant-loading';
-        loader.innerHTML = `
+        loader.innerHTML = sanitizeHTML(`
             <div class="loading-overlay">
                 <div class="loading-spinner"></div>
                 <p>Configurando institución...</p>
             </div>
-        `;
+        `);
         loader.style.cssText = `
             position: fixed;
             top: 0;

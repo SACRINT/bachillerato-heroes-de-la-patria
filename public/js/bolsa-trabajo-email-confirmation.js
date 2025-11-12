@@ -79,7 +79,7 @@
 
         const color = isSuccess ? '#4CAF50' : '#f44336';
 
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             ${icon}
             <h2 style="color: ${color}; margin: 0 0 15px 0; font-size: 24px;">
                 ${title}
@@ -90,7 +90,7 @@
             <p style="color: #999; font-size: 14px; margin: 0;">
                 Serás redirigido en 3 segundos...
             </p>
-        `;
+        `);
 
         overlay.appendChild(modal);
         document.body.appendChild(overlay);

@@ -144,7 +144,7 @@ class PushNotificationManager {
         const container = document.getElementById('push-notifications-container');
         if (!container) return;
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="push-notifications-system">
                 <!-- Header del Sistema -->
                 <div class="notifications-header bg-info text-white p-4 rounded-top">
@@ -433,7 +433,7 @@ class PushNotificationManager {
                     </div>
                 </div>
             </div>
-        `;
+        `);
     }
 
     async bindEvents() {
@@ -649,7 +649,7 @@ class PushNotificationManager {
 
         const config = statusConfig[status] || statusConfig['default'];
 
-        statusIndicator.innerHTML = `<i class="fas ${config.icon}"></i>`;
+        statusIndicator.innerHTML = sanitizeHTML(`<i class="fas ${config.icon}"></i>`);
         statusText.textContent = text;
         statusText.className = config.class;
         statusDetails.textContent = details;
@@ -667,7 +667,7 @@ class PushNotificationManager {
             serviceWorker: this.swRegistration ? 'Activo' : 'Inactivo'
         };
 
-        systemStatusInfo.innerHTML = `
+        systemStatusInfo.innerHTML = sanitizeHTML(`
             <div class="table-responsive">
                 <table class="table table-sm">
                     <tr>
@@ -708,7 +708,7 @@ class PushNotificationManager {
                     </tr>
                 </table>
             </div>
-        `;
+        `);
 
         // Actualizar estadísticas
         await this.updateStatistics();
@@ -903,12 +903,12 @@ class PushNotificationManager {
         const historyContainer = document.getElementById('notificationHistory');
 
         if (this.notificationQueue.length === 0) {
-            historyContainer.innerHTML = `
+            historyContainer.innerHTML = sanitizeHTML(`
                 <div class="text-center text-muted py-5">
                     <i class="fas fa-bell-slash fa-3x mb-3"></i>
                     <p>No hay notificaciones en el historial</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -1073,10 +1073,10 @@ class PushNotificationManager {
             transition: opacity 0.3s ease;
         `;
 
-        toast.innerHTML = `
+        toast.innerHTML = sanitizeHTML(`
             <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
             ${message}
-        `;
+        `);
 
         document.body.appendChild(toast);
 

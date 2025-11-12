@@ -240,7 +240,7 @@ class UnifiedAuthSystem {
         // Crear modal si no existe
         if (!document.getElementById('unified-auth-modal')) {
             const modalHTML = this.managers.ui.createModalHTML();
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
         }
 
         // Actualizar UI según estado actual
@@ -1133,7 +1133,7 @@ class UIManager {
             </div>
         `;
 
-        container.insertAdjacentHTML('beforeend', alertHTML);
+        container.insertAdjacentHTML('beforeend', sanitizeHTML(alertHTML));
 
         // Auto-remove después de 5 segundos (excepto errores)
         if (type !== 'danger') {

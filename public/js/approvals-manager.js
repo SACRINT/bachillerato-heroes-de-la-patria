@@ -553,7 +553,7 @@ function viewFullData(id) {
     const oldModal = document.getElementById('dataModal');
     if (oldModal) oldModal.remove();
 
-    document.body.insertAdjacentHTML('beforeend', modal);
+    document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modal));
 
     const modalElement = document.getElementById('dataModal');
     const bsModal = new bootstrap.Modal(modalElement);

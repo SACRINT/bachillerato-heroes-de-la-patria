@@ -107,13 +107,13 @@ class IADashboardAccess {
         const floatingButton = document.createElement('div');
         floatingButton.id = 'ia-access-button';
         floatingButton.className = 'ia-floating-button';
-        floatingButton.innerHTML = `
+        floatingButton.innerHTML = sanitizeHTML(`
             <div class="floating-btn-content">
                 <span style="font-size: 20px; color: white;">🤖</span>
                 <span style="font-size: 9px; color: white; font-weight: bold; margin-top: 1px;">IA</span>
             </div>
             <div class="floating-btn-pulse"></div>
-        `;
+        `);
 
         floatingButton.addEventListener('click', () => {
             this.toggleMainPanel();
@@ -129,7 +129,7 @@ class IADashboardAccess {
         panel.id = 'ia-dashboard-panel';
         panel.className = 'ia-dashboard-panel hidden';
 
-        panel.innerHTML = `
+        panel.innerHTML = sanitizeHTML(`
             <div class="ia-panel-header">
                 <h3><i class="fas fa-robot"></i> Centro de IA Académica</h3>
                 <button class="close-panel" onclick="if(window.iaDashboard) window.iaDashboard.toggleMainPanel(); else this.closest('.ia-dashboard-panel').classList.add('hidden');">
@@ -155,7 +155,7 @@ class IADashboardAccess {
                     </p>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(panel);
     }
@@ -548,7 +548,7 @@ class IADashboardAccess {
         if (statusElement) {
             if (this.userSession) {
                 if (this.userSession.accountApproved) {
-                    statusElement.innerHTML = `
+                    statusElement.innerHTML = sanitizeHTML(`
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
                                 <i class="fas fa-user-check" style="color: #28a745;"></i>
@@ -559,22 +559,22 @@ class IADashboardAccess {
                                 <i class="fas fa-sign-out-alt"></i>
                             </button>
                         </div>
-                    `;
+                    `);
                 } else {
-                    statusElement.innerHTML = `
+                    statusElement.innerHTML = sanitizeHTML(`
                         <i class="fas fa-user-clock" style="color: #ffc107;"></i>
                         ${this.userSession.name} - Cuenta pendiente de aprobación
                         <span class="badge bg-warning ms-2">Pendiente</span>
-                    `;
+                    `);
                 }
             } else {
-                statusElement.innerHTML = `
+                statusElement.innerHTML = sanitizeHTML(`
                     <i class="fas fa-sign-in-alt" style="color: #dc3545;"></i>
                     Debes iniciar sesión con Google en la página principal (index.html) para acceder a la IA
                     <div class="login-guide mt-2" style="font-size: 0.8rem; color: #666;">
                         💡 Ve a la página de inicio y busca el botón "Iniciar Sesión con Google"
                     </div>
-                `;
+                `);
             }
         }
     }
@@ -582,7 +582,7 @@ class IADashboardAccess {
     createLaunchModal(featureKey, config) {
         const modal = document.createElement('div');
         modal.className = 'ia-launch-modal';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-backdrop" onclick="this.parentElement.remove()"></div>
             <div class="modal-content">
                 <div class="modal-header">
@@ -603,7 +603,7 @@ class IADashboardAccess {
                     </button>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
         return modal;
@@ -620,10 +620,10 @@ class IADashboardAccess {
     showNotification(message, type) {
         const notification = document.createElement('div');
         notification.className = `ia-notification ${type}`;
-        notification.innerHTML = `
+        notification.innerHTML = sanitizeHTML(`
             <i class="fas fa-${type === 'success' ? 'check' : 'exclamation-triangle'}"></i>
             ${message}
-        `;
+        `);
 
         document.body.appendChild(notification);
 

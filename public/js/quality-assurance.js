@@ -119,7 +119,7 @@ class QualityAssurance {
     createVisualReport() {
         const report = document.createElement('div');
         report.id = 'qa-report';
-        report.innerHTML = `
+        report.innerHTML = sanitizeHTML(`
             <div style="
                 position: fixed; top: 10px; right: 10px; 
                 background: white; border: 2px solid #333;
@@ -132,7 +132,7 @@ class QualityAssurance {
                 <div>❌ Failed: ${this.results.failed}</div>
                 <div>🚨 Critical: ${this.criticalErrors.length}</div>
                 <hr>
-                ${this.results.details.map(detail => `
+                ${this.results.details.map(detail => `)
                     <div style="color: ${detail.status === 'PASS' ? 'green' : 'red'};">
                         ${detail.status === 'PASS' ? '✅' : (detail.critical ? '🚨' : '⚠️')} 
                         ${detail.name}

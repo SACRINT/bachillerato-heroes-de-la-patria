@@ -300,7 +300,7 @@ class BolsaTrabajoManager {
         if (modalAnterior) modalAnterior.remove();
 
         // Insertar y mostrar nuevo modal
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHtml));
         const modal = new bootstrap.Modal(document.getElementById('candidatoDetalleModal'));
         modal.show();
     }

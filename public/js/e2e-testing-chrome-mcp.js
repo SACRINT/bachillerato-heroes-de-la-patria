@@ -117,7 +117,7 @@ class E2ETestingChromeMCP {
         // Crear botón E2E flotante
         const e2eBtn = document.createElement('button');
         e2eBtn.id = 'e2e-testing-btn';
-        e2eBtn.innerHTML = '🤖';
+        e2eBtn.innerHTML = sanitizeHTML('🤖');
         e2eBtn.title = 'E2E Testing con Chrome MCP';
         e2eBtn.style.cssText = `
             position: fixed;

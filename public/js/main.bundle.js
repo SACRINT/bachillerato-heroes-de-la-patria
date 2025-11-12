@@ -181,18 +181,18 @@ const submenu = item.querySelector('.dropdown-menu');
 const submenuItems = submenu ? submenu.querySelectorAll('li a') : [];
 const headerItem = document.createElement('li');
 headerItem.className = 'nav-secondary-in-dropdown';
-headerItem.innerHTML = `<h6 class="dropdown-header">${link.textContent}</h6>`;
+headerItem.innerHTML = sanitizeHTML(`<h6 class="dropdown-header">${link.textContent}</h6>`);
 masDropdownMenu.insertBefore(headerItem, firstStaticItem);
 submenuItems.forEach(subLink => {
 const subDropdownItem = document.createElement('li');
 subDropdownItem.className = 'nav-secondary-in-dropdown';
-subDropdownItem.innerHTML = `<a class="dropdown-item" href="${subLink.href}">${subLink.innerHTML}</a>`;
+subDropdownItem.innerHTML = sanitizeHTML(`<a class="dropdown-item" href="${subLink.href}">${subLink.innerHTML}</a>`);
 masDropdownMenu.insertBefore(subDropdownItem, firstStaticItem);
 });
 } else {
 const dropdownItem = document.createElement('li');
 dropdownItem.className = 'nav-secondary-in-dropdown';
-dropdownItem.innerHTML = `<a class="dropdown-item" href="${link.href}">${link.innerHTML}</a>`;
+dropdownItem.innerHTML = sanitizeHTML(`<a class="dropdown-item" href="${link.href}">${link.innerHTML}</a>`);
 masDropdownMenu.insertBefore(dropdownItem, firstStaticItem);
 }
 });
@@ -392,11 +392,11 @@ showUpdateNotification() {
 const notification = document.createElement('div');
 notification.className = 'alert alert-info alert-dismissible fade show position-fixed';
 notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
-notification.innerHTML = `
+notification.innerHTML = sanitizeHTML(`
 <strong>¡Actualización disponible!</strong>
 <br>Recarga la página para obtener la última versión.
 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-`;
+`);
 document.body.appendChild(notification);
 setTimeout(() => {
 if (notification.parentNode) {
@@ -517,10 +517,10 @@ showNotification(message, type = 'info', duration = 5000) {
 const notification = document.createElement('div');
 notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
 notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
-notification.innerHTML = `
+notification.innerHTML = sanitizeHTML(`
 ${message}
 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-`;
+`);
 document.body.appendChild(notification);
 setTimeout(() => {
 if (notification.parentNode) {
@@ -756,12 +756,12 @@ document.body.appendChild(toastContainer);
 }
 const toastElement = document.createElement('div');
 toastElement.className = `toast align-items-center text-bg-${type} border-0`;
-toastElement.innerHTML = `
+toastElement.innerHTML = sanitizeHTML(`
 <div class="d-flex">
 <div class="toast-body">${message}</div>
 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
 </div>
-`;
+`);
 toastContainer.appendChild(toastElement);
 const toast = new bootstrap.Toast(toastElement, {
 autohide: true,

@@ -107,7 +107,7 @@ class DynamicTeacherLoader {
             }
 
             // Limpiar tabla
-            tableBody.innerHTML = '';
+            tableBody.innerHTML = sanitizeHTML('');
 
             // Agregar filas de docentes
             this.teachers.docentes?.forEach(teacher => {
@@ -148,7 +148,7 @@ class DynamicTeacherLoader {
         // Especialidad
         const especialidad = teacher.especialidad || teacher.specialization || 'Sin especialidad';
 
-        row.innerHTML = `
+        row.innerHTML = sanitizeHTML(`
             <td>
                 <img src="${teacher.photo || 'images/default-teacher.jpg'}"
                      alt="${nombreCompleto}"
@@ -162,7 +162,7 @@ class DynamicTeacherLoader {
             <td><span class="badge bg-primary">${especialidad}</span></td>
             <td>
                 ${teacher.subjects?.map(subject =>
-                    `<span class="badge bg-secondary me-1">${subject}</span>`
+                    `)<span class="badge bg-secondary me-1">${subject}</span>`
                 ).join('') || '<span class="badge bg-secondary">Sin materias asignadas</span>'}
             </td>
             <td>
@@ -278,7 +278,7 @@ class DynamicTeacherLoader {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.id = 'editTeacherModal';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -371,7 +371,7 @@ class DynamicTeacherLoader {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         return modal;
     }
 
@@ -468,13 +468,13 @@ class DynamicTeacherLoader {
 
         // Llenar modal con materias disponibles
         const subjectsContainer = document.getElementById('availableSubjects');
-        subjectsContainer.innerHTML = '';
+        subjectsContainer.innerHTML = sanitizeHTML('');
 
         this.teachers.materias?.forEach(subject => {
             const isAssigned = teacher.subjects?.includes(subject) || false;
             const checkbox = document.createElement('div');
             checkbox.className = 'form-check';
-            checkbox.innerHTML = `
+            checkbox.innerHTML = sanitizeHTML(`
                 <input class="form-check-input" type="checkbox" 
                        id="subject_${subject.replace(/\s+/g, '_')}" 
                        value="${subject}" 
@@ -482,7 +482,7 @@ class DynamicTeacherLoader {
                 <label class="form-check-label" for="subject_${subject.replace(/\s+/g, '_')}">
                     ${subject}
                 </label>
-            `;
+            `);
             subjectsContainer.appendChild(checkbox);
         });
 
@@ -498,7 +498,7 @@ class DynamicTeacherLoader {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.id = 'assignSubjectsModal';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -523,7 +523,7 @@ class DynamicTeacherLoader {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         return modal;
     }
 
@@ -602,7 +602,7 @@ class DynamicTeacherLoader {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.id = 'newTeacherModal';
-        modal.innerHTML = `
+        modal.innerHTML = sanitizeHTML(`
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -710,7 +710,7 @@ class DynamicTeacherLoader {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         return modal;
     }
 
@@ -912,11 +912,11 @@ class DynamicTeacherLoader {
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 350px;';
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             <i class="fas fa-check-circle me-2"></i>
             <strong>¡Éxito!</strong> ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
 
         document.body.appendChild(alertDiv);
 
@@ -934,11 +934,11 @@ class DynamicTeacherLoader {
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed';
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 350px;';
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             <i class="fas fa-exclamation-circle me-2"></i>
             <strong>Error:</strong> ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
 
         document.body.appendChild(alertDiv);
 

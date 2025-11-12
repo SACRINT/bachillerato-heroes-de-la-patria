@@ -1207,7 +1207,7 @@ class BGEAnalyticsModule extends BGEModule {
             align-items: center; justify-content: center;
             transition: all 0.3s ease; font-size: 18px;
         `;
-        dashboardButton.innerHTML = '📊';
+        dashboardButton.innerHTML = sanitizeHTML('📊');
         dashboardButton.title = 'BGE Analytics Dashboard';
 
         // Efectos hover

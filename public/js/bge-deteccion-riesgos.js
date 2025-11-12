@@ -282,7 +282,7 @@ class BGEDeteccionRiesgos {
     createRiskDashboard() {
         const dashboard = document.createElement('div');
         dashboard.id = 'bge-risk-dashboard';
-        dashboard.innerHTML = `
+        dashboard.innerHTML = sanitizeHTML(`
             <div class="risk-detection-dashboard">
                 <div class="dashboard-header">
                     <div class="system-info">
@@ -360,7 +360,7 @@ class BGEDeteccionRiesgos {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         // Añadir estilos
         this.addDashboardStyles();
@@ -1128,18 +1128,18 @@ class BGEDeteccionRiesgos {
         const grid = document.getElementById('risk-categories-grid');
         if (!grid) return;
 
-        grid.innerHTML = '';
+        grid.innerHTML = sanitizeHTML('');
 
         Object.entries(this.config.riskTypes).forEach(([type, config]) => {
             const count = this.getRiskCategoryCount(type);
 
             const categoryCard = document.createElement('div');
             categoryCard.className = 'category-card';
-            categoryCard.innerHTML = `
+            categoryCard.innerHTML = sanitizeHTML(`
                 <div class="category-icon">${this.getRiskIcon(type)}</div>
                 <div class="category-name">${config.name}</div>
                 <div class="category-count">${count}</div>
-            `;
+            `);
 
             categoryCard.addEventListener('click', () => {
                 this.showRiskCategoryDetails(type);
@@ -1174,7 +1174,7 @@ class BGEDeteccionRiesgos {
             return;
         }
 
-        container.innerHTML = '';
+        container.innerHTML = sanitizeHTML('');
 
         // Mostrar las 5 alertas más recientes
         const recentAlerts = this.state.activeAlerts
@@ -1184,11 +1184,11 @@ class BGEDeteccionRiesgos {
         recentAlerts.forEach(alert => {
             const alertElement = document.createElement('div');
             alertElement.className = `alert-item ${alert.level}`;
-            alertElement.innerHTML = `
+            alertElement.innerHTML = sanitizeHTML(`
                 <div class="alert-title">${alert.message}</div>
                 <div class="alert-description">${alert.studentName}</div>
                 <div class="alert-time">${this.formatTime(alert.timestamp)}</div>
-            `;
+            `);
 
             container.appendChild(alertElement);
         });
@@ -1198,7 +1198,7 @@ class BGEDeteccionRiesgos {
         const timeline = document.getElementById('detections-timeline');
         if (!timeline) return;
 
-        timeline.innerHTML = '';
+        timeline.innerHTML = sanitizeHTML('');
 
         // Mostrar las 10 detecciones más recientes
         const recentDetections = Array.from(this.cache.riskAnalysis.entries())
@@ -1212,11 +1212,11 @@ class BGEDeteccionRiesgos {
             const primaryRisk = this.getPrimaryRiskType(analysis.risks);
             const riskLevel = this.getRiskLevel(analysis.overallRisk);
 
-            detectionElement.innerHTML = `
+            detectionElement.innerHTML = sanitizeHTML(`
                 <div class="detection-time">${this.formatTime(analysis.timestamp, true)}</div>
                 <div class="detection-type">${riskLevel}</div>
                 <div class="detection-student">Estudiante ${studentId}</div>
-            `;
+            `);
 
             timeline.appendChild(detectionElement);
         });

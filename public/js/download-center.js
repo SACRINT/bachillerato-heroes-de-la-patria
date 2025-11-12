@@ -938,7 +938,7 @@ const downloadCenterStyles = `
 `;
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', downloadCenterStyles);
+document.head.insertAdjacentHTML('beforeend', sanitizeHTML(downloadCenterStyles));
 
 // Inicializar el centro de descargas cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {

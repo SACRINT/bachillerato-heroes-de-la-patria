@@ -1185,7 +1185,7 @@ const integratedCalendarStyles = `
 `;
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', integratedCalendarStyles);
+document.head.insertAdjacentHTML('beforeend', sanitizeHTML(integratedCalendarStyles));
 
 // Inicialización automática
 document.addEventListener('DOMContentLoaded', function() {

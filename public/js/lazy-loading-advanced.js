@@ -167,7 +167,7 @@ class AdvancedLazyLoader {
             </style>
         `;
 
-        document.head.insertAdjacentHTML('beforeend', styles);
+        document.head.insertAdjacentHTML('beforeend', sanitizeHTML(styles));
     }
 
     // ==========================================
@@ -332,12 +332,12 @@ class AdvancedLazyLoader {
         // Crear placeholder de error
         const wrapper = document.createElement('div');
         wrapper.className = 'lazy-error';
-        wrapper.innerHTML = `
+        wrapper.innerHTML = sanitizeHTML(`
             <div class="text-center">
                 <i class="fas fa-image text-muted mb-2"></i>
                 <div class="small text-muted">Error al cargar imagen</div>
             </div>
-        `;
+        `);
 
         img.parentNode.replaceChild(wrapper, img);
 
@@ -354,12 +354,12 @@ class AdvancedLazyLoader {
         element.classList.remove(this.config.loadingClass);
         element.classList.add(this.config.errorClass);
 
-        element.innerHTML = `
+        element.innerHTML = sanitizeHTML(`
             <div class="alert alert-warning">
                 <i class="fas fa-exclamation-triangle"></i>
                 Error al cargar contenido
             </div>
-        `;
+        `);
 
         this.stats.errors++;
         this.log(`❌ Error cargando contenido: ${error.message}`);

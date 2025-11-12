@@ -209,7 +209,7 @@ class AdvancedGradesAnalytics {
         }
 
         // Insertar la interfaz
-        container.insertAdjacentHTML('beforeend', analyticsHTML);
+        container.insertAdjacentHTML('beforeend', sanitizeHTML(analyticsHTML));
     }
 
     renderStudentAnalytics() {
@@ -238,7 +238,7 @@ class AdvancedGradesAnalytics {
         const trendIcon = this.getTrendIcon(analytics.performance_trend);
         const trendColor = this.getTrendColor(analytics.performance_trend);
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="col-md-3">
                 <div class="stat-card text-center">
                     <div class="stat-icon bg-primary text-white rounded-circle mx-auto mb-2">
@@ -276,7 +276,7 @@ class AdvancedGradesAnalytics {
                     <p class="stat-label text-muted">Alertas Activas</p>
                 </div>
             </div>
-        `;
+        `);
     }
 
     renderAlerts(alerts) {
@@ -357,7 +357,7 @@ class AdvancedGradesAnalytics {
             `;
         }).join('');
 
-        container.innerHTML = `<div class="row">${subjectsHTML}</div>`;
+        container.innerHTML = sanitizeHTML(`<div class="row">${subjectsHTML}</div>`);
     }
 
     renderRecommendations(recommendations) {
@@ -682,10 +682,10 @@ class AdvancedGradesAnalytics {
         const notification = document.createElement('div');
         notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
         notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-        notification.innerHTML = `
+        notification.innerHTML = sanitizeHTML(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
 
         document.body.appendChild(notification);
 

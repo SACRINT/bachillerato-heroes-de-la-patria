@@ -457,10 +457,10 @@ class ParentPortal {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1060; max-width: 400px;';
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
         
         document.body.appendChild(alertDiv);
         
@@ -970,7 +970,7 @@ const parentPortalStyles = `
 `;
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', parentPortalStyles);
+document.head.insertAdjacentHTML('beforeend', sanitizeHTML(parentPortalStyles));
 
 // Inicializar el portal cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {

@@ -287,7 +287,7 @@ class ParentTeacherChat {
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', chatHTML);
+        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(chatHTML));
     }
 
     setupEventListeners() {
@@ -384,7 +384,7 @@ class ParentTeacherChat {
         if (!container) return;
 
         if (conversations.length === 0) {
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="no-conversations">
                     <i class="fas fa-inbox"></i>
                     <p>No tienes conversaciones aún.</p>
@@ -392,7 +392,7 @@ class ParentTeacherChat {
                         Iniciar Conversación
                     </button>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -496,11 +496,11 @@ class ParentTeacherChat {
         if (!container) return;
 
         if (messages.length === 0) {
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="no-messages">
                     <p>No hay mensajes en esta conversación.</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -605,7 +605,7 @@ class ParentTeacherChat {
         if (!container) return;
 
         const messageHTML = this.createMessageHTML(message);
-        container.insertAdjacentHTML('beforeend', messageHTML);
+        container.insertAdjacentHTML('beforeend', sanitizeHTML(messageHTML));
         container.scrollTop = container.scrollHeight;
     }
 
