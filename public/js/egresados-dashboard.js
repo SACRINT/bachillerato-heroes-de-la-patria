@@ -45,6 +45,17 @@ class EgresadosDashboard {
     }
 
     /**
+     * Helper: Editar egresado y cerrar modal de detalles
+     */
+    handleEditAndCloseDetailsModal(egresadoId) {
+        this.editEgresado(egresadoId);
+        const modal = bootstrap.Modal.getInstance(document.getElementById('egresadoDetailsModal'));
+        if (modal) {
+            modal.hide();
+        }
+    }
+
+    /**
      * Inicialización del dashboard
      */
     async init() {
@@ -384,7 +395,7 @@ class EgresadosDashboard {
                 <table class="table table-hover table-striped align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th onclick="egresadosApp.sortBy('id')" style="cursor: pointer);">
+                            <th onclick="egresadosApp.sortBy('id')" style="cursor: pointer;">
                                 ID ${this.getSortIcon('id')}
                             </th>
                             <th onclick="egresadosApp.sortBy('nombre')" style="cursor: pointer;">
@@ -415,7 +426,7 @@ class EgresadosDashboard {
             </div>
 
             ${this.renderPagination()}
-        `;
+        `);
     }
 
     /**
@@ -1017,7 +1028,7 @@ class EgresadosDashboard {
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-warning" onclick="egresadosApp.editEgresado(${egresado.id})); bootstrap.Modal.getInstance(document.getElementById('egresadoDetailsModal')).hide();">
+                        <button type="button" class="btn btn-warning edit-egresado-btn" data-egresado-id="${egresado.id}">
                             <i class="fas fa-edit"></i> Editar
                         </button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -1026,7 +1037,13 @@ class EgresadosDashboard {
                     </div>
                 </div>
             </div>
-        `;
+        `);
+
+        // Agregar event listener para el botón de editar
+        modal.querySelector('.edit-egresado-btn')?.addEventListener('click', (e) => {
+            const egresadoId = parseInt(e.target.closest('button').dataset.egresadoId);
+            this.handleEditAndCloseDetailsModal(egresadoId);
+        });
 
         return modal;
     }
