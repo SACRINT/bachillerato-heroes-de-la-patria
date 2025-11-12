@@ -118,4 +118,10 @@
         printSchedule
     };
 
+    // Export directo para acceso desde event-handler-registry.js
+    window.showSubjectDetail = showSubjectDetail;
+    window.generateReport = generateReport;
+    window.generateAttendanceReport = generateAttendanceReport;
+    window.printSchedule = printSchedule;
+
 })();

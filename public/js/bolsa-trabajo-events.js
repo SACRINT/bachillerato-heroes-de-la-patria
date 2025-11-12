@@ -228,6 +228,9 @@
         alert(`Aplicación a empleo ${jobId} - En desarrollo`);
     }
 
+    // Exportar globalmente para event-handler-registry
+    window.applyToJob = applyToJob;
+
     /**
      * ❤️➡️ Remueve empleo de guardados
      */
@@ -238,6 +241,9 @@
         }
     }
 
+    // Exportar globalmente para event-handler-registry
+    window.removeFromSaved = removeFromSaved;
+
     /**
      * 💾 Guarda un empleo
      */
@@ -245,6 +251,9 @@
         console.log('[BOLSA-TRABAJO-EVENTS] Guardando empleo:', jobId);
         alert(`Empleo ${jobId} guardado exitosamente`);
     }
+
+    // Exportar globalmente para event-handler-registry
+    window.saveJob = saveJob;
 
     /**
      * 💬 Alterna la visibilidad del chatbot

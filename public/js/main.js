@@ -1,11 +1,38 @@
 // Main JavaScript para el sitio web window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
 
-// Load delegated event handler registry (for onclick → data-action refactorization)
-// This script maps data-action attributes to their corresponding handler functions
-const eventHandlerScript = document.createElement('script');
-eventHandlerScript.src = 'js/event-handler-registry.js';
-eventHandlerScript.async = true;
-document.head.appendChild(eventHandlerScript);
+// Load event handler files FIRST (in order), then event-handler-registry
+// CRITICAL: event-handler-registry references functions from these modules
+// Must wait for all event handlers to load before loading event-handler-registry
+
+let eventHandlersLoaded = 0;
+const eventHandlerFiles = ['js/bolsa-trabajo-events.js', 'js/calificaciones-events.js', 'js/citas-events.js', 'js/inscriptions-handler.js', 'js/orphan-handlers.js'];
+
+function loadNextEventHandler() {
+    if (eventHandlersLoaded < eventHandlerFiles.length) {
+        const script = document.createElement('script');
+        script.src = eventHandlerFiles[eventHandlersLoaded];
+        script.onload = function() {
+            eventHandlersLoaded++;
+            console.log(`[MAIN.JS] ✅ Loaded ${eventHandlerFiles[eventHandlersLoaded - 1]}`);
+            loadNextEventHandler(); // Load next file
+        };
+        script.onerror = function() {
+            console.error(`[MAIN.JS] ❌ Failed to load ${eventHandlerFiles[eventHandlersLoaded]}`);
+            eventHandlersLoaded++;
+            loadNextEventHandler(); // Continue to next file
+        };
+        document.head.appendChild(script);
+    } else {
+        // All event handlers loaded, now load the registry
+        console.log('[MAIN.JS] ✅ All event handlers loaded, loading event-handler-registry...');
+        const eventHandlerScript = document.createElement('script');
+        eventHandlerScript.src = 'js/event-handler-registry.js';
+        eventHandlerScript.async = false;
+        document.head.appendChild(eventHandlerScript);
+    }
+}
+
+loadNextEventHandler();
 
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializar componentes principales

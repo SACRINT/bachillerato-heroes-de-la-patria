@@ -203,4 +203,11 @@
         return div.innerHTML;
     }
 
+    // Export directo para acceso desde event-handler-registry.js
+    window.selectDepartment = selectDepartment;
+    window.consultarCita = consultarCita;
+    window.cancelarCita = cancelarCita;
+    window.toggleChatbot = toggleChatbot;
+    window.sendMessage = sendMessage;
+
 })();

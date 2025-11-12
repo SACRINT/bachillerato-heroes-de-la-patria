@@ -330,4 +330,9 @@ function showNotification(message, type = 'info') {
     });
 }
 
+// Export directo para acceso desde event-handler-registry.js
+window.showActivityRegistration = showActivityRegistration;
+window.confirmActivityRegistration = confirmActivityRegistration;
+window.showNotification = showNotification;
+
 console.log('✅ [INSCRIPTIONS HANDLER] Gestor cargado correctamente');
