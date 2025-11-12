@@ -689,7 +689,7 @@ class BGENotificationAdmin {
             <div class="preview-content">
                 <div class="preview-header">
                     <h3>👁️ Vista Previa de Notificación</h3>
-                    <button onclick="this.closest('.preview-modal').remove()" class="close-btn">&times);</button>
+                    <button onclick="this.closest('.preview-modal').remove()" class="close-btn">&times;</button>
                 </div>
                 <div class="preview-notification">
                     <div class="notification-icon">🔔</div>
@@ -708,7 +708,7 @@ class BGENotificationAdmin {
                     ${formData.scheduled ? `<p><strong>Programada para:</strong> ${new Date(formData.scheduleDate).toLocaleString()}</p>` : ''}
                 </div>
             </div>
-        `;
+        `);
 
         modal.style.cssText = `
             position: fixed;
@@ -951,12 +951,12 @@ class BGENotificationAdmin {
     showAccessDenied() {
         const denied = document.createElement('div');
         denied.innerHTML = sanitizeHTML(`
-            <div style="text-align: center); padding: 3rem; color: #dc3545;">
+            <div style="text-align: center; padding: 3rem; color: #dc3545;">
                 <h2>🚫 Acceso Denegado</h2>
                 <p>No tienes permisos para acceder al panel de administración de notificaciones.</p>
                 <p>Contacta al administrador del sistema si crees que esto es un error.</p>
             </div>
-        `;
+        `);
         document.body.appendChild(denied);
     }
 
