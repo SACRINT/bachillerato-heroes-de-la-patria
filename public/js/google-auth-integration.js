@@ -205,7 +205,7 @@ class GoogleAuthIntegration {
         modal.id = 'googleSignInModal';
         modal.setAttribute('data-bs-backdrop', 'static');
         modal.innerHTML = sanitizeHTML(`
-            <div class="modal-dialog modal-dialog-centered" style="max-width: 400px);">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
                 <div class="modal-content" style="border: none; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
                     <div class="modal-header border-0 text-center" style="padding: 2rem 2rem 1rem 2rem;">
                         <div class="w-100">
@@ -272,7 +272,7 @@ class GoogleAuthIntegration {
                             style="top: 16px; right: 16px; opacity: 0.5;" aria-label="Cerrar"></button>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
         const bootstrapModal = new bootstrap.Modal(modal);
@@ -303,7 +303,7 @@ class GoogleAuthIntegration {
         modal.id = 'googleErrorModal';
         modal.setAttribute('data-bs-backdrop', 'static');
         modal.innerHTML = sanitizeHTML(`
-            <div class="modal-dialog modal-dialog-centered" style="max-width: 400px);">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
                 <div class="modal-content" style="border: none; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
                     <div class="modal-header border-0 text-center" style="padding: 2rem 2rem 1rem 2rem;">
                         <div class="w-100">
@@ -338,7 +338,7 @@ class GoogleAuthIntegration {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
         const bootstrapModal = new bootstrap.Modal(modal);
@@ -433,7 +433,7 @@ class GoogleAuthIntegration {
             </div>
 
             <!-- Dropdown de perfil completo (reemplaza el botón de login cuando hay sesión activa) -->
-            <div id="userProfileDropdown" class="dropdown" style="display: none);">
+            <div id="userProfileDropdown" class="dropdown" style="display: none;">
                 <button class="btn btn-success btn-sm dropdown-toggle ms-2" type="button" data-bs-toggle="dropdown">
                     <img id="userProfileImage" src="" alt="Perfil" style="width: 24px; height: 24px; border-radius: 50%; margin-right: 8px;">
                     <span id="userProfileName">Usuario</span>
@@ -460,7 +460,7 @@ class GoogleAuthIntegration {
                     </a></li>
                 </ul>
             </div>
-        `;
+        `);
 
         // Agregar al final del navbar
         console.log('🔗 Agregando botón al navbar...');
