@@ -445,7 +445,7 @@ class GamificationSystem {
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                ${this.userProfile.recentAchievements.map(achievement => `)
+                                ${this.userProfile.recentAchievements.map(achievement => `
                                     <div class="col-md-6 mb-3">
                                         <div class="achievement-item">
                                             <div class="d-flex align-items-center">
@@ -512,7 +512,7 @@ class GamificationSystem {
                     </div>
                 </div>
             </div>
-        `;
+        `);
     }
 
     updateChallengesDisplay() {
@@ -556,7 +556,7 @@ class GamificationSystem {
             </div>
 
             <div class="challenges-grid">
-                ${this.dailyChallenges.map(challenge => `)
+                ${this.dailyChallenges.map(challenge => `
                     <div class="challenge-card ${challenge.completed ? 'completed' : ''}" data-challenge-id="${challenge.id}">
                         <div class="challenge-header">
                             <div class="challenge-icon">${challenge.icon}</div>
@@ -588,7 +588,7 @@ class GamificationSystem {
                     </div>
                 `).join('')}
             </div>
-        `;
+        `);
     }
 
     // ============================================
@@ -724,11 +724,11 @@ class GamificationSystem {
                 <div class="flex-grow-1">
                     <h6 class="mb-1">${notification.title}</h6>
                     <p class="mb-0 small">${notification.message}</p>
-                    ${notification.points ? `)<small class="text-success">+${notification.points} puntos</small>` : ''}
+                    ${notification.points ? `<small class="text-success">+${notification.points} puntos</small>` : ''}
                 </div>
                 <button class="btn-close btn-close-sm" onclick="this.parentElement.parentElement.remove()"></button>
             </div>
-        `;
+        `);
 
         container.appendChild(notificationElement);
 

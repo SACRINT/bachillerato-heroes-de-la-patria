@@ -858,7 +858,7 @@ class AREducationSystem {
                     <i class="fas fa-cube"></i>
                     Iniciar AR
                 </button>
-                <button class="ar-btn stop-ar" id="stop-ar-btn" style="display: none);">
+                <button class="ar-btn stop-ar" id="stop-ar-btn" style="display: none;">
                     <i class="fas fa-stop"></i>
                     Detener AR
                 </button>
@@ -909,7 +909,7 @@ class AREducationSystem {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(arInterface);
         this.setupAREventListeners();
@@ -1161,7 +1161,7 @@ class AREducationSystem {
         viewer.innerHTML = sanitizeHTML(`
             <div class="viewer-header">
                 <h3>🖥️ Visor 3D (Modo Simulación)</h3>
-                <button class="close-viewer-btn" onclick="this.closest('#ar-fallback-viewer').style.display='none');">✕</button>
+                <button class="close-viewer-btn" onclick="this.closest('#ar-fallback-viewer').style.display='none';">✕</button>
                 <p>Tu dispositivo no soporta AR, pero puedes interactuar con los modelos 3D</p>
             </div>
             <div class="viewer-content">
@@ -1178,7 +1178,7 @@ class AREducationSystem {
                     <button class="control-btn" data-action="zoom-out">🔍-</button>
                 </div>
             </div>
-        `;
+        `);
 
         // OCULTAR POR DEFECTO - Solo mostrar cuando usuario lo active
         viewer.style.display = 'none';
