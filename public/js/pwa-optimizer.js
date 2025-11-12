@@ -855,11 +855,11 @@ class PWAOptimizer {
             const errorElement = document.createElement('div');
             errorElement.className = 'error-boundary-message';
             errorElement.innerHTML = sanitizeHTML(`
-                <div style="background: #fee); border: 1px solid #fcc; padding: 10px; margin: 5px; border-radius: 4px;">
+                <div style="background: #fee; border: 1px solid #fcc; padding: 10px; margin: 5px; border-radius: 4px;">
                     <strong>Se produjo un error en la aplicación</strong>
                     <p>La aplicación continúa funcionando. Si el problema persiste, actualiza la página.</p>
                 </div>
-            `;
+            `);
 
             // Solo mostrar en desarrollo
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
