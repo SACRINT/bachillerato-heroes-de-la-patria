@@ -87,7 +87,7 @@ async function loadSubscribers() {
             if (subscribers.length === 0) {
                 tableBody.innerHTML = sanitizeHTML(`
                     <tr>
-                        <td colspan="7" style="text-align: center); padding: 40px;">
+                        <td colspan="7" style="text-align: center; padding: 40px;">
                             <div class="empty-state">
                                 <i class="fas fa-inbox"></i>
                                 <h4>No hay suscriptores todavía</h4>
@@ -95,7 +95,7 @@ async function loadSubscribers() {
                             </div>
                         </td>
                     </tr>
-                `;
+                `);
             } else {
                 renderSubscribers(subscribers);
             }
@@ -106,11 +106,11 @@ async function loadSubscribers() {
         console.error('❌ Error cargando suscriptores:', error);
         tableBody.innerHTML = sanitizeHTML(`
             <tr>
-                <td colspan="7" style="text-align: center); padding: 20px; color: red;">
+                <td colspan="7" style="text-align: center; padding: 20px; color: red;">
                     Error al cargar suscriptores
                 </td>
             </tr>
-        `;
+        `);
     } finally {
         spinner.classList.remove('active');
     }
@@ -240,11 +240,11 @@ function createNewsletterHistoryItem(news) {
                     </span>
                 </span>
             </div>
-            <div class="progress" style="height: 10px);">
+            <div class="progress" style="height: 10px;">
                 <div class="progress-bar bg-success" style="width: ${successRate}%"></div>
             </div>
         </div>
-    `;
+    `);
 
     return div;
 }
