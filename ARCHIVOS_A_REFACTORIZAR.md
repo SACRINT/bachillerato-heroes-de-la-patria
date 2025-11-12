@@ -67,7 +67,7 @@ function handleCopyPassword(button, password) {
 
 - **Vía 1 Completados:** 8/8 (100%) ✅
 - **Vía 2 Identificados:** 3 archivos
-- **Código Muerto Archivado:** 11/11 archivos ✅
+- **Bundles Pendientes:** 4+ archivos
 
 ## Resumen de Vía 1 Completada
 
@@ -83,21 +83,3 @@ Todos los 8 archivos de reparación rápida han sido completados exitosamente:
 
 **Total Reparado:** 28 instancias de errores de sintaxis
 **Commits:** 8 commits atómicos
-
-## Código Muerto Archivado
-
-11 archivos de código muerto han sido exitosamente movidos a `public/js/dead_code_archive/`:
-1. ✅ academic-reports-manager.js
-2. ✅ adaptive-ai-tutor.js
-3. ✅ admin.bundle.js
-4. ✅ ai-progress-dashboard.js
-5. ✅ ai-recommendation-engine.js
-6. ✅ ar-education-system.js
-7. ✅ automated-testing-system.js
-8. ✅ bolsa-trabajo-dashboard.js
-9. ✅ digital-ecosystem.js
-10. ✅ features.bundle.js
-11. ✅ forms.bundle.js
-
-**Total Archivado:** 11 archivos (~850 KB)
-**Reducción:** Limpieza de 11 archivos no utilizados en el sistema activo
