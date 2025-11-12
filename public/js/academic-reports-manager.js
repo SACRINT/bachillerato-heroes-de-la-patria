@@ -515,7 +515,7 @@ class AcademicReportsManager {
                 reportHTML = this.generateGenericReportHTML(reportData);
         }
 
-        resultsContainer.innerHTML = reportHTML;
+        resultsContainer.innerHTML = sanitizeHTML(reportHTML);
 
         // Generar gráficos si es necesario
         if (reportData.charts) {
@@ -903,7 +903,7 @@ class AcademicReportsManager {
             </div>
         `).join('');
 
-        suggestions.innerHTML = html;
+        suggestions.innerHTML = sanitizeHTML(html);
         suggestions.style.display = 'block';
 
         // Agregar eventos de clic
@@ -1012,7 +1012,7 @@ class AcademicReportsManager {
             </div>
         `).join('');
 
-        historyContainer.innerHTML = html;
+        historyContainer.innerHTML = sanitizeHTML(html);
     }
 
     loadHistoryReport(reportId) {

@@ -862,9 +862,9 @@ class ManualLoginManager {
 
         if (submitBtn) {
             submitBtn.disabled = isLoading;
-            submitBtn.innerHTML = isLoading
+            submitBtn.innerHTML = sanitizeHTML(isLoading
                 ? '<span class="spinner-border spinner-border-sm me-2"></span>Verificando...'
-                : '<i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión';
+                : '<i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión');
         }
 
         if (form) {

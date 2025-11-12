@@ -375,10 +375,10 @@ class GoogleWorkspaceIntegration {
         const alert = document.createElement('div');
         alert.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
         alert.style.cssText = 'top: 20px; right: 20px; z-index: 1060; max-width: 350px;';
-        alert.innerHTML = `
+        alert.innerHTML = sanitizeHTML(`
             ${message}
             <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
-        `;
+        `);
         
         document.body.appendChild(alert);
         setTimeout(() => alert.remove(), 5000);
@@ -655,7 +655,7 @@ window.addEventListener('beforeunload', () => {
 function addSocialSharingButtons(container) {
     const shareContainer = document.createElement('div');
     shareContainer.className = 'social-sharing mt-3';
-    shareContainer.innerHTML = `
+    shareContainer.innerHTML = sanitizeHTML(`
         <div class="d-flex gap-2 align-items-center">
             <small class="text-muted me-2">Compartir:</small>
             <button class="btn btn-sm btn-outline-primary social-share" data-platform="facebook" title="Compartir en Facebook">
@@ -671,7 +671,7 @@ function addSocialSharingButtons(container) {
                 <i class="fab fa-telegram"></i>
             </button>
         </div>
-    `;
+    `);
     
     container.appendChild(shareContainer);
 }

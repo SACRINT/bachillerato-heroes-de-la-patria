@@ -93,7 +93,7 @@ class FloatingToolbar {
         const button = document.createElement('button');
         button.id = config.id;
         button.className = 'floating-toolbar-btn';
-        button.innerHTML = config.icon;
+        button.innerHTML = sanitizeHTML(config.icon);
         button.title = config.title;
         button.style.setProperty('--btn-color', config.color);
         button.style.setProperty('--btn-index', index);

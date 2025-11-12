@@ -689,7 +689,7 @@ class BGESecurityManager {
         const securityPanel = document.createElement('div');
         securityPanel.id = 'bge-security-panel';
         securityPanel.className = 'bge-security-panel';
-        securityPanel.innerHTML = `
+        securityPanel.innerHTML = sanitizeHTML(`
             <div class="security-header">
                 <h3>🔐 Seguridad BGE v${this.version}</h3>
                 <div class="security-controls">
@@ -733,7 +733,7 @@ class BGESecurityManager {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         // Estilos CSS para el panel
         const securityStyles = document.createElement('style');
@@ -993,17 +993,17 @@ class BGESecurityManager {
         const eventsList = document.getElementById('security-events-list');
 
         if (this.securityLogs.length === 0) {
-            eventsList.innerHTML = '<div class="no-events">No hay eventos recientes</div>';
+            eventsList.innerHTML = sanitizeHTML('<div class="no-events">No hay eventos recientes</div>');
             return;
         }
 
         const recentEvents = this.securityLogs.slice(-10).reverse();
-        eventsList.innerHTML = recentEvents.map(event => `
+        eventsList.innerHTML = sanitizeHTML(recentEvents.map(event => `
             <div class="security-event ${event.level}">
                 <div class="event-time">[${event.timestamp}]</div>
                 <div class="event-message">${event.message}</div>
             </div>
-        `).join('');
+        `).join(''));
     }
 
     /**

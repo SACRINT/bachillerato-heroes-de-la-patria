@@ -121,7 +121,7 @@ class SuscriptoresManager {
         }
 
         // Renderizar filas
-        tbody.innerHTML = suscriptoresFiltrados.map(suscriptor => `
+        tbody.innerHTML = sanitizeHTML(suscriptoresFiltrados.map(suscriptor => `
             <tr>
                 <td>${suscriptor.id}</td>
                 <td>
@@ -185,7 +185,7 @@ class SuscriptoresManager {
                     </div>
                 </td>
             </tr>
-        `).join('');
+        `).join(''));
 
         // Mostrar tabla o estado vacío
         if (suscriptoresFiltrados.length > 0) {

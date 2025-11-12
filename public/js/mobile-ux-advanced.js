@@ -598,7 +598,7 @@ class MobileUXAdvanced {
         if (!indicator) {
             indicator = document.createElement('div');
             indicator.className = `swipe-indicator ${direction}`;
-            indicator.innerHTML = direction === 'left' ? '‹' : '›';
+            indicator.innerHTML = sanitizeHTML(direction === 'left' ? '‹' : '›');
             document.body.appendChild(indicator);
         }
         indicator.classList.add('show');

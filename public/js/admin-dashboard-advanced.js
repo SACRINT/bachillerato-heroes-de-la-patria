@@ -1209,10 +1209,10 @@ class AdminDashboardAdvanced {
         this.updateRecentActivity();
         
         const button = document.querySelector('.refresh-activity');
-        button.innerHTML = '<i class="fas fa-sync fa-spin"></i>';
+        button.innerHTML = sanitizeHTML('<i class="fas fa-sync fa-spin"></i>');
         
         setTimeout(() => {
-            button.innerHTML = '<i class="fas fa-sync"></i>';
+            button.innerHTML = sanitizeHTML('<i class="fas fa-sync"></i>');
         }, 1000);
     }
 

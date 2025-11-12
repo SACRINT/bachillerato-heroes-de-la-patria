@@ -64,7 +64,7 @@
                 console.error('❌ Validación fallida - Campos faltantes:', mappedData);
                 showErrorMessage('Por favor completa: Nombre Completo, Email, Año de Egreso y Carrera Técnica.');
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
+                submitBtn.innerHTML = sanitizeHTML(originalText);
                 return;
             }
 
@@ -72,7 +72,7 @@
 
             // Deshabilitar botón de envío
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
+            submitBtn.innerHTML = sanitizeHTML('<i class="fas fa-spinner fa-spin me-2"></i>Enviando...');
 
             try {
                 // Enviar a la API - usa /create para flujo de aprobación
@@ -106,7 +106,7 @@
             } finally {
                 // Rehabilitar botón
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
+                submitBtn.innerHTML = sanitizeHTML(originalText);
             }
         });
 

@@ -114,7 +114,7 @@ class BGEChatbotIAAvanzado {
         if (!document.getElementById('chatbot-ia-container')) {
             const container = document.createElement('div');
             container.id = 'chatbot-ia-container';
-            container.innerHTML = this.getChatbotHTML();
+            container.innerHTML = sanitizeHTML(this.getChatbotHTML());
             document.body.appendChild(container);
         }
 

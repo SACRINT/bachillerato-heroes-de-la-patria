@@ -446,7 +446,7 @@ class InteractiveCalendar {
         }
         
         calendarHTML += '</div></div>';
-        calendarContainer.innerHTML = calendarHTML;
+        calendarContainer.innerHTML = sanitizeHTML(calendarHTML);
     }
 
     renderEventsList() {
@@ -535,7 +535,7 @@ class InteractiveCalendar {
             `;
         }
         
-        listContainer.innerHTML = listHTML;
+        listContainer.innerHTML = sanitizeHTML(listHTML);
     }
 
     getEventsForDate(date) {

@@ -110,7 +110,7 @@ class TenantsAdminManager {
         const listEl = document.getElementById('tenantsList');
         const emptyEl = document.getElementById('emptyStateTenants');
 
-        tbody.innerHTML = '';
+        tbody.innerHTML = sanitizeHTML('');
 
         if (this.tenants.length === 0) {
             listEl.style.display = 'none';
@@ -140,7 +140,7 @@ class TenantsAdminManager {
             const statusText = (tenant.status === 'activo') ? 'Activo' : 'Inactivo';
             const createdDate = tenant.created_at ? new Date(tenant.created_at).toLocaleDateString('es-ES') : '-';
 
-            row.innerHTML = `
+            row.innerHTML = sanitizeHTML(`
                 <td><strong>#${tenant.id}</strong></td>
                 <td>${schoolName}</td>
                 <td><code>${tenant.domain}</code></td>
@@ -156,7 +156,7 @@ class TenantsAdminManager {
                         </button>
                     </div>
                 </td>
-            `;
+            `);
 
             tbody.appendChild(row);
         });

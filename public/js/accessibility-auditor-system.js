@@ -119,7 +119,7 @@ class AccessibilityAuditorSystem {
         // Crear botón de accesibilidad flotante
         const a11yBtn = document.createElement('button');
         a11yBtn.id = 'accessibility-btn';
-        a11yBtn.innerHTML = '♿';
+        a11yBtn.innerHTML = sanitizeHTML('♿');
         a11yBtn.title = 'Auditoría de Accesibilidad';
         a11yBtn.style.cssText = `
             position: fixed;
@@ -167,7 +167,7 @@ class AccessibilityAuditorSystem {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         `;
 
-        panel.innerHTML = this.generateAccessibilityPanelHTML();
+        panel.innerHTML = sanitizeHTML(this.generateAccessibilityPanelHTML());
         document.body.appendChild(panel);
     }
 

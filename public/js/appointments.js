@@ -232,7 +232,7 @@ class AppointmentSystem {
             </div>
         `).join('');
 
-        container.innerHTML = html;
+        container.innerHTML = sanitizeHTML(html);
     }
 
     formatSchedule(schedule) {
@@ -329,7 +329,7 @@ class AppointmentSystem {
         }
 
         calendarHTML += '</div></div>';
-        calendarContainer.innerHTML = calendarHTML;
+        calendarContainer.innerHTML = sanitizeHTML(calendarHTML);
 
         // Actualizar el título después de renderizar
         const monthYearAfter = document.getElementById('currentMonthYear');
@@ -398,7 +398,7 @@ class AppointmentSystem {
         const schedule = dept.schedule[dayName];
 
         if (!schedule) {
-            container.innerHTML = '<p class="text-muted">No hay horarios disponibles para este día.</p>';
+            container.innerHTML = sanitizeHTML('<p class="text-muted">No hay horarios disponibles para este día.</p>');
             return;
         }
 
@@ -406,7 +406,7 @@ class AppointmentSystem {
         const availableSlots = this.getAvailableSlots(this.selectedDate, startTime, endTime, dept.duration);
 
         if (availableSlots.length === 0) {
-            container.innerHTML = '<div class="alert alert-warning">No hay horarios disponibles para esta fecha. Por favor selecciona otro día.</div>';
+            container.innerHTML = sanitizeHTML('<div class="alert alert-warning">No hay horarios disponibles para esta fecha. Por favor selecciona otro día.</div>');
             return;
         }
 

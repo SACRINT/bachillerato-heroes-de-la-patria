@@ -348,7 +348,7 @@ class AdminAuth {
                 
                 // Actualizar botón de login
                 if (loginBtn) {
-                    loginBtn.innerHTML = '<i class="fas fa-shield-check me-2"></i>Admin <span class="badge bg-light text-success ms-1">✓</span>';
+                    loginBtn.innerHTML = sanitizeHTML('<i class="fas fa-shield-check me-2"></i>Admin <span class="badge bg-light text-success ms-1">✓</span>');
                     loginBtn.classList.remove('admin-login-compact');
                     loginBtn.classList.add('text-success');
                     loginBtn.onclick = () => this.openAdminPanel();
@@ -380,7 +380,7 @@ class AdminAuth {
                 
                 // Restaurar botón de login
                 if (loginBtn) {
-                    loginBtn.innerHTML = '<i class="fas fa-shield-halved me-2"></i>Admin';
+                    loginBtn.innerHTML = sanitizeHTML('<i class="fas fa-shield-halved me-2"></i>Admin');
                     loginBtn.classList.add('admin-login-compact');
                     loginBtn.classList.remove('text-success');
                     loginBtn.onclick = () => {
@@ -488,7 +488,7 @@ class AdminAuth {
         toast.className = `toast position-fixed top-0 end-0 m-3`;
         toast.style.zIndex = '9999';
         
-        toast.innerHTML = `
+        toast.innerHTML = sanitizeHTML(`
             <div class="toast-header ${colors[type]} text-white">
                 <i class="fas fa-shield-alt me-2"></i>
                 <strong class="me-auto">${title}</strong>
@@ -497,7 +497,7 @@ class AdminAuth {
             <div class="toast-body">
                 ${message}
             </div>
-        `;
+        `);
 
         const bsToast = new bootstrap.Toast(toast);
         bsToast.show();
@@ -773,7 +773,7 @@ function initAdminAuthSystem() {
             });
             
             if (loginBtn) {
-                loginBtn.innerHTML = '<i class="fas fa-user-shield me-1"></i>Panel Admin <span class="badge bg-success ms-1">✓</span>';
+                loginBtn.innerHTML = sanitizeHTML('<i class="fas fa-user-shield me-1"></i>Panel Admin <span class="badge bg-success ms-1">✓</span>');
                 loginBtn.classList.add('text-success');
                 loginBtn.setAttribute('data-admin-active', 'true');
                 //console.log('🔥 BOTÓN LOGIN FORZADO');

@@ -254,11 +254,11 @@ class TeachersPortalManager {
         const tbody = document.getElementById('upcomingClassesTable');
 
         if (classes.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No hay clases próximas</td></tr>';
+            tbody.innerHTML = sanitizeHTML('<tr><td colspan="5" class="text-center text-muted">No hay clases próximas</td></tr>');
             return;
         }
 
-        tbody.innerHTML = classes.map(cls => `
+        tbody.innerHTML = sanitizeHTML(classes.map(cls => `
             <tr>
                 <td>${cls.hora_inicio || '-'} - ${cls.hora_fin || '-'}</td>
                 <td>${cls.materia}</td>
@@ -266,7 +266,7 @@ class TeachersPortalManager {
                 <td>${cls.salon || '-'}</td>
                 <td><span class="badge bg-primary">${cls.total_estudiantes}</span></td>
             </tr>
-        `).join('');
+        `).join(''));
     }
 
     /**
@@ -337,11 +337,11 @@ class TeachersPortalManager {
         const grid = document.getElementById('classesGrid');
 
         if (classes.length === 0) {
-            grid.innerHTML = '<div class="col-12 text-center text-muted"><p>No hay clases registradas</p></div>';
+            grid.innerHTML = sanitizeHTML('<div class="col-12 text-center text-muted"><p>No hay clases registradas</p></div>');
             return;
         }
 
-        grid.innerHTML = classes.map(cls => `
+        grid.innerHTML = sanitizeHTML(classes.map(cls => `
             <div class="col-md-6 col-lg-4">
                 <div class="stat-card">
                     <h5 class="mb-2">${cls.materia}</h5>
@@ -358,7 +358,7 @@ class TeachersPortalManager {
                     </div>
                 </div>
             </div>
-        `).join('');
+        `).join(''));
     }
 
     /**
@@ -405,10 +405,10 @@ class TeachersPortalManager {
             this.classes = response.data || [];
         }
 
-        select.innerHTML = '<option value="">Seleccionar clase...</option>' +
+        select.innerHTML = sanitizeHTML('<option value="">Seleccionar clase...</option>' +
             this.classes.map(cls =>
                 `<option value="${cls.id}">${cls.materia} - ${cls.grado}° ${cls.grupo}</option>`
-            ).join('');
+            ).join(''));
     }
 
     /**
@@ -449,11 +449,11 @@ class TeachersPortalManager {
         const tbody = document.getElementById('gradesTableBody');
 
         if (grades.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No hay estudiantes</td></tr>';
+            tbody.innerHTML = sanitizeHTML('<tr><td colspan="8" class="text-center text-muted">No hay estudiantes</td></tr>');
             return;
         }
 
-        tbody.innerHTML = grades.map((grade, index) => `
+        tbody.innerHTML = sanitizeHTML(grades.map((grade, index) => `
             <tr>
                 <td>${grade.matricula}</td>
                 <td>${grade.nombre_completo}</td>
@@ -490,7 +490,7 @@ class TeachersPortalManager {
                     </button>
                 </td>
             </tr>
-        `).join('');
+        `).join(''));
     }
 
     /**
@@ -582,11 +582,11 @@ class TeachersPortalManager {
         const grid = document.getElementById('resourcesGrid');
 
         if (resources.length === 0) {
-            grid.innerHTML = '<div class="col-12 text-center text-muted"><p>No hay recursos disponibles</p></div>';
+            grid.innerHTML = sanitizeHTML('<div class="col-12 text-center text-muted"><p>No hay recursos disponibles</p></div>');
             return;
         }
 
-        grid.innerHTML = resources.map(resource => `
+        grid.innerHTML = sanitizeHTML(resources.map(resource => `
             <div class="col-md-4">
                 <div class="stat-card">
                     <h6>${resource.titulo}</h6>
@@ -599,7 +599,7 @@ class TeachersPortalManager {
                     </div>
                 </div>
             </div>
-        `).join('');
+        `).join(''));
     }
 
     /**
@@ -665,11 +665,11 @@ class TeachersPortalManager {
         const tbody = document.getElementById('messagesTableBody');
 
         if (messages.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No hay mensajes</td></tr>';
+            tbody.innerHTML = sanitizeHTML('<tr><td colspan="5" class="text-center text-muted">No hay mensajes</td></tr>');
             return;
         }
 
-        tbody.innerHTML = messages.map(msg => `
+        tbody.innerHTML = sanitizeHTML(messages.map(msg => `
             <tr>
                 <td>${msg.recipient_type === 'parent' ? 'Padre' : 'Estudiante'}</td>
                 <td>${msg.asunto}</td>
@@ -681,7 +681,7 @@ class TeachersPortalManager {
                     </button>
                 </td>
             </tr>
-        `).join('');
+        `).join(''));
     }
 
     /**
@@ -747,11 +747,11 @@ class TeachersPortalManager {
         const container = document.getElementById('notificationsList');
 
         if (notifications.length === 0) {
-            container.innerHTML = '<p class="text-muted">No hay notificaciones</p>';
+            container.innerHTML = sanitizeHTML('<p class="text-muted">No hay notificaciones</p>');
             return;
         }
 
-        container.innerHTML = notifications.map(notif => `
+        container.innerHTML = sanitizeHTML(notifications.map(notif => `
             <div class="alert alert-${this.getNotificationColor(notif.prioridad)} ${notif.leida ? 'opacity-50' : ''}" role="alert">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
@@ -766,7 +766,7 @@ class TeachersPortalManager {
                     ` : ''}
                 </div>
             </div>
-        `).join('');
+        `).join(''));
     }
 
     /**

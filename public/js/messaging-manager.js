@@ -221,18 +221,18 @@ class MessagingManager {
         if (!this.conversationsList) return;
 
         if (this.conversations.length === 0) {
-            this.conversationsList.innerHTML = `
+            this.conversationsList.innerHTML = sanitizeHTML(`
                 <div class="text-center p-4 text-muted">
                     <p>No hay conversaciones</p>
                     <button class="btn btn-sm btn-primary" onclick="window.messagingManager.showNewConversationModal()">
                         Iniciar conversación
                     </button>
                 </div>
-            `;
+            `);
             return;
         }
 
-        this.conversationsList.innerHTML = this.conversations.map(conv => `
+        this.conversationsList.innerHTML = sanitizeHTML(this.conversations.map(conv => `
             <div class="conversation-item ${conv.unread_count > 0 ? 'unread' : ''} ${this.currentConversation && this.currentConversation.conversation_id === conv.conversation_id ? 'active' : ''}"
                  onclick="window.messagingManager.selectConversation(${conv.conversation_id})">
                 <div class="conversation-avatar">
@@ -253,7 +253,7 @@ class MessagingManager {
                 </div>
                 ${conv.unread_count > 0 ? `<div class="unread-badge">${conv.unread_count}</div>` : ''}
             </div>
-        `).join('');
+        `).join(''));
     }
 
     async selectConversation(conversationId) {
@@ -327,17 +327,17 @@ class MessagingManager {
         if (!this.messagesContainer) return;
 
         if (this.messages.length === 0) {
-            this.messagesContainer.innerHTML = `
+            this.messagesContainer.innerHTML = sanitizeHTML(`
                 <div class="text-center text-muted py-5">
                     <p>No hay mensajes en esta conversación</p>
                     <p><small>Envía el primer mensaje para comenzar</small></p>
                 </div>
-            `;
+            `);
             return;
         }
 
-        this.messagesContainer.innerHTML = this.messages.map(msg => {
-            const isSent = msg.sender_id == this.getCurrentUserId();
+        this.messagesContainer.innerHTML = sanitizeHTML(this.messages.map(msg => {
+            const isSent = msg.sender_id == this.getCurrentUserId());
             const messageClass = isSent ? 'sent' : 'received';
 
             return `
@@ -506,11 +506,11 @@ class MessagingManager {
         const select = document.getElementById('participantsSelect');
         if (!select) return;
 
-        select.innerHTML = `
+        select.innerHTML = sanitizeHTML(`
             <option value="101-teacher">Prof. Juan Pérez (Docente)</option>
             <option value="201-parent">María González (Padre)</option>
             <option value="1-admin">Admin Principal</option>
-        `;
+        `);
     }
 
     async createConversation() {

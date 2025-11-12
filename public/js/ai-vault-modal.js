@@ -83,7 +83,7 @@ class AIVaultModal {
         const content = document.getElementById('aiVaultContent');
 
         setTimeout(() => {
-            content.innerHTML = `
+            content.innerHTML = sanitizeHTML(`
                 <div class="row">
                     <div class="col-md-4">
                         <div class="card bg-white bg-opacity-10 border-0 mb-3">
@@ -111,7 +111,7 @@ class AIVaultModal {
                         </div>
                     </div>
                 </div>
-            `;
+            `);
         }, 1000);
     }
 

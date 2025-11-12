@@ -104,7 +104,7 @@ class PollsManager {
         html += this.renderFilters();
         html += this.renderPollsList();
 
-        container.innerHTML = html;
+        container.innerHTML = sanitizeHTML(html);
     }
 
     /**
@@ -290,12 +290,12 @@ class PollsManager {
 
             const modal = document.createElement('div');
             modal.className = 'modal poll-modal';
-            modal.innerHTML = `
+            modal.innerHTML = sanitizeHTML(`
                 <div class="modal-overlay"></div>
                 <div class="modal-content">
                     <div class="modal-header">
                         <h2>${poll.title}</h2>
-                        <button class="modal-close">&times;</button>
+                        <button class="modal-close">&times);</button>
                     </div>
 
                     <div class="modal-body">
@@ -489,12 +489,12 @@ class PollsManager {
 
             const modal = document.createElement('div');
             modal.className = 'modal poll-results-modal';
-            modal.innerHTML = `
+            modal.innerHTML = sanitizeHTML(`
                 <div class="modal-overlay"></div>
                 <div class="modal-content modal-large">
                     <div class="modal-header">
                         <h2>${poll.title} - Resultados</h2>
-                        <button class="modal-close">&times;</button>
+                        <button class="modal-close">&times);</button>
                     </div>
 
                     <div class="modal-body">

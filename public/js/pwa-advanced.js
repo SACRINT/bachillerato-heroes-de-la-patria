@@ -157,7 +157,7 @@ class PWAAdvanced {
         shareTargets.forEach(target => {
             const shareButton = document.createElement('button');
             shareButton.className = 'btn btn-outline-primary btn-sm ms-2';
-            shareButton.innerHTML = '<i class="fas fa-share-alt"></i>';
+            shareButton.innerHTML = sanitizeHTML('<i class="fas fa-share-alt"></i>');
             shareButton.title = 'Compartir';
             
             shareButton.addEventListener('click', () => {
@@ -436,12 +436,12 @@ class PWAAdvanced {
     showToast(message, type = 'info') {
         const toast = document.createElement('div');
         toast.className = `toast-notification toast-${type}`;
-        toast.innerHTML = `
+        toast.innerHTML = sanitizeHTML(`
             <div class="toast-content">
                 <span class="toast-message">${message}</span>
                 <button class="toast-close" onclick="this.parentElement.parentElement.remove()">×</button>
             </div>
-        `;
+        `);
         
         // Estilos inline para asegurar visibilidad
         toast.style.cssText = `
@@ -853,13 +853,13 @@ class UpdateManager {
         // Mostrar notificación de actualización con mejores controles
         const updateBanner = document.createElement('div');
         updateBanner.className = 'update-banner';
-        updateBanner.innerHTML = `
+        updateBanner.innerHTML = sanitizeHTML(`
             <div class="update-content">
                 <span>🚀 Nueva versión disponible</span>
                 <button onclick="window.pwaAdvanced.updateManager.applyUpdate()" class="btn btn-primary btn-sm">Actualizar</button>
                 <button onclick="window.pwaAdvanced.updateManager.dismissBanner()" class="btn btn-outline-secondary btn-sm">Después</button>
             </div>
-        `;
+        `);
 
         updateBanner.style.cssText = `
             position: fixed;
@@ -954,7 +954,7 @@ class InstallManager {
     showInstallButton() {
         const installButton = document.createElement('button');
         installButton.className = 'install-button btn btn-primary';
-        installButton.innerHTML = '📱 Instalar App';
+        installButton.innerHTML = sanitizeHTML('📱 Instalar App');
         installButton.onclick = () => this.showInstallPrompt();
         
         installButton.style.cssText = `

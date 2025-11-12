@@ -62,7 +62,7 @@ class AIEducationalSystem {
         const ui = document.createElement('div');
         ui.id = 'ai-system-manager';
         ui.className = 'pwa-feature-panel ai-panel';
-        ui.innerHTML = `
+        ui.innerHTML = sanitizeHTML(`
             <div class="panel-header">
                 <h3>🤖 Sistema IA Educativo</h3>
                 <div class="panel-controls">
@@ -257,7 +257,7 @@ class AIEducationalSystem {
 
             <style>
                 .ai-panel {
-                    background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%);
+                    background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%));
                     color: white;
                     border-radius: 12px;
                     padding: 0;
@@ -1052,12 +1052,12 @@ class AIEducationalSystem {
         if (!panel) return;
 
         if (predictions.length === 0) {
-            panel.innerHTML = `
+            panel.innerHTML = sanitizeHTML(`
                 <div class="no-data">
                     <div class="no-data-icon">📊</div>
                     <p>No hay predicciones disponibles</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -1076,10 +1076,10 @@ class AIEducationalSystem {
             </div>
         `).join('');
 
-        panel.innerHTML = predictionsHTML + `
+        panel.innerHTML = sanitizeHTML(predictionsHTML + `
             <style>
                 .prediction-item {
-                    border-left: 4px solid #4CAF50;
+                    border-left: 4px solid #4CAF50);
                 }
                 .prediction-item.medium-risk {
                     border-left-color: #FF9800;
@@ -1107,12 +1107,12 @@ class AIEducationalSystem {
         if (!panel) return;
 
         if (alerts.length === 0) {
-            panel.innerHTML = `
+            panel.innerHTML = sanitizeHTML(`
                 <div class="no-data">
                     <div class="no-data-icon">📋</div>
                     <p>No hay alertas de asistencia</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -1128,10 +1128,10 @@ class AIEducationalSystem {
             </div>
         `).join('');
 
-        panel.innerHTML = alertsHTML + `
+        panel.innerHTML = sanitizeHTML(alertsHTML + `
             <style>
                 .alert-item {
-                    border-left: 4px solid #FF9800;
+                    border-left: 4px solid #FF9800);
                 }
                 .severity-alta {
                     border-left-color: #F44336;
@@ -1156,12 +1156,12 @@ class AIEducationalSystem {
         if (!panel) return;
 
         if (recommendations.length === 0) {
-            panel.innerHTML = `
+            panel.innerHTML = sanitizeHTML(`
                 <div class="no-data">
                     <div class="no-data-icon">💡</div>
                     <p>No hay recomendaciones disponibles</p>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -1179,10 +1179,10 @@ class AIEducationalSystem {
             </div>
         `).join('');
 
-        panel.innerHTML = recommendationsHTML + `
+        panel.innerHTML = sanitizeHTML(recommendationsHTML + `
             <style>
                 .content-item {
-                    background: rgba(255, 255, 255, 0.05);
+                    background: rgba(255, 255, 255, 0.05));
                     padding: 5px 10px;
                     border-radius: 5px;
                     margin: 3px 0;
@@ -1204,10 +1204,10 @@ class AIEducationalSystem {
             </div>
         `).join('');
 
-        panel.innerHTML = insightsHTML + `
+        panel.innerHTML = sanitizeHTML(insightsHTML + `
             <style>
                 .insight-item {
-                    background: rgba(255, 255, 255, 0.1);
+                    background: rgba(255, 255, 255, 0.1));
                     padding: 15px;
                     border-radius: 8px;
                     margin-bottom: 10px;
@@ -1292,11 +1292,11 @@ class AIEducationalSystem {
         const avatar = sender === 'user' ? '👤' : '🤖';
         const time = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
         
-        messageDiv.innerHTML = `
+        messageDiv.innerHTML = sanitizeHTML(`
             <div class="message-avatar">${avatar}</div>
             <div class="message-content">${message}</div>
             <div class="message-time">${time}</div>
-        `;
+        `);
 
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1439,14 +1439,14 @@ class AIEducationalSystem {
     showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `ai-notification ${type}`;
-        notification.innerHTML = `
+        notification.innerHTML = sanitizeHTML(`
             <div class="notification-content">
                 <span class="notification-icon">
                     ${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}
                 </span>
                 <span class="notification-message">${message}</span>
             </div>
-        `;
+        `);
 
         document.body.appendChild(notification);
 

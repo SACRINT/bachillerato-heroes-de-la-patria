@@ -274,7 +274,7 @@ class JobPortal {
         const featuredJobs = this.jobs.filter(job => job.featured && job.status === 'active').slice(0, 6);
         
         if (featuredJobs.length === 0) {
-            container.innerHTML = '<div class="col-12 text-center text-muted">No hay empleos destacados disponibles</div>';
+            container.innerHTML = sanitizeHTML('<div class="col-12 text-center text-muted">No hay empleos destacados disponibles</div>');
             return;
         }
 
@@ -322,7 +322,7 @@ class JobPortal {
             </div>
         `).join('');
 
-        container.innerHTML = html;
+        container.innerHTML = sanitizeHTML(html);
     }
 
     renderCompanies() {
@@ -340,7 +340,7 @@ class JobPortal {
             </div>
         `).join('');
 
-        container.innerHTML = html;
+        container.innerHTML = sanitizeHTML(html);
     }
 
     updateStatistics() {
@@ -527,7 +527,7 @@ class JobPortal {
             </div>
         `).join('');
 
-        container.innerHTML = html;
+        container.innerHTML = sanitizeHTML(html);
     }
 
     showJobDetails(jobId) {
@@ -607,13 +607,13 @@ class JobPortal {
         
         if (index === -1) {
             this.savedJobs.push(jobId);
-            button.innerHTML = '<i class="fas fa-bookmark text-warning"></i>';
+            button.innerHTML = sanitizeHTML('<i class="fas fa-bookmark text-warning"></i>');
             button.classList.remove('btn-outline-warning');
             button.classList.add('btn-warning');
             this.showAlert('Empleo guardado exitosamente', 'success');
         } else {
             this.savedJobs.splice(index, 1);
-            button.innerHTML = '<i class="fas fa-bookmark"></i>';
+            button.innerHTML = sanitizeHTML('<i class="fas fa-bookmark"></i>');
             button.classList.remove('btn-warning');
             button.classList.add('btn-outline-warning');
             this.showAlert('Empleo eliminado de guardados', 'info');

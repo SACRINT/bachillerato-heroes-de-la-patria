@@ -273,7 +273,7 @@ class GradesManager {
     async renderInterface() {
         const container = document.getElementById('grades-container') || this.createContainer();
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="grades-manager">
                 <div class="row">
                     <!-- Panel de Captura -->
@@ -317,7 +317,7 @@ class GradesManager {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         this.setupEventListeners();
     }
@@ -611,7 +611,7 @@ class GradesManager {
             </div>
         `;
 
-        filtersContainer.innerHTML = filtersHTML;
+        filtersContainer.innerHTML = sanitizeHTML(filtersHTML);
     }
 
     async handleQuery() {
@@ -630,7 +630,7 @@ class GradesManager {
                         parcial: document.getElementById('query-parcial').value,
                         ciclo_escolar: document.getElementById('query-period').value
                     });
-                    resultsContainer.innerHTML = this.renderStudentGrades(results);
+                    resultsContainer.innerHTML = sanitizeHTML(this.renderStudentGrades(results));
                     break;
 
                 case 'group':
@@ -641,7 +641,7 @@ class GradesManager {
                         parcial: document.getElementById('query-parcial').value,
                         ciclo_escolar: document.getElementById('query-period').value
                     });
-                    resultsContainer.innerHTML = this.renderGroupGrades(results);
+                    resultsContainer.innerHTML = sanitizeHTML(this.renderGroupGrades(results));
                     break;
             }
 
@@ -825,10 +825,10 @@ class GradesManager {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-        alertDiv.innerHTML = `
+        alertDiv.innerHTML = sanitizeHTML(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        `);
 
         document.body.appendChild(alertDiv);
 
@@ -911,6 +911,6 @@ const styles = `
 if (!document.getElementById('grades-manager-styles')) {
     const styleElement = document.createElement('div');
     styleElement.id = 'grades-manager-styles';
-    styleElement.innerHTML = styles;
+    styleElement.innerHTML = sanitizeHTML(styles);
     document.head.appendChild(styleElement);
 }

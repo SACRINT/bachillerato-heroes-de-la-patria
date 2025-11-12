@@ -322,7 +322,7 @@ async function handleStudentLogin() {
     const button = event.target;
     const originalText = button.innerHTML;
     button.disabled = true;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Iniciando sesión...';
+    button.innerHTML = sanitizeHTML('<i class="fas fa-spinner fa-spin me-2"></i>Iniciando sesión...');
 
     try {
         const result = await studentAuth.login(email, password);
@@ -344,12 +344,12 @@ async function handleStudentLogin() {
         } else {
             showLoginAlert(result.message || 'Credenciales incorrectas', 'danger');
             button.disabled = false;
-            button.innerHTML = originalText;
+            button.innerHTML = sanitizeHTML(originalText);
         }
     } catch (error) {
         showLoginAlert('Error al iniciar sesión. Intenta nuevamente.', 'danger');
         button.disabled = false;
-        button.innerHTML = originalText;
+        button.innerHTML = sanitizeHTML(originalText);
     }
 }
 
@@ -385,7 +385,7 @@ function showLoginAlert(message, type) {
         </div>
     `;
 
-    container.innerHTML = alertHTML;
+    container.innerHTML = sanitizeHTML(alertHTML);
 
     // Auto-dismiss después de 5 segundos
     setTimeout(() => {

@@ -117,7 +117,7 @@ class PWAAdvancedFeatures {
             border-radius: 50%; width: 60px; height: 60px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         `;
-        qrScannerButton.innerHTML = '<i class="fas fa-qrcode"></i>';
+        qrScannerButton.innerHTML = sanitizeHTML('<i class="fas fa-qrcode"></i>');
         qrScannerButton.title = 'Escanear QR para asistencia';
         qrScannerButton.addEventListener('click', () => this.openQRScanner());
         

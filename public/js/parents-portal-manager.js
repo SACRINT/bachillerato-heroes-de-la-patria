@@ -232,7 +232,7 @@ class ParentsPortalManager {
 
     async loadGrades(studentId) {
         const container = document.getElementById('gradesContent');
-        container.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div></div>';
+        container.innerHTML = sanitizeHTML('<div class="text-center"><div class="spinner-border" role="status"></div></div>');
 
         try {
             const response = await fetch(`${this.apiEndpoint}/students/${studentId}/grades`, {
@@ -291,17 +291,17 @@ class ParentsPortalManager {
                 </div>
             `;
 
-            container.innerHTML = html;
+            container.innerHTML = sanitizeHTML(html);
 
         } catch (error) {
             console.error('Error al cargar calificaciones:', error);
-            container.innerHTML = '<div class="alert alert-danger">Error al cargar calificaciones</div>';
+            container.innerHTML = sanitizeHTML('<div class="alert alert-danger">Error al cargar calificaciones</div>');
         }
     }
 
     async loadAttendance(studentId) {
         const container = document.getElementById('attendanceContent');
-        container.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div></div>';
+        container.innerHTML = sanitizeHTML('<div class="text-center"><div class="spinner-border" role="status"></div></div>');
 
         try {
             const response = await fetch(`${this.apiEndpoint}/students/${studentId}/attendance`, {
@@ -386,17 +386,17 @@ class ParentsPortalManager {
                 </table>
             `;
 
-            container.innerHTML = html;
+            container.innerHTML = sanitizeHTML(html);
 
         } catch (error) {
             console.error('Error al cargar asistencia:', error);
-            container.innerHTML = '<div class="alert alert-danger">Error al cargar asistencia</div>';
+            container.innerHTML = sanitizeHTML('<div class="alert alert-danger">Error al cargar asistencia</div>');
         }
     }
 
     async loadPayments(studentId) {
         const container = document.getElementById('paymentsContent');
-        container.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div></div>';
+        container.innerHTML = sanitizeHTML('<div class="text-center"><div class="spinner-border" role="status"></div></div>');
 
         try {
             const response = await fetch(`${this.apiEndpoint}/students/${studentId}/payments`, {
@@ -456,11 +456,11 @@ class ParentsPortalManager {
                 </table>
             `;
 
-            container.innerHTML = html;
+            container.innerHTML = sanitizeHTML(html);
 
         } catch (error) {
             console.error('Error al cargar pagos:', error);
-            container.innerHTML = '<div class="alert alert-danger">Error al cargar pagos</div>';
+            container.innerHTML = sanitizeHTML('<div class="alert alert-danger">Error al cargar pagos</div>');
         }
     }
 

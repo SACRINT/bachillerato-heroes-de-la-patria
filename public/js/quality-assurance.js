@@ -119,9 +119,9 @@ class QualityAssurance {
     createVisualReport() {
         const report = document.createElement('div');
         report.id = 'qa-report';
-        report.innerHTML = `
+        report.innerHTML = sanitizeHTML(`
             <div style="
-                position: fixed; top: 10px; right: 10px; 
+                position: fixed); top: 10px; right: 10px; 
                 background: white; border: 2px solid #333;
                 padding: 15px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
                 font-family: monospace; font-size: 12px; z-index: 10000; max-width: 400px;

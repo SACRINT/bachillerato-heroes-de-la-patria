@@ -857,7 +857,7 @@ ${originalMessage}
         const submitButton = form.querySelector('button[type="submit"]');
         if (submitButton) {
             submitButton.disabled = false;
-            submitButton.innerHTML = submitButton.dataset.originalText || 'Enviar Mensaje';
+            submitButton.innerHTML = sanitizeHTML(submitButton.dataset.originalText || 'Enviar Mensaje');
         }
     }
 

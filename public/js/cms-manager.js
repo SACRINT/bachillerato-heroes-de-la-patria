@@ -172,14 +172,14 @@ class CMSManager {
         const container = document.getElementById('noticiasContainer');
         if (!container) return;
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="text-center p-4">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Cargando...</span>
                 </div>
                 <p class="mt-2">Cargando noticias...</p>
             </div>
-        `;
+        `);
 
         try {
             const limit = this.pagination.noticias.limit;
@@ -189,12 +189,12 @@ class CMSManager {
             const total = result.total || noticias.length;
 
             if (noticias.length === 0) {
-                container.innerHTML = `
+                container.innerHTML = sanitizeHTML(`
                     <div class="text-center p-4">
                         <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
                         <p class="text-muted">No hay noticias creadas aún</p>
                     </div>
-                `;
+                `);
                 return;
             }
 
@@ -245,7 +245,7 @@ class CMSManager {
                 </table>
             `;
 
-            container.innerHTML = html;
+            container.innerHTML = sanitizeHTML(html);
 
             // Actualizar paginación
             this.pagination.noticias.total = total;
@@ -270,12 +270,12 @@ class CMSManager {
 
         } catch (error) {
             console.error('Error cargando noticias:', error);
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="text-center p-4">
                     <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
                     <p class="text-danger">Error cargando noticias: ${error.message}</p>
                 </div>
-            `;
+            `);
         }
     }
 
@@ -332,14 +332,14 @@ class CMSManager {
         const container = document.getElementById('eventosContainer');
         if (!container) return;
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="text-center p-4">
                 <div class="spinner-border text-success" role="status">
                     <span class="visually-hidden">Cargando...</span>
                 </div>
                 <p class="mt-2">Cargando eventos...</p>
             </div>
-        `;
+        `);
 
         try {
             const limit = this.pagination.eventos.limit;
@@ -349,12 +349,12 @@ class CMSManager {
             const total = result.total || eventos.length;
 
             if (eventos.length === 0) {
-                container.innerHTML = `
+                container.innerHTML = sanitizeHTML(`
                     <div class="text-center p-4">
                         <i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
                         <p class="text-muted">No hay eventos creados aún</p>
                     </div>
-                `;
+                `);
                 return;
             }
 
@@ -410,7 +410,7 @@ class CMSManager {
                 </table>
             `;
 
-            container.innerHTML = html;
+            container.innerHTML = sanitizeHTML(html);
 
             // Actualizar paginación
             this.pagination.eventos.total = total;
@@ -435,12 +435,12 @@ class CMSManager {
 
         } catch (error) {
             console.error('Error cargando eventos:', error);
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="text-center p-4">
                     <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
                     <p class="text-danger">Error cargando eventos: ${error.message}</p>
                 </div>
-            `;
+            `);
         }
     }
 
@@ -489,14 +489,14 @@ class CMSManager {
         const container = document.getElementById('avisosContainer');
         if (!container) return;
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="text-center p-4">
                 <div class="spinner-border text-warning" role="status">
                     <span class="visually-hidden">Cargando...</span>
                 </div>
                 <p class="mt-2">Cargando avisos...</p>
             </div>
-        `;
+        `);
 
         try {
             const limit = this.pagination.avisos.limit;
@@ -506,12 +506,12 @@ class CMSManager {
             const total = result.total || avisos.length;
 
             if (avisos.length === 0) {
-                container.innerHTML = `
+                container.innerHTML = sanitizeHTML(`
                     <div class="text-center p-4">
                         <i class="fas fa-exclamation-triangle fa-3x text-muted mb-3"></i>
                         <p class="text-muted">No hay avisos creados aún</p>
                     </div>
-                `;
+                `);
                 return;
             }
 
@@ -562,7 +562,7 @@ class CMSManager {
                 </table>
             `;
 
-            container.innerHTML = html;
+            container.innerHTML = sanitizeHTML(html);
         
 
             // Actualizar paginación
@@ -588,12 +588,12 @@ class CMSManager {
 
         } catch (error) {
             console.error('Error cargando avisos:', error);
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="text-center p-4">
                     <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
                     <p class="text-danger">Error cargando avisos: ${error.message}</p>
                 </div>
-            `;
+            `);
         }
     }
 
@@ -642,14 +642,14 @@ class CMSManager {
         const container = document.getElementById('comunicadosContainer');
         if (!container) return;
 
-        container.innerHTML = `
+        container.innerHTML = sanitizeHTML(`
             <div class="text-center p-4">
                 <div class="spinner-border text-info" role="status">
                     <span class="visually-hidden">Cargando...</span>
                 </div>
                 <p class="mt-2">Cargando comunicados...</p>
             </div>
-        `;
+        `);
 
         try {
             const limit = this.pagination.comunicados.limit;
@@ -659,12 +659,12 @@ class CMSManager {
             const total = result.total || comunicados.length;
 
             if (comunicados.length === 0) {
-                container.innerHTML = `
+                container.innerHTML = sanitizeHTML(`
                     <div class="text-center p-4">
                         <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
                         <p class="text-muted">No hay comunicados creados aún</p>
                     </div>
-                `;
+                `);
                 return;
             }
 
@@ -717,7 +717,7 @@ class CMSManager {
                 </table>
             `;
 
-            container.innerHTML = html;
+            container.innerHTML = sanitizeHTML(html);
         
 
             // Actualizar paginación
@@ -743,12 +743,12 @@ class CMSManager {
 
         } catch (error) {
             console.error('Error cargando comunicados:', error);
-            container.innerHTML = `
+            container.innerHTML = sanitizeHTML(`
                 <div class="text-center p-4">
                     <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
                     <p class="text-danger">Error cargando comunicados: ${error.message}</p>
                 </div>
-            `;
+            `);
         }
     }
 

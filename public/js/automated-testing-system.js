@@ -88,7 +88,7 @@ class AutomatedTestingSystem {
         // Crear botón de testing flotante
         const testingBtn = document.createElement('button');
         testingBtn.id = 'testing-btn';
-        testingBtn.innerHTML = '🧪';
+        testingBtn.innerHTML = sanitizeHTML('🧪');
         testingBtn.title = 'Ejecutar tests automáticos';
         testingBtn.style.cssText = `
             position: fixed;
@@ -145,7 +145,7 @@ class AutomatedTestingSystem {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         `;
 
-        panel.innerHTML = this.generateTestingPanelHTML();
+        panel.innerHTML = sanitizeHTML(this.generateTestingPanelHTML());
         document.body.appendChild(panel);
     }
 

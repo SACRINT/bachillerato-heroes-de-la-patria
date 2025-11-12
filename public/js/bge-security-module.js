@@ -2399,7 +2399,7 @@ function setupAdminLoginEvents() {
 
         // Deshabilitar botón durante el login
         loginBtn.disabled = true;
-        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Verificando...';
+        loginBtn.innerHTML = sanitizeHTML('<i class="fas fa-spinner fa-spin me-2"></i>Verificando...');
         errorDiv.classList.add('d-none');
 
         try {
@@ -2438,7 +2438,7 @@ function setupAdminLoginEvents() {
         } finally {
             // Reactivar botón
             loginBtn.disabled = false;
-            loginBtn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión';
+            loginBtn.innerHTML = sanitizeHTML('<i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión');
         }
     });
 
@@ -2460,7 +2460,7 @@ window.updateAdminHeaderStatus = function updateAdminHeaderStatus(isLoggedIn, us
         // Actualizar enlace de admin
         if (adminLink) {
             adminLink.classList.add('text-success');
-            adminLink.innerHTML = `<i class="fas fa-shield-check me-2"></i>Admin (${user.username.split('@')[0]})`;
+            adminLink.innerHTML = sanitizeHTML(`<i class="fas fa-shield-check me-2"></i>Admin (${user.username.split('@')[0]})`);
         }
         if (statusBadge) {
             statusBadge.classList.remove('d-none');
@@ -2481,7 +2481,7 @@ window.updateAdminHeaderStatus = function updateAdminHeaderStatus(isLoggedIn, us
         // Resetear estado
         if (adminLink) {
             adminLink.classList.remove('text-success');
-            adminLink.innerHTML = '<i class="fas fa-shield-halved me-2"></i>Admin';
+            adminLink.innerHTML = sanitizeHTML('<i class="fas fa-shield-halved me-2"></i>Admin');
         }
         if (statusBadge) {
             statusBadge.classList.add('d-none');

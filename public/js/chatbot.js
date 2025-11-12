@@ -1195,7 +1195,7 @@ function toggleChatbot() {
     
     if (chatbotOpen) {
         container.style.display = 'flex';
-        toggle.innerHTML = '<i class="fas fa-times"></i>';
+        toggle.innerHTML = sanitizeHTML('<i class="fas fa-times"></i>');
         
         // Limpiar mensajes anteriores si es necesario
         const messagesContainer = document.getElementById('chatbotMessages');
@@ -1219,7 +1219,7 @@ function toggleChatbot() {
         
     } else {
         container.style.display = 'none';
-        toggle.innerHTML = '<i class="fas fa-comments"></i>';
+        toggle.innerHTML = sanitizeHTML('<i class="fas fa-comments"></i>');
     }
 }
 
@@ -1234,7 +1234,7 @@ function addMessage(sender, message) {
     messageDiv.className = `chatbot-message ${sender}`;
     
     // Usar innerHTML para renderizar HTML formateado
-    messageDiv.innerHTML = message;
+    messageDiv.innerHTML = sanitizeHTML(message);
     
     // Animación de entrada
     messageDiv.style.opacity = '0';
@@ -1427,7 +1427,7 @@ function addFeedbackButtons(originalMessage) {
     const messagesContainer = document.getElementById('chatbotMessages');
     const feedbackDiv = document.createElement('div');
     feedbackDiv.className = 'feedback-container';
-    feedbackDiv.innerHTML = `
+    feedbackDiv.innerHTML = sanitizeHTML(`
         <div class="feedback-question">
             <small>¿Te fue útil esta respuesta?</small>
         </div>
@@ -1439,7 +1439,7 @@ function addFeedbackButtons(originalMessage) {
                 👎 No
             </button>
         </div>
-    `;
+    `);
     
     messagesContainer.appendChild(feedbackDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -1456,11 +1456,11 @@ async function submitFeedback(rating, originalMessage) {
             const lastFeedback = feedbackContainers[feedbackContainers.length - 1];
             
             if (lastFeedback) {
-                lastFeedback.innerHTML = `
+                lastFeedback.innerHTML = sanitizeHTML(`
                     <div class="feedback-thanks">
                         <small>✅ ¡Gracias por tu feedback!</small>
                     </div>
-                `;
+                `);
             }
             
         } catch (error) {

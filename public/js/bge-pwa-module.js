@@ -339,7 +339,7 @@ class BGEPWAModule extends BGEModule {
 
                 const installBanner = document.createElement('div');
                 installBanner.className = 'bge-install-banner';
-                installBanner.innerHTML = `
+                installBanner.innerHTML = sanitizeHTML(`
                     <div class="install-content">
                         <div class="install-icon">📱</div>
                         <div class="install-text">
@@ -351,7 +351,7 @@ class BGEPWAModule extends BGEModule {
                             <button class="btn btn-outline-secondary dismiss-btn">Ahora no</button>
                         </div>
                     </div>
-                `;
+                `);
 
                 installBanner.querySelector('.install-btn').addEventListener('click', () => {
                     this.installer.prompt.show();

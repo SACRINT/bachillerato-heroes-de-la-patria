@@ -151,7 +151,7 @@ class SimpleCMS {
     renderDashboard() {
         const dashboardStats = document.getElementById('dashboard-stats');
         if (dashboardStats) {
-            dashboardStats.innerHTML = `
+            dashboardStats.innerHTML = sanitizeHTML(`
                 <div class="row g-4">
                     <div class="col-md-3">
                         <div class="card text-center">
@@ -186,7 +186,7 @@ class SimpleCMS {
                         </div>
                     </div>
                 </div>
-            `;
+            `);
         }
     }
 
