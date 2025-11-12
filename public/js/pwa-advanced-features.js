@@ -162,7 +162,7 @@ class PWAAdvancedFeatures {
                         <button type="button" class="btn-close btn-close-white" onclick="this.closest('.modal').remove()"></button>
                     </div>
                     <div class="modal-body p-0 position-relative">
-                        <video autoplay playsinline style="width: 100%); height: auto;"></video>
+                        <video autoplay playsinline style="width: 100%; height: auto;"></video>
                         <div class="position-absolute top-50 start-50 translate-middle">
                             <div style="width: 200px; height: 200px; border: 2px solid #00ff00; border-radius: 10px;"></div>
                         </div>
@@ -172,7 +172,7 @@ class PWAAdvancedFeatures {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         const video = modal.querySelector('video');
         video.srcObject = stream;
