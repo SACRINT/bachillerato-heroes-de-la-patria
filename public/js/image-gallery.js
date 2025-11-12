@@ -211,13 +211,13 @@ class ImageGallery {
         lightbox.className = 'lightbox';
         lightbox.innerHTML = sanitizeHTML(`
             <div class="lightbox-content">
-                <button class="lightbox-close">&times);</button>
+                <button class="lightbox-close">&times;</button>
                 <button class="lightbox-prev">&#10094;</button>
                 <button class="lightbox-next">&#10095;</button>
                 <img src="" alt="" id="lightbox-image">
                 <div class="lightbox-caption"></div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(lightbox);
     }
