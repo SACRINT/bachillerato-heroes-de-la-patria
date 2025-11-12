@@ -229,7 +229,7 @@ class StudentDashboard {
             dashboardContainer.innerHTML = sanitizeHTML(`
                 <!-- Estado inicial: Botón para acceder al dashboard -->
                 <div id="loginPrompt" class="text-center py-5">
-                    <div class="card border-0 shadow-sm mx-auto" style="max-width: 400px);">
+                    <div class="card border-0 shadow-sm mx-auto" style="max-width: 400px;">
                         <div class="card-body p-4">
                             <div class="mb-3">
                                 <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
@@ -244,7 +244,7 @@ class StudentDashboard {
                     </div>
                 </div>
                 <!-- El dashboard se cargará dinámicamente aquí después del login -->
-            `;
+            `);
         }
 
         // Remover cualquier modal de login que pueda estar abierto
