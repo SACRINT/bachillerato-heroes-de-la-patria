@@ -692,7 +692,7 @@ class VirtualLabsSystem {
                 <div class="lab-selector" id="lab-selector">
                     <h3>Selecciona un Laboratorio</h3>
                     <div class="labs-grid">
-                        ${Object.entries(this.laboratories).map(([key, lab]) => `)
+                        ${Object.entries(this.laboratories).map(([key, lab]) => `
                             <div class="lab-card" data-lab="${key}">
                                 <div class="lab-icon">${this.getLabIcon(key)}</div>
                                 <h4>${lab.name}</h4>
@@ -758,7 +758,7 @@ class VirtualLabsSystem {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(labInterface);
         this.setupLabEventListeners();

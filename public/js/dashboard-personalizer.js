@@ -209,7 +209,7 @@ class DashboardPersonalizer {
                             <span class="stat-label">Eventos</span>
                         </div>
                     </div>
-                    ${size === 'large' ? `)
+                    ${size === 'large' ? `
                     <div class="stat-item">
                         <div class="stat-icon">
                             <i class="fas fa-download"></i>
@@ -222,7 +222,7 @@ class DashboardPersonalizer {
                     ` : ''}
                 </div>
             </div>
-        `;
+        `);
     }
 
     createRecentNewsWidget(container, size = 'medium') {
@@ -232,7 +232,7 @@ class DashboardPersonalizer {
             container.innerHTML = sanitizeHTML(`
                 <div class="widget-content news-content">
                     <div class="news-list">
-                        ${news.slice(0, itemsToShow).map(item => `)
+                        ${news.slice(0, itemsToShow).map(item => `
                             <div class="news-item" onclick="window.open('${item.url}', '_blank')">
                                 <div class="news-meta">
                                     <span class="news-date">${this.formatDate(item.fecha)}</span>
@@ -247,7 +247,7 @@ class DashboardPersonalizer {
                         <a href="./index.html#noticias" class="view-all-link">Ver todas las noticias</a>
                     </div>
                 </div>
-            `;
+            `);
         });
     }
 
@@ -258,7 +258,7 @@ class DashboardPersonalizer {
             container.innerHTML = sanitizeHTML(`
                 <div class="widget-content events-content">
                     <div class="events-list">
-                        ${events.slice(0, itemsToShow).map(event => `)
+                        ${events.slice(0, itemsToShow).map(event => `
                             <div class="event-item">
                                 <div class="event-date">
                                     <span class="event-day">${new Date(event.fecha).getDate()}</span>
@@ -276,7 +276,7 @@ class DashboardPersonalizer {
                         <a href="./calendario.html" class="view-all-link">Ver calendario completo</a>
                     </div>
                 </div>
-            `;
+            `);
         });
     }
 
@@ -302,14 +302,14 @@ class DashboardPersonalizer {
                 </div>
                 <div class="weather-info">
                     <p class="weather-location">${weather.location}</p>
-                    ${size === 'medium' ? `)
+                    ${size === 'medium' ? `
                     <div class="weather-details">
                         <span>Humedad: ${weather.humidity}%</span>
                     </div>
                     ` : ''}
                 </div>
             </div>
-        `;
+        `);
     }
 
     createCalendarWidget(container, size = 'large') {
@@ -339,7 +339,7 @@ class DashboardPersonalizer {
         container.innerHTML = sanitizeHTML(`
             <div class="widget-content notifications-content">
                 <div class="notifications-list">
-                    ${notifications.slice(0, itemsToShow).map(notif => `)
+                    ${notifications.slice(0, itemsToShow).map(notif => `
                         <div class="notification-item ${notif.read ? 'read' : 'unread'}">
                             <div class="notif-icon">
                                 <i class="${notif.icon}"></i>
@@ -356,7 +356,7 @@ class DashboardPersonalizer {
                     <button onclick="window.notificationConfigUI?.openConfigPanel()" class="view-all-link">Gestionar notificaciones</button>
                 </div>
             </div>
-        `;
+        `);
     }
 
     createQuickAccessWidget(container, size = 'small') {
@@ -365,7 +365,7 @@ class DashboardPersonalizer {
         container.innerHTML = sanitizeHTML(`
             <div class="widget-content quick-access-content">
                 <div class="quick-access-grid quick-access-${size}">
-                    ${quickAccess.map(item => `)
+                    ${quickAccess.map(item => `
                         <a href="${item.url}" class="quick-access-item" title="${item.title}">
                             <i class="${item.icon}"></i>
                             <span>${item.title}</span>
@@ -376,7 +376,7 @@ class DashboardPersonalizer {
                     <button onclick="window.dashboardPersonalizer?.editQuickAccess()" class="edit-link">Editar accesos</button>
                 </div>
             </div>
-        `;
+        `);
     }
 
     createPerformanceWidget(container, size = 'medium') {
@@ -399,7 +399,7 @@ class DashboardPersonalizer {
                         </div>
                         <span class="metric-value">${performance.performance}%</span>
                     </div>
-                    ${size === 'large' ? `)
+                    ${size === 'large' ? `
                     <div class="metric-item">
                         <span class="metric-label">Lighthouse Score</span>
                         <div class="metric-bar">
@@ -410,7 +410,7 @@ class DashboardPersonalizer {
                     ` : ''}
                 </div>
             </div>
-        `;
+        `);
     }
 
     // === GESTIÓN DE LAYOUT ===
@@ -718,7 +718,7 @@ class DashboardPersonalizer {
                             <label>Tamaño del widget:</label>
                             <select id="widgetSize-${widgetId}">
                                 ${widgetDef.sizes.map(size =>
-                                    `)<option value="${size}" ${config.size === size ? 'selected' : ''}>${this.getSizeLabel(size)}</option>`
+                                    `<option value="${size}" ${config.size === size ? 'selected' : ''}>${this.getSizeLabel(size)}</option>`
                                 ).join('')}
                             </select>
                         </div>
@@ -735,7 +735,7 @@ class DashboardPersonalizer {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
     }

@@ -269,7 +269,7 @@ class AcademicReportsManager {
                     </div>
                 </div>
             </div>
-        `;
+        `);
     }
 
     async loadAvailableReports() {
