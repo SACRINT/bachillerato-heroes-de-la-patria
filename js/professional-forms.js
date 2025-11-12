@@ -408,7 +408,7 @@ class ProfessionalFormsManager {
                 // Metadata profesional
                 _timestamp: new Date().toISOString(),
                 _source: 'website_contact',
-                _institution: window.getTenantConfigValue('school_name', 'window.getTenantConfigValue('school_name', 'window.getTenantConfigValue('school_short_form', 'window.getTenantConfigValue('school_short_form', 'window.getTenantConfigValue('school_short_form', 'window.getTenantConfigValue('school_short_form', 'window.getTenantConfigValue('school_short_form', 'window.getTenantConfigValue('school_short_form', 'window.getTenantConfigValue('school_short_form', 'BGE Héroes')')')')')')') de la Patria')'),
+                _institution: window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria'),
                 _verified: 'true'
             };
 
@@ -833,10 +833,10 @@ ${originalMessage}
         const submitButton = form.querySelector('button[type="submit"]');
         if (submitButton) {
             submitButton.disabled = true;
-            submitButton.innerHTML = `
+            submitButton.innerHTML = sanitizeHTML(`
                 <span class="spinner-border spinner-border-sm me-2" role="status"></span>
                 ${message}
-            `;
+            `);
         }
     }
 
@@ -845,10 +845,10 @@ ${originalMessage}
         if (submitButton) {
             const spinner = submitButton.querySelector('.spinner-border');
             if (spinner) {
-                submitButton.innerHTML = `
+                submitButton.innerHTML = sanitizeHTML(`
                     <span class="spinner-border spinner-border-sm me-2" role="status"></span>
                     ${message}
-                `;
+                `);
             }
         }
     }
@@ -869,7 +869,7 @@ ${originalMessage}
         // Crear popup elegante para verificación de email
         const popup = document.createElement('div');
         popup.className = 'verification-popup-overlay';
-        popup.innerHTML = `
+        popup.innerHTML = sanitizeHTML(`
             <div class="verification-popup">
                 <div class="popup-header">
                     <div class="popup-icon">📧</div>
@@ -901,7 +901,7 @@ ${originalMessage}
                     </button>
                 </div>
             </div>
-        `;
+        `);
 
         // Estilos del popup
         popup.style.cssText = `
@@ -1075,7 +1075,7 @@ ${originalMessage}
             form.appendChild(successAlert);
         }
 
-        successAlert.innerHTML = `
+        successAlert.innerHTML = sanitizeHTML(`
             <div class="d-flex align-items-center">
                 <i class="fas fa-check-circle fa-lg me-3 text-success"></i>
                 <div>
@@ -1083,7 +1083,7 @@ ${originalMessage}
                     <small>La información ha sido procesada correctamente.</small>
                 </div>
             </div>
-        `;
+        `);
 
         successAlert.style.display = 'block';
         successAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1104,7 +1104,7 @@ ${originalMessage}
             form.appendChild(errorAlert);
         }
 
-        errorAlert.innerHTML = `
+        errorAlert.innerHTML = sanitizeHTML(`
             <div class="d-flex align-items-center">
                 <i class="fas fa-exclamation-triangle fa-lg me-3 text-danger"></i>
                 <div>
@@ -1112,7 +1112,7 @@ ${originalMessage}
                     <small>${message}</small>
                 </div>
             </div>
-        `;
+        `);
 
         errorAlert.style.display = 'block';
         errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1128,7 +1128,7 @@ ${originalMessage}
         return new Promise((resolve) => {
             const modal = document.createElement('div');
             modal.className = 'modal fade';
-            modal.innerHTML = `
+            modal.innerHTML = sanitizeHTML(`
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header bg-warning text-dark">
@@ -1151,7 +1151,7 @@ ${originalMessage}
                         </div>
                     </div>
                 </div>
-            `;
+            `);
 
             document.body.appendChild(modal);
             const bsModal = new bootstrap.Modal(modal);
@@ -1182,12 +1182,12 @@ ${originalMessage}
         // Agregar badge de seguridad
         const securityBadge = document.createElement('div');
         securityBadge.className = 'security-badge mb-3';
-        securityBadge.innerHTML = `
+        securityBadge.innerHTML = sanitizeHTML(`
             <small class="text-muted d-flex align-items-center">
                 <i class="fas fa-shield-alt text-success me-2"></i>
                 <span>Formulario protegido contra spam • Verificación de email incluida</span>
             </small>
-        `;
+        `);
 
         form.insertBefore(securityBadge, form.firstChild);
     }
