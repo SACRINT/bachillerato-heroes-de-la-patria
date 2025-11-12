@@ -1432,10 +1432,10 @@ function addFeedbackButtons(originalMessage) {
             <small>¿Te fue útil esta respuesta?</small>
         </div>
         <div class="feedback-buttons">
-            <button class="feedback-btn positive" onclick="submitFeedback(5, '${originalMessage}')">
+            <button class="feedback-btn positive" data-action="submit-feedback" data-param-1="5, '${originalMessage}'">
                 👍 Sí
             </button>
-            <button class="feedback-btn negative" onclick="submitFeedback(2, '${originalMessage}')">
+            <button class="feedback-btn negative" data-action="submit-feedback" data-param-1="2, '${originalMessage}'">
                 👎 No
             </button>
         </div>

@@ -889,10 +889,10 @@
                                 <span class="badge bg-primary">${job.type}</span>
                                 <span class="badge bg-success">${job.salary}</span>
                             </p>
-                            <button class="btn btn-outline-primary btn-sm" onclick="applyToJob(${job.id})">
+                            <button class="btn btn-outline-primary btn-sm" data-action="apply-to-job" data-param-1="${job.id}">
                                 <i class="fas fa-paper-plane me-1"></i>Aplicar
                             </button>
-                            <button class="btn btn-outline-danger btn-sm" onclick="removeFromSaved(${job.id})">
+                            <button class="btn btn-outline-danger btn-sm" data-action="remove-from-saved" data-param-1="${job.id}">
                                 <i class="fas fa-trash me-1"></i>Eliminar
                             </button>
                         </div>
@@ -955,7 +955,7 @@
                             </p>
                             <small class="text-muted d-block mb-3">Publicado: ${job.posted}</small>
                             <div class="d-flex gap-2">
-                                <button class="btn btn-sm btn-outline-secondary" onclick="saveJob(${job.id})">
+                                <button class="btn btn-sm btn-outline-secondary" data-action="save-job" data-param-1="${job.id}">
                                     <i class="fas fa-bookmark"></i>
                                 </button>
                                 <button class="btn btn-sm btn-primary flex-grow-1" data-action="show-upload-c-v">

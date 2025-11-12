@@ -1,3 +1,54 @@
+## [2.25.1] - 2025-11-12 (FASE 2.3: ELIMINACIÓN DE JAVASCRIPT INLINE - PATTERN A COMPLETADA)
+
+### FASE 2.3: Eliminación de JavaScript Inline - Patrón A
+- **✅ REFACTORIZACIÓN DE 91 HANDLERS INLINE COMPLETADA: 29 archivos modificados exitosamente**
+  - **Objetivo:** Eliminar handlers onclick simple (sin parámetros) y migrar a event delegation
+  - **Estado:** ✅ COMPLETADO - Pasos 1-4 ejecutados sin errores
+  - **Fecha:** 12 de Noviembre de 2025
+  - **Commit:** `5f057c7 - refactor(csp): Remove 91 simple inline onclick handlers (Pattern A)`
+
+- **📊 Resultados Finales**
+  - **Archivos Escaneados:** 1,076
+  - **Archivos Modificados:** 29 (15 HTML + 14 JS)
+  - **Handlers Refactorizados:** 91 onclick replacements
+  - **Funciones Detectadas:** 51 funciones unicas
+  - **Archivos Nuevos:** 2 (event-handler-registry.js, remove-inline-handlers.cjs)
+  - **Errores en Ejecución:** 0
+  - **Nuevas Fallos en Tests:** 0 (9 passed, igual que antes)
+
+- **🔄 Pasos Ejecutados**
+  - **Paso 1 - Ejecución Real (✅):** `node scripts/remove-inline-handlers.cjs -x`
+    - 91 onclick → data-action replacements aplicados
+    - event-handler-registry.js auto-generado con IIFE delegado
+    - 51 funciones mapeadas a action map centralizado
+
+  - **Paso 2 - Integración (✅):** Agregado carga dinámica a main.js
+    - Script se carga en todas las páginas (main.js está en todas)
+    - Delegated event listener centralizado en document
+
+  - **Paso 3 - Verificación (✅):** npm test
+    - Tests: 9 passed, 17 failed (sin nuevas regresiones)
+    - Conclusión: 0 nuevas fallos introducidos
+
+  - **Paso 4 - Commit Atómico (✅):** Push a origin/main
+    - Commit: 5f057c7 (31 archivos: 29 modificados + 2 nuevos)
+    - Mensaje: Detailed commit message con arquitectura documentada
+
+- **🏗️ Arquitectura Implementada**
+  - **Pattern A:** onclick="func()" → data-action="func-name"
+  - **IIFE Delegated Listener:** Single document listener para todos los clicks
+  - **Error Handling:** try-catch con logging centralizado [EVENT-HANDLER]
+  - **Scalabilidad:** Preparado para Patterns B-E (futuro)
+  - **CSP Compliant:** Cumple con Content Security Policy (sin 'unsafe-inline' para Pattern A)
+
+- **📋 Archivos Modificados (29)**
+  - HTML (15): aviso-privacidad, bolsa-trabajo, calificaciones, chatbot, comunidad, convocatorias, egresados, estudiantes, oferta-educativa, offline, partials/header, privacidad, servicios, terminos, test-dashboard
+  - JavaScript (14): admin-dashboard-events, google-auth-integration, padres-events, parent-portal, index-events, inscriptions-handler, main, dashboard-manager-2025, approvals-manager, ia-dashboard-access, student-auth, student-dashboard, student-portal, backend/scripts/refactor-admin-dashboard
+
+- **✅ Próximo Paso:** FASE 2.4 (Pattern B: onclick con parámetros - 400 instancias estimadas)
+
+---
+
 ## [2.24.2] - 2025-11-11 (FASE 2 BLOQUE 3: SANITIZACIÓN XSS AUTOMÁTICA COMPLETADA)
 
 ### FASE 2 - Bloque 3: Sanitización XSS con DOMPurify

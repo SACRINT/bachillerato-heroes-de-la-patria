@@ -46,19 +46,19 @@
     // ============================================
 
     function registerNavigationHandlers() {
-        // onclick="scrollToSection('adminPanel')"
+        // data-action="scroll-to-section" data-param-1="adminPanel"
         const adminPanelCard = document.querySelector('[data-scroll-target="adminPanel"]');
         if (adminPanelCard) {
             adminPanelCard.addEventListener('click', () => scrollToSection('adminPanel'));
         }
 
-        // onclick="scrollToSection('modulos-admin')"
+        // data-action="scroll-to-section" data-param-1="modulos-admin"
         const modulosCard = document.querySelector('[data-scroll-target="modulos-admin"]');
         if (modulosCard) {
             modulosCard.addEventListener('click', () => scrollToSection('modulos-admin'));
         }
 
-        // onclick="scrollToSection('seguridad')"
+        // data-action="scroll-to-section" data-param-1="seguridad"
         const seguridadCard = document.querySelector('[data-scroll-target="seguridad"]');
         if (seguridadCard) {
             seguridadCard.addEventListener('click', () => scrollToSection('seguridad'));

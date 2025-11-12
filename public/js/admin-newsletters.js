@@ -224,7 +224,7 @@ function createNewsletterHistoryItem(news) {
                     <span><i class="fas fa-paper-plane me-1"></i>${news.sentTo} enviados</span>
                 </div>
             </div>
-            <button class="btn btn-sm btn-primary" onclick="viewNewsletterDetail('${news.id}')">
+            <button class="btn btn-sm btn-primary" data-action="view-newsletter-detail" data-param-1="${news.id}">
                 <i class="fas fa-eye me-1"></i>Ver Detalle
             </button>
         </div>

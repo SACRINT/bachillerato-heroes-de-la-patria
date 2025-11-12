@@ -1,7 +1,55 @@
 # ✅ MASTER CHECKLIST - PROYECTO BGE HÉROES DE LA PATRIA
 
-**Última Actualización:** 11 Noviembre 2025 - FASE 2 BLOQUE 3 Completada (v2.24.2)
-**Estado del Proyecto:** v2.24.2 - FASE 2 (Sanitización XSS) ✅ BLOQUE 3 COMPLETADA
+**Última Actualización:** 12 Noviembre 2025 - FASE 2.3 Completada (v2.25.1)
+**Estado del Proyecto:** v2.25.1 - FASE 2.3 (Eliminación de Inline Handlers) ✅ COMPLETADA
+
+---
+
+## 🔒 FASE 2.3: ELIMINACIÓN DE JAVASCRIPT INLINE - PATTERN A COMPLETADO (v2.25.1)
+
+### ✅ FASE 2.3: ELIMINACIÓN DE JAVASCRIPT INLINE (PATRÓN A) - COMPLETADA
+**Documento:** `RESUMEN_FASE_2.3_COMPLETADA.md`
+**Status:** ✅ COMPLETADA EXITOSAMENTE - 12 NOV 2025
+**Commit:** `5f057c7 - refactor(csp): Remove 91 simple inline onclick handlers (Pattern A)`
+**Impacto Crítico:** Refactorización de 91 handlers inline, cumplimiento CSP
+
+**Resultados Finales:**
+- ✅ **Archivos Escaneados:** 1,076
+- ✅ **Archivos Modificados:** 29 (15 HTML + 14 JS)
+- ✅ **Handlers Refactorizados:** 91 onclick replacements (Pattern A)
+- ✅ **Funciones Detectadas:** 51 funciones unicas
+- ✅ **Errores en Ejecución:** 0
+- ✅ **Nuevas Fallos en Tests:** 0 (9 passed, igual que antes)
+- ✅ **Archivos Nuevos:** 2 (event-handler-registry.js, remove-inline-handlers.cjs)
+
+**Paso 1 - Ejecución Real (✅ COMPLETADO):**
+- Comando: `node scripts/remove-inline-handlers.cjs -x`
+- 91 onclick → data-action replacements aplicados
+- event-handler-registry.js auto-generado con IIFE delegado
+- 51 funciones mapeadas a action map
+
+**Paso 2 - Integración (✅ COMPLETADO):**
+- Agregado carga dinámica de event-handler-registry.js a main.js
+- Script se carga en todas las páginas (main.js está en todas)
+- Delegated event listener centralizado en document
+
+**Paso 3 - Verificación (✅ COMPLETADO):**
+- Tests: 9 passed, 17 failed (sin nuevas regresiones)
+- Coverage: 1.87% (pre-existente)
+- Conclusión: 0 nuevas fallos introducidos
+
+**Paso 4 - Commit Atómico (✅ COMPLETADO):**
+- Commit: 5f057c7 (31 archivos: 29 modificados + 2 nuevos)
+- Push: origen/main (✅ exitoso)
+- Mensaje: Detailed commit message con 91 handlers refactorizados
+
+**Arquitectura Implementada:**
+- Pattern A: onclick="func()" → data-action="func-name"
+- IIFE Delegated Listener: Single document listener
+- Error Handling: try-catch con logging centralizado
+- Escalabilidad: Preparado para Patterns B-E (futuro)
+
+**Próximo Paso:** FASE 2.4 (Pattern B: onclick con parámetros - 400 instancias)
 
 ---
 

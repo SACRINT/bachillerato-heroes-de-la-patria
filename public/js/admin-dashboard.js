@@ -701,13 +701,13 @@ class AdminDashboard {
                 </td>
                 <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group">
-                        <button class="btn btn-outline-primary" onclick="viewStudent('${student.id}')" title="Ver Detalles">
+                        <button class="btn btn-outline-primary" data-action="view-student" data-param-1="${student.id}" title="Ver Detalles">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-outline-success" onclick="editStudent('${student.id}')" title="Editar">
+                        <button class="btn btn-outline-success" data-action="edit-student" data-param-1="${student.id}" title="Editar">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-outline-warning" onclick="contactStudent('${student.id}')" title="Contactar">
+                        <button class="btn btn-outline-warning" data-action="contact-student" data-param-1="${student.id}" title="Contactar">
                             <i class="fas fa-envelope"></i>
                         </button>
                     </div>
@@ -743,13 +743,13 @@ class AdminDashboard {
                 <td class="text-center">${statusBadge}</td>
                 <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group">
-                        <button class="btn btn-outline-primary" onclick="viewTeacher('${teacher.id}')" title="Ver Detalles">
+                        <button class="btn btn-outline-primary" data-action="view-teacher" data-param-1="${teacher.id}" title="Ver Detalles">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-outline-success" onclick="editTeacher('${teacher.id}')" title="Editar">
+                        <button class="btn btn-outline-success" data-action="edit-teacher" data-param-1="${teacher.id}" title="Editar">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-outline-info" onclick="assignSubjects('${teacher.id}')" title="Asignar Materias">
+                        <button class="btn btn-outline-info" data-action="assign-subjects" data-param-1="${teacher.id}" title="Asignar Materias">
                             <i class="fas fa-book"></i>
                         </button>
                     </div>

@@ -271,7 +271,7 @@ async function showActivityRegistration(activityName) {
                             <i class="fas fa-times me-2"></i>Cancelar
                         </button>
                         <button type="button" class="btn btn-primary" id="submitInscriptionBtn"
-                                onclick="submitActivityRegistration('${activityName}')">
+                                data-action="submit-activity-registration" data-param-1="${activityName}">
                             <i class="fas fa-check me-2"></i>Confirmar Inscripción
                         </button>
                     </div>

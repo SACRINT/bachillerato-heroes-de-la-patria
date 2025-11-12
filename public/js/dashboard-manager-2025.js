@@ -825,13 +825,13 @@ class AdminDashboard {
                 <td class="text-center">${statusBadge}</td>
                 <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group">
-                        <button class="btn btn-outline-primary" onclick="viewStudent('${student.id}')" title="Ver Detalles">
+                        <button class="btn btn-outline-primary" data-action="view-student" data-param-1="${student.id}" title="Ver Detalles">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-outline-success" onclick="editStudent('${student.id}')" title="Editar">
+                        <button class="btn btn-outline-success" data-action="edit-student" data-param-1="${student.id}" title="Editar">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-outline-warning" onclick="generateStudentReport('${student.id}')" title="Generar Reporte">
+                        <button class="btn btn-outline-warning" data-action="generate-student-report" data-param-1="${student.id}" title="Generar Reporte">
                             <i class="fas fa-file-pdf"></i>
                         </button>
                     </div>
@@ -903,13 +903,13 @@ class AdminDashboard {
                 </td>
                 <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group">
-                        <button class="btn btn-outline-primary" onclick="viewStudent('${student.id}')" title="Ver Detalles">
+                        <button class="btn btn-outline-primary" data-action="view-student" data-param-1="${student.id}" title="Ver Detalles">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-outline-success" onclick="editStudent('${student.id}')" title="Editar">
+                        <button class="btn btn-outline-success" data-action="edit-student" data-param-1="${student.id}" title="Editar">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-outline-warning" onclick="contactStudent('${student.id}')" title="Contactar">
+                        <button class="btn btn-outline-warning" data-action="contact-student" data-param-1="${student.id}" title="Contactar">
                             <i class="fas fa-envelope"></i>
                         </button>
                     </div>
@@ -990,13 +990,13 @@ class AdminDashboard {
                 <td class="text-center">${statusBadge}</td>
                 <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group">
-                        <button class="btn btn-outline-primary" onclick="viewTeacher('${teacher.id}')" title="Ver Detalles">
+                        <button class="btn btn-outline-primary" data-action="view-teacher" data-param-1="${teacher.id}" title="Ver Detalles">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-outline-success" onclick="editTeacher('${teacher.id}')" title="Editar">
+                        <button class="btn btn-outline-success" data-action="edit-teacher" data-param-1="${teacher.id}" title="Editar">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-outline-info" onclick="assignSubjects('${teacher.id}')" title="Asignar Materias">
+                        <button class="btn btn-outline-info" data-action="assign-subjects" data-param-1="${teacher.id}" title="Asignar Materias">
                             <i class="fas fa-book"></i>
                         </button>
                     </div>
@@ -1035,13 +1035,13 @@ class AdminDashboard {
                 <td class="text-center">${statusBadge}</td>
                 <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group">
-                        <button class="btn btn-outline-primary" onclick="viewTeacher('${teacher.id}')" title="Ver Detalles">
+                        <button class="btn btn-outline-primary" data-action="view-teacher" data-param-1="${teacher.id}" title="Ver Detalles">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-outline-success" onclick="editTeacher('${teacher.id}')" title="Editar">
+                        <button class="btn btn-outline-success" data-action="edit-teacher" data-param-1="${teacher.id}" title="Editar">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-outline-info" onclick="assignSubjects('${teacher.id}')" title="Asignar Materias">
+                        <button class="btn btn-outline-info" data-action="assign-subjects" data-param-1="${teacher.id}" title="Asignar Materias">
                             <i class="fas fa-book"></i>
                         </button>
                     </div>
@@ -3234,10 +3234,10 @@ window.legacyContentManager = {
                             </small>
                         </div>
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-primary" onclick="editContent(${item.id})" title="Editar">
+                            <button class="btn btn-outline-primary" data-action="edit-content" data-param-1="${item.id}" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn btn-outline-danger" onclick="deleteContent(${item.id})" title="Eliminar">
+                            <button class="btn btn-outline-danger" data-action="delete-content" data-param-1="${item.id}" title="Eliminar">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>

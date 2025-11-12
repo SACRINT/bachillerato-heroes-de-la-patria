@@ -228,10 +228,10 @@ class CMSManager {
                         </td>
                         <td>
                             <div class="btn-group" role="group">
-                                <button class="btn btn-sm btn-outline-primary" onclick="editNoticia('${noticia.id}')">
+                                <button class="btn btn-sm btn-outline-primary" data-action="edit-noticia" data-param-1="${noticia.id}">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteNoticia('${noticia.id}')">
+                                <button class="btn btn-sm btn-outline-danger" data-action="delete-noticia" data-param-1="${noticia.id}">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -393,10 +393,10 @@ class CMSManager {
                         </td>
                         <td>
                             <div class="btn-group" role="group">
-                                <button class="btn btn-sm btn-outline-success" onclick="editEvento('${evento.id}')">
+                                <button class="btn btn-sm btn-outline-success" data-action="edit-evento" data-param-1="${evento.id}">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteEvento('${evento.id}')">
+                                <button class="btn btn-sm btn-outline-danger" data-action="delete-evento" data-param-1="${evento.id}">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -545,10 +545,10 @@ class CMSManager {
                         </td>
                         <td>
                             <div class="btn-group" role="group">
-                                <button class="btn btn-sm btn-outline-warning" onclick="editAviso('${aviso.id}')">
+                                <button class="btn btn-sm btn-outline-warning" data-action="edit-aviso" data-param-1="${aviso.id}">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteAviso('${aviso.id}')">
+                                <button class="btn btn-sm btn-outline-danger" data-action="delete-aviso" data-param-1="${aviso.id}">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -700,10 +700,10 @@ class CMSManager {
                         </td>
                         <td>
                             <div class="btn-group" role="group">
-                                <button class="btn btn-sm btn-outline-info" onclick="editComunicado('${comunicado.id}')">
+                                <button class="btn btn-sm btn-outline-info" data-action="edit-comunicado" data-param-1="${comunicado.id}">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteComunicado('${comunicado.id}')">
+                                <button class="btn btn-sm btn-outline-danger" data-action="delete-comunicado" data-param-1="${comunicado.id}">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>

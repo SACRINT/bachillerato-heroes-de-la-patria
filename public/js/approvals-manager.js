@@ -157,13 +157,13 @@ function renderApprovalsList() {
                         </div>
                         <div class="col-md-4">
                             <div class="d-grid gap-2">
-                                <button class="btn btn-success" onclick="approveSubmission(event)">
+                                <button class="btn btn-success" data-action="approve-submission" data-param-1="event">
                                     <i class="fas fa-check me-2"></i>Aprobar
                                 </button>
-                                <button class="btn btn-danger" onclick="rejectSubmission(event)">
+                                <button class="btn btn-danger" data-action="reject-submission" data-param-1="event">
                                     <i class="fas fa-times me-2"></i>Rechazar
                                 </button>
-                                <button class="btn btn-sm btn-outline-primary" onclick="viewFullData(${approval.id})">
+                                <button class="btn btn-sm btn-outline-primary" data-action="view-full-data" data-param-1="${approval.id}">
                                     <i class="fas fa-eye me-2"></i>Ver Detalles Completos
                                 </button>
                             </div>

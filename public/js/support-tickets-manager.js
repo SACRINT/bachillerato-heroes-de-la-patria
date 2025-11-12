@@ -365,7 +365,7 @@ function renderTickets(tickets) {
     emptyState?.classList.add('hidden');
 
     container.innerHTML = sanitizeHTML(tickets.map(ticket => `
-        <div class="ticket-card" onclick="showTicketDetail('${ticket.ticket_number}')">
+        <div class="ticket-card" data-action="show-ticket-detail" data-param-1="${ticket.ticket_number}">
             <div class="ticket-header">
                 <div>
                     <span class="ticket-number">${ticket.ticket_number}</span>
@@ -672,7 +672,7 @@ function renderTicketDetail(ticket) {
                         placeholder="Escribe un comentario..."></textarea>
                     <button
                         class="btn btn-primary mt-2"
-                        onclick="handleAddComment('${ticket.ticket_number}')">
+                        data-action="handle-add-comment" data-param-1="${ticket.ticket_number}">
                         <i class="bi bi-send"></i> Enviar comentario
                     </button>
                 </div>
@@ -716,7 +716,7 @@ function renderTicketActions(ticket) {
 
     if (ticket.status === 'open' && canModify) {
         actions += `
-            <button class="btn btn-sm btn-primary" onclick="handleAssignTicket('${ticket.ticket_number}')">
+            <button class="btn btn-sm btn-primary" data-action="handle-assign-ticket" data-param-1="${ticket.ticket_number}">
                 <i class="bi bi-person-plus"></i> Asignar
             </button>
         `;
@@ -724,7 +724,7 @@ function renderTicketActions(ticket) {
 
     if (ticket.status === 'in_progress' && canModify) {
         actions += `
-            <button class="btn btn-sm btn-success" onclick="handleResolveTicket('${ticket.ticket_number}')">
+            <button class="btn btn-sm btn-success" data-action="handle-resolve-ticket" data-param-1="${ticket.ticket_number}">
                 <i class="bi bi-check-circle"></i> Resolver
             </button>
         `;
@@ -732,10 +732,10 @@ function renderTicketActions(ticket) {
 
     if (ticket.status === 'resolved' && canModify) {
         actions += `
-            <button class="btn btn-sm btn-secondary" onclick="handleCloseTicket('${ticket.ticket_number}')">
+            <button class="btn btn-sm btn-secondary" data-action="handle-close-ticket" data-param-1="${ticket.ticket_number}">
                 <i class="bi bi-x-circle"></i> Cerrar
             </button>
-            <button class="btn btn-sm btn-warning" onclick="handleReopenTicket('${ticket.ticket_number}')">
+            <button class="btn btn-sm btn-warning" data-action="handle-reopen-ticket" data-param-1="${ticket.ticket_number}">
                 <i class="bi bi-arrow-counterclockwise"></i> Reabrir
             </button>
         `;
@@ -743,7 +743,7 @@ function renderTicketActions(ticket) {
 
     if (ticket.status === 'closed' && canModify) {
         actions += `
-            <button class="btn btn-sm btn-warning" onclick="handleReopenTicket('${ticket.ticket_number}')">
+            <button class="btn btn-sm btn-warning" data-action="handle-reopen-ticket" data-param-1="${ticket.ticket_number}">
                 <i class="bi bi-arrow-counterclockwise"></i> Reabrir
             </button>
         `;
@@ -752,13 +752,13 @@ function renderTicketActions(ticket) {
     // Botón de seguir/dejar de seguir
     if (ticket.is_watching) {
         actions += `
-            <button class="btn btn-sm btn-outline-secondary" onclick="handleUnwatchTicket('${ticket.ticket_number}')">
+            <button class="btn btn-sm btn-outline-secondary" data-action="handle-unwatch-ticket" data-param-1="${ticket.ticket_number}">
                 <i class="bi bi-eye-slash"></i> Dejar de seguir
             </button>
         `;
     } else {
         actions += `
-            <button class="btn btn-sm btn-outline-primary" onclick="handleWatchTicket('${ticket.ticket_number}')">
+            <button class="btn btn-sm btn-outline-primary" data-action="handle-watch-ticket" data-param-1="${ticket.ticket_number}">
                 <i class="bi bi-eye"></i> Seguir
             </button>
         `;

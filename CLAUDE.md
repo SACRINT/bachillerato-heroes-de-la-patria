@@ -57,13 +57,22 @@ grep -r "keyword" /no_usados/codigo_muerto_archivado_2025-11-07/js/
 
 **CONCLUSIÓN:** Primero busca en `/no_usados/` → Luego en código activo → Finalmente, crea nuevo
 
-### 2.3. Instrucciones de Idioma
+### 2.3. 📌 REGLAS DE MEMORIA - PROTOCOLO ESPAÑOL (USUARIO 12 NOV 2025)
+
+**IMPORTANTE - ELIMINAR DUALIDAD INGLÉS/ESPAÑOL:**
+- ✅ **Responder SIEMPRE en español, sin excepciones**
+- ✅ **Comentarios de código:** Escritos en español
+- ✅ **Documentación:** Toda en español
+- ✅ **No dualidad:** Eliminar cualquier referencia a dual-language approach
+- ✅ **Permanente:** Esta regla es vinculante para todas las sesiones futuras
+
+### 2.2. Instrucciones de Idioma
 
 *   **TODO en Español:** Tus respuestas, comentarios de código y documentación.
 
 ### 2.4. 🔧 REQUIREMENT CRÍTICO: main.js en TODAS las páginas HTML
 
-**IMPORTANTE:** Todas las páginas HTML DEBEN cargar `js/main.js` para funcionar correctamente.
+**IMPORTANTE:** Todas las páginas HTML DEBEN cargar `public/js/main.js` para funcionar correctamente.
 
 **Razón:** El archivo `main.js` contiene la función `loadHeaderFooter()` que:
 1. Carga dinámicamente el header desde `partials/header.html`
@@ -80,10 +89,10 @@ grep -r "keyword" /no_usados/codigo_muerto_archivado_2025-11-07/js/
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
-  <script src="js/main.js"></script>
+  <script src="public/js/main.js"></script>
 
   <!-- Otros scripts personalizado después -->
-  <script src="js/context-manager.js"></script>
+  <script src=" public/js/context-manager.js"></script>
   ...
   ```
 
@@ -132,8 +141,7 @@ Usa "Conventional Commits" para tus mensajes de `git commit`.
           - Archivos procesados: 49/49 (100%)
           - Archivos modificados: 11 con cambios aplicados
           - Total sanitizaciones: 20 cambios en innerHTML/insertAdjacentHTML/setAttribute
-          - Sincronización: 49/49 archivos → `/js/` completada
-
+          
         - **PATRONES SANITIZADOS:**
           1. `.innerHTML = "..."` → `.innerHTML = sanitizeHTML(...)`
           2. `.innerHTML += "..."` → `.innerHTML += sanitizeHTML(...)`
@@ -206,7 +214,6 @@ Usa "Conventional Commits" para tus mensajes de `git commit`.
         - **GIT COMMIT Y PUSH:**
           - Commit: 85b31b3 "security(fase-1-6): XSS Testing Suite Completada"
           - Push: d9e71c3..85b31b3 a GitHub (origin/main)
-          - Status: ✅ Sincronizado correctamente
 
         - **DOCUMENTACIÓN OFICIAL CREADA:**
           - `docs/FASE-1-6-TESTING-COMPLETADO.md` (500+ líneas)
@@ -239,7 +246,7 @@ Usa "Conventional Commits" para tus mensajes de `git commit`.
           - Patrones: 3 reemplazos de strings hardcodeados
 
         - **EJECUCIÓN EXITOSA DEL SCRIPT:**
-          - Archivos procesados: 273 (269 en public/js + 4 en js/)
+          - Archivos procesados: 269 (269 en public/js)
           - Archivos modificados: 4 (1.46% - esperado en primera pasada)
           - Total reemplazos: 5 exitosos
           - Tasa de éxito: 100%
@@ -248,7 +255,6 @@ Usa "Conventional Commits" para tus mensajes de `git commit`.
           - ✅ `public/js/bge-framework-core.js` - 2 reemplazos
           - ✅ `public/js/interoperability-system.js` - 1 reemplazo
           - ✅ `public/js/tenant-config-loader.js` - 1 reemplazo
-          - ✅ `js/tenant-config-loader.js` - 1 reemplazo (sincronización)
 
         - **PATRONES IMPLEMENTADOS:**
           - Patrón 1: 'BGE Héroes de la Patria' → window.getTenantConfigValue('school_name', '...')
@@ -283,7 +289,6 @@ Usa "Conventional Commits" para tus mensajes de `git commit`.
     *   **Logros Críticos:**
         - **CREACIÓN DE TENANT CONFIG LOADER (v1.0.0):**
           - Nuevo archivo: `public/js/tenant-config-loader.js` (198 líneas)
-          - Sincronización: `js/tenant-config-loader.js` (protocolo dual completado)
           - Patrón IIFE para encapsulación y evitar contaminación global
           - Función `loadTenantConfig()` con async/await
           - Fallback a DEFAULT_CONFIG si API falla (robustez)
@@ -684,7 +689,7 @@ Usa "Conventional Commits" para tus mensajes de `git commit`.
                 confirmEmail(token);
             }
             ```
-          - Archivos modificados: `/js/egresados-email-confirmation.js` + `/public/js/egresados-email-confirmation.js`
+          - Archivos modificados: `/public/js/egresados-email-confirmation.js`
           - Patrón utilizado: "State Flag Pattern" para prevenir duplicate processing
         - **TESTING Y VALIDACIÓN DEL FIX:**
           - User test con email samuelci6377@gmail.com
@@ -784,12 +789,6 @@ Usa "Conventional Commits" para tus mensajes de `git commit`.
           - Troubleshooting completo
           - Deployment a producción
           - Checklist final
-        - **PROTOCOLO DUAL SINCRONIZADO:**
-          - public/js/unified-auth-system-v2.js ✅
-          - js/unified-auth-system-v2.js ✅
-          - public/css/unified-auth-system-v2.css ✅
-          - css/unified-auth-system-v2.css ✅
-          - Ambos sincronizados según protocolo BGE
         - **INTEGRACIONES:**
           - main.js actualizado (línea 357)
           - header.html actualizado (línea 820)
@@ -826,7 +825,7 @@ Usa "Conventional Commits" para tus mensajes de `git commit`.
         - **RESOLUCIÓN COMPLETA DEL PROBLEMA DE LOGIN EN MÚLTIPLES PÁGINAS:**
           - Problema inicial: El botón de login solo funcionaba en index.html, NO en otras páginas
           - Root cause encontrado: main.js no se cargaba en estudiantes.html, admin-dashboard.html, padres.html, docentes.html, etc.
-          - Solución: Agregado `<script src="js/main.js"></script>` a TODAS las páginas HTML
+          - Solución: Agregado `<script src=" public/js/main.js"></script>` a TODAS las páginas HTML
           - Archivo crítico: `public/js/main.js` contiene `loadHeaderFooter()` que inyecta header dinámicamente
         - **CORRECCIONES DE JAVASCRIPT EN main.js:**
           - Eliminado chequeo de existencia de scripts que bloqueaba carga dinámica
@@ -909,7 +908,7 @@ Usa "Conventional Commits" para tus mensajes de `git commit`.
           - Mejora de error handling: Demo data como fallback si tablas no existen
           - Uso correcto de pg.Pool: `await pool.connect()` + `client.release()`
         - **CONFIGURACIÓN DE TINYMCE API KEY (Commit: e0392c0):**
-          - Modifiqué js/config.js y public/js/config.js
+          - Modifiqué public/js/config.js
           - Endpoint /api/config/public-keys devuelve TinyMCE API key
           - Config loader asigna `window.TINYMCE_API_KEY` dinámicamente
           - TinyMCE ahora recibe API key correcta en lugar de "invalid-origin"
@@ -919,7 +918,7 @@ Usa "Conventional Commits" para tus mensajes de `git commit`.
           - Directivas explícitas: script-src-elem, style-src-elem
           - Eliminados todos los CSP violations de TinyMCE CDN
         - **FIXES HARDCODED LOCALHOST:3000 (Commits: varios):**
-          - 32 reemplazos en 28 archivos JavaScript (js/ y public/js/)
+          - 32 reemplazos en 28 archivos JavaScript (public/js/)
           - Cambio: `http://localhost:3000/api/*` → `/api/*` (URLs relativas)
           - Archivos: student-dashboard.js, external-integrations.js, chatbot.js, bge-security-module.js, auth-manager.js, api-client.js, y 22 más
           - Resultado: Production API calls funcionan sin ERR_CONNECTION_REFUSED
@@ -1341,7 +1340,6 @@ Task(
   subagent_type="Plan", # o usar RUBE_CREATE_PLAN
   prompt="Planifica la Fase 1 de limpieza técnica para BGE:
   - Eliminar 155 archivos de código muerto
-  - Consolidar duplicación /js vs /public/js (10MB)
   - Implementar logging condicional
   Proporciona: workflow_steps, complexity_assessment, failure_handling, timeline"
 )

@@ -409,7 +409,7 @@
                                         Desarrolla tus habilidades de liderazgo con expertos en el área. Capacidad limitada a 30 estudiantes.
                                     </p>
                                     <div class="timeline-actions">
-                                        <button class="btn btn-info btn-sm" onclick="showActivityRegistration('Taller de Liderazgo')">
+                                        <button class="btn btn-info btn-sm" data-action="show-activity-registration" data-param-1="Taller de Liderazgo">
                                             <i class="fas fa-users me-2"></i>Inscribirse
                                         </button>
                                     </div>
@@ -1318,7 +1318,7 @@
                             html += `
                                 <td class="schedule-cell ${clase.color} text-white" 
                                     style="cursor: pointer; min-height: 60px; position: relative;"
-                                    onclick="editClass('${dia}', '${modulo}')">
+                                    data-action="edit-class" data-param-1="'${dia}', '${modulo}'">
                                     <strong>${clase.materia}</strong>
                                     ${clase.profesor ? `<br><small>Prof. ${clase.profesor}</small>` : ''}
                                     ${clase.aula ? `<br><small>${clase.aula}</small>` : ''}
@@ -1328,7 +1328,7 @@
                             html += `
                                 <td class="schedule-cell empty-cell" 
                                     style="cursor: pointer; min-height: 60px; border: 2px dashed #dee2e6; text-align: center;"
-                                    onclick="editClass('${dia}', '${modulo}')">
+                                    data-action="edit-class" data-param-1="'${dia}', '${modulo}'">
                                     <span class="text-muted">+</span>
                                 </td>
                             `;

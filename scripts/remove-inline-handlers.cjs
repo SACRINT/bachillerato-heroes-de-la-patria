@@ -1,18 +1,19 @@
 #!/usr/bin/env node
 
 /**
- * Remove Inline Event Handlers Script v1 - Pattern A: Simple onclick
+ * Remove Inline Event Handlers Script v2 - Patterns A & B
  *
- * Refactorizes simple onclick handlers (without parameters) by:
- * 1. Replacing onclick="functionName()" with data-action="function-name"
- * 2. Adding delegated event listener code snippet for main.js integration
- * 3. Supports dry-run (default) and execution (-x flag) modes
+ * Refactorizes inline onclick handlers by:
+ * 1. Replacing onclick="functionName()" with data-action="function-name" (Pattern A)
+ * 2. Replacing onclick="functionName(param)" with data-action="function-name" data-param="value" (Pattern B)
+ * 3. Adding delegated event listener code snippet for main.js integration
+ * 4. Supports dry-run (default) and execution (-x flag) modes
  *
- * Supported Patterns (Phase 1):
+ * Supported Patterns (Phase 2):
  * - Pattern A: Simple onclick without parameters (onclick="toggleMenu()")
+ * - Pattern B: onclick with parameters (onclick="deleteItem(123)" or onclick="showUser('john')")
  *
  * TODO (Future Phases):
- * - Pattern B: onclick with parameters
  * - Pattern C: onclick with multiple actions
  * - Pattern D: onclick with conditionals
  * - Pattern E: onchange handlers
@@ -43,6 +44,14 @@ const PATTERN_A = {
     const actionName = functionName.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '');
     return `data-action="${actionName}"`;
   }
+};
+
+// Pattern B: onclick with parameters
+// Matches: onclick="deleteItem(123)" or onclick="showUser('john')" or onclick="update(id, true)"
+const PATTERN_B = {
+  name: 'onclick with parameters (Pattern B)',
+  pattern: /onclick\s*=\s*['"`](\w+)\((.*?)\)['"`]/g,
+  isSimple: false
 };
 
 // File extensions to process
@@ -95,6 +104,98 @@ function camelToKebab(str) {
 }
 
 /**
+ * Parse function parameters from a parameter string
+ * Example: "123, 'john', true" →
+ *   [{value: '123', type: 'number'},
+ *    {value: 'john', type: 'string'},
+ *    {value: 'true', type: 'boolean'}]
+ */
+function parseParameters(paramsString) {
+  if (!paramsString || paramsString.trim() === '') {
+    return [];
+  }
+
+  const params = [];
+  // Split by commas, but respect quoted strings
+  const parts = paramsString.split(/,(?=(?:[^'"]*['"]][^'"]*['"]*)*$)/);
+
+  parts.forEach((part, index) => {
+    part = part.trim();
+
+    let type = 'unknown';
+    let value = part;
+
+    if (/^\d+$/.test(part)) {
+      // Pure number
+      type = 'number';
+    } else if (/^'[^']*'$/.test(part) || /^"[^"]*"$/.test(part)) {
+      // String with quotes
+      type = 'string';
+      value = part.slice(1, -1); // Remove quotes
+    } else if (/^`[^`]*`$/.test(part)) {
+      // Template literal
+      type = 'template';
+      value = part.slice(1, -1); // Remove backticks
+    } else if (part === 'true' || part === 'false') {
+      // Boolean
+      type = 'boolean';
+    } else if (/^\$\{.*\}$/.test(part)) {
+      // Template expression: ${variable}
+      type = 'template-expression';
+    } else {
+      // Variable or expression
+      type = 'expression';
+    }
+
+    params.push({
+      index,
+      type,
+      value,
+      originalValue: part
+    });
+  });
+
+  return params;
+}
+
+/**
+ * Generate semantic data-attribute name based on parameter type and function context
+ * Uses heuristics: if parameter looks like ID/email/name, derive from type
+ * Fallback: data-param-N
+ */
+function generateDataAttributeName(params, functionName, paramIndex, paramInfo) {
+  // Heuristic 1: If parameter is numeric and function is delete/edit/show/update → data-id
+  if (paramInfo.type === 'number' &&
+      (functionName.includes('delete') ||
+       functionName.includes('edit') ||
+       functionName.includes('show') ||
+       functionName.includes('update'))) {
+    return 'data-id';
+  }
+
+  // Heuristic 2: If parameter is string that looks like email
+  if (paramInfo.type === 'string' && paramInfo.value.includes('@')) {
+    return 'data-email';
+  }
+
+  // Heuristic 3: If parameter is boolean
+  if (paramInfo.type === 'boolean') {
+    return `data-${camelToKebab(functionName)}-${paramInfo.value}`;
+  }
+
+  // Heuristic 4: Template expression - derive from variable name
+  if (paramInfo.type === 'template-expression') {
+    const varMatch = paramInfo.value.match(/\{\s*(\w+)\s*\}/);
+    if (varMatch) {
+      return `data-${camelToKebab(varMatch[1])}`;
+    }
+  }
+
+  // Fallback: Generic name
+  return `data-param-${paramIndex + 1}`;
+}
+
+/**
  * Check if file should be skipped
  */
 function shouldSkipFile(filePath) {
@@ -133,6 +234,7 @@ function extractFunctionsFromPattern(content) {
 
 /**
  * Generate event handler registry code for main.js integration
+ * Supports both Pattern A (simple) and Pattern B (with parameters)
  * This code should be added to main.js or event-handler.js
  */
 function generateEventHandlerRegistry(allFunctions) {
@@ -142,8 +244,12 @@ function generateEventHandlerRegistry(allFunctions) {
 /**
  * Delegated Event Handler Registry (Auto-generated from remove-inline-handlers.cjs)
  *
- * Maps data-action attributes to their corresponding functions.
- * All simple onclick handlers are now handled via this central dispatcher.
+ * Version 2: Supports Patterns A (simple) and B (with parameters)
+ *
+ * Pattern A: data-action="func-name"
+ * Pattern B: data-action="func-name" data-id="123" data-email="test@mail.com"
+ *
+ * The registry reads all data-* attributes and passes them as arguments
  */
 (function initDelegatedEventHandlers() {
   'use strict';
@@ -161,8 +267,41 @@ ${uniqueFunctions.map(fn => `    '${camelToKebab(fn)}': ${fn}`).join(',\n')}
     if (action && actionMap[action]) {
       try {
         const fn = actionMap[action];
+
         if (typeof fn === 'function') {
-          fn.call(target, event);
+          // Extract parameters from data-* attributes (Pattern B support)
+          const params = [];
+
+          // Iterate through all attributes
+          for (let attr of target.attributes) {
+            if (attr.name.startsWith('data-') && attr.name !== 'data-action') {
+              let value = attr.value;
+
+              // Try to convert to appropriate type
+              if (!isNaN(value) && value !== '') {
+                // Numeric parameter
+                value = Number(value);
+              } else if (value === 'true') {
+                // Boolean true
+                value = true;
+              } else if (value === 'false') {
+                // Boolean false
+                value = false;
+              } else if ((value.startsWith('{') || value.startsWith('[')) && value.length > 0) {
+                // Try to parse as JSON
+                try {
+                  value = JSON.parse(value);
+                } catch (e) {
+                  // Keep as string if not valid JSON
+                }
+              }
+
+              params.push(value);
+            }
+          }
+
+          // Call function with parameters: first arg is event, then extracted data-* values
+          fn.apply(target, [event, ...params]);
         } else {
           console.warn(\`[EVENT-HANDLER] Action '\${action}' is not a function\`);
         }
@@ -172,7 +311,7 @@ ${uniqueFunctions.map(fn => `    '${camelToKebab(fn)}': ${fn}`).join(',\n')}
     }
   });
 
-  console.log('[EVENT-HANDLER] Delegated event handler initialized');
+  console.log('[EVENT-HANDLER] Delegated event handler initialized (v2 - Pattern A & B)');
 })();
 `;
 }
@@ -197,7 +336,7 @@ class InlineHandlerRemover {
   }
 
   /**
-   * Process a single file for Pattern A matches
+   * Process a single file for Pattern A and B matches
    */
   processFile(filePath) {
     this.filesProcessed++;
@@ -216,52 +355,104 @@ class InlineHandlerRemover {
 
       // Read file
       const content = fs.readFileSync(filePath, 'utf8');
+      let modifiedContent = content;
+      const originalContent = content;
+      let patternsFound = [];
+      let totalReplacements = 0;
+      const extractedFunctions = new Set();
 
-      // Extract functions from Pattern A
-      const functionsInFile = extractFunctionsFromPattern(content);
-      if (functionsInFile.length > 0) {
-        this.allExtractedFunctions.push(...functionsInFile);
-      }
+      // ========== PATTERN A: Simple onclick (without parameters) ==========
+      if (PATTERN_A.pattern.test(modifiedContent)) {
+        PATTERN_A.pattern.lastIndex = 0;
 
-      // Check if file has Pattern A matches
-      if (!PATTERN_A.pattern.test(content)) {
-        return;
-      }
+        const newContent = modifiedContent.replace(PATTERN_A.pattern, (match) => {
+          const funcMatch = match.match(/onclick\s*=\s*['"`](\w+)\(\)['"`]/);
+          if (funcMatch) {
+            const functionName = funcMatch[1];
+            extractedFunctions.add(functionName);
+            const actionName = camelToKebab(functionName);
+            return `data-action="${actionName}"`;
+          }
+          return match;
+        });
 
-      // Reset regex
-      PATTERN_A.pattern.lastIndex = 0;
-
-      // Apply pattern replacement
-      const newContent = content.replace(PATTERN_A.pattern, (match) => {
-        // Extract function name from match
-        const funcMatch = match.match(/onclick\s*=\s*['"`](\w+)\(\)['"`]/);
-        if (funcMatch) {
-          const functionName = funcMatch[1];
-          const actionName = camelToKebab(functionName);
-          return `data-action="${actionName}"`;
+        if (newContent !== modifiedContent) {
+          patternsFound.push('A');
+          const countA = (originalContent.match(PATTERN_A.pattern) || []).length;
+          totalReplacements += countA;
+          modifiedContent = newContent;
         }
-        return match;
-      });
+      }
 
-      if (newContent !== content) {
-        const replacementCount = (content.match(PATTERN_A.pattern) || []).length;
+      // ========== PATTERN B: onclick with parameters ==========
+      if (PATTERN_B.pattern.test(modifiedContent)) {
+        PATTERN_B.pattern.lastIndex = 0;
 
+        const newContent = modifiedContent.replace(PATTERN_B.pattern, (match) => {
+          const funcMatch = match.match(/onclick\s*=\s*['"`](\w+)\((.*?)\)['"`]/);
+          if (!funcMatch) return match;
+
+          const functionName = funcMatch[1];
+          const paramsString = funcMatch[2];
+          const params = parseParameters(paramsString);
+          const actionName = camelToKebab(functionName);
+
+          extractedFunctions.add(functionName);
+
+          // Generate data-* attributes
+          let dataAttrs = `data-action="${actionName}"`;
+
+          params.forEach((param, index) => {
+            const attrName = generateDataAttributeName(
+              params,
+              functionName,
+              index,
+              param
+            );
+
+            // Handle value escaping
+            let attrValue = param.value;
+            if (param.type === 'template-expression') {
+              // Template: ${id} → keep as is
+              attrValue = param.originalValue;
+            }
+
+            dataAttrs += ` ${attrName}="${attrValue}"`;
+          });
+
+          return dataAttrs;
+        });
+
+        if (newContent !== modifiedContent) {
+          patternsFound.push('B');
+          const countB = (originalContent.match(PATTERN_B.pattern) || []).length;
+          totalReplacements += countB;
+          modifiedContent = newContent;
+        }
+      }
+
+      // Write file if modifications were made
+      if (modifiedContent !== originalContent) {
         this.filesModified++;
-        this.totalReplacements += replacementCount;
+        this.totalReplacements += totalReplacements;
+
+        this.allExtractedFunctions.push(...Array.from(extractedFunctions));
 
         const status = this.dryRun ? '📋' : '✏️';
-        this.log(`${status} ${filePath.replace(process.cwd(), '.')} (+${replacementCount})`, 'cyan');
+        const patterns = patternsFound.join('+');
+        this.log(`${status} ${filePath.replace(process.cwd(), '.')} (+${totalReplacements} [${patterns}])`, 'cyan');
 
         this.modifications.push({
           file: filePath,
-          replacements: replacementCount,
-          functions: functionsInFile,
+          replacements: totalReplacements,
+          patterns: patternsFound,
+          functions: Array.from(extractedFunctions),
           modified: !this.dryRun
         });
 
         // Write if not dry-run
         if (!this.dryRun) {
-          fs.writeFileSync(filePath, newContent, 'utf8');
+          fs.writeFileSync(filePath, modifiedContent, 'utf8');
         }
       }
 
@@ -319,7 +510,7 @@ class InlineHandlerRemover {
    */
   run() {
     this.log(`\n${'='.repeat(80)}`, 'bright');
-    this.log(`Remove Inline Event Handlers v1 - ${MODE} MODE (Pattern A: Simple onclick)`, 'bright');
+    this.log(`Remove Inline Event Handlers v2 - ${MODE} MODE (Patterns A & B)`, 'bright');
     this.log(`${'='.repeat(80)}\n`, 'bright');
 
     const startTime = Date.now();

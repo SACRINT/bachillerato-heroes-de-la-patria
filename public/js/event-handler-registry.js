@@ -2,65 +2,61 @@
 /**
  * Delegated Event Handler Registry (Auto-generated from remove-inline-handlers.cjs)
  *
- * Maps data-action attributes to their corresponding functions.
- * All simple onclick handlers are now handled via this central dispatcher.
+ * Version 2: Supports Patterns A (simple) and B (with parameters)
+ *
+ * Pattern A: data-action="func-name"
+ * Pattern B: data-action="func-name" data-id="123" data-email="test@mail.com"
+ *
+ * The registry reads all data-* attributes and passes them as arguments
  */
 (function initDelegatedEventHandlers() {
   'use strict';
 
   // Action to function name mapping
   const actionMap = {
-    'toggle-chatbot': toggleChatbot,
-    'send-message': sendMessage,
-    'show-upload-c-v': showUploadCV,
-    'generate-report': generateReport,
-    'generate-attendance-report': generateAttendanceReport,
-    'print-schedule': printSchedule,
-    'show-photo-gallery': showPhotoGallery,
-    'show-student-login': showStudentLogin,
-    'delete-class': deleteClass,
-    'contact-for-registration': contactForRegistration,
-    'show-info-modal': showInfoModal,
-    'show-change-password-modal': showChangePasswordModal,
-    'show-statistics-config-modal': showStatisticsConfigModal,
-    'login-admin': loginAdmin,
-    'logout-admin': logoutAdmin,
-    'update-password': updatePassword,
-    'refresh-dashboard': refreshDashboard,
-    'open-notification-panel': openNotificationPanel,
-    'reload-students': reloadStudents,
-    'save-statistics-config': saveStatisticsConfig,
-    'load-pending-approvals': loadPendingApprovals,
-    'create-content': createContent,
-    'initiate-google-login': initiateGoogleLogin,
-    'initiate-demo-login': initiateDemoLogin,
-    'initiate-manual-login': initiateManualLogin,
-    'initiate-guest-login': initiateGuestLogin,
-    'open-a-i-vault': openAIVault,
-    'open-profile': openProfile,
-    'open-achievements': openAchievements,
-    'google-logout': googleLogout,
-    'handle-logout': handleLogout,
-    'confirm-activity-registration': confirmActivityRegistration,
-    'close-chatbot': closeChatbot,
-    'show-grades': showGrades,
-    'show-attendance': showAttendance,
-    'show-communication': showCommunication,
-    'show-schedule': showSchedule,
-    'download-report': downloadReport,
-    'schedule-appointment': scheduleAppointment,
-    'contact-teacher': contactTeacher,
-    'parent-logout': parentLogout,
-    'load-main-dashboard': loadMainDashboard,
-    'handle-student-login': handleStudentLogin,
-    'check-connection': checkConnection,
-    'logout-admin-panel': logoutAdminPanel,
-    'test-auth': testAuth,
-    'test-bolsa-trabajo': testBolsaTrabajo,
-    'test-students': testStudents,
-    'test-parents': testParents,
-    'test-b-g-e-framework': testBGEFramework,
-    'func-name': funcName
+    'apply-to-job': applyToJob,
+    'remove-from-saved': removeFromSaved,
+    'save-job': saveJob,
+    'show-subject-detail': showSubjectDetail,
+    'cancelar-cita': cancelarCita,
+    'show-activity-registration': showActivityRegistration,
+    'edit-class': editClass,
+    'scroll-to-section': scrollToSection,
+    'view-student': viewStudent,
+    'edit-student': editStudent,
+    'contact-student': contactStudent,
+    'view-teacher': viewTeacher,
+    'edit-teacher': editTeacher,
+    'assign-subjects': assignSubjects,
+    'view-newsletter-detail': viewNewsletterDetail,
+    'approve-submission': approveSubmission,
+    'reject-submission': rejectSubmission,
+    'view-full-data': viewFullData,
+    'submit-feedback': submitFeedback,
+    'edit-noticia': editNoticia,
+    'delete-noticia': deleteNoticia,
+    'edit-evento': editEvento,
+    'delete-evento': deleteEvento,
+    'edit-aviso': editAviso,
+    'delete-aviso': deleteAviso,
+    'edit-comunicado': editComunicado,
+    'delete-comunicado': deleteComunicado,
+    'generate-student-report': generateStudentReport,
+    'edit-content': editContent,
+    'delete-content': deleteContent,
+    'show-noticia-modal': showNoticiaModal,
+    'show-evento-modal': showEventoModal,
+    'inscribirse-evento': inscribirseEvento,
+    'fill-dev-credentials': fillDevCredentials,
+    'submit-activity-registration': submitActivityRegistration,
+    'show-ticket-detail': showTicketDetail,
+    'handle-add-comment': handleAddComment,
+    'handle-assign-ticket': handleAssignTicket,
+    'handle-resolve-ticket': handleResolveTicket,
+    'handle-close-ticket': handleCloseTicket,
+    'handle-reopen-ticket': handleReopenTicket,
+    'handle-unwatch-ticket': handleUnwatchTicket,
+    'handle-watch-ticket': handleWatchTicket
   };
 
   // Delegated event listener on document
@@ -71,8 +67,41 @@
     if (action && actionMap[action]) {
       try {
         const fn = actionMap[action];
+
         if (typeof fn === 'function') {
-          fn.call(target, event);
+          // Extract parameters from data-* attributes (Pattern B support)
+          const params = [];
+
+          // Iterate through all attributes
+          for (let attr of target.attributes) {
+            if (attr.name.startsWith('data-') && attr.name !== 'data-action') {
+              let value = attr.value;
+
+              // Try to convert to appropriate type
+              if (!isNaN(value) && value !== '') {
+                // Numeric parameter
+                value = Number(value);
+              } else if (value === 'true') {
+                // Boolean true
+                value = true;
+              } else if (value === 'false') {
+                // Boolean false
+                value = false;
+              } else if ((value.startsWith('{') || value.startsWith('[')) && value.length > 0) {
+                // Try to parse as JSON
+                try {
+                  value = JSON.parse(value);
+                } catch (e) {
+                  // Keep as string if not valid JSON
+                }
+              }
+
+              params.push(value);
+            }
+          }
+
+          // Call function with parameters: first arg is event, then extracted data-* values
+          fn.apply(target, [event, ...params]);
         } else {
           console.warn(`[EVENT-HANDLER] Action '${action}' is not a function`);
         }
@@ -82,5 +111,5 @@
     }
   });
 
-  console.log('[EVENT-HANDLER] Delegated event handler initialized');
+  console.log('[EVENT-HANDLER] Delegated event handler initialized (v2 - Pattern A & B)');
 })();

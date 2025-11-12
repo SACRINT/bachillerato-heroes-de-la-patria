@@ -52,9 +52,9 @@ function initializeChatbotEvents() {
 function initializeDevCredentialsEvents() {
     // Buscar todos los botones de credenciales de desarrollo
     const devButtons = [
-        { selector: '[onclick="fillDevCredentials(\'admin\')"]', type: 'admin' },
-        { selector: '[onclick="fillDevCredentials(\'teacher\')"]', type: 'teacher' },
-        { selector: '[onclick="fillDevCredentials(\'student\')"]', type: 'student' }
+        { selector: '[data-action="fill-dev-credentials" data-param-1="\'admin\'"]', type: 'admin' },
+        { selector: '[data-action="fill-dev-credentials" data-param-1="\'teacher\'"]', type: 'teacher' },
+        { selector: '[data-action="fill-dev-credentials" data-param-1="\'student\'"]', type: 'student' }
     ];
 
     devButtons.forEach(({ selector, type }) => {

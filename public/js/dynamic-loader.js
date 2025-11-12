@@ -183,7 +183,7 @@ class DynamicContentLoader {
                                         <i class="fas fa-user me-1"></i>${noticia.autor}
                                     </small>
                                 </div>
-                                <button class="btn btn-primary btn-sm mt-2 w-100" onclick="showNoticiaModal('${noticia.id}')">
+                                <button class="btn btn-primary btn-sm mt-2 w-100" data-action="show-noticia-modal" data-param-1="${noticia.id}">
                                     Leer más <i class="fas fa-arrow-right ms-1"></i>
                                 </button>
                             </div>
@@ -277,7 +277,7 @@ class DynamicContentLoader {
                                         <small>${evento.lugar}</small>
                                     </div>
                                 </div>
-                                <button class="btn btn-outline-success btn-sm mt-3 w-100" onclick="showEventoModal('${evento.id}')">
+                                <button class="btn btn-outline-success btn-sm mt-3 w-100" data-action="show-evento-modal" data-param-1="${evento.id}">
                                     Ver detalles <i class="fas fa-info-circle ms-1"></i>
                                 </button>
                             </div>
@@ -532,7 +532,7 @@ async function showEventoModal(id) {
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                             ${evento.inscripcionRequerida ? `
-                            <button type="button" class="btn btn-success" onclick="inscribirseEvento('${evento.id}')">
+                            <button type="button" class="btn btn-success" data-action="inscribirse-evento" data-param-1="${evento.id}">
                                 <i class="fas fa-user-plus me-2"></i>Inscribirse
                             </button>
                             ` : ''}

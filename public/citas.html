@@ -883,7 +883,7 @@
                         </div>
                         <div class="modal-footer">
                             ${appointment.status === 'confirmed' ? `
-                            <button type="button" class="btn btn-danger" onclick="cancelarCita('${appointment.id}')">
+                            <button type="button" class="btn btn-danger" data-action="cancelar-cita" data-param-1="${appointment.id}">
                                 <i class="fas fa-times me-2"></i>Cancelar Cita
                             </button>
                             ` : ''}
