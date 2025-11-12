@@ -741,14 +741,14 @@ class SecurityManager {
     escalateSecurityAlert() {
         const alertModal = document.createElement('div');
         alertModal.className = 'security-alert-modal';
-        alertModal.innerHTML = sanitizeHTML(`
+        alertModal.innerHTML = `
             <div class="security-alert-content">
                 <h4>🚨 Alerta de Seguridad</h4>
                 <p>Se han detectado múltiples incidentes de seguridad.</p>
                 <p>Score actual: ${this.securityMetrics.securityScore}/100</p>
                 <button onclick="this.parentElement.parentElement.remove()" class="btn btn-primary">Entendido</button>
             </div>
-        `);
+        `;
         
         alertModal.style.cssText = `
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -864,12 +864,12 @@ class SecurityManager {
     showSecurityAlert(message) {
         const alert = document.createElement('div');
         alert.className = 'security-toast';
-        alert.innerHTML = sanitizeHTML(`
+        alert.innerHTML = `
             <div class="security-toast-content">
                 🔒 ${message}
                 <button onclick="this.parentElement.parentElement.remove()">×</button>
             </div>
-        `);
+        `;
         
         alert.style.cssText = `
             position: fixed; top: 20px; right: 20px; z-index: 10000;

@@ -140,8 +140,8 @@ class ContentGeneratorAI {
             transition: all 0.3s ease;
         `;
 
-        button.innerHTML = sanitizeHTML(`
-            <i class="fas fa-magic text-white" style="font-size: 1.3rem);"></i>
+        button.innerHTML = `
+            <i class="fas fa-magic text-white" style="font-size: 1.3rem;"></i>
         `;
 
         button.onclick = () => this.showContentGeneratorModal();
@@ -205,9 +205,9 @@ class ContentGeneratorAI {
         modal.id = 'contentGeneratorModal';
         modal.setAttribute('tabindex', '-1');
 
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = `
             <div class="modal-dialog modal-xl">
-                <div class="modal-content" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)); border-radius: 15px;">
+                <div class="modal-content" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px;">
                     <div class="modal-header border-0 text-white">
                         <h5 class="modal-title fw-bold">📚 Generador de Contenido IA - ${this.currentUser.name}</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -911,7 +911,7 @@ class ContentGeneratorAI {
 
     displayGeneratedContent(content) {
         const preview = document.getElementById('contentPreview');
-        preview.innerHTML = sanitizeHTML(content.htmlContent);
+        preview.innerHTML = content.htmlContent;
 
         // Mostrar acciones
         document.getElementById('contentActions').classList.remove('d-none');

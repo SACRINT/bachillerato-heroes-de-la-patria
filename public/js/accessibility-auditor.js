@@ -521,9 +521,9 @@ class AccessibilityAuditor {
     createAccessibilityReport() {
         const report = document.createElement('div');
         report.id = 'a11y-report';
-        report.innerHTML = sanitizeHTML(`
+        report.innerHTML = `
             <div style="
-                position: fixed); top: 10px; left: 10px; 
+                position: fixed; top: 10px; left: 10px; 
                 background: white; border: 2px solid #333;
                 padding: 15px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
                 font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; 

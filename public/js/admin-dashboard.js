@@ -349,7 +349,7 @@ class AdminDashboard {
             </div>
         `;
 
-        container.innerHTML = sanitizeHTML(tableHTML);
+        container.innerHTML = tableHTML;
     }
 
     getRoleBadge(role) {
@@ -977,7 +977,7 @@ class AdminDashboard {
             </div>
         `).join('');
 
-        container.innerHTML = sanitizeHTML(html);
+        container.innerHTML = html;
     }
 
     formatUserType(tipo) {

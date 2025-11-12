@@ -54,7 +54,7 @@ class AITutorInterface {
 
         const btn = document.createElement('div');
         btn.id = 'ai-tutor-btn';
-        btn.innerHTML = sanitizeHTML('🤖');
+        btn.innerHTML = '🤖';
         btn.style.cssText = `
             position: fixed;
             bottom: 30px;
@@ -86,7 +86,7 @@ class AITutorInterface {
         const widget = document.createElement('div');
         widget.id = 'ai-tutor-widget';
         widget.className = 'ai-tutor-widget';
-        widget.innerHTML = sanitizeHTML(`
+        widget.innerHTML = `
             <div class="ai-header">
                 <span>🤖</span>
                 <h4>IA Educativa</h4>
@@ -113,7 +113,7 @@ class AITutorInterface {
                     <button onclick="aiTutor.sendMessage()">➤</button>
                 </div>
             </div>
-        `);
+        `;
 
         widget.style.cssText = `
             position: fixed;

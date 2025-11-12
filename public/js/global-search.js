@@ -152,13 +152,13 @@ class GlobalSearch {
         this.currentQuery = '';
         this.selectedIndex = -1;
         this.results = [];
-        this.resultsContainer.innerHTML = sanitizeHTML(`
+        this.resultsContainer.innerHTML = `
             <div class="text-center text-muted py-5">
                 <i class="fas fa-search fa-3x mb-3 opacity-25"></i>
                 <p>Escribe para buscar en noticias, eventos, avisos, comunicados y egresados</p>
                 <small class="text-muted">Mínimo 2 caracteres</small>
             </div>
-        `);
+        `;
     }
 
     /**
@@ -173,14 +173,14 @@ class GlobalSearch {
         }
 
         this.currentQuery = query;
-        this.resultsContainer.innerHTML = sanitizeHTML(`
+        this.resultsContainer.innerHTML = `
             <div class="text-center py-5">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Buscando...</span>
                 </div>
                 <p class="mt-3 text-muted">Buscando "${query}"...</p>
             </div>
-        `);
+        `;
 
         this.searchTimeout = setTimeout(() => {
             this.performSearch(query);
@@ -202,12 +202,12 @@ class GlobalSearch {
             this.displayResults(data.results);
         } catch (error) {
             console.error('Error en búsqueda:', error);
-            this.resultsContainer.innerHTML = sanitizeHTML(`
+            this.resultsContainer.innerHTML = `
                 <div class="text-center text-danger py-5">
                     <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
                     <p>Error al buscar. Intenta nuevamente.</p>
                 </div>
-            `);
+            `;
         }
     }
 
@@ -216,13 +216,13 @@ class GlobalSearch {
      */
     displayResults(results) {
         if (results.total === 0) {
-            this.resultsContainer.innerHTML = sanitizeHTML(`
+            this.resultsContainer.innerHTML = `
                 <div class="text-center text-muted py-5">
                     <i class="fas fa-inbox fa-3x mb-3 opacity-25"></i>
                     <p>No se encontraron resultados para "${this.currentQuery}"</p>
                     <small class="text-muted">Intenta con otros términos de búsqueda</small>
                 </div>
-            `);
+            `;
             return;
         }
 
@@ -265,7 +265,7 @@ class GlobalSearch {
             </div>
         `;
 
-        this.resultsContainer.innerHTML = sanitizeHTML(html);
+        this.resultsContainer.innerHTML = html;
 
         // Agregar event listeners a los resultados
         this.bindResultClicks();

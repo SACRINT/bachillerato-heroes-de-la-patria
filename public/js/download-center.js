@@ -451,7 +451,7 @@ class DownloadCenter {
             </div>
         ` + documents.map(doc => this.generateDocumentCard(doc)).join('');
 
-        container.innerHTML = sanitizeHTML(resultsHTML);
+        container.innerHTML = resultsHTML;
     }
 
     clearSearch() {
@@ -485,7 +485,7 @@ class DownloadCenter {
             </div>
         `).join('');
 
-        container.innerHTML = sanitizeHTML(html);
+        container.innerHTML = html;
     }
 
     showCategoryDocuments(categoryId) {
@@ -511,7 +511,7 @@ class DownloadCenter {
             </div>
         ` + docs.map(doc => this.generateDocumentCard(doc)).join('');
 
-        container.innerHTML = sanitizeHTML(html);
+        container.innerHTML = html;
     }
 
     renderPopularDocuments() {
@@ -521,7 +521,7 @@ class DownloadCenter {
             .slice(0, 6);
 
         const html = popularDocs.map(doc => this.generateDocumentCard(doc)).join('');
-        container.innerHTML = sanitizeHTML(html);
+        container.innerHTML = html;
     }
 
     renderRecentDocuments() {
@@ -531,7 +531,7 @@ class DownloadCenter {
             .slice(0, 6);
 
         const html = recentDocs.map(doc => this.generateDocumentCard(doc)).join('');
-        container.innerHTML = sanitizeHTML(html);
+        container.innerHTML = html;
     }
 
     generateDocumentCard(doc) {

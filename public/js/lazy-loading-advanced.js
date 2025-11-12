@@ -219,7 +219,7 @@ class AdvancedLazyLoader {
         if (this.config.enableSkeleton) {
             const skeleton = document.createElement('div');
             skeleton.className = `${this.config.skeletonClass} lazy-content-skeleton`;
-            skeleton.innerHTML = sanitizeHTML('<div class="lazy-spinner"></div>');
+            skeleton.innerHTML = '<div class="lazy-spinner"></div>';
             element.appendChild(skeleton);
         }
     }
@@ -301,7 +301,7 @@ class AdvancedLazyLoader {
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
                 const content = await response.text();
-                element.innerHTML = sanitizeHTML(content);
+                element.innerHTML = content;
             }
 
             // Remover skeleton
@@ -332,12 +332,12 @@ class AdvancedLazyLoader {
         // Crear placeholder de error
         const wrapper = document.createElement('div');
         wrapper.className = 'lazy-error';
-        wrapper.innerHTML = sanitizeHTML(`
+        wrapper.innerHTML = `
             <div class="text-center">
                 <i class="fas fa-image text-muted mb-2"></i>
                 <div class="small text-muted">Error al cargar imagen</div>
             </div>
-        `);
+        `;
 
         img.parentNode.replaceChild(wrapper, img);
 
@@ -354,12 +354,12 @@ class AdvancedLazyLoader {
         element.classList.remove(this.config.loadingClass);
         element.classList.add(this.config.errorClass);
 
-        element.innerHTML = sanitizeHTML(`
+        element.innerHTML = `
             <div class="alert alert-warning">
                 <i class="fas fa-exclamation-triangle"></i>
                 Error al cargar contenido
             </div>
-        `);
+        `;
 
         this.stats.errors++;
         this.log(`❌ Error cargando contenido: ${error.message}`);

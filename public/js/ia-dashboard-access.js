@@ -107,9 +107,9 @@ class IADashboardAccess {
         const floatingButton = document.createElement('div');
         floatingButton.id = 'ia-access-button';
         floatingButton.className = 'ia-floating-button';
-        floatingButton.innerHTML = sanitizeHTML(`
+        floatingButton.innerHTML = `
             <div class="floating-btn-content">
-                <span style="font-size: 20px); color: white;">🤖</span>
+                <span style="font-size: 20px; color: white;">🤖</span>
                 <span style="font-size: 9px; color: white; font-weight: bold; margin-top: 1px;">IA</span>
             </div>
             <div class="floating-btn-pulse"></div>
@@ -129,10 +129,10 @@ class IADashboardAccess {
         panel.id = 'ia-dashboard-panel';
         panel.className = 'ia-dashboard-panel hidden';
 
-        panel.innerHTML = sanitizeHTML(`
+        panel.innerHTML = `
             <div class="ia-panel-header">
                 <h3><i class="fas fa-robot"></i> Centro de IA Académica</h3>
-                <button class="close-panel" onclick="if(window.iaDashboard) window.iaDashboard.toggleMainPanel()); else this.closest('.ia-dashboard-panel').classList.add('hidden');">
+                <button class="close-panel" onclick="if(window.iaDashboard) window.iaDashboard.toggleMainPanel(); else this.closest('.ia-dashboard-panel').classList.add('hidden');">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -548,10 +548,10 @@ class IADashboardAccess {
         if (statusElement) {
             if (this.userSession) {
                 if (this.userSession.accountApproved) {
-                    statusElement.innerHTML = sanitizeHTML(`
+                    statusElement.innerHTML = `
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <i class="fas fa-user-check" style="color: #28a745);"></i>
+                                <i class="fas fa-user-check" style="color: #28a745;"></i>
                                 ${this.userSession.name} - Nivel ${this.userSession.level || 1}
                                 <span class="badge bg-success ms-2">Aprobado</span>
                             </div>
@@ -561,15 +561,15 @@ class IADashboardAccess {
                         </div>
                     `;
                 } else {
-                    statusElement.innerHTML = sanitizeHTML(`
-                        <i class="fas fa-user-clock" style="color: #ffc107);"></i>
+                    statusElement.innerHTML = `
+                        <i class="fas fa-user-clock" style="color: #ffc107;"></i>
                         ${this.userSession.name} - Cuenta pendiente de aprobación
                         <span class="badge bg-warning ms-2">Pendiente</span>
                     `;
                 }
             } else {
-                statusElement.innerHTML = sanitizeHTML(`
-                    <i class="fas fa-sign-in-alt" style="color: #dc3545);"></i>
+                statusElement.innerHTML = `
+                    <i class="fas fa-sign-in-alt" style="color: #dc3545;"></i>
                     Debes iniciar sesión con Google en la página principal (index.html) para acceder a la IA
                     <div class="login-guide mt-2" style="font-size: 0.8rem; color: #666;">
                         💡 Ve a la página de inicio y busca el botón "Iniciar Sesión con Google"
@@ -582,7 +582,7 @@ class IADashboardAccess {
     createLaunchModal(featureKey, config) {
         const modal = document.createElement('div');
         modal.className = 'ia-launch-modal';
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = `
             <div class="modal-backdrop" onclick="this.parentElement.remove()"></div>
             <div class="modal-content">
                 <div class="modal-header">
@@ -598,7 +598,7 @@ class IADashboardAccess {
                     <button class="btn btn-secondary" onclick="this.closest('.ia-launch-modal').remove()">
                         Cancelar
                     </button>
-                    <button class="btn btn-primary" onclick="(${config.action.toString()})()); this.closest('.ia-launch-modal').remove();">
+                    <button class="btn btn-primary" onclick="(${config.action.toString()})(); this.closest('.ia-launch-modal').remove();">
                         Lanzar
                     </button>
                 </div>
@@ -620,10 +620,10 @@ class IADashboardAccess {
     showNotification(message, type) {
         const notification = document.createElement('div');
         notification.className = `ia-notification ${type}`;
-        notification.innerHTML = sanitizeHTML(`
+        notification.innerHTML = `
             <i class="fas fa-${type === 'success' ? 'check' : 'exclamation-triangle'}"></i>
             ${message}
-        `);
+        `;
 
         document.body.appendChild(notification);
 

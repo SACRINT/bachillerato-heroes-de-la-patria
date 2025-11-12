@@ -607,13 +607,13 @@ class BGEAdvancedPWA {
             indicator = document.createElement('div');
             indicator.id = 'offline-indicator';
             indicator.className = 'offline-indicator';
-            indicator.innerHTML = sanitizeHTML(`
+            indicator.innerHTML = `
                 <div class="offline-content">
                     <span class="offline-icon">📡</span>
                     <span class="offline-text">Modo Offline</span>
                     <span class="offline-queue" id="offline-queue-count"></span>
                 </div>
-            `);
+            `;
             document.body.appendChild(indicator);
         }
 
@@ -813,12 +813,12 @@ class BGEAdvancedPWA {
     showToast(message, type = 'info', duration = 5000) {
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
-        toast.innerHTML = sanitizeHTML(`
+        toast.innerHTML = `
             <div class="toast-content">
                 <span class="toast-message">${message}</span>
                 <button class="toast-close" onclick="this.parentElement.parentElement.remove()">×</button>
             </div>
-        `);
+        `;
 
         document.body.appendChild(toast);
 

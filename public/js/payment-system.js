@@ -388,7 +388,7 @@ class PaymentSystemManager {
 
     updatePaymentForm(method) {
         const paymentForm = document.getElementById('paymentForm');
-        paymentForm.innerHTML = sanitizeHTML(this.paymentForms[method]);
+        paymentForm.innerHTML = this.paymentForms[method];
 
         // Configurar eventos específicos para cada método
         if (method === 'credit') {

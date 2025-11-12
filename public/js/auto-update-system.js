@@ -286,7 +286,7 @@ class BGEAutoUpdateSystem {
         const notification = document.createElement('div');
         notification.id = 'update-notification';
         notification.className = 'update-notification';
-        notification.innerHTML = sanitizeHTML(`
+        notification.innerHTML = `
             <div class="update-content">
                 <div class="update-icon">
                     <i class="fas fa-download"></i>
@@ -304,7 +304,7 @@ class BGEAutoUpdateSystem {
                     </button>
                 </div>
             </div>
-        `);
+        `;
 
         document.body.appendChild(notification);
 
@@ -383,7 +383,7 @@ class BGEAutoUpdateSystem {
         const loader = document.createElement('div');
         loader.id = 'update-loader';
         loader.className = 'update-loader';
-        loader.innerHTML = sanitizeHTML(`
+        loader.innerHTML = `
             <div class="update-loader-content">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Actualizando...</span>
@@ -391,7 +391,7 @@ class BGEAutoUpdateSystem {
                 <p class="mt-3 mb-0">Aplicando actualización...</p>
                 <small class="text-muted">Por favor espera un momento</small>
             </div>
-        `);
+        `;
 
         document.body.appendChild(loader);
         setTimeout(() => loader.classList.add('show'), 100);
@@ -475,7 +475,7 @@ class BGEAutoUpdateSystem {
         const toast = document.createElement('div');
         toast.className = 'toast show position-fixed top-0 end-0 m-3';
         toast.style.zIndex = '9999';
-        toast.innerHTML = sanitizeHTML(`
+        toast.innerHTML = `
             <div class="toast-header">
                 <i class="fas fa-check-circle text-success me-2"></i>
                 <strong class="me-auto">Sistema actualizado</strong>
@@ -484,7 +484,7 @@ class BGEAutoUpdateSystem {
             <div class="toast-body">
                 Estás usando la versión más reciente del sistema BGE.
             </div>
-        `);
+        `;
 
         document.body.appendChild(toast);
 

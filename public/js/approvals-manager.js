@@ -183,7 +183,7 @@ function renderApprovalsList() {
         `;
     });
 
-    container.innerHTML = sanitizeHTML(html);
+    container.innerHTML = html;
 }
 
 /**

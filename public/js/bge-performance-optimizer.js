@@ -154,7 +154,7 @@ class BGEPerformanceOptimizer {
     createOptimizerInterface() {
         const optimizerPanel = document.createElement('div');
         optimizerPanel.id = 'bge-optimizer-panel';
-        optimizerPanel.innerHTML = sanitizeHTML(`
+        optimizerPanel.innerHTML = `
             <div class="performance-optimizer-panel">
                 <div class="optimizer-header">
                     <div class="optimizer-title">
@@ -225,7 +225,7 @@ class BGEPerformanceOptimizer {
                     </div>
                 </div>
             </div>
-        `);
+        `;
 
         // Añadir estilos
         this.addOptimizerStyles();
@@ -556,12 +556,12 @@ class BGEPerformanceOptimizer {
             const systemCard = document.createElement('div');
             systemCard.className = 'system-perf-card';
 
-            systemCard.innerHTML = sanitizeHTML(`
+            systemCard.innerHTML = `
                 <div class="system-perf-info">
                     <span class="system-perf-name">${system.name}</span>
                 </div>
                 <div class="system-perf-score excellent" id="score-${key}">100%</div>
-            `);
+            `;
 
             grid.appendChild(systemCard);
         });
@@ -1364,7 +1364,7 @@ class BGEPerformanceOptimizer {
         if (!container) return;
 
         if (this.state.alerts.length === 0) {
-            container.innerHTML = sanitizeHTML('<div class="no-alerts">No hay alertas de rendimiento</div>');
+            container.innerHTML = '<div class="no-alerts">No hay alertas de rendimiento</div>';
             return;
         }
 
@@ -1377,7 +1377,7 @@ class BGEPerformanceOptimizer {
             `;
         });
 
-        container.innerHTML = sanitizeHTML(alertsHTML);
+        container.innerHTML = alertsHTML;
     }
 
     updateStatus(status, text) {

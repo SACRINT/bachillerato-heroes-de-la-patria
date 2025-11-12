@@ -179,7 +179,7 @@ class DashboardPersonalizer {
     createQuickStatsWidget(container, size = 'medium') {
         const stats = this.getQuickStats();
 
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = `
             <div class="widget-content quick-stats-content">
                 <div class="stats-grid stats-${size}">
                     <div class="stat-item">
@@ -222,14 +222,14 @@ class DashboardPersonalizer {
                     ` : ''}
                 </div>
             </div>
-        `);
+        `;
     }
 
     createRecentNewsWidget(container, size = 'medium') {
         this.fetchRecentNews().then(news => {
             const itemsToShow = size === 'large' ? 5 : 3;
 
-            container.innerHTML = sanitizeHTML(`
+            container.innerHTML = `
                 <div class="widget-content news-content">
                     <div class="news-list">
                         ${news.slice(0, itemsToShow).map(item => `
@@ -247,7 +247,7 @@ class DashboardPersonalizer {
                         <a href="./index.html#noticias" class="view-all-link">Ver todas las noticias</a>
                     </div>
                 </div>
-            `);
+            `;
         });
     }
 
@@ -255,7 +255,7 @@ class DashboardPersonalizer {
         this.fetchUpcomingEvents().then(events => {
             const itemsToShow = size === 'large' ? 4 : 2;
 
-            container.innerHTML = sanitizeHTML(`
+            container.innerHTML = `
                 <div class="widget-content events-content">
                     <div class="events-list">
                         ${events.slice(0, itemsToShow).map(event => `
@@ -276,7 +276,7 @@ class DashboardPersonalizer {
                         <a href="./calendario.html" class="view-all-link">Ver calendario completo</a>
                     </div>
                 </div>
-            `);
+            `;
         });
     }
 
@@ -289,7 +289,7 @@ class DashboardPersonalizer {
             location: 'Guadalajara, JAL'
         };
 
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = `
             <div class="widget-content weather-content">
                 <div class="weather-main">
                     <div class="weather-icon">
@@ -309,7 +309,7 @@ class DashboardPersonalizer {
                     ` : ''}
                 </div>
             </div>
-        `);
+        `;
     }
 
     createCalendarWidget(container, size = 'large') {
@@ -317,7 +317,7 @@ class DashboardPersonalizer {
         const currentMonth = currentDate.getMonth();
         const currentYear = currentDate.getFullYear();
 
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = `
             <div class="widget-content calendar-content">
                 <div class="calendar-header">
                     <h5>${this.getMonthName(currentMonth)} ${currentYear}</h5>
@@ -329,14 +329,14 @@ class DashboardPersonalizer {
                     <a href="./calendario.html" class="view-all-link">Ver calendario completo</a>
                 </div>
             </div>
-        `);
+        `;
     }
 
     createNotificationsWidget(container, size = 'medium') {
         const notifications = this.getRecentNotifications();
         const itemsToShow = size === 'large' ? 5 : 3;
 
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = `
             <div class="widget-content notifications-content">
                 <div class="notifications-list">
                     ${notifications.slice(0, itemsToShow).map(notif => `
@@ -356,13 +356,13 @@ class DashboardPersonalizer {
                     <button onclick="window.notificationConfigUI?.openConfigPanel()" class="view-all-link">Gestionar notificaciones</button>
                 </div>
             </div>
-        `);
+        `;
     }
 
     createQuickAccessWidget(container, size = 'small') {
         const quickAccess = this.userPreferences.quickAccess;
 
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = `
             <div class="widget-content quick-access-content">
                 <div class="quick-access-grid quick-access-${size}">
                     ${quickAccess.map(item => `
@@ -376,13 +376,13 @@ class DashboardPersonalizer {
                     <button onclick="window.dashboardPersonalizer?.editQuickAccess()" class="edit-link">Editar accesos</button>
                 </div>
             </div>
-        `);
+        `;
     }
 
     createPerformanceWidget(container, size = 'medium') {
         const performance = this.getPerformanceMetrics();
 
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = `
             <div class="widget-content performance-content">
                 <div class="performance-metrics">
                     <div class="metric-item">
@@ -410,7 +410,7 @@ class DashboardPersonalizer {
                     ` : ''}
                 </div>
             </div>
-        `);
+        `;
     }
 
     // === GESTIÓN DE LAYOUT ===
@@ -425,7 +425,7 @@ class DashboardPersonalizer {
         dashboardContainer.className = `dashboard-widgets-container layout-${this.userPreferences.layout}`;
 
         // Clear existing widgets
-        dashboardContainer.innerHTML = sanitizeHTML('');
+        dashboardContainer.innerHTML = '';
 
         // Sort widgets by position
         const enabledWidgets = Object.entries(this.userPreferences.widgets)
@@ -472,7 +472,7 @@ class DashboardPersonalizer {
         widgetElement.dataset.widgetId = widgetId;
         widgetElement.dataset.position = config.position;
 
-        widgetElement.innerHTML = sanitizeHTML(`
+        widgetElement.innerHTML = `
             <div class="widget-header">
                 <div class="widget-title">
                     <i class="${widgetDef.icon}"></i>
@@ -496,7 +496,7 @@ class DashboardPersonalizer {
                     <span>Cargando...</span>
                 </div>
             </div>
-        `);
+        `;
 
         container.appendChild(widgetElement);
 
@@ -686,7 +686,7 @@ class DashboardPersonalizer {
         const config = this.userPreferences.widgets[widgetId];
 
         if (widgetBody && widgetDef && config) {
-            widgetBody.innerHTML = sanitizeHTML('<div class="widget-loading"><i class="fas fa-spinner fa-spin"></i><span>Actualizando...</span></div>');
+            widgetBody.innerHTML = '<div class="widget-loading"><i class="fas fa-spinner fa-spin"></i><span>Actualizando...</span></div>';
 
             setTimeout(() => {
                 widgetDef.component(widgetBody, config.size);
@@ -706,7 +706,7 @@ class DashboardPersonalizer {
     showWidgetConfigModal(widgetId, widgetDef, config) {
         const modal = document.createElement('div');
         modal.className = 'widget-config-modal';
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = `
             <div class="modal-overlay">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -735,7 +735,7 @@ class DashboardPersonalizer {
                     </div>
                 </div>
             </div>
-        `);
+        `;
 
         document.body.appendChild(modal);
     }
@@ -768,9 +768,9 @@ class DashboardPersonalizer {
         const button = document.createElement('button');
         button.id = 'dashboardPersonalizerBtn';
         button.className = 'dashboard-personalizer-btn';
-        button.innerHTML = sanitizeHTML(`
+        button.innerHTML = `
             <i class="fas fa-palette"></i>
-        `);
+        `;
         button.title = 'Personalizar Dashboard';
 
         document.body.appendChild(button);
@@ -787,7 +787,7 @@ class DashboardPersonalizer {
     openPersonalizationPanel() {
         const panel = document.createElement('div');
         panel.className = 'personalization-panel';
-        panel.innerHTML = sanitizeHTML(`
+        panel.innerHTML = `
             <div class="panel-overlay">
                 <div class="panel-content">
                     <div class="panel-header">
@@ -803,7 +803,7 @@ class DashboardPersonalizer {
                     </div>
                 </div>
             </div>
-        `);
+        `;
 
         document.body.appendChild(panel);
     }

@@ -626,7 +626,7 @@
             return;
         }
 
-        resultsContent.innerHTML = sanitizeHTML(createUnifiedResultsHTML(results, query));
+        resultsContent.innerHTML = createUnifiedResultsHTML(results, query);
         resultsContainer.classList.remove('d-none');
 
         // Agregar event listeners

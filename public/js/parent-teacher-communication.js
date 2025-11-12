@@ -448,7 +448,7 @@ class ParentTeacherCommunicationSystem {
             ${this.renderModals()}
         `;
 
-        container.innerHTML = sanitizeHTML(html);
+        container.innerHTML = html;
         this.bindEventHandlers();
     }
 
@@ -1020,7 +1020,7 @@ class ParentTeacherCommunicationSystem {
             // Actualizar vista de conversación
             const conversationView = document.querySelector('.conversation-view');
             if (conversationView) {
-                conversationView.innerHTML = sanitizeHTML(this.renderConversationView());
+                conversationView.innerHTML = this.renderConversationView();
             }
 
             // Cargar mensajes
@@ -1060,7 +1060,7 @@ class ParentTeacherCommunicationSystem {
             </div>
         `).join('');
 
-        messagesList.innerHTML = sanitizeHTML(messagesHtml);
+        messagesList.innerHTML = messagesHtml;
         messagesList.scrollTop = messagesList.scrollHeight;
     }
 

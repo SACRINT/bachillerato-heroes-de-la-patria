@@ -144,7 +144,7 @@ class PushNotificationManager {
         const container = document.getElementById('push-notifications-container');
         if (!container) return;
 
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = `
             <div class="push-notifications-system">
                 <!-- Header del Sistema -->
                 <div class="notifications-header bg-info text-white p-4 rounded-top">
@@ -433,7 +433,7 @@ class PushNotificationManager {
                     </div>
                 </div>
             </div>
-        `);
+        `;
     }
 
     async bindEvents() {
@@ -612,7 +612,7 @@ class PushNotificationManager {
                 if (this.subscription) {
                     this.updateStatus('active', 'Activas', 'Las notificaciones están funcionando correctamente');
                     enableBtn.disabled = true;
-                    enableBtn.innerHTML = sanitizeHTML('<i class="fas fa-check me-1"></i>Notificaciones Activas');
+                    enableBtn.innerHTML = '<i class="fas fa-check me-1"></i>Notificaciones Activas';
                 } else {
                     this.updateStatus('granted-not-subscribed', 'Permisos Concedidos', 'Configurando suscripción...');
                     enableBtn.disabled = false;
@@ -622,7 +622,7 @@ class PushNotificationManager {
             case 'denied':
                 this.updateStatus('denied', 'Denegadas', 'Los permisos han sido denegados');
                 enableBtn.disabled = true;
-                enableBtn.innerHTML = sanitizeHTML('<i class="fas fa-ban me-1"></i>Permisos Denegados');
+                enableBtn.innerHTML = '<i class="fas fa-ban me-1"></i>Permisos Denegados';
                 break;
 
             default:
@@ -649,7 +649,7 @@ class PushNotificationManager {
 
         const config = statusConfig[status] || statusConfig['default'];
 
-        statusIndicator.innerHTML = sanitizeHTML(`<i class="fas ${config.icon}"></i>`);
+        statusIndicator.innerHTML = `<i class="fas ${config.icon}"></i>`;
         statusText.textContent = text;
         statusText.className = config.class;
         statusDetails.textContent = details;
@@ -667,7 +667,7 @@ class PushNotificationManager {
             serviceWorker: this.swRegistration ? 'Activo' : 'Inactivo'
         };
 
-        systemStatusInfo.innerHTML = sanitizeHTML(`
+        systemStatusInfo.innerHTML = `
             <div class="table-responsive">
                 <table class="table table-sm">
                     <tr>
@@ -708,7 +708,7 @@ class PushNotificationManager {
                     </tr>
                 </table>
             </div>
-        `);
+        `;
 
         // Actualizar estadísticas
         await this.updateStatistics();
@@ -903,12 +903,12 @@ class PushNotificationManager {
         const historyContainer = document.getElementById('notificationHistory');
 
         if (this.notificationQueue.length === 0) {
-            historyContainer.innerHTML = sanitizeHTML(`
+            historyContainer.innerHTML = `
                 <div class="text-center text-muted py-5">
                     <i class="fas fa-bell-slash fa-3x mb-3"></i>
                     <p>No hay notificaciones en el historial</p>
                 </div>
-            `);
+            `;
             return;
         }
 
@@ -951,7 +951,7 @@ class PushNotificationManager {
             `;
         }).join('');
 
-        historyContainer.innerHTML = sanitizeHTML(html);
+        historyContainer.innerHTML = html;
     }
 
     async markAsRead(notificationId) {
@@ -1073,10 +1073,10 @@ class PushNotificationManager {
             transition: opacity 0.3s ease;
         `;
 
-        toast.innerHTML = sanitizeHTML(`
+        toast.innerHTML = `
             <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
             ${message}
-        `);
+        `;
 
         document.body.appendChild(toast);
 

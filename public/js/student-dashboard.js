@@ -509,7 +509,7 @@ class StudentDashboard {
             </div>
         `;
 
-        container.innerHTML = sanitizeHTML(dashboardHtml);
+        container.innerHTML = dashboardHtml;
 
         // Re-setup event listeners
         this.setupEventListeners();

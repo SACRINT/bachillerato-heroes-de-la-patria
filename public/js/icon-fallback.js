@@ -68,7 +68,7 @@ class IconFallback {
             if (fallbackSVG) {
                 // Reemplazar el icono con SVG de respaldo
                 const wrapper = document.createElement('span');
-                wrapper.innerHTML = sanitizeHTML(fallbackSVG);
+                wrapper.innerHTML = fallbackSVG;
                 wrapper.className = element.className.replace(/fa[sr]?\s+fa-[\w-]+/g, '');
                 
                 element.parentNode.replaceChild(wrapper.firstChild, element);

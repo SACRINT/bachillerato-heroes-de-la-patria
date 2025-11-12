@@ -163,7 +163,7 @@ class AITutorInterface {
         tutorWidget.id = 'ai-tutor-widget';
         tutorWidget.className = 'ai-tutor-widget hidden';
 
-        tutorWidget.innerHTML = sanitizeHTML(`
+        tutorWidget.innerHTML = `
             <div class="tutor-header">
                 <div class="tutor-avatar">
                     <div class="avatar-image">🤖</div>
@@ -211,7 +211,7 @@ class AITutorInterface {
                             <span class="send-icon">➤</span>
                         </button>
                     </div>
-                    <div class="voice-recording" id="voice-recording" style="display: none);">
+                    <div class="voice-recording" id="voice-recording" style="display: none;">
                         <div class="recording-indicator">
                             <span class="pulse"></span>
                             Escuchando...
@@ -240,10 +240,10 @@ class AITutorInterface {
         const activationBtn = document.createElement('div');
         activationBtn.id = 'ai-tutor-activation';
         activationBtn.className = 'ai-tutor-activation';
-        activationBtn.innerHTML = sanitizeHTML(`
+        activationBtn.innerHTML = `
             <div class="activation-content">
                 <div class="tutor-icon">🤖</div>
-                <div class="notification-badge" style="display: none);">1</div>
+                <div class="notification-badge" style="display: none;">1</div>
             </div>
         `;
 
@@ -410,10 +410,10 @@ class AITutorInterface {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}-message ${emotion}`;
 
-        messageDiv.innerHTML = sanitizeHTML(`
+        messageDiv.innerHTML = `
             <div class="message-content">${content}</div>
             <div class="message-time">${new Date().toLocaleTimeString()}</div>
-        `);
+        `;
 
         container.appendChild(messageDiv);
         this.scrollToBottom();

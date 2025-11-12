@@ -323,7 +323,7 @@ async function viewNewsletterDetail(newsletterId) {
 
             // Agregar modal al body
             const modalContainer = document.createElement('div');
-            modalContainer.innerHTML = sanitizeHTML(modal);
+            modalContainer.innerHTML = modal;
             document.body.appendChild(modalContainer);
 
             // Mostrar modal

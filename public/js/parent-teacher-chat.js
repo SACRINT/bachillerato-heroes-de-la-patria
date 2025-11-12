@@ -384,7 +384,7 @@ class ParentTeacherChat {
         if (!container) return;
 
         if (conversations.length === 0) {
-            container.innerHTML = sanitizeHTML(`
+            container.innerHTML = `
                 <div class="no-conversations">
                     <i class="fas fa-inbox"></i>
                     <p>No tienes conversaciones aún.</p>
@@ -392,7 +392,7 @@ class ParentTeacherChat {
                         Iniciar Conversación
                     </button>
                 </div>
-            `);
+            `;
             return;
         }
 
@@ -418,7 +418,7 @@ class ParentTeacherChat {
             </div>
         `).join('');
 
-        container.innerHTML = sanitizeHTML(conversationsHTML);
+        container.innerHTML = conversationsHTML;
 
         // Guardar conversaciones en el mapa
         conversations.forEach(conv => {
@@ -496,16 +496,16 @@ class ParentTeacherChat {
         if (!container) return;
 
         if (messages.length === 0) {
-            container.innerHTML = sanitizeHTML(`
+            container.innerHTML = `
                 <div class="no-messages">
                     <p>No hay mensajes en esta conversación.</p>
                 </div>
-            `);
+            `;
             return;
         }
 
         const messagesHTML = messages.map(message => this.createMessageHTML(message)).join('');
-        container.innerHTML = sanitizeHTML(messagesHTML);
+        container.innerHTML = messagesHTML;
 
         // Scroll al final
         container.scrollTop = container.scrollHeight;

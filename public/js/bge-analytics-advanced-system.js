@@ -397,7 +397,7 @@ class BGEAdvancedAnalytics {
 
         const dashboardContainer = document.createElement('div');
         dashboardContainer.className = 'analytics-dashboard-container';
-        dashboardContainer.innerHTML = sanitizeHTML(`
+        dashboardContainer.innerHTML = `
             <div class="analytics-tabs">
                 <button class="analytics-tab active" data-dashboard="realtime">
                     📊 Tiempo Real
@@ -418,7 +418,7 @@ class BGEAdvancedAnalytics {
                 <div id="engagement-dashboard" class="analytics-panel"></div>
                 <div id="performance-dashboard" class="analytics-panel"></div>
             </div>
-        `);
+        `;
 
         // Insertar en dashboard admin si existe
         const adminDashboard = document.querySelector('#admin-dashboard-content');
@@ -791,7 +791,7 @@ class RealtimeDashboard {
         this.container = document.getElementById('realtime-dashboard');
         if (!this.container) return;
 
-        this.container.innerHTML = sanitizeHTML(`
+        this.container.innerHTML = `
             <div class="realtime-metrics">
                 <div class="metric-card">
                     <h3>👥 Usuarios Activos</h3>
@@ -817,7 +817,7 @@ class RealtimeDashboard {
                 <h4>📄 Páginas Más Visitadas</h4>
                 <ul id="active-pages"></ul>
             </div>
-        `);
+        `;
 
         this.loadRealtimeData();
         this.initChart();
@@ -847,12 +847,12 @@ class RealtimeDashboard {
         const list = document.getElementById('active-pages');
         if (!list) return;
 
-        list.innerHTML = sanitizeHTML(pages.map(page => `
+        list.innerHTML = pages.map(page => `
             <li>
                 <span class="page-url">${page.url}</span>
                 <span class="page-visitors">${page.visitors} usuarios</span>
             </li>
-        `).join(''));
+        `).join('');
     }
 
     initChart() {
@@ -878,12 +878,12 @@ class AcademicDashboard {
         const container = document.getElementById('academic-dashboard');
         if (!container) return;
 
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = `
             <div class="academic-overview">
                 <h3>📚 Resumen Académico</h3>
                 <!-- Academic metrics here -->
             </div>
-        `);
+        `;
     }
 }
 
@@ -896,12 +896,12 @@ class EngagementDashboard {
         const container = document.getElementById('engagement-dashboard');
         if (!container) return;
 
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = `
             <div class="engagement-overview">
                 <h3>👥 Análisis de Participación</h3>
                 <!-- Engagement metrics here -->
             </div>
-        `);
+        `;
     }
 }
 
@@ -914,12 +914,12 @@ class PerformanceDashboard {
         const container = document.getElementById('performance-dashboard');
         if (!container) return;
 
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = `
             <div class="performance-overview">
                 <h3>⚡ Métricas de Rendimiento</h3>
                 <!-- Performance metrics here -->
             </div>
-        `);
+        `;
     }
 }
 

@@ -141,14 +141,14 @@ class DynamicContentLoader {
         }
 
         if (noticias.length === 0) {
-            container.innerHTML = sanitizeHTML(`
+            container.innerHTML = `
                 <div class="col-12 text-center">
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle me-2"></i>
                         No hay noticias disponibles en este momento.
                     </div>
                 </div>
-            `);
+            `;
             return;
         }
 
@@ -193,7 +193,7 @@ class DynamicContentLoader {
             `;
         });
 
-        container.innerHTML = sanitizeHTML(html);
+        container.innerHTML = html;
         console.log(`📰 [LOADER] ${noticias.length} noticias cargadas en homepage`);
     }
 
@@ -206,7 +206,7 @@ class DynamicContentLoader {
             const newsSection = document.querySelector('#recent-news').closest('section');
             const eventsSection = document.createElement('section');
             eventsSection.className = 'py-5 bg-light';
-            eventsSection.innerHTML = sanitizeHTML(`
+            eventsSection.innerHTML = `
                 <div class="container">
                     <div class="row mb-5">
                         <div class="col-lg-8 mx-auto text-center">
@@ -224,21 +224,21 @@ class DynamicContentLoader {
                         </div>
                     </div>
                 </div>
-            `);
+            `;
 
             newsSection.parentNode.insertBefore(eventsSection, newsSection.nextSibling);
             container = document.getElementById('upcoming-events');
         }
 
         if (eventos.length === 0) {
-            container.innerHTML = sanitizeHTML(`
+            container.innerHTML = `
                 <div class="col-12 text-center">
                     <div class="alert alert-info">
                         <i class="fas fa-calendar-times me-2"></i>
                         No hay eventos próximos programados.
                     </div>
                 </div>
-            `);
+            `;
             return;
         }
 
@@ -287,7 +287,7 @@ class DynamicContentLoader {
             `;
         });
 
-        container.innerHTML = sanitizeHTML(html);
+        container.innerHTML = html;
         console.log(`📅 [LOADER] ${eventos.length} eventos cargados en homepage`);
     }
 
@@ -583,10 +583,10 @@ function showAlert(message, type = 'info') {
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
     alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
-    alertDiv.innerHTML = sanitizeHTML(`
+    alertDiv.innerHTML = `
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `);
+    `;
     document.body.appendChild(alertDiv);
 
     // Auto-dismiss after 5 seconds

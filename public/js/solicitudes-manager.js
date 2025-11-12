@@ -97,7 +97,7 @@ class SolicitudesManager {
             </div>
         `;
 
-        containerEl.innerHTML = sanitizeHTML(html);
+        containerEl.innerHTML = html;
     }
 
     createTableRow(solicitud) {

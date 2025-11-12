@@ -250,7 +250,7 @@ async function loadDepartments() {
         // Poblar select de departamentos en el modal
         const select = document.getElementById('ticketDepartment');
         if (select) {
-            select.innerHTML = sanitizeHTML('<option value="">Seleccione departamento</option>');
+            select.innerHTML = '<option value="">Seleccione departamento</option>';
             appState.departments.forEach(dept => {
                 select.innerHTML += `<option value="${dept.id}">${dept.name}</option>`;
             });
@@ -274,7 +274,7 @@ async function loadCategories() {
         // Poblar select de categorías en el modal
         const select = document.getElementById('ticketCategory');
         if (select) {
-            select.innerHTML = sanitizeHTML('<option value="">Seleccione categoría</option>');
+            select.innerHTML = '<option value="">Seleccione categoría</option>';
             appState.categories.forEach(cat => {
                 select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
             });
@@ -466,7 +466,7 @@ function renderPagination(pagination) {
         </li>
     `;
 
-    container.innerHTML = sanitizeHTML(html);
+    container.innerHTML = html;
 }
 
 /**

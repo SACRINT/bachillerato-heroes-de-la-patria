@@ -87,7 +87,7 @@
         const startYear = 2000;
 
         // Limpiar opciones existentes (excepto la primera)
-        graduationYearSelect.innerHTML = sanitizeHTML('<option value="">Seleccionar año...</option>');
+        graduationYearSelect.innerHTML = '<option value="">Seleccionar año...</option>';
 
         // Generar años desde actual hacia atrás
         for (let year = currentYear + 1; year >= startYear; year--) {
@@ -311,7 +311,7 @@
     function hideLoadingState(button, originalText) {
         if (!button) return;
         button.disabled = false;
-        button.innerHTML = sanitizeHTML(originalText);
+        button.innerHTML = originalText;
     }
 
     /**

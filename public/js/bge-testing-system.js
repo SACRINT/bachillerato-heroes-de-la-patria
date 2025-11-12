@@ -118,7 +118,7 @@ class BGETestingSystem {
     createTestingInterface() {
         const testingPanel = document.createElement('div');
         testingPanel.id = 'bge-testing-panel';
-        testingPanel.innerHTML = sanitizeHTML(`
+        testingPanel.innerHTML = `
             <div class="testing-system-panel">
                 <div class="testing-header">
                     <div class="testing-title">
@@ -177,7 +177,7 @@ class BGETestingSystem {
                     </div>
                 </div>
             </div>
-        `);
+        `;
 
         // Añadir estilos
         this.addTestingStyles();
@@ -518,13 +518,13 @@ class BGETestingSystem {
 
             const icon = this.getSystemIcon(key);
 
-            systemCard.innerHTML = sanitizeHTML(`
+            systemCard.innerHTML = `
                 <div class="system-info">
                     <span class="system-icon">${icon}</span>
                     <span class="system-name">${system.name}</span>
                 </div>
                 <div class="system-status" id="status-${key}"></div>
-            `);
+            `;
 
             systemCard.addEventListener('click', () => this.testSingleSystem(key));
             grid.appendChild(systemCard);
@@ -1043,7 +1043,7 @@ class BGETestingSystem {
         if (!container) return;
 
         if (this.results.detailed.size === 0) {
-            container.innerHTML = sanitizeHTML('<div class="no-results">No se han ejecutado tests aún</div>');
+            container.innerHTML = '<div class="no-results">No se han ejecutado tests aún</div>';
             return;
         }
 
@@ -1061,7 +1061,7 @@ class BGETestingSystem {
             `;
         }
 
-        container.innerHTML = sanitizeHTML(resultsHTML);
+        container.innerHTML = resultsHTML;
     }
 
     log(message, type = 'info') {

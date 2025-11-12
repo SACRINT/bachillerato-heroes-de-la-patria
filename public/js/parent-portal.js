@@ -314,7 +314,7 @@ class ParentPortal {
             `;
         }).join('');
 
-        container.innerHTML = sanitizeHTML(html);
+        container.innerHTML = html;
     }
 
     loadUpcomingEvents() {
@@ -347,7 +347,7 @@ class ParentPortal {
             `;
         }).join('');
 
-        container.innerHTML = sanitizeHTML(html);
+        container.innerHTML = html;
     }
 
     loadAnnouncements() {
@@ -376,7 +376,7 @@ class ParentPortal {
             `;
         }).join('');
 
-        container.innerHTML = sanitizeHTML(html);
+        container.innerHTML = html;
     }
 
     getGradeColor(grade) {
@@ -457,10 +457,10 @@ class ParentPortal {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1060; max-width: 400px;';
-        alertDiv.innerHTML = sanitizeHTML(`
+        alertDiv.innerHTML = `
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `);
+        `;
         
         document.body.appendChild(alertDiv);
         

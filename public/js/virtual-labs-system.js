@@ -680,7 +680,7 @@ class VirtualLabsSystem {
         labInterface.id = 'virtual-labs-interface';
         labInterface.className = 'virtual-labs-interface hidden';
 
-        labInterface.innerHTML = sanitizeHTML(`
+        labInterface.innerHTML = `
             <div class="labs-header">
                 <h2>🧪 Laboratorios Virtuales</h2>
                 <div class="labs-controls">
@@ -705,7 +705,7 @@ class VirtualLabsSystem {
                     </div>
                 </div>
 
-                <div class="experiment-selector" id="experiment-selector" style="display: none);">
+                <div class="experiment-selector" id="experiment-selector" style="display: none;">
                     <h3>Experimentos Disponibles</h3>
                     <div class="experiments-grid" id="experiments-grid">
                         <!-- Experiments will be populated dynamically -->
@@ -771,12 +771,12 @@ class VirtualLabsSystem {
         const activationBtn = document.createElement('div');
         activationBtn.id = 'labs-activation';
         activationBtn.className = 'labs-activation';
-        activationBtn.innerHTML = sanitizeHTML(`
+        activationBtn.innerHTML = `
             <div class="activation-content">
                 <div class="lab-icon">🧪</div>
                 <div class="lab-status-dot active"></div>
             </div>
-        `);
+        `;
 
         activationBtn.addEventListener('click', () => this.toggleLabInterface());
         document.body.appendChild(activationBtn);
@@ -836,7 +836,7 @@ class VirtualLabsSystem {
         const lab = this.laboratories[labType];
         const grid = document.getElementById('experiments-grid');
 
-        grid.innerHTML = sanitizeHTML(lab.experiments.map(experiment => `
+        grid.innerHTML = lab.experiments.map(experiment => `
             <div class="experiment-card" data-experiment="${experiment}">
                 <div class="experiment-icon">${this.getExperimentIcon(experiment)}</div>
                 <h4>${this.getExperimentName(experiment)}</h4>
@@ -845,7 +845,7 @@ class VirtualLabsSystem {
                     Comenzar
                 </button>
             </div>
-        `).join(''));
+        `).join('');
     }
 
     async selectExperiment(experimentType) {

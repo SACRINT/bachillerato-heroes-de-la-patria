@@ -67,7 +67,7 @@ class AdvancedMetricsSystem {
         }
 
         // Limpiar contenedor
-        widgetsContainer.innerHTML = sanitizeHTML('');
+        widgetsContainer.innerHTML = '';
 
         const widgets = [
             this.createKPIWidget('institutional-efficiency', 'Eficiencia Institucional',
@@ -108,7 +108,7 @@ class AdvancedMetricsSystem {
     createKPIWidget(id, title, value, unit, color, icon) {
         const widget = document.createElement('div');
         widget.className = 'col-xl-3 col-lg-4 col-md-6 mb-4';
-        widget.innerHTML = sanitizeHTML(`
+        widget.innerHTML = `
             <div class="card border-0 shadow-sm h-100 kpi-widget" data-widget-id="${id}">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between mb-3">
@@ -131,7 +131,7 @@ class AdvancedMetricsSystem {
                     </div>
                     <h3 class="text-${color} mb-1 widget-value" id="${id}-value">${value}${unit}</h3>
                     <p class="text-muted mb-2 small">${title}</p>
-                    <div class="progress" style="height: 4px);">
+                    <div class="progress" style="height: 4px;">
                         <div class="progress-bar bg-${color}" style="width: ${Math.min(value, 100)}%"></div>
                     </div>
                     <small class="text-muted mt-2 d-block">
@@ -146,7 +146,7 @@ class AdvancedMetricsSystem {
     createRealtimeWidget(id, title, value, unit, color, icon) {
         const widget = document.createElement('div');
         widget.className = 'col-xl-3 col-lg-4 col-md-6 mb-4';
-        widget.innerHTML = sanitizeHTML(`
+        widget.innerHTML = `
             <div class="card border-0 shadow-sm h-100 realtime-widget" data-widget-id="${id}">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between mb-3">
@@ -161,7 +161,7 @@ class AdvancedMetricsSystem {
                     <h3 class="text-${color} mb-1 widget-value" id="${id}-value">${value}${unit}</h3>
                     <p class="text-muted mb-2 small">${title}</p>
                     <div class="d-flex align-items-center">
-                        <div class="mini-chart flex-grow-1" id="${id}-chart" style="height: 30px);"></div>
+                        <div class="mini-chart flex-grow-1" id="${id}-chart" style="height: 30px;"></div>
                     </div>
                     <small class="text-muted mt-2 d-block">
                         <i class="fas fa-circle text-${color} me-1 blink"></i>En vivo
@@ -179,7 +179,7 @@ class AdvancedMetricsSystem {
         const trendValue = this.calculateTrend(data);
         const trendIcon = trendValue > 0 ? 'fa-arrow-up text-success' : 'fa-arrow-down text-danger';
 
-        widget.innerHTML = sanitizeHTML(`
+        widget.innerHTML = `
             <div class="card border-0 shadow-sm h-100 trend-widget" data-widget-id="${id}">
                 <div class="card-header bg-transparent border-0 pb-0">
                     <div class="d-flex align-items-center justify-content-between">
@@ -194,7 +194,7 @@ class AdvancedMetricsSystem {
                     </div>
                 </div>
                 <div class="card-body pt-2">
-                    <div style="position: relative); height: 120px;"><canvas id="${id}-chart"></canvas></div>
+                    <div style="position: relative; height: 120px;"><canvas id="${id}-chart"></canvas></div>
                     <div class="row mt-3">
                         <div class="col-3 text-center">
                             <small class="text-muted d-block">Aprobación</small>
@@ -222,7 +222,7 @@ class AdvancedMetricsSystem {
     createOperationalWidget(id, title, data, color, icon) {
         const widget = document.createElement('div');
         widget.className = 'col-xl-6 col-lg-8 col-md-12 mb-4';
-        widget.innerHTML = sanitizeHTML(`
+        widget.innerHTML = `
             <div class="card border-0 shadow-sm h-100 operational-widget" data-widget-id="${id}">
                 <div class="card-header bg-transparent border-0 pb-0">
                     <h6 class="mb-0 text-${color}">
@@ -238,7 +238,7 @@ class AdvancedMetricsSystem {
                                     <i class="fas fa-chart-pie text-primary"></i>
                                 </div>
                                 <h5 class="mb-0 text-primary">${data.resourceUtilization}%</h5>
-                                <div class="progress mt-2" style="height: 3px);">
+                                <div class="progress mt-2" style="height: 3px;">
                                     <div class="progress-bar bg-primary" style="width: ${data.resourceUtilization}%"></div>
                                 </div>
                             </div>
@@ -291,7 +291,7 @@ class AdvancedMetricsSystem {
         const healthStatus = this.calculateSystemHealth(data);
         const statusColor = healthStatus > 90 ? 'success' : healthStatus > 70 ? 'warning' : 'danger';
 
-        widget.innerHTML = sanitizeHTML(`
+        widget.innerHTML = `
             <div class="card border-0 shadow-sm h-100 system-health-widget" data-widget-id="${id}">
                 <div class="card-header bg-transparent border-0 pb-0">
                     <div class="d-flex align-items-center justify-content-between">
@@ -323,7 +323,7 @@ class AdvancedMetricsSystem {
                             <div class="text-center p-3 border rounded">
                                 <h4 class="text-info mb-1">${data.systemLoad}%</h4>
                                 <small class="text-muted">Carga del Sistema</small>
-                                <div class="progress mt-2" style="height: 4px);">
+                                <div class="progress mt-2" style="height: 4px;">
                                     <div class="progress-bar bg-info" style="width: ${data.systemLoad}%"></div>
                                 </div>
                             </div>
@@ -613,12 +613,12 @@ class AdvancedMetricsSystem {
         const toast = document.createElement('div');
         toast.className = `toast align-items-center text-bg-${type} border-0`;
         toast.setAttribute('role', 'alert');
-        toast.innerHTML = sanitizeHTML(`
+        toast.innerHTML = `
             <div class="d-flex">
                 <div class="toast-body">${message}</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-        `);
+        `;
 
         // Agregar al contenedor de toasts
         let toastContainer = document.querySelector('.toast-container');

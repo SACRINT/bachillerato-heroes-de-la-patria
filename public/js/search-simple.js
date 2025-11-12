@@ -189,7 +189,7 @@
         
         if (!resultsContainer || !resultsContent) return;
         
-        resultsContent.innerHTML = sanitizeHTML(createResultsHTML(results, query));
+        resultsContent.innerHTML = createResultsHTML(results, query);
         resultsContainer.classList.remove('d-none');
         
         // Agregar listeners a los resultados

@@ -135,7 +135,7 @@ class DynamicStudentLoader {
             }
 
             // Limpiar tabla
-            tableBody.innerHTML = sanitizeHTML('');
+            tableBody.innerHTML = '';
 
             // Agregar filas de estudiantes
             this.students.estudiantes?.forEach(student => {
@@ -189,7 +189,7 @@ class DynamicStudentLoader {
         // Semestre con valor por defecto
         const semestre = student.semestre || 'N/A';
 
-        row.innerHTML = sanitizeHTML(`
+        row.innerHTML = `
             <td><strong>${student.matricula || 'Sin matrícula'}</strong></td>
             <td>
                 <strong>${nombreCompleto}</strong><br>
@@ -228,7 +228,7 @@ class DynamicStudentLoader {
                     </button>
                 </div>
             </td>
-        `);
+        `;
         return row;
     }
 
@@ -322,7 +322,7 @@ class DynamicStudentLoader {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.id = 'editStudentModal';
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = `
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -449,7 +449,7 @@ class DynamicStudentLoader {
                     </div>
                 </div>
             </div>
-        `);
+        `;
         return modal;
     }
 
@@ -542,7 +542,7 @@ class DynamicStudentLoader {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.id = 'contactStudentModal';
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = `
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -570,7 +570,7 @@ class DynamicStudentLoader {
                     </div>
                 </div>
             </div>
-        `);
+        `;
 
         document.body.appendChild(modal);
         const bootstrapModal = new bootstrap.Modal(modal);
@@ -610,7 +610,7 @@ class DynamicStudentLoader {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.id = 'newStudentModal';
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = `
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -702,7 +702,7 @@ class DynamicStudentLoader {
                     </div>
                 </div>
             </div>
-        `);
+        `;
         return modal;
     }
 
@@ -957,11 +957,11 @@ class DynamicStudentLoader {
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 350px;';
-        alertDiv.innerHTML = sanitizeHTML(`
+        alertDiv.innerHTML = `
             <i class="fas fa-check-circle me-2"></i>
             <strong>¡Éxito!</strong> ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `);
+        `;
 
         document.body.appendChild(alertDiv);
 
@@ -979,11 +979,11 @@ class DynamicStudentLoader {
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed';
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 350px;';
-        alertDiv.innerHTML = sanitizeHTML(`
+        alertDiv.innerHTML = `
             <i class="fas fa-exclamation-circle me-2"></i>
             <strong>Error:</strong> ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `);
+        `;
 
         document.body.appendChild(alertDiv);
 

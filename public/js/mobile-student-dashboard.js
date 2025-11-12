@@ -530,7 +530,7 @@ class BGEMobileStudentDashboard {
         // Crear estructura base del dashboard
         const container = document.createElement('div');
         container.className = 'bge-student-dashboard';
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = `
             <div class="dashboard-header">
                 <div class="student-info">
                     <div class="avatar">
@@ -558,7 +558,7 @@ class BGEMobileStudentDashboard {
                     <!-- Widgets se renderizan aquí -->
                 </div>
             </div>
-        `);
+        `;
 
         // Agregar al DOM
         const targetElement = document.getElementById('dashboard-root') || document.body;
@@ -592,13 +592,13 @@ class BGEMobileStudentDashboard {
 
             // Mostrar loading si está cargando
             if (widget.isLoading) {
-                widget.element.innerHTML = sanitizeHTML(this.renderWidgetLoading(widget));
+                widget.element.innerHTML = this.renderWidgetLoading(widget);
                 return widget.element;
             }
 
             // Renderizar contenido según el tipo de widget
             const content = await this.renderWidgetContent(widget);
-            widget.element.innerHTML = sanitizeHTML(content);
+            widget.element.innerHTML = content;
 
             // Agregar event listeners específicos del widget
             this.setupWidgetEventListeners(widget);
@@ -607,7 +607,7 @@ class BGEMobileStudentDashboard {
 
         } catch (error) {
             this.logger.error('StudentDashboard', `Error al renderizar widget ${widget.id}`, error);
-            widget.element.innerHTML = sanitizeHTML(this.renderWidgetError(widget, error));
+            widget.element.innerHTML = this.renderWidgetError(widget, error);
             return widget.element;
         }
     }

@@ -98,8 +98,8 @@ class CollaborativeAISystem {
             transition: all 0.3s ease;
         `;
 
-        button.innerHTML = sanitizeHTML(`
-            <i class="fas fa-users text-white" style="font-size: 1.3rem);"></i>
+        button.innerHTML = `
+            <i class="fas fa-users text-white" style="font-size: 1.3rem;"></i>
         `;
 
         button.onclick = () => this.showCollaborativeModal();
@@ -175,9 +175,9 @@ class CollaborativeAISystem {
             cursor: pointer;
         `;
 
-        notification.innerHTML = sanitizeHTML(`
+        notification.innerHTML = `
             <div class="d-flex align-items-start">
-                <div class="me-2" style="font-size: 1.5rem);">🤝</div>
+                <div class="me-2" style="font-size: 1.5rem;">🤝</div>
                 <div class="flex-grow-1">
                     <h6 class="mb-1 fw-bold">Actividad en Grupo</h6>
                     <p class="mb-1 small">"${group.name}" tiene nuevas actualizaciones</p>
@@ -225,9 +225,9 @@ class CollaborativeAISystem {
         modal.id = 'collaborativeAIModal';
         modal.setAttribute('tabindex', '-1');
 
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = `
             <div class="modal-dialog modal-xl">
-                <div class="modal-content" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%)); border-radius: 15px;">
+                <div class="modal-content" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 15px;">
                     <div class="modal-header border-0 text-white">
                         <h5 class="modal-title fw-bold">🤝 IA Colaborativa BGE - ${this.currentUser.name}</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>

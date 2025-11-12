@@ -264,7 +264,7 @@ class BolsaTrabajoManager {
         const end = start + this.pageSize;
         const pageData = this.filteredCandidatos.slice(start, end);
 
-        tableBody.innerHTML = sanitizeHTML(pageData.map(candidato => this.renderTableRow(candidato)).join(''));
+        tableBody.innerHTML = pageData.map(candidato => this.renderTableRow(candidato)).join('');
 
         console.log(`📋 [BOLSA-TRABAJO] Tabla renderizada: ${pageData.length} filas`);
     }

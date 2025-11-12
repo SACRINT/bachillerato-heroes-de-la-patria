@@ -124,11 +124,11 @@ class BGEFramework {
             background: #ff4444; color: white; padding: 10px;
             border-radius: 5px; max-width: 300px; font-size: 12px;
         `;
-        errorDiv.innerHTML = sanitizeHTML(`
+        errorDiv.innerHTML = `
             <strong>BGE Framework Error (${type})</strong><br>
             ${error.message}<br>
             <small>${error.stack ? error.stack.split('\n')[1] : ''}</small>
-        `);
+        `;
         document.body.appendChild(errorDiv);
 
         setTimeout(() => errorDiv.remove(), 10000);

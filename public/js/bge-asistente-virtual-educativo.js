@@ -265,7 +265,7 @@ class BGEAsistenteVirtualEducativo {
     createUserInterface() {
         const container = document.createElement('div');
         container.id = 'bge-asistente-container';
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = `
             <div class="asistente-virtual-widget">
                 <div class="asistente-header">
                     <div class="asistente-avatar">
@@ -313,7 +313,7 @@ class BGEAsistenteVirtualEducativo {
                             </div>
                         </div>
 
-                        <div class="typing-indicator" style="display: none);">
+                        <div class="typing-indicator" style="display: none;">
                             <span>El asistente está escribiendo...</span>
                             <div class="typing-dots">
                                 <span>.</span><span>.</span><span>.</span>
@@ -884,10 +884,10 @@ class BGEAsistenteVirtualEducativo {
             attachmentHTML += '</div>';
         }
 
-        messageDiv.innerHTML = sanitizeHTML(`
+        messageDiv.innerHTML = `
             <p>${content}</p>
             ${attachmentHTML}
-        `);
+        `;
 
         container.appendChild(messageDiv);
         container.scrollTop = container.scrollHeight;

@@ -134,7 +134,7 @@ class AuthInterface {
         const authButtonContainer = document.createElement('div');
         authButtonContainer.id = 'authButtonContainer';
         authButtonContainer.className = 'auth-button-container';
-        authButtonContainer.innerHTML = sanitizeHTML(`
+        authButtonContainer.innerHTML = `
             <div class="auth-status" id="authStatus">
                 <button class="btn btn-outline-primary auth-btn-compact" id="authToggleBtn" type="button">
                     <i class="fas fa-user me-1"></i>
@@ -158,7 +158,7 @@ class AuthInterface {
                     </ul>
                 </div>
             </div>
-        `);
+        `;
 
         // Insertar en la barra de navegación
         const navbar = document.querySelector('.navbar-nav');
@@ -766,10 +766,10 @@ Fecha: ${new Date().toLocaleString('es-MX')}
     showRegisterSuccess() {
         const successDiv = document.getElementById('registerSuccess');
         if (successDiv) {
-            successDiv.innerHTML = sanitizeHTML(`
+            successDiv.innerHTML = `
                 <i class="fas fa-check-circle me-2"></i>
                 <strong>¡Solicitud enviada!</strong> Te contactaremos pronto para activar tu cuenta.
-            `);
+            `;
             successDiv.classList.remove('d-none');
         }
     }

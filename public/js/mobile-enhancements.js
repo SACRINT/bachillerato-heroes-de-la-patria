@@ -537,7 +537,7 @@ class MobileEnhancements {
         
         const toolbar = document.createElement('div');
         toolbar.className = 'mobile-toolbar';
-        toolbar.innerHTML = sanitizeHTML(`
+        toolbar.innerHTML = `
             <div class="mobile-toolbar-content">
                 <button class="btn btn-primary btn-sm" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
                     <i class="fas fa-arrow-up"></i>
@@ -552,7 +552,7 @@ class MobileEnhancements {
                     <i class="fas fa-refresh"></i>
                 </button>
             </div>
-        `);
+        `;
         
         document.body.appendChild(toolbar);
     }
@@ -572,7 +572,7 @@ class MobileEnhancements {
         
         const bottomNav = document.createElement('nav');
         bottomNav.className = 'bottom-navigation';
-        bottomNav.innerHTML = sanitizeHTML(`
+        bottomNav.innerHTML = `
             <div class="bottom-nav-items">
                 <a href="index.html" class="bottom-nav-item">
                     <i class="fas fa-home"></i>
@@ -591,7 +591,7 @@ class MobileEnhancements {
                     <span>Contacto</span>
                 </a>
             </div>
-        `);
+        `;
         
         document.body.appendChild(bottomNav);
         
@@ -615,13 +615,13 @@ class MobileEnhancements {
         const menuToggle = document.querySelector('.navbar-toggler');
         if (menuToggle && this.isMobile) {
             // Agregar animación hamburguesa
-            menuToggle.innerHTML = sanitizeHTML(`
+            menuToggle.innerHTML = `
                 <div class="hamburger-menu">
                     <span></span>
                     <span></span>
                     <span></span>
                 </div>
-            `);
+            `;
             
             // Animar toggle
             menuToggle.addEventListener('click', () => {
@@ -704,12 +704,12 @@ class MobileEnhancements {
         if (!indicator) {
             indicator = document.createElement('div');
             indicator.className = 'pull-refresh-indicator';
-            indicator.innerHTML = sanitizeHTML(`
+            indicator.innerHTML = `
                 <div class="pull-refresh-content">
                     <i class="fas fa-sync-alt"></i>
                     <span>Desliza para actualizar</span>
                 </div>
-            `);
+            `;
             document.body.insertBefore(indicator, document.body.firstChild);
         }
         
@@ -743,12 +743,12 @@ class MobileEnhancements {
         // Mostrar loading
         const loader = document.createElement('div');
         loader.className = 'page-refreshing';
-        loader.innerHTML = sanitizeHTML(`
+        loader.innerHTML = `
             <div class="refresh-spinner">
                 <i class="fas fa-sync-alt fa-spin"></i>
                 <span>Actualizando...</span>
             </div>
-        `);
+        `;
         document.body.appendChild(loader);
         
         // Simular refresh
@@ -1008,7 +1008,7 @@ class MobileEnhancements {
     showLinkContextMenu(link) {
         const menu = document.createElement('div');
         menu.className = 'context-menu-mobile';
-        menu.innerHTML = sanitizeHTML(`
+        menu.innerHTML = `
             <div class="context-menu-items">
                 <button onclick="window.open('${link.href}', '_blank')">
                     <i class="fas fa-external-link-alt"></i> Abrir en nueva pestaña
@@ -1020,7 +1020,7 @@ class MobileEnhancements {
                     <i class="fas fa-share"></i> Compartir
                 </button>
             </div>
-        `);
+        `;
         
         document.body.appendChild(menu);
         

@@ -218,10 +218,10 @@ class DigitalLibraryManager {
             // Llenar select de categorías en modal de subida
             const docCategory = document.getElementById('docCategory');
             if (docCategory) {
-                docCategory.innerHTML = sanitizeHTML('<option value="">Seleccionar...</option>' +
+                docCategory.innerHTML = '<option value="">Seleccionar...</option>' +
                     this.categories.map(cat =>
                         `<option value="${cat.id}">${cat.name}</option>`
-                    ).join(''));
+                    ).join('');
             }
         } catch (error) {
             console.error('Error al cargar categorías:', error);
@@ -236,17 +236,17 @@ class DigitalLibraryManager {
         if (!container) return;
 
         if (this.categories.length === 0) {
-            container.innerHTML = sanitizeHTML('<p class="text-muted small">No hay categorías</p>');
+            container.innerHTML = '<p class="text-muted small">No hay categorías</p>';
             return;
         }
 
-        container.innerHTML = sanitizeHTML(this.categories.map(cat => `
+        container.innerHTML = this.categories.map(cat => `
             <div class="filter-item" data-category="${cat.id}">
                 <input type="checkbox" id="cat-${cat.id}">
                 <label for="cat-${cat.id}">${cat.icon ? cat.icon + ' ' : ''}${cat.name}</label>
                 <span class="badge bg-secondary">${cat.document_count || 0}</span>
             </div>
-        `).join(''));
+        `).join('');
 
         // Agregar event listeners
         container.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
@@ -339,7 +339,7 @@ class DigitalLibraryManager {
         const container = document.getElementById('documentsGrid');
         if (!container) return;
 
-        container.innerHTML = sanitizeHTML(this.documents.map(doc => `
+        container.innerHTML = this.documents.map(doc => `
             <div class="document-card" data-id="${doc.id}">
                 <div class="card-icon">
                     ${this.getDocumentIcon(doc.document_type)}
@@ -381,7 +381,7 @@ class DigitalLibraryManager {
                     </div>
                 </div>
             </div>
-        `).join(''));
+        `).join('');
     }
 
     /**
@@ -391,7 +391,7 @@ class DigitalLibraryManager {
         const container = document.getElementById('documentsList');
         if (!container) return;
 
-        container.innerHTML = sanitizeHTML(this.documents.map(doc => `
+        container.innerHTML = this.documents.map(doc => `
             <div class="document-list-item" data-id="${doc.id}">
                 <div class="list-icon">
                     ${this.getDocumentIcon(doc.document_type)}
@@ -424,7 +424,7 @@ class DigitalLibraryManager {
                     </button>
                 </div>
             </div>
-        `).join(''));
+        `).join('');
     }
 
     /**
@@ -438,7 +438,7 @@ class DigitalLibraryManager {
             const modalBody = document.getElementById('documentDetailBody');
             if (!modalBody) return;
 
-            modalBody.innerHTML = sanitizeHTML(`
+            modalBody.innerHTML = `
                 <div class="document-detail-header">
                     <div class="document-detail-icon">
                         ${this.getDocumentIcon(doc.document_type)}
@@ -517,7 +517,7 @@ class DigitalLibraryManager {
                 <div class="mb-4">
                     <h5>Calificar Documento</h5>
                     <div class="d-flex gap-2 align-items-center">
-                        <div class="rating-stars" style="font-size: 1.5rem); cursor: pointer;" id="ratingStars-${doc.id}">
+                        <div class="rating-stars" style="font-size: 1.5rem; cursor: pointer;" id="ratingStars-${doc.id}">
                             ${this.renderInteractiveRating(doc.user_rating || 0, doc.id)}
                         </div>
                         <span class="text-muted ms-2">
@@ -695,11 +695,11 @@ class DigitalLibraryManager {
             if (!container) return;
 
             if (comments.length === 0) {
-                container.innerHTML = sanitizeHTML('<p class="text-muted text-center py-3">No hay comentarios aún</p>');
+                container.innerHTML = '<p class="text-muted text-center py-3">No hay comentarios aún</p>';
                 return;
             }
 
-            container.innerHTML = sanitizeHTML(comments.map(comment => `
+            container.innerHTML = comments.map(comment => `
                 <div class="comment">
                     <div class="comment-header">
                         <span class="comment-author">
@@ -724,7 +724,7 @@ class DigitalLibraryManager {
                         </div>
                     ` : ''}
                 </div>
-            `).join(''));
+            `).join('');
         } catch (error) {
             console.error('Error al cargar comentarios:', error);
         }
@@ -805,7 +805,7 @@ class DigitalLibraryManager {
             documentsList.classList.remove('hidden');
             documentsList.classList.add('active');
 
-            documentsList.innerHTML = sanitizeHTML(history.map(item => `
+            documentsList.innerHTML = history.map(item => `
                 <div class="document-list-item">
                     <div class="list-icon">
                         ${this.getDocumentIcon(item.document_type)}
@@ -824,7 +824,7 @@ class DigitalLibraryManager {
                         </button>
                     </div>
                 </div>
-            `).join(''));
+            `).join('');
         } catch (error) {
             this.showToast('Error al cargar historial', 'error');
             console.error('Error:', error);
@@ -878,7 +878,7 @@ class DigitalLibraryManager {
         try {
             const saveBtn = document.getElementById('saveDocumentBtn');
             saveBtn.disabled = true;
-            saveBtn.innerHTML = sanitizeHTML('<i class="bi bi-hourglass-split"></i> Subiendo...');
+            saveBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Subiendo...';
 
             const response = await fetch(`${this.apiBaseURL}/documents`, {
                 method: 'POST',
@@ -909,7 +909,7 @@ class DigitalLibraryManager {
         } finally {
             const saveBtn = document.getElementById('saveDocumentBtn');
             saveBtn.disabled = false;
-            saveBtn.innerHTML = sanitizeHTML('<i class="bi bi-upload"></i> Subir Documento');
+            saveBtn.innerHTML = '<i class="bi bi-upload"></i> Subir Documento';
         }
     }
 
@@ -923,7 +923,7 @@ class DigitalLibraryManager {
         const { page, totalPages } = pagination;
 
         if (totalPages <= 1) {
-            container.innerHTML = sanitizeHTML('');
+            container.innerHTML = '';
             return;
         }
 
@@ -978,7 +978,7 @@ class DigitalLibraryManager {
             </li>
         `;
 
-        container.innerHTML = sanitizeHTML(html);
+        container.innerHTML = html;
     }
 
     /**
@@ -1147,10 +1147,10 @@ class DigitalLibraryManager {
         const toast = document.createElement('div');
         toast.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
         toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-        toast.innerHTML = sanitizeHTML(`
+        toast.innerHTML = `
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `);
+        `;
 
         document.body.appendChild(toast);
 

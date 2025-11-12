@@ -340,11 +340,11 @@ class DynamicStatsLoader {
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
-        alertDiv.innerHTML = sanitizeHTML(`
+        alertDiv.innerHTML = `
             <i class="fas fa-check-circle me-2"></i>
             <strong>¡Éxito!</strong> Estadísticas actualizadas correctamente.
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `);
+        `;
 
         document.body.appendChild(alertDiv);
 
@@ -365,11 +365,11 @@ class DynamicStatsLoader {
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed';
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
-        alertDiv.innerHTML = sanitizeHTML(`
+        alertDiv.innerHTML = `
             <i class="fas fa-exclamation-circle me-2"></i>
             <strong>Error</strong> No se pudieron guardar las estadísticas.
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `);
+        `;
 
         document.body.appendChild(alertDiv);
 

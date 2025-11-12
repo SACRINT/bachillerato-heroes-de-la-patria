@@ -266,7 +266,7 @@ class GradePlatform {
 
     loadPeriodGrades(period) {
         const tbody = document.getElementById(`gradesTable${period.charAt(0).toUpperCase() + period.slice(1)}`);
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = '';
 
         this.studentData.subjects.forEach(subject => {
             const grades = subject[period];
@@ -274,7 +274,7 @@ class GradePlatform {
             
             const statusBadge = this.getGradeStatusBadge(grades.promedio);
             
-            row.innerHTML = sanitizeHTML(`
+            row.innerHTML = `
                 <td>
                     <strong>${subject.name}</strong>
                     <br><small class="text-muted">${subject.id}</small>
@@ -296,7 +296,7 @@ class GradePlatform {
                     </strong>
                 </td>
                 <td class="text-center">${statusBadge}</td>
-            `);
+            `;
             
             tbody.appendChild(row);
         });
@@ -304,7 +304,7 @@ class GradePlatform {
 
     loadFinalGrades() {
         const tbody = document.getElementById('gradesTableFinal');
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = '';
 
         this.studentData.subjects.forEach(subject => {
             const row = document.createElement('tr');
@@ -313,7 +313,7 @@ class GradePlatform {
             const parcialAvg = ((subject.parcial1.promedio + subject.parcial2.promedio + subject.parcial3.promedio) / 3);
             const statusBadge = this.getGradeStatusBadge(subject.final.calificacionFinal);
             
-            row.innerHTML = sanitizeHTML(`
+            row.innerHTML = `
                 <td>
                     <strong>${subject.name}</strong>
                     <br><small class="text-muted">${subject.id}</small>
@@ -335,7 +335,7 @@ class GradePlatform {
                     </strong>
                 </td>
                 <td class="text-center">${statusBadge}</td>
-            `);
+            `;
             
             tbody.appendChild(row);
         });
@@ -658,12 +658,12 @@ Historial completo de calificaciones...`;
 
         const toastElement = document.createElement('div');
         toastElement.className = `toast align-items-center text-bg-${type} border-0`;
-        toastElement.innerHTML = sanitizeHTML(`
+        toastElement.innerHTML = `
             <div class="d-flex">
                 <div class="toast-body">${message}</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-        `);
+        `;
 
         toastContainer.appendChild(toastElement);
         

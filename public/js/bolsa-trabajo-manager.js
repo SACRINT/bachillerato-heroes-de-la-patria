@@ -126,7 +126,7 @@ class BolsaTrabajoManager {
         }
 
         // Renderizar filas
-        tbody.innerHTML = sanitizeHTML(candidatosFiltrados.map(candidato => `
+        tbody.innerHTML = candidatosFiltrados.map(candidato => `
             <tr>
                 <td>${candidato.id}</td>
                 <td>
@@ -170,7 +170,7 @@ class BolsaTrabajoManager {
                     </div>
                 </td>
             </tr>
-        `).join(''));
+        `).join('');
 
         // Mostrar tabla o estado vacío
         if (candidatosFiltrados.length > 0) {

@@ -331,7 +331,7 @@ async function submitActivityRegistration(activityName) {
     const button = document.getElementById('submitInscriptionBtn');
     const originalText = button.innerHTML;
     button.disabled = true;
-    button.innerHTML = sanitizeHTML('<i class="fas fa-spinner fa-spin me-2"></i>Procesando...');
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
 
     try {
         // Enviar inscripción al backend
@@ -364,7 +364,7 @@ async function submitActivityRegistration(activityName) {
 
             // Re-habilitar botón
             button.disabled = false;
-            button.innerHTML = sanitizeHTML(originalText);
+            button.innerHTML = originalText;
         }
     } catch (error) {
         console.error('❌ Error en inscripción:', error);
@@ -372,7 +372,7 @@ async function submitActivityRegistration(activityName) {
 
         // Re-habilitar botón
         button.disabled = false;
-        button.innerHTML = sanitizeHTML(originalText);
+        button.innerHTML = originalText;
     }
 }
 
@@ -390,7 +390,7 @@ function showInscriptionAlert(message, type) {
         </div>
     `;
 
-    container.innerHTML = sanitizeHTML(alertHTML);
+    container.innerHTML = alertHTML;
 
     // Auto-dismiss después de 10 segundos (excepto para éxito)
     if (type !== 'success') {

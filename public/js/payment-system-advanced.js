@@ -92,7 +92,7 @@ class PaymentSystemAdvanced {
         const modal = document.createElement('div');
         modal.id = 'payment-modal';
         modal.className = 'modal fade';
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = `
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -104,7 +104,7 @@ class PaymentSystemAdvanced {
                     </div>
                 </div>
             </div>
-        `);
+        `;
         
         document.body.appendChild(modal);
     }
@@ -307,7 +307,7 @@ class PaymentSystemAdvanced {
         const modal = document.createElement('div');
         modal.id = 'receipt-modal';
         modal.className = 'modal fade';
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = `
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -325,7 +325,7 @@ class PaymentSystemAdvanced {
                     </div>
                 </div>
             </div>
-        `);
+        `;
         
         document.body.appendChild(modal);
     }
@@ -336,7 +336,7 @@ class PaymentSystemAdvanced {
             const service = element.dataset.payment;
             const button = document.createElement('button');
             button.className = 'btn btn-success payment-trigger';
-            button.innerHTML = sanitizeHTML('<i class="fas fa-credit-card"></i> Pagar ahora');
+            button.innerHTML = '<i class="fas fa-credit-card"></i> Pagar ahora';
             button.onclick = () => this.showPaymentModal(service);
             
             element.appendChild(button);
@@ -544,12 +544,12 @@ class PaymentSystemAdvanced {
         
         try {
             const form = await provider.createPaymentForm(amount);
-            container.innerHTML = sanitizeHTML(form);
+            container.innerHTML = form;
             
             // Habilitar botón de pago
             document.querySelector('.process-payment').disabled = false;
         } catch (error) {
-            container.innerHTML = sanitizeHTML('<div class="alert alert-danger">Error cargando formulario de pago</div>');
+            container.innerHTML = '<div class="alert alert-danger">Error cargando formulario de pago</div>';
         }
     }
 

@@ -169,12 +169,12 @@ function calculateAverage() {
     const resultElement = document.getElementById('averageResult');
 
     if (resultElement) {
-        resultElement.innerHTML = sanitizeHTML(`
+        resultElement.innerHTML = `
             <div class="alert alert-success text-center">
                 <h4><i class="fas fa-chart-line me-2"></i>Tu promedio actual es: <strong>${average}</strong></h4>
                 <p class="mb-0">Basado en ${count} calificación${count > 1 ? 'es' : ''}</p>
             </div>
-        `);
+        `;
     }
 
     showNotification(`Promedio calculado: ${average}`, 'success');
@@ -326,11 +326,11 @@ function showNotification(message, type = 'info') {
 
     const notification = document.createElement('div');
     notification.className = `alert alert-${type} alert-dismissible fade show shadow`;
-    notification.innerHTML = sanitizeHTML(`
+    notification.innerHTML = `
         <i class="fas fa-${type === 'success' ? 'check' : type === 'warning' ? 'exclamation-triangle' : 'info'}-circle me-2"></i>
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `);
+    `;
 
     container.appendChild(notification);
 

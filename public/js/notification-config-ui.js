@@ -56,9 +56,9 @@ class NotificationConfigUI {
         const button = document.createElement('button');
         button.id = 'notificationConfigBtn';
         button.className = 'notification-config-btn';
-        button.innerHTML = sanitizeHTML(`
+        button.innerHTML = `
             <i class="fas fa-bell"></i>
-            <span class="notification-badge" id="notificationBadge" style="display: none);">0</span>
+            <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
         `;
         button.title = 'Configurar notificaciones';
 
@@ -454,11 +454,11 @@ class NotificationConfigUI {
         panel.id = 'notificationConfigPanel';
         panel.className = 'notification-config-panel';
 
-        panel.innerHTML = sanitizeHTML(`
+        panel.innerHTML = `
             <div class="config-panel-content">
                 <div class="config-panel-header">
                     <div>
-                        <h3 style="margin: 0);">🔔 Configuración de Notificaciones</h3>
+                        <h3 style="margin: 0;">🔔 Configuración de Notificaciones</h3>
                         <p style="margin: 5px 0 0 0; opacity: 0.9;">Personaliza cómo y cuándo recibir alertas</p>
                     </div>
                     <button onclick="window.notificationConfigUI.closeConfigPanel()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>

@@ -209,7 +209,7 @@ Este ejercicio refuerza nuestro compromiso con la seguridad y nos permite mejora
             </button>
         `).join('');
 
-        filterContainer.innerHTML = sanitizeHTML(buttonsHTML);
+        filterContainer.innerHTML = buttonsHTML;
 
         // Event listeners para filtros
         filterContainer.addEventListener('click', (e) => {
@@ -282,7 +282,7 @@ Este ejercicio refuerza nuestro compromiso con la seguridad y nos permite mejora
             }
         });
 
-        this.newsContainer.innerHTML = sanitizeHTML(html);
+        this.newsContainer.innerHTML = html;
         
         // Mostrar/ocultar botón "Cargar más"
         const loadMoreBtn = document.getElementById('loadMoreNews');

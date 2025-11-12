@@ -22,9 +22,9 @@ class ParentManager {
 
     async loadParents() {
         const loadingEl = document.getElementById('parentsTable');
-        if (loadingEl) loadingEl.innerHTML = sanitizeHTML(`<tr><td colspan="4" class="text-center py-4">
+        if (loadingEl) loadingEl.innerHTML = `<tr><td colspan="4" class="text-center py-4">
             <div class="spinner-border text-info" role="status"><span class="visually-hidden">Cargando...</span></div>
-            <p class="mt-2 text-muted">Cargando información de padres...</p></td></tr>`);
+            <p class="mt-2 text-muted">Cargando información de padres...</p></td></tr>`;
 
         try {
             // Usar apiClient para autenticación automática
@@ -74,7 +74,7 @@ class ParentManager {
     populateStudentFilter() {
         const select = document.getElementById('parentFilterStudent');
         if (!select) return;
-        select.innerHTML = sanitizeHTML('<option value="">Todos los estudiantes</option>');
+        select.innerHTML = '<option value="">Todos los estudiantes</option>';
         this.students.forEach(student => {
             const option = document.createElement('option');
             option.value = student.id;
@@ -87,10 +87,10 @@ class ParentManager {
         const tbody = document.getElementById('parentsTable');
         if (!tbody) return;
 
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = '';
         if (this.filteredParents.length === 0) {
-            tbody.innerHTML = sanitizeHTML(`<tr><td colspan="4" class="text-center text-muted py-4">
-                <i class="fas fa-user-friends fa-3x text-muted mb-3"></i><p>No hay padres registrados</p></td></tr>`);
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">
+                <i class="fas fa-user-friends fa-3x text-muted mb-3"></i><p>No hay padres registrados</p></td></tr>`;
             return;
         }
 
@@ -104,7 +104,7 @@ class ParentManager {
         const associatedStudent = this.students.find(s => parent.student_id && s.id === parent.student_id);
         const studentInfo = associatedStudent ? `${associatedStudent.nombre} (${associatedStudent.matricula})` : 'N/A';
 
-        tr.innerHTML = sanitizeHTML(`
+        tr.innerHTML = `
             <td><strong>${this.escapeHtml(parent.nombre)}</strong></td>
             <td>${this.escapeHtml(parent.email)}</td>
             <td>${this.escapeHtml(studentInfo)}</td>
@@ -118,7 +118,7 @@ class ParentManager {
                     </button>
                 </div>
             </td>
-        `);
+        `;
         return tr;
     }
 

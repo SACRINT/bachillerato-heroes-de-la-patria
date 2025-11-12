@@ -79,9 +79,9 @@
 
         const color = isSuccess ? '#4CAF50' : '#f44336';
 
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = `
             ${icon}
-            <h2 style="color: ${color}); margin: 0 0 15px 0; font-size: 24px;">
+            <h2 style="color: ${color}; margin: 0 0 15px 0; font-size: 24px;">
                 ${title}
             </h2>
             <p style="color: #666; margin: 0 0 20px 0; font-size: 16px;">

@@ -87,11 +87,11 @@ try {
 const response = await fetch(path);
 if (!response.ok) throw new Error(`Failed to load ${path}`);
 const html = await response.text();
-element.innerHTML = sanitizeHTML(html);
+element.innerHTML = html;
 } catch (error) {
 console.warn(`⚠️ Could not load ${path}:`, error);
 if (selector === APP_CONFIG.selectors.header) {
-element.innerHTML = sanitizeHTML('<nav class="navbar navbar-light bg-light"><div class="container"><a class="navbar-brand" href="index.html">Héroes de la Patria</a></div></nav>');
+element.innerHTML = '<nav class="navbar navbar-light bg-light"><div class="container"><a class="navbar-brand" href="index.html">Héroes de la Patria</a></div></nav>';
 }
 }
 }
@@ -167,7 +167,7 @@ existingDynamicItems.forEach(item => item.remove());
 if (screenWidth < 1200 && screenWidth >= 992) {
 const dropdownSeparator = document.createElement('li');
 dropdownSeparator.className = 'nav-secondary-separator';
-dropdownSeparator.innerHTML = sanitizeHTML('<hr class="dropdown-divider">');
+dropdownSeparator.innerHTML = '<hr class="dropdown-divider">';
 const firstStaticItem = masDropdownMenu.querySelector('li:first-child');
 if (firstStaticItem) {
 masDropdownMenu.insertBefore(dropdownSeparator, firstStaticItem);
@@ -181,18 +181,18 @@ const submenu = item.querySelector('.dropdown-menu');
 const submenuItems = submenu ? submenu.querySelectorAll('li a') : [];
 const headerItem = document.createElement('li');
 headerItem.className = 'nav-secondary-in-dropdown';
-headerItem.innerHTML = sanitizeHTML(`<h6 class="dropdown-header">${link.textContent}</h6>`);
+headerItem.innerHTML = `<h6 class="dropdown-header">${link.textContent}</h6>`;
 masDropdownMenu.insertBefore(headerItem, firstStaticItem);
 submenuItems.forEach(subLink => {
 const subDropdownItem = document.createElement('li');
 subDropdownItem.className = 'nav-secondary-in-dropdown';
-subDropdownItem.innerHTML = sanitizeHTML(`<a class="dropdown-item" href="${subLink.href}">${subLink.innerHTML}</a>`);
+subDropdownItem.innerHTML = `<a class="dropdown-item" href="${subLink.href}">${subLink.innerHTML}</a>`;
 masDropdownMenu.insertBefore(subDropdownItem, firstStaticItem);
 });
 } else {
 const dropdownItem = document.createElement('li');
 dropdownItem.className = 'nav-secondary-in-dropdown';
-dropdownItem.innerHTML = sanitizeHTML(`<a class="dropdown-item" href="${link.href}">${link.innerHTML}</a>`);
+dropdownItem.innerHTML = `<a class="dropdown-item" href="${link.href}">${link.innerHTML}</a>`;
 masDropdownMenu.insertBefore(dropdownItem, firstStaticItem);
 }
 });
@@ -392,11 +392,11 @@ showUpdateNotification() {
 const notification = document.createElement('div');
 notification.className = 'alert alert-info alert-dismissible fade show position-fixed';
 notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
-notification.innerHTML = sanitizeHTML(`
+notification.innerHTML = `
 <strong>¡Actualización disponible!</strong>
 <br>Recarga la página para obtener la última versión.
 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-`);
+`;
 document.body.appendChild(notification);
 setTimeout(() => {
 if (notification.parentNode) {
@@ -517,10 +517,10 @@ showNotification(message, type = 'info', duration = 5000) {
 const notification = document.createElement('div');
 notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
 notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
-notification.innerHTML = sanitizeHTML(`
+notification.innerHTML = `
 ${message}
 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-`);
+`;
 document.body.appendChild(notification);
 setTimeout(() => {
 if (notification.parentNode) {
@@ -756,12 +756,12 @@ document.body.appendChild(toastContainer);
 }
 const toastElement = document.createElement('div');
 toastElement.className = `toast align-items-center text-bg-${type} border-0`;
-toastElement.innerHTML = sanitizeHTML(`
+toastElement.innerHTML = `
 <div class="d-flex">
 <div class="toast-body">${message}</div>
 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
 </div>
-`);
+`;
 toastContainer.appendChild(toastElement);
 const toast = new bootstrap.Toast(toastElement, {
 autohide: true,
@@ -779,11 +779,11 @@ const menuLink = document.getElementById('adminPanelMenuLink');
 if (isAuthenticated) {
 if (statusBadge) statusBadge.classList.remove('d-none');
 if (logoutOption) logoutOption.classList.remove('d-none');
-if (menuLink) menuLink.innerHTML = sanitizeHTML('<i class="fas fa-edit me-2"></i>Abrir Panel <span class="badge bg-success ms-2">Sesión Activa</span>');
+if (menuLink) menuLink.innerHTML = '<i class="fas fa-edit me-2"></i>Abrir Panel <span class="badge bg-success ms-2">Sesión Activa</span>';
 } else {
 if (statusBadge) statusBadge.classList.add('d-none');
 if (logoutOption) logoutOption.classList.add('d-none');
-if (menuLink) menuLink.innerHTML = sanitizeHTML('<i class="fas fa-edit me-2"></i>Panel de Administración');
+if (menuLink) menuLink.innerHTML = '<i class="fas fa-edit me-2"></i>Panel de Administración';
 }
 }
 logout() {
@@ -935,7 +935,7 @@ function showResults(results, query) {
 const resultsContainer = document.getElementById('searchResults');
 const resultsContent = resultsContainer?.querySelector('.search-content');
 if (!resultsContainer || !resultsContent) return;
-resultsContent.innerHTML = sanitizeHTML(createResultsHTML(results, query));
+resultsContent.innerHTML = createResultsHTML(results, query);
 resultsContainer.classList.remove('d-none');
 resultsContent.addEventListener('click', handleResultClick);
 }

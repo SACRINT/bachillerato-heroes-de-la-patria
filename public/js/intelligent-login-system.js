@@ -104,7 +104,7 @@ class IntelligentLoginSystem {
         // Crear badge de IA sin modificar el botón original
         const aiBadge = document.createElement('span');
         aiBadge.className = 'ai-indicator-badge';
-        aiBadge.innerHTML = sanitizeHTML('🧠');
+        aiBadge.innerHTML = '🧠';
         aiBadge.title = 'Sistema IA de Recompensas Académicas';
 
         // Estilos del badge
@@ -253,7 +253,7 @@ class IntelligentLoginSystem {
         // Crear modal de bienvenida elegante
         const welcomeModal = document.createElement('div');
         welcomeModal.className = 'welcome-modal-overlay';
-        welcomeModal.innerHTML = sanitizeHTML(`
+        welcomeModal.innerHTML = `
             <div class="welcome-modal-content">
                 <div class="welcome-header">
                     <div class="welcome-icon">${config.icon}</div>
@@ -301,7 +301,7 @@ class IntelligentLoginSystem {
                 </div>
 
                 <div class="welcome-actions">
-                    <button class="btn btn-primary btn-lg" onclick="this.closest('.welcome-modal-overlay').remove()); window.intelligentLogin.showDashboard();">
+                    <button class="btn btn-primary btn-lg" onclick="this.closest('.welcome-modal-overlay').remove(); window.intelligentLogin.showDashboard();">
                         <i class="fas fa-rocket"></i> Comenzar Aventura IA
                     </button>
                     <button class="btn btn-outline-secondary" onclick="this.closest('.welcome-modal-overlay').remove(); window.intelligentLogin.showTutorial();">
@@ -330,7 +330,7 @@ class IntelligentLoginSystem {
         const dashboard = document.createElement('div');
         dashboard.id = 'ai-rewards-dashboard';
         dashboard.className = 'ai-dashboard';
-        dashboard.innerHTML = sanitizeHTML(this.generateDashboardHTML(profile));
+        dashboard.innerHTML = this.generateDashboardHTML(profile);
 
         // Agregar al DOM
         document.body.appendChild(dashboard);
@@ -352,12 +352,12 @@ class IntelligentLoginSystem {
         const config = this.userProfiles[profile.type];
 
         // Cambiar texto y estilo del botón
-        loginButton.innerHTML = sanitizeHTML(`
+        loginButton.innerHTML = `
             <img src="${profile.picture}" alt="Avatar" class="user-avatar">
             <span class="user-name">${profile.name.split(' ')[0]}</span>
             <span class="user-level">Nv.${profile.level}</span>
             <span class="user-xp">${profile.xp} XP</span>
-        `);
+        `;
 
         loginButton.style.cssText = `
             background: linear-gradient(135deg, ${config.color}, ${this.darkenColor(config.color, 20)});
@@ -623,8 +623,8 @@ class IntelligentLoginSystem {
         const loadingModal = document.createElement('div');
         loadingModal.id = 'loading-modal';
         loadingModal.className = 'welcome-modal-overlay';
-        loadingModal.innerHTML = sanitizeHTML(`
-            <div class="welcome-modal-content" style="max-width: 400px); text-align: center; padding: 40px;">
+        loadingModal.innerHTML = `
+            <div class="welcome-modal-content" style="max-width: 400px; text-align: center; padding: 40px;">
                 <div class="loading-spinner">
                     <i class="fas fa-robot fa-3x text-primary mb-3"></i>
                     <div class="spinner-border text-primary" role="status"></div>
@@ -819,7 +819,7 @@ class IntelligentLoginSystem {
         if (!dashboard) return;
 
         const newHTML = this.generateDashboardHTML(profile);
-        dashboard.innerHTML = sanitizeHTML(newHTML);
+        dashboard.innerHTML = newHTML;
         this.initializeDashboardFeatures(dashboard, profile);
     }
 
@@ -868,8 +868,8 @@ class IntelligentLoginSystem {
         return new Promise((resolve) => {
             const modal = document.createElement('div');
             modal.className = 'welcome-modal-overlay';
-            modal.innerHTML = sanitizeHTML(`
-                <div class="welcome-modal-content" style="max-width: 600px);">
+            modal.innerHTML = `
+                <div class="welcome-modal-content" style="max-width: 600px;">
                     <div class="welcome-header">
                         <div class="welcome-icon">🤖</div>
                         <h2>${prompt.name}</h2>
@@ -937,8 +937,8 @@ class IntelligentLoginSystem {
     showAILoadingModal(promptName) {
         const loadingModal = document.createElement('div');
         loadingModal.className = 'welcome-modal-overlay';
-        loadingModal.innerHTML = sanitizeHTML(`
-            <div class="welcome-modal-content" style="max-width: 400px); text-align: center; padding: 40px;">
+        loadingModal.innerHTML = `
+            <div class="welcome-modal-content" style="max-width: 400px; text-align: center; padding: 40px;">
                 <div class="loading-spinner">
                     <div class="ai-brain-animation">🧠</div>
                     <div class="spinner-border text-primary" role="status"></div>
@@ -1004,8 +1004,8 @@ class IntelligentLoginSystem {
     showAIResponseModal(responseData, prompt) {
         const modal = document.createElement('div');
         modal.className = 'welcome-modal-overlay';
-        modal.innerHTML = sanitizeHTML(`
-            <div class="welcome-modal-content ai-response-modal" style="max-width: 800px); max-height: 90vh;">
+        modal.innerHTML = `
+            <div class="welcome-modal-content ai-response-modal" style="max-width: 800px; max-height: 90vh;">
                 <div class="welcome-header" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
                     <div class="welcome-icon">✨</div>
                     <h2>Respuesta Generada</h2>
@@ -1137,8 +1137,8 @@ class IntelligentLoginSystem {
     showErrorModal(errorMessage) {
         const modal = document.createElement('div');
         modal.className = 'welcome-modal-overlay';
-        modal.innerHTML = sanitizeHTML(`
-            <div class="welcome-modal-content" style="max-width: 500px);">
+        modal.innerHTML = `
+            <div class="welcome-modal-content" style="max-width: 500px;">
                 <div class="welcome-header" style="background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);">
                     <div class="welcome-icon">⚠️</div>
                     <h2>Error</h2>

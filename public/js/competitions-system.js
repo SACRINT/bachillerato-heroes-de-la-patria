@@ -277,11 +277,11 @@ class CompetitionsSystem {
             animation: bounceIn 0.5s ease;
         `;
 
-        badge.innerHTML = sanitizeHTML(`
+        badge.innerHTML = `
             <div class="d-flex align-items-center">
                 <i class="fas fa-trophy me-2"></i>
                 <div>
-                    <small class="d-block" style="font-size: 0.75rem); opacity: 0.9;">Competencias Activas</small>
+                    <small class="d-block" style="font-size: 0.75rem; opacity: 0.9;">Competencias Activas</small>
                     <strong>${activeCount} disponibles</strong>
                 </div>
             </div>
@@ -323,9 +323,9 @@ class CompetitionsSystem {
         modal.id = 'competitionsModal';
         modal.setAttribute('tabindex', '-1');
 
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = `
             <div class="modal-dialog modal-xl">
-                <div class="modal-content" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)); border-radius: 15px;">
+                <div class="modal-content" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px;">
                     <div class="modal-header border-0 text-white">
                         <h5 class="modal-title fw-bold">🏆 Competencias BGE - ${this.currentUser.name}</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>

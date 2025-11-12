@@ -754,7 +754,7 @@ class BGEDashboardMonitor {
         const dashboardPanel = document.createElement('div');
         dashboardPanel.id = 'bge-dashboard-monitor';
         dashboardPanel.className = 'bge-dashboard-monitor';
-        dashboardPanel.innerHTML = sanitizeHTML(`
+        dashboardPanel.innerHTML = `
             <div class="dashboard-header">
                 <h3>📊 Dashboard BGE v${this.version}</h3>
                 <div class="dashboard-controls">
@@ -824,7 +824,7 @@ class BGEDashboardMonitor {
                     <div class="systems-grid" id="systems-grid"></div>
                 </div>
             </div>
-        `);
+        `;
 
         // Estilos CSS
         const dashboardStyles = document.createElement('style');
@@ -1282,7 +1282,7 @@ class BGEDashboardMonitor {
         const statusContainer = document.getElementById('systems-status');
         if (!statusContainer) return;
 
-        statusContainer.innerHTML = sanitizeHTML('');
+        statusContainer.innerHTML = '';
 
         for (const [systemKey, status] of this.state.systemsStatus) {
             const dot = document.createElement('div');
@@ -1333,11 +1333,11 @@ class BGEDashboardMonitor {
         if (!alertsList) return;
 
         if (this.alertSystem.queue.length === 0) {
-            alertsList.innerHTML = sanitizeHTML('<div class="no-alerts">No hay alertas activas</div>');
+            alertsList.innerHTML = '<div class="no-alerts">No hay alertas activas</div>';
             return;
         }
 
-        alertsList.innerHTML = sanitizeHTML(this.alertSystem.queue
+        alertsList.innerHTML = this.alertSystem.queue
             .slice(-10)
             .reverse()
             .map(alert => `
@@ -1346,7 +1346,7 @@ class BGEDashboardMonitor {
                     <div class="alert-message">${alert.message}</div>
                 </div>
             `)
-            .join(''));
+            .join('');
     }
 
     /**
@@ -1356,20 +1356,20 @@ class BGEDashboardMonitor {
         const systemsGrid = document.getElementById('systems-grid');
         if (!systemsGrid) return;
 
-        systemsGrid.innerHTML = sanitizeHTML('');
+        systemsGrid.innerHTML = '';
 
         for (const [systemKey, systemConfig] of Object.entries(this.config.systems)) {
             const status = this.state.systemsStatus.get(systemKey) || { status: 'unknown', health: 0 };
 
             const systemItem = document.createElement('div');
             systemItem.className = 'system-item';
-            systemItem.innerHTML = sanitizeHTML(`
+            systemItem.innerHTML = `
                 <div class="system-name">${systemConfig.name}</div>
                 <div class="system-status">
                     <span class="status-dot ${status.status}"></span>
                     <span>${status.status.toUpperCase()} - ${status.health}%</span>
                 </div>
-            `);
+            `;
 
             systemItem.addEventListener('click', () => {
                 this.showSystemDetails(systemKey);
