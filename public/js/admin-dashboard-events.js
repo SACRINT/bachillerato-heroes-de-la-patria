@@ -70,19 +70,19 @@
     // ============================================
 
     function registerModalHandlers() {
-        // onclick="showInfoModal()"
+        // data-action="show-info-modal"
         const infoModalTrigger = document.querySelector('[data-action="showInfoModal"]');
         if (infoModalTrigger) {
             infoModalTrigger.addEventListener('click', showInfoModal);
         }
 
-        // onclick="showChangePasswordModal()"
+        // data-action="show-change-password-modal"
         const changePasswordBtn = document.querySelector('[data-action="showChangePasswordModal"]');
         if (changePasswordBtn) {
             changePasswordBtn.addEventListener('click', showChangePasswordModal);
         }
 
-        // onclick="showStatisticsConfigModal()"
+        // data-action="show-statistics-config-modal"
         const statsConfigBtn = document.querySelector('[data-action="showStatisticsConfigModal"]');
         if (statsConfigBtn) {
             statsConfigBtn.addEventListener('click', showStatisticsConfigModal);
@@ -94,31 +94,31 @@
     // ============================================
 
     function registerButtonHandlers() {
-        // onclick="loginAdmin()"
+        // data-action="login-admin"
         const loginBtn = document.querySelector('[data-action="loginAdmin"]');
         if (loginBtn) {
             loginBtn.addEventListener('click', loginAdmin);
         }
 
-        // onclick="logoutAdmin()"
+        // data-action="logout-admin"
         const logoutBtn = document.querySelector('[data-action="logoutAdmin"]');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', logoutAdmin);
         }
 
-        // onclick="updatePassword()"
+        // data-action="update-password"
         const updatePwdBtn = document.querySelector('[data-action="updatePassword"]');
         if (updatePwdBtn) {
             updatePwdBtn.addEventListener('click', updatePassword);
         }
 
-        // onclick="refreshDashboard()"
+        // data-action="refresh-dashboard"
         const refreshBtn = document.querySelector('[data-action="refreshDashboard"]');
         if (refreshBtn) {
             refreshBtn.addEventListener('click', refreshDashboard);
         }
 
-        // onclick="openNotificationPanel()"
+        // data-action="open-notification-panel"
         // ⚠️ DESHABILITADO (11 NOV 2025): El evento delegado en admin-dashboard.html línea 6327-6349
         // ya está manejando openNotificationPanel. Agregar listener aquí causa duplicación (modal abierto 2 veces)
         // const notifPanelBtn = document.querySelector('[data-action="openNotificationPanel"]');
@@ -126,7 +126,7 @@
         //     notifPanelBtn.addEventListener('click', openNotificationPanel);
         // }
 
-        // onclick="reloadStudents()"
+        // data-action="reload-students"
         const reloadStudentsBtn = document.querySelector('[data-action="reloadStudents"]');
         if (reloadStudentsBtn) {
             reloadStudentsBtn.addEventListener('click', reloadStudents);
@@ -168,7 +168,7 @@
     // ============================================
 
     function registerFormHandlers() {
-        // onclick="saveStatisticsConfig()"
+        // data-action="save-statistics-config"
         const saveStatsBtn = document.querySelector('[data-action="saveStatisticsConfig"]');
         if (saveStatsBtn) {
             saveStatsBtn.addEventListener('click', saveStatisticsConfig);

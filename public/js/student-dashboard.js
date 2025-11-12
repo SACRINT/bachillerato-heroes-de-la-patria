@@ -236,7 +236,7 @@ class StudentDashboard {
                             </div>
                             <h5 class="card-title text-primary mb-3">Accede a tu Dashboard</h5>
                             <p class="text-muted mb-4">Inicia sesión para ver tu información académica personalizada</p>
-                            <button class="btn btn-primary btn-lg" onclick="showStudentLogin()">
+                            <button class="btn btn-primary btn-lg" data-action="show-student-login">
                                 <i class="fas fa-sign-in-alt me-2"></i>
                                 Iniciar Sesión
                             </button>

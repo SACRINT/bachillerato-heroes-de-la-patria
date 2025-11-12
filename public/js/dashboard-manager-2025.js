@@ -3114,7 +3114,7 @@ function saveRealDataConfig() {
 // Función para actualizar el estado del botón refresh
 function updateRefreshButtonState() {
     const hasCustomConfig = localStorage.getItem('realData_customConfigured') === 'true';
-    const refreshButtons = document.querySelectorAll('[onclick="refreshDashboard()"]');
+    const refreshButtons = document.querySelectorAll('[data-action="refresh-dashboard"]');
 
     refreshButtons.forEach(button => {
         if (hasCustomConfig) {
@@ -3302,7 +3302,7 @@ function editContent(id) {
     document.getElementById('contentPriority').value = item.priority;
 
     // Cambiar el botón para modo edición
-    const submitBtn = document.querySelector('#contentForm button[onclick="createContent()"]');
+    const submitBtn = document.querySelector('#contentForm button[data-action="create-content"]');
     submitBtn.innerHTML = '<i class="fas fa-save me-1"></i>Actualizar Contenido';
     submitBtn.onclick = () => updateContent(id);
 

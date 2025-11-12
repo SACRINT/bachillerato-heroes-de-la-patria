@@ -67,7 +67,7 @@ function showConfirmationModal(activityName) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-warning" onclick="confirmActivityRegistration()">
+                    <button type="button" class="btn btn-warning" data-action="confirm-activity-registration">
                         <i class="fas fa-paper-plane me-2"></i>Enviar Solicitud
                     </button>
                 </div>
@@ -153,7 +153,7 @@ function showRegistrationFormModal(activityName) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmActivityRegistration()">
+                    <button type="button" class="btn btn-primary" data-action="confirm-activity-registration">
                         <i class="fas fa-paper-plane me-2"></i>Enviar Solicitud
                     </button>
                 </div>

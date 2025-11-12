@@ -1,4 +1,12 @@
 // Main JavaScript para el sitio web window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
+
+// Load delegated event handler registry (for onclick → data-action refactorization)
+// This script maps data-action attributes to their corresponding handler functions
+const eventHandlerScript = document.createElement('script');
+eventHandlerScript.src = 'js/event-handler-registry.js';
+eventHandlerScript.async = true;
+document.head.appendChild(eventHandlerScript);
+
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializar componentes principales
     initializeChatbot();
@@ -100,7 +108,7 @@ function createChatbot() {
             <h5 class="mb-0">
                 <i class="fas fa-robot me-2"></i>Asistente Virtual BGE
             </h5>
-            <button class="btn btn-sm btn-link text-white" onclick="closeChatbot()">
+            <button class="btn btn-sm btn-link text-white" data-action="close-chatbot">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -115,7 +123,7 @@ function createChatbot() {
         <div class="chatbot-footer">
             <div class="input-group">
                 <input type="text" class="form-control" id="chatbot-input" placeholder="Escribe tu mensaje...">
-                <button class="btn btn-primary" onclick="sendMessage()">
+                <button class="btn btn-primary" data-action="send-message">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>

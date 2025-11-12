@@ -558,7 +558,7 @@ function showGrades() {
     document.getElementById('mainPanel').innerHTML = `
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4><i class="fas fa-chart-line text-primary me-2"></i>Calificaciones Detalladas</h4>
-            <button class="btn btn-outline-secondary" onclick="loadMainDashboard()">
+            <button class="btn btn-outline-secondary" data-action="load-main-dashboard">
                 <i class="fas fa-arrow-left me-2"></i>Regresar
             </button>
         </div>
@@ -638,7 +638,7 @@ function showAttendance() {
     document.getElementById('mainPanel').innerHTML = `
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4><i class="fas fa-calendar-check text-success me-2"></i>Control de Asistencias</h4>
-            <button class="btn btn-outline-secondary" onclick="loadMainDashboard()">
+            <button class="btn btn-outline-secondary" data-action="load-main-dashboard">
                 <i class="fas fa-arrow-left me-2"></i>Regresar
             </button>
         </div>
@@ -650,7 +650,7 @@ function showCommunication() {
     const communicationHTML = `
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4><i class="fas fa-comments text-info me-2"></i>Centro de Comunicación</h4>
-            <button class="btn btn-outline-secondary" onclick="loadMainDashboard()">
+            <button class="btn btn-outline-secondary" data-action="load-main-dashboard">
                 <i class="fas fa-arrow-left me-2"></i>Regresar
             </button>
         </div>
@@ -717,7 +717,7 @@ function showSchedule() {
     const scheduleHTML = `
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4><i class="fas fa-clock text-warning me-2"></i>Horarios y Calendario</h4>
-            <button class="btn btn-outline-secondary" onclick="loadMainDashboard()">
+            <button class="btn btn-outline-secondary" data-action="load-main-dashboard">
                 <i class="fas fa-arrow-left me-2"></i>Regresar
             </button>
         </div>

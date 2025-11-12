@@ -85,14 +85,14 @@
     function registerDashboardActions() {
         // Mapeo de acciones a funciones
         const actionMap = {
-            'showGrades': 'onclick="showGrades()"',
-            'showAttendance': 'onclick="showAttendance()"',
-            'showCommunication': 'onclick="showCommunication()"',
-            'showSchedule': 'onclick="showSchedule()"',
-            'downloadReport': 'onclick="downloadReport()"',
-            'scheduleAppointment': 'onclick="scheduleAppointment()"',
-            'contactTeacher': 'onclick="contactTeacher()"',
-            'parentLogout': 'onclick="parentLogout()"'
+            'showGrades': 'data-action="show-grades"',
+            'showAttendance': 'data-action="show-attendance"',
+            'showCommunication': 'data-action="show-communication"',
+            'showSchedule': 'data-action="show-schedule"',
+            'downloadReport': 'data-action="download-report"',
+            'scheduleAppointment': 'data-action="schedule-appointment"',
+            'contactTeacher': 'data-action="contact-teacher"',
+            'parentLogout': 'data-action="parent-logout"'
         };
 
         // Registrar botones por su función

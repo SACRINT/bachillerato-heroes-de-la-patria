@@ -553,7 +553,7 @@
                 <strong>Asistente Virtual</strong>
                 <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
             </div>
-            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+            <button data-action="toggle-chatbot" style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
@@ -573,7 +573,7 @@
         
         <div class="chatbot-input">
             <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
-            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+            <button data-action="send-message" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>

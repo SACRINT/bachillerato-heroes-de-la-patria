@@ -647,7 +647,7 @@
                 </div>
 
                 <div class="text-center mt-4">
-                    <button class="btn btn-primary btn-lg" onclick="showPhotoGallery()">
+                    <button class="btn btn-primary btn-lg" data-action="show-photo-gallery">
                         <i class="fas fa-camera me-2" aria-hidden="true"></i>
                         Ver Más Fotografías
                     </button>
@@ -717,7 +717,7 @@
                 <strong>Asistente Virtual</strong>
                 <div class="chatbot-subtitle">Héroes de la Patria</div>
             </div>
-            <button onclick="toggleChatbot()" class="chatbot-close-btn" aria-label="Cerrar chat">×</button>
+            <button data-action="toggle-chatbot" class="chatbot-close-btn" aria-label="Cerrar chat">×</button>
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
@@ -737,7 +737,7 @@
         
         <div class="chatbot-input">
             <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
-            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+            <button data-action="send-message" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>

@@ -187,7 +187,7 @@
                             </a>
                         </div>
                         
-                        <button class="btn btn-warning btn-lg" onclick="toggleChatbot()">
+                        <button class="btn btn-warning btn-lg" data-action="toggle-chatbot">
                             <i class="fas fa-comments me-2"></i>
                             Iniciar Chat Ahora
                         </button>
@@ -383,7 +383,7 @@
             <div class="container text-center">
                 <h2 class="fw-bold mb-4">¡Prueba el Asistente Virtual Ahora!</h2>
                 <p class="lead mb-4">Experimenta la facilidad de obtener información instantánea</p>
-                <button class="btn btn-warning btn-lg me-3" onclick="toggleChatbot()">
+                <button class="btn btn-warning btn-lg me-3" data-action="toggle-chatbot">
                     <i class="fas fa-comments me-2"></i>
                     Abrir Chatbot
                 </button>
@@ -410,7 +410,7 @@
                 <strong>Asistente Virtual</strong>
                 <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
             </div>
-            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 18px;">×</button>
+            <button data-action="toggle-chatbot" style="background: none; border: none; color: white; font-size: 18px;">×</button>
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
@@ -438,7 +438,7 @@
         
         <div class="chatbot-input">
             <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()">
+            <button data-action="send-message">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>

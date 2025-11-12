@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function initializeChatbotEvents() {
     // Botón para cerrar chatbot
-    const chatbotCloseBtn = document.querySelector('[onclick="toggleChatbot()"]');
+    const chatbotCloseBtn = document.querySelector('[data-action="toggle-chatbot"]');
     if (chatbotCloseBtn) {
         chatbotCloseBtn.removeAttribute('onclick');
         chatbotCloseBtn.addEventListener('click', function() {
@@ -32,7 +32,7 @@ function initializeChatbotEvents() {
     }
 
     // Botón para enviar mensaje
-    const sendMessageBtn = document.querySelector('[onclick="sendMessage()"]');
+    const sendMessageBtn = document.querySelector('[data-action="send-message"]');
     if (sendMessageBtn) {
         sendMessageBtn.removeAttribute('onclick');
         sendMessageBtn.addEventListener('click', function() {

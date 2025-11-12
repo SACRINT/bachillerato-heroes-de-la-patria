@@ -583,7 +583,7 @@ function showApprovalsError(message) {
         <div class="alert alert-danger">
             <i class="fas fa-exclamation-circle me-2"></i>
             ${message}
-            <button class="btn btn-sm btn-outline-danger ms-3" onclick="loadPendingApprovals()">
+            <button class="btn btn-sm btn-outline-danger ms-3" data-action="load-pending-approvals">
                 <i class="fas fa-sync-alt me-1"></i>Reintentar
             </button>
         </div>

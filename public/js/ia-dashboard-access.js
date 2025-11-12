@@ -555,7 +555,7 @@ class IADashboardAccess {
                                 ${this.userSession.name} - Nivel ${this.userSession.level || 1}
                                 <span class="badge bg-success ms-2">Aprobado</span>
                             </div>
-                            <button onclick="handleLogout()" class="btn btn-outline-danger btn-sm" title="Cerrar Sesión">
+                            <button data-action="handle-logout" class="btn btn-outline-danger btn-sm" title="Cerrar Sesión">
                                 <i class="fas fa-sign-out-alt"></i>
                             </button>
                         </div>

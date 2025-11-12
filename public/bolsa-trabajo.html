@@ -619,7 +619,7 @@
                 <strong>Asistente Virtual</strong>
                 <div class="chatbot-subtitle">Bolsa de Trabajo</div>
             </div>
-            <button onclick="toggleChatbot()" class="chatbot-close-btn" aria-label="Cerrar chat">×</button>
+            <button data-action="toggle-chatbot" class="chatbot-close-btn" aria-label="Cerrar chat">×</button>
         </div>
         
         <div class="chatbot-messages" id="chatbotMessages">
@@ -639,7 +639,7 @@
         
         <div class="chatbot-input">
             <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)" aria-label="Escribe tu pregunta">
-            <button onclick="sendMessage()" aria-label="Enviar mensaje">
+            <button data-action="send-message" aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>
@@ -958,7 +958,7 @@
                                 <button class="btn btn-sm btn-outline-secondary" onclick="saveJob(${job.id})">
                                     <i class="fas fa-bookmark"></i>
                                 </button>
-                                <button class="btn btn-sm btn-primary flex-grow-1" onclick="showUploadCV()">
+                                <button class="btn btn-sm btn-primary flex-grow-1" data-action="show-upload-c-v">
                                     <i class="fas fa-paper-plane me-1"></i>Aplicar
                                 </button>
                             </div>

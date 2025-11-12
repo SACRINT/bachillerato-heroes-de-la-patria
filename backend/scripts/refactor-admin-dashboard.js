@@ -7,7 +7,7 @@
  * Objetivo: Mejorar mantenibilidad, seguridad y accesibilidad
  *
  * Cambios:
- * 1. onclick="funcName()" -> data-action="funcName" + event listener
+ * 1. data-action="func-name" -> data-action="funcName" + event listener
  * 2. onmouseover/onmouseout -> CSS hover states
  * 3. onchange -> event listener delegado
  * 4. onkeyup -> event listener delegado

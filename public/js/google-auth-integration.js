@@ -167,16 +167,16 @@ class GoogleAuthIntegration {
                     <div class="modal-body">
                         <p>Google Services no está disponible. Selecciona una opción:</p>
                         <div class="d-grid gap-2">
-                            <button class="btn btn-primary" onclick="initiateGoogleLogin()">
+                            <button class="btn btn-primary" data-action="initiate-google-login">
                                 <i class="fab fa-google me-2"></i>Reintentar Google
                             </button>
-                            <button class="btn btn-success" onclick="initiateDemoLogin()">
+                            <button class="btn btn-success" data-action="initiate-demo-login">
                                 <i class="fas fa-play me-2"></i>Modo Demo
                             </button>
-                            <button class="btn btn-info" onclick="initiateManualLogin()">
+                            <button class="btn btn-info" data-action="initiate-manual-login">
                                 <i class="fas fa-envelope me-2"></i>Login Manual
                             </button>
-                            <button class="btn btn-secondary" onclick="initiateGuestLogin()">
+                            <button class="btn btn-secondary" data-action="initiate-guest-login">
                                 <i class="fas fa-user-secret me-2"></i>Invitado
                             </button>
                         </div>
@@ -399,7 +399,7 @@ class GoogleAuthIntegration {
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="loginDropdown">
                     <li><h6 class="dropdown-header">Opciones de Acceso</h6></li>
-                    <li><a class="dropdown-item" href="#" onclick="initiateGoogleLogin()">
+                    <li><a class="dropdown-item" href="#" data-action="initiate-google-login">
                         <svg width="16" height="16" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
                             <path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285f4"/>
                             <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#4285f4"/>
@@ -408,16 +408,16 @@ class GoogleAuthIntegration {
                         </svg>
                         Iniciar con Google
                     </a></li>
-                    <li><a class="dropdown-item" href="#" onclick="initiateManualLogin()">
+                    <li><a class="dropdown-item" href="#" data-action="initiate-manual-login">
                         <i class="fas fa-envelope me-2 text-info"></i>
                         Login Manual
                     </a></li>
-                    <li><a class="dropdown-item" href="#" onclick="initiateGuestLogin()">
+                    <li><a class="dropdown-item" href="#" data-action="initiate-guest-login">
                         <i class="fas fa-user-secret me-2 text-secondary"></i>
                         Acceso de Invitado
                     </a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#" onclick="initiateDemoLogin()">
+                    <li><a class="dropdown-item" href="#" data-action="initiate-demo-login">
                         <i class="fas fa-play-circle me-2 text-success"></i>
                         Cuenta Demo
                     </a></li>
@@ -445,17 +445,17 @@ class GoogleAuthIntegration {
                         <span id="userCoins">0</span> IA Coins
                     </span></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#" onclick="openAIVault()">
+                    <li><a class="dropdown-item" href="#" data-action="open-a-i-vault">
                         <i class="fas fa-robot me-2"></i>Bóveda IA
                     </a></li>
-                    <li><a class="dropdown-item" href="#" onclick="openProfile()">
+                    <li><a class="dropdown-item" href="#" data-action="open-profile">
                         <i class="fas fa-user me-2"></i>Mi Perfil
                     </a></li>
-                    <li><a class="dropdown-item" href="#" onclick="openAchievements()">
+                    <li><a class="dropdown-item" href="#" data-action="open-achievements">
                         <i class="fas fa-trophy me-2"></i>Logros
                     </a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" href="#" onclick="googleLogout()">
+                    <li><a class="dropdown-item text-danger" href="#" data-action="google-logout">
                         <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
                     </a></li>
                 </ul>
@@ -926,17 +926,17 @@ class GoogleAuthIntegration {
                     <span id="userCoins">${user.iaCoins || 100}</span> IA Coins
                 </span></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#" onclick="openAIVault()">
+                <li><a class="dropdown-item" href="#" data-action="open-a-i-vault">
                     <i class="fas fa-robot me-2"></i>Bóveda IA
                 </a></li>
-                <li><a class="dropdown-item" href="#" onclick="openProfile()">
+                <li><a class="dropdown-item" href="#" data-action="open-profile">
                     <i class="fas fa-user me-2"></i>Mi Perfil
                 </a></li>
-                <li><a class="dropdown-item" href="#" onclick="openAchievements()">
+                <li><a class="dropdown-item" href="#" data-action="open-achievements">
                     <i class="fas fa-trophy me-2"></i>Logros
                 </a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger" href="#" onclick="googleLogout()">
+                <li><a class="dropdown-item text-danger" href="#" data-action="google-logout">
                     <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
                 </a></li>
             `);

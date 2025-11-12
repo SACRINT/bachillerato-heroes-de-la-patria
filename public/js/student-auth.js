@@ -270,7 +270,7 @@ function showStudentLoginModal() {
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             Cancelar
                         </button>
-                        <button type="button" class="btn btn-primary" onclick="handleStudentLogin()">
+                        <button type="button" class="btn btn-primary" data-action="handle-student-login">
                             <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
                         </button>
                     </div>
