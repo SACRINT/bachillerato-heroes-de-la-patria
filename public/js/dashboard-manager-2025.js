@@ -77,6 +77,41 @@ class AdminDashboard {
         }
     }
 
+    // Helper function para copiar contraseña - Refactorizada de onclick inline
+    handleCopyPassword(button, password) {
+        if (!password) {
+            console.error('Error: No se proporcionó contraseña para copiar.');
+            return;
+        }
+        navigator.clipboard.writeText(password).then(() => {
+            button.innerHTML = sanitizeHTML('<i class="fas fa-check"></i> Copiado');
+            setTimeout(() => {
+                button.innerHTML = sanitizeHTML('<i class="fas fa-copy"></i> Copiar');
+            }, 2000);
+        }).catch(err => {
+            console.error('Error al copiar la contraseña: ', err);
+            button.innerHTML = sanitizeHTML('<i class="fas fa-times"></i> Error');
+        });
+    }
+
+    // Helper function para aprobar solicitud - Refactorizada de onclick inline
+    handleApproveRequest(requestId) {
+        this.approveRequest(requestId);
+        const modal = bootstrap.Modal.getInstance(document.getElementById('requestDetailsModal'));
+        if (modal) {
+            modal.hide();
+        }
+    }
+
+    // Helper function para rechazar solicitud - Refactorizada de onclick inline
+    handleRejectRequest(requestId) {
+        this.rejectRequest(requestId);
+        const modal = bootstrap.Modal.getInstance(document.getElementById('requestDetailsModal'));
+        if (modal) {
+            modal.hide();
+        }
+    }
+
     async init() {
         console.log('🔄 [INIT] Iniciando sistema AdminDashboard...');
         // Verificar si hay usuario autenticado
@@ -1607,18 +1642,27 @@ class AdminDashboard {
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="fas fa-times me-1"></i>Cerrar
                         </button>
-                        <button type="button" class="btn btn-success" onclick="adminDashboard.approveRequest('${id}')); bootstrap.Modal.getInstance(document.getElementById('requestDetailsModal')).hide();">
+                        <button type="button" class="btn btn-success approve-request-btn" data-request-id="${id}">
                             <i class="fas fa-check me-2"></i>Aprobar Solicitud
                         </button>
-                        <button type="button" class="btn btn-danger" onclick="adminDashboard.rejectRequest('${id}'); bootstrap.Modal.getInstance(document.getElementById('requestDetailsModal')).hide();">
+                        <button type="button" class="btn btn-danger reject-request-btn" data-request-id="${id}">
                             <i class="fas fa-times me-2"></i>Rechazar Solicitud
                         </button>
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
+
+        // Agregar event listeners para los botones de aprobar/rechazar
+        modal.querySelector('.approve-request-btn')?.addEventListener('click', () => {
+            this.handleApproveRequest(id);
+        });
+        modal.querySelector('.reject-request-btn')?.addEventListener('click', () => {
+            this.handleRejectRequest(id);
+        });
+
         const bsModal = new bootstrap.Modal(modal);
         bsModal.show();
 
@@ -1748,15 +1792,9 @@ class AdminDashboard {
                                            value="${password}"
                                            readonly
                                            id="tempPasswordInput">
-                                    <button class="btn btn-outline-primary"
+                                    <button class="btn btn-outline-primary copy-password-btn"
                                             type="button"
-                                            onclick="
-                                                navigator.clipboard.writeText('${password}'));
-                                                this.innerHTML = sanitizeHTML('<i class=\\')fas fa-check\\'></i> Copiado';
-                                                setTimeout(() => {
-                                                    this.innerHTML = sanitizeHTML('<i class=\\')fas fa-copy\\'></i> Copiar';
-                                                }, 2000);
-                                            ">
+                                            data-password="${password}">
                                         <i class="fas fa-copy"></i> Copiar
                                     </button>
                                 </div>
@@ -1781,9 +1819,15 @@ class AdminDashboard {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
+
+        // Agregar event listener para el botón de copiar contraseña
+        modal.querySelector('.copy-password-btn')?.addEventListener('click', (e) => {
+            this.handleCopyPassword(e.target.closest('button'), e.target.closest('button').dataset.password);
+        });
+
         const bsModal = new bootstrap.Modal(modal);
         bsModal.show();
 
@@ -1927,7 +1971,7 @@ class AdminDashboard {
                         <div class="alert alert-info">
                             <strong>📧 MODO DESARROLLO:</strong> En producción esto sería un email automático real.
                         </div>
-                        <pre style="background: #f8f9fa); padding: 15px; border-radius: 5px; white-space: pre-wrap;">${emailContent}</pre>
+                        <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; white-space: pre-wrap;">${emailContent}</pre>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
@@ -1937,7 +1981,7 @@ class AdminDashboard {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(modal);
         const bsModal = new bootstrap.Modal(modal);
