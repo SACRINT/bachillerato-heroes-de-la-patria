@@ -3,7 +3,7 @@
 ## Fecha: 13 Noviembre 2025
 ## Problemas Solucionados:
 1. ✅ 404 Errors masivos en `/api/config/tenant` y `/api/config/public-keys`
-2. ✅ Login del admin dashboard roto
+2. ✅ Login del admin dashboard roto (Usuario no existía en BD)
 
 ---
 
@@ -23,13 +23,16 @@
 
 ### 2. Creado script SQL para usuario administrador
 **Archivo nuevo:**
-- `backend/scripts/create-admin-user.sql`
+- ~~`backend/scripts/create-admin-user.sql`~~ (DEPRECATED - credenciales incorrectas)
+- ✅ `backend/scripts/create-admin-user-real-credentials.sql` (USAR ESTE)
 
 **Credenciales del usuario:**
-- **Email**: admin@bge.edu.mx
-- **Usuario**: admin
-- **Contraseña**: Admin123!
+- **Email**: admin@heroespatria.edu.mx
+- **Usuario**: Administrador
+- **Contraseña**: HeroesPatria2024!
 - **Rol**: admin
+
+**Diferencia:** El script nuevo usa **tus credenciales exactas** y genera el hash bcrypt directamente en PostgreSQL usando `pgcrypto`.
 
 ---
 
@@ -49,17 +52,18 @@ git pull origin claude/code-sanity-audit-011CV68f419YCMPEZZ4txuhC
 1. Abre **Neon Console**: https://console.neon.tech
 2. Selecciona tu base de datos BGE
 3. Ve a **SQL Editor**
-4. Abre el archivo: `backend/scripts/create-admin-user.sql`
+4. Abre el archivo: `backend/scripts/create-admin-user-real-credentials.sql`
 5. Copia TODO el contenido del script
 6. Pégalo en el SQL Editor de Neon
 7. Click en **Run** o presiona `Ctrl+Enter`
-8. Verifica que aparezca el mensaje: ✅ Usuario administrador creado/actualizado exitosamente
-9. Verifica que la consulta SELECT muestre el usuario:
+8. Verifica que el script ejecute sin errores
+9. Verifica que la consulta SELECT al final muestre el usuario:
    ```
-   id | uuid | email              | username | role  | status
-   ---|------|-------------------|----------|-------|--------
-   X  | ...  | admin@bge.edu.mx  | admin    | admin | activo
+   id | uuid | email                        | username      | role  | status | password_hash_length
+   ---|------|----------------------------|---------------|-------|--------|---------------------
+   X  | ...  | admin@heroespatria.edu.mx | Administrador | admin | activo | 60
    ```
+10. **IMPORTANTE**: Si ves `password_hash_length = 60`, el hash bcrypt se generó correctamente
 
 ### PASO 3: Re-deploy a Vercel
 
@@ -101,13 +105,13 @@ Vercel detectará el cambio y hará re-deploy automáticamente.
 
 1. Ve a https://bge-heroesdelapatria.vercel.app/admin-dashboard.html
 2. Ingresa las credenciales:
-   - **Email/Usuario**: `admin` o `admin@bge.edu.mx`
-   - **Contraseña**: `Admin123!`
+   - **Email/Usuario**: `admin@heroespatria.edu.mx` o `Administrador`
+   - **Contraseña**: `HeroesPatria2024!`
 3. Click en **Iniciar Sesión**
 4. **Verifica**:
    - ✅ Debe entrar al dashboard sin errores
-   - ✅ Debe mostrar tu nombre en el header
-   - ✅ Debe mostrar las pestañas del dashboard
+   - ✅ Debe mostrar tu nombre ("Administrador Sistema BGE") en el header
+   - ✅ Debe mostrar las pestañas del dashboard (Estudiantes, Docentes, etc.)
 
 ---
 
@@ -133,13 +137,10 @@ Vercel detectará el cambio y hará re-deploy automáticamente.
 1. **No ejecutaste el script SQL**
    - Solución: Ve al PASO 2 y ejecuta el script en Neon
 
-2. **El password hash no coincide**
-   - Solución: Ejecuta esto en Neon SQL Editor:
-     ```sql
-     UPDATE usuarios
-     SET password_hash = '$2b$10$8Kd3iZ4xF9qR7jY5nW2tL.eX7mQ4vP6hN8wK3sJ9tL2rF4gH5kI1m'
-     WHERE email = 'admin@bge.edu.mx';
-     ```
+2. **El password hash no coincide o la contraseña no funciona**
+   - Solución: Vuelve a ejecutar el script completo `create-admin-user-real-credentials.sql` en Neon SQL Editor
+   - El script usa `pgcrypto` para generar el hash correcto automáticamente
+   - Asegúrate de que Neon tenga la extensión `pgcrypto` habilitada (el script la activa automáticamente)
 
 3. **El endpoint /api/auth/login no existe**
    - Solución: Verifica que api/app.js tiene la línea:
@@ -161,9 +162,10 @@ Vercel detectará el cambio y hará re-deploy automáticamente.
 |---------|---------|--------|
 | `api/app.js` | Agregado import y registro de configRoutes | +2 |
 | `backend/routes/config.js` | Agregado endpoint /public-keys | +32 |
-| `backend/scripts/create-admin-user.sql` | Nuevo archivo para crear admin | +94 |
+| ~~`backend/scripts/create-admin-user.sql`~~ | ~~Nuevo archivo para crear admin~~ | ~~+94~~ (DEPRECATED) |
+| `backend/scripts/create-admin-user-real-credentials.sql` | ✅ Script SQL con TUS credenciales exactas | +108 |
 
-**Total**: 3 archivos modificados/creados
+**Total**: 4 archivos (3 modificados + 1 nuevo)
 
 ---
 
