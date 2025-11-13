@@ -1363,51 +1363,99 @@ function loginAdmin() {
 }
 
 function logoutAdmin() {
-    adminDashboard.logoutAdmin();
+    if (adminDashboard && typeof adminDashboard.logoutAdmin === 'function') {
+        adminDashboard.logoutAdmin();
+    } else {
+        console.error('❌ adminDashboard no está inicializado');
+    }
 }
 
 function refreshDashboard() {
-    adminDashboard.refreshDashboard();
+    if (adminDashboard && typeof adminDashboard.refreshDashboard === 'function') {
+        adminDashboard.refreshDashboard();
+    } else {
+        console.error('❌ adminDashboard no está inicializado');
+    }
 }
 
 function viewStudent(studentId) {
-    adminDashboard.viewStudent(studentId);
+    if (adminDashboard && typeof adminDashboard.viewStudent === 'function') {
+        adminDashboard.viewStudent(studentId);
+    } else {
+        console.error('❌ adminDashboard no está inicializado');
+    }
 }
 
 function editStudent(studentId) {
-    adminDashboard.editStudent(studentId);
+    if (adminDashboard && typeof adminDashboard.editStudent === 'function') {
+        adminDashboard.editStudent(studentId);
+    } else {
+        console.error('❌ adminDashboard no está inicializado');
+    }
 }
 
 function contactStudent(studentId) {
-    adminDashboard.contactStudent(studentId);
+    if (adminDashboard && typeof adminDashboard.contactStudent === 'function') {
+        adminDashboard.contactStudent(studentId);
+    } else {
+        console.error('❌ adminDashboard no está inicializado');
+    }
 }
 
 function addStudent() {
-    adminDashboard.addStudent();
+    if (adminDashboard && typeof adminDashboard.addStudent === 'function') {
+        adminDashboard.addStudent();
+    } else {
+        console.error('❌ adminDashboard no está inicializado');
+    }
 }
 
 function exportStudents() {
-    adminDashboard.exportStudents();
+    if (adminDashboard && typeof adminDashboard.exportStudents === 'function') {
+        adminDashboard.exportStudents();
+    } else {
+        console.error('❌ adminDashboard no está inicializado');
+    }
 }
 
 function viewTeacher(teacherId) {
-    adminDashboard.viewTeacher(teacherId);
+    if (adminDashboard && typeof adminDashboard.viewTeacher === 'function') {
+        adminDashboard.viewTeacher(teacherId);
+    } else {
+        console.error('❌ adminDashboard no está inicializado');
+    }
 }
 
 function editTeacher(teacherId) {
-    adminDashboard.editTeacher(teacherId);
+    if (adminDashboard && typeof adminDashboard.editTeacher === 'function') {
+        adminDashboard.editTeacher(teacherId);
+    } else {
+        console.error('❌ adminDashboard no está inicializado');
+    }
 }
 
 function assignSubjects(teacherId) {
-    adminDashboard.assignSubjects(teacherId);
+    if (adminDashboard && typeof adminDashboard.assignSubjects === 'function') {
+        adminDashboard.assignSubjects(teacherId);
+    } else {
+        console.error('❌ adminDashboard no está inicializado');
+    }
 }
 
 function addTeacher() {
-    adminDashboard.addTeacher();
+    if (adminDashboard && typeof adminDashboard.addTeacher === 'function') {
+        adminDashboard.addTeacher();
+    } else {
+        console.error('❌ adminDashboard no está inicializado');
+    }
 }
 
 function generateReport(type) {
-    adminDashboard.generateReport(type);
+    if (adminDashboard && typeof adminDashboard.generateReport === 'function') {
+        adminDashboard.generateReport(type);
+    } else {
+        console.error('❌ adminDashboard no está inicializado');
+    }
 }
 
 // Variable global para el dashboard (ya declarada anteriormente)
