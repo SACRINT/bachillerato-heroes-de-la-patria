@@ -155,6 +155,40 @@ router.get('/tenant', async (req, res) => {
 });
 
 /**
+ * GET /api/config/public-keys
+ * Devuelve claves públicas de servicios externos (TinyMCE, Google, etc)
+ * AGREGADO: 13 Nov 2025 - Fix 404 errors
+ */
+router.get('/public-keys', (req, res) => {
+    try {
+        const isDevelopment = process.env.NODE_ENV === 'development';
+
+        const keys = {
+            success: true,
+            tinymce: {
+                apiKey: process.env.TINYMCE_API_KEY || null
+            },
+            google: {
+                clientId: isDevelopment
+                    ? process.env.GOOGLE_OAUTH_CLIENT_ID_DEV
+                    : process.env.GOOGLE_OAUTH_CLIENT_ID_PROD
+            },
+            environment: isDevelopment ? 'development' : 'production'
+        };
+
+        res.json(keys);
+
+    } catch (error) {
+        devLogger.error('❌ Error obteniendo claves públicas:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener claves públicas',
+            message: error.message
+        });
+    }
+});
+
+/**
  * GET /api/config/health
  * Verifica si las variables críticas de configuración están presentes
  */

@@ -1175,6 +1175,7 @@ const comunicadosRoutes = require('../backend/routes/comunicados');
 const uploadRoutes = require('../backend/routes/upload');
 const healthRoutes = require('../backend/routes/health');
 const chartsDataRoutes = require('../backend/routes/charts-data');
+const configRoutes = require('../backend/routes/config');  // 🔧 CONFIG API (tenant, public-keys) - 13 NOV 2025
 const searchRoutes = require('../backend/routes/search');
 const emailsRoutes = require('../backend/routes/emails');
 const pollsRoutes = require('../backend/routes/polls');
@@ -1253,6 +1254,7 @@ app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/health', healthRoutes);
 app.use('/api/charts', chartsDataRoutes);
+app.use('/api/config', configRoutes);  // 🔧 CONFIG API (tenant, public-keys) - 13 NOV 2025
 app.use('/api/search', searchRoutes);
 app.use('/api/emails', emailsRoutes);
 app.use('/api/polls', pollsRoutes);
