@@ -374,8 +374,8 @@
             <div class="auth-section ms-3 d-flex align-items-center" id="authSection">
                 <!-- Botones de login cuando no está autenticado -->
                 <div id="loginButtons" class="d-flex align-items-center">
-                    <button type="button" class="btn btn-primary btn-sm me-2" id="loginBtn" data-bs-target="#unified-auth-modal" title="Iniciar Sesión">
-                        <i class="fas fa-sign-in-alt"></i>
+                    <button type="button" class="btn btn-primary btn-sm me-2" id="loginBtn" data-bs-toggle="modal" data-bs-target="#unified-auth-modal" title="Iniciar Sesión" aria-label="Iniciar Sesión">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
                     </button>
                 </div>
 
@@ -810,11 +810,34 @@
 <script src="js/nested-dropdowns.js?v=2024091401"></script>
 <script src="js/admin-auth.js?v=2024091401"></script>
 
-<!-- Sistema de Autenticación V2 - Cargado desde main.js -->
+<!-- Sistema de Autenticación V2 -->
 <!-- DEPRECATED: <script src="js/auth-manager.js?v=2024092301"></script> -->
 
 <!-- Estilos del Sistema de Autenticación Unificado V2 -->
 <link rel="stylesheet" href="css/unified-auth-system-v2.css?v=2025110401">
+
+<!-- 🔒 DOMPurify XSS Protection - REQUERIDO para sanitizeHTML() -->
+<script src="https://cdn.jsdelivr.net/npm/isomorphic-dompurify/dist/purify.min.js"></script>
+<script src="js/dompurify-config.js"></script>
+
+<!-- 🔐 Sistema de Autenticación Unificado V2 - CRÍTICO para botón de login -->
+<script src="js/unified-auth-system-v2.js?v=2025111301" defer></script>
+<script>
+    // Inicializar sistema de autenticación cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🔐 Inicializando UnifiedAuthSystem...');
+        try {
+            window.unifiedAuthSystem = new UnifiedAuthSystem({
+                apiBaseUrl: '/api',
+                enableDemo: false, // Google OAuth real solamente
+                sessionTimeout: 30 * 60 * 1000 // 30 minutos
+            });
+            console.log('✅ UnifiedAuthSystem inicializado correctamente');
+        } catch (error) {
+            console.error('❌ Error inicializando UnifiedAuthSystem:', error);
+        }
+    });
+</script>
 
 <!-- Sistema de Temas Avanzado - Fase A -->
 <!-- ⚠️ NOTA: theme-manager.js se carga desde main.js en loadHeaderFooter() para evitar duplicados -->
