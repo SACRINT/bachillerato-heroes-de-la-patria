@@ -299,7 +299,7 @@ class PollsManager {
                     </div>
 
                     <div class="modal-body">
-                        ${poll.description ? `)<p class="poll-modal-description">${poll.description}</p>` : ''}
+                        ${poll.description ? `<p class="poll-modal-description">${poll.description}</p>` : ''}
 
                         <form id="poll-vote-form">
                             ${this.renderVotingOptions(poll)}
@@ -315,7 +315,7 @@ class PollsManager {
                         </form>
                     </div>
                 </div>
-            `;
+            `);
 
             document.body.appendChild(modal);
 
@@ -507,7 +507,7 @@ class PollsManager {
                                 <div class="stat-value">${statistics.unique_voters || 0}</div>
                                 <div class="stat-label">Participantes</div>
                             </div>
-                            ${statistics.average_rating ? `)
+                            ${statistics.average_rating ? `
                                 <div class="result-stat">
                                     <div class="stat-value">${parseFloat(statistics.average_rating).toFixed(1)}</div>
                                     <div class="stat-label">Calificación Promedio</div>
@@ -546,7 +546,7 @@ class PollsManager {
                         ` : ''}
                     </div>
                 </div>
-            `;
+            `);
 
             document.body.appendChild(modal);
 

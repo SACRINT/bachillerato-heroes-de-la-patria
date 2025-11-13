@@ -309,7 +309,7 @@ class IntelligentLoginSystem {
                     </button>
                 </div>
             </div>
-        `;
+        `);
 
         // Agregar estilos del modal
         this.addWelcomeModalStyles();

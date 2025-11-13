@@ -132,15 +132,15 @@ class QualityAssurance {
                 <div>❌ Failed: ${this.results.failed}</div>
                 <div>🚨 Critical: ${this.criticalErrors.length}</div>
                 <hr>
-                ${this.results.details.map(detail => `)
+                ${this.results.details.map(detail => `
                     <div style="color: ${detail.status === 'PASS' ? 'green' : 'red'};">
-                        ${detail.status === 'PASS' ? '✅' : (detail.critical ? '🚨' : '⚠️')} 
+                        ${detail.status === 'PASS' ? '✅' : (detail.critical ? '🚨' : '⚠️')}
                         ${detail.name}
                         ${detail.error ? `<br><small style="color: #666;">${detail.error}</small>` : ''}
                     </div>
                 `).join('')}
             </div>
-        `;
+        `);
         document.body.appendChild(report);
 
         // Auto-hide después de 10 segundos
