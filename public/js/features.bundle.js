@@ -199,8 +199,8 @@ response: {
 title: '📊 Consultar Boleta de Calificaciones',
 content: [
 { 
-subtitle: '🔗 Portal SICEP', 
-text: 'Ingresa a: <a href="http:
+subtitle: '🔗 Portal SICEP',
+text: 'Ingresa a: <a href="https://sicep.bge.edu.mx">Portal SICEP</a>'
 },
 { 
 subtitle: '📝 Datos Necesarios', 
@@ -225,7 +225,7 @@ title: '🏆 Becas y Apoyos Disponibles',
 content: [
 { 
 subtitle: '💰 Beca Universal Benito Juárez', 
-text: '<strong>¡AUTOMÁTICA para TODOS!</strong><br>• Se asigna automáticamente al inscribirte<br>• Depósitos bimestrales directos<br>• Sin trámite adicional requerido<br>• Consultas: <a href="https:
+text: '<strong>¡AUTOMÁTICA para TODOS!</strong><br>• Se asigna automáticamente al inscribirte<br>• Depósitos bimestrales directos<br>• Sin trámite adicional requerido<br>• Consultas: <a href="https://www.bgeheroesdelapatria.edu.mx">BGE</a>'
 },
 { 
 subtitle: '🎯 Becas Institucionales', 

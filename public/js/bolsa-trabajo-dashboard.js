@@ -574,7 +574,7 @@ class BolsaTrabajoManager {
                         ` : ''}
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-warning" onclick="bolsaTrabajoManager.edit(${candidato.id})); bootstrap.Modal.getInstance(document.getElementById('bolsaTrabajoDetailsModal')).hide();">
+                        <button type="button" class="btn btn-warning" onclick="bolsaTrabajoManager.edit(${candidato.id}); bootstrap.Modal.getInstance(document.getElementById('bolsaTrabajoDetailsModal')).hide();">
                             <i class="fas fa-edit"></i> Editar
                         </button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -583,7 +583,7 @@ class BolsaTrabajoManager {
                     </div>
                 </div>
             </div>
-        `;
+        `);
 
         return modal;
     }

@@ -540,7 +540,7 @@ class AccessibilityAuditor {
                 
                 <hr style="margin: 15px 0;">
                 
-                ${this.issues.slice(0, 5).map(issue => `)
+                ${this.issues.slice(0, 5).map(issue => `
                     <div style="margin-bottom: 8px; padding: 8px; background: #f8d7da; border-radius: 3px;">
                         <strong>🚨 Error:</strong><br>
                         <small>${issue.message}</small><br>
@@ -556,7 +556,7 @@ class AccessibilityAuditor {
                     </div>
                 `).join('')}
             </div>
-        `;
+        `);
         
         document.body.appendChild(report);
 

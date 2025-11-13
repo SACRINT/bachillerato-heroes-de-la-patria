@@ -89,7 +89,7 @@ class CitasManager {
             <td><span class="badge bg-${estadoClass}">${cita.estado}</span></td>
             <td>
                 <div class="btn-group btn-group-sm">
-                    ${cita.estado === 'pendiente' ? `)
+                    ${cita.estado === 'pendiente' ? `
                         <button class="btn btn-outline-success" onclick="citasManager.approveCita(${cita.id})">
                             <i class="fas fa-check"></i>
                         </button>
@@ -102,7 +102,7 @@ class CitasManager {
                     </button>
                 </div>
             </td>
-        `;
+        `);
         return tr;
     }
 

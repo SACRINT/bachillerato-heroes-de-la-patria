@@ -269,7 +269,7 @@ class AdvancedPersonalizationSystem {
                 <div class="personalization-section" style="margin-bottom: 30px;">
                     <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">🌈 Temas</h3>
                     <div id="theme-selector" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        ${Object.entries(this.themes).map(([key, theme]) => `)
+                        ${Object.entries(this.themes).map(([key, theme]) => `
                             <div class="theme-option ${this.preferences.theme === key ? 'active' : ''}"
                                  onclick="advancedPersonalization.setTheme('${key}')"
                                  style="
@@ -431,7 +431,7 @@ class AdvancedPersonalizationSystem {
                             ">Exportar</button>
                 </div>
             </div>
-        `;
+        `);
 
         document.body.appendChild(panel);
     }

@@ -162,7 +162,7 @@ class DynamicTeacherLoader {
             <td><span class="badge bg-primary">${especialidad}</span></td>
             <td>
                 ${teacher.subjects?.map(subject =>
-                    `)<span class="badge bg-secondary me-1">${subject}</span>`
+                    `<span class="badge bg-secondary me-1">${subject}</span>`
                 ).join('') || '<span class="badge bg-secondary">Sin materias asignadas</span>'}
             </td>
             <td>
@@ -192,7 +192,7 @@ class DynamicTeacherLoader {
                     </button>
                 </div>
             </td>
-        `;
+        `);
         return row;
     }
 

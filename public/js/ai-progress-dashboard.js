@@ -339,9 +339,9 @@ class AIProgressDashboard {
         activationBtn.innerHTML = sanitizeHTML(`
             <div class="activation-content">
                 <div class="dashboard-icon">📊</div>
-                <div class="notification-dot" style="display: none);"></div>
+                <div class="notification-dot" style="display: none;"></div>
             </div>
-        `;
+        `);
 
         activationBtn.addEventListener('click', () => this.toggleDashboard());
         document.body.appendChild(activationBtn);

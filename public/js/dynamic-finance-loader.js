@@ -215,7 +215,7 @@ class DynamicFinanceLoader {
                 <td>${this.formatDate(payment.fechaVencimiento)}</td>
                 <td>
                     <span class="badge ${statusClass}">${payment.estado}</span>
-                    ${payment.diasVencido > 0 ? `)<br><small class="text-danger">${payment.diasVencido} días</small>` : ''}
+                    ${payment.diasVencido > 0 ? `<br><small class="text-danger">${payment.diasVencido} días</small>` : ''}
                 </td>
                 <td>
                     <button class="btn btn-sm btn-outline-success" onclick="dynamicFinanceLoader.markAsPaid('${payment.id}')">
@@ -225,7 +225,7 @@ class DynamicFinanceLoader {
                         <i class="fas fa-phone"></i> Contactar
                     </button>
                 </td>
-            `;
+            `);
             tableBody.appendChild(row);
         });
     }

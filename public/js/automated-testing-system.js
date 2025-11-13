@@ -337,7 +337,7 @@ class AutomatedTestingSystem {
                         if (node.nodeType === 1 && (
                             node.matches?.('button') ||
                             node.matches?.('.btn') ||
-                            node.matches?('[onclick]') ||
+                            node.hasAttribute?.('onclick') ||
                             node.querySelector?.('button, .btn, [onclick]')
                         )) {
                             needsRetest = true;

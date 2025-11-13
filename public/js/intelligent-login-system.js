@@ -270,7 +270,7 @@ class IntelligentLoginSystem {
                         <h4>🎯 Funcionalidades Desbloqueadas:</h4>
                         <ul class="features-list">
                             ${profile.unlockedPrompts.map(prompt =>
-                                `)<li><i class="fas fa-check text-success"></i> ${this.getPromptDisplayName(prompt)}</li>`
+                                `<li><i class="fas fa-check text-success"></i> ${this.getPromptDisplayName(prompt)}</li>`
                             ).join('')}
                         </ul>
                     </div>

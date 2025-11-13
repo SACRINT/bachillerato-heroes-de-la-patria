@@ -451,7 +451,7 @@ class DigitalLibraryManager {
                             <span class="badge bg-secondary">${this.escapeHtml(doc.document_type)}</span>
                             <span class="badge bg-info">v${doc.current_version_number || '1.0'}</span>
                         </div>
-                        ${doc.tags && doc.tags.length > 0 ? `)
+                        ${doc.tags && doc.tags.length > 0 ? `
                             <div class="document-tags mt-3">
                                 ${doc.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('')}
                             </div>
@@ -542,7 +542,7 @@ class DigitalLibraryManager {
                         </button>
                     </div>
                 </div>
-            `;
+            `);
 
             // Mostrar modal
             const modal = new bootstrap.Modal(document.getElementById('documentDetailModal'));
