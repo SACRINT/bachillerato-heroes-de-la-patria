@@ -20,9 +20,10 @@ class TinyMCEManager {
             language: 'es',
             language_url: 'https://cdn.jsdelivr.net/npm/tinymce-i18n@23.10.9/langs6/es.min.js',
 
-            // 🔧 ELIMINADO base_url - TinyMCE Cloud lo configura automáticamente
-            // Al usar TinyMCE Cloud con API key, NO debes configurar base_url manualmente
-            // El CDN detecta automáticamente la ubicación correcta basándose en el script cargado
+            // 🔧 SOLUCIÓN DEFINITIVA: Configurar base_url porque TinyMCE no lo auto-detecta en carga dinámica
+            // CRÍTICO: Usar versión genérica /6/ (NO /6.8.3-131/) para coincidir con script cargado
+            base_url: '/tinymce/6',
+            suffix: '.min',
 
             // Plugins
             plugins: [
