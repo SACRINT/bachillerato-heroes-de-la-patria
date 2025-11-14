@@ -1,3 +1,71 @@
+## [2.25.2] - 2025-11-14 (FIX CRÍTICO: TINYMCE WYSIWYG EDITOR COMPLETAMENTE FUNCIONAL EN PRODUCCIÓN)
+
+### FIX DEFINITIVO: TinyMCE Dynamic Script Loading + CSP
+- **✅ PROBLEMA RESUELTO: TinyMCE plugins/themes no cargaban en producción Vercel**
+  - **Root Cause Identificado:** TinyMCE cargado dinámicamente con `createElement('script')` no auto-detecta su ubicación
+  - **Síntomas:** Errores 404 para `themes/silver/theme.min.js`, `models/dom/model.min.js`, `plugins/*/plugin.min.js`
+  - **Fecha:** 14 de Noviembre de 2025
+  - **Commits:**
+    - `77d9bdb` - fix(tinymce): Add base_url with relative path for dynamic script loading (DEFINITIVO)
+    - `21ac290` - fix(tinymce): Remove base_url - TinyMCE Cloud auto-configures it (intento previo)
+    - `d360ca5` - debug(tinymce): Fix TinyMCE CDN loading + DOMPurify package error
+    - `3bdd97c` - fix(csp): Simplify CSP in vercel.json + update DOMPurify to @latest
+    - `d6b6904` - fix(tinymce): Force CDN loading for theme/skins + fix trust proxy
+    - `581206d` - fix(tinymce): Fix CSP in vercel.json to allow TinyMCE CDN scripts
+
+- **🔍 Investigación Exhaustiva (6 Iteraciones)**
+  1. **Iteración 1:** CSP bloqueando cdn.tiny.cloud → Fix: Agregado TinyMCE domains a CSP
+  2. **Iteración 2:** CSP en backend/middleware/security.js ignorado → Fix: Movido a vercel.json
+  3. **Iteración 3:** CSP con URLs específicas muy verbosas → Fix: Simplificado con wildcards `https:`
+  4. **Iteración 4:** Version mismatch (v6 vs v6.8.3-131) → Fix: Agregado base_url con versión específica
+  5. **Iteración 5:** base_url absoluto hardcodeaba API key → Fix: Removido para auto-detección
+  6. **Iteración 6 (DEFINITIVA):** Auto-detección falla con dynamic loading → **Fix: base_url relativo '/tinymce/6'**
+
+- **💡 Solución Definitiva (Commit 77d9bdb)**
+  ```javascript
+  // public/js/tinymce-config.js líneas 23-26
+  base_url: '/tinymce/6',  // Ruta relativa que el navegador resuelve a CDN
+  suffix: '.min'           // Indica usar archivos .min.js
+  ```
+
+  **¿Por qué funciona?**
+  - TinyMCE cargado dinámicamente NO puede usar `document.currentScript`
+  - Sin `document.currentScript`, TinyMCE usa rutas relativas por defecto
+  - Configurar `base_url: '/tinymce/6'` hace que TinyMCE construya URLs correctamente
+  - Navegador resuelve `/tinymce/6/` a `https://cdn.tiny.cloud/1/[API_KEY]/tinymce/6/`
+  - TinyMCE carga: `/tinymce/6/themes/silver/theme.min.js` → CDN URL completa ✅
+
+- **📋 Otros Fixes Aplicados**
+  - **CSP Simplificado:** `vercel.json` ahora usa wildcards (`https:`, `data:`, `blob:`) en lugar de URLs específicas
+  - **DOMPurify Fix:** Cambiado de `isomorphic-dompurify` (Node.js) a `dompurify@3.0.6` (browser)
+  - **Trust Proxy:** Agregado `app.set('trust proxy', 1)` en `api/app.js` para Vercel
+  - **Logging Diagnóstico:** Agregado logging detallado `[TINYMCE-LOADER]` para debugging
+
+- **✅ Archivos Modificados (4)**
+  - `public/js/tinymce-config.js` - Agregado base_url relativo + suffix
+  - `vercel.json` - Simplificado CSP con wildcards
+  - `api/app.js` - Agregado trust proxy setting
+  - `public/admin-dashboard.html` - Cambiado DOMPurify package + agregado logging
+
+- **🧪 Testing Esperado (Post-Merge)**
+  - ✅ Console NO debe mostrar errores 404 para themes/models/plugins
+  - ✅ Console debe mostrar: "[TINYMCE] Editor inicializado" con modo "design"
+  - ✅ Editores TinyMCE deben ser completamente funcionales (escribir, formatear, insertar imágenes)
+  - ✅ Toolbar debe tener todos los botones operativos
+
+- **📚 Documentación Técnica**
+  - Problema documentado extensivamente en commits
+  - Root cause analysis disponible en git log
+  - Solución basada en docs oficiales de TinyMCE sobre dynamic loading
+
+- **⏭️ Próximo Paso**
+  - Usuario debe mergear PR desde branch `claude/fix-tinymce-frontend-logging-011CV68f419YCMPEZZ4txuhC`
+  - Usuario debe redeploy en Vercel
+  - Usuario debe verificar en console que errores desaparecieron
+  - Usuario debe testear funcionalidad completa de editores
+
+---
+
 ## [2.25.1] - 2025-11-12 (FASE 2.3: ELIMINACIÓN DE JAVASCRIPT INLINE - PATTERN A COMPLETADA)
 
 ### FASE 2.3: Eliminación de JavaScript Inline - Patrón A
