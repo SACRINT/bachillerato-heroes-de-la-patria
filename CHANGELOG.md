@@ -1,6 +1,37 @@
-## [2.25.2] - 2025-11-14 (FIX CRÍTICO: TINYMCE WYSIWYG EDITOR COMPLETAMENTE FUNCIONAL EN PRODUCCIÓN)
+## [2.25.3] - 2025-11-14 (FIX DEFINITIVO REAL: base_url con URL ABSOLUTA del CDN - 7ª Iteración)
 
-### FIX DEFINITIVO: TinyMCE Dynamic Script Loading + CSP
+### FIX CRÍTICO: base_url Relativo NO Funciona - Cambio a URL Absoluta
+- **✅ ROOT CAUSE REAL IDENTIFICADO: Ruta relativa se resolvía incorrectamente**
+  - **Problema:** `base_url: '/tinymce/6'` (ruta relativa) se resuelve al dominio actual, NO al CDN
+  - **En Producción:** `/tinymce/6/` → `https://bge-heroesdelapatria.vercel.app/tinymce/6/` ❌
+  - **En Localhost:** `/tinymce/6/` → `http://localhost:3000/tinymce/6/` ❌
+  - **Resultado:** Ambas URLs NO EXISTEN → 404 → HTML devuelto → `SyntaxError: Unexpected token '<'`
+  - **Commit:** `b1a9c1b` - SOLUCIÓN DEFINITIVA con URL absoluta del CDN
+
+- **🔧 SOLUCIÓN DEFINITIVA (7ª Iteración):**
+  1. **Exponer API Key Globalmente** (admin-dashboard.html línea 5175)
+     ```javascript
+     window.TINYMCE_API_KEY = apiKey;
+     ```
+  2. **Usar URL Absoluta del CDN** (tinymce-config.js líneas 26-28)
+     ```javascript
+     base_url: `https://cdn.tiny.cloud/1/${window.TINYMCE_API_KEY}/tinymce/6`
+     ```
+
+- **💡 Por Qué Funciona:** URL absoluta apunta DIRECTAMENTE al CDN (no depende del dominio actual)
+
+- **📊 Iteraciones Completas:**
+  - Iteraciones 1-5: CSP + logging + DOMPurify fixes
+  - Iteración 6: `base_url: '/tinymce/6'` (INCORRECTO - ruta relativa)
+  - **Iteración 7 (DEFINITIVA): URL absoluta del CDN** ✅
+
+- **✅ Archivos:** `public/admin-dashboard.html` (+3), `public/js/tinymce-config.js` (+5 con logging)
+
+---
+
+## [2.25.2] - 2025-11-14 (FIX CRÍTICO: TINYMCE WYSIWYG EDITOR - Iteración 6)
+
+### FIX: TinyMCE Dynamic Script Loading + CSP (SUPERADO POR v2.25.3)
 - **✅ PROBLEMA RESUELTO: TinyMCE plugins/themes no cargaban en producción Vercel**
   - **Root Cause Identificado:** TinyMCE cargado dinámicamente con `createElement('script')` no auto-detecta su ubicación
   - **Síntomas:** Errores 404 para `themes/silver/theme.min.js`, `models/dom/model.min.js`, `plugins/*/plugin.min.js`
