@@ -15,7 +15,7 @@
 | 2 | admin-dashboard.js | 4 (REAL) | 🟢 BAJA | ✅ Completado | ✅ | 14 Nov 2025 | 14 Nov 2025 |
 | 3 | professional-forms.js | 2 (REAL) | 🟢 BAJA | ✅ Completado | ✅ | 14 Nov 2025 | 14 Nov 2025 |
 | 4 | academic-reports-manager.js | 2 (REAL) | 🟢 BAJA | ✅ Completado | ✅ | 14 Nov 2025 | 14 Nov 2025 |
-| 5 | bge-notification-admin.js | 12-15 | 🟡 MEDIA | ⏳ Pendiente | ❌ | - | - |
+| 5 | bge-notification-admin.js | 5 (REAL) | 🟢 BAJA | ✅ Completado | ✅ | 14 Nov 2025 | 14 Nov 2025 |
 | 6 | admin-dashboard-executive.js | 10-15 | 🟡 MEDIA | ⏳ Pendiente | ❌ | - | - |
 | 7 | citas-manager.js | 8-10 | 🟢 BAJA | ⏳ Pendiente | ❌ | - | - |
 | 8 | accessibility-auditor-system.js | 8-10 | 🔴 ALTA | ⏳ Pendiente | ❌ | - | - |
@@ -28,10 +28,11 @@
 
 - **Total Archivos:** 10
 - **Total Instancias (estimado):** 158-183 (ajustado)
-- **Completadas:** 15 (7+4+2+2 Archivos #1-4)
+- **Completadas:** 20 (7+4+2+2+5 Archivos #1-5)
 - **En Progreso:** 0
-- **Validadas:** 15
-- **Porcentaje Completado:** ~9% (15/165 estimado)
+- **Validadas:** 20
+- **Porcentaje Completado:** ~12% (20/165 estimado)
+- **Archivos Completados:** 5/10 (50% 🎉)
 
 ---
 
@@ -125,11 +126,32 @@
   1. onclick="academicReports.loadHistoryReport(${report.id})" → data-action="loadHistoryReport-${report.id}" (línea 1002, context: report-history)
   2. onclick="academicReports.exportHistoryReport(${report.id})" → data-action="exportHistoryReport-${report.id}" (línea 1006, context: report-history)
 
-### [PRÓXIMO] Archivo #5: bge-notification-admin.js
-- **Estimado:** 12-15 instancias
-- **Complejidad:** 🟡 MEDIA
+### [COMPLETADO] Archivo #5: bge-notification-admin.js ✅
+- **Inicio:** 14 Nov 2025
+- **Fin:** 14 Nov 2025
+- **Instancias REALES:** 5 (NO 12-15 como estimado)
+- **Complejidad:** 🟢 BAJA (ajustada de MEDIA)
+- **Estado:** ✅ COMPLETADO
+- **Commit:** f8e273f
+- **Duración:** ~40 minutos (mucho menos que las 1-2h estimadas)
+- **Cambios:**
+  - Event listener agregado (63 líneas, 1026-1085)
+  - 5 onclick refactorizados a data-action
+  - Sintaxis validada con node -c
+  - Push exitoso a GitHub
+  - Múltiples contextos para categorización (preview-modal, scheduled-notifications, notification-history)
+- **Handlers Refactorizados:**
+  1. onclick="this.closest('.preview-modal').remove()" → data-action="close-preview-modal" (línea 692, context: preview-modal, cerrar modal)
+  2. onclick="bgeNotificationAdmin.editScheduled('${notif.id}')" → data-action="editScheduled-${notif.id}" (línea 763, context: scheduled-notifications, editar)
+  3. onclick="bgeNotificationAdmin.deleteScheduled('${notif.id}')" → data-action="deleteScheduled-${notif.id}" (línea 764, context: scheduled-notifications, eliminar)
+  4. onclick="bgeNotificationAdmin.resendNotification('${notif.id}')" → data-action="resendNotification-${notif.id}" (línea 791, context: notification-history, reenviar)
+  5. onclick="bgeNotificationAdmin.viewDetails('${notif.id}')" → data-action="viewDetails-${notif.id}" (línea 792, context: notification-history, detalles)
+
+### [PRÓXIMO] Archivo #6: admin-dashboard-executive.js
+- **Estimado:** 10-15 instancias (probablemente 2-3 según patrón)
+- **Complejidad:** 🟢 BAJA (proyectada)
 - **Estado:** ⏳ Pendiente
-- **Notas:** Notificaciones admin, estimar 1-2 horas (probablemente menos según patrón)
+- **Notas:** Dashboard ejecutivo, estimar 30-45 minutos
 
 ---
 
@@ -145,4 +167,4 @@
 
 ---
 
-**Última Actualización:** 14 Nov 2025 - Archivos #1-4 Completados (15 onclick refactorizados)
+**Última Actualización:** 14 Nov 2025 - 🎉 50% COMPLETADO: Archivos #1-5 (20 onclick refactorizados)
