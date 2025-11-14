@@ -20,6 +20,9 @@ class TinyMCEManager {
             language: 'es',
             language_url: 'https://cdn.jsdelivr.net/npm/tinymce-i18n@23.10.9/langs6/es.min.js',
 
+            // 🔧 FIX CRÍTICO: Configurar base URL del CDN para TODOS los recursos
+            base_url: 'https://cdn.tiny.cloud/1/9eomuls0jgbqziqkahugmesowt48tellxulfspshp9pa03bi/tinymce/6.8.3-131',
+
             // 🔧 FIX CRÍTICO: Forzar carga de tema y estilos desde CDN
             skin_url: 'https://cdn.tiny.cloud/1/9eomuls0jgbqziqkahugmesowt48tellxulfspshp9pa03bi/tinymce/6.8.3-131/skins/ui/oxide',
             content_css: 'https://cdn.tiny.cloud/1/9eomuls0jgbqziqkahugmesowt48tellxulfspshp9pa03bi/tinymce/6.8.3-131/skins/content/default/content.min.css',
