@@ -1069,6 +1069,9 @@ async function handleContactGet(req, res) {
 // --- Express App Setup ---
 const app = express();
 
+// 🔧 FIX CRÍTICO: Confiar en proxy de Vercel para X-Forwarded-For headers
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(cookieParser());
 app.use(express.json());
