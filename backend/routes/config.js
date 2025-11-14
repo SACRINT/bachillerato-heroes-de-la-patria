@@ -145,11 +145,17 @@ router.get('/tenant', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('[CONFIG] ❌ Error obteniendo configuración de tenant:', error);
+        // 🔍 DIAGNÓSTICO DE RAÍZ - Logging detallado para identificar el error exacto
+        console.error('[DIAGNÓSTICO DE RAÍZ] Error detallado en /api/config/tenant:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+        console.error('[DIAGNÓSTICO DE RAÍZ] Stack trace completo:', error.stack);
+        console.error('[DIAGNÓSTICO DE RAÍZ] Tipo de error:', error.constructor.name);
+        console.error('[DIAGNÓSTICO DE RAÍZ] Mensaje:', error.message);
+
         res.status(500).json({
             success: false,
-            error: 'Error al obtener configuración del tenant',
-            message: error.message
+            error: 'Error interno del servidor',
+            details: error.message,
+            errorType: error.constructor.name
         });
     }
 });
