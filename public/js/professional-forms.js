@@ -874,7 +874,7 @@ ${originalMessage}
                 <div class="popup-header">
                     <div class="popup-icon">📧</div>
                     <h3>¡Mensaje Enviado!</h3>
-                    <button class="popup-close" onclick="this.closest('.verification-popup-overlay').remove()">×</button>
+                    <button class="popup-close" data-action="close-popup" data-context="verification-popup">×</button>
                 </div>
                 <div class="popup-content">
                     <p><strong>Tu mensaje ha sido enviado exitosamente.</strong></p>
@@ -896,7 +896,7 @@ ${originalMessage}
                     </div>
                 </div>
                 <div class="popup-footer">
-                    <button class="btn-primary" onclick="this.closest('.verification-popup-overlay').remove()">
+                    <button class="btn-primary" data-action="close-popup" data-context="verification-popup">
                         Entendido
                     </button>
                 </div>
@@ -1242,5 +1242,32 @@ window.verifyEmail = async (email) => {
     }
     return { valid: true, reason: 'Sistema no inicializado' };
 };
+
+// ============================================
+// EVENT DELEGATION HANDLER (CSP Compliant)
+// Pattern B: onclick con parámetros → data-action
+// ============================================
+document.addEventListener('click', (e) => {
+    const actionElement = e.target.closest('[data-action]');
+    if (!actionElement) return;
+
+    const action = actionElement.getAttribute('data-action');
+    const context = actionElement.getAttribute('data-context') || 'professional-forms';
+
+    try {
+        // Pattern B: Cerrar popup de verificación
+        if (action === 'close-popup') {
+            const popupOverlay = actionElement.closest('.verification-popup-overlay');
+            if (popupOverlay) {
+                popupOverlay.remove();
+            }
+            return;
+        }
+
+        console.warn('[PROFESSIONAL-FORMS] Unhandled data-action:', action);
+    } catch (error) {
+        console.error('[PROFESSIONAL-FORMS] Error handling action:', action, error);
+    }
+});
 
 console.log('🏛️ professional-forms.js cargado exitosamente');

@@ -154,10 +154,10 @@ class AdminDashboardExecutive {
                                         <p class="text-muted mb-0">Sistema IA Gamificado • Estado: <span class="badge bg-success">Operativo</span> • Última actualización: ${new Date().toLocaleTimeString()}</p>
                                     </div>
                                     <div class="col-md-4 text-end">
-                                        <button class="btn btn-primary me-2" onclick="adminExecutive.exportExecutiveReport()">
+                                        <button class="btn btn-primary me-2" data-action="exportExecutiveReport" data-context="executive-dashboard">
                                             📊 Exportar Reporte
                                         </button>
-                                        <button class="btn btn-outline-primary" onclick="adminExecutive.scheduleReport()">
+                                        <button class="btn btn-outline-primary" data-action="scheduleReport" data-context="executive-dashboard">
                                             📅 Programar
                                         </button>
                                     </div>
@@ -291,7 +291,7 @@ class AdminDashboardExecutive {
                                     </div>
                                 `).join('')}
                                 <div class="text-center mt-3">
-                                    <button class="btn btn-outline-primary btn-sm" onclick="adminExecutive.showFullRanking()">
+                                    <button class="btn btn-outline-primary btn-sm" data-action="showFullRanking" data-context="ranking-display">
                                         Ver Ranking Completo
                                     </button>
                                 </div>
@@ -392,7 +392,7 @@ class AdminDashboardExecutive {
                                         <i class="fas fa-user-clock text-danger me-2"></i>
                                         <div>
                                             <strong>👥 Atención Requerida</strong><br>
-                                            <small>3 estudiantes sin actividad IA por más de 5 días. <a href="#" onclick="adminExecutive.contactInactiveStudents()">Contactar ahora</a></small>
+                                            <small>3 estudiantes sin actividad IA por más de 5 días. <a href="#" data-action="contactInactiveStudents" data-context="student-alerts">Contactar ahora</a></small>
                                         </div>
                                     </div>
                                 </div>
@@ -640,6 +640,53 @@ function openExecutiveDashboard() {
         window.adminExecutive.show();
     }
 }
+
+// ============================================
+// EVENT DELEGATION HANDLER (CSP Compliant)
+// Pattern B: onclick con parámetros → data-action
+// ============================================
+document.addEventListener('click', (e) => {
+    const actionElement = e.target.closest('[data-action]');
+    if (!actionElement) return;
+
+    const action = actionElement.getAttribute('data-action');
+    const context = actionElement.getAttribute('data-context') || 'admin-dashboard-executive';
+
+    try {
+        // Pattern B: Acciones del dashboard ejecutivo
+        if (action === 'exportExecutiveReport') {
+            if (window.adminExecutive && typeof window.adminExecutive.exportExecutiveReport === 'function') {
+                window.adminExecutive.exportExecutiveReport();
+            }
+            return;
+        }
+
+        if (action === 'scheduleReport') {
+            if (window.adminExecutive && typeof window.adminExecutive.scheduleReport === 'function') {
+                window.adminExecutive.scheduleReport();
+            }
+            return;
+        }
+
+        if (action === 'showFullRanking') {
+            if (window.adminExecutive && typeof window.adminExecutive.showFullRanking === 'function') {
+                window.adminExecutive.showFullRanking();
+            }
+            return;
+        }
+
+        if (action === 'contactInactiveStudents') {
+            if (window.adminExecutive && typeof window.adminExecutive.contactInactiveStudents === 'function') {
+                window.adminExecutive.contactInactiveStudents();
+            }
+            return;
+        }
+
+        console.warn('[ADMIN-DASHBOARD-EXECUTIVE] Unhandled data-action:', action);
+    } catch (error) {
+        console.error('[ADMIN-DASHBOARD-EXECUTIVE] Error handling action:', action, error);
+    }
+});
 
 // Inicializar dashboard ejecutivo
 document.addEventListener('DOMContentLoaded', function() {

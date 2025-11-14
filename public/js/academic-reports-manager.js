@@ -999,11 +999,11 @@ class AcademicReportsManager {
                         </div>
                         <div class="btn-group-vertical">
                             <button type="button" class="btn btn-sm btn-outline-primary"
-                                    onclick="academicReports.loadHistoryReport(${report.id})">
+                                    data-action="loadHistoryReport-${report.id}" data-context="report-history">
                                 <i class="fas fa-eye me-1"></i>Ver
                             </button>
                             <button type="button" class="btn btn-sm btn-outline-success"
-                                    onclick="academicReports.exportHistoryReport(${report.id})">
+                                    data-action="exportHistoryReport-${report.id}" data-context="report-history">
                                 <i class="fas fa-download me-1"></i>Exportar
                             </button>
                         </div>
@@ -1107,6 +1107,41 @@ class AcademicReportsManager {
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('academic-reports-container')) {
         window.academicReports = new AcademicReportsManager();
+    }
+});
+
+// ============================================
+// EVENT DELEGATION HANDLER (CSP Compliant)
+// Pattern B: onclick con parámetros → data-action
+// ============================================
+document.addEventListener('click', (e) => {
+    const actionElement = e.target.closest('[data-action]');
+    if (!actionElement) return;
+
+    const action = actionElement.getAttribute('data-action');
+    const context = actionElement.getAttribute('data-context') || 'academic-reports';
+
+    try {
+        // Pattern B: Acciones de historial de reportes
+        if (action.startsWith('loadHistoryReport-')) {
+            const reportId = parseInt(action.replace('loadHistoryReport-', ''), 10);
+            if (window.academicReports && typeof window.academicReports.loadHistoryReport === 'function') {
+                window.academicReports.loadHistoryReport(reportId);
+            }
+            return;
+        }
+
+        if (action.startsWith('exportHistoryReport-')) {
+            const reportId = parseInt(action.replace('exportHistoryReport-', ''), 10);
+            if (window.academicReports && typeof window.academicReports.exportHistoryReport === 'function') {
+                window.academicReports.exportHistoryReport(reportId);
+            }
+            return;
+        }
+
+        console.warn('[ACADEMIC-REPORTS] Unhandled data-action:', action);
+    } catch (error) {
+        console.error('[ACADEMIC-REPORTS] Error handling action:', action, error);
     }
 });
 

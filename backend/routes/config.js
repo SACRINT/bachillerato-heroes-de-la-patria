@@ -106,14 +106,37 @@ router.get('/tenant', async (req, res) => {
         // Consultar la BD usando la función DAL
         const tenant = await getTenantByDomain(hostname);
 
-        // Si no encuentra el tenant, retornar error
+        // Si no encuentra el tenant, usar configuración por defecto (BGE)
         if (!tenant) {
-            devLogger.warn(`[CONFIG] ⚠️ Tenant no encontrado para dominio: ${hostname}`);
-            return res.status(404).json({
-                success: false,
-                error: 'Tenant no encontrado',
-                message: `No hay configuración para el dominio: ${hostname}`,
-                hostname: hostname
+            devLogger.warn(`[CONFIG] ⚠️ Tenant no encontrado para dominio: ${hostname}, usando configuración por defecto`);
+
+            // Configuración por defecto de BGE Héroes de la Patria
+            const defaultConfig = {
+                school_name: 'Bachillerato General Estatal "Héroes de la Patria"',
+                school_short_name: 'BGE',
+                school_type: 'Bachillerato General por Competencias',
+                primary_color: '#2563eb',
+                secondary_color: '#1e40af',
+                logo_url: '/public/images/logo-bge.png',
+                contact_email: 'contacto@heroespatria.edu.mx',
+                contact_phone: '(777) 123-4567',
+                address: 'Calle Principal #123, Cuernavaca, Morelos',
+                enable_notifications: true,
+                enable_gamification: true
+            };
+
+            return res.json({
+                success: true,
+                isDefault: true,  // Indicar que es configuración por defecto
+                tenant: {
+                    id: 1,
+                    uuid: 'default-uuid',
+                    school_name: defaultConfig.school_name,
+                    schema_name: 'public',
+                    domain: hostname,
+                    status: 'activo'
+                },
+                config: defaultConfig
             });
         }
 
@@ -145,11 +168,8 @@ router.get('/tenant', async (req, res) => {
         });
 
     } catch (error) {
-        // 🔍 DIAGNÓSTICO DE RAÍZ - Logging detallado para identificar el error exacto
-        console.error('[DIAGNÓSTICO DE RAÍZ] Error detallado en /api/config/tenant:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
-        console.error('[DIAGNÓSTICO DE RAÍZ] Stack trace completo:', error.stack);
-        console.error('[DIAGNÓSTICO DE RAÍZ] Tipo de error:', error.constructor.name);
-        console.error('[DIAGNÓSTICO DE RAÍZ] Mensaje:', error.message);
+        // 🔍 DIAGNÓSTICO DE RAÍZ (GDPR-compliant)
+        devLogger.error('Error durante operación'); // Error en /api/config/tenant (stack trace masked)
 
         res.status(500).json({
             success: false,
@@ -170,15 +190,8 @@ router.get('/public-keys', (req, res) => {
         const isDevelopment = process.env.NODE_ENV === 'development';
         const tinymceKey = process.env.TINYMCE_API_KEY || null;
 
-        // 🔍 LOGGING DIAGNÓSTICO
-        console.log('═══════════════════════════════════════════════════');
-        console.log('[PUBLIC-KEYS] Request recibido');
-        console.log('[PUBLIC-KEYS] NODE_ENV:', process.env.NODE_ENV || 'undefined');
-        console.log('[PUBLIC-KEYS] isDevelopment:', isDevelopment);
-        console.log('[PUBLIC-KEYS] TINYMCE_API_KEY presente:', !!tinymceKey);
-        console.log('[PUBLIC-KEYS] TINYMCE_API_KEY longitud:', tinymceKey ? tinymceKey.length : 0);
-        console.log('[PUBLIC-KEYS] TINYMCE_API_KEY primeros 10 caracteres:', tinymceKey ? tinymceKey.substring(0, 10) + '...' : 'null');
-        console.log('═══════════════════════════════════════════════════');
+        // 🔍 LOGGING DIAGNÓSTICO (GDPR-compliant)
+        devLogger.log('Operación iniciada'); // [PUBLIC-KEYS] Request recibido (API key metadata no se logea por seguridad)
 
         const response = {
             success: true,

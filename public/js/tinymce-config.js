@@ -20,9 +20,12 @@ class TinyMCEManager {
             language: 'es',
             language_url: 'https://cdn.jsdelivr.net/npm/tinymce-i18n@23.10.9/langs6/es.min.js',
 
-            // 🔧 SOLUCIÓN DEFINITIVA: Configurar base_url porque TinyMCE no lo auto-detecta en carga dinámica
-            // CRÍTICO: Usar versión genérica /6/ (NO /6.8.3-131/) para coincidir con script cargado
-            base_url: '/tinymce/6',
+            // 🔧 SOLUCIÓN DEFINITIVA: Usar URL ABSOLUTA del CDN con API key
+            // CRÍTICO: Rutas relativas NO funcionan porque se resuelven al dominio actual
+            // window.TINYMCE_API_KEY es expuesta por admin-dashboard.html antes de cargar este script
+            base_url: window.TINYMCE_API_KEY
+                ? `https://cdn.tiny.cloud/1/${window.TINYMCE_API_KEY}/tinymce/6`
+                : 'https://cdn.tiny.cloud/1/9eomuls0jgbqziqkahugmesowt48tellxulfspshp9pa03bi/tinymce/6',
             suffix: '.min',
 
             // Plugins
@@ -158,6 +161,10 @@ class TinyMCEManager {
                 ...customConfig,
                 selector: selector
             };
+
+            // 🔍 DEBUG: Verificar base_url construido
+            console.log(`🔧 [TINYMCE] base_url configurado: ${config.base_url}`);
+            console.log(`🔧 [TINYMCE] suffix configurado: ${config.suffix}`);
 
             const editors = await tinymce.init(config);
 
