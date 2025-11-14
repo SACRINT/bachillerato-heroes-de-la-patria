@@ -14,7 +14,7 @@
 | 1 | dashboard-manager-2025.js | 7 (REAL) | 🟢 BAJA | ✅ Completado | ✅ | 14 Nov 2025 | 14 Nov 2025 |
 | 2 | admin-dashboard.js | 4 (REAL) | 🟢 BAJA | ✅ Completado | ✅ | 14 Nov 2025 | 14 Nov 2025 |
 | 3 | professional-forms.js | 2 (REAL) | 🟢 BAJA | ✅ Completado | ✅ | 14 Nov 2025 | 14 Nov 2025 |
-| 4 | academic-reports-manager.js | 12-15 | 🟡 MEDIA | ⏳ Pendiente | ❌ | - | - |
+| 4 | academic-reports-manager.js | 2 (REAL) | 🟢 BAJA | ✅ Completado | ✅ | 14 Nov 2025 | 14 Nov 2025 |
 | 5 | bge-notification-admin.js | 12-15 | 🟡 MEDIA | ⏳ Pendiente | ❌ | - | - |
 | 6 | admin-dashboard-executive.js | 10-15 | 🟡 MEDIA | ⏳ Pendiente | ❌ | - | - |
 | 7 | citas-manager.js | 8-10 | 🟢 BAJA | ⏳ Pendiente | ❌ | - | - |
@@ -28,10 +28,10 @@
 
 - **Total Archivos:** 10
 - **Total Instancias (estimado):** 158-183 (ajustado)
-- **Completadas:** 13 (7 Archivo #1 + 4 Archivo #2 + 2 Archivo #3)
+- **Completadas:** 15 (7+4+2+2 Archivos #1-4)
 - **En Progreso:** 0
-- **Validadas:** 13
-- **Porcentaje Completado:** ~8% (13/165 estimado)
+- **Validadas:** 15
+- **Porcentaje Completado:** ~9% (15/165 estimado)
 
 ---
 
@@ -107,11 +107,29 @@
   1. onclick="this.closest('.verification-popup-overlay').remove()" → data-action="close-popup" (línea 877, botón × header)
   2. onclick="this.closest('.verification-popup-overlay').remove()" → data-action="close-popup" (línea 899, botón "Entendido" footer)
 
-### [PRÓXIMO] Archivo #4: academic-reports-manager.js
+### [COMPLETADO] Archivo #4: academic-reports-manager.js ✅
+- **Inicio:** 14 Nov 2025
+- **Fin:** 14 Nov 2025
+- **Instancias REALES:** 2 (NO 12-15 como estimado)
+- **Complejidad:** 🟢 BAJA (ajustada de MEDIA)
+- **Estado:** ✅ COMPLETADO
+- **Commit:** c69abed
+- **Duración:** ~30 minutos (mucho menos que las 1-2h estimadas)
+- **Cambios:**
+  - Event listener agregado (37 líneas, 1113-1146)
+  - 2 onclick refactorizados a data-action
+  - Sintaxis validada con node -c
+  - Push exitoso a GitHub
+  - parseInt() para conversión segura de IDs numéricos
+- **Handlers Refactorizados:**
+  1. onclick="academicReports.loadHistoryReport(${report.id})" → data-action="loadHistoryReport-${report.id}" (línea 1002, context: report-history)
+  2. onclick="academicReports.exportHistoryReport(${report.id})" → data-action="exportHistoryReport-${report.id}" (línea 1006, context: report-history)
+
+### [PRÓXIMO] Archivo #5: bge-notification-admin.js
 - **Estimado:** 12-15 instancias
 - **Complejidad:** 🟡 MEDIA
 - **Estado:** ⏳ Pendiente
-- **Notas:** Reportes académicos, estimar 1-2 horas
+- **Notas:** Notificaciones admin, estimar 1-2 horas (probablemente menos según patrón)
 
 ---
 
@@ -127,4 +145,4 @@
 
 ---
 
-**Última Actualización:** 14 Nov 2025 - Archivos #1-3 Completados (13 onclick refactorizados)
+**Última Actualización:** 14 Nov 2025 - Archivos #1-4 Completados (15 onclick refactorizados)
