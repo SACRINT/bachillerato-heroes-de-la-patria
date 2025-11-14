@@ -20,15 +20,16 @@ function securityHeadersMiddleware(req, res, next) {
     res.setHeader('X-Frame-Options', 'DENY');
 
     // Content Security Policy (CSP) - ROBUSTA Y CORREGIDA
+    // 🔐 ACTUALIZADO: 14 Nov 2025 - Fix TinyMCE CSP + localhost ports
     res.setHeader(
         'Content-Security-Policy',
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud *.tiny.cloud https://vercel.live https://*.vercel.live blob:; " +
-        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://cdn.tiny.cloud *.tiny.cloud; " +
-        "connect-src 'self' http://localhost:3000 ws: wss: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud *.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live; " +
-        "img-src 'self' data: blob: https: https://cdn.tiny.cloud *.tiny.cloud https://sp.tinymce.com; " +
-        "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.tiny.cloud *.tiny.cloud; " +
-        "frame-src 'self' https://cdn.tiny.cloud *.tiny.cloud https://www.google.com https://accounts.google.com https://maps.google.com https://forms.gle https://vercel.live https://*.vercel.live;"
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live blob:; " +
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com; " +
+        "connect-src 'self' http://localhost:3000 http://localhost:3001 http://localhost:3002 http://localhost:3003 http://localhost:3004 http://localhost:3005 http://localhost:8000 http://127.0.0.1:8080 ws: wss: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live; " +
+        "img-src 'self' data: blob: https: https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com; " +
+        "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.tiny.cloud https://*.tiny.cloud; " +
+        "frame-src 'self' https://cdn.tiny.cloud https://*.tiny.cloud https://www.google.com https://accounts.google.com https://maps.google.com https://forms.gle https://vercel.live https://*.vercel.live;"
     );
 
     // Strict Transport Security (HSTS)

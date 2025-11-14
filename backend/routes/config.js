@@ -168,11 +168,22 @@ router.get('/tenant', async (req, res) => {
 router.get('/public-keys', (req, res) => {
     try {
         const isDevelopment = process.env.NODE_ENV === 'development';
+        const tinymceKey = process.env.TINYMCE_API_KEY || null;
+
+        // 🔍 LOGGING DIAGNÓSTICO
+        console.log('═══════════════════════════════════════════════════');
+        console.log('[PUBLIC-KEYS] Request recibido');
+        console.log('[PUBLIC-KEYS] NODE_ENV:', process.env.NODE_ENV || 'undefined');
+        console.log('[PUBLIC-KEYS] isDevelopment:', isDevelopment);
+        console.log('[PUBLIC-KEYS] TINYMCE_API_KEY presente:', !!tinymceKey);
+        console.log('[PUBLIC-KEYS] TINYMCE_API_KEY longitud:', tinymceKey ? tinymceKey.length : 0);
+        console.log('[PUBLIC-KEYS] TINYMCE_API_KEY primeros 10 caracteres:', tinymceKey ? tinymceKey.substring(0, 10) + '...' : 'null');
+        console.log('═══════════════════════════════════════════════════');
 
         const response = {
             success: true,
             keys: {
-                tinymce: process.env.TINYMCE_API_KEY || null,
+                tinymce: tinymceKey,
                 google_oauth_client_id: isDevelopment
                     ? process.env.GOOGLE_OAUTH_CLIENT_ID_DEV
                     : process.env.GOOGLE_OAUTH_CLIENT_ID_PROD
