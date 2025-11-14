@@ -12,7 +12,15 @@ const path = require('path');
 
 class ImageOptimizationService {
     constructor(options = {}) {
-        this.uploadsDir = options.uploadsDir || path.join(__dirname, '../../public/uploads');
+        // 🚨 FIX VERCEL: Usar /tmp en entornos serverless
+        if (this.isServerlessEnvironment()) {
+            this.uploadsDir = options.uploadsDir || '/tmp/uploads';
+            devLogger.log('ℹ️ Image Optimization: Usando /tmp/uploads (entorno serverless)');
+        } else {
+            this.uploadsDir = options.uploadsDir || path.join(__dirname, '../../public/uploads');
+            devLogger.log('ℹ️ Image Optimization: Usando public/uploads (entorno local)');
+        }
+
         this.thumbnailsDir = path.join(this.uploadsDir, 'thumbnails');
         this.webpDir = path.join(this.uploadsDir, 'webp');
 
@@ -30,6 +38,20 @@ class ImageOptimizationService {
             webp: 90,
             png: 90
         };
+    }
+
+    /**
+     * Detectar si estamos en entorno serverless (Vercel, AWS Lambda, etc.)
+     * 🚨 FIX VERCEL: Detección de entornos serverless
+     */
+    isServerlessEnvironment() {
+        return process.env.VERCEL === '1' ||
+               process.env.VERCEL_ENV ||
+               process.env.AWS_LAMBDA_FUNCTION_NAME ||
+               process.env.AWS_EXECUTION_ENV ||
+               process.env.NETLIFY === 'true' ||
+               process.env.LAMBDA_TASK_ROOT ||
+               typeof process.env.LAMBDA_RUNTIME_DIR !== 'undefined';
     }
 
     /**
