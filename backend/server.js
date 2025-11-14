@@ -120,11 +120,15 @@ const PORT = process.env.PORT || 3000;
 
 app.set('trust proxy', 1);
 
+// ❌ CSP DESHABILITADO - Para desarrollo local sin restricciones
+// En producción (Vercel), el CSP se define en vercel.json
+// Helmet CSP causaba conflictos con TinyMCE y scripts inline
+// FECHA: 14 Nov 2025 - Arquitectura corregida por diagnóstico definitivo
 app.use(helmet({
     permissionsPolicy: {
         camera: ["'self'"],
     },
-    contentSecurityPolicy: cspConfig
+    contentSecurityPolicy: false  // Deshabilitado - vercel.json maneja CSP en producción
 }));
 
 // CORS Configuration

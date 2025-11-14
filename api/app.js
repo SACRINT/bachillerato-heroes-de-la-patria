@@ -1078,20 +1078,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/images', express.static(path.join(__dirname, '../images')));
 
-// CSP Middleware for TinyMCE
-app.use((req, res, next) => {
-    res.setHeader('Content-Security-Policy',
-        "default-src 'self';" +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://vercel.live blob:;" +
-        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://vercel.live;" +
-        "connect-src 'self' http://localhost:3000 http://localhost:3001 http://localhost:3002 http://localhost:3003 http://localhost:3004 http://localhost:3005 http://localhost:8000 http://127.0.0.1:8080 https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live;" +
-        "img-src 'self' data: blob: https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live;" +
-        "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.tiny.cloud https://*.tiny.cloud https://vercel.live;" +
-        "frame-src 'self' https://cdn.tiny.cloud https://*.tiny.cloud https://www.google.com https://maps.google.com https://forms.gle https://vercel.live;" +
-        "scriptElemSrc 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://vercel.live blob:;"
-    );
-    next();
-});
+// ❌ CSP REMOVIDO - Vercel Edge Headers toman prioridad
+// En Vercel, el CSP se define en vercel.json (línea 40-41)
+// Tener múltiples definiciones de CSP causa conflictos
+// REFERENCIA: vercel.json > headers > Content-Security-Policy
+// FECHA: 14 Nov 2025 - Arquitectura corregida por diagnóstico definitivo
 
 // --- API Routes --- [v2.1]
 app.get('/api/health', handleHealth);
@@ -1281,7 +1272,7 @@ app.use('/api/analytics-predictivo', analyticsPredictiveRoutes);
 app.use('/api/analytics-direct', analyticsRoutes);  // analytics (para evitar conflicto con analytics-dashboard)
 app.use('/api/asistente-virtual', asistenteVirtualRoutes);
 app.use('/api/backup', backupRoutes);
-app.use('/api/calendar-direct', calendarRoutes);  // calendar (para evitar conflicto si necesario)
+app.use('/api/calendar', calendarRoutes);  // ✅ FIX: Cambiado de -direct a ruta principal (14 Nov 2025)
 app.use('/api/chatbot-ia', chatbotIaRoutes);
 app.use('/api/chatbot-direct', chatbotRoutes);  // chatbot (para evitar conflicto)
 app.use('/api/cms', cmsRoutes);
@@ -1341,6 +1332,31 @@ app.get('/api/config/public-keys', (req, res) => {
             message: error.message
         });
     }
+});
+
+// ✅ Google OAuth Client ID Endpoint (FIX: 14 Nov 2025 - Sincronización con backend/server.js)
+// Este endpoint es CRÍTICO para Google OAuth en producción
+app.get('/api/config/google-client-id', (req, res) => {
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const clientId = isDevelopment
+        ? process.env.GOOGLE_OAUTH_CLIENT_ID_DEV
+        : process.env.GOOGLE_OAUTH_CLIENT_ID_PROD;
+
+    if (!clientId) {
+        console.warn('⚠️ [GOOGLE-OAUTH] Client ID no configurado en variables de entorno');
+        return res.status(500).json({
+            success: false,
+            error: 'Google OAuth no configurado',
+            environment: isDevelopment ? 'development' : 'production'
+        });
+    }
+
+    console.log(`✅ [GOOGLE-OAUTH] Client ID enviado para entorno: ${isDevelopment ? 'development' : 'production'}`);
+    res.json({
+        success: true,
+        clientId: clientId,
+        environment: isDevelopment ? 'development' : 'production'
+    });
 });
 
 // Not implemented routes
