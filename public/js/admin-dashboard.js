@@ -678,7 +678,8 @@ class AdminDashboard {
             const studentName = student.nombre || student.name || 'Sin nombre';
             const studentSemester = student.semestre || student.semester || 'N/A';
             const studentMatricula = student.matricula || student.id || 'N/A';
-            const studentAverage = student.promedio || student.average || 0;
+            const studentAverageRaw = student.promedio || student.average || 0;
+            const studentAverage = Number(studentAverageRaw);
             const studentStatus = student.estado || student.status || 'Activo';
             const studentRiskLevel = studentAverage < 6.0 ? 'Alto Riesgo' : 'Normal';
 
@@ -693,7 +694,7 @@ class AdminDashboard {
                 </td>
                 <td class="text-center">
                     <span class="badge ${this.getGradeColorClass(studentAverage)}">
-                        ${studentAverage > 0 ? studentAverage.toFixed(2) : 'S/P'}
+                        ${!isNaN(studentAverage) && studentAverage > 0 ? studentAverage.toFixed(2) : 'N/A'}
                     </span>
                 </td>
                 <td class="text-center">
