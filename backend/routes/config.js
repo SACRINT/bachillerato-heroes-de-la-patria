@@ -169,20 +169,18 @@ router.get('/public-keys', (req, res) => {
     try {
         const isDevelopment = process.env.NODE_ENV === 'development';
 
-        const keys = {
+        const response = {
             success: true,
-            tinymce: {
-                apiKey: process.env.TINYMCE_API_KEY || null
-            },
-            google: {
-                clientId: isDevelopment
+            keys: {
+                tinymce: process.env.TINYMCE_API_KEY || null,
+                google_oauth_client_id: isDevelopment
                     ? process.env.GOOGLE_OAUTH_CLIENT_ID_DEV
                     : process.env.GOOGLE_OAUTH_CLIENT_ID_PROD
             },
             environment: isDevelopment ? 'development' : 'production'
         };
 
-        res.json(keys);
+        res.json(response);
 
     } catch (error) {
         devLogger.error('❌ Error obteniendo claves públicas:', error);
