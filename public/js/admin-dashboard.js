@@ -808,7 +808,7 @@ class AdminDashboard {
                     <p class="text-muted">Gráficos no disponibles</p>
                     <small class="text-muted">Chart.js no se pudo cargar desde CDN</small>
                     <br>
-                    <button class="btn btn-sm btn-outline-primary mt-2" onclick="location.reload()">
+                    <button class="btn btn-sm btn-outline-primary mt-2" data-action="reload-page" data-context="charts">
                         <i class="fas fa-refresh me-1"></i>Reintentar
                     </button>
                 </div>
@@ -961,15 +961,15 @@ class AdminDashboard {
                         </div>
                     </div>
                     <div class="mt-3 d-flex gap-2">
-                        <button class="btn btn-success btn-sm" onclick="adminDashboard.approveRegistration('${registration.email}')">
+                        <button class="btn btn-success btn-sm" data-action="approveRegistration-${registration.email}" data-context="registrations">
                             <i class="fas fa-check me-1"></i>
                             Aprobar
                         </button>
-                        <button class="btn btn-danger btn-sm" onclick="adminDashboard.rejectRegistration('${registration.email}')">
+                        <button class="btn btn-danger btn-sm" data-action="rejectRegistration-${registration.email}" data-context="registrations">
                             <i class="fas fa-times me-1"></i>
                             Rechazar
                         </button>
-                        <button class="btn btn-info btn-sm" onclick="adminDashboard.viewRegistrationDetails('${registration.email}')">
+                        <button class="btn btn-info btn-sm" data-action="viewRegistrationDetails-${registration.email}" data-context="registrations">
                             <i class="fas fa-eye me-1"></i>
                             Ver Detalles
                         </button>
@@ -1583,4 +1583,52 @@ adminStyle.textContent = `
         background-color: #3182ce;
     }
 `;
+
+// ============================================
+// EVENT DELEGATION HANDLER (CSP Compliant)
+// Pattern B: onclick con parámetros → data-action
+// ============================================
+document.addEventListener('click', (e) => {
+    const actionElement = e.target.closest('[data-action]');
+    if (!actionElement) return;
+
+    const action = actionElement.getAttribute('data-action');
+    const context = actionElement.getAttribute('data-context') || 'admin-dashboard';
+
+    try {
+        // Pattern B: Acciones con parámetros
+        if (action === 'reload-page') {
+            location.reload();
+            return;
+        }
+
+        if (action.startsWith('approveRegistration-')) {
+            const email = action.replace('approveRegistration-', '');
+            if (window.adminDashboard && typeof window.adminDashboard.approveRegistration === 'function') {
+                window.adminDashboard.approveRegistration(email);
+            }
+            return;
+        }
+
+        if (action.startsWith('rejectRegistration-')) {
+            const email = action.replace('rejectRegistration-', '');
+            if (window.adminDashboard && typeof window.adminDashboard.rejectRegistration === 'function') {
+                window.adminDashboard.rejectRegistration(email);
+            }
+            return;
+        }
+
+        if (action.startsWith('viewRegistrationDetails-')) {
+            const email = action.replace('viewRegistrationDetails-', '');
+            if (window.adminDashboard && typeof window.adminDashboard.viewRegistrationDetails === 'function') {
+                window.adminDashboard.viewRegistrationDetails(email);
+            }
+            return;
+        }
+
+        console.warn('[ADMIN-DASHBOARD] Unhandled data-action:', action);
+    } catch (error) {
+        console.error('[ADMIN-DASHBOARD] Error handling action:', action, error);
+    }
+});
 document.head.appendChild(adminStyle);
