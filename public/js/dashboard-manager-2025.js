@@ -1202,7 +1202,7 @@ class AdminDashboard {
                     <p class="text-muted">Gráficos no disponibles</p>
                     <small class="text-muted">Chart.js no se pudo cargar desde CDN</small>
                     <br>
-                    <button class="btn btn-sm btn-outline-primary mt-2" onclick="location.reload()">
+                    <button class="btn btn-sm btn-outline-primary mt-2" data-action="reload-page">
                         <i class="fas fa-refresh me-1"></i>Reintentar
                     </button>
                 </div>
@@ -1537,17 +1537,20 @@ class AdminDashboard {
                 <td class="text-end">
                     <div class="btn-group btn-group-sm" role="group">
                         <button class="btn btn-outline-primary"
-                                onclick="adminDashboard.viewRequestDetails('${id}')"
+                                data-action="viewRequestDetails-${id}"
+                                data-context="requests"
                                 title="Ver detalles">
                             <i class="fas fa-eye"></i>
                         </button>
                         <button class="btn btn-outline-success"
-                                onclick="adminDashboard.approveRequest('${id}')"
+                                data-action="approveRequest-${id}"
+                                data-context="requests"
                                 title="Aprobar">
                             <i class="fas fa-check"></i>
                         </button>
                         <button class="btn btn-outline-danger"
-                                onclick="adminDashboard.rejectRequest('${id}')"
+                                data-action="rejectRequest-${id}"
+                                data-context="requests"
                                 title="Rechazar">
                             <i class="fas fa-times"></i>
                         </button>
@@ -2157,18 +2160,18 @@ class AdminDashboard {
                                     Administrador Principal
                                 </span>
                             ` : user.status === 'active' ? `
-                                <button class="btn btn-warning btn-sm mb-1" onclick="adminDashboard.revokeUserAccess('${user.email}')">
+                                <button class="btn btn-warning btn-sm mb-1" data-action="revokeUserAccess-${user.email}" data-context="users">
                                     <i class="fas fa-ban me-1"></i>
                                     Revocar Acceso
                                 </button>
                             ` : `
-                                <button class="btn btn-success btn-sm mb-1" onclick="adminDashboard.restoreUserAccess('${user.email}')">
+                                <button class="btn btn-success btn-sm mb-1" data-action="restoreUserAccess-${user.email}" data-context="users">
                                     <i class="fas fa-undo me-1"></i>
                                     Restaurar Acceso
                                 </button>
                             `}
                             ${!user.isCurrentUser ? `
-                                <button class="btn btn-info btn-sm" onclick="adminDashboard.viewUserDetails('${user.email}')">
+                                <button class="btn btn-info btn-sm" data-action="viewUserDetails-${user.email}" data-context="users">
                                     <i class="fas fa-eye me-1"></i>
                                     Ver Detalles
                                 </button>
@@ -3475,5 +3478,77 @@ AdminDashboard.prototype.showAdvancedMetrics = function() {
         console.warn('⚠️ [METRICS] Sección executive-metrics-section no encontrada');
     }
 };
+
+// ============================================
+// EVENT DELEGATION HANDLER (CSP Compliant)
+// Pattern B: onclick con parámetros → data-action
+// ============================================
+document.addEventListener('click', (e) => {
+    const actionElement = e.target.closest('[data-action]');
+    if (!actionElement) return;
+
+    const action = actionElement.getAttribute('data-action');
+    const context = actionElement.getAttribute('data-context') || 'dashboard';
+
+    try {
+        // Pattern B: Acciones con parámetros
+        if (action === 'reload-page') {
+            location.reload();
+            return;
+        }
+
+        if (action.startsWith('viewRequestDetails-')) {
+            const requestId = action.replace('viewRequestDetails-', '');
+            if (window.adminDashboard && typeof window.adminDashboard.viewRequestDetails === 'function') {
+                window.adminDashboard.viewRequestDetails(requestId);
+            }
+            return;
+        }
+
+        if (action.startsWith('approveRequest-')) {
+            const requestId = action.replace('approveRequest-', '');
+            if (window.adminDashboard && typeof window.adminDashboard.approveRequest === 'function') {
+                window.adminDashboard.approveRequest(requestId);
+            }
+            return;
+        }
+
+        if (action.startsWith('rejectRequest-')) {
+            const requestId = action.replace('rejectRequest-', '');
+            if (window.adminDashboard && typeof window.adminDashboard.rejectRequest === 'function') {
+                window.adminDashboard.rejectRequest(requestId);
+            }
+            return;
+        }
+
+        if (action.startsWith('revokeUserAccess-')) {
+            const userEmail = action.replace('revokeUserAccess-', '');
+            if (window.adminDashboard && typeof window.adminDashboard.revokeUserAccess === 'function') {
+                window.adminDashboard.revokeUserAccess(userEmail);
+            }
+            return;
+        }
+
+        if (action.startsWith('restoreUserAccess-')) {
+            const userEmail = action.replace('restoreUserAccess-', '');
+            if (window.adminDashboard && typeof window.adminDashboard.restoreUserAccess === 'function') {
+                window.adminDashboard.restoreUserAccess(userEmail);
+            }
+            return;
+        }
+
+        if (action.startsWith('viewUserDetails-')) {
+            const userEmail = action.replace('viewUserDetails-', '');
+            if (window.adminDashboard && typeof window.adminDashboard.viewUserDetails === 'function') {
+                window.adminDashboard.viewUserDetails(userEmail);
+            }
+            return;
+        }
+
+        console.warn('[DASHBOARD-MANAGER] Unhandled data-action:', action);
+    } catch (error) {
+        console.error('[DASHBOARD-MANAGER] Error handling action:', action, error);
+    }
+});
 
 console.log('✅ [COMPLETE] dashboard-manager-2025.js cargado completamente - VERSIÓN 2025-09-21 CON MÉTRICAS AVANZADAS');
