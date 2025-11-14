@@ -176,7 +176,7 @@ class AccessibilityAuditorSystem {
             <div style="padding: 20px; border-bottom: 1px solid rgba(0,0,0,0.1);">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <h2 style="margin: 0; font-size: 24px; color: #333;">♿ Auditoría A11Y</h2>
-                    <button onclick="accessibilityAuditor.closeAccessibilityPanel()" style="
+                    <button data-action="closeAccessibilityPanel" data-context="accessibility-panel" style="
                         background: none;
                         border: none;
                         font-size: 24px;
@@ -199,7 +199,7 @@ class AccessibilityAuditorSystem {
                 <!-- Controles de auditoría -->
                 <div class="audit-controls" style="margin-bottom: 30px;">
                     <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                        <button onclick="accessibilityAuditor.runFullAudit()"
+                        <button data-action="runFullAudit" data-context="audit-controls"
                                 style="
                                     flex: 1;
                                     padding: 12px;
@@ -210,7 +210,7 @@ class AccessibilityAuditorSystem {
                                     font-weight: bold;
                                     cursor: pointer;
                         ">🔍 Auditar Todo</button>
-                        <button onclick="accessibilityAuditor.runQuickAudit()"
+                        <button data-action="runQuickAudit" data-context="audit-controls"
                                 style="
                                     flex: 1;
                                     padding: 12px;
@@ -298,7 +298,7 @@ class AccessibilityAuditorSystem {
                                         margin-left: 8px;
                                     ">${rule.level}</span>
                                 </div>
-                                <button onclick="accessibilityAuditor.runSingleRule('${ruleKey}')" style="
+                                <button data-action="runSingleRule-${ruleKey}" data-context="audit-rules" style="
                                     padding: 4px 8px;
                                     background: #17a2b8;
                                     color: white;
@@ -372,7 +372,7 @@ class AccessibilityAuditorSystem {
 
                 <!-- Acciones rápidas -->
                 <div style="display: flex; gap: 10px;">
-                    <button onclick="accessibilityAuditor.exportAuditReport()" style="
+                    <button data-action="exportAuditReport" data-context="quick-actions" style="
                         flex: 1;
                         padding: 10px;
                         background: #6c757d;
@@ -381,7 +381,7 @@ class AccessibilityAuditorSystem {
                         border-radius: 6px;
                         cursor: pointer;
                     ">📄 Exportar</button>
-                    <button onclick="accessibilityAuditor.clearAuditResults()" style="
+                    <button data-action="clearAuditResults" data-context="quick-actions" style="
                         flex: 1;
                         padding: 10px;
                         background: #dc3545;
@@ -390,7 +390,7 @@ class AccessibilityAuditorSystem {
                         border-radius: 6px;
                         cursor: pointer;
                     ">🗑️ Limpiar</button>
-                    <button onclick="accessibilityAuditor.fixAllIssues()" style="
+                    <button data-action="fixAllIssues" data-context="quick-actions" style="
                         flex: 1;
                         padding: 10px;
                         background: #fd7e14;
@@ -1284,6 +1284,75 @@ class AccessibilityAuditorSystem {
 // Auto-inicialización
 document.addEventListener('DOMContentLoaded', () => {
     window.accessibilityAuditor = new AccessibilityAuditorSystem();
+});
+
+// ============================================
+// EVENT DELEGATION HANDLER (CSP Compliant)
+// Pattern B: onclick con parámetros → data-action
+// ============================================
+document.addEventListener('click', (e) => {
+    const actionElement = e.target.closest('[data-action]');
+    if (!actionElement) return;
+
+    const action = actionElement.getAttribute('data-action');
+    const context = actionElement.getAttribute('data-context') || 'accessibility-auditor';
+
+    try {
+        // Pattern B: Acciones del auditor de accesibilidad
+        if (action === 'closeAccessibilityPanel') {
+            if (window.accessibilityAuditor && typeof window.accessibilityAuditor.closeAccessibilityPanel === 'function') {
+                window.accessibilityAuditor.closeAccessibilityPanel();
+            }
+            return;
+        }
+
+        if (action === 'runFullAudit') {
+            if (window.accessibilityAuditor && typeof window.accessibilityAuditor.runFullAudit === 'function') {
+                window.accessibilityAuditor.runFullAudit();
+            }
+            return;
+        }
+
+        if (action === 'runQuickAudit') {
+            if (window.accessibilityAuditor && typeof window.accessibilityAuditor.runQuickAudit === 'function') {
+                window.accessibilityAuditor.runQuickAudit();
+            }
+            return;
+        }
+
+        if (action.startsWith('runSingleRule-')) {
+            const ruleKey = action.replace('runSingleRule-', '');
+            if (window.accessibilityAuditor && typeof window.accessibilityAuditor.runSingleRule === 'function') {
+                window.accessibilityAuditor.runSingleRule(ruleKey);
+            }
+            return;
+        }
+
+        if (action === 'exportAuditReport') {
+            if (window.accessibilityAuditor && typeof window.accessibilityAuditor.exportAuditReport === 'function') {
+                window.accessibilityAuditor.exportAuditReport();
+            }
+            return;
+        }
+
+        if (action === 'clearAuditResults') {
+            if (window.accessibilityAuditor && typeof window.accessibilityAuditor.clearAuditResults === 'function') {
+                window.accessibilityAuditor.clearAuditResults();
+            }
+            return;
+        }
+
+        if (action === 'fixAllIssues') {
+            if (window.accessibilityAuditor && typeof window.accessibilityAuditor.fixAllIssues === 'function') {
+                window.accessibilityAuditor.fixAllIssues();
+            }
+            return;
+        }
+
+        console.warn('[ACCESSIBILITY-AUDITOR] Unhandled data-action:', action);
+    } catch (error) {
+        console.error('[ACCESSIBILITY-AUDITOR] Error handling action:', action, error);
+    }
 });
 
 // Export para módulos

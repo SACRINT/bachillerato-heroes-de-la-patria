@@ -317,9 +317,9 @@ class AppointmentSystem {
                 }
 
                 calendarHTML += `
-                    <div class="${classes.join(' ')}" 
+                    <div class="${classes.join(' ')}"
                          data-date="${current.toISOString().split('T')[0]}"
-                         ${isAvailable ? 'onclick="appointmentSystem.selectDate(this)"' : ''}>
+                         ${isAvailable ? 'data-action="selectDate" data-context="calendar-date"' : ''}>
                         ${current.getDate()}
                     </div>
                 `;
@@ -411,9 +411,9 @@ class AppointmentSystem {
         }
 
         const slotsHTML = availableSlots.map(slot => `
-            <button class="btn btn-outline-primary time-slot me-2 mb-2" 
-                    data-time="${slot}" 
-                    onclick="appointmentSystem.selectTimeSlot('${slot}')">
+            <button class="btn btn-outline-primary time-slot me-2 mb-2"
+                    data-time="${slot}"
+                    data-action="selectTimeSlot-${slot}" data-context="time-slots">
                 ${slot}
             </button>
         `).join('');
@@ -715,7 +715,7 @@ ${formData.get('reason')}
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" onclick="appointmentSystem.downloadConfirmation('${appointment.id}')">
+                            <button type="button" class="btn btn-success" data-action="downloadConfirmation-${appointment.id}" data-context="appointment-confirmation">
                                 <i class="fas fa-download me-2"></i>
                                 Descargar Confirmación
                             </button>
@@ -916,7 +916,7 @@ Coronel Tito Hernández, Venustiano Carranza, Puebla
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" onclick="appointmentSystem.exportAppointments()">
+                            <button type="button" class="btn btn-success" data-action="exportAppointments" data-context="admin-exports">
                                 <i class="fas fa-download me-1"></i>Exportar CSV
                             </button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -958,10 +958,10 @@ Coronel Tito Hernández, Venustiano Carranza, Puebla
                     <td><a href="tel:${apt.phone}">${apt.phone}</a></td>
                     <td><span class="badge bg-${statusClass}">${status}</span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary" onclick="appointmentSystem.viewAppointmentDetails('${apt.id}')">
+                        <button class="btn btn-sm btn-outline-primary" data-action="viewAppointmentDetails-${apt.id}" data-context="appointment-actions">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="appointmentSystem.cancelAppointment('${apt.id}')">
+                        <button class="btn btn-sm btn-outline-danger" data-action="cancelAppointment-${apt.id}" data-context="appointment-actions">
                             <i class="fas fa-times"></i>
                         </button>
                     </td>
@@ -1269,5 +1269,70 @@ document.head.insertAdjacentHTML('beforeend', sanitizeHTML(appointmentStyles));
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('departmentsContainer')) {
         window.appointmentSystem = new AppointmentSystem();
+    }
+});
+
+// ============================================
+// EVENT DELEGATION HANDLER (CSP Compliant)
+// Pattern B: onclick con parámetros → data-action
+// ============================================
+document.addEventListener('click', (e) => {
+    const actionElement = e.target.closest('[data-action]');
+    if (!actionElement) return;
+
+    const action = actionElement.getAttribute('data-action');
+    const context = actionElement.getAttribute('data-context') || 'appointment-system';
+
+    try {
+        // Pattern B: Acciones del sistema de citas
+        if (action === 'selectDate') {
+            if (window.appointmentSystem && typeof window.appointmentSystem.selectDate === 'function') {
+                window.appointmentSystem.selectDate(actionElement);
+            }
+            return;
+        }
+
+        if (action.startsWith('selectTimeSlot-')) {
+            const slot = action.replace('selectTimeSlot-', '');
+            if (window.appointmentSystem && typeof window.appointmentSystem.selectTimeSlot === 'function') {
+                window.appointmentSystem.selectTimeSlot(slot);
+            }
+            return;
+        }
+
+        if (action.startsWith('downloadConfirmation-')) {
+            const appointmentId = action.replace('downloadConfirmation-', '');
+            if (window.appointmentSystem && typeof window.appointmentSystem.downloadConfirmation === 'function') {
+                window.appointmentSystem.downloadConfirmation(appointmentId);
+            }
+            return;
+        }
+
+        if (action === 'exportAppointments') {
+            if (window.appointmentSystem && typeof window.appointmentSystem.exportAppointments === 'function') {
+                window.appointmentSystem.exportAppointments();
+            }
+            return;
+        }
+
+        if (action.startsWith('viewAppointmentDetails-')) {
+            const appointmentId = action.replace('viewAppointmentDetails-', '');
+            if (window.appointmentSystem && typeof window.appointmentSystem.viewAppointmentDetails === 'function') {
+                window.appointmentSystem.viewAppointmentDetails(appointmentId);
+            }
+            return;
+        }
+
+        if (action.startsWith('cancelAppointment-')) {
+            const appointmentId = action.replace('cancelAppointment-', '');
+            if (window.appointmentSystem && typeof window.appointmentSystem.cancelAppointment === 'function') {
+                window.appointmentSystem.cancelAppointment(appointmentId);
+            }
+            return;
+        }
+
+        console.warn('[APPOINTMENT-SYSTEM] Unhandled data-action:', action);
+    } catch (error) {
+        console.error('[APPOINTMENT-SYSTEM] Error handling action:', action, error);
     }
 });

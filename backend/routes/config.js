@@ -168,11 +168,8 @@ router.get('/tenant', async (req, res) => {
         });
 
     } catch (error) {
-        // 🔍 DIAGNÓSTICO DE RAÍZ - Logging detallado para identificar el error exacto
-        console.error('[DIAGNÓSTICO DE RAÍZ] Error detallado en /api/config/tenant:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
-        console.error('[DIAGNÓSTICO DE RAÍZ] Stack trace completo:', error.stack);
-        console.error('[DIAGNÓSTICO DE RAÍZ] Tipo de error:', error.constructor.name);
-        console.error('[DIAGNÓSTICO DE RAÍZ] Mensaje:', error.message);
+        // 🔍 DIAGNÓSTICO DE RAÍZ (GDPR-compliant)
+        devLogger.error('Error durante operación'); // Error en /api/config/tenant (stack trace masked)
 
         res.status(500).json({
             success: false,
@@ -193,15 +190,8 @@ router.get('/public-keys', (req, res) => {
         const isDevelopment = process.env.NODE_ENV === 'development';
         const tinymceKey = process.env.TINYMCE_API_KEY || null;
 
-        // 🔍 LOGGING DIAGNÓSTICO
-        console.log('═══════════════════════════════════════════════════');
-        console.log('[PUBLIC-KEYS] Request recibido');
-        console.log('[PUBLIC-KEYS] NODE_ENV:', process.env.NODE_ENV || 'undefined');
-        console.log('[PUBLIC-KEYS] isDevelopment:', isDevelopment);
-        console.log('[PUBLIC-KEYS] TINYMCE_API_KEY presente:', !!tinymceKey);
-        console.log('[PUBLIC-KEYS] TINYMCE_API_KEY longitud:', tinymceKey ? tinymceKey.length : 0);
-        console.log('[PUBLIC-KEYS] TINYMCE_API_KEY primeros 10 caracteres:', tinymceKey ? tinymceKey.substring(0, 10) + '...' : 'null');
-        console.log('═══════════════════════════════════════════════════');
+        // 🔍 LOGGING DIAGNÓSTICO (GDPR-compliant)
+        devLogger.log('Operación iniciada'); // [PUBLIC-KEYS] Request recibido (API key metadata no se logea por seguridad)
 
         const response = {
             success: true,

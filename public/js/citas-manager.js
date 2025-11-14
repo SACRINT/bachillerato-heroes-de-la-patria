@@ -90,14 +90,14 @@ class CitasManager {
             <td>
                 <div class="btn-group btn-group-sm">
                     ${cita.estado === 'pendiente' ? `
-                        <button class="btn btn-outline-success" onclick="citasManager.approveCita(${cita.id})">
+                        <button class="btn btn-outline-success" data-action="approveCita-${cita.id}" data-context="cita-actions">
                             <i class="fas fa-check"></i>
                         </button>
-                        <button class="btn btn-outline-danger" onclick="citasManager.showRejectModal(${cita.id})">
+                        <button class="btn btn-outline-danger" data-action="showRejectModal-${cita.id}" data-context="cita-actions">
                             <i class="fas fa-times"></i>
                         </button>
                     ` : ''}
-                    <button class="btn btn-outline-primary" onclick="citasManager.showCitaDetails(${cita.id})">
+                    <button class="btn btn-outline-primary" data-action="showCitaDetails-${cita.id}" data-context="cita-actions">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
@@ -271,7 +271,7 @@ class CitasManager {
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-danger" onclick="citasManager.rejectCita()">Rechazar</button>
+                            <button type="button" class="btn btn-danger" data-action="rejectCita" data-context="reject-modal">Rechazar</button>
                         </div>
                     </div>
                 </div>
@@ -348,3 +348,53 @@ window.clearCitasFilters = () => {
     document.getElementById('citasMotivosFilter').value = '';
     window.citasManager.applyFilters();
 };
+
+// ============================================
+// EVENT DELEGATION HANDLER (CSP Compliant)
+// Pattern B: onclick con parámetros → data-action
+// ============================================
+document.addEventListener('click', (e) => {
+    const actionElement = e.target.closest('[data-action]');
+    if (!actionElement) return;
+
+    const action = actionElement.getAttribute('data-action');
+    const context = actionElement.getAttribute('data-context') || 'citas-manager';
+
+    try {
+        // Pattern B: Acciones de citas
+        if (action.startsWith('approveCita-')) {
+            const citaId = parseInt(action.replace('approveCita-', ''), 10);
+            if (window.citasManager && typeof window.citasManager.approveCita === 'function') {
+                window.citasManager.approveCita(citaId);
+            }
+            return;
+        }
+
+        if (action.startsWith('showRejectModal-')) {
+            const citaId = parseInt(action.replace('showRejectModal-', ''), 10);
+            if (window.citasManager && typeof window.citasManager.showRejectModal === 'function') {
+                window.citasManager.showRejectModal(citaId);
+            }
+            return;
+        }
+
+        if (action.startsWith('showCitaDetails-')) {
+            const citaId = parseInt(action.replace('showCitaDetails-', ''), 10);
+            if (window.citasManager && typeof window.citasManager.showCitaDetails === 'function') {
+                window.citasManager.showCitaDetails(citaId);
+            }
+            return;
+        }
+
+        if (action === 'rejectCita') {
+            if (window.citasManager && typeof window.citasManager.rejectCita === 'function') {
+                window.citasManager.rejectCita();
+            }
+            return;
+        }
+
+        console.warn('[CITAS-MANAGER] Unhandled data-action:', action);
+    } catch (error) {
+        console.error('[CITAS-MANAGER] Error handling action:', action, error);
+    }
+});
