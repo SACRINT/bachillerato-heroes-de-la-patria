@@ -13,7 +13,16 @@ class UploadService {
     constructor() {
         this.dbAvailable = false;
         this.db = null;
-        this.uploadsPath = path.join(__dirname, '../../public/uploads');
+
+        // 🚨 FIX VERCEL: Usar /tmp en entornos serverless, public/uploads en local
+        if (this.isServerlessEnvironment()) {
+            this.uploadsPath = '/tmp/uploads';
+            devLogger.log('ℹ️ Upload Service: Usando /tmp/uploads (entorno serverless)');
+        } else {
+            this.uploadsPath = path.join(__dirname, '../../public/uploads');
+            devLogger.log('ℹ️ Upload Service: Usando public/uploads (entorno local)');
+        }
+
         this.initialize();
     }
 
@@ -33,26 +42,26 @@ class UploadService {
             devLogger.log('⚠️ Upload Service: Sin base de datos -', error.message);
         }
 
-        // Asegurar directorios de uploads (solo en entornos con filesystem persistente)
-        if (!this.isServerlessEnvironment()) {
-            try {
-                await this.ensureDirectories();
-            } catch (error) {
-                devLogger.warn('⚠️ Upload Service: No se pudo crear directorios', error.message);
-            }
-        } else {
-            devLogger.log('ℹ️ Upload Service: Entorno serverless detectado, saltando creación de directorios');
+        // 🚨 FIX VERCEL: Crear directorios en /tmp para serverless, en public/uploads para local
+        try {
+            await this.ensureDirectories();
+        } catch (error) {
+            devLogger.warn('⚠️ Upload Service: No se pudo crear directorios', error.message);
         }
     }
 
     /**
      * Detectar si estamos en entorno serverless (Vercel, AWS Lambda, etc.)
+     * 🚨 FIX VERCEL: Mejorada detección para Vercel
      */
     isServerlessEnvironment() {
         return process.env.VERCEL === '1' ||
+               process.env.VERCEL_ENV ||  // Vercel también setea VERCEL_ENV
                process.env.AWS_LAMBDA_FUNCTION_NAME ||
+               process.env.AWS_EXECUTION_ENV ||  // AWS Lambda
                process.env.NETLIFY === 'true' ||
-               process.env.NODE_ENV === 'production' && !process.env.HAS_PERSISTENT_FILESYSTEM;
+               process.env.LAMBDA_TASK_ROOT ||  // Vercel usa AWS Lambda
+               typeof process.env.LAMBDA_RUNTIME_DIR !== 'undefined';  // Runtime de Lambda
     }
 
     // ============================================
