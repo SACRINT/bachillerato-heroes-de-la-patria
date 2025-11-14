@@ -1175,18 +1175,32 @@ async function deleteCourse(courseId) {
  */
 async function getTenantByDomain(domain) {
     try {
-        devLogger.log('Operación DAL iniciada');
-        const result = await pool.query(
-            'SELECT * FROM tenants WHERE domain = $1 LIMIT 1',
-            [domain]
-        );
+        devLogger.log(`[DAL] Buscando tenant por dominio: ${domain}`);
+        let query = {
+            text: 'SELECT * FROM tenants WHERE domain = $1 AND status = $2',
+            values: [domain, 'active'],
+        };
+        let result = await pool.query(query);
+        let tenant = result.rows[0] || null;
 
-        const tenant = result.rows[0] || null;
-        devLogger.log(`[DAL] ✅ getTenantByDomain: ${tenant ? 'encontrado' : 'no encontrado'}`);
+        // 🚨 FALLBACK CRÍTICO PARA PRODUCCIÓN 🚨
+        // Si no se encuentra un tenant para el dominio de Vercel, busca un default.
+        if (!tenant && domain && domain.includes('vercel.app')) {
+            devLogger.warn(`[DAL] No se encontró tenant para el dominio de Vercel "${domain}". Buscando tenant por defecto (ID=1 o localhost).`);
+            query = {
+                text: 'SELECT * FROM tenants WHERE id = 1 OR domain = $1 LIMIT 1',
+                values: ['localhost'],
+            };
+            result = await pool.query(query);
+            tenant = result.rows[0] || null;
+        }
 
+        devLogger.log(`[DAL] ✅ getTenantByDomain: ${tenant ? `encontrado (ID: ${tenant.id})` : 'no encontrado'}`);
         return tenant;
     } catch (error) {
-        devLogger.error('Error durante operación DAL');
+        devLogger.error(`[DAL] ❌ Error en getTenantByDomain para el dominio "${domain}":`, error);
+        // Devolver null o lanzar el error, dependiendo de cómo deba manejarlo el resto de la app.
+        // Por seguridad, lanzamos para que el error 500 sea explícito.
         throw error;
     }
 }
