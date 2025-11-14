@@ -98,6 +98,7 @@ backend/data/ # Ignorar toda la carpeta de datos del backend
 # Carpetas de Datos y Contenido Generado
 # public/uploads/
 backups/
+backup/
 
 # Archivos de Configuración Sensibles
 # Carpetas que podrían contener claves de API o configuraciones locales.
