@@ -8,6 +8,7 @@ const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const express = require('express');
 const os = require('os');
+const devLogger = require('../backend/utils/devLogger');
 
 // --- Helpers ---
 const JWT_SECRET = process.env.JWT_SECRET || 'SUPER_SECRET_KEY_REPLACE_IN_PRODUCTION';
@@ -765,7 +766,7 @@ async function handleAuthLogin(req, res) {
             [user.id]
         );
 
-        console.log(`✅ Login exitoso: ${user.email} (${user.role})`);
+        devLogger.log('Operación iniciada'); // ✅ Login exitoso (email y role no se logean por GDPR)
 
         res.json({
             success: true,
@@ -903,7 +904,7 @@ async function handleAuthRefresh(req, res) {
         });
 
     } catch (error) {
-        console.error('❌ Error renovando token:', error);
+        devLogger.error('Error durante operación'); // ❌ Error renovando token (error details masked)
         res.status(403).json({
             success: false,
             error: 'Refresh token inválido'
@@ -1001,7 +1002,7 @@ async function handleContactPost(req, res) {
 
         const contactoId = rows[0].id;
 
-        console.log(`✅ Mensaje de contacto guardado: ID ${contactoId} - ${normalizedData.nombre}`);
+        devLogger.log('Operación iniciada'); // ✅ Mensaje de contacto guardado (nombre no se logea por GDPR)
 
         res.status(201).json({
             success: true,
