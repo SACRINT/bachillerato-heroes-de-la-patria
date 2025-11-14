@@ -689,7 +689,7 @@ class BGENotificationAdmin {
             <div class="preview-content">
                 <div class="preview-header">
                     <h3>👁️ Vista Previa de Notificación</h3>
-                    <button onclick="this.closest('.preview-modal').remove()" class="close-btn">&times;</button>
+                    <button data-action="close-preview-modal" data-context="preview-modal" class="close-btn">&times;</button>
                 </div>
                 <div class="preview-notification">
                     <div class="notification-icon">🔔</div>
@@ -760,8 +760,8 @@ class BGENotificationAdmin {
                     <small>Programada para: ${new Date(notif.scheduledFor).toLocaleString()}</small>
                 </div>
                 <div class="scheduled-actions">
-                    <button onclick="bgeNotificationAdmin.editScheduled('${notif.id}')" class="btn btn-sm btn-secondary">✏️ Editar</button>
-                    <button onclick="bgeNotificationAdmin.deleteScheduled('${notif.id}')" class="btn btn-sm btn-danger">🗑️ Eliminar</button>
+                    <button data-action="editScheduled-${notif.id}" data-context="scheduled-notifications" class="btn btn-sm btn-secondary">✏️ Editar</button>
+                    <button data-action="deleteScheduled-${notif.id}" data-context="scheduled-notifications" class="btn btn-sm btn-danger">🗑️ Eliminar</button>
                 </div>
             </div>
         `).join(''));
@@ -788,8 +788,8 @@ class BGENotificationAdmin {
                     </div>
                 </div>
                 <div class="history-actions">
-                    <button onclick="bgeNotificationAdmin.resendNotification('${notif.id}')" class="btn btn-sm btn-primary">🔄 Reenviar</button>
-                    <button onclick="bgeNotificationAdmin.viewDetails('${notif.id}')" class="btn btn-sm btn-secondary">👁️ Detalles</button>
+                    <button data-action="resendNotification-${notif.id}" data-context="notification-history" class="btn btn-sm btn-primary">🔄 Reenviar</button>
+                    <button data-action="viewDetails-${notif.id}" data-context="notification-history" class="btn btn-sm btn-secondary">👁️ Detalles</button>
                 </div>
             </div>
         `).join(''));
@@ -1022,5 +1022,66 @@ function initializeBGENotificationAdmin() {
         window.bgeNotificationAdmin = new BGENotificationAdmin();
     }
 }
+
+// ============================================
+// EVENT DELEGATION HANDLER (CSP Compliant)
+// Pattern B: onclick con parámetros → data-action
+// ============================================
+document.addEventListener('click', (e) => {
+    const actionElement = e.target.closest('[data-action]');
+    if (!actionElement) return;
+
+    const action = actionElement.getAttribute('data-action');
+    const context = actionElement.getAttribute('data-context') || 'bge-notification-admin';
+
+    try {
+        // Pattern B: Cerrar modal de vista previa
+        if (action === 'close-preview-modal') {
+            const modal = actionElement.closest('.preview-modal');
+            if (modal) {
+                modal.remove();
+            }
+            return;
+        }
+
+        // Pattern B: Acciones de notificaciones programadas
+        if (action.startsWith('editScheduled-')) {
+            const notifId = action.replace('editScheduled-', '');
+            if (window.bgeNotificationAdmin && typeof window.bgeNotificationAdmin.editScheduled === 'function') {
+                window.bgeNotificationAdmin.editScheduled(notifId);
+            }
+            return;
+        }
+
+        if (action.startsWith('deleteScheduled-')) {
+            const notifId = action.replace('deleteScheduled-', '');
+            if (window.bgeNotificationAdmin && typeof window.bgeNotificationAdmin.deleteScheduled === 'function') {
+                window.bgeNotificationAdmin.deleteScheduled(notifId);
+            }
+            return;
+        }
+
+        // Pattern B: Acciones de historial de notificaciones
+        if (action.startsWith('resendNotification-')) {
+            const notifId = action.replace('resendNotification-', '');
+            if (window.bgeNotificationAdmin && typeof window.bgeNotificationAdmin.resendNotification === 'function') {
+                window.bgeNotificationAdmin.resendNotification(notifId);
+            }
+            return;
+        }
+
+        if (action.startsWith('viewDetails-')) {
+            const notifId = action.replace('viewDetails-', '');
+            if (window.bgeNotificationAdmin && typeof window.bgeNotificationAdmin.viewDetails === 'function') {
+                window.bgeNotificationAdmin.viewDetails(notifId);
+            }
+            return;
+        }
+
+        console.warn('[BGE-NOTIFICATION-ADMIN] Unhandled data-action:', action);
+    } catch (error) {
+        console.error('[BGE-NOTIFICATION-ADMIN] Error handling action:', action, error);
+    }
+});
 
 console.log('🔧 Panel de Administración de Notificaciones BGE cargado');
