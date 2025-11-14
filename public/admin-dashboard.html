@@ -5171,6 +5171,10 @@
                     const apiKey = config.keys.tinymce;
                     console.log('✅ [TINYMCE-LOADER] API Key obtenida (primeros 10 chars):', apiKey.substring(0, 10) + '...');
 
+                    // 🔑 CRÍTICO: Exponer API key globalmente para tinymce-config.js
+                    window.TINYMCE_API_KEY = apiKey;
+                    console.log('🌐 [TINYMCE-LOADER] API Key expuesta en window.TINYMCE_API_KEY');
+
                     const script = document.createElement('script');
                     script.referrerPolicy = 'origin';
                     script.src = `https://cdn.tiny.cloud/1/${apiKey}/tinymce/6/tinymce.min.js`;
