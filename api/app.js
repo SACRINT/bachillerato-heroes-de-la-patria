@@ -1287,7 +1287,8 @@ app.use('/api/chatbot-direct', chatbotRoutes);  // chatbot (para evitar conflict
 app.use('/api/cms', cmsRoutes);
 app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes);
 // Mitad A - Activadas (24 de 28 rutas nuevas + analytics & dashboard)
-app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para evitar conflicto)
+app.use('/api/gamification', gamificationRoutes);  // ✅ gamification (ruta principal para frontend)
+app.use('/api/gamification-direct', gamificationRoutes);  // gamification (para evitar conflicto - legacy)
 app.use('/api/grades-direct', gradesRoutes);  // grades (para evitar conflicto)
 app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
 app.use('/api/maintenance', maintenanceRoutes);
