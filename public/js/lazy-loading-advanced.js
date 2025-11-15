@@ -167,7 +167,7 @@ class AdvancedLazyLoader {
             </style>
         `;
 
-        document.head.insertAdjacentHTML('beforeend', sanitizeHTML(styles));
+        document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(styles));
     }
 
     // ==========================================
@@ -332,7 +332,7 @@ class AdvancedLazyLoader {
         // Crear placeholder de error
         const wrapper = document.createElement('div');
         wrapper.className = 'lazy-error';
-        wrapper.innerHTML = sanitizeHTML(`
+        wrapper.innerHTML = DOMPurify.sanitize(`
             <div class="text-center">
                 <i class="fas fa-image text-muted mb-2"></i>
                 <div class="small text-muted">Error al cargar imagen</div>
@@ -354,7 +354,7 @@ class AdvancedLazyLoader {
         element.classList.remove(this.config.loadingClass);
         element.classList.add(this.config.errorClass);
 
-        element.innerHTML = sanitizeHTML(`
+        element.innerHTML = DOMPurify.sanitize(`
             <div class="alert alert-warning">
                 <i class="fas fa-exclamation-triangle"></i>
                 Error al cargar contenido

@@ -521,7 +521,7 @@ class AccessibilityAuditor {
     createAccessibilityReport() {
         const report = document.createElement('div');
         report.id = 'a11y-report';
-        report.innerHTML = sanitizeHTML(`
+        report.innerHTML = DOMPurify.sanitize(`
             <div style="
                 position: fixed; top: 10px; left: 10px; 
                 background: white; border: 2px solid #333;

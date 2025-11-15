@@ -141,7 +141,7 @@ class AchievementSystem {
             existingModal.remove();
         }
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
         const modal = new bootstrap.Modal(document.getElementById('achievementsModal'));
         modal.show();
     }
@@ -270,7 +270,7 @@ class AchievementSystem {
         const notification = document.createElement('div');
         notification.className = 'alert alert-success alert-dismissible fade show position-fixed';
         notification.style.cssText = 'top: 120px; right: 20px; z-index: 1070; max-width: 350px; animation: slideIn 0.5s ease;';
-        notification.innerHTML = sanitizeHTML(`
+        notification.innerHTML = DOMPurify.sanitize(`
             <div class="d-flex align-items-center">
                 <div style="font-size: 1.5rem; margin-right: 10px;">${achievement.icon}</div>
                 <div>

@@ -3,6 +3,44 @@
  * Maneja la interfaz y funcionalidades del dashboard estudiantil
  */
 
+// ============================================
+// CONFIGURACIONES DOMPURIFY - XSS PROTECTION
+// ============================================
+
+// Contexto 1: Tablas y Listados (Datos sensibles)
+const DOMPURIFY_CONFIG_TABLAS = {
+  ALLOWED_TAGS: ['div', 'p', 'span', 'table', 'tr', 'td', 'thead', 'tbody', 'th', 'strong', 'em', 'a', 'br', 'small', 'h6', 'h5', 'h2', 'h3', 'i', 'button'],
+  ALLOWED_ATTR: ['class', 'id', 'data-*', 'href', 'target', 'rel', 'style', 'role', 'aria-label', 'data-bs-dismiss', 'data-notification-id', 'data-section', 'tabindex', 'type'],
+  ALLOW_DATA_ATTR: true,
+  KEEP_CONTENT: true
+};
+
+// Contexto 2: Formularios (Validaciones, errores)
+const DOMPURIFY_CONFIG_FORMULARIOS = {
+  ALLOWED_TAGS: ['span', 'div', 'p', 'em', 'strong', 'small', 'a'],
+  ALLOWED_ATTR: ['class', 'id'],
+  KEEP_CONTENT: true
+};
+
+// Contexto 3: Contenido de Usuario (Comentarios, mensajes)
+const DOMPURIFY_CONFIG_UGC = {
+  ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'a', 'blockquote', 'code', 'pre', 'span', 'div', 'small'],
+  ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+  KEEP_CONTENT: true,
+  RETURN_DOM: false
+};
+
+// Contexto 4: HTML Simple (Modales, alertas)
+const DOMPURIFY_CONFIG_SIMPLE = {
+  ALLOWED_TAGS: ['div', 'p', 'span', 'a', 'strong', 'em', 'i', 'button', 'br'],
+  ALLOWED_ATTR: ['class', 'id', 'type', 'data-bs-dismiss'],
+  KEEP_CONTENT: true
+};
+
+// ============================================
+// FIN CONFIGURACIONES
+// ============================================
+
 class StudentDashboard {
     constructor() {
         try {
@@ -124,7 +162,8 @@ class StudentDashboard {
             existingModal.remove();
         }
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(loginModalHtml));
+        const sanitized = DOMPurify.sanitize(loginModalHtml, DOMPURIFY_CONFIG_SIMPLE);
+        document.body.insertAdjacentHTML('beforeend', sanitized);
 
         // Mostrar modal de forma segura
         try {
@@ -226,7 +265,7 @@ class StudentDashboard {
         const dashboardContainer = document.getElementById('dashboardContainer');
         if (dashboardContainer) {
             // Restaurar el HTML inicial con el botón de login
-            dashboardContainer.innerHTML = sanitizeHTML(`
+            const initialHTML = `
                 <!-- Estado inicial: Botón para acceder al dashboard -->
                 <div id="loginPrompt" class="text-center py-5">
                     <div class="card border-0 shadow-sm mx-auto" style="max-width: 400px;">
@@ -244,7 +283,8 @@ class StudentDashboard {
                     </div>
                 </div>
                 <!-- El dashboard se cargará dinámicamente aquí después del login -->
-            `);
+            `;
+            dashboardContainer.innerHTML = DOMPurify.sanitize(initialHTML, DOMPURIFY_CONFIG_SIMPLE);
         }
 
         // Remover cualquier modal de login que pueda estar abierto
@@ -347,14 +387,15 @@ class StudentDashboard {
     showLoading() {
         const container = document.getElementById('dashboardContainer');
         if (container) {
-            container.innerHTML = sanitizeHTML(`
+            const loadingHTML = `
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary mb-3" role="status">
                         <span class="visually-hidden">Cargando...</span>
                     </div>
                     <p class="text-muted">Cargando tu dashboard...</p>
                 </div>
-            `);
+            `;
+            container.innerHTML = DOMPurify.sanitize(loadingHTML, DOMPURIFY_CONFIG_SIMPLE);
         }
     }
 
@@ -509,7 +550,7 @@ class StudentDashboard {
             </div>
         `;
 
-        container.innerHTML = sanitizeHTML(dashboardHtml, 'ugc');
+        container.innerHTML = DOMPurify.sanitize(dashboardHtml, DOMPURIFY_CONFIG_TABLAS);
 
         // Re-setup event listeners
         this.setupEventListeners();
@@ -525,11 +566,13 @@ class StudentDashboard {
             `;
         }
 
-        return grades.map(grade => `
+        return grades.map(grade => {
+            const sanitizedMateria = DOMPurify.sanitize(grade.materia, {ALLOWED_TAGS: [], KEEP_CONTENT: true});
+            return `
             <div class="grade-item border-bottom pb-3 mb-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="mb-1">${grade.materia}</h6>
+                        <h6 class="mb-1">${sanitizedMateria}</h6>
                         <small class="text-muted">Promedio del semestre</small>
                     </div>
                     <div class="text-end">
@@ -539,7 +582,8 @@ class StudentDashboard {
                     </div>
                 </div>
             </div>
-        `).join('');
+        `;
+        }).join('');
     }
 
     renderPendingAssignments(assignments) {
@@ -552,23 +596,28 @@ class StudentDashboard {
             `;
         }
 
-        return assignments.map(assignment => `
+        return assignments.map(assignment => {
+            const sanitizedTitulo = DOMPurify.sanitize(assignment.titulo, {ALLOWED_TAGS: [], KEEP_CONTENT: true});
+            const sanitizedMateria = DOMPurify.sanitize(assignment.materia, {ALLOWED_TAGS: [], KEEP_CONTENT: true});
+            const sanitizedPrioridad = DOMPurify.sanitize(assignment.prioridad, {ALLOWED_TAGS: [], KEEP_CONTENT: true});
+            return `
             <div class="assignment-item border-bottom pb-3 mb-3">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
-                        <h6 class="mb-1">${assignment.titulo}</h6>
-                        <p class="text-muted small mb-1">${assignment.materia}</p>
+                        <h6 class="mb-1">${sanitizedTitulo}</h6>
+                        <p class="text-muted small mb-1">${sanitizedMateria}</p>
                         <small class="text-danger">
                             <i class="fas fa-calendar me-1"></i>
                             Entrega: ${this.formatDate(assignment.fecha_entrega)}
                         </small>
                     </div>
                     <span class="badge ${this.getPriorityBadgeClass(assignment.prioridad)}">
-                        ${assignment.prioridad}
+                        ${sanitizedPrioridad}
                     </span>
                 </div>
             </div>
-        `).join('');
+        `;
+        }).join('');
     }
 
     renderRecentNotifications(notifications) {
@@ -581,7 +630,10 @@ class StudentDashboard {
             `;
         }
 
-        return notifications.map(notification => `
+        return notifications.map(notification => {
+            const sanitizedTitulo = DOMPurify.sanitize(notification.titulo, {ALLOWED_TAGS: [], KEEP_CONTENT: true});
+            const sanitizedMensaje = DOMPurify.sanitize(notification.mensaje, {ALLOWED_TAGS: [], KEEP_CONTENT: true});
+            return `
             <div class="notification-item border-bottom pb-3 mb-3 ${!notification.leido ? 'bg-light' : ''}"
                  data-notification-id="${notification.id}" style="cursor: pointer;">
                 <div class="d-flex align-items-start">
@@ -589,8 +641,8 @@ class StudentDashboard {
                         <i class="fas ${this.getNotificationIcon(notification.tipo)} text-${this.getNotificationColor(notification.tipo)}"></i>
                     </div>
                     <div class="flex-grow-1">
-                        <h6 class="mb-1">${notification.titulo}</h6>
-                        <p class="text-muted small mb-1">${notification.mensaje}</p>
+                        <h6 class="mb-1">${sanitizedTitulo}</h6>
+                        <p class="text-muted small mb-1">${sanitizedMensaje}</p>
                         <small class="text-muted">
                             ${this.formatDate(notification.fecha)}
                         </small>
@@ -598,7 +650,8 @@ class StudentDashboard {
                     ${!notification.leido ? '<div class="notification-badge"><span class="badge bg-primary">Nuevo</span></div>' : ''}
                 </div>
             </div>
-        `).join('');
+        `;
+        }).join('');
     }
 
     async markNotificationAsRead(notificationElement) {
@@ -672,10 +725,12 @@ class StudentDashboard {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1050; max-width: 400px;';
-        alertDiv.innerHTML = sanitizeHTML(`
-            ${message}
+        const sanitizedMessage = DOMPurify.sanitize(message, {ALLOWED_TAGS: [], KEEP_CONTENT: true});
+        const notificationHTML = `
+            ${sanitizedMessage}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `);
+        `;
+        alertDiv.innerHTML = DOMPurify.sanitize(notificationHTML, DOMPURIFY_CONFIG_SIMPLE);
 
         document.body.appendChild(alertDiv);
 

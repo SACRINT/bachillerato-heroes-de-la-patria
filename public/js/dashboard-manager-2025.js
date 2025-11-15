@@ -84,13 +84,13 @@ class AdminDashboard {
             return;
         }
         navigator.clipboard.writeText(password).then(() => {
-            button.innerHTML = sanitizeHTML('<i class="fas fa-check"></i> Copiado');
+            button.innerHTML = DOMPurify.sanitize('<i class="fas fa-check"></i> Copiado');
             setTimeout(() => {
-                button.innerHTML = sanitizeHTML('<i class="fas fa-copy"></i> Copiar');
+                button.innerHTML = DOMPurify.sanitize('<i class="fas fa-copy"></i> Copiar');
             }, 2000);
         }).catch(err => {
             console.error('Error al copiar la contraseña: ', err);
-            button.innerHTML = sanitizeHTML('<i class="fas fa-times"></i> Error');
+            button.innerHTML = DOMPurify.sanitize('<i class="fas fa-times"></i> Error');
         });
     }
 
@@ -550,7 +550,7 @@ class AdminDashboard {
                                  document.body;
 
         if (dashboardContainer) {
-            dashboardContainer.insertAdjacentHTML('afterbegin', sanitizeHTML(errorMessage));
+            dashboardContainer.insertAdjacentHTML('afterbegin', DOMPurify.sanitize(errorMessage));
         }
     }
 
@@ -793,7 +793,7 @@ class AdminDashboard {
         const tbody = document.getElementById('studentsTable');
         if (!tbody) return;
 
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = DOMPurify.sanitize('');
 
         const students = window.dynamicStudentLoader.students.estudiantes || [];
 
@@ -803,7 +803,7 @@ class AdminDashboard {
             const statusBadge = this.getStudentStatusBadge(student.estado || student.status);
             const riskBadge = this.getRiskLevelBadge(student.nivelRiesgo || 'Bajo');
 
-            row.innerHTML = sanitizeHTML(`
+            row.innerHTML = DOMPurify.sanitize(`
                 <td class="text-center">
                     <strong>${student.matricula || student.id}</strong>
                 </td>
@@ -854,26 +854,26 @@ class AdminDashboard {
             return;
         }
 
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = DOMPurify.sanitize('');
 
         // Verificar que dashboardData existe
         if (!this.dashboardData) {
             console.log('❌ [DEBUG] dashboardData no existe');
-            tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-muted">Cargando datos...</td></tr>', 'simple');
+            tbody.innerHTML = DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">Cargando datos...</td></tr>', 'simple');
             return;
         }
 
         // Verificar que students existe y es un array
         if (!this.dashboardData.students || !Array.isArray(this.dashboardData.students)) {
             console.log('❌ [DEBUG] students no es array válido:', this.dashboardData.students);
-            tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-muted">No hay datos de estudiantes disponibles</td></tr>', 'simple');
+            tbody.innerHTML = DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">No hay datos de estudiantes disponibles</td></tr>', 'simple');
             return;
         }
 
         // Verificar que students tiene elementos
         if (this.dashboardData.students.length === 0) {
             console.log('ℹ️ [DEBUG] students array está vacío');
-            tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-muted">No hay estudiantes registrados</td></tr>', 'simple');
+            tbody.innerHTML = DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">No hay estudiantes registrados</td></tr>', 'simple');
             return;
         }
 
@@ -886,7 +886,7 @@ class AdminDashboard {
             const statusBadge = this.getStudentStatusBadge(student.status);
             const riskBadge = this.getRiskLevelBadge(student.riskLevel);
 
-            row.innerHTML = sanitizeHTML(`
+            row.innerHTML = DOMPurify.sanitize(`
                 <td><strong>${student.id}</strong></td>
                 <td>${student.name}</td>
                 <td class="text-center">
@@ -920,7 +920,7 @@ class AdminDashboard {
         });
         } catch (error) {
             console.error('❌ [DEBUG] Error en loadStudentsTable:', error);
-            tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-danger">Error cargando estudiantes</td></tr>', 'simple');
+            tbody.innerHTML = DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-danger">Error cargando estudiantes</td></tr>', 'simple');
         }
     }
 
@@ -957,7 +957,7 @@ class AdminDashboard {
         const tbody = document.getElementById('teachersTable');
         if (!tbody) return;
 
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = DOMPurify.sanitize('');
 
         const teachers = window.dynamicTeacherLoader.teachers.docentes || [];
 
@@ -970,7 +970,7 @@ class AdminDashboard {
 
             const subjects = Array.isArray(teacher.subjects) ? teacher.subjects.join(', ') : (teacher.specialization || 'No especificado');
 
-            row.innerHTML = sanitizeHTML(`
+            row.innerHTML = DOMPurify.sanitize(`
                 <td>
                     <div class="d-flex align-items-center">
                         <img src="${teacher.photo || 'images/default-avatar.png'}" class="rounded-circle me-3" width="40" height="40" onerror="this.src='images/default-avatar.png'">
@@ -1014,7 +1014,7 @@ class AdminDashboard {
         const tbody = document.getElementById('teachersTable');
         if (!tbody) return;
 
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = DOMPurify.sanitize('');
 
         this.dashboardData.teachers.forEach(teacher => {
             const row = document.createElement('tr');
@@ -1023,7 +1023,7 @@ class AdminDashboard {
                 '<span class="badge bg-success">Activo</span>' :
                 '<span class="badge bg-secondary">Inactivo</span>';
 
-            row.innerHTML = sanitizeHTML(`
+            row.innerHTML = DOMPurify.sanitize(`
                 <td><strong>${teacher.name}</strong></td>
                 <td>${teacher.specialty}</td>
                 <td>
@@ -1196,7 +1196,7 @@ class AdminDashboard {
         // Verificar que Chart.js esté disponible
         if (typeof Chart === 'undefined') {
             console.warn('⚠️ Chart.js no está disponible, mostrando mensaje alternativo');
-            ctx.parentElement.innerHTML = sanitizeHTML(`
+            ctx.parentElement.innerHTML = DOMPurify.sanitize(`
                 <div class="text-center py-4">
                     <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
                     <p class="text-muted">Gráficos no disponibles</p>
@@ -1460,7 +1460,7 @@ class AdminDashboard {
         const registrations = this.dashboardData.pendingRegistrations || [];
 
         if (registrations.length === 0) {
-            container.innerHTML = sanitizeHTML(`
+            container.innerHTML = DOMPurify.sanitize(`
                 <div class="text-center py-5">
                     <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                     <p class="text-muted">No hay solicitudes pendientes</p>
@@ -1489,7 +1489,7 @@ class AdminDashboard {
             </div>
         `;
 
-        container.innerHTML = sanitizeHTML(html, 'tablas');
+        container.innerHTML = DOMPurify.sanitize(html, 'tablas');
         console.log(`✅ [DISPLAY] ${registrations.length} solicitudes renderizadas`);
     }
 
@@ -1596,7 +1596,7 @@ class AdminDashboard {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.id = 'requestDetailsModal';
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = DOMPurify.sanitize(`
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header bg-primary text-white">
@@ -1767,7 +1767,7 @@ class AdminDashboard {
         modal.id = 'passwordModal';
         modal.setAttribute('data-bs-backdrop', 'static');
         modal.setAttribute('data-bs-keyboard', 'false');
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = DOMPurify.sanitize(`
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-success text-white">
@@ -1960,7 +1960,7 @@ class AdminDashboard {
         // Mostrar modal con simulación
         const modal = document.createElement('div');
         modal.className = 'modal fade';
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = DOMPurify.sanitize(`
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-info text-white">
@@ -2114,7 +2114,7 @@ class AdminDashboard {
         }
 
         if (allUsers.length === 0) {
-            container.innerHTML = sanitizeHTML(`
+            container.innerHTML = DOMPurify.sanitize(`
                 <div class="text-center py-4">
                     <i class="fas fa-users fa-3x text-muted mb-3"></i>
                     <p class="text-muted">No hay usuarios registrados</p>
@@ -2182,7 +2182,7 @@ class AdminDashboard {
             </div>
         `).join('');
 
-        container.innerHTML = sanitizeHTML(html, 'tablas');
+        container.innerHTML = DOMPurify.sanitize(html, 'tablas');
 
         // ACTUALIZAR CONTADORES EN BADGES
         const activeUsersCount = uniqueUsers.filter(user => user.status === 'active').length;
@@ -2261,7 +2261,7 @@ class AdminDashboard {
 
         const modal = document.createElement('div');
         modal.className = 'modal fade';
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = DOMPurify.sanitize(`
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -2629,7 +2629,7 @@ class AdminDashboard {
             existingModal.remove();
         }
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
         const modal = new bootstrap.Modal(document.getElementById('dynamicModal'));
         modal.show();
     }
@@ -2658,7 +2658,7 @@ class AdminDashboard {
 
         const toastElement = document.createElement('div');
         toastElement.className = `toast align-items-center text-bg-${type} border-0`;
-        toastElement.innerHTML = sanitizeHTML(`
+        toastElement.innerHTML = DOMPurify.sanitize(`
             <div class="d-flex">
                 <div class="toast-body">${message}</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
@@ -2945,7 +2945,7 @@ function updateSystemInfo() {
 
     console.log('📊 [INFO] Datos estadísticos:', {estudiantes, docentes, materias, promedio});
 
-    modalBody.innerHTML = sanitizeHTML(`
+    modalBody.innerHTML = DOMPurify.sanitize(`
         <div class="row">
             <div class="col-md-6">
                 <h6><i class="fas fa-school me-2 text-primary"></i>Información del Sistema</h6>
@@ -3121,11 +3121,11 @@ function updateRefreshButtonState() {
 
     refreshButtons.forEach(button => {
         if (hasCustomConfig) {
-            button.innerHTML = sanitizeHTML('<i class="fas fa-exclamation-triangle me-1"></i>⚠️ Configuración Personalizada', 'simple');
+            button.innerHTML = DOMPurify.sanitize('<i class="fas fa-exclamation-triangle me-1"></i>⚠️ Configuración Personalizada', 'simple');
             button.className = 'btn btn-warning btn-sm';
             button.title = 'Datos personalizados configurados - Usar con precaución';
         } else {
-            button.innerHTML = sanitizeHTML('<i class="fas fa-sync me-1"></i>Actualizar', 'simple');
+            button.innerHTML = DOMPurify.sanitize('<i class="fas fa-sync me-1"></i>Actualizar', 'simple');
             button.className = 'btn btn-outline-light btn-sm';
             button.title = 'Actualizar dashboard';
         }
@@ -3187,7 +3187,7 @@ window.legacyContentManager = {
         }
 
         if (filteredItems.length === 0) {
-            container.innerHTML = sanitizeHTML(`
+            container.innerHTML = DOMPurify.sanitize(`
                 <div class="text-center text-muted py-4">
                     <i class="fas fa-inbox fa-3x mb-3"></i>
                     <p>No hay contenido de este tipo</p>
@@ -3198,7 +3198,7 @@ window.legacyContentManager = {
         }
 
         const html = filteredItems.map(item => this.renderItem(item)).join('');
-        container.innerHTML = sanitizeHTML(html, 'tablas');
+        container.innerHTML = DOMPurify.sanitize(html, 'tablas');
     },
 
     renderItem: function(item) {
@@ -3306,7 +3306,7 @@ function editContent(id) {
 
     // Cambiar el botón para modo edición
     const submitBtn = document.querySelector('#contentForm button[data-action="create-content"]');
-    submitBtn.innerHTML = sanitizeHTML('<i class="fas fa-save me-1"></i>Actualizar Contenido', 'simple');
+    submitBtn.innerHTML = DOMPurify.sanitize('<i class="fas fa-save me-1"></i>Actualizar Contenido', 'simple');
     submitBtn.onclick = () => updateContent(id);
 
     // Scroll hacia el formulario
@@ -3332,7 +3332,7 @@ function updateContent(id) {
 
     // Restaurar el botón a modo creación
     const submitBtn = document.querySelector('#contentForm button[onclick^="updateContent"]');
-    submitBtn.innerHTML = sanitizeHTML('<i class="fas fa-plus me-1"></i>Crear Contenido', 'simple');
+    submitBtn.innerHTML = DOMPurify.sanitize('<i class="fas fa-plus me-1"></i>Crear Contenido', 'simple');
     submitBtn.onclick = createContent;
 
     if (adminDashboard && typeof adminDashboard.showToast === 'function') {

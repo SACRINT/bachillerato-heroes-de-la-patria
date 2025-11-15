@@ -552,7 +552,7 @@ class BGEChatbotIAAvanzado {
             minute: '2-digit'
         });
 
-        messageElement.innerHTML = sanitizeHTML(`
+        messageElement.innerHTML = DOMPurify.sanitize(`
             <div class="message-content">
                 <div class="message-text">${this.formatMessage(message)}</div>
                 <div class="message-time">${timestamp}</div>
@@ -589,7 +589,7 @@ class BGEChatbotIAAvanzado {
         const indicator = document.createElement('div');
         indicator.id = 'chatbot-typing-indicator';
         indicator.className = 'chatbot-message assistant typing';
-        indicator.innerHTML = sanitizeHTML(`
+        indicator.innerHTML = DOMPurify.sanitize(`
             <div class="message-content">
                 <div class="typing-dots">
                     <span></span>
@@ -1178,7 +1178,7 @@ CONTEXTO ACTUAL DEL USUARIO:
         localStorage.removeItem('bge-chatbot-history');
 
         if (this.chatContainer) {
-            this.chatContainer.innerHTML = sanitizeHTML('');
+            this.chatContainer.innerHTML = DOMPurify.sanitize('');
         }
 
         this.sendWelcomeMessage();

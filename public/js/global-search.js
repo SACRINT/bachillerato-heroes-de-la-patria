@@ -74,7 +74,7 @@ class GlobalSearch {
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
 
         this.modal = new bootstrap.Modal(document.getElementById('globalSearchModal'));
         this.searchInput = document.getElementById('globalSearchInput');
@@ -152,7 +152,7 @@ class GlobalSearch {
         this.currentQuery = '';
         this.selectedIndex = -1;
         this.results = [];
-        this.resultsContainer.innerHTML = sanitizeHTML(`
+        this.resultsContainer.innerHTML = DOMPurify.sanitize(`
             <div class="text-center text-muted py-5">
                 <i class="fas fa-search fa-3x mb-3 opacity-25"></i>
                 <p>Escribe para buscar en noticias, eventos, avisos, comunicados y egresados</p>
@@ -173,7 +173,7 @@ class GlobalSearch {
         }
 
         this.currentQuery = query;
-        this.resultsContainer.innerHTML = sanitizeHTML(`
+        this.resultsContainer.innerHTML = DOMPurify.sanitize(`
             <div class="text-center py-5">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Buscando...</span>
@@ -202,7 +202,7 @@ class GlobalSearch {
             this.displayResults(data.results);
         } catch (error) {
             console.error('Error en búsqueda:', error);
-            this.resultsContainer.innerHTML = sanitizeHTML(`
+            this.resultsContainer.innerHTML = DOMPurify.sanitize(`
                 <div class="text-center text-danger py-5">
                     <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
                     <p>Error al buscar. Intenta nuevamente.</p>
@@ -216,7 +216,7 @@ class GlobalSearch {
      */
     displayResults(results) {
         if (results.total === 0) {
-            this.resultsContainer.innerHTML = sanitizeHTML(`
+            this.resultsContainer.innerHTML = DOMPurify.sanitize(`
                 <div class="text-center text-muted py-5">
                     <i class="fas fa-inbox fa-3x mb-3 opacity-25"></i>
                     <p>No se encontraron resultados para "${this.currentQuery}"</p>

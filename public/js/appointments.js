@@ -418,7 +418,7 @@ class AppointmentSystem {
             </button>
         `).join('');
 
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = DOMPurify.sanitize(`
             <h6 class="mb-3">Horarios disponibles:</h6>
             <div class="time-slots-grid">${slotsHTML}</div>
         `);
@@ -727,7 +727,7 @@ ${formData.get('reason')}
         `;
 
         // Insertar y mostrar modal
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(confirmationHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(confirmationHTML));
         const modal = BootstrapHelper.showModal(document.getElementById('confirmationModal'));
 
         // Remover modal al cerrar
@@ -799,7 +799,7 @@ Coronel Tito Hernández, Venustiano Carranza, Puebla
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1060; max-width: 400px;';
-        alertDiv.innerHTML = sanitizeHTML(`
+        alertDiv.innerHTML = DOMPurify.sanitize(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `);
@@ -931,7 +931,7 @@ Coronel Tito Hernández, Venustiano Carranza, Puebla
         if (existingModal) {
             existingModal.remove();
         }
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(html));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(html));
 
         // Mostrar modal
         const modal = BootstrapHelper.showModal(document.getElementById('appointmentsViewModal'));
@@ -1263,7 +1263,7 @@ function selectDepartment(departmentId) {
 }
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', sanitizeHTML(appointmentStyles));
+document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(appointmentStyles));
 
 // Inicializar el sistema cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {

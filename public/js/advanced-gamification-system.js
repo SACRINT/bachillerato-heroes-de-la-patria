@@ -4,6 +4,21 @@
  * Mecánicas de juego, logros, niveles, insignias y competencias educativas
  */
 
+// ============================================
+// CONFIGURACIONES DOMPURIFY - XSS PROTECTION
+// ============================================
+
+const DOMPURIFY_CONFIG_GAMIFICATION = {
+  ALLOWED_TAGS: ['div', 'p', 'span', 'strong', 'em', 'i', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'button', 'svg', 'path', 'small', 'ul', 'li', 'hr'],
+  ALLOWED_ATTR: ['class', 'id', 'style', 'data-*', 'onclick', 'type', 'aria-label', 'role', 'viewBox', 'd', 'fill', 'stroke', 'stroke-width'],
+  ALLOW_DATA_ATTR: true,
+  KEEP_CONTENT: true
+};
+
+// ============================================
+// FIN CONFIGURACIONES
+// ============================================
+
 class AdvancedGamificationSystem {
     constructor() {
         this.playerProfile = {
@@ -1005,7 +1020,7 @@ class AdvancedGamificationSystem {
         gameInterface.id = 'gamification-interface';
         gameInterface.className = 'gamification-interface hidden';
 
-        gameInterface.innerHTML = sanitizeHTML(`
+        gameInterface.innerHTML = DOMPurify.sanitize(`
             <div class="game-header">
                 <h2>🎮 Centro de Gamificación</h2>
                 <button class="close-game" id="close-game">×</button>
@@ -1077,7 +1092,7 @@ class AdvancedGamificationSystem {
         const activationBtn = document.createElement('div');
         activationBtn.id = 'game-activation';
         activationBtn.className = 'game-activation';
-        activationBtn.innerHTML = sanitizeHTML(`
+        activationBtn.innerHTML = DOMPurify.sanitize(`
             <div class="activation-content">
                 <div class="game-icon">🎮</div>
                 <div class="level-badge">${this.playerProfile.level}</div>
@@ -1116,14 +1131,14 @@ class AdvancedGamificationSystem {
         const achievementsContainer = document.getElementById('achievements-list');
         if (!achievementsContainer) return;
 
-        achievementsContainer.innerHTML = sanitizeHTML('');
+        achievementsContainer.innerHTML = DOMPurify.sanitize('');
 
         Object.entries(this.achievements).forEach(([key, achievement]) => {
             const isUnlocked = this.playerProfile.achievements.includes(key);
             const achievementElement = document.createElement('div');
             achievementElement.className = `achievement-item ${isUnlocked ? 'unlocked' : 'locked'}`;
 
-            achievementElement.innerHTML = sanitizeHTML(`
+            achievementElement.innerHTML = DOMPurify.sanitize(`
                 <div class="achievement-icon">${achievement.icon}</div>
                 <div class="achievement-details">
                     <div class="achievement-name">${achievement.name}</div>
@@ -1141,7 +1156,7 @@ class AdvancedGamificationSystem {
         const powerUpsContainer = document.getElementById('powerups-list');
         if (!powerUpsContainer) return;
 
-        powerUpsContainer.innerHTML = sanitizeHTML('');
+        powerUpsContainer.innerHTML = DOMPurify.sanitize('');
 
         Object.entries(this.powerUps).forEach(([key, powerUp]) => {
             const isOwned = this.playerProfile.powerUps && this.playerProfile.powerUps.includes(key);
@@ -1150,7 +1165,7 @@ class AdvancedGamificationSystem {
             const powerUpElement = document.createElement('div');
             powerUpElement.className = `powerup-item ${isOwned ? 'owned' : canAfford ? 'available' : 'locked'}`;
 
-            powerUpElement.innerHTML = sanitizeHTML(`
+            powerUpElement.innerHTML = DOMPurify.sanitize(`
                 <div class="powerup-icon">${powerUp.icon}</div>
                 <div class="powerup-details">
                     <div class="powerup-name">${powerUp.name}</div>
@@ -1189,7 +1204,7 @@ class AdvancedGamificationSystem {
 
         const stats = this.getUserStats();
 
-        statsContainer.innerHTML = sanitizeHTML(`
+        statsContainer.innerHTML = DOMPurify.sanitize(`
             <div class="stat-item">
                 <div class="stat-icon">⭐</div>
                 <div class="stat-details">
@@ -1241,7 +1256,7 @@ class AdvancedGamificationSystem {
     showNotification(message, type = 'info', source = '') {
         const notification = document.createElement('div');
         notification.className = `game-notification ${type}`;
-        notification.innerHTML = sanitizeHTML(`
+        notification.innerHTML = DOMPurify.sanitize(`
             <div class="notification-icon">${this.getNotificationIcon(type)}</div>
             <div class="notification-content">
                 <div class="notification-message">${message}</div>
@@ -1424,7 +1439,7 @@ class AdvancedGamificationSystem {
             }
         ];
 
-        questsContainer.innerHTML = sanitizeHTML(dailyQuests.map(quest => `
+        questsContainer.innerHTML = DOMPurify.sanitize(dailyQuests.map(quest => `
             <div class="quest-item ${quest.completed ? 'completed' : ''}">
                 <div class="quest-info">
                     <h5>${quest.title}</h5>
@@ -1567,7 +1582,7 @@ class AdvancedGamificationSystem {
     showAchievementNotification(achievement) {
         const notification = document.createElement('div');
         notification.className = 'achievement-notification';
-        notification.innerHTML = sanitizeHTML(`
+        notification.innerHTML = DOMPurify.sanitize(`
             <div class="achievement-content">
                 <div class="achievement-icon">${achievement.icon}</div>
                 <div class="achievement-text">

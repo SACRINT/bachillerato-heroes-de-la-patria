@@ -295,7 +295,7 @@ class OnboardingSystem {
     createHelpButton() {
         const helpButton = document.createElement('button');
         helpButton.id = 'onboarding-help-btn';
-        helpButton.innerHTML = sanitizeHTML('❓');
+        helpButton.innerHTML = DOMPurify.sanitize('❓');
         helpButton.title = 'Tutorial del sistema';
         helpButton.style.cssText = `
             position: fixed;
@@ -431,7 +431,7 @@ class OnboardingSystem {
     showTooltip(step, stepIndex) {
         const target = document.querySelector(step.target);
 
-        this.tooltip.innerHTML = sanitizeHTML(`
+        this.tooltip.innerHTML = DOMPurify.sanitize(`
             <div style="display: flex; align-items: center; margin-bottom: 15px;">
                 <h3 style="margin: 0; font-size: 18px; flex: 1;">${step.title}</h3>
                 <span style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 12px; font-size: 12px;">
@@ -544,7 +544,7 @@ class OnboardingSystem {
 
     updateProgress() {
         const progress = Math.round(((this.currentStep + 1) / this.totalSteps) * 100);
-        this.progressBar.innerHTML = sanitizeHTML(`
+        this.progressBar.innerHTML = DOMPurify.sanitize(`
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span>Tutorial: ${this.currentStep + 1}/${this.totalSteps}</span>
                 <div style="width: 100px; height: 8px; background: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden;">
@@ -587,7 +587,7 @@ class OnboardingSystem {
         this.isActive = false;
 
         // Mostrar mensaje de completion
-        this.tooltip.innerHTML = sanitizeHTML(`
+        this.tooltip.innerHTML = DOMPurify.sanitize(`
             <div style="text-align: center;">
                 <div style="font-size: 48px; margin-bottom: 15px;">🎉</div>
                 <h3 style="margin: 0 0 10px 0;">¡Tutorial Completado!</h3>

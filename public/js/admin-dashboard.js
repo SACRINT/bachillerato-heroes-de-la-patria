@@ -146,7 +146,7 @@ class AdminDashboard {
         alertDiv.id = alertId;
         alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
         alertDiv.setAttribute('role', 'alert');
-        alertDiv.innerHTML = sanitizeHTML(`
+        alertDiv.innerHTML = DOMPurify.sanitize(`
             <strong>${type === 'danger' ? 'Error' : type === 'success' ? 'Éxito' : 'Información'}:</strong> ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         `);
@@ -299,7 +299,7 @@ class AdminDashboard {
         }
 
         if (users.length === 0) {
-            container.innerHTML = sanitizeHTML(`
+            container.innerHTML = DOMPurify.sanitize(`
                 <div class="text-center text-muted py-5">
                     <i class="fas fa-user-slash fa-3x mb-3"></i>
                     <p class="lead">No hay usuarios activos en este momento</p>
@@ -349,7 +349,7 @@ class AdminDashboard {
             </div>
         `;
 
-        container.innerHTML = sanitizeHTML(tableHTML, 'ugc');
+        container.innerHTML = DOMPurify.sanitize(tableHTML, 'ugc');
     }
 
     getRoleBadge(role) {
@@ -511,7 +511,7 @@ class AdminDashboard {
                                  document.body;
         
         if (dashboardContainer) {
-            dashboardContainer.insertAdjacentHTML('afterbegin', sanitizeHTML(errorMessage));
+            dashboardContainer.insertAdjacentHTML('afterbegin', DOMPurify.sanitize(errorMessage));
         }
     }
 
@@ -664,7 +664,7 @@ class AdminDashboard {
         const tbody = document.getElementById('studentsTable');
         if (!tbody) return;
 
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = DOMPurify.sanitize('');
 
         if (!this.dashboardData.students || this.dashboardData.students.length === 0) {
             console.warn('⚠️ No hay estudiantes para mostrar');
@@ -686,7 +686,7 @@ class AdminDashboard {
             const statusBadge = this.getStudentStatusBadge(studentStatus);
             const riskBadge = this.getRiskLevelBadge(studentRiskLevel);
 
-            row.innerHTML = sanitizeHTML(`
+            row.innerHTML = DOMPurify.sanitize(`
                 <td><strong>${studentMatricula}</strong></td>
                 <td>${studentName}</td>
                 <td class="text-center">
@@ -723,7 +723,7 @@ class AdminDashboard {
         const tbody = document.getElementById('teachersTable');
         if (!tbody) return;
 
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = DOMPurify.sanitize('');
 
         this.dashboardData.teachers.forEach(teacher => {
             const row = document.createElement('tr');
@@ -732,7 +732,7 @@ class AdminDashboard {
                 '<span class="badge bg-success">Activo</span>' : 
                 '<span class="badge bg-secondary">Inactivo</span>';
             
-            row.innerHTML = sanitizeHTML(`
+            row.innerHTML = DOMPurify.sanitize(`
                 <td><strong>${teacher.name}</strong></td>
                 <td>${teacher.specialty}</td>
                 <td>
@@ -802,7 +802,7 @@ class AdminDashboard {
         // Verificar que Chart.js esté disponible
         if (typeof Chart === 'undefined') {
             console.warn('⚠️ Chart.js no está disponible, mostrando mensaje alternativo');
-            ctx.parentElement.innerHTML = sanitizeHTML(`
+            ctx.parentElement.innerHTML = DOMPurify.sanitize(`
                 <div class="text-center py-4">
                     <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
                     <p class="text-muted">Gráficos no disponibles</p>
@@ -928,7 +928,7 @@ class AdminDashboard {
         const registrations = this.dashboardData.pendingRegistrations || [];
         
         if (registrations.length === 0) {
-            container.innerHTML = sanitizeHTML(`
+            container.innerHTML = DOMPurify.sanitize(`
                 <div class="text-center py-4">
                     <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                     <p class="text-muted">No hay solicitudes pendientes</p>
@@ -978,7 +978,7 @@ class AdminDashboard {
             </div>
         `).join('');
 
-        container.innerHTML = sanitizeHTML(html, 'ugc');
+        container.innerHTML = DOMPurify.sanitize(html, 'ugc');
     }
 
     formatUserType(tipo) {
@@ -1289,7 +1289,7 @@ class AdminDashboard {
             existingModal.remove();
         }
         
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
         const modal = new bootstrap.Modal(document.getElementById('dynamicModal'));
         modal.show();
     }
@@ -1318,7 +1318,7 @@ class AdminDashboard {
 
         const toastElement = document.createElement('div');
         toastElement.className = `toast align-items-center text-bg-${type} border-0`;
-        toastElement.innerHTML = sanitizeHTML(`
+        toastElement.innerHTML = DOMPurify.sanitize(`
             <div class="d-flex">
                 <div class="toast-body">${message}</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>

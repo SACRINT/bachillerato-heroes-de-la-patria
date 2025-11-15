@@ -125,7 +125,7 @@ class BGENotificationAdmin {
         adminPanel.id = 'bge-notification-admin';
         adminPanel.className = 'notification-admin-panel';
 
-        adminPanel.innerHTML = sanitizeHTML(`
+        adminPanel.innerHTML = DOMPurify.sanitize(`
             <div class="admin-header">
                 <h2>🔔 Panel de Notificaciones BGE</h2>
                 <div class="admin-user-info">
@@ -685,7 +685,7 @@ class BGENotificationAdmin {
         // Crear vista previa modal
         const modal = document.createElement('div');
         modal.className = 'preview-modal';
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = DOMPurify.sanitize(`
             <div class="preview-content">
                 <div class="preview-header">
                     <h3>👁️ Vista Previa de Notificación</h3>
@@ -748,11 +748,11 @@ class BGENotificationAdmin {
         if (!container) return;
 
         if (this.scheduledNotifications.length === 0) {
-            container.innerHTML = sanitizeHTML('<p class="no-items">No hay notificaciones programadas</p>', 'simple');
+            container.innerHTML = DOMPurify.sanitize('<p class="no-items">No hay notificaciones programadas</p>', 'simple');
             return;
         }
 
-        container.innerHTML = sanitizeHTML(this.scheduledNotifications.map(notif => `
+        container.innerHTML = DOMPurify.sanitize(this.scheduledNotifications.map(notif => `
             <div class="scheduled-item">
                 <div class="scheduled-info">
                     <h4>${notif.title}</h4>
@@ -772,11 +772,11 @@ class BGENotificationAdmin {
         if (!container) return;
 
         if (this.notificationHistory.length === 0) {
-            container.innerHTML = sanitizeHTML('<p class="no-items">No hay historial de notificaciones</p>', 'simple');
+            container.innerHTML = DOMPurify.sanitize('<p class="no-items">No hay historial de notificaciones</p>', 'simple');
             return;
         }
 
-        container.innerHTML = sanitizeHTML(this.notificationHistory.map(notif => `
+        container.innerHTML = DOMPurify.sanitize(this.notificationHistory.map(notif => `
             <div class="history-item">
                 <div class="history-info">
                     <h4>${notif.title}</h4>
@@ -950,7 +950,7 @@ class BGENotificationAdmin {
 
     showAccessDenied() {
         const denied = document.createElement('div');
-        denied.innerHTML = sanitizeHTML(`
+        denied.innerHTML = DOMPurify.sanitize(`
             <div style="text-align: center; padding: 3rem; color: #dc3545;">
                 <h2>🚫 Acceso Denegado</h2>
                 <p>No tienes permisos para acceder al panel de administración de notificaciones.</p>
@@ -972,7 +972,7 @@ class BGENotificationAdmin {
         const button = document.getElementById('send-notification');
         if (button) {
             button.disabled = true;
-            button.innerHTML = sanitizeHTML('⏳ Enviando...');
+            button.innerHTML = DOMPurify.sanitize('⏳ Enviando...');
         }
     }
 
@@ -980,7 +980,7 @@ class BGENotificationAdmin {
         const button = document.getElementById('send-notification');
         if (button) {
             button.disabled = false;
-            button.innerHTML = sanitizeHTML('📤 Enviar Ahora');
+            button.innerHTML = DOMPurify.sanitize('📤 Enviar Ahora');
         }
     }
 

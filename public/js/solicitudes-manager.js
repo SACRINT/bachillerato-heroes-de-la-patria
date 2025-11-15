@@ -24,7 +24,7 @@ class SolicitudesManager {
     async loadSolicitudes() {
         const containerEl = document.getElementById('pending-registrations-container');
         if (containerEl) {
-            containerEl.innerHTML = sanitizeHTML(`
+            containerEl.innerHTML = DOMPurify.sanitize(`
                 <div class="text-center py-4">
                     <div class="spinner-border text-info" role="status"><span class="visually-hidden">Cargando...</span></div>
                     <p class="mt-2 text-muted">Cargando solicitudes...</p>
@@ -61,7 +61,7 @@ class SolicitudesManager {
         if (!containerEl) return;
 
         if (this.filteredSolicitudes.length === 0) {
-            containerEl.innerHTML = sanitizeHTML(`
+            containerEl.innerHTML = DOMPurify.sanitize(`
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle me-2"></i>
                     <strong>Sin solicitudes pendientes</strong>
@@ -97,7 +97,7 @@ class SolicitudesManager {
             </div>
         `;
 
-        containerEl.innerHTML = sanitizeHTML(html, 'ugc');
+        containerEl.innerHTML = DOMPurify.sanitize(html, 'ugc');
     }
 
     createTableRow(solicitud) {
@@ -224,7 +224,7 @@ class SolicitudesManager {
         const existingModal = document.getElementById('solicitudDetailsModal');
         if (existingModal) existingModal.remove();
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHtml));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHtml));
         const modal = new bootstrap.Modal(document.getElementById('solicitudDetailsModal'));
         modal.show();
     }

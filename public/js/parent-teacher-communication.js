@@ -448,7 +448,7 @@ class ParentTeacherCommunicationSystem {
             ${this.renderModals()}
         `;
 
-        container.innerHTML = sanitizeHTML(html, 'ugc');
+        container.innerHTML = DOMPurify.sanitize(html, 'ugc');
         this.bindEventHandlers();
     }
 
@@ -1020,7 +1020,7 @@ class ParentTeacherCommunicationSystem {
             // Actualizar vista de conversación
             const conversationView = document.querySelector('.conversation-view');
             if (conversationView) {
-                conversationView.innerHTML = sanitizeHTML(this.renderConversationView(), 'ugc');
+                conversationView.innerHTML = DOMPurify.sanitize(this.renderConversationView(), 'ugc');
             }
 
             // Cargar mensajes
@@ -1040,7 +1040,7 @@ class ParentTeacherCommunicationSystem {
         if (!messagesList) return;
 
         if (messages.length === 0) {
-            messagesList.innerHTML = sanitizeHTML(`
+            messagesList.innerHTML = DOMPurify.sanitize(`
                 <div class="text-center py-4">
                     <p class="text-muted">No hay mensajes aún. ¡Inicia la conversación!</p>
                 </div>
@@ -1060,7 +1060,7 @@ class ParentTeacherCommunicationSystem {
             </div>
         `).join('');
 
-        messagesList.innerHTML = sanitizeHTML(messagesHtml, 'ugc');
+        messagesList.innerHTML = DOMPurify.sanitize(messagesHtml, 'ugc');
         messagesList.scrollTop = messagesList.scrollHeight;
     }
 
@@ -1080,7 +1080,7 @@ class ParentTeacherCommunicationSystem {
             </div>
         `;
 
-        messagesList.insertAdjacentHTML('beforeend', sanitizeHTML(messageHtml));
+        messagesList.insertAdjacentHTML('beforeend', DOMPurify.sanitize(messageHtml));
         messagesList.scrollTop = messagesList.scrollHeight;
     }
 
@@ -1188,7 +1188,7 @@ class ParentTeacherCommunicationSystem {
         alertDiv.id = alertId;
         alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1070; max-width: 400px;';
-        alertDiv.innerHTML = sanitizeHTML(`
+        alertDiv.innerHTML = DOMPurify.sanitize(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `);
@@ -1361,7 +1361,7 @@ const communicationStyles = `
 `;
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', sanitizeHTML(communicationStyles));
+document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(communicationStyles));
 
 // Inicialización automática
 document.addEventListener('DOMContentLoaded', function() {

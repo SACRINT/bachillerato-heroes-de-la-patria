@@ -689,7 +689,7 @@ class BGESecurityManager {
         const securityPanel = document.createElement('div');
         securityPanel.id = 'bge-security-panel';
         securityPanel.className = 'bge-security-panel';
-        securityPanel.innerHTML = sanitizeHTML(`
+        securityPanel.innerHTML = DOMPurify.sanitize(`
             <div class="security-header">
                 <h3>🔐 Seguridad BGE v${this.version}</h3>
                 <div class="security-controls">

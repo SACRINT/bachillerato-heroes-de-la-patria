@@ -209,7 +209,7 @@ class AdvancedGradesAnalytics {
         }
 
         // Insertar la interfaz
-        container.insertAdjacentHTML('beforeend', sanitizeHTML(analyticsHTML));
+        container.insertAdjacentHTML('beforeend', DOMPurify.sanitize(analyticsHTML));
     }
 
     renderStudentAnalytics() {
@@ -238,7 +238,7 @@ class AdvancedGradesAnalytics {
         const trendIcon = this.getTrendIcon(analytics.performance_trend);
         const trendColor = this.getTrendColor(analytics.performance_trend);
 
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = DOMPurify.sanitize(`
             <div class="col-md-3">
                 <div class="stat-card text-center">
                     <div class="stat-icon bg-primary text-white rounded-circle mx-auto mb-2">
@@ -301,7 +301,7 @@ class AdvancedGradesAnalytics {
             `;
         }).join('');
 
-        container.innerHTML = sanitizeHTML(alertsHTML, 'ugc');
+        container.innerHTML = DOMPurify.sanitize(alertsHTML, 'ugc');
     }
 
     renderSubjectAnalysis(subjects) {
@@ -357,7 +357,7 @@ class AdvancedGradesAnalytics {
             `;
         }).join('');
 
-        container.innerHTML = sanitizeHTML(`<div class="row">${subjectsHTML}</div>`);
+        container.innerHTML = DOMPurify.sanitize(`<div class="row">${subjectsHTML}</div>`);
     }
 
     renderRecommendations(recommendations) {
@@ -391,7 +391,7 @@ class AdvancedGradesAnalytics {
             `;
         }).join('');
 
-        container.innerHTML = sanitizeHTML(recommendationsHTML, 'ugc');
+        container.innerHTML = DOMPurify.sanitize(recommendationsHTML, 'ugc');
     }
 
     renderProgressCharts() {
@@ -682,7 +682,7 @@ class AdvancedGradesAnalytics {
         const notification = document.createElement('div');
         notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
         notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-        notification.innerHTML = sanitizeHTML(`
+        notification.innerHTML = DOMPurify.sanitize(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `);

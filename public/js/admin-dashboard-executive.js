@@ -106,7 +106,7 @@ class AdminDashboardExecutive {
         modal.setAttribute('tabindex', '-1');
         modal.style.cssText = 'z-index: 2000;';
 
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = DOMPurify.sanitize(`
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                     <div class="modal-header border-0 text-white">
@@ -615,7 +615,7 @@ class AdminDashboardExecutive {
         const notification = document.createElement('div');
         notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
         notification.style.cssText = 'top: 100px; right: 20px; z-index: 2100; max-width: 400px;';
-        notification.innerHTML = sanitizeHTML(`
+        notification.innerHTML = DOMPurify.sanitize(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `);
