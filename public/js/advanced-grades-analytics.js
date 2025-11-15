@@ -301,7 +301,7 @@ class AdvancedGradesAnalytics {
             `;
         }).join('');
 
-        container.innerHTML = alertsHTML;
+        container.innerHTML = sanitizeHTML(alertsHTML, 'ugc');
     }
 
     renderSubjectAnalysis(subjects) {
@@ -391,7 +391,7 @@ class AdvancedGradesAnalytics {
             `;
         }).join('');
 
-        container.innerHTML = recommendationsHTML;
+        container.innerHTML = sanitizeHTML(recommendationsHTML, 'ugc');
     }
 
     renderProgressCharts() {
