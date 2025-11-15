@@ -128,7 +128,7 @@ router.post('/subscribe', [
         } catch (tokenError) {
             // Si la columna token_verificacion no existe, insertar sin ella y marcar como verificado
             if (tokenError.code === '42703') { // Column does not exist
-                devLog.warn('Columna token_verificacion no existe, insertando sin token y verificando automáticamente');
+                debugLog.log('SUBSCRIPTIONS', 'Columna token_verificacion no existe, insertando sin token y verificando automáticamente');
                 const insertQueryWithoutToken = `
                     INSERT INTO suscriptores_notificaciones (
                         email, nombre, notif_convocatorias, notif_becas, notif_eventos,
