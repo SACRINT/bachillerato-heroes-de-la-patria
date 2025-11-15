@@ -201,7 +201,7 @@ class AIProgressDashboard {
         dashboardContainer.id = 'ai-progress-dashboard';
         dashboardContainer.className = 'ai-dashboard-container hidden';
 
-        dashboardContainer.innerHTML = sanitizeHTML(`
+        dashboardContainer.innerHTML = DOMPurify.sanitize(`
             <div class="dashboard-header">
                 <div class="header-content">
                     <h2 class="dashboard-title">
@@ -336,7 +336,7 @@ class AIProgressDashboard {
         const activationBtn = document.createElement('div');
         activationBtn.id = 'ai-dashboard-activation';
         activationBtn.className = 'ai-dashboard-activation';
-        activationBtn.innerHTML = sanitizeHTML(`
+        activationBtn.innerHTML = DOMPurify.sanitize(`
             <div class="activation-content">
                 <div class="dashboard-icon">📊</div>
                 <div class="notification-dot" style="display: none;"></div>
@@ -545,7 +545,7 @@ class AIProgressDashboard {
 
     renderGoals() {
         const container = document.getElementById('goals-list');
-        container.innerHTML = sanitizeHTML('');
+        container.innerHTML = DOMPurify.sanitize('');
 
         this.progressData.goals.forEach(goal => {
             const goalElement = document.createElement('div');
@@ -554,7 +554,7 @@ class AIProgressDashboard {
             const progressPercentage = Math.round((goal.current / goal.target) * 100);
             const isCompleted = progressPercentage >= 100;
 
-            goalElement.innerHTML = sanitizeHTML(`
+            goalElement.innerHTML = DOMPurify.sanitize(`
                 <div class="goal-header">
                     <h4 class="goal-title">${goal.title}</h4>
                     <span class="goal-status ${isCompleted ? 'completed' : ''}">
@@ -619,7 +619,7 @@ class AIProgressDashboard {
             ];
         }
 
-        container.innerHTML = sanitizeHTML('');
+        container.innerHTML = DOMPurify.sanitize('');
 
         // Ensure recommendations is an array
         const validRecommendations = Array.isArray(recommendations) ? recommendations : [];
@@ -628,7 +628,7 @@ class AIProgressDashboard {
             const recElement = document.createElement('div');
             recElement.className = `recommendation-item priority-${rec.priority}`;
 
-            recElement.innerHTML = sanitizeHTML(`
+            recElement.innerHTML = DOMPurify.sanitize(`
                 <div class="rec-icon">
                     ${this.getRecommendationIcon(rec.type)}
                 </div>
@@ -647,13 +647,13 @@ class AIProgressDashboard {
 
     renderAchievements() {
         const container = document.getElementById('achievements-list');
-        container.innerHTML = sanitizeHTML('');
+        container.innerHTML = DOMPurify.sanitize('');
 
         this.progressData.achievements.slice(0, 6).forEach(achievement => {
             const achElement = document.createElement('div');
             achElement.className = 'achievement-item';
 
-            achElement.innerHTML = sanitizeHTML(`
+            achElement.innerHTML = DOMPurify.sanitize(`
                 <div class="achievement-icon">${achievement.icon}</div>
                 <div class="achievement-content">
                     <h4 class="achievement-title">${achievement.title}</h4>
