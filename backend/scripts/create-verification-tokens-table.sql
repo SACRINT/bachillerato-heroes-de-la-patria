@@ -4,6 +4,7 @@
 -- Usado por verificationService.js
 -- ============================================
 
+-- Primero, se crea la tabla sin los índices dentro de la definición.
 CREATE TABLE IF NOT EXISTS verification_tokens (
     id SERIAL PRIMARY KEY,
     token UUID NOT NULL UNIQUE,
@@ -14,12 +15,14 @@ CREATE TABLE IF NOT EXISTS verification_tokens (
     expires_at TIMESTAMP NOT NULL,
     used_at TIMESTAMP,
     ip_address VARCHAR(45),
-    user_agent TEXT,
-    INDEX idx_token (token),
-    INDEX idx_email (email),
-    INDEX idx_expires (expires_at),
-    INDEX idx_created (created_at)
+    user_agent TEXT
 );
+
+-- Luego, se crean los índices por separado, que es la sintaxis correcta para PostgreSQL.
+CREATE INDEX IF NOT EXISTS idx_verification_tokens_token ON verification_tokens (token);
+CREATE INDEX IF NOT EXISTS idx_verification_tokens_email ON verification_tokens (email);
+CREATE INDEX IF NOT EXISTS idx_verification_tokens_expires_at ON verification_tokens (expires_at);
+CREATE INDEX IF NOT EXISTS idx_verification_tokens_created_at ON verification_tokens (created_at);
 
 -- Comentarios
 COMMENT ON TABLE verification_tokens IS 'Tokens de verificación de email para formularios de contacto';
