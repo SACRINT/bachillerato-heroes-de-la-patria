@@ -11,7 +11,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const crypto = require('crypto');
@@ -324,7 +326,7 @@ router.post('/create', [
             'pendiente'
         ]);
 
-        devLogger.log(`✅ Nueva cita creada: ${newCitaId} - ${nombre_completo}`);
+        debugLog.log('CITAS_IMPROVED', `✅ Nueva cita creada: ${newCitaId} - ${nombre_completo}`);
 
         // =====================================================
         // Enviar email de confirmación
@@ -363,9 +365,9 @@ router.post('/create', [
                 `
             });
 
-            devLogger.log(`📧 Email de confirmación enviado a ${email}`);
+            debugLog.log('CITAS_IMPROVED', `📧 Email de confirmación enviado a ${email}`);
         } catch (emailError) {
-            devLogger.error('⚠️ Error enviando email:', emailError);
+            debugLog.error('CITAS_IMPROVED', '⚠️ Error enviando email:', emailError);
         }
 
         res.json({
@@ -381,7 +383,7 @@ router.post('/create', [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error creando cita:', error);
+        debugLog.error('CITAS_IMPROVED', '❌ Error creando cita:', sanitizeError(error, 'citas-improved'));
         res.status(500).json({
             success: false,
             message: 'Error al crear solicitud de cita',
@@ -448,7 +450,7 @@ router.get('/available-slots', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error obteniendo horarios disponibles:', error);
+        debugLog.error('CITAS_IMPROVED', 'Error obteniendo horarios disponibles:', sanitizeError(error, 'citas-improved'));
         res.status(500).json({
             success: false,
             message: 'Error al obtener horarios disponibles'
@@ -496,7 +498,7 @@ router.get('/confirm/:token', async (req, res) => {
         }
 
         const cita = result[0];
-        devLogger.log(`✅ Cita confirmada por usuario: ${cita.cita_id}`);
+        debugLog.log('CITAS_IMPROVED', `✅ Cita confirmada por usuario: ${cita.cita_id}`);
 
         res.send(`
             <html>
@@ -528,7 +530,7 @@ router.get('/confirm/:token', async (req, res) => {
         `);
 
     } catch (error) {
-        devLogger.error('Error confirmando cita:', error);
+        debugLog.error('CITAS_IMPROVED', 'Error confirmando cita:', sanitizeError(error, 'citas-improved'));
         res.status(500).send('Error al confirmar cita');
     }
 });
@@ -590,7 +592,7 @@ router.get('/list', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error listando citas:', error);
+        debugLog.error('CITAS_IMPROVED', 'Error listando citas:', sanitizeError(error, 'citas-improved'));
         res.status(500).json({
             success: false,
             message: 'Error al obtener citas'
@@ -631,7 +633,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error obteniendo estadísticas:', error);
+        debugLog.error('CITAS_IMPROVED', 'Error obteniendo estadísticas:', sanitizeError(error, 'citas-improved'));
         res.status(500).json({
             success: false,
             message: 'Error al obtener estadísticas'

@@ -15,7 +15,6 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
 const { body, validationResult } = require('express-validator');
 const { authenticateToken, requireSuperAdmin } = require('../middleware/auth');
 const {
@@ -84,11 +83,11 @@ const validateTenantData = [
  */
 router.get('/', authenticateToken, requireSuperAdmin, async (req, res) => {
     try {
-        devLogger.log(`[TENANTS-ROUTES] 📋 GET /api/tenants - Usuario: ${req.user.email}`);
+        debugLog.log('TENANTS', `[TENANTS-ROUTES] 📋 GET /api/tenants - Usuario: ${req.user.email}`);
 
         const tenants = await getAllTenants();
 
-        devLogger.log(`[TENANTS-ROUTES] ✅ Obtenidos ${tenants.length} tenants`);
+        debugLog.log('TENANTS', `[TENANTS-ROUTES] ✅ Obtenidos ${tenants.length} tenants`);
 
         return res.status(200).json({
             success: true,
@@ -98,7 +97,7 @@ router.get('/', authenticateToken, requireSuperAdmin, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('[TENANTS-ROUTES] ❌ Error en GET /api/tenants:', error);
+        debugLog.error('TENANTS', '[TENANTS-ROUTES] ❌ Error en GET /api/tenants', sanitizeError(error, 'tenants'));
         return res.status(500).json({
             success: false,
             error: 'Error obteniendo tenants',
@@ -115,7 +114,7 @@ router.get('/', authenticateToken, requireSuperAdmin, async (req, res) => {
 router.get('/:id', authenticateToken, requireSuperAdmin, async (req, res) => {
     try {
         const tenantId = parseInt(req.params.id);
-        devLogger.log(`[TENANTS-ROUTES] 🔍 GET /api/tenants/${tenantId} - Usuario: ${req.user.email}`);
+        debugLog.log('TENANTS', `[TENANTS-ROUTES] 🔍 GET /api/tenants/${tenantId} - Usuario: ${req.user.email}`);
 
         if (isNaN(tenantId)) {
             return res.status(400).json({
@@ -128,14 +127,14 @@ router.get('/:id', authenticateToken, requireSuperAdmin, async (req, res) => {
         const tenant = tenants.find(t => t.id === tenantId);
 
         if (!tenant) {
-            devLogger.warn(`[TENANTS-ROUTES] ⚠️ Tenant no encontrado: ${tenantId}`);
+            debugLog.log('TENANTS', `[TENANTS-ROUTES] ⚠️ Tenant no encontrado: ${tenantId}`);
             return res.status(404).json({
                 success: false,
                 error: 'Tenant no encontrado'
             });
         }
 
-        devLogger.log(`[TENANTS-ROUTES] ✅ Tenant encontrado: ${tenant.school_name}`);
+        debugLog.log('TENANTS', `[TENANTS-ROUTES] ✅ Tenant encontrado: ${tenant.school_name}`);
 
         return res.status(200).json({
             success: true,
@@ -144,7 +143,7 @@ router.get('/:id', authenticateToken, requireSuperAdmin, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('[TENANTS-ROUTES] ❌ Error en GET /api/tenants/:id:', error);
+        debugLog.error('TENANTS', '[TENANTS-ROUTES] ❌ Error en GET /api/tenants/:id', sanitizeError(error, 'tenants'));
         return res.status(500).json({
             success: false,
             error: 'Error obteniendo tenant',
@@ -160,12 +159,12 @@ router.get('/:id', authenticateToken, requireSuperAdmin, async (req, res) => {
  */
 router.post('/', authenticateToken, requireSuperAdmin, validateTenantData, async (req, res) => {
     try {
-        devLogger.log(`[TENANTS-ROUTES] 📝 POST /api/tenants - Usuario: ${req.user.email}`);
+        debugLog.log('TENANTS', `[TENANTS-ROUTES] 📝 POST /api/tenants - Usuario: ${req.user.email}`);
 
         // Validar errores de validación
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            devLogger.warn('[TENANTS-ROUTES] ⚠️ Errores de validación:', errors.array());
+            debugLog.log('TENANTS', '[TENANTS-ROUTES] ⚠️ Errores de validación:', errors.array());
             return res.status(400).json({
                 success: false,
                 error: 'Datos inválidos',
@@ -178,7 +177,7 @@ router.post('/', authenticateToken, requireSuperAdmin, validateTenantData, async
         // Verificar que el dominio no exista
         const existingTenant = await getTenantByDomain(domain);
         if (existingTenant) {
-            devLogger.warn(`[TENANTS-ROUTES] ⚠️ Dominio ya existe: ${domain}`);
+            debugLog.log('TENANTS', `[TENANTS-ROUTES] ⚠️ Dominio ya existe: ${domain}`);
             return res.status(409).json({
                 success: false,
                 error: 'El dominio ya está registrado',
@@ -222,11 +221,11 @@ router.post('/', authenticateToken, requireSuperAdmin, validateTenantData, async
             }
         };
 
-        devLogger.log('[TENANTS-ROUTES] 📋 Creando tenant con datos:', { school_name, domain });
+        debugLog.log('TENANTS', '[TENANTS-ROUTES] 📋 Creando tenant con datos:', { school_name, domain });
 
         const newTenant = await createTenant(tenantData);
 
-        devLogger.log(`[TENANTS-ROUTES] ✅ Tenant creado exitosamente - ID: ${newTenant.id}`);
+        debugLog.log('TENANTS', `[TENANTS-ROUTES] ✅ Tenant creado exitosamente - ID: ${newTenant.id}`);
 
         return res.status(201).json({
             success: true,
@@ -235,7 +234,7 @@ router.post('/', authenticateToken, requireSuperAdmin, validateTenantData, async
         });
 
     } catch (error) {
-        devLogger.error('[TENANTS-ROUTES] ❌ Error en POST /api/tenants:', error);
+        debugLog.error('TENANTS', '[TENANTS-ROUTES] ❌ Error en POST /api/tenants', sanitizeError(error, 'tenants'));
         return res.status(500).json({
             success: false,
             error: 'Error creando tenant',
@@ -252,7 +251,7 @@ router.post('/', authenticateToken, requireSuperAdmin, validateTenantData, async
 router.put('/:id', authenticateToken, requireSuperAdmin, validateTenantData, async (req, res) => {
     try {
         const tenantId = parseInt(req.params.id);
-        devLogger.log(`[TENANTS-ROUTES] ✏️ PUT /api/tenants/${tenantId} - Usuario: ${req.user.email}`);
+        debugLog.log('TENANTS', `[TENANTS-ROUTES] ✏️ PUT /api/tenants/${tenantId} - Usuario: ${req.user.email}`);
 
         if (isNaN(tenantId)) {
             return res.status(400).json({
@@ -264,7 +263,7 @@ router.put('/:id', authenticateToken, requireSuperAdmin, validateTenantData, asy
         // Validar errores de validación
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            devLogger.warn('[TENANTS-ROUTES] ⚠️ Errores de validación:', errors.array());
+            debugLog.log('TENANTS', '[TENANTS-ROUTES] ⚠️ Errores de validación:', errors.array());
             return res.status(400).json({
                 success: false,
                 error: 'Datos inválidos',
@@ -277,7 +276,7 @@ router.put('/:id', authenticateToken, requireSuperAdmin, validateTenantData, asy
         const existingTenant = tenants.find(t => t.id === tenantId);
 
         if (!existingTenant) {
-            devLogger.warn(`[TENANTS-ROUTES] ⚠️ Tenant no encontrado: ${tenantId}`);
+            debugLog.log('TENANTS', `[TENANTS-ROUTES] ⚠️ Tenant no encontrado: ${tenantId}`);
             return res.status(404).json({
                 success: false,
                 error: 'Tenant no encontrado'
@@ -290,7 +289,7 @@ router.put('/:id', authenticateToken, requireSuperAdmin, validateTenantData, asy
         if (domain !== existingTenant.domain) {
             const domainInUse = await getTenantByDomain(domain);
             if (domainInUse && domainInUse.id !== tenantId) {
-                devLogger.warn(`[TENANTS-ROUTES] ⚠️ Dominio ya existe: ${domain}`);
+                debugLog.log('TENANTS', `[TENANTS-ROUTES] ⚠️ Dominio ya existe: ${domain}`);
                 return res.status(409).json({
                     success: false,
                     error: 'El dominio ya está registrado por otro tenant',
@@ -308,11 +307,11 @@ router.put('/:id', authenticateToken, requireSuperAdmin, validateTenantData, asy
             config_json: config_json || existingTenant.config_json
         };
 
-        devLogger.log('[TENANTS-ROUTES] 📋 Actualizando tenant con datos:', { school_name, domain });
+        debugLog.log('TENANTS', '[TENANTS-ROUTES] 📋 Actualizando tenant con datos:', { school_name, domain });
 
         const updatedTenant = await updateTenant(tenantId, updateData);
 
-        devLogger.log(`[TENANTS-ROUTES] ✅ Tenant actualizado exitosamente - ID: ${tenantId}`);
+        debugLog.log('TENANTS', `[TENANTS-ROUTES] ✅ Tenant actualizado exitosamente - ID: ${tenantId}`);
 
         return res.status(200).json({
             success: true,
@@ -321,7 +320,7 @@ router.put('/:id', authenticateToken, requireSuperAdmin, validateTenantData, asy
         });
 
     } catch (error) {
-        devLogger.error('[TENANTS-ROUTES] ❌ Error en PUT /api/tenants/:id:', error);
+        debugLog.error('TENANTS', '[TENANTS-ROUTES] ❌ Error en PUT /api/tenants/:id', sanitizeError(error, 'tenants'));
         return res.status(500).json({
             success: false,
             error: 'Error actualizando tenant',
@@ -338,7 +337,7 @@ router.put('/:id', authenticateToken, requireSuperAdmin, validateTenantData, asy
 router.delete('/:id', authenticateToken, requireSuperAdmin, async (req, res) => {
     try {
         const tenantId = parseInt(req.params.id);
-        devLogger.log(`[TENANTS-ROUTES] 🗑️ DELETE /api/tenants/${tenantId} - Usuario: ${req.user.email}`);
+        debugLog.log('TENANTS', `[TENANTS-ROUTES] 🗑️ DELETE /api/tenants/${tenantId} - Usuario: ${req.user.email}`);
 
         if (isNaN(tenantId)) {
             return res.status(400).json({
@@ -352,18 +351,18 @@ router.delete('/:id', authenticateToken, requireSuperAdmin, async (req, res) => 
         const existingTenant = tenants.find(t => t.id === tenantId);
 
         if (!existingTenant) {
-            devLogger.warn(`[TENANTS-ROUTES] ⚠️ Tenant no encontrado: ${tenantId}`);
+            debugLog.log('TENANTS', `[TENANTS-ROUTES] ⚠️ Tenant no encontrado: ${tenantId}`);
             return res.status(404).json({
                 success: false,
                 error: 'Tenant no encontrado'
             });
         }
 
-        devLogger.log('[TENANTS-ROUTES] 🗑️ Eliminando tenant:', existingTenant.school_name);
+        debugLog.log('TENANTS', '[TENANTS-ROUTES] 🗑️ Eliminando tenant:', existingTenant.school_name);
 
         await deleteTenant(tenantId);
 
-        devLogger.log(`[TENANTS-ROUTES] ✅ Tenant eliminado exitosamente - ID: ${tenantId}`);
+        debugLog.log('TENANTS', `[TENANTS-ROUTES] ✅ Tenant eliminado exitosamente - ID: ${tenantId}`);
 
         return res.status(200).json({
             success: true,
@@ -372,7 +371,7 @@ router.delete('/:id', authenticateToken, requireSuperAdmin, async (req, res) => 
         });
 
     } catch (error) {
-        devLogger.error('[TENANTS-ROUTES] ❌ Error en DELETE /api/tenants/:id:', error);
+        debugLog.error('TENANTS', '[TENANTS-ROUTES] ❌ Error en DELETE /api/tenants/:id', sanitizeError(error, 'tenants'));
         return res.status(500).json({
             success: false,
             error: 'Error eliminando tenant',

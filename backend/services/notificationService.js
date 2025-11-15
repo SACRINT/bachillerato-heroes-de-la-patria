@@ -10,6 +10,10 @@ const devLogger = require('../utils/devLogger');
 const EventEmitter = require('events');
 const pool = require('../config/database');
 
+// GDPR Logging - Debug condicional y sanitización
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
+
+
 class NotificationService extends EventEmitter {
     constructor(server) {
         super();

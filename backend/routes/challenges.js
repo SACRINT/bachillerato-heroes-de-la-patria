@@ -5,7 +5,9 @@
 
 const express = require('express');
 const { Pool } = require('pg');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
@@ -25,7 +27,7 @@ router.get('/', authenticateToken, async (req, res) => {
         const userId = req.user.id;
         const { type, status = 'active' } = req.query;
 
-        devLogger.log(`[CHALLENGES] Listando retos para usuario ${userId}`);
+        debugLog.log('CHALLENGES', `[CHALLENGES] Listando retos para usuario ${userId}`);
 
         let query = `
             SELECT
@@ -90,7 +92,7 @@ router.get('/', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('[CHALLENGES] Error al listar retos:', error.message);
+        debugLog.error('CHALLENGES', '[CHALLENGES] Error al listar retos:', error.message);
         res.status(500).json({
             error: 'Error al obtener retos',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -107,7 +109,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
         const userId = req.user.id;
         const { id } = req.params;
 
-        devLogger.log(`[CHALLENGES] Obteniendo detalles del reto ${id} para usuario ${userId}`);
+        debugLog.log('CHALLENGES', `[CHALLENGES] Obteniendo detalles del reto ${id} para usuario ${userId}`);
 
         const result = await pool.query(
             `SELECT
@@ -160,7 +162,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('[CHALLENGES] Error al obtener detalles del reto:', error.message);
+        debugLog.error('CHALLENGES', '[CHALLENGES] Error al obtener detalles del reto:', error.message);
         res.status(500).json({
             error: 'Error al obtener detalles del reto',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -180,7 +182,7 @@ router.post('/:id/complete', authenticateToken, async (req, res) => {
         const { id } = req.params;
         const { progress = {} } = req.body;
 
-        devLogger.log(`[CHALLENGES] Usuario ${userId} completando reto ${id}`);
+        debugLog.log('CHALLENGES', `[CHALLENGES] Usuario ${userId} completando reto ${id}`);
 
         await client.query('BEGIN');
 
@@ -307,7 +309,7 @@ router.post('/:id/complete', authenticateToken, async (req, res) => {
 
     } catch (error) {
         await client.query('ROLLBACK');
-        devLogger.error('[CHALLENGES] Error al completar reto:', error.message);
+        debugLog.error('CHALLENGES', '[CHALLENGES] Error al completar reto:', error.message);
         res.status(500).json({
             error: 'Error al completar el reto',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -370,7 +372,7 @@ router.post('/', authenticateToken, async (req, res) => {
             });
         }
 
-        devLogger.log(`[CHALLENGES] Admin ${req.user.id} creando nuevo reto: ${title}`);
+        debugLog.log('CHALLENGES', `[CHALLENGES] Admin ${req.user.id} creando nuevo reto: ${title}`);
 
         const result = await pool.query(
             `INSERT INTO challenges
@@ -401,7 +403,7 @@ router.post('/', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('[CHALLENGES] Error al crear reto:', error.message);
+        debugLog.error('CHALLENGES', '[CHALLENGES] Error al crear reto:', error.message);
         res.status(500).json({
             error: 'Error al crear el reto',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined

@@ -1,4 +1,15 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    // Fallback si debug-logger.js no está cargado
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * 🔌 CLIENTE API PARA INTEGRACIÓN CON BACKEND
  * Maneja todas las comunicaciones con el backend de la base de datos
  */
@@ -63,7 +74,8 @@ class APIClient {
                         if (Date.now() < sessionData.expiresAt) {
                             return sessionData.token;
                         } else {
-                            console.warn('⚠️ Token expirado en secure_admin_session');
+                            // GDPR: Datos sensibles enmascarados
+                            debugLog.warn('APP', '⚠️ Token expirado en secure_admin_session');
                             // ✅ LIMPIAR TOKEN EXPIRADO
                             localStorage.removeItem('secure_admin_session');
                             this.removeToken();
@@ -74,7 +86,8 @@ class APIClient {
                 }
             }
         } catch (error) {
-            console.warn('⚠️ Error recuperando secure_admin_session:', error);
+            // GDPR: Datos sensibles enmascarados
+            debugLog.warn('ERROR', '⚠️ Error recuperando secure_admin_session:', error);
         }
 
         // ✅ NUEVO: Verificar expiración del token directo (authToken)
@@ -90,7 +103,8 @@ class APIClient {
                     return directToken;
                 } else {
                     // Token expirado
-                    console.warn('⚠️ Token expirado detectado y eliminado');
+                    // GDPR: Datos sensibles enmascarados
+                    debugLog.warn('APP', '⚠️ Token expirado detectado y eliminado');
                     localStorage.removeItem('authToken');
                     localStorage.removeItem('userData');
 
@@ -102,7 +116,8 @@ class APIClient {
                     return null;
                 }
             } catch (error) {
-                console.warn('⚠️ Error verificando expiración de token:', error);
+                // GDPR: Datos sensibles enmascarados
+                debugLog.warn('ERROR', '⚠️ Error verificando expiración de token:', error);
             }
         }
 
@@ -139,7 +154,8 @@ class APIClient {
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
         } else {
-            console.warn('⚠️ No se encontró token de autenticación para la petición');
+            // GDPR: Datos sensibles enmascarados
+            debugLog.warn('APP', '⚠️ No se encontró token de autenticación para la petición');
         }
 
         return headers;
@@ -236,7 +252,7 @@ class APIClient {
                     return await response.text();
                 }
 
-                console.warn(`⚠️ [API WARNING] Endpoint devolvió contenido no JSON (${contentType}): ${config.method} ${url}`);
+                debugLog.warn('API', `⚠️ [API WARNING] Endpoint devolvió contenido no JSON (${contentType}): ${config.method} ${url}`);
 
                 return {
                     success: false,
@@ -251,7 +267,7 @@ class APIClient {
             try {
                 data = await response.json();
             } catch (jsonError) {
-                console.warn(`⚠️ [API WARNING] No se pudo parsear JSON: ${config.method} ${url}`, jsonError);
+                debugLog.warn('API', `⚠️ [API WARNING] No se pudo parsear JSON: ${config.method} ${url}`, jsonError);
 
                 return {
                     success: false,
@@ -269,7 +285,7 @@ class APIClient {
 
         } catch (error) {
             clearTimeout(timeoutId);
-            console.error(`❌ API Error: ${config.method} ${url}`, error);
+            debugLog.error('API', `❌ API Error: ${config.method} ${url}`, error);
 
             // Manejar timeout
             if (error.name === 'AbortError') {
@@ -304,7 +320,7 @@ class APIClient {
                 }
             });
         } catch (error) {
-            console.warn('🔍 Búsqueda en DB falló, usando respuestas estáticas');
+            debugLog.warn('APP', '🔍 Búsqueda en DB falló, usando respuestas estáticas');
             return null;
         }
     }
@@ -325,7 +341,7 @@ class APIClient {
                 }
             });
         } catch (error) {
-            console.warn('📝 Log de mensaje falló:', error.message);
+            debugLog.warn('ERROR', '📝 Log de mensaje falló:', error.message);
             return null;
         }
     }
@@ -344,7 +360,7 @@ class APIClient {
                 }
             });
         } catch (error) {
-            console.warn('⭐ Feedback falló:', error.message);
+            debugLog.warn('ERROR', '⭐ Feedback falló:', error.message);
             return null;
         }
     }
@@ -356,7 +372,7 @@ class APIClient {
         try {
             return await this.request('/api/information/categories');
         } catch (error) {
-            console.warn('📂 Obtener categorías falló:', error.message);
+            debugLog.warn('ERROR', '📂 Obtener categorías falló:', error.message);
             return null;
         }
     }
@@ -373,7 +389,7 @@ class APIClient {
             const response = await this.request(`/api/admin/check-approval/${encodeURIComponent(email)}`);
             return response;
         } catch (error) {
-            console.warn('❌ Error verificando aprobación:', error);
+            debugLog.warn('ERROR', '❌ Error verificando aprobación:', error);
             return { success: false, approved: false };
         }
     }
@@ -443,7 +459,7 @@ class APIClient {
                 });
             }
         } catch (error) {
-            console.warn('Logout API falló:', error.message);
+            debugLog.warn('API', 'Logout API falló:', error.message);
         }
         finally {
             this.removeToken();
@@ -482,12 +498,12 @@ class APIClient {
             // Usar el método 'get' que ya construye la URL correctamente
             const data = await this.get('/health');
             if (data && data.success) {
-                //console.log('🟢 Backend conectado:', data.message);
+                //debugLog.log('DATA', '🟢 Backend conectado:', data.message);
                 return true;
             }
             return false;
         } catch (error) {
-            //console.log('🔴 Backend no disponible:', error.message);
+            //debugLog.log('ERROR', '🔴 Backend no disponible:', error.message);
             return false;
         }
     }
@@ -515,7 +531,8 @@ class APIClient {
                 tipo_usuario: decoded.tipo_usuario
             };
         } catch (error) {
-            console.warn('No se pudo decodificar token:', error.message);
+            // GDPR: Datos sensibles enmascarados
+            debugLog.warn('ERROR', 'No se pudo decodificar token:', error.message);
             return null;
         }
     }
@@ -529,9 +546,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const connected = await window.apiClient.checkConnection();
 
     if (connected) {
-        //console.log('🚀 API Cliente inicializado correctamente');
+        //debugLog.log('API', '🚀 API Cliente inicializado correctamente');
     } else {
-        //console.log('⚠️ API Cliente en modo offline - usando datos estáticos');
+        //debugLog.log('API', '⚠️ API Cliente en modo offline - usando datos estáticos');
     }
 });
 

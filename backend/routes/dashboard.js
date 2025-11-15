@@ -4,7 +4,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const router = express.Router();
 
@@ -18,7 +20,7 @@ const router = express.Router();
  */
 router.get('/stats', authenticateToken, requireAdmin, async (req, res, next) => {
     try {
-        devLogger.log('📊 [DASHBOARD] Obteniendo estadísticas generales...');
+        debugLog.log('DASHBOARD', '📊 [DASHBOARD] Obteniendo estadísticas generales...');
 
         // Simular datos de usuarios
         const users = [];
@@ -57,7 +59,7 @@ router.get('/stats', authenticateToken, requireAdmin, async (req, res, next) => 
             systemAlerts: Math.floor(Math.random() * 3)
         };
 
-        devLogger.log('Estadísticas del dashboard consultadas', {
+        debugLog.log('DASHBOARD', 'Estadísticas del dashboard consultadas', {
             adminId: req.user.id,
             timestamp: new Date().toISOString()
         });
@@ -84,7 +86,7 @@ router.get('/stats', authenticateToken, requireAdmin, async (req, res, next) => 
  */
 router.get('/recent-activity', authenticateToken, requireAdmin, async (req, res, next) => {
     try {
-        devLogger.log('🔄 [DASHBOARD] Obteniendo actividad reciente...');
+        debugLog.log('DASHBOARD', '🔄 [DASHBOARD] Obteniendo actividad reciente...');
 
         // Simulación de actividad reciente
         const activities = [
@@ -151,7 +153,7 @@ router.get('/recent-activity', authenticateToken, requireAdmin, async (req, res,
  */
 router.get('/system-health', authenticateToken, requireAdmin, async (req, res, next) => {
     try {
-        devLogger.log('🏥 [DASHBOARD] Verificando salud del sistema...');
+        debugLog.log('DASHBOARD', '🏥 [DASHBOARD] Verificando salud del sistema...');
 
         const health = {
             database: {
@@ -268,7 +270,7 @@ router.post('/execute-action', authenticateToken, requireAdmin, async (req, res,
     try {
         const { actionId, parameters } = req.body;
 
-        devLogger.log('⚡ [DASHBOARD] Ejecutando acción:', actionId);
+        debugLog.log('DASHBOARD', '⚡ [DASHBOARD] Ejecutando acción:', actionId);
 
         // Simulación de ejecución de acciones
         const results = {
@@ -309,7 +311,7 @@ router.post('/execute-action', authenticateToken, requireAdmin, async (req, res,
             message: 'Acción no reconocida'
         };
 
-        devLogger.log('Acción del dashboard ejecutada:', actionId, {
+        debugLog.log('DASHBOARD', 'Acción del dashboard ejecutada:', actionId, {
             adminId: req.user.id,
             actionId,
             parameters,
@@ -329,7 +331,7 @@ router.post('/execute-action', authenticateToken, requireAdmin, async (req, res,
  */
 router.get('/active-users', authenticateToken, requireAdmin, async (req, res, next) => {
     try {
-        devLogger.log('👥 [DASHBOARD] Obteniendo usuarios activos...');
+        debugLog.log('DASHBOARD', '👥 [DASHBOARD] Obteniendo usuarios activos...');
 
         // Simular sesiones activas
         const activeSessions = [];
@@ -362,12 +364,12 @@ router.get('/active-users', authenticateToken, requireAdmin, async (req, res, ne
                     sessionExpires: session.expire
                 };
             } catch (error) {
-                devLogger.error('Error procesando sesión:', error);
+                debugLog.error('DASHBOARD', 'Error procesando sesión:', sanitizeError(error, 'dashboard'));
                 return null;
             }
         }).filter(user => user !== null);
 
-        devLogger.log(`✅ [DASHBOARD] ${activeUsers.length} usuarios activos encontrados`);
+        debugLog.log('DASHBOARD', `✅ [DASHBOARD] ${activeUsers.length} usuarios activos encontrados`);
 
         res.json({
             success: true,
@@ -377,7 +379,7 @@ router.get('/active-users', authenticateToken, requireAdmin, async (req, res, ne
         });
 
     } catch (error) {
-        devLogger.error('❌ [DASHBOARD] Error obteniendo usuarios activos:', error);
+        debugLog.error('DASHBOARD', '❌ [DASHBOARD] Error obteniendo usuarios activos:', sanitizeError(error, 'dashboard'));
         next(error);
     }
 });

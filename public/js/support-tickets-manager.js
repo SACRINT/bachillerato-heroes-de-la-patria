@@ -1,4 +1,14 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * 🎫 SISTEMA DE TICKETS DE SOPORTE - FRONTEND MANAGER
  * Sistema completo de gestión de tickets con SLA tracking
  * Fase 3 - Ciclo 23 - BGE 2025
@@ -44,7 +54,7 @@ const appState = {
  */
 async function initSupportTickets() {
     try {
-        console.log('🎫 Inicializando Sistema de Tickets de Soporte...');
+        debugLog.log('APP', '🎫 Inicializando Sistema de Tickets de Soporte...');
 
         // Verificar autenticación
         await checkAuthentication();
@@ -59,9 +69,9 @@ async function initSupportTickets() {
         // Inicializar event listeners
         initEventListeners();
 
-        console.log('✅ Sistema de Tickets inicializado correctamente');
+        debugLog.log('APP', '✅ Sistema de Tickets inicializado correctamente');
     } catch (error) {
-        console.error('❌ Error al inicializar:', error);
+        debugLog.error('APP', '❌ Error al inicializar:', error);
         showError('Error al inicializar el sistema');
     }
 }
@@ -80,9 +90,9 @@ async function checkAuthentication() {
     try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         appState.user = payload;
-        console.log('👤 Usuario autenticado:', appState.user.name);
+        debugLog.log('APP', '👤 Usuario autenticado:', appState.user.name);
     } catch (error) {
-        console.error('Error al decodificar token:', error);
+        debugLog.error('TOKEN', 'Error al decodificar token:', error);
         localStorage.removeItem('token');
         window.location.href = '/login.html';
     }
@@ -256,9 +266,9 @@ async function loadDepartments() {
             });
         }
 
-        console.log(`✅ ${appState.departments.length} departamentos cargados`);
+        debugLog.log('APP', `✅ ${appState.departments.length} departamentos cargados`);
     } catch (error) {
-        console.error('Error al cargar departamentos:', error);
+        debugLog.error('APP', 'Error al cargar departamentos:', error);
         showError('Error al cargar departamentos');
     }
 }
@@ -280,9 +290,9 @@ async function loadCategories() {
             });
         }
 
-        console.log(`✅ ${appState.categories.length} categorías cargadas`);
+        debugLog.log('APP', `✅ ${appState.categories.length} categorías cargadas`);
     } catch (error) {
-        console.error('Error al cargar categorías:', error);
+        debugLog.error('APP', 'Error al cargar categorías:', error);
         showError('Error al cargar categorías');
     }
 }
@@ -315,9 +325,9 @@ async function loadTickets() {
         renderPagination(data.pagination);
         updateBadgeCounts(data.counts);
 
-        console.log(`✅ ${appState.tickets.length} tickets cargados`);
+        debugLog.log('TICKET', `✅ ${appState.tickets.length} tickets cargados`);
     } catch (error) {
-        console.error('Error al cargar tickets:', error);
+        debugLog.error('TICKET', 'Error al cargar tickets:', error);
         showError('Error al cargar los tickets');
     } finally {
         showLoading(false);
@@ -337,9 +347,9 @@ async function loadStats() {
         document.getElementById('stat-assigned').textContent = stats.tickets_assigned || 0;
         document.getElementById('stat-watching').textContent = stats.tickets_watching || 0;
 
-        console.log('✅ Estadísticas cargadas');
+        debugLog.log('APP', '✅ Estadísticas cargadas');
     } catch (error) {
-        console.error('Error al cargar estadísticas:', error);
+        debugLog.error('APP', 'Error al cargar estadísticas:', error);
         showError('Error al cargar estadísticas');
     }
 }
@@ -549,7 +559,7 @@ async function handleSaveTicket() {
         }
 
     } catch (error) {
-        console.error('Error al crear ticket:', error);
+        debugLog.error('TICKET', 'Error al crear ticket:', error);
         showError(error.message || 'Error al crear el ticket');
     } finally {
         showLoading(false);
@@ -586,7 +596,7 @@ async function showTicketDetail(ticketNumber) {
         modal.show();
 
     } catch (error) {
-        console.error('Error al cargar detalle del ticket:', error);
+        debugLog.error('TICKET', 'Error al cargar detalle del ticket:', error);
         showError('Error al cargar el detalle del ticket');
     } finally {
         showLoading(false);
@@ -811,7 +821,7 @@ async function handleAssignTicket(ticketNumber) {
         await showTicketDetail(ticketNumber);
 
     } catch (error) {
-        console.error('Error al asignar ticket:', error);
+        debugLog.error('TICKET', 'Error al asignar ticket:', error);
         showError('Error al asignar el ticket');
     }
 }
@@ -836,7 +846,7 @@ async function handleResolveTicket(ticketNumber) {
         await loadTickets();
 
     } catch (error) {
-        console.error('Error al resolver ticket:', error);
+        debugLog.error('TICKET', 'Error al resolver ticket:', error);
         showError('Error al resolver el ticket');
     }
 }
@@ -858,7 +868,7 @@ async function handleCloseTicket(ticketNumber) {
         await loadTickets();
 
     } catch (error) {
-        console.error('Error al cerrar ticket:', error);
+        debugLog.error('TICKET', 'Error al cerrar ticket:', error);
         showError('Error al cerrar el ticket');
     }
 }
@@ -883,7 +893,7 @@ async function handleReopenTicket(ticketNumber) {
         await loadTickets();
 
     } catch (error) {
-        console.error('Error al reabrir ticket:', error);
+        debugLog.error('TICKET', 'Error al reabrir ticket:', error);
         showError('Error al reabrir el ticket');
     }
 }
@@ -902,7 +912,7 @@ async function handleWatchTicket(ticketNumber) {
         await showTicketDetail(ticketNumber);
 
     } catch (error) {
-        console.error('Error al seguir ticket:', error);
+        debugLog.error('TICKET', 'Error al seguir ticket:', error);
         showError('Error al seguir el ticket');
     }
 }
@@ -921,7 +931,7 @@ async function handleUnwatchTicket(ticketNumber) {
         await showTicketDetail(ticketNumber);
 
     } catch (error) {
-        console.error('Error al dejar de seguir ticket:', error);
+        debugLog.error('TICKET', 'Error al dejar de seguir ticket:', error);
         showError('Error al dejar de seguir el ticket');
     }
 }
@@ -952,7 +962,7 @@ async function handleAddComment(ticketNumber) {
         await showTicketDetail(ticketNumber);
 
     } catch (error) {
-        console.error('Error al agregar comentario:', error);
+        debugLog.error('APP', 'Error al agregar comentario:', error);
         showError('Error al agregar el comentario');
     }
 }
@@ -1040,7 +1050,7 @@ function showLoading(show) {
  */
 function showSuccess(message) {
     // Aquí puedes integrar tu sistema de notificaciones existente
-    console.log('✅ SUCCESS:', message);
+    debugLog.log('MESSAGE', '✅ SUCCESS:', message);
     alert(message); // Temporal
 }
 
@@ -1050,7 +1060,7 @@ function showSuccess(message) {
  */
 function showError(message) {
     // Aquí puedes integrar tu sistema de notificaciones existente
-    console.error('❌ ERROR:', message);
+    debugLog.error('MESSAGE', '❌ ERROR:', message);
     alert(message); // Temporal
 }
 
@@ -1225,6 +1235,6 @@ window.handleAddComment = handleAddComment;
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🎫 Sistema de Tickets - DOM Ready');
+    debugLog.log('APP', '🎫 Sistema de Tickets - DOM Ready');
     initSupportTickets();
 });

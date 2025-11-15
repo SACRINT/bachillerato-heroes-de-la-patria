@@ -17,7 +17,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const { pool } = require('../config/database');
 
 const router = express.Router();
@@ -222,7 +224,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error al listar encuestas:', error);
+        debugLog.error('POLLS', 'Error al listar encuestas:', sanitizeError(error, 'polls'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener las encuestas',
@@ -313,7 +315,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error al obtener encuesta:', error);
+        debugLog.error('POLLS', 'Error al obtener encuesta:', sanitizeError(error, 'polls'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener la encuesta',
@@ -479,7 +481,7 @@ router.post('/', async (req, res) => {
         }
 
     } catch (error) {
-        devLogger.error('Error al crear encuesta:', error);
+        debugLog.error('POLLS', 'Error al crear encuesta:', sanitizeError(error, 'polls'));
         res.status(500).json({
             success: false,
             error: 'Error al crear la encuesta',
@@ -579,7 +581,7 @@ router.put('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error al actualizar encuesta:', error);
+        debugLog.error('POLLS', 'Error al actualizar encuesta:', sanitizeError(error, 'polls'));
         res.status(500).json({
             success: false,
             error: 'Error al actualizar la encuesta',
@@ -625,7 +627,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error al eliminar encuesta:', error);
+        debugLog.error('POLLS', 'Error al eliminar encuesta:', sanitizeError(error, 'polls'));
         res.status(500).json({
             success: false,
             error: 'Error al eliminar la encuesta',
@@ -750,7 +752,7 @@ router.post('/:id/vote', async (req, res) => {
             });
         }
 
-        devLogger.error('Error al registrar voto:', error);
+        debugLog.error('POLLS', 'Error al registrar voto:', sanitizeError(error, 'polls'));
         res.status(500).json({
             success: false,
             error: 'Error al registrar el voto',
@@ -828,7 +830,7 @@ router.get('/:id/results', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error al obtener resultados:', error);
+        debugLog.error('POLLS', 'Error al obtener resultados:', sanitizeError(error, 'polls'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener los resultados',
@@ -868,7 +870,7 @@ router.post('/:id/close', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error al cerrar encuesta:', error);
+        debugLog.error('POLLS', 'Error al cerrar encuesta:', sanitizeError(error, 'polls'));
         res.status(500).json({
             success: false,
             error: 'Error al cerrar la encuesta',
@@ -898,7 +900,7 @@ router.get('/categories/list', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error al obtener categorías:', error);
+        debugLog.error('POLLS', 'Error al obtener categorías:', sanitizeError(error, 'polls'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener las categorías',
@@ -975,7 +977,7 @@ router.get('/:id/export', async (req, res) => {
         }
 
     } catch (error) {
-        devLogger.error('Error al exportar resultados:', error);
+        debugLog.error('POLLS', 'Error al exportar resultados:', sanitizeError(error, 'polls'));
         res.status(500).json({
             success: false,
             error: 'Error al exportar los resultados',

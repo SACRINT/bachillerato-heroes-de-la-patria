@@ -14,7 +14,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { pool } = require('../config/database');
@@ -34,7 +36,7 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
     const client = await pool.connect();
 
     try {
-        devLogger.log('👨‍👩‍👧 [PARENTS] Obteniendo lista de padres...');
+        debugLog.log('parents', '👨‍👩‍👧 [PARENTS] Obteniendo lista de padres...');
 
         const query = `
             SELECT
@@ -50,7 +52,7 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
 
         const result = await client.query(query);
 
-        devLogger.log(`✅ [PARENTS] ${result.rows.length} padres encontrados`);
+        debugLog.log('parents', `✅ [PARENTS] ${result.rows.length} padres encontrados`);
 
         res.json({
             success: true,
@@ -59,7 +61,7 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ [PARENTS] Error obteniendo padres:', error);
+        debugLog.error('parents', '❌ [PARENTS] Error obteniendo padres', sanitizeError(error, 'parents'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener padres',
@@ -80,7 +82,7 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { nombre, email, password, student_id } = req.body;
 
-        devLogger.log('👨‍👩‍👧 [PARENTS] Creando nuevo padre...');
+        debugLog.log('parents', '👨‍👩‍👧 [PARENTS] Creando nuevo padre...');
 
         // Validaciones
         if (!nombre || !email || !password) {
@@ -122,7 +124,7 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
 
         const parent = result.rows[0];
 
-        devLogger.log(`✅ [PARENTS] Padre creado con ID: ${parent.id}`);
+        debugLog.log('parents', `✅ [PARENTS] Padre creado con ID: ${parent.id}`);
 
         res.status(201).json({
             success: true,
@@ -131,7 +133,7 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ [PARENTS] Error creando padre:', error);
+        debugLog.error('parents', '❌ [PARENTS] Error creando padre', sanitizeError(error, 'parents'));
         res.status(500).json({
             success: false,
             message: 'Error al crear padre',
@@ -153,7 +155,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
         const parentId = parseInt(req.params.id);
         const { nombre, email, password, student_id } = req.body;
 
-        devLogger.log(`👨‍👩‍👧 [PARENTS] Actualizando padre ID: ${parentId}`);
+        debugLog.log('parents', `👨‍👩‍👧 [PARENTS] Actualizando padre ID: ${parentId}`);
 
         // Verificar que el padre existe
         const existsCheck = await client.query(
@@ -221,7 +223,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
         const result = await client.query(updateQuery, values);
         const parent = result.rows[0];
 
-        devLogger.log(`✅ [PARENTS] Padre actualizado: ${parent.id}`);
+        debugLog.log('parents', `✅ [PARENTS] Padre actualizado: ${parent.id}`);
 
         res.json({
             success: true,
@@ -230,7 +232,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ [PARENTS] Error actualizando padre:', error);
+        debugLog.error('parents', '❌ [PARENTS] Error actualizando padre', sanitizeError(error, 'parents'));
         res.status(500).json({
             success: false,
             message: 'Error al actualizar padre',
@@ -251,7 +253,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const parentId = parseInt(req.params.id);
 
-        devLogger.log(`👨‍👩‍👧 [PARENTS] Eliminando padre ID: ${parentId}`);
+        debugLog.log('parents', `👨‍👩‍👧 [PARENTS] Eliminando padre ID: ${parentId}`);
 
         // Verificar que el padre existe
         const existsCheck = await client.query(
@@ -269,7 +271,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
         // Eliminar padre
         await client.query('DELETE FROM parents WHERE id = $1', [parentId]);
 
-        devLogger.log(`✅ [PARENTS] Padre eliminado: ${parentId}`);
+        debugLog.log('parents', `✅ [PARENTS] Padre eliminado: ${parentId}`);
 
         res.json({
             success: true,
@@ -277,7 +279,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ [PARENTS] Error eliminando padre:', error);
+        debugLog.error('parents', '❌ [PARENTS] Error eliminando padre', sanitizeError(error, 'parents'));
         res.status(500).json({
             success: false,
             message: 'Error al eliminar padre',
@@ -381,7 +383,7 @@ router.post('/auth/login', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error en login de padres:', error);
+        debugLog.error('parents', 'Error en login de padres', sanitizeError(error, 'parents'));
         res.status(500).json({
             success: false,
             error: 'Error al procesar login'
@@ -470,7 +472,7 @@ router.post('/auth/register', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error en registro de padres:', error);
+        debugLog.error('parents', 'Error en registro de padres', sanitizeError(error, 'parents'));
         res.status(500).json({
             success: false,
             error: 'Error al procesar registro'
@@ -563,7 +565,7 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error en dashboard de padres:', error);
+        debugLog.error('parents', 'Error en dashboard de padres', sanitizeError(error, 'parents'));
         res.status(500).json({
             success: false,
             error: 'Error al cargar dashboard'
@@ -679,7 +681,7 @@ router.get('/students/:studentId/grades', authenticateToken, async (req, res) =>
         });
 
     } catch (error) {
-        devLogger.error('Error al obtener calificaciones:', error);
+        debugLog.error('parents', 'Error al obtener calificaciones', sanitizeError(error, 'parents'));
         res.status(500).json({
             success: false,
             error: 'Error al cargar calificaciones'
@@ -782,7 +784,7 @@ router.get('/students/:studentId/attendance', authenticateToken, async (req, res
         });
 
     } catch (error) {
-        devLogger.error('Error al obtener asistencia:', error);
+        debugLog.error('parents', 'Error al obtener asistencia', sanitizeError(error, 'parents'));
         res.status(500).json({
             success: false,
             error: 'Error al cargar asistencia'
@@ -891,7 +893,7 @@ router.get('/students/:studentId/payments', authenticateToken, async (req, res) 
         });
 
     } catch (error) {
-        devLogger.error('Error al obtener pagos:', error);
+        debugLog.error('parents', 'Error al obtener pagos', sanitizeError(error, 'parents'));
         res.status(500).json({
             success: false,
             error: 'Error al cargar pagos'
@@ -952,7 +954,7 @@ router.get('/notifications', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error al obtener notificaciones:', error);
+        debugLog.error('parents', 'Error al obtener notificaciones', sanitizeError(error, 'parents'));
         res.status(500).json({
             success: false,
             error: 'Error al cargar notificaciones'
@@ -995,7 +997,7 @@ router.put('/notifications/:id/read', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error al marcar notificación:', error);
+        debugLog.error('parents', 'Error al marcar notificación', sanitizeError(error, 'parents'));
         res.status(500).json({
             success: false,
             error: 'Error al actualizar notificación'

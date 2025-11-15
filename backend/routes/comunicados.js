@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
@@ -95,7 +97,7 @@ router.post('/', [
             fecha_pub
         ]);
 
-        devLogger.log('✅ Nueva comunicado creada:', result.rows[0].id);
+        debugLog.log('COMUNICADOS', '✅ Nueva comunicado creada:', result.rows[0].id);
 
         res.status(201).json({
             success: true,
@@ -104,7 +106,7 @@ router.post('/', [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al crear comunicado:', error);
+        debugLog.error('COMUNICADOS', '❌ Error al crear comunicado:', sanitizeError(error, 'comunicados'));
         res.status(500).json({
             success: false,
             error: 'Error al crear la comunicado'
@@ -180,7 +182,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener comunicados:', error);
+        debugLog.error('COMUNICADOS', '❌ Error al obtener comunicados:', sanitizeError(error, 'comunicados'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener comunicados'
@@ -211,7 +213,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener estadísticas:', error);
+        debugLog.error('COMUNICADOS', '❌ Error al obtener estadísticas:', sanitizeError(error, 'comunicados'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -244,7 +246,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener comunicado:', error);
+        debugLog.error('COMUNICADOS', '❌ Error al obtener comunicado:', sanitizeError(error, 'comunicados'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener la comunicado'
@@ -277,7 +279,7 @@ router.get('/slug/:slug', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener comunicado:', error);
+        debugLog.error('COMUNICADOS', '❌ Error al obtener comunicado:', sanitizeError(error, 'comunicados'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener la comunicado'
@@ -345,7 +347,7 @@ router.put('/:id', async (req, res) => {
             });
         }
 
-        devLogger.log(`✅ Comunicado ${id} actualizada`);
+        debugLog.log('COMUNICADOS', `✅ Comunicado ${id} actualizada`);
 
         res.json({
             success: true,
@@ -354,7 +356,7 @@ router.put('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al actualizar comunicado:', error);
+        debugLog.error('COMUNICADOS', '❌ Error al actualizar comunicado:', sanitizeError(error, 'comunicados'));
         res.status(500).json({
             success: false,
             error: 'Error al actualizar la comunicado'
@@ -390,7 +392,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al archivar comunicado:', error);
+        debugLog.error('COMUNICADOS', '❌ Error al archivar comunicado:', sanitizeError(error, 'comunicados'));
         res.status(500).json({
             success: false,
             error: 'Error al archivar la comunicado'

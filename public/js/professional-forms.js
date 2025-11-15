@@ -1,4 +1,15 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    // Fallback si debug-logger.js no está cargado
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * 🏛️ SISTEMA PROFESIONAL DE FORMULARIOS
  * window.getTenantConfigValue('school_full_name_with_quotes', 'Bachillerato General Estatal "window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria')')')')')')"')
  * Sistema híbrido con verificación de email y anti-spam avanzado
@@ -42,7 +53,7 @@ class ProfessionalFormsManager {
     }
 
     init() {
-        console.log('🏛️ [FORMS] Inicializando sistema profesional de formularios...');
+        debugLog.log('FORMS', '🏛️ [FORMS] Inicializando sistema profesional de formularios...');
 
         // Buscar y configurar todos los formularios
         this.setupAllForms();
@@ -53,7 +64,7 @@ class ProfessionalFormsManager {
         // Configurar validaciones en tiempo real
         this.setupRealTimeValidation();
 
-        console.log('✅ [FORMS] Sistema profesional inicializado');
+        debugLog.log('FORMS', '✅ [FORMS] Sistema profesional inicializado');
     }
 
     // ==========================================
@@ -82,7 +93,7 @@ class ProfessionalFormsManager {
         document.querySelectorAll('.professional-form').forEach(form => {
             // IMPORTANTE: Saltar formularios que ya son manejados por handlers específicos
             if (form.getAttribute('data-handled-by')) {
-                console.log(`📝 [FORMS] Formulario #${form.id} ya es manejado por: ${form.getAttribute('data-handled-by')}. Saltando...`);
+                debugLog.log('FORMS', `📝 [FORMS] Formulario #${form.id} ya es manejado por: ${form.getAttribute('data-handled-by')}. Saltando...`);
                 return;
             }
             this.setupProfessionalForm(form);
@@ -91,7 +102,7 @@ class ProfessionalFormsManager {
 
     setupProfessionalForm(form) {
         const formId = form.id || 'form-' + Date.now();
-        console.log('📝 [FORMS] Configurando formulario:', formId);
+        debugLog.log('FORMS', '📝 [FORMS] Configurando formulario:', formId);
 
         // Prevenir envío estándar
         form.addEventListener('submit', async (e) => {
@@ -188,7 +199,8 @@ class ProfessionalFormsManager {
 
             return verification;
         } catch (error) {
-            console.warn('⚠️ [FORMS] Error verificando email:', error);
+            // GDPR: Datos sensibles enmascarados
+            debugLog.warn('FORMS', '⚠️ [FORMS] Error verificando email:', error);
 
             // En caso de error, permitir si el formato es válido
             return {
@@ -288,7 +300,7 @@ class ProfessionalFormsManager {
             }
 
         } catch (error) {
-            console.error('❌ [FORMS] Error procesando formulario:', error);
+            debugLog.error('FORMS', '❌ [FORMS] Error procesando formulario:', error);
             this.showError(form, 'Error inesperado. Por favor intenta nuevamente.');
         } finally {
             this.hideLoadingState(form);
@@ -371,20 +383,20 @@ class ProfessionalFormsManager {
 
             // 🆕 CORRECCIÓN CRÍTICA: Detectar suscripciones a newsletter
             if (formType === 'Suscripción Newsletter') {
-                console.log('📧 Detectada suscripción a newsletter, usando endpoint especializado');
+                debugLog.log('APP', '📧 Detectada suscripción a newsletter, usando endpoint especializado');
                 return await this.handleNewsletterSubscription(formData);
             }
 
             // 🆕 NUEVO: Detectar formularios de citas
             if (formType === 'Agendamiento de Cita') {
-                console.log('📅 Detectado formulario de citas, usando endpoint especializado');
+                debugLog.log('FORM', '📅 Detectado formulario de citas, usando endpoint especializado');
                 return await this.handleAppointmentSubmit(form, formData);
             }
 
             // 💼 DESACTIVADO: Bolsa de trabajo ahora manejada por bolsa-trabajo-cv-handler.js
             // Este handler no debe procesar formularios de bolsa-trabajo para evitar envíos duplicados
             // if (formType === 'Registro Bolsa de Trabajo') {
-            //     console.log('💼 Detectado formulario de bolsa de trabajo, usando endpoint especializado');
+            //     debugLog.log('FORM', '💼 Detectado formulario de bolsa de trabajo, usando endpoint especializado');
             //     return await this.handleBolsaTrabajoSubmit(form, formData);
             // }
 
@@ -412,7 +424,7 @@ class ProfessionalFormsManager {
                 _verified: 'true'
             };
 
-            console.log('📤 Enviando datos al servidor:', jsonData);
+            debugLog.log('APP', '📤 Enviando datos al servidor:', jsonData);
 
             const response = await fetch(this.config.apiEndpoint, {
                 method: 'POST',
@@ -424,7 +436,7 @@ class ProfessionalFormsManager {
             });
 
             const result = await response.json();
-            console.log('📥 Respuesta del servidor:', result);
+            debugLog.log('APP', '📥 Respuesta del servidor:', result);
 
             if (response.ok && result.success) {
                 // Devolver resultado con flag de verificación
@@ -449,7 +461,7 @@ class ProfessionalFormsManager {
                 message: result.message || 'Error al enviar mensaje'
             };
         } catch (error) {
-            console.error('❌ [FORMS] Error enviando al servidor:', error);
+            debugLog.error('FORMS', '❌ [FORMS] Error enviando al servidor:', error);
             return {
                 success: false,
                 message: 'Error de conexión con el servidor'
@@ -466,7 +478,8 @@ class ProfessionalFormsManager {
             const email = formData.get('email');
             const name = formData.get('name') || formData.get('nombre') || 'Suscriptor';
 
-            console.log('📧 [NEWSLETTER] Procesando suscripción:', { email, name });
+            // GDPR: Datos sensibles enmascarados
+            debugLog.log('NEWSLETTER', '📧 [NEWSLETTER] Procesando suscripción:', { email, name });
 
             // Datos para el endpoint de suscripciones
             const subscriptionData = {
@@ -487,7 +500,7 @@ class ProfessionalFormsManager {
             });
 
             const result = await response.json();
-            console.log('📥 [NEWSLETTER] Respuesta del servidor:', result);
+            debugLog.log('NEWSLETTER', '📥 [NEWSLETTER] Respuesta del servidor:', result);
 
             if (response.ok && result.success) {
                 return {
@@ -506,7 +519,7 @@ class ProfessionalFormsManager {
             };
 
         } catch (error) {
-            console.error('❌ [NEWSLETTER] Error en suscripción:', error);
+            debugLog.error('NEWSLETTER', '❌ [NEWSLETTER] Error en suscripción:', error);
             return {
                 success: false,
                 message: 'Error de conexión. Por favor intenta nuevamente.'
@@ -585,7 +598,7 @@ class ProfessionalFormsManager {
                 };
             }
 
-            console.log('📅 [CITAS] Procesando cita:', {
+            debugLog.log('CITAS', '📅 [CITAS] Procesando cita:', {
                 nombre, email, departamento,
                 fecha: fecha_solicitada,
                 hora: hora_solicitada
@@ -604,7 +617,7 @@ class ProfessionalFormsManager {
                 departamento: departamento.trim()
             };
 
-            console.log('📤 [CITAS] Enviando datos al endpoint /api/citas/create:', appointmentData);
+            debugLog.log('CITAS', '📤 [CITAS] Enviando datos al endpoint /api/citas/create:', appointmentData);
 
             // Enviar al endpoint correcto de citas mejoradas
             const response = await fetch('/api/citas/create', {
@@ -617,7 +630,7 @@ class ProfessionalFormsManager {
             });
 
             const result = await response.json();
-            console.log('📥 [CITAS] Respuesta del servidor:', result);
+            debugLog.log('CITAS', '📥 [CITAS] Respuesta del servidor:', result);
 
             if (response.ok && result.success) {
                 return {
@@ -651,7 +664,7 @@ class ProfessionalFormsManager {
             };
 
         } catch (error) {
-            console.error('❌ [CITAS] Error en agendamiento:', error);
+            debugLog.error('CITAS', '❌ [CITAS] Error en agendamiento:', error);
             return {
                 success: false,
                 message: 'Error de conexión. Por favor intenta nuevamente.'
@@ -707,7 +720,7 @@ class ProfessionalFormsManager {
                 };
             }
 
-            console.log('💼 [BOLSA-TRABAJO] Procesando registro CV:', {
+            debugLog.log('BOLSA-TRABAJO', '💼 [BOLSA-TRABAJO] Procesando registro CV:', {
                 nombre: name,
                 email: email,
                 telefono: phone,
@@ -728,7 +741,7 @@ class ProfessionalFormsManager {
                 form_type: 'bolsa_trabajo'
             };
 
-            console.log('📤 [BOLSA-TRABAJO] Enviando datos al endpoint /api/bolsa-trabajo/cv:', cvData);
+            debugLog.log('BOLSA-TRABAJO', '📤 [BOLSA-TRABAJO] Enviando datos al endpoint /api/bolsa-trabajo/cv:', cvData);
 
             // Enviar al endpoint correcto de bolsa de trabajo
             const response = await fetch('/api/bolsa-trabajo/cv', {
@@ -741,7 +754,7 @@ class ProfessionalFormsManager {
             });
 
             const result = await response.json();
-            console.log('📥 [BOLSA-TRABAJO] Respuesta del servidor:', result);
+            debugLog.log('BOLSA-TRABAJO', '📥 [BOLSA-TRABAJO] Respuesta del servidor:', result);
 
             if (response.ok && result.success) {
                 return {
@@ -782,7 +795,7 @@ class ProfessionalFormsManager {
             };
 
         } catch (error) {
-            console.error('❌ [BOLSA-TRABAJO] Error en registro:', error);
+            debugLog.error('BOLSA-TRABAJO', '❌ [BOLSA-TRABAJO] Error en registro:', error);
             return {
                 success: false,
                 message: 'Error de conexión. Por favor intenta nuevamente.'
@@ -796,7 +809,7 @@ class ProfessionalFormsManager {
 
     // MÉTODO DEPRECADO - Ya no usamos Formspree (bloqueado por CSP)
     async sendToFormspree(form) {
-        console.warn('⚠️ sendToFormspree está deprecado y bloqueado por CSP');
+        debugLog.warn('APP', '⚠️ sendToFormspree está deprecado y bloqueado por CSP');
         return false;
     }
 
@@ -1265,10 +1278,10 @@ document.addEventListener('click', (e) => {
             return;
         }
 
-        console.warn('[PROFESSIONAL-FORMS] Unhandled data-action:', action);
+        debugLog.warn('PROFESSIONAL-FORMS', '[PROFESSIONAL-FORMS] Unhandled data-action:', action);
     } catch (error) {
-        console.error('[PROFESSIONAL-FORMS] Error handling action:', action, error);
+        debugLog.error('PROFESSIONAL-FORMS', '[PROFESSIONAL-FORMS] Error handling action:', action, error);
     }
 });
 
-console.log('🏛️ professional-forms.js cargado exitosamente');
+debugLog.log('FORM', '🏛️ professional-forms.js cargado exitosamente');

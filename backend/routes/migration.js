@@ -4,7 +4,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
 const JSONToMySQLMigrator = require('../scripts/migrate-json-to-mysql');
@@ -24,17 +26,17 @@ router.post('/start', authenticateToken, async (req, res) => {
             });
         }
 
-        devLogger.log(`🔄 Iniciando migración JSON→MySQL por: ${req.user.email}`);
+        debugLog.log('MIGRATION', `🔄 Iniciando migración JSON→MySQL por: ${req.user.email}`);
 
         const migrator = new JSONToMySQLMigrator();
 
         // Ejecutar migración de forma asíncrona
         migrator.runMigration()
             .then((stats) => {
-                devLogger.log('✅ Migración completada exitosamente');
+                debugLog.log('MIGRATION', '✅ Migración completada exitosamente');
             })
             .catch((error) => {
-                devLogger.error('❌ Error en migración:', error.message);
+                debugLog.error('MIGRATION', '❌ Error en migración:', error.message);
             });
 
         res.json({
@@ -48,7 +50,7 @@ router.post('/start', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error iniciando migración:', error);
+        debugLog.error('MIGRATION', '❌ Error iniciando migración:', sanitizeError(error, 'migration'));
         res.status(500).json({
             success: false,
             error: 'Error iniciando migración',
@@ -125,7 +127,7 @@ router.get('/status', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo estado de migración:', error);
+        debugLog.error('MIGRATION', '❌ Error obteniendo estado de migración:', sanitizeError(error, 'migration'));
         res.status(500).json({
             success: false,
             error: 'Error obteniendo estado',
@@ -202,7 +204,7 @@ router.get('/preview', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error generando vista previa:', error);
+        debugLog.error('MIGRATION', '❌ Error generando vista previa:', sanitizeError(error, 'migration'));
         res.status(500).json({
             success: false,
             error: 'Error generando vista previa',
@@ -240,7 +242,7 @@ router.post('/force-mysql', authenticateToken, async (req, res) => {
         // Forzar uso de MySQL
         await db.forceMySQL();
 
-        devLogger.log(`✅ Forzado uso de MySQL por: ${req.user.email}`);
+        debugLog.log('MIGRATION', `✅ Forzado uso de MySQL por: ${req.user.email}`);
 
         res.json({
             success: true,
@@ -254,7 +256,7 @@ router.post('/force-mysql', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error forzando MySQL:', error);
+        debugLog.error('MIGRATION', '❌ Error forzando MySQL:', sanitizeError(error, 'migration'));
         res.status(500).json({
             success: false,
             error: 'Error configurando MySQL',
@@ -281,7 +283,7 @@ router.post('/enable-fallback', authenticateToken, async (req, res) => {
         // Habilitar modo híbrido
         await db.enableFallback();
 
-        devLogger.log(`✅ Habilitado fallback JSON por: ${req.user.email}`);
+        debugLog.log('MIGRATION', `✅ Habilitado fallback JSON por: ${req.user.email}`);
 
         res.json({
             success: true,
@@ -295,7 +297,7 @@ router.post('/enable-fallback', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error habilitando fallback:', error);
+        debugLog.error('MIGRATION', '❌ Error habilitando fallback:', sanitizeError(error, 'migration'));
         res.status(500).json({
             success: false,
             error: 'Error configurando fallback',
@@ -361,7 +363,7 @@ router.get('/tables-info', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo info de tablas:', error);
+        debugLog.error('MIGRATION', '❌ Error obteniendo info de tablas:', sanitizeError(error, 'migration'));
         res.status(500).json({
             success: false,
             error: 'Error obteniendo información de tablas',

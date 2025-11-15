@@ -1,5 +1,7 @@
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const { pool } = require('../config/database');
@@ -43,7 +45,7 @@ router.post('/', [
             user_agent
         ]);
 
-        devLogger.log('✅ Queja/sugerencia guardada:', result.rows[0].id);
+        debugLog.log('QUEJAS', '✅ Queja/sugerencia guardada:', result.rows[0].id);
 
         res.status(201).json({
             success: true,
@@ -55,7 +57,7 @@ router.post('/', [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al guardar queja:', error);
+        debugLog.error('QUEJAS', '❌ Error al guardar queja:', sanitizeError(error, 'quejas'));
         res.status(500).json({
             success: false,
             error: 'Error al procesar tu mensaje. Por favor intenta nuevamente.'
@@ -90,7 +92,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener quejas:', error);
+        debugLog.error('QUEJAS', '❌ Error al obtener quejas:', sanitizeError(error, 'quejas'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener los datos'
@@ -125,7 +127,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener estadísticas:', error);
+        debugLog.error('QUEJAS', '❌ Error al obtener estadísticas:', sanitizeError(error, 'quejas'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -155,7 +157,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener queja:', error);
+        debugLog.error('QUEJAS', '❌ Error al obtener queja:', sanitizeError(error, 'quejas'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener la queja'
@@ -203,7 +205,7 @@ router.put('/:id', [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al actualizar queja:', error);
+        debugLog.error('QUEJAS', '❌ Error al actualizar queja:', sanitizeError(error, 'quejas'));
         res.status(500).json({
             success: false,
             error: 'Error al actualizar la queja'
@@ -233,7 +235,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al eliminar queja:', error);
+        debugLog.error('QUEJAS', '❌ Error al eliminar queja:', sanitizeError(error, 'quejas'));
         res.status(500).json({
             success: false,
             error: 'Error al eliminar la queja'

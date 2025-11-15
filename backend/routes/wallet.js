@@ -5,7 +5,9 @@
 
 const express = require('express');
 const { Pool } = require('pg');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
@@ -24,7 +26,7 @@ router.get('/', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
 
-        devLogger.log(`[WALLET] Obteniendo saldo para usuario ${userId}`);
+        debugLog.log('WALLET', `[WALLET] Obteniendo saldo para usuario ${userId}`);
 
         const result = await pool.query(
             `SELECT
@@ -60,7 +62,7 @@ router.get('/', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('[WALLET] Error al obtener saldo:', error.message);
+        debugLog.error('WALLET', '[WALLET] Error al obtener saldo:', error.message);
         res.status(500).json({
             error: 'Error al obtener saldo del wallet',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -77,7 +79,7 @@ router.get('/history', authenticateToken, async (req, res) => {
         const userId = req.user.id;
         const { limit = 50, offset = 0, type } = req.query;
 
-        devLogger.log(`[WALLET] Obteniendo historial para usuario ${userId}`);
+        debugLog.log('WALLET', `[WALLET] Obteniendo historial para usuario ${userId}`);
 
         let query = `
             SELECT
@@ -122,7 +124,7 @@ router.get('/history', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('[WALLET] Error al obtener historial:', error.message);
+        debugLog.error('WALLET', '[WALLET] Error al obtener historial:', error.message);
         res.status(500).json({
             error: 'Error al obtener historial de transacciones',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -154,7 +156,7 @@ router.post('/earn', authenticateToken, async (req, res) => {
             });
         }
 
-        devLogger.log(`[WALLET] Usuario ${userId} ganando ${amount} IACoins: ${description}`);
+        debugLog.log('WALLET', `[WALLET] Usuario ${userId} ganando ${amount} IACoins: ${description}`);
 
         await client.query('BEGIN');
 
@@ -199,7 +201,7 @@ router.post('/earn', authenticateToken, async (req, res) => {
 
     } catch (error) {
         await client.query('ROLLBACK');
-        devLogger.error('[WALLET] Error al ganar IACoins:', error.message);
+        debugLog.error('WALLET', '[WALLET] Error al ganar IACoins:', error.message);
         res.status(500).json({
             error: 'Error al procesar la ganancia',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -233,7 +235,7 @@ router.post('/spend', authenticateToken, async (req, res) => {
             });
         }
 
-        devLogger.log(`[WALLET] Usuario ${userId} gastando ${amount} IACoins: ${description}`);
+        debugLog.log('WALLET', `[WALLET] Usuario ${userId} gastando ${amount} IACoins: ${description}`);
 
         await client.query('BEGIN');
 
@@ -294,7 +296,7 @@ router.post('/spend', authenticateToken, async (req, res) => {
 
     } catch (error) {
         await client.query('ROLLBACK');
-        devLogger.error('[WALLET] Error al gastar IACoins:', error.message);
+        debugLog.error('WALLET', '[WALLET] Error al gastar IACoins:', error.message);
         res.status(500).json({
             error: 'Error al procesar el gasto',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -328,7 +330,7 @@ router.post('/purchase', authenticateToken, async (req, res) => {
             });
         }
 
-        devLogger.log(`[WALLET] Usuario ${userId} comprando paquete ${package_id} con ${payment_method}`);
+        debugLog.log('WALLET', `[WALLET] Usuario ${userId} comprando paquete ${package_id} con ${payment_method}`);
 
         // Configuración de paquetes (debería venir de BD o config)
         const PACKAGES = {
@@ -413,7 +415,7 @@ router.post('/purchase', authenticateToken, async (req, res) => {
 
     } catch (error) {
         await client.query('ROLLBACK');
-        devLogger.error('[WALLET] Error al comprar IACoins:', error.message);
+        debugLog.error('WALLET', '[WALLET] Error al comprar IACoins:', error.message);
         res.status(500).json({
             error: 'Error al procesar la compra',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined

@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { getTenantByDomain } = require('../data/database-access');
 
@@ -39,7 +41,7 @@ router.get('/google-client-id', (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo Google Client ID:', error);
+        debugLog.error('CONFIG', '❌ Error obteniendo Google Client ID:', sanitizeError(error, 'config'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener configuración',
@@ -77,7 +79,7 @@ router.get('/public', (req, res) => {
         res.json(config);
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo configuración pública:', error);
+        debugLog.error('CONFIG', '❌ Error obteniendo configuración pública:', sanitizeError(error, 'config'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener configuración',
@@ -101,14 +103,14 @@ router.get('/tenant', async (req, res) => {
         // req.headers.host retorna el valor EXACTO del header Host: 'localhost:3000' ✅
         const hostname = req.headers.host || req.host || 'localhost';  // ej: 'localhost:3000' o 'heroes.localhost'
 
-        devLogger.log('[CONFIG] Buscando configuración de tenant para dominio:', hostname);
+        debugLog.log('CONFIG', '[CONFIG] Buscando configuración de tenant para dominio:', hostname);
 
         // Consultar la BD usando la función DAL
         const tenant = await getTenantByDomain(hostname);
 
         // Si no encuentra el tenant, usar configuración por defecto (BGE)
         if (!tenant) {
-            devLogger.warn(`[CONFIG] ⚠️ Tenant no encontrado para dominio: ${hostname}, usando configuración por defecto`);
+            debugLog.log('CONFIG', `[CONFIG] ⚠️ Tenant no encontrado para dominio: ${hostname}, usando configuración por defecto`);
 
             // Configuración por defecto de BGE Héroes de la Patria
             const defaultConfig = {
@@ -142,7 +144,7 @@ router.get('/tenant', async (req, res) => {
 
         // Si el tenant existe pero está inactivo, retornar error
         if (tenant.status !== 'activo') {
-            devLogger.warn(`[CONFIG] ⚠️ Tenant inactivo: ${hostname} (status: ${tenant.status})`);
+            debugLog.log('CONFIG', `[CONFIG] ⚠️ Tenant inactivo: ${hostname} (status: ${tenant.status})`);
             return res.status(403).json({
                 success: false,
                 error: 'Tenant inactivo',
@@ -151,7 +153,7 @@ router.get('/tenant', async (req, res) => {
             });
         }
 
-        devLogger.log(`[CONFIG] ✅ Configuración de tenant encontrada: ${tenant.school_name}`);
+        debugLog.log('CONFIG', `[CONFIG] ✅ Configuración de tenant encontrada: ${tenant.school_name}`);
 
         // Retornar la configuración JSON del tenant
         res.json({
@@ -169,7 +171,7 @@ router.get('/tenant', async (req, res) => {
 
     } catch (error) {
         // 🔍 DIAGNÓSTICO DE RAÍZ (GDPR-compliant)
-        devLogger.error('Error durante operación'); // Error en /api/config/tenant (stack trace masked)
+        debugLog.error('CONFIG', 'Error durante operación'); // Error en /api/config/tenant (stack trace masked)
 
         res.status(500).json({
             success: false,
@@ -191,7 +193,7 @@ router.get('/public-keys', (req, res) => {
         const tinymceKey = process.env.TINYMCE_API_KEY || null;
 
         // 🔍 LOGGING DIAGNÓSTICO (GDPR-compliant)
-        devLogger.log('Operación iniciada'); // [PUBLIC-KEYS] Request recibido (API key metadata no se logea por seguridad)
+        debugLog.log('CONFIG', 'Operación iniciada'); // [PUBLIC-KEYS] Request recibido (API key metadata no se logea por seguridad)
 
         const response = {
             success: true,
@@ -207,7 +209,7 @@ router.get('/public-keys', (req, res) => {
         res.json(response);
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo claves públicas:', error);
+        debugLog.error('CONFIG', '❌ Error obteniendo claves públicas:', sanitizeError(error, 'config'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener claves públicas',
@@ -244,7 +246,7 @@ router.get('/health', (req, res) => {
         res.json(config);
 
     } catch (error) {
-        devLogger.error('❌ Error en health check de configuración:', error);
+        debugLog.error('CONFIG', '❌ Error en health check de configuración:', sanitizeError(error, 'config'));
         res.status(500).json({
             success: false,
             error: 'Error en health check',

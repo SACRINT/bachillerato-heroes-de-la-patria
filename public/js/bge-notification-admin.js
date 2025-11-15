@@ -1,4 +1,14 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * 🔔 PANEL DE ADMINISTRACIÓN DE NOTIFICACIONES BGE
  * Bachillerato General Estatal "Héroes de la Patria"
  *
@@ -23,7 +33,7 @@ class BGENotificationAdmin {
             all: []
         };
 
-        console.log('🔧 Iniciando Panel de Administración de Notificaciones BGE');
+        debugLog.log('APP', '🔧 Iniciando Panel de Administración de Notificaciones BGE');
         this.init();
     }
 
@@ -34,7 +44,7 @@ class BGENotificationAdmin {
         this.createAdminInterface();
         this.setupEventListeners();
 
-        console.log('✅ Panel de administración BGE inicializado');
+        debugLog.log('APP', '✅ Panel de administración BGE inicializado');
     }
 
     async loadUserSession() {
@@ -42,13 +52,14 @@ class BGENotificationAdmin {
         const user = JSON.parse(localStorage.getItem('bge_admin_user') || '{}');
 
         if (!user.email || !user.role || !['admin', 'director', 'coordinador'].includes(user.role)) {
-            console.warn('⚠️ Usuario sin permisos de administración');
+            debugLog.warn('APP', '⚠️ Usuario sin permisos de administración');
             this.showAccessDenied();
             return;
         }
 
         this.currentUser = user;
-        console.log(`👤 Usuario admin: ${user.name} (${user.role})`);
+        // GDPR: Datos sensibles enmascarados
+        debugLog.log('APP', `👤 Usuario admin: ${user.name} (${user.role})`);
     }
 
     async loadRecipients() {
@@ -62,7 +73,7 @@ class BGENotificationAdmin {
                 all: await this.fetchRecipients('all')
             };
 
-            console.log('📋 Destinatarios cargados:', {
+            debugLog.log('APP', '📋 Destinatarios cargados:', {
                 estudiantes: this.recipients.students.length,
                 padres: this.recipients.parents.length,
                 maestros: this.recipients.teachers.length,
@@ -70,7 +81,7 @@ class BGENotificationAdmin {
             });
 
         } catch (error) {
-            console.error('❌ Error cargando destinatarios:', error);
+            debugLog.error('ERROR', '❌ Error cargando destinatarios:', error);
             this.recipients = this.getDemoRecipients();
         }
     }
@@ -555,7 +566,7 @@ class BGENotificationAdmin {
             this.showSuccessMessage('Notificación enviada exitosamente');
 
         } catch (error) {
-            console.error('❌ Error enviando notificación:', error);
+            debugLog.error('ERROR', '❌ Error enviando notificación:', error);
             this.showErrorMessage('Error enviando notificación: ' + error.message);
         } finally {
             this.hideLoadingState();
@@ -607,7 +618,7 @@ class BGENotificationAdmin {
 
     async sendNotificationNow(notification) {
         // Simular envío (en producción usar API real)
-        console.log('📤 Enviando notificación:', notification);
+        debugLog.log('NOTIFICATION', '📤 Enviando notificación:', notification);
 
         // Si existe el sistema de notificaciones global, usarlo
         if (window.bgeNotifications) {
@@ -653,7 +664,7 @@ class BGENotificationAdmin {
         this.scheduledNotifications.push(scheduledNotification);
         this.saveScheduledNotifications();
 
-        console.log('⏰ Notificación programada para:', scheduleDate);
+        debugLog.log('APP', '⏰ Notificación programada para:', scheduleDate);
     }
 
     addToHistory(notification) {
@@ -1078,10 +1089,10 @@ document.addEventListener('click', (e) => {
             return;
         }
 
-        console.warn('[BGE-NOTIFICATION-ADMIN] Unhandled data-action:', action);
+        debugLog.warn('BGE-NOTIFICATION-ADMIN', '[BGE-NOTIFICATION-ADMIN] Unhandled data-action:', action);
     } catch (error) {
-        console.error('[BGE-NOTIFICATION-ADMIN] Error handling action:', action, error);
+        debugLog.error('BGE-NOTIFICATION-ADMIN', '[BGE-NOTIFICATION-ADMIN] Error handling action:', action, error);
     }
 });
 
-console.log('🔧 Panel de Administración de Notificaciones BGE cargado');
+debugLog.log('APP', '🔧 Panel de Administración de Notificaciones BGE cargado');

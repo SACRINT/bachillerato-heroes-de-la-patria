@@ -7,7 +7,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 
 // Configuración de IA (se configurará con variables de entorno)
@@ -59,7 +61,7 @@ router.get('/health', async (req, res) => {
                     healthStatus.availableModel = AI_CONFIG.openai.model;
                 }
             } catch (error) {
-                devLogger.warn('OpenAI health check failed:', error.message);
+                debugLog.log('CHATBOT_IA', 'OpenAI health check failed:', error.message);
             }
         }
 
@@ -72,7 +74,7 @@ router.get('/health', async (req, res) => {
                     healthStatus.availableModel = AI_CONFIG.claude.model;
                 }
             } catch (error) {
-                devLogger.warn('Claude health check failed:', error.message);
+                debugLog.log('CHATBOT_IA', 'Claude health check failed:', error.message);
             }
         }
 
@@ -86,7 +88,7 @@ router.get('/health', async (req, res) => {
         res.json(healthStatus);
 
     } catch (error) {
-        devLogger.error('Health check error:', error);
+        debugLog.error('CHATBOT_IA', 'Health check error:', sanitizeError(error, 'chatbot-ia'));
         res.status(500).json({
             status: 'error',
             message: 'Health check failed',
@@ -167,7 +169,7 @@ router.post('/chat', async (req, res) => {
     } catch (error) {
         const responseTime = Date.now() - startTime;
 
-        devLogger.error('Chat endpoint error:', error);
+        debugLog.error('CHATBOT_IA', 'Chat endpoint error:', sanitizeError(error, 'chatbot-ia'));
 
         // Log de error
         logChatResponse(
@@ -211,7 +213,7 @@ async function processWithAvailableIA(params) {
             };
 
         } catch (error) {
-            devLogger.warn('OpenAI failed, trying Claude:', error.message);
+            debugLog.log('CHATBOT_IA', 'OpenAI failed, trying Claude:', error.message);
         }
     }
 
@@ -232,7 +234,7 @@ async function processWithAvailableIA(params) {
             };
 
         } catch (error) {
-            devLogger.warn('Claude failed, using local IA:', error.message);
+            debugLog.log('CHATBOT_IA', 'Claude failed, using local IA:', error.message);
         }
     }
 
@@ -504,14 +506,14 @@ function generateRequestId() {
 }
 
 function logChatQuery(context, message) {
-    devLogger.log(`📝 [CHAT-IA] Query from ${context.userType || 'guest'}: "${message.substring(0, 50)}..."`);
+    debugLog.log('CHATBOT_IA', `📝 [CHAT-IA] Query from ${context.userType || 'guest'}: "${message.substring(0, 50)}..."`);
 }
 
 function logChatResponse(context, response, responseTime, success, error = null) {
     if (success) {
-        devLogger.log(`✅ [CHAT-IA] Response sent (${responseTime}ms) - Model: ${response?.model || 'unknown'}`);
+        debugLog.log('CHATBOT_IA', `✅ [CHAT-IA] Response sent (${responseTime}ms) - Model: ${response?.model || 'unknown'}`);
     } else {
-        devLogger.log(`❌ [CHAT-IA] Response failed (${responseTime}ms) - Error: ${error}`);
+        debugLog.log('CHATBOT_IA', `❌ [CHAT-IA] Response failed (${responseTime}ms) - Error: ${error}`);
     }
 }
 
@@ -543,7 +545,7 @@ router.get('/stats', async (req, res) => {
         res.json(stats);
 
     } catch (error) {
-        devLogger.error('Stats endpoint error:', error);
+        debugLog.error('CHATBOT_IA', 'Stats endpoint error:', sanitizeError(error, 'chatbot-ia'));
         res.status(500).json({
             error: 'Error retrieving stats',
             message: error.message
@@ -574,7 +576,7 @@ router.post('/config', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Config endpoint error:', error);
+        debugLog.error('CHATBOT_IA', 'Config endpoint error:', sanitizeError(error, 'chatbot-ia'));
         res.status(500).json({
             error: 'Error updating configuration',
             message: error.message

@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
@@ -95,7 +97,7 @@ router.post('/', [
             fecha_pub
         ]);
 
-        devLogger.log('✅ Nueva aviso creada:', result.rows[0].id);
+        debugLog.log('AVISOS', '✅ Nueva aviso creada:', result.rows[0].id);
 
         res.status(201).json({
             success: true,
@@ -104,7 +106,7 @@ router.post('/', [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al crear aviso:', error);
+        debugLog.error('AVISOS', '❌ Error al crear aviso:', sanitizeError(error, 'avisos'));
         res.status(500).json({
             success: false,
             error: 'Error al crear la aviso'
@@ -180,7 +182,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener avisos:', error);
+        debugLog.error('AVISOS', '❌ Error al obtener avisos:', sanitizeError(error, 'avisos'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener avisos'
@@ -211,11 +213,11 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener estadísticas:', error);
+        debugLog.error('AVISOS', '❌ Error al obtener estadísticas:', sanitizeError(error, 'avisos'));
 
         // Si la tabla no existe, devolver datos vacíos en lugar de error
         if (error.code === '42P01') {
-            devLogger.warn('⚠️ Tabla "avisos" no existe - devolviendo datos vacíos');
+            debugLog.log('AVISOS', '⚠️ Tabla "avisos" no existe - devolviendo datos vacíos');
             return res.json({
                 success: true,
                 data: {
@@ -260,7 +262,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener aviso:', error);
+        debugLog.error('AVISOS', '❌ Error al obtener aviso:', sanitizeError(error, 'avisos'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener la aviso'
@@ -293,7 +295,7 @@ router.get('/slug/:slug', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener aviso:', error);
+        debugLog.error('AVISOS', '❌ Error al obtener aviso:', sanitizeError(error, 'avisos'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener la aviso'
@@ -361,7 +363,7 @@ router.put('/:id', async (req, res) => {
             });
         }
 
-        devLogger.log(`✅ Aviso ${id} actualizada`);
+        debugLog.log('AVISOS', `✅ Aviso ${id} actualizada`);
 
         res.json({
             success: true,
@@ -370,7 +372,7 @@ router.put('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al actualizar aviso:', error);
+        debugLog.error('AVISOS', '❌ Error al actualizar aviso:', sanitizeError(error, 'avisos'));
         res.status(500).json({
             success: false,
             error: 'Error al actualizar la aviso'
@@ -406,7 +408,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al archivar aviso:', error);
+        debugLog.error('AVISOS', '❌ Error al archivar aviso:', sanitizeError(error, 'avisos'));
         res.status(500).json({
             success: false,
             error: 'Error al archivar la aviso'

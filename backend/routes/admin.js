@@ -4,7 +4,6 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
 const { body, validationResult } = require('express-validator');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const { getAuthService } = require('../services/authService');
@@ -12,6 +11,11 @@ const { getPasswordGenerator } = require('../utils/passwordGenerator');
 const { pool } = require('../config/database');
 const fs = require('fs').promises;
 const path = require('path');
+
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
+
 const router = express.Router();
 
 // Instancias de servicios
@@ -76,7 +80,7 @@ router.get('/pending-registrations', authenticateToken, requireAdmin, async (req
         // Ordenar por fecha de creación (más reciente primero)
         pendingRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-        devLogger.log('📋 Admin ${req.user.email} consultó solicitudes pendientes: ${pendingRequests.length}');
+        debugLog.log('ADMIN', '📋 Admin ${req.user.email} consultó solicitudes pendientes: ${pendingRequests.length}');
 
         res.json({
             success: true,
@@ -87,7 +91,7 @@ router.get('/pending-registrations', authenticateToken, requireAdmin, async (req
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo solicitudes pendientes:');
+        debugLog.error('ADMIN', '❌ Error obteniendo solicitudes pendientes', sanitizeError(new Error('Admin error'), 'admin'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -124,7 +128,7 @@ router.get('/all-registrations', authenticateToken, requireAdmin, async (req, re
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo todas las solicitudes:');
+        debugLog.error('ADMIN', '❌ Error obteniendo todas las solicitudes', sanitizeError(new Error('Admin error'), 'admin'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -158,7 +162,7 @@ router.get('/check-approval/:email', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error verificando aprobación:');
+        debugLog.error('ADMIN', '❌ Error verificando aprobación', sanitizeError(new Error('Admin error'), 'admin'));
         res.status(500).json({
             success: false,
             approved: false
@@ -269,7 +273,7 @@ router.post('/approve-registration', authenticateToken, requireAdmin, [
             // Guardar cambios
             await RegistrationHelpers.writeRegistrationRequests(data);
 
-            devLogger.log('✅ Admin ${req.user.email} aprobó solicitud ${requestId} - Usuario creado: ${newUser.email}');
+            debugLog.log('ADMIN', '✅ Admin ${req.user.email} aprobó solicitud ${requestId} - Usuario creado: ${newUser.email}');
 
             res.status(201).json({
                 success: true,
@@ -290,7 +294,7 @@ router.post('/approve-registration', authenticateToken, requireAdmin, [
             });
 
         } catch (userError) {
-            devLogger.error('❌ Error creando usuario:', userError);
+            debugLog.error('ADMIN', '❌ Error creando usuario', sanitizeError(userError, 'admin'));
 
             // Si falla la creación del usuario, revertir el cambio de estado
             return res.status(500).json({
@@ -301,7 +305,7 @@ router.post('/approve-registration', authenticateToken, requireAdmin, [
         }
 
     } catch (error) {
-        devLogger.error('❌ Error aprobando solicitud:');
+        debugLog.error('ADMIN', '❌ Error aprobando solicitud', sanitizeError(new Error('Admin error'), 'admin'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -366,7 +370,7 @@ router.post('/reject-registration', authenticateToken, requireAdmin, [
         // Guardar cambios
         await RegistrationHelpers.writeRegistrationRequests(data);
 
-        devLogger.log('🚫 Admin ${req.user.email} rechazó solicitud ${requestId}');
+        debugLog.log('ADMIN', '🚫 Admin ${req.user.email} rechazó solicitud ${requestId}');
 
         res.json({
             success: true,
@@ -382,7 +386,7 @@ router.post('/reject-registration', authenticateToken, requireAdmin, [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error rechazando solicitud:');
+        debugLog.error('ADMIN', '❌ Error rechazando solicitud', sanitizeError(new Error('Admin error'), 'admin'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -431,7 +435,7 @@ router.get('/registration-stats', authenticateToken, requireAdmin, async (req, r
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo estadísticas:');
+        debugLog.error('ADMIN', '❌ Error obteniendo estadísticas', sanitizeError(new Error('Admin error'), 'admin'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -451,7 +455,7 @@ router.get('/teachers', authenticateToken, requireAdmin, async (req, res) => {
         const teachers = result.rows || [];
         res.json({ success: true, data: teachers });
     } catch (error) {
-        devLogger.error('❌ Error al obtener docentes:');
+        debugLog.error('ADMIN', '❌ Error al obtener docentes', sanitizeError(new Error('Admin error'), 'admin'));
         res.status(500).json({ success: false, error: 'Error interno del servidor al obtener docentes' });
     }
 });
@@ -464,18 +468,18 @@ router.get('/teachers', authenticateToken, requireAdmin, async (req, res) => {
 router.get('/students', authenticateToken, requireAdmin, async (req, res) => {
     try {
         // 🔍 LOGS DE DIAGNÓSTICO - Verificar conexión a BD
-        devLogger.log('[DB_DEBUG] DATABASE_URL presente: ${!!process.env.DATABASE_URL}');
-        devLogger.log('[DB_DEBUG] Pool configurado - Total connections: ${pool.totalCount}, Idle: ${pool.idleCount}');
-        devLogger.log('[DB_DEBUG] Ejecutando consulta: SELECT * FROM estudiantes');
+        debugLog.log('ADMIN', '[DB_DEBUG] DATABASE_URL presente: ${!!process.env.DATABASE_URL}');
+        debugLog.log('ADMIN', '[DB_DEBUG] Pool configurado - Total connections: ${pool.totalCount}, Idle: ${pool.idleCount}');
+        debugLog.log('ADMIN', '[DB_DEBUG] Ejecutando consulta: SELECT * FROM estudiantes');
 
         const result = await pool.query('SELECT * FROM estudiantes ORDER BY apellido_paterno, apellido_materno, nombre ASC');
         const students = result.rows || [];
 
-        devLogger.log('[DB_DEBUG] ✅ Consulta exitosa: ${students.length} estudiantes encontrados');
+        debugLog.log('ADMIN', '[DB_DEBUG] ✅ Consulta exitosa: ${students.length} estudiantes encontrados');
 
         res.json({ success: true, data: students });
     } catch (error) {
-        devLogger.error('❌ Error al obtener estudiantes:');
+        debugLog.error('ADMIN', '❌ Error al obtener estudiantes', sanitizeError(new Error('Admin error'), 'admin'));
         res.status(500).json({ success: false, error: 'Error interno del servidor al obtener estudiantes' });
     }
 });
@@ -501,7 +505,7 @@ router.get('/parents', authenticateToken, requireAdmin, async (req, res) => {
         const parents = result.rows || [];
         res.json({ success: true, data: parents, total: parents.length });
     } catch (error) {
-        devLogger.error('❌ Error al obtener padres:');
+        debugLog.error('ADMIN', '❌ Error al obtener padres', sanitizeError(new Error('Admin error'), 'admin'));
         res.status(500).json({ success: false, error: 'Error interno del servidor al obtener padres' });
     }
 });

@@ -4,7 +4,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const { body, query, validationResult } = require('express-validator');
 const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
 
@@ -16,7 +18,7 @@ function getParentTeacherService() {
         const { getParentTeacherCommunicationService } = require('../services/parentTeacherCommunicationService');
         return getParentTeacherCommunicationService();
     } catch (error) {
-        devLogger.error('❌ Error obteniendo servicio de comunicación:', error.message);
+        debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error obteniendo servicio de comunicación:', error.message);
         return null;
     }
 }
@@ -59,7 +61,7 @@ router.get('/conversations', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo conversaciones:', error);
+        debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error obteniendo conversaciones:', sanitizeError(error, 'parentTeacherCommunication'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo conversaciones',
@@ -141,7 +143,7 @@ router.post('/conversations', authenticateToken, [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error creando conversación:', error);
+        debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error creando conversación:', sanitizeError(error, 'parentTeacherCommunication'));
         res.status(500).json({
             success: false,
             message: 'Error creando conversación',
@@ -195,7 +197,7 @@ router.get('/conversations/:conversationId', authenticateToken, async (req, res)
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo conversación:', error);
+        debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error obteniendo conversación:', sanitizeError(error, 'parentTeacherCommunication'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo conversación',
@@ -292,7 +294,7 @@ router.post('/messages', authenticateToken, [
                 });
             }
         } catch (wsError) {
-            devLogger.log('⚠️ WebSocket no disponible para notificación de mensaje');
+            debugLog.log('PARENTTEACHERCOMMUNICATION', '⚠️ WebSocket no disponible para notificación de mensaje');
         }
 
         res.status(201).json({
@@ -302,7 +304,7 @@ router.post('/messages', authenticateToken, [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error enviando mensaje:', error);
+        debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error enviando mensaje:', sanitizeError(error, 'parentTeacherCommunication'));
         res.status(500).json({
             success: false,
             message: 'Error enviando mensaje',
@@ -382,7 +384,7 @@ router.get('/conversations/:conversationId/messages', authenticateToken, [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo mensajes:', error);
+        debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error obteniendo mensajes:', sanitizeError(error, 'parentTeacherCommunication'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo mensajes',
@@ -464,7 +466,7 @@ router.get('/appointments', authenticateToken, [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo citas:', error);
+        debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error obteniendo citas:', sanitizeError(error, 'parentTeacherCommunication'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo citas',
@@ -568,7 +570,7 @@ router.post('/appointments', authenticateToken, [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error programando cita:', error);
+        debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error programando cita:', sanitizeError(error, 'parentTeacherCommunication'));
         res.status(500).json({
             success: false,
             message: 'Error programando cita',
@@ -624,7 +626,7 @@ router.put('/appointments/:appointmentId', authenticateToken, async (req, res) =
         });
 
     } catch (error) {
-        devLogger.error('❌ Error actualizando cita:', error);
+        debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error actualizando cita:', sanitizeError(error, 'parentTeacherCommunication'));
         res.status(500).json({
             success: false,
             message: 'Error actualizando cita',
@@ -678,7 +680,7 @@ router.post('/appointments/:appointmentId/cancel', authenticateToken, async (req
         });
 
     } catch (error) {
-        devLogger.error('❌ Error cancelando cita:', error);
+        debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error cancelando cita:', sanitizeError(error, 'parentTeacherCommunication'));
         res.status(500).json({
             success: false,
             message: 'Error cancelando cita',
@@ -744,7 +746,7 @@ router.get('/reports', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo reportes:', error);
+        debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error obteniendo reportes:', sanitizeError(error, 'parentTeacherCommunication'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo reportes',
@@ -805,7 +807,7 @@ router.post('/reports', authenticateToken, requireTeacher, [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error creando reporte:', error);
+        debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error creando reporte:', sanitizeError(error, 'parentTeacherCommunication'));
         res.status(500).json({
             success: false,
             message: 'Error creando reporte',
@@ -849,7 +851,7 @@ router.get('/stats', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo estadísticas:', error);
+        debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error obteniendo estadísticas:', sanitizeError(error, 'parentTeacherCommunication'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo estadísticas',
@@ -912,7 +914,7 @@ router.get('/upcoming-appointments', authenticateToken, [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo próximas citas:', error);
+        debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error obteniendo próximas citas:', sanitizeError(error, 'parentTeacherCommunication'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo próximas citas',
@@ -926,7 +928,7 @@ router.get('/upcoming-appointments', authenticateToken, [
 // ============================================
 
 router.use((error, req, res, next) => {
-    devLogger.error('❌ Error en rutas de comunicación padres-docentes:', error);
+    debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error en rutas de comunicación padres-docentes:', sanitizeError(error, 'parentTeacherCommunication'));
 
     res.status(500).json({
         success: false,

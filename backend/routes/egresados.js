@@ -8,7 +8,10 @@ const router = express.Router();
 const { pool } = require('../config/database');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const devLog = require('../utils/devLogger'); // 🔐 Logging seguro (GDPR compliant)
+
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
 
 // Configuración de nodemailer
 const transporter = nodemailer.createTransport({
@@ -26,7 +29,7 @@ const transporter = nodemailer.createTransport({
 router.post('/create', async (req, res) => {
     const client = await pool.connect();
     try {
-        devLog.log('[EGRESADOS CREATE v2] Recibido formulario de egresado');
+        debugLog.log('EGRESADOS', '[EGRESADOS CREATE v2] Recibido formulario de egresado');
         const { nombre_completo, email, ...otherData } = req.body;
 
         if (!nombre_completo || !email) {
@@ -49,7 +52,7 @@ router.post('/create', async (req, res) => {
         const result = await client.query(insertQuery, [email, JSON.stringify(datosJSON), confirmationToken]);
         const finalToken = result.rows[0].confirmation_token;
 
-        devLog.log('[EGRESADOS CREATE v2] Solicitud guardada en tabla temporal');
+        debugLog.log('EGRESADOS', '[EGRESADOS CREATE v2] Solicitud guardada en tabla temporal');
 
         const confirmLink = `${process.env.BASE_URL || 'http://localhost:3000'}/egresados.html?token=${finalToken}#confirm-email`;
         const mailOptions = {
@@ -90,12 +93,12 @@ router.post('/create', async (req, res) => {
         };
 
         await transporter.sendMail(mailOptions);
-        devLog.log('[EGRESADOS CREATE v2] Email de confirmación enviado exitosamente');
+        debugLog.log('EGRESADOS', `[EGRESADOS CREATE v2] Email de confirmación enviado a ${maskEmail(email)}`);
 
         res.status(201).json({ success: true, message: `✅ REGISTRO EXITOSO: Se ha enviado un email de confirmación a ${email}.` });
 
     } catch (error) {
-        devLog.error('[EGRESADOS CREATE v2] Error al procesar solicitud', error);
+        debugLog.error('EGRESADOS', '[EGRESADOS CREATE v2] Error al procesar solicitud', sanitizeError(error, 'egresados'));
         res.status(500).json({ success: false, message: 'Error al procesar la solicitud.', error: error.message });
     } finally {
         client.release();
@@ -151,7 +154,7 @@ router.post('/confirm/:token', async (req, res) => {
         }
 
     } catch (error) {
-        devLog.error('[EGRESADOS CONFIRM v2] Error al confirmar email', error);
+        debugLog.error('EGRESADOS', '[EGRESADOS CONFIRM v2] Error al confirmar email', sanitizeError(error, 'egresados'));
         res.status(500).json({ success: false, error: 'Error al confirmar email.', detail: error.message });
     } finally {
         client.release();
@@ -182,7 +185,7 @@ router.get('/', async (req, res) => {
             data: result.rows
         });
     } catch (error) {
-        devLog.error('[EGRESADOS GET] Error al obtener egresados', error);
+        debugLog.error('EGRESADOS', '[EGRESADOS GET] Error al obtener egresados', sanitizeError(error, 'egresados'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener egresados'
@@ -216,7 +219,7 @@ router.get('/stats', async (req, res) => {
             }
         });
     } catch (error) {
-        devLog.error('[EGRESADOS STATS] Error al obtener estadísticas', error);
+        debugLog.error('EGRESADOS', '[EGRESADOS STATS] Error al obtener estadísticas', sanitizeError(error, 'egresados'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -250,7 +253,7 @@ router.get('/stats/general', async (req, res) => {
             }
         });
     } catch (error) {
-        devLog.error('[EGRESADOS STATS GENERAL] Error al obtener estadísticas', error);
+        debugLog.error('EGRESADOS', '[EGRESADOS STATS GENERAL] Error al obtener estadísticas', sanitizeError(error, 'egresados'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -282,7 +285,7 @@ router.get('/list', async (req, res) => {
             data: result.rows
         });
     } catch (error) {
-        devLog.error('[EGRESADOS LIST] Error al obtener egresados', error);
+        debugLog.error('EGRESADOS', '[EGRESADOS LIST] Error al obtener egresados', sanitizeError(error, 'egresados'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener egresados'

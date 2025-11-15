@@ -4,7 +4,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const { authenticateToken } = require('../middleware/auth');
 const router = express.Router();
 
@@ -28,7 +30,7 @@ router.get('/profile/:userId', authenticateToken, async (req, res, next) => {
             });
         }
 
-        devLogger.log(`🎮 [GAMIFICATION] Obteniendo perfil de gamificación para usuario ${userId}`);
+        debugLog.log('GAMIFICATION', `🎮 [GAMIFICATION] Obteniendo perfil de gamificación para usuario ${userId}`);
 
         // Simular datos de gamificación (hasta tener base de datos real)
         const gamificationProfile = {
@@ -88,7 +90,7 @@ router.get('/profile/:userId', authenticateToken, async (req, res, next) => {
             }
         };
 
-        devLogger.log('✅ Perfil de gamificación consultado', {
+        debugLog.log('GAMIFICATION', '✅ Perfil de gamificación consultado', {
             userId: userId,
             requestedBy: req.user.id
         });
@@ -111,7 +113,7 @@ router.get('/leaderboard', authenticateToken, async (req, res, next) => {
     try {
         const { type = 'weekly', limit = 10 } = req.query;
 
-        devLogger.log(`🏆 [GAMIFICATION] Obteniendo leaderboard tipo: ${type}`);
+        debugLog.log('GAMIFICATION', `🏆 [GAMIFICATION] Obteniendo leaderboard tipo: ${type}`);
 
         // Simular leaderboard
         const leaderboard = [];
@@ -164,7 +166,7 @@ router.post('/award-points', authenticateToken, async (req, res, next) => {
     try {
         const { activity, points, metadata } = req.body;
 
-        devLogger.log(`⭐ [GAMIFICATION] Otorgando ${points} puntos por actividad: ${activity}`);
+        debugLog.log('GAMIFICATION', `⭐ [GAMIFICATION] Otorgando ${points} puntos por actividad: ${activity}`);
 
         // Validar actividad
         const validActivities = [
@@ -233,7 +235,7 @@ router.post('/award-points', authenticateToken, async (req, res, next) => {
             }
         });
 
-        devLogger.log('⭐ Puntos otorgados en gamificación', {
+        debugLog.log('GAMIFICATION', '⭐ Puntos otorgados en gamificación', {
             userId: req.user.id,
             activity: activity,
             points: earnedPoints,
@@ -253,7 +255,7 @@ router.post('/award-points', authenticateToken, async (req, res, next) => {
  */
 router.get('/achievements', authenticateToken, async (req, res, next) => {
     try {
-        devLogger.log('🏅 [GAMIFICATION] Obteniendo lista de logros disponibles');
+        debugLog.log('GAMIFICATION', '🏅 [GAMIFICATION] Obteniendo lista de logros disponibles');
 
         const achievements = [
             {
@@ -362,7 +364,7 @@ router.get('/achievements', authenticateToken, async (req, res, next) => {
  */
 router.get('/daily-challenges', authenticateToken, async (req, res, next) => {
     try {
-        devLogger.log('📅 [GAMIFICATION] Obteniendo desafíos diarios');
+        debugLog.log('GAMIFICATION', '📅 [GAMIFICATION] Obteniendo desafíos diarios');
 
         // Generar desafíos dinámicos basados en el día
         const today = new Date();
@@ -458,7 +460,7 @@ router.post('/complete-challenge', authenticateToken, async (req, res, next) => 
     try {
         const { challengeId, evidence } = req.body;
 
-        devLogger.log(`🎯 [GAMIFICATION] Completando desafío: ${challengeId}`);
+        debugLog.log('GAMIFICATION', `🎯 [GAMIFICATION] Completando desafío: ${challengeId}`);
 
         // Simular verificación y completado del desafío
         const challenge = {
@@ -471,7 +473,7 @@ router.post('/complete-challenge', authenticateToken, async (req, res, next) => 
 
         const totalPoints = challenge.pointsEarned * challenge.bonusMultiplier;
 
-        devLogger.log('🎯 Desafío completado', {
+        debugLog.log('GAMIFICATION', '🎯 Desafío completado', {
             userId: req.user.id,
             challengeId: challengeId,
             points: totalPoints
@@ -501,7 +503,7 @@ router.get('/profile/:userId', async (req, res, next) => {
     try {
         const { userId } = req.params;
 
-        devLogger.log(`🎮 [GAMIFICATION PUBLIC] Obteniendo perfil de gamificación para usuario ${userId}`);
+        debugLog.log('GAMIFICATION', `🎮 [GAMIFICATION PUBLIC] Obteniendo perfil de gamificación para usuario ${userId}`);
 
         // Datos simulados públicos
         const gamificationProfile = {
@@ -539,7 +541,7 @@ router.get('/profile/:userId', async (req, res, next) => {
  */
 router.get('/daily-challenges', async (req, res, next) => {
     try {
-        devLogger.log('🎯 [GAMIFICATION PUBLIC] Obteniendo desafíos diarios');
+        debugLog.log('GAMIFICATION', '🎯 [GAMIFICATION PUBLIC] Obteniendo desafíos diarios');
 
         const challenges = [
             {

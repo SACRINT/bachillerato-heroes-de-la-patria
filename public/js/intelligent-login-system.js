@@ -1,4 +1,14 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * 🎯 SISTEMA INTELIGENTE DE LOGIN Y RECOMPENSAS IA
  * Integración completa con el botón existente
  * Detección automática de roles y sistema de gamificación
@@ -167,7 +177,7 @@ class IntelligentLoginSystem {
             this.updateButtonToLoggedState(completeProfile);
 
         } catch (error) {
-            console.error('Error en login inteligente:', error);
+            debugLog.error('APP', 'Error en login inteligente:', error);
             this.showErrorMessage('Error al iniciar sesión. Intenta nuevamente.');
         }
     }
@@ -613,7 +623,7 @@ class IntelligentLoginSystem {
     initializeGoogleAuth() {
         // Placeholder para Google Auth SDK
         // En producción aquí iría: gapi.load('auth2', ...)
-        console.log('🔐 Sistema de autenticación inicializado');
+        debugLog.log('APP', '🔐 Sistema de autenticación inicializado');
     }
 
     /**
@@ -712,7 +722,7 @@ class IntelligentLoginSystem {
             }
 
         } catch (error) {
-            console.error('Error ejecutando prompt:', error);
+            debugLog.error('APP', 'Error ejecutando prompt:', error);
             loadingModal.remove();
             this.showErrorModal('Error de conexión. Intenta nuevamente.');
         }
@@ -786,7 +796,7 @@ class IntelligentLoginSystem {
                 this.updateButtonToLoggedState(this.currentUser);
                 this.initializePersonalizedDashboard(this.currentUser);
             } catch (error) {
-                console.error('Error al cargar perfil guardado:', error);
+                debugLog.error('APP', 'Error al cargar perfil guardado:', error);
                 localStorage.removeItem('heroesPatria_userProfile');
             }
         }
@@ -806,9 +816,9 @@ class IntelligentLoginSystem {
     async syncProfileWithBackend(profile) {
         try {
             // Placeholder para sincronización con servidor
-            console.log('📡 Sincronizando perfil con servidor...', profile.email);
+            debugLog.log('EMAIL', '📡 Sincronizando perfil con servidor...', profile.email);
         } catch (error) {
-            console.error('Error al sincronizar:', error);
+            debugLog.error('APP', 'Error al sincronizar:', error);
         }
     }
 
@@ -828,7 +838,7 @@ class IntelligentLoginSystem {
      */
     playWelcomeSound(userType) {
         // Placeholder para sonidos opcionales
-        console.log(`🎵 Sonido de bienvenida para ${userType}`);
+        debugLog.log('APP', `🎵 Sonido de bienvenida para ${userType}`);
     }
 
     /**
@@ -836,7 +846,7 @@ class IntelligentLoginSystem {
      */
     addWelcomeModalStyles() {
         // Los estilos ya están en intelligent-login-styles.css
-        console.log('🎨 Estilos de modal aplicados');
+        debugLog.log('APP', '🎨 Estilos de modal aplicados');
     }
 
     /**
@@ -857,7 +867,7 @@ class IntelligentLoginSystem {
      * 💬 Mostrar tip contextual
      */
     showContextualTip(target, message, position) {
-        console.log(`💬 Tip: ${message}`);
+        debugLog.log('MESSAGE', `💬 Tip: ${message}`);
         // Implementación completa de tooltips próximamente
     }
 

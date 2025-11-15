@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
@@ -89,7 +91,7 @@ router.post('/image', upload.single('image'), async (req, res) => {
         const contentType = req.body.contentType || 'general';
         const imageUrl = `/uploads/${contentType}/${req.file.filename}`;
 
-        devLogger.log('✅ Imagen subida:', imageUrl);
+        debugLog.log('UPLOAD', '✅ Imagen subida:', imageUrl);
 
         res.status(201).json({
             success: true,
@@ -105,7 +107,7 @@ router.post('/image', upload.single('image'), async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al subir imagen:', error);
+        debugLog.error('UPLOAD', '❌ Error al subir imagen:', sanitizeError(error, 'upload'));
         res.status(500).json({
             success: false,
             error: 'Error al subir la imagen'
@@ -134,7 +136,7 @@ router.post('/multiple', upload.array('images', 10), async (req, res) => {
             mimetype: file.mimetype
         }));
 
-        devLogger.log(`✅ ${uploadedFiles.length} imágenes subidas`);
+        debugLog.log('UPLOAD', `✅ ${uploadedFiles.length} imágenes subidas`);
 
         res.status(201).json({
             success: true,
@@ -143,7 +145,7 @@ router.post('/multiple', upload.array('images', 10), async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al subir imágenes:', error);
+        debugLog.error('UPLOAD', '❌ Error al subir imágenes:', sanitizeError(error, 'upload'));
         res.status(500).json({
             success: false,
             error: 'Error al subir las imágenes'
@@ -179,7 +181,7 @@ router.delete('/image/:contentType/:filename', async (req, res) => {
         // Eliminar archivo
         fs.unlinkSync(filePath);
 
-        devLogger.log('✅ Imagen eliminada:', filename);
+        debugLog.log('UPLOAD', '✅ Imagen eliminada:', filename);
 
         res.json({
             success: true,
@@ -187,7 +189,7 @@ router.delete('/image/:contentType/:filename', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al eliminar imagen:', error);
+        debugLog.error('UPLOAD', '❌ Error al eliminar imagen:', sanitizeError(error, 'upload'));
         res.status(500).json({
             success: false,
             error: 'Error al eliminar la imagen'
@@ -239,7 +241,7 @@ router.get('/list/:contentType', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al listar imágenes:', error);
+        debugLog.error('UPLOAD', '❌ Error al listar imágenes:', sanitizeError(error, 'upload'));
         res.status(500).json({
             success: false,
             error: 'Error al listar las imágenes'
