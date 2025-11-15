@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const { body, query, param, validationResult } = require('express-validator');
 const { executeQuery } = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
@@ -82,7 +84,7 @@ router.post('/',
             await updateStudentAverage(estudiante_id, ciclo_escolar);
 
         } catch (error) {
-            devLogger.error('Error capturando calificación:', error);
+            debugLog.error('GRADES', 'Error capturando calificación:', sanitizeError(error, 'grades'));
             res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor'
@@ -154,7 +156,7 @@ router.post('/batch',
                     await updateStudentAverage(cal.estudiante_id, cal.ciclo_escolar);
 
                 } catch (error) {
-                    devLogger.error(`Error procesando calificación:`, error);
+                    debugLog.error('GRADES', `Error procesando calificación:`, error);
                     results.push({ ...cal, action: 'error', success: false, error: error.message });
                 }
             }
@@ -174,7 +176,7 @@ router.post('/batch',
             });
 
         } catch (error) {
-            devLogger.error('Error en captura masiva:', error);
+            debugLog.error('GRADES', 'Error en captura masiva:', sanitizeError(error, 'grades'));
             res.status(500).json({
                 success: false,
                 message: 'Error interno en captura masiva'
@@ -282,7 +284,7 @@ router.get('/student/:id',
             });
 
         } catch (error) {
-            devLogger.error('Error consultando calificaciones:', error);
+            debugLog.error('GRADES', 'Error consultando calificaciones:', sanitizeError(error, 'grades'));
             res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor'
@@ -361,7 +363,7 @@ router.get('/group/:grupo',
             });
 
         } catch (error) {
-            devLogger.error('Error consultando calificaciones por grupo:', error);
+            debugLog.error('GRADES', 'Error consultando calificaciones por grupo:', sanitizeError(error, 'grades'));
             res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor'
@@ -433,7 +435,7 @@ router.get('/report/semester',
             });
 
         } catch (error) {
-            devLogger.error('Error generando reporte semestral:', error);
+            debugLog.error('GRADES', 'Error generando reporte semestral:', sanitizeError(error, 'grades'));
             res.status(500).json({
                 success: false,
                 message: 'Error generando reporte'
@@ -465,7 +467,7 @@ async function updateStudentAverage(estudiante_id, ciclo_escolar) {
             `, [Math.round(promedio[0].promedio * 100) / 100, estudiante_id]);
         }
     } catch (error) {
-        devLogger.error('Error actualizando promedio:', error);
+        debugLog.error('GRADES', 'Error actualizando promedio:', sanitizeError(error, 'grades'));
     }
 }
 

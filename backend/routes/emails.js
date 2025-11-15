@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const emailService = require('../services/emailService');
 
@@ -127,7 +129,7 @@ router.post('/test', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al enviar email de prueba:', error);
+        debugLog.error('EMAILS', '❌ Error al enviar email de prueba:', sanitizeError(error, 'emails'));
         res.status(500).json({
             success: false,
             error: 'Error al enviar email de prueba',
@@ -159,7 +161,7 @@ router.post('/welcome', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al enviar email de bienvenida:', error);
+        debugLog.error('EMAILS', '❌ Error al enviar email de bienvenida:', sanitizeError(error, 'emails'));
         res.status(500).json({
             success: false,
             error: 'Error al enviar email de bienvenida'
@@ -190,7 +192,7 @@ router.post('/event-notification', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al enviar notificación de evento:', error);
+        debugLog.error('EMAILS', '❌ Error al enviar notificación de evento:', sanitizeError(error, 'emails'));
         res.status(500).json({
             success: false,
             error: 'Error al enviar notificación de evento'
@@ -224,7 +226,7 @@ router.post('/password-recovery', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al enviar email de recuperación:', error);
+        debugLog.error('EMAILS', '❌ Error al enviar email de recuperación:', sanitizeError(error, 'emails'));
         res.status(500).json({
             success: false,
             error: 'Error al enviar email de recuperación'
@@ -255,7 +257,7 @@ router.post('/bulk', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error en envío masivo:', error);
+        debugLog.error('EMAILS', '❌ Error en envío masivo:', sanitizeError(error, 'emails'));
         res.status(500).json({
             success: false,
             error: 'Error en envío masivo de emails'
@@ -276,7 +278,7 @@ router.post('/clear-cache', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al limpiar caché:', error);
+        debugLog.error('EMAILS', '❌ Error al limpiar caché:', sanitizeError(error, 'emails'));
         res.status(500).json({
             success: false,
             error: 'Error al limpiar caché'
@@ -301,7 +303,7 @@ router.get('/status', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al verificar estado:', error);
+        debugLog.error('EMAILS', '❌ Error al verificar estado:', sanitizeError(error, 'emails'));
         res.status(500).json({
             success: false,
             error: 'Error al verificar estado del servicio'

@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { pool } = require('../config/database');
 
@@ -14,7 +16,7 @@ const { pool } = require('../config/database');
  * Fix automático: Asegura que todos los registros pendientes sean visibles
  */
 router.post('/sincronizar', async (req, res) => {
-    devLogger.log('🔧 [FIX AUTO] Iniciando sincronización de aprobaciones...');
+    debugLog.log('FIX_APROBACIONES_AUTO', '🔧 [FIX AUTO] Iniciando sincronización de aprobaciones...');
 
     try {
         // PASO 1: Ver estado actual
@@ -28,7 +30,7 @@ router.post('/sincronizar', async (req, res) => {
         `);
 
         const antes = estadoActual.rows[0];
-        devLogger.log('📊 [FIX AUTO] Estado ANTES:', antes);
+        debugLog.log('FIX_APROBACIONES_AUTO', '📊 [FIX AUTO] Estado ANTES:', antes);
 
         // PASO 2: FORZAR email_confirmado=true para TODOS los pendientes
         const updateResult = await pool.query(`
@@ -38,7 +40,7 @@ router.post('/sincronizar', async (req, res) => {
             RETURNING id
         `);
 
-        devLogger.log(`🔄 [FIX AUTO] Actualizados ${updateResult.rows.length} registros`);
+        debugLog.log('FIX_APROBACIONES_AUTO', `🔄 [FIX AUTO] Actualizados ${updateResult.rows.length} registros`);
 
         // PASO 3: Verificar estado después
         const estadoFinal = await pool.query(`
@@ -51,7 +53,7 @@ router.post('/sincronizar', async (req, res) => {
         `);
 
         const despues = estadoFinal.rows[0];
-        devLogger.log('📊 [FIX AUTO] Estado DESPUÉS:', despues);
+        debugLog.log('FIX_APROBACIONES_AUTO', '📊 [FIX AUTO] Estado DESPUÉS:', despues);
 
         // PASO 4: Listar registros actualizados
         const listado = await pool.query(`
@@ -77,10 +79,10 @@ router.post('/sincronizar', async (req, res) => {
             registros_pendientes: listado.rows
         });
 
-        devLogger.log('✅ [FIX AUTO] Sincronización completada exitosamente');
+        debugLog.log('FIX_APROBACIONES_AUTO', '✅ [FIX AUTO] Sincronización completada exitosamente');
 
     } catch (error) {
-        devLogger.error('❌ [FIX AUTO] Error durante sincronización:', error);
+        debugLog.error('FIX_APROBACIONES_AUTO', '❌ [FIX AUTO] Error durante sincronización:', sanitizeError(error, 'fix-aprobaciones-auto'));
         res.status(500).json({
             success: false,
             error: 'Error al sincronizar aprobaciones',
@@ -112,7 +114,7 @@ router.get('/estado', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener estado:', error);
+        debugLog.error('FIX_APROBACIONES_AUTO', '❌ Error al obtener estado:', sanitizeError(error, 'fix-aprobaciones-auto'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener estado'

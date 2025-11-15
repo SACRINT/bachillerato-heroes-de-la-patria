@@ -4,7 +4,9 @@
  */
 
 const fs = require('fs').promises;
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const path = require('path');
 const crypto = require('crypto');
 
@@ -33,10 +35,10 @@ async function initializeSubscribersFile() {
                 lastId: 0
             };
             await fs.writeFile(SUBSCRIBERS_FILE, JSON.stringify(initialData, null, 2));
-            devLogger.log('✅ Archivo subscribers.json creado');
+            debugLog.log('SUBSCRIPTIONS_SERVICE', '✅ Archivo subscribers.json creado');
         }
     } catch (error) {
-        devLogger.error('❌ Error inicializando archivo subscribers:', error);
+        debugLog.error('SUBSCRIPTIONS_SERVICE', '❌ Error inicializando archivo subscribers:', sanitizeError(error, 'subscriptions-service'));
     }
 }
 
@@ -51,7 +53,7 @@ async function readSubscribers() {
         const data = await fs.readFile(SUBSCRIBERS_FILE, 'utf8');
         return JSON.parse(data);
     } catch (error) {
-        devLogger.error('Error leyendo suscriptores:', error);
+        debugLog.error('SUBSCRIPTIONS_SERVICE', 'Error leyendo suscriptores:', sanitizeError(error, 'subscriptions-service'));
         return { subscribers: [], lastId: 0 };
     }
 }
@@ -64,7 +66,7 @@ async function saveSubscribers(data) {
         await fs.writeFile(SUBSCRIBERS_FILE, JSON.stringify(data, null, 2));
         return true;
     } catch (error) {
-        devLogger.error('Error guardando suscriptores:', error);
+        debugLog.error('SUBSCRIPTIONS_SERVICE', 'Error guardando suscriptores:', sanitizeError(error, 'subscriptions-service'));
         return false;
     }
 }
@@ -103,7 +105,7 @@ async function addSubscriber({ email, name, categories, source }) {
         );
 
         if (existingSubscriber) {
-            devLogger.log(`ℹ️  Suscriptor ya existe: ${email}`);
+            debugLog.log('SUBSCRIPTIONS_SERVICE', `ℹ️  Suscriptor ya existe: ${email}`);
             return {
                 success: true,
                 message: 'Ya estás suscrito',
@@ -134,7 +136,7 @@ async function addSubscriber({ email, name, categories, source }) {
 
         await saveSubscribers(subscribersData);
 
-        devLogger.log(`✅ Nuevo suscriptor agregado: ${email} (${subscriberId})`);
+        debugLog.log('SUBSCRIPTIONS_SERVICE', `✅ Nuevo suscriptor agregado: ${email} (${subscriberId})`);
 
         return {
             success: true,
@@ -148,7 +150,7 @@ async function addSubscriber({ email, name, categories, source }) {
         };
 
     } catch (error) {
-        devLogger.error('Error agregando suscriptor:', error);
+        debugLog.error('SUBSCRIPTIONS_SERVICE', 'Error agregando suscriptor:', sanitizeError(error, 'subscriptions-service'));
         throw error;
     }
 }
@@ -162,7 +164,7 @@ async function getActiveSubscribers() {
         const subscribersData = await readSubscribers();
         return subscribersData.subscribers.filter(sub => sub.active);
     } catch (error) {
-        devLogger.error('Error obteniendo suscriptores activos:', error);
+        debugLog.error('SUBSCRIPTIONS_SERVICE', 'Error obteniendo suscriptores activos:', sanitizeError(error, 'subscriptions-service'));
         return [];
     }
 }
@@ -191,7 +193,7 @@ async function getSubscriberStats() {
         };
 
     } catch (error) {
-        devLogger.error('Error obteniendo estadísticas:', error);
+        debugLog.error('SUBSCRIPTIONS_SERVICE', 'Error obteniendo estadísticas:', sanitizeError(error, 'subscriptions-service'));
         return {
             total: 0,
             active: 0,

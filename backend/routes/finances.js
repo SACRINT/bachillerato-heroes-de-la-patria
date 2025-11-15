@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { pool } = require('../config/database');
 
@@ -14,7 +16,7 @@ const { pool } = require('../config/database');
 // =====================================================
 router.get('/', async (req, res) => {
     try {
-        devLogger.log('💰 [FINANCES] Obteniendo datos financieros...');
+        debugLog.log('FINANCES', '💰 [FINANCES] Obteniendo datos financieros...');
 
         // Verificar si las tablas existen
         const tablesCheck = await pool.query(`
@@ -25,7 +27,7 @@ router.get('/', async (req, res) => {
         `);
 
         const existingTables = tablesCheck.rows.map(r => r.table_name);
-        devLogger.log('📋 Tablas encontradas:', existingTables);
+        debugLog.log('FINANCES', '📋 Tablas encontradas:', existingTables);
 
         let ingresos = [];
         let gastos = [];
@@ -153,12 +155,12 @@ router.get('/', async (req, res) => {
             }
         };
 
-        devLogger.log('✅ [FINANCES] Datos financieros obtenidos');
+        debugLog.log('FINANCES', '✅ [FINANCES] Datos financieros obtenidos');
 
         res.json(response);
 
     } catch (error) {
-        devLogger.error('❌ [FINANCES] Error obteniendo datos financieros:', error);
+        debugLog.error('FINANCES', '❌ [FINANCES] Error obteniendo datos financieros:', sanitizeError(error, 'finances'));
 
         // Devolver estructura vacía en caso de error
         res.json({
@@ -188,7 +190,7 @@ router.get('/', async (req, res) => {
 // =====================================================
 router.get('/stats', async (req, res) => {
     try {
-        devLogger.log('📊 [FINANCES] Obteniendo estadísticas financieras...');
+        debugLog.log('FINANCES', '📊 [FINANCES] Obteniendo estadísticas financieras...');
 
         // Por ahora devolver estadísticas vacías
         res.json({
@@ -202,7 +204,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ [FINANCES] Error obteniendo estadísticas:', error);
+        debugLog.error('FINANCES', '❌ [FINANCES] Error obteniendo estadísticas:', sanitizeError(error, 'finances'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas financieras'

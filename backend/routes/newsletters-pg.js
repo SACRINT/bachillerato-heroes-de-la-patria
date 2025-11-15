@@ -4,7 +4,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const db = require('../config/database');
@@ -209,8 +211,8 @@ router.post('/send', [
 
         const newsletterDbId = newsletterResult[0].id;
 
-        devLogger.log(`📨 Iniciando envío de newsletter: ${newsletterId}`);
-        devLogger.log(`📊 Destinatarios: ${targetSubscribers.length}`);
+        debugLog.log('NEWSLETTERS_PG', `📨 Iniciando envío de newsletter: ${newsletterId}`);
+        debugLog.log('NEWSLETTERS_PG', `📊 Destinatarios: ${targetSubscribers.length}`);
 
         // Enviar a cada suscriptor (con rate limiting)
         let successCount = 0;
@@ -235,13 +237,13 @@ router.post('/send', [
                 `, [newsletterDbId, subscriber.id, subscriber.email, 'sent']);
 
                 successCount++;
-                devLogger.log(`✅ Enviado a: ${subscriber.email} (${successCount}/${targetSubscribers.length})`);
+                debugLog.log('NEWSLETTERS_PG', `✅ Enviado a: ${subscriber.email} (${successCount}/${targetSubscribers.length})`);
 
                 // Rate limiting: 1 email por segundo
                 await sleep(1000);
 
             } catch (error) {
-                devLogger.error(`❌ Error enviando a ${subscriber.email}:`, error.message);
+                debugLog.error('NEWSLETTERS_PG', `❌ Error enviando a ${subscriber.email}:`, error.message);
 
                 // Registrar envío fallido
                 await db.executeQuery(`
@@ -261,8 +263,8 @@ router.post('/send', [
             WHERE id = $3
         `, [successCount, failureCount, newsletterDbId]);
 
-        devLogger.log(`✅ Newsletter enviada: ${newsletterId}`);
-        devLogger.log(`📊 Éxitos: ${successCount}, Fallos: ${failureCount}`);
+        debugLog.log('NEWSLETTERS_PG', `✅ Newsletter enviada: ${newsletterId}`);
+        debugLog.log('NEWSLETTERS_PG', `📊 Éxitos: ${successCount}, Fallos: ${failureCount}`);
 
         res.json({
             success: true,
@@ -278,7 +280,7 @@ router.post('/send', [
         });
 
     } catch (error) {
-        devLogger.error('Error enviando newsletter:', error);
+        debugLog.error('NEWSLETTERS_PG', 'Error enviando newsletter:', sanitizeError(error, 'newsletters-pg'));
         res.status(500).json({
             success: false,
             message: 'Error al enviar newsletter',
@@ -311,7 +313,7 @@ router.get('/list', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error listando newsletters:', error);
+        debugLog.error('NEWSLETTERS_PG', 'Error listando newsletters:', sanitizeError(error, 'newsletters-pg'));
         res.status(500).json({
             success: false,
             message: 'Error al obtener newsletters'
@@ -371,7 +373,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error obteniendo newsletter:', error);
+        debugLog.error('NEWSLETTERS_PG', 'Error obteniendo newsletter:', sanitizeError(error, 'newsletters-pg'));
         res.status(500).json({
             success: false,
             message: 'Error al obtener newsletter'
