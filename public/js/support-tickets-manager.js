@@ -357,14 +357,14 @@ function renderTickets(tickets) {
     const emptyState = document.getElementById('emptyState');
 
     if (!tickets || tickets.length === 0) {
-        container.innerHTML = sanitizeHTML('');
+        container.innerHTML = DOMPurify.sanitize('');
         emptyState?.classList.remove('hidden');
         return;
     }
 
     emptyState?.classList.add('hidden');
 
-    container.innerHTML = sanitizeHTML(tickets.map(ticket => `
+    container.innerHTML = DOMPurify.sanitize(tickets.map(ticket => `
         <div class="ticket-card" data-action="show-ticket-detail" data-param-1="${ticket.ticket_number}">
             <div class="ticket-header">
                 <div>
@@ -425,7 +425,7 @@ function renderPagination(pagination) {
     const { currentPage, totalPages } = pagination;
 
     if (totalPages <= 1) {
-        container.innerHTML = sanitizeHTML('');
+        container.innerHTML = DOMPurify.sanitize('');
         return;
     }
 
@@ -601,7 +601,7 @@ function renderTicketDetail(ticket) {
     const container = document.getElementById('ticketDetailBody');
     if (!container) return;
 
-    container.innerHTML = sanitizeHTML(`
+    container.innerHTML = DOMPurify.sanitize(`
         <div class="ticket-detail">
             <!-- Header del ticket -->
             <div class="ticket-detail-header">

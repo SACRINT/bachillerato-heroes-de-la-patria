@@ -833,7 +833,7 @@ ${originalMessage}
         const submitButton = form.querySelector('button[type="submit"]');
         if (submitButton) {
             submitButton.disabled = true;
-            submitButton.innerHTML = sanitizeHTML(`
+            submitButton.innerHTML = DOMPurify.sanitize(`
                 <span class="spinner-border spinner-border-sm me-2" role="status"></span>
                 ${message}
             `);
@@ -845,7 +845,7 @@ ${originalMessage}
         if (submitButton) {
             const spinner = submitButton.querySelector('.spinner-border');
             if (spinner) {
-                submitButton.innerHTML = sanitizeHTML(`
+                submitButton.innerHTML = DOMPurify.sanitize(`
                     <span class="spinner-border spinner-border-sm me-2" role="status"></span>
                     ${message}
                 `);
@@ -858,7 +858,7 @@ ${originalMessage}
         if (submitButton) {
             submitButton.disabled = false;
             // dataset.originalText ya está sanitizado desde el HTML original
-            submitButton.innerHTML = sanitizeHTML(submitButton.dataset.originalText || 'Enviar Mensaje', 'simple');
+            submitButton.innerHTML = DOMPurify.sanitize(submitButton.dataset.originalText || 'Enviar Mensaje', 'simple');
         }
     }
 
@@ -870,7 +870,7 @@ ${originalMessage}
         // Crear popup elegante para verificación de email
         const popup = document.createElement('div');
         popup.className = 'verification-popup-overlay';
-        popup.innerHTML = sanitizeHTML(`
+        popup.innerHTML = DOMPurify.sanitize(`
             <div class="verification-popup">
                 <div class="popup-header">
                     <div class="popup-icon">📧</div>
@@ -1076,7 +1076,7 @@ ${originalMessage}
             form.appendChild(successAlert);
         }
 
-        successAlert.innerHTML = sanitizeHTML(`
+        successAlert.innerHTML = DOMPurify.sanitize(`
             <div class="d-flex align-items-center">
                 <i class="fas fa-check-circle fa-lg me-3 text-success"></i>
                 <div>
@@ -1105,7 +1105,7 @@ ${originalMessage}
             form.appendChild(errorAlert);
         }
 
-        errorAlert.innerHTML = sanitizeHTML(`
+        errorAlert.innerHTML = DOMPurify.sanitize(`
             <div class="d-flex align-items-center">
                 <i class="fas fa-exclamation-triangle fa-lg me-3 text-danger"></i>
                 <div>
@@ -1129,7 +1129,7 @@ ${originalMessage}
         return new Promise((resolve) => {
             const modal = document.createElement('div');
             modal.className = 'modal fade';
-            modal.innerHTML = sanitizeHTML(`
+            modal.innerHTML = DOMPurify.sanitize(`
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header bg-warning text-dark">
@@ -1183,7 +1183,7 @@ ${originalMessage}
         // Agregar badge de seguridad
         const securityBadge = document.createElement('div');
         securityBadge.className = 'security-badge mb-3';
-        securityBadge.innerHTML = sanitizeHTML(`
+        securityBadge.innerHTML = DOMPurify.sanitize(`
             <small class="text-muted d-flex align-items-center">
                 <i class="fas fa-shield-alt text-success me-2"></i>
                 <span>Formulario protegido contra spam • Verificación de email incluida</span>
