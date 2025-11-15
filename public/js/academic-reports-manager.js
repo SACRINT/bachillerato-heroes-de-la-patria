@@ -515,7 +515,7 @@ class AcademicReportsManager {
                 reportHTML = this.generateGenericReportHTML(reportData);
         }
 
-        resultsContainer.innerHTML = reportHTML;
+        resultsContainer.innerHTML = sanitizeHTML(reportHTML, 'ugc');
 
         // Generar gráficos si es necesario
         if (reportData.charts) {
@@ -867,7 +867,7 @@ class AcademicReportsManager {
 
     async searchStudents(query) {
         if (query.length < 2) {
-            document.getElementById('studentSuggestions').innerHTML = '';
+            document.getElementById('studentSuggestions').innerHTML = sanitizeHTML('', 'simple');
             return;
         }
 
@@ -903,7 +903,7 @@ class AcademicReportsManager {
             </div>
         `).join('');
 
-        suggestions.innerHTML = html;
+        suggestions.innerHTML = sanitizeHTML(html, 'ugc');
         suggestions.style.display = 'block';
 
         // Agregar eventos de clic
@@ -921,12 +921,12 @@ class AcademicReportsManager {
         document.getElementById('reportTitle').textContent = title;
 
         // Limpiar resultados anteriores
-        document.getElementById('reportResults').innerHTML = `
+        document.getElementById('reportResults').innerHTML = sanitizeHTML(`
             <div class="text-center text-muted py-5">
                 <i class="fas fa-chart-bar fa-3x mb-3"></i>
                 <p>Configura los filtros y genera el reporte "${title}" para ver los resultados</p>
             </div>
-        `;
+        `, 'simple');
 
         document.getElementById('exportButtons').style.display = 'none';
     }
@@ -1012,7 +1012,7 @@ class AcademicReportsManager {
             </div>
         `).join('');
 
-        historyContainer.innerHTML = html;
+        historyContainer.innerHTML = sanitizeHTML(html, 'ugc');
     }
 
     loadHistoryReport(reportId) {
