@@ -4,7 +4,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const { body, query, validationResult } = require('express-validator');
 const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
 const router = express.Router();
@@ -15,7 +17,7 @@ function getGradesAnalyticsService() {
         const { getGradesAnalyticsService } = require('../services/gradesAnalyticsService');
         return getGradesAnalyticsService();
     } catch (error) {
-        devLogger.error('❌ Error obteniendo servicio de análisis:', error.message);
+        debugLog.error('GRADESANALYTICS', '❌ Error obteniendo servicio de análisis:', error.message);
         return null;
     }
 }
@@ -86,7 +88,7 @@ router.get('/student/:studentId', [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo análisis de estudiante:', error);
+        debugLog.error('GRADESANALYTICS', '❌ Error obteniendo análisis de estudiante:', sanitizeError(error, 'gradesAnalytics'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo análisis de estudiante',
@@ -137,7 +139,7 @@ router.get('/student/:studentId/progress', async (req, res, next) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo datos de progreso:', error);
+        debugLog.error('GRADESANALYTICS', '❌ Error obteniendo datos de progreso:', sanitizeError(error, 'gradesAnalytics'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo datos de progreso',
@@ -218,7 +220,7 @@ router.get('/group', [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo análisis grupal:', error);
+        debugLog.error('GRADESANALYTICS', '❌ Error obteniendo análisis grupal:', sanitizeError(error, 'gradesAnalytics'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo análisis grupal',
@@ -282,7 +284,7 @@ router.get('/performance-distribution', [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo distribución de rendimiento:', error);
+        debugLog.error('GRADESANALYTICS', '❌ Error obteniendo distribución de rendimiento:', sanitizeError(error, 'gradesAnalytics'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo distribución de rendimiento',
@@ -323,7 +325,7 @@ router.get('/subject-rankings', async (req, res, next) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo ranking de materias:', error);
+        debugLog.error('GRADESANALYTICS', '❌ Error obteniendo ranking de materias:', sanitizeError(error, 'gradesAnalytics'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo ranking de materias',
@@ -398,7 +400,7 @@ router.get('/top-performers', [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo mejores estudiantes:', error);
+        debugLog.error('GRADESANALYTICS', '❌ Error obteniendo mejores estudiantes:', sanitizeError(error, 'gradesAnalytics'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo mejores estudiantes',
@@ -462,7 +464,7 @@ router.get('/struggling-students', [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo estudiantes en riesgo:', error);
+        debugLog.error('GRADESANALYTICS', '❌ Error obteniendo estudiantes en riesgo:', sanitizeError(error, 'gradesAnalytics'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo estudiantes en riesgo',
@@ -526,7 +528,7 @@ router.get('/institutional-report', authenticateToken, requireAdmin, async (req,
         });
 
     } catch (error) {
-        devLogger.error('❌ Error generando reporte institucional:', error);
+        debugLog.error('GRADESANALYTICS', '❌ Error generando reporte institucional:', sanitizeError(error, 'gradesAnalytics'));
         res.status(500).json({
             success: false,
             message: 'Error generando reporte institucional',
@@ -540,7 +542,7 @@ router.get('/institutional-report', authenticateToken, requireAdmin, async (req,
 // ============================================
 
 router.use((error, req, res, next) => {
-    devLogger.error('❌ Error en rutas de análisis de calificaciones:', error);
+    debugLog.error('GRADESANALYTICS', '❌ Error en rutas de análisis de calificaciones:', sanitizeError(error, 'gradesAnalytics'));
 
     res.status(500).json({
         success: false,

@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
@@ -106,7 +108,7 @@ router.post('/register', [
                     existing.id
                 ]);
 
-                devLogger.log('✅ Inscripción actualizada (reintento):', result.rows[0].id);
+                debugLog.log('INSCRIPTIONS', '✅ Inscripción actualizada (reintento):', result.rows[0].id);
 
                 return res.json({
                     success: true,
@@ -143,7 +145,7 @@ router.post('/register', [
             user_agent
         ]);
 
-        devLogger.log('✅ Nueva inscripción creada:', result.rows[0].id);
+        debugLog.log('INSCRIPTIONS', '✅ Nueva inscripción creada:', result.rows[0].id);
 
         res.status(201).json({
             success: true,
@@ -156,7 +158,7 @@ router.post('/register', [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al crear inscripción:', error);
+        debugLog.error('INSCRIPTIONS', '❌ Error al crear inscripción:', sanitizeError(error, 'inscriptions'));
 
         // Error de constraint (email + actividad duplicado)
         if (error.code === '23505') {
@@ -177,7 +179,7 @@ router.post('/register', [
 // POST /api/inscriptions/create - Alias para compatibilidad
 // =====================================================
 router.post('/create', async (req, res) => {
-    devLogger.log('📝 Redirigiendo /create a /register');
+    debugLog.log('INSCRIPTIONS', '📝 Redirigiendo /create a /register');
     // Redirigir internamente a /register
     req.url = '/register';
     return router.handle(req, res);
@@ -251,7 +253,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener inscripciones:', error);
+        debugLog.error('INSCRIPTIONS', '❌ Error al obtener inscripciones:', sanitizeError(error, 'inscriptions'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener los datos'
@@ -276,7 +278,7 @@ router.get('/list', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al listar inscripciones:', error);
+        debugLog.error('INSCRIPTIONS', '❌ Error al listar inscripciones:', sanitizeError(error, 'inscriptions'));
         res.json({
             success: true,
             inscripciones: [],
@@ -326,7 +328,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener estadísticas:', error);
+        debugLog.error('INSCRIPTIONS', '❌ Error al obtener estadísticas:', sanitizeError(error, 'inscriptions'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -356,7 +358,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener inscripción:', error);
+        debugLog.error('INSCRIPTIONS', '❌ Error al obtener inscripción:', sanitizeError(error, 'inscriptions'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener la inscripción'
@@ -392,7 +394,7 @@ router.put('/:id', async (req, res) => {
             });
         }
 
-        devLogger.log(`✅ Inscripción ${id} actualizada: ${status}`);
+        debugLog.log('INSCRIPTIONS', `✅ Inscripción ${id} actualizada: ${status}`);
 
         res.json({
             success: true,
@@ -401,7 +403,7 @@ router.put('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al actualizar inscripción:', error);
+        debugLog.error('INSCRIPTIONS', '❌ Error al actualizar inscripción:', sanitizeError(error, 'inscriptions'));
         res.status(500).json({
             success: false,
             error: 'Error al actualizar la inscripción'
@@ -437,7 +439,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al cancelar inscripción:', error);
+        debugLog.error('INSCRIPTIONS', '❌ Error al cancelar inscripción:', sanitizeError(error, 'inscriptions'));
         res.status(500).json({
             success: false,
             error: 'Error al cancelar la inscripción'

@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { getRealAIService } = require('../services/realAIService');
 const { authenticateToken } = require('../middleware/auth');
@@ -50,7 +52,7 @@ router.get('/health', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error en health check Real AI:', error);
+        debugLog.error('REAL_AI', '❌ Error en health check Real AI:', sanitizeError(error, 'real-ai'));
         res.status(500).json({
             status: 'error',
             message: 'Health check failed',
@@ -82,7 +84,7 @@ router.post('/process', authenticateToken, async (req, res) => {
             });
         }
 
-        devLogger.log(`🤖 Procesando solicitud de IA para usuario: ${req.user.email}`);
+        debugLog.log('REAL_AI', `🤖 Procesando solicitud de IA para usuario: ${req.user.email}`);
 
         // Preparar datos de la solicitud
         const requestData = {
@@ -124,7 +126,7 @@ router.post('/process', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error procesando con IA real:', error);
+        debugLog.error('REAL_AI', '❌ Error procesando con IA real:', sanitizeError(error, 'real-ai'));
         res.status(500).json({
             success: false,
             error: 'Error procesando solicitud de IA',
@@ -154,7 +156,7 @@ router.post('/chat', authenticateToken, async (req, res) => {
             });
         }
 
-        devLogger.log(`💬 Chat IA para usuario: ${req.user.email}`);
+        debugLog.log('REAL_AI', `💬 Chat IA para usuario: ${req.user.email}`);
 
         // Construir contexto de conversación
         let context = '';
@@ -207,7 +209,7 @@ router.post('/chat', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error en chat IA:', error);
+        debugLog.error('REAL_AI', '❌ Error en chat IA:', sanitizeError(error, 'real-ai'));
         res.status(500).json({
             success: false,
             error: 'Error en chat con IA',
@@ -236,7 +238,7 @@ router.post('/analyze', authenticateToken, async (req, res) => {
             });
         }
 
-        devLogger.log(`📊 Análisis IA para usuario: ${req.user.email}, tipo: ${analysisType}`);
+        debugLog.log('REAL_AI', `📊 Análisis IA para usuario: ${req.user.email}, tipo: ${analysisType}`);
 
         // Prompts especializados por tipo de análisis
         const analysisPrompts = {
@@ -290,7 +292,7 @@ router.post('/analyze', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error en análisis IA:', error);
+        debugLog.error('REAL_AI', '❌ Error en análisis IA:', sanitizeError(error, 'real-ai'));
         res.status(500).json({
             success: false,
             error: 'Error en análisis con IA',
@@ -326,7 +328,7 @@ router.get('/providers', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo info de proveedores:', error);
+        debugLog.error('REAL_AI', '❌ Error obteniendo info de proveedores:', sanitizeError(error, 'real-ai'));
         res.status(500).json({
             success: false,
             error: 'Error obteniendo información de proveedores',
@@ -350,7 +352,7 @@ router.post('/reload', authenticateToken, async (req, res) => {
             });
         }
 
-        devLogger.log(`🔄 Recargando configuración IA por: ${req.user.email}`);
+        debugLog.log('REAL_AI', `🔄 Recargando configuración IA por: ${req.user.email}`);
 
         const stats = await realAIService.reload();
 
@@ -363,7 +365,7 @@ router.post('/reload', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error recargando configuración IA:', error);
+        debugLog.error('REAL_AI', '❌ Error recargando configuración IA:', sanitizeError(error, 'real-ai'));
         res.status(500).json({
             success: false,
             error: 'Error recargando configuración',
@@ -401,7 +403,7 @@ router.get('/stats', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo estadísticas IA:', error);
+        debugLog.error('REAL_AI', '❌ Error obteniendo estadísticas IA:', sanitizeError(error, 'real-ai'));
         res.status(500).json({
             success: false,
             error: 'Error obteniendo estadísticas',

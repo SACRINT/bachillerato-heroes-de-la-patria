@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
@@ -113,7 +115,7 @@ router.post('/', [
             user_agent
         ]);
 
-        devLogger.log('✅ Nuevo evento creado:', result.rows[0].id);
+        debugLog.log('EVENTOS', '✅ Nuevo evento creado:', result.rows[0].id);
 
         res.status(201).json({
             success: true,
@@ -122,7 +124,7 @@ router.post('/', [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al crear evento:', error);
+        debugLog.error('EVENTOS', '❌ Error al crear evento:', sanitizeError(error, 'eventos'));
         res.status(500).json({
             success: false,
             error: 'Error al crear el evento'
@@ -210,7 +212,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener eventos:', error);
+        debugLog.error('EVENTOS', '❌ Error al obtener eventos:', sanitizeError(error, 'eventos'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener eventos'
@@ -245,7 +247,7 @@ router.get('/stats', cacheMiddleware({ ttl: TTL_CONFIG.stats }), async (req, res
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener estadísticas:', error);
+        debugLog.error('EVENTOS', '❌ Error al obtener estadísticas:', sanitizeError(error, 'eventos'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -275,7 +277,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener evento:', error);
+        debugLog.error('EVENTOS', '❌ Error al obtener evento:', sanitizeError(error, 'eventos'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener el evento'
@@ -305,7 +307,7 @@ router.get('/slug/:slug', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener evento:', error);
+        debugLog.error('EVENTOS', '❌ Error al obtener evento:', sanitizeError(error, 'eventos'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener el evento'
@@ -398,7 +400,7 @@ router.put('/:id', async (req, res) => {
             });
         }
 
-        devLogger.log(`✅ Evento ${id} actualizado`);
+        debugLog.log('EVENTOS', `✅ Evento ${id} actualizado`);
 
         res.json({
             success: true,
@@ -407,7 +409,7 @@ router.put('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al actualizar evento:', error);
+        debugLog.error('EVENTOS', '❌ Error al actualizar evento:', sanitizeError(error, 'eventos'));
         res.status(500).json({
             success: false,
             error: 'Error al actualizar el evento'
@@ -443,7 +445,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al cancelar evento:', error);
+        debugLog.error('EVENTOS', '❌ Error al cancelar evento:', sanitizeError(error, 'eventos'));
         res.status(500).json({
             success: false,
             error: 'Error al cancelar el evento'
@@ -538,7 +540,7 @@ router.get('/calendar', async (req, res) => {
             events
         });
     } catch (error) {
-        devLogger.error('Error en /calendar:', error);
+        debugLog.error('EVENTOS', 'Error en /calendar:', sanitizeError(error, 'eventos'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener eventos para calendario'

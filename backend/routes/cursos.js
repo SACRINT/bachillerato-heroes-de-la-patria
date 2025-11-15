@@ -14,7 +14,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const {
     getAllCourses,
@@ -47,7 +49,7 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ [CURSOS] Error obteniendo cursos:', error);
+        debugLog.error('CURSOS', '❌ [CURSOS] Error obteniendo cursos:', sanitizeError(error, 'cursos'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener cursos',
@@ -88,7 +90,7 @@ router.get('/:id', authenticateToken, requireAdmin, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ [CURSOS] Error obteniendo curso:', error);
+        debugLog.error('CURSOS', '❌ [CURSOS] Error obteniendo curso:', sanitizeError(error, 'cursos'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener curso',
@@ -107,7 +109,7 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { nombre, codigo, descripcion, creditos, horas_totales, grado_minimo, grado_maximo, activo } = req.body;
 
-        devLogger.log('📚 [CURSOS] Creando nuevo curso...');
+        debugLog.log('CURSOS', '📚 [CURSOS] Creando nuevo curso...');
 
         // Validaciones
         if (!nombre) {
@@ -128,7 +130,7 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
             activo
         });
 
-        devLogger.log(`✅ [CURSOS] Curso creado con ID: ${curso.id}`);
+        debugLog.log('CURSOS', `✅ [CURSOS] Curso creado con ID: ${curso.id}`);
 
         res.status(201).json({
             success: true,
@@ -137,7 +139,7 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ [CURSOS] Error creando curso:', error);
+        debugLog.error('CURSOS', '❌ [CURSOS] Error creando curso:', sanitizeError(error, 'cursos'));
         res.status(500).json({
             success: false,
             message: 'Error al crear curso',
@@ -163,7 +165,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
             });
         }
 
-        devLogger.log(`📚 [CURSOS] Actualizando curso ID: ${cursoId}`);
+        debugLog.log('CURSOS', `📚 [CURSOS] Actualizando curso ID: ${cursoId}`);
 
         const { nombre, codigo, descripcion, creditos, horas_totales, grado_minimo, grado_maximo, activo } = req.body;
 
@@ -188,7 +190,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
             });
         }
 
-        devLogger.log(`✅ [CURSOS] Curso actualizado: ${curso.id}`);
+        debugLog.log('CURSOS', `✅ [CURSOS] Curso actualizado: ${curso.id}`);
 
         res.json({
             success: true,
@@ -197,7 +199,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ [CURSOS] Error actualizando curso:', error);
+        debugLog.error('CURSOS', '❌ [CURSOS] Error actualizando curso:', sanitizeError(error, 'cursos'));
         res.status(500).json({
             success: false,
             message: 'Error al actualizar curso',
@@ -223,7 +225,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
             });
         }
 
-        devLogger.log(`📚 [CURSOS] Eliminando curso ID: ${cursoId}`);
+        debugLog.log('CURSOS', `📚 [CURSOS] Eliminando curso ID: ${cursoId}`);
 
         const deleted = await deleteCourse(cursoId);
 
@@ -234,7 +236,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
             });
         }
 
-        devLogger.log(`✅ [CURSOS] Curso eliminado: ${cursoId}`);
+        debugLog.log('CURSOS', `✅ [CURSOS] Curso eliminado: ${cursoId}`);
 
         res.json({
             success: true,
@@ -242,7 +244,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ [CURSOS] Error eliminando curso:', error);
+        debugLog.error('CURSOS', '❌ [CURSOS] Error eliminando curso:', sanitizeError(error, 'cursos'));
         res.status(500).json({
             success: false,
             message: 'Error al eliminar curso',
