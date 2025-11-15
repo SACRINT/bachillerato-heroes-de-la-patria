@@ -76,7 +76,7 @@ async function loadSubscribers() {
 
     try {
         spinner.classList.add('active');
-        tableBody.innerHTML = sanitizeHTML('');
+        tableBody.innerHTML = DOMPurify.sanitize('');
 
         const response = await fetch(`${API_BASE}/subscriptions/list`);
         const data = await response.json();
@@ -85,7 +85,7 @@ async function loadSubscribers() {
             subscribers = data.subscribers;
 
             if (subscribers.length === 0) {
-                tableBody.innerHTML = sanitizeHTML(`
+                tableBody.innerHTML = DOMPurify.sanitize(`
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 40px;">
                             <div class="empty-state">
@@ -104,7 +104,7 @@ async function loadSubscribers() {
         }
     } catch (error) {
         console.error('❌ Error cargando suscriptores:', error);
-        tableBody.innerHTML = sanitizeHTML(`
+        tableBody.innerHTML = DOMPurify.sanitize(`
             <tr>
                 <td colspan="7" style="text-align: center; padding: 20px; color: red;">
                     Error al cargar suscriptores
@@ -122,7 +122,7 @@ async function loadSubscribers() {
 
 function renderSubscribers(subscribersList) {
     const tableBody = document.getElementById('subscribersTableBody');
-    tableBody.innerHTML = sanitizeHTML('');
+    tableBody.innerHTML = DOMPurify.sanitize('');
 
     subscribersList.forEach(sub => {
         const row = document.createElement('tr');
@@ -137,7 +137,7 @@ function renderSubscribers(subscribersList) {
 
         const date = new Date(sub.subscribedAt).toLocaleDateString('es-MX');
 
-        row.innerHTML = sanitizeHTML(`
+        row.innerHTML = DOMPurify.sanitize(`
             <td><small>${sub.id}</small></td>
             <td><strong>${sub.email}</strong></td>
             <td>${sub.name}</td>
@@ -161,7 +161,7 @@ async function loadNewsletterHistory() {
 
     try {
         spinner.classList.add('active');
-        listContainer.innerHTML = sanitizeHTML('');
+        listContainer.innerHTML = DOMPurify.sanitize('');
 
         const response = await fetch(`${API_BASE}/newsletters/list`);
         const data = await response.json();
@@ -170,7 +170,7 @@ async function loadNewsletterHistory() {
             newsletters = data.newsletters;
 
             if (newsletters.length === 0) {
-                listContainer.innerHTML = sanitizeHTML(`
+                listContainer.innerHTML = DOMPurify.sanitize(`
                     <div class="empty-state">
                         <i class="fas fa-envelope"></i>
                         <h4>No se han enviado newsletters todavía</h4>
@@ -191,7 +191,7 @@ async function loadNewsletterHistory() {
         }
     } catch (error) {
         console.error('❌ Error cargando historial:', error);
-        listContainer.innerHTML = sanitizeHTML(`
+        listContainer.innerHTML = DOMPurify.sanitize(`
             <div class="alert alert-danger">
                 Error al cargar el historial de newsletters
             </div>
@@ -214,7 +214,7 @@ function createNewsletterHistoryItem(news) {
         ? Math.round((news.successCount / news.sentTo) * 100)
         : 0;
 
-    div.innerHTML = sanitizeHTML(`
+    div.innerHTML = DOMPurify.sanitize(`
         <div class="d-flex justify-content-between align-items-start">
             <div>
                 <h4>${news.subject}</h4>
@@ -351,7 +351,7 @@ async function sendNewsletter(subject, content, targetCategory) {
 
     try {
         spinner.classList.add('active');
-        resultDiv.innerHTML = sanitizeHTML('');
+        resultDiv.innerHTML = DOMPurify.sanitize('');
 
         console.log('📤 Enviando newsletter...');
 
@@ -372,7 +372,7 @@ async function sendNewsletter(subject, content, targetCategory) {
         if (data.success) {
             console.log('✅ Newsletter enviada:', data.newsletter);
 
-            resultDiv.innerHTML = sanitizeHTML(`
+            resultDiv.innerHTML = DOMPurify.sanitize(`
                 <div class="alert alert-success">
                     <h5><i class="fas fa-check-circle me-2"></i>¡Newsletter Enviada Exitosamente!</h5>
                     <hr>
@@ -398,7 +398,7 @@ async function sendNewsletter(subject, content, targetCategory) {
     } catch (error) {
         console.error('❌ Error enviando newsletter:', error);
 
-        resultDiv.innerHTML = sanitizeHTML(`
+        resultDiv.innerHTML = DOMPurify.sanitize(`
             <div class="alert alert-danger">
                 <h5><i class="fas fa-exclamation-triangle me-2"></i>Error al Enviar</h5>
                 <p>${error.message}</p>
@@ -596,7 +596,7 @@ function previewNewsletter() {
 function showAlert(type, message) {
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-    alertDiv.innerHTML = sanitizeHTML(`
+    alertDiv.innerHTML = DOMPurify.sanitize(`
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `);

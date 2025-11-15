@@ -472,7 +472,7 @@ class AdvancedAnalyticsManager {
             border-radius: 50%; cursor: pointer; box-shadow: 0 4px 20px rgba(156, 39, 176, 0.5), 0 0 30px rgba(103, 58, 183, 0.3);
             width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
         `;
-        dashboardButton.innerHTML = sanitizeHTML('<i class="fas fa-chart-bar"></i>', 'simple');
+        dashboardButton.innerHTML = DOMPurify.sanitize('<i class="fas fa-chart-bar"></i>', 'simple');
         dashboardButton.title = 'Analytics Dashboard';
         
         document.body.appendChild(dashboardButton);
@@ -497,7 +497,7 @@ class AdvancedAnalyticsManager {
             transform: translateX(100%); transition: transform 0.3s ease;
         `;
 
-        dashboard.innerHTML = sanitizeHTML(`
+        dashboard.innerHTML = DOMPurify.sanitize(`
             <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
                 <h5 class="mb-0">📊 Analytics Dashboard</h5>
                 <button class="btn-close analytics-dashboard-toggle"></button>
