@@ -4,7 +4,6 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
 const { body, validationResult } = require('express-validator');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const { getAuthService } = require('../services/authService');

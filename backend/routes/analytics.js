@@ -4,7 +4,6 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
 const { body, validationResult } = require('express-validator');
 const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
 const router = express.Router();
@@ -605,7 +604,7 @@ router.post('/custom-report', authenticateToken, requireAdmin, [
         }
 
         // Registrar generación del reporte
-        devLogger.log('Reporte personalizado generado', {
+        debugLog.log('ANALYTICS', 'Reporte personalizado generado', {
             tipo: report_type,
             periodo: `${date_from} - ${date_to}`,
             generadoPor: req.user.id

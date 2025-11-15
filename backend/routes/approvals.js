@@ -5,7 +5,6 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
 
 // GDPR Logging - Debug condicional y sanitización
 const { debugLog } = require('../utils/debug-logger');

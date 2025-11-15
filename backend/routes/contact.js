@@ -9,7 +9,6 @@ const helmet = require('helmet');
 const validator = require('validator');
 const nodemailer = require('nodemailer');
 const { pool } = require('../config/database');
-const devLogger = require('../utils/devLogger'); // 🔐 Logging seguro (GDPR compliant)
 
 // GDPR Logging - Debug condicional y sanitización
 const { debugLog } = require('../utils/debug-logger');

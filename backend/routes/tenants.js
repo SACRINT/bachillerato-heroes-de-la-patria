@@ -15,7 +15,6 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
 const { body, validationResult } = require('express-validator');
 const { authenticateToken, requireSuperAdmin } = require('../middleware/auth');
 const {

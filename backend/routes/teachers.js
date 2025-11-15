@@ -4,7 +4,6 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
 const { body, validationResult } = require('express-validator');
 // const { executeQuery } = require('../config/database');
 const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
@@ -402,7 +401,7 @@ router.post('/', authenticateToken, requireAdmin, [
 
         const teacherId = teacherResult[0].id;
         
-        devLogger.log('Docente creado exitosamente', {
+        debugLog.log('TEACHERS', 'Docente creado exitosamente', {
             teacherId: teacherId,
             userId: userId,
             numero_empleado: numero_empleado,
@@ -490,7 +489,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
             });
         }
         
-        devLogger.log('Docente actualizado', {
+        debugLog.log('TEACHERS', 'Docente actualizado', {
             teacherId: id,
             camposActualizados: Object.keys(updateFields),
             actualizadoPor: req.user.id
@@ -528,7 +527,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res, next) =>
             });
         }
         
-        devLogger.log('Docente desactivado', {
+        debugLog.log('TEACHERS', 'Docente desactivado', {
             teacherId: id,
             desactivadoPor: req.user.id
         });
