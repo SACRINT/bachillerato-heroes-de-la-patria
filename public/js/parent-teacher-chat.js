@@ -418,7 +418,7 @@ class ParentTeacherChat {
             </div>
         `).join('');
 
-        container.innerHTML = conversationsHTML;
+        container.innerHTML = sanitizeHTML(conversationsHTML, 'ugc');
 
         // Guardar conversaciones en el mapa
         conversations.forEach(conv => {
@@ -505,7 +505,7 @@ class ParentTeacherChat {
         }
 
         const messagesHTML = messages.map(message => this.createMessageHTML(message)).join('');
-        container.innerHTML = messagesHTML;
+        container.innerHTML = sanitizeHTML(messagesHTML, 'ugc');
 
         // Scroll al final
         container.scrollTop = container.scrollHeight;
@@ -712,7 +712,7 @@ class ParentTeacherChat {
         document.getElementById('search-recipients').value = '';
         document.getElementById('conversation-subject').value = '';
         document.getElementById('initial-message').value = '';
-        document.getElementById('recipients-list').innerHTML = '';
+        document.getElementById('recipients-list').innerHTML = sanitizeHTML('', 'simple');
     }
 
     clearAppointmentForm() {

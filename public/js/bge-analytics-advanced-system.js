@@ -847,12 +847,12 @@ class RealtimeDashboard {
         const list = document.getElementById('active-pages');
         if (!list) return;
 
-        list.innerHTML = pages.map(page => `
+        list.innerHTML = sanitizeHTML(pages.map(page => `
             <li>
                 <span class="page-url">${page.url}</span>
                 <span class="page-visitors">${page.visitors} usuarios</span>
             </li>
-        `).join('');
+        `).join(''), 'ugc');
     }
 
     initChart() {

@@ -74,7 +74,7 @@ class ParentManager {
     populateStudentFilter() {
         const select = document.getElementById('parentFilterStudent');
         if (!select) return;
-        select.innerHTML = '<option value="">Todos los estudiantes</option>';
+        select.innerHTML = sanitizeHTML('<option value="">Todos los estudiantes</option>', 'simple');
         this.students.forEach(student => {
             const option = document.createElement('option');
             option.value = student.id;

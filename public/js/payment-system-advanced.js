@@ -336,7 +336,7 @@ class PaymentSystemAdvanced {
             const service = element.dataset.payment;
             const button = document.createElement('button');
             button.className = 'btn btn-success payment-trigger';
-            button.innerHTML = '<i class="fas fa-credit-card"></i> Pagar ahora';
+            button.innerHTML = sanitizeHTML('<i class="fas fa-credit-card"></i> Pagar ahora', 'simple');
             button.onclick = () => this.showPaymentModal(service);
             
             element.appendChild(button);
@@ -544,12 +544,12 @@ class PaymentSystemAdvanced {
         
         try {
             const form = await provider.createPaymentForm(amount);
-            container.innerHTML = form;
+            container.innerHTML = sanitizeHTML(form, 'ugc');
             
             // Habilitar botón de pago
             document.querySelector('.process-payment').disabled = false;
         } catch (error) {
-            container.innerHTML = '<div class="alert alert-danger">Error cargando formulario de pago</div>';
+            container.innerHTML = sanitizeHTML('<div class="alert alert-danger">Error cargando formulario de pago</div>', 'simple');
         }
     }
 

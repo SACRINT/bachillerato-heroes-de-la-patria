@@ -1076,7 +1076,7 @@ class AIEducationalSystem {
             </div>
         `).join('');
 
-        panel.innerHTML = predictionsHTML + `
+        panel.innerHTML = sanitizeHTML(predictionsHTML + `
             <style>
                 .prediction-item {
                     border-left: 4px solid #4CAF50;
@@ -1099,7 +1099,7 @@ class AIEducationalSystem {
                     margin-top: 8px;
                 }
             </style>
-        `;
+        `, 'ugc');
     }
 
     updateAttendanceAlertsDisplay(alerts) {
@@ -1128,7 +1128,7 @@ class AIEducationalSystem {
             </div>
         `).join('');
 
-        panel.innerHTML = alertsHTML + `
+        panel.innerHTML = sanitizeHTML(alertsHTML + `
             <style>
                 .alert-item {
                     border-left: 4px solid #FF9800;
@@ -1148,7 +1148,7 @@ class AIEducationalSystem {
                     margin-top: 8px;
                 }
             </style>
-        `;
+        `, 'ugc');
     }
 
     updateContentRecommendationsDisplay(recommendations) {
@@ -1179,7 +1179,7 @@ class AIEducationalSystem {
             </div>
         `).join('');
 
-        panel.innerHTML = recommendationsHTML + `
+        panel.innerHTML = sanitizeHTML(recommendationsHTML + `
             <style>
                 .content-item {
                     background: rgba(255, 255, 255, 0.05);
@@ -1189,7 +1189,7 @@ class AIEducationalSystem {
                     font-size: 0.9em;
                 }
             </style>
-        `;
+        `, 'ugc');
     }
 
     updateInsightsDisplay(insights) {
@@ -1204,7 +1204,7 @@ class AIEducationalSystem {
             </div>
         `).join('');
 
-        panel.innerHTML = insightsHTML + `
+        panel.innerHTML = sanitizeHTML(insightsHTML + `
             <style>
                 .insight-item {
                     background: rgba(255, 255, 255, 0.1);
@@ -1228,7 +1228,7 @@ class AIEducationalSystem {
                     text-transform: capitalize;
                 }
             </style>
-        `;
+        `, 'ugc');
     }
 
     async sendChatMessage() {

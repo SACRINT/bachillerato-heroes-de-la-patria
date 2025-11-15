@@ -448,7 +448,7 @@ class ParentTeacherCommunicationSystem {
             ${this.renderModals()}
         `;
 
-        container.innerHTML = html;
+        container.innerHTML = sanitizeHTML(html, 'ugc');
         this.bindEventHandlers();
     }
 
@@ -1020,7 +1020,7 @@ class ParentTeacherCommunicationSystem {
             // Actualizar vista de conversación
             const conversationView = document.querySelector('.conversation-view');
             if (conversationView) {
-                conversationView.innerHTML = this.renderConversationView();
+                conversationView.innerHTML = sanitizeHTML(this.renderConversationView(), 'ugc');
             }
 
             // Cargar mensajes
@@ -1060,7 +1060,7 @@ class ParentTeacherCommunicationSystem {
             </div>
         `).join('');
 
-        messagesList.innerHTML = messagesHtml;
+        messagesList.innerHTML = sanitizeHTML(messagesHtml, 'ugc');
         messagesList.scrollTop = messagesList.scrollHeight;
     }
 

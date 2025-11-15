@@ -232,7 +232,7 @@ class MessagingManager {
             return;
         }
 
-        this.conversationsList.innerHTML = this.conversations.map(conv => `
+        this.conversationsList.innerHTML = sanitizeHTML(this.conversations.map(conv => `
             <div class="conversation-item ${conv.unread_count > 0 ? 'unread' : ''} ${this.currentConversation && this.currentConversation.conversation_id === conv.conversation_id ? 'active' : ''}"
                  onclick="window.messagingManager.selectConversation(${conv.conversation_id})">
                 <div class="conversation-avatar">
@@ -253,7 +253,7 @@ class MessagingManager {
                 </div>
                 ${conv.unread_count > 0 ? `<div class="unread-badge">${conv.unread_count}</div>` : ''}
             </div>
-        `).join('');
+        `).join(''), 'ugc');
     }
 
     async selectConversation(conversationId) {
@@ -336,7 +336,7 @@ class MessagingManager {
             return;
         }
 
-        this.messagesContainer.innerHTML = this.messages.map(msg => {
+        this.messagesContainer.innerHTML = sanitizeHTML(this.messages.map(msg => {
             const isSent = msg.sender_id == this.getCurrentUserId();
             const messageClass = isSent ? 'sent' : 'received';
 
@@ -354,7 +354,7 @@ class MessagingManager {
                     </div>
                 </div>
             `;
-        }).join('');
+        }).join(''), 'ugc');
     }
 
     renderAttachments(attachments) {

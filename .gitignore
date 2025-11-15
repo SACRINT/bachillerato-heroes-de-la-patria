@@ -41,7 +41,7 @@ node_modules/
 no_usados/
 
 # Subdirectorios de docs (ignorar toda la carpeta docs/)
-# docs/
+docs/
 
 # Documentación local (no subir a GitHub ni a Vercel para despliegue)
 # Generalizado para ignorar todos los archivos Markdown excepto README.md

@@ -245,7 +245,7 @@ class CMSManager {
                 </table>
             `;
 
-            container.innerHTML = html;
+            container.innerHTML = sanitizeHTML(html, 'ugc');
 
             // Actualizar paginación
             this.pagination.noticias.total = total;
@@ -410,7 +410,7 @@ class CMSManager {
                 </table>
             `;
 
-            container.innerHTML = html;
+            container.innerHTML = sanitizeHTML(html, 'ugc');
 
             // Actualizar paginación
             this.pagination.eventos.total = total;
@@ -562,8 +562,8 @@ class CMSManager {
                 </table>
             `;
 
-            container.innerHTML = html;
-        
+            container.innerHTML = sanitizeHTML(html, 'ugc');
+
 
             // Actualizar paginación
             this.pagination.avisos.total = total;
@@ -717,8 +717,8 @@ class CMSManager {
                 </table>
             `;
 
-            container.innerHTML = html;
-        
+            container.innerHTML = sanitizeHTML(html, 'ugc');
+
 
             // Actualizar paginación
             this.pagination.comunicados.total = total;

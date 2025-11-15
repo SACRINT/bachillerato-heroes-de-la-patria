@@ -314,7 +314,7 @@ class ParentPortal {
             `;
         }).join('');
 
-        container.innerHTML = html;
+        container.innerHTML = sanitizeHTML(html, 'ugc');
     }
 
     loadUpcomingEvents() {
@@ -347,7 +347,7 @@ class ParentPortal {
             `;
         }).join('');
 
-        container.innerHTML = html;
+        container.innerHTML = sanitizeHTML(html, 'ugc');
     }
 
     loadAnnouncements() {
@@ -376,7 +376,7 @@ class ParentPortal {
             `;
         }).join('');
 
-        container.innerHTML = html;
+        container.innerHTML = sanitizeHTML(html, 'ugc');
     }
 
     getGradeColor(grade) {
@@ -555,7 +555,7 @@ function showGrades() {
     
     gradesHTML += '</div>';
     
-    document.getElementById('mainPanel').innerHTML = `
+    document.getElementById('mainPanel').innerHTML = sanitizeHTML(`
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4><i class="fas fa-chart-line text-primary me-2"></i>Calificaciones Detalladas</h4>
             <button class="btn btn-outline-secondary" data-action="load-main-dashboard">
@@ -563,7 +563,7 @@ function showGrades() {
             </button>
         </div>
         ${gradesHTML}
-    `;
+    `, 'ugc');
 }
 
 function showAttendance() {
@@ -635,7 +635,7 @@ function showAttendance() {
     
     attendanceHTML += '</div>';
     
-    document.getElementById('mainPanel').innerHTML = `
+    document.getElementById('mainPanel').innerHTML = sanitizeHTML(`
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4><i class="fas fa-calendar-check text-success me-2"></i>Control de Asistencias</h4>
             <button class="btn btn-outline-secondary" data-action="load-main-dashboard">
@@ -643,7 +643,7 @@ function showAttendance() {
             </button>
         </div>
         ${attendanceHTML}
-    `;
+    `, 'ugc');
 }
 
 function showCommunication() {
@@ -710,7 +710,7 @@ function showCommunication() {
         </div>
     `;
     
-    document.getElementById('mainPanel').innerHTML = communicationHTML;
+    document.getElementById('mainPanel').innerHTML = sanitizeHTML(communicationHTML, 'ugc');
 }
 
 function showSchedule() {
@@ -834,7 +834,7 @@ function showSchedule() {
         </div>
     `;
     
-    document.getElementById('mainPanel').innerHTML = scheduleHTML;
+    document.getElementById('mainPanel').innerHTML = sanitizeHTML(scheduleHTML, 'ugc');
 }
 
 function loadMainDashboard() {

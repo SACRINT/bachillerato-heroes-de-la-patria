@@ -497,17 +497,17 @@ return;
 tbody.innerHTML = sanitizeHTML('');
 if (!this.dashboardData) {
 console.log('❌ [DEBUG] dashboardData no existe');
-tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Cargando datos...</td></tr>';
+tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-muted">Cargando datos...</td></tr>', 'simple');
 return;
 }
 if (!this.dashboardData.students || !Array.isArray(this.dashboardData.students)) {
 console.log('❌ [DEBUG] students no es array válido:', this.dashboardData.students);
-tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No hay datos de estudiantes disponibles</td></tr>';
+tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-muted">No hay datos de estudiantes disponibles</td></tr>', 'simple');
 return;
 }
 if (this.dashboardData.students.length === 0) {
 console.log('ℹ️ [DEBUG] students array está vacío');
-tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No hay estudiantes registrados</td></tr>';
+tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-muted">No hay estudiantes registrados</td></tr>', 'simple');
 return;
 }
 console.log('✅ [DEBUG] Procesando', this.dashboardData.students.length, 'estudiantes');
@@ -549,7 +549,7 @@ tbody.appendChild(row);
 });
 } catch (error) {
 console.error('❌ [DEBUG] Error en loadStudentsTable:', error);
-tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error cargando estudiantes</td></tr>';
+tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-danger">Error cargando estudiantes</td></tr>', 'simple');
 }
 }
 loadTeachersTable() {
@@ -780,7 +780,7 @@ Ver Detalles
 </div>
 </div>
 `).join('');
-container.innerHTML = html;
+container.innerHTML = sanitizeHTML(html, 'tablas');
 }
 formatUserType(tipo) {
 const types = {
@@ -1386,11 +1386,11 @@ const hasCustomConfig = localStorage.getItem('realData_customConfigured') === 't
 const refreshButtons = document.querySelectorAll('[onclick="refreshDashboard()"]');
 refreshButtons.forEach(button => {
 if (hasCustomConfig) {
-button.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>⚠️ Configuración Personalizada';
+button.innerHTML = sanitizeHTML('<i class="fas fa-exclamation-triangle me-1"></i>⚠️ Configuración Personalizada', 'simple');
 button.className = 'btn btn-warning btn-sm';
 button.title = 'Datos personalizados configurados - Usar con precaución';
 } else {
-button.innerHTML = '<i class="fas fa-sync me-1"></i>Actualizar';
+button.innerHTML = sanitizeHTML('<i class="fas fa-sync me-1"></i>Actualizar', 'simple');
 button.className = 'btn btn-outline-light btn-sm';
 button.title = 'Actualizar dashboard';
 }
@@ -1447,7 +1447,7 @@ container.innerHTML = sanitizeHTML(`
 return;
 }
 const html = filteredItems.map(item => this.renderItem(item)).join('');
-container.innerHTML = html;
+container.innerHTML = sanitizeHTML(html, 'tablas');
 },
 renderItem: function(item) {
 const typeIcons = {
@@ -1535,7 +1535,7 @@ document.getElementById('contentDescription').value = item.description;
 document.getElementById('contentDate').value = item.date || '';
 document.getElementById('contentPriority').value = item.priority;
 const submitBtn = document.querySelector('#contentForm button[onclick="createContent()"]');
-submitBtn.innerHTML = '<i class="fas fa-save me-1"></i>Actualizar Contenido';
+submitBtn.innerHTML = sanitizeHTML('<i class="fas fa-save me-1"></i>Actualizar Contenido', 'simple');
 submitBtn.onclick = () => updateContent(id);
 document.getElementById('contentForm').scrollIntoView({ behavior: 'smooth' });
 }

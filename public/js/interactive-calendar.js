@@ -446,7 +446,7 @@ class InteractiveCalendar {
         }
         
         calendarHTML += '</div></div>';
-        calendarContainer.innerHTML = calendarHTML;
+        calendarContainer.innerHTML = sanitizeHTML(calendarHTML, 'ugc');
     }
 
     renderEventsList() {
@@ -534,8 +534,8 @@ class InteractiveCalendar {
                 </div>
             `;
         }
-        
-        listContainer.innerHTML = listHTML;
+
+        listContainer.innerHTML = sanitizeHTML(listHTML, 'ugc');
     }
 
     getEventsForDate(date) {
@@ -605,11 +605,11 @@ class InteractiveCalendar {
                 </div>
             </div>
         `;
-        
-        document.getElementById('eventModalBody').innerHTML = modalBody;
-        document.getElementById('eventModalLabel').innerHTML = `
+
+        document.getElementById('eventModalBody').innerHTML = sanitizeHTML(modalBody, 'ugc');
+        document.getElementById('eventModalLabel').innerHTML = sanitizeHTML(`
             <i class="fas fa-calendar-day me-2"></i>${event.title}
-        `;
+        `, 'ugc');
         
         // Guardar ID del evento actual para otras acciones
         this.currentEventId = eventId;

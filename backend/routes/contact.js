@@ -318,7 +318,7 @@ router.get('/verify/:token', async (req, res) => {
 
         // Verificar token usando verificationService
         const verificationService = require('../services/verificationService');
-        const verification = verificationService.verifyToken(token);
+        const verification = await verificationService.verifyToken(token);
 
         if (!verification.success) {
             return res.status(400).send(`

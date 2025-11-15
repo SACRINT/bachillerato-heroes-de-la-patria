@@ -190,7 +190,7 @@ class AdvancedLazyLoader {
             }
         } catch (error) {
             console.error('❌ Error cargando contenido:', error);
-            element.innerHTML = '<p class="text-muted">Error cargando contenido</p>';
+            element.innerHTML = sanitizeHTML('<p class="text-muted">Error cargando contenido</p>', 'simple');
         }
     }
 
@@ -199,7 +199,7 @@ class AdvancedLazyLoader {
             const response = await fetch('data/noticias.json');
             const noticias = await response.json();
 
-            element.innerHTML = this.renderNoticias(noticias.slice(0, 3));
+            element.innerHTML = sanitizeHTML(this.renderNoticias(noticias.slice(0, 3)), 'ugc');
             element.classList.add('content-loaded');
 
         } catch (error) {
@@ -212,7 +212,7 @@ class AdvancedLazyLoader {
             const response = await fetch('data/eventos.json');
             const eventos = await response.json();
 
-            element.innerHTML = this.renderEventos(eventos.slice(0, 3));
+            element.innerHTML = sanitizeHTML(this.renderEventos(eventos.slice(0, 3)), 'ugc');
             element.classList.add('content-loaded');
 
         } catch (error) {
