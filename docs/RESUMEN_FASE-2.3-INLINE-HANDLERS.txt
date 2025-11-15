@@ -1,0 +1,256 @@
+================================================================================
+  FASE 2.3: ELIMINACIÓN DE JAVASCRIPT INLINE
+  Paso 1: ANÁLISIS DE ALCANCE - COMPLETADO
+================================================================================
+
+Fecha: 12 de Noviembre de 2025
+Estado: Análisis Exhaustivo Finalizado
+Documentación: docs/FASE-2.3-INLINE-JAVASCRIPT-ANALYSIS.md
+
+================================================================================
+  ESTADÍSTICAS GENERALES
+================================================================================
+
+Total de Manejadores Inline Encontrados: 781
+
+Distribución por Tipo de Evento:
+  • onclick=                           751 (96.2%)  ████████████████████████████
+  • onchange=                           28 (3.6%)   █
+  • onmouseover=                         1 (0.1%)
+  • onmouseout=                          1 (0.1%)
+
+Distribución por Tipo de Archivo:
+  • JavaScript (public/js/)        ~750 manejadores (96%)
+  • HTML (public/*.html)            ~31 manejadores (4%)
+  • Total de Archivos Afectados:    ~124 archivos
+
+================================================================================
+  ARCHIVOS CRÍTICOS (TOP 10)
+================================================================================
+
+Tier 1: MÁXIMA PRIORIDAD (>15 manejadores)
+  #1  dashboard-manager-2025.js         23 manejadores
+  #2  google-auth-integration.js        22 manejadores
+  #3  egresados-dashboard.js            18 manejadores
+  #4  admin-dashboard-events.js         16 manejadores
+  #5  digital-library-manager.js        15 manejadores
+  #6  advanced-web-apis.js              15 manejadores
+  ────────────────────────────────────────────────────
+  Subtotal Tier 1:                     109 manejadores
+
+Tier 2: ALTA PRIORIDAD (10-14 manejadores)
+  #7  content-generator-ai.js           13 manejadores
+  #8  support-tickets-manager.js        12 manejadores
+  #9  mobile-student-dashboard.js       12 manejadores
+  #10 dashboard-personalizer.js         11 manejadores
+  #11 estudiantes.html                  11 manejadores
+  #12-16 (5 archivos)                   50 manejadores
+  ────────────────────────────────────────────────────
+  Subtotal Tier 2:                     109 manejadores
+
+Tier 3: MEDIA PRIORIDAD (7-9 manejadores)
+  9 archivos con ~72 manejadores
+
+Tier 4: BAJA PRIORIDAD (<7 manejadores)
+  100+ archivos con ~491 manejadores
+
+================================================================================
+  VULNERABILIDADES IDENTIFICADAS
+================================================================================
+
+🔴 CRÍTICAS: CSP Violations (Content Security Policy)
+   • Afecta: 124 archivos
+   • Severidad: CRÍTICA
+   • Impacto: Navegador bloquea eventos si CSP no permite 'unsafe-inline'
+   • Requer Refactorización: OBLIGATORIA
+
+🟠 ALTOS: XSS via Parámetros en Onclick
+   • Afecta: ~200+ manejadores con parámetros dinámicos
+   • Severidad: ALTA
+   • Impacto: Inyección de código a través de parámetros no escapados
+   • Ejemplo: onclick="deleteItem('${id}')" - Si id contiene quote, XSS
+
+🟡 MEDIOS: Event Handler Scope Pollution
+   • Afecta: ~300+ manejadores
+   • Severidad: MEDIA
+   • Impacto: Acceso a variables globales desde atributos HTML
+   • Solución: Encapsulación en funciones con parámetros explícitos
+
+================================================================================
+  PATRONES ENCONTRADOS
+================================================================================
+
+Patrón A: onclick Simple (Sin parámetros)
+  • Cantidad: ~150 instancias
+  • Complejidad: BAJA
+  • Ejemplo: onclick="toggleMenu()"
+  • Refactorización: 1:1 directa con addEventListener
+
+Patrón B: onclick con Parámetros
+  • Cantidad: ~400 instancias
+  • Complejidad: MEDIA
+  • Ejemplo: onclick="deleteItem(123)" o onclick="editUser('${id}')"
+  • Refactorización: Usar atributos data-* + dataset API
+
+Patrón C: onclick Múltiples Acciones
+  • Cantidad: ~100 instancias
+  • Complejidad: MEDIA-ALTA
+  • Ejemplo: onclick="save(); closeModal(); refresh();"
+  • Refactorización: Función wrapper para coordinar acciones
+
+Patrón D: onclick Condicionales
+  • Cantidad: ~50 instancias
+  • Complejidad: ALTA
+  • Ejemplo: onclick="if(x) doA(); else doB();"
+  • Refactorización: Lógica en función JavaScript
+
+Patrón E: onchange en Formularios
+  • Cantidad: 28 instancias
+  • Complejidad: MEDIA
+  • Ejemplo: onchange="filterByDept(this.value)"
+  • Refactorización: addEventListener('change') con value extraído
+
+================================================================================
+  PLAN DE EJECUCIÓN PROPUESTO
+================================================================================
+
+FASE 2.3.1: Refactorización Tier 1 (Máxima Prioridad)
+  • Archivos: 6 (109 manejadores)
+  • Tiempo Estimado: 8-10 horas
+  • Prioridad: INMEDIATA
+  • Complejidad: ALTA
+
+FASE 2.3.2: Refactorización Tier 2 (Alta Prioridad)
+  • Archivos: 10 (109 manejadores)
+  • Tiempo Estimado: 6-8 horas
+  • Prioridad: ALTA
+  • Complejidad: MEDIA-ALTA
+
+FASE 2.3.3: Refactorización Tier 3 (Media Prioridad)
+  • Archivos: 9 (72 manejadores)
+  • Tiempo Estimado: 4-5 horas
+  • Prioridad: MEDIA
+  • Complejidad: MEDIA
+
+FASE 2.3.4: Refactorización Tier 4 (Baja Prioridad)
+  • Archivos: 100+ (<491 manejadores)
+  • Tiempo Estimado: 10-12 horas
+  • Prioridad: BAJA
+  • Complejidad: MEDIA-BAJA
+
+TOTAL ESTIMADO: 28-35 horas (puede automatizarse a ~2-3 horas)
+
+================================================================================
+  HERRAMIENTAS RECOMENDADAS
+================================================================================
+
+Opción A: AUTOMATIZACIÓN (Recomendado)
+  ✓ Script: scripts/remove-inline-handlers.cjs
+  ✓ Modo: --analyze, --fix, --verify
+  ✓ Ventajas:
+    - Procesamiento masivo
+    - Menos errores humanos
+    - Reportes detallados
+  ✓ Tiempo: 2-3 horas (incluye testing)
+
+Opción B: Refactorización Manual
+  ✓ Enfoque: Archivo por archivo
+  ✓ Ventajas:
+    - Control total
+    - Oportunidades de optimización
+    - Better testing incremental
+  ✓ Tiempo: 28-35 horas
+
+================================================================================
+  MÉTRICAS DE ÉXITO
+================================================================================
+
+                          Antes    Después   Target
+  ─────────────────────────────────────────────────
+  Manejadores inline        781        0       0
+  CSP violations           150+        0       0
+  XSS vulnerabilidades     30+       0-5      <5
+  Archivos conformes         0       124+      124+
+  Test coverage (%)         35%      ≥40%     ≥40%
+
+================================================================================
+  HTML ARCHIVOS CON ONCLICK (15 TOTAL)
+================================================================================
+
+ 1. aviso-privacidad.html       (toggleChatbot, sendMessage, etc.)
+ 2. bolsa-trabajo.html          (applyToJob, removeFromSaved, saveJob, etc.)
+ 3. calificaciones.html         (generateReport, showSubjectDetail, etc.)
+ 4. chatbot.html                (sendMessage, toggleChatbot)
+ 5. citas.html                  (bookAppointment, cancelAppointment, etc.)
+ 6. contacto.html               (sendContact, validateForm, etc.)
+ 7. convocatorias.html          (subscribeConvocation, filterConvocations, etc.)
+ 8. descargas.html              (downloadFile, deleteDownload, etc.)
+ 9. estudiantes.html            (showSubject, editSubject, deleteSubject - 11 total)
+10. padres.html                 (viewHijo, editProfile, etc.)
+11. docentes.html               (viewAsignatura, editGrade, etc.)
+12. servicios.html              (requestService, trackRequest, etc.)
+13. soporte.html                (submitTicket, replyTicket, etc.)
+14. oferta-educativa.html       (enrollProgram, etc.)
+15. transparencia.html          (filterReport, downloadReport, etc.)
+
+================================================================================
+  PRÓXIMOS PASOS
+================================================================================
+
+✅ Paso 1: ANÁLISIS DE ALCANCE - COMPLETADO
+   • Archivo: docs/FASE-2.3-INLINE-JAVASCRIPT-ANALYSIS.md
+   • Estadísticas: 781 manejadores identificados
+   • Vulnerabilidades: 3 niveles de severidad mapeados
+   • Plan: Dividido en 4 fases ejecutables
+
+⏳ Paso 2: CREAR SCRIPT DE AUTOMATIZACIÓN
+   • Archivo: scripts/remove-inline-handlers.cjs
+   • Modos: --analyze, --fix, --verify
+   • Estimado: 2-3 horas para script + testing
+
+⏳ Paso 3: SIMULACIÓN (DRY-RUN)
+   • Comando: node scripts/remove-inline-handlers.cjs --analyze
+   • Objetivo: Verificar detección de manejadores
+   • Tiempo: <5 minutos
+
+⏳ Paso 4: EJECUCIÓN REAL
+   • Comando: node scripts/remove-inline-handlers.cjs --fix
+   • Objetivo: Aplicar refactorización
+   • Tiempo: <10 minutos
+
+⏳ Paso 5: VALIDACIÓN
+   • Comando: npm test
+   • Objetivo: Verificar no hay regresiones
+   • Tiempo: 2-3 minutos
+
+⏳ Paso 6: COMMIT ATÓMICO
+   • Mensaje: "feat(security): Remove all inline event handlers and migrate to addEventListener"
+   • Cambios: 124 archivos modificados, 781 manejadores refactorizados
+   • Time: <5 minutos
+
+================================================================================
+  NOTAS IMPORTANTES
+================================================================================
+
+• La refactorización puede automatizarse de manera segura usando patrón de:
+  1. Detección de patron onclick/onchange
+  2. Extracción de nombre de función y parámetros
+  3. Creación de atributo data-* para parámetros
+  4. Generación de código addEventListener
+  5. Validación de sintaxis con node -c
+
+• Todos los cambios deben pasar npm test sin nuevas fallas
+
+• El commit debe ser atómico (un commit para todos los 124 archivos)
+
+• Después de FASE 2.3, quedaremos con:
+  ✅ FASE 2.1: DOMPurify CDN + dompurify-config.js
+  ✅ FASE 2.2: Sanitización de innerHTML (61788e0)
+  ✅ FASE 2.3: Eliminación de JavaScript Inline (pendiente)
+  = 100% CSP Compliance + XSS Prevention
+
+================================================================================
+Documento generado: 12 de Noviembre de 2025
+Análisis completado: ✅
+Estado: LISTO PARA IMPLEMENTACIÓN
+================================================================================
