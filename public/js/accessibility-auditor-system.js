@@ -167,7 +167,7 @@ class AccessibilityAuditorSystem {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         `;
 
-        panel.innerHTML = this.generateAccessibilityPanelHTML();
+        panel.innerHTML = sanitizeHTML(this.generateAccessibilityPanelHTML(), 'ugc');
         document.body.appendChild(panel);
     }
 
