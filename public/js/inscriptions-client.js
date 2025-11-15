@@ -287,7 +287,7 @@ async function showActivityRegistration(activityName) {
     }
 
     // Agregar modal al DOM
-    document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHtml));
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHtml));
 
     // Mostrar modal
     try {

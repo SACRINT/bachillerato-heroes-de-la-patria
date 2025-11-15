@@ -49,7 +49,7 @@ function createTasksModal() {
             </div>
         </div>
     </div>`;
-    document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
     return document.getElementById('tasksModal');
 }
 
@@ -113,7 +113,7 @@ function loadTasks() {
         </div>`;
     }).join('');
 
-    document.getElementById('tasksContent').innerHTML = sanitizeHTML(tasksHTML, 'ugc');
+    document.getElementById('tasksContent').innerHTML = DOMPurify.sanitize(tasksHTML, 'ugc');
 }
 
 // === FILTROS DE RECURSOS ===
@@ -169,7 +169,7 @@ function calculateAverage() {
     const resultElement = document.getElementById('averageResult');
 
     if (resultElement) {
-        resultElement.innerHTML = sanitizeHTML(`
+        resultElement.innerHTML = DOMPurify.sanitize(`
             <div class="alert alert-success text-center">
                 <h4><i class="fas fa-chart-line me-2"></i>Tu promedio actual es: <strong>${average}</strong></h4>
                 <p class="mb-0">Basado en ${count} calificación${count > 1 ? 'es' : ''}</p>
@@ -240,7 +240,7 @@ function createActivityModal() {
             </div>
         </div>
     </div>`;
-    document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
     return document.getElementById('activityModal');
 }
 
@@ -326,7 +326,7 @@ function showNotification(message, type = 'info') {
 
     const notification = document.createElement('div');
     notification.className = `alert alert-${type} alert-dismissible fade show shadow`;
-    notification.innerHTML = sanitizeHTML(`
+    notification.innerHTML = DOMPurify.sanitize(`
         <i class="fas fa-${type === 'success' ? 'check' : type === 'warning' ? 'exclamation-triangle' : 'info'}-circle me-2"></i>
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>

@@ -31,7 +31,7 @@ class CitasManager {
 
     async loadCitas() {
         const loadingEl = document.getElementById('citasTable');
-        if (loadingEl) loadingEl.innerHTML = sanitizeHTML(`<tr><td colspan="7" class="text-center py-4">
+        if (loadingEl) loadingEl.innerHTML = DOMPurify.sanitize(`<tr><td colspan="7" class="text-center py-4">
             <div class="spinner-border text-info" role="status"><span class="visually-hidden">Cargando...</span></div>
             <p class="mt-2 text-muted">Cargando solicitudes de citas...</p></td></tr>`);
 
@@ -63,9 +63,9 @@ class CitasManager {
         const tbody = document.getElementById('citasTable');
         if (!tbody) return;
 
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = DOMPurify.sanitize('');
         if (this.filteredCitas.length === 0) {
-            tbody.innerHTML = sanitizeHTML(`<tr><td colspan="7" class="text-center text-muted py-4">
+            tbody.innerHTML = DOMPurify.sanitize(`<tr><td colspan="7" class="text-center text-muted py-4">
                 <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i><p>No hay solicitudes de citas</p></td></tr>`);
             return;
         }
@@ -81,7 +81,7 @@ class CitasManager {
         const fechaFormato = new Date(cita.fecha_solicitada).toLocaleDateString('es-ES');
         const horaFormato = cita.hora_solicitada.substring(0, 5);
 
-        tr.innerHTML = sanitizeHTML(`
+        tr.innerHTML = DOMPurify.sanitize(`
             <td><strong>${this.escapeHtml(cita.nombre_completo)}</strong></td>
             <td>${this.escapeHtml(cita.email)}</td>
             <td>${this.escapeHtml(cita.motivo)}</td>
@@ -221,7 +221,7 @@ class CitasManager {
         const existingModal = document.getElementById('citaDetailsModal');
         if (existingModal) existingModal.remove();
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHtml));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHtml));
         const modal = new bootstrap.Modal(document.getElementById('citaDetailsModal'));
         modal.show();
     }
@@ -281,7 +281,7 @@ class CitasManager {
         const existingModal = document.getElementById('rejectCitaModal');
         if (existingModal) existingModal.remove();
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHtml));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHtml));
         const modal = new bootstrap.Modal(document.getElementById('rejectCitaModal'));
         modal.show();
     }

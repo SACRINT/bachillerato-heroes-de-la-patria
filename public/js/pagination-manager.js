@@ -89,7 +89,7 @@ class PaginationManager {
         if (!container) return;
 
         if (this.totalPages <= 1) {
-            container.innerHTML = sanitizeHTML('');
+            container.innerHTML = DOMPurify.sanitize('');
             return;
         }
 

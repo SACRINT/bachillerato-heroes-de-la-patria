@@ -446,7 +446,7 @@ class InteractiveCalendar {
         }
         
         calendarHTML += '</div></div>';
-        calendarContainer.innerHTML = sanitizeHTML(calendarHTML, 'ugc');
+        calendarContainer.innerHTML = DOMPurify.sanitize(calendarHTML, 'ugc');
     }
 
     renderEventsList() {
@@ -535,7 +535,7 @@ class InteractiveCalendar {
             `;
         }
 
-        listContainer.innerHTML = sanitizeHTML(listHTML, 'ugc');
+        listContainer.innerHTML = DOMPurify.sanitize(listHTML, 'ugc');
     }
 
     getEventsForDate(date) {
@@ -606,8 +606,8 @@ class InteractiveCalendar {
             </div>
         `;
 
-        document.getElementById('eventModalBody').innerHTML = sanitizeHTML(modalBody, 'ugc');
-        document.getElementById('eventModalLabel').innerHTML = sanitizeHTML(`
+        document.getElementById('eventModalBody').innerHTML = DOMPurify.sanitize(modalBody, 'ugc');
+        document.getElementById('eventModalLabel').innerHTML = DOMPurify.sanitize(`
             <i class="fas fa-calendar-day me-2"></i>${event.title}
         `, 'ugc');
         
@@ -903,7 +903,7 @@ function showAlert(message, type) {
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
     alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1060; max-width: 400px;';
-    alertDiv.innerHTML = sanitizeHTML(`
+    alertDiv.innerHTML = DOMPurify.sanitize(`
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `);
@@ -1156,7 +1156,7 @@ const calendarStyles = `
 `;
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', sanitizeHTML(calendarStyles));
+document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(calendarStyles));
 
 // Inicializar el calendario cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
