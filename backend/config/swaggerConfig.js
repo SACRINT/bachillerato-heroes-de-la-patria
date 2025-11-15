@@ -27,7 +27,7 @@ const swaggerDefinition = {
 const options = {
   swaggerDefinition,
   // Rutas a los archivos que contienen las anotaciones de la API
-  apis: ['./backend/routes/*.js', './backend/routes/**/*.js'],
+  apis: ['./routes/*.js', './routes/**/*.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

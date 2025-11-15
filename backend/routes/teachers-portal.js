@@ -14,7 +14,7 @@
 
 const express = require('express');
 const devLogger = require('../utils/devLogger');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { pool } = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
