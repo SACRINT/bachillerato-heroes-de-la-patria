@@ -113,7 +113,7 @@ function loadTasks() {
         </div>`;
     }).join('');
 
-    document.getElementById('tasksContent').innerHTML = tasksHTML;
+    document.getElementById('tasksContent').innerHTML = sanitizeHTML(tasksHTML, 'ugc');
 }
 
 // === FILTROS DE RECURSOS ===
