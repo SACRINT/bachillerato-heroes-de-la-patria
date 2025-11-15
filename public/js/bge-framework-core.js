@@ -124,7 +124,7 @@ class BGEFramework {
             background: #ff4444; color: white; padding: 10px;
             border-radius: 5px; max-width: 300px; font-size: 12px;
         `;
-        errorDiv.innerHTML = sanitizeHTML(`
+        errorDiv.innerHTML = DOMPurify.sanitize(`
             <strong>BGE Framework Error (${type})</strong><br>
             ${error.message}<br>
             <small>${error.stack ? error.stack.split('\n')[1] : ''}</small>

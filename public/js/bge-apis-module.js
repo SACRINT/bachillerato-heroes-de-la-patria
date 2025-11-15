@@ -730,7 +730,7 @@ class BGEAPIsModule extends BGEModule {
 
         const feedback = document.createElement('div');
         feedback.className = 'bge-validation-feedback text-muted';
-        feedback.innerHTML = sanitizeHTML(`<small>${message}</small>`);
+        feedback.innerHTML = DOMPurify.sanitize(`<small>${message}</small>`);
         field.parentNode.appendChild(feedback);
     }
 
@@ -739,7 +739,7 @@ class BGEAPIsModule extends BGEModule {
 
         const feedback = document.createElement('div');
         feedback.className = `bge-validation-feedback ${isValid ? 'text-success' : 'text-danger'}`;
-        feedback.innerHTML = sanitizeHTML(`<small>${message}</small>`);
+        feedback.innerHTML = DOMPurify.sanitize(`<small>${message}</small>`);
 
         field.classList.add(isValid ? 'is-valid' : 'is-invalid');
         field.parentNode.appendChild(feedback);
@@ -811,7 +811,7 @@ class BGEAPIsModule extends BGEModule {
             top: 20px; right: 20px; z-index: 1060;
             max-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         `;
-        notification.innerHTML = sanitizeHTML(`
+        notification.innerHTML = DOMPurify.sanitize(`
             <div class="d-flex align-items-center">
                 <span class="me-2">📴</span>
                 <div>

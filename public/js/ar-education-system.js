@@ -272,7 +272,7 @@ class AREducationSystem {
         // Crear indicador visual
         const indicator = document.createElement('div');
         indicator.id = 'ar-simulation-indicator';
-        indicator.innerHTML = sanitizeHTML('🎭 Modo Simulación AR Activo');
+        indicator.innerHTML = DOMPurify.sanitize('🎭 Modo Simulación AR Activo');
         indicator.style.cssText = `
             position: fixed;
             top: 10px;
@@ -852,7 +852,7 @@ class AREducationSystem {
         arInterface.id = 'ar-interface';
         arInterface.className = 'ar-interface hidden';
 
-        arInterface.innerHTML = sanitizeHTML(`
+        arInterface.innerHTML = DOMPurify.sanitize(`
             <div class="ar-controls">
                 <button class="ar-btn start-ar" id="start-ar-btn">
                     <i class="fas fa-cube"></i>
@@ -922,7 +922,7 @@ class AREducationSystem {
         const activationBtn = document.createElement('div');
         activationBtn.id = 'ar-activation';
         activationBtn.className = 'ar-activation';
-        activationBtn.innerHTML = sanitizeHTML(`
+        activationBtn.innerHTML = DOMPurify.sanitize(`
             <div class="activation-content">
                 <div class="ar-icon">🥽</div>
                 <div class="ar-status-dot available"></div>
@@ -1158,7 +1158,7 @@ class AREducationSystem {
         const viewer = document.createElement('div');
         viewer.id = 'ar-fallback-viewer';
         viewer.className = 'ar-fallback-viewer';
-        viewer.innerHTML = sanitizeHTML(`
+        viewer.innerHTML = DOMPurify.sanitize(`
             <div class="viewer-header">
                 <h3>🖥️ Visor 3D (Modo Simulación)</h3>
                 <button class="close-viewer-btn" onclick="this.closest('#ar-fallback-viewer').style.display='none';">✕</button>
@@ -1287,7 +1287,7 @@ class AREducationSystem {
 
         if (!experiences) return;
 
-        grid.innerHTML = sanitizeHTML(experiences.scenarios.map(scenario => `
+        grid.innerHTML = DOMPurify.sanitize(experiences.scenarios.map(scenario => `
             <div class="scenario-card" data-subject="${subject}" data-scenario="${scenario}">
                 <div class="scenario-icon">${this.getScenarioIcon(scenario)}</div>
                 <h4>${this.getScenarioName(scenario)}</h4>

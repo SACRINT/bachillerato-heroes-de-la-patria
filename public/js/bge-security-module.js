@@ -2371,7 +2371,7 @@ function createAdminLoginModal() {
     </div>`;
 
     // Insertar modal en el DOM
-    document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
 
     // Configurar event listeners
     setupAdminLoginEvents();
@@ -2460,7 +2460,7 @@ window.updateAdminHeaderStatus = function updateAdminHeaderStatus(isLoggedIn, us
         // Actualizar enlace de admin
         if (adminLink) {
             adminLink.classList.add('text-success');
-            adminLink.innerHTML = sanitizeHTML(`<i class="fas fa-shield-check me-2"></i>Admin (${user.username.split('@')[0]})`);
+            adminLink.innerHTML = DOMPurify.sanitize(`<i class="fas fa-shield-check me-2"></i>Admin (${user.username.split('@')[0]})`);
         }
         if (statusBadge) {
             statusBadge.classList.remove('d-none');
