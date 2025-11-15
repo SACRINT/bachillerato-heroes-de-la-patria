@@ -287,13 +287,14 @@ router.post('/send', contactLimiter, validateContactForm, async (req, res) => {
         const verificationService = require('../services/verificationService');
         const token = await verificationService.createVerification(formData);
 
-        devLog.log('Email de verificación enviado exitosamente');
+        devLogger.log('✅ Email de verificación enviado exitosamente');
 
         res.json({
             success: true,
             message: 'Se ha enviado un email de confirmación a tu correo. Revisa tu bandeja de entrada y haz clic en el enlace para completar el envío.',
             requiresVerification: true,
-            verificationSent: true
+            verificationSent: true,
+            token: token
         });
 
     } catch (error) {
