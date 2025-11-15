@@ -748,7 +748,7 @@ class BGENotificationAdmin {
         if (!container) return;
 
         if (this.scheduledNotifications.length === 0) {
-            container.innerHTML = '<p class="no-items">No hay notificaciones programadas</p>';
+            container.innerHTML = sanitizeHTML('<p class="no-items">No hay notificaciones programadas</p>', 'simple');
             return;
         }
 
@@ -772,7 +772,7 @@ class BGENotificationAdmin {
         if (!container) return;
 
         if (this.notificationHistory.length === 0) {
-            container.innerHTML = '<p class="no-items">No hay historial de notificaciones</p>';
+            container.innerHTML = sanitizeHTML('<p class="no-items">No hay historial de notificaciones</p>', 'simple');
             return;
         }
 

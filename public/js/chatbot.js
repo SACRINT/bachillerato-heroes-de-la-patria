@@ -1195,7 +1195,7 @@ function toggleChatbot() {
     
     if (chatbotOpen) {
         container.style.display = 'flex';
-        toggle.innerHTML = '<i class="fas fa-times"></i>';
+        toggle.innerHTML = sanitizeHTML('<i class="fas fa-times"></i>', 'simple');
         
         // Limpiar mensajes anteriores si es necesario
         const messagesContainer = document.getElementById('chatbotMessages');
@@ -1219,7 +1219,7 @@ function toggleChatbot() {
         
     } else {
         container.style.display = 'none';
-        toggle.innerHTML = '<i class="fas fa-comments"></i>';
+        toggle.innerHTML = sanitizeHTML('<i class="fas fa-comments"></i>', 'simple');
     }
 }
 
@@ -1234,7 +1234,7 @@ function addMessage(sender, message) {
     messageDiv.className = `chatbot-message ${sender}`;
     
     // Usar innerHTML para renderizar HTML formateado
-    messageDiv.innerHTML = message;
+    messageDiv.innerHTML = sanitizeHTML(message, 'ugc');
     
     // Animación de entrada
     messageDiv.style.opacity = '0';
