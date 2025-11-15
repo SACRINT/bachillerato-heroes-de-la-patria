@@ -7,14 +7,15 @@
 const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
 const devLogger = require('../utils/devLogger');
+const { pool } = require('../config/database');
 require('dotenv').config();
 
 class VerificationService {
     constructor() {
-        // Almacén temporal de verificaciones (en producción usar Redis/DB)
-        this.pendingVerifications = new Map();
+        // ✅ AHORA USA PostgreSQL EN LUGAR DE Map() EN MEMORIA
+        // Esto resuelve el problema de tokens perdidos en Vercel serverless
 
-        // Control de re-envíos por email
+        // Control de re-envíos por email (sigue usando Map por ser temporal)
         this.emailCooldowns = new Map(); // { email: timestamp }
         this.COOLDOWN_TIME = 2 * 60 * 1000; // 2 minutos entre envíos
 
@@ -51,6 +52,7 @@ class VerificationService {
 
     /**
      * Crear token de verificación y enviar email
+     * ✅ AHORA USA POSTGRESQL PARA PERSISTENCIA
      */
     async createVerification(formData) {
         if (!this.transporter) {
@@ -70,18 +72,37 @@ class VerificationService {
         }
 
         const token = uuidv4();
-        const expirationTime = Date.now() + (30 * 60 * 1000); // 30 minutos
+        const expiresAt = new Date(Date.now() + (30 * 60 * 1000)); // 30 minutos
 
-        // Guardar verificación pendiente
-        this.pendingVerifications.set(token, {
-            data: formData,
-            email: formData.email,
-            expires: expirationTime,
-            created: Date.now()
-        });
+        // ✅ GUARDAR EN POSTGRESQL (en lugar de Map)
+        const query = `
+            INSERT INTO verification_tokens (
+                token, email, form_data, form_type, expires_at, ip_address, user_agent
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING token
+        `;
+
+        const values = [
+            token,
+            email,
+            JSON.stringify(formData),
+            formData.form_type || 'Contacto General',
+            expiresAt,
+            formData.ip_address || null,
+            formData.user_agent || null
+        ];
+
+        try {
+            await pool.query(query, values);
+            devLogger.log(`✅ [VERIFICATION] Token ${token.substring(0, 8)}... guardado en DB`);
+        } catch (error) {
+            devLogger.error('❌ [VERIFICATION] Error guardando token en DB:', error);
+            throw new Error('Error al crear verificación');
+        }
 
         // Enviar email de confirmación
-        await this.sendVerificationEmail(formData.email, token, formData.form_type);
+        await this.sendVerificationEmail(email, token, formData.form_type);
 
         // Registrar timestamp de envío para cooldown
         this.emailCooldowns.set(email, Date.now());
@@ -112,24 +133,52 @@ class VerificationService {
 
     /**
      * Verificar token y procesar mensaje
+     * ✅ AHORA LEE DESDE POSTGRESQL
      */
-    verifyToken(token) {
-        const verification = this.pendingVerifications.get(token);
+    async verifyToken(token) {
+        try {
+            // Buscar token en base de datos
+            const query = `
+                SELECT *
+                FROM verification_tokens
+                WHERE token = $1
+                AND used_at IS NULL
+            `;
 
-        if (!verification) {
-            return { success: false, error: 'Token inválido o expirado' };
+            const result = await pool.query(query, [token]);
+
+            if (result.rows.length === 0) {
+                return { success: false, error: 'Token inválido' };
+            }
+
+            const verification = result.rows[0];
+
+            // Verificar si expiró
+            if (new Date() > new Date(verification.expires_at)) {
+                return { success: false, error: 'Token expirado' };
+            }
+
+            // Marcar token como usado
+            const updateQuery = `
+                UPDATE verification_tokens
+                SET used_at = NOW()
+                WHERE token = $1
+            `;
+            await pool.query(updateQuery, [token]);
+
+            // Retornar datos del formulario
+            const data = typeof verification.form_data === 'string'
+                ? JSON.parse(verification.form_data)
+                : verification.form_data;
+
+            devLogger.log(`✅ [VERIFICATION] Token ${token.substring(0, 8)}... verificado exitosamente`);
+
+            return { success: true, data };
+
+        } catch (error) {
+            devLogger.error('❌ [VERIFICATION] Error verificando token:', error);
+            return { success: false, error: 'Error al verificar token' };
         }
-
-        if (Date.now() > verification.expires) {
-            this.pendingVerifications.delete(token);
-            return { success: false, error: 'Token expirado' };
-        }
-
-        // Token válido, obtener datos
-        const data = verification.data;
-        this.pendingVerifications.delete(token);
-
-        return { success: true, data };
     }
 
     /**
@@ -245,24 +294,59 @@ class VerificationService {
 
     /**
      * Limpiar verificaciones expiradas (ejecutar periódicamente)
+     * ✅ AHORA LIMPIA DESDE POSTGRESQL
      */
-    cleanExpiredVerifications() {
-        const now = Date.now();
-        for (const [token, verification] of this.pendingVerifications.entries()) {
-            if (now > verification.expires) {
-                this.pendingVerifications.delete(token);
-            }
+    async cleanExpiredVerifications() {
+        try {
+            const query = `
+                DELETE FROM verification_tokens
+                WHERE expires_at < NOW()
+                OR (used_at IS NOT NULL AND used_at < NOW() - INTERVAL '7 days')
+            `;
+
+            const result = await pool.query(query);
+            devLogger.log(`🧹 [VERIFICATION] Limpieza: ${result.rowCount} tokens eliminados`);
+
+            return result.rowCount;
+        } catch (error) {
+            devLogger.error('❌ [VERIFICATION] Error limpiando tokens:', error);
+            return 0;
         }
     }
 
     /**
      * Obtener estadísticas del sistema
+     * ✅ AHORA LEE DESDE POSTGRESQL
      */
-    getStats() {
-        return {
-            pendingVerifications: this.pendingVerifications.size,
-            uptime: process.uptime()
-        };
+    async getStats() {
+        try {
+            const query = `
+                SELECT
+                    COUNT(*) FILTER (WHERE used_at IS NULL AND expires_at > NOW()) as pending,
+                    COUNT(*) FILTER (WHERE used_at IS NOT NULL) as used,
+                    COUNT(*) FILTER (WHERE expires_at < NOW()) as expired
+                FROM verification_tokens
+            `;
+
+            const result = await pool.query(query);
+            const stats = result.rows[0];
+
+            return {
+                pendingVerifications: parseInt(stats.pending || 0),
+                usedVerifications: parseInt(stats.used || 0),
+                expiredVerifications: parseInt(stats.expired || 0),
+                uptime: process.uptime()
+            };
+        } catch (error) {
+            devLogger.error('❌ [VERIFICATION] Error obteniendo stats:', error);
+            return {
+                pendingVerifications: 0,
+                usedVerifications: 0,
+                expiredVerifications: 0,
+                uptime: process.uptime(),
+                error: error.message
+            };
+        }
     }
 }
 

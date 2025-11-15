@@ -859,21 +859,21 @@ class AdminDashboard {
         // Verificar que dashboardData existe
         if (!this.dashboardData) {
             console.log('❌ [DEBUG] dashboardData no existe');
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Cargando datos...</td></tr>';
+            tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-muted">Cargando datos...</td></tr>', 'simple');
             return;
         }
 
         // Verificar que students existe y es un array
         if (!this.dashboardData.students || !Array.isArray(this.dashboardData.students)) {
             console.log('❌ [DEBUG] students no es array válido:', this.dashboardData.students);
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No hay datos de estudiantes disponibles</td></tr>';
+            tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-muted">No hay datos de estudiantes disponibles</td></tr>', 'simple');
             return;
         }
 
         // Verificar que students tiene elementos
         if (this.dashboardData.students.length === 0) {
             console.log('ℹ️ [DEBUG] students array está vacío');
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No hay estudiantes registrados</td></tr>';
+            tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-muted">No hay estudiantes registrados</td></tr>', 'simple');
             return;
         }
 
@@ -920,7 +920,7 @@ class AdminDashboard {
         });
         } catch (error) {
             console.error('❌ [DEBUG] Error en loadStudentsTable:', error);
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error cargando estudiantes</td></tr>';
+            tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-danger">Error cargando estudiantes</td></tr>', 'simple');
         }
     }
 
@@ -1489,7 +1489,7 @@ class AdminDashboard {
             </div>
         `;
 
-        container.innerHTML = html;
+        container.innerHTML = sanitizeHTML(html, 'tablas');
         console.log(`✅ [DISPLAY] ${registrations.length} solicitudes renderizadas`);
     }
 
@@ -2182,7 +2182,7 @@ class AdminDashboard {
             </div>
         `).join('');
 
-        container.innerHTML = html;
+        container.innerHTML = sanitizeHTML(html, 'tablas');
 
         // ACTUALIZAR CONTADORES EN BADGES
         const activeUsersCount = uniqueUsers.filter(user => user.status === 'active').length;
@@ -3121,11 +3121,11 @@ function updateRefreshButtonState() {
 
     refreshButtons.forEach(button => {
         if (hasCustomConfig) {
-            button.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>⚠️ Configuración Personalizada';
+            button.innerHTML = sanitizeHTML('<i class="fas fa-exclamation-triangle me-1"></i>⚠️ Configuración Personalizada', 'simple');
             button.className = 'btn btn-warning btn-sm';
             button.title = 'Datos personalizados configurados - Usar con precaución';
         } else {
-            button.innerHTML = '<i class="fas fa-sync me-1"></i>Actualizar';
+            button.innerHTML = sanitizeHTML('<i class="fas fa-sync me-1"></i>Actualizar', 'simple');
             button.className = 'btn btn-outline-light btn-sm';
             button.title = 'Actualizar dashboard';
         }
@@ -3198,7 +3198,7 @@ window.legacyContentManager = {
         }
 
         const html = filteredItems.map(item => this.renderItem(item)).join('');
-        container.innerHTML = html;
+        container.innerHTML = sanitizeHTML(html, 'tablas');
     },
 
     renderItem: function(item) {
@@ -3306,7 +3306,7 @@ function editContent(id) {
 
     // Cambiar el botón para modo edición
     const submitBtn = document.querySelector('#contentForm button[data-action="create-content"]');
-    submitBtn.innerHTML = '<i class="fas fa-save me-1"></i>Actualizar Contenido';
+    submitBtn.innerHTML = sanitizeHTML('<i class="fas fa-save me-1"></i>Actualizar Contenido', 'simple');
     submitBtn.onclick = () => updateContent(id);
 
     // Scroll hacia el formulario
@@ -3332,7 +3332,7 @@ function updateContent(id) {
 
     // Restaurar el botón a modo creación
     const submitBtn = document.querySelector('#contentForm button[onclick^="updateContent"]');
-    submitBtn.innerHTML = '<i class="fas fa-plus me-1"></i>Crear Contenido';
+    submitBtn.innerHTML = sanitizeHTML('<i class="fas fa-plus me-1"></i>Crear Contenido', 'simple');
     submitBtn.onclick = createContent;
 
     if (adminDashboard && typeof adminDashboard.showToast === 'function') {
