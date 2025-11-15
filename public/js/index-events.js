@@ -1,16 +1,26 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * Archivo de eventos para index.html - Reemplaza scripts inline por eventos externos
  * Compatible con CSP (Content Security Policy)
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔧 index-events.js cargado correctamente');
+    debugLog.log('APP', '🔧 index-events.js cargado correctamente');
 
     // Inicializar todos los event listeners
     initializeChatbotEvents();
     // initializeDevCredentialsEvents(); // DESHABILITADO: El archivo dev-credentials.js no existe.
 
-    console.log('✅ Todos los eventos de index.html configurados');
+    debugLog.log('APP', '✅ Todos los eventos de index.html configurados');
 });
 
 /**
@@ -25,10 +35,10 @@ function initializeChatbotEvents() {
             if (typeof toggleChatbot === 'function') {
                 toggleChatbot();
             } else {
-                console.warn('⚠️ Función toggleChatbot no encontrada');
+                debugLog.warn('APP', '⚠️ Función toggleChatbot no encontrada');
             }
         });
-        console.log('✅ Evento chatbot close configurado');
+        debugLog.log('APP', '✅ Evento chatbot close configurado');
     }
 
     // Botón para enviar mensaje
@@ -39,10 +49,10 @@ function initializeChatbotEvents() {
             if (typeof sendMessage === 'function') {
                 sendMessage();
             } else {
-                console.warn('⚠️ Función sendMessage no encontrada');
+                debugLog.warn('APP', '⚠️ Función sendMessage no encontrada');
             }
         });
-        console.log('✅ Evento send message configurado');
+        debugLog.log('MESSAGE', '✅ Evento send message configurado');
     }
 }
 
@@ -65,10 +75,10 @@ function initializeDevCredentialsEvents() {
                 if (typeof fillDevCredentials === 'function') {
                     fillDevCredentials(type);
                 } else {
-                    console.warn(`⚠️ Función fillDevCredentials no encontrada para tipo: ${type}`);
+                    debugLog.warn('APP', `⚠️ Función fillDevCredentials no encontrada para tipo: ${type}`);
                 }
             });
-            console.log(`✅ Evento dev credentials '${type}' configurado`);
+            debugLog.log('APP', `✅ Evento dev credentials '${type}' configurado`);
         }
     });
 }
@@ -77,7 +87,7 @@ function initializeDevCredentialsEvents() {
  * Función de utilidad para debug
  */
 function logEventSetup(eventName, element) {
-    console.log(`✅ Evento '${eventName}' configurado en elemento:`, element);
+    debugLog.log('APP', `✅ Evento '${eventName}' configurado en elemento:`, element);
 }
 
 /**
@@ -94,10 +104,10 @@ function verifyDependencies() {
     });
 
     if (missing.length > 0) {
-        console.warn('⚠️ Funciones faltantes:', missing);
+        debugLog.warn('APP', '⚠️ Funciones faltantes:', missing);
         console.info('ℹ️ Estas funciones deberían estar definidas en otros archivos JS');
     } else {
-        console.log('✅ Todas las dependencias encontradas');
+        debugLog.log('APP', '✅ Todas las dependencias encontradas');
     }
 
     return missing.length === 0;

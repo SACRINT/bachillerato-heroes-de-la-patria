@@ -8,6 +8,10 @@ const devLogger = require('../utils/devLogger');
 const { body, validationResult } = require('express-validator');
 const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
 const crypto = require('crypto');
+
+// GDPR Logging - Debug condicional y sanitización
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
+
 const router = express.Router();
 
 // Obtener servicio de estudiantes

@@ -1,4 +1,15 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    // Fallback si debug-logger.js no está cargado
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * Context Manager BGE - Sistema de verificación de contexto
  * Previene ejecución de scripts en páginas incorrectas
  * Versión: 1.0
@@ -11,8 +22,8 @@ class BGEContextManager {
         this.pageFeatures = this.detectPageFeatures();
         this.isReady = false;
 
-        console.log('🔍 [CONTEXT] Página detectada:', this.currentPage);
-        console.log('📋 [CONTEXT] Características:', this.pageFeatures);
+        debugLog.log('CONTEXT', '🔍 [CONTEXT] Página detectada:', this.currentPage);
+        debugLog.log('CONTEXT', '📋 [CONTEXT] Características:', this.pageFeatures);
     }
 
     /**
@@ -83,13 +94,13 @@ class BGEContextManager {
 
         // Verificar exclusiones
         if (exclude.includes(this.currentPage)) {
-            console.log(`⏭️ [CONTEXT] Script ${scriptName} excluido en página ${this.currentPage}`);
+            debugLog.log('CONTEXT', `⏭️ [CONTEXT] Script ${scriptName} excluido en página ${this.currentPage}`);
             return false;
         }
 
         // Si se especifican páginas, verificar inclusión
         if (pages.length > 0 && !pages.includes(this.currentPage)) {
-            console.log(`⏭️ [CONTEXT] Script ${scriptName} no requerido en página ${this.currentPage}`);
+            debugLog.log('CONTEXT', `⏭️ [CONTEXT] Script ${scriptName} no requerido en página ${this.currentPage}`);
             return false;
         }
 
@@ -97,12 +108,12 @@ class BGEContextManager {
         if (features.length > 0) {
             const hasRequiredFeatures = features.some(feature => this.pageFeatures[feature]);
             if (!hasRequiredFeatures) {
-                console.log(`⏭️ [CONTEXT] Script ${scriptName} - características no encontradas:`, features);
+                debugLog.log('CONTEXT', `⏭️ [CONTEXT] Script ${scriptName} - características no encontradas:`, features);
                 return false;
             }
         }
 
-        console.log(`✅ [CONTEXT] Script ${scriptName} autorizado para ejecución`);
+        debugLog.log('CONTEXT', `✅ [CONTEXT] Script ${scriptName} autorizado para ejecución`);
         return true;
     }
 
@@ -116,10 +127,10 @@ class BGEContextManager {
 
         try {
             callback();
-            console.log(`✅ [CONTEXT] Script ${scriptName} ejecutado exitosamente`);
+            debugLog.log('CONTEXT', `✅ [CONTEXT] Script ${scriptName} ejecutado exitosamente`);
             return true;
         } catch (error) {
-            console.error(`❌ [CONTEXT] Error ejecutando ${scriptName}:`, error);
+            debugLog.error('CONTEXT', `❌ [CONTEXT] Error ejecutando ${scriptName}:`, error);
             return false;
         }
     }
@@ -156,4 +167,4 @@ class BGEContextManager {
 // Instancia global
 window.BGEContext = new BGEContextManager();
 
-console.log('✅ [CONTEXT] Context Manager inicializado');
+debugLog.log('CONTEXT', '✅ [CONTEXT] Context Manager inicializado');

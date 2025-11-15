@@ -1,4 +1,14 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * ============================================
  * MESSAGING MANAGER - Sistema de Mensajería Interna BGE
  * ============================================
@@ -54,7 +64,7 @@ class MessagingManager {
 
     init() {
         if (!this.token) {
-            console.warn('No hay token de autenticación');
+            debugLog.warn('TOKEN', 'No hay token de autenticación');
             this.redirectToLogin();
             return;
         }
@@ -172,7 +182,7 @@ class MessagingManager {
 
             return data;
         } catch (error) {
-            console.error('Error en API request:', error);
+            debugLog.error('APP', 'Error en API request:', error);
             throw error;
         }
     }
@@ -210,7 +220,7 @@ class MessagingManager {
             this.renderConversations();
 
         } catch (error) {
-            console.error('Error al cargar conversaciones:', error);
+            debugLog.error('APP', 'Error al cargar conversaciones:', error);
             if (!silent) this.showToast('Error al cargar conversaciones', 'danger');
         } finally {
             if (!silent) this.showLoading(false);
@@ -282,7 +292,7 @@ class MessagingManager {
             this.renderConversations();
 
         } catch (error) {
-            console.error('Error al seleccionar conversación:', error);
+            debugLog.error('APP', 'Error al seleccionar conversación:', error);
             this.showToast('Error al cargar conversación', 'danger');
         } finally {
             this.showLoading(false);
@@ -319,7 +329,7 @@ class MessagingManager {
             }
 
         } catch (error) {
-            console.error('Error al cargar mensajes:', error);
+            debugLog.error('APP', 'Error al cargar mensajes:', error);
         }
     }
 
@@ -394,7 +404,7 @@ class MessagingManager {
             this.stopTyping();
 
         } catch (error) {
-            console.error('Error al enviar mensaje:', error);
+            debugLog.error('APP', 'Error al enviar mensaje:', error);
             this.showToast('Error al enviar mensaje', 'danger');
         }
     }
@@ -433,7 +443,7 @@ class MessagingManager {
             this.showToast('Archivo enviado exitosamente', 'success');
 
         } catch (error) {
-            console.error('Error al enviar archivo:', error);
+            debugLog.error('APP', 'Error al enviar archivo:', error);
             this.showToast('Error al enviar archivo', 'danger');
         } finally {
             this.showLoading(false);
@@ -447,7 +457,7 @@ class MessagingManager {
                 method: 'POST'
             });
         } catch (error) {
-            console.error('Error al marcar como leído:', error);
+            debugLog.error('APP', 'Error al marcar como leído:', error);
         }
     }
 
@@ -479,7 +489,7 @@ class MessagingManager {
                 body: JSON.stringify({ is_typing: isTyping })
             });
         } catch (error) {
-            console.error('Error al enviar indicador de escritura:', error);
+            debugLog.error('APP', 'Error al enviar indicador de escritura:', error);
         }
     }
 
@@ -561,7 +571,7 @@ class MessagingManager {
             this.showToast('Conversación creada exitosamente', 'success');
 
         } catch (error) {
-            console.error('Error al crear conversación:', error);
+            debugLog.error('APP', 'Error al crear conversación:', error);
             this.showToast('Error al crear conversación', 'danger');
         } finally {
             this.showLoading(false);

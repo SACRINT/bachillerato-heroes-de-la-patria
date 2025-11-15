@@ -1,4 +1,14 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * 📧 MANEJADOR DE CONFIRMACIÓN DE EMAIL - BOLSA DE TRABAJO
  * Detecta cuando el usuario hace clic en el enlace de confirmación de email
  * y llama al endpoint de confirmación en el backend
@@ -9,7 +19,7 @@
 (function() {
     'use strict';
 
-    console.log('📧 [EMAIL CONFIRMATION] Script cargado');
+    debugLog.log('EMAIL', '📧 [EMAIL CONFIRMATION] Script cargado');
 
     /**
      * Obtener token de confirmación de la URL
@@ -108,7 +118,7 @@
      * Confirmar email con token
      */
     async function confirmEmail(token) {
-        console.log(`📧 [EMAIL CONFIRMATION] Confirmando email con token: ${token.substring(0, 8)}...`);
+        debugLog.log('TOKEN', `📧 [EMAIL CONFIRMATION] Confirmando email con token: ${token.substring(0, 8)}...`);
 
         // Mostrar estado inicial
         showConfirmationStatus('Confirmando tu email...', true);
@@ -124,16 +134,16 @@
 
             const data = await response.json();
 
-            console.log(`📧 [EMAIL CONFIRMATION] Respuesta del servidor:`, data);
+            debugLog.log('EMAIL', `📧 [EMAIL CONFIRMATION] Respuesta del servidor:`, data);
 
             if (response.ok && data.success) {
-                console.log(`✅ [EMAIL CONFIRMATION] Email confirmado exitosamente`);
+                debugLog.log('EMAIL', `✅ [EMAIL CONFIRMATION] Email confirmado exitosamente`);
                 showConfirmationStatus(
                     '✓ Tu email ha sido confirmado exitosamente. Tu solicitud ha sido enviada a revisión del administrador. Te notificaremos cuando sea revisada.',
                     true
                 );
             } else {
-                console.error(`❌ [EMAIL CONFIRMATION] Error:`, data.error);
+                debugLog.error('EMAIL', `❌ [EMAIL CONFIRMATION] Error:`, data.error);
                 showConfirmationStatus(
                     data.error || 'Hubo un error al confirmar tu email. Por favor intenta nuevamente.',
                     false
@@ -141,7 +151,7 @@
             }
 
         } catch (error) {
-            console.error(`❌ [EMAIL CONFIRMATION] Error de red:`, error);
+            debugLog.error('EMAIL', `❌ [EMAIL CONFIRMATION] Error de red:`, error);
             showConfirmationStatus(
                 'Error de conexión. Por favor verifica tu conexión a internet e intenta nuevamente.',
                 false
@@ -155,17 +165,17 @@
     function init() {
         // Solo ejecutar si estamos en bolsa-trabajo.html
         if (!window.location.pathname.includes('bolsa-trabajo')) {
-            console.log('📧 [EMAIL CONFIRMATION] No estamos en bolsa-trabajo.html, saliendo');
+            debugLog.log('EMAIL', '📧 [EMAIL CONFIRMATION] No estamos en bolsa-trabajo.html, saliendo');
             return;
         }
 
         const token = getConfirmationToken();
 
         if (token) {
-            console.log(`📧 [EMAIL CONFIRMATION] Token encontrado: ${token.substring(0, 8)}...`);
+            debugLog.log('TOKEN', `📧 [EMAIL CONFIRMATION] Token encontrado: ${token.substring(0, 8)}...`);
             confirmEmail(token);
         } else {
-            console.log('📧 [EMAIL CONFIRMATION] No se encontró token de confirmación en la URL');
+            debugLog.log('TOKEN', '📧 [EMAIL CONFIRMATION] No se encontró token de confirmación en la URL');
         }
     }
 

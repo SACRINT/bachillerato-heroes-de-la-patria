@@ -10,6 +10,10 @@ const { getAuthService } = require('../services/authService');
 const { getJWTUtils } = require('../utils/jwtUtils');
 const { authenticateToken, requireAdmin, requireRole } = require('../middleware/auth');
 const devLogger = require('../utils/devLogger'); // 🔐 Logging seguro (GDPR compliant)
+
+// GDPR Logging - Debug condicional y sanitización
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
+
 const router = express.Router();
 
 // Instancias de servicios

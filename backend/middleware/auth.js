@@ -7,6 +7,10 @@ const { getJWTUtils } = require('../utils/jwtUtils');
 const { getAuthService } = require('../services/authService');
 const devLogger = require('../utils/devLogger'); // 🔐 Logging seguro
 
+// GDPR Logging - Debug condicional y sanitización
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
+
+
 // Instancias de servicios
 const jwtUtils = getJWTUtils();
 const authService = getAuthService();

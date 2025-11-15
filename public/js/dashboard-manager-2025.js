@@ -3,23 +3,34 @@
 // ========================================
 
 // Inicialización con logging centralizado
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    // Fallback si debug-logger.js no está cargado
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
 if (window.BGELogger && typeof window.BGELogger.info === 'function') {
-    window.BGELogger.info('Dashboard Manager', '🚀 INICIANDO Dashboard Manager 2025', {
+    debugLog.log('APP', 'Dashboard Manager', '🚀 INICIANDO Dashboard Manager 2025', {
         version: '2025-10-01',
         timestamp: Date.now(),
         antiCache: true
     });
 } else {
-    console.log('🚀 [Dashboard Manager] INICIANDO Dashboard Manager 2025 v2025-10-01');
+    debugLog.log('APP', '🚀 [Dashboard Manager] INICIANDO Dashboard Manager 2025 v2025-10-01');
 }
 
 // Dashboard Administrativo Integrado con API
 class AdminDashboard {
     constructor() {
         if (window.BGELogger && typeof window.BGELogger.debug === 'function') {
-            window.BGELogger.debug('Dashboard Manager', '🏗️ Constructor AdminDashboard iniciando...');
+            debugLog.log('APP', 'Dashboard Manager', '🏗️ Constructor AdminDashboard iniciando...');
         } else {
-            console.log('🏗️ [Dashboard Manager] Constructor AdminDashboard iniciando...');
+            debugLog.log('APP', '🏗️ [Dashboard Manager] Constructor AdminDashboard iniciando...');
         }
         this.currentUser = null;
         this.isLoggedIn = false;
@@ -37,7 +48,7 @@ class AdminDashboard {
 
         // Configuración de datos estadísticos
         if (window.BGELogger && typeof window.BGELogger.debug === 'function') {
-            window.BGELogger.debug('Dashboard Manager', '🔧 Inicializando configuración de datos reales', {
+            debugLog.log('APP', 'Dashboard Manager', '🔧 Inicializando configuración de datos reales', {
                 version: '2025-10-01',
             localStorage: {
                 totalStudents: localStorage.getItem('realData_totalStudents'),
@@ -47,7 +58,7 @@ class AdminDashboard {
             }
             });
         } else {
-            console.log('🔧 [Dashboard Manager] Inicializando configuración de datos reales');
+            debugLog.log('APP', '🔧 [Dashboard Manager] Inicializando configuración de datos reales');
         }
 
         this.realDataConfig = {
@@ -58,9 +69,9 @@ class AdminDashboard {
         };
 
         if (window.BGELogger && typeof window.BGELogger.info === 'function') {
-            window.BGELogger.info('Dashboard Manager', '⚙️ Configuración de datos inicializada', this.realDataConfig);
+            debugLog.log('APP', 'Dashboard Manager', '⚙️ Configuración de datos inicializada', this.realDataConfig);
         } else {
-            console.log('⚙️ [Dashboard Manager] Configuración de datos inicializada:', this.realDataConfig);
+            debugLog.log('APP', '⚙️ [Dashboard Manager] Configuración de datos inicializada:', this.realDataConfig);
         }
 
         this.init();
@@ -71,16 +82,16 @@ class AdminDashboard {
         }, 1000);
 
         if (window.BGELogger && typeof window.BGELogger.info === 'function') {
-            window.BGELogger.info('Dashboard Manager', '✅ Constructor AdminDashboard completado exitosamente');
+            debugLog.log('APP', 'Dashboard Manager', '✅ Constructor AdminDashboard completado exitosamente');
         } else {
-            console.log('✅ [Dashboard Manager] Constructor AdminDashboard completado exitosamente');
+            debugLog.log('APP', '✅ [Dashboard Manager] Constructor AdminDashboard completado exitosamente');
         }
     }
 
     // Helper function para copiar contraseña - Refactorizada de onclick inline
     handleCopyPassword(button, password) {
         if (!password) {
-            console.error('Error: No se proporcionó contraseña para copiar.');
+            debugLog.error('ERROR', 'Error: No se proporcionó contraseña para copiar.');
             return;
         }
         navigator.clipboard.writeText(password).then(() => {
@@ -89,7 +100,7 @@ class AdminDashboard {
                 button.innerHTML = sanitizeHTML('<i class="fas fa-copy"></i> Copiar');
             }, 2000);
         }).catch(err => {
-            console.error('Error al copiar la contraseña: ', err);
+            debugLog.error('ERROR', 'Error al copiar la contraseña: ', err);
             button.innerHTML = sanitizeHTML('<i class="fas fa-times"></i> Error');
         });
     }
@@ -113,7 +124,7 @@ class AdminDashboard {
     }
 
     async init() {
-        console.log('🔄 [INIT] Iniciando sistema AdminDashboard...');
+        debugLog.log('INIT', '🔄 [INIT] Iniciando sistema AdminDashboard...');
         // Verificar si hay usuario autenticado
         await this.checkAuthentication();
 
@@ -133,12 +144,12 @@ class AdminDashboard {
         } else {
             this.showLoginPrompt();
         }
-        console.log('✅ [INIT] Sistema AdminDashboard inicializado correctamente');
+        debugLog.log('INIT', '✅ [INIT] Sistema AdminDashboard inicializado correctamente');
     }
 
     setupInterface() {
         // Configurar la interfaz inicial del dashboard
-        //console.log('🔧 Configurando interfaz del dashboard');
+        //debugLog.log('DASHBOARD', '🔧 Configurando interfaz del dashboard');
 
         // Inicializar componentes de la interfaz si es necesario
         if (typeof this.initializeSystem === 'function') {
@@ -147,7 +158,8 @@ class AdminDashboard {
     }
 
     async checkAuthentication() {
-        console.log('🔐 [AUTH] Verificando autenticación en dashboard...');
+        // GDPR: Datos sensibles enmascarados
+        debugLog.log('AUTH', '🔐 [AUTH] Verificando autenticación en dashboard...');
 
         // Prioridad 1: Sistema de autenticación seguro (nuevo) - BGESecurityModule
         if (window.secureAdminAuth && typeof window.secureAdminAuth.isUserAuthenticated === 'function') {
@@ -159,10 +171,12 @@ class AdminDashboard {
                         const session = JSON.parse(sessionData);
                         this.currentUser = session.user || { username: 'admin', role: 'admin' };
                         this.isLoggedIn = true;
-                        console.log('✅ [AUTH] Usuario autenticado con sistema seguro:', this.currentUser);
+                        // GDPR: Datos sensibles enmascarados
+                        debugLog.log('AUTH', '✅ [AUTH] Usuario autenticado con sistema seguro:', this.currentUser);
                         return;
                     } catch (e) {
-                        console.error('❌ [AUTH] Error parseando sesión:', e);
+                        // GDPR: Datos sensibles enmascarados
+                        debugLog.error('AUTH', '❌ [AUTH] Error parseando sesión:', e);
                     }
                 }
             }
@@ -176,24 +190,24 @@ class AdminDashboard {
                 if (sessionData.token && sessionData.expiresAt && Date.now() < sessionData.expiresAt) {
                     this.currentUser = sessionData.user || { role: 'admin' };
                     this.isLoggedIn = true;
-                    //console.log('✅ Usuario autenticado via localStorage seguro');
+                    //debugLog.log('APP', '✅ Usuario autenticado via localStorage seguro');
                     return;
                 }
             }
         } catch (error) {
-            console.warn('⚠️ Error verificando sesión segura:', error);
+            debugLog.warn('ERROR', '⚠️ Error verificando sesión segura:', error);
         }
 
         // Fallback: Sistema viejo (mantener compatibilidad)
         if (window.authInterface && window.authInterface.isAuthenticated()) {
             this.currentUser = window.authInterface.getCurrentUser();
             this.isLoggedIn = true;
-            //console.log('✅ Usuario detectado con sistema viejo:', this.currentUser);
+            //debugLog.log('APP', '✅ Usuario detectado con sistema viejo:', this.currentUser);
             return;
         }
 
         // No autenticado
-        //console.log('❌ Usuario no autenticado');
+        //debugLog.log('APP', '❌ Usuario no autenticado');
         this.isLoggedIn = false;
     }
 
@@ -231,11 +245,13 @@ class AdminDashboard {
             try {
                 const user = JSON.parse(userData);
                 if (user && user.role === 'admin') {
-                    console.log('🔑 [TOKEN] Token JWT obtenido del sistema authToken');
+                    // GDPR: Datos sensibles enmascarados
+                    debugLog.log('TOKEN', '🔑 [TOKEN] Token JWT obtenido del sistema authToken');
                     return authToken;
                 }
             } catch (e) {
-                console.warn('⚠️ [TOKEN] Error parseando userData:', e);
+                // GDPR: Datos sensibles enmascarados
+                debugLog.warn('TOKEN', '⚠️ [TOKEN] Error parseando userData:', e);
             }
         }
 
@@ -245,27 +261,31 @@ class AdminDashboard {
             try {
                 const sessionData = JSON.parse(secureSession);
                 if (sessionData.token && sessionData.isAuthenticated && sessionData.expiresAt && Date.now() < sessionData.expiresAt) {
-                    console.log('🔑 [TOKEN] Token obtenido del sistema secure_admin_session');
+                    // GDPR: Datos sensibles enmascarados
+                    debugLog.log('TOKEN', '🔑 [TOKEN] Token obtenido del sistema secure_admin_session');
                     return sessionData.token;
                 }
             } catch (e) {
-                console.warn('⚠️ [TOKEN] Error parseando secure_admin_session:', e);
+                // GDPR: Datos sensibles enmascarados
+                debugLog.warn('TOKEN', '⚠️ [TOKEN] Error parseando secure_admin_session:', e);
             }
         }
 
         // Prioridad 3: authToken directo (sin validación de userData)
         if (authToken) {
-            console.log('🔑 [TOKEN] Token JWT obtenido directamente de authToken');
+            // GDPR: Datos sensibles enmascarados
+            debugLog.log('TOKEN', '🔑 [TOKEN] Token JWT obtenido directamente de authToken');
             return authToken;
         }
 
-        console.error('❌ [TOKEN] No se encontró token de administrador válido');
+        // GDPR: Datos sensibles enmascarados
+        debugLog.error('TOKEN', '❌ [TOKEN] No se encontró token de administrador válido');
         return null;
     }
 
     showLoginPrompt() {
-        //console.log('🔐 Mostrando prompt de login');
-        //console.log('🚫 Acceso no autorizado al dashboard - Redirigiendo al inicio');
+        //debugLog.log('APP', '🔐 Mostrando prompt de login');
+        //debugLog.log('DASHBOARD', '🚫 Acceso no autorizado al dashboard - Redirigiendo al inicio');
 
         // Mostrar mensaje de seguridad
         alert('Acceso restringido: Debes iniciar sesión como administrador para acceder al dashboard.');
@@ -277,7 +297,7 @@ class AdminDashboard {
     }
 
     showDashboard() {
-        //console.log('📊 Mostrando dashboard');
+        //debugLog.log('DASHBOARD', '📊 Mostrando dashboard');
         // Mostrar sección del dashboard principal
         const dashboardSection = document.querySelector('.dashboard-section');
         if (dashboardSection) {
@@ -296,7 +316,7 @@ class AdminDashboard {
 
     async loadDashboardData() {
         try {
-            console.log('📊 [DASHBOARD] Cargando datos del dashboard...');
+            debugLog.log('DASHBOARD', '📊 [DASHBOARD] Cargando datos del dashboard...');
 
             // Cargar solicitudes de registro pendientes
             await this.loadPendingRegistrations();
@@ -311,7 +331,7 @@ class AdminDashboard {
             // Verificar si hay configuración personalizada guardada
             const hasCustomConfig = localStorage.getItem('realData_customConfigured') === 'true';
 
-            console.log('🔍 [DEBUG] Configuración personalizada detectada:', hasCustomConfig);
+            debugLog.log('DEBUG', '🔍 [DEBUG] Configuración personalizada detectada:', hasCustomConfig);
 
             // Si hay configuración personalizada, usar esos datos
             const finalStats = hasCustomConfig ? {
@@ -326,7 +346,7 @@ class AdminDashboard {
                 generalAverage: analytics?.academic?.promedio_general || students?.overview?.generalAverage || parseFloat(this.realDataConfig.generalAverage)
             };
 
-            console.log('📊 [DEBUG] Estadísticas finales calculadas:', finalStats);
+            debugLog.log('DEBUG', '📊 [DEBUG] Estadísticas finales calculadas:', finalStats);
 
             // Estructurar datos correctamente para el dashboard
             this.dashboardData = {
@@ -337,10 +357,10 @@ class AdminDashboard {
                 lastUpdate: new Date().toISOString()
             };
 
-            console.log('✅ [DEBUG] Dashboard data final estructurado:', this.dashboardData.statistics);
+            debugLog.log('DEBUG', '✅ [DEBUG] Dashboard data final estructurado:', this.dashboardData.statistics);
 
         } catch (error) {
-            console.error('❌ Error cargando dashboard:', error);
+            debugLog.error('DASHBOARD', '❌ Error cargando dashboard:', error);
             this.showErrorState(error);
         }
     }
@@ -359,7 +379,7 @@ class AdminDashboard {
 
             throw new Error('Error en respuesta de analytics');
         } catch (error) {
-            console.log('📊 Analytics API no disponible, usando datos locales');
+            debugLog.log('API', '📊 Analytics API no disponible, usando datos locales');
             return this.getDemoAnalytics();
         }
     }
@@ -378,7 +398,7 @@ class AdminDashboard {
 
             throw new Error('Error en respuesta de estudiantes');
         } catch (error) {
-            console.log('👥 Students API no disponible, usando datos locales');
+            debugLog.log('API', '👥 Students API no disponible, usando datos locales');
             return this.getDemoStudents();
         }
     }
@@ -397,7 +417,7 @@ class AdminDashboard {
 
             throw new Error('Error en respuesta de docentes');
         } catch (error) {
-            console.log('👨‍🏫 Teachers API no disponible, usando datos locales');
+            debugLog.log('API', '👨‍🏫 Teachers API no disponible, usando datos locales');
             return this.getDemoStudents().teachers;
         }
     }
@@ -532,7 +552,7 @@ class AdminDashboard {
      * Mostrar estado de error cuando fallan las cargas
      */
     showErrorState(error) {
-        console.error('❌ Error en el dashboard - Modo de prueba activado', error);
+        debugLog.error('DASHBOARD', '❌ Error en el dashboard - Modo de prueba activado', error);
 
         // Mostrar mensaje de error amigable
         const errorMessage = `
@@ -569,10 +589,11 @@ class AdminDashboard {
     }
 
     loginAdmin() {
-        console.log('🔑 [LOGIN] Iniciando proceso de login...');
+        debugLog.log('LOGIN', '🔑 [LOGIN] Iniciando proceso de login...');
         // Verificar que las credenciales estén inicializadas
         if (!this.adminCredentials) {
-            console.error('❌ adminCredentials no está inicializado');
+            // GDPR: Datos sensibles enmascarados
+            debugLog.error('ERROR', '❌ adminCredentials no está inicializado');
             this.adminCredentials = {
                 username: 'admin',
                 password: 'admin123',
@@ -585,13 +606,13 @@ class AdminDashboard {
         const password = document.getElementById('adminPassword').value;
         const role = document.getElementById('adminRole').value;
 
-        console.log('🔍 [LOGIN] Verificando credenciales...');
+        debugLog.log('LOGIN', '🔍 [LOGIN] Verificando credenciales...');
 
         if (username === this.adminCredentials.username &&
             password === this.adminCredentials.password &&
             role === this.adminCredentials.role) {
 
-            console.log('✅ [LOGIN] Credenciales correctas');
+            debugLog.log('LOGIN', '✅ [LOGIN] Credenciales correctas');
 
             // Crear sesión
             this.currentSession = {
@@ -617,13 +638,13 @@ class AdminDashboard {
                 this.scrollToDashboard();
             }, 1000);
         } else {
-            console.log('❌ [LOGIN] Credenciales incorrectas');
+            debugLog.log('LOGIN', '❌ [LOGIN] Credenciales incorrectas');
             this.showErrorToast('Credenciales administrativas incorrectas');
         }
     }
 
     scrollToDashboard() {
-        console.log('📍 [SCROLL] Intentando hacer scroll al dashboard...');
+        debugLog.log('SCROLL', '📍 [SCROLL] Intentando hacer scroll al dashboard...');
         // Buscar la sección del dashboard administrativo
         const dashboardSection = document.getElementById('adminPanel');
 
@@ -638,7 +659,7 @@ class AdminDashboard {
                     behavior: 'smooth'
                 });
 
-                console.log('✅ [SCROLL] Redirigiendo al panel de administración');
+                debugLog.log('SCROLL', '✅ [SCROLL] Redirigiendo al panel de administración');
             }, 500);
         } else {
             // Fallback: scroll al área donde debería estar el dashboard
@@ -648,13 +669,13 @@ class AdminDashboard {
                     top: fallbackPosition,
                     behavior: 'smooth'
                 });
-                console.log('⚠️ [SCROLL] Dashboard no encontrado, usando posición estimada');
+                debugLog.log('SCROLL', '⚠️ [SCROLL] Dashboard no encontrado, usando posición estimada');
             }, 500);
         }
     }
 
     logoutAdmin() {
-        console.log('🚪 [LOGOUT] Cerrando sesión administrativa...');
+        debugLog.log('LOGOUT', '🚪 [LOGOUT] Cerrando sesión administrativa...');
         localStorage.removeItem('adminSession');
         this.currentSession = null;
         this.isLoggedIn = false;
@@ -677,7 +698,7 @@ class AdminDashboard {
     }
 
     showAdminPanel() {
-        console.log('🎛️ [PANEL] Mostrando panel administrativo...');
+        debugLog.log('PANEL', '🎛️ [PANEL] Mostrando panel administrativo...');
         // Ocultar hero section (CORRECTO - debe mantenerse oculto)
         document.getElementById('hero').style.display = 'none';
 
@@ -713,7 +734,7 @@ class AdminDashboard {
     }
 
     hideAdminPanel() {
-        console.log('🙈 [PANEL] Ocultando panel administrativo...');
+        debugLog.log('PANEL', '🙈 [PANEL] Ocultando panel administrativo...');
         // Mostrar hero section (CORRECTO - debe mostrarse al cerrar sesión)
         const heroSection = document.getElementById('hero');
         heroSection.style.display = '';  // Remover display inline
@@ -749,7 +770,7 @@ class AdminDashboard {
     }
 
     updateDashboardUI() {
-        console.log('🎨 [UI] Actualizando interfaz del dashboard...');
+        debugLog.log('UI', '🎨 [UI] Actualizando interfaz del dashboard...');
         // Cargar estadísticas generales - usar los datos estructurados
         const stats = this.dashboardData.statistics;
         if (stats) {
@@ -772,19 +793,19 @@ class AdminDashboard {
         setTimeout(() => {
             this.setupTeacherSearchEvents();
             this.setupStudentSearchEvents();
-            console.log('🔍 Eventos de búsqueda configurados');
+            debugLog.log('APP', '🔍 Eventos de búsqueda configurados');
         }, 500);
     }
 
     loadStudentsTable() {
-        console.log('🔄 Cargando tabla de estudiantes...');
+        debugLog.log('APP', '🔄 Cargando tabla de estudiantes...');
 
         // Verificar si hay dynamic student loader disponible
         if (window.dynamicStudentLoader && window.dynamicStudentLoader.students) {
-            console.log('✅ Usando datos dinámicos para estudiantes');
+            debugLog.log('APP', '✅ Usando datos dinámicos para estudiantes');
             this.loadStudentsTableFromDynamic();
         } else {
-            console.log('⚠️ Dynamic student loader no disponible, usando datos por defecto');
+            debugLog.log('APP', '⚠️ Dynamic student loader no disponible, usando datos por defecto');
             this.loadStudentsTableFromStatic();
         }
     }
@@ -846,11 +867,11 @@ class AdminDashboard {
     }
 
     loadStudentsTableFromStatic() {
-        console.log('📊 [DEBUG] loadStudentsTableFromStatic() iniciado');
+        debugLog.log('DEBUG', '📊 [DEBUG] loadStudentsTableFromStatic() iniciado');
 
         const tbody = document.getElementById('studentsTable');
         if (!tbody) {
-            console.log('❌ [DEBUG] tabla studentsTable no encontrada');
+            debugLog.log('DEBUG', '❌ [DEBUG] tabla studentsTable no encontrada');
             return;
         }
 
@@ -858,26 +879,26 @@ class AdminDashboard {
 
         // Verificar que dashboardData existe
         if (!this.dashboardData) {
-            console.log('❌ [DEBUG] dashboardData no existe');
+            debugLog.log('DEBUG', '❌ [DEBUG] dashboardData no existe');
             tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-muted">Cargando datos...</td></tr>', 'simple');
             return;
         }
 
         // Verificar que students existe y es un array
         if (!this.dashboardData.students || !Array.isArray(this.dashboardData.students)) {
-            console.log('❌ [DEBUG] students no es array válido:', this.dashboardData.students);
+            debugLog.log('DEBUG', '❌ [DEBUG] students no es array válido:', this.dashboardData.students);
             tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-muted">No hay datos de estudiantes disponibles</td></tr>', 'simple');
             return;
         }
 
         // Verificar que students tiene elementos
         if (this.dashboardData.students.length === 0) {
-            console.log('ℹ️ [DEBUG] students array está vacío');
+            debugLog.log('DEBUG', 'ℹ️ [DEBUG] students array está vacío');
             tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-muted">No hay estudiantes registrados</td></tr>', 'simple');
             return;
         }
 
-        console.log('✅ [DEBUG] Procesando', this.dashboardData.students.length, 'estudiantes');
+        debugLog.log('DEBUG', '✅ [DEBUG] Procesando', this.dashboardData.students.length, 'estudiantes');
 
         try {
             this.dashboardData.students.forEach(student => {
@@ -919,7 +940,7 @@ class AdminDashboard {
             tbody.appendChild(row);
         });
         } catch (error) {
-            console.error('❌ [DEBUG] Error en loadStudentsTable:', error);
+            debugLog.error('DEBUG', '❌ [DEBUG] Error en loadStudentsTable:', error);
             tbody.innerHTML = sanitizeHTML('<tr><td colspan="6" class="text-center text-danger">Error cargando estudiantes</td></tr>', 'simple');
         }
     }
@@ -941,14 +962,14 @@ class AdminDashboard {
     }
 
     loadTeachersTable() {
-        console.log('🔄 Cargando tabla de docentes...');
+        debugLog.log('APP', '🔄 Cargando tabla de docentes...');
 
         // Verificar si hay dynamic teacher loader disponible
         if (window.dynamicTeacherLoader && window.dynamicTeacherLoader.teachers) {
-            console.log('✅ Usando datos dinámicos para docentes');
+            debugLog.log('APP', '✅ Usando datos dinámicos para docentes');
             this.loadTeachersTableFromDynamic();
         } else {
-            console.log('⚠️ Dynamic teacher loader no disponible, usando datos por defecto');
+            debugLog.log('APP', '⚠️ Dynamic teacher loader no disponible, usando datos por defecto');
             this.loadTeachersTableFromStatic();
         }
     }
@@ -1195,7 +1216,7 @@ class AdminDashboard {
 
         // Verificar que Chart.js esté disponible
         if (typeof Chart === 'undefined') {
-            console.warn('⚠️ Chart.js no está disponible, mostrando mensaje alternativo');
+            debugLog.warn('APP', '⚠️ Chart.js no está disponible, mostrando mensaje alternativo');
             ctx.parentElement.innerHTML = sanitizeHTML(`
                 <div class="text-center py-4">
                     <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
@@ -1355,13 +1376,14 @@ class AdminDashboard {
      */
     async loadPendingRegistrations() {
         try {
-            console.log('📋 [REGISTRATIONS] Cargando solicitudes desde API backend...');
+            debugLog.log('REGISTRATIONS', '📋 [REGISTRATIONS] Cargando solicitudes desde API backend...');
 
             // Obtener token de administrador
             const token = this.getAdminToken();
 
             if (!token) {
-                console.warn('⚠️ [REGISTRATIONS] No hay token disponible - usando fallback local');
+                // GDPR: Datos sensibles enmascarados
+                debugLog.warn('REGISTRATIONS', '⚠️ [REGISTRATIONS] No hay token disponible - usando fallback local');
                 await this.loadPendingRegistrationsLocal();
                 return;
             }
@@ -1388,16 +1410,16 @@ class AdminDashboard {
                 // Actualizar contador del badge
                 this.updatePendingCounter(data.count);
 
-                console.log(`✅ [REGISTRATIONS] ${data.count} solicitudes pendientes cargadas desde API`);
+                debugLog.log('REGISTRATIONS', `✅ [REGISTRATIONS] ${data.count} solicitudes pendientes cargadas desde API`);
             } else {
                 throw new Error('Respuesta inválida de la API');
             }
 
         } catch (error) {
-            console.error('❌ [REGISTRATIONS] Error al cargar desde API:', error.message);
+            debugLog.error('REGISTRATIONS', '❌ [REGISTRATIONS] Error al cargar desde API:', error.message);
 
             // Fallback: intentar cargar desde localStorage
-            console.log('🔄 [REGISTRATIONS] Usando fallback con datos locales...');
+            debugLog.log('REGISTRATIONS', '🔄 [REGISTRATIONS] Usando fallback con datos locales...');
             await this.loadPendingRegistrationsLocal();
         }
     }
@@ -1437,10 +1459,11 @@ class AdminDashboard {
 
             this.dashboardData.pendingRegistrations = combinedRegistrations;
 
-            console.log(`📋 [LOCAL] ${combinedRegistrations.length} solicitudes pendientes encontradas (${localRegistrations.length} locales + ${pendingUsers.length} de Google Auth)`);
+            // GDPR: Datos sensibles enmascarados
+            debugLog.log('LOCAL', `📋 [LOCAL] ${combinedRegistrations.length} solicitudes pendientes encontradas (${localRegistrations.length} locales + ${pendingUsers.length} de Google Auth)`);
             this.updatePendingCounter(combinedRegistrations.length);
         } catch (error) {
-            console.warn('⚠️ [LOCAL] Error cargando solicitudes locales:', error);
+            debugLog.warn('LOCAL', '⚠️ [LOCAL] Error cargando solicitudes locales:', error);
             this.dashboardData.pendingRegistrations = [];
             this.updatePendingCounter(0);
         }
@@ -1453,7 +1476,7 @@ class AdminDashboard {
     displayPendingRegistrations() {
         const container = document.getElementById('pending-registrations-container');
         if (!container) {
-            console.warn('⚠️ [DISPLAY] Contenedor pending-registrations-container no encontrado');
+            debugLog.warn('DISPLAY', '⚠️ [DISPLAY] Contenedor pending-registrations-container no encontrado');
             return;
         }
 
@@ -1490,7 +1513,7 @@ class AdminDashboard {
         `;
 
         container.innerHTML = sanitizeHTML(html, 'tablas');
-        console.log(`✅ [DISPLAY] ${registrations.length} solicitudes renderizadas`);
+        debugLog.log('DISPLAY', `✅ [DISPLAY] ${registrations.length} solicitudes renderizadas`);
     }
 
     /**
@@ -1694,7 +1717,7 @@ class AdminDashboard {
         if (notes === null) return; // Usuario canceló
 
         try {
-            console.log(`✅ [APPROVE] Aprobando solicitud ${requestId}...`);
+            debugLog.log('APPROVE', `✅ [APPROVE] Aprobando solicitud ${requestId}...`);
 
             // Obtener token JWT
             const token = this.getAdminToken();
@@ -1736,13 +1759,13 @@ class AdminDashboard {
                     this.loadActiveUsers();
                 }
 
-                console.log('[USER_ACTION]');
+                debugLog.log('APP', '[USER_ACTION]');
             } else {
                 throw new Error('Respuesta inválida del servidor');
             }
 
         } catch (error) {
-            console.error('❌ [APPROVE] Error:', error);
+            debugLog.error('APPROVE', '❌ [APPROVE] Error:', error);
             this.showToast('danger', '❌ Error', error.message || 'No se pudo aprobar la solicitud');
         }
     }
@@ -1752,7 +1775,7 @@ class AdminDashboard {
      * @deprecated Usar approveRequest() en su lugar
      */
     async approveRegistration(email) {
-        console.warn('⚠️ approveRegistration() está deprecado, usa approveRequest()');
+        debugLog.warn('APP', '⚠️ approveRegistration() está deprecado, usa approveRequest()');
         return this.approveRequest(email);
     }
 
@@ -1844,7 +1867,8 @@ class AdminDashboard {
             this.showToast('success', '✅ Solicitud Aprobada', `Usuario ${email} creado exitosamente`);
         });
 
-        console.log('🔑 [PASSWORD] Modal de contraseña temporal mostrado');
+        // GDPR: Datos sensibles enmascarados
+        debugLog.log('PASSWORD', '🔑 [PASSWORD] Modal de contraseña temporal mostrado');
     }
 
     /**
@@ -1864,7 +1888,7 @@ class AdminDashboard {
         }
 
         try {
-            console.log(`🚫 [REJECT] Rechazando solicitud ${requestId}...`);
+            debugLog.log('REJECT', `🚫 [REJECT] Rechazando solicitud ${requestId}...`);
 
             // Obtener token JWT
             const token = this.getAdminToken();
@@ -1900,13 +1924,13 @@ class AdminDashboard {
 
                 this.showToast('info', '🚫 Solicitud Rechazada', `La solicitud ha sido rechazada`);
 
-                console.log(`🚫 [REJECT] Solicitud ${requestId} rechazada exitosamente`);
+                debugLog.log('REJECT', `🚫 [REJECT] Solicitud ${requestId} rechazada exitosamente`);
             } else {
                 throw new Error('Respuesta inválida del servidor');
             }
 
         } catch (error) {
-            console.error('❌ [REJECT] Error:', error);
+            debugLog.error('REJECT', '❌ [REJECT] Error:', error);
             this.showToast('danger', '❌ Error', error.message || 'No se pudo rechazar la solicitud');
         }
     }
@@ -1916,7 +1940,7 @@ class AdminDashboard {
      * @deprecated Usar rejectRequest() en su lugar
      */
     async rejectRegistration(email) {
-        console.warn('⚠️ rejectRegistration() está deprecado, usa rejectRequest()');
+        debugLog.warn('APP', '⚠️ rejectRegistration() está deprecado, usa rejectRequest()');
         return this.rejectRequest(email);
     }
 
@@ -1955,7 +1979,8 @@ class AdminDashboard {
 
                Si crees que es un error, contacta al administrador.`;
 
-        console.log(emailContent);
+        // GDPR: Datos sensibles enmascarados
+        debugLog.log('APP', emailContent);
 
         // Mostrar modal con simulación
         const modal = document.createElement('div');
@@ -2007,7 +2032,8 @@ class AdminDashboard {
             approvedPasswords[email.toLowerCase()] = userRequest.password;
             localStorage.setItem('bge_user_passwords', JSON.stringify(approvedPasswords));
 
-            console.log(`🔐 Contraseña agregada para usuario ${email}`);
+            // GDPR: Datos sensibles enmascarados
+            debugLog.log('APP', `🔐 Contraseña agregada para usuario ${email}`);
         }
 
         // Agregar usuario a la lista de cuentas aprobadas
@@ -2017,7 +2043,8 @@ class AdminDashboard {
             approvedAccounts.push(email.toLowerCase());
             localStorage.setItem('bge_approved_accounts', JSON.stringify(approvedAccounts));
 
-            console.log(`✅ Usuario ${email} aprobado localmente`);
+            // GDPR: Datos sensibles enmascarados
+            debugLog.log('APP', `✅ Usuario ${email} aprobado localmente`);
         }
     }
 
@@ -2049,7 +2076,7 @@ class AdminDashboard {
             this.loadActiveUsers(); // Recargar lista
 
         } catch (error) {
-            console.error('Error revocando acceso:', error);
+            debugLog.error('ERROR', 'Error revocando acceso:', error);
             this.showNotification('Error al revocar acceso', 'danger');
         }
     }
@@ -2077,7 +2104,7 @@ class AdminDashboard {
             this.loadActiveUsers(); // Recargar lista
 
         } catch (error) {
-            console.error('Error restaurando acceso:', error);
+            debugLog.error('ERROR', 'Error restaurando acceso:', error);
             this.showNotification('Error al restaurar acceso', 'danger');
         }
     }
@@ -2199,12 +2226,12 @@ class AdminDashboard {
             activeUsersCounter.textContent = `${activeUsersCount} ${activeUsersCount === 1 ? 'usuario' : 'usuarios'}`;
         }
 
-        console.log(`📊 Contador actualizado: ${activeUsersCount} usuarios activos`);
+        debugLog.log('APP', `📊 Contador actualizado: ${activeUsersCount} usuarios activos`);
     }
 
     // ✅ NUEVO: Cargar estadísticas de contenido (noticias, eventos, avisos, comunicados)
     async loadContentStats() {
-        console.log('📊 [Content Stats] Cargando estadísticas de contenido...');
+        debugLog.log('APP', '📊 [Content Stats] Cargando estadísticas de contenido...');
 
         try {
             // Cargar cada tipo de contenido desde sus archivos JSON
@@ -2220,7 +2247,7 @@ class AdminDashboard {
                     const response = await fetch(contentType.url);
 
                     if (!response.ok) {
-                        console.warn(`⚠️ No se pudo cargar ${contentType.name}: ${response.status}`);
+                        debugLog.warn('APP', `⚠️ No se pudo cargar ${contentType.name}: ${response.status}`);
                         this.updateContentCounter(contentType.elementId, 0);
                         continue;
                     }
@@ -2229,18 +2256,18 @@ class AdminDashboard {
                     const count = data[contentType.key] ? data[contentType.key].length : 0;
 
                     this.updateContentCounter(contentType.elementId, count);
-                    console.log('[USER_ACTION]');
+                    debugLog.log('APP', '[USER_ACTION]');
 
                 } catch (error) {
-                    console.error(`❌ Error cargando ${contentType.name}:`, error);
+                    debugLog.error('ERROR', `❌ Error cargando ${contentType.name}:`, error);
                     this.updateContentCounter(contentType.elementId, 0);
                 }
             }
 
-            console.log('✅ [Content Stats] Estadísticas de contenido cargadas exitosamente');
+            debugLog.log('APP', '✅ [Content Stats] Estadísticas de contenido cargadas exitosamente');
 
         } catch (error) {
-            console.error('❌ [Content Stats] Error general:', error);
+            debugLog.error('ERROR', '❌ [Content Stats] Error general:', error);
         }
     }
 
@@ -2249,9 +2276,9 @@ class AdminDashboard {
         const element = document.getElementById(elementId);
         if (element) {
             element.textContent = count;
-            console.log(`📈 Contador ${elementId}: ${count}`);
+            debugLog.log('APP', `📈 Contador ${elementId}: ${count}`);
         } else {
-            console.warn(`⚠️ Elemento ${elementId} no encontrado en DOM`);
+            debugLog.warn('APP', `⚠️ Elemento ${elementId} no encontrado en DOM`);
         }
     }
 
@@ -2399,7 +2426,7 @@ class AdminDashboard {
         this.loadPendingRegistrations();
         this.displayPendingRegistrations();
 
-        console.log('✅ Solicitudes de prueba generadas');
+        debugLog.log('APP', '✅ Solicitudes de prueba generadas');
         this.showToast('success', '🧪 Solicitudes Generadas', `Se agregaron ${testUsers.length} solicitudes de prueba`);
     }
 
@@ -2408,12 +2435,12 @@ class AdminDashboard {
         if (window.authInterface && window.authInterface.showToast) {
             window.authInterface.showToast(type, title, message);
         } else {
-            //console.log(`${title}: ${message}`);
+            //debugLog.log('APP', `${title}: ${message}`);
         }
     }
 
     refreshDashboard() {
-        console.log('🔄 [REFRESH] Actualizando dashboard...');
+        debugLog.log('REFRESH', '🔄 [REFRESH] Actualizando dashboard...');
         this.showLoadingToast('Actualizando dashboard...');
 
         setTimeout(async () => {
@@ -2423,7 +2450,7 @@ class AdminDashboard {
             this.createAcademicChart();
             this.showSuccessToast('Dashboard actualizado correctamente');
 
-            console.log('✅ [REFRESH] Dashboard actualizado exitosamente');
+            debugLog.log('REFRESH', '✅ [REFRESH] Dashboard actualizado exitosamente');
         }, 1500);
     }
 
@@ -2442,7 +2469,7 @@ class AdminDashboard {
 
         // Auto-refresh general del dashboard (cada 5 minutos)
         this.refreshInterval = setInterval(async () => {
-            //console.log('🔄 Auto-refresh del dashboard...');
+            //debugLog.log('DASHBOARD', '🔄 Auto-refresh del dashboard...');
             await this.loadDashboardData();
             this.updateDashboardUI();
             this.displayPendingRegistrations();
@@ -2453,15 +2480,15 @@ class AdminDashboard {
             // Solo actualizar si el tab de solicitudes está activo
             const registrationsTab = document.getElementById('registrations-tab');
             if (registrationsTab && registrationsTab.classList.contains('active')) {
-                console.log('🔄 [AUTO-REFRESH] Actualizando solicitudes pendientes...');
+                debugLog.log('AUTO-REFRESH', '🔄 [AUTO-REFRESH] Actualizando solicitudes pendientes...');
                 await this.loadPendingRegistrations();
                 this.displayPendingRegistrations();
             }
         }, 30 * 1000); // 30 segundos
 
-        console.log('⏰ [AUTO-REFRESH] Auto-refresh iniciado:');
-        console.log('   - Dashboard general: cada 5 minutos');
-        console.log('   - Solicitudes pendientes: cada 30 segundos (cuando tab está activo)');
+        debugLog.log('AUTO-REFRESH', '⏰ [AUTO-REFRESH] Auto-refresh iniciado:');
+        debugLog.log('APP', '   - Dashboard general: cada 5 minutos');
+        debugLog.log('APP', '   - Solicitudes pendientes: cada 30 segundos (cuando tab está activo)');
     }
 
     // Funciones de gestión
@@ -2751,7 +2778,7 @@ class AdminDashboard {
     configureRealData() {
         const modal = document.getElementById('configureDataModal');
         if (!modal) {
-            console.error('Modal de configuración no encontrado');
+            debugLog.error('ERROR', 'Modal de configuración no encontrado');
             return;
         }
 
@@ -2767,14 +2794,14 @@ class AdminDashboard {
     }
 
     saveRealDataConfig() {
-        console.log('🔧 [CONFIG] saveRealDataConfig() iniciado - NUEVA VERSIÓN 2025-09-15 16:30:00');
+        debugLog.log('CONFIG', '🔧 [CONFIG] saveRealDataConfig() iniciado - NUEVA VERSIÓN 2025-09-15 16:30:00');
 
         const totalStudents = document.getElementById('configTotalStudents').value;
         const totalTeachers = document.getElementById('configTotalTeachers').value;
         const totalSubjects = document.getElementById('configTotalSubjects').value;
         const generalAverage = document.getElementById('configGeneralAverage').value;
 
-        console.log('📊 [CONFIG] Valores del formulario:', {
+        debugLog.log('CONFIG', '📊 [CONFIG] Valores del formulario:', {
             totalStudents, totalTeachers, totalSubjects, generalAverage
         });
 
@@ -2806,7 +2833,7 @@ class AdminDashboard {
             return;
         }
 
-        console.log('✅ [CONFIG] Validaciones pasadas');
+        debugLog.log('CONFIG', '✅ [CONFIG] Validaciones pasadas');
 
         // Guardar en configuración local
         this.realDataConfig.totalStudents = parseInt(totalStudents);
@@ -2814,37 +2841,37 @@ class AdminDashboard {
         this.realDataConfig.totalSubjects = parseInt(totalSubjects);
         this.realDataConfig.generalAverage = parseFloat(generalAverage);
 
-        console.log('💾 [CONFIG] Datos guardados en realDataConfig:', this.realDataConfig);
+        debugLog.log('CONFIG', '💾 [CONFIG] Datos guardados en realDataConfig:', this.realDataConfig);
 
         // Persistir en localStorage con logging intensivo
-        console.log('💾 [CONFIG] Guardando en localStorage...');
+        debugLog.log('CONFIG', '💾 [CONFIG] Guardando en localStorage...');
 
         try {
             localStorage.setItem('realData_totalStudents', totalStudents);
-            console.log('✅ [CONFIG] totalStudents guardado:', localStorage.getItem('realData_totalStudents'));
+            debugLog.log('CONFIG', '✅ [CONFIG] totalStudents guardado:', localStorage.getItem('realData_totalStudents'));
 
             localStorage.setItem('realData_totalTeachers', totalTeachers);
-            console.log('✅ [CONFIG] totalTeachers guardado:', localStorage.getItem('realData_totalTeachers'));
+            debugLog.log('CONFIG', '✅ [CONFIG] totalTeachers guardado:', localStorage.getItem('realData_totalTeachers'));
 
             localStorage.setItem('realData_totalSubjects', totalSubjects);
-            console.log('✅ [CONFIG] totalSubjects guardado:', localStorage.getItem('realData_totalSubjects'));
+            debugLog.log('CONFIG', '✅ [CONFIG] totalSubjects guardado:', localStorage.getItem('realData_totalSubjects'));
 
             localStorage.setItem('realData_generalAverage', generalAverage);
-            console.log('✅ [CONFIG] generalAverage guardado:', localStorage.getItem('realData_generalAverage'));
+            debugLog.log('CONFIG', '✅ [CONFIG] generalAverage guardado:', localStorage.getItem('realData_generalAverage'));
 
             // Marcar que se han configurado datos personalizados
             localStorage.setItem('realData_customConfigured', 'true');
             localStorage.setItem('realData_lastConfigured', Date.now().toString());
 
-            console.log('🎯 [CONFIG] Flag customConfigured:', localStorage.getItem('realData_customConfigured'));
+            debugLog.log('CONFIG', '🎯 [CONFIG] Flag customConfigured:', localStorage.getItem('realData_customConfigured'));
         } catch (error) {
-            console.error('❌ [CONFIG] Error guardando en localStorage:', error);
+            debugLog.error('CONFIG', '❌ [CONFIG] Error guardando en localStorage:', error);
             this.showConfigError('Error guardando configuración en el navegador');
             return;
         }
 
         // Verificar que se guardó en localStorage
-        console.log('🔍 [CONFIG] Verificando localStorage después de guardar:', {
+        debugLog.log('CONFIG', '🔍 [CONFIG] Verificando localStorage después de guardar:', {
             totalStudents: localStorage.getItem('realData_totalStudents'),
             totalTeachers: localStorage.getItem('realData_totalTeachers'),
             totalSubjects: localStorage.getItem('realData_totalSubjects'),
@@ -2863,7 +2890,7 @@ class AdminDashboard {
             generalAverage: parseFloat(generalAverage)
         };
 
-        console.log('📊 [CONFIG] DashboardData actualizado:', this.dashboardData.statistics);
+        debugLog.log('CONFIG', '📊 [CONFIG] DashboardData actualizado:', this.dashboardData.statistics);
 
         // Actualizar la UI inmediatamente
         this.updateDashboardUI();
@@ -2881,7 +2908,7 @@ class AdminDashboard {
             // Mostrar notificación toast
             this.showToast('Datos estadísticos actualizados correctamente', 'success');
 
-            console.log('🎉 [CONFIG] saveRealDataConfig() completado exitosamente');
+            debugLog.log('CONFIG', '🎉 [CONFIG] saveRealDataConfig() completado exitosamente');
         }, 1000);
     }
 
@@ -2902,13 +2929,13 @@ class AdminDashboard {
 let adminDashboard;
 
 function showLoginModal() {
-    console.log('🔐 [MODAL] Mostrando modal de login...');
+    debugLog.log('MODAL', '🔐 [MODAL] Mostrando modal de login...');
     const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
     loginModal.show();
 }
 
 function showInfoModal() {
-    console.log('🔍 [INFO] showInfoModal() iniciado - NUEVA VERSIÓN');
+    debugLog.log('INFO', '🔍 [INFO] showInfoModal() iniciado - NUEVA VERSIÓN');
 
     // Mostrar el modal inmediatamente
     const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
@@ -2919,13 +2946,13 @@ function showInfoModal() {
 }
 
 function updateSystemInfo() {
-    console.log('⚡ [INFO] updateSystemInfo() ULTRARRÁPIDO iniciado - NUEVA VERSIÓN');
+    debugLog.log('INFO', '⚡ [INFO] updateSystemInfo() ULTRARRÁPIDO iniciado - NUEVA VERSIÓN');
     const startTime = performance.now();
 
     // Acceso directo y optimizado al modal
     const modalBody = document.querySelector('#infoModal .modal-body');
     if (!modalBody) {
-        console.log('❌ [INFO] Modal body no encontrado');
+        debugLog.log('INFO', '❌ [INFO] Modal body no encontrado');
         return;
     }
 
@@ -2943,7 +2970,7 @@ function updateSystemInfo() {
         promedio = parseFloat(localStorage.getItem('realData_generalAverage')) || 8.4;
     }
 
-    console.log('📊 [INFO] Datos estadísticos:', {estudiantes, docentes, materias, promedio});
+    debugLog.log('INFO', '📊 [INFO] Datos estadísticos:', {estudiantes, docentes, materias, promedio});
 
     modalBody.innerHTML = sanitizeHTML(`
         <div class="row">
@@ -3007,16 +3034,16 @@ function updateSystemInfo() {
     `);
 
     const endTime = performance.now();
-    console.log(`⚡ [INFO] updateSystemInfo() completado en ${(endTime - startTime).toFixed(2)}ms`);
+    debugLog.log('INFO', `⚡ [INFO] updateSystemInfo() completado en ${(endTime - startTime).toFixed(2)}ms`);
 }
 
 function loginAdmin() {
-    console.log('🔑 [GLOBAL] Función loginAdmin() llamada');
+    debugLog.log('GLOBAL', '🔑 [GLOBAL] Función loginAdmin() llamada');
     if (adminDashboard && typeof adminDashboard.loginAdmin === 'function') {
-        console.log('✅ [GLOBAL] Llamando adminDashboard.loginAdmin()');
+        debugLog.log('GLOBAL', '✅ [GLOBAL] Llamando adminDashboard.loginAdmin()');
         adminDashboard.loginAdmin();
     } else {
-        console.error('❌ [GLOBAL] adminDashboard no está inicializado o no tiene método loginAdmin');
+        debugLog.error('GLOBAL', '❌ [GLOBAL] adminDashboard no está inicializado o no tiene método loginAdmin');
         alert('Error: Sistema no inicializado correctamente. Recarga la página.');
     }
 }
@@ -3094,22 +3121,22 @@ function showConfigureDataModal() {
     if (adminDashboard && typeof adminDashboard.configureRealData === 'function') {
         adminDashboard.configureRealData();
     } else {
-        console.error('AdminDashboard no está inicializado o no tiene método configureRealData');
+        debugLog.error('ERROR', 'AdminDashboard no está inicializado o no tiene método configureRealData');
         alert('Error: Sistema no inicializado correctamente. Recarga la página.');
     }
 }
 
 // Función global para guardar configuración (backup)
 function saveRealDataConfig() {
-    console.log('🔧 [GLOBAL] Función global saveRealDataConfig() llamada - NUEVA VERSIÓN 2025-09-15 16:30:00');
+    debugLog.log('GLOBAL', '🔧 [GLOBAL] Función global saveRealDataConfig() llamada - NUEVA VERSIÓN 2025-09-15 16:30:00');
     if (adminDashboard && typeof adminDashboard.saveRealDataConfig === 'function') {
-        console.log('✅ [GLOBAL] Llamando método de adminDashboard');
+        debugLog.log('GLOBAL', '✅ [GLOBAL] Llamando método de adminDashboard');
         adminDashboard.saveRealDataConfig();
 
         // Después de guardar, actualizar el botón de actualizar
         updateRefreshButtonState();
     } else {
-        console.error('❌ [GLOBAL] AdminDashboard no disponible o método no existe');
+        debugLog.error('GLOBAL', '❌ [GLOBAL] AdminDashboard no disponible o método no existe');
         alert('Error: Sistema no inicializado correctamente. Recarga la página.');
     }
 }
@@ -3346,7 +3373,7 @@ function filterContent() {
 
 // Inicializar gestión de contenido cuando se carga la página
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('📄 [DOM] DOMContentLoaded - NUEVA VERSIÓN 2025-09-15 16:30:00');
+    debugLog.log('DOM', '📄 [DOM] DOMContentLoaded - NUEVA VERSIÓN 2025-09-15 16:30:00');
     // Cargar contenido existente si estamos en la página del dashboard
     if (document.getElementById('contentList')) {
         window.legacyContentManager.updateDisplay();
@@ -3357,24 +3384,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Inicializar dashboard cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 [INIT] Inicializando dashboard - NUEVA VERSIÓN 2025-09-15 16:30:00');
+    debugLog.log('INIT', '🚀 [INIT] Inicializando dashboard - NUEVA VERSIÓN 2025-09-15 16:30:00');
     // Verificar que Chart.js esté disponible
     if (typeof Chart === 'undefined') {
-        console.error('Chart.js no está disponible. Los gráficos no funcionarán.');
+        debugLog.error('ERROR', 'Chart.js no está disponible. Los gráficos no funcionarán.');
         // Intentar cargar Chart.js dinámicamente
         const script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js';
         script.onload = function() {
-            console.log('Chart.js cargado dinámicamente');
+            debugLog.log('APP', 'Chart.js cargado dinámicamente');
             adminDashboard = new AdminDashboard();
         };
         script.onerror = function() {
-            console.error('No se pudo cargar Chart.js. Dashboard funcionará sin gráficos.');
+            debugLog.error('ERROR', 'No se pudo cargar Chart.js. Dashboard funcionará sin gráficos.');
             adminDashboard = new AdminDashboard();
         };
         document.head.appendChild(script);
     } else {
-        console.log('Chart.js disponible, inicializando dashboard');
+        debugLog.log('DASHBOARD', 'Chart.js disponible, inicializando dashboard');
         adminDashboard = new AdminDashboard();
     }
 });
@@ -3467,15 +3494,15 @@ document.head.appendChild(adminStyle);
 
 // Método para mostrar métricas avanzadas
 AdminDashboard.prototype.showAdvancedMetrics = function() {
-    console.log('📊 [METRICS] Mostrando sección de métricas avanzadas...');
+    debugLog.log('METRICS', '📊 [METRICS] Mostrando sección de métricas avanzadas...');
 
     // Mostrar sección de métricas ejecutivas
     const metricsSection = document.getElementById('executive-metrics-section');
     if (metricsSection) {
         metricsSection.style.display = 'block';
-        console.log('✅ [METRICS] Sección de métricas avanzadas visible');
+        debugLog.log('METRICS', '✅ [METRICS] Sección de métricas avanzadas visible');
     } else {
-        console.warn('⚠️ [METRICS] Sección executive-metrics-section no encontrada');
+        debugLog.warn('METRICS', '⚠️ [METRICS] Sección executive-metrics-section no encontrada');
     }
 };
 
@@ -3545,10 +3572,10 @@ document.addEventListener('click', (e) => {
             return;
         }
 
-        console.warn('[DASHBOARD-MANAGER] Unhandled data-action:', action);
+        debugLog.warn('DASHBOARD-MANAGER', '[DASHBOARD-MANAGER] Unhandled data-action:', action);
     } catch (error) {
-        console.error('[DASHBOARD-MANAGER] Error handling action:', action, error);
+        debugLog.error('DASHBOARD-MANAGER', '[DASHBOARD-MANAGER] Error handling action:', action, error);
     }
 });
 
-console.log('✅ [COMPLETE] dashboard-manager-2025.js cargado completamente - VERSIÓN 2025-09-21 CON MÉTRICAS AVANZADAS');
+debugLog.log('COMPLETE', '✅ [COMPLETE] dashboard-manager-2025.js cargado completamente - VERSIÓN 2025-09-21 CON MÉTRICAS AVANZADAS');

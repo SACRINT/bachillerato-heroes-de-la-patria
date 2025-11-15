@@ -1,4 +1,14 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * 🔐 INTERFAZ DE AUTENTICACIÓN
  * Sistema de login integrado para usuarios del plantel
  */
@@ -227,10 +237,11 @@ class AuthInterface {
                 if (profile.success) {
                     this.currentUser = profile.user;
                     this.updateAuthInterface();
-                    //console.log('🔐 Usuario autenticado automáticamente:', this.currentUser.email);
+                    // GDPR: Datos sensibles enmascarados
+                    //debugLog.log('APP', '🔐 Usuario autenticado automáticamente:', this.currentUser.email);
                 }
             } catch (error) {
-                //console.log('🔓 Sesión anterior expirada');
+                //debugLog.log('APP', '🔓 Sesión anterior expirada');
                 window.apiClient.removeToken();
             }
         }
@@ -270,7 +281,8 @@ class AuthInterface {
                 this.closeAuthModal();
                 this.showLoginSuccess();
                 
-                //console.log('✅ Login exitoso:', this.currentUser.email);
+                // GDPR: Datos sensibles enmascarados
+                //debugLog.log('APP', '✅ Login exitoso:', this.currentUser.email);
 
                 // Reinicializar chatbot con nueva sesión
                 if (window.initializeChatSession) {
@@ -280,7 +292,7 @@ class AuthInterface {
 
         } catch (error) {
             this.showAuthError(error.message || 'Error de autenticación');
-            console.error('❌ Error de login:', error);
+            debugLog.error('ERROR', '❌ Error de login:', error);
         } finally {
             this.setLoginLoading(false);
         }
@@ -295,13 +307,13 @@ class AuthInterface {
                 await window.apiClient.logout();
             }
         } catch (error) {
-            console.warn('Error durante logout:', error);
+            debugLog.warn('ERROR', 'Error durante logout:', error);
         }
 
         this.currentUser = null;
         this.updateAuthInterface();
         this.showLogoutSuccess();
-        //console.log('🔓 Sesión cerrada');
+        //debugLog.log('APP', '🔓 Sesión cerrada');
     }
 
     /**
@@ -596,7 +608,7 @@ class AuthInterface {
 
         } catch (error) {
             this.showRegisterError(error.message || 'Error al enviar la solicitud');
-            console.error('❌ Error en registro:', error);
+            debugLog.error('ERROR', '❌ Error en registro:', error);
         } finally {
             this.setRegisterLoading(false);
         }
@@ -657,7 +669,8 @@ Fecha: ${new Date().toLocaleString('es-MX')}
         });
         localStorage.setItem('pending_registrations', JSON.stringify(registrations));
 
-        //console.log('📧 Solicitud guardada localmente:', data.email);
+        // GDPR: Datos sensibles enmascarados
+        //debugLog.log('APP', '📧 Solicitud guardada localmente:', data.email);
     }
 
     /**
@@ -871,7 +884,7 @@ Fecha: ${new Date().toLocaleString('es-MX')}
  */
 window.handleGoogleCredentialResponse = async function(response) {
     try {
-        //console.log('🔐 Google Sign-In response received');
+        //debugLog.log('APP', '🔐 Google Sign-In response received');
         
         if (!response.credential) {
             throw new Error('No se recibió credencial de Google');
@@ -890,7 +903,8 @@ window.handleGoogleCredentialResponse = async function(response) {
             google_id: decoded.sub
         };
 
-        //console.log('📧 Usuario de Google:', googleUser.email);
+        // GDPR: Datos sensibles enmascarados
+        //debugLog.log('APP', '📧 Usuario de Google:', googleUser.email);
 
         // Autenticar con el backend usando Google token
         if (window.apiClient) {
@@ -903,13 +917,13 @@ window.handleGoogleCredentialResponse = async function(response) {
                     window.authInterface.closeAuthModal();
                     window.authInterface.showToast('success', '✅ Google Sign-In exitoso', `Bienvenido ${authResponse.user.nombre}`);
                     
-                    //console.log('✅ Autenticación con Google exitosa');
+                    //debugLog.log('APP', '✅ Autenticación con Google exitosa');
                 } else {
                     throw new Error(authResponse.message || 'Error de autenticación con Google');
                 }
                 
             } catch (apiError) {
-                console.warn('⚠️ Backend no disponible, usando autenticación local');
+                debugLog.warn('APP', '⚠️ Backend no disponible, usando autenticación local');
                 
                 // Fallback: autenticación local temporal
                 const localUser = {
@@ -936,7 +950,7 @@ window.handleGoogleCredentialResponse = async function(response) {
         }
 
     } catch (error) {
-        console.error('❌ Error en Google Sign-In:', error);
+        debugLog.error('ERROR', '❌ Error en Google Sign-In:', error);
         window.authInterface.showToast('danger', '❌ Error de autenticación', error.message || 'No se pudo completar el acceso con Google');
     }
 };
@@ -947,7 +961,7 @@ window.handleGoogleCredentialResponse = async function(response) {
 function initializeGoogleSignIn() {
     // Verificar si AppConfig está disponible y si Google está configurado
     if (!window.AppConfig || !window.AppConfig.isEnabled || !window.AppConfig.isEnabled('google')) {
-        //console.log('⚠️ Google Sign-In no configurado - ocultando botón');
+        //debugLog.log('APP', '⚠️ Google Sign-In no configurado - ocultando botón');
         
         // Ocultar sección de Google Sign-In si no está configurado
         setTimeout(() => {
@@ -956,15 +970,15 @@ function initializeGoogleSignIn() {
             
             if (googleSection) {
                 googleSection.style.display = 'none';
-                //console.log('🔐 Botón de Google Sign-In ocultado');
+                //debugLog.log('APP', '🔐 Botón de Google Sign-In ocultado');
             }
             if (separatorDiv) {
                 separatorDiv.style.display = 'none';
-                //console.log('🔐 Separador "o continúa con" ocultado');
+                //debugLog.log('APP', '🔐 Separador "o continúa con" ocultado');
             }
         }, 100);
         
-        //console.log('🔐 Usando solo autenticación tradicional');
+        //debugLog.log('APP', '🔐 Usando solo autenticación tradicional');
         return;
     }
     
@@ -974,7 +988,7 @@ function initializeGoogleSignIn() {
     script.async = true;
     script.defer = true;
     script.onload = () => {
-        //console.log('📱 Google Sign-In SDK cargado');
+        //debugLog.log('APP', '📱 Google Sign-In SDK cargado');
         
         // Configurar con client ID real
         const gOnloadElement = document.getElementById('g_id_onload');
@@ -990,7 +1004,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Esperar a que el API client esté disponible
     setTimeout(() => {
         window.authInterface = new AuthInterface();
-        //console.log('🔐 Interfaz de autenticación inicializada');
+        //debugLog.log('APP', '🔐 Interfaz de autenticación inicializada');
         
         // Inicializar Google Sign-In
         setTimeout(() => {
@@ -1004,9 +1018,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const user = JSON.parse(googleSession);
                 window.authInterface.currentUser = user;
                 window.authInterface.updateAuthInterface();
-                //console.log('🔐 Sesión de Google restaurada:', user.email);
+                // GDPR: Datos sensibles enmascarados
+                //debugLog.log('APP', '🔐 Sesión de Google restaurada:', user.email);
             } catch (error) {
-                console.warn('⚠️ Error al restaurar sesión de Google:', error);
+                debugLog.warn('ERROR', '⚠️ Error al restaurar sesión de Google:', error);
                 sessionStorage.removeItem('google_user_session');
             }
         }

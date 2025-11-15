@@ -6,6 +6,10 @@
 
 const express = require('express');
 const devLogger = require('../utils/devLogger');
+
+// GDPR Logging - Debug condicional y sanitización
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
+
 const router = express.Router();
 const multer = require('multer');
 const sharp = require('sharp');

@@ -4,6 +4,17 @@
 // NOTA: DOMPurify se asume disponible globalmente desde script anterior
 // O usar: const DOMPurify = window.DOMPurify || { sanitize: (str) => str };
 
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    // Fallback si debug-logger.js no está cargado
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
 class BootstrapHelper {
     static isAvailable() {
         return typeof bootstrap !== 'undefined' && bootstrap.Modal;
@@ -31,7 +42,7 @@ class BootstrapHelper {
                 };
             }
         } catch (error) {
-            console.warn('⚠️ Error mostrando modal:', error);
+            debugLog.warn('ERROR', '⚠️ Error mostrando modal:', error);
             // Fallback de emergencia
             element.style.display = 'block';
             return { hide: () => { element.style.display = 'none'; } };
@@ -57,7 +68,7 @@ class BootstrapHelper {
                 document.body.style.paddingRight = '';
             }
         } catch (error) {
-            console.warn('⚠️ Error ocultando modal:', error);
+            debugLog.warn('ERROR', '⚠️ Error ocultando modal:', error);
             element.style.display = 'none';
         }
     }
@@ -76,13 +87,13 @@ class AppointmentSystem {
         try {
             this.initializeSystem();
         } catch (error) {
-            console.error('❌ Error inicializando sistema de citas:', error);
+            debugLog.error('ERROR', '❌ Error inicializando sistema de citas:', error);
             // Intentar inicialización básica
             setTimeout(() => {
                 try {
                     this.renderDepartments();
                 } catch (e) {
-                    console.error('❌ Error en inicialización de emergencia:', e);
+                    debugLog.error('ERROR', '❌ Error en inicialización de emergencia:', e);
                 }
             }, 1000);
         }
@@ -203,7 +214,7 @@ class AppointmentSystem {
     renderDepartments() {
         const container = document.getElementById('departmentsContainer');
         if (!container) {
-            console.warn('⚠️ Contenedor de departamentos no encontrado. La página puede no estar completamente cargada.');
+            debugLog.warn('APP', '⚠️ Contenedor de departamentos no encontrado. La página puede no estar completamente cargada.');
             return;
         }
 
@@ -645,7 +656,7 @@ ${formData.get('reason')}
                 document.body.style.paddingRight = '';
             }
         } catch (error) {
-            console.warn('⚠️ Error cerrando modales:', error);
+            debugLog.warn('ERROR', '⚠️ Error cerrando modales:', error);
             // Forzar cierre de modales
             const modals = document.querySelectorAll('.modal');
             modals.forEach(modal => {
@@ -1331,8 +1342,8 @@ document.addEventListener('click', (e) => {
             return;
         }
 
-        console.warn('[APPOINTMENT-SYSTEM] Unhandled data-action:', action);
+        debugLog.warn('APPOINTMENT-SYSTEM', '[APPOINTMENT-SYSTEM] Unhandled data-action:', action);
     } catch (error) {
-        console.error('[APPOINTMENT-SYSTEM] Error handling action:', action, error);
+        debugLog.error('APPOINTMENT-SYSTEM', '[APPOINTMENT-SYSTEM] Error handling action:', action, error);
     }
 });

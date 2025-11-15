@@ -12,6 +12,10 @@ const { getPasswordGenerator } = require('../utils/passwordGenerator');
 const { pool } = require('../config/database');
 const fs = require('fs').promises;
 const path = require('path');
+
+// GDPR Logging - Debug condicional y sanitización
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
+
 const router = express.Router();
 
 // Instancias de servicios

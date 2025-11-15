@@ -10,6 +10,10 @@ const handlebars = require('handlebars');
 const fs = require('fs').promises;
 const path = require('path');
 
+// GDPR Logging - Debug condicional y sanitización
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
+
+
 class EmailService {
     constructor() {
         this.transporter = null;

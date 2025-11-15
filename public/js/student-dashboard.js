@@ -1,4 +1,15 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    // Fallback si debug-logger.js no está cargado
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * 🎓 DASHBOARD ESTUDIANTIL - Sistema Integrado
  * Maneja la interfaz y funcionalidades del dashboard estudiantil
  */
@@ -6,31 +17,31 @@
 class StudentDashboard {
     constructor() {
         try {
-            console.log('🎓 [DASHBOARD] Inicializando dashboard estudiantil...');
+            debugLog.log('DASHBOARD', '🎓 [DASHBOARD] Inicializando dashboard estudiantil...');
             this.apiBase = '/api/students/';
             this.authToken = localStorage.getItem('student_auth_token');
             this.currentStudent = JSON.parse(localStorage.getItem('current_student') || 'null');
 
             this.init();
         } catch (error) {
-            console.error('❌ Error inicializando StudentDashboard:', error);
+            debugLog.error('ERROR', '❌ Error inicializando StudentDashboard:', error);
             this.fallbackInitialization();
         }
     }
 
     fallbackInitialization() {
-        console.log('🔄 [DASHBOARD] Iniciando modo de respaldo...');
+        debugLog.log('DASHBOARD', '🔄 [DASHBOARD] Iniciando modo de respaldo...');
         this.apiBase = '/api/students/';
         this.authToken = null;
         this.currentStudent = null;
         // NO mostrar modal automáticamente en modo de respaldo
-        console.log('ℹ️ Modo de respaldo iniciado. Use el botón para login.');
+        debugLog.log('APP', 'ℹ️ Modo de respaldo iniciado. Use el botón para login.');
     }
 
     init() {
         this.setupEventListeners();
         this.checkAuthentication();
-        console.log('✅ [DASHBOARD] Dashboard estudiantil inicializado');
+        debugLog.log('DASHBOARD', '✅ [DASHBOARD] Dashboard estudiantil inicializado');
     }
 
     setupEventListeners() {
@@ -61,7 +72,7 @@ class StudentDashboard {
     async checkAuthentication() {
         if (!this.authToken || !this.currentStudent) {
             // NO mostrar modal automáticamente, solo verificar estado
-            console.log('ℹ️ Usuario no autenticado');
+            debugLog.log('APP', 'ℹ️ Usuario no autenticado');
             return false;
         }
 
@@ -70,7 +81,7 @@ class StudentDashboard {
             this.loadDashboard();
             return true;
         } catch (error) {
-            console.error('❌ Error verificando autenticación:', error);
+            debugLog.error('ERROR', '❌ Error verificando autenticación:', error);
             this.clearAuth();
             return false;
         }
@@ -132,12 +143,12 @@ class StudentDashboard {
                 const modal = new bootstrap.Modal(document.getElementById('studentLoginModal'));
                 modal.show();
             } else {
-                console.warn('⚠️ Bootstrap no disponible, mostrando modal con fallback');
+                debugLog.warn('APP', '⚠️ Bootstrap no disponible, mostrando modal con fallback');
                 document.getElementById('studentLoginModal').style.display = 'block';
                 document.getElementById('studentLoginModal').classList.add('show');
             }
         } catch (error) {
-            console.error('❌ Error mostrando modal:', error);
+            debugLog.error('ERROR', '❌ Error mostrando modal:', error);
         }
 
         // Setup form listener
@@ -187,7 +198,7 @@ class StudentDashboard {
                         document.getElementById('studentLoginModal').classList.remove('show');
                     }
                 } catch (error) {
-                    console.warn('⚠️ Error cerrando modal:', error);
+                    debugLog.warn('ERROR', '⚠️ Error cerrando modal:', error);
                 }
 
                 // Ocultar el prompt de login
@@ -202,7 +213,7 @@ class StudentDashboard {
                 loginError.classList.remove('d-none');
             }
         } catch (error) {
-            console.error('❌ Error en login:', error);
+            debugLog.error('ERROR', '❌ Error en login:', error);
             loginError.textContent = 'Error de conexión. Usando modo demo.';
             loginError.classList.remove('d-none');
         }
@@ -220,7 +231,7 @@ class StudentDashboard {
     }
 
     resetToInitialState() {
-        console.log('🔄 Restableciendo estado inicial del dashboard...');
+        debugLog.log('DASHBOARD', '🔄 Restableciendo estado inicial del dashboard...');
 
         // Limpiar el contenedor del dashboard
         const dashboardContainer = document.getElementById('dashboardContainer');
@@ -280,7 +291,7 @@ class StudentDashboard {
 
     async loadDashboard() {
         try {
-            console.log('📊 [DASHBOARD] Cargando datos del dashboard...');
+            debugLog.log('DASHBOARD', '📊 [DASHBOARD] Cargando datos del dashboard...');
 
             // Mostrar loading
             this.showLoading();
@@ -339,7 +350,7 @@ class StudentDashboard {
 
             this.renderDashboard(mockDashboardData.data);
         } catch (error) {
-            console.error('❌ Error cargando dashboard:', error);
+            debugLog.error('DASHBOARD', '❌ Error cargando dashboard:', error);
             this.showNotification('Error cargando dashboard', 'error');
         }
     }
@@ -613,13 +624,13 @@ class StudentDashboard {
                 if (badge) badge.remove();
             }
         } catch (error) {
-            console.error('❌ Error marcando notificación:', error);
+            debugLog.error('ERROR', '❌ Error marcando notificación:', error);
         }
     }
 
     async handleRefresh(e) {
         const section = e.target.closest('.refresh-btn').dataset.section;
-        console.log(`🔄 Refrescando sección: ${section}`);
+        debugLog.log('APP', `🔄 Refrescando sección: ${section}`);
 
         // Aquí podrías refrescar secciones específicas
         this.loadDashboard();
@@ -695,4 +706,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-console.log('📝 [DASHBOARD] student-dashboard.js cargado exitosamente');
+debugLog.log('DASHBOARD', '📝 [DASHBOARD] student-dashboard.js cargado exitosamente');
