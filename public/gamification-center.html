@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Gamificación - IACoins | BGE Héroes de la Patria</title>
+
+    <!-- Preconnects -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
+    <!-- Meta tags -->
+    <meta name="description" content="Centro de Gamificación - Gana IACoins, completa retos, sube de nivel y desbloquea recompensas. Sistema Learn-to-Earn del BGE Héroes de la Patria.">
+    <meta name="keywords" content="gamificación, iacoins, retos, niveles, aprendizaje, recompensas">
+    <meta name="theme-color" content="#1976D2">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
+
+    <!-- Icons -->
+    <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* Gamification Center Styles */
+        .gamification-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 4rem 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gamification-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .wallet-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wallet-card::before {
+            content: '🪙';
+            position: absolute;
+            font-size: 15rem;
+            opacity: 0.1;
+            right: -3rem;
+            top: -3rem;
+        }
+
+        .iacoin-balance {
+            font-size: 3rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .level-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            color: white;
+            transition: transform 0.3s;
+        }
+
+        .level-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .challenge-card {
+            border-left: 4px solid;
+            transition: all 0.3s;
+        }
+
+        .challenge-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .challenge-card.daily {
+            border-left-color: #fbbf24;
+        }
+
+        .challenge-card.weekly {
+            border-left-color: #3b82f6;
+        }
+
+        .challenge-card.monthly {
+            border-left-color: #8b5cf6;
+        }
+
+        .reward-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .xp-badge {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .quick-action-btn {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #1f2937;
+            display: block;
+        }
+
+        .quick-action-btn:hover {
+            border-color: #667eea;
+            background: #f9fafb;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            color: #667eea;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .leaderboard-item:hover {
+            background: #f9fafb;
+        }
+
+        .leaderboard-rank {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 1rem;
+        }
+
+        .rank-1 { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; }
+        .rank-2 { background: linear-gradient(135deg, #9ca3af, #6b7280); color: white; }
+        .rank-3 { background: linear-gradient(135deg, #d97706, #b45309); color: white; }
+        .rank-other { background: #e5e7eb; color: #6b7280; }
+
+        /* Dark mode support */
+        [data-theme="dark"] .stat-card,
+        .dark-mode .stat-card {
+            background: #1f2937;
+            color: #f3f4f6;
+        }
+
+        [data-theme="dark"] .quick-action-btn,
+        .dark-mode .quick-action-btn {
+            background: #1f2937;
+            border-color: #374151;
+            color: #f3f4f6;
+        }
+
+        [data-theme="dark"] .leaderboard-item:hover,
+        .dark-mode .leaderboard-item:hover {
+            background: #1f2937;
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+    <!-- Header will be injected here -->
+    <header id="main-header"></header>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="gamification-hero">
+            <div class="container position-relative">
+                <div class="text-center mb-4">
+                    <h1 class="display-4 fw-bold mb-3">
+                        <i class="fas fa-gamepad me-3"></i>Centro de Gamificación
+                    </h1>
+                    <p class="lead">Aprende, gana y crece con nuestro sistema de recompensas IACoins</p>
+                </div>
+
+                <!-- Wallet Overview -->
+                <div class="row g-4 justify-content-center">
+                    <div class="col-lg-5">
+                        <div class="wallet-card">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h3 class="h5 mb-1 opacity-75">Tu Billetera</h3>
+                                    <p class="mb-0 small opacity-50">Saldo disponible</p>
+                                </div>
+                                <button class="btn btn-light btn-sm" data-action="refresh-wallet">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                            <div class="iacoin-balance mb-2" id="walletBalance">
+                                <i class="fas fa-coins me-2"></i><span data-balance="0">0</span>
+                            </div>
+                            <p class="mb-3 small opacity-75">IACoins</p>
+                            <div class="d-grid gap-2 d-md-flex">
+                                <a href="iacoins-store.html" class="btn btn-warning flex-fill">
+                                    <i class="fas fa-shopping-cart me-2"></i>Ir a la Tienda
+                                </a>
+                                <button class="btn btn-light flex-fill" data-action="show-purchase-modal">
+                                    <i class="fas fa-plus-circle me-2"></i>Comprar IACoins
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="level-card">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <div class="position-relative" style="width: 80px; height: 80px;">
+                                        <svg class="progress-ring" viewBox="0 0 120 120">
+                                            <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="8"/>
+                                            <circle id="progressCircle" cx="60" cy="60" r="54" fill="none" stroke="white" stroke-width="8"
+                                                    stroke-dasharray="339.292" stroke-dashoffset="169.646"
+                                                    transform="rotate(-90 60 60)" stroke-linecap="round"/>
+                                        </svg>
+                                        <div class="position-absolute top-50 start-50 translate-middle text-center">
+                                            <div class="h2 fw-bold mb-0" id="userLevel">1</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h3 class="h5 mb-1" id="levelName">Aprendiz</h3>
+                                    <div class="progress" style="height: 8px; background: rgba(255,255,255,0.2);">
+                                        <div class="progress-bar bg-warning" id="xpProgress" style="width: 0%"></div>
+                                    </div>
+                                    <p class="small mb-0 mt-1 opacity-75">
+                                        <span id="currentXP">0</span> / <span id="requiredXP">100</span> XP
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="small opacity-75">
+                                <i class="fas fa-star me-2"></i>
+                                <span id="levelBenefits">Acceso básico a la plataforma</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="py-5 bg-light">
+            <div class="container">
+                <h2 class="h3 mb-4 text-center">Acciones Rápidas</h2>
+                <div class="row g-3">
+                    <div class="col-md-3 col-6">
+                        <a href="challenges.html" class="quick-action-btn">
+                            <i class="fas fa-trophy fa-2x mb-2 text-warning"></i>
+                            <div class="fw-semibold">Retos Activos</div>
+                            <small class="text-muted">3 disponibles</small>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <a href="iacoins-store.html" class="quick-action-btn">
+                            <i class="fas fa-store fa-2x mb-2 text-primary"></i>
+                            <div class="fw-semibold">Tienda</div>
+                            <small class="text-muted">15 items</small>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <a href="#achievements" class="quick-action-btn">
+                            <i class="fas fa-medal fa-2x mb-2 text-success"></i>
+                            <div class="fw-semibold">Logros</div>
+                            <small class="text-muted">5/20 desbloqueados</small>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <a href="#leaderboard" class="quick-action-btn">
+                            <i class="fas fa-ranking-star fa-2x mb-2 text-danger"></i>
+                            <div class="fw-semibold">Ranking</div>
+                            <small class="text-muted">Ver posición</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Overview -->
+        <section class="py-5">
+            <div class="container">
+                <h2 class="h3 mb-4">Tus Estadísticas</h2>
+                <div class="row g-4">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card text-center">
+                            <div class="stat-icon mx-auto" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">
+                                <i class="fas fa-coins text-white"></i>
+                            </div>
+                            <h3 class="h2 fw-bold mb-1" id="totalEarned">0</h3>
+                            <p class="text-muted mb-0">IACoins Ganados</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card text-center">
+                            <div class="stat-icon mx-auto" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                                <i class="fas fa-fire text-white"></i>
+                            </div>
+                            <h3 class="h2 fw-bold mb-1" id="currentStreak">0</h3>
+                            <p class="text-muted mb-0">Días Consecutivos</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card text-center">
+                            <div class="stat-icon mx-auto" style="background: linear-gradient(135deg, #10b981, #059669);">
+                                <i class="fas fa-check-circle text-white"></i>
+                            </div>
+                            <h3 class="h2 fw-bold mb-1" id="completedChallenges">0</h3>
+                            <p class="text-muted mb-0">Retos Completados</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card text-center">
+                            <div class="stat-icon mx-auto" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                                <i class="fas fa-star text-white"></i>
+                            </div>
+                            <h3 class="h2 fw-bold mb-1" id="totalXP">0</h3>
+                            <p class="text-muted mb-0">Experiencia Total</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Active Challenges -->
+        <section class="py-5 bg-light">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3 mb-0">Retos Activos</h2>
+                    <a href="challenges.html" class="btn btn-outline-primary">Ver Todos</a>
+                </div>
+
+                <div class="row g-3" id="activeChallenges">
+                    <!-- Daily Challenge -->
+                    <div class="col-lg-4">
+                        <div class="card challenge-card daily border-0 h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <span class="badge bg-warning text-dark">Diario</span>
+                                    <i class="fas fa-sun text-warning fa-2x"></i>
+                                </div>
+                                <h4 class="h5 fw-bold mb-2">Madrugador Académico</h4>
+                                <p class="text-muted small mb-3">Inicia sesión antes de las 8:00 AM</p>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="small text-muted">Progreso</span>
+                                        <span class="small fw-semibold">0/1</span>
+                                    </div>
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar bg-warning" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <span class="reward-badge">
+                                        <i class="fas fa-coins"></i> +15 IACoins
+                                    </span>
+                                    <span class="reward-badge xp-badge">
+                                        <i class="fas fa-star"></i> +10 XP
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Challenge -->
+                    <div class="col-lg-4">
+                        <div class="card challenge-card weekly border-0 h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <span class="badge bg-primary">Semanal</span>
+                                    <i class="fas fa-calendar-week text-primary fa-2x"></i>
+                                </div>
+                                <h4 class="h5 fw-bold mb-2">Racha Perfecta</h4>
+                                <p class="text-muted small mb-3">Inicia sesión durante 7 días consecutivos</p>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="small text-muted">Progreso</span>
+                                        <span class="small fw-semibold">0/7</span>
+                                    </div>
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar bg-primary" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <span class="reward-badge">
+                                        <i class="fas fa-coins"></i> +75 IACoins
+                                    </span>
+                                    <span class="reward-badge xp-badge">
+                                        <i class="fas fa-star"></i> +50 XP
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Challenge -->
+                    <div class="col-lg-4">
+                        <div class="card challenge-card monthly border-0 h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <span class="badge bg-purple text-white" style="background: #8b5cf6;">Mensual</span>
+                                    <i class="fas fa-calendar-alt text-purple fa-2x" style="color: #8b5cf6;"></i>
+                                </div>
+                                <h4 class="h5 fw-bold mb-2">Excelencia Académica</h4>
+                                <p class="text-muted small mb-3">Logra un promedio de 90%+ este mes</p>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="small text-muted">Promedio Actual</span>
+                                        <span class="small fw-semibold">85%</span>
+                                    </div>
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar" style="width: 85%; background: #8b5cf6;"></div>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <span class="reward-badge">
+                                        <i class="fas fa-coins"></i> +300 IACoins
+                                    </span>
+                                    <span class="reward-badge xp-badge">
+                                        <i class="fas fa-star"></i> +200 XP
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leaderboard Preview -->
+        <section class="py-5" id="leaderboard">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3 mb-0">Ranking Semanal</h2>
+                    <a href="leaderboards.html" class="btn btn-outline-primary">Ver Completo</a>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <div id="leaderboardList">
+                            <!-- Top 5 will be loaded dynamically -->
+                            <div class="leaderboard-item">
+                                <div class="leaderboard-rank rank-1">1</div>
+                                <img src="https://ui-avatars.com/api/?name=Ana+Martinez&background=667eea&color=fff"
+                                     class="rounded-circle me-3" width="45" height="45" alt="Avatar">
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold">Ana Martínez</div>
+                                    <small class="text-muted">Nivel 5 - Maestro</small>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold text-warning">2,450 <i class="fas fa-coins"></i></div>
+                                    <small class="text-muted">Esta semana</small>
+                                </div>
+                            </div>
+
+                            <div class="leaderboard-item">
+                                <div class="leaderboard-rank rank-2">2</div>
+                                <img src="https://ui-avatars.com/api/?name=Carlos+Lopez&background=667eea&color=fff"
+                                     class="rounded-circle me-3" width="45" height="45" alt="Avatar">
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold">Carlos López</div>
+                                    <small class="text-muted">Nivel 4 - Erudito</small>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold text-warning">2,120 <i class="fas fa-coins"></i></div>
+                                    <small class="text-muted">Esta semana</small>
+                                </div>
+                            </div>
+
+                            <div class="leaderboard-item">
+                                <div class="leaderboard-rank rank-3">3</div>
+                                <img src="https://ui-avatars.com/api/?name=Maria+Garcia&background=667eea&color=fff"
+                                     class="rounded-circle me-3" width="45" height="45" alt="Avatar">
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold">María García</div>
+                                    <small class="text-muted">Nivel 4 - Erudito</small>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold text-warning">1,980 <i class="fas fa-coins"></i></div>
+                                    <small class="text-muted">Esta semana</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Achievements Preview -->
+        <section class="py-5 bg-light" id="achievements">
+            <div class="container">
+                <h2 class="h3 mb-4">Logros Recientes</h2>
+                <div class="row g-3">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <i class="fas fa-sign-in-alt fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="fw-bold mb-2">Primer Paso</h5>
+                                <p class="small text-muted mb-3">Completaste tu primer login</p>
+                                <span class="badge bg-success">Desbloqueado</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <i class="fas fa-user-circle fa-3x text-warning"></i>
+                                </div>
+                                <h5 class="fw-bold mb-2">Perfil Completo</h5>
+                                <p class="small text-muted mb-3">Llenaste toda tu información</p>
+                                <span class="badge bg-success">Desbloqueado</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="card border-0 shadow-sm opacity-50">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <i class="fas fa-graduation-cap fa-3x text-muted"></i>
+                                </div>
+                                <h5 class="fw-bold mb-2">Primer 100</h5>
+                                <p class="small text-muted mb-3">Obtén tu primera calificación perfecta</p>
+                                <span class="badge bg-secondary">Bloqueado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer will be injected here -->
+    <footer id="main-footer"></footer>
+
+    <!-- Purchase IACoins Modal -->
+    <div class="modal fade" id="purchaseModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-coins me-2"></i>Comprar IACoins</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted mb-4">Selecciona un paquete para continuar:</p>
+                    <div class="row g-3" id="packagesList">
+                        <!-- Packages will be loaded dynamically -->
+                        <div class="col-6">
+                            <div class="card h-100 package-card" data-package="basic">
+                                <div class="card-body text-center">
+                                    <h6 class="fw-bold">Básico</h6>
+                                    <div class="h3 text-primary">50</div>
+                                    <small class="text-muted">IACoins</small>
+                                    <hr>
+                                    <p class="mb-0 fw-bold">$5.00 USD</p>
+                                    <small class="text-muted">$100 MXN</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card h-100 package-card" data-package="standard">
+                                <div class="card-body text-center">
+                                    <span class="badge bg-success mb-2">+5% Bonus</span>
+                                    <h6 class="fw-bold">Estándar</h6>
+                                    <div class="h3 text-primary">105</div>
+                                    <small class="text-muted">IACoins</small>
+                                    <hr>
+                                    <p class="mb-0 fw-bold">$10.00 USD</p>
+                                    <small class="text-muted">$200 MXN</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
+    <script src="js/main.js"></script>
+
+    <!-- Gamification Center Scripts -->
+    <script>
+        // Wait for auth to load
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication
+            const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+
+            if (!token) {
+                // Redirect to home if not authenticated
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Load wallet data
+            await loadWalletData();
+            // Load challenges
+            await loadChallenges();
+            // Load stats
+            await loadUserStats();
+        });
+
+        async function loadWalletData() {
+            try {
+                const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+                const response = await fetch('/api/wallet', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    updateWalletUI(data);
+                } else {
+                    console.error('Error loading wallet:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error loading wallet:', error);
+            }
+        }
+
+        function updateWalletUI(walletData) {
+            // Update balance
+            document.querySelector('[data-balance]').textContent = walletData.balance || 0;
+
+            // Update level
+            document.getElementById('userLevel').textContent = walletData.level || 1;
+            document.getElementById('levelName').textContent = getLevelName(walletData.level || 1);
+
+            // Update XP progress
+            const currentXP = walletData.xp || 0;
+            const requiredXP = getRequiredXP(walletData.level || 1);
+            const xpPercentage = (currentXP / requiredXP) * 100;
+
+            document.getElementById('currentXP').textContent = currentXP;
+            document.getElementById('requiredXP').textContent = requiredXP;
+            document.getElementById('xpProgress').style.width = xpPercentage + '%';
+
+            // Update stats
+            document.getElementById('totalEarned').textContent = walletData.total_earned || 0;
+            document.getElementById('totalXP').textContent = walletData.xp || 0;
+        }
+
+        function getLevelName(level) {
+            const levels = ['', 'Aprendiz', 'Explorador', 'Estudioso', 'Erudito', 'Maestro', 'Sabio', 'Leyenda'];
+            return levels[level] || 'Aprendiz';
+        }
+
+        function getRequiredXP(level) {
+            const requirements = [0, 100, 300, 600, 1000, 1500, 2500];
+            return requirements[level] || 100;
+        }
+
+        async function loadChallenges() {
+            // This will be implemented when API is ready
+            console.log('Challenges will be loaded from /api/challenges');
+        }
+
+        async function loadUserStats() {
+            // This will be implemented when API is ready
+            console.log('User stats will be loaded from /api/wallet/stats');
+        }
+
+        function refreshWallet() {
+            loadWalletData();
+        }
+
+        function showPurchaseModal() {
+            const modal = new bootstrap.Modal(document.getElementById('purchaseModal'));
+            modal.show();
+        }
+
+        // Package selection
+        document.addEventListener('click', function(e) {
+            const packageCard = e.target.closest('.package-card');
+            if (packageCard) {
+                const packageType = packageCard.dataset.package;
+                initiatePayment(packageType);
+            }
+        });
+
+        function initiatePayment(packageType) {
+            console.log('Initiating payment for package:', packageType);
+            // This will integrate with Stripe/MercadoPago
+            alert('Payment integration coming soon!');
+        }
+
+        // ============================================
+        // EVENT DELEGATION HANDLER (CSP Compliance)
+        // ============================================
+        document.addEventListener('click', function(e) {
+            const actionElement = e.target.closest('[data-action]');
+            if (!actionElement) return;
+
+            const action = actionElement.dataset.action;
+
+            // Handle actions
+            switch(action) {
+                case 'refresh-wallet':
+                    refreshWallet();
+                    break;
+                case 'show-purchase-modal':
+                    showPurchaseModal();
+                    break;
+                default:
+                    console.warn('[GAMIFICATION] Unknown action:', action);
+            }
+        });
+    </script>
+</body>
+</html>
