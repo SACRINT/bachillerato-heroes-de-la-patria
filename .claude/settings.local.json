@@ -31,7 +31,9 @@
       "Bash(npm install:*)",
       "Bash(for file in admin-dashboard.js solicitudes-manager.js professional-forms.js admin-dashboard-modal-manager.js)",
       "mcp__chrome-devtools__fill",
-      "Bash(tee:*)"
+      "Bash(tee:*)",
+      "mcp__chrome-devtools__wait_for",
+      "mcp__chrome-devtools__fill_form"
     ],
     "deny": [],
     "ask": []

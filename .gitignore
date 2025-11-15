@@ -47,7 +47,9 @@ docs/
 # Generalizado para ignorar todos los archivos Markdown excepto README.md
 *.md
 !README.md # Mantener README.md en GitHub para referencia del repositorio
-
+!CHANGELOG.md
+!MASTER-CHECKLIST-BGE-2025.md
+!CLAUDE.md
 # Reportes de texto (ya cubierto por *.log, pero se mantiene si hay otros .txt)
 *.txt
 

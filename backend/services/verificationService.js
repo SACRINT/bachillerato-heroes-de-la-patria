@@ -1,361 +1,259 @@
-/**
- * 🔐 SERVICIO DE VERIFICACIÓN PARA VERCEL SERVERLESS
- * Sistema de verificación por email + token
- * Máxima seguridad contra spam
- */
-
-const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const devLogger = require('../utils/devLogger');
-const { pool } = require('../config/database');
-require('dotenv').config();
 
-class VerificationService {
-    constructor() {
-        // ✅ AHORA USA PostgreSQL EN LUGAR DE Map() EN MEMORIA
-        // Esto resuelve el problema de tokens perdidos en Vercel serverless
-
-        // Control de re-envíos por email (sigue usando Map por ser temporal)
-        this.emailCooldowns = new Map(); // { email: timestamp }
-        this.COOLDOWN_TIME = 2 * 60 * 1000; // 2 minutos entre envíos
-
-        // Configurar transporter
-        this.transporter = this.createTransporter();
+// 📧 Configurar transporter de Gmail
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER || 'contacto.heroesdelapatria.sep@gmail.com',
+        pass: process.env.EMAIL_PASS || process.env.GMAIL_APP_PASSWORD || ''
     }
+});
 
-    createTransporter() {
-        // Verificar si tenemos credenciales reales de Gmail configuradas
-        if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-            devLogger.log('📧 [VERIFICATION SERVICE] Configurando transporter Gmail...');
-
-            const transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS
-                }
-            });
-
-            transporter.verify((error, success) => {
-                if (error) {
-                    devLogger.error('❌ [VERIFICATION SERVICE] Error al conectar con Gmail:', error);
-                } else {
-                    devLogger.log('✅ [VERIFICATION SERVICE] Conexión con Gmail exitosa');
-                }
-            });
-            return transporter;
-        }
-
-        devLogger.warn('⚠️ [VERIFICATION SERVICE] EMAIL_USER/EMAIL_PASS no configuradas');
-        return null;
+// 🔍 Verificar conexión del transporter al iniciar
+transporter.verify((error, success) => {
+    if (error) {
+        devLogger.error(`[VERIFICATION] ❌ Error de configuración Gmail: ${error.message}`);
+        devLogger.error(`[VERIFICATION] Usuario: ${process.env.EMAIL_USER}`);
+        devLogger.error(`[VERIFICATION] Contraseña cargada: ${process.env.EMAIL_PASS ? '✅ Sí' : '❌ No'}`);
+    } else {
+        devLogger.log(`[VERIFICATION] ✅ Transporter Gmail verificado correctamente`);
+        devLogger.log(`[VERIFICATION] Email configurado: ${process.env.EMAIL_USER}`);
     }
+});
 
-    /**
-     * Crear token de verificación y enviar email
-     * ✅ AHORA USA POSTGRESQL PARA PERSISTENCIA
-     */
-    async createVerification(formData) {
-        if (!this.transporter) {
-            throw new Error('Email transporter no configurado');
-        }
+// 🔒 Almacenar tokens en memoria (en producción usar BD)
+const verifications = new Map();
 
-        const email = formData.email.toLowerCase();
+/**
+ * Crear verificación y enviar email al usuario
+ * @param {Object} formData - Datos del formulario
+ * @returns {Promise<string>} Token de verificación
+ */
+async function createVerification(formData) {
+    try {
+        // 🔐 Generar token criptográfico
+        const token = crypto.randomBytes(32).toString('hex');
+        const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 24 horas
 
-        // Verificar cooldown de re-envíos
-        const lastSent = this.emailCooldowns.get(email);
-        if (lastSent) {
-            const timeElapsed = Date.now() - lastSent;
-            if (timeElapsed < this.COOLDOWN_TIME) {
-                const remainingSeconds = Math.ceil((this.COOLDOWN_TIME - timeElapsed) / 1000);
-                throw new Error(`Por favor espera ${remainingSeconds} segundos antes de solicitar otro código de verificación`);
-            }
-        }
-
-        const token = uuidv4();
-        const expiresAt = new Date(Date.now() + (30 * 60 * 1000)); // 30 minutos
-
-        // ✅ GUARDAR EN POSTGRESQL (en lugar de Map)
-        const query = `
-            INSERT INTO verification_tokens (
-                token, email, form_data, form_type, expires_at, ip_address, user_agent
-            )
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING token
-        `;
-
-        const values = [
-            token,
-            email,
-            JSON.stringify(formData),
-            formData.form_type || 'Contacto General',
+        // 📝 Guardar verificación en memoria
+        verifications.set(token, {
+            data: formData,
             expiresAt,
-            formData.ip_address || null,
-            formData.user_agent || null
-        ];
+            verified: false
+        });
 
-        try {
-            await pool.query(query, values);
-            devLogger.log(`✅ [VERIFICATION] Token ${token.substring(0, 8)}... guardado en DB`);
-        } catch (error) {
-            devLogger.error('❌ [VERIFICATION] Error guardando token en DB:', error);
-            throw new Error('Error al crear verificación');
-        }
+        devLogger.log(`[VERIFICATION] 📧 Token creado: ${token.substring(0, 10)}...`);
 
-        // Enviar email de confirmación
-        await this.sendVerificationEmail(email, token, formData.form_type);
-
-        // Registrar timestamp de envío para cooldown
-        this.emailCooldowns.set(email, Date.now());
-
-        // Limpiar cooldown después del tiempo establecido
-        setTimeout(() => {
-            this.emailCooldowns.delete(email);
-        }, this.COOLDOWN_TIME);
-
-        return token;
-    }
-
-    /**
-     * Enviar email de verificación
-     */
-    async sendVerificationEmail(email, token, formType) {
+        // 🔍 Construir enlace de verificación
         const verificationLink = `${process.env.BASE_URL || 'http://localhost:3000'}/api/contact/verify/${token}`;
 
-        const mailOptions = {
-            from: `"BGE Héroes de la Patria" <${process.env.EMAIL_USER}>`,
-            to: email,
-            subject: `✅ Confirma tu mensaje - ${formType || 'Contacto'}`,
-            html: this.getVerificationEmailTemplate(verificationLink, formType)
+        devLogger.log(`[VERIFICATION] 🔗 Enlace generado: ${verificationLink}`);
+
+        // 📧 Construir email HTML
+        const emailHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #1a3a52; color: white; padding: 20px; border-radius: 5px 5px 0 0; }
+        .content { background-color: #f9f9f9; padding: 20px; }
+        .footer { background-color: #e0e0e0; padding: 10px; text-align: center; font-size: 12px; border-radius: 0 0 5px 5px; }
+        .button { display: inline-block; background-color: #0066cc; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+        .info { background-color: #f0f8ff; padding: 10px; border-left: 4px solid #0066cc; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Verifica tu Mensaje</h2>
+            <p>Bachillerato General Estatal "Héroes de la Patria"</p>
+        </div>
+
+        <div class="content">
+            <p>Hola <strong>${formData.nombre || 'Usuario'}</strong>,</p>
+
+            <p>Hemos recibido tu mensaje a través del formulario de contacto. Para completar el envío, por favor verifica tu dirección de correo electrónico haciendo clic en el botón de abajo:</p>
+
+            <center>
+                <a href="${verificationLink}" class="button">Verificar Email</a>
+            </center>
+
+            <p>O copia y pega este enlace en tu navegador:</p>
+            <p style="background-color: #f0f0f0; padding: 10px; overflow-wrap: break-word; word-break: break-all;">
+                ${verificationLink}
+            </p>
+
+            <div class="info">
+                <strong>ℹ️ Información del mensaje:</strong><br>
+                <strong>Tipo:</strong> ${formData.tipo_consulta || formData.tipo || 'No especificado'}<br>
+                <strong>Asunto:</strong> ${formData.asunto || 'No especificado'}<br>
+                <strong>Recibido:</strong> ${new Date().toLocaleString('es-MX')}
+            </div>
+
+            <p><strong>⏰ Nota importante:</strong> Este enlace de verificación expirará en 24 horas.</p>
+
+            <p>Si no realizaste esta solicitud, puedes ignorar este email de forma segura.</p>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 Bachillerato General Estatal "Héroes de la Patria" - CCT: 21EBH0200X</p>
+            <p>C. Manuel Ávila Camacho #7, Coronel Tito Hernández, Venustiano Carranza, Puebla</p>
+        </div>
+    </div>
+</body>
+</html>
+        `;
+
+        // 📬 Enviar email al usuario
+        devLogger.log(`[VERIFICATION] 📨 Intentando enviar email a: ${formData.email}`);
+        devLogger.log(`[VERIFICATION] 🔧 Transporter configurado con: ${process.env.EMAIL_USER}`);
+
+        const userMailOptions = {
+            from: process.env.EMAIL_USER || 'contacto.heroesdelapatria.sep@gmail.com',
+            to: formData.email,
+            subject: 'Verifica tu mensaje - Bachillerato Héroes de la Patria',
+            html: emailHTML
         };
 
-        await this.transporter.sendMail(mailOptions);
-    }
+        devLogger.log(`[VERIFICATION] 📋 Opciones de email: from=${userMailOptions.from}, to=${userMailOptions.to}`);
 
-    /**
-     * Verificar token y procesar mensaje
-     * ✅ AHORA LEE DESDE POSTGRESQL
-     */
-    async verifyToken(token) {
         try {
-            // Buscar token en base de datos
-            const query = `
-                SELECT *
-                FROM verification_tokens
-                WHERE token = $1
-                AND used_at IS NULL
-            `;
-
-            const result = await pool.query(query, [token]);
-
-            if (result.rows.length === 0) {
-                return { success: false, error: 'Token inválido' };
-            }
-
-            const verification = result.rows[0];
-
-            // Verificar si expiró
-            if (new Date() > new Date(verification.expires_at)) {
-                return { success: false, error: 'Token expirado' };
-            }
-
-            // Marcar token como usado
-            const updateQuery = `
-                UPDATE verification_tokens
-                SET used_at = NOW()
-                WHERE token = $1
-            `;
-            await pool.query(updateQuery, [token]);
-
-            // Retornar datos del formulario
-            const data = typeof verification.form_data === 'string'
-                ? JSON.parse(verification.form_data)
-                : verification.form_data;
-
-            devLogger.log(`✅ [VERIFICATION] Token ${token.substring(0, 8)}... verificado exitosamente`);
-
-            return { success: true, data };
-
-        } catch (error) {
-            devLogger.error('❌ [VERIFICATION] Error verificando token:', error);
-            return { success: false, error: 'Error al verificar token' };
+            devLogger.log(`[VERIFICATION] ⏳ Enviando email con transporter.sendMail()...`);
+            const userMailInfo = await transporter.sendMail(userMailOptions);
+            devLogger.log(`[VERIFICATION] ✅ EMAIL ENVIADO EXITOSAMENTE AL USUARIO`);
+            devLogger.log(`[VERIFICATION] Response: ${userMailInfo.response}`);
+            devLogger.log(`[VERIFICATION] MessageID: ${userMailInfo.messageId}`);
+        } catch (emailError) {
+            devLogger.error(`[VERIFICATION] ❌ ERROR CRÍTICO ENVIANDO EMAIL AL USUARIO`);
+            devLogger.error(`[VERIFICATION] Error message: ${emailError.message}`);
+            devLogger.error(`[VERIFICATION] Error code: ${emailError.code}`);
+            devLogger.error(`[VERIFICATION] Error response: ${emailError.response}`);
+            devLogger.error(`[VERIFICATION] Stack: ${emailError.stack}`);
+            throw emailError;
         }
-    }
 
-    /**
-     * Plantilla de email de verificación
-     */
-    getVerificationEmailTemplate(verificationLink, formType) {
-        return `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <style>
-                body {
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    line-height: 1.6;
-                    color: #333;
-                    max-width: 600px;
-                    margin: 0 auto;
-                    background: #f8f9fa;
-                }
-                .container {
-                    background: white;
-                    border-radius: 10px;
-                    overflow: hidden;
-                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                }
-                .header {
-                    background: linear-gradient(135deg, #2c3e50, #3498db);
-                    color: white;
-                    padding: 30px 20px;
-                    text-align: center;
-                }
-                .header h1 {
-                    margin: 0;
-                    font-size: 24px;
-                    font-weight: 300;
-                }
-                .content {
-                    padding: 40px 30px;
-                    text-align: center;
-                }
-                .content h2 {
-                    color: #2c3e50;
-                    margin-bottom: 20px;
-                }
-                .verify-btn {
-                    display: inline-block;
-                    background: linear-gradient(135deg, #27ae60, #2ecc71);
-                    color: white;
-                    text-decoration: none;
-                    padding: 15px 30px;
-                    border-radius: 50px;
-                    font-weight: bold;
-                    margin: 20px 0;
-                    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
-                }
-                .footer {
-                    background: #ecf0f1;
-                    padding: 20px;
-                    text-align: center;
-                    font-size: 12px;
-                    color: #7f8c8d;
-                }
-                .warning {
-                    background: #fff3cd;
-                    border: 1px solid #ffeaa7;
-                    color: #856404;
-                    padding: 15px;
-                    border-radius: 5px;
-                    margin: 20px 0;
-                }
-                .icon {
-                    font-size: 48px;
-                    margin-bottom: 20px;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="header">
-                    <div class="icon">🎓</div>
-                    <h1>Bachillerato General Estatal<br>"Héroes de la Patria"</h1>
-                </div>
-
-                <div class="content">
-                    <h2>✉️ Confirma tu mensaje</h2>
-                    <p>Hemos recibido tu mensaje sobre: <strong>${formType || 'Contacto General'}</strong></p>
-
-                    <p>Para completar el envío y garantizar que eres una persona real, confirma haciendo clic en el botón:</p>
-
-                    <a href="${verificationLink}" class="verify-btn">
-                        ✅ CONFIRMAR MENSAJE
-                    </a>
-
-                    <div class="warning">
-                        <strong>⏰ Importante:</strong> Este enlace expira en 30 minutos por seguridad.
-                    </div>
-
-                    <p style="font-size: 14px; color: #7f8c8d; margin-top: 30px;">
-                        Si no enviaste este mensaje, puedes ignorar este email.
-                    </p>
-                </div>
-
-                <div class="footer">
-                    <p><strong>BGE Héroes de la Patria</strong><br>
-                    Sistema de Contacto Seguro<br>
-                    <em>Este es un email automático, no responder</em></p>
-                </div>
-            </div>
-        </body>
-        </html>
-        `;
-    }
-
-    /**
-     * Limpiar verificaciones expiradas (ejecutar periódicamente)
-     * ✅ AHORA LIMPIA DESDE POSTGRESQL
-     */
-    async cleanExpiredVerifications() {
-        try {
-            const query = `
-                DELETE FROM verification_tokens
-                WHERE expires_at < NOW()
-                OR (used_at IS NOT NULL AND used_at < NOW() - INTERVAL '7 days')
+        // 📬 Enviar copia al admin (opcional)
+        if (process.env.EMAIL_ADMIN) {
+            const adminEmailHTML = `
+<h3>Nuevo mensaje de contacto pendiente de verificación</h3>
+<p><strong>Usuario:</strong> ${formData.nombre}</p>
+<p><strong>Email:</strong> ${formData.email}</p>
+<p><strong>Tipo:</strong> ${formData.tipo_consulta || 'No especificado'}</p>
+<p><strong>Asunto:</strong> ${formData.asunto}</p>
+<p><strong>Mensaje:</strong></p>
+<p>${formData.mensaje}</p>
+<p><strong>Estado:</strong> Pendiente de verificación por el usuario</p>
             `;
 
-            const result = await pool.query(query);
-            devLogger.log(`🧹 [VERIFICATION] Limpieza: ${result.rowCount} tokens eliminados`);
-
-            return result.rowCount;
-        } catch (error) {
-            devLogger.error('❌ [VERIFICATION] Error limpiando tokens:', error);
-            return 0;
-        }
-    }
-
-    /**
-     * Obtener estadísticas del sistema
-     * ✅ AHORA LEE DESDE POSTGRESQL
-     */
-    async getStats() {
-        try {
-            const query = `
-                SELECT
-                    COUNT(*) FILTER (WHERE used_at IS NULL AND expires_at > NOW()) as pending,
-                    COUNT(*) FILTER (WHERE used_at IS NOT NULL) as used,
-                    COUNT(*) FILTER (WHERE expires_at < NOW()) as expired
-                FROM verification_tokens
-            `;
-
-            const result = await pool.query(query);
-            const stats = result.rows[0];
-
-            return {
-                pendingVerifications: parseInt(stats.pending || 0),
-                usedVerifications: parseInt(stats.used || 0),
-                expiredVerifications: parseInt(stats.expired || 0),
-                uptime: process.uptime()
+            const adminMailOptions = {
+                from: process.env.EMAIL_USER || 'contacto.heroesdelapatria.sep@gmail.com',
+                to: process.env.EMAIL_ADMIN,
+                subject: `[NUEVO] Contacto pendiente de verificación: ${formData.asunto}`,
+                html: adminEmailHTML
             };
-        } catch (error) {
-            devLogger.error('❌ [VERIFICATION] Error obteniendo stats:', error);
-            return {
-                pendingVerifications: 0,
-                usedVerifications: 0,
-                expiredVerifications: 0,
-                uptime: process.uptime(),
-                error: error.message
-            };
+
+            try {
+                const adminMailInfo = await transporter.sendMail(adminMailOptions);
+                devLogger.log(`[VERIFICATION] ✅ Copia enviada al admin: ${process.env.EMAIL_ADMIN}`);
+                devLogger.log(`[VERIFICATION] Admin email MessageID: ${adminMailInfo.messageId}`);
+            } catch (adminEmailError) {
+                devLogger.warn(`[VERIFICATION] ⚠️ Error enviando copia al admin (no crítico): ${adminEmailError.message}`);
+            }
         }
+
+        return token;
+
+    } catch (error) {
+        devLogger.error(`[VERIFICATION] ❌ Error creando verificación: ${error.message}`);
+        devLogger.error(`[VERIFICATION] Stack: ${error.stack}`);
+
+        // Lanzar el error para que contact.js lo capture
+        throw new Error(`Error enviando email de verificación: ${error.message}`);
     }
 }
 
-// Instancia singleton
-const verificationService = new VerificationService();
+/**
+ * Verificar token y marcar como verificado
+ * @param {string} token - Token a verificar
+ * @returns {Object} {success: boolean, data: Object}
+ */
+function verifyToken(token) {
+    try {
+        if (!token) {
+            return { success: false, error: 'Token no proporcionado' };
+        }
 
-// Limpiar verificaciones expiradas cada 10 minutos
-setInterval(() => {
-    verificationService.cleanExpiredVerifications();
-}, 10 * 60 * 1000);
+        const verification = verifications.get(token);
 
-module.exports = verificationService;
+        if (!verification) {
+            devLogger.log(`[VERIFICATION] ❌ Token no encontrado: ${token.substring(0, 10)}...`);
+            return { success: false, error: 'Token inválido' };
+        }
+
+        // Verificar expiración
+        if (Date.now() > verification.expiresAt) {
+            devLogger.log(`[VERIFICATION] ❌ Token expirado: ${token.substring(0, 10)}...`);
+            verifications.delete(token);
+            return { success: false, error: 'Token expirado' };
+        }
+
+        // Marcar como verificado
+        verification.verified = true;
+        devLogger.log(`[VERIFICATION] ✅ Token verificado exitosamente: ${token.substring(0, 10)}...`);
+
+        return {
+            success: true,
+            data: verification.data,
+            message: 'Email verificado exitosamente'
+        };
+
+    } catch (error) {
+        devLogger.error(`[VERIFICATION] ❌ Error verificando token: ${error.message}`);
+        return { success: false, error: error.message };
+    }
+}
+
+/**
+ * Obtener información de una verificación (sin eliminar)
+ * @param {string} token - Token a buscar
+ * @returns {Object} Datos de la verificación o null
+ */
+function getVerification(token) {
+    return verifications.get(token) || null;
+}
+
+/**
+ * Limpiar verificaciones expiradas (ejecutar periódicamente)
+ */
+function cleanupExpiredTokens() {
+    let cleaned = 0;
+    const now = Date.now();
+
+    for (const [token, verification] of verifications.entries()) {
+        if (now > verification.expiresAt) {
+            verifications.delete(token);
+            cleaned++;
+        }
+    }
+
+    if (cleaned > 0) {
+        devLogger.log(`[VERIFICATION] 🧹 Limpieza: ${cleaned} tokens expirados eliminados`);
+    }
+}
+
+// 🕐 Ejecutar limpieza cada hora
+setInterval(cleanupExpiredTokens, 60 * 60 * 1000);
+
+// Ejecutar limpieza al iniciar
+cleanupExpiredTokens();
+
+module.exports = {
+    createVerification,
+    verifyToken,
+    getVerification,
+    cleanupExpiredTokens
+};

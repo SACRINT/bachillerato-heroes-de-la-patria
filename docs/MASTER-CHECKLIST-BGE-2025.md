@@ -1,62 +1,7 @@
-# ? FASE 2.4: REFACTORIZACI�N ONCLICK (PATTERN B) - COMPLETADA
+# ✅ MASTER CHECKLIST - PROYECTO BGE HÉROES DE LA PATRIA
 
-**Estado:** ? **COMPLETADO** (Seg�n confirmaci�n del 14 de Noviembre)
-**Descripci�n:** Refactorizaci�n de 387 instancias de onclick="func(param)" a un patr�n data-action para cumplimiento de CSP.
-**Impacto:** Se elimin� una fuente principal de vulnerabilidades XSS y se mejor� la mantenibilidad del frontend.
-
----# ✅ MASTER CHECKLIST - PROYECTO BGE HÉROES DE LA PATRIA
-
-**Última Actualización:** 14 Noviembre 2025 - FASE 1 Completada (v2.25.3)
-**Estado del Proyecto:** v2.25.3 - FASE 1 (Seguridad Crítica + GDPR) ✅ 100% COMPLETADA
-
----
-
-## 🏆 FASE 1: SEGURIDAD CRÍTICA Y COMPLIANCE GDPR - ✅ 100% COMPLETADA (v2.25.3)
-
-### ✅ FASE 1 COMPLETADA - RESUMEN EJECUTIVO
-**Documento:** `docs/FASE-1-COMPLETADA-RESUMEN-FINAL.md` (500+ líneas)
-**Status:** ✅ 100% COMPLETADA - 14 NOV 2025
-**Commits:** 8+ commits (incluye 66ef418 - GDPR Logs)
-**Duración:** 5 días (10-14 Nov 2025)
-**Impacto Crítico:** 19 vulnerabilidades críticas remediadas + GDPR compliance alcanzado
-
-**Sub-Tareas Completadas:**
-1. ✅ **FASE 1.1:** Recuperación Masiva de Scripts (22 archivos, 456KB)
-2. ✅ **FASE 1.2:** Migración GDPR Logs (15 logs críticos con PII eliminados)
-3. ✅ **FASE 1.3:** XSS Sanitization (9 archivos con DOMPurify)
-4. ✅ **FASE 1.4:** Testing Suite (45 tests, 100% éxito)
-5. ✅ **FASE 1.5:** Saneamiento Total (15 archivos con syntax errors reparados)
-6. ✅ **FASE 1.6:** Inline Handlers Pattern A (91 handlers refactorizados)
-7. ✅ **FASE 1.7:** Commit Final y Cierre (este checklist actualizado)
-
-**Métricas Finales:**
-- ✅ **Archivos Modificados:** 20+
-- ✅ **Líneas de Código:** ~5,000+
-- ✅ **Documentación:** 3,000+ líneas (5 documentos)
-- ✅ **Scripts Automatizados:** 3 (test-xss, sanitize, analyze)
-- ✅ **Commits Realizados:** 8+
-- ✅ **Vulnerabilidades Remediadas:** 19
-- ✅ **Puntuación Seguridad:** 40/100 → 65/100 (+25 puntos)
-
-**Datos Sensibles Protegidos (GDPR):**
-- ✅ user.email (PII)
-- ✅ user.nombre (PII)
-- ✅ TINYMCE_API_KEY metadata (primeros 10 chars)
-- ✅ Stack traces completos
-- ✅ Token refresh error details
-
-**Compliance:**
-- ✅ GDPR Article 5 (Data Minimization)
-- ✅ GDPR Article 32 (Security of Processing)
-- ✅ 0 logs con PII en producción
-
-**Commit Principal FASE 1.2 (GDPR Logs):**
-- Commit: `66ef418` - security(gdpr): Migrate 15 critical logs to devLogger
-- Branch: `claude/review-documents-01T5NEveP4sL142ZKZn71Ro2`
-- Files: api/app.js, backend/routes/config.js, CHANGELOG.md
-- Changes: 55 insertions, 17 deletions
-
-**Próximo Paso:** FASE 2.4 (Pattern B: onclick con parámetros - 387 instancias en 85 archivos)
+**Última Actualización:** 12 Noviembre 2025 - FASE 2.3 Completada (v2.25.1)
+**Estado del Proyecto:** v2.25.1 - FASE 2.3 (Eliminación de Inline Handlers) ✅ COMPLETADA
 
 ---
 
@@ -1291,4 +1236,3 @@ Cuando digas **"continua con el proyecto BGE"**, Claude debe:
 
 **Responsable:** Usuario para cambios en vercel.json y git push
 **Soporte:** Claude para debugging si es necesario
-

@@ -293,7 +293,8 @@ router.post('/send', contactLimiter, validateContactForm, async (req, res) => {
             success: true,
             message: 'Se ha enviado un email de confirmación a tu correo. Revisa tu bandeja de entrada y haz clic en el enlace para completar el envío.',
             requiresVerification: true,
-            verificationSent: true
+            verificationSent: true,
+            token: token
         });
 
     } catch (error) {
