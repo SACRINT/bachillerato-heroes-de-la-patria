@@ -4,7 +4,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const { getPushNotificationService } = require('../services/pushNotificationService');
 
@@ -50,7 +52,7 @@ router.post('/subscribe', authenticateToken, async (req, res, next) => {
             });
         }
 
-        devLogger.log(`📱 [NOTIFICATIONS API] Nueva suscripción para usuario ${req.user.id}`);
+        debugLog.log('NOTIFICATIONS', `📱 [NOTIFICATIONS API] Nueva suscripción para usuario ${req.user.id}`);
 
         const pushService = getPushNotificationService();
         const subscriptionId = await pushService.subscribe(req.user.id, subscription, {
@@ -59,7 +61,7 @@ router.post('/subscribe', authenticateToken, async (req, res, next) => {
             ...metadata
         });
 
-        devLogger.log('Usuario suscrito a notificaciones push', {
+        debugLog.log('NOTIFICATIONS', 'Usuario suscrito a notificaciones push', {
             userId: req.user.id,
             subscriptionId: subscriptionId
         });
@@ -84,13 +86,13 @@ router.delete('/unsubscribe/:subscriptionId', authenticateToken, async (req, res
     try {
         const { subscriptionId } = req.params;
 
-        devLogger.log(`📱 [NOTIFICATIONS API] Cancelando suscripción ${subscriptionId}`);
+        debugLog.log('NOTIFICATIONS', `📱 [NOTIFICATIONS API] Cancelando suscripción ${subscriptionId}`);
 
         const pushService = getPushNotificationService();
         const result = await pushService.unsubscribe(subscriptionId);
 
         if (result) {
-            devLogger.log('Suscripción cancelada', {
+            debugLog.log('NOTIFICATIONS', 'Suscripción cancelada', {
                 userId: req.user.id,
                 subscriptionId: subscriptionId
             });
@@ -137,7 +139,7 @@ router.post('/send', requireAdmin, async (req, res, next) => {
             });
         }
 
-        devLogger.log(`📱 [NOTIFICATIONS API] Enviando notificación: "${title}"`);
+        debugLog.log('NOTIFICATIONS', `📱 [NOTIFICATIONS API] Enviando notificación: "${title}"`);
 
         const pushService = getPushNotificationService();
         const result = await pushService.sendNotification({
@@ -153,7 +155,7 @@ router.post('/send', requireAdmin, async (req, res, next) => {
             scheduledAt
         });
 
-        devLogger.log('Notificación enviada', {
+        debugLog.log('NOTIFICATIONS', 'Notificación enviada', {
             userId: req.user.id,
             title: title,
             targetUsers: userIds.length || 'all',
@@ -186,12 +188,12 @@ router.post('/send-emergency', requireAdmin, async (req, res, next) => {
             });
         }
 
-        devLogger.log(`🚨 [NOTIFICATIONS API] Enviando notificación de EMERGENCIA: "${title}"`);
+        debugLog.log('NOTIFICATIONS', `🚨 [NOTIFICATIONS API] Enviando notificación de EMERGENCIA: "${title}"`);
 
         const pushService = getPushNotificationService();
         const result = await pushService.sendEmergencyNotification(title, body, userIds);
 
-        devLogger.warn('Notificación de emergencia enviada', {
+        debugLog.log('NOTIFICATIONS', 'Notificación de emergencia enviada', {
             userId: req.user.id,
             title: title,
             targetUsers: userIds.length || 'all'
@@ -223,12 +225,12 @@ router.post('/send-grade', requireAdmin, async (req, res, next) => {
             });
         }
 
-        devLogger.log(`📊 [NOTIFICATIONS API] Enviando notificación de calificación: ${subject} - ${grade}`);
+        debugLog.log('NOTIFICATIONS', `📊 [NOTIFICATIONS API] Enviando notificación de calificación: ${subject} - ${grade}`);
 
         const pushService = getPushNotificationService();
         const result = await pushService.sendGradeNotification(userId, subject, grade);
 
-        devLogger.log('Notificación de calificación enviada', {
+        debugLog.log('NOTIFICATIONS', 'Notificación de calificación enviada', {
             adminId: req.user.id,
             studentId: userId,
             subject: subject,
@@ -251,7 +253,7 @@ router.post('/send-grade', requireAdmin, async (req, res, next) => {
  */
 router.get('/stats', requireAdmin, async (req, res, next) => {
     try {
-        devLogger.log('📊 [NOTIFICATIONS API] Obteniendo estadísticas de notificaciones');
+        debugLog.log('NOTIFICATIONS', '📊 [NOTIFICATIONS API] Obteniendo estadísticas de notificaciones');
 
         const pushService = getPushNotificationService();
         const stats = await pushService.getSubscriptionStats();
@@ -275,7 +277,7 @@ router.post('/test', requireAdmin, async (req, res, next) => {
         const { userId } = req.body;
         const targetUsers = userId ? [userId] : [];
 
-        devLogger.log('🧪 [NOTIFICATIONS API] Enviando notificación de prueba');
+        debugLog.log('NOTIFICATIONS', '🧪 [NOTIFICATIONS API] Enviando notificación de prueba');
 
         const pushService = getPushNotificationService();
         const result = await pushService.sendNotification({
@@ -287,7 +289,7 @@ router.post('/test', requireAdmin, async (req, res, next) => {
             type: 'system'
         });
 
-        devLogger.log('Notificación de prueba enviada', {
+        debugLog.log('NOTIFICATIONS', 'Notificación de prueba enviada', {
             userId: req.user.id,
             targetUser: userId || 'all'
         });
@@ -310,12 +312,12 @@ router.post('/cleanup', requireAdmin, async (req, res, next) => {
     try {
         const { daysInactive = 30 } = req.body;
 
-        devLogger.log(`🧹 [NOTIFICATIONS API] Limpiando suscripciones inactivas (${daysInactive} días)`);
+        debugLog.log('NOTIFICATIONS', `🧹 [NOTIFICATIONS API] Limpiando suscripciones inactivas (${daysInactive} días)`);
 
         const pushService = getPushNotificationService();
         const removed = await pushService.cleanupInactiveSubscriptions(daysInactive);
 
-        devLogger.log('Limpieza de suscripciones completada', {
+        debugLog.log('NOTIFICATIONS', 'Limpieza de suscripciones completada', {
             userId: req.user.id,
             removed: removed,
             daysInactive: daysInactive
@@ -340,7 +342,7 @@ router.post('/cleanup', requireAdmin, async (req, res, next) => {
  */
 router.get('/my-subscriptions', authenticateToken, async (req, res, next) => {
     try {
-        devLogger.log(`📱 [NOTIFICATIONS API] Consultando suscripciones del usuario ${req.user.id}`);
+        debugLog.log('NOTIFICATIONS', `📱 [NOTIFICATIONS API] Consultando suscripciones del usuario ${req.user.id}`);
 
         const pushService = getPushNotificationService();
         const allSubscriptions = Array.from(pushService.subscribers.values());
@@ -400,7 +402,7 @@ router.post('/schedule', requireAdmin, async (req, res, next) => {
             });
         }
 
-        devLogger.log(`📅 [NOTIFICATIONS API] Programando notificación para ${scheduledAt}`);
+        debugLog.log('NOTIFICATIONS', `📅 [NOTIFICATIONS API] Programando notificación para ${scheduledAt}`);
 
         const pushService = getPushNotificationService();
         const scheduleId = await pushService.scheduleNotification({
@@ -411,7 +413,7 @@ router.post('/schedule', requireAdmin, async (req, res, next) => {
             type
         }, userIds, scheduledAt);
 
-        devLogger.log('Notificación programada', {
+        debugLog.log('NOTIFICATIONS', 'Notificación programada', {
             userId: req.user.id,
             scheduleId: scheduleId,
             scheduledAt: scheduledAt,

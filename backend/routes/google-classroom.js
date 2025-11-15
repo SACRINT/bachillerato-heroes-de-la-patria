@@ -6,7 +6,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const { body, validationResult } = require('express-validator');
 const { getGoogleClassroomService } = require('../services/googleClassroomService');
 const authMiddleware = require('../middleware/auth');
@@ -38,7 +40,7 @@ router.post('/sync',
 
             const { user, courses, timestamp } = req.body;
 
-            devLogger.log('🔄 [GOOGLE-CLASSROOM-API] Sincronizando datos para usuario:', user.email);
+            debugLog.log('GOOGLE_CLASSROOM', '🔄 [GOOGLE-CLASSROOM-API] Sincronizando datos para usuario:', user.email);
 
             // Sincronizar datos con el servicio
             const result = await googleClassroomService.syncUserData(user, courses, timestamp);
@@ -51,7 +53,7 @@ router.post('/sync',
             });
 
         } catch (error) {
-            devLogger.error('❌ [GOOGLE-CLASSROOM-API] Error en sincronización:', error);
+            debugLog.error('GOOGLE_CLASSROOM', '❌ [GOOGLE-CLASSROOM-API] Error en sincronización:', sanitizeError(error, 'google-classroom'));
 
             res.status(500).json({
                 success: false,
@@ -73,7 +75,7 @@ router.get('/courses/:userId',
             const { userId } = req.params;
             const { role, active } = req.query;
 
-            devLogger.log('📚 [GOOGLE-CLASSROOM-API] Obteniendo cursos para usuario:', userId);
+            debugLog.log('GOOGLE_CLASSROOM', '📚 [GOOGLE-CLASSROOM-API] Obteniendo cursos para usuario:', userId);
 
             const courses = await googleClassroomService.getUserCourses(userId, { role, active });
 
@@ -85,7 +87,7 @@ router.get('/courses/:userId',
             });
 
         } catch (error) {
-            devLogger.error('❌ [GOOGLE-CLASSROOM-API] Error obteniendo cursos:', error);
+            debugLog.error('GOOGLE_CLASSROOM', '❌ [GOOGLE-CLASSROOM-API] Error obteniendo cursos:', sanitizeError(error, 'google-classroom'));
 
             res.status(500).json({
                 success: false,
@@ -107,7 +109,7 @@ router.get('/assignments/:courseId',
             const { courseId } = req.params;
             const { status, limit = 50 } = req.query;
 
-            devLogger.log('📝 [GOOGLE-CLASSROOM-API] Obteniendo tareas del curso:', courseId);
+            debugLog.log('GOOGLE_CLASSROOM', '📝 [GOOGLE-CLASSROOM-API] Obteniendo tareas del curso:', courseId);
 
             const assignments = await googleClassroomService.getCourseAssignments(courseId, {
                 status,
@@ -123,7 +125,7 @@ router.get('/assignments/:courseId',
             });
 
         } catch (error) {
-            devLogger.error('❌ [GOOGLE-CLASSROOM-API] Error obteniendo tareas:', error);
+            debugLog.error('GOOGLE_CLASSROOM', '❌ [GOOGLE-CLASSROOM-API] Error obteniendo tareas:', sanitizeError(error, 'google-classroom'));
 
             res.status(500).json({
                 success: false,
@@ -159,7 +161,7 @@ router.post('/assignments',
 
             const assignmentData = req.body;
 
-            devLogger.log('📝 [GOOGLE-CLASSROOM-API] Creando nueva tarea:', assignmentData.title);
+            debugLog.log('GOOGLE_CLASSROOM', '📝 [GOOGLE-CLASSROOM-API] Creando nueva tarea:', assignmentData.title);
 
             const assignment = await googleClassroomService.createAssignment(assignmentData);
 
@@ -171,7 +173,7 @@ router.post('/assignments',
             });
 
         } catch (error) {
-            devLogger.error('❌ [GOOGLE-CLASSROOM-API] Error creando tarea:', error);
+            debugLog.error('GOOGLE_CLASSROOM', '❌ [GOOGLE-CLASSROOM-API] Error creando tarea:', sanitizeError(error, 'google-classroom'));
 
             res.status(500).json({
                 success: false,
@@ -192,7 +194,7 @@ router.get('/grades/:courseId/:assignmentId',
         try {
             const { courseId, assignmentId } = req.params;
 
-            devLogger.log('📊 [GOOGLE-CLASSROOM-API] Obteniendo calificaciones:', { courseId, assignmentId });
+            debugLog.log('GOOGLE_CLASSROOM', '📊 [GOOGLE-CLASSROOM-API] Obteniendo calificaciones:', { courseId, assignmentId });
 
             const grades = await googleClassroomService.getAssignmentGrades(courseId, assignmentId);
 
@@ -206,7 +208,7 @@ router.get('/grades/:courseId/:assignmentId',
             });
 
         } catch (error) {
-            devLogger.error('❌ [GOOGLE-CLASSROOM-API] Error obteniendo calificaciones:', error);
+            debugLog.error('GOOGLE_CLASSROOM', '❌ [GOOGLE-CLASSROOM-API] Error obteniendo calificaciones:', sanitizeError(error, 'google-classroom'));
 
             res.status(500).json({
                 success: false,
@@ -241,7 +243,7 @@ router.put('/grades',
 
             const { courseId, assignmentId, studentId, grade, feedback } = req.body;
 
-            devLogger.log('📊 [GOOGLE-CLASSROOM-API] Actualizando calificación:', {
+            debugLog.log('GOOGLE_CLASSROOM', '📊 [GOOGLE-CLASSROOM-API] Actualizando calificación:', {
                 courseId, assignmentId, studentId, grade
             });
 
@@ -261,7 +263,7 @@ router.put('/grades',
             });
 
         } catch (error) {
-            devLogger.error('❌ [GOOGLE-CLASSROOM-API] Error actualizando calificación:', error);
+            debugLog.error('GOOGLE_CLASSROOM', '❌ [GOOGLE-CLASSROOM-API] Error actualizando calificación:', sanitizeError(error, 'google-classroom'));
 
             res.status(500).json({
                 success: false,
@@ -282,7 +284,7 @@ router.get('/stats/:userId',
         try {
             const { userId } = req.params;
 
-            devLogger.log('📊 [GOOGLE-CLASSROOM-API] Obteniendo estadísticas para usuario:', userId);
+            debugLog.log('GOOGLE_CLASSROOM', '📊 [GOOGLE-CLASSROOM-API] Obteniendo estadísticas para usuario:', userId);
 
             const stats = await googleClassroomService.getUserStats(userId);
 
@@ -294,7 +296,7 @@ router.get('/stats/:userId',
             });
 
         } catch (error) {
-            devLogger.error('❌ [GOOGLE-CLASSROOM-API] Error obteniendo estadísticas:', error);
+            debugLog.error('GOOGLE_CLASSROOM', '❌ [GOOGLE-CLASSROOM-API] Error obteniendo estadísticas:', sanitizeError(error, 'google-classroom'));
 
             res.status(500).json({
                 success: false,
@@ -318,7 +320,7 @@ router.post('/webhook',
         try {
             const { eventType, data, timestamp } = req.body;
 
-            devLogger.log('🔔 [GOOGLE-CLASSROOM-API] Webhook recibido:', eventType);
+            debugLog.log('GOOGLE_CLASSROOM', '🔔 [GOOGLE-CLASSROOM-API] Webhook recibido:', eventType);
 
             // Procesar evento del webhook
             const result = await googleClassroomService.processWebhookEvent(eventType, data, timestamp);
@@ -331,7 +333,7 @@ router.post('/webhook',
             });
 
         } catch (error) {
-            devLogger.error('❌ [GOOGLE-CLASSROOM-API] Error procesando webhook:', error);
+            debugLog.error('GOOGLE_CLASSROOM', '❌ [GOOGLE-CLASSROOM-API] Error procesando webhook:', sanitizeError(error, 'google-classroom'));
 
             res.status(500).json({
                 success: false,
@@ -352,7 +354,7 @@ router.delete('/sync/:userId',
         try {
             const { userId } = req.params;
 
-            devLogger.log('🗑️ [GOOGLE-CLASSROOM-API] Eliminando datos sincronizados para usuario:', userId);
+            debugLog.log('GOOGLE_CLASSROOM', '🗑️ [GOOGLE-CLASSROOM-API] Eliminando datos sincronizados para usuario:', userId);
 
             const result = await googleClassroomService.deleteSyncedData(userId);
 
@@ -365,7 +367,7 @@ router.delete('/sync/:userId',
             });
 
         } catch (error) {
-            devLogger.error('❌ [GOOGLE-CLASSROOM-API] Error eliminando datos:', error);
+            debugLog.error('GOOGLE_CLASSROOM', '❌ [GOOGLE-CLASSROOM-API] Error eliminando datos:', sanitizeError(error, 'google-classroom'));
 
             res.status(500).json({
                 success: false,
@@ -392,7 +394,7 @@ router.get('/health', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ [GOOGLE-CLASSROOM-API] Error en health check:', error);
+        debugLog.error('GOOGLE_CLASSROOM', '❌ [GOOGLE-CLASSROOM-API] Error en health check:', sanitizeError(error, 'google-classroom'));
 
         res.status(503).json({
             success: false,

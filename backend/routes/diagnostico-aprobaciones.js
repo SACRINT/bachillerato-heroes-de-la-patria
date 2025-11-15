@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { pool } = require('../config/database');
 
@@ -14,7 +16,7 @@ const { pool } = require('../config/database');
  * Ver TODOS los registros de la tabla sin filtros
  */
 router.get('/todos-registros', async (req, res) => {
-    devLogger.log('\n🔍 [DIAGNÓSTICO] Consultando TODOS los registros sin filtros...\n');
+    debugLog.log('DIAGNOSTICO_APROBACIONES', '\n🔍 [DIAGNÓSTICO] Consultando TODOS los registros sin filtros...\n');
 
     try {
         // QUERY 1: Resumen
@@ -30,13 +32,13 @@ router.get('/todos-registros', async (req, res) => {
         `);
 
         const stats = resumen.rows[0];
-        devLogger.log('📊 [DIAGNÓSTICO] Estadísticas generales:');
-        devLogger.log(`   - Total registros: ${stats.total_registros}`);
-        devLogger.log(`   - Estado pendiente: ${stats.pendiente_count}`);
-        devLogger.log(`   - Estado aprobada: ${stats.aprobada_count}`);
-        devLogger.log(`   - Estado rechazada: ${stats.rechazada_count}`);
-        devLogger.log(`   - Email confirmados: ${stats.confirmados_count}`);
-        devLogger.log(`   - Email NO confirmados: ${stats.no_confirmados_count}`);
+        debugLog.log('DIAGNOSTICO_APROBACIONES', '📊 [DIAGNÓSTICO] Estadísticas generales:');
+        debugLog.log('DIAGNOSTICO_APROBACIONES', `   - Total registros: ${stats.total_registros}`);
+        debugLog.log('DIAGNOSTICO_APROBACIONES', `   - Estado pendiente: ${stats.pendiente_count}`);
+        debugLog.log('DIAGNOSTICO_APROBACIONES', `   - Estado aprobada: ${stats.aprobada_count}`);
+        debugLog.log('DIAGNOSTICO_APROBACIONES', `   - Estado rechazada: ${stats.rechazada_count}`);
+        debugLog.log('DIAGNOSTICO_APROBACIONES', `   - Email confirmados: ${stats.confirmados_count}`);
+        debugLog.log('DIAGNOSTICO_APROBACIONES', `   - Email NO confirmados: ${stats.no_confirmados_count}`);
 
         // QUERY 2: Desglose por estado
         const porEstado = await pool.query(`
@@ -46,9 +48,9 @@ router.get('/todos-registros', async (req, res) => {
             ORDER BY cantidad DESC
         `);
 
-        devLogger.log('\n📋 [DIAGNÓSTICO] Desglose por estado:');
+        debugLog.log('DIAGNOSTICO_APROBACIONES', '\n📋 [DIAGNÓSTICO] Desglose por estado:');
         porEstado.rows.forEach(row => {
-            devLogger.log(`   - ${row.estado}: ${row.cantidad}`);
+            debugLog.log('DIAGNOSTICO_APROBACIONES', `   - ${row.estado}: ${row.cantidad}`);
         });
 
         // QUERY 3: TODOS los registros
@@ -65,9 +67,9 @@ router.get('/todos-registros', async (req, res) => {
             ORDER BY fecha_solicitud DESC
         `);
 
-        devLogger.log(`\n📋 [DIAGNÓSTICO] LISTADO COMPLETO (${todos.rows.length} registros):`);
+        debugLog.log('DIAGNOSTICO_APROBACIONES', `\n📋 [DIAGNÓSTICO] LISTADO COMPLETO (${todos.rows.length} registros):`);
         todos.rows.forEach((row, idx) => {
-            devLogger.log(`   ${idx+1}. ID ${row.id}: ${row.tipo_solicitud} | ${row.estado} | ${row.email_usuario}`);
+            debugLog.log('DIAGNOSTICO_APROBACIONES', `   ${idx+1}. ID ${row.id}: ${row.tipo_solicitud} | ${row.estado} | ${row.email_usuario}`);
         });
 
         res.json({
@@ -78,10 +80,10 @@ router.get('/todos-registros', async (req, res) => {
             total: todos.rows.length
         });
 
-        devLogger.log('\n✅ [DIAGNÓSTICO] Completado\n');
+        debugLog.log('DIAGNOSTICO_APROBACIONES', '\n✅ [DIAGNÓSTICO] Completado\n');
 
     } catch (error) {
-        devLogger.error('❌ [DIAGNÓSTICO] Error:', error.message);
+        debugLog.error('DIAGNOSTICO_APROBACIONES', '❌ [DIAGNÓSTICO] Error:', error.message);
         res.status(500).json({
             success: false,
             error: error.message
@@ -94,7 +96,7 @@ router.get('/todos-registros', async (req, res) => {
  * Ver SOLO registros con estado='pendiente' (lo que debería mostrar el dashboard)
  */
 router.get('/pendientes-solo', async (req, res) => {
-    devLogger.log('\n🔍 [DIAGNÓSTICO] Consultando SOLO registros pendientes...\n');
+    debugLog.log('DIAGNOSTICO_APROBACIONES', '\n🔍 [DIAGNÓSTICO] Consultando SOLO registros pendientes...\n');
 
     try {
         const pendientes = await pool.query(`
@@ -110,9 +112,9 @@ router.get('/pendientes-solo', async (req, res) => {
             ORDER BY fecha_solicitud DESC
         `);
 
-        devLogger.log(`📊 [DIAGNÓSTICO] Registros pendientes: ${pendientes.rows.length}`);
+        debugLog.log('DIAGNOSTICO_APROBACIONES', `📊 [DIAGNÓSTICO] Registros pendientes: ${pendientes.rows.length}`);
         pendientes.rows.forEach((row, idx) => {
-            devLogger.log(`   ${idx+1}. ID ${row.id}: ${row.tipo_solicitud} | ${row.email_usuario} | Confirmado: ${row.email_confirmado}`);
+            debugLog.log('DIAGNOSTICO_APROBACIONES', `   ${idx+1}. ID ${row.id}: ${row.tipo_solicitud} | ${row.email_usuario} | Confirmado: ${row.email_confirmado}`);
         });
 
         res.json({
@@ -121,10 +123,10 @@ router.get('/pendientes-solo', async (req, res) => {
             total: pendientes.rows.length
         });
 
-        devLogger.log('\n✅ [DIAGNÓSTICO] Completado\n');
+        debugLog.log('DIAGNOSTICO_APROBACIONES', '\n✅ [DIAGNÓSTICO] Completado\n');
 
     } catch (error) {
-        devLogger.error('❌ [DIAGNÓSTICO] Error:', error.message);
+        debugLog.error('DIAGNOSTICO_APROBACIONES', '❌ [DIAGNÓSTICO] Error:', error.message);
         res.status(500).json({
             success: false,
             error: error.message
@@ -137,7 +139,7 @@ router.get('/pendientes-solo', async (req, res) => {
  * Comparar lo que la BD tiene vs lo que el endpoint normal retorna
  */
 router.get('/comparar', async (req, res) => {
-    devLogger.log('\n🔍 [DIAGNÓSTICO] Comparando BD vs endpoint GET...\n');
+    debugLog.log('DIAGNOSTICO_APROBACIONES', '\n🔍 [DIAGNÓSTICO] Comparando BD vs endpoint GET...\n');
 
     try {
         // BD real
@@ -155,8 +157,8 @@ router.get('/comparar', async (req, res) => {
             LIMIT 100
         `);
 
-        devLogger.log(`📊 [DIAGNÓSTICO] BD real: ${bdReal.rows[0].total} pendientes`);
-        devLogger.log(`📊 [DIAGNÓSTICO] Endpoint retorna: ${endpointNormal.rows.length} registros`);
+        debugLog.log('DIAGNOSTICO_APROBACIONES', `📊 [DIAGNÓSTICO] BD real: ${bdReal.rows[0].total} pendientes`);
+        debugLog.log('DIAGNOSTICO_APROBACIONES', `📊 [DIAGNÓSTICO] Endpoint retorna: ${endpointNormal.rows.length} registros`);
 
         res.json({
             success: true,
@@ -166,10 +168,10 @@ router.get('/comparar', async (req, res) => {
             corresponden: bdReal.rows[0].total === endpointNormal.rows.length
         });
 
-        devLogger.log('\n✅ [DIAGNÓSTICO] Completado\n');
+        debugLog.log('DIAGNOSTICO_APROBACIONES', '\n✅ [DIAGNÓSTICO] Completado\n');
 
     } catch (error) {
-        devLogger.error('❌ [DIAGNÓSTICO] Error:', error.message);
+        debugLog.error('DIAGNOSTICO_APROBACIONES', '❌ [DIAGNÓSTICO] Error:', error.message);
         res.status(500).json({
             success: false,
             error: error.message
