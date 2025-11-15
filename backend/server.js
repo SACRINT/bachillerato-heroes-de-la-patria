@@ -24,6 +24,10 @@ const pgSession = require('connect-pg-simple')(session);
 const { pool } = require('./config/database');
 const cspConfig = require('./config/csp-config');
 
+// Swagger Documentation
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swaggerConfig');
+
 // Middleware
 const { errorHandler } = require('./middleware/errorHandler');
 const { securityMiddleware } = require('./middleware/security');
@@ -373,6 +377,17 @@ app.get('/api/config/google-client-id', (req, res) => {
         environment: isDevelopment ? 'development' : 'production'
     });
 });
+
+// ============================================
+// SWAGGER API DOCUMENTATION
+// ============================================
+
+// Sirve la documentación de la API en /api-docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: "API BGE - Documentación"
+}));
+devLogger.log('📘 Documentación de la API disponible en http://localhost:3000/api-docs');
 
 // ============================================
 // FALLBACK & ERROR HANDLING

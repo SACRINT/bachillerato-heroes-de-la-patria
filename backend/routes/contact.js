@@ -249,8 +249,128 @@ Enviado: ${new Date().toLocaleString('es-MX')}
 // ============================================
 
 /**
- * POST /api/contact/send
- * ✅ NUEVO: Enviar mensaje CON VERIFICACIÓN DE EMAIL (anti-spam)
+ * @openapi
+ * /api/contact/send:
+ *   post:
+ *     summary: Envía un formulario de contacto con verificación por email.
+ *     description: Recibe los datos de un formulario, crea un token de verificación y envía un email al usuario para confirmar. Sistema anti-spam con rate limiting.
+ *     tags:
+ *       - Contacto
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - nombre
+ *               - email
+ *               - asunto
+ *               - mensaje
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 minLength: 2
+ *                 example: "Juan Pérez García"
+ *                 description: Nombre completo del usuario (mínimo 2 caracteres)
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "juan.perez@example.com"
+ *                 description: Email del usuario para enviar confirmación
+ *               telefono:
+ *                 type: string
+ *                 example: "3331234567"
+ *                 description: Teléfono del usuario (opcional, formato mexicano)
+ *               tipo_consulta:
+ *                 type: string
+ *                 example: "Información General"
+ *                 description: Tipo de consulta (opcional)
+ *               asunto:
+ *                 type: string
+ *                 minLength: 5
+ *                 example: "Información sobre inscripciones 2025"
+ *                 description: Asunto del mensaje (mínimo 5 caracteres)
+ *               mensaje:
+ *                 type: string
+ *                 minLength: 10
+ *                 maxLength: 2000
+ *                 example: "Estoy interesado en inscribir a mi hijo para el ciclo escolar 2025. ¿Cuáles son los requisitos?"
+ *                 description: Mensaje del usuario (entre 10 y 2000 caracteres)
+ *               form_type:
+ *                 type: string
+ *                 example: "Contacto General"
+ *                 description: Tipo de formulario (Contacto General, bolsa_trabajo, egresados)
+ *     responses:
+ *       '200':
+ *         description: Email de verificación enviado exitosamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Se ha enviado un email de confirmación a tu correo. Revisa tu bandeja de entrada y haz clic en el enlace para completar el envío."
+ *                 requiresVerification:
+ *                   type: boolean
+ *                   example: true
+ *                 verificationSent:
+ *                   type: boolean
+ *                   example: true
+ *       '400':
+ *         description: Datos inválidos en la solicitud.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Errores en el formulario"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: ["El email no es válido", "El mensaje debe tener al menos 10 caracteres"]
+ *       '429':
+ *         description: Demasiadas solicitudes (rate limit excedido - máximo 50 en 5 minutos).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Demasiados intentos de envío. Inténtalo nuevamente en 5 minutos."
+ *                 code:
+ *                   type: string
+ *                   example: "RATE_LIMIT_EXCEEDED"
+ *       '500':
+ *         description: Error interno del servidor.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Error enviando email de verificación"
+ *                 error:
+ *                   type: string
+ *                   example: "Connection timeout"
  */
 router.post('/send', contactLimiter, validateContactForm, async (req, res) => {
     try {

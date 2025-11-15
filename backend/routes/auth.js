@@ -112,8 +112,156 @@ const passwordChangeValidation = [
 // ============================================
 
 /**
- * POST /api/auth/login
- * Iniciar sesión con JWT
+ * @openapi
+ * /api/auth/login:
+ *   post:
+ *     summary: Iniciar sesión con JWT
+ *     description: Autentica un usuario y devuelve tokens de acceso (access token) y renovación (refresh token). Incluye rate limiting de 5 intentos cada 15 minutos.
+ *     tags:
+ *       - Autenticación
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 minLength: 3
+ *                 example: "admin@bge.edu.mx"
+ *                 description: Nombre de usuario o email (mínimo 3 caracteres)
+ *               password:
+ *                 type: string
+ *                 minLength: 6
+ *                 example: "Passw0rd!"
+ *                 description: Contraseña del usuario (mínimo 6 caracteres)
+ *               rememberMe:
+ *                 type: boolean
+ *                 example: false
+ *                 description: Mantener sesión activa por más tiempo (opcional)
+ *     responses:
+ *       '200':
+ *         description: Autenticación exitosa
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Autenticación exitosa"
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     username:
+ *                       type: string
+ *                       example: "admin"
+ *                     email:
+ *                       type: string
+ *                       example: "admin@bge.edu.mx"
+ *                     nombre:
+ *                       type: string
+ *                       example: "Juan"
+ *                     apellido_paterno:
+ *                       type: string
+ *                       example: "Pérez"
+ *                     role:
+ *                       type: string
+ *                       example: "admin"
+ *                     permissions:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: ["read", "write", "delete", "manage_users"]
+ *                 tokens:
+ *                   type: object
+ *                   properties:
+ *                     accessToken:
+ *                       type: string
+ *                       example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *                     refreshToken:
+ *                       type: string
+ *                       example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *                     accessTokenExpiry:
+ *                       type: integer
+ *                       example: 1699999999
+ *                     refreshTokenExpiry:
+ *                       type: integer
+ *                       example: 1700000000
+ *                 sessionInfo:
+ *                   type: object
+ *                   properties:
+ *                     loginTime:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-11-15T12:00:00.000Z"
+ *                     rememberMe:
+ *                       type: boolean
+ *                       example: false
+ *                     expiresAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-11-15T13:00:00.000Z"
+ *       '400':
+ *         description: Datos de entrada inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Datos de entrada inválidos"
+ *                 details:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                   example: [{"msg": "Contraseña mínimo 6 caracteres", "param": "password"}]
+ *       '401':
+ *         description: Credenciales inválidas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Credenciales inválidas"
+ *                 message:
+ *                   type: string
+ *                   example: "Email o contraseña incorrectos"
+ *       '429':
+ *         description: Demasiados intentos de login (rate limit excedido - máximo 5 cada 15 minutos)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Demasiados intentos de login"
+ *                 message:
+ *                   type: string
+ *                   example: "Has superado el límite de intentos. Intenta de nuevo en 15 minutos."
+ *                 retryAfter:
+ *                   type: string
+ *                   example: "15 minutos"
  */
 router.post('/login', loginLimiter, loginValidation, async (req, res, next) => {
     try {

@@ -116,6 +116,114 @@ router.post('/', [
 // =====================================================
 // GET /api/noticias - Listar todas las noticias
 // =====================================================
+
+/**
+ * @openapi
+ * /api/noticias:
+ *   get:
+ *     summary: Listar todas las noticias
+ *     description: Obtiene una lista paginada de noticias con filtros opcionales por estado, categoría y destacada.
+ *     tags:
+ *       - Noticias
+ *     parameters:
+ *       - in: query
+ *         name: estado
+ *         schema:
+ *           type: string
+ *           enum: [publicada, borrador, archivada]
+ *         description: Filtrar por estado de la noticia
+ *         example: "publicada"
+ *       - in: query
+ *         name: categoria
+ *         schema:
+ *           type: string
+ *         description: Filtrar por categoría
+ *         example: "Académico"
+ *       - in: query
+ *         name: destacada
+ *         schema:
+ *           type: boolean
+ *         description: Filtrar solo noticias destacadas
+ *         example: true
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 50
+ *           minimum: 1
+ *           maximum: 100
+ *         description: Número máximo de resultados
+ *         example: 10
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *           default: 0
+ *           minimum: 0
+ *         description: Número de resultados a saltar (paginación)
+ *         example: 0
+ *     responses:
+ *       '200':
+ *         description: Lista de noticias obtenida exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       titulo:
+ *                         type: string
+ *                         example: "Inicio del Ciclo Escolar 2025"
+ *                       contenido:
+ *                         type: string
+ *                         example: "Damos la bienvenida a todos los estudiantes..."
+ *                       categoria:
+ *                         type: string
+ *                         example: "Académico"
+ *                       estado:
+ *                         type: string
+ *                         example: "publicada"
+ *                       destacada:
+ *                         type: boolean
+ *                         example: true
+ *                       fecha_creacion:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2025-01-15T10:00:00.000Z"
+ *                 total:
+ *                   type: integer
+ *                   example: 25
+ *                   description: Número total de noticias que coinciden con los filtros
+ *                 limit:
+ *                   type: integer
+ *                   example: 10
+ *                 offset:
+ *                   type: integer
+ *                   example: 0
+ *       '500':
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Error al obtener noticias"
+ */
 router.get('/', async (req, res) => {
     const { estado, categoria, destacada, limit = 50, offset = 0 } = req.query;
 
