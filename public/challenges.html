@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Retos y Logros - BGE Héroes de la Patria</title>
+
+    <!-- Bootstrap 5.3.2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome 6.4.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --gold-color: #f59e0b;
+            --purple-color: #8b5cf6;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .challenges-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            color: white;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .filter-tabs {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-tabs .nav-pills {
+            justify-content: center;
+        }
+
+        .filter-tabs .nav-link {
+            padding: 12px 30px;
+            margin: 0 5px;
+            border-radius: 50px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            transition: all 0.3s;
+        }
+
+        .filter-tabs .nav-link.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--purple-color));
+            color: white;
+        }
+
+        .filter-tabs .nav-link:hover:not(.active) {
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .challenge-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .challenge-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+
+        .challenge-card.daily::before {
+            background: linear-gradient(90deg, #28a745, #20c997);
+        }
+
+        .challenge-card.weekly::before {
+            background: linear-gradient(90deg, #007bff, #0056b3);
+        }
+
+        .challenge-card.monthly::before {
+            background: linear-gradient(90deg, #8b5cf6, #6d28d9);
+        }
+
+        .challenge-card.achievement::before {
+            background: linear-gradient(90deg, #f59e0b, #ff6b35);
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .challenge-icon {
+            font-size: 3rem;
+            margin-right: 20px;
+        }
+
+        .challenge-info {
+            flex: 1;
+        }
+
+        .challenge-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .challenge-description {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .challenge-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .meta-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .meta-badge.type-daily {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .meta-badge.type-weekly {
+            background: rgba(0, 123, 255, 0.1);
+            color: #007bff;
+        }
+
+        .meta-badge.type-monthly {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+        }
+
+        .meta-badge.type-achievement {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .meta-badge.reward {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .challenge-rewards {
+            display: flex;
+            gap: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(255, 107, 53, 0.05));
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .reward-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--gold-color);
+        }
+
+        .reward-item i {
+            font-size: 1.5rem;
+        }
+
+        .challenge-progress {
+            margin-bottom: 15px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+
+        .progress {
+            height: 25px;
+            border-radius: 50px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--success-color), #20c997);
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .challenge-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-complete {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-complete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-completed {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            background: var(--secondary-color);
+            color: white;
+            cursor: not-allowed;
+        }
+
+        .btn-view-details {
+            padding: 10px 25px;
+            border: 2px solid var(--primary-color);
+            border-radius: 50px;
+            font-weight: 600;
+            background: transparent;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-view-details:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .challenge-time {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .challenge-time .label {
+            font-size: 0.8rem;
+            color: var(--secondary-color);
+        }
+
+        .challenge-time .value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--danger-color);
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 15px;
+            padding: 60px 20px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            color: var(--secondary-color);
+            opacity: 0.3;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: var(--secondary-color);
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .challenge-header {
+                flex-direction: column;
+            }
+
+            .challenge-time {
+                position: static;
+                margin-bottom: 15px;
+            }
+
+            .challenge-actions {
+                flex-direction: column;
+            }
+
+            .filter-tabs .nav-pills {
+                flex-direction: column;
+            }
+
+            .filter-tabs .nav-link {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container challenges-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-trophy"></i> Retos y Logros</h1>
+            <p>Completa retos diarios, semanales y mensuales para ganar IA Coins y XP</p>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <ul class="nav nav-pills" id="challengeTypeTabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" data-type="all">
+                        <i class="fas fa-th-large"></i> Todos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-type="daily">
+                        <i class="fas fa-sun"></i> Diarios
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-type="weekly">
+                        <i class="fas fa-calendar-week"></i> Semanales
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-type="monthly">
+                        <i class="fas fa-calendar-alt"></i> Mensuales
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-type="achievement">
+                        <i class="fas fa-medal"></i> Logros
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Challenges List -->
+        <div id="challengesContainer">
+            <!-- Las tarjetas de retos se cargarán dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Bootstrap 5.3.2 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Main.js (Carga header/footer dinámicamente) -->
+    <script src="public/js/main.js"></script>
+
+    <script>
+        let allChallenges = [];
+        let currentFilter = 'all';
+
+        // Mapeo de Iconos por Tipo
+        const CHALLENGE_ICONS = {
+            daily: '☀️',
+            weekly: '📅',
+            monthly: '🗓️',
+            achievement: '🏆'
+        };
+
+        // Cargar Retos desde API
+        async function loadChallenges() {
+            try {
+                const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+
+                let url = '/api/challenges?active_only=true';
+                if (currentFilter !== 'all') {
+                    url += `&type=${currentFilter}`;
+                }
+
+                const response = await fetch(url, {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    allChallenges = data.challenges;
+                    renderChallenges();
+                } else {
+                    console.error('Error al cargar retos:', response.statusText);
+                    showEmptyState();
+                }
+            } catch (error) {
+                console.error('Error al cargar retos:', error);
+                showEmptyState();
+            }
+        }
+
+        // Renderizar Retos (CSP Compliant)
+        function renderChallenges() {
+            const container = document.getElementById('challengesContainer');
+
+            // Clear container safely
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+
+            if (allChallenges.length === 0) {
+                showEmptyState();
+                return;
+            }
+
+            allChallenges.forEach(challenge => {
+                const card = createChallengeCard(challenge);
+                container.appendChild(card);
+            });
+        }
+
+        // Crear Tarjeta de Reto (CSP Compliant)
+        function createChallengeCard(challenge) {
+            const card = document.createElement('div');
+            card.className = `challenge-card ${challenge.challenge_type}`;
+
+            const icon = challenge.icon || CHALLENGE_ICONS[challenge.challenge_type] || '🎯';
+            const isCompleted = challenge.user_progress && challenge.user_progress.is_completed;
+            const progress = challenge.user_progress ? JSON.parse(challenge.user_progress.progress || '{}') : {};
+            const progressPercentage = calculateProgress(challenge, progress);
+
+            // Calcular tiempo restante
+            let timeRemaining = '';
+            if (challenge.ends_at) {
+                const endDate = new Date(challenge.ends_at);
+                const now = new Date();
+                const diff = endDate - now;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+                if (days > 0) {
+                    timeRemaining = `${days}d ${hours}h`;
+                } else if (hours > 0) {
+                    timeRemaining = `${hours}h`;
+                } else {
+                    timeRemaining = 'Expira pronto';
+                }
+            }
+
+            // Challenge Time (conditional)
+            if (timeRemaining) {
+                const timeDiv = document.createElement('div');
+                timeDiv.className = 'challenge-time';
+
+                const label = document.createElement('div');
+                label.className = 'label';
+                label.textContent = 'Tiempo restante';
+                timeDiv.appendChild(label);
+
+                const value = document.createElement('div');
+                value.className = 'value';
+                value.textContent = timeRemaining;
+                timeDiv.appendChild(value);
+
+                card.appendChild(timeDiv);
+            }
+
+            // Challenge Header
+            const header = document.createElement('div');
+            header.className = 'challenge-header';
+
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'challenge-icon';
+            iconDiv.textContent = icon;
+            header.appendChild(iconDiv);
+
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'challenge-info';
+
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'challenge-title';
+            titleDiv.textContent = challenge.title;
+            infoDiv.appendChild(titleDiv);
+
+            const descDiv = document.createElement('div');
+            descDiv.className = 'challenge-description';
+            descDiv.textContent = challenge.description;
+            infoDiv.appendChild(descDiv);
+
+            // Meta badges
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'challenge-meta';
+
+            const typeBadge = document.createElement('span');
+            typeBadge.className = `meta-badge type-${challenge.challenge_type}`;
+            const typeIcon = document.createElement('i');
+            typeIcon.className = 'fas fa-tag';
+            typeBadge.appendChild(typeIcon);
+            typeBadge.appendChild(document.createTextNode(` ${formatType(challenge.challenge_type)}`));
+            metaDiv.appendChild(typeBadge);
+
+            if (challenge.max_completions > 1) {
+                const maxBadge = document.createElement('span');
+                maxBadge.className = 'meta-badge';
+                const maxIcon = document.createElement('i');
+                maxIcon.className = 'fas fa-redo';
+                maxBadge.appendChild(maxIcon);
+                maxBadge.appendChild(document.createTextNode(` Máx: ${challenge.max_completions}x`));
+                metaDiv.appendChild(maxBadge);
+            }
+
+            infoDiv.appendChild(metaDiv);
+            header.appendChild(infoDiv);
+            card.appendChild(header);
+
+            // Rewards
+            const rewardsDiv = document.createElement('div');
+            rewardsDiv.className = 'challenge-rewards';
+
+            const coinsReward = document.createElement('div');
+            coinsReward.className = 'reward-item';
+            const coinsIcon = document.createElement('i');
+            coinsIcon.className = 'fas fa-coins';
+            coinsReward.appendChild(coinsIcon);
+            const coinsSpan = document.createElement('span');
+            coinsSpan.textContent = `${challenge.reward_iacoins} IA Coins`;
+            coinsReward.appendChild(coinsSpan);
+            rewardsDiv.appendChild(coinsReward);
+
+            const xpReward = document.createElement('div');
+            xpReward.className = 'reward-item';
+            const xpIcon = document.createElement('i');
+            xpIcon.className = 'fas fa-star';
+            xpReward.appendChild(xpIcon);
+            const xpSpan = document.createElement('span');
+            xpSpan.textContent = `${challenge.reward_xp} XP`;
+            xpReward.appendChild(xpSpan);
+            rewardsDiv.appendChild(xpReward);
+
+            card.appendChild(rewardsDiv);
+
+            // Progress (conditional)
+            if (!isCompleted && progressPercentage > 0) {
+                const progressDiv = document.createElement('div');
+                progressDiv.className = 'challenge-progress';
+
+                const progressLabel = document.createElement('div');
+                progressLabel.className = 'progress-label';
+
+                const labelText = document.createElement('span');
+                labelText.textContent = 'Progreso';
+                progressLabel.appendChild(labelText);
+
+                const labelPercentage = document.createElement('span');
+                labelPercentage.textContent = `${progressPercentage}%`;
+                progressLabel.appendChild(labelPercentage);
+
+                progressDiv.appendChild(progressLabel);
+
+                const progressContainer = document.createElement('div');
+                progressContainer.className = 'progress';
+
+                const progressBar = document.createElement('div');
+                progressBar.className = 'progress-bar';
+                progressBar.setAttribute('role', 'progressbar');
+                progressBar.style.width = `${progressPercentage}%`;
+                progressBar.textContent = `${progressPercentage}%`;
+                progressContainer.appendChild(progressBar);
+
+                progressDiv.appendChild(progressContainer);
+                card.appendChild(progressDiv);
+            }
+
+            // Actions (CSP Compliant - data-action)
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'challenge-actions';
+
+            const detailsBtn = document.createElement('button');
+            detailsBtn.className = 'btn-view-details';
+            detailsBtn.setAttribute('data-action', 'view-challenge-details');
+            detailsBtn.setAttribute('data-challenge-id', challenge.id);
+            const detailsIcon = document.createElement('i');
+            detailsIcon.className = 'fas fa-info-circle';
+            detailsBtn.appendChild(detailsIcon);
+            detailsBtn.appendChild(document.createTextNode(' Ver Detalles'));
+            actionsDiv.appendChild(detailsBtn);
+
+            if (isCompleted) {
+                const completedBtn = document.createElement('button');
+                completedBtn.className = 'btn-completed';
+                const completedIcon = document.createElement('i');
+                completedIcon.className = 'fas fa-check-circle';
+                completedBtn.appendChild(completedIcon);
+                completedBtn.appendChild(document.createTextNode(' Completado'));
+                actionsDiv.appendChild(completedBtn);
+            } else {
+                const completeBtn = document.createElement('button');
+                completeBtn.className = 'btn-complete';
+                completeBtn.setAttribute('data-action', 'complete-challenge');
+                completeBtn.setAttribute('data-challenge-id', challenge.id);
+                completeBtn.setAttribute('data-challenge-title', challenge.title);
+                const completeIcon = document.createElement('i');
+                completeIcon.className = 'fas fa-check';
+                completeBtn.appendChild(completeIcon);
+                completeBtn.appendChild(document.createTextNode(' Completar Reto'));
+                actionsDiv.appendChild(completeBtn);
+            }
+
+            card.appendChild(actionsDiv);
+
+            return card;
+        }
+
+        // Calcular Progreso
+        function calculateProgress(challenge, progress) {
+            // Lógica de progreso depende del completion_criteria
+            // Por ahora retornamos un valor fijo si hay progreso
+            if (progress && Object.keys(progress).length > 0) {
+                return progress.percentage || 50;
+            }
+            return 0;
+        }
+
+        // Formatear Tipo de Reto
+        function formatType(type) {
+            const types = {
+                daily: 'Diario',
+                weekly: 'Semanal',
+                monthly: 'Mensual',
+                achievement: 'Logro'
+            };
+            return types[type] || type;
+        }
+
+        // Ver Detalles de Reto
+        async function viewChallengeDetails(challengeId) {
+            try {
+                const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+
+                const response = await fetch(`/api/challenges/${challengeId}`, {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const challenge = data.challenge;
+
+                    alert(`🏆 ${challenge.title}\n\n` +
+                          `${challenge.description}\n\n` +
+                          `Recompensas:\n` +
+                          `• ${challenge.reward_iacoins} IA Coins\n` +
+                          `• ${challenge.reward_xp} XP\n\n` +
+                          `Tipo: ${formatType(challenge.challenge_type)}\n` +
+                          `Máximo de completaciones: ${challenge.max_completions}`);
+                } else {
+                    alert('Error al cargar detalles del reto');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error de conexión');
+            }
+        }
+
+        // Completar Reto
+        async function completeChallenge(challengeId, challengeTitle) {
+            if (!confirm(`¿Completar el reto "${challengeTitle}"?`)) {
+                return;
+            }
+
+            try {
+                const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+
+                if (!token) {
+                    alert('Debes iniciar sesión para completar retos');
+                    return;
+                }
+
+                const response = await fetch(`/api/challenges/${challengeId}/complete`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(`🎉 ¡Reto Completado!\n\n` +
+                          `Recompensas:\n` +
+                          `• +${data.rewards.iacoins} IA Coins\n` +
+                          `• +${data.rewards.xp} XP\n\n` +
+                          `Nuevo Saldo: ${data.new_balance} IA Coins\n` +
+                          `XP Total: ${data.new_xp}`);
+
+                    // Recargar retos
+                    loadChallenges();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.error}`);
+                }
+            } catch (error) {
+                console.error('Error al completar reto:', error);
+                alert('Error de conexión. Intenta nuevamente.');
+            }
+        }
+
+        // Mostrar Estado Vacío (CSP Compliant)
+        function showEmptyState() {
+            const container = document.getElementById('challengesContainer');
+
+            // Clear container safely
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+
+            // Create empty state div
+            const emptyStateDiv = document.createElement('div');
+            emptyStateDiv.className = 'empty-state';
+
+            const icon = document.createElement('i');
+            icon.className = 'fas fa-inbox';
+            emptyStateDiv.appendChild(icon);
+
+            const title = document.createElement('h3');
+            title.textContent = 'No hay retos disponibles';
+            emptyStateDiv.appendChild(title);
+
+            const description = document.createElement('p');
+            description.textContent = 'Vuelve más tarde para nuevos desafíos';
+            emptyStateDiv.appendChild(description);
+
+            container.appendChild(emptyStateDiv);
+        }
+
+        // Event Listeners para Filtros
+        document.querySelectorAll('#challengeTypeTabs .nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Actualizar tabs activos
+                document.querySelectorAll('#challengeTypeTabs .nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+
+                // Actualizar filtro y recargar
+                currentFilter = this.dataset.type;
+                loadChallenges();
+            });
+        });
+
+        // ============================================
+        // EVENT DELEGATION HANDLER (CSP Compliance)
+        // ============================================
+        document.addEventListener('click', function(e) {
+            const actionElement = e.target.closest('[data-action]');
+            if (!actionElement) return;
+
+            const action = actionElement.dataset.action;
+
+            // Handle actions
+            switch(action) {
+                case 'view-challenge-details':
+                    const detailsChallengeId = actionElement.dataset.challengeId;
+                    if (detailsChallengeId) {
+                        viewChallengeDetails(detailsChallengeId);
+                    }
+                    break;
+
+                case 'complete-challenge':
+                    const challengeId = actionElement.dataset.challengeId;
+                    const challengeTitle = actionElement.dataset.challengeTitle;
+                    if (challengeId && challengeTitle) {
+                        completeChallenge(challengeId, challengeTitle);
+                    }
+                    break;
+
+                default:
+                    console.warn('[CHALLENGES] Unknown action:', action);
+            }
+        });
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            loadChallenges();
+        });
+    </script>
+</body>
+</html>

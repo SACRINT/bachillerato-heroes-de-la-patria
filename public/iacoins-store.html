@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Tienda IA Coins - BGE Héroes de la Patria</title>
+
+    <!-- Bootstrap 5.3.2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome 6.4.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --gold-color: #f59e0b;
+            --purple-color: #8b5cf6;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .store-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            color: white;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .wallet-banner {
+            background: white;
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .wallet-balance {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .wallet-balance .icon {
+            font-size: 3rem;
+            color: var(--gold-color);
+        }
+
+        .wallet-balance .info h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+        }
+
+        .wallet-balance .info .amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-refresh {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-refresh:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .section-title {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .package-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .package-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--purple-color));
+        }
+
+        .package-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .package-card.featured {
+            border: 3px solid var(--gold-color);
+        }
+
+        .package-card.featured::before {
+            background: linear-gradient(90deg, var(--gold-color), #ff6b35);
+        }
+
+        .package-badge {
+            position: absolute;
+            top: 15px;
+            right: -35px;
+            background: var(--gold-color);
+            color: white;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .package-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .package-header h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .package-iacoins {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--gold-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .package-price {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-top: 10px;
+        }
+
+        .package-bonus {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .package-features {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .package-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .package-features li:last-child {
+            border-bottom: none;
+        }
+
+        .package-features i {
+            color: var(--success-color);
+        }
+
+        .btn-purchase {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--purple-color));
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-purchase:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-purchase.featured {
+            background: linear-gradient(135deg, var(--gold-color), #ff6b35);
+        }
+
+        .store-items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .item-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .item-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .item-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .item-description {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .item-price {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold-color);
+            margin-bottom: 10px;
+        }
+
+        .btn-buy-item {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 50px;
+            background: var(--success-color);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-buy-item:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .modal-content {
+            border-radius: 15px;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--purple-color));
+            color: white;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .payment-method {
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-method:hover, .payment-method.active {
+            border-color: var(--primary-color);
+            background: rgba(0, 123, 255, 0.05);
+        }
+
+        .payment-method i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .wallet-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container store-container">
+        <!-- Página Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-store"></i> Tienda IA Coins</h1>
+            <p>Compra paquetes de IA Coins y desbloquea todo el potencial de la plataforma</p>
+        </div>
+
+        <!-- Wallet Banner -->
+        <div class="wallet-banner">
+            <div class="wallet-balance">
+                <div class="icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="info">
+                    <h3>Tu Saldo Actual</h3>
+                    <div class="amount">
+                        <span id="currentBalance">0</span>
+                        <small style="font-size: 1.2rem; color: var(--gold-color);">🪙 IA Coins</small>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-refresh" data-action="load-wallet-balance">
+                <i class="fas fa-sync-alt"></i> Actualizar Saldo
+            </button>
+        </div>
+
+        <!-- Paquetes de IA Coins -->
+        <div class="section-title">
+            <h2><i class="fas fa-box-open"></i> Paquetes de IA Coins</h2>
+        </div>
+
+        <div class="packages-grid" id="packagesContainer">
+            <!-- Los paquetes se cargarán dinámicamente desde config.json -->
+        </div>
+
+        <!-- Items de la Tienda -->
+        <div class="section-title">
+            <h2><i class="fas fa-gift"></i> Items Especiales</h2>
+        </div>
+
+        <div class="store-items-grid" id="storeItemsContainer">
+            <!-- Los items se cargarán dinámicamente desde la API -->
+        </div>
+    </div>
+
+    <!-- Modal de Compra -->
+    <div class="modal fade" id="purchaseModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-shopping-cart"></i> Completar Compra</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <h3 id="modalPackageName"></h3>
+                        <div class="package-iacoins" id="modalPackageCoins"></div>
+                        <div class="package-price" id="modalPackagePrice"></div>
+                        <div id="modalPackageBonus"></div>
+                    </div>
+
+                    <h5 class="mb-3">Selecciona Método de Pago</h5>
+                    <div class="payment-methods">
+                        <div class="payment-method" data-method="stripe">
+                            <i class="fab fa-cc-stripe" style="color: #635bff;"></i>
+                            <p class="mb-0"><strong>Stripe</strong></p>
+                            <small>Tarjeta</small>
+                        </div>
+                        <div class="payment-method" data-method="mercadopago">
+                            <i class="fas fa-credit-card" style="color: #009ee3;"></i>
+                            <p class="mb-0"><strong>MercadoPago</strong></p>
+                            <small>México</small>
+                        </div>
+                        <div class="payment-method" data-method="paypal">
+                            <i class="fab fa-paypal" style="color: #0070ba;"></i>
+                            <p class="mb-0"><strong>PayPal</strong></p>
+                            <small>Internacional</small>
+                        </div>
+                    </div>
+
+                    <div id="paymentFormContainer" class="mt-4" style="display: none;">
+                        <!-- Aquí se cargará el formulario de pago según el método seleccionado -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmPurchase" disabled>
+                        <i class="fas fa-lock"></i> Pagar Ahora
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5.3.2 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Main.js (Carga header/footer dinámicamente) -->
+    <script src="public/js/main.js"></script>
+
+    <script>
+        // Estado Global
+        let currentPackage = null;
+        let selectedPaymentMethod = null;
+
+        // Definición de paquetes (desde config/institucion.json)
+        const PACKAGES = [
+            {
+                id: 'basic',
+                name: 'Básico',
+                iacoins: 50,
+                price_usd: 5.00,
+                price_mxn: 100,
+                bonus_percentage: 0,
+                features: [
+                    'Acceso a funciones básicas de IA',
+                    'Soporte por email',
+                    'Válido por 90 días'
+                ]
+            },
+            {
+                id: 'standard',
+                name: 'Estándar',
+                iacoins: 100,
+                price_usd: 10.00,
+                price_mxn: 200,
+                bonus_percentage: 5,
+                features: [
+                    '5% de bonus (105 IA Coins total)',
+                    'Acceso a tutorías P2P',
+                    'Soporte prioritario',
+                    'Válido por 180 días'
+                ]
+            },
+            {
+                id: 'premium',
+                name: 'Premium',
+                iacoins: 250,
+                price_usd: 25.00,
+                price_mxn: 500,
+                bonus_percentage: 10,
+                featured: true,
+                features: [
+                    '10% de bonus (275 IA Coins total)',
+                    'Acceso completo a IA Premium',
+                    'Tutor IA ilimitado',
+                    'Soporte prioritario 24/7',
+                    'Válido por 1 año'
+                ]
+            },
+            {
+                id: 'escolar',
+                name: 'Escolar',
+                iacoins: 500,
+                price_usd: 50.00,
+                price_mxn: 1000,
+                bonus_percentage: 15,
+                features: [
+                    '15% de bonus (575 IA Coins total)',
+                    'Ideal para todo el ciclo escolar',
+                    'Acceso completo Premium',
+                    'Reportes mensuales para padres',
+                    'Válido por 1 año'
+                ]
+            },
+            {
+                id: 'elite',
+                name: 'Elite',
+                iacoins: 1000,
+                price_usd: 100.00,
+                price_mxn: 2000,
+                bonus_percentage: 20,
+                features: [
+                    '20% de bonus (1,200 IA Coins total)',
+                    'Máximo valor - ¡Ahorra $20!',
+                    'Acceso VIP a todas las funciones',
+                    'Sesiones personalizadas con tutores',
+                    'Certificado de excelencia',
+                    'Válido por 2 años'
+                ]
+            }
+        ];
+
+        // Cargar Saldo de Wallet
+        async function loadWalletBalance() {
+            try {
+                const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+
+                if (!token) {
+                    alert('Debes iniciar sesión para ver tu saldo');
+                    return;
+                }
+
+                const response = await fetch('/api/wallet', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('currentBalance').textContent = data.wallet.balance.toFixed(2);
+                } else {
+                    console.error('Error al cargar saldo:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error al cargar saldo:', error);
+            }
+        }
+
+        // Renderizar Paquetes (CSP Compliant - Sin innerHTML ni onclick)
+        function renderPackages() {
+            const container = document.getElementById('packagesContainer');
+
+            // Clear container safely
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+
+            PACKAGES.forEach(pkg => {
+                const totalCoins = Math.floor(pkg.iacoins * (1 + pkg.bonus_percentage / 100));
+                const cardClass = pkg.featured ? 'package-card featured' : 'package-card';
+
+                const card = document.createElement('div');
+                card.className = cardClass;
+
+                // Badge (if featured)
+                if (pkg.featured) {
+                    const badge = document.createElement('div');
+                    badge.className = 'package-badge';
+                    badge.textContent = 'Más Popular';
+                    card.appendChild(badge);
+                }
+
+                // Header
+                const header = document.createElement('div');
+                header.className = 'package-header';
+
+                const title = document.createElement('h3');
+                title.textContent = pkg.name;
+                header.appendChild(title);
+
+                const coinsDiv = document.createElement('div');
+                coinsDiv.className = 'package-iacoins';
+                coinsDiv.innerHTML = '<i class="fas fa-coins"></i>';
+                coinsDiv.appendChild(document.createTextNode(` ${totalCoins}`));
+                header.appendChild(coinsDiv);
+
+                const priceDiv = document.createElement('div');
+                priceDiv.className = 'package-price';
+                priceDiv.textContent = `$${pkg.price_usd.toFixed(2)} USD / $${pkg.price_mxn} MXN`;
+                header.appendChild(priceDiv);
+
+                if (pkg.bonus_percentage > 0) {
+                    const bonusDiv = document.createElement('div');
+                    bonusDiv.className = 'package-bonus';
+                    bonusDiv.textContent = `+${pkg.bonus_percentage}% BONUS`;
+                    header.appendChild(bonusDiv);
+                }
+                card.appendChild(header);
+
+                // Features
+                const ul = document.createElement('ul');
+                ul.className = 'package-features';
+                pkg.features.forEach(feature => {
+                    const li = document.createElement('li');
+                    li.innerHTML = '<i class="fas fa-check-circle"></i>';
+                    li.appendChild(document.createTextNode(` ${feature}`));
+                    ul.appendChild(li);
+                });
+                card.appendChild(ul);
+
+                // Button (CSP Compliant - data-action)
+                const button = document.createElement('button');
+                button.className = pkg.featured ? 'btn-purchase featured' : 'btn-purchase';
+                button.setAttribute('data-action', 'open-purchase-modal');
+                button.setAttribute('data-package-id', pkg.id);
+                button.innerHTML = '<i class="fas fa-shopping-cart"></i>';
+                button.appendChild(document.createTextNode(' Comprar Ahora'));
+                card.appendChild(button);
+
+                container.appendChild(card);
+            });
+        }
+
+        // Abrir Modal de Compra (CSP Compliant)
+        function openPurchaseModal(packageId) {
+            const pkg = PACKAGES.find(p => p.id === packageId);
+            if (!pkg) return;
+
+            currentPackage = pkg;
+            const totalCoins = Math.floor(pkg.iacoins * (1 + pkg.bonus_percentage / 100));
+
+            // Package name (safe - textContent)
+            document.getElementById('modalPackageName').textContent = pkg.name;
+
+            // Package coins (safe DOM manipulation)
+            const coinsElement = document.getElementById('modalPackageCoins');
+            while (coinsElement.firstChild) {
+                coinsElement.removeChild(coinsElement.firstChild);
+            }
+            const coinIcon = document.createElement('i');
+            coinIcon.className = 'fas fa-coins';
+            coinsElement.appendChild(coinIcon);
+            coinsElement.appendChild(document.createTextNode(` ${totalCoins} IA Coins`));
+
+            // Package price (safe - textContent)
+            document.getElementById('modalPackagePrice').textContent = `$${pkg.price_usd.toFixed(2)} USD / $${pkg.price_mxn} MXN`;
+
+            // Bonus badge (safe DOM manipulation)
+            const bonusElement = document.getElementById('modalPackageBonus');
+            while (bonusElement.firstChild) {
+                bonusElement.removeChild(bonusElement.firstChild);
+            }
+
+            if (pkg.bonus_percentage > 0) {
+                const bonusDiv = document.createElement('div');
+                bonusDiv.className = 'package-bonus';
+                bonusDiv.textContent = `+${pkg.bonus_percentage}% BONUS incluido`;
+                bonusElement.appendChild(bonusDiv);
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('purchaseModal'));
+            modal.show();
+        }
+
+        // Selección de Método de Pago
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', function() {
+                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
+                this.classList.add('active');
+                selectedPaymentMethod = this.dataset.method;
+                document.getElementById('btnConfirmPurchase').disabled = false;
+            });
+        });
+
+        // Confirmar Compra
+        document.getElementById('btnConfirmPurchase').addEventListener('click', async function() {
+            if (!currentPackage || !selectedPaymentMethod) {
+                alert('Selecciona un método de pago');
+                return;
+            }
+
+            // TODO: Integrar con Stripe/MercadoPago/PayPal
+            alert(`Redirigiendo a ${selectedPaymentMethod.toUpperCase()}...\n\nPaquete: ${currentPackage.name}\nTotal: $${currentPackage.price_usd} USD`);
+
+            // Simular compra exitosa (remover en producción)
+            try {
+                const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+
+                const response = await fetch('/api/wallet/purchase', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        package_type: currentPackage.id,
+                        payment_provider: selectedPaymentMethod,
+                        payment_id: 'demo_payment_' + Date.now(),
+                        payment_amount_usd: currentPackage.price_usd
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(`¡Compra exitosa!\n\n+${data.iacoins_purchased} IA Coins\nNuevo Saldo: ${data.new_balance}`);
+                    bootstrap.Modal.getInstance(document.getElementById('purchaseModal')).hide();
+                    loadWalletBalance();
+                } else {
+                    alert('Error al procesar compra. Intenta nuevamente.');
+                }
+            } catch (error) {
+                console.error('Error al comprar:', error);
+                alert('Error de conexión. Intenta nuevamente.');
+            }
+        });
+
+        // Cargar Items de Tienda
+        async function loadStoreItems() {
+            try {
+                const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+
+                const response = await fetch('/api/store/items', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderStoreItems(data.items);
+                }
+            } catch (error) {
+                console.error('Error al cargar items:', error);
+                // Mostrar items de ejemplo si falla
+                renderStoreItems([
+                    {
+                        id: 1,
+                        name: 'Avatar Premium',
+                        description: 'Personaliza tu perfil con avatares exclusivos',
+                        icon: '🎭',
+                        price_iacoins: 50,
+                        category: 'customization'
+                    },
+                    {
+                        id: 2,
+                        name: 'Tema Oscuro Plus',
+                        description: 'Desbloquea el modo oscuro premium',
+                        icon: '🌙',
+                        price_iacoins: 30,
+                        category: 'customization'
+                    },
+                    {
+                        id: 3,
+                        name: 'Certificado Digital',
+                        description: 'Certificado verificable de logros',
+                        icon: '🏆',
+                        price_iacoins: 100,
+                        category: 'rewards'
+                    }
+                ]);
+            }
+        }
+
+        // Renderizar Items de Tienda (CSP Compliant)
+        function renderStoreItems(items) {
+            const container = document.getElementById('storeItemsContainer');
+
+            // Clear container safely
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+
+                // Icon
+                const iconDiv = document.createElement('div');
+                iconDiv.className = 'item-icon';
+                iconDiv.textContent = item.icon;  // Safe - auto-escaped
+                card.appendChild(iconDiv);
+
+                // Name
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'item-name';
+                nameDiv.textContent = item.name;  // Safe - auto-escaped
+                card.appendChild(nameDiv);
+
+                // Description
+                const descDiv = document.createElement('div');
+                descDiv.className = 'item-description';
+                descDiv.textContent = item.description;  // Safe - auto-escaped
+                card.appendChild(descDiv);
+
+                // Price
+                const priceDiv = document.createElement('div');
+                priceDiv.className = 'item-price';
+                const priceIcon = document.createElement('i');
+                priceIcon.className = 'fas fa-coins';
+                priceDiv.appendChild(priceIcon);
+                priceDiv.appendChild(document.createTextNode(` ${item.price_iacoins}`));
+                card.appendChild(priceDiv);
+
+                // Button (CSP Compliant - data-action)
+                const button = document.createElement('button');
+                button.className = 'btn-buy-item';
+                button.setAttribute('data-action', 'buy-item');
+                button.setAttribute('data-item-id', item.id);
+                button.setAttribute('data-item-name', item.name);
+                button.setAttribute('data-item-price', item.price_iacoins);
+                const btnIcon = document.createElement('i');
+                btnIcon.className = 'fas fa-shopping-bag';
+                button.appendChild(btnIcon);
+                button.appendChild(document.createTextNode(' Comprar'));
+                card.appendChild(button);
+
+                container.appendChild(card);
+            });
+        }
+
+        // Comprar Item
+        async function buyItem(itemId, itemName, price) {
+            if (!confirm(`¿Comprar "${itemName}" por ${price} IA Coins?`)) {
+                return;
+            }
+
+            try {
+                const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+
+                const response = await fetch('/api/store/purchase', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        item_id: itemId
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(`¡Compra exitosa!\n\nItem: ${itemName}\nNuevo Saldo: ${data.new_balance} IA Coins`);
+                    loadWalletBalance();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.error}`);
+                }
+            } catch (error) {
+                console.error('Error al comprar item:', error);
+                alert('Error de conexión. Intenta nuevamente.');
+            }
+        }
+
+        // ============================================
+        // EVENT DELEGATION HANDLER (CSP Compliance)
+        // ============================================
+        document.addEventListener('click', function(e) {
+            const actionElement = e.target.closest('[data-action]');
+            if (!actionElement) return;
+
+            const action = actionElement.dataset.action;
+
+            // Handle actions
+            switch(action) {
+                case 'load-wallet-balance':
+                    loadWalletBalance();
+                    break;
+
+                case 'open-purchase-modal':
+                    const packageId = actionElement.dataset.packageId;
+                    if (packageId) {
+                        openPurchaseModal(packageId);
+                    }
+                    break;
+
+                case 'buy-item':
+                    const itemId = parseInt(actionElement.dataset.itemId);
+                    const itemName = actionElement.dataset.itemName;
+                    const itemPrice = parseInt(actionElement.dataset.itemPrice);
+                    if (itemId && itemName && itemPrice) {
+                        buyItem(itemId, itemName, itemPrice);
+                    }
+                    break;
+
+                default:
+                    console.warn('[IACOINS-STORE] Unknown action:', action);
+            }
+        });
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPackages();
+            loadWalletBalance();
+            loadStoreItems();
+        });
+    </script>
+</body>
+</html>

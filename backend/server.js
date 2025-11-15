@@ -109,6 +109,11 @@ const sslRoutes = require('./routes/ssl');
 const backupRoutes = require('./routes/backup');
 const gamificationDirectRoutes = require('./routes/gamification');  // ⚠️ Alias para evitar conflicto
 
+// GRUPO 5: SISTEMA DE GAMIFICACIÓN IACOINS (3 rutas) - 15 NOV 2025
+const walletRoutes = require('./routes/wallet');  // 💰 Wallet management (5 endpoints)
+const challengesRoutes = require('./routes/challenges');  // 🏆 Challenges system (4 endpoints)
+const storeRoutes = require('./routes/store');  // 🛒 Virtual store (5 endpoints)
+
 const { startCleanupService } = require('./services/cleanupService');
 
 const app = express();
@@ -277,6 +282,9 @@ app.use('/api/messaging', messagingRoutes);
 app.use('/api/digital-library', digitalLibraryRoutes);
 app.use('/api/support-tickets', supportTicketsRoutes);
 app.use('/api/gamification', gamificationRoutes);  // ✅ GAMIFICATION ROUTES - Sistema de logros y puntuaciones
+app.use('/api/wallet', walletRoutes);  // ✅ WALLET ROUTES - Gestión de IACoins (15 NOV 2025)
+app.use('/api/challenges', challengesRoutes);  // ✅ CHALLENGES ROUTES - Sistema de retos (15 NOV 2025)
+app.use('/api/store', storeRoutes);  // ✅ STORE ROUTES - Tienda virtual (15 NOV 2025)
 
 // ✅ FASE 1.2: RUTAS HUÉRFANAS REGISTRADAS - 11 NOV 2025
 // ⚠️ NOTA: Algunas rutas requieren debugging (google-classroom, chatbot-ia, etc)
