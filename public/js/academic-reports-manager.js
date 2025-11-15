@@ -76,7 +76,7 @@ class AcademicReportsManager {
         const container = document.getElementById('academic-reports-container');
         if (!container) return;
 
-        container.innerHTML = sanitizeHTML(`
+        container.innerHTML = DOMPurify.sanitize(`
             <div class="academic-reports-system">
                 <!-- Header del Sistema -->
                 <div class="reports-header bg-primary text-white p-4 rounded-top">
@@ -515,7 +515,7 @@ class AcademicReportsManager {
                 reportHTML = this.generateGenericReportHTML(reportData);
         }
 
-        resultsContainer.innerHTML = sanitizeHTML(reportHTML, 'ugc');
+        resultsContainer.innerHTML = DOMPurify.sanitize(reportHTML, 'ugc');
 
         // Generar gráficos si es necesario
         if (reportData.charts) {
@@ -867,7 +867,7 @@ class AcademicReportsManager {
 
     async searchStudents(query) {
         if (query.length < 2) {
-            document.getElementById('studentSuggestions').innerHTML = sanitizeHTML('', 'simple');
+            document.getElementById('studentSuggestions').innerHTML = DOMPurify.sanitize('', 'simple');
             return;
         }
 
@@ -892,7 +892,7 @@ class AcademicReportsManager {
         const suggestions = document.getElementById('studentSuggestions');
 
         if (students.length === 0) {
-            suggestions.innerHTML = sanitizeHTML('');
+            suggestions.innerHTML = DOMPurify.sanitize('');
             return;
         }
 
@@ -903,7 +903,7 @@ class AcademicReportsManager {
             </div>
         `).join('');
 
-        suggestions.innerHTML = sanitizeHTML(html, 'ugc');
+        suggestions.innerHTML = DOMPurify.sanitize(html, 'ugc');
         suggestions.style.display = 'block';
 
         // Agregar eventos de clic
@@ -921,7 +921,7 @@ class AcademicReportsManager {
         document.getElementById('reportTitle').textContent = title;
 
         // Limpiar resultados anteriores
-        document.getElementById('reportResults').innerHTML = sanitizeHTML(`
+        document.getElementById('reportResults').innerHTML = DOMPurify.sanitize(`
             <div class="text-center text-muted py-5">
                 <i class="fas fa-chart-bar fa-3x mb-3"></i>
                 <p>Configura los filtros y genera el reporte "${title}" para ver los resultados</p>
@@ -972,7 +972,7 @@ class AcademicReportsManager {
         const historyContainer = document.getElementById('reportHistory');
 
         if (history.length === 0) {
-            historyContainer.innerHTML = sanitizeHTML(`
+            historyContainer.innerHTML = DOMPurify.sanitize(`
                 <div class="text-center text-muted py-5">
                     <i class="fas fa-history fa-3x mb-3"></i>
                     <p>No hay reportes generados anteriormente</p>
@@ -1012,7 +1012,7 @@ class AcademicReportsManager {
             </div>
         `).join('');
 
-        historyContainer.innerHTML = sanitizeHTML(html, 'ugc');
+        historyContainer.innerHTML = DOMPurify.sanitize(html, 'ugc');
     }
 
     loadHistoryReport(reportId) {
@@ -1082,7 +1082,7 @@ class AcademicReportsManager {
         // Crear toast notification
         const toast = document.createElement('div');
         toast.className = `toast-notification ${type}`;
-        toast.innerHTML = sanitizeHTML(`
+        toast.innerHTML = DOMPurify.sanitize(`
             <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
             ${message}
         `);

@@ -115,7 +115,7 @@ class AdminDashboardAdvanced {
         const toggle = document.createElement('div');
         toggle.id = 'admin-dashboard-toggle';
         toggle.className = 'admin-dashboard-toggle';
-        toggle.innerHTML = sanitizeHTML(`
+        toggle.innerHTML = DOMPurify.sanitize(`
             <i class="fas fa-tachometer-alt"></i>
             <span class="toggle-text">Admin</span>
         `);
@@ -154,7 +154,7 @@ class AdminDashboardAdvanced {
         const dashboard = document.createElement('div');
         dashboard.id = 'admin-dashboard-main';
         dashboard.className = 'admin-dashboard-main';
-        dashboard.innerHTML = sanitizeHTML(`
+        dashboard.innerHTML = DOMPurify.sanitize(`
             <div class="dashboard-container">
                 <div class="dashboard-header">
                     <div class="dashboard-title">
@@ -610,7 +610,7 @@ class AdminDashboardAdvanced {
         const modal = document.createElement('div');
         modal.id = 'dashboard-settings-modal';
         modal.className = 'modal fade';
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = DOMPurify.sanitize(`
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -679,7 +679,7 @@ class AdminDashboardAdvanced {
         const modal = document.createElement('div');
         modal.id = 'dashboard-logs-modal';
         modal.className = 'modal fade';
-        modal.innerHTML = sanitizeHTML(`
+        modal.innerHTML = DOMPurify.sanitize(`
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -974,7 +974,7 @@ class AdminDashboardAdvanced {
                 </div>
             `;
             
-            activityList.insertAdjacentHTML('afterbegin', sanitizeHTML(activityHTML));
+            activityList.insertAdjacentHTML('afterbegin', DOMPurify.sanitize(activityHTML));
         }
     }
 
@@ -1015,7 +1015,7 @@ class AdminDashboardAdvanced {
             </div>
         `;
         
-        alertsContainer.insertAdjacentHTML('afterbegin', sanitizeHTML(alertHTML));
+        alertsContainer.insertAdjacentHTML('afterbegin', DOMPurify.sanitize(alertHTML));
     }
 
     loadTabData(tabName) {
@@ -1124,7 +1124,7 @@ class AdminDashboardAdvanced {
         
         logs.sort((a, b) => b.timestamp - a.timestamp);
         
-        logsList.innerHTML = sanitizeHTML(logs.slice(0, 100).map(log => `
+        logsList.innerHTML = DOMPurify.sanitize(logs.slice(0, 100).map(log => `
             <div class="log-entry">
                 <span class="log-time">${new Date(log.timestamp).toLocaleTimeString()}</span>
                 <span class="log-level ${log.level}">${log.level.toUpperCase()}</span>
