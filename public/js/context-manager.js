@@ -1,4 +1,10 @@
 /**
+ * Context Manager BGE - Sistema de verificación de contexto
+ * Previene ejecución de scripts en páginas incorrectas
+ * Versión: 1.0
+ * Fecha: 21-09-2025
+ */
+
 // Debug Logger - Logging condicional (GDPR compliant)
 if (typeof debugLog === 'undefined') {
     // Fallback si debug-logger.js no está cargado
@@ -8,13 +14,6 @@ if (typeof debugLog === 'undefined') {
         error: () => {}
     };
 }
-
-
- * Context Manager BGE - Sistema de verificación de contexto
- * Previene ejecución de scripts en páginas incorrectas
- * Versión: 1.0
- * Fecha: 21-09-2025
- */
 
 class BGEContextManager {
     constructor() {

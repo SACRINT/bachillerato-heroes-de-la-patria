@@ -71,17 +71,20 @@ const cspConfig = {
             "https://*.tiny.cloud"
         ],
 
-        // 6. CONEXIONES - Endpoints específicos (no wildcard ws:/wss:)
+        // 6. CONEXIONES - Endpoints específicos
         connectSrc: [
             "'self'",
             "https://bge-heroesdelapatria.vercel.app",  // Production domain
+            "https://cdn.jsdelivr.net",        // ✅ AGREGADO: Source maps de Bootstrap
+            "https://cdnjs.cloudflare.com",    // ✅ AGREGADO: Source maps de librerías
             "https://sp.tinymce.com",          // TinyMCE plugin server
             "https://www.google-analytics.com", // Google Analytics
-            "https://www.googletagmanager.com" // Google Tag Manager
-            // NOTA: WebSocket específicos pueden agregarse si se necesitan
+            "https://www.googletagmanager.com", // Google Tag Manager
+            "https://accounts.google.com",     // ✅ AGREGADO: Google OAuth
+            "https://www.googleapis.com"       // ✅ AGREGADO: Google APIs
         ],
 
-        // 7. FRAMES - Solo embeds específicos (no wildcard *.tiny.cloud)
+        // 7. FRAMES - Solo embeds específicos
         frameSrc: [
             "'self'",
             "https://accounts.google.com",     // Google OAuth login iframe
@@ -131,6 +134,14 @@ const cspConfig = {
             "https://accounts.google.com/gsi/style",  // ✅ Google Sign-In button styles (FIJO 11 NOV)
             "https://cdn.tiny.cloud",
             "https://*.tiny.cloud"
+        ],
+
+        // 14. Atributos de script inline (event handlers en HTML)
+        // ⚠️ CRÍTICO: Necesario para onclick, oninput, etc. en HTML
+        scriptSrcAttr: [
+            "'self'",
+            "'unsafe-inline'",                 // ✅ NECESARIO: event handlers en HTML (onclick="...")
+            "'unsafe-hashes'"                  // ✅ NECESARIO: hashes para event handlers específicos
         ]
     },
 
