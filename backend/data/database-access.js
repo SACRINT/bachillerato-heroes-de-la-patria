@@ -1436,6 +1436,118 @@ async function createUserFromGoogle(googleData) {
 
 /**
  * ============================================
+ * FUNCIONES DE ACCESO A DATOS - APROBACIONES
+ * ============================================
+ */
+
+/**
+ * Obtener solicitudes pendientes de aprobación
+ * @param {Object} filters - Filtros opcionales (form_type, limit, offset, status)
+ * @returns {Promise<Array>} Array de solicitudes pendientes
+ */
+async function getPendingApprovals(filters = {}) {
+    try {
+        const { form_type, limit = 50, offset = 0, status = 'pending' } = filters;
+
+        let query = 'SELECT * FROM pending_approvals WHERE status = $1';
+        const params = [status];
+        let paramCount = 1;
+
+        if (form_type) {
+            paramCount++;
+            query += ` AND form_type = $${paramCount}`;
+            params.push(form_type);
+        }
+
+        query += ` ORDER BY created_at DESC LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;
+        params.push(parseInt(limit), parseInt(offset));
+
+        const result = await pool.query(query, params);
+        devLogger.log(`Fetched ${result.rows.length} pending approvals`);
+        return result.rows;
+
+    } catch (error) {
+        devLogger.error(`Error fetching pending approvals: ${error.message}`);
+        throw error;
+    }
+}
+
+/**
+ * Obtener solicitud de aprobación por ID
+ * @param {number} id - ID de la solicitud
+ * @returns {Promise<Object>} Solicitud encontrada o null
+ */
+async function getApprovalById(id) {
+    try {
+        const result = await pool.query(
+            'SELECT * FROM pending_approvals WHERE id = $1',
+            [id]
+        );
+        return result.rows[0] || null;
+
+    } catch (error) {
+        devLogger.error(`Error fetching approval ${id}: ${error.message}`);
+        throw error;
+    }
+}
+
+/**
+ * Obtener estadísticas de aprobaciones
+ * @returns {Promise<Object>} Objeto con estadísticas
+ */
+async function getApprovalStatistics() {
+    try {
+        const result = await pool.query(`
+            SELECT
+                COUNT(*) as total,
+                COUNT(*) FILTER (WHERE status = 'pending') as pendientes,
+                COUNT(*) FILTER (WHERE status = 'approved') as aprobadas,
+                COUNT(*) FILTER (WHERE status = 'rejected') as rechazadas,
+                COUNT(*) FILTER (WHERE DATE(created_at) = CURRENT_DATE) as hoy,
+                COUNT(*) FILTER (WHERE DATE(created_at) >= CURRENT_DATE - INTERVAL '7 days') as esta_semana
+            FROM pending_approvals
+        `);
+        return result.rows[0] || {};
+
+    } catch (error) {
+        devLogger.error(`Error fetching approval statistics: ${error.message}`);
+        throw error;
+    }
+}
+
+/**
+ * Actualizar estado de solicitud de aprobación
+ * @param {number} id - ID de la solicitud
+ * @param {string} status - Nuevo estado
+ * @param {string} notes - Notas de revisión
+ * @param {number} reviewedBy - ID de quien revisa
+ * @returns {Promise<Object>} Solicitud actualizada
+ */
+async function updateRequestStatus(id, status, notes = '', reviewedBy = null) {
+    try {
+        const query = `
+            UPDATE pending_approvals
+            SET
+                status = $1,
+                review_notes = $2,
+                reviewed_by = $3,
+                reviewed_at = NOW()
+            WHERE id = $4
+            RETURNING *
+        `;
+
+        const result = await pool.query(query, [status, notes, reviewedBy || 'admin', id]);
+        devLogger.log(`Updated approval ${id} to status: ${status}`);
+        return result.rows[0];
+
+    } catch (error) {
+        devLogger.error(`Error updating approval ${id}: ${error.message}`);
+        throw error;
+    }
+}
+
+/**
+ * ============================================
  * EXPORTACIÓN DE FUNCIONES DAL
  * ============================================
  */
@@ -1496,4 +1608,10 @@ module.exports = {
     getAllTenants,
     createTenant,
     updateTenant,
+
+    // Aprobaciones
+    getPendingApprovals,
+    getApprovalById,
+    getApprovalStatistics,
+    updateRequestStatus,
 };
