@@ -120,7 +120,7 @@
   },
   "lastPlanModeUse": 1762835981232,
   "blockedCommands": {
-    "PERMANENTLY_BLOCKED_16NOV2025": "Por orden del usuario Samuel - BLOQUEAR TODOS los comandos que cierren terminales",
+    "PERMANENTLY_BLOCKED_16NOV2025": "Por orden del usuario Samuel - BLOQUEAR TODOS los comandos que cierren terminales o procesos",
     "exit": "BLOQUEADO - No se permite cerrar terminales",
     "quit": "BLOQUEADO - No se permite cerrar terminales",
     "close": "BLOQUEADO - No se permite cerrar terminales",
@@ -132,7 +132,15 @@
     "killProcess": "BLOQUEADO - No se permite cerrar procesos",
     "shutdown": "BLOQUEADO - No se permite shutdown",
     "halt": "BLOQUEADO - No se permite halt",
-    "reboot": "BLOQUEADO - No se permite reboot"
+    "reboot": "BLOQUEADO - No se permite reboot",
+    "Stop-Process": "BLOQUEADO - PowerShell - No se permite detener procesos",
+    "Stop-Service": "BLOQUEADO - PowerShell - No se permite detener servicios",
+    "npm stop": "BLOQUEADO - No se permite ejecutar npm stop",
+    "node stop": "BLOQUEADO - No se permite ejecutar node stop",
+    "npx kill-port": "BLOQUEADO - No se permite matar puertos",
+    "lsof": "BLOQUEADO - No se permite listar procesos en puertos",
+    "fuser": "BLOQUEADO - No se permite matar procesos por puerto",
+    "Get-Process | Stop-Process": "BLOQUEADO - PowerShell pipeline que mata procesos"
   },
   "securityPolicy": {
     "terminalManagement": "NUNCA cerrar terminales sin autorización explícita del usuario",

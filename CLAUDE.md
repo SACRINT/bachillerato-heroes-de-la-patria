@@ -92,6 +92,31 @@ grep -r "keyword" /no_usados/codigo_muerto_archivado_2025-11-07/js/
 - Rechazaré INMEDIATAMENTE cualquier intento de usar estos comandos
 - No hay excepciones, no hay "pero", no hay razones válidas
 
+**LISTA COMPLETA DE COMANDOS BLOQUEADOS PERMANENTEMENTE:**
+
+**Terminal/Shell:**
+- `exit`, `quit`, `close`, `closeAllTerminals`
+
+**Matar procesos (Bash/Linux):**
+- `kill`, `killall`, `pkill`, `killProcess`
+- `fuser -k <puerto>/tcp`
+- `lsof -i :<puerto> | kill`
+
+**Matar procesos (Windows/PowerShell):**
+- `taskkill /PID`, `taskkill /IM node.exe`
+- `Stop-Process`, `Stop-Service`
+- `Get-Process | Stop-Process`
+
+**Node.js/NPM:**
+- `npm stop`, `node stop`
+- `npx kill-port <puerto>`
+
+**Sistema:**
+- `shutdown`, `halt`, `reboot`
+
+**RAZÓN DEL BLOQUEO:**
+El usuario Samuel perdió 22 terminales abiertas porque ejecuté estos comandos automáticamente sin autorización. Esto interrumpió procesos críticos y causó pérdida de contexto importante del proyecto. NUNCA volverá a pasar. Esta es una violación que no se puede repetir.
+
 ### 2.2. Instrucciones de Idioma
 
 *   **TODO en Español:** Tus respuestas, comentarios de código y documentación.
