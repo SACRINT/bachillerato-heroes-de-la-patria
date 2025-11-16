@@ -15,10 +15,12 @@ const cspConfig = {
         // 1. DEFAULT - Rechaza TODO excepto lo explícitamente permitido
         defaultSrc: ["'self'"],
 
-        // 2. SCRIPTS - Solo archivos JS externos, SIN inline
-        // ❌ ELIMINADO: 'unsafe-inline', 'unsafe-eval'
+        // 2. SCRIPTS - Permite scripts locales e inline dinámicos
+        // ⚠️ NOTA: 'unsafe-inline' necesario porque código usa scripts dinámicos vía JavaScript
+        // TODO: Refactorizar a nonces o módulos dinámicos en futuro
         scriptSrc: [
             "'self'",                          // Scripts locales
+            "'unsafe-inline'",                 // ⚠️ NECESARIO: Scripts dinámicos desde JS (element.innerHTML += '<script>')
             "https://cdn.jsdelivr.net",        // Bootstrap, jQuery, librerías
             "https://cdnjs.cloudflare.com",    // Font Awesome, Chart.js
             "https://unpkg.com",               // Librerías npm
@@ -32,10 +34,12 @@ const cspConfig = {
             "https://vercel.live"              // Vercel analytics
         ],
 
-        // 3. STYLES - Solo CSS externo, SIN inline
-        // ❌ ELIMINADO: 'unsafe-inline'
+        // 3. STYLES - Permite estilos locales e inline dinámicos
+        // ⚠️ NOTA: 'unsafe-inline' necesario porque código usa styles dinámicos vía JavaScript
+        // TODO: Refactorizar a CSS Modules o clases dinámicas en futuro
         styleSrc: [
             "'self'",                          // CSS locales
+            "'unsafe-inline'",                 // ⚠️ NECESARIO: Estilos dinámicos desde JS (element.style.color = 'red')
             "https://cdn.jsdelivr.net",        // Bootstrap CSS
             "https://cdnjs.cloudflare.com",    // Font Awesome CSS
             "https://unpkg.com",               // Librerías CSS
@@ -101,6 +105,7 @@ const cspConfig = {
         // 12. Elementos de script inline (explicitar)
         scriptSrcElem: [
             "'self'",
+            "'unsafe-inline'",                 // ⚠️ NECESARIO: <script> tags dinámicos
             "https://cdn.jsdelivr.net",
             "https://cdnjs.cloudflare.com",
             "https://unpkg.com",
@@ -117,6 +122,7 @@ const cspConfig = {
         // 13. Elementos de estilo inline (explicitar)
         styleSrcElem: [
             "'self'",
+            "'unsafe-inline'",                 // ⚠️ NECESARIO: <style> tags dinámicos e inline styles
             "https://cdn.jsdelivr.net",
             "https://cdnjs.cloudflare.com",
             "https://unpkg.com",
