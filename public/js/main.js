@@ -162,11 +162,16 @@ function createChatbot() {
     document.body.appendChild(chatWindow);
     
     // Event listener para Enter en el input
-    document.getElementById('chatbot-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
+    const chatbotInput = document.getElementById('chatbot-input');
+    if (chatbotInput) {
+        chatbotInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    } else {
+        console.warn('⚠️ [MAIN.JS] chatbot-input no encontrado en el DOM');
+    }
 }
 
 function toggleChatbot() {

@@ -2384,6 +2384,16 @@ function setupAdminLoginEvents() {
     const errorDiv = document.getElementById('adminLoginError');
     const errorText = document.getElementById('adminLoginErrorText');
 
+    // Validar que los elementos existen antes de agregar listeners
+    if (!form) {
+        console.warn('⚠️ [BGE-SECURITY] adminLoginForm no encontrado en el DOM');
+        return;
+    }
+    if (!loginBtn) {
+        console.warn('⚠️ [BGE-SECURITY] adminLoginBtn no encontrado en el DOM');
+        return;
+    }
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 

@@ -934,11 +934,16 @@ class AREducationSystem {
     }
 
     setupAREventListeners() {
-        // Controles principales
-        document.getElementById('start-ar-btn').addEventListener('click', () => this.show3DViewer());
-        document.getElementById('stop-ar-btn').addEventListener('click', () => this.stopARSession());
-        document.getElementById('close-ar-btn').addEventListener('click', () => this.closeARInterface());
-        document.getElementById('close-session').addEventListener('click', () => this.stopARSession());
+        // Controles principales - con validación de existencia
+        const startBtn = document.getElementById('start-ar-btn');
+        const stopBtn = document.getElementById('stop-ar-btn');
+        const closeBtn = document.getElementById('close-ar-btn');
+        const closeSessionBtn = document.getElementById('close-session');
+
+        if (startBtn) startBtn.addEventListener('click', () => this.show3DViewer());
+        if (stopBtn) stopBtn.addEventListener('click', () => this.stopARSession());
+        if (closeBtn) closeBtn.addEventListener('click', () => this.closeARInterface());
+        if (closeSessionBtn) closeSessionBtn.addEventListener('click', () => this.stopARSession());
 
         // Tabs de materias
         document.querySelectorAll('.subject-tab').forEach(tab => {
