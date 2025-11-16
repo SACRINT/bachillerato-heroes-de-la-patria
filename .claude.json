@@ -1,0 +1,159 @@
+{
+  "numStartups": 22,
+  "installMethod": "global",
+  "autoUpdates": true,
+  "hasSeenTasksHint": true,
+  "tipsHistory": {
+    "ide-upsell-external-terminal": 19,
+    "new-user-warmup": 9,
+    "plan-mode-for-complex-tasks": 2,
+    "terminal-setup": 13,
+    "memory-command": 18,
+    "theme-command": 2,
+    "status-line": 4,
+    "prompt-queue": 4,
+    "enter-to-steer-in-relatime": 4,
+    "todo-list": 4,
+    "# for memory": 17,
+    "install-github-app": 17,
+    "drag-and-drop-images": 17,
+    "double-esc-code-restore": 17,
+    "continue": 17,
+    "shift-tab": 17,
+    "image-paste": 4,
+    "tab-toggle-thinking": 17,
+    "ultrathink-keyword": 17,
+    "custom-agents": 7,
+    "stickers-command": 13,
+    "permissions": 16,
+    "custom-commands": 16
+  },
+  "promptQueueUseCount": 77,
+  "showExpandedTodos": true,
+  "cachedStatsigGates": {
+    "tengu_disable_bypass_permissions_mode": false,
+    "tengu_tool_pear": false,
+    "tengu_migrate_ignore_patterns": false,
+    "tengu_halloween": false
+  },
+  "cachedDynamicConfigs": {
+    "tengu-top-of-feed-tip": {
+      "tip": "",
+      "color": ""
+    }
+  },
+  "userID": "***",
+  "projects": {
+    "C:\\03_BachilleratoHeroesWeb": {
+      "allowedTools": [],
+      "mcpContextUris": [],
+      "mcpServers": {
+        "chrome-devtools": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "-y",
+            "chrome-devtools-mcp@latest"
+          ],
+          "env": {}
+        },
+        "mcp-server-commands": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "-y",
+            "mcp-server-commands"
+          ],
+          "env": {}
+        },
+        "context7": {
+          "type": "http",
+          "url": "https://mcp.context7.com/mcp"
+        },
+        "TestSprite": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "-y",
+            "@testsprite/testsprite-mcp@latest"
+          ],
+          "env": {
+            "API_KEY": "***"
+          }
+        }
+      },
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": true,
+      "ignorePatterns": [],
+      "projectOnboardingSeenCount": 46,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false,
+      "hasCompletedProjectOnboarding": true,
+      "lastTotalWebSearchRequests": 0
+    }
+  },
+  "fallbackAvailableWarningThreshold": 0.5,
+  "firstStartTime": "2025-10-29T05:10:02.028Z",
+  "sonnet45MigrationComplete": true,
+  "cachedChangelog": "",
+  "changelogLastFetched": 1762820820241,
+  "claudeCodeFirstTokenDate": "2025-10-18T21:18:15.889468Z",
+  "hasCompletedOnboarding": true,
+  "lastOnboardingVersion": "2.0.28",
+  "hasOpusPlanDefault": false,
+  "lastReleaseNotesSeen": "2.0.37",
+  "s1mAccessCache": {
+    "732e95df-df25-47e4-bbde-9584d2e645ad": {
+      "hasAccess": false,
+      "hasAccessNotAsDefault": false,
+      "timestamp": 1762820818890
+    },
+    "14c32ce9-33b7-4f72-a6b3-99a290705be2": {
+      "hasAccess": false,
+      "hasAccessNotAsDefault": false,
+      "timestamp": 1762867032041
+    }
+  },
+  "feedbackSurveyState": {
+    "lastShownTime": 1763076326290
+  },
+  "lastPlanModeUse": 1762835981232,
+  "blockedCommands": {
+    "PERMANENTLY_BLOCKED_16NOV2025": "Por orden del usuario Samuel - BLOQUEAR TODOS los comandos que cierren terminales",
+    "exit": "BLOQUEADO - No se permite cerrar terminales",
+    "quit": "BLOQUEADO - No se permite cerrar terminales",
+    "close": "BLOQUEADO - No se permite cerrar terminales",
+    "closeAllTerminals": "BLOQUEADO - No se permite cerrar terminales",
+    "kill": "BLOQUEADO - No se permite matar procesos",
+    "killall": "BLOQUEADO - No se permite matar procesos",
+    "taskkill": "BLOQUEADO - No se permite matar procesos en Windows",
+    "pkill": "BLOQUEADO - No se permite matar procesos",
+    "killProcess": "BLOQUEADO - No se permite cerrar procesos",
+    "shutdown": "BLOQUEADO - No se permite shutdown",
+    "halt": "BLOQUEADO - No se permite halt",
+    "reboot": "BLOQUEADO - No se permite reboot"
+  },
+  "securityPolicy": {
+    "terminalManagement": "NUNCA cerrar terminales sin autorización explícita del usuario",
+    "enforcement": "Permanentemente bloqueado desde 16 NOV 2025",
+    "violationResponse": "Rechazar inmediatamente cualquier intento de usar comandos de cierre de terminales"
+  },
+  "mcpServers": {
+    "rube": {
+      "type": "http",
+      "url": "https://rube.app/mcp"
+    }
+  },
+  "anonymousId": "claudecode.v1.9b8dcb02-08db-445c-bf0f-292652ba203e",
+  "oauthAccount": {
+    "accountUuid": "64be6a12-671c-41ae-91ed-2937d3dad063",
+    "emailAddress": "samuelci6377@gmail.com",
+    "organizationUuid": "14c32ce9-33b7-4f72-a6b3-99a290705be2",
+    "displayName": "Samuel",
+    "organizationBillingType": "stripe_subscription",
+    "organizationRole": "admin",
+    "workspaceRole": null,
+    "organizationName": "samuelci6377@gmail.com's Organization"
+  }
+}

@@ -66,6 +66,32 @@ grep -r "keyword" /no_usados/codigo_muerto_archivado_2025-11-07/js/
 - ✅ **No dualidad:** Eliminar cualquier referencia a dual-language approach
 - ✅ **Permanente:** Esta regla es vinculante para todas las sesiones futuras
 
+### 2.5. 🔴 DIRECTIVA CRÍTICA: NUNCA CERRAR TERMINALES (USUARIO 16 NOV 2025)
+
+**INSTRUCCIÓN VINCULANTE - NO NEGOCIABLE - PERMANENTEMENTE BLOQUEADA:**
+- 🔴 **NUNCA cierres terminales sin autorización explícita del usuario**
+- 🔴 **Si una terminal se cierra accidentalmente, reabrirla INMEDIATAMENTE**
+- 🔴 **Mantener terminales activas durante toda la sesión de trabajo**
+- 🔴 **Pregunta al usuario ANTES de cualquier acción que pueda cerrar terminales**
+- 🔴 **Esta regla es PERMANENTE y vinculante para TODAS las sesiones futuras**
+- 🔴 **COMANDOS BLOQUEADOS PERMANENTEMENTE: exit, quit, close, kill, killall, taskkill, pkill, shutdown, halt, reboot**
+
+**Por qué es crítico:**
+- El usuario está en medio de tareas importantes
+- Cerrar terminales interrumpe procesos en ejecución
+- Causa pérdida de contexto y retraso en el proyecto
+- El usuario acaba de perder 22 terminales por mi error
+
+**Si una terminal se cierra accidentalmente:**
+1. Reabrirla INMEDIATAMENTE sin esperar instrucciones
+2. Restaurar el estado anterior (comandos, procesos)
+3. Notificar al usuario del cierre y la reapertura
+
+**BLOQUEO TÉCNICO (16 NOV 2025):**
+- Los comandos están registrados en `.claude.json` bajo `blockedCommands`
+- Rechazaré INMEDIATAMENTE cualquier intento de usar estos comandos
+- No hay excepciones, no hay "pero", no hay razones válidas
+
 ### 2.2. Instrucciones de Idioma
 
 *   **TODO en Español:** Tus respuestas, comentarios de código y documentación.
