@@ -125,15 +125,22 @@ const PORT = process.env.PORT || 3000;
 
 app.set('trust proxy', 1);
 
-// ❌ CSP DESHABILITADO - Para desarrollo local sin restricciones
+// ✅ SECURITY MIDDLEWARE PRIMERO - ANTES DE HELMET (16 NOV 2025)
+// Registrar seguridad ANTES de helmet para asegurar que los headers CSP no sean overridden
+app.use(securityMiddleware);
+
+// ✅ CSP HABILITADO EN HELMET - FIJO 16 NOV 2025
+// Usar securityMiddleware + cspConfig para desarrollo local
 // En producción (Vercel), el CSP se define en vercel.json
-// Helmet CSP causaba conflictos con TinyMCE y scripts inline
-// FECHA: 14 Nov 2025 - Arquitectura corregida por diagnóstico definitivo
+// FECHA: 16 Nov 2025 - Habilitado para desarrollo local, TinyMCE funcional
 app.use(helmet({
     permissionsPolicy: {
         camera: ["'self'"],
     },
-    contentSecurityPolicy: false  // Deshabilitado - vercel.json maneja CSP en producción
+    contentSecurityPolicy: {
+        directives: cspConfig.directives,
+        reportOnly: cspConfig.reportOnly
+    }
 }));
 
 // CORS Configuration
@@ -216,9 +223,6 @@ app.use(session({
         maxAge: 30 * 24 * 60 * 60 * 1000               // 30 días (como recomendaste)
     }
 }));
-
-// Security Middleware - ✅ CONFIGURADO para no interferir con archivos estáticos
-app.use(securityMiddleware);
 
 // --- UNIFIED STATIC FILE SERVING FROM /public ---
 devLogger.log('🌍 Configurando servidor de archivos estáticos...');
