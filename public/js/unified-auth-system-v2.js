@@ -35,10 +35,12 @@ class UnifiedAuthSystem {
         this.config = {
             apiBaseUrl: config.apiBaseUrl || '/api',
             googleClientId: config.googleClientId || null, // Se carga de forma asíncrona
-            enableDemo: config.enableDemo !== false, // Demo como fallback
             sessionTimeout: config.sessionTimeout || 30 * 60 * 1000, // 30 minutos
             ...config
         };
+
+        // ✅ NO hay demo login - TODO debe venir de la base de datos PostgreSQL
+        // El usuario explícitamente rechazó hardcoded credentials
 
         this.state = {
             currentUser: null,
@@ -825,23 +827,31 @@ class ManualLoginManager {
         this.setLoading(true);
 
         try {
+            // ✅ CORRECCIÓN CRÍTICA: Usar 'username' en lugar de 'email'
+            // El endpoint /api/auth/login espera { username, password, rememberMe }
             const response = await fetch(`${this.auth.config.apiBaseUrl}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({
+                    username: email,  // ✅ El campo se llama 'username' en el backend
+                    password: password,
+                    rememberMe: rememberMe
+                })
             });
 
             const data = await response.json();
 
             if (response.ok && data.success) {
-                // Login exitoso
-                await this.auth.processLogin(data.user, data.token, rememberMe);
+                // ✅ CORRECCIÓN CRÍTICA: El endpoint devuelve tokens.accessToken, no token
+                // Estructura: { success, message, user, tokens: { accessToken, refreshToken, ... }, sessionInfo }
+                const accessToken = data.tokens?.accessToken || data.token;
+                await this.auth.processLogin(data.user, accessToken, rememberMe);
             } else {
-                this.auth.showError(data.error || 'Error en autenticación');
+                this.auth.showError(data.error || data.message || 'Credenciales inválidas');
             }
         } catch (error) {
             debugLog.error('ERROR', 'Error en login:', error);
-            this.auth.showError('Error de conexión');
+            this.auth.showError('Error de conexión con el servidor');
         } finally {
             this.setLoading(false);
         }
