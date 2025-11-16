@@ -588,29 +588,44 @@ async function handleGetBolsaTrabajo(req, res) {
 }
 
 async function handleFinances(req, res) {
+    let client;
     try {
         let ingresos = [];
         let gastos = [];
         let pagosPendientes = [];
 
         try {
-            const client = await pool.connect();
+            client = await pool.connect();
 
-            // Fetch ingresos
-            const ingresosResult = await client.query('SELECT * FROM ingresos');
-            ingresos = ingresosResult.rows;
+            // Fetch ingresos (con timeout implícito de 30s del pool)
+            try {
+                const ingresosResult = await client.query('SELECT * FROM ingresos');
+                ingresos = ingresosResult.rows;
+            } catch (err) {
+                console.warn('⚠️ [FINANCES] Error fetching ingresos, using fallback:', err.message);
+                ingresos = [];
+            }
 
-            // Fetch gastos
-            const gastosResult = await client.query('SELECT * FROM gastos');
-            gastos = gastosResult.rows;
+            // Fetch gastos (con timeout implícito de 30s del pool)
+            try {
+                const gastosResult = await client.query('SELECT * FROM gastos');
+                gastos = gastosResult.rows;
+            } catch (err) {
+                console.warn('⚠️ [FINANCES] Error fetching gastos, using fallback:', err.message);
+                gastos = [];
+            }
 
-            // Fetch pagos_pendientes
-            const pagosPendientesResult = await client.query('SELECT * FROM pagos_pendientes');
-            pagosPendientes = pagosPendientesResult.rows;
+            // Fetch pagos_pendientes (con timeout implícito de 30s del pool)
+            try {
+                const pagosPendientesResult = await client.query('SELECT * FROM pagos_pendientes');
+                pagosPendientes = pagosPendientesResult.rows;
+            } catch (err) {
+                console.warn('⚠️ [FINANCES] Error fetching pagos_pendientes, using fallback:', err.message);
+                pagosPendientes = [];
+            }
 
-            client.release();
         } catch (dbError) {
-            console.warn('⚠️ [FINANCES] Database tables not found, using demo data:', dbError.message);
+            console.warn('⚠️ [FINANCES] Database connection error, using demo data:', dbError.message);
             // Use demo data if tables don't exist
             ingresos = [
                 { id: 1, concepto: 'Colegiaturas', monto: 15000, fecha: new Date().toISOString() },
@@ -623,6 +638,11 @@ async function handleFinances(req, res) {
             pagosPendientes = [
                 { id: 1, estudiante: 'Juan García', monto: 1500, fecha_vencimiento: new Date().toISOString() }
             ];
+        } finally {
+            // IMPORTANTE: Liberar la conexión siempre, incluso en caso de error
+            if (client) {
+                client.release();
+            }
         }
 
         // Calculate resumen
