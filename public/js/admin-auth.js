@@ -70,11 +70,17 @@ class AdminAuth {
 
     // Configurar event listeners
     setupEventListeners() {
-        // Event listener para el formulario de autenticación
-        document.addEventListener('DOMContentLoaded', () => {
+        // ✅ MEJORADO: Agregar listeners inmediatamente y también al DOMContentLoaded para máxima compatibilidad
+        const setupFormListeners = () => {
             const authForm = document.getElementById('adminPanelAuthForm');
             if (authForm) {
+                // Remover listeners previos si existen (para evitar duplicados)
+                authForm.removeEventListener('submit', (e) => this.handleLogin(e));
+                // Agregar listener con binding correcto
                 authForm.addEventListener('submit', (e) => this.handleLogin(e));
+                console.log('✅ [ADMIN-AUTH] Formulario de autenticación configurado correctamente');
+            } else {
+                console.warn('⚠️ [ADMIN-AUTH] adminPanelAuthForm no encontrado en el DOM');
             }
 
             // Auto-logout cuando se cierra la ventana
@@ -83,7 +89,18 @@ class AdminAuth {
                     this.updateSessionTimestamp();
                 }
             });
-        });
+        };
+
+        // Ejecutar inmediatamente si DOM está listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupFormListeners);
+        } else {
+            // DOM ya está listo, ejecutar inmediatamente
+            setupFormListeners();
+        }
+
+        // También ejecutar después de un pequeño delay para mayor robustez
+        setTimeout(setupFormListeners, 100);
     }
 
     // Manejar el login
