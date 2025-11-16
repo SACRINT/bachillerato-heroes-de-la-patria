@@ -15,6 +15,10 @@
 const { pool } = require('../config/database');
 const devLogger = require('../utils/devLogger');
 
+// GDPR Logging - Debug condicional y sanitización
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
+
+
 /**
  * ============================================
  * FUNCIONES DE ACCESO A DATOS - ESTUDIANTES

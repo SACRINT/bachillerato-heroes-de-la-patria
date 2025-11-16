@@ -11,7 +11,10 @@ const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-const devLog = require('../utils/devLogger'); // 🔐 Logging seguro (GDPR compliant)
+
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
 
 // Configuración de email
 const transporter = nodemailer.createTransport({
@@ -56,7 +59,7 @@ router.post('/cv', [
     const client = await pool.connect();
 
     try {
-        devLog.log('[BOLSA-TRABAJO CV v2] Recibiendo CV');
+        debugLog.log('BOLSA_TRABAJO', '[BOLSA-TRABAJO CV v2] Recibiendo CV');
 
         // 🎯 PASO 1: Generar token de confirmación
         const confirmationToken = crypto.randomBytes(32).toString('hex');
@@ -93,7 +96,7 @@ router.post('/cv', [
 
         const finalToken = result.rows[0].confirmation_token;
 
-        devLog.log('[BOLSA-TRABAJO CV v2] Datos guardados en BD temporal - Esperando confirmación');
+        debugLog.log('BOLSA_TRABAJO', '[BOLSA-TRABAJO CV v2] Datos guardados en BD temporal - Esperando confirmación');
 
         // 🎯 PASO 4: Enviar email de confirmación
         const confirmationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/bolsa-trabajo.html#confirm-email`;
@@ -152,7 +155,7 @@ router.post('/cv', [
             html: htmlContent
         });
 
-        devLog.log('[BOLSA-TRABAJO CV v2] Email de confirmación enviado');
+        debugLog.log('BOLSA_TRABAJO', '[BOLSA-TRABAJO CV v2] Email de confirmación enviado');
 
         // 🎯 PASO 5: Responder al cliente (datos aún NO guardados en pendientes_aprobacion)
         res.status(201).json({
@@ -168,7 +171,7 @@ router.post('/cv', [
         });
 
     } catch (error) {
-        devLog.error('[BOLSA-TRABAJO CV v2] Error al procesar solicitud de CV', error);
+        debugLog.error('BOLSA_TRABAJO', '[BOLSA-TRABAJO CV v2] Error al procesar solicitud de CV', sanitizeError(error, 'bolsa-trabajo'));
 
         res.status(500).json({
             success: false,
@@ -202,7 +205,7 @@ router.post('/confirm-email/:token', async (req, res) => {
     }
 
     try {
-        devLog.log('[BOLSA-TRABAJO CONFIRM v2] Confirmando email');
+        debugLog.log('BOLSA_TRABAJO', '[BOLSA-TRABAJO CONFIRM v2] Confirmando email');
 
         // 1️⃣ PASO 1: Buscar datos temporales en BD
         const selectQuery = `
@@ -271,7 +274,7 @@ router.post('/confirm-email/:token', async (req, res) => {
 
                 await client.query('COMMIT');
 
-                devLog.log('[BOLSA-TRABAJO CONFIRM v2] Email confirmado y registro actualizado');
+                debugLog.log('BOLSA_TRABAJO', '[BOLSA-TRABAJO CONFIRM v2] Email confirmado y registro actualizado');
 
                 res.status(200).json({
                     success: true,
@@ -319,7 +322,7 @@ router.post('/confirm-email/:token', async (req, res) => {
 
                 await client.query('COMMIT');
 
-                devLog.log('[BOLSA-TRABAJO CONFIRM v2] Email confirmado y registro guardado');
+                debugLog.log('BOLSA_TRABAJO', '[BOLSA-TRABAJO CONFIRM v2] Email confirmado y registro guardado');
 
                 res.status(200).json({
                     success: true,
@@ -340,7 +343,7 @@ router.post('/confirm-email/:token', async (req, res) => {
         }
 
     } catch (error) {
-        devLog.error('[BOLSA-TRABAJO CONFIRM v2] Error al confirmar email', error);
+        debugLog.error('BOLSA_TRABAJO', '[BOLSA-TRABAJO CONFIRM v2] Error al confirmar email', sanitizeError(error, 'bolsa-trabajo'));
         res.status(500).json({
             success: false,
             error: 'Error al confirmar email. Por favor intenta nuevamente.',
@@ -387,7 +390,7 @@ router.get('/cv', async (req, res) => {
         });
 
     } catch (error) {
-        devLog.error('Error al obtener CVs', error);
+        debugLog.error('BOLSA_TRABAJO', 'Error al obtener CVs', sanitizeError(error, 'bolsa-trabajo'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener los datos'
@@ -456,7 +459,7 @@ router.get('/cv/stats', async (req, res) => {
         });
 
     } catch (error) {
-        devLog.error('Error al obtener estadísticas', error);
+        debugLog.error('BOLSA_TRABAJO', 'Error al obtener estadísticas', sanitizeError(error, 'bolsa-trabajo'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -486,7 +489,7 @@ router.get('/cv/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLog.error('Error al obtener CV', error);
+        debugLog.error('BOLSA_TRABAJO', 'Error al obtener CV', sanitizeError(error, 'bolsa-trabajo'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener el CV'
@@ -537,7 +540,7 @@ router.put('/cv/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLog.error('Error al actualizar CV', error);
+        debugLog.error('BOLSA_TRABAJO', 'Error al actualizar CV', sanitizeError(error, 'bolsa-trabajo'));
         res.status(500).json({
             success: false,
             error: 'Error al actualizar el CV'
@@ -567,7 +570,7 @@ router.delete('/cv/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLog.error('Error al eliminar CV', error);
+        debugLog.error('BOLSA_TRABAJO', 'Error al eliminar CV', sanitizeError(error, 'bolsa-trabajo'));
         res.status(500).json({
             success: false,
             error: 'Error al eliminar el CV'
@@ -587,7 +590,7 @@ router.get('/', async (req, res) => {
     const { estado, limit = 50, offset = 0 } = req.query;
 
     try {
-        devLog.log('[BOLSA-TRABAJO] Obteniendo lista de candidatos');
+        debugLog.log('BOLSA_TRABAJO', '[BOLSA-TRABAJO] Obteniendo lista de candidatos');
 
         let query = 'SELECT * FROM bolsa_trabajo';
         const params = [];
@@ -609,7 +612,7 @@ router.get('/', async (req, res) => {
         const countParams = estado ? [estado] : [];
         const countResult = await pool.query(countQuery, countParams);
 
-        devLog.log('[BOLSA-TRABAJO] Candidatos encontrados');
+        debugLog.log('BOLSA_TRABAJO', '[BOLSA-TRABAJO] Candidatos encontrados');
 
         res.json({
             success: true,
@@ -620,7 +623,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        devLog.error('[BOLSA-TRABAJO] Error al obtener candidatos', error);
+        debugLog.error('BOLSA_TRABAJO', '[BOLSA-TRABAJO] Error al obtener candidatos', sanitizeError(error, 'bolsa-trabajo'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener los datos',
@@ -635,7 +638,7 @@ router.get('/', async (req, res) => {
  */
 router.get('/stats/general', async (req, res) => {
     try {
-        devLog.log('📊 [BOLSA-TRABAJO] Obteniendo estadísticas generales...');
+        debugLog.log('BOLSA_TRABAJO', '📊 [BOLSA-TRABAJO] Obteniendo estadísticas generales...');
 
         const query = `
             SELECT
@@ -690,7 +693,7 @@ router.get('/stats/general', async (req, res) => {
             byExperiencia
         };
 
-        devLog.log('✅ [BOLSA-TRABAJO] Estadísticas obtenidas');
+        debugLog.log('BOLSA_TRABAJO', '✅ [BOLSA-TRABAJO] Estadísticas obtenidas');
 
         res.json({
             success: true,
@@ -698,7 +701,7 @@ router.get('/stats/general', async (req, res) => {
         });
 
     } catch (error) {
-        devLog.error('❌ [BOLSA-TRABAJO] Error al obtener estadísticas:', error);
+        debugLog.error('BOLSA_TRABAJO', '❌ [BOLSA-TRABAJO] Error al obtener estadísticas:', sanitizeError(error, 'bolsa-trabajo'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas',
@@ -715,7 +718,7 @@ router.get('/pending-approvals', async (req, res) => {
     const { status = 'pendiente', limit = 50, offset = 0, email_confirmado = true } = req.query;
 
     try {
-        devLog.log(`📋 [BOLSA-TRABAJO] Obteniendo solicitudes pendientes de aprobación...`);
+        debugLog.log('BOLSA_TRABAJO', `📋 [BOLSA-TRABAJO] Obteniendo solicitudes pendientes de aprobación...`);
 
         let query = `
             SELECT
@@ -775,7 +778,7 @@ router.get('/pending-approvals', async (req, res) => {
 
         const countResult = await pool.query(countQuery, countParams);
 
-        devLog.log(`✅ [BOLSA-TRABAJO] ${result.rows.length} solicitudes encontradas`);
+        debugLog.log('BOLSA_TRABAJO', `✅ [BOLSA-TRABAJO] ${result.rows.length} solicitudes encontradas`);
 
         res.json({
             success: true,
@@ -786,7 +789,7 @@ router.get('/pending-approvals', async (req, res) => {
         });
 
     } catch (error) {
-        devLog.error('❌ [BOLSA-TRABAJO] Error al obtener solicitudes pendientes:', error);
+        debugLog.error('BOLSA_TRABAJO', '❌ [BOLSA-TRABAJO] Error al obtener solicitudes pendientes:', sanitizeError(error, 'bolsa-trabajo'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener las solicitudes',
@@ -816,7 +819,7 @@ router.post('/approve-solicitud/:id', [
     }
 
     try {
-        devLog.log(`📋 [BOLSA-TRABAJO] Procesando solicitud ID ${id} con acción: ${action}`);
+        debugLog.log('BOLSA_TRABAJO', `📋 [BOLSA-TRABAJO] Procesando solicitud ID ${id} con acción: ${action}`);
 
         // 1. Obtener la solicitud pendiente
         const getQuery = `
@@ -894,9 +897,9 @@ router.post('/approve-solicitud/:id', [
                 true
             ]);
 
-            devLog.log(`✅ [BOLSA-TRABAJO] Solicitud aprobada y guardada en bolsa_trabajo: ID ${boletinResult.rows[0].id}`);
+            debugLog.log('BOLSA_TRABAJO', `✅ [BOLSA-TRABAJO] Solicitud aprobada y guardada en bolsa_trabajo: ID ${boletinResult.rows[0].id}`);
         } else {
-            devLog.log(`❌ [BOLSA-TRABAJO] Solicitud rechazada: ID ${solicitud.id}`);
+            debugLog.log('BOLSA_TRABAJO', `❌ [BOLSA-TRABAJO] Solicitud rechazada: ID ${solicitud.id}`);
         }
 
         res.status(200).json({
@@ -915,7 +918,7 @@ router.post('/approve-solicitud/:id', [
         });
 
     } catch (error) {
-        devLog.error('❌ [BOLSA-TRABAJO] Error al procesar solicitud:', error);
+        debugLog.error('BOLSA_TRABAJO', '❌ [BOLSA-TRABAJO] Error al procesar solicitud:', sanitizeError(error, 'bolsa-trabajo'));
         res.status(500).json({
             success: false,
             error: 'Error al procesar la solicitud',

@@ -1,4 +1,15 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    // Fallback si debug-logger.js no está cargado
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * 🎮 SISTEMA DE GAMIFICACIÓN BGE
  * Sistema completo de logros, puntuaciones y mecánicas educativas
  * Versión 2.0 - Integración con backend real
@@ -18,7 +29,7 @@ class GamificationSystem {
     }
 
     async init() {
-        console.log('🎮 [GAMIFICATION] Inicializando sistema de gamificación...');
+        debugLog.log('GAMIFICATION', '🎮 [GAMIFICATION] Inicializando sistema de gamificación...');
 
         try {
             // Verificar autenticación
@@ -26,7 +37,7 @@ class GamificationSystem {
             const userData = localStorage.getItem('userData');
 
             if (!token || !userData) {
-                console.log('ℹ️ [GAMIFICATION] Usuario no autenticado, modo limitado');
+                debugLog.log('GAMIFICATION', 'ℹ️ [GAMIFICATION] Usuario no autenticado, modo limitado');
                 return;
             }
 
@@ -37,9 +48,9 @@ class GamificationSystem {
             this.setupEventListeners();
             this.startPeriodicUpdates();
 
-            console.log('✅ [GAMIFICATION] Sistema inicializado correctamente');
+            debugLog.log('GAMIFICATION', '✅ [GAMIFICATION] Sistema inicializado correctamente');
         } catch (error) {
-            console.error('❌ [GAMIFICATION] Error inicializando:', error);
+            debugLog.error('GAMIFICATION', '❌ [GAMIFICATION] Error inicializando:', error);
         }
     }
 
@@ -56,7 +67,7 @@ class GamificationSystem {
             }
         } catch (error) {
             // ✅ CORRECCIÓN: API de gamificación aún no implementada, usar datos demo
-            console.log('ℹ️ [GAMIFICATION] API no disponible aún, usando modo demo');
+            debugLog.log('GAMIFICATION', 'ℹ️ [GAMIFICATION] API no disponible aún, usando modo demo');
             this.userProfile = this.getDemoProfile();
             this.updateProfileDisplay();
         }
@@ -90,7 +101,7 @@ class GamificationSystem {
             }
         } catch (error) {
             // ✅ CORRECCIÓN: API de gamificación aún no implementada
-            console.log('ℹ️ [GAMIFICATION] Desafíos API no disponible, usando modo demo');
+            debugLog.log('GAMIFICATION', 'ℹ️ [GAMIFICATION] Desafíos API no disponible, usando modo demo');
             this.dailyChallenges = [];
         }
     }
@@ -104,7 +115,7 @@ class GamificationSystem {
             }
         } catch (error) {
             // ✅ CORRECCIÓN: API de gamificación aún no implementada
-            console.log('ℹ️ [GAMIFICATION] Leaderboard API no disponible, usando modo demo');
+            debugLog.log('GAMIFICATION', 'ℹ️ [GAMIFICATION] Leaderboard API no disponible, usando modo demo');
             this.leaderboard = [];
         }
     }
@@ -118,7 +129,7 @@ class GamificationSystem {
             }
         } catch (error) {
             // ✅ CORRECCIÓN: API de gamificación aún no implementada
-            console.log('ℹ️ [GAMIFICATION] Logros API no disponible, usando modo demo');
+            debugLog.log('GAMIFICATION', 'ℹ️ [GAMIFICATION] Logros API no disponible, usando modo demo');
             this.achievements = [];
         }
     }
@@ -629,7 +640,7 @@ class GamificationSystem {
                 this.updateFloatingWidget();
             }
         } catch (error) {
-            console.error('❌ Error otorgando puntos:', error);
+            debugLog.error('ERROR', '❌ Error otorgando puntos:', error);
         }
     }
 
@@ -654,7 +665,7 @@ class GamificationSystem {
                 this.updateFloatingWidget();
             }
         } catch (error) {
-            console.error('❌ Error completando desafío:', error);
+            debugLog.error('ERROR', '❌ Error completando desafío:', error);
         }
     }
 
@@ -813,4 +824,4 @@ document.addEventListener('userAuthenticated', () => {
     }
 });
 
-console.log('🎮 [GAMIFICATION] Sistema de gamificación cargado');
+debugLog.log('GAMIFICATION', '🎮 [GAMIFICATION] Sistema de gamificación cargado');

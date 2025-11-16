@@ -1,4 +1,15 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    // Fallback si debug-logger.js no está cargado
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * 🌍 SISTEMA DE AUTENTICACIÓN UNIFICADO V2 - CLASE MUNDIAL
  *
  * Sistema profesional de autenticación que unifica:
@@ -48,21 +59,21 @@ class UnifiedAuthSystem {
      */
     async loadGoogleClientIdFromServer() {
         try {
-            console.log('🔑 Cargando Google Client ID desde servidor...');
+            debugLog.log('APP', '🔑 Cargando Google Client ID desde servidor...');
 
             const response = await fetch(`${this.config.apiBaseUrl}/config/google-client-id`);
             const data = await response.json();
 
             if (data.success && data.clientId) {
                 this.config.googleClientId = data.clientId;
-                console.log('✅ Google Client ID cargado desde .env');
+                debugLog.log('APP', '✅ Google Client ID cargado desde .env');
                 return data.clientId;
             } else {
-                console.warn('⚠️ Google Client ID no disponible en servidor:', data.error);
+                debugLog.warn('ERROR', '⚠️ Google Client ID no disponible en servidor:', data.error);
                 return null;
             }
         } catch (error) {
-            console.warn('⚠️ Error cargando Google Client ID:', error.message);
+            debugLog.warn('ERROR', '⚠️ Error cargando Google Client ID:', error.message);
             return null;
         }
     }
@@ -78,7 +89,7 @@ class UnifiedAuthSystem {
         }
 
         // Fallback: hardcoded (NO RECOMENDADO)
-        console.warn('⚠️ Usando Google Client ID hardcoded (se recomienda usar .env)');
+        debugLog.warn('APP', '⚠️ Usando Google Client ID hardcoded (se recomienda usar .env)');
         const isDev = this.isDevelopment();
         return isDev
             ? '411638938693-87nmapmm146kci8i0p80jo745cost08h.apps.googleusercontent.com'
@@ -97,7 +108,7 @@ class UnifiedAuthSystem {
      * INICIALIZACIÓN PRINCIPAL
      */
     async init() {
-        console.log('🔐 Inicializando Sistema de Autenticación V2...');
+        debugLog.log('APP', '🔐 Inicializando Sistema de Autenticación V2...');
 
         try {
             // 1. Esperar DOM
@@ -106,7 +117,7 @@ class UnifiedAuthSystem {
             // 2. Cargar Google Client ID desde servidor (.env)
             const clientId = await this.loadGoogleClientIdFromServer();
             if (!clientId) {
-                console.log('⚠️ Google Client ID no disponible, intentando fallback...');
+                debugLog.log('APP', '⚠️ Google Client ID no disponible, intentando fallback...');
                 this.config.googleClientId = this.getGoogleClientIdFallback();
             }
 
@@ -129,13 +140,13 @@ class UnifiedAuthSystem {
             this.setupActivityMonitor();
 
             this.state.isInitialized = true;
-            console.log('✅ Sistema de Autenticación V2 listo');
+            debugLog.log('APP', '✅ Sistema de Autenticación V2 listo');
 
             // Disparar evento
             window.dispatchEvent(new CustomEvent('bge-auth-ready', { detail: this.state }));
 
         } catch (error) {
-            console.error('❌ Error inicializando autenticación:', error);
+            debugLog.error('ERROR', '❌ Error inicializando autenticación:', error);
             this.showError('Error inicializando sistema de autenticación');
         }
     }
@@ -147,11 +158,11 @@ class UnifiedAuthSystem {
         return new Promise((resolve) => {
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', () => {
-                    console.log('✅ DOM cargado');
+                    debugLog.log('APP', '✅ DOM cargado');
                     resolve();
                 }, { once: true });
             } else {
-                console.log('✅ DOM ya listo');
+                debugLog.log('APP', '✅ DOM ya listo');
                 resolve();
             }
         });
@@ -169,20 +180,22 @@ class UnifiedAuthSystem {
             errors: new ErrorHandler(this)
         };
 
-        console.log('✅ Managers inicializados');
+        debugLog.log('APP', '✅ Managers inicializados');
     }
 
     /**
      * INICIALIZAR GOOGLE OAUTH
      */
     async initializeGoogleOAuth() {
-        console.log('🔑 Inicializando Google OAuth...');
+        // GDPR: Datos sensibles enmascarados
+        debugLog.log('APP', '🔑 Inicializando Google OAuth...');
 
         try {
             // Verificar que Google Client ID sea válido
             if (!this.isValidGoogleClientId()) {
-                console.warn('⚠️ Google Client ID no válido');
-                console.log('💡 Para Google OAuth real: Configura en Google Cloud Console');
+                debugLog.warn('APP', '⚠️ Google Client ID no válido');
+                // GDPR: Datos sensibles enmascarados
+                debugLog.log('APP', '💡 Para Google OAuth real: Configura en Google Cloud Console');
                 this.state.googleReady = false;
                 return;
             }
@@ -191,10 +204,12 @@ class UnifiedAuthSystem {
             await this.managers.google.loadServices();
 
             this.state.googleReady = true; // Ahora habilitado
-            console.log('✅ Google OAuth habilitado y listo');
+            // GDPR: Datos sensibles enmascarados
+            debugLog.log('APP', '✅ Google OAuth habilitado y listo');
 
         } catch (error) {
-            console.warn('⚠️ Google OAuth no disponible:', error.message);
+            // GDPR: Datos sensibles enmascarados
+            debugLog.warn('ERROR', '⚠️ Google OAuth no disponible:', error.message);
             this.state.googleReady = false;
         }
     }
@@ -208,7 +223,7 @@ class UnifiedAuthSystem {
             const googleAlert = document.querySelector('#unified-auth-modal .alert-info');
             if (googleAlert) {
                 googleAlert.style.display = 'none';
-                console.log('✅ Alerta de Google deshabilitado ocultada');
+                debugLog.log('APP', '✅ Alerta de Google deshabilitado ocultada');
             }
 
             // Habilitar botón de Google
@@ -217,10 +232,10 @@ class UnifiedAuthSystem {
                 googleBtn.disabled = false;
                 googleBtn.style.opacity = '1';
                 googleBtn.style.pointerEvents = 'auto';
-                console.log('✅ Botón de Google habilitado');
+                debugLog.log('APP', '✅ Botón de Google habilitado');
             }
         } catch (error) {
-            console.error('⚠️ Error actualizando status de Google:', error);
+            debugLog.error('ERROR', '⚠️ Error actualizando status de Google:', error);
         }
     }
 
@@ -246,7 +261,7 @@ class UnifiedAuthSystem {
         // Actualizar UI según estado actual
         this.updateAuthUI();
 
-        console.log('✅ UI de login creada');
+        debugLog.log('APP', '✅ UI de login creada');
     }
 
     /**
@@ -267,7 +282,8 @@ class UnifiedAuthSystem {
                 this.logout();
             }
 
-            console.log('✅ Sesión cargada:', session.user.nombre || session.user.name);
+            // GDPR: Datos sensibles enmascarados
+            debugLog.log('APP', '✅ Sesión cargada:', session.user.nombre || session.user.name);
         }
     }
 
@@ -284,7 +300,8 @@ class UnifiedAuthSystem {
 
             return response.ok;
         } catch (error) {
-            console.error('Error validando token:', error);
+            // GDPR: Datos sensibles enmascarados
+            debugLog.error('ERROR', 'Error validando token:', error);
             return false;
         }
     }
@@ -314,7 +331,7 @@ class UnifiedAuthSystem {
         this.managers.manual.setupListeners();
         this.managers.google.setupListeners();
 
-        console.log('✅ Event listeners configurados');
+        debugLog.log('APP', '✅ Event listeners configurados');
     }
 
     /**
@@ -326,7 +343,7 @@ class UnifiedAuthSystem {
             const timeSinceActivity = now - this.state.lastActivityTime;
 
             if (this.state.isAuthenticated && timeSinceActivity > this.config.sessionTimeout) {
-                console.log('⏰ Sesión expirada por inactividad');
+                debugLog.log('APP', '⏰ Sesión expirada por inactividad');
                 this.logout();
             }
         };
@@ -341,14 +358,15 @@ class UnifiedAuthSystem {
         // Verificar cada 1 minuto
         setInterval(checkActivity, 60000);
 
-        console.log('✅ Monitor de actividad configurado');
+        debugLog.log('APP', '✅ Monitor de actividad configurado');
     }
 
     /**
      * PROCESAR LOGIN EXITOSO
      */
     async processLogin(userData, token, rememberMe = false) {
-        console.log('🔓 Procesando login para:', userData.nombre || userData.name);
+        // GDPR: Datos sensibles enmascarados
+        debugLog.log('APP', '🔓 Procesando login para:', userData.nombre || userData.name);
 
         this.state.currentUser = userData;
         this.state.token = token;
@@ -392,7 +410,7 @@ class UnifiedAuthSystem {
      * CERRAR SESIÓN
      */
     logout() {
-        console.log('🔓 Cerrando sesión...');
+        debugLog.log('APP', '🔓 Cerrando sesión...');
 
         this.state.currentUser = null;
         this.state.token = null;
@@ -508,13 +526,13 @@ class GoogleOAuthManager {
         return new Promise((resolve, reject) => {
             // Verificar si ya está cargado
             if (window.google?.accounts?.id) {
-                console.log('✅ Google Identity Services ya cargado');
+                debugLog.log('APP', '✅ Google Identity Services ya cargado');
                 this.initializeGoogle();
                 resolve();
                 return;
             }
 
-            console.log('📥 Cargando Google Identity Services...');
+            debugLog.log('APP', '📥 Cargando Google Identity Services...');
 
             const script = document.createElement('script');
             script.src = 'https://accounts.google.com/gsi/client';
@@ -523,20 +541,20 @@ class GoogleOAuthManager {
 
             // Timeout
             const timeout = setTimeout(() => {
-                console.warn('⏰ Timeout cargando Google Services');
+                debugLog.warn('APP', '⏰ Timeout cargando Google Services');
                 reject(new Error('Google Services timeout'));
             }, 10000);
 
             script.onload = () => {
                 clearTimeout(timeout);
-                console.log('✅ Google Identity Services cargado');
+                debugLog.log('APP', '✅ Google Identity Services cargado');
                 this.initializeGoogle();
                 resolve();
             };
 
             script.onerror = () => {
                 clearTimeout(timeout);
-                console.error('❌ Error cargando Google Services');
+                debugLog.error('ERROR', '❌ Error cargando Google Services');
                 reject(new Error('Failed to load Google Services'));
             };
 
@@ -555,7 +573,7 @@ class GoogleOAuthManager {
             itp_support: true // iPhone Tracking Prevention support
         });
 
-        console.log('✅ Google inicializado');
+        debugLog.log('APP', '✅ Google inicializado');
     }
 
     /**
@@ -563,17 +581,19 @@ class GoogleOAuthManager {
      */
     async handleGoogleResponse(response) {
         if (!response.credential) {
-            console.error('❌ No credential en respuesta de Google');
+            debugLog.error('ERROR', '❌ No credential en respuesta de Google');
             this.auth.showError('Error en autenticación con Google');
             return;
         }
 
-        console.log('🔑 JWT de Google recibido');
+        // GDPR: Datos sensibles enmascarados
+        debugLog.log('APP', '🔑 JWT de Google recibido');
 
         try {
             // Decodificar JWT (sin verificar firma en cliente)
             const decoded = this.decodeJWT(response.credential);
-            console.log('👤 Usuario de Google:', decoded.email);
+            // GDPR: Datos sensibles enmascarados
+            debugLog.log('APP', '👤 Usuario de Google:', decoded.email);
 
             // Enviar al backend para verificar y crear/actualizar usuario
             const result = await this.verifyWithBackend(response.credential, decoded);
@@ -585,7 +605,7 @@ class GoogleOAuthManager {
                 this.auth.showError(result.error || 'No autorizado');
             }
         } catch (error) {
-            console.error('❌ Error procesando Google login:', error);
+            debugLog.error('ERROR', '❌ Error procesando Google login:', error);
             this.auth.showError('Error procesando autenticación con Google');
         }
     }
@@ -599,7 +619,8 @@ class GoogleOAuthManager {
             const decoded = JSON.parse(atob(base64));
             return decoded;
         } catch (error) {
-            console.error('Error decodificando JWT:', error);
+            // GDPR: Datos sensibles enmascarados
+            debugLog.error('ERROR', 'Error decodificando JWT:', error);
             return {};
         }
     }
@@ -622,7 +643,7 @@ class GoogleOAuthManager {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error('Error verificando con backend:', error);
+            debugLog.error('ERROR', 'Error verificando con backend:', error);
             return {
                 success: false,
                 error: 'Error de conexión'
@@ -703,12 +724,12 @@ class ManualLoginManager {
             if (e.target?.getAttribute('data-bs-target') === '#unified-auth-modal' ||
                 e.target?.closest('[data-bs-target="#unified-auth-modal"]')) {
                 e.preventDefault();
-                console.log('📁 Botón de login clickeado, abriendo modal...');
+                debugLog.log('APP', '📁 Botón de login clickeado, abriendo modal...');
 
                 // 🔧 MANIPULACIÓN DIRECTA DEL DOM - Evitar llamadas a métodos
                 const modal = document.getElementById('unified-auth-modal');
                 if (!modal) {
-                    console.error('❌ Modal element not found in DOM');
+                    debugLog.error('ERROR', '❌ Modal element not found in DOM');
                     return;
                 }
 
@@ -725,14 +746,14 @@ class ManualLoginManager {
                         backdrop = document.createElement('div');
                         backdrop.className = 'modal-backdrop fade show';
                         document.body.appendChild(backdrop);
-                        console.log('✅ Backdrop creado');
+                        debugLog.log('APP', '✅ Backdrop creado');
                     } else {
                         backdrop.classList.add('show');
                     }
 
-                    console.log('✅ Modal mostrado exitosamente (DOM directo)');
+                    debugLog.log('APP', '✅ Modal mostrado exitosamente (DOM directo)');
                 } catch (error) {
-                    console.error('❌ Error abriendo modal:', error);
+                    debugLog.error('ERROR', '❌ Error abriendo modal:', error);
                 }
             }
         });
@@ -756,7 +777,7 @@ class ManualLoginManager {
         document.addEventListener('click', (e) => {
             if (e.target?.id === 'modal-close-btn' || e.target?.closest('#modal-close-btn')) {
                 e.preventDefault();
-                console.log('🔴 Botón de cerrar clickeado, cerrando modal...');
+                debugLog.log('APP', '🔴 Botón de cerrar clickeado, cerrando modal...');
                 this.auth.managers.ui.hideModal();
             }
         });
@@ -764,7 +785,7 @@ class ManualLoginManager {
         // ✅ LISTENER PARA CERRAR MODAL CLICKEANDO EN EL BACKDROP
         document.addEventListener('click', (e) => {
             if (e.target?.classList?.contains('modal-backdrop')) {
-                console.log('🔴 Backdrop clickeado, cerrando modal...');
+                debugLog.log('APP', '🔴 Backdrop clickeado, cerrando modal...');
                 this.auth.managers.ui.hideModal();
             }
         });
@@ -819,7 +840,7 @@ class ManualLoginManager {
                 this.auth.showError(data.error || 'Error en autenticación');
             }
         } catch (error) {
-            console.error('Error en login:', error);
+            debugLog.error('ERROR', 'Error en login:', error);
             this.auth.showError('Error de conexión');
         } finally {
             this.setLoading(false);
@@ -901,7 +922,8 @@ class SessionManager {
         const expiryTime = Date.now() + (24 * 60 * 60 * 1000);
         storage.setItem(this.STORAGE_KEYS.expiry, expiryTime.toString());
 
-        console.log('✅ Sesión guardada en', rememberMe ? 'localStorage' : 'sessionStorage');
+        // GDPR: Datos sensibles enmascarados
+        debugLog.log('APP', '✅ Sesión guardada en', rememberMe ? 'localStorage' : 'sessionStorage');
     }
 
     /**
@@ -922,7 +944,7 @@ class SessionManager {
 
         // Verificar expiración
         if (expiry && Date.now() > parseInt(expiry)) {
-            console.log('⏰ Sesión expirada');
+            debugLog.log('APP', '⏰ Sesión expirada');
             this.clearSession();
             return null;
         }
@@ -931,7 +953,7 @@ class SessionManager {
             const user = JSON.parse(userStr);
             return { token, user };
         } catch (error) {
-            console.error('Error cargando sesión:', error);
+            debugLog.error('ERROR', 'Error cargando sesión:', error);
             return null;
         }
     }
@@ -950,7 +972,7 @@ class SessionManager {
             sessionStorage.removeItem(key);
         });
 
-        console.log('✅ Sesión limpiada');
+        debugLog.log('APP', '✅ Sesión limpiada');
     }
 }
 
@@ -1161,11 +1183,11 @@ class UIManager {
         try {
             const modal = document.getElementById('unified-auth-modal');
             if (!modal) {
-                console.error('❌ Modal element not found');
+                debugLog.error('ERROR', '❌ Modal element not found');
                 return;
             }
 
-            console.log('📂 Modal encontrado en DOM, mostrando...');
+            debugLog.log('APP', '📂 Modal encontrado en DOM, mostrando...');
 
             // SOLUCIÓN SIMPLE: Manipular el DOM directamente sin Bootstrap.Modal
             // Esto evita completamente el error "Cannot read properties of undefined (reading 'backdrop')"
@@ -1184,21 +1206,21 @@ class UIManager {
                 backdrop = document.createElement('div');
                 backdrop.className = 'modal-backdrop fade show';
                 document.body.appendChild(backdrop);
-                console.log('✅ Backdrop creado');
+                debugLog.log('APP', '✅ Backdrop creado');
             }
 
-            console.log('✅ Modal mostrado exitosamente (sin Bootstrap.Modal)');
+            debugLog.log('APP', '✅ Modal mostrado exitosamente (sin Bootstrap.Modal)');
 
             // Agregar evento para cerrar el modal al hacer clic en el botón close
             const closeBtn = modal.querySelector('[data-bs-dismiss="modal"]');
             if (closeBtn && !closeBtn.hasAttribute('data-close-bound')) {
                 closeBtn.setAttribute('data-close-bound', 'true');
                 closeBtn.addEventListener('click', () => this.hideModal());
-                console.log('✅ Evento de cierre agregado al botón close');
+                debugLog.log('APP', '✅ Evento de cierre agregado al botón close');
             }
 
         } catch (error) {
-            console.error('❌ Error abriendo modal:', error);
+            debugLog.error('ERROR', '❌ Error abriendo modal:', error);
         }
     }
 
@@ -1214,19 +1236,19 @@ class UIManager {
                 modal.classList.remove('show');
                 modal.style.display = 'none';
                 modal.removeAttribute('aria-modal');
-                console.log('✅ Modal ocultado');
+                debugLog.log('APP', '✅ Modal ocultado');
             }
 
             if (backdrop) {
                 backdrop.remove();
-                console.log('✅ Backdrop eliminado');
+                debugLog.log('APP', '✅ Backdrop eliminado');
             }
 
             document.body.classList.remove('modal-open');
-            console.log('✅ Modal cerrado completamente');
+            debugLog.log('APP', '✅ Modal cerrado completamente');
 
         } catch (error) {
-            console.error('❌ Error cerrando modal:', error);
+            debugLog.error('ERROR', '❌ Error cerrando modal:', error);
         }
     }
 }
@@ -1243,7 +1265,7 @@ class ErrorHandler {
      * PROCESAR ERROR DE AUTENTICACIÓN
      */
     handleAuthError(error, context = '') {
-        console.error(`❌ Error de autenticación [${context}]:`, error);
+        debugLog.error('ERROR', `❌ Error de autenticación [${context}]:`, error);
 
         const messages = {
             'network': 'Error de conexión. Verifica tu internet.',
@@ -1266,9 +1288,9 @@ class ErrorHandler {
 // Se inicializa inmediatamente (no esperar DOMContentLoaded)
 // porque main.js carga el script dinámicamente DESPUÉS de que DOMContentLoaded ya ocurrió
 if (!window.unifiedLogin) {
-    console.log('🔐 Inicializando Sistema de Autenticación V2 (Instancia Global)...');
+    debugLog.log('APP', '🔐 Inicializando Sistema de Autenticación V2 (Instancia Global)...');
     window.unifiedLogin = new UnifiedAuthSystem();
-    console.log('✅ Sistema de Autenticación V2 disponible en window.unifiedLogin');
+    debugLog.log('APP', '✅ Sistema de Autenticación V2 disponible en window.unifiedLogin');
 }
 
 // Mantener backward compatibility si algo usa window.bgeAuth

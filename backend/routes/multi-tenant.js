@@ -15,7 +15,11 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError } = require('../utils/sanitized-errors');
+
 const router = express.Router();
 const fs = require('fs').promises;
 const path = require('path');
@@ -39,7 +43,7 @@ const isServerlessEnvironment = () => {
 // Asegurar que los directorios existen (solo en entornos con filesystem persistente)
 const ensureDirectories = async () => {
     if (isServerlessEnvironment()) {
-        devLogger.log('ℹ️ Entorno serverless detectado, saltando creación de directorios');
+        debugLog.log('MULTI_TENANT', 'ℹ️ Entorno serverless detectado, saltando creación de directorios');
         return;
     }
 
@@ -47,9 +51,9 @@ const ensureDirectories = async () => {
         await fs.mkdir(CONFIG_DIR, { recursive: true });
         await fs.mkdir(TEMPLATES_DIR, { recursive: true });
         await fs.mkdir(GENERATED_DIR, { recursive: true });
-        devLogger.log('✅ Directorios multi-tenant creados/verificados');
+        debugLog.log('MULTI_TENANT', '✅ Directorios multi-tenant creados/verificados');
     } catch (error) {
-        devLogger.warn('⚠️ Advertencia creando directorios:', error.message);
+        debugLog.log('MULTI_TENANT', '⚠️ Advertencia creando directorios:', error.message);
     }
 };
 
@@ -76,7 +80,7 @@ Handlebars.registerHelper('each', function(context, options) {
  */
 router.get('/tenants', async (req, res) => {
     try {
-        devLogger.log('📋 Obteniendo lista de tenants...');
+        debugLog.log('MULTI_TENANT', '📋 Obteniendo lista de tenants...');
 
         const files = await fs.readdir(CONFIG_DIR);
         const configFiles = files.filter(file => file.endsWith('-config.json'));
@@ -101,7 +105,7 @@ router.get('/tenants', async (req, res) => {
                     features: Object.keys(config.features).filter(key => config.features[key]).length
                 });
             } catch (error) {
-                devLogger.warn(`Error procesando archivo ${file}:`, error);
+                debugLog.log('MULTI_TENANT', `Error procesando archivo ${file}:`, error);
             }
         }
 
@@ -112,7 +116,7 @@ router.get('/tenants', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo tenants:', error);
+        debugLog.error('MULTI_TENANT', '❌ Error obteniendo tenants', sanitizeError(error, 'multi-tenant'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -128,7 +132,7 @@ router.get('/tenants', async (req, res) => {
 router.get('/tenant/:tenantId', async (req, res) => {
     try {
         const { tenantId } = req.params;
-        devLogger.log(`📖 Obteniendo configuración para tenant: ${tenantId}`);
+        debugLog.log('MULTI_TENANT', `📖 Obteniendo configuración para tenant: ${tenantId}`);
 
         const configFile = getConfigFileName(tenantId);
         const filePath = path.join(CONFIG_DIR, configFile);
@@ -155,7 +159,7 @@ router.get('/tenant/:tenantId', async (req, res) => {
         }
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo tenant:', error);
+        debugLog.error('MULTI_TENANT', '❌ Error obteniendo tenant', sanitizeError(error, 'multi-tenant'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -171,7 +175,7 @@ router.get('/tenant/:tenantId', async (req, res) => {
 router.post('/tenant', async (req, res) => {
     try {
         const tenantConfig = req.body;
-        devLogger.log(`🏗️ Creando nuevo tenant: ${tenantConfig.institution?.name}`);
+        debugLog.log('MULTI_TENANT', `🏗️ Creando nuevo tenant: ${tenantConfig.institution?.name}`);
 
         // Validar configuración
         const validation = validateTenantConfig(tenantConfig);
@@ -200,7 +204,7 @@ router.post('/tenant', async (req, res) => {
         // Generar página HTML
         await generateTenantPage(completeConfig);
 
-        devLogger.log(`✅ Tenant ${completeConfig.tenantId} creado exitosamente`);
+        debugLog.log('MULTI_TENANT', `✅ Tenant ${completeConfig.tenantId} creado exitosamente`);
 
         res.status(201).json({
             success: true,
@@ -210,7 +214,7 @@ router.post('/tenant', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error creando tenant:', error);
+        debugLog.error('MULTI_TENANT', '❌ Error creando tenant', sanitizeError(error, 'multi-tenant'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -228,7 +232,7 @@ router.put('/tenant/:tenantId', async (req, res) => {
         const { tenantId } = req.params;
         const updates = req.body;
 
-        devLogger.log(`🔄 Actualizando tenant: ${tenantId}`);
+        debugLog.log('MULTI_TENANT', `🔄 Actualizando tenant: ${tenantId}`);
 
         const configFile = getConfigFileName(tenantId);
         const filePath = path.join(CONFIG_DIR, configFile);
@@ -258,7 +262,7 @@ router.put('/tenant/:tenantId', async (req, res) => {
             // Regenerar página HTML
             await generateTenantPage(updatedConfig);
 
-            devLogger.log(`✅ Tenant ${tenantId} actualizado exitosamente`);
+            debugLog.log('MULTI_TENANT', `✅ Tenant ${tenantId} actualizado exitosamente`);
 
             res.json({
                 success: true,
@@ -279,7 +283,7 @@ router.put('/tenant/:tenantId', async (req, res) => {
         }
 
     } catch (error) {
-        devLogger.error('❌ Error actualizando tenant:', error);
+        debugLog.error('MULTI_TENANT', '❌ Error actualizando tenant', sanitizeError(error, 'multi-tenant'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -295,7 +299,7 @@ router.put('/tenant/:tenantId', async (req, res) => {
 router.delete('/tenant/:tenantId', async (req, res) => {
     try {
         const { tenantId } = req.params;
-        devLogger.log(`🗑️ Eliminando tenant: ${tenantId}`);
+        debugLog.log('MULTI_TENANT', `🗑️ Eliminando tenant: ${tenantId}`);
 
         const configFile = getConfigFileName(tenantId);
         const filePath = path.join(CONFIG_DIR, configFile);
@@ -311,7 +315,7 @@ router.delete('/tenant/:tenantId', async (req, res) => {
                 // Ignorar si no existe
             }
 
-            devLogger.log(`✅ Tenant ${tenantId} eliminado exitosamente`);
+            debugLog.log('MULTI_TENANT', `✅ Tenant ${tenantId} eliminado exitosamente`);
 
             res.json({
                 success: true,
@@ -332,7 +336,7 @@ router.delete('/tenant/:tenantId', async (req, res) => {
         }
 
     } catch (error) {
-        devLogger.error('❌ Error eliminando tenant:', error);
+        debugLog.error('MULTI_TENANT', '❌ Error eliminando tenant', sanitizeError(error, 'multi-tenant'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -348,7 +352,7 @@ router.delete('/tenant/:tenantId', async (req, res) => {
 router.post('/generate/:tenantId', async (req, res) => {
     try {
         const { tenantId } = req.params;
-        devLogger.log(`🎨 Generando página para tenant: ${tenantId}`);
+        debugLog.log('MULTI_TENANT', `🎨 Generando página para tenant: ${tenantId}`);
 
         const configFile = getConfigFileName(tenantId);
         const filePath = path.join(CONFIG_DIR, configFile);
@@ -359,7 +363,7 @@ router.post('/generate/:tenantId', async (req, res) => {
 
             const generatedPagePath = await generateTenantPage(config);
 
-            devLogger.log(`✅ Página generada en: ${generatedPagePath}`);
+            debugLog.log('MULTI_TENANT', `✅ Página generada en: ${generatedPagePath}`);
 
             res.json({
                 success: true,
@@ -381,7 +385,7 @@ router.post('/generate/:tenantId', async (req, res) => {
         }
 
     } catch (error) {
-        devLogger.error('❌ Error generando página:', error);
+        debugLog.error('MULTI_TENANT', '❌ Error generando página', sanitizeError(error, 'multi-tenant'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -397,7 +401,7 @@ router.post('/generate/:tenantId', async (req, res) => {
 router.post('/validate', async (req, res) => {
     try {
         const config = req.body;
-        devLogger.log('🔍 Validando configuración...');
+        debugLog.log('MULTI_TENANT', '🔍 Validando configuración...');
 
         const validation = validateTenantConfig(config);
 
@@ -409,7 +413,7 @@ router.post('/validate', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error validando configuración:', error);
+        debugLog.error('MULTI_TENANT', '❌ Error validando configuración', sanitizeError(error, 'multi-tenant'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -425,7 +429,7 @@ router.post('/validate', async (req, res) => {
 router.get('/export/:tenantId', async (req, res) => {
     try {
         const { tenantId } = req.params;
-        devLogger.log(`📤 Exportando tenant: ${tenantId}`);
+        debugLog.log('MULTI_TENANT', `📤 Exportando tenant: ${tenantId}`);
 
         const configFile = getConfigFileName(tenantId);
         const filePath = path.join(CONFIG_DIR, configFile);
@@ -461,7 +465,7 @@ router.get('/export/:tenantId', async (req, res) => {
         }
 
     } catch (error) {
-        devLogger.error('❌ Error exportando tenant:', error);
+        debugLog.error('MULTI_TENANT', '❌ Error exportando tenant', sanitizeError(error, 'multi-tenant'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -477,7 +481,7 @@ router.get('/export/:tenantId', async (req, res) => {
 router.post('/import', async (req, res) => {
     try {
         const importedConfig = req.body;
-        devLogger.log(`📥 Importando configuración...`);
+        debugLog.log('MULTI_TENANT', `📥 Importando configuración...`);
 
         // Limpiar metadatos de exportación si existen
         if (importedConfig.exportMetadata) {
@@ -509,7 +513,7 @@ router.post('/import', async (req, res) => {
         // Generar página HTML
         await generateTenantPage(importedConfig);
 
-        devLogger.log(`✅ Configuración importada como tenant: ${newId}`);
+        debugLog.log('MULTI_TENANT', `✅ Configuración importada como tenant: ${newId}`);
 
         res.status(201).json({
             success: true,
@@ -520,7 +524,7 @@ router.post('/import', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error importando configuración:', error);
+        debugLog.error('MULTI_TENANT', '❌ Error importando configuración', sanitizeError(error, 'multi-tenant'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -690,7 +694,7 @@ async function generateTenantPage(config) {
         return outputPath;
 
     } catch (error) {
-        devLogger.error('Error generando página:', error);
+        debugLog.error('MULTI_TENANT', 'Error generando página', sanitizeError(error, 'multi-tenant'));
         throw error;
     }
 }

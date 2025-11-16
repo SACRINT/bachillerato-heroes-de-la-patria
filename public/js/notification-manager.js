@@ -1,4 +1,14 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * NOTIFICATION MANAGER - Sistema Avanzado de Notificaciones Push
  * Bachillerato General Estatal "Héroes de la Patria"
  * Versión 1.0 - Septiembre 2025
@@ -18,7 +28,7 @@ class NotificationManager {
         this.config = this.loadConfiguration();
         this.notificationQueue = [];
 
-        console.log('🔔 Notification Manager initialized', {
+        debugLog.log('APP', '🔔 Notification Manager initialized', {
             supported: this.isSupported,
             permission: this.permission,
             config: this.config
@@ -30,7 +40,7 @@ class NotificationManager {
     // === INICIALIZACIÓN ===
     async init() {
         if (!this.isSupported) {
-            console.warn('⚠️ Notifications not supported in this browser');
+            debugLog.warn('APP', '⚠️ Notifications not supported in this browser');
             return;
         }
 
@@ -39,7 +49,7 @@ class NotificationManager {
         this.setupEventListeners();
         this.setupPeriodicChecks();
 
-        console.log('✅ Notification Manager ready');
+        debugLog.log('APP', '✅ Notification Manager ready');
     }
 
     async setupServiceWorker() {
@@ -51,10 +61,10 @@ class NotificationManager {
                 // Listen for messages from service worker
                 navigator.serviceWorker.addEventListener('message', this.handleServiceWorkerMessage.bind(this));
 
-                console.log('🔧 Service Worker connected for notifications');
+                debugLog.log('NOTIFICATION', '🔧 Service Worker connected for notifications');
             }
         } catch (error) {
-            console.error('❌ Service Worker setup failed:', error);
+            debugLog.error('ERROR', '❌ Service Worker setup failed:', error);
         }
     }
 
@@ -73,16 +83,16 @@ class NotificationManager {
             this.permission = permission;
 
             if (permission === 'granted') {
-                console.log('✅ Notification permission granted');
+                debugLog.log('APP', '✅ Notification permission granted');
                 await this.subscribe();
                 this.saveConfiguration();
                 return true;
             } else {
-                console.warn('⚠️ Notification permission denied');
+                debugLog.warn('APP', '⚠️ Notification permission denied');
                 return false;
             }
         } catch (error) {
-            console.error('❌ Permission request failed:', error);
+            debugLog.error('ERROR', '❌ Permission request failed:', error);
             return false;
         }
     }
@@ -107,11 +117,11 @@ class NotificationManager {
             this.subscription = subscription;
             await this.sendSubscriptionToServer(subscription);
 
-            console.log('🔔 Push subscription successful:', subscription);
+            debugLog.log('APP', '🔔 Push subscription successful:', subscription);
             return subscription;
 
         } catch (error) {
-            console.error('❌ Push subscription failed:', error);
+            debugLog.error('ERROR', '❌ Push subscription failed:', error);
             throw error;
         }
     }
@@ -124,10 +134,10 @@ class NotificationManager {
 
             if (subscription) {
                 this.subscription = subscription;
-                console.log('📱 Existing subscription loaded');
+                debugLog.log('APP', '📱 Existing subscription loaded');
             }
         } catch (error) {
-            console.error('❌ Failed to load subscription:', error);
+            debugLog.error('ERROR', '❌ Failed to load subscription:', error);
         }
     }
 
@@ -139,9 +149,9 @@ class NotificationManager {
             await this.removeSubscriptionFromServer(this.subscription);
             this.subscription = null;
 
-            console.log('🚫 Push subscription removed');
+            debugLog.log('APP', '🚫 Push subscription removed');
         } catch (error) {
-            console.error('❌ Unsubscribe failed:', error);
+            debugLog.error('ERROR', '❌ Unsubscribe failed:', error);
         }
     }
 
@@ -179,7 +189,7 @@ class NotificationManager {
 
     saveConfiguration() {
         localStorage.setItem('heroesPatria_notificationConfig', JSON.stringify(this.config));
-        console.log('💾 Notification configuration saved');
+        debugLog.log('APP', '💾 Notification configuration saved');
     }
 
     updateConfiguration(updates) {
@@ -193,14 +203,14 @@ class NotificationManager {
     // === ENVÍO DE NOTIFICACIONES ===
     async sendNotification(type, title, options = {}) {
         if (!this.isNotificationAllowed(type)) {
-            console.log(`🔇 Notification blocked for type: ${type}`);
+            debugLog.log('APP', `🔇 Notification blocked for type: ${type}`);
             return;
         }
 
         const notificationData = this.prepareNotificationData(type, title, options);
 
         if (this.isQuietHours() && !options.emergency) {
-            console.log('😴 Quiet hours - notification queued');
+            debugLog.log('NOTIFICATION', '😴 Quiet hours - notification queued');
             this.queueNotification(notificationData);
             return;
         }
@@ -243,10 +253,10 @@ class NotificationManager {
             }
 
             this.saveNotificationToHistory(notificationData);
-            console.log('🔔 Notification displayed:', notificationData.title);
+            debugLog.log('NOTIFICATION', '🔔 Notification displayed:', notificationData.title);
 
         } catch (error) {
-            console.error('❌ Failed to display notification:', error);
+            debugLog.error('NOTIFICATION', '❌ Failed to display notification:', error);
         }
     }
 
@@ -296,7 +306,7 @@ class NotificationManager {
     async processQueuedNotifications() {
         if (this.notificationQueue.length === 0) return;
 
-        console.log(`📤 Processing ${this.notificationQueue.length} queued notifications`);
+        debugLog.log('NOTIFICATION', `📤 Processing ${this.notificationQueue.length} queued notifications`);
 
         const notifications = [...this.notificationQueue];
         this.notificationQueue = [];
@@ -355,7 +365,7 @@ class NotificationManager {
     }
 
     handleNotificationClick(notification, action) {
-        console.log('👆 Notification clicked:', notification, action);
+        debugLog.log('NOTIFICATION', '👆 Notification clicked:', notification, action);
 
         switch (action) {
             case 'read':
@@ -375,7 +385,7 @@ class NotificationManager {
                 break;
 
             default:
-                console.log('📋 Notification acknowledged');
+                debugLog.log('APP', '📋 Notification acknowledged');
         }
 
         this.markNotificationAsRead(notification.data.id);
@@ -395,7 +405,7 @@ class NotificationManager {
             );
         }, delayMinutes * 60 * 1000);
 
-        console.log(`⏰ Reminder scheduled for ${delayMinutes} minutes`);
+        debugLog.log('APP', `⏰ Reminder scheduled for ${delayMinutes} minutes`);
     }
 
     scheduleForLater(notification) {
@@ -442,7 +452,7 @@ class NotificationManager {
 
     clearHistory() {
         localStorage.removeItem('heroesPatria_notificationHistory');
-        console.log('🗑️ Notification history cleared');
+        debugLog.log('APP', '🗑️ Notification history cleared');
     }
 
     // === INTEGRACIÓN CON SERVIDOR ===
@@ -463,13 +473,13 @@ class NotificationManager {
                 });
 
                 if (response.ok) {
-                    console.log('📡 Subscription sent to server');
+                    debugLog.log('APP', '📡 Subscription sent to server');
                 }
             } else {
-                console.log('ℹ️ [NOTIFICATIONS] Modo estático - Subscription almacenada localmente');
+                debugLog.log('NOTIFICATIONS', 'ℹ️ [NOTIFICATIONS] Modo estático - Subscription almacenada localmente');
             }
         } catch (error) {
-            console.log('ℹ️ [NOTIFICATIONS] Servidor no disponible, usando almacenamiento local');
+            debugLog.log('NOTIFICATIONS', 'ℹ️ [NOTIFICATIONS] Servidor no disponible, usando almacenamiento local');
             // Store locally for retry
             localStorage.setItem('heroesPatria_pendingSubscription', JSON.stringify(subscription));
         }
@@ -486,12 +496,12 @@ class NotificationManager {
                     },
                     body: JSON.stringify({ subscription })
                 });
-                console.log('📡 Unsubscribe sent to server');
+                debugLog.log('APP', '📡 Unsubscribe sent to server');
             } else {
-                console.log('ℹ️ [NOTIFICATIONS] Modo estático - Unsubscribe local');
+                debugLog.log('NOTIFICATIONS', 'ℹ️ [NOTIFICATIONS] Modo estático - Unsubscribe local');
             }
         } catch (error) {
-            console.log('ℹ️ [NOTIFICATIONS] Servidor no disponible para unsubscribe');
+            debugLog.log('NOTIFICATIONS', 'ℹ️ [NOTIFICATIONS] Servidor no disponible para unsubscribe');
         }
     }
 
@@ -512,7 +522,7 @@ class NotificationManager {
                     clearTimeout(timeoutId);
 
                     if (!response.ok) {
-                        console.log('ℹ️ [NOTIFICATIONS] Backend API no disponible, usando modo offline');
+                        debugLog.log('NOTIFICATIONS', 'ℹ️ [NOTIFICATIONS] Backend API no disponible, usando modo offline');
                         return;
                     }
 
@@ -528,15 +538,15 @@ class NotificationManager {
                         }
                     }
                 } catch (fetchError) {
-                    console.log('ℹ️ [NOTIFICATIONS] Error conectando con API:', fetchError.message);
+                    debugLog.log('NOTIFICATIONS', 'ℹ️ [NOTIFICATIONS] Error conectando con API:', fetchError.message);
                     return;
                 }
             } else {
                 // En modo estático o producción, usar simulación local
-                console.log('ℹ️ [NOTIFICATIONS] Modo estático - Sin verificación de backend');
+                debugLog.log('NOTIFICATIONS', 'ℹ️ [NOTIFICATIONS] Modo estático - Sin verificación de backend');
             }
         } catch (error) {
-            console.log('ℹ️ [NOTIFICATIONS] API no disponible, usando modo offline');
+            debugLog.log('NOTIFICATIONS', 'ℹ️ [NOTIFICATIONS] API no disponible, usando modo offline');
         }
     }
 
@@ -652,4 +662,4 @@ if (document.readyState === 'loading') {
     window.heroesNotifications = new NotificationManager();
 }
 
-console.log('🔔 Notification Manager loaded successfully');
+debugLog.log('APP', '🔔 Notification Manager loaded successfully');

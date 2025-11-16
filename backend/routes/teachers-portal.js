@@ -13,7 +13,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { pool } = require('../config/database');
@@ -52,7 +54,7 @@ const requireTeacher = async (req, res, next) => {
             client.release();
         }
     } catch (error) {
-        devLogger.error('Error en requireTeacher:', error);
+        debugLog.error('teachers-portal', 'Error en requireTeacher', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error verificando permisos de docente'
@@ -153,7 +155,7 @@ router.post('/auth/login', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error en login de docente:', error);
+        debugLog.error('teachers-portal', 'Error en login de docente', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al iniciar sesión'
@@ -254,7 +256,7 @@ router.get('/dashboard', authenticateToken, requireTeacher, async (req, res) => 
         });
 
     } catch (error) {
-        devLogger.error('Error en dashboard de docente:', error);
+        debugLog.error('teachers-portal', 'Error en dashboard de docente', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al cargar dashboard'
@@ -306,7 +308,7 @@ router.get('/classes', authenticateToken, requireTeacher, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error obteniendo clases:', error);
+        debugLog.error('teachers-portal', 'Error obteniendo clases', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener clases'
@@ -363,7 +365,7 @@ router.get('/classes/:id', authenticateToken, requireTeacher, async (req, res) =
         });
 
     } catch (error) {
-        devLogger.error('Error obteniendo detalle de clase:', error);
+        debugLog.error('teachers-portal', 'Error obteniendo detalle de clase', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener detalle de clase'
@@ -419,7 +421,7 @@ router.post('/classes', authenticateToken, requireTeacher, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error creando clase:', error);
+        debugLog.error('teachers-portal', 'Error creando clase', sanitizeError(error, 'teachers-portal'));
 
         if (error.code === '23505') { // Duplicate key
             return res.status(409).json({
@@ -501,7 +503,7 @@ router.put('/classes/:id', authenticateToken, requireTeacher, async (req, res) =
         });
 
     } catch (error) {
-        devLogger.error('Error actualizando clase:', error);
+        debugLog.error('teachers-portal', 'Error actualizando clase', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al actualizar clase'
@@ -590,7 +592,7 @@ router.get('/classes/:id/grades', authenticateToken, requireTeacher, async (req,
         });
 
     } catch (error) {
-        devLogger.error('Error obteniendo calificaciones:', error);
+        debugLog.error('teachers-portal', 'Error obteniendo calificaciones', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener calificaciones'
@@ -674,7 +676,7 @@ router.post('/grades', authenticateToken, requireTeacher, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error guardando calificación:', error);
+        debugLog.error('teachers-portal', 'Error guardando calificación', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al guardar calificación'
@@ -733,7 +735,7 @@ router.post('/attendance/sessions', authenticateToken, requireTeacher, async (re
         });
 
     } catch (error) {
-        devLogger.error('Error creando sesión de asistencia:', error);
+        debugLog.error('teachers-portal', 'Error creando sesión de asistencia', sanitizeError(error, 'teachers-portal'));
 
         if (error.code === '23505') {
             return res.status(409).json({
@@ -834,7 +836,7 @@ router.post('/attendance', authenticateToken, requireTeacher, async (req, res) =
 
     } catch (error) {
         await client.query('ROLLBACK');
-        devLogger.error('Error registrando asistencias:', error);
+        debugLog.error('teachers-portal', 'Error registrando asistencias', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al registrar asistencias'
@@ -877,7 +879,7 @@ router.put('/attendance/sessions/:id/close', authenticateToken, requireTeacher, 
         });
 
     } catch (error) {
-        devLogger.error('Error cerrando sesión:', error);
+        debugLog.error('teachers-portal', 'Error cerrando sesión', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al cerrar sesión'
@@ -931,7 +933,7 @@ router.get('/resources', authenticateToken, requireTeacher, async (req, res) => 
         });
 
     } catch (error) {
-        devLogger.error('Error obteniendo recursos:', error);
+        debugLog.error('teachers-portal', 'Error obteniendo recursos', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener recursos'
@@ -989,7 +991,7 @@ router.post('/resources', authenticateToken, requireTeacher, async (req, res) =>
         });
 
     } catch (error) {
-        devLogger.error('Error creando recurso:', error);
+        debugLog.error('teachers-portal', 'Error creando recurso', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al crear recurso'
@@ -1034,7 +1036,7 @@ router.get('/notifications', authenticateToken, requireTeacher, async (req, res)
         });
 
     } catch (error) {
-        devLogger.error('Error obteniendo notificaciones:', error);
+        debugLog.error('teachers-portal', 'Error obteniendo notificaciones', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener notificaciones'
@@ -1076,7 +1078,7 @@ router.put('/notifications/:id/read', authenticateToken, requireTeacher, async (
         });
 
     } catch (error) {
-        devLogger.error('Error marcando notificación:', error);
+        debugLog.error('teachers-portal', 'Error marcando notificación', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al marcar notificación'
@@ -1128,7 +1130,7 @@ router.get('/messages', authenticateToken, requireTeacher, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error obteniendo mensajes:', error);
+        debugLog.error('teachers-portal', 'Error obteniendo mensajes', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener mensajes'
@@ -1179,7 +1181,7 @@ router.post('/messages', authenticateToken, requireTeacher, async (req, res) => 
         });
 
     } catch (error) {
-        devLogger.error('Error enviando mensaje:', error);
+        debugLog.error('teachers-portal', 'Error enviando mensaje', sanitizeError(error, 'teachers-portal'));
         res.status(500).json({
             success: false,
             error: 'Error al enviar mensaje'

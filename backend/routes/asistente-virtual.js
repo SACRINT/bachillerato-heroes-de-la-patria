@@ -15,7 +15,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 
 // Simulación de base de datos en memoria para el asistente
@@ -130,7 +132,7 @@ router.post('/chat', async (req, res) => {
             context
         } = req.body;
 
-        devLogger.log(`💬 Chat asistente - Estudiante: ${studentId}, Mensaje: ${message}`);
+        debugLog.log('ASISTENTE_VIRTUAL', `💬 Chat asistente - Estudiante: ${studentId}, Mensaje: ${message}`);
 
         // Validación de entrada
         if (!message || message.trim().length === 0) {
@@ -147,7 +149,7 @@ router.post('/chat', async (req, res) => {
 
         // Analizar intención del mensaje
         const intent = analyzeMessageIntent(message);
-        devLogger.log(`🧠 Intención detectada: ${intent.primary} (confianza: ${intent.confidence})`);
+        debugLog.log('ASISTENTE_VIRTUAL', `🧠 Intención detectada: ${intent.primary} (confianza: ${intent.confidence})`);
 
         // Obtener contexto del estudiante
         const studentContext = getStudentContext(studentId, subject);
@@ -194,7 +196,7 @@ router.post('/chat', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error en chat del asistente:', error);
+        debugLog.error('ASISTENTE_VIRTUAL', '❌ Error en chat del asistente:', sanitizeError(error, 'asistente-virtual'));
         res.status(500).json({
             success: false,
             error: 'Error interno del asistente',
@@ -224,7 +226,7 @@ router.get('/conversation/:sessionId', (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo historial:', error);
+        debugLog.error('ASISTENTE_VIRTUAL', '❌ Error obteniendo historial:', sanitizeError(error, 'asistente-virtual'));
         res.status(500).json({
             success: false,
             error: 'Error obteniendo historial'
@@ -237,7 +239,7 @@ router.post('/subject-help', (req, res) => {
     try {
         const { subject, topic, level, question } = req.body;
 
-        devLogger.log(`📚 Ayuda especializada - Materia: ${subject}, Tema: ${topic}`);
+        debugLog.log('ASISTENTE_VIRTUAL', `📚 Ayuda especializada - Materia: ${subject}, Tema: ${topic}`);
 
         // Obtener conocimiento especializado
         const subjectKnowledge = educationalKnowledge[subject] || {};
@@ -257,7 +259,7 @@ router.post('/subject-help', (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error en ayuda especializada:', error);
+        debugLog.error('ASISTENTE_VIRTUAL', '❌ Error en ayuda especializada:', sanitizeError(error, 'asistente-virtual'));
         res.status(500).json({
             success: false,
             error: 'Error en ayuda especializada'
@@ -297,7 +299,7 @@ router.post('/learning-analysis', (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error en análisis de aprendizaje:', error);
+        debugLog.error('ASISTENTE_VIRTUAL', '❌ Error en análisis de aprendizaje:', sanitizeError(error, 'asistente-virtual'));
         res.status(500).json({
             success: false,
             error: 'Error en análisis de aprendizaje'
@@ -323,7 +325,7 @@ router.post('/follow-up-questions', (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error generando preguntas de seguimiento:', error);
+        debugLog.error('ASISTENTE_VIRTUAL', '❌ Error generando preguntas de seguimiento:', sanitizeError(error, 'asistente-virtual'));
         res.status(500).json({
             success: false,
             error: 'Error generando preguntas'
@@ -375,7 +377,7 @@ router.get('/statistics', (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo estadísticas:', error);
+        debugLog.error('ASISTENTE_VIRTUAL', '❌ Error obteniendo estadísticas:', sanitizeError(error, 'asistente-virtual'));
         res.status(500).json({
             success: false,
             error: 'Error obteniendo estadísticas'

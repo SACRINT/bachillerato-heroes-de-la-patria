@@ -1,4 +1,15 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    // Fallback si debug-logger.js no está cargado
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * FORM VALIDATOR - Sistema de Validaciones Mejoradas
  * Sistema centralizado de validación de formularios para BGE
  * Fecha: 19 de Octubre, 2025
@@ -158,7 +169,7 @@ class FormValidator {
         }
 
         if (!form) {
-            console.error('Formulario no encontrado');
+            debugLog.error('ERROR', 'Formulario no encontrado');
             return { valid: false, errors: {} };
         }
 

@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
 
@@ -101,7 +103,7 @@ router.get('/content', async (req, res) => {
             }
         });
     } catch (error) {
-        devLogger.error('Error obteniendo contenido:', error);
+        debugLog.error('CMS', 'Error obteniendo contenido:', sanitizeError(error, 'cms'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -149,7 +151,7 @@ router.get('/content/:id', async (req, res) => {
             data: content
         });
     } catch (error) {
-        devLogger.error('Error obteniendo contenido:', error);
+        debugLog.error('CMS', 'Error obteniendo contenido:', sanitizeError(error, 'cms'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -265,7 +267,7 @@ router.post('/content', authenticateToken, requireAdmin, async (req, res) => {
             data: newContent
         });
     } catch (error) {
-        devLogger.error('Error creando contenido:', error);
+        debugLog.error('CMS', 'Error creando contenido:', sanitizeError(error, 'cms'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -324,7 +326,7 @@ router.put('/content/:id', authenticateToken, requireAdmin, async (req, res) => 
             data: updatedContent
         });
     } catch (error) {
-        devLogger.error('Error actualizando contenido:', error);
+        debugLog.error('CMS', 'Error actualizando contenido:', sanitizeError(error, 'cms'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -360,7 +362,7 @@ router.delete('/content/:id', authenticateToken, requireAdmin, async (req, res) 
             message: 'Contenido eliminado exitosamente'
         });
     } catch (error) {
-        devLogger.error('Error eliminando contenido:', error);
+        debugLog.error('CMS', 'Error eliminando contenido:', sanitizeError(error, 'cms'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -401,7 +403,7 @@ router.patch('/content/:id/publish', authenticateToken, requireAdmin, async (req
             data: published
         });
     } catch (error) {
-        devLogger.error('Error publicando contenido:', error);
+        debugLog.error('CMS', 'Error publicando contenido:', sanitizeError(error, 'cms'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -438,7 +440,7 @@ router.patch('/content/:id/archive', authenticateToken, requireAdmin, async (req
             data: archived
         });
     } catch (error) {
-        devLogger.error('Error archivando contenido:', error);
+        debugLog.error('CMS', 'Error archivando contenido:', sanitizeError(error, 'cms'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -469,7 +471,7 @@ router.get('/stats', authenticateToken, requireAdmin, async (req, res) => {
             data: stats
         });
     } catch (error) {
-        devLogger.error('Error obteniendo estadísticas:', error);
+        debugLog.error('CMS', 'Error obteniendo estadísticas:', sanitizeError(error, 'cms'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -500,7 +502,7 @@ router.get('/content/recent', async (req, res) => {
             data: recentContent
         });
     } catch (error) {
-        devLogger.error('Error obteniendo contenido reciente:', error);
+        debugLog.error('CMS', 'Error obteniendo contenido reciente:', sanitizeError(error, 'cms'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -525,7 +527,7 @@ router.get('/content/urgent', async (req, res) => {
             data: urgentContent
         });
     } catch (error) {
-        devLogger.error('Error obteniendo contenido urgente:', error);
+        debugLog.error('CMS', 'Error obteniendo contenido urgente:', sanitizeError(error, 'cms'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',

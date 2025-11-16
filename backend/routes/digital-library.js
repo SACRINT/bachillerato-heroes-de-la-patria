@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
@@ -105,7 +107,7 @@ async function checkDocumentPermission(req, res, next) {
         req.isDocumentAuthor = isAuthor;
         next();
     } catch (error) {
-        devLogger.error('Error verificando permisos:', error);
+        debugLog.error('digital-library', 'Error verificando permisos', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al verificar permisos' });
     } finally {
         client.release();
@@ -134,7 +136,7 @@ router.get('/categories', authenticateToken, async (req, res) => {
             total: result.rows.length
         });
     } catch (error) {
-        devLogger.error('Error al obtener categorías:', error);
+        debugLog.error('digital-library', 'Error al obtener categorías', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al obtener categorías' });
     } finally {
         client.release();
@@ -170,7 +172,7 @@ router.post('/categories', authenticateToken, async (req, res) => {
             category: result.rows[0]
         });
     } catch (error) {
-        devLogger.error('Error al crear categoría:', error);
+        debugLog.error('digital-library', 'Error al crear categoría', sanitizeError(error, 'digital-library'));
         if (error.code === '23505') { // Unique violation
             res.status(409).json({ error: 'Ya existe una categoría con ese slug' });
         } else {
@@ -215,7 +217,7 @@ router.put('/categories/:id', authenticateToken, async (req, res) => {
             category: result.rows[0]
         });
     } catch (error) {
-        devLogger.error('Error al actualizar categoría:', error);
+        debugLog.error('digital-library', 'Error al actualizar categoría', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al actualizar categoría' });
     } finally {
         client.release();
@@ -261,7 +263,7 @@ router.delete('/categories/:id', authenticateToken, async (req, res) => {
             message: 'Categoría eliminada exitosamente'
         });
     } catch (error) {
-        devLogger.error('Error al eliminar categoría:', error);
+        debugLog.error('digital-library', 'Error al eliminar categoría', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al eliminar categoría' });
     } finally {
         client.release();
@@ -387,7 +389,7 @@ router.get('/documents', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-        devLogger.error('Error al obtener documentos:', error);
+        debugLog.error('digital-library', 'Error al obtener documentos', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al obtener documentos' });
     } finally {
         client.release();
@@ -442,7 +444,7 @@ router.get('/documents/:id', authenticateToken, checkDocumentPermission, async (
             document: document
         });
     } catch (error) {
-        devLogger.error('Error al obtener documento:', error);
+        debugLog.error('digital-library', 'Error al obtener documento', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al obtener documento' });
     } finally {
         client.release();
@@ -582,7 +584,7 @@ router.post('/documents', authenticateToken, upload.single('file'), async (req, 
         });
     } catch (error) {
         await client.query('ROLLBACK');
-        devLogger.error('Error al crear documento:', error);
+        debugLog.error('digital-library', 'Error al crear documento', sanitizeError(error, 'digital-library'));
 
         // Eliminar archivo subido si hubo error
         if (req.file) {
@@ -639,7 +641,7 @@ router.put('/documents/:id', authenticateToken, checkDocumentPermission, async (
             document: result.rows[0]
         });
     } catch (error) {
-        devLogger.error('Error al actualizar documento:', error);
+        debugLog.error('digital-library', 'Error al actualizar documento', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al actualizar documento' });
     } finally {
         client.release();
@@ -671,7 +673,7 @@ router.delete('/documents/:id', authenticateToken, checkDocumentPermission, asyn
             message: 'Documento eliminado exitosamente'
         });
     } catch (error) {
-        devLogger.error('Error al eliminar documento:', error);
+        debugLog.error('digital-library', 'Error al eliminar documento', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al eliminar documento' });
     } finally {
         client.release();
@@ -703,7 +705,7 @@ router.get('/documents/:id/versions', authenticateToken, checkDocumentPermission
             total: result.rows.length
         });
     } catch (error) {
-        devLogger.error('Error al obtener versiones:', error);
+        debugLog.error('digital-library', 'Error al obtener versiones', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al obtener versiones' });
     } finally {
         client.release();
@@ -779,7 +781,7 @@ router.post('/documents/:id/versions', authenticateToken, checkDocumentPermissio
         });
     } catch (error) {
         await client.query('ROLLBACK');
-        devLogger.error('Error al crear versión:', error);
+        debugLog.error('digital-library', 'Error al crear versión', sanitizeError(error, 'digital-library'));
 
         if (req.file) {
             await fs.unlink(req.file.path).catch(console.error);
@@ -854,14 +856,14 @@ router.get('/documents/:id/download', authenticateToken, checkDocumentPermission
         // Enviar archivo
         res.download(version.file_path, version.file_name, (err) => {
             if (err) {
-                devLogger.error('Error al enviar archivo:', err);
+                debugLog.error('digital-library', 'Error al enviar archivo:', err);
                 if (!res.headersSent) {
                     res.status(500).json({ error: 'Error al descargar archivo' });
                 }
             }
         });
     } catch (error) {
-        devLogger.error('Error al descargar documento:', error);
+        debugLog.error('digital-library', 'Error al descargar documento', sanitizeError(error, 'digital-library'));
         if (!res.headersSent) {
             res.status(500).json({ error: 'Error al descargar documento' });
         }
@@ -897,7 +899,7 @@ router.post('/documents/:id/favorite', authenticateToken, async (req, res) => {
             message: 'Documento agregado a favoritos'
         });
     } catch (error) {
-        devLogger.error('Error al agregar favorito:', error);
+        debugLog.error('digital-library', 'Error al agregar favorito', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al agregar favorito' });
     } finally {
         client.release();
@@ -925,7 +927,7 @@ router.delete('/documents/:id/favorite', authenticateToken, async (req, res) => 
             message: 'Documento eliminado de favoritos'
         });
     } catch (error) {
-        devLogger.error('Error al eliminar favorito:', error);
+        debugLog.error('digital-library', 'Error al eliminar favorito', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al eliminar favorito' });
     } finally {
         client.release();
@@ -972,7 +974,7 @@ router.get('/favorites', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-        devLogger.error('Error al obtener favoritos:', error);
+        debugLog.error('digital-library', 'Error al obtener favoritos', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al obtener favoritos' });
     } finally {
         client.release();
@@ -1014,7 +1016,7 @@ router.post('/documents/:id/rating', authenticateToken, async (req, res) => {
             rating: result.rows[0]
         });
     } catch (error) {
-        devLogger.error('Error al calificar documento:', error);
+        debugLog.error('digital-library', 'Error al calificar documento', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al calificar documento' });
     } finally {
         client.release();
@@ -1072,7 +1074,7 @@ router.get('/documents/:id/comments', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-        devLogger.error('Error al obtener comentarios:', error);
+        debugLog.error('digital-library', 'Error al obtener comentarios', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al obtener comentarios' });
     } finally {
         client.release();
@@ -1108,7 +1110,7 @@ router.post('/documents/:id/comments', authenticateToken, checkDocumentPermissio
             comment: result.rows[0]
         });
     } catch (error) {
-        devLogger.error('Error al crear comentario:', error);
+        debugLog.error('digital-library', 'Error al crear comentario', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al crear comentario' });
     } finally {
         client.release();
@@ -1147,7 +1149,7 @@ router.put('/comments/:id', authenticateToken, async (req, res) => {
             comment: result.rows[0]
         });
     } catch (error) {
-        devLogger.error('Error al actualizar comentario:', error);
+        debugLog.error('digital-library', 'Error al actualizar comentario', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al actualizar comentario' });
     } finally {
         client.release();
@@ -1180,7 +1182,7 @@ router.delete('/comments/:id', authenticateToken, async (req, res) => {
             message: 'Comentario eliminado exitosamente'
         });
     } catch (error) {
-        devLogger.error('Error al eliminar comentario:', error);
+        debugLog.error('digital-library', 'Error al eliminar comentario', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al eliminar comentario' });
     } finally {
         client.release();
@@ -1249,7 +1251,7 @@ router.get('/search', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-        devLogger.error('Error en búsqueda:', error);
+        debugLog.error('digital-library', 'Error en búsqueda', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error en búsqueda' });
     } finally {
         client.release();
@@ -1281,7 +1283,7 @@ router.get('/tags', authenticateToken, async (req, res) => {
             total: result.rows.length
         });
     } catch (error) {
-        devLogger.error('Error al obtener tags:', error);
+        debugLog.error('digital-library', 'Error al obtener tags', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al obtener tags' });
     } finally {
         client.release();
@@ -1334,7 +1336,7 @@ router.post('/documents/:id/tags', authenticateToken, checkDocumentPermission, a
         });
     } catch (error) {
         await client.query('ROLLBACK');
-        devLogger.error('Error al asignar tags:', error);
+        debugLog.error('digital-library', 'Error al asignar tags', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al asignar tags' });
     } finally {
         client.release();
@@ -1373,7 +1375,7 @@ router.get('/recent', authenticateToken, async (req, res) => {
             documents: result.rows
         });
     } catch (error) {
-        devLogger.error('Error al obtener documentos recientes:', error);
+        debugLog.error('digital-library', 'Error al obtener documentos recientes', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al obtener documentos recientes' });
     } finally {
         client.release();
@@ -1408,7 +1410,7 @@ router.get('/popular', authenticateToken, async (req, res) => {
             documents: result.rows
         });
     } catch (error) {
-        devLogger.error('Error al obtener documentos populares:', error);
+        debugLog.error('digital-library', 'Error al obtener documentos populares', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al obtener documentos populares' });
     } finally {
         client.release();
@@ -1461,7 +1463,7 @@ router.get('/history', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-        devLogger.error('Error al obtener historial:', error);
+        debugLog.error('digital-library', 'Error al obtener historial', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al obtener historial' });
     } finally {
         client.release();
@@ -1522,7 +1524,7 @@ router.post('/documents/:id/permissions', authenticateToken, async (req, res) =>
         });
     } catch (error) {
         await client.query('ROLLBACK');
-        devLogger.error('Error al actualizar permisos:', error);
+        debugLog.error('digital-library', 'Error al actualizar permisos', sanitizeError(error, 'digital-library'));
         res.status(500).json({ error: 'Error al actualizar permisos' });
     } finally {
         client.release();

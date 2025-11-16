@@ -7,7 +7,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 
 // Configuración del sistema de analytics predictivo
@@ -113,7 +115,7 @@ router.get('/health', async (req, res) => {
         res.json(health);
 
     } catch (error) {
-        devLogger.error('Analytics health check error:', error);
+        debugLog.error('analytics-predictivo', 'Analytics health check error', sanitizeError(error, 'analytics-predictivo'));
         res.status(500).json({
             status: 'error',
             message: 'Analytics system health check failed',
@@ -151,7 +153,7 @@ router.post('/risk-prediction', async (req, res) => {
             });
         }
 
-        devLogger.log(`🎯 [ANALYTICS-API] Generando predicción de riesgo para estudiante ${studentId}`);
+        debugLog.log('analytics-predictivo', `🎯 [ANALYTICS-API] Generando predicción de riesgo para estudiante ${studentId}`);
 
         // Obtener o usar datos del estudiante
         const student = studentData || await getStudentData(studentId);
@@ -191,13 +193,13 @@ router.post('/risk-prediction', async (req, res) => {
         systemStats.lastUpdate = new Date().toISOString();
 
         // Log del resultado
-        devLogger.log(`✅ [ANALYTICS-API] Predicción de riesgo generada en ${processingTime}ms - Riesgo: ${riskPrediction.riskLevel} (${(riskPrediction.overallRisk * 100).toFixed(1)}%)`);
+        debugLog.log('analytics-predictivo', `✅ [ANALYTICS-API] Predicción de riesgo generada en ${processingTime}ms - Riesgo: ${riskPrediction.riskLevel} (${(riskPrediction.overallRisk * 100).toFixed(1)}%)`);
 
         res.json(result);
 
     } catch (error) {
         const processingTime = Date.now() - startTime;
-        devLogger.error('Risk prediction error:', error);
+        debugLog.error('analytics-predictivo', 'Risk prediction error', sanitizeError(error, 'analytics-predictivo'));
 
         res.status(500).json({
             error: 'Error generating risk prediction',
@@ -234,7 +236,7 @@ router.post('/performance-trends', async (req, res) => {
             });
         }
 
-        devLogger.log(`📈 [ANALYTICS-API] Generando análisis de tendencias para estudiante ${studentId}`);
+        debugLog.log('analytics-predictivo', `📈 [ANALYTICS-API] Generando análisis de tendencias para estudiante ${studentId}`);
 
         const student = await getStudentData(studentId);
         if (!student) {
@@ -264,13 +266,13 @@ router.post('/performance-trends', async (req, res) => {
         setCachedResult(cacheKey, result);
         dataStore.trends.set(`${studentId}_trends`, result);
 
-        devLogger.log(`✅ [ANALYTICS-API] Análisis de tendencias generado en ${processingTime}ms`);
+        debugLog.log('analytics-predictivo', `✅ [ANALYTICS-API] Análisis de tendencias generado en ${processingTime}ms`);
 
         res.json(result);
 
     } catch (error) {
         const processingTime = Date.now() - startTime;
-        devLogger.error('Performance trends error:', error);
+        debugLog.error('analytics-predictivo', 'Performance trends error', sanitizeError(error, 'analytics-predictivo'));
 
         res.status(500).json({
             error: 'Error generating performance trends',
@@ -294,7 +296,7 @@ router.get('/dashboard', async (req, res) => {
             includeRecommendations = true
         } = req.query;
 
-        devLogger.log('📊 [ANALYTICS-API] Generando dashboard de analytics...');
+        debugLog.log('analytics-predictivo', '📊 [ANALYTICS-API] Generando dashboard de analytics...');
 
         const filters = { grade, group, timeRange };
         const dashboard = await generateRealTimeDashboard(filters);
@@ -319,7 +321,7 @@ router.get('/dashboard', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Dashboard generation error:', error);
+        debugLog.error('analytics-predictivo', 'Dashboard generation error', sanitizeError(error, 'analytics-predictivo'));
         res.status(500).json({
             error: 'Error generating dashboard',
             message: error.message
@@ -354,7 +356,7 @@ router.get('/alerts', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Alerts retrieval error:', error);
+        debugLog.error('analytics-predictivo', 'Alerts retrieval error', sanitizeError(error, 'analytics-predictivo'));
         res.status(500).json({
             error: 'Error retrieving alerts',
             message: error.message
@@ -397,7 +399,7 @@ router.post('/alerts', async (req, res) => {
         // Procesar la alerta
         await processAlert(alert);
 
-        devLogger.log(`🚨 [ANALYTICS-API] Alerta creada: ${type} para estudiante ${studentId} (${severity})`);
+        debugLog.log('analytics-predictivo', `🚨 [ANALYTICS-API] Alerta creada: ${type} para estudiante ${studentId} (${severity})`);
 
         res.json({
             success: true,
@@ -406,7 +408,7 @@ router.post('/alerts', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Alert creation error:', error);
+        debugLog.error('analytics-predictivo', 'Alert creation error', sanitizeError(error, 'analytics-predictivo'));
         res.status(500).json({
             error: 'Error creating alert',
             message: error.message
@@ -460,7 +462,7 @@ router.get('/stats', async (req, res) => {
         res.json(stats);
 
     } catch (error) {
-        devLogger.error('Stats retrieval error:', error);
+        debugLog.error('analytics-predictivo', 'Stats retrieval error', sanitizeError(error, 'analytics-predictivo'));
         res.status(500).json({
             error: 'Error retrieving statistics',
             message: error.message
@@ -484,7 +486,7 @@ router.get('/group-analysis', async (req, res) => {
         const subjectsArray = subjects ? subjects.split(',') : ['all'];
         const metricsArray = metrics.split(',');
 
-        devLogger.log(`👥 [ANALYTICS-API] Generando análisis comparativo de grupos: ${groupsArray.join(', ')}`);
+        debugLog.log('analytics-predictivo', `👥 [ANALYTICS-API] Generando análisis comparativo de grupos: ${groupsArray.join(', ')}`);
 
         const analysis = await generateGroupComparison({
             groups: groupsArray,
@@ -508,7 +510,7 @@ router.get('/group-analysis', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Group analysis error:', error);
+        debugLog.error('analytics-predictivo', 'Group analysis error', sanitizeError(error, 'analytics-predictivo'));
         res.status(500).json({
             error: 'Error generating group analysis',
             message: error.message
@@ -530,7 +532,7 @@ router.post('/batch-predictions', async (req, res) => {
             });
         }
 
-        devLogger.log(`📊 [ANALYTICS-API] Procesando batch de predicciones para ${studentIds.length} estudiantes`);
+        debugLog.log('analytics-predictivo', `📊 [ANALYTICS-API] Procesando batch de predicciones para ${studentIds.length} estudiantes`);
 
         const results = [];
         const errors = [];
@@ -579,7 +581,7 @@ router.post('/batch-predictions', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Batch predictions error:', error);
+        debugLog.error('analytics-predictivo', 'Batch predictions error', sanitizeError(error, 'analytics-predictivo'));
         res.status(500).json({
             error: 'Error processing batch predictions',
             message: error.message
@@ -649,7 +651,7 @@ async function generateRiskPrediction(student, options = {}) {
         };
 
     } catch (error) {
-        devLogger.error('Error generating risk prediction:', error);
+        debugLog.error('analytics-predictivo', 'Error generating risk prediction', sanitizeError(error, 'analytics-predictivo'));
         return getFallbackRiskPrediction(student);
     }
 }
@@ -694,7 +696,7 @@ async function generatePerformanceTrends(student, timeRange, options = {}) {
         };
 
     } catch (error) {
-        devLogger.error('Error generating performance trends:', error);
+        debugLog.error('analytics-predictivo', 'Error generating performance trends', sanitizeError(error, 'analytics-predictivo'));
         return getFallbackTrends(student);
     }
 }
@@ -733,7 +735,7 @@ async function generateRealTimeDashboard(filters = {}) {
         };
 
     } catch (error) {
-        devLogger.error('Error generating dashboard:', error);
+        debugLog.error('analytics-predictivo', 'Error generating dashboard', sanitizeError(error, 'analytics-predictivo'));
         return getFallbackDashboard();
     }
 }

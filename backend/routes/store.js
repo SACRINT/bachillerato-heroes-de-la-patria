@@ -5,7 +5,9 @@
 
 const express = require('express');
 const { Pool } = require('pg');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
@@ -24,7 +26,7 @@ router.get('/items', authenticateToken, async (req, res) => {
     try {
         const { category, is_available = true } = req.query;
 
-        devLogger.log('[STORE] Listando items de la tienda');
+        debugLog.log('STORE', '[STORE] Listando items de la tienda');
 
         let query = `
             SELECT
@@ -78,7 +80,7 @@ router.get('/items', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('[STORE] Error al listar items:', error.message);
+        debugLog.error('STORE', '[STORE] Error al listar items:', error.message);
         res.status(500).json({
             error: 'Error al obtener items de la tienda',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -95,7 +97,7 @@ router.get('/items/:id', authenticateToken, async (req, res) => {
         const { id } = req.params;
         const userId = req.user.id;
 
-        devLogger.log(`[STORE] Obteniendo detalles del item ${id}`);
+        debugLog.log('STORE', `[STORE] Obteniendo detalles del item ${id}`);
 
         const itemResult = await pool.query(
             `SELECT * FROM store_items WHERE id = $1`,
@@ -130,7 +132,7 @@ router.get('/items/:id', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('[STORE] Error al obtener item:', error.message);
+        debugLog.error('STORE', '[STORE] Error al obtener item:', error.message);
         res.status(500).json({
             error: 'Error al obtener detalles del item',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -155,7 +157,7 @@ router.post('/purchase', authenticateToken, async (req, res) => {
             });
         }
 
-        devLogger.log(`[STORE] Usuario ${userId} comprando item ${item_id}`);
+        debugLog.log('STORE', `[STORE] Usuario ${userId} comprando item ${item_id}`);
 
         await client.query('BEGIN');
 
@@ -285,7 +287,7 @@ router.post('/purchase', authenticateToken, async (req, res) => {
 
     } catch (error) {
         await client.query('ROLLBACK');
-        devLogger.error('[STORE] Error al comprar item:', error.message);
+        debugLog.error('STORE', '[STORE] Error al comprar item:', error.message);
         res.status(500).json({
             error: 'Error al procesar la compra',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -303,7 +305,7 @@ router.get('/my-items', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
 
-        devLogger.log(`[STORE] Obteniendo items comprados por usuario ${userId}`);
+        debugLog.log('STORE', `[STORE] Obteniendo items comprados por usuario ${userId}`);
 
         const result = await pool.query(
             `SELECT
@@ -343,7 +345,7 @@ router.get('/my-items', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('[STORE] Error al obtener items del usuario:', error.message);
+        debugLog.error('STORE', '[STORE] Error al obtener items del usuario:', error.message);
         res.status(500).json({
             error: 'Error al obtener tus items',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -402,7 +404,7 @@ router.post('/items', authenticateToken, async (req, res) => {
             });
         }
 
-        devLogger.log(`[STORE] Admin ${req.user.id} creando nuevo item: ${name}`);
+        debugLog.log('STORE', `[STORE] Admin ${req.user.id} creando nuevo item: ${name}`);
 
         const result = await pool.query(
             `INSERT INTO store_items
@@ -419,7 +421,7 @@ router.post('/items', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('[STORE] Error al crear item:', error.message);
+        debugLog.error('STORE', '[STORE] Error al crear item:', error.message);
         res.status(500).json({
             error: 'Error al crear el item',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined

@@ -1,4 +1,14 @@
 /**
+// Debug Logger - Logging condicional (GDPR compliant)
+if (typeof debugLog === 'undefined') {
+    var debugLog = {
+        log: () => {},
+        warn: () => {},
+        error: () => {}
+    };
+}
+
+
  * 📧 MANEJADOR DE CONFIRMACIÓN DE EMAIL - EGRESADOS
  * Detecta cuando el usuario hace clic en el enlace de confirmación de email
  * y llama al endpoint de confirmación en el backend
@@ -9,7 +19,7 @@
 (function() {
     'use strict';
 
-    console.log('📧 [EGRESADOS EMAIL CONFIRMATION] Script cargado');
+    debugLog.log('EMAIL', '📧 [EGRESADOS EMAIL CONFIRMATION] Script cargado');
 
     // Flag para evitar múltiples ejecuciones con el mismo token
     let processingToken = null;
@@ -110,7 +120,7 @@
      * Confirmar email con token
      */
     async function confirmEmail(token) {
-        console.log(`📧 [EGRESADOS EMAIL CONFIRMATION] Confirmando email con token: ${token.substring(0, 8)}...`);
+        debugLog.log('TOKEN', `📧 [EGRESADOS EMAIL CONFIRMATION] Confirmando email con token: ${token.substring(0, 8)}...`);
 
         // IMPORTANTE: NO mostrar modal aquí, esperar respuesta del servidor PRIMERO
 
@@ -132,16 +142,16 @@
                 data = { success: false, error: 'Respuesta inválida del servidor' };
             }
 
-            console.log(`📧 [EGRESADOS EMAIL CONFIRMATION] Respuesta del servidor:`, data);
+            debugLog.log('EMAIL', `📧 [EGRESADOS EMAIL CONFIRMATION] Respuesta del servidor:`, data);
 
             if (response.ok && (data.success || response.status === 200)) {
-                console.log(`✅ [EGRESADOS EMAIL CONFIRMATION] Email confirmado exitosamente`);
+                debugLog.log('EMAIL', `✅ [EGRESADOS EMAIL CONFIRMATION] Email confirmado exitosamente`);
                 showConfirmationStatus(
                     '✓ Tu email ha sido confirmado exitosamente. Tu solicitud ha sido enviada a revisión del administrador. Te notificaremos cuando sea revisada.',
                     true
                 );
             } else {
-                console.error(`❌ [EGRESADOS EMAIL CONFIRMATION] Error:`, data.error);
+                debugLog.error('EMAIL', `❌ [EGRESADOS EMAIL CONFIRMATION] Error:`, data.error);
                 showConfirmationStatus(
                     data.error || 'Hubo un error al confirmar tu email. Por favor intenta nuevamente.',
                     false
@@ -149,7 +159,7 @@
             }
 
         } catch (error) {
-            console.error(`❌ [EGRESADOS EMAIL CONFIRMATION] Error de red:`, error);
+            debugLog.error('EMAIL', `❌ [EGRESADOS EMAIL CONFIRMATION] Error de red:`, error);
             showConfirmationStatus(
                 'Error de conexión. Por favor verifica tu conexión a internet e intenta nuevamente.',
                 false
@@ -163,7 +173,7 @@
     function init() {
         // Solo ejecutar si estamos en egresados.html
         if (!window.location.pathname.includes('egresados')) {
-            console.log('📧 [EGRESADOS EMAIL CONFIRMATION] No estamos en egresados.html, saliendo');
+            debugLog.log('EMAIL', '📧 [EGRESADOS EMAIL CONFIRMATION] No estamos en egresados.html, saliendo');
             return;
         }
 
@@ -172,17 +182,17 @@
         if (token) {
             // IMPORTANTE: Evitar procesar el mismo token múltiples veces
             if (processingToken === token) {
-                console.log(`📧 [EGRESADOS EMAIL CONFIRMATION] Token ya está siendo procesado: ${token.substring(0, 8)}...`);
+                debugLog.log('TOKEN', `📧 [EGRESADOS EMAIL CONFIRMATION] Token ya está siendo procesado: ${token.substring(0, 8)}...`);
                 return;
             }
 
             // Marcar que estamos procesando este token
             processingToken = token;
 
-            console.log(`📧 [EGRESADOS EMAIL CONFIRMATION] Token encontrado: ${token.substring(0, 8)}...`);
+            debugLog.log('TOKEN', `📧 [EGRESADOS EMAIL CONFIRMATION] Token encontrado: ${token.substring(0, 8)}...`);
             confirmEmail(token);
         } else {
-            console.log('📧 [EGRESADOS EMAIL CONFIRMATION] No se encontró token de confirmación en la URL');
+            debugLog.log('TOKEN', '📧 [EGRESADOS EMAIL CONFIRMATION] No se encontró token de confirmación en la URL');
         }
     }
 

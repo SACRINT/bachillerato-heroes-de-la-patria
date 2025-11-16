@@ -17,7 +17,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 
 // Base de datos simulada para sistema de riesgos
@@ -82,7 +84,7 @@ router.post('/analyze', async (req, res) => {
     try {
         const { studentId, data, forceReanalysis = false } = req.body;
 
-        devLogger.log(`🚨 Análisis de riesgo - Estudiante: ${studentId}`);
+        debugLog.log('DETECCION_RIESGOS', `🚨 Análisis de riesgo - Estudiante: ${studentId}`);
 
         if (!studentId) {
             return res.status(400).json({
@@ -138,7 +140,7 @@ router.post('/analyze', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error en análisis de riesgos:', error);
+        debugLog.error('DETECCION_RIESGOS', '❌ Error en análisis de riesgos:', sanitizeError(error, 'deteccion-riesgos'));
         res.status(500).json({
             success: false,
             error: 'Error en análisis de riesgos',
@@ -152,7 +154,7 @@ router.post('/analyze-batch', async (req, res) => {
     try {
         const { studentIds, criteria } = req.body;
 
-        devLogger.log(`📊 Análisis masivo - ${studentIds.length} estudiantes`);
+        debugLog.log('DETECCION_RIESGOS', `📊 Análisis masivo - ${studentIds.length} estudiantes`);
 
         const batchResults = [];
         const alerts = [];
@@ -176,7 +178,7 @@ router.post('/analyze-batch', async (req, res) => {
                 }
 
             } catch (error) {
-                devLogger.error(`❌ Error analizando estudiante ${studentId}:`, error);
+                debugLog.error('DETECCION_RIESGOS', `❌ Error analizando estudiante ${studentId}:`, error);
                 batchResults.push({
                     studentId,
                     success: false,
@@ -213,7 +215,7 @@ router.post('/analyze-batch', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error en análisis masivo:', error);
+        debugLog.error('DETECCION_RIESGOS', '❌ Error en análisis masivo:', sanitizeError(error, 'deteccion-riesgos'));
         res.status(500).json({
             success: false,
             error: 'Error en análisis masivo'
@@ -267,7 +269,7 @@ router.get('/alerts', (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo alertas:', error);
+        debugLog.error('DETECCION_RIESGOS', '❌ Error obteniendo alertas:', sanitizeError(error, 'deteccion-riesgos'));
         res.status(500).json({
             success: false,
             error: 'Error obteniendo alertas'
@@ -288,7 +290,7 @@ router.post('/intervention', async (req, res) => {
             timeline
         } = req.body;
 
-        devLogger.log(`🎯 Creando intervención - Estudiante: ${studentId}, Tipo: ${type}`);
+        debugLog.log('DETECCION_RIESGOS', `🎯 Creando intervención - Estudiante: ${studentId}, Tipo: ${type}`);
 
         const intervention = {
             id: generateInterventionId(),
@@ -329,7 +331,7 @@ router.post('/intervention', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error creando intervención:', error);
+        debugLog.error('DETECCION_RIESGOS', '❌ Error creando intervención:', sanitizeError(error, 'deteccion-riesgos'));
         res.status(500).json({
             success: false,
             error: 'Error creando intervención'
@@ -343,7 +345,7 @@ router.put('/intervention/:interventionId', async (req, res) => {
         const { interventionId } = req.params;
         const { progress, notes, status, milestones } = req.body;
 
-        devLogger.log(`📈 Actualizando intervención: ${interventionId}`);
+        debugLog.log('DETECCION_RIESGOS', `📈 Actualizando intervención: ${interventionId}`);
 
         const intervention = interventions.get(interventionId);
         if (!intervention) {
@@ -377,7 +379,7 @@ router.put('/intervention/:interventionId', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error actualizando intervención:', error);
+        debugLog.error('DETECCION_RIESGOS', '❌ Error actualizando intervención:', sanitizeError(error, 'deteccion-riesgos'));
         res.status(500).json({
             success: false,
             error: 'Error actualizando intervención'
@@ -441,7 +443,7 @@ router.get('/dashboard', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error en dashboard de riesgos:', error);
+        debugLog.error('DETECCION_RIESGOS', '❌ Error en dashboard de riesgos:', sanitizeError(error, 'deteccion-riesgos'));
         res.status(500).json({
             success: false,
             error: 'Error en dashboard de riesgos'
@@ -474,7 +476,7 @@ router.get('/student/:studentId/profile', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo perfil de riesgo:', error);
+        debugLog.error('DETECCION_RIESGOS', '❌ Error obteniendo perfil de riesgo:', sanitizeError(error, 'deteccion-riesgos'));
         res.status(500).json({
             success: false,
             error: 'Error obteniendo perfil de riesgo'
@@ -487,7 +489,7 @@ router.post('/predict', async (req, res) => {
     try {
         const { criteria, timeHorizon = '30d', confidence = 0.7 } = req.body;
 
-        devLogger.log('🔍 Realizando predicción de riesgos...');
+        debugLog.log('DETECCION_RIESGOS', '🔍 Realizando predicción de riesgos...');
 
         // Realizar predicción basada en criterios
         const predictions = await performRiskPrediction(criteria, timeHorizon, confidence);
@@ -510,7 +512,7 @@ router.post('/predict', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error en predicción de riesgos:', error);
+        debugLog.error('DETECCION_RIESGOS', '❌ Error en predicción de riesgos:', sanitizeError(error, 'deteccion-riesgos'));
         res.status(500).json({
             success: false,
             error: 'Error en predicción de riesgos'
@@ -524,7 +526,7 @@ router.get('/reports/:type', async (req, res) => {
         const { type } = req.params;
         const { format = 'json', period = '1m' } = req.query;
 
-        devLogger.log(`📊 Generando reporte: ${type} - Formato: ${format}`);
+        debugLog.log('DETECCION_RIESGOS', `📊 Generando reporte: ${type} - Formato: ${format}`);
 
         let reportData;
 
@@ -565,7 +567,7 @@ router.get('/reports/:type', async (req, res) => {
         }
 
     } catch (error) {
-        devLogger.error('❌ Error generando reporte:', error);
+        debugLog.error('DETECCION_RIESGOS', '❌ Error generando reporte:', sanitizeError(error, 'deteccion-riesgos'));
         res.status(500).json({
             success: false,
             error: 'Error generando reporte'
@@ -594,7 +596,7 @@ router.get('/config', (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo configuración:', error);
+        debugLog.error('DETECCION_RIESGOS', '❌ Error obteniendo configuración:', sanitizeError(error, 'deteccion-riesgos'));
         res.status(500).json({
             success: false,
             error: 'Error obteniendo configuración'

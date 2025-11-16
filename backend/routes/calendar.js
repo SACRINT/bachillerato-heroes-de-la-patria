@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
 
@@ -97,7 +99,7 @@ router.get('/events', async (req, res) => {
             view: view
         });
     } catch (error) {
-        devLogger.error('Error obteniendo eventos:', error);
+        debugLog.error('CALENDAR', 'Error obteniendo eventos:', sanitizeError(error, 'calendar'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -137,7 +139,7 @@ router.get('/events/:id', async (req, res) => {
             data: event
         });
     } catch (error) {
-        devLogger.error('Error obteniendo evento:', error);
+        debugLog.error('CALENDAR', 'Error obteniendo evento:', sanitizeError(error, 'calendar'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -273,7 +275,7 @@ router.post('/events', authenticateToken, requireAdmin, async (req, res) => {
         try {
             await calendarService.syncWithGoogleCalendar(newEvent);
         } catch (syncError) {
-            devLogger.warn('No se pudo sincronizar con Google Calendar:', syncError.message);
+            debugLog.log('CALENDAR', 'No se pudo sincronizar con Google Calendar:', syncError.message);
         }
 
         res.status(201).json({
@@ -282,7 +284,7 @@ router.post('/events', authenticateToken, requireAdmin, async (req, res) => {
             data: newEvent
         });
     } catch (error) {
-        devLogger.error('Error creando evento:', error);
+        debugLog.error('CALENDAR', 'Error creando evento:', sanitizeError(error, 'calendar'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -333,7 +335,7 @@ router.put('/events/:id', authenticateToken, requireAdmin, async (req, res) => {
             data: updatedEvent
         });
     } catch (error) {
-        devLogger.error('Error actualizando evento:', error);
+        debugLog.error('CALENDAR', 'Error actualizando evento:', sanitizeError(error, 'calendar'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -369,7 +371,7 @@ router.delete('/events/:id', authenticateToken, requireAdmin, async (req, res) =
             message: 'Evento eliminado exitosamente'
         });
     } catch (error) {
-        devLogger.error('Error eliminando evento:', error);
+        debugLog.error('CALENDAR', 'Error eliminando evento:', sanitizeError(error, 'calendar'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -404,7 +406,7 @@ router.get('/events/upcoming', async (req, res) => {
             data: upcomingEvents
         });
     } catch (error) {
-        devLogger.error('Error obteniendo eventos próximos:', error);
+        debugLog.error('CALENDAR', 'Error obteniendo eventos próximos:', sanitizeError(error, 'calendar'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -430,7 +432,7 @@ router.get('/events/today', async (req, res) => {
             count: todayEvents.length
         });
     } catch (error) {
-        devLogger.error('Error obteniendo eventos de hoy:', error);
+        debugLog.error('CALENDAR', 'Error obteniendo eventos de hoy:', sanitizeError(error, 'calendar'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -468,7 +470,7 @@ router.post('/events/:id/attend', authenticateToken, async (req, res) => {
             data: result.attendance
         });
     } catch (error) {
-        devLogger.error('Error registrando asistencia:', error);
+        debugLog.error('CALENDAR', 'Error registrando asistencia:', sanitizeError(error, 'calendar'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -498,7 +500,7 @@ router.get('/events/:id/attendees', authenticateToken, requireAdmin, async (req,
             count: attendees.length
         });
     } catch (error) {
-        devLogger.error('Error obteniendo asistentes:', error);
+        debugLog.error('CALENDAR', 'Error obteniendo asistentes:', sanitizeError(error, 'calendar'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -540,7 +542,7 @@ router.post('/google/sync', authenticateToken, requireAdmin, async (req, res) =>
             }
         });
     } catch (error) {
-        devLogger.error('Error en sincronización:', error);
+        debugLog.error('CALENDAR', 'Error en sincronización:', sanitizeError(error, 'calendar'));
         res.status(500).json({
             success: false,
             error: 'Error en sincronización',
@@ -569,7 +571,7 @@ router.get('/google/auth', authenticateToken, requireAdmin, async (req, res) => 
             }
         });
     } catch (error) {
-        devLogger.error('Error obteniendo URL de autorización:', error);
+        debugLog.error('CALENDAR', 'Error obteniendo URL de autorización:', sanitizeError(error, 'calendar'));
         res.status(500).json({
             success: false,
             error: 'Error de autorización',
@@ -602,7 +604,7 @@ router.get('/stats', authenticateToken, requireAdmin, async (req, res) => {
             data: stats
         });
     } catch (error) {
-        devLogger.error('Error obteniendo estadísticas:', error);
+        debugLog.error('CALENDAR', 'Error obteniendo estadísticas:', sanitizeError(error, 'calendar'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -632,7 +634,7 @@ router.get('/export', async (req, res) => {
         res.setHeader('Content-Disposition', 'attachment; filename="calendario-bge.ics"');
         res.send(icsData);
     } catch (error) {
-        devLogger.error('Error exportando calendario:', error);
+        debugLog.error('CALENDAR', 'Error exportando calendario:', sanitizeError(error, 'calendar'));
         res.status(500).json({
             success: false,
             error: 'Error exportando calendario',
@@ -676,7 +678,7 @@ router.post('/reminders/:id', authenticateToken, requireAdmin, async (req, res) 
             data: result
         });
     } catch (error) {
-        devLogger.error('Error configurando recordatorios:', error);
+        debugLog.error('CALENDAR', 'Error configurando recordatorios:', sanitizeError(error, 'calendar'));
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',

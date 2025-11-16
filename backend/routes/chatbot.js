@@ -4,7 +4,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { executeQuery, executeTransaction } = require('../config/database');
 const { body, validationResult } = require('express-validator');
@@ -87,7 +89,7 @@ router.post('/search', validateSearch, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error en búsqueda de chatbot:', error);
+        debugLog.error('CHATBOT', 'Error en búsqueda de chatbot:', sanitizeError(error, 'chatbot'));
         res.status(500).json({
             error: 'Error interno del servidor',
             message: 'No se pudo procesar la búsqueda'
@@ -130,7 +132,7 @@ router.post('/message', validateMessage, async (req, res) => {
             timestamp: new Date().toISOString()
         };
 
-        devLogger.log(`💬 Mensaje registrado: ${sender_type} - "${message.substring(0, 50)}..."`);
+        debugLog.log('CHATBOT', `💬 Mensaje registrado: ${sender_type} - "${message.substring(0, 50)}..."`);
 
         const conversationId = Date.now();
 
@@ -142,7 +144,7 @@ router.post('/message', validateMessage, async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error registrando mensaje:', error);
+        debugLog.error('CHATBOT', 'Error registrando mensaje:', sanitizeError(error, 'chatbot'));
         res.status(500).json({
             error: 'Error interno del servidor',
             message: 'No se pudo registrar el mensaje'
@@ -186,7 +188,7 @@ router.get('/analytics/daily', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error obteniendo analytics:', error);
+        debugLog.error('CHATBOT', 'Error obteniendo analytics:', sanitizeError(error, 'chatbot'));
         res.status(500).json({
             error: 'Error interno del servidor',
             message: 'No se pudieron obtener las estadísticas'
@@ -236,7 +238,7 @@ router.post('/feedback', [
         });
 
     } catch (error) {
-        devLogger.error('Error registrando feedback:', error);
+        debugLog.error('CHATBOT', 'Error registrando feedback:', sanitizeError(error, 'chatbot'));
         res.status(500).json({
             error: 'Error interno del servidor',
             message: 'No se pudo registrar el feedback'
@@ -270,7 +272,7 @@ router.get('/information/:category', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error obteniendo información por categoría:', error);
+        debugLog.error('CHATBOT', 'Error obteniendo información por categoría:', sanitizeError(error, 'chatbot'));
         res.status(500).json({
             error: 'Error interno del servidor',
             message: 'No se pudo obtener la información'
@@ -305,7 +307,7 @@ router.get('/categories', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error obteniendo categorías:', error);
+        debugLog.error('CHATBOT', 'Error obteniendo categorías:', sanitizeError(error, 'chatbot'));
         res.status(500).json({
             error: 'Error interno del servidor',
             message: 'No se pudieron obtener las categorías'

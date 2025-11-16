@@ -4,19 +4,23 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
 const { body, validationResult } = require('express-validator');
 const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
 const crypto = require('crypto');
+
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
+
 const router = express.Router();
 
-// Obtener servicio de estudiantes
+// Obtener servicio de estudiantes (usa servicio existente con datos de ejemplo/JSON)
 function getStudentService() {
     try {
         const { getStudentService } = require('../services/studentService');
         return getStudentService();
     } catch (error) {
-        devLogger.error('❌ Error obteniendo servicio de estudiantes:', error.message);
+        debugLog.error('STUDENTS', 'Error obteniendo servicio de estudiantes', sanitizeError(error, 'getStudentService'));
         return null;
     }
 }
@@ -394,7 +398,7 @@ router.post('/', authenticateToken, requireAdmin, [
 
         const studentId = studentResult[0].id;
         
-        devLogger.log('Estudiante creado exitosamente', {
+        debugLog.log('STUDENTS', 'Estudiante creado exitosamente', {
             studentId: studentId,
             userId: userId,
             matricula: matricula,
@@ -480,7 +484,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
             });
         }
         
-        devLogger.log('Estudiante actualizado', {
+        debugLog.log('STUDENTS', 'Estudiante actualizado', {
             studentId: id,
             camposActualizados: Object.keys(updateFields),
             actualizadoPor: req.user.id
@@ -518,7 +522,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res, next) =>
             });
         }
         
-        devLogger.log('Estudiante desactivado', {
+        debugLog.log('STUDENTS', 'Estudiante desactivado', {
             studentId: id,
             desactivadoPor: req.user.id
         });
@@ -582,7 +586,7 @@ router.post('/auth/login', async (req, res, next) => {
             });
         }
     } catch (error) {
-        devLogger.error('❌ Error en login de estudiante:', error);
+        debugLog.error('STUDENTS', 'Error en login de estudiante', sanitizeError(error, 'STUDENTS'));
         res.status(500).json({
             success: false,
             message: 'Error interno del servidor',
@@ -612,7 +616,7 @@ router.get('/dashboard', authenticateToken, async (req, res, next) => {
             data: dashboardData
         });
     } catch (error) {
-        devLogger.error('❌ Error obteniendo dashboard:', error);
+        debugLog.error('STUDENTS', 'Error obteniendo dashboard', sanitizeError(error, 'STUDENTS'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo datos del dashboard',
@@ -642,7 +646,7 @@ router.get('/profile', authenticateToken, async (req, res, next) => {
             data: profile
         });
     } catch (error) {
-        devLogger.error('❌ Error obteniendo perfil:', error);
+        debugLog.error('STUDENTS', 'Error obteniendo perfil', sanitizeError(error, 'STUDENTS'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo perfil del estudiante',
@@ -674,7 +678,7 @@ router.get('/grades', authenticateToken, async (req, res, next) => {
             data: grades
         });
     } catch (error) {
-        devLogger.error('❌ Error obteniendo calificaciones:', error);
+        debugLog.error('STUDENTS', 'Error obteniendo calificaciones', sanitizeError(error, 'STUDENTS'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo calificaciones',
@@ -704,7 +708,7 @@ router.get('/schedule', authenticateToken, async (req, res, next) => {
             data: schedule
         });
     } catch (error) {
-        devLogger.error('❌ Error obteniendo horario:', error);
+        debugLog.error('STUDENTS', 'Error obteniendo horario', sanitizeError(error, 'STUDENTS'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo horario',
@@ -736,7 +740,7 @@ router.get('/assignments', authenticateToken, async (req, res, next) => {
             data: assignments
         });
     } catch (error) {
-        devLogger.error('❌ Error obteniendo tareas:', error);
+        debugLog.error('STUDENTS', 'Error obteniendo tareas', sanitizeError(error, 'STUDENTS'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo tareas',
@@ -770,7 +774,7 @@ router.get('/notifications', authenticateToken, async (req, res, next) => {
             data: notifications
         });
     } catch (error) {
-        devLogger.error('❌ Error obteniendo notificaciones:', error);
+        debugLog.error('STUDENTS', 'Error obteniendo notificaciones', sanitizeError(error, 'STUDENTS'));
         res.status(500).json({
             success: false,
             message: 'Error obteniendo notificaciones',

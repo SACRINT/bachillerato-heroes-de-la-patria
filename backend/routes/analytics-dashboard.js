@@ -5,7 +5,6 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
 const router = express.Router();
 const { pool } = require('../config/database');
 
@@ -154,7 +153,7 @@ router.get('/dashboard', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo estadísticas del dashboard:', error);
+        debugLog.error('ANALYTICS_DASHBOARD', '❌ Error obteniendo estadísticas del dashboard:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo estadísticas',
@@ -245,7 +244,7 @@ router.get('/dashboard/recent-activity', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo actividad reciente:', error);
+        debugLog.error('ANALYTICS_DASHBOARD', '❌ Error obteniendo actividad reciente:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo actividad reciente'
@@ -342,7 +341,7 @@ router.get('/dashboard/charts', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error obteniendo datos de gráficas:', error);
+        debugLog.error('ANALYTICS_DASHBOARD', '❌ Error obteniendo datos de gráficas:', error);
         res.status(500).json({
             success: false,
             message: 'Error obteniendo datos de gráficas'

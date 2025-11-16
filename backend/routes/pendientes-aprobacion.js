@@ -4,7 +4,11 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
+
 const router = express.Router();
 const { pool } = require('../config/database');
 
@@ -60,9 +64,8 @@ router.get('/', async (req, res) => {
         query += ' LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2);
         params.push(parseInt(limit), parseInt(offset));
 
-        devLogger.log(`📋 [GET /pendientes-aprobacion] Query:`);
-        devLogger.log(`   ${query}`);
-        devLogger.log(`   Parámetros: [${params.join(', ')}]`);
+        debugLog.log('PENDIENTES', `📋 [GET /pendientes-aprobacion] Query: ${query}`);
+        debugLog.log('PENDIENTES', `   Parámetros: [${params.join(', ')}]`);
 
         const result = await pool.query(query, params);
 
@@ -87,7 +90,7 @@ router.get('/', async (req, res) => {
         const countResult = await pool.query(countQuery, countParams);
 
         const totalCount = parseInt(countResult.rows[0].count);
-        devLogger.log(`   ✅ Encontrados ${result.rows.length} registros, Total: ${totalCount}`);
+        debugLog.log('PENDIENTES', `   ✅ Encontrados ${result.rows.length} registros, Total: ${totalCount}`);
 
         res.json({
             success: true,
@@ -98,7 +101,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener pendientes:', error);
+        debugLog.error('PENDIENTES', '❌ Error al obtener pendientes', sanitizeError(error, 'pendientes'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener solicitudes pendientes'
@@ -132,7 +135,7 @@ router.get('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error:', error);
+        debugLog.error('PENDIENTES', '❌ Error al obtener solicitud', sanitizeError(error, 'pendientes'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener solicitud'
@@ -151,26 +154,24 @@ router.post('/aprobar/:id', async (req, res) => {
     const { id } = req.params;
     const { admin_id, admin_notas } = req.body;
 
-    devLogger.log(`\n🔵 [BACKEND APROBAR] =====================================`);
-    devLogger.log(`📥 [BACKEND APROBAR] POST /aprobar/${id} recibido`);
-    devLogger.log(`   Body:`, { admin_id, admin_notas });
-    devLogger.log(`   Tipo de ID: ${typeof id}, Valor: ${id}`);
+    debugLog.log('PENDIENTES', `\n🔵 [BACKEND APROBAR] POST /aprobar/${id} recibido`);
+    debugLog.log('PENDIENTES', `   Body: admin_id=${admin_id}, admin_notas=${admin_notas}`);
+    debugLog.log('PENDIENTES', `   Tipo de ID: ${typeof id}, Valor: ${id}`);
 
     const client = await pool.connect();
 
     try {
         // Obtener la solicitud pendiente
-        devLogger.log(`🔍 [BACKEND APROBAR] Buscando solicitud con id=${id}`);
+        debugLog.log('PENDIENTES', `🔍 [BACKEND APROBAR] Buscando solicitud con id=${id}`);
         const pendienteResult = await client.query(
             'SELECT * FROM pendientes_aprobacion WHERE id = $1',
             [id]
         );
 
-        devLogger.log(`📊 [BACKEND APROBAR] Resultado de búsqueda:`);
-        devLogger.log(`   Registros encontrados: ${pendienteResult.rows.length}`);
+        debugLog.log('PENDIENTES', `📊 [BACKEND APROBAR] Resultado de búsqueda: ${pendienteResult.rows.length} registros encontrados`);
 
         if (pendienteResult.rows.length === 0) {
-            devLogger.warn(`⚠️ [BACKEND APROBAR] Solicitud ${id} NO ENCONTRADA`);
+            debugLog.log('PENDIENTES', `⚠️ [BACKEND APROBAR] Solicitud ${id} NO ENCONTRADA`);
             return res.status(404).json({
                 success: false,
                 error: 'Solicitud no encontrada'
@@ -180,20 +181,15 @@ router.post('/aprobar/:id', async (req, res) => {
         const solicitud = pendienteResult.rows[0];
         const datos = solicitud.datos_json;
 
-        devLogger.log(`✅ [BACKEND APROBAR] Solicitud encontrada:`);
-        devLogger.log(`   ID: ${solicitud.id}`);
-        devLogger.log(`   Tipo: ${solicitud.tipo_solicitud}`);
-        devLogger.log(`   Email usuario: ${solicitud.email_usuario}`);
-        devLogger.log(`   Estado actual: ${solicitud.estado}`);
-        devLogger.log(`   Datos JSON completos:`, datos);
+        debugLog.log('PENDIENTES', `✅ [BACKEND APROBAR] Solicitud encontrada: ID=${solicitud.id}, Tipo=${solicitud.tipo_solicitud}, Email=${maskEmail(solicitud.email_usuario)}, Estado=${solicitud.estado}`);
 
-        devLogger.log(`🔄 [BACKEND APROBAR] Iniciando transacción...`);
+        debugLog.log('PENDIENTES', `🔄 [BACKEND APROBAR] Iniciando transacción...`);
         await client.query('BEGIN');
 
         try {
             // Insertar en la tabla final según el tipo de solicitud
             if (solicitud.tipo_solicitud === 'egresado') {
-                devLogger.log(`📝 [BACKEND APROBAR] Insertando en tabla EGRESADOS...`);
+                debugLog.log('PENDIENTES', `📝 [BACKEND APROBAR] Insertando en tabla EGRESADOS...`);
 
                 const insertResult = await client.query(`
                     INSERT INTO egresados (
@@ -217,11 +213,10 @@ router.post('/aprobar/:id', async (req, res) => {
                     true
                 ]);
 
-                devLogger.log(`✅ [BACKEND APROBAR] Inserción en egresados completada`);
-                devLogger.log(`   Filas afectadas: ${insertResult.rowCount}`);
+                debugLog.log('PENDIENTES', `✅ [BACKEND APROBAR] Inserción en egresados completada. Filas afectadas: ${insertResult.rowCount}`);
 
             } else if (solicitud.tipo_solicitud === 'bolsa_trabajo') {
-                devLogger.log(`📝 [BACKEND APROBAR] Insertando en tabla BOLSA_TRABAJO...`);
+                debugLog.log('PENDIENTES', `📝 [BACKEND APROBAR] Insertando en tabla BOLSA_TRABAJO...`);
 
                 const insertResult = await client.query(`
                     INSERT INTO bolsa_trabajo (
@@ -240,35 +235,29 @@ router.post('/aprobar/:id', async (req, res) => {
                     datos.skills || datos.habilidades || null
                 ]);
 
-                devLogger.log(`✅ [BACKEND APROBAR] Inserción en bolsa_trabajo completada`);
-                devLogger.log(`   Filas afectadas: ${insertResult.rowCount}`);
+                debugLog.log('PENDIENTES', `✅ [BACKEND APROBAR] Inserción en bolsa_trabajo completada. Filas afectadas: ${insertResult.rowCount}`);
 
             } else {
                 throw new Error(`Tipo de solicitud desconocido: ${solicitud.tipo_solicitud}`);
             }
 
             // ✅ ELIMINAR de pendientes_aprobacion
-            devLogger.log(`🗑️ [BACKEND APROBAR] Eliminando de pendientes_aprobacion (id=${id})...`);
+            debugLog.log('PENDIENTES', `🗑️ [BACKEND APROBAR] Eliminando de pendientes_aprobacion (id=${id})...`);
             const deleteResult = await client.query(
                 'DELETE FROM pendientes_aprobacion WHERE id = $1 RETURNING id',
                 [id]
             );
 
-            devLogger.log(`📊 [BACKEND APROBAR] Resultado de DELETE:`);
-            devLogger.log(`   Filas eliminadas: ${deleteResult.rowCount}`);
-            devLogger.log(`   IDs retornados:`, deleteResult.rows);
+            debugLog.log('PENDIENTES', `📊 [BACKEND APROBAR] Resultado de DELETE: ${deleteResult.rowCount} filas eliminadas`);
 
             if (deleteResult.rows.length === 0) {
                 throw new Error(`No se pudo eliminar el registro ${id} de pendientes_aprobacion`);
             }
 
-            devLogger.log(`✅ [BACKEND APROBAR] COMMIT de transacción...`);
+            debugLog.log('PENDIENTES', `✅ [BACKEND APROBAR] COMMIT de transacción...`);
             await client.query('COMMIT');
 
-            devLogger.log(`🎉 [BACKEND APROBAR] ¡Solicitud aprobada exitosamente!`);
-            devLogger.log(`   ID aprobado: ${id}`);
-            devLogger.log(`   Tabla destino: ${solicitud.tipo_solicitud}`);
-            devLogger.log(`🔵 [BACKEND APROBAR] =====================================\n`);
+            debugLog.log('PENDIENTES', `🎉 [BACKEND APROBAR] ¡Solicitud aprobada exitosamente! ID=${id}, Tabla destino=${solicitud.tipo_solicitud}`);
 
             res.json({
                 success: true,
@@ -277,18 +266,14 @@ router.post('/aprobar/:id', async (req, res) => {
             });
 
         } catch (innerError) {
-            devLogger.error(`❌ [BACKEND APROBAR] Error en transacción:`, innerError.message);
-            devLogger.error(`   Stack:`, innerError.stack);
-            devLogger.log(`🔄 [BACKEND APROBAR] Haciendo ROLLBACK...`);
+            debugLog.error('PENDIENTES', `❌ [BACKEND APROBAR] Error en transacción`, sanitizeError(innerError, 'pendientes'));
+            debugLog.log('PENDIENTES', `🔄 [BACKEND APROBAR] Haciendo ROLLBACK...`);
             await client.query('ROLLBACK');
             throw innerError;
         }
 
     } catch (error) {
-        devLogger.error(`❌ [BACKEND APROBAR] Error fatal:`, error.message);
-        devLogger.error(`   Tipo de error:`, error.name);
-        devLogger.error(`   Stack completo:`, error.stack);
-        devLogger.log(`🔵 [BACKEND APROBAR] =====================================\n`);
+        debugLog.error('PENDIENTES', `❌ [BACKEND APROBAR] Error fatal`, sanitizeError(error, 'pendientes'));
 
         res.status(500).json({
             success: false,
@@ -296,7 +281,7 @@ router.post('/aprobar/:id', async (req, res) => {
             message: error.message
         });
     } finally {
-        devLogger.log(`🔓 [BACKEND APROBAR] Liberando cliente de conexión...`);
+        debugLog.log('PENDIENTES', `🔓 [BACKEND APROBAR] Liberando cliente de conexión...`);
         client.release();
     }
 });
@@ -327,8 +312,8 @@ router.post('/rechazar/:id', async (req, res) => {
 
         // ⚠️ NOTA: Para mantener auditoría, primero guardamos en un log antes de eliminar
         // (Opcional: si se requiere auditoría completa)
-        devLogger.log(`❌ Rechazando solicitud ${id}: ${solicitud.tipo_solicitud} de ${solicitud.email_usuario}`);
-        devLogger.log(`   Notas del admin: ${admin_notas || 'Sin notas'}`);
+        debugLog.log('PENDIENTES', `❌ Rechazando solicitud ${id}: ${solicitud.tipo_solicitud} de ${maskEmail(solicitud.email_usuario)}`);
+        debugLog.log('PENDIENTES', `   Notas del admin: ${admin_notas || 'Sin notas'}`);
 
         // ELIMINAR el registro de la base de datos
         const deleteResult = await pool.query(
@@ -349,7 +334,7 @@ router.post('/rechazar/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al rechazar:', error);
+        debugLog.error('PENDIENTES', '❌ Error al rechazar solicitud', sanitizeError(error, 'pendientes'));
         res.status(500).json({
             success: false,
             error: 'Error al rechazar solicitud'
@@ -383,7 +368,7 @@ router.delete('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al eliminar:', error);
+        debugLog.error('PENDIENTES', '❌ Error al eliminar solicitud', sanitizeError(error, 'pendientes'));
         res.status(500).json({
             success: false,
             error: 'Error al eliminar solicitud'
@@ -416,7 +401,7 @@ router.get('/stats/general', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error:', error);
+        debugLog.error('PENDIENTES', '❌ Error al obtener estadísticas', sanitizeError(error, 'pendientes'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'

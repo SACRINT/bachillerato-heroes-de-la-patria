@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
@@ -60,7 +62,7 @@ router.post('/', [
             user_agent
         ]);
 
-        devLogger.log('✅ Nueva solicitud de recuperación creada:', result.rows[0].id);
+        debugLog.log('PASSWORD_RECOVERY', '✅ Nueva solicitud de recuperación creada:', result.rows[0].id);
 
         // Generar token de recuperación único
         const recoveryToken = crypto.randomBytes(32).toString('hex');
@@ -134,10 +136,10 @@ router.post('/', [
                 `
             });
 
-            devLogger.log(`📧 Email de recuperación enviado a: ${email}`);
+            debugLog.log('PASSWORD_RECOVERY', `📧 Email de recuperación enviado a: ${email}`);
 
         } catch (emailError) {
-            devLogger.error('❌ Error al enviar email de recuperación:', emailError);
+            debugLog.error('PASSWORD_RECOVERY', '❌ Error al enviar email de recuperación:', emailError);
             // No fallar la solicitud si el email falla, el token está guardado en BD
         }
 
@@ -151,7 +153,7 @@ router.post('/', [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al crear solicitud de recuperación:', error);
+        debugLog.error('PASSWORD_RECOVERY', '❌ Error al crear solicitud de recuperación:', sanitizeError(error, 'password-recovery'));
         res.status(500).json({
             success: false,
             error: 'Error al procesar tu solicitud. Por favor intenta nuevamente.'
@@ -195,7 +197,7 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener solicitudes:', error);
+        debugLog.error('PASSWORD_RECOVERY', '❌ Error al obtener solicitudes:', sanitizeError(error, 'password-recovery'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener los datos'
@@ -227,7 +229,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al obtener estadísticas:', error);
+        debugLog.error('PASSWORD_RECOVERY', '❌ Error al obtener estadísticas:', sanitizeError(error, 'password-recovery'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener estadísticas'
@@ -270,7 +272,7 @@ router.put('/:id', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('❌ Error al actualizar solicitud:', error);
+        debugLog.error('PASSWORD_RECOVERY', '❌ Error al actualizar solicitud:', sanitizeError(error, 'password-recovery'));
         res.status(500).json({
             success: false,
             error: 'Error al actualizar la solicitud'

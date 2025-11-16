@@ -4,7 +4,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const { requireAdmin } = require('../middleware/auth');
 const { getBackupService } = require('../services/backupService');
 const router = express.Router();
@@ -18,13 +20,13 @@ router.use(requireAdmin);
  */
 router.get('/list', async (req, res, next) => {
     try {
-        devLogger.log('📋 [BACKUP API] Solicitando lista de backups');
+        debugLog.log('BACKUP', '📋 [BACKUP API] Solicitando lista de backups');
 
         const backupService = getBackupService();
         const result = await backupService.listBackups();
 
         if (result.success) {
-            devLogger.log('Lista de backups consultada', {
+            debugLog.log('BACKUP', 'Lista de backups consultada', {
                 userId: req.user.id,
                 count: result.count
             });
@@ -55,7 +57,7 @@ router.get('/list', async (req, res, next) => {
  */
 router.get('/stats', async (req, res, next) => {
     try {
-        devLogger.log('📊 [BACKUP API] Solicitando estadísticas de backup');
+        debugLog.log('BACKUP', '📊 [BACKUP API] Solicitando estadísticas de backup');
 
         const backupService = getBackupService();
         const result = await backupService.getBackupStats();
@@ -84,7 +86,7 @@ router.get('/stats', async (req, res, next) => {
  */
 router.get('/health', async (req, res, next) => {
     try {
-        devLogger.log('❤️ [BACKUP API] Verificando salud del sistema de backup');
+        debugLog.log('BACKUP', '❤️ [BACKUP API] Verificando salud del sistema de backup');
 
         const backupService = getBackupService();
         const health = await backupService.checkBackupHealth();
@@ -110,7 +112,7 @@ router.post('/create', async (req, res, next) => {
     try {
         const { type = 'manual' } = req.body;
 
-        devLogger.log(`🚀 [BACKUP API] Creando backup manual tipo: ${type}`);
+        debugLog.log('BACKUP', `🚀 [BACKUP API] Creando backup manual tipo: ${type}`);
 
         const backupService = getBackupService();
 
@@ -126,7 +128,7 @@ router.post('/create', async (req, res, next) => {
         const result = await backupService.createManualBackup();
 
         if (result.success) {
-            devLogger.log('Backup manual creado', {
+            debugLog.log('BACKUP', 'Backup manual creado', {
                 userId: req.user.id,
                 filename: result.filename,
                 size: result.size
@@ -160,13 +162,13 @@ router.post('/create', async (req, res, next) => {
  */
 router.post('/data-only', async (req, res, next) => {
     try {
-        devLogger.log('📊 [BACKUP API] Creando backup de datos únicamente');
+        debugLog.log('BACKUP', '📊 [BACKUP API] Creando backup de datos únicamente');
 
         const backupService = getBackupService();
         const result = await backupService.createDataBackup();
 
         if (result.success) {
-            devLogger.log('Backup de datos creado', {
+            debugLog.log('BACKUP', 'Backup de datos creado', {
                 userId: req.user.id,
                 filename: result.filename,
                 type: 'data-only'
@@ -202,7 +204,7 @@ router.post('/restore/:filename', async (req, res, next) => {
         const { filename } = req.params;
         const { confirm } = req.body;
 
-        devLogger.log(`🔄 [BACKUP API] Solicitud de restauración: ${filename}`);
+        debugLog.log('BACKUP', `🔄 [BACKUP API] Solicitud de restauración: ${filename}`);
 
         if (!confirm) {
             return res.status(400).json({
@@ -215,7 +217,7 @@ router.post('/restore/:filename', async (req, res, next) => {
         const backupService = getBackupService();
         const result = await backupService.restoreFromBackup(filename);
 
-        devLogger.warn('Solicitud de restauración de backup', {
+        debugLog.log('BACKUP', 'Solicitud de restauración de backup', {
             userId: req.user.id,
             filename: filename,
             confirmed: confirm
@@ -251,7 +253,7 @@ router.delete('/:filename', async (req, res, next) => {
     try {
         const { filename } = req.params;
 
-        devLogger.log(`🗑️ [BACKUP API] Eliminando backup: ${filename}`);
+        debugLog.log('BACKUP', `🗑️ [BACKUP API] Eliminando backup: ${filename}`);
 
         // Validar que es un archivo de backup válido
         if (!filename.includes('backup') || !filename.endsWith('.zip')) {
@@ -271,7 +273,7 @@ router.delete('/:filename', async (req, res, next) => {
             await fs.access(backupPath);
             await fs.unlink(backupPath);
 
-            devLogger.warn('Backup eliminado manualmente', {
+            debugLog.log('BACKUP', 'Backup eliminado manualmente', {
                 userId: req.user.id,
                 filename: filename
             });
@@ -304,7 +306,7 @@ router.get('/download/:filename', async (req, res, next) => {
     try {
         const { filename } = req.params;
 
-        devLogger.log(`📥 [BACKUP API] Descargando backup: ${filename}`);
+        debugLog.log('BACKUP', `📥 [BACKUP API] Descargando backup: ${filename}`);
 
         // Validar que es un archivo de backup válido
         if (!filename.includes('backup') || !filename.endsWith('.zip')) {
@@ -327,7 +329,7 @@ router.get('/download/:filename', async (req, res, next) => {
             });
         }
 
-        devLogger.log('Backup descargado', {
+        debugLog.log('BACKUP', 'Backup descargado', {
             userId: req.user.id,
             filename: filename
         });
@@ -351,7 +353,7 @@ router.get('/download/:filename', async (req, res, next) => {
  */
 router.get('/status', async (req, res, next) => {
     try {
-        devLogger.log('📋 [BACKUP API] Consultando estado del sistema');
+        debugLog.log('BACKUP', '📋 [BACKUP API] Consultando estado del sistema');
 
         const backupService = getBackupService();
 
@@ -384,7 +386,7 @@ router.post('/config', async (req, res, next) => {
     try {
         const { maxBackups } = req.body;
 
-        devLogger.log('⚙️ [BACKUP API] Actualizando configuración');
+        debugLog.log('BACKUP', '⚙️ [BACKUP API] Actualizando configuración');
 
         if (maxBackups && (typeof maxBackups !== 'number' || maxBackups < 1 || maxBackups > 100)) {
             return res.status(400).json({
@@ -399,7 +401,7 @@ router.post('/config', async (req, res, next) => {
             backupService.maxBackups = maxBackups;
         }
 
-        devLogger.log('Configuración de backup actualizada', {
+        debugLog.log('BACKUP', 'Configuración de backup actualizada', {
             userId: req.user.id,
             changes: req.body
         });

@@ -5,7 +5,9 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { pool } = require('../config/database');
 
@@ -45,7 +47,7 @@ router.get('/noticias-por-mes', async (req, res) => {
             }]
         });
     } catch (error) {
-        devLogger.error('Error en /noticias-por-mes:', error);
+        debugLog.error('CHARTS_DATA', 'Error en /noticias-por-mes:', sanitizeError(error, 'charts-data'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener datos de noticias por mes'
@@ -99,7 +101,7 @@ router.get('/eventos-por-categoria', async (req, res) => {
             }]
         });
     } catch (error) {
-        devLogger.error('Error en /eventos-por-categoria:', error);
+        debugLog.error('CHARTS_DATA', 'Error en /eventos-por-categoria:', sanitizeError(error, 'charts-data'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener eventos por categoría'
@@ -151,7 +153,7 @@ router.get('/quejas-por-tipo', async (req, res) => {
             }]
         });
     } catch (error) {
-        devLogger.error('Error en /quejas-por-tipo:', error);
+        debugLog.error('CHARTS_DATA', 'Error en /quejas-por-tipo:', sanitizeError(error, 'charts-data'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener quejas por tipo'
@@ -208,11 +210,11 @@ router.get('/suscriptores-crecimiento', async (req, res) => {
             ]
         });
     } catch (error) {
-        devLogger.error('Error en /suscriptores-crecimiento:', error);
+        debugLog.error('CHARTS_DATA', 'Error en /suscriptores-crecimiento:', sanitizeError(error, 'charts-data'));
 
         // Si la tabla no existe, devolver datos vacíos en lugar de error
         if (error.code === '42P01') {
-            devLogger.warn('⚠️ Tabla "suscriptores" no existe - devolviendo datos vacíos');
+            debugLog.log('CHARTS_DATA', '⚠️ Tabla "suscriptores" no existe - devolviendo datos vacíos');
             return res.json({
                 success: true,
                 labels: [],
@@ -318,7 +320,7 @@ router.get('/resumen-general', async (req, res) => {
             }
         });
     } catch (error) {
-        devLogger.error('Error en /resumen-general:', error);
+        debugLog.error('CHARTS_DATA', 'Error en /resumen-general:', sanitizeError(error, 'charts-data'));
         res.status(500).json({
             success: false,
             error: 'Error al obtener resumen general'

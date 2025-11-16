@@ -11,7 +11,11 @@
  */
 
 const express = require('express');
-const devLogger = require('../utils/devLogger');
+
+// GDPR Logging - Debug condicional y sanitización
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
+
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const crypto = require('crypto');
@@ -212,7 +216,7 @@ router.get('/', async (req, res) => {
             message: 'Use /list para obtener listado completo de citas'
         });
     } catch (error) {
-        devLogger.error('Error fetching citas stats:', error);
+        debugLog.error('CITAS', 'Error fetching citas stats', sanitizeError(error, 'citas'));
         res.status(500).json({
             success: false,
             message: 'Error al obtener estadísticas de citas',
@@ -363,7 +367,7 @@ router.post('/create', [
             'pendiente'
         ]);
 
-        devLogger.log(`✅ Nueva cita creada: ${newCitaId} - ${nombre_completo}`);
+        debugLog.log('CITAS', `✅ Nueva cita creada: ${newCitaId} - ${nombre_completo}`);
 
         // =====================================================
         // Enviar email de confirmación
@@ -402,9 +406,9 @@ router.post('/create', [
                 `
             });
 
-            devLogger.log(`📧 Email de confirmación enviado a ${email}`);
+            debugLog.log('CITAS', `📧 Email de confirmación enviado a ${maskEmail(email)}`);
         } catch (emailError) {
-            devLogger.error('⚠️ Error enviando email:', emailError);
+            debugLog.error('CITAS', '⚠️ Error enviando email', sanitizeError(emailError, 'citas'));
         }
 
         res.json({
@@ -420,7 +424,7 @@ router.post('/create', [
         });
 
     } catch (error) {
-        devLogger.error('❌ Error creando cita:', error);
+        debugLog.error('CITAS', '❌ Error creando cita', sanitizeError(error, 'citas'));
         res.status(500).json({
             success: false,
             message: 'Error al crear solicitud de cita',
@@ -487,7 +491,7 @@ router.get('/available-slots', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error obteniendo horarios disponibles:', error);
+        debugLog.error('CITAS', 'Error obteniendo horarios disponibles', sanitizeError(error, 'citas'));
         res.status(500).json({
             success: false,
             message: 'Error al obtener horarios disponibles'
@@ -535,7 +539,7 @@ router.get('/confirm/:token', async (req, res) => {
         }
 
         const cita = result[0];
-        devLogger.log(`✅ Cita confirmada por usuario: ${cita.cita_id}`);
+        debugLog.log('CITAS', `✅ Cita confirmada por usuario: ${cita.cita_id}`);
 
         res.send(`
             <html>
@@ -567,7 +571,7 @@ router.get('/confirm/:token', async (req, res) => {
         `);
 
     } catch (error) {
-        devLogger.error('Error confirmando cita:', error);
+        debugLog.error('CITAS', 'Error confirmando cita', sanitizeError(error, 'citas'));
         res.status(500).send('Error al confirmar cita');
     }
 });
@@ -629,7 +633,7 @@ router.get('/list', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error listando citas:', error);
+        debugLog.error('CITAS', 'Error listando citas', sanitizeError(error, 'citas'));
         res.status(500).json({
             success: false,
             message: 'Error al obtener citas'
@@ -670,7 +674,7 @@ router.get('/stats', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error obteniendo estadísticas:', error);
+        debugLog.error('CITAS', 'Error obteniendo estadísticas', sanitizeError(error, 'citas'));
         res.status(500).json({
             success: false,
             message: 'Error al obtener estadísticas'
@@ -704,7 +708,7 @@ router.put('/:id/approve', async (req, res) => {
             });
         }
 
-        devLogger.log(`✅ Cita ${id} aprobada`);
+        debugLog.log('CITAS', `✅ Cita ${id} aprobada`);
 
         res.json({
             success: true,
@@ -713,7 +717,7 @@ router.put('/:id/approve', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error aprobando cita:', error);
+        debugLog.error('CITAS', 'Error aprobando cita', sanitizeError(error, 'citas'));
         res.status(500).json({
             success: false,
             message: 'Error al aprobar cita',
@@ -755,7 +759,7 @@ router.put('/:id/reject', async (req, res) => {
             });
         }
 
-        devLogger.log(`❌ Cita ${id} rechazada`);
+        debugLog.log('CITAS', `❌ Cita ${id} rechazada`);
 
         res.json({
             success: true,
@@ -764,7 +768,7 @@ router.put('/:id/reject', async (req, res) => {
         });
 
     } catch (error) {
-        devLogger.error('Error rechazando cita:', error);
+        debugLog.error('CITAS', 'Error rechazando cita', sanitizeError(error, 'citas'));
         res.status(500).json({
             success: false,
             message: 'Error al rechazar cita',
