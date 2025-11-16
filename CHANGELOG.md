@@ -1,3 +1,13 @@
+[2.27.1] - 2025-11-16 (AUDITORÍA Y REPARACIÓN DE ERRORES CRÍTICOS)
+🔧 REPARACIÓN COMPLETADA: 3 Errores Críticos Encontrados en Auditoría de DevTools
+✅ ERROR 1 - TinyMCE CSP: Habilitado CSP en helmet (backend/server.js) | Commit 7b111ec
+✅ ERROR 2 - /api/approvals/pending 500: Agregadas 4 funciones faltantes en DAL + refactorización de handler | Commits 4d9d209, 875a36e
+✅ ERROR 3 - /api/finances intermitente: Fixed connection pooling con finally block para evitar fugas de conexiones | Commit 94604b2
+📋 Documentación: FIXES_CRITICOS_16NOV_2025.md (261 líneas, guía completa)
+📊 Estadísticas: 4 commits, 3 archivos modificados, ~150 líneas agregadas, 4 funciones nuevas
+🚀 STATUS: Code READY - Pendiente reinicio de servidor por parte del usuario
+📝 Detalle completo en: FIXES_CRITICOS_16NOV_2025.md
+
 [2.27.0] - 2025-11-14 (XSS REMEDIATION: DOMPURIFY SANITIZATION PHASE 2.4)
 🛡️ PLAN DETALLADO: Sanitización XSS con DOMPurify (62 archivos, 613 riesgos)
 ✅ Plan Completo Creado: docs/FASE-2-BLOQUE-4-SANITIZACION-62-ARCHIVOS.md (500+ líneas)
