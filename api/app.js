@@ -9,6 +9,7 @@ const multer = require('multer');
 const express = require('express');
 const os = require('os');
 const devLogger = require('../backend/utils/devLogger');
+const ApprovalService = require('../backend/services/ApprovalService');
 
 // --- Helpers ---
 const JWT_SECRET = process.env.JWT_SECRET || 'SUPER_SECRET_KEY_REPLACE_IN_PRODUCTION';
@@ -456,36 +457,34 @@ async function handleChartQuejasPorTipo(req, res) {
 
 async function handleApprovalsPending(req, res) {
     try {
-        let approvals = [];
+        const { form_type, limit = 50, offset = 0 } = req.query;
 
-        try {
-            const client = await pool.connect();
-            const { rows } = await client.query("SELECT id, form_type, submission_data, created_at FROM pending_approvals WHERE status = 'pending' ORDER BY created_at ASC");
-            client.release();
-            approvals = rows;
-        } catch (dbError) {
-            console.warn('⚠️ [APPROVALS] Database table not found, using demo data:', dbError.message);
-            // Use demo data if table doesn't exist
-            approvals = [
-                {
-                    id: 1,
-                    form_type: 'new_user',
-                    submission_data: { name: 'Carlos López', email: 'carlos@example.com', role: 'teacher' },
-                    created_at: new Date(Date.now() - 3600000).toISOString()
-                }
-            ];
-        }
+        // Use ApprovalService to fetch pending approvals
+        const filters = {
+            form_type,
+            limit: parseInt(limit),
+            offset: parseInt(offset),
+            status: 'pending'
+        };
+
+        const approvals = await ApprovalService.getPendingApprovals(filters);
 
         // Return structured response matching client expectations
         res.status(200).json({
             success: true,
             data: approvals,
             total: approvals.length,
+            limit: parseInt(limit),
+            offset: parseInt(offset),
             message: 'Solicitudes pendientes cargadas correctamente'
         });
     } catch (error) {
         console.error('❌ [APPROVALS] Error fetching pending approvals:', error);
-        res.status(500).json({ success: false, error: 'Error fetching pending approvals.', details: error.message });
+        res.status(500).json({
+            success: false,
+            error: 'Error fetching pending approvals.',
+            details: error.message
+        });
     }
 }
 
