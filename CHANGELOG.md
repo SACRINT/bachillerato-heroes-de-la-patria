@@ -1,3 +1,32 @@
+[2.30.0] - 2025-11-17 (TAREA D1: UNIT TESTS PARA DAL)
+🧪 TESTING SUITE COMPLETADA: 31 Unit Tests para Data Access Layer
+✅ TAREA D1 COMPLETADA: Suite de tests unitarios con Jest (100% passing)
+✅ COBERTURA: 31 tests para 7 entidades principales (estudiantes, docentes, noticias, tenant, approvals)
+✅ PATRÓN IMPLEMENTADO: Mocking completo de PostgreSQL pool sin dependencias de BD real
+✅ TESTS IMPLEMENTADOS:
+- Estudiantes: 11 tests (getAllStudents, getStudentById, createStudent, updateStudent, deleteStudent)
+- Docentes: 4 tests (getAllTeachers, getTeacherById)
+- Noticias: 4 tests (getAllNews, getNewsById)
+- Tenant: 3 tests (getTenantByDomain con casos edge)
+- Approvals: 2 tests (getPendingApprovals)
+- Error Handling: 3 tests (timeout, conexión, sintaxis SQL)
+- Edge Cases: 4 tests (rows undefined, ID string, caracteres especiales)
+📊 Funcionalidades Testeadas:
+- Mock de pool.query() con jest.fn()
+- Mock de devLogger para evitar spam
+- Patrón AAA (Arrange-Act-Assert) en todos los tests
+- Tests de happy path + error cases
+- Validación de parámetros SQL correctos
+🎯 Resultados:
+- Tests Totales: 31/31 passing (100%)
+- Tiempo de ejecución: ~5 segundos
+- Líneas de código: 680+ en dal.test.js
+- Bugs detectados durante testing: 4 (todos corregidos)
+🚀 STATUS: COMPLETADA - Jest instalado, tests ejecutándose exitosamente
+📝 Detalle completo en: docs/D1_UNIT_TESTS_DAL_COMPLETADO.md
+
+---
+
 [2.29.0] - 2025-11-17 (TAREA B2: SISTEMA DE CACHÉ IN-MEMORY PARA ENDPOINTS)
 ⚡ OPTIMIZACIÓN DE PERFORMANCE: Middleware de Caché con TTL y Estadísticas
 ✅ TAREA B2 COMPLETADA: Sistema de caché in-memory sin dependencias externas
