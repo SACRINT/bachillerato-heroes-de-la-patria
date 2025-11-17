@@ -15,6 +15,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env.local'), overr
 require('dotenv').config({ path: path.resolve(__dirname, '../.env'), override: false });
 
 const express = require('express');
+const http = require('http');  // ✅ HTTP Server para Socket.IO
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -45,6 +46,7 @@ const bolsaTrabajoRoutes = require('./routes/bolsa-trabajo');
 const suscriptoresRoutes = require('./routes/suscriptores');
 const quejasRoutes = require('./routes/quejas');
 const notificacionesRoutes = require('./routes/notificaciones');
+const notificationsRealtimeRoutes = require('./routes/notifications-realtime');  // ✅ SOCKET.IO NOTIFICATIONS - SEMANA 5
 const solicitudesRoutes = require('./routes/solicitudes');
 const passwordRecoveryRoutes = require('./routes/password-recovery');
 const approvalsRoutes = require('./routes/approvals');
@@ -116,6 +118,7 @@ const challengesRoutes = require('./routes/challenges');  // 🏆 Challenges sys
 const storeRoutes = require('./routes/store');  // 🛒 Virtual store (5 endpoints)
 
 const { startCleanupService } = require('./services/cleanupService');
+const SocketService = require('./services/socket-service');  // ✅ SOCKET.IO SERVICE - SEMANA 5 (17 NOV 2025)
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -268,6 +271,7 @@ app.use('/api/bolsa-trabajo', bolsaTrabajoRoutes);
 app.use('/api/suscriptores', suscriptoresRoutes);
 app.use('/api/quejas', quejasRoutes);
 app.use('/api/notificaciones', notificacionesRoutes);
+app.use('/api/notifications-realtime', notificationsRealtimeRoutes);  // ✅ SOCKET.IO REALTIME NOTIFICATIONS - SEMANA 5
 app.use('/api/solicitudes', solicitudesRoutes);
 app.use('/api/password-recovery', passwordRecoveryRoutes);
 app.use('/api/approvals', approvalsRoutes);
@@ -427,13 +431,33 @@ autoFixAprobaciones().catch(err => {
 startCleanupService(12);
 
 // ============================================
-// SERVER START
+// SERVER START CON SOCKET.IO
 // ============================================
 
+// Crear HTTP Server para Socket.IO
+const httpServer = http.createServer(app);
+
+// Inicializar Socket.IO Service
+let socketService = null;
+try {
+    socketService = new SocketService(httpServer);
+    devLogger.log('[SOCKET.IO] ✅ Servicio de notificaciones en tiempo real inicializado');
+
+    // Hacer socketService disponible para las rutas
+    app.socketService = socketService;
+} catch (error) {
+    devLogger.error('[SOCKET.IO] ❌ Error al inicializar:', error.message);
+    // Continuar sin Socket.IO si falla
+}
+
 if (require.main === module) {
-    app.listen(PORT, () => {
+    httpServer.listen(PORT, () => {
         devLogger.log(`🚀 Servidor backend iniciado en http://localhost:${PORT}`);
         devLogger.log('✅✅✅ ¡VERSIÓN CORRECTA DEL SERVIDOR EN EJECUCIÓN! ✅✅✅');
+
+        if (socketService) {
+            devLogger.log(`📡 Socket.IO escuchando en http://localhost:${PORT}`);
+        }
     });
 }
 
