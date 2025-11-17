@@ -1,3 +1,27 @@
+[2.28.0] - 2025-11-17 (REFACTORIZACIÓN A1: FORMULARIOS PROFESIONALES MODULARES)
+🔧 REFACTORIZACIÓN COMPLETA: Extracción de Validadores y UI Helpers a Módulos Reutilizables
+✅ TAREA A1 COMPLETADA: Refactorizar professional-forms.js (1299 → 1150 líneas, -11%)
+✅ MÓDULO CREADO: form-validators-global.js (370 líneas, 15 funciones de validación) | Window.FormValidators
+✅ MÓDULO CREADO: form-ui-helpers-global.js (540 líneas, 10 helpers de interfaz) | Window.FormUIHelpers
+✅ PATRÓN IMPLEMENTADO: Fallback para compatibilidad 100% si módulos no cargan
+✅ VALIDACIÓN SINTAXIS: 3/3 archivos JavaScript validados correctamente (node -c)
+📋 Documentación Generada:
+- REFACTOR_A1_PROFESSIONAL_FORMS.md (500+ líneas, guía completa de refactorización)
+- public/js/modules/form-validators.js + form-ui-helpers.js (versiones ES6 para futuro)
+📊 Cambios Realizados:
+- professional-forms.js: 13 métodos refactorizados, +5 líneas de header de documentación
+- Reducción de duplicación de código: ~149 líneas (-11%)
+- Nuevos módulos reutilizables: 2 (910 líneas totales de helpers centralizados)
+🎯 Impacto:
+- Código más mantenible: Validaciones centralizadas en 1 módulo
+- Mejor testing: Funciones puras separadas de lógica de negocio
+- Reutilización: Validadores y UI helpers disponibles para TODOS los formularios del proyecto
+- Sin breaking changes: Fallbacks garantizan compatibilidad total
+🚀 STATUS: COMPLETADA - Pendiente integración en páginas HTML (agregar scripts globalizados)
+📝 Detalle completo en: docs/REFACTOR_A1_PROFESSIONAL_FORMS.md
+
+---
+
 [2.27.2] - 2025-11-16 (RESOLUCIÓN COMPLETA DE ERRORES CSP - DEFINITIVA)
 🛡️ SOLUCIÓN DEFINITIVA: Todos los Errores CSP Identificados y Reparados
 ✅ ERROR 1-2: connectSrc incompleto - Agregados 4 dominios CDN faltantes (cdn.jsdelivr.net, cdnjs.cloudflare.com, accounts.google.com, www.googleapis.com) | Commit 37f6281

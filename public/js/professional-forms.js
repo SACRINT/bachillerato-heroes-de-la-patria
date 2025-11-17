@@ -1,4 +1,19 @@
 /**
+ * 🏛️ SISTEMA PROFESIONAL DE FORMULARIOS - REFACTORIZADO
+ * Bachillerato General Estatal Héroes de la Patria
+ * Sistema híbrido con verificación de email y anti-spam avanzado
+ *
+ * REFACTORIZACIÓN A1 (17 Nov 2025):
+ * - Extraídas validaciones a form-validators-global.js
+ * - Extraídos helpers de UI a form-ui-helpers-global.js
+ * - Reducida duplicación de código
+ * - Mejorada mantenibilidad y legibilidad
+ *
+ * DEPENDENCIAS (deben cargarse ANTES de este archivo):
+ * - form-validators-global.js (window.FormValidators)
+ * - form-ui-helpers-global.js (window.FormUIHelpers)
+ */
+
 // Debug Logger - Logging condicional (GDPR compliant)
 if (typeof debugLog === 'undefined') {
     // Fallback si debug-logger.js no está cargado
@@ -8,12 +23,6 @@ if (typeof debugLog === 'undefined') {
         error: () => {}
     };
 }
-
-
- * 🏛️ SISTEMA PROFESIONAL DE FORMULARIOS
- * window.getTenantConfigValue('school_full_name_with_quotes', 'Bachillerato General Estatal "window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria')')')')')')"')
- * Sistema híbrido con verificación de email y anti-spam avanzado
- */
 
 class ProfessionalFormsManager {
     constructor() {
@@ -128,15 +137,19 @@ class ProfessionalFormsManager {
     // ==========================================
 
     addHoneypot(form) {
-        // Campo invisible para detectar bots
-        const honeypot = document.createElement('input');
-        honeypot.type = 'text';
-        honeypot.name = this.config.honeypotField;
-        honeypot.style.cssText = 'position:absolute;left:-9999px;top:-9999px;visibility:hidden;';
-        honeypot.tabIndex = -1;
-        honeypot.autocomplete = 'off';
-
-        form.appendChild(honeypot);
+        // ✅ REFACTORIZADO: Usar helper globalizado
+        if (typeof FormUIHelpers !== 'undefined') {
+            FormUIHelpers.addHoneypot(form, this.config.honeypotField);
+        } else {
+            // Fallback si FormUIHelpers no está cargado
+            const honeypot = document.createElement('input');
+            honeypot.type = 'text';
+            honeypot.name = this.config.honeypotField;
+            honeypot.style.cssText = 'position:absolute;left:-9999px;top:-9999px;visibility:hidden;';
+            honeypot.tabIndex = -1;
+            honeypot.autocomplete = 'off';
+            form.appendChild(honeypot);
+        }
     }
 
     setupAntiSpam() {
@@ -212,9 +225,12 @@ class ProfessionalFormsManager {
     }
 
     async performEmailVerification(email) {
-        // Simulación de verificación avanzada
-        // En producción, usar servicios como Hunter.io, ZeroBounce, etc.
+        // ✅ REFACTORIZADO: Usar validator globalizado
+        if (typeof FormValidators !== 'undefined') {
+            return FormValidators.verifyEmailQuality(email);
+        }
 
+        // Fallback si FormValidators no está disponible
         const commonDomains = [
             'gmail.com', 'hotmail.com', 'yahoo.com', 'outlook.com',
             'icloud.com', 'protonmail.com', 'live.com'
@@ -222,7 +238,6 @@ class ProfessionalFormsManager {
 
         const domain = email.split('@')[1];
 
-        // Verificar dominios comunes (mayoría válidos)
         if (commonDomains.includes(domain)) {
             return {
                 valid: true,
@@ -231,7 +246,6 @@ class ProfessionalFormsManager {
             };
         }
 
-        // Verificar dominios educativos
         if (domain.includes('edu') || domain.includes('gob')) {
             return {
                 valid: true,
@@ -240,7 +254,6 @@ class ProfessionalFormsManager {
             };
         }
 
-        // Para otros dominios, asumir válidos pero con menor calidad
         return {
             valid: true,
             reason: 'Formato válido',
@@ -358,8 +371,14 @@ class ProfessionalFormsManager {
 
     // Validación simple de email (sin API externa)
     isValidEmailFormat(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+        // ✅ REFACTORIZADO: Usar validator globalizado
+        if (typeof FormValidators !== 'undefined') {
+            return FormValidators.isValidEmailFormat(email);
+        } else {
+            // Fallback si FormValidators no está cargado
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
     }
 
     // MÉTODO ANTIGUO DEPRECADO (mantener por compatibilidad pero no usar)
@@ -839,25 +858,18 @@ ${originalMessage}
     }
 
     // ==========================================
-    // INTERFAZ DE USUARIO
+    // INTERFAZ DE USUARIO (✅ REFACTORIZADO)
     // ==========================================
 
     showLoadingState(form, message = 'Enviando...') {
-        const submitButton = form.querySelector('button[type="submit"]');
-        if (submitButton) {
-            submitButton.disabled = true;
-            submitButton.innerHTML = DOMPurify.sanitize(`
-                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                ${message}
-            `);
-        }
-    }
-
-    updateLoadingState(form, message) {
-        const submitButton = form.querySelector('button[type="submit"]');
-        if (submitButton) {
-            const spinner = submitButton.querySelector('.spinner-border');
-            if (spinner) {
+        // ✅ REFACTORIZADO: Usar helper globalizado
+        if (typeof FormUIHelpers !== 'undefined') {
+            FormUIHelpers.showLoadingState(form, message);
+        } else {
+            // Fallback
+            const submitButton = form.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = true;
                 submitButton.innerHTML = DOMPurify.sanitize(`
                     <span class="spinner-border spinner-border-sm me-2" role="status"></span>
                     ${message}
@@ -866,357 +878,167 @@ ${originalMessage}
         }
     }
 
+    updateLoadingState(form, message) {
+        // ✅ REFACTORIZADO: Usar helper globalizado
+        if (typeof FormUIHelpers !== 'undefined') {
+            FormUIHelpers.updateLoadingState(form, message);
+        } else {
+            // Fallback
+            const submitButton = form.querySelector('button[type="submit"]');
+            if (submitButton) {
+                const spinner = submitButton.querySelector('.spinner-border');
+                if (spinner) {
+                    submitButton.innerHTML = DOMPurify.sanitize(`
+                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                        ${message}
+                    `);
+                }
+            }
+        }
+    }
+
     hideLoadingState(form) {
-        const submitButton = form.querySelector('button[type="submit"]');
-        if (submitButton) {
-            submitButton.disabled = false;
-            // dataset.originalText ya está sanitizado desde el HTML original
-            submitButton.innerHTML = DOMPurify.sanitize(submitButton.dataset.originalText || 'Enviar Mensaje', 'simple');
+        // ✅ REFACTORIZADO: Usar helper globalizado
+        if (typeof FormUIHelpers !== 'undefined') {
+            FormUIHelpers.hideLoadingState(form);
+        } else {
+            // Fallback
+            const submitButton = form.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = DOMPurify.sanitize(submitButton.dataset.originalText || 'Enviar Mensaje', 'simple');
+            }
         }
     }
 
     showVerificationPopup(result) {
-        // PRIMERO: Eliminar popups anteriores si existen
-        const existingPopups = document.querySelectorAll('.verification-popup-overlay');
-        existingPopups.forEach(p => p.remove());
-
-        // Crear popup elegante para verificación de email
-        const popup = document.createElement('div');
-        popup.className = 'verification-popup-overlay';
-        popup.innerHTML = DOMPurify.sanitize(`
-            <div class="verification-popup">
-                <div class="popup-header">
-                    <div class="popup-icon">📧</div>
-                    <h3>¡Mensaje Enviado!</h3>
-                    <button class="popup-close" data-action="close-popup" data-context="verification-popup">×</button>
-                </div>
-                <div class="popup-content">
-                    <p><strong>Tu mensaje ha sido enviado exitosamente.</strong></p>
-                    <p>📮 Hemos enviado un enlace de confirmación a tu correo electrónico.</p>
-                    <p>✅ Por favor revisa tu bandeja de entrada y haz clic en el enlace para completar el envío.</p>
-                    <div class="popup-steps">
-                        <div class="step">
-                            <span class="step-number">1</span>
-                            <span>Revisa tu email</span>
-                        </div>
-                        <div class="step">
-                            <span class="step-number">2</span>
-                            <span>Haz clic en "Confirmar mensaje"</span>
-                        </div>
-                        <div class="step">
-                            <span class="step-number">3</span>
-                            <span>¡Listo! Tu mensaje llegará a nosotros</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="popup-footer">
-                    <button class="btn-primary" data-action="close-popup" data-context="verification-popup">
-                        Entendido
-                    </button>
-                </div>
-            </div>
-        `);
-
-        // Estilos del popup
-        popup.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s ease;
-        `;
-
-        // Agregar estilos al popup
-        this.addVerificationPopupStyles();
-
-        document.body.appendChild(popup);
-
-        // Auto-cerrar después de 15 segundos
-        setTimeout(() => {
-            if (popup.parentNode) {
-                popup.remove();
-            }
-        }, 15000);
+        // ✅ REFACTORIZADO: Usar helper globalizado
+        if (typeof FormUIHelpers !== 'undefined') {
+            FormUIHelpers.showVerificationPopup(result);
+        } else {
+            // Fallback simple
+            alert('✅ Mensaje enviado. Por favor revisa tu email para confirmar.');
+        }
     }
 
     addVerificationPopupStyles() {
-        if (document.querySelector('#verification-popup-styles')) return;
-
-        const styles = document.createElement('style');
-        styles.id = 'verification-popup-styles';
-        styles.textContent = `
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-
-            .verification-popup {
-                background: white;
-                border-radius: 15px;
-                max-width: 500px;
-                width: 90%;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                animation: slideUp 0.3s ease;
-                font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            }
-
-            @keyframes slideUp {
-                from { transform: translateY(30px); opacity: 0; }
-                to { transform: translateY(0); opacity: 1; }
-            }
-
-            .popup-header {
-                background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-                color: white;
-                padding: 20px;
-                border-radius: 15px 15px 0 0;
-                text-align: center;
-                position: relative;
-            }
-
-            .popup-icon {
-                font-size: 48px;
-                margin-bottom: 10px;
-            }
-
-            .popup-header h3 {
-                margin: 0;
-                font-size: 24px;
-                font-weight: 600;
-            }
-
-            .popup-close {
-                position: absolute;
-                top: 15px;
-                right: 15px;
-                background: none;
-                border: none;
-                color: white;
-                font-size: 24px;
-                cursor: pointer;
-                width: 30px;
-                height: 30px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: background 0.3s;
-            }
-
-            .popup-close:hover {
-                background: rgba(255, 255, 255, 0.2);
-            }
-
-            .popup-content {
-                padding: 25px;
-                text-align: center;
-            }
-
-            .popup-content p {
-                margin: 10px 0;
-                color: #555;
-                line-height: 1.6;
-            }
-
-            .popup-steps {
-                margin: 20px 0;
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .step {
-                display: flex;
-                align-items: center;
-                padding: 10px;
-                background: #f8f9fa;
-                border-radius: 8px;
-                text-align: left;
-            }
-
-            .step-number {
-                background: #3498db;
-                color: white;
-                width: 25px;
-                height: 25px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-weight: bold;
-                font-size: 12px;
-                margin-right: 15px;
-            }
-
-            .popup-footer {
-                padding: 20px;
-                text-align: center;
-                border-top: 1px solid #eee;
-                border-radius: 0 0 15px 15px;
-            }
-
-            .popup-footer .btn-primary {
-                background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-                border: none;
-                color: white;
-                padding: 12px 30px;
-                border-radius: 8px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: transform 0.3s;
-            }
-
-            .popup-footer .btn-primary:hover {
-                transform: translateY(-2px);
-            }
-        `;
-
-        document.head.appendChild(styles);
+        // ✅ REFACTORIZADO: Los estilos ya están en FormUIHelpers
+        // Este método ya no es necesario pero lo mantenemos por compatibilidad
+        if (typeof FormUIHelpers !== 'undefined') {
+            FormUIHelpers.addVerificationPopupStyles();
+        }
     }
 
-    showSuccess(form) {
-        // Este método ya no se usa para contacto, pero mantenerlo para otros formularios
-        const successAlert = form.querySelector('.alert-success') || document.createElement('div');
-        successAlert.className = 'alert alert-success';
-
-        if (!form.querySelector('.alert-success')) {
-            form.appendChild(successAlert);
-        }
-
-        successAlert.innerHTML = DOMPurify.sanitize(`
-            <div class="d-flex align-items-center">
-                <i class="fas fa-check-circle fa-lg me-3 text-success"></i>
-                <div>
-                    <strong>¡Operación completada exitosamente!</strong><br>
-                    <small>La información ha sido procesada correctamente.</small>
+    showSuccess(form, message = null) {
+        // ✅ REFACTORIZADO: Usar helper globalizado
+        if (typeof FormUIHelpers !== 'undefined') {
+            FormUIHelpers.showSuccess(form, message);
+        } else {
+            // Fallback
+            const successAlert = form.querySelector('.alert-success') || document.createElement('div');
+            successAlert.className = 'alert alert-success';
+            if (!form.querySelector('.alert-success')) {
+                form.appendChild(successAlert);
+            }
+            successAlert.innerHTML = DOMPurify.sanitize(`
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle fa-lg me-3 text-success"></i>
+                    <div>
+                        <strong>¡Operación completada exitosamente!</strong><br>
+                        <small>La información ha sido procesada correctamente.</small>
+                    </div>
                 </div>
-            </div>
-        `);
+            `);
+            successAlert.style.display = 'block';
+            successAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-        successAlert.style.display = 'block';
-        successAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-        // Ocultar errores
-        const errorAlert = form.querySelector('.alert-danger');
-        if (errorAlert) {
-            errorAlert.style.display = 'none';
+            const errorAlert = form.querySelector('.alert-danger');
+            if (errorAlert) {
+                errorAlert.style.display = 'none';
+            }
         }
     }
 
     showError(form, message) {
-        // Buscar o crear contenedor de error
-        let errorAlert = form.querySelector('.alert-danger');
-        if (!errorAlert) {
-            errorAlert = document.createElement('div');
-            errorAlert.className = 'alert alert-danger';
-            form.appendChild(errorAlert);
-        }
-
-        errorAlert.innerHTML = DOMPurify.sanitize(`
-            <div class="d-flex align-items-center">
-                <i class="fas fa-exclamation-triangle fa-lg me-3 text-danger"></i>
-                <div>
-                    <strong>Error al enviar mensaje</strong><br>
-                    <small>${message}</small>
+        // ✅ REFACTORIZADO: Usar helper globalizado
+        if (typeof FormUIHelpers !== 'undefined') {
+            FormUIHelpers.showError(form, message);
+        } else {
+            // Fallback
+            let errorAlert = form.querySelector('.alert-danger');
+            if (!errorAlert) {
+                errorAlert = document.createElement('div');
+                errorAlert.className = 'alert alert-danger';
+                form.appendChild(errorAlert);
+            }
+            errorAlert.innerHTML = DOMPurify.sanitize(`
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle fa-lg me-3 text-danger"></i>
+                    <div>
+                        <strong>Error al enviar mensaje</strong><br>
+                        <small>${message}</small>
+                    </div>
                 </div>
-            </div>
-        `);
+            `);
+            errorAlert.style.display = 'block';
+            errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-        errorAlert.style.display = 'block';
-        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-        // Ocultar éxito
-        const successAlert = form.querySelector('.alert-success');
-        if (successAlert) {
-            successAlert.style.display = 'none';
+            const successAlert = form.querySelector('.alert-success');
+            if (successAlert) {
+                successAlert.style.display = 'none';
+            }
         }
     }
 
     async showEmailWarning(warning) {
-        return new Promise((resolve) => {
-            const modal = document.createElement('div');
-            modal.className = 'modal fade';
-            modal.innerHTML = DOMPurify.sanitize(`
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header bg-warning text-dark">
-                            <h5 class="modal-title">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                Verificar Email
-                            </h5>
-                        </div>
-                        <div class="modal-body">
-                            <p><strong>Advertencia:</strong> ${warning}</p>
-                            <p>¿Estás seguro de que tu email es correcto? Un email incorrecto significa que no podremos contactarte.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-action="cancel">
-                                Corregir Email
-                            </button>
-                            <button type="button" class="btn btn-warning" data-action="proceed">
-                                Continuar de Todos Modos
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `);
-
-            document.body.appendChild(modal);
-            const bsModal = new bootstrap.Modal(modal);
-            bsModal.show();
-
-            modal.addEventListener('click', (e) => {
-                const action = e.target.dataset.action;
-                if (action) {
-                    bsModal.hide();
-                    modal.remove();
-                    resolve(action === 'proceed');
-                }
-            });
-        });
+        // ✅ REFACTORIZADO: Usar helper globalizado
+        if (typeof FormUIHelpers !== 'undefined') {
+            return await FormUIHelpers.showConfirmDialog(warning);
+        } else {
+            // Fallback
+            return confirm(`⚠️ ${warning}\n\n¿Estás seguro de que tu email es correcto?`);
+        }
     }
 
     resetForm(form) {
-        form.reset();
-        form.classList.remove('was-validated');
-
-        // Limpiar alertas
-        form.querySelectorAll('.alert').forEach(alert => {
-            alert.style.display = 'none';
-        });
+        // ✅ REFACTORIZADO: Usar helper globalizado
+        if (typeof FormUIHelpers !== 'undefined') {
+            FormUIHelpers.resetForm(form);
+        } else {
+            // Fallback
+            form.reset();
+            form.classList.remove('was-validated');
+            form.querySelectorAll('.alert').forEach(alert => {
+                alert.style.display = 'none';
+            });
+        }
     }
 
     addSecurityIndicators(form) {
-        // Agregar badge de seguridad
-        const securityBadge = document.createElement('div');
-        securityBadge.className = 'security-badge mb-3';
-
-        // ✅ FALLBACK si DOMPurify no está disponible
-        const badgeHTML = `
-            <small class="text-muted d-flex align-items-center">
-                <i class="fas fa-shield-alt text-success me-2"></i>
-                <span>Formulario protegido contra spam • Verificación de email incluida</span>
-            </small>
-        `;
-
-        if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
-            securityBadge.innerHTML = DOMPurify.sanitize(badgeHTML);
+        // ✅ REFACTORIZADO: Usar helper globalizado
+        if (typeof FormUIHelpers !== 'undefined') {
+            FormUIHelpers.addSecurityBadge(form);
         } else {
-            // Fallback si DOMPurify no está disponible
-            securityBadge.textContent = 'Formulario protegido contra spam • Verificación de email incluida';
-            securityBadge.className = 'security-badge mb-3 text-muted';
-            if (typeof debugLog !== 'undefined') {
-                debugLog.warn('⚠️ DOMPurify no disponible en addSecurityIndicators, usando fallback');
-            }
-        }
+            // Fallback
+            const securityBadge = document.createElement('div');
+            securityBadge.className = 'security-badge mb-3';
 
-        form.insertBefore(securityBadge, form.firstChild);
+            const badgeHTML = `
+                <small class="text-muted d-flex align-items-center">
+                    <i class="fas fa-shield-alt text-success me-2"></i>
+                    <span>Formulario protegido contra spam • Verificación de email incluida</span>
+                </small>
+            `;
+
+            if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+                securityBadge.innerHTML = DOMPurify.sanitize(badgeHTML);
+            } else {
+                securityBadge.textContent = 'Formulario protegido contra spam • Verificación de email incluida';
+                securityBadge.className = 'security-badge mb-3 text-muted';
+            }
+
+            form.insertBefore(securityBadge, form.firstChild);
+        }
     }
 
     setupFormValidation(form) {
