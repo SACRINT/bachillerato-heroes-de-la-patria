@@ -161,9 +161,40 @@ class BGEContextManager {
             this.safeExecute(scriptName, initFunction, requirements);
         });
     }
+
+    // ============================================
+    // ✅ BRIDGE: Métodos para auth-context-bridge.js
+    // ============================================
+
+    /**
+     * Establecer usuario actual (llamado por auth-context-bridge cuando user se autentica)
+     */
+    setCurrentUser(user) {
+        this.currentUser = user;
+        debugLog.log('CONTEXT', '✅ Usuario establecido en contexto:', user?.email || 'N/A');
+    }
+
+    /**
+     * Limpiar contexto (llamado por auth-context-bridge cuando user cierra sesión)
+     */
+    clearContext() {
+        this.currentUser = null;
+        debugLog.log('CONTEXT', '🧹 Contexto limpiado (usuario removido)');
+    }
+
+    /**
+     * Actualizar token de autenticación (llamado por auth-context-bridge cuando token se refresca)
+     */
+    updateAuthToken(newToken) {
+        this.authToken = newToken;
+        debugLog.log('CONTEXT', '🔄 Token actualizado en contexto');
+    }
 }
 
 // Instancia global
 window.BGEContext = new BGEContextManager();
+
+// ✅ BRIDGE: Exponer como window.contextManager para auth-context-bridge.js
+window.contextManager = window.BGEContext;
 
 debugLog.log('CONTEXT', '✅ [CONTEXT] Context Manager inicializado');

@@ -8,6 +8,25 @@
     document.head.appendChild(script);
 })();
 
+// ✅ BRIDGES - Cargar inmediatamente después de logger para desacoplamiento
+// Orden crítico: data-event-emitter primero (base), luego bridges específicos
+(function loadBridges() {
+    const bridges = [
+        'js/data-event-emitter.js',      // Base event emitter (usado por otros bridges)
+        'js/auth-context-bridge.js',     // Desacopla auth ↔ context
+        'js/auth-api-bridge.js'          // Desacopla api-client ↔ auth
+    ];
+
+    bridges.forEach(bridgePath => {
+        const script = document.createElement('script');
+        script.src = bridgePath;
+        script.async = false;
+        document.head.appendChild(script);
+    });
+
+    console.log('[MAIN.JS] ✅ 3 bridges cargados: data-event-emitter, auth-context-bridge, auth-api-bridge');
+})();
+
 // Load event handler files FIRST (in order), then event-handler-registry
 // CRITICAL: event-handler-registry references functions from these modules
 // Must wait for all event handlers to load before loading event-handler-registry

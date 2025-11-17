@@ -28,11 +28,23 @@ class APIClient {
         this.timeout = options.timeout || 30000; // 30 segundos por defecto
         this.token = this.getStoredToken();
 
+        // ✅ BRIDGE: Token provider inyectado por auth-api-bridge.js
+        this._tokenProvider = null;
+
         // Configuración por defecto para requests
         this.defaultHeaders = {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         };
+    }
+
+    /**
+     * ✅ BRIDGE: Inyectar token provider (llamado por auth-api-bridge.js)
+     * Desacopla api-client de auth.js
+     */
+    setTokenProvider(providerFunction) {
+        this._tokenProvider = providerFunction;
+        debugLog.log('API', '✅ Token provider inyectado por auth-api-bridge');
     }
 
     /**
@@ -148,8 +160,8 @@ class APIClient {
     getHeaders() {
         const headers = { ...this.defaultHeaders };
 
-        // Obtener token dinámicamente desde localStorage cada vez
-        const token = this.getStoredToken();
+        // ✅ BRIDGE: Usar provider inyectado si está disponible
+        const token = this._tokenProvider ? this._tokenProvider() : this.getStoredToken();
 
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
