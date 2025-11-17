@@ -1,78 +1,58 @@
 /**
- * Jest Configuration
- * BGE Héroes de la Patria - Testing Configuration
+ * 🧪 JEST CONFIGURATION
+ * Testing setup para BGE
+ * Semana 7 - Testing Integral
  */
 
 module.exports = {
-  // Test environment (jsdom para soportar tests de frontend)
-  testEnvironment: 'jsdom',
+  // Test environment
+  testEnvironment: 'node',
 
   // Coverage configuration
   collectCoverage: true,
+  collectCoverageFrom: [
+    'backend/**/*.js',
+    '!backend/node_modules/**',
+    '!backend/__tests__/**',
+    '!backend/scripts/**',
+    '!backend/seeds/**'
+  ],
   coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
-
-  // Coverage thresholds (empezando con 10%, objetivo final: 70%)
+  coverageReporters: ['text', 'lcov', 'html', 'json'],
   coverageThreshold: {
     global: {
-      branches: 10,
-      functions: 10,
-      lines: 10,
-      statements: 10,
-    },
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70
+    }
   },
 
-  // Files to collect coverage from
-  collectCoverageFrom: [
-    'backend/services/**/*.js',
-    'backend/middleware/**/*.js',
-    'backend/utils/**/*.js',
-    'js/form-validator.js',
-    'js/api-client.js',
-    '!backend/server.js',
-    '!backend/config/**',
-    '!**/node_modules/**',
-    '!**/coverage/**',
-    '!**/dist/**',
-    '!**/*.bundle.js',
-    '!**/*.min.js',
-    '!**/external-integrations.js', // Tiene errores de sintaxis
-  ],
-
-  // Test match patterns
+  // Test patterns
   testMatch: [
-    '**/__tests__/**/*.js',
-    '**/?(*.)+(spec|test).js',
+    '**/__tests__/**/*.test.js',
+    '**/?(*.)+(spec|test).js'
+  ],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    '/coverage/'
   ],
 
   // Setup files
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.cjs'],
+  setupFilesAfterEnv: ['<rootDir>/backend/__tests__/setup.js'],
 
   // Module paths
-  modulePaths: ['<rootDir>'],
+  moduleDirectories: ['node_modules', 'backend'],
 
-  // Transform (si usamos ES modules en el futuro)
-  transform: {},
-
-  // Ignore patterns
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/coverage/',
-    '/dist/',
-  ],
+  // Timeouts
+  testTimeout: 10000,
 
   // Verbose output
   verbose: true,
 
   // Clear mocks between tests
   clearMocks: true,
-
-  // Restore mocks after each test
-  restoreMocks: true,
-
-  // Timeout for tests
-  testTimeout: 10000, // 10 segundos
-
-  // Maximum workers (para CI/CD)
-  maxWorkers: '50%',
+  resetMocks: true,
+  restoreMocks: true
 };
