@@ -35,7 +35,8 @@
       "mcp__chrome-devtools__wait_for",
       "mcp__chrome-devtools__fill_form",
       "Bash(dir \"C:\\03_BachilleratoHeroesWeb\\docs\")",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(git fetch:*)"
     ],
     "deny": [],
     "ask": []

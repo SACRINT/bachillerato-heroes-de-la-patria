@@ -1,0 +1,66 @@
+═══════════════════════════════════════════════════════════════════════════════
+            ✅ COMPLETASTE TODO - AHORA SOLO HACES UN PUSH
+═══════════════════════════════════════════════════════════════════════════════
+
+Excelente trabajo. 10 tareas completadas.
+
+Ahora TÚ haces UN solo paso: Push a GitHub
+
+El resto LO HAGO YO.
+
+───────────────────────────────────────────────────────────────────────────────
+TU TRABAJO (En Claude Code web):
+───────────────────────────────────────────────────────────────────────────────
+
+PASO 1: Verifica que estés en tu rama
+
+git status
+
+Deberías ver:
+  On branch claude/fix-csp-errors-01ESGL2jJ78S5gKkXhVdofRE
+  Your branch is 8 commits ahead of 'origin/main'
+
+───────────────────────────────────────────────────────────────────────────────
+
+PASO 2: Push a GitHub
+
+git push -u origin claude/fix-csp-errors-01ESGL2jJ78S5gKkXhVdofRE
+
+Espera a que diga:
+  ✓ 8 commits pushed
+  ✓ Branch created
+
+───────────────────────────────────────────────────────────────────────────────
+
+PASO 3: Confirma aquí
+
+Cuando veas que se pusheó, RESPONDE:
+
+  ✅ Push completado
+
+───────────────────────────────────────────────────────────────────────────────
+LO QUE HAGO YO DESPUÉS:
+───────────────────────────────────────────────────────────────────────────────
+
+Cuando digas "✅ Push completado", YO haré:
+
+1. git pull de tu rama desde GitHub
+2. Merge a main
+3. git push a main (actualizar main branch)
+4. Ejecutar 31 unit tests
+5. Validar sintaxis
+6. Generar reporte final
+
+TÚ NO HACES NADA MÁS.
+
+═══════════════════════════════════════════════════════════════════════════════
+RESUMEN:
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ Completaste: 10 tareas, ~5,859 líneas código
+⏳ Ahora: git push de tu rama
+🚀 Después: Yo hago todo lo demás
+
+RESPONDE CUANDO HAYAS PUSHEADO:  ✅ Push completado
+
+═══════════════════════════════════════════════════════════════════════════════

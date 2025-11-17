@@ -39,6 +39,7 @@ node_modules/
 
 # Directorio de archivos no usados (COMPLETO)
 no_usados/
+03_BachilleratoHeroesWeb_copia/
 
 # Documentación local (no subir a GitHub ni a Vercel para despliegue)
 # Generalizado para ignorar todos los archivos Markdown excepto README.md
