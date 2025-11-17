@@ -12,6 +12,7 @@ const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
 const { cacheMiddleware, TTL_CONFIG } = require('../middleware/cache');
+const { softDelete } = require('../data/soft-delete-helpers');
 
 // Función para generar slug
 function generateSlug(titulo) {
@@ -366,37 +367,33 @@ router.put('/:id', async (req, res) => {
 });
 
 // =====================================================
-// DELETE /api/noticias/:id - Eliminar noticia
+// DELETE /api/noticias/:id - Eliminar noticia (Soft Delete)
 // =====================================================
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        // Archivar en lugar de eliminar
-        const result = await pool.query(`
-            UPDATE noticias
-            SET estado = 'archivada', fecha_modificacion = NOW()
-            WHERE id = $1
-            RETURNING id, titulo
-        `, [id]);
+        const deleted = await softDelete('noticias', id);
 
-        if (result.rows.length === 0) {
+        if (!deleted) {
             return res.status(404).json({
                 success: false,
-                error: 'Noticia no encontrada'
+                error: 'Noticia no encontrada o ya eliminada'
             });
         }
 
+        debugLog.log('NOTICIAS', `🗑️ Noticia ${id} eliminada (soft delete)`);
+
         res.json({
             success: true,
-            message: 'Noticia archivada correctamente'
+            message: 'Noticia eliminada correctamente'
         });
 
     } catch (error) {
-        debugLog.error('NOTICIAS', '❌ Error al archivar noticia:', sanitizeError(error, 'noticias'));
+        debugLog.error('NOTICIAS', '❌ Error al eliminar noticia:', sanitizeError(error, 'noticias'));
         res.status(500).json({
             success: false,
-            error: 'Error al archivar la noticia'
+            error: 'Error al eliminar la noticia'
         });
     }
 });

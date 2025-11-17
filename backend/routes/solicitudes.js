@@ -11,6 +11,7 @@ const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
+const { softDelete } = require('../data/soft-delete-helpers');
 
 // =====================================================
 // POST /api/solicitudes - Crear nueva solicitud
@@ -318,20 +319,22 @@ router.put('/:id', async (req, res) => {
 });
 
 // =====================================================
-// DELETE /api/solicitudes/:id - Eliminar solicitud (ADMIN)
+// DELETE /api/solicitudes/:id - Eliminar solicitud (Soft Delete)
 // =====================================================
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const result = await pool.query('DELETE FROM solicitudes_documentos WHERE id = $1 RETURNING id', [id]);
+        const deleted = await softDelete('solicitudes_documentos', id);
 
-        if (result.rows.length === 0) {
+        if (!deleted) {
             return res.status(404).json({
                 success: false,
-                error: 'Solicitud no encontrada'
+                error: 'Solicitud no encontrada o ya eliminada'
             });
         }
+
+        debugLog.log('SOLICITUDES', `🗑️ Solicitud ${id} eliminada (soft delete)`);
 
         res.json({
             success: true,

@@ -11,6 +11,7 @@ const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
+const { softDelete } = require('../data/soft-delete-helpers');
 
 // Función para generar slug
 function generateSlug(titulo) {
@@ -381,37 +382,33 @@ router.put('/:id', async (req, res) => {
 });
 
 // =====================================================
-// DELETE /api/avisos/:id - Eliminar aviso
+// DELETE /api/avisos/:id - Eliminar aviso (Soft Delete)
 // =====================================================
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        // Archivar en lugar de eliminar
-        const result = await pool.query(`
-            UPDATE avisos
-            SET estado = 'archivada', fecha_modificacion = NOW()
-            WHERE id = $1
-            RETURNING id, titulo
-        `, [id]);
+        const deleted = await softDelete('avisos', id);
 
-        if (result.rows.length === 0) {
+        if (!deleted) {
             return res.status(404).json({
                 success: false,
-                error: 'Aviso no encontrada'
+                error: 'Aviso no encontrado o ya eliminado'
             });
         }
 
+        debugLog.log('AVISOS', `🗑️ Aviso ${id} eliminado (soft delete)`);
+
         res.json({
             success: true,
-            message: 'Aviso archivada correctamente'
+            message: 'Aviso eliminado correctamente'
         });
 
     } catch (error) {
-        debugLog.error('AVISOS', '❌ Error al archivar aviso:', sanitizeError(error, 'avisos'));
+        debugLog.error('AVISOS', '❌ Error al eliminar aviso:', sanitizeError(error, 'avisos'));
         res.status(500).json({
             success: false,
-            error: 'Error al archivar la aviso'
+            error: 'Error al eliminar el aviso'
         });
     }
 });
