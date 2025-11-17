@@ -346,7 +346,7 @@ function formatResponse(responseData) {
 // ELIMINADO: loadScriptDynamically() y loadScriptsSequentially() (eran causa de race conditions)
 // Cambio: nested-dropdowns.js y admin-auth.js ahora se cargan en header.html líneas 812-813
 
-function loadHeaderFooter() {
+async function loadHeaderFooter() {
     console.log('🔍 [MAIN.JS] loadHeaderFooter() iniciando...');
 
     // Buscar por el ID correcto: main-header (no header-placeholder)
@@ -355,20 +355,29 @@ function loadHeaderFooter() {
 
     console.log(`🔍 [MAIN.JS] headerContainer encontrado: ${!!headerContainer}, footerContainer encontrado: ${!!footerContainer}`);
 
-    if (headerContainer && !headerContainer.innerHTML.trim()) {
-        console.log('📥 [MAIN.JS] Iniciando fetch de header.html...');
+    // Helper function para sanitizar HTML de forma segura
+    const sanitizeHtmlSafe = (html) => {
+        if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+            return DOMPurify.sanitize(html);
+        }
+        if (typeof window.sanitizeHTML === 'function') {
+            return window.sanitizeHTML(html, 'ugc');
+        }
+        return html; // Último recurso sin sanitización
+    };
 
-        fetch('partials/header.html')
-            .then(response => {
-                console.log(`📥 [MAIN.JS] Fetch response status: ${response.status}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                return response.text();
-            })
-            .then((data) => {
-                console.log(`✅ [MAIN.JS] Header HTML recibido (${data.length} caracteres)`);
-                headerContainer.innerHTML = DOMPurify.sanitize(sanitizeHTML(data, 'ugc'));
+    // Cargar header
+    if (headerContainer && !headerContainer.innerHTML.trim()) {
+        try {
+            console.log('📥 [MAIN.JS] Iniciando fetch de header.html...');
+            const headerResponse = await fetch('./partials/header.html');
+
+            if (!headerResponse.ok) {
+                console.warn(`⚠️ [MAIN.JS] Header no encontrado (${headerResponse.status})`);
+            } else {
+                const headerHtml = await headerResponse.text();
+                console.log(`✅ [MAIN.JS] Header HTML recibido (${headerHtml.length} caracteres)`);
+                headerContainer.innerHTML = sanitizeHtmlSafe(headerHtml);
                 console.log('✅ [MAIN.JS] Header HTML inyectado en el DOM');
 
                 // ✅ FASE 1.3: Los scripts ya se cargan de forma estática en header.html
@@ -378,34 +387,36 @@ function loadHeaderFooter() {
                 // Disparar evento para que otros scripts sepan que el header está listo
                 console.log('📡 [MAIN.JS] Disparando evento headerLoaded...');
                 document.dispatchEvent(new Event('headerLoaded'));
-                console.log('✅ [MAIN.JS] loadHeaderFooter() completado exitosamente');
-            })
-            .catch(error => {
-                console.error('❌ [MAIN.JS] Error en loadHeaderFooter:', error);
-                console.error('❌ [MAIN.JS] Error stack:', error.stack);
-            });
+            }
+        } catch (error) {
+            console.warn('⚠️ [MAIN.JS] Error cargando header:', error.message);
+        }
     } else {
         console.log('⚠️ [MAIN.JS] Header container no encontrado o ya contiene datos');
     }
 
+    // Cargar footer
     if (footerContainer && !footerContainer.innerHTML.trim()) {
-        console.log('📥 [MAIN.JS] Iniciando fetch de footer.html...');
+        try {
+            console.log('📥 [MAIN.JS] Iniciando fetch de footer.html...');
+            const footerResponse = await fetch('./partials/footer.html');
 
-        fetch('partials/footer.html')
-            .then(response => {
-                console.log(`📥 [MAIN.JS] Footer fetch status: ${response.status}`);
-                return response.text();
-            })
-            .then(data => {
-                footerContainer.innerHTML = DOMPurify.sanitize(sanitizeHTML(data, 'ugc'));
+            if (!footerResponse.ok) {
+                console.warn(`⚠️ [MAIN.JS] Footer no encontrado (${footerResponse.status})`);
+            } else {
+                const footerHtml = await footerResponse.text();
+                console.log(`✅ [MAIN.JS] Footer HTML recibido (${footerHtml.length} caracteres)`);
+                footerContainer.innerHTML = sanitizeHtmlSafe(footerHtml);
                 console.log('✅ [MAIN.JS] Footer cargado dinámicamente');
-            })
-            .catch(error => {
-                console.error('❌ [MAIN.JS] Error en footer:', error);
-            });
+            }
+        } catch (error) {
+            console.warn('⚠️ [MAIN.JS] Error cargando footer:', error.message);
+        }
     } else {
         console.log('⚠️ [MAIN.JS] Footer container no encontrado o ya contiene datos');
     }
+
+    console.log('✅ [MAIN.JS] loadHeaderFooter() completado');
 }
 
 
