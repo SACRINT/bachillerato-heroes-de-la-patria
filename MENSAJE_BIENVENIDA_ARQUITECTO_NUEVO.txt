@@ -1,0 +1,130 @@
+===============================================================================
+BIENVENIDA AL PROYECTO BGE - INSTRUCCIONES PARA ARQUITECTO NUEVO
+===============================================================================
+
+Hola [Nombre del Arquitecto Nuevo],
+
+Bienvenido al proyecto BGE (Bachillerato Héroes de la Patria).
+Necesitamos que continúes con el trabajo que estaba en progreso.
+
+===============================================================================
+SITUACIÓN ACTUAL (RESUMIDO)
+===============================================================================
+
+El arquitecto anterior completó las SEMANAS 17-24 (ML/AI, Mobile, PWA):
+- ✅ 32 archivos nuevos creados
+- ✅ 11,430+ líneas de código generado
+- ❌ Se encontraron 7 errores que necesitan reparación
+
+Tu tarea: Reparar 4 errores críticos en ~1.5 horas
+
+Después: El PM configurará API keys y haremos merge a producción.
+
+===============================================================================
+¿QUÉ NECESITAS HACER?
+===============================================================================
+
+PASO 1: Lee la documentación
+-------
+Abre este archivo en GitHub:
+CONTEXTO_Y_INSTRUCCIONES_PARA_ARQUITECTO_NUEVO.md
+
+Rama: claude/phase-2-performance-block-014w9WxgnJEB2ALWWPJXEBKf
+URL: https://github.com/SACRINT/bachillerato-heroes-de-la-patria/blob/claude/phase-2-performance-block-014w9WxgnJEB2ALWWPJXEBKf/CONTEXTO_Y_INSTRUCCIONES_PARA_ARQUITECTO_NUEVO.md
+
+PASO 2: Lee las instrucciones de reparación
+-------
+Abre este archivo:
+INSTRUCCIONES_REPARACION_ERRORES_SEMANAS_17-24.md
+
+PASO 3: Repara los 4 errores críticos
+-------
+Los errores están documentados con causa raíz, código correcto y pasos exactos.
+
+1. authMiddleware import incorrecto (10 minutos)
+2. Column "nombre" query error (20 minutos)
+3. RLS syntax error "$1" (30 minutos)
+4. Column "fecha_registro" error (15 minutos)
+
+PASO 4: Haz 4 commits y pushea
+-------
+git add [archivo]
+git commit -m "fix(descripción): ..."
+git push origin claude/phase-2-performance-block-014w9WxgnJEB2ALWWPJXEBKf
+
+PASO 5: Notifica al PM
+-------
+Mensaje: "Completé reparación de 4 errores críticos."
+Link de rama: https://github.com/SACRINT/bachillerato-heroes-de-la-patria/tree/claude/phase-2-performance-block-014w9WxgnJEB2ALWWPJXEBKf
+
+===============================================================================
+IMPORTANTE - RAMA CORRECTA
+===============================================================================
+
+TÚ TRABAJAS EN ESTA RAMA (no cambies):
+claude/phase-2-performance-block-014w9WxgnJEB2ALWWPJXEBKf
+
+NO hagas:
+- No crees rama nueva
+- No hagas checkout a main
+- No hagas checkout a develop
+
+SÍ continúa en la rama dada.
+
+===============================================================================
+TOOLS DISPONIBLES
+===============================================================================
+
+Tienes 3 documentos en GitHub para consultar:
+
+1. CONTEXTO_Y_INSTRUCCIONES_PARA_ARQUITECTO_NUEVO.md (ESTE)
+   → Contexto general, checklist de tareas, timeline
+
+2. INSTRUCCIONES_REPARACION_ERRORES_SEMANAS_17-24.md
+   → Detalle completo de cada error, código correcto, pasos exactos
+
+3. RESUMEN_VALIDACION_SEMANAS_17-24_PM.md
+   → Resumen ejecutivo, errores encontrados, próximos pasos
+
+Todos están en rama: claude/phase-2-performance-block-014w9WxgnJEB2ALWWPJXEBKf
+
+===============================================================================
+TIMELINE
+===============================================================================
+
+Preparación + lectura:    10 minutos
+Reparar ERROR 1:          10 minutos
+Reparar ERROR 2:          20 minutos
+Reparar ERROR 3:          30 minutos
+Reparar ERROR 4:          15 minutos
+Verificar y pushear:      10 minutos
+------------------------------------------------------
+TOTAL:                    ~95 minutos (1.5 horas)
+
+===============================================================================
+CONTACTO SI TIENES DUDAS
+===============================================================================
+
+1. Consulta los 3 documentos en GitHub (tienen todo detallado)
+2. Revisa la sección de causa raíz en INSTRUCCIONES_REPARACION_ERRORES_SEMANAS_17-24.md
+3. Contacta al PM si necesitas acceso a información de la BD
+
+===============================================================================
+PRÓXIMA ETAPA (NO TÚ - PM)
+===============================================================================
+
+Cuando termines, el PM:
+1. Configura OpenAI API key
+2. Configura Anthropic API key
+3. Hace merge a main
+4. Deploy automático en Vercel
+
+Resultado final: v4.1.0 funcional en producción con ML/AI features 🚀
+
+===============================================================================
+
+¡Adelante! Lee los documentos y comienza con las reparaciones.
+
+Generado: 17 de Noviembre 2025
+PM: [Tu nombre]
+Validador: Claude Code

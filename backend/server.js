@@ -15,6 +15,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env.local'), overr
 require('dotenv').config({ path: path.resolve(__dirname, '../.env'), override: false });
 
 const express = require('express');
+const http = require('http');  // ✅ HTTP Server para Socket.IO
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -41,10 +42,12 @@ const subscriptionsRoutes = require('./routes/subscriptions');
 const newslettersRoutes = require('./routes/newsletters');
 const egresadosRoutes = require('./routes/egresados');
 const analyticsDashboardRoutes = require('./routes/analytics-dashboard');
+const reportsRoutes = require('./routes/reports');  // ✅ REPORTS - SEMANA 7
 const bolsaTrabajoRoutes = require('./routes/bolsa-trabajo');
 const suscriptoresRoutes = require('./routes/suscriptores');
 const quejasRoutes = require('./routes/quejas');
 const notificacionesRoutes = require('./routes/notificaciones');
+const notificationsRealtimeRoutes = require('./routes/notifications-realtime');  // ✅ SOCKET.IO NOTIFICATIONS - SEMANA 5
 const solicitudesRoutes = require('./routes/solicitudes');
 const passwordRecoveryRoutes = require('./routes/password-recovery');
 const approvalsRoutes = require('./routes/approvals');
@@ -54,10 +57,14 @@ const avisosRoutes = require('./routes/avisos');
 const tenantsRoutes = require('./routes/tenants');  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
 const comunicadosRoutes = require('./routes/comunicados');
 const uploadRoutes = require('./routes/upload');
+const webhooksRoutes = require('./routes/webhooks');  // ✅ WEBHOOKS - SEMANA 8
 const healthRoutes = require('./routes/health');
 const chartsDataRoutes = require('./routes/charts-data');
 const searchRoutes = require('./routes/search');
 const emailsRoutes = require('./routes/emails');
+
+// ✅ API VERSIONING MIDDLEWARE - SEMANA 8
+const { apiVersioning, v1CompatibilityLayer, rateLimitByTier } = require('./middleware/api-versioning');
 const pollsRoutes = require('./routes/polls');
 const parentsRoutes = require('./routes/parents');
 const installPollsRoutes = require('./routes/install-polls');
@@ -116,6 +123,7 @@ const challengesRoutes = require('./routes/challenges');  // 🏆 Challenges sys
 const storeRoutes = require('./routes/store');  // 🛒 Virtual store (5 endpoints)
 
 const { startCleanupService } = require('./services/cleanupService');
+const SocketService = require('./services/socket-service');  // ✅ SOCKET.IO SERVICE - SEMANA 5 (17 NOV 2025)
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -239,6 +247,18 @@ devLogger.log('🏢 Configurando multi-tenancy middleware...');
 app.use(tenantContext);
 
 // ============================================
+// 🔀 API VERSIONING MIDDLEWARE (17 NOV 2025 - SEMANA 8)
+// ============================================
+// IMPORTANTE: Aplicar ANTES de todas las rutas API
+// Detecta versión desde: header Accept-Version, URL path (/api/v1/, /api/v2/), query param
+// Aplica backward compatibility v1 → v2
+// Rate limiting por tier (starter, pro, enterprise)
+devLogger.log('🔀 Configurando API versioning middleware...');
+app.use('/api', apiVersioning);           // Detección de versión
+app.use('/api', v1CompatibilityLayer);    // Compatibilidad v1 → v2
+app.use('/api', rateLimitByTier);         // Rate limiting por plan del tenant
+
+// ============================================
 // RUTAS DE API
 // ============================================
 
@@ -264,10 +284,12 @@ app.use('/api/subscriptions', subscriptionsRoutes);
 app.use('/api/newsletters', newslettersRoutes);
 app.use('/api/egresados', egresadosRoutes);
 app.use('/api/analytics', analyticsDashboardRoutes);
+app.use('/api/reports', reportsRoutes);  // ✅ REPORTS - SEMANA 7
 app.use('/api/bolsa-trabajo', bolsaTrabajoRoutes);
 app.use('/api/suscriptores', suscriptoresRoutes);
 app.use('/api/quejas', quejasRoutes);
 app.use('/api/notificaciones', notificacionesRoutes);
+app.use('/api/notifications-realtime', notificationsRealtimeRoutes);  // ✅ SOCKET.IO REALTIME NOTIFICATIONS - SEMANA 5
 app.use('/api/solicitudes', solicitudesRoutes);
 app.use('/api/password-recovery', passwordRecoveryRoutes);
 app.use('/api/approvals', approvalsRoutes);
@@ -281,6 +303,7 @@ app.use('/api/health', healthRoutes);
 app.use('/api/charts', chartsDataRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/emails', emailsRoutes);
+app.use('/api/webhooks', webhooksRoutes);  // ✅ WEBHOOKS - SEMANA 8 (17 NOV 2025)
 app.use('/api/polls', pollsRoutes);
 app.use('/api/parents', parentsRoutes);
 app.use('/api/install-polls', installPollsRoutes);
@@ -427,13 +450,33 @@ autoFixAprobaciones().catch(err => {
 startCleanupService(12);
 
 // ============================================
-// SERVER START
+// SERVER START CON SOCKET.IO
 // ============================================
 
+// Crear HTTP Server para Socket.IO
+const httpServer = http.createServer(app);
+
+// Inicializar Socket.IO Service
+let socketService = null;
+try {
+    socketService = new SocketService(httpServer);
+    devLogger.log('[SOCKET.IO] ✅ Servicio de notificaciones en tiempo real inicializado');
+
+    // Hacer socketService disponible para las rutas
+    app.socketService = socketService;
+} catch (error) {
+    devLogger.error('[SOCKET.IO] ❌ Error al inicializar:', error.message);
+    // Continuar sin Socket.IO si falla
+}
+
 if (require.main === module) {
-    app.listen(PORT, () => {
+    httpServer.listen(PORT, () => {
         devLogger.log(`🚀 Servidor backend iniciado en http://localhost:${PORT}`);
         devLogger.log('✅✅✅ ¡VERSIÓN CORRECTA DEL SERVIDOR EN EJECUCIÓN! ✅✅✅');
+
+        if (socketService) {
+            devLogger.log(`📡 Socket.IO escuchando en http://localhost:${PORT}`);
+        }
     });
 }
 
