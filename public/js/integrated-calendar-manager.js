@@ -459,7 +459,7 @@ class IntegratedCalendarManager {
         }
 
         html += '</div></div>';
-        container.innerHTML = html;
+        container.innerHTML = DOMPurify.sanitize(html);
     }
 
     renderWeekView() {
@@ -529,7 +529,7 @@ class IntegratedCalendarManager {
         }
 
         html += '</div></div>';
-        container.innerHTML = html;
+        container.innerHTML = DOMPurify.sanitize(html);
     }
 
     renderListView() {
@@ -614,7 +614,7 @@ class IntegratedCalendarManager {
             });
 
         html += '</div>';
-        container.innerHTML = html;
+        container.innerHTML = DOMPurify.sanitize(html);
     }
 
     updateCurrentMonthDisplay() {
@@ -862,8 +862,8 @@ class IntegratedCalendarManager {
         const modalTitle = modal.querySelector('.modal-title');
         const modalBody = modal.querySelector('.modal-body');
 
-        if (modalTitle) modalTitle.innerHTML = sanitizeHTML(`<i class="fas fa-calendar-day me-2"></i>${title}`);
-        if (modalBody) modalBody.innerHTML = body;
+        if (modalTitle) modalTitle.innerHTML = DOMPurify.sanitize(sanitizeHTML(`<i class="fas fa-calendar-day me-2"></i>${title}`));
+        if (modalBody) modalBody.innerHTML = DOMPurify.sanitize(body);
 
         const bootstrapModal = new bootstrap.Modal(modal);
         bootstrapModal.show();
@@ -1185,7 +1185,7 @@ const integratedCalendarStyles = `
 `;
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', sanitizeHTML(integratedCalendarStyles));
+document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(integratedCalendarStyles)));
 
 // Inicialización automática
 document.addEventListener('DOMContentLoaded', function() {

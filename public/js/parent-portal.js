@@ -314,7 +314,7 @@ class ParentPortal {
             `;
         }).join('');
 
-        container.innerHTML = sanitizeHTML(html, 'ugc');
+        container.innerHTML = DOMPurify.sanitize(sanitizeHTML(html, 'ugc'));
     }
 
     loadUpcomingEvents() {
@@ -347,7 +347,7 @@ class ParentPortal {
             `;
         }).join('');
 
-        container.innerHTML = sanitizeHTML(html, 'ugc');
+        container.innerHTML = DOMPurify.sanitize(sanitizeHTML(html, 'ugc'));
     }
 
     loadAnnouncements() {
@@ -376,7 +376,7 @@ class ParentPortal {
             `;
         }).join('');
 
-        container.innerHTML = sanitizeHTML(html, 'ugc');
+        container.innerHTML = DOMPurify.sanitize(sanitizeHTML(html, 'ugc'));
     }
 
     getGradeColor(grade) {
@@ -970,7 +970,7 @@ const parentPortalStyles = `
 `;
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', sanitizeHTML(parentPortalStyles));
+document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(parentPortalStyles)));
 
 // Inicializar el portal cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {

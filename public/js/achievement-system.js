@@ -141,7 +141,7 @@ class AchievementSystem {
             existingModal.remove();
         }
 
-        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(modalHTML)));
         const modal = new bootstrap.Modal(document.getElementById('achievementsModal'));
         modal.show();
     }

@@ -97,7 +97,7 @@ class SolicitudesManager {
             </div>
         `;
 
-        containerEl.innerHTML = DOMPurify.sanitize(html, 'ugc');
+        containerEl.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(html, 'ugc'));
     }
 
     createTableRow(solicitud) {
@@ -224,7 +224,7 @@ class SolicitudesManager {
         const existingModal = document.getElementById('solicitudDetailsModal');
         if (existingModal) existingModal.remove();
 
-        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHtml));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(modalHtml)));
         const modal = new bootstrap.Modal(document.getElementById('solicitudDetailsModal'));
         modal.show();
     }

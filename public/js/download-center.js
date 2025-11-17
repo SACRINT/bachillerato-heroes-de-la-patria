@@ -451,7 +451,7 @@ class DownloadCenter {
             </div>
         ` + documents.map(doc => this.generateDocumentCard(doc)).join('');
 
-        container.innerHTML = resultsHTML;
+        container.innerHTML = DOMPurify.sanitize(resultsHTML);
     }
 
     clearSearch() {
@@ -485,7 +485,7 @@ class DownloadCenter {
             </div>
         `).join('');
 
-        container.innerHTML = html;
+        container.innerHTML = DOMPurify.sanitize(html);
     }
 
     showCategoryDocuments(categoryId) {
@@ -511,7 +511,7 @@ class DownloadCenter {
             </div>
         ` + docs.map(doc => this.generateDocumentCard(doc)).join('');
 
-        container.innerHTML = html;
+        container.innerHTML = DOMPurify.sanitize(html);
     }
 
     renderPopularDocuments() {
@@ -521,7 +521,7 @@ class DownloadCenter {
             .slice(0, 6);
 
         const html = popularDocs.map(doc => this.generateDocumentCard(doc)).join('');
-        container.innerHTML = html;
+        container.innerHTML = DOMPurify.sanitize(html);
     }
 
     renderRecentDocuments() {
@@ -531,7 +531,7 @@ class DownloadCenter {
             .slice(0, 6);
 
         const html = recentDocs.map(doc => this.generateDocumentCard(doc)).join('');
-        container.innerHTML = html;
+        container.innerHTML = DOMPurify.sanitize(html);
     }
 
     generateDocumentCard(doc) {
@@ -938,7 +938,7 @@ const downloadCenterStyles = `
 `;
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', sanitizeHTML(downloadCenterStyles));
+document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(downloadCenterStyles)));
 
 // Inicializar el centro de descargas cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {

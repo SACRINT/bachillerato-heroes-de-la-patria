@@ -1043,7 +1043,7 @@ class BGETestingSystem {
         if (!container) return;
 
         if (this.results.detailed.size === 0) {
-            container.innerHTML = '<div class="no-results">No se han ejecutado tests aún</div>';
+            container.innerHTML = DOMPurify.sanitize('<div class="no-results">No se han ejecutado tests aún</div>');
             return;
         }
 
@@ -1061,7 +1061,7 @@ class BGETestingSystem {
             `;
         }
 
-        container.innerHTML = resultsHTML;
+        container.innerHTML = DOMPurify.sanitize(resultsHTML);
     }
 
     log(message, type = 'info') {

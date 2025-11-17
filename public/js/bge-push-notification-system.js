@@ -586,7 +586,7 @@ class BGEPushNotificationSystem {
                 </div>
             `;
 
-            document.body.insertAdjacentHTML('beforeend', sanitizeHTML(promptHTML));
+            document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(promptHTML)));
 
             const enableBtn = document.getElementById('enable-notifications');
             const skipBtn = document.getElementById('skip-notifications');
@@ -671,7 +671,7 @@ class BGEPushNotificationSystem {
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(panelHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(panelHTML)));
         this.initializeSettingsPanel();
     }
 
@@ -815,7 +815,7 @@ class BGEPushNotificationSystem {
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
 
         // Manejar acciones del modal
         document.getElementById('acknowledge-emergency').addEventListener('click', () => {
@@ -1081,7 +1081,7 @@ class BGEPushNotificationSystem {
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(fallbackHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(fallbackHTML)));
     }
 
     showUpdateAvailable() {
@@ -1093,7 +1093,7 @@ class BGEPushNotificationSystem {
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(updateHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(updateHTML)));
 
         document.getElementById('update-sw').addEventListener('click', () => {
             if (this.swRegistration.waiting) {

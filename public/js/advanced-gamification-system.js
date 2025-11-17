@@ -1131,7 +1131,7 @@ class AdvancedGamificationSystem {
         const achievementsContainer = document.getElementById('achievements-list');
         if (!achievementsContainer) return;
 
-        achievementsContainer.innerHTML = DOMPurify.sanitize('');
+        achievementsContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         Object.entries(this.achievements).forEach(([key, achievement]) => {
             const isUnlocked = this.playerProfile.achievements.includes(key);
@@ -1156,7 +1156,7 @@ class AdvancedGamificationSystem {
         const powerUpsContainer = document.getElementById('powerups-list');
         if (!powerUpsContainer) return;
 
-        powerUpsContainer.innerHTML = DOMPurify.sanitize('');
+        powerUpsContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         Object.entries(this.powerUps).forEach(([key, powerUp]) => {
             const isOwned = this.playerProfile.powerUps && this.playerProfile.powerUps.includes(key);

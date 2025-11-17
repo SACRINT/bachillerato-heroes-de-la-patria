@@ -117,7 +117,7 @@ class E2ETestingChromeMCP {
         // Crear botón E2E flotante
         const e2eBtn = document.createElement('button');
         e2eBtn.id = 'e2e-testing-btn';
-        e2eBtn.innerHTML = sanitizeHTML('🤖');
+        e2eBtn.innerHTML = DOMPurify.sanitize(sanitizeHTML('🤖'));
         e2eBtn.title = 'E2E Testing con Chrome MCP';
         e2eBtn.style.cssText = `
             position: fixed;
@@ -165,7 +165,7 @@ class E2ETestingChromeMCP {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         `;
 
-        panel.innerHTML = this.generateE2EPanelHTML();
+        panel.innerHTML = DOMPurify.sanitize(this.generateE2EPanelHTML());
         document.body.appendChild(panel);
     }
 

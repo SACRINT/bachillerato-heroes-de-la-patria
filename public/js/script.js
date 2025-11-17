@@ -125,7 +125,7 @@ class HeroesPatriaApp {
             if (!response.ok) throw new Error(`Failed to load ${path}`);
             
             const html = await response.text();
-            element.innerHTML = html;
+            element.innerHTML = DOMPurify.sanitize(html);
             
             //console.log(`✅ Loaded partial: ${path}`);
             
@@ -133,7 +133,7 @@ class HeroesPatriaApp {
             console.warn(`⚠️ Could not load ${path}:`, error);
             // Fallback content
             if (selector === APP_CONFIG.selectors.header) {
-                element.innerHTML = '<nav class="navbar navbar-light bg-light"><div class="container"><a class="navbar-brand" href="index.html">BGE Héroes de la Patria</a></div></nav>';
+                element.innerHTML = DOMPurify.sanitize('<nav class="navbar navbar-light bg-light"><div class="container"><a class="navbar-brand" href="index.html">BGE Héroes de la Patria</a></div></nav>');
             }
         }
     }
@@ -238,7 +238,7 @@ class HeroesPatriaApp {
                     // Add separator
                     const dropdownSeparator = document.createElement('li');
                     dropdownSeparator.className = 'nav-secondary-separator';
-                    dropdownSeparator.innerHTML = '<hr class="dropdown-divider">';
+                    dropdownSeparator.innerHTML = DOMPurify.sanitize('<hr class="dropdown-divider">');
                     
                     // Find the first static item in mas dropdown
                     const firstStaticItem = masDropdownMenu.querySelector('li:first-child');
@@ -261,21 +261,21 @@ class HeroesPatriaApp {
                             // Add main dropdown title as header
                             const headerItem = document.createElement('li');
                             headerItem.className = 'nav-secondary-in-dropdown';
-                            headerItem.innerHTML = sanitizeHTML(`<h6 class="dropdown-header">${link.textContent}</h6>`);
+                            headerItem.innerHTML = DOMPurify.sanitize(sanitizeHTML(`<h6 class="dropdown-header">${link.textContent}</h6>`));
                             masDropdownMenu.insertBefore(headerItem, firstStaticItem);
                             
                             // Add submenu items
                             submenuItems.forEach(subLink => {
                                 const subDropdownItem = document.createElement('li');
                                 subDropdownItem.className = 'nav-secondary-in-dropdown';
-                                subDropdownItem.innerHTML = sanitizeHTML(`<a class="dropdown-item" href="${subLink.href}">${subLink.innerHTML}</a>`);
+                                subDropdownItem.innerHTML = DOMPurify.sanitize(sanitizeHTML(`<a class="dropdown-item" href="${subLink.href}">${subLink.innerHTML}</a>`));
                                 masDropdownMenu.insertBefore(subDropdownItem, firstStaticItem);
                             });
                         } else {
                             // Handle regular items
                             const dropdownItem = document.createElement('li');
                             dropdownItem.className = 'nav-secondary-in-dropdown';
-                            dropdownItem.innerHTML = sanitizeHTML(`<a class="dropdown-item" href="${link.href}">${link.innerHTML}</a>`);
+                            dropdownItem.innerHTML = DOMPurify.sanitize(sanitizeHTML(`<a class="dropdown-item" href="${link.href}">${link.innerHTML}</a>`));
                             masDropdownMenu.insertBefore(dropdownItem, firstStaticItem);
                         }
                     });
@@ -1098,11 +1098,11 @@ class AdminPanelAuth {
         if (isAuthenticated) {
             if (statusBadge) statusBadge.classList.remove('d-none');
             if (logoutOption) logoutOption.classList.remove('d-none');
-            if (menuLink) menuLink.innerHTML = '<i class="fas fa-edit me-2"></i>Abrir Panel <span class="badge bg-success ms-2">Sesión Activa</span>';
+            if (menuLink) menuLink.innerHTML = DOMPurify.sanitize('<i class="fas fa-edit me-2"></i>Abrir Panel <span class="badge bg-success ms-2">Sesión Activa</span>');
         } else {
             if (statusBadge) statusBadge.classList.add('d-none');
             if (logoutOption) logoutOption.classList.add('d-none');
-            if (menuLink) menuLink.innerHTML = '<i class="fas fa-edit me-2"></i>Panel de Administración';
+            if (menuLink) menuLink.innerHTML = DOMPurify.sanitize('<i class="fas fa-edit me-2"></i>Panel de Administración');
         }
     }
 

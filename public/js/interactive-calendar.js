@@ -446,7 +446,7 @@ class InteractiveCalendar {
         }
         
         calendarHTML += '</div></div>';
-        calendarContainer.innerHTML = DOMPurify.sanitize(calendarHTML, 'ugc');
+        calendarContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(calendarHTML, 'ugc'));
     }
 
     renderEventsList() {
@@ -535,7 +535,7 @@ class InteractiveCalendar {
             `;
         }
 
-        listContainer.innerHTML = DOMPurify.sanitize(listHTML, 'ugc');
+        listContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(listHTML, 'ugc'));
     }
 
     getEventsForDate(date) {
@@ -1156,7 +1156,7 @@ const calendarStyles = `
 `;
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(calendarStyles));
+document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(calendarStyles)));
 
 // Inicializar el calendario cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {

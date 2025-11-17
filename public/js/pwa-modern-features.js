@@ -210,7 +210,7 @@ class PWAModernFeatures {
 
         const shareButton = document.createElement('button');
         shareButton.className = 'pwa-global-share';
-        shareButton.innerHTML = sanitizeHTML('<i class="fas fa-share-alt"></i>', 'simple');
+        shareButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-share-alt"></i>', 'simple'));
         shareButton.title = 'Compartir página';
         shareButton.addEventListener('click', () => {
             this.shareContent({
@@ -534,7 +534,7 @@ class PWAModernFeatures {
         copyTargets.forEach(element => {
             const copyButton = document.createElement('button');
             copyButton.className = 'pwa-copy-btn';
-            copyButton.innerHTML = sanitizeHTML('<i class="fas fa-copy"></i>', 'simple');
+            copyButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-copy"></i>', 'simple'));
             copyButton.title = 'Copiar';
             
             copyButton.addEventListener('click', () => {

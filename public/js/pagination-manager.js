@@ -89,7 +89,7 @@ class PaginationManager {
         if (!container) return;
 
         if (this.totalPages <= 1) {
-            container.innerHTML = DOMPurify.sanitize('');
+            container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
             return;
         }
 
@@ -165,7 +165,7 @@ class PaginationManager {
             </div>
         `;
 
-        container.innerHTML = html;
+        container.innerHTML = DOMPurify.sanitize(html);
     }
 
     reset() {

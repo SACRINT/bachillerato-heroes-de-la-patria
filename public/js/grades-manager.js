@@ -611,7 +611,7 @@ class GradesManager {
             </div>
         `;
 
-        filtersContainer.innerHTML = filtersHTML;
+        filtersContainer.innerHTML = DOMPurify.sanitize(filtersHTML);
     }
 
     async handleQuery() {
@@ -630,7 +630,7 @@ class GradesManager {
                         parcial: document.getElementById('query-parcial').value,
                         ciclo_escolar: document.getElementById('query-period').value
                     });
-                    resultsContainer.innerHTML = this.renderStudentGrades(results);
+                    resultsContainer.innerHTML = DOMPurify.sanitize(this.renderStudentGrades(results));
                     break;
 
                 case 'group':
@@ -641,7 +641,7 @@ class GradesManager {
                         parcial: document.getElementById('query-parcial').value,
                         ciclo_escolar: document.getElementById('query-period').value
                     });
-                    resultsContainer.innerHTML = this.renderGroupGrades(results);
+                    resultsContainer.innerHTML = DOMPurify.sanitize(this.renderGroupGrades(results));
                     break;
             }
 
@@ -911,6 +911,6 @@ const styles = `
 if (!document.getElementById('grades-manager-styles')) {
     const styleElement = document.createElement('div');
     styleElement.id = 'grades-manager-styles';
-    styleElement.innerHTML = styles;
+    styleElement.innerHTML = DOMPurify.sanitize(styles);
     document.head.appendChild(styleElement);
 }

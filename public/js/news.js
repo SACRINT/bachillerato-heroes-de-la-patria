@@ -209,7 +209,7 @@ Este ejercicio refuerza nuestro compromiso con la seguridad y nos permite mejora
             </button>
         `).join('');
 
-        filterContainer.innerHTML = sanitizeHTML(buttonsHTML, 'simple');
+        filterContainer.innerHTML = DOMPurify.sanitize(sanitizeHTML(buttonsHTML, 'simple'));
 
         // Event listeners para filtros
         filterContainer.addEventListener('click', (e) => {
@@ -282,7 +282,7 @@ Este ejercicio refuerza nuestro compromiso con la seguridad y nos permite mejora
             }
         });
 
-        this.newsContainer.innerHTML = sanitizeHTML(html, 'ugc');
+        this.newsContainer.innerHTML = DOMPurify.sanitize(sanitizeHTML(html, 'ugc'));
         
         // Mostrar/ocultar botón "Cargar más"
         const loadMoreBtn = document.getElementById('loadMoreNews');

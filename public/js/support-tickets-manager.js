@@ -260,9 +260,9 @@ async function loadDepartments() {
         // Poblar select de departamentos en el modal
         const select = document.getElementById('ticketDepartment');
         if (select) {
-            select.innerHTML = '<option value="">Seleccione departamento</option>';
+            select.innerHTML = DOMPurify.sanitize('<option value="">Seleccione departamento</option>');
             appState.departments.forEach(dept => {
-                select.innerHTML += `<option value="${dept.id}">${dept.name}</option>`;
+                select.innerHTML += DOMPurify.sanitize(`<option value="${dept.id}">${dept.name}</option>`);
             });
         }
 
@@ -284,9 +284,9 @@ async function loadCategories() {
         // Poblar select de categorías en el modal
         const select = document.getElementById('ticketCategory');
         if (select) {
-            select.innerHTML = '<option value="">Seleccione categoría</option>';
+            select.innerHTML = DOMPurify.sanitize('<option value="">Seleccione categoría</option>');
             appState.categories.forEach(cat => {
-                select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                select.innerHTML += DOMPurify.sanitize(`<option value="${cat.id}">${cat.name}</option>`);
             });
         }
 
@@ -367,7 +367,7 @@ function renderTickets(tickets) {
     const emptyState = document.getElementById('emptyState');
 
     if (!tickets || tickets.length === 0) {
-        container.innerHTML = DOMPurify.sanitize('');
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
         emptyState?.classList.remove('hidden');
         return;
     }
@@ -435,7 +435,7 @@ function renderPagination(pagination) {
     const { currentPage, totalPages } = pagination;
 
     if (totalPages <= 1) {
-        container.innerHTML = DOMPurify.sanitize('');
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
         return;
     }
 
@@ -476,7 +476,7 @@ function renderPagination(pagination) {
         </li>
     `;
 
-    container.innerHTML = html;
+    container.innerHTML = DOMPurify.sanitize(html);
 }
 
 /**

@@ -612,7 +612,7 @@ class PushNotificationManager {
                 if (this.subscription) {
                     this.updateStatus('active', 'Activas', 'Las notificaciones están funcionando correctamente');
                     enableBtn.disabled = true;
-                    enableBtn.innerHTML = '<i class="fas fa-check me-1"></i>Notificaciones Activas';
+                    enableBtn.innerHTML = DOMPurify.sanitize('<i class="fas fa-check me-1"></i>Notificaciones Activas');
                 } else {
                     this.updateStatus('granted-not-subscribed', 'Permisos Concedidos', 'Configurando suscripción...');
                     enableBtn.disabled = false;
@@ -622,7 +622,7 @@ class PushNotificationManager {
             case 'denied':
                 this.updateStatus('denied', 'Denegadas', 'Los permisos han sido denegados');
                 enableBtn.disabled = true;
-                enableBtn.innerHTML = '<i class="fas fa-ban me-1"></i>Permisos Denegados';
+                enableBtn.innerHTML = DOMPurify.sanitize('<i class="fas fa-ban me-1"></i>Permisos Denegados');
                 break;
 
             default:
@@ -649,7 +649,7 @@ class PushNotificationManager {
 
         const config = statusConfig[status] || statusConfig['default'];
 
-        statusIndicator.innerHTML = sanitizeHTML(`<i class="fas ${config.icon}"></i>`);
+        statusIndicator.innerHTML = DOMPurify.sanitize(sanitizeHTML(`<i class="fas ${config.icon}"></i>`));
         statusText.textContent = text;
         statusText.className = config.class;
         statusDetails.textContent = details;
@@ -951,7 +951,7 @@ class PushNotificationManager {
             `;
         }).join('');
 
-        historyContainer.innerHTML = html;
+        historyContainer.innerHTML = DOMPurify.sanitize(html);
     }
 
     async markAsRead(notificationId) {

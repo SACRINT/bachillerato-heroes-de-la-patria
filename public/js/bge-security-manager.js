@@ -993,7 +993,7 @@ class BGESecurityManager {
         const eventsList = document.getElementById('security-events-list');
 
         if (this.securityLogs.length === 0) {
-            eventsList.innerHTML = '<div class="no-events">No hay eventos recientes</div>';
+            eventsList.innerHTML = DOMPurify.sanitize('<div class="no-events">No hay eventos recientes</div>');
             return;
         }
 

@@ -95,13 +95,13 @@ class AdminDashboard {
             return;
         }
         navigator.clipboard.writeText(password).then(() => {
-            button.innerHTML = DOMPurify.sanitize('<i class="fas fa-check"></i> Copiado');
+            button.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-check"></i> Copiado'));
             setTimeout(() => {
-                button.innerHTML = DOMPurify.sanitize('<i class="fas fa-copy"></i> Copiar');
+                button.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-copy"></i> Copiar'));
             }, 2000);
         }).catch(err => {
             debugLog.error('ERROR', 'Error al copiar la contraseña: ', err);
-            button.innerHTML = DOMPurify.sanitize('<i class="fas fa-times"></i> Error');
+            button.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-times"></i> Error'));
         });
     }
 
@@ -570,7 +570,7 @@ class AdminDashboard {
                                  document.body;
 
         if (dashboardContainer) {
-            dashboardContainer.insertAdjacentHTML('afterbegin', DOMPurify.sanitize(errorMessage));
+            dashboardContainer.insertAdjacentHTML('afterbegin', DOMPurify.sanitize( DOMPurify.sanitize(errorMessage)));
         }
     }
 
@@ -814,7 +814,7 @@ class AdminDashboard {
         const tbody = document.getElementById('studentsTable');
         if (!tbody) return;
 
-        tbody.innerHTML = DOMPurify.sanitize('');
+        tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         const students = window.dynamicStudentLoader.students.estudiantes || [];
 
@@ -875,26 +875,26 @@ class AdminDashboard {
             return;
         }
 
-        tbody.innerHTML = DOMPurify.sanitize('');
+        tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         // Verificar que dashboardData existe
         if (!this.dashboardData) {
             debugLog.log('DEBUG', '❌ [DEBUG] dashboardData no existe');
-            tbody.innerHTML = DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">Cargando datos...</td></tr>');
+            tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">Cargando datos...</td></tr>'));
             return;
         }
 
         // Verificar que students existe y es un array
         if (!this.dashboardData.students || !Array.isArray(this.dashboardData.students)) {
             debugLog.log('DEBUG', '❌ [DEBUG] students no es array válido:', this.dashboardData.students);
-            tbody.innerHTML = DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">No hay datos de estudiantes disponibles</td></tr>');
+            tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">No hay datos de estudiantes disponibles</td></tr>'));
             return;
         }
 
         // Verificar que students tiene elementos
         if (this.dashboardData.students.length === 0) {
             debugLog.log('DEBUG', 'ℹ️ [DEBUG] students array está vacío');
-            tbody.innerHTML = DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">No hay estudiantes registrados</td></tr>');
+            tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">No hay estudiantes registrados</td></tr>'));
             return;
         }
 
@@ -941,7 +941,7 @@ class AdminDashboard {
         });
         } catch (error) {
             debugLog.error('DEBUG', '❌ [DEBUG] Error en loadStudentsTable:', error);
-            tbody.innerHTML = DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-danger">Error cargando estudiantes</td></tr>');
+            tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-danger">Error cargando estudiantes</td></tr>'));
         }
     }
 
@@ -978,7 +978,7 @@ class AdminDashboard {
         const tbody = document.getElementById('teachersTable');
         if (!tbody) return;
 
-        tbody.innerHTML = DOMPurify.sanitize('');
+        tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         const teachers = window.dynamicTeacherLoader.teachers.docentes || [];
 
@@ -1035,7 +1035,7 @@ class AdminDashboard {
         const tbody = document.getElementById('teachersTable');
         if (!tbody) return;
 
-        tbody.innerHTML = DOMPurify.sanitize('');
+        tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         this.dashboardData.teachers.forEach(teacher => {
             const row = document.createElement('tr');
@@ -1512,7 +1512,7 @@ class AdminDashboard {
             </div>
         `;
 
-        container.innerHTML = DOMPurify.sanitize(html);
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(html));
         debugLog.log('DISPLAY', `✅ [DISPLAY] ${registrations.length} solicitudes renderizadas`);
     }
 
@@ -2209,7 +2209,7 @@ class AdminDashboard {
             </div>
         `).join('');
 
-        container.innerHTML = DOMPurify.sanitize(html, 'tablas');
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(html, 'tablas'));
 
         // ACTUALIZAR CONTADORES EN BADGES
         const activeUsersCount = uniqueUsers.filter(user => user.status === 'active').length;
@@ -2656,7 +2656,7 @@ class AdminDashboard {
             existingModal.remove();
         }
 
-        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(modalHTML)));
         const modal = new bootstrap.Modal(document.getElementById('dynamicModal'));
         modal.show();
     }
@@ -3148,11 +3148,11 @@ function updateRefreshButtonState() {
 
     refreshButtons.forEach(button => {
         if (hasCustomConfig) {
-            button.innerHTML = DOMPurify.sanitize('<i class="fas fa-exclamation-triangle me-1"></i>⚠️ Configuración Personalizada', 'simple');
+            button.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-exclamation-triangle me-1"></i>⚠️ Configuración Personalizada', 'simple'));
             button.className = 'btn btn-warning btn-sm';
             button.title = 'Datos personalizados configurados - Usar con precaución';
         } else {
-            button.innerHTML = DOMPurify.sanitize('<i class="fas fa-sync me-1"></i>Actualizar', 'simple');
+            button.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-sync me-1"></i>Actualizar', 'simple'));
             button.className = 'btn btn-outline-light btn-sm';
             button.title = 'Actualizar dashboard';
         }
@@ -3225,7 +3225,7 @@ window.legacyContentManager = {
         }
 
         const html = filteredItems.map(item => this.renderItem(item)).join('');
-        container.innerHTML = DOMPurify.sanitize(html, 'tablas');
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(html, 'tablas'));
     },
 
     renderItem: function(item) {
@@ -3333,7 +3333,7 @@ function editContent(id) {
 
     // Cambiar el botón para modo edición
     const submitBtn = document.querySelector('#contentForm button[data-action="create-content"]');
-    submitBtn.innerHTML = DOMPurify.sanitize('<i class="fas fa-save me-1"></i>Actualizar Contenido', 'simple');
+    submitBtn.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-save me-1"></i>Actualizar Contenido', 'simple'));
     submitBtn.onclick = () => updateContent(id);
 
     // Scroll hacia el formulario
@@ -3359,7 +3359,7 @@ function updateContent(id) {
 
     // Restaurar el botón a modo creación
     const submitBtn = document.querySelector('#contentForm button[onclick^="updateContent"]');
-    submitBtn.innerHTML = DOMPurify.sanitize('<i class="fas fa-plus me-1"></i>Crear Contenido', 'simple');
+    submitBtn.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-plus me-1"></i>Crear Contenido', 'simple'));
     submitBtn.onclick = createContent;
 
     if (adminDashboard && typeof adminDashboard.showToast === 'function') {

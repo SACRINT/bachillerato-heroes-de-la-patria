@@ -209,7 +209,7 @@ class AdvancedGradesAnalytics {
         }
 
         // Insertar la interfaz
-        container.insertAdjacentHTML('beforeend', DOMPurify.sanitize(analyticsHTML));
+        container.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(analyticsHTML)));
     }
 
     renderStudentAnalytics() {
@@ -301,7 +301,7 @@ class AdvancedGradesAnalytics {
             `;
         }).join('');
 
-        container.innerHTML = DOMPurify.sanitize(alertsHTML, 'ugc');
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(alertsHTML, 'ugc'));
     }
 
     renderSubjectAnalysis(subjects) {
@@ -357,7 +357,7 @@ class AdvancedGradesAnalytics {
             `;
         }).join('');
 
-        container.innerHTML = DOMPurify.sanitize(`<div class="row">${subjectsHTML}</div>`);
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(`<div class="row">${subjectsHTML}</div>`));
     }
 
     renderRecommendations(recommendations) {
@@ -391,7 +391,7 @@ class AdvancedGradesAnalytics {
             `;
         }).join('');
 
-        container.innerHTML = DOMPurify.sanitize(recommendationsHTML, 'ugc');
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(recommendationsHTML, 'ugc'));
     }
 
     renderProgressCharts() {

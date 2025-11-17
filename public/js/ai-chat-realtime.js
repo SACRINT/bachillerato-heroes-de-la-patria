@@ -118,7 +118,7 @@ class AIChatRealtime {
             border: 1px solid rgba(0,0,0,0.1);
         `;
 
-        chatContainer.innerHTML = this.generateChatHTML();
+        chatContainer.innerHTML = DOMPurify.sanitize(this.generateChatHTML());
         document.body.appendChild(chatContainer);
 
         this.chatContainer = chatContainer;
@@ -467,7 +467,7 @@ class AIChatRealtime {
             </div>
         `;
 
-        messagesContainer.insertAdjacentHTML('beforeend', DOMPurify.sanitize(messageHTML));
+        messagesContainer.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(messageHTML)));
         this.scrollToBottom();
 
         // Guardar historial
@@ -669,7 +669,7 @@ class AIChatRealtime {
 
         // Recargar mensajes
         const messagesContainer = document.getElementById('chatMessages');
-        messagesContainer.innerHTML = this.generateWelcomeMessage();
+        messagesContainer.innerHTML = DOMPurify.sanitize(this.generateWelcomeMessage());
 
         alert('🗑️ Historial de chat eliminado');
     }

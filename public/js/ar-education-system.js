@@ -276,7 +276,7 @@ class AREducationSystem {
         // ✅ FALLBACK si DOMPurify no está disponible
         const indicatorText = '🎭 Modo Simulación AR Activo';
         if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
-            indicator.innerHTML = DOMPurify.sanitize(indicatorText);
+            indicator.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(indicatorText));
         } else {
             indicator.textContent = indicatorText;
             if (typeof debugLog !== 'undefined') {

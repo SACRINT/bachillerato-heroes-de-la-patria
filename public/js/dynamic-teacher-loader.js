@@ -107,7 +107,7 @@ class DynamicTeacherLoader {
             }
 
             // Limpiar tabla
-            tableBody.innerHTML = sanitizeHTML('');
+            tableBody.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
 
             // Agregar filas de docentes
             this.teachers.docentes?.forEach(teacher => {
@@ -468,7 +468,7 @@ class DynamicTeacherLoader {
 
         // Llenar modal con materias disponibles
         const subjectsContainer = document.getElementById('availableSubjects');
-        subjectsContainer.innerHTML = sanitizeHTML('');
+        subjectsContainer.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
 
         this.teachers.materias?.forEach(subject => {
             const isAssigned = teacher.subjects?.includes(subject) || false;

@@ -302,7 +302,7 @@
             // Agregar mensaje del usuario
             const userMsg = document.createElement('div');
             userMsg.className = 'chatbot-message user';
-            userMsg.innerHTML = sanitizeHTML(`<div class="response-professional"><div class="response-content">${escapeHtml(message)}</div></div>`);
+            userMsg.innerHTML = DOMPurify.sanitize(sanitizeHTML(`<div class="response-professional"><div class="response-content">${escapeHtml(message)}</div></div>`));
             messagesContainer.appendChild(userMsg);
 
             // Limpiar input
@@ -312,7 +312,7 @@
             setTimeout(() => {
                 const botMsg = document.createElement('div');
                 botMsg.className = 'chatbot-message bot';
-                botMsg.innerHTML = sanitizeHTML(`<div class="response-professional"><div class="response-content">Gracias por tu pregunta. Un asesor te responderá pronto.</div></div>`);
+                botMsg.innerHTML = DOMPurify.sanitize(sanitizeHTML(`<div class="response-professional"><div class="response-content">Gracias por tu pregunta. Un asesor te responderá pronto.</div></div>`));
                 messagesContainer.appendChild(botMsg);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }, 500);

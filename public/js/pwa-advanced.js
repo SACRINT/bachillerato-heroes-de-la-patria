@@ -157,7 +157,7 @@ class PWAAdvanced {
         shareTargets.forEach(target => {
             const shareButton = document.createElement('button');
             shareButton.className = 'btn btn-outline-primary btn-sm ms-2';
-            shareButton.innerHTML = '<i class="fas fa-share-alt"></i>';
+            shareButton.innerHTML = DOMPurify.sanitize('<i class="fas fa-share-alt"></i>');
             shareButton.title = 'Compartir';
             
             shareButton.addEventListener('click', () => {
@@ -954,7 +954,7 @@ class InstallManager {
     showInstallButton() {
         const installButton = document.createElement('button');
         installButton.className = 'install-button btn btn-primary';
-        installButton.innerHTML = sanitizeHTML('📱 Instalar App');
+        installButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('📱 Instalar App'));
         installButton.onclick = () => this.showInstallPrompt();
         
         installButton.style.cssText = `

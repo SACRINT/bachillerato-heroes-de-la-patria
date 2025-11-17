@@ -1364,7 +1364,7 @@ class BGEPerformanceOptimizer {
         if (!container) return;
 
         if (this.state.alerts.length === 0) {
-            container.innerHTML = '<div class="no-alerts">No hay alertas de rendimiento</div>';
+            container.innerHTML = DOMPurify.sanitize('<div class="no-alerts">No hay alertas de rendimiento</div>');
             return;
         }
 
@@ -1377,7 +1377,7 @@ class BGEPerformanceOptimizer {
             `;
         });
 
-        container.innerHTML = alertsHTML;
+        container.innerHTML = DOMPurify.sanitize(alertsHTML);
     }
 
     updateStatus(status, text) {

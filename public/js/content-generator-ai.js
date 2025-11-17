@@ -911,7 +911,7 @@ class ContentGeneratorAI {
 
     displayGeneratedContent(content) {
         const preview = document.getElementById('contentPreview');
-        preview.innerHTML = content.htmlContent;
+        preview.innerHTML = DOMPurify.sanitize(content.htmlContent);
 
         // Mostrar acciones
         document.getElementById('contentActions').classList.remove('d-none');

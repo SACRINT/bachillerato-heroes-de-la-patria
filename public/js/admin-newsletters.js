@@ -76,7 +76,7 @@ async function loadSubscribers() {
 
     try {
         spinner.classList.add('active');
-        tableBody.innerHTML = DOMPurify.sanitize('');
+        tableBody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         const response = await fetch(`${API_BASE}/subscriptions/list`);
         const data = await response.json();
@@ -122,7 +122,7 @@ async function loadSubscribers() {
 
 function renderSubscribers(subscribersList) {
     const tableBody = document.getElementById('subscribersTableBody');
-    tableBody.innerHTML = DOMPurify.sanitize('');
+    tableBody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
     subscribersList.forEach(sub => {
         const row = document.createElement('tr');
@@ -161,7 +161,7 @@ async function loadNewsletterHistory() {
 
     try {
         spinner.classList.add('active');
-        listContainer.innerHTML = DOMPurify.sanitize('');
+        listContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         const response = await fetch(`${API_BASE}/newsletters/list`);
         const data = await response.json();
@@ -323,7 +323,7 @@ async function viewNewsletterDetail(newsletterId) {
 
             // Agregar modal al body
             const modalContainer = document.createElement('div');
-            modalContainer.innerHTML = modal;
+            modalContainer.innerHTML = DOMPurify.sanitize(modal);
             document.body.appendChild(modalContainer);
 
             // Mostrar modal
@@ -351,7 +351,7 @@ async function sendNewsletter(subject, content, targetCategory) {
 
     try {
         spinner.classList.add('active');
-        resultDiv.innerHTML = DOMPurify.sanitize('');
+        resultDiv.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         console.log('📤 Enviando newsletter...');
 

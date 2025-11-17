@@ -522,7 +522,7 @@ class BGEAdvancedPWA {
 
         // Insertar en el header o footer
         const targetElement = document.querySelector('header') || document.querySelector('.header') || document.body;
-        targetElement.insertAdjacentHTML('beforeend', sanitizeHTML(pwaPanelHTML));
+        targetElement.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(pwaPanelHTML)));
 
         this.initializePWAControls();
     }
@@ -692,7 +692,7 @@ class BGEAdvancedPWA {
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(updateHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(updateHTML)));
 
         // Configurar botones
         document.getElementById('update-now-btn').addEventListener('click', () => {

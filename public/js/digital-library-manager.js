@@ -236,7 +236,7 @@ class DigitalLibraryManager {
         if (!container) return;
 
         if (this.categories.length === 0) {
-            container.innerHTML = '<p class="text-muted small">No hay categorías</p>';
+            container.innerHTML = DOMPurify.sanitize('<p class="text-muted small">No hay categorías</p>');
             return;
         }
 
@@ -695,7 +695,7 @@ class DigitalLibraryManager {
             if (!container) return;
 
             if (comments.length === 0) {
-                container.innerHTML = '<p class="text-muted text-center py-3">No hay comentarios aún</p>';
+                container.innerHTML = DOMPurify.sanitize('<p class="text-muted text-center py-3">No hay comentarios aún</p>');
                 return;
             }
 
@@ -878,7 +878,7 @@ class DigitalLibraryManager {
         try {
             const saveBtn = document.getElementById('saveDocumentBtn');
             saveBtn.disabled = true;
-            saveBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Subiendo...';
+            saveBtn.innerHTML = DOMPurify.sanitize('<i class="bi bi-hourglass-split"></i> Subiendo...');
 
             const response = await fetch(`${this.apiBaseURL}/documents`, {
                 method: 'POST',
@@ -909,7 +909,7 @@ class DigitalLibraryManager {
         } finally {
             const saveBtn = document.getElementById('saveDocumentBtn');
             saveBtn.disabled = false;
-            saveBtn.innerHTML = '<i class="bi bi-upload"></i> Subir Documento';
+            saveBtn.innerHTML = DOMPurify.sanitize('<i class="bi bi-upload"></i> Subir Documento');
         }
     }
 
@@ -923,7 +923,7 @@ class DigitalLibraryManager {
         const { page, totalPages } = pagination;
 
         if (totalPages <= 1) {
-            container.innerHTML = sanitizeHTML('');
+            container.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
             return;
         }
 
@@ -978,7 +978,7 @@ class DigitalLibraryManager {
             </li>
         `;
 
-        container.innerHTML = html;
+        container.innerHTML = DOMPurify.sanitize(html);
     }
 
     /**

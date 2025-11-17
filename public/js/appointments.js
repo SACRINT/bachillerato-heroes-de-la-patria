@@ -243,7 +243,7 @@ class AppointmentSystem {
             </div>
         `).join('');
 
-        container.innerHTML = html;
+        container.innerHTML = DOMPurify.sanitize(html);
     }
 
     formatSchedule(schedule) {
@@ -340,7 +340,7 @@ class AppointmentSystem {
         }
 
         calendarHTML += '</div></div>';
-        calendarContainer.innerHTML = calendarHTML;
+        calendarContainer.innerHTML = DOMPurify.sanitize(calendarHTML);
 
         // Actualizar el título después de renderizar
         const monthYearAfter = document.getElementById('currentMonthYear');
@@ -409,7 +409,7 @@ class AppointmentSystem {
         const schedule = dept.schedule[dayName];
 
         if (!schedule) {
-            container.innerHTML = '<p class="text-muted">No hay horarios disponibles para este día.</p>';
+            container.innerHTML = DOMPurify.sanitize('<p class="text-muted">No hay horarios disponibles para este día.</p>');
             return;
         }
 
@@ -417,7 +417,7 @@ class AppointmentSystem {
         const availableSlots = this.getAvailableSlots(this.selectedDate, startTime, endTime, dept.duration);
 
         if (availableSlots.length === 0) {
-            container.innerHTML = '<div class="alert alert-warning">No hay horarios disponibles para esta fecha. Por favor selecciona otro día.</div>';
+            container.innerHTML = DOMPurify.sanitize('<div class="alert alert-warning">No hay horarios disponibles para esta fecha. Por favor selecciona otro día.</div>');
             return;
         }
 
@@ -738,7 +738,7 @@ ${formData.get('reason')}
         `;
 
         // Insertar y mostrar modal
-        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(confirmationHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(confirmationHTML)));
         const modal = BootstrapHelper.showModal(document.getElementById('confirmationModal'));
 
         // Remover modal al cerrar
@@ -942,7 +942,7 @@ Coronel Tito Hernández, Venustiano Carranza, Puebla
         if (existingModal) {
             existingModal.remove();
         }
-        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(html));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(html)));
 
         // Mostrar modal
         const modal = BootstrapHelper.showModal(document.getElementById('appointmentsViewModal'));
@@ -1274,7 +1274,7 @@ function selectDepartment(departmentId) {
 }
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(appointmentStyles));
+document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(appointmentStyles)));
 
 // Inicializar el sistema cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {

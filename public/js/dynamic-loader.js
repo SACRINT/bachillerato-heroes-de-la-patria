@@ -193,7 +193,7 @@ class DynamicContentLoader {
             `;
         });
 
-        container.innerHTML = html;
+        container.innerHTML = DOMPurify.sanitize(html);
         console.log(`📰 [LOADER] ${noticias.length} noticias cargadas en homepage`);
     }
 
@@ -287,7 +287,7 @@ class DynamicContentLoader {
             `;
         });
 
-        container.innerHTML = html;
+        container.innerHTML = DOMPurify.sanitize(html);
         console.log(`📅 [LOADER] ${eventos.length} eventos cargados en homepage`);
     }
 
@@ -373,7 +373,7 @@ class DynamicContentLoader {
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
         const modalInstance = new bootstrap.Modal(document.getElementById(modalId));
         modalInstance.show();
     }
@@ -554,7 +554,7 @@ async function showEventoModal(id) {
         }
 
         // Agregar modal al DOM
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
 
         // Mostrar modal
         const modal = new bootstrap.Modal(document.getElementById('eventoModal'));

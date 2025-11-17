@@ -592,13 +592,13 @@ class BGEMobileStudentDashboard {
 
             // Mostrar loading si está cargando
             if (widget.isLoading) {
-                widget.element.innerHTML = this.renderWidgetLoading(widget);
+                widget.element.innerHTML = DOMPurify.sanitize(this.renderWidgetLoading(widget));
                 return widget.element;
             }
 
             // Renderizar contenido según el tipo de widget
             const content = await this.renderWidgetContent(widget);
-            widget.element.innerHTML = content;
+            widget.element.innerHTML = DOMPurify.sanitize(content);
 
             // Agregar event listeners específicos del widget
             this.setupWidgetEventListeners(widget);
@@ -607,7 +607,7 @@ class BGEMobileStudentDashboard {
 
         } catch (error) {
             this.logger.error('StudentDashboard', `Error al renderizar widget ${widget.id}`, error);
-            widget.element.innerHTML = this.renderWidgetError(widget, error);
+            widget.element.innerHTML = DOMPurify.sanitize(this.renderWidgetError(widget, error));
             return widget.element;
         }
     }

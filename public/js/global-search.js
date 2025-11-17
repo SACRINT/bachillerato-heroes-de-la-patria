@@ -76,10 +76,10 @@ class GlobalSearch {
 
         // ✅ FALLBACK si DOMPurify no está disponible
         if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
-            document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
+            document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(modalHTML)));
         } else {
             // Fallback: HTML sin sanitizar (es seguro porque lo generamos nosotros)
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
             if (typeof debugLog !== 'undefined') {
                 debugLog.warn('⚠️ [GLOBAL-SEARCH] DOMPurify no disponible, usando fallback');
             }
@@ -280,7 +280,7 @@ class GlobalSearch {
             </div>
         `;
 
-        this.resultsContainer.innerHTML = html;
+        this.resultsContainer.innerHTML = DOMPurify.sanitize(html);
 
         // Agregar event listeners a los resultados
         this.bindResultClicks();

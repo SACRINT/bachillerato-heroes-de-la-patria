@@ -974,7 +974,7 @@ class AdminDashboardAdvanced {
                 </div>
             `;
             
-            activityList.insertAdjacentHTML('afterbegin', DOMPurify.sanitize(activityHTML));
+            activityList.insertAdjacentHTML('afterbegin', DOMPurify.sanitize( DOMPurify.sanitize(activityHTML)));
         }
     }
 
@@ -1015,7 +1015,7 @@ class AdminDashboardAdvanced {
             </div>
         `;
         
-        alertsContainer.insertAdjacentHTML('afterbegin', DOMPurify.sanitize(alertHTML));
+        alertsContainer.insertAdjacentHTML('afterbegin', DOMPurify.sanitize( DOMPurify.sanitize(alertHTML)));
     }
 
     loadTabData(tabName) {
@@ -1209,10 +1209,10 @@ class AdminDashboardAdvanced {
         this.updateRecentActivity();
         
         const button = document.querySelector('.refresh-activity');
-        button.innerHTML = '<i class="fas fa-sync fa-spin"></i>';
+        button.innerHTML = DOMPurify.sanitize('<i class="fas fa-sync fa-spin"></i>');
         
         setTimeout(() => {
-            button.innerHTML = '<i class="fas fa-sync"></i>';
+            button.innerHTML = DOMPurify.sanitize('<i class="fas fa-sync"></i>');
         }, 1000);
     }
 

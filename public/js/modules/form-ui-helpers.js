@@ -67,7 +67,7 @@ export function hideLoadingState(form) {
     const originalText = submitButton.dataset.originalText || 'Enviar Mensaje';
 
     if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
-        submitButton.innerHTML = DOMPurify.sanitize(originalText, 'simple');
+        submitButton.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(originalText, 'simple'));
     } else {
         submitButton.textContent = originalText;
     }
@@ -416,7 +416,7 @@ export function addSecurityBadge(form) {
     `;
 
     if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
-        securityBadge.innerHTML = DOMPurify.sanitize(badgeHTML);
+        securityBadge.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(badgeHTML));
     } else {
         securityBadge.textContent = '🛡️ Formulario protegido contra spam • Verificación de email incluida';
         securityBadge.className = 'security-badge mb-3 text-muted';

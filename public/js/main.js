@@ -8,6 +8,25 @@
     document.head.appendChild(script);
 })();
 
+// ✅ BRIDGES - Cargar inmediatamente después de logger para desacoplamiento
+// Orden crítico: data-event-emitter primero (base), luego bridges específicos
+(function loadBridges() {
+    const bridges = [
+        'js/data-event-emitter.js',      // Base event emitter (usado por otros bridges)
+        'js/auth-context-bridge.js',     // Desacopla auth ↔ context
+        'js/auth-api-bridge.js'          // Desacopla api-client ↔ auth
+    ];
+
+    bridges.forEach(bridgePath => {
+        const script = document.createElement('script');
+        script.src = bridgePath;
+        script.async = false;
+        document.head.appendChild(script);
+    });
+
+    console.log('[MAIN.JS] ✅ 3 bridges cargados: data-event-emitter, auth-context-bridge, auth-api-bridge');
+})();
+
 // Load event handler files FIRST (in order), then event-handler-registry
 // CRITICAL: event-handler-registry references functions from these modules
 // Must wait for all event handlers to load before loading event-handler-registry
@@ -90,7 +109,7 @@ function createDarkModeToggle() {
     button.className = 'nav-link btn btn-link border-0 bg-transparent';
     button.id = 'darkModeToggle';
     button.setAttribute('aria-label', 'Alternar modo oscuro');
-    button.innerHTML = sanitizeHTML('<i class="fas fa-moon" id="darkModeIcon"></i>', 'simple');
+    button.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-moon" id="darkModeIcon"></i>', 'simple'));
     
     button.addEventListener('click', toggleDarkMode);
     
@@ -131,7 +150,7 @@ function createChatbot() {
     const chatButton = document.createElement('div');
     chatButton.id = 'chatbot-toggle';
     chatButton.className = 'chatbot-toggle';
-    chatButton.innerHTML = sanitizeHTML('<i class="fas fa-comments"></i>', 'simple');
+    chatButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'));
     chatButton.addEventListener('click', toggleChatbot);
     
     // Crear ventana del chatbot
@@ -202,9 +221,9 @@ function toggleChatbot() {
         const chatButton = document.getElementById('chatbot-toggle');
         if (chatButton) {
             if (chatWindow.classList.contains('d-none')) {
-                chatButton.innerHTML = sanitizeHTML('<i class="fas fa-comments"></i>', 'simple');
+                chatButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'));
             } else {
-                chatButton.innerHTML = sanitizeHTML('<i class="fas fa-times"></i>', 'simple');
+                chatButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-times"></i>', 'simple'));
             }
         }
     }
@@ -215,7 +234,7 @@ function closeChatbot() {
     const chatButton = document.getElementById('chatbot-toggle');
     
     chatWindow.classList.add('d-none');
-    chatButton.innerHTML = sanitizeHTML('<i class="fas fa-comments"></i>', 'simple');
+    chatButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'));
 }
 
 function sendMessage() {
@@ -349,7 +368,7 @@ function loadHeaderFooter() {
             })
             .then((data) => {
                 console.log(`✅ [MAIN.JS] Header HTML recibido (${data.length} caracteres)`);
-                headerContainer.innerHTML = sanitizeHTML(data, 'ugc');
+                headerContainer.innerHTML = DOMPurify.sanitize(sanitizeHTML(data, 'ugc'));
                 console.log('✅ [MAIN.JS] Header HTML inyectado en el DOM');
 
                 // ✅ FASE 1.3: Los scripts ya se cargan de forma estática en header.html
@@ -378,7 +397,7 @@ function loadHeaderFooter() {
                 return response.text();
             })
             .then(data => {
-                footerContainer.innerHTML = sanitizeHTML(data, 'ugc');
+                footerContainer.innerHTML = DOMPurify.sanitize(sanitizeHTML(data, 'ugc'));
                 console.log('✅ [MAIN.JS] Footer cargado dinámicamente');
             })
             .catch(error => {

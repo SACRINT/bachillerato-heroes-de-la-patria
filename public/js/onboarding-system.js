@@ -295,7 +295,7 @@ class OnboardingSystem {
     createHelpButton() {
         const helpButton = document.createElement('button');
         helpButton.id = 'onboarding-help-btn';
-        helpButton.innerHTML = DOMPurify.sanitize('❓');
+        helpButton.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('❓'));
         helpButton.title = 'Tutorial del sistema';
         helpButton.style.cssText = `
             position: fixed;

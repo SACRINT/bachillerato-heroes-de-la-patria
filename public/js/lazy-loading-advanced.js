@@ -167,7 +167,7 @@ class AdvancedLazyLoader {
             </style>
         `;
 
-        document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(styles));
+        document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(styles)));
     }
 
     // ==========================================
@@ -219,7 +219,7 @@ class AdvancedLazyLoader {
         if (this.config.enableSkeleton) {
             const skeleton = document.createElement('div');
             skeleton.className = `${this.config.skeletonClass} lazy-content-skeleton`;
-            skeleton.innerHTML = '<div class="lazy-spinner"></div>';
+            skeleton.innerHTML = DOMPurify.sanitize('<div class="lazy-spinner"></div>');
             element.appendChild(skeleton);
         }
     }
@@ -301,7 +301,7 @@ class AdvancedLazyLoader {
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
                 const content = await response.text();
-                element.innerHTML = content;
+                element.innerHTML = DOMPurify.sanitize(content);
             }
 
             // Remover skeleton

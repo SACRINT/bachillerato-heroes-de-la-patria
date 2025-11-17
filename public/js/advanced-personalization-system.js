@@ -185,7 +185,7 @@ class AdvancedPersonalizationSystem {
         if (!document.getElementById('personalization-btn')) {
             const personalizationBtn = document.createElement('button');
             personalizationBtn.id = 'personalization-btn';
-            personalizationBtn.innerHTML = DOMPurify.sanitize('🎨');
+            personalizationBtn.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('🎨'));
             personalizationBtn.title = 'Personalizar interfaz';
             personalizationBtn.style.cssText = `
                 position: fixed;
@@ -657,7 +657,7 @@ class AdvancedPersonalizationSystem {
         const dashboardContainer = document.querySelector('.dashboard-widgets');
         if (dashboardContainer) {
             // Limpiar widgets existentes
-            dashboardContainer.innerHTML = DOMPurify.sanitize('');
+            dashboardContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
             // Agregar widgets seleccionados
             this.preferences.dashboardWidgets.forEach(widgetId => {

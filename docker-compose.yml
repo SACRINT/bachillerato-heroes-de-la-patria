@@ -1,0 +1,100 @@
+# ===============================
+# 🐳 DOCKER COMPOSE - BGE Local Development
+# Semana 6 - DevOps & CI/CD - Tarea 3
+# ===============================
+
+version: '3.8'
+
+services:
+  # ===============================
+  # BGE Application
+  # ===============================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bge-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/bge_dev
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET:-dev-jwt-secret}
+      - SESSION_SECRET=${SESSION_SECRET:-dev-session-secret}
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./backend:/app/backend
+      - ./public:/app/public
+      - ./node_modules:/app/node_modules
+    networks:
+      - bge-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health', (r) => { if (r.statusCode !== 200) throw new Error() })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ===============================
+  # PostgreSQL Database
+  # ===============================
+  db:
+    image: postgres:17-alpine
+    container_name: bge-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=bge_dev
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./backend/scripts:/docker-entrypoint-initdb.d
+    networks:
+      - bge-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===============================
+  # Redis Cache
+  # ===============================
+  redis:
+    image: redis:7-alpine
+    container_name: bge-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - bge-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+# ===============================
+# Networks
+# ===============================
+networks:
+  bge-network:
+    driver: bridge
+
+# ===============================
+# Volumes
+# ===============================
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local

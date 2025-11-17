@@ -67,7 +67,7 @@ class AdvancedMetricsSystem {
         }
 
         // Limpiar contenedor
-        widgetsContainer.innerHTML = DOMPurify.sanitize('');
+        widgetsContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         const widgets = [
             this.createKPIWidget('institutional-efficiency', 'Eficiencia Institucional',
@@ -714,7 +714,7 @@ const additionalCSS = `
 `;
 
 // Inyectar CSS
-document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(additionalCSS));
+document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(additionalCSS)));
 
 // Instancia global
 let advancedMetrics = null;

@@ -60,7 +60,7 @@ class AIVaultModal {
 
         // Insertar modal si no existe
         if (!document.getElementById('aiVaultModal')) {
-            document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+            document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
         }
     }
 

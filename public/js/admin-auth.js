@@ -157,6 +157,12 @@ class AdminAuth {
                 localStorage.setItem('secure_admin_session', JSON.stringify(session));
                 this.isAdminLoggedIn = true;
                 this.adminSession = session;
+
+                // ✅ BRIDGE: Disparar evento de autenticación
+                if (window.auth && window.auth._triggerUserAuthenticated) {
+                    window.auth._triggerUserAuthenticated(data.user);
+                }
+
                 this.closeAuthModal();
                 this.showSuccessMessage();
                 usernameInput.value = '';
@@ -229,8 +235,13 @@ class AdminAuth {
     logout() {
         this.isAdminLoggedIn = false;
         this.adminSession = null;
-        
+
         localStorage.removeItem('admin_session');
+
+        // ✅ BRIDGE: Disparar evento de logout
+        if (window.auth && window.auth._triggerUserLoggedOut) {
+            window.auth._triggerUserLoggedOut();
+        }
         
         // LIMPIAR ESTADO DEL MODAL COMPLETAMENTE Y REINCIAR TODO EL SISTEMA
         const modal = document.getElementById('adminPanelAuthModal');
@@ -377,7 +388,7 @@ class AdminAuth {
                 
                 // Actualizar botón de login
                 if (loginBtn) {
-                    loginBtn.innerHTML = DOMPurify.sanitize('<i class="fas fa-shield-check me-2"></i>Admin <span class="badge bg-light text-success ms-1">✓</span>', 'simple');
+                    loginBtn.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-shield-check me-2"></i>Admin <span class="badge bg-light text-success ms-1">✓</span>', 'simple'));
                     loginBtn.classList.remove('admin-login-compact');
                     loginBtn.classList.add('text-success');
                     loginBtn.onclick = () => this.openAdminPanel();
@@ -409,7 +420,7 @@ class AdminAuth {
                 
                 // Restaurar botón de login
                 if (loginBtn) {
-                    loginBtn.innerHTML = DOMPurify.sanitize('<i class="fas fa-shield-halved me-2"></i>Admin', 'simple');
+                    loginBtn.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-shield-halved me-2"></i>Admin', 'simple'));
                     loginBtn.classList.add('admin-login-compact');
                     loginBtn.classList.remove('text-success');
                     loginBtn.onclick = () => {
@@ -811,7 +822,7 @@ function initAdminAuthSystem() {
             });
             
             if (loginBtn) {
-                loginBtn.innerHTML = DOMPurify.sanitize('<i class="fas fa-user-shield me-1"></i>Panel Admin <span class="badge bg-success ms-1">✓</span>', 'simple');
+                loginBtn.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-user-shield me-1"></i>Panel Admin <span class="badge bg-success ms-1">✓</span>', 'simple'));
                 loginBtn.classList.add('text-success');
                 loginBtn.setAttribute('data-admin-active', 'true');
                 //debugLog.log('APP', '🔥 BOTÓN LOGIN FORZADO');
@@ -977,3 +988,86 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Exponer función de inicialización globalmente
 window.initAdminAuthSystem = initAdminAuthSystem;
+
+// ============================================
+// ✅ BRIDGE: Funciones para auth-api-bridge.js y auth-context-bridge.js
+// ============================================
+
+/**
+ * ✅ BRIDGE: Obtener token de autenticación (para auth-api-bridge.js)
+ * Esta función será inyectada en api-client.js
+ */
+window.getAuthToken = function() {
+    // Prioridad 1: secure_admin_session (nuevo sistema)
+    try {
+        const secureSession = localStorage.getItem('secure_admin_session');
+        if (secureSession) {
+            const sessionData = JSON.parse(secureSession);
+            if (sessionData.token && Date.now() < sessionData.expiresAt) {
+                return sessionData.token;
+            }
+        }
+    } catch (error) {
+        debugLog.warn('AUTH', '⚠️ Error obteniendo secure token:', error);
+    }
+
+    // Prioridad 2: authToken directo
+    const directToken = localStorage.getItem('authToken');
+    if (directToken) return directToken;
+
+    // Prioridad 3: heroes_auth_token (sistema viejo)
+    return localStorage.getItem('heroes_auth_token') || sessionStorage.getItem('heroes_auth_token');
+};
+
+/**
+ * ✅ BRIDGE: Objeto auth con event hooks (para auth-context-bridge.js)
+ */
+window.auth = {
+    _userAuthenticatedCallbacks: [],
+    _userLoggedOutCallbacks: [],
+    _tokenRefreshedCallbacks: [],
+
+    /**
+     * Registrar callback para cuando usuario se autentica
+     */
+    onUserAuthenticated(callback) {
+        this._userAuthenticatedCallbacks.push(callback);
+    },
+
+    /**
+     * Registrar callback para cuando usuario cierra sesión
+     */
+    onUserLoggedOut(callback) {
+        this._userLoggedOutCallbacks.push(callback);
+    },
+
+    /**
+     * Registrar callback para cuando token se refresca
+     */
+    onTokenRefreshed(callback) {
+        this._tokenRefreshedCallbacks.push(callback);
+    },
+
+    /**
+     * Disparar evento de autenticación (llamado desde AdminAuth.handleLogin)
+     */
+    _triggerUserAuthenticated(user) {
+        this._userAuthenticatedCallbacks.forEach(cb => cb(user));
+    },
+
+    /**
+     * Disparar evento de logout (llamado desde AdminAuth.logout)
+     */
+    _triggerUserLoggedOut() {
+        this._userLoggedOutCallbacks.forEach(cb => cb());
+    },
+
+    /**
+     * Disparar evento de token refrescado
+     */
+    _triggerTokenRefreshed(newToken) {
+        this._tokenRefreshedCallbacks.forEach(cb => cb(newToken));
+    }
+};
+
+debugLog.log('AUTH', '✅ Bridges de autenticación configurados (window.getAuthToken, window.auth)');

@@ -79,7 +79,7 @@ function showConfirmationModal(activityName) {
     const oldModal = document.getElementById('activityModal');
     if (oldModal) oldModal.remove();
 
-    document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
 
     // Mostrar modal
     const modalElement = document.getElementById('activityModal');
@@ -165,7 +165,7 @@ function showRegistrationFormModal(activityName) {
     const oldModal = document.getElementById('activityModal');
     if (oldModal) oldModal.remove();
 
-    document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
 
     // Mostrar modal
     const modalElement = document.getElementById('activityModal');

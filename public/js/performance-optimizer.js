@@ -198,7 +198,7 @@ class PerformanceOptimizer {
             try {
                 const response = await fetch(contentUrl);
                 const content = await response.text();
-                section.innerHTML = content;
+                section.innerHTML = DOMPurify.sanitize(content);
                 section.dataset.loaded = 'true';
                 
                 // Trigger animations if available
