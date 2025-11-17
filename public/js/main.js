@@ -109,7 +109,7 @@ function createDarkModeToggle() {
     button.className = 'nav-link btn btn-link border-0 bg-transparent';
     button.id = 'darkModeToggle';
     button.setAttribute('aria-label', 'Alternar modo oscuro');
-    button.innerHTML = sanitizeHTML('<i class="fas fa-moon" id="darkModeIcon"></i>', 'simple');
+    button.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-moon" id="darkModeIcon"></i>', 'simple'));
     
     button.addEventListener('click', toggleDarkMode);
     
@@ -150,7 +150,7 @@ function createChatbot() {
     const chatButton = document.createElement('div');
     chatButton.id = 'chatbot-toggle';
     chatButton.className = 'chatbot-toggle';
-    chatButton.innerHTML = sanitizeHTML('<i class="fas fa-comments"></i>', 'simple');
+    chatButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'));
     chatButton.addEventListener('click', toggleChatbot);
     
     // Crear ventana del chatbot
@@ -221,9 +221,9 @@ function toggleChatbot() {
         const chatButton = document.getElementById('chatbot-toggle');
         if (chatButton) {
             if (chatWindow.classList.contains('d-none')) {
-                chatButton.innerHTML = sanitizeHTML('<i class="fas fa-comments"></i>', 'simple');
+                chatButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'));
             } else {
-                chatButton.innerHTML = sanitizeHTML('<i class="fas fa-times"></i>', 'simple');
+                chatButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-times"></i>', 'simple'));
             }
         }
     }
@@ -234,7 +234,7 @@ function closeChatbot() {
     const chatButton = document.getElementById('chatbot-toggle');
     
     chatWindow.classList.add('d-none');
-    chatButton.innerHTML = sanitizeHTML('<i class="fas fa-comments"></i>', 'simple');
+    chatButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'));
 }
 
 function sendMessage() {
@@ -368,7 +368,7 @@ function loadHeaderFooter() {
             })
             .then((data) => {
                 console.log(`✅ [MAIN.JS] Header HTML recibido (${data.length} caracteres)`);
-                headerContainer.innerHTML = sanitizeHTML(data, 'ugc');
+                headerContainer.innerHTML = DOMPurify.sanitize(sanitizeHTML(data, 'ugc'));
                 console.log('✅ [MAIN.JS] Header HTML inyectado en el DOM');
 
                 // ✅ FASE 1.3: Los scripts ya se cargan de forma estática en header.html
@@ -397,7 +397,7 @@ function loadHeaderFooter() {
                 return response.text();
             })
             .then(data => {
-                footerContainer.innerHTML = sanitizeHTML(data, 'ugc');
+                footerContainer.innerHTML = DOMPurify.sanitize(sanitizeHTML(data, 'ugc'));
                 console.log('✅ [MAIN.JS] Footer cargado dinámicamente');
             })
             .catch(error => {

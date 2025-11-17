@@ -183,7 +183,7 @@ function renderApprovalsList() {
         `;
     });
 
-    container.innerHTML = DOMPurify.sanitize(html, 'ugc');
+    container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(html, 'ugc'));
 }
 
 /**
@@ -553,7 +553,7 @@ function viewFullData(id) {
     const oldModal = document.getElementById('dataModal');
     if (oldModal) oldModal.remove();
 
-    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modal));
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(modal)));
 
     const modalElement = document.getElementById('dataModal');
     const bsModal = new bootstrap.Modal(modalElement);

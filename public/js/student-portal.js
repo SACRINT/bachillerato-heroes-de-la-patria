@@ -49,7 +49,7 @@ function createTasksModal() {
             </div>
         </div>
     </div>`;
-    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(modalHTML)));
     return document.getElementById('tasksModal');
 }
 
@@ -240,7 +240,7 @@ function createActivityModal() {
             </div>
         </div>
     </div>`;
-    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(modalHTML)));
     return document.getElementById('activityModal');
 }
 

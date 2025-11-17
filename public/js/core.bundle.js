@@ -54,7 +54,7 @@ class AITutorInterface {
 
         const btn = document.createElement('div');
         btn.id = 'ai-tutor-btn';
-        btn.innerHTML = sanitizeHTML('🤖');
+        btn.innerHTML = DOMPurify.sanitize(sanitizeHTML('🤖'));
         btn.style.cssText = `
             position: fixed;
             bottom: 30px;

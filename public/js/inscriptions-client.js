@@ -287,7 +287,7 @@ async function showActivityRegistration(activityName) {
     }
 
     // Agregar modal al DOM
-    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHtml));
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(modalHtml)));
 
     // Mostrar modal
     try {
@@ -331,7 +331,7 @@ async function submitActivityRegistration(activityName) {
     const button = document.getElementById('submitInscriptionBtn');
     const originalText = button.innerHTML;
     button.disabled = true;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
+    button.innerHTML = DOMPurify.sanitize('<i class="fas fa-spinner fa-spin me-2"></i>Procesando...');
 
     try {
         // Enviar inscripción al backend
@@ -364,7 +364,7 @@ async function submitActivityRegistration(activityName) {
 
             // Re-habilitar botón
             button.disabled = false;
-            button.innerHTML = originalText;
+            button.innerHTML = DOMPurify.sanitize(originalText);
         }
     } catch (error) {
         console.error('❌ Error en inscripción:', error);
@@ -372,7 +372,7 @@ async function submitActivityRegistration(activityName) {
 
         // Re-habilitar botón
         button.disabled = false;
-        button.innerHTML = originalText;
+        button.innerHTML = DOMPurify.sanitize(originalText);
     }
 }
 
@@ -390,7 +390,7 @@ function showInscriptionAlert(message, type) {
         </div>
     `;
 
-    container.innerHTML = alertHTML;
+    container.innerHTML = DOMPurify.sanitize(alertHTML);
 
     // Auto-dismiss después de 10 segundos (excepto para éxito)
     if (type !== 'success') {

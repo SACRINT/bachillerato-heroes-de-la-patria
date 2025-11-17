@@ -99,7 +99,7 @@ class ProfileManager {
             existingModal.remove();
         }
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
         const modal = new bootstrap.Modal(document.getElementById('profileModal'));
         modal.show();
     }

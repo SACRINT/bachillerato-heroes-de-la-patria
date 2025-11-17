@@ -448,7 +448,7 @@ class ParentTeacherCommunicationSystem {
             ${this.renderModals()}
         `;
 
-        container.innerHTML = DOMPurify.sanitize(html, 'ugc');
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(html, 'ugc'));
         this.bindEventHandlers();
     }
 
@@ -1020,7 +1020,7 @@ class ParentTeacherCommunicationSystem {
             // Actualizar vista de conversación
             const conversationView = document.querySelector('.conversation-view');
             if (conversationView) {
-                conversationView.innerHTML = DOMPurify.sanitize(this.renderConversationView(), 'ugc');
+                conversationView.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(this.renderConversationView(), 'ugc'));
             }
 
             // Cargar mensajes
@@ -1060,7 +1060,7 @@ class ParentTeacherCommunicationSystem {
             </div>
         `).join('');
 
-        messagesList.innerHTML = DOMPurify.sanitize(messagesHtml, 'ugc');
+        messagesList.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(messagesHtml, 'ugc'));
         messagesList.scrollTop = messagesList.scrollHeight;
     }
 
@@ -1080,7 +1080,7 @@ class ParentTeacherCommunicationSystem {
             </div>
         `;
 
-        messagesList.insertAdjacentHTML('beforeend', DOMPurify.sanitize(messageHtml));
+        messagesList.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(messageHtml)));
         messagesList.scrollTop = messagesList.scrollHeight;
     }
 
@@ -1361,7 +1361,7 @@ const communicationStyles = `
 `;
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(communicationStyles));
+document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(communicationStyles)));
 
 // Inicialización automática
 document.addEventListener('DOMContentLoaded', function() {

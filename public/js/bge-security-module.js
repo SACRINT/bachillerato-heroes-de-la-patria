@@ -2378,7 +2378,7 @@ function createAdminLoginModal() {
     } else {
         console.warn('⚠️ [BGE-SECURITY] DOMPurify no disponible, usando HTML sin sanitizar');
     }
-    document.body.insertAdjacentHTML('beforeend', sanitizedHTML);
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizedHTML));
 
     // Configurar event listeners
     setupAdminLoginEvents();
@@ -2416,7 +2416,7 @@ function setupAdminLoginEvents() {
 
         // Deshabilitar botón durante el login
         loginBtn.disabled = true;
-        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Verificando...';
+        loginBtn.innerHTML = DOMPurify.sanitize('<i class="fas fa-spinner fa-spin me-2"></i>Verificando...');
         errorDiv.classList.add('d-none');
 
         try {
@@ -2455,7 +2455,7 @@ function setupAdminLoginEvents() {
         } finally {
             // Reactivar botón
             loginBtn.disabled = false;
-            loginBtn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión';
+            loginBtn.innerHTML = DOMPurify.sanitize('<i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión');
         }
     });
 
@@ -2481,10 +2481,10 @@ window.updateAdminHeaderStatus = function updateAdminHeaderStatus(isLoggedIn, us
             // ✅ FALLBACK si DOMPurify no está disponible
             const adminHTML = `<i class="fas fa-shield-check me-2"></i>Admin (${user.username.split('@')[0]})`;
             if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
-                adminLink.innerHTML = DOMPurify.sanitize(adminHTML);
+                adminLink.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(adminHTML));
             } else {
                 // Fallback: HTML sin sanitizar (seguro porque lo generamos nosotros)
-                adminLink.innerHTML = adminHTML;
+                adminLink.innerHTML = DOMPurify.sanitize(adminHTML);
                 if (typeof debugLog !== 'undefined') {
                     debugLog.warn('⚠️ DOMPurify no disponible en updateAdminHeaderStatus (loggedIn), usando fallback sin sanitización');
                 }
@@ -2513,10 +2513,10 @@ window.updateAdminHeaderStatus = function updateAdminHeaderStatus(isLoggedIn, us
             // ✅ FALLBACK si DOMPurify no está disponible
             const adminResetHTML = '<i class="fas fa-shield-halved me-2"></i>Admin';
             if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
-                adminLink.innerHTML = DOMPurify.sanitize(adminResetHTML);
+                adminLink.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(adminResetHTML));
             } else {
                 // Fallback: HTML sin sanitizar (seguro porque lo generamos nosotros)
-                adminLink.innerHTML = adminResetHTML;
+                adminLink.innerHTML = DOMPurify.sanitize(adminResetHTML);
                 if (typeof debugLog !== 'undefined') {
                     debugLog.warn('⚠️ DOMPurify no disponible en updateAdminHeaderStatus (not logged in), usando fallback sin sanitización');
                 }

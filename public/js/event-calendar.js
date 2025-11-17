@@ -192,7 +192,7 @@ class EventCalendar {
         }
 
         // Agregar nuevo modal
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalContent));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalContent)));
 
         // Mostrar modal
         const modal = new bootstrap.Modal(document.getElementById('eventDetailModal'));

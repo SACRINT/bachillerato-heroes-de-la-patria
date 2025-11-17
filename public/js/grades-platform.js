@@ -266,7 +266,7 @@ class GradePlatform {
 
     loadPeriodGrades(period) {
         const tbody = document.getElementById(`gradesTable${period.charAt(0).toUpperCase() + period.slice(1)}`);
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
 
         this.studentData.subjects.forEach(subject => {
             const grades = subject[period];
@@ -304,7 +304,7 @@ class GradePlatform {
 
     loadFinalGrades() {
         const tbody = document.getElementById('gradesTableFinal');
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
 
         this.studentData.subjects.forEach(subject => {
             const row = document.createElement('tr');
@@ -584,7 +584,7 @@ Historial completo de calificaciones...`;
             existingModal.remove();
         }
         
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
         const modal = new bootstrap.Modal(document.getElementById('attendanceModal'));
         modal.show();
     }
@@ -629,7 +629,7 @@ Historial completo de calificaciones...`;
             existingModal.remove();
         }
         
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
         const modal = new bootstrap.Modal(document.getElementById('scheduleModal'));
         modal.show();
     }

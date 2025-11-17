@@ -114,7 +114,7 @@ class IntelligentLoginSystem {
         // Crear badge de IA sin modificar el botón original
         const aiBadge = document.createElement('span');
         aiBadge.className = 'ai-indicator-badge';
-        aiBadge.innerHTML = sanitizeHTML('🧠');
+        aiBadge.innerHTML = DOMPurify.sanitize(sanitizeHTML('🧠'));
         aiBadge.title = 'Sistema IA de Recompensas Académicas';
 
         // Estilos del badge
@@ -340,7 +340,7 @@ class IntelligentLoginSystem {
         const dashboard = document.createElement('div');
         dashboard.id = 'ai-rewards-dashboard';
         dashboard.className = 'ai-dashboard';
-        dashboard.innerHTML = this.generateDashboardHTML(profile);
+        dashboard.innerHTML = DOMPurify.sanitize(this.generateDashboardHTML(profile));
 
         // Agregar al DOM
         document.body.appendChild(dashboard);
@@ -829,7 +829,7 @@ class IntelligentLoginSystem {
         if (!dashboard) return;
 
         const newHTML = this.generateDashboardHTML(profile);
-        dashboard.innerHTML = newHTML;
+        dashboard.innerHTML = DOMPurify.sanitize(newHTML);
         this.initializeDashboardFeatures(dashboard, profile);
     }
 

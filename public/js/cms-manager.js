@@ -245,7 +245,7 @@ class CMSManager {
                 </table>
             `;
 
-            container.innerHTML = sanitizeHTML(html, 'ugc');
+            container.innerHTML = DOMPurify.sanitize(sanitizeHTML(html, 'ugc'));
 
             // Actualizar paginación
             this.pagination.noticias.total = total;
@@ -410,7 +410,7 @@ class CMSManager {
                 </table>
             `;
 
-            container.innerHTML = sanitizeHTML(html, 'ugc');
+            container.innerHTML = DOMPurify.sanitize(sanitizeHTML(html, 'ugc'));
 
             // Actualizar paginación
             this.pagination.eventos.total = total;
@@ -562,7 +562,7 @@ class CMSManager {
                 </table>
             `;
 
-            container.innerHTML = sanitizeHTML(html, 'ugc');
+            container.innerHTML = DOMPurify.sanitize(sanitizeHTML(html, 'ugc'));
 
 
             // Actualizar paginación
@@ -717,7 +717,7 @@ class CMSManager {
                 </table>
             `;
 
-            container.innerHTML = sanitizeHTML(html, 'ugc');
+            container.innerHTML = DOMPurify.sanitize(sanitizeHTML(html, 'ugc'));
 
 
             // Actualizar paginación
@@ -999,7 +999,7 @@ class CMSManager {
             </div>
         `;
 
-        toastContainer.insertAdjacentHTML('beforeend', sanitizeHTML(toastHTML));
+        toastContainer.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(toastHTML)));
 
         const toastElement = document.getElementById(toastId);
         const toast = new bootstrap.Toast(toastElement, { delay: 3000 });

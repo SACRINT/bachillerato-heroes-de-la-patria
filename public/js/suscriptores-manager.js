@@ -342,7 +342,7 @@ class SuscriptoresManager {
         if (modalAnterior) modalAnterior.remove();
 
         // Insertar y mostrar nuevo modal
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHtml));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHtml)));
         const modal = new bootstrap.Modal(document.getElementById('suscriptorDetalleModal'));
         modal.show();
     }

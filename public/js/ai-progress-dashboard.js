@@ -545,7 +545,7 @@ class AIProgressDashboard {
 
     renderGoals() {
         const container = document.getElementById('goals-list');
-        container.innerHTML = DOMPurify.sanitize('');
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         this.progressData.goals.forEach(goal => {
             const goalElement = document.createElement('div');
@@ -619,7 +619,7 @@ class AIProgressDashboard {
             ];
         }
 
-        container.innerHTML = DOMPurify.sanitize('');
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         // Ensure recommendations is an array
         const validRecommendations = Array.isArray(recommendations) ? recommendations : [];
@@ -647,7 +647,7 @@ class AIProgressDashboard {
 
     renderAchievements() {
         const container = document.getElementById('achievements-list');
-        container.innerHTML = DOMPurify.sanitize('');
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         this.progressData.achievements.slice(0, 6).forEach(achievement => {
             const achElement = document.createElement('div');

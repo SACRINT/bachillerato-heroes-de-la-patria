@@ -174,7 +174,7 @@ class StudentDashboard {
         }
 
         const sanitized = DOMPurify.sanitize(loginModalHtml, DOMPURIFY_CONFIG_SIMPLE);
-        document.body.insertAdjacentHTML('beforeend', sanitized);
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitized));
 
         // Mostrar modal de forma segura
         try {
@@ -295,7 +295,7 @@ class StudentDashboard {
                 </div>
                 <!-- El dashboard se cargará dinámicamente aquí después del login -->
             `;
-            dashboardContainer.innerHTML = DOMPurify.sanitize(initialHTML, DOMPURIFY_CONFIG_SIMPLE);
+            dashboardContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(initialHTML, DOMPURIFY_CONFIG_SIMPLE));
         }
 
         // Remover cualquier modal de login que pueda estar abierto
@@ -406,7 +406,7 @@ class StudentDashboard {
                     <p class="text-muted">Cargando tu dashboard...</p>
                 </div>
             `;
-            container.innerHTML = DOMPurify.sanitize(loadingHTML, DOMPURIFY_CONFIG_SIMPLE);
+            container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(loadingHTML, DOMPURIFY_CONFIG_SIMPLE));
         }
     }
 
@@ -561,7 +561,7 @@ class StudentDashboard {
             </div>
         `;
 
-        container.innerHTML = DOMPurify.sanitize(dashboardHtml, DOMPURIFY_CONFIG_TABLAS);
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(dashboardHtml, DOMPURIFY_CONFIG_TABLAS));
 
         // Re-setup event listeners
         this.setupEventListeners();
@@ -741,7 +741,7 @@ class StudentDashboard {
             ${sanitizedMessage}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
-        alertDiv.innerHTML = DOMPurify.sanitize(notificationHTML, DOMPURIFY_CONFIG_SIMPLE);
+        alertDiv.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(notificationHTML, DOMPURIFY_CONFIG_SIMPLE));
 
         document.body.appendChild(alertDiv);
 

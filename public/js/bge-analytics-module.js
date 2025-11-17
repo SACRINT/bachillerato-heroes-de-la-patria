@@ -1207,7 +1207,7 @@ class BGEAnalyticsModule extends BGEModule {
             align-items: center; justify-content: center;
             transition: all 0.3s ease; font-size: 18px;
         `;
-        dashboardButton.innerHTML = DOMPurify.sanitize('📊');
+        dashboardButton.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('📊'));
         dashboardButton.title = 'BGE Analytics Dashboard';
 
         // Efectos hover
@@ -1343,7 +1343,7 @@ class BGEAnalyticsModule extends BGEModule {
             </div>
         `;
 
-        dashboard.innerHTML = dashboardHTML;
+        dashboard.innerHTML = DOMPurify.sanitize(dashboardHTML);
         document.body.appendChild(dashboard);
 
         // Animar entrada
@@ -1489,13 +1489,13 @@ class BGEAnalyticsModule extends BGEModule {
             // Actualizar eventos recientes
             const recentEventsEl = dashboard.querySelector('#recent-events');
             if (recentEventsEl) {
-                recentEventsEl.innerHTML = this.generateRecentEventsHTML();
+                recentEventsEl.innerHTML = DOMPurify.sanitize(this.generateRecentEventsHTML());
             }
 
             // Actualizar performance si está disponible
             const performanceEl = dashboard.querySelector('#performance-metrics');
             if (performanceEl) {
-                performanceEl.innerHTML = this.generatePerformanceHTML();
+                performanceEl.innerHTML = DOMPurify.sanitize(this.generatePerformanceHTML());
             }
         }, 2000);
     }

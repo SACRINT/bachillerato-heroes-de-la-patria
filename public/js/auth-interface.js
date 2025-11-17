@@ -128,7 +128,7 @@ class AuthInterface {
             </div>
         `;
         
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
     }
 
     /**
@@ -515,7 +515,7 @@ class AuthInterface {
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
         
         // Agregar event listeners
         this.attachRegisterEventListeners();
@@ -715,7 +715,7 @@ Fecha: ${new Date().toLocaleString('es-MX')}
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
         return document.getElementById('profileModal');
     }
 
@@ -827,7 +827,7 @@ Fecha: ${new Date().toLocaleString('es-MX')}
             </div>
         `;
         
-        toastContainer.insertAdjacentHTML('beforeend', sanitizeHTML(toastHTML));
+        toastContainer.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(toastHTML)));
         
         const toastElement = document.getElementById(toastId);
         const toast = new bootstrap.Toast(toastElement);

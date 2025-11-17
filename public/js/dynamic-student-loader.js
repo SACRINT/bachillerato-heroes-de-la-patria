@@ -135,7 +135,7 @@ class DynamicStudentLoader {
             }
 
             // Limpiar tabla
-            tableBody.innerHTML = sanitizeHTML('');
+            tableBody.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
 
             // Agregar filas de estudiantes
             this.students.estudiantes?.forEach(student => {

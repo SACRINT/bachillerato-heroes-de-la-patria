@@ -759,7 +759,7 @@ class BGENotificationAdmin {
         if (!container) return;
 
         if (this.scheduledNotifications.length === 0) {
-            container.innerHTML = DOMPurify.sanitize('<p class="no-items">No hay notificaciones programadas</p>', 'simple');
+            container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<p class="no-items">No hay notificaciones programadas</p>', 'simple'));
             return;
         }
 
@@ -783,7 +783,7 @@ class BGENotificationAdmin {
         if (!container) return;
 
         if (this.notificationHistory.length === 0) {
-            container.innerHTML = DOMPurify.sanitize('<p class="no-items">No hay historial de notificaciones</p>', 'simple');
+            container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<p class="no-items">No hay historial de notificaciones</p>', 'simple'));
             return;
         }
 
@@ -983,7 +983,7 @@ class BGENotificationAdmin {
         const button = document.getElementById('send-notification');
         if (button) {
             button.disabled = true;
-            button.innerHTML = DOMPurify.sanitize('⏳ Enviando...');
+            button.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('⏳ Enviando...'));
         }
     }
 
@@ -991,7 +991,7 @@ class BGENotificationAdmin {
         const button = document.getElementById('send-notification');
         if (button) {
             button.disabled = false;
-            button.innerHTML = DOMPurify.sanitize('📤 Enviar Ahora');
+            button.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('📤 Enviar Ahora'));
         }
     }
 

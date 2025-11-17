@@ -906,7 +906,7 @@ ${originalMessage}
             const submitButton = form.querySelector('button[type="submit"]');
             if (submitButton) {
                 submitButton.disabled = false;
-                submitButton.innerHTML = DOMPurify.sanitize(submitButton.dataset.originalText || 'Enviar Mensaje', 'simple');
+                submitButton.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(submitButton.dataset.originalText || 'Enviar Mensaje', 'simple'));
             }
         }
     }
@@ -1031,7 +1031,7 @@ ${originalMessage}
             `;
 
             if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
-                securityBadge.innerHTML = DOMPurify.sanitize(badgeHTML);
+                securityBadge.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(badgeHTML));
             } else {
                 securityBadge.textContent = 'Formulario protegido contra spam • Verificación de email incluida';
                 securityBadge.className = 'security-badge mb-3 text-muted';

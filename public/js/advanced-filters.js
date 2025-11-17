@@ -44,7 +44,7 @@ class AdvancedFilters {
         `;
 
         html += '</div></div>';
-        container.innerHTML = html;
+        container.innerHTML = DOMPurify.sanitize(html);
 
         // Agregar listeners después de renderizar
         this.attachListeners();
@@ -335,7 +335,7 @@ class AdvancedFilters {
     destroy() {
         const container = document.getElementById(this.containerId);
         if (container) {
-            container.innerHTML = DOMPurify.sanitize('');
+            container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
         }
 
         if (window.advancedFilters && window.advancedFilters[this.containerId]) {

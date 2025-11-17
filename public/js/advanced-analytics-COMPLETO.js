@@ -472,7 +472,7 @@ class AdvancedAnalyticsManager {
             border-radius: 50%; cursor: pointer; box-shadow: 0 4px 20px rgba(156, 39, 176, 0.5), 0 0 30px rgba(103, 58, 183, 0.3);
             width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
         `;
-        dashboardButton.innerHTML = sanitizeHTML('<i class="fas fa-chart-bar"></i>', 'simple');
+        dashboardButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-chart-bar"></i>', 'simple'));
         dashboardButton.title = 'Analytics Dashboard';
         
         document.body.appendChild(dashboardButton);

@@ -254,7 +254,7 @@ class TeachersPortalManager {
         const tbody = document.getElementById('upcomingClassesTable');
 
         if (classes.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No hay clases próximas</td></tr>';
+            tbody.innerHTML = DOMPurify.sanitize('<tr><td colspan="5" class="text-center text-muted">No hay clases próximas</td></tr>');
             return;
         }
 
@@ -337,7 +337,7 @@ class TeachersPortalManager {
         const grid = document.getElementById('classesGrid');
 
         if (classes.length === 0) {
-            grid.innerHTML = '<div class="col-12 text-center text-muted"><p>No hay clases registradas</p></div>';
+            grid.innerHTML = DOMPurify.sanitize('<div class="col-12 text-center text-muted"><p>No hay clases registradas</p></div>');
             return;
         }
 
@@ -449,7 +449,7 @@ class TeachersPortalManager {
         const tbody = document.getElementById('gradesTableBody');
 
         if (grades.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No hay estudiantes</td></tr>';
+            tbody.innerHTML = DOMPurify.sanitize('<tr><td colspan="8" class="text-center text-muted">No hay estudiantes</td></tr>');
             return;
         }
 
@@ -582,7 +582,7 @@ class TeachersPortalManager {
         const grid = document.getElementById('resourcesGrid');
 
         if (resources.length === 0) {
-            grid.innerHTML = '<div class="col-12 text-center text-muted"><p>No hay recursos disponibles</p></div>';
+            grid.innerHTML = DOMPurify.sanitize('<div class="col-12 text-center text-muted"><p>No hay recursos disponibles</p></div>');
             return;
         }
 
@@ -665,7 +665,7 @@ class TeachersPortalManager {
         const tbody = document.getElementById('messagesTableBody');
 
         if (messages.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No hay mensajes</td></tr>';
+            tbody.innerHTML = DOMPurify.sanitize('<tr><td colspan="5" class="text-center text-muted">No hay mensajes</td></tr>');
             return;
         }
 
@@ -747,7 +747,7 @@ class TeachersPortalManager {
         const container = document.getElementById('notificationsList');
 
         if (notifications.length === 0) {
-            container.innerHTML = '<p class="text-muted">No hay notificaciones</p>';
+            container.innerHTML = DOMPurify.sanitize('<p class="text-muted">No hay notificaciones</p>');
             return;
         }
 

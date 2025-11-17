@@ -74,7 +74,7 @@ class ParentManager {
     populateStudentFilter() {
         const select = document.getElementById('parentFilterStudent');
         if (!select) return;
-        select.innerHTML = sanitizeHTML('<option value="">Todos los estudiantes</option>', 'simple');
+        select.innerHTML = DOMPurify.sanitize(sanitizeHTML('<option value="">Todos los estudiantes</option>', 'simple'));
         this.students.forEach(student => {
             const option = document.createElement('option');
             option.value = student.id;
@@ -87,7 +87,7 @@ class ParentManager {
         const tbody = document.getElementById('parentsTable');
         if (!tbody) return;
 
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
         if (this.filteredParents.length === 0) {
             tbody.innerHTML = sanitizeHTML(`<tr><td colspan="4" class="text-center text-muted py-4">
                 <i class="fas fa-user-friends fa-3x text-muted mb-3"></i><p>No hay padres registrados</p></td></tr>`);
@@ -203,7 +203,7 @@ class ParentManager {
         const existingModal = document.getElementById('parentFormModal');
         if (existingModal) existingModal.remove();
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHtml));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHtml)));
         const modal = new bootstrap.Modal(document.getElementById('parentFormModal'));
         modal.show();
 

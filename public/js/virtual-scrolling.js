@@ -38,7 +38,7 @@ class VirtualScrollTable {
         this.viewport.style.width = '100%';
 
         this.wrapper.appendChild(this.viewport);
-        this.container.innerHTML = '';
+        this.container.innerHTML = DOMPurify.sanitize('');
         this.container.appendChild(this.wrapper);
         this.container.style.overflowY = 'auto';
         this.container.style.position = 'relative';
@@ -71,7 +71,7 @@ class VirtualScrollTable {
         const end = Math.min(this.data.length, this.visibleEnd + this.bufferSize);
 
         // Limpiar viewport
-        this.viewport.innerHTML = '';
+        this.viewport.innerHTML = DOMPurify.sanitize('');
 
         // Renderizar solo filas visibles
         for (let i = start; i < end; i++) {
@@ -100,7 +100,7 @@ class VirtualScrollTable {
     // Destruir instancia
     destroy() {
         this.container.removeEventListener('scroll', this.handleScroll);
-        this.container.innerHTML = '';
+        this.container.innerHTML = DOMPurify.sanitize('');
     }
 }
 

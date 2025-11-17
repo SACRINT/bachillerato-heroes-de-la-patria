@@ -104,7 +104,7 @@ class PollsManager {
         html += this.renderFilters();
         html += this.renderPollsList();
 
-        container.innerHTML = sanitizeHTML(html, 'ugc');
+        container.innerHTML = DOMPurify.sanitize(sanitizeHTML(html, 'ugc'));
     }
 
     /**

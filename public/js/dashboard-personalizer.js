@@ -425,7 +425,7 @@ class DashboardPersonalizer {
         dashboardContainer.className = `dashboard-widgets-container layout-${this.userPreferences.layout}`;
 
         // Clear existing widgets
-        dashboardContainer.innerHTML = sanitizeHTML('');
+        dashboardContainer.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
 
         // Sort widgets by position
         const enabledWidgets = Object.entries(this.userPreferences.widgets)
@@ -686,7 +686,7 @@ class DashboardPersonalizer {
         const config = this.userPreferences.widgets[widgetId];
 
         if (widgetBody && widgetDef && config) {
-            widgetBody.innerHTML = '<div class="widget-loading"><i class="fas fa-spinner fa-spin"></i><span>Actualizando...</span></div>';
+            widgetBody.innerHTML = DOMPurify.sanitize('<div class="widget-loading"><i class="fas fa-spinner fa-spin"></i><span>Actualizando...</span></div>');
 
             setTimeout(() => {
                 widgetDef.component(widgetBody, config.size);

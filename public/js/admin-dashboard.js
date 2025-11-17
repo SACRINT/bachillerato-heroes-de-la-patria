@@ -360,7 +360,7 @@ class AdminDashboard {
             </div>
         `;
 
-        container.innerHTML = DOMPurify.sanitize(tableHTML, 'ugc');
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(tableHTML, 'ugc'));
     }
 
     getRoleBadge(role) {
@@ -522,7 +522,7 @@ class AdminDashboard {
                                  document.body;
         
         if (dashboardContainer) {
-            dashboardContainer.insertAdjacentHTML('afterbegin', DOMPurify.sanitize(errorMessage));
+            dashboardContainer.insertAdjacentHTML('afterbegin', DOMPurify.sanitize( DOMPurify.sanitize(errorMessage)));
         }
     }
 
@@ -675,7 +675,7 @@ class AdminDashboard {
         const tbody = document.getElementById('studentsTable');
         if (!tbody) return;
 
-        tbody.innerHTML = DOMPurify.sanitize('');
+        tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         if (!this.dashboardData.students || this.dashboardData.students.length === 0) {
             debugLog.warn('APP', '⚠️ No hay estudiantes para mostrar');
@@ -734,7 +734,7 @@ class AdminDashboard {
         const tbody = document.getElementById('teachersTable');
         if (!tbody) return;
 
-        tbody.innerHTML = DOMPurify.sanitize('');
+        tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         this.dashboardData.teachers.forEach(teacher => {
             const row = document.createElement('tr');
@@ -989,7 +989,7 @@ class AdminDashboard {
             </div>
         `).join('');
 
-        container.innerHTML = DOMPurify.sanitize(html, 'ugc');
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(html, 'ugc'));
     }
 
     formatUserType(tipo) {
@@ -1300,7 +1300,7 @@ class AdminDashboard {
             existingModal.remove();
         }
         
-        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(modalHTML)));
         const modal = new bootstrap.Modal(document.getElementById('dynamicModal'));
         modal.show();
     }

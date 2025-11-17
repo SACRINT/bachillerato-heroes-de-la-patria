@@ -62,7 +62,7 @@ class LoaderSystem {
             const loaderId = 'loader-' + Date.now();
             const loader = document.createElement('div');
             loader.id = loaderId;
-            loader.innerHTML = sanitizeHTML(`<div class="inline-loader">${message}</div>`);
+            loader.innerHTML = DOMPurify.sanitize(sanitizeHTML(`<div class="inline-loader">${message}</div>`));
             loader.style.cssText = 'text-align: center; padding: 20px;';
 
             element.appendChild(loader);

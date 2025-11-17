@@ -287,7 +287,7 @@ class ParentTeacherChat {
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', sanitizeHTML(chatHTML));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(chatHTML)));
     }
 
     setupEventListeners() {
@@ -418,7 +418,7 @@ class ParentTeacherChat {
             </div>
         `).join('');
 
-        container.innerHTML = sanitizeHTML(conversationsHTML, 'ugc');
+        container.innerHTML = DOMPurify.sanitize(sanitizeHTML(conversationsHTML, 'ugc'));
 
         // Guardar conversaciones en el mapa
         conversations.forEach(conv => {
@@ -505,7 +505,7 @@ class ParentTeacherChat {
         }
 
         const messagesHTML = messages.map(message => this.createMessageHTML(message)).join('');
-        container.innerHTML = sanitizeHTML(messagesHTML, 'ugc');
+        container.innerHTML = DOMPurify.sanitize(sanitizeHTML(messagesHTML, 'ugc'));
 
         // Scroll al final
         container.scrollTop = container.scrollHeight;
@@ -605,7 +605,7 @@ class ParentTeacherChat {
         if (!container) return;
 
         const messageHTML = this.createMessageHTML(message);
-        container.insertAdjacentHTML('beforeend', sanitizeHTML(messageHTML));
+        container.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(messageHTML)));
         container.scrollTop = container.scrollHeight;
     }
 

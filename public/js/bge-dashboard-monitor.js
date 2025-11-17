@@ -1282,7 +1282,7 @@ class BGEDashboardMonitor {
         const statusContainer = document.getElementById('systems-status');
         if (!statusContainer) return;
 
-        statusContainer.innerHTML = DOMPurify.sanitize('');
+        statusContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         for (const [systemKey, status] of this.state.systemsStatus) {
             const dot = document.createElement('div');
@@ -1333,7 +1333,7 @@ class BGEDashboardMonitor {
         if (!alertsList) return;
 
         if (this.alertSystem.queue.length === 0) {
-            alertsList.innerHTML = '<div class="no-alerts">No hay alertas activas</div>';
+            alertsList.innerHTML = DOMPurify.sanitize('<div class="no-alerts">No hay alertas activas</div>');
             return;
         }
 
@@ -1356,7 +1356,7 @@ class BGEDashboardMonitor {
         const systemsGrid = document.getElementById('systems-grid');
         if (!systemsGrid) return;
 
-        systemsGrid.innerHTML = DOMPurify.sanitize('');
+        systemsGrid.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         for (const [systemKey, systemConfig] of Object.entries(this.config.systems)) {
             const status = this.state.systemsStatus.get(systemKey) || { status: 'unknown', health: 0 };

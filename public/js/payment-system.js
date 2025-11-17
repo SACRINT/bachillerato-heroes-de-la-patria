@@ -322,7 +322,7 @@ class PaymentSystemManager {
 
     loadPendingPayments() {
         const tbody = document.getElementById('pendingPaymentsTable');
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
 
         this.studentData.pendingPayments.forEach(payment => {
             const row = document.createElement('tr');
@@ -388,7 +388,7 @@ class PaymentSystemManager {
 
     updatePaymentForm(method) {
         const paymentForm = document.getElementById('paymentForm');
-        paymentForm.innerHTML = this.paymentForms[method];
+        paymentForm.innerHTML = DOMPurify.sanitize(this.paymentForms[method]);
 
         // Configurar eventos específicos para cada método
         if (method === 'credit') {
@@ -511,7 +511,7 @@ class PaymentSystemManager {
         `;
 
         const paymentPanel = document.getElementById('paymentPanel');
-        paymentPanel.insertAdjacentHTML('afterbegin', sanitizeHTML(confirmationHTML));
+        paymentPanel.insertAdjacentHTML('afterbegin', DOMPurify.sanitize(sanitizeHTML(confirmationHTML)));
 
         // Auto-remove after 10 seconds
         setTimeout(() => {
@@ -949,7 +949,7 @@ PaymentSystemManager.prototype.showAdvancedPaymentModal = function(paymentId) {
     if (existingModal) existingModal.remove();
     
     // Add new modal
-    document.body.insertAdjacentHTML('beforeend', sanitizeHTML(modalHTML));
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
     
     // Show modal
     const modal = new bootstrap.Modal(document.getElementById('advancedPaymentModal'));
@@ -961,7 +961,7 @@ PaymentSystemManager.prototype.handlePaymentMethodChange = function(method) {
     const fieldsContainer = document.getElementById('advanced-payment-fields');
     if (!fieldsContainer) return;
 
-    fieldsContainer.innerHTML = sanitizeHTML('');
+    fieldsContainer.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
 
     switch (method) {
         case 'credit_card':

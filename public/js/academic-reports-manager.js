@@ -515,7 +515,7 @@ class AcademicReportsManager {
                 reportHTML = this.generateGenericReportHTML(reportData);
         }
 
-        resultsContainer.innerHTML = DOMPurify.sanitize(reportHTML, 'ugc');
+        resultsContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(reportHTML, 'ugc'));
 
         // Generar gráficos si es necesario
         if (reportData.charts) {
@@ -892,7 +892,7 @@ class AcademicReportsManager {
         const suggestions = document.getElementById('studentSuggestions');
 
         if (students.length === 0) {
-            suggestions.innerHTML = DOMPurify.sanitize('');
+            suggestions.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
             return;
         }
 
@@ -903,7 +903,7 @@ class AcademicReportsManager {
             </div>
         `).join('');
 
-        suggestions.innerHTML = DOMPurify.sanitize(html, 'ugc');
+        suggestions.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(html, 'ugc'));
         suggestions.style.display = 'block';
 
         // Agregar eventos de clic
@@ -1012,7 +1012,7 @@ class AcademicReportsManager {
             </div>
         `).join('');
 
-        historyContainer.innerHTML = DOMPurify.sanitize(html, 'ugc');
+        historyContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(html, 'ugc'));
     }
 
     loadHistoryReport(reportId) {

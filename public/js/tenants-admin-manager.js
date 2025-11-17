@@ -110,7 +110,7 @@ class TenantsAdminManager {
         const listEl = document.getElementById('tenantsList');
         const emptyEl = document.getElementById('emptyStateTenants');
 
-        tbody.innerHTML = sanitizeHTML('');
+        tbody.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
 
         if (this.tenants.length === 0) {
             listEl.style.display = 'none';
@@ -391,7 +391,7 @@ class TenantsAdminManager {
             </div>
         `;
 
-        alertContainer.insertAdjacentHTML('beforeend', sanitizeHTML(alertHTML));
+        alertContainer.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(alertHTML)));
 
         // Auto-dismiss después de 5 segundos
         setTimeout(() => {

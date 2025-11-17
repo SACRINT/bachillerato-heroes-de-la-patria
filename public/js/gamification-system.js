@@ -252,7 +252,7 @@ class GamificationSystem {
             </style>
         `;
 
-        document.head.insertAdjacentHTML('beforeend', sanitizeHTML(styles));
+        document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(styles)));
         document.body.appendChild(widget);
     }
 

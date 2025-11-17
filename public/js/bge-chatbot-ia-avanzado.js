@@ -114,7 +114,7 @@ class BGEChatbotIAAvanzado {
         if (!document.getElementById('chatbot-ia-container')) {
             const container = document.createElement('div');
             container.id = 'chatbot-ia-container';
-            container.innerHTML = this.getChatbotHTML();
+            container.innerHTML = DOMPurify.sanitize(this.getChatbotHTML());
             document.body.appendChild(container);
         }
 
@@ -1178,7 +1178,7 @@ CONTEXTO ACTUAL DEL USUARIO:
         localStorage.removeItem('bge-chatbot-history');
 
         if (this.chatContainer) {
-            this.chatContainer.innerHTML = DOMPurify.sanitize('');
+            this.chatContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
         }
 
         this.sendWelcomeMessage();

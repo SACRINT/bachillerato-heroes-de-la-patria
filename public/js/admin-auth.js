@@ -388,7 +388,7 @@ class AdminAuth {
                 
                 // Actualizar botón de login
                 if (loginBtn) {
-                    loginBtn.innerHTML = DOMPurify.sanitize('<i class="fas fa-shield-check me-2"></i>Admin <span class="badge bg-light text-success ms-1">✓</span>', 'simple');
+                    loginBtn.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-shield-check me-2"></i>Admin <span class="badge bg-light text-success ms-1">✓</span>', 'simple'));
                     loginBtn.classList.remove('admin-login-compact');
                     loginBtn.classList.add('text-success');
                     loginBtn.onclick = () => this.openAdminPanel();
@@ -420,7 +420,7 @@ class AdminAuth {
                 
                 // Restaurar botón de login
                 if (loginBtn) {
-                    loginBtn.innerHTML = DOMPurify.sanitize('<i class="fas fa-shield-halved me-2"></i>Admin', 'simple');
+                    loginBtn.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-shield-halved me-2"></i>Admin', 'simple'));
                     loginBtn.classList.add('admin-login-compact');
                     loginBtn.classList.remove('text-success');
                     loginBtn.onclick = () => {
@@ -822,7 +822,7 @@ function initAdminAuthSystem() {
             });
             
             if (loginBtn) {
-                loginBtn.innerHTML = DOMPurify.sanitize('<i class="fas fa-user-shield me-1"></i>Panel Admin <span class="badge bg-success ms-1">✓</span>', 'simple');
+                loginBtn.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-user-shield me-1"></i>Panel Admin <span class="badge bg-success ms-1">✓</span>', 'simple'));
                 loginBtn.classList.add('text-success');
                 loginBtn.setAttribute('data-admin-active', 'true');
                 //debugLog.log('APP', '🔥 BOTÓN LOGIN FORZADO');

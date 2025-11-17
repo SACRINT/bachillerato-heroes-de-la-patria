@@ -63,7 +63,7 @@ class CitasManager {
         const tbody = document.getElementById('citasTable');
         if (!tbody) return;
 
-        tbody.innerHTML = DOMPurify.sanitize('');
+        tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
         if (this.filteredCitas.length === 0) {
             tbody.innerHTML = DOMPurify.sanitize(`<tr><td colspan="7" class="text-center text-muted py-4">
                 <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i><p>No hay solicitudes de citas</p></td></tr>`);
@@ -221,7 +221,7 @@ class CitasManager {
         const existingModal = document.getElementById('citaDetailsModal');
         if (existingModal) existingModal.remove();
 
-        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHtml));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(modalHtml)));
         const modal = new bootstrap.Modal(document.getElementById('citaDetailsModal'));
         modal.show();
     }
@@ -281,7 +281,7 @@ class CitasManager {
         const existingModal = document.getElementById('rejectCitaModal');
         if (existingModal) existingModal.remove();
 
-        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHtml));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(modalHtml)));
         const modal = new bootstrap.Modal(document.getElementById('rejectCitaModal'));
         modal.show();
     }

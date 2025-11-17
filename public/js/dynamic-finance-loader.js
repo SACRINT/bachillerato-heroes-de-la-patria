@@ -130,7 +130,7 @@ class DynamicFinanceLoader {
         const tableBody = document.querySelector('#incomesTable tbody');
         if (!tableBody) return;
 
-        tableBody.innerHTML = sanitizeHTML('');
+        tableBody.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
         
         this.finances.ingresos?.forEach(income => {
             const row = document.createElement('tr');
@@ -164,7 +164,7 @@ class DynamicFinanceLoader {
         const tableBody = document.querySelector('#expensesTable tbody');
         if (!tableBody) return;
 
-        tableBody.innerHTML = sanitizeHTML('');
+        tableBody.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
         
         this.finances.gastos?.forEach(expense => {
             const row = document.createElement('tr');
@@ -198,7 +198,7 @@ class DynamicFinanceLoader {
         const tableBody = document.querySelector('#pendingPaymentsTable tbody');
         if (!tableBody) return;
 
-        tableBody.innerHTML = sanitizeHTML('');
+        tableBody.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
         
         this.finances.pagosPendientes?.forEach(payment => {
             const row = document.createElement('tr');

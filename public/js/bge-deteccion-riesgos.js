@@ -1128,7 +1128,7 @@ class BGEDeteccionRiesgos {
         const grid = document.getElementById('risk-categories-grid');
         if (!grid) return;
 
-        grid.innerHTML = DOMPurify.sanitize('');
+        grid.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         Object.entries(this.config.riskTypes).forEach(([type, config]) => {
             const count = this.getRiskCategoryCount(type);
@@ -1170,11 +1170,11 @@ class BGEDeteccionRiesgos {
         if (!container) return;
 
         if (this.state.activeAlerts.length === 0) {
-            container.innerHTML = '<div class="no-alerts">No hay alertas activas en este momento</div>';
+            container.innerHTML = DOMPurify.sanitize('<div class="no-alerts">No hay alertas activas en este momento</div>');
             return;
         }
 
-        container.innerHTML = DOMPurify.sanitize('');
+        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         // Mostrar las 5 alertas más recientes
         const recentAlerts = this.state.activeAlerts
@@ -1198,7 +1198,7 @@ class BGEDeteccionRiesgos {
         const timeline = document.getElementById('detections-timeline');
         if (!timeline) return;
 
-        timeline.innerHTML = DOMPurify.sanitize('');
+        timeline.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
         // Mostrar las 10 detecciones más recientes
         const recentDetections = Array.from(this.cache.riskAnalysis.entries())

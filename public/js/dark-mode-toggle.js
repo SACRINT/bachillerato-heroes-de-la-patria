@@ -62,7 +62,7 @@ class DarkModeManager {
         button.id = 'dark-mode-toggle';
         button.className = 'dark-mode-toggle';
         button.setAttribute('aria-label', 'Toggle Dark Mode');
-        button.innerHTML = this.getIcon(this.theme);
+        button.innerHTML = DOMPurify.sanitize(this.getIcon(this.theme));
 
         button.addEventListener('click', () => this.toggleTheme());
 
@@ -72,7 +72,7 @@ class DarkModeManager {
     updateToggleIcon() {
         const button = document.getElementById('dark-mode-toggle');
         if (button) {
-            button.innerHTML = this.getIcon(this.theme);
+            button.innerHTML = DOMPurify.sanitize(this.getIcon(this.theme));
         }
     }
 
