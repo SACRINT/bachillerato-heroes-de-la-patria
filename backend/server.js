@@ -57,10 +57,14 @@ const avisosRoutes = require('./routes/avisos');
 const tenantsRoutes = require('./routes/tenants');  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
 const comunicadosRoutes = require('./routes/comunicados');
 const uploadRoutes = require('./routes/upload');
+const webhooksRoutes = require('./routes/webhooks');  // ✅ WEBHOOKS - SEMANA 8
 const healthRoutes = require('./routes/health');
 const chartsDataRoutes = require('./routes/charts-data');
 const searchRoutes = require('./routes/search');
 const emailsRoutes = require('./routes/emails');
+
+// ✅ API VERSIONING MIDDLEWARE - SEMANA 8
+const { apiVersioning, v1CompatibilityLayer, rateLimitByTier } = require('./middleware/api-versioning');
 const pollsRoutes = require('./routes/polls');
 const parentsRoutes = require('./routes/parents');
 const installPollsRoutes = require('./routes/install-polls');
@@ -243,6 +247,18 @@ devLogger.log('🏢 Configurando multi-tenancy middleware...');
 app.use(tenantContext);
 
 // ============================================
+// 🔀 API VERSIONING MIDDLEWARE (17 NOV 2025 - SEMANA 8)
+// ============================================
+// IMPORTANTE: Aplicar ANTES de todas las rutas API
+// Detecta versión desde: header Accept-Version, URL path (/api/v1/, /api/v2/), query param
+// Aplica backward compatibility v1 → v2
+// Rate limiting por tier (starter, pro, enterprise)
+devLogger.log('🔀 Configurando API versioning middleware...');
+app.use('/api', apiVersioning);           // Detección de versión
+app.use('/api', v1CompatibilityLayer);    // Compatibilidad v1 → v2
+app.use('/api', rateLimitByTier);         // Rate limiting por plan del tenant
+
+// ============================================
 // RUTAS DE API
 // ============================================
 
@@ -287,6 +303,7 @@ app.use('/api/health', healthRoutes);
 app.use('/api/charts', chartsDataRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/emails', emailsRoutes);
+app.use('/api/webhooks', webhooksRoutes);  // ✅ WEBHOOKS - SEMANA 8 (17 NOV 2025)
 app.use('/api/polls', pollsRoutes);
 app.use('/api/parents', parentsRoutes);
 app.use('/api/install-polls', installPollsRoutes);
