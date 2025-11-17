@@ -35,8 +35,7 @@ CREATE INDEX IF NOT EXISTS idx_tenants_nombre ON tenants(nombre);
 UPDATE tenants
 SET nombre = COALESCE(
     config_json->>'school_name',
-    subdomain,
-    dominio,
+    domain,
     'Tenant'
 )
 WHERE nombre IS NULL OR nombre = 'Tenant';
@@ -48,7 +47,7 @@ WHERE table_name = 'tenants'
 AND column_name = 'nombre';
 
 -- 6. Verificar datos de ejemplo
-SELECT id, nombre, subdomain, dominio, status
+SELECT id, nombre, domain, status
 FROM tenants
 LIMIT 5;
 
