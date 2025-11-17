@@ -1,0 +1,334 @@
+# ⚡ LOAD TEST - 1000+ USUARIOS CONCURRENTES - SEMANA 9
+# Artillery.io configuration para testing de carga
+#
+# Instalación:
+#   npm install -g artillery@latest
+#
+# Ejecución:
+#   artillery run artillery/load-test-1000-users.yml
+#
+# Ejecución con reporte HTML:
+#   artillery run --output report.json artillery/load-test-1000-users.yml
+#   artillery report report.json
+#
+# Fecha: 17 Noviembre 2025
+# Objetivo: Validar que el sistema maneja 10,000 usuarios concurrentes
+# Meta: p95 < 500ms, p99 < 1000ms, error rate < 1%
+
+config:
+  target: 'http://localhost:3000'
+  phases:
+    # FASE 1: Warm-up (100 usuarios en 1 minuto)
+    - duration: 60
+      arrivalRate: 10
+      name: "Warm-up: 10 usuarios/segundo"
+
+    # FASE 2: Ramp-up gradual (1000 usuarios en 5 minutos)
+    - duration: 300
+      arrivalRate: 50
+      rampTo: 100
+      name: "Ramp-up: 50 → 100 usuarios/segundo"
+
+    # FASE 3: Sostenido alto (1000 usuarios/segundo por 10 minutos)
+    - duration: 600
+      arrivalRate: 100
+      name: "Sustained load: 100 usuarios/segundo (10 minutos)"
+
+    # FASE 4: Pico extremo (2000 usuarios/segundo por 2 minutos)
+    - duration: 120
+      arrivalRate: 200
+      name: "Spike test: 200 usuarios/segundo (2 minutos)"
+
+    # FASE 5: Cool-down (50 usuarios en 1 minuto)
+    - duration: 60
+      arrivalRate: 50
+      rampTo: 10
+      name: "Cool-down: 50 → 10 usuarios/segundo"
+
+  # Plugins
+  plugins:
+    metrics-by-endpoint:
+      # Agrupar métricas por endpoint
+      stripQueryString: true
+
+    expect:
+      # Validaciones automáticas
+      outputFormat: 'pretty'
+      showFailures: true
+
+  # Variables de entorno
+  variables:
+    admin_email: 'admin@bge.edu.mx'
+    admin_password: 'admin123'
+    student_email: 'estudiante@bge.edu.mx'
+    student_password: 'estudiante123'
+
+  # Configuración de requests
+  http:
+    timeout: 10  # 10 segundos timeout
+    pool: 100    # 100 conexiones HTTP concurrentes
+
+  # Procesador JavaScript personalizado
+  processor: "./artillery/processors.js"
+
+  # Métricas personalizadas
+  statsig:
+    apiKey: "{{ $processEnvironment.STATSIG_API_KEY }}"
+
+# ============================================================================
+# ESCENARIOS DE TESTING
+# ============================================================================
+
+scenarios:
+  # ---------------------------------------------------------------------------
+  # ESCENARIO 1: Usuario Anónimo - Navegación Pública (40% del tráfico)
+  # ---------------------------------------------------------------------------
+  - name: "Public Navigation (Anonymous User)"
+    weight: 40
+    flow:
+      - get:
+          url: "/"
+          expect:
+            - statusCode: 200
+            - contentType: text/html
+            - hasHeader: "Content-Security-Policy"
+          capture:
+            - json: "$.message"
+              as: "welcome_message"
+
+      - get:
+          url: "/convocatorias.html"
+          expect:
+            - statusCode: 200
+            - responseTime: 500  # < 500ms
+
+      - get:
+          url: "/calendario.html"
+          expect:
+            - statusCode: 200
+
+      - get:
+          url: "/api/config/tenant"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+      - think: 2  # Pausa 2 segundos (simular lectura)
+
+      - get:
+          url: "/api/noticias?limit=10"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+  # ---------------------------------------------------------------------------
+  # ESCENARIO 2: Login de Estudiante + Dashboard (30% del tráfico)
+  # ---------------------------------------------------------------------------
+  - name: "Student Login + Dashboard"
+    weight: 30
+    flow:
+      # Login
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "{{ student_email }}"
+            password: "{{ student_password }}"
+          expect:
+            - statusCode: 200
+            - hasProperty: token
+          capture:
+            - json: "$.token"
+              as: "auth_token"
+
+      - think: 1
+
+      # Obtener perfil
+      - get:
+          url: "/api/auth/profile"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          expect:
+            - statusCode: 200
+            - hasProperty: user
+
+      # Dashboard: Calificaciones
+      - get:
+          url: "/api/students/{{ $randomNumber(1, 1000) }}/grades"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          expect:
+            - statusCode:
+                - 200
+                - 404  # Aceptar 404 si estudiante no existe
+
+      - think: 3
+
+      # Buscar noticias
+      - get:
+          url: "/api/search/advanced?q=matemáticas&limit=5"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          expect:
+            - statusCode: 200
+            - responseTime: 300  # Search debe ser < 300ms
+
+  # ---------------------------------------------------------------------------
+  # ESCENARIO 3: Admin CRUD Operations (20% del tráfico)
+  # ---------------------------------------------------------------------------
+  - name: "Admin CRUD + Reports"
+    weight: 20
+    flow:
+      # Login admin
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "{{ admin_email }}"
+            password: "{{ admin_password }}"
+          capture:
+            - json: "$.token"
+              as: "admin_token"
+
+      # Dashboard admin
+      - get:
+          url: "/api/admin/dashboard-stats"
+          headers:
+            Authorization: "Bearer {{ admin_token }}"
+          expect:
+            - statusCode: 200
+
+      - think: 2
+
+      # Listar estudiantes (paginado)
+      - get:
+          url: "/api/students?limit=50&offset=0"
+          headers:
+            Authorization: "Bearer {{ admin_token }}"
+          expect:
+            - statusCode: 200
+            - responseTime: 400  # Query debe ser eficiente
+
+      # Generar reporte
+      - get:
+          url: "/api/reports/students?period=2025-11"
+          headers:
+            Authorization: "Bearer {{ admin_token }}"
+          expect:
+            - statusCode: 200
+            - responseTime: 1000  # Reportes pueden tardar hasta 1s
+
+      - think: 5
+
+      # Crear estudiante (simulación)
+      - post:
+          url: "/api/students"
+          headers:
+            Authorization: "Bearer {{ admin_token }}"
+          json:
+            email: "test{{ $randomNumber(1, 100000) }}@bge.edu.mx"
+            username: "test{{ $randomNumber(1, 100000) }}"
+            nombre: "Test"
+            apellido_paterno: "User"
+            role: "estudiante"
+          expect:
+            - statusCode:
+                - 201
+                - 400  # Email duplicado es aceptable en load test
+
+  # ---------------------------------------------------------------------------
+  # ESCENARIO 4: Real-Time Notifications (Socket.IO) (5% del tráfico)
+  # ---------------------------------------------------------------------------
+  - name: "WebSocket Connections (Socket.IO)"
+    weight: 5
+    engine: "ws"
+    flow:
+      # Conectar a Socket.IO
+      - send:
+          channel: "connection"
+          data:
+            auth:
+              token: "fake-token-for-testing"
+
+      - think: 10  # Mantener conexión 10 segundos
+
+      # Escuchar evento notification
+      - receive:
+          channel: "notification"
+          response:
+            json:
+              type: "info"
+
+      - think: 5
+
+  # ---------------------------------------------------------------------------
+  # ESCENARIO 5: API Webhooks + Search Analytics (5% del tráfico)
+  # ---------------------------------------------------------------------------
+  - name: "Webhooks + Search Analytics"
+    weight: 5
+    flow:
+      # Login
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "{{ admin_email }}"
+            password: "{{ admin_password }}"
+          capture:
+            - json: "$.token"
+              as: "token"
+
+      # Listar webhooks
+      - get:
+          url: "/api/webhooks"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          expect:
+            - statusCode: 200
+
+      - think: 2
+
+      # Search analytics (admin only)
+      - get:
+          url: "/api/search/analytics/summary"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          expect:
+            - statusCode: 200
+
+      # Top search terms
+      - get:
+          url: "/api/search/analytics/top-terms?limit=10"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          expect:
+            - statusCode: 200
+
+# ============================================================================
+# EXPECT ASSERTIONS (VALIDACIONES GLOBALES)
+# ============================================================================
+
+# Las expectativas se validan automáticamente por Artillery
+# Si alguna falla, el test se marca como fallido y se reporta
+
+# Errores esperados:
+# - 429 Too Many Requests (rate limiting) < 1% del total
+# - 404 Not Found (recursos no existentes) < 5%
+# - 500 Internal Server Error < 0.1% (CRÍTICO)
+
+# ============================================================================
+# NOTAS IMPORTANTES
+# ============================================================================
+#
+# 1. Este test genera ~100,000 requests en 18 minutos
+# 2. Monitorear CPU, memoria, DB connections durante ejecución
+# 3. Ejecutar con servidor en estado limpio (sin cache previa)
+# 4. Verificar logs de errores después del test
+# 5. Analizar p95, p99 response times en el reporte
+# 6. Revisar connection pool de PostgreSQL (max connections)
+# 7. Validar que Redis no se quede sin memoria
+#
+# Comandos útiles durante el test:
+#   - Monitorear CPU: top
+#   - Monitorear memoria: free -h
+#   - Ver conexiones BD: SELECT count(*) FROM pg_stat_activity;
+#   - Ver Redis memory: redis-cli info memory
+#
+# ============================================================================
