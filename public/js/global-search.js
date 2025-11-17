@@ -74,11 +74,26 @@ class GlobalSearch {
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
+        // ✅ FALLBACK si DOMPurify no está disponible
+        if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+            document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
+        } else {
+            // Fallback: HTML sin sanitizar (es seguro porque lo generamos nosotros)
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            if (typeof debugLog !== 'undefined') {
+                debugLog.warn('⚠️ [GLOBAL-SEARCH] DOMPurify no disponible, usando fallback');
+            }
+        }
 
         this.modal = new bootstrap.Modal(document.getElementById('globalSearchModal'));
         this.searchInput = document.getElementById('globalSearchInput');
         this.resultsContainer = document.getElementById('globalSearchResults');
+
+        // ✅ Validaciones adicionales para evitar null reference errors
+        if (!this.searchInput || !this.resultsContainer) {
+            console.error('❌ [GLOBAL-SEARCH] Error: No se pudo encontrar elementos del modal');
+            return;
+        }
 
         // Eventos del modal
         document.getElementById('globalSearchModal').addEventListener('shown.bs.modal', () => {

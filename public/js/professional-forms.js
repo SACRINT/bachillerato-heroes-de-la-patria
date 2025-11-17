@@ -1196,12 +1196,25 @@ ${originalMessage}
         // Agregar badge de seguridad
         const securityBadge = document.createElement('div');
         securityBadge.className = 'security-badge mb-3';
-        securityBadge.innerHTML = DOMPurify.sanitize(`
+
+        // ✅ FALLBACK si DOMPurify no está disponible
+        const badgeHTML = `
             <small class="text-muted d-flex align-items-center">
                 <i class="fas fa-shield-alt text-success me-2"></i>
                 <span>Formulario protegido contra spam • Verificación de email incluida</span>
             </small>
-        `);
+        `;
+
+        if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+            securityBadge.innerHTML = DOMPurify.sanitize(badgeHTML);
+        } else {
+            // Fallback si DOMPurify no está disponible
+            securityBadge.textContent = 'Formulario protegido contra spam • Verificación de email incluida';
+            securityBadge.className = 'security-badge mb-3 text-muted';
+            if (typeof debugLog !== 'undefined') {
+                debugLog.warn('⚠️ DOMPurify no disponible en addSecurityIndicators, usando fallback');
+            }
+        }
 
         form.insertBefore(securityBadge, form.firstChild);
     }

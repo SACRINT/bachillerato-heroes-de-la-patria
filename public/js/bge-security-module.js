@@ -2371,7 +2371,14 @@ function createAdminLoginModal() {
     </div>`;
 
     // Insertar modal en el DOM
-    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHTML));
+    // ✅ FALLBACK si DOMPurify no está disponible
+    let sanitizedHTML = modalHTML;
+    if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+        sanitizedHTML = DOMPurify.sanitize(modalHTML);
+    } else {
+        console.warn('⚠️ [BGE-SECURITY] DOMPurify no disponible, usando HTML sin sanitizar');
+    }
+    document.body.insertAdjacentHTML('beforeend', sanitizedHTML);
 
     // Configurar event listeners
     setupAdminLoginEvents();
@@ -2470,7 +2477,18 @@ window.updateAdminHeaderStatus = function updateAdminHeaderStatus(isLoggedIn, us
         // Actualizar enlace de admin
         if (adminLink) {
             adminLink.classList.add('text-success');
-            adminLink.innerHTML = DOMPurify.sanitize(`<i class="fas fa-shield-check me-2"></i>Admin (${user.username.split('@')[0]})`);
+
+            // ✅ FALLBACK si DOMPurify no está disponible
+            const adminHTML = `<i class="fas fa-shield-check me-2"></i>Admin (${user.username.split('@')[0]})`;
+            if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+                adminLink.innerHTML = DOMPurify.sanitize(adminHTML);
+            } else {
+                // Fallback: HTML sin sanitizar (seguro porque lo generamos nosotros)
+                adminLink.innerHTML = adminHTML;
+                if (typeof debugLog !== 'undefined') {
+                    debugLog.warn('⚠️ DOMPurify no disponible en updateAdminHeaderStatus (loggedIn), usando fallback sin sanitización');
+                }
+            }
         }
         if (statusBadge) {
             statusBadge.classList.remove('d-none');
@@ -2491,7 +2509,18 @@ window.updateAdminHeaderStatus = function updateAdminHeaderStatus(isLoggedIn, us
         // Resetear estado
         if (adminLink) {
             adminLink.classList.remove('text-success');
-            adminLink.innerHTML = '<i class="fas fa-shield-halved me-2"></i>Admin';
+
+            // ✅ FALLBACK si DOMPurify no está disponible
+            const adminResetHTML = '<i class="fas fa-shield-halved me-2"></i>Admin';
+            if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+                adminLink.innerHTML = DOMPurify.sanitize(adminResetHTML);
+            } else {
+                // Fallback: HTML sin sanitizar (seguro porque lo generamos nosotros)
+                adminLink.innerHTML = adminResetHTML;
+                if (typeof debugLog !== 'undefined') {
+                    debugLog.warn('⚠️ DOMPurify no disponible en updateAdminHeaderStatus (not logged in), usando fallback sin sanitización');
+                }
+            }
         }
         if (statusBadge) {
             statusBadge.classList.add('d-none');

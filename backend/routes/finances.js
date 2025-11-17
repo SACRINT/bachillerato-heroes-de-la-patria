@@ -50,7 +50,6 @@ router.get('/', async (req, res) => {
                     monto,
                     fecha,
                     estado,
-                    comprobante,
                     notas,
                     fecha_registro
                 FROM ingresos
@@ -80,7 +79,6 @@ router.get('/', async (req, res) => {
                     fecha,
                     estado,
                     proveedor,
-                    comprobante,
                     notas,
                     fecha_registro
                 FROM gastos

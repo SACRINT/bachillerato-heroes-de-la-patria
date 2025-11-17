@@ -272,7 +272,18 @@ class AREducationSystem {
         // Crear indicador visual
         const indicator = document.createElement('div');
         indicator.id = 'ar-simulation-indicator';
-        indicator.innerHTML = DOMPurify.sanitize('🎭 Modo Simulación AR Activo');
+
+        // ✅ FALLBACK si DOMPurify no está disponible
+        const indicatorText = '🎭 Modo Simulación AR Activo';
+        if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+            indicator.innerHTML = DOMPurify.sanitize(indicatorText);
+        } else {
+            indicator.textContent = indicatorText;
+            if (typeof debugLog !== 'undefined') {
+                debugLog.warn('⚠️ DOMPurify no disponible en createSimulationIndicator, usando fallback');
+            }
+        }
+
         indicator.style.cssText = `
             position: fixed;
             top: 10px;

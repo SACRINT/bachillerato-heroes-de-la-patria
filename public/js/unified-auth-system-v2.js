@@ -1,4 +1,3 @@
-/**
 // Debug Logger - Logging condicional (GDPR compliant)
 if (typeof debugLog === 'undefined') {
     // Fallback si debug-logger.js no está cargado
@@ -9,7 +8,7 @@ if (typeof debugLog === 'undefined') {
     };
 }
 
-
+/**
  * 🌍 SISTEMA DE AUTENTICACIÓN UNIFICADO V2 - CLASE MUNDIAL
  *
  * Sistema profesional de autenticación que unifica:

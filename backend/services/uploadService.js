@@ -1,681 +1,265 @@
 /**
- * 🎯 FASE 2A - UPLOAD SERVICE
- * Servicio de gestión de archivos para BGE
- * Upload, optimización y gestión de archivos multimedia
+ * Upload Service - Capa de servicios para gestión de archivos
+ * Maneja subida, validación y almacenamiento de archivos
+ * GDPR Compliant - Logging condicional
  */
 
-const sharp = require('sharp');
-const devLogger = require('../utils/devLogger');
-const path = require('path');
+const { debugLog } = require('../utils/debug-logger');
+const { sanitizeError } = require('../utils/sanitized-errors');
 const fs = require('fs').promises;
+const path = require('path');
+const crypto = require('crypto');
 
 class UploadService {
-    constructor() {
-        this.dbAvailable = false;
-        this.db = null;
+  constructor() {
+    // Directorios de almacenamiento
+    this.uploadDirs = {
+      cv: path.join(__dirname, '../../uploads/cv'),
+      documents: path.join(__dirname, '../../uploads/documents'),
+      images: path.join(__dirname, '../../uploads/images'),
+      temp: path.join(__dirname, '../../uploads/temp')
+    };
 
-        // 🚨 FIX VERCEL: Usar /tmp en entornos serverless, public/uploads en local
-        if (this.isServerlessEnvironment()) {
-            this.uploadsPath = '/tmp/uploads';
-            devLogger.log('ℹ️ Upload Service: Usando /tmp/uploads (entorno serverless)');
-        } else {
-            this.uploadsPath = path.join(__dirname, '../../public/uploads');
-            devLogger.log('ℹ️ Upload Service: Usando public/uploads (entorno local)');
-        }
+    // Tipos de archivo permitidos
+    this.allowedTypes = {
+      cv: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+      images: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+      documents: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain']
+    };
 
-        this.initialize();
+    // Tamaños máximos (en bytes)
+    this.maxSizes = {
+      cv: 5 * 1024 * 1024,       // 5 MB
+      images: 2 * 1024 * 1024,   // 2 MB
+      documents: 10 * 1024 * 1024 // 10 MB
+    };
+  }
+
+  /**
+   * Subir un archivo
+   * @param {Object} file - Objeto de archivo (req.file de multer)
+   * @param {string} category - Categoría (cv, images, documents)
+   * @param {Object} options - Opciones adicionales
+   * @returns {Promise<Object>} Información del archivo subido
+   */
+  async uploadFile(file, category = 'documents', options = {}) {
+    debugLog.log('UPLOAD', `Uploading ${category} file`, { originalName: file.originalname });
+
+    try {
+      // Validar archivo
+      this._validateFile(file, category);
+
+      // Asegurar que el directorio existe
+      await this._ensureDirectory(this.uploadDirs[category]);
+
+      // Generar nombre único
+      const uniqueFilename = this._generateUniqueFilename(file.originalname);
+      const filePath = path.join(this.uploadDirs[category], uniqueFilename);
+
+      // Guardar archivo
+      await fs.writeFile(filePath, file.buffer);
+
+      const fileInfo = {
+        originalName: file.originalname,
+        filename: uniqueFilename,
+        path: filePath,
+        relativePath: `/uploads/${category}/${uniqueFilename}`,
+        mimetype: file.mimetype,
+        size: file.size,
+        category: category,
+        uploadedAt: new Date().toISOString()
+      };
+
+      debugLog.log('UPLOAD', 'File uploaded successfully', { filename: uniqueFilename, size: file.size });
+
+      return fileInfo;
+    } catch (error) {
+      debugLog.error('UPLOAD', 'Error uploading file', sanitizeError(error, 'uploadFile'));
+      throw error;
     }
+  }
 
-    async initialize() {
-        try {
-            // Intentar conexión con MySQL
-            this.db = require('../config/database');
-            const isConnected = await this.db.testConnection();
+  /**
+   * Eliminar un archivo
+   * @param {string} filename - Nombre del archivo
+   * @param {string} category - Categoría del archivo
+   * @returns {Promise<boolean>} true si se eliminó correctamente
+   */
+  async deleteFile(filename, category = 'documents') {
+    debugLog.log('UPLOAD', `Deleting ${category} file`, { filename });
 
-            if (isConnected) {
-                this.dbAvailable = true;
-                devLogger.log('✅ Upload Service: PostgreSQL disponible');
-            } else {
-                devLogger.log('⚠️ Upload Service: Sin base de datos');
-            }
-        } catch (error) {
-            devLogger.log('⚠️ Upload Service: Sin base de datos -', error.message);
-        }
+    try {
+      const filePath = path.join(this.uploadDirs[category], filename);
 
-        // 🚨 FIX VERCEL: Crear directorios en /tmp para serverless, en public/uploads para local
-        try {
-            await this.ensureDirectories();
-        } catch (error) {
-            devLogger.warn('⚠️ Upload Service: No se pudo crear directorios', error.message);
-        }
+      // Verificar que el archivo existe
+      await fs.access(filePath);
+
+      // Eliminar archivo
+      await fs.unlink(filePath);
+
+      debugLog.log('UPLOAD', 'File deleted successfully', { filename });
+
+      return true;
+    } catch (error) {
+      debugLog.error('UPLOAD', 'Error deleting file', sanitizeError(error, 'deleteFile'));
+      throw error;
     }
+  }
 
-    /**
-     * Detectar si estamos en entorno serverless (Vercel, AWS Lambda, etc.)
-     * 🚨 FIX VERCEL: Mejorada detección para Vercel
-     */
-    isServerlessEnvironment() {
-        return process.env.VERCEL === '1' ||
-               process.env.VERCEL_ENV ||  // Vercel también setea VERCEL_ENV
-               process.env.AWS_LAMBDA_FUNCTION_NAME ||
-               process.env.AWS_EXECUTION_ENV ||  // AWS Lambda
-               process.env.NETLIFY === 'true' ||
-               process.env.LAMBDA_TASK_ROOT ||  // Vercel usa AWS Lambda
-               typeof process.env.LAMBDA_RUNTIME_DIR !== 'undefined';  // Runtime de Lambda
+  /**
+   * Obtener información de un archivo
+   * @param {string} filename - Nombre del archivo
+   * @param {string} category - Categoría del archivo
+   * @returns {Promise<Object>} Información del archivo
+   */
+  async getFileInfo(filename, category = 'documents') {
+    debugLog.log('UPLOAD', `Getting ${category} file info`, { filename });
+
+    try {
+      const filePath = path.join(this.uploadDirs[category], filename);
+
+      const stats = await fs.stat(filePath);
+
+      return {
+        filename: filename,
+        path: filePath,
+        relativePath: `/uploads/${category}/${filename}`,
+        size: stats.size,
+        category: category,
+        createdAt: stats.birthtime,
+        modifiedAt: stats.mtime
+      };
+    } catch (error) {
+      debugLog.error('UPLOAD', 'Error getting file info', sanitizeError(error, 'getFileInfo'));
+      throw error;
     }
+  }
 
-    // ============================================
-    // INICIALIZACIÓN DE DIRECTORIOS
-    // ============================================
+  /**
+   * Listar archivos en una categoría
+   * @param {string} category - Categoría
+   * @returns {Promise<Array>} Lista de archivos
+   */
+  async listFiles(category = 'documents') {
+    debugLog.log('UPLOAD', `Listing ${category} files`);
 
-    async ensureDirectories() {
-        const dirs = [
-            'uploads',
-            'uploads/images',
-            'uploads/images/thumbnails',
-            'uploads/documents',
-            'uploads/videos',
-            'uploads/temp',
-            'uploads/images/avisos',
-            'uploads/images/noticias',
-            'uploads/images/eventos',
-            'uploads/images/comunicados',
-            'uploads/documents/avisos',
-            'uploads/documents/noticias',
-            'uploads/documents/eventos',
-            'uploads/documents/comunicados'
-        ];
+    try {
+      await this._ensureDirectory(this.uploadDirs[category]);
 
-        for (const dir of dirs) {
-            const fullPath = path.join(__dirname, '../../public', dir);
-            try {
-                await fs.access(fullPath);
-            } catch {
-                await fs.mkdir(fullPath, { recursive: true });
-                devLogger.log(`📁 Creado directorio: ${dir}`);
-            }
-        }
-    }
+      const files = await fs.readdir(this.uploadDirs[category]);
 
-    // ============================================
-    // PROCESAMIENTO DE IMÁGENES
-    // ============================================
-
-    async processImage(file, category = 'general', userId) {
-        try {
-            const timestamp = Date.now();
-            const originalName = path.parse(file.originalname).name;
-            const safeName = originalName.replace(/[^a-zA-Z0-9\-_]/g, '_');
-            const fileName = `${safeName}_${timestamp}`;
-
-            const outputDir = path.join(__dirname, '../../public/uploads/images', category);
-
-            // Intentar crear directorio (puede fallar en Vercel, pero continuamos)
-            try {
-                await fs.mkdir(outputDir, { recursive: true });
-            } catch (mkdirError) {
-                devLogger.warn(`⚠️ No se pudo crear directorio ${category}:`, mkdirError.message);
-            }
-
-            // Obtener metadatos de la imagen original
-            const metadata = await sharp(file.buffer).metadata();
-
-            // Crear versión WebP optimizada
-            const webpPath = path.join(outputDir, `${fileName}.webp`);
-            await sharp(file.buffer)
-                .resize(1920, 1080, {
-                    fit: 'inside',
-                    withoutEnlargement: true
-                })
-                .webp({
-                    quality: 85,
-                    progressive: true,
-                    effort: 6
-                })
-                .toFile(webpPath);
-
-            // Crear versión JPEG como fallback
-            const jpegPath = path.join(outputDir, `${fileName}.jpg`);
-            await sharp(file.buffer)
-                .resize(1920, 1080, {
-                    fit: 'inside',
-                    withoutEnlargement: true
-                })
-                .jpeg({
-                    quality: 85,
-                    progressive: true,
-                    mozjpeg: true
-                })
-                .toFile(jpegPath);
-
-            // Crear thumbnail
-            const thumbnailDir = path.join(__dirname, '../../public/uploads/images/thumbnails');
-            const thumbnailPath = path.join(thumbnailDir, `${fileName}_thumb.webp`);
-            await sharp(file.buffer)
-                .resize(300, 200, {
-                    fit: 'cover',
-                    position: 'center'
-                })
-                .webp({
-                    quality: 80
-                })
-                .toFile(thumbnailPath);
-
-            // Crear versión móvil (opcional)
-            const mobilePath = path.join(outputDir, `${fileName}_mobile.webp`);
-            await sharp(file.buffer)
-                .resize(800, 600, {
-                    fit: 'inside',
-                    withoutEnlargement: true
-                })
-                .webp({
-                    quality: 75
-                })
-                .toFile(mobilePath);
-
-            // Obtener información de archivos creados
-            const webpStats = await fs.stat(webpPath);
-            const jpegStats = await fs.stat(jpegPath);
-            const thumbnailStats = await fs.stat(thumbnailPath);
-            const mobileStats = await fs.stat(mobilePath);
-
-            const fileInfo = {
-                original_name: file.originalname,
-                file_name: fileName,
-                category,
-                file_size: file.size,
-                mime_type: file.mimetype,
-                width: metadata.width,
-                height: metadata.height,
-                webp_url: `/uploads/images/${category}/${fileName}.webp`,
-                jpeg_url: `/uploads/images/${category}/${fileName}.jpg`,
-                thumbnail_url: `/uploads/images/thumbnails/${fileName}_thumb.webp`,
-                mobile_url: `/uploads/images/${category}/${fileName}_mobile.webp`,
-                uploaded_by: userId,
-                upload_date: new Date(),
-                processed_sizes: {
-                    original: file.size,
-                    webp: webpStats.size,
-                    jpeg: jpegStats.size,
-                    thumbnail: thumbnailStats.size,
-                    mobile: mobileStats.size
-                },
-                compression_ratio: ((file.size - webpStats.size) / file.size * 100).toFixed(2)
-            };
-
-            // Guardar información en base de datos si está disponible
-            const savedFile = await this.saveFileInfo(fileInfo);
-
-            return {
-                id: savedFile?.id || `img_${timestamp}`,
-                urls: {
-                    webp: fileInfo.webp_url,
-                    jpeg: fileInfo.jpeg_url,
-                    thumbnail: fileInfo.thumbnail_url,
-                    mobile: fileInfo.mobile_url
-                },
-                metadata: {
-                    original_size: file.size,
-                    optimized_size: webpStats.size,
-                    compression_ratio: fileInfo.compression_ratio + '%',
-                    dimensions: `${metadata.width}x${metadata.height}`,
-                    formats: ['WebP', 'JPEG', 'Thumbnail', 'Mobile']
-                }
-            };
-
-        } catch (error) {
-            devLogger.error('Error procesando imagen:', error);
-            throw error;
-        }
-    }
-
-    async processDocument(file, category = 'general', userId) {
-        try {
-            const timestamp = Date.now();
-            const originalName = path.parse(file.originalname).name;
-            const extension = path.extname(file.originalname);
-            const safeName = originalName.replace(/[^a-zA-Z0-9\-_]/g, '_');
-            const fileName = `${safeName}_${timestamp}${extension}`;
-
-            const outputDir = path.join(__dirname, '../../public/uploads/documents', category);
-
-            // Intentar crear directorio (puede fallar en Vercel, pero continuamos)
-            try {
-                await fs.mkdir(outputDir, { recursive: true });
-            } catch (mkdirError) {
-                devLogger.warn(`⚠️ No se pudo crear directorio de documentos ${category}:`, mkdirError.message);
-            }
-
-            // Guardar archivo
-            const filePath = path.join(outputDir, fileName);
-            await fs.writeFile(filePath, file.buffer);
-
-            const fileInfo = {
-                original_name: file.originalname,
-                file_name: fileName,
-                category,
-                file_size: file.size,
-                mime_type: file.mimetype,
-                file_url: `/uploads/documents/${category}/${fileName}`,
-                uploaded_by: userId,
-                upload_date: new Date()
-            };
-
-            const savedFile = await this.saveFileInfo(fileInfo);
-
-            return {
-                id: savedFile?.id || `doc_${timestamp}`,
-                url: fileInfo.file_url,
-                metadata: {
-                    original_name: file.originalname,
-                    size: file.size,
-                    type: file.mimetype,
-                    extension: extension
-                }
-            };
-
-        } catch (error) {
-            devLogger.error('Error procesando documento:', error);
-            throw error;
-        }
-    }
-
-    // ============================================
-    // GESTIÓN DE ARCHIVOS EN BASE DE DATOS
-    // ============================================
-
-    async saveFileInfo(fileInfo) {
-        if (!this.dbAvailable) {
-            devLogger.log('⚠️ No se pudo guardar info del archivo: DB no disponible');
-            return { id: null };
-        }
-
-        try {
-            const query = `
-                INSERT INTO cms_files (
-                    original_name, file_name, category, alt_text, title,
-                    file_size, mime_type, width, height,
-                    webp_url, jpeg_url, file_url, thumbnail_url,
-                    uploaded_by, upload_date
-                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-            `;
-
-            const params = [
-                fileInfo.original_name,
-                fileInfo.file_name,
-                fileInfo.category || 'general',
-                fileInfo.alt_text || null,
-                fileInfo.title || null,
-                fileInfo.file_size,
-                fileInfo.mime_type,
-                fileInfo.width || null,
-                fileInfo.height || null,
-                fileInfo.webp_url || null,
-                fileInfo.jpeg_url || null,
-                fileInfo.file_url || null,
-                fileInfo.thumbnail_url || null,
-                fileInfo.uploaded_by,
-                fileInfo.upload_date || new Date()
-            ];
-
-            const [result] = await this.db.execute(query, params);
-
-            return { id: result.insertId };
-
-        } catch (error) {
-            devLogger.error('Error guardando información del archivo:', error);
-            return { id: null };
-        }
-    }
-
-    async getFiles(filters = {}) {
-        if (!this.dbAvailable) {
-            return { files: [], total: 0 };
-        }
-
-        try {
-            let query = `
-                SELECT
-                    id, original_name, file_name, category, alt_text, title,
-                    file_size, mime_type, width, height,
-                    webp_url, jpeg_url, file_url, thumbnail_url,
-                    uploaded_by, upload_date
-                FROM cms_files
-                WHERE 1=1
-            `;
-            const params = [];
-            let paramIndex = 1;
-
-            // Aplicar filtros
-            if (filters.category) {
-                query += ` AND category = $${paramIndex++}`;
-                params.push(filters.category);
-            }
-
-            if (filters.type) {
-                query += ` AND mime_type LIKE $${paramIndex++}`;
-                params.push(`${filters.type}%`);
-            }
-
-            if (filters.search) {
-                query += ` AND (original_name LIKE $${paramIndex++} OR title LIKE $${paramIndex++})`;
-                params.push(`%${filters.search}%`, `%${filters.search}%`);
-            }
-
-            query += ' ORDER BY upload_date DESC';
-
-            // Paginación
-            if (filters.limit) {
-                query += ` LIMIT $${paramIndex++}`;
-                params.push(filters.limit);
-            }
-
-            if (filters.offset) {
-                query += ` OFFSET $${paramIndex++}`;
-                params.push(filters.offset);
-            }
-
-            const [files] = await this.db.execute(query, params);
-
-            // Contar total
-            let countQuery = 'SELECT COUNT(*) as total FROM cms_files WHERE 1=1';
-            const countParams = [];
-            let countParamIndex = 1;
-
-            if (filters.category) {
-                countQuery += ` AND category = $${countParamIndex++}`;
-                countParams.push(filters.category);
-            }
-
-            if (filters.type) {
-                countQuery += ` AND mime_type LIKE $${countParamIndex++}`;
-                countParams.push(`${filters.type}%`);
-            }
-
-            const [countResult] = await this.db.execute(countQuery, countParams);
-            const total = countResult[0].total;
-
-            return { files, total };
-
-        } catch (error) {
-            devLogger.error('Error obteniendo archivos:', error);
-            throw error;
-        }
-    }
-
-    async deleteFile(id) {
-        if (!this.dbAvailable) {
-            return false;
-        }
-
-        try {
-            // Obtener información del archivo antes de eliminarlo
-            const fileQuery = 'SELECT * FROM cms_files WHERE id = $1';
-            const [files] = await this.db.execute(fileQuery, [id]);
-
-            if (files.length === 0) {
-                return false;
-            }
-
-            const file = files[0];
-
-            // Eliminar archivos físicos
-            const filesToDelete = [];
-
-            if (file.webp_url) {
-                filesToDelete.push(path.join(__dirname, '../../public', file.webp_url));
-            }
-            if (file.jpeg_url) {
-                filesToDelete.push(path.join(__dirname, '../../public', file.jpeg_url));
-            }
-            if (file.file_url) {
-                filesToDelete.push(path.join(__dirname, '../../public', file.file_url));
-            }
-            if (file.thumbnail_url) {
-                filesToDelete.push(path.join(__dirname, '../../public', file.thumbnail_url));
-            }
-
-            // Intentar eliminar archivos físicos
-            for (const filePath of filesToDelete) {
-                try {
-                    await fs.unlink(filePath);
-                } catch (error) {
-                    devLogger.warn(`No se pudo eliminar archivo físico: ${filePath}`);
-                }
-            }
-
-            // Eliminar registro de la base de datos
-            const deleteQuery = 'DELETE FROM cms_files WHERE id = $1';
-            const [result] = await this.db.execute(deleteQuery, [id]);
-
-            return result.affectedRows > 0;
-
-        } catch (error) {
-            devLogger.error('Error eliminando archivo:', error);
-            throw error;
-        }
-    }
-
-    // ============================================
-    // OPTIMIZACIÓN Y UTILIDADES
-    // ============================================
-
-    async optimizeImage(id, options = {}) {
-        if (!this.dbAvailable) {
+      const fileInfos = await Promise.all(
+        files.map(async (filename) => {
+          try {
+            return await this.getFileInfo(filename, category);
+          } catch (err) {
             return null;
-        }
+          }
+        })
+      );
 
-        try {
-            // Obtener información del archivo
-            const fileQuery = 'SELECT * FROM cms_files WHERE id = $1';
-            const [files] = await this.db.execute(fileQuery, [id]);
+      // Filtrar archivos nulos (errores)
+      const validFiles = fileInfos.filter(f => f !== null);
 
-            if (files.length === 0) {
-                return null;
-            }
+      debugLog.log('UPLOAD', 'Files listed', { count: validFiles.length });
 
-            const file = files[0];
+      return validFiles;
+    } catch (error) {
+      debugLog.error('UPLOAD', 'Error listing files', sanitizeError(error, 'listFiles'));
+      throw error;
+    }
+  }
 
-            if (!file.webp_url) {
-                throw new Error('El archivo no es una imagen');
-            }
-
-            // Ruta del archivo original
-            const originalPath = path.join(__dirname, '../../public', file.webp_url);
-
-            // Crear nuevas versiones optimizadas
-            const timestamp = Date.now();
-            const fileName = path.parse(file.file_name).name + '_opt_' + timestamp;
-            const category = file.category;
-            const outputDir = path.join(__dirname, '../../public/uploads/images', category);
-
-            // Aplicar nuevas optimizaciones
-            const quality = options.quality || 85;
-            const width = options.width || null;
-            const height = options.height || null;
-
-            let sharpInstance = sharp(originalPath);
-
-            if (width || height) {
-                sharpInstance = sharpInstance.resize(width, height, {
-                    fit: 'inside',
-                    withoutEnlargement: true
-                });
-            }
-
-            // Crear nueva versión WebP
-            const newWebpPath = path.join(outputDir, `${fileName}.webp`);
-            await sharpInstance
-                .webp({
-                    quality: quality,
-                    progressive: true,
-                    effort: 6
-                })
-                .toFile(newWebpPath);
-
-            // Actualizar base de datos con nueva información
-            const updateQuery = `
-                UPDATE cms_files
-                SET webp_url = $1, updated_at = NOW()
-                WHERE id = $2
-            `;
-
-            const newWebpUrl = `/uploads/images/${category}/${fileName}.webp`;
-            await this.db.execute(updateQuery, [newWebpUrl, id]);
-
-            // Obtener estadísticas del nuevo archivo
-            const stats = await fs.stat(newWebpPath);
-
-            return {
-                id,
-                url: newWebpUrl,
-                old_size: file.file_size,
-                new_size: stats.size,
-                compression_improvement: ((file.file_size - stats.size) / file.file_size * 100).toFixed(2) + '%'
-            };
-
-        } catch (error) {
-            devLogger.error('Error optimizando imagen:', error);
-            throw error;
-        }
+  /**
+   * Validar archivo
+   * @private
+   */
+  _validateFile(file, category) {
+    if (!file) {
+      throw new Error('No se proporcionó archivo');
     }
 
-    async cleanupOrphanedFiles() {
-        const results = {
-            filesDeleted: 0,
-            spaceFreed: 0
-        };
-
-        try {
-            // Obtener lista de archivos en base de datos
-            const dbFiles = new Set();
-
-            if (this.dbAvailable) {
-                const query = 'SELECT webp_url, jpeg_url, file_url, thumbnail_url FROM cms_files';
-                const [files] = await this.db.execute(query);
-
-                files.forEach(file => {
-                    if (file.webp_url) dbFiles.add(file.webp_url);
-                    if (file.jpeg_url) dbFiles.add(file.jpeg_url);
-                    if (file.file_url) dbFiles.add(file.file_url);
-                    if (file.thumbnail_url) dbFiles.add(file.thumbnail_url);
-                });
-            }
-
-            // Escanear directorios de uploads
-            const uploadDirs = [
-                'uploads/images',
-                'uploads/images/thumbnails',
-                'uploads/documents'
-            ];
-
-            for (const dir of uploadDirs) {
-                const fullPath = path.join(__dirname, '../../public', dir);
-
-                try {
-                    const files = await fs.readdir(fullPath, { recursive: true });
-
-                    for (const file of files) {
-                        const filePath = path.join(fullPath, file);
-                        const relativePath = `/${dir}/${file}`.replace(/\\/g, '/');
-
-                        const stats = await fs.stat(filePath);
-
-                        if (stats.isFile() && !dbFiles.has(relativePath)) {
-                            // Archivo huérfano encontrado
-                            try {
-                                await fs.unlink(filePath);
-                                results.filesDeleted++;
-                                results.spaceFreed += stats.size;
-                            } catch (deleteError) {
-                                devLogger.warn(`No se pudo eliminar archivo huérfano: ${filePath}`);
-                            }
-                        }
-                    }
-                } catch (dirError) {
-                    devLogger.warn(`No se pudo escanear directorio: ${dir}`);
-                }
-            }
-
-            devLogger.log(`🧹 Limpieza completada: ${results.filesDeleted} archivos eliminados, ${(results.spaceFreed / 1024 / 1024).toFixed(2)} MB liberados`);
-
-            return results;
-
-        } catch (error) {
-            devLogger.error('Error en limpieza de archivos:', error);
-            throw error;
-        }
+    // Validar tipo de archivo
+    const allowedTypes = this.allowedTypes[category] || this.allowedTypes.documents;
+    if (!allowedTypes.includes(file.mimetype)) {
+      throw new Error(`Tipo de archivo no permitido. Tipos permitidos: ${allowedTypes.join(', ')}`);
     }
 
-    // ============================================
-    // UTILIDADES DE IMAGEN
-    // ============================================
-
-    async createThumbnail(imagePath, outputPath, size = { width: 300, height: 200 }) {
-        try {
-            await sharp(imagePath)
-                .resize(size.width, size.height, {
-                    fit: 'cover',
-                    position: 'center'
-                })
-                .webp({
-                    quality: 80
-                })
-                .toFile(outputPath);
-
-            return outputPath;
-        } catch (error) {
-            devLogger.error('Error creando thumbnail:', error);
-            throw error;
-        }
+    // Validar tamaño
+    const maxSize = this.maxSizes[category] || this.maxSizes.documents;
+    if (file.size > maxSize) {
+      const maxSizeMB = Math.round(maxSize / 1024 / 1024);
+      throw new Error(`El archivo excede el tamaño máximo permitido de ${maxSizeMB} MB`);
     }
 
-    async getImageMetadata(imagePath) {
-        try {
-            const metadata = await sharp(imagePath).metadata();
-            const stats = await fs.stat(imagePath);
-
-            return {
-                format: metadata.format,
-                width: metadata.width,
-                height: metadata.height,
-                channels: metadata.channels,
-                density: metadata.density,
-                hasAlpha: metadata.hasAlpha,
-                fileSize: stats.size
-            };
-        } catch (error) {
-            devLogger.error('Error obteniendo metadatos de imagen:', error);
-            throw error;
-        }
+    // Validar nombre de archivo
+    if (!file.originalname || file.originalname.length === 0) {
+      throw new Error('Nombre de archivo inválido');
     }
+  }
 
-    async convertToWebP(inputPath, outputPath, quality = 85) {
-        try {
-            await sharp(inputPath)
-                .webp({
-                    quality: quality,
-                    progressive: true,
-                    effort: 6
-                })
-                .toFile(outputPath);
+  /**
+   * Generar nombre único de archivo
+   * @private
+   */
+  _generateUniqueFilename(originalName) {
+    const ext = path.extname(originalName);
+    const timestamp = Date.now();
+    const randomString = crypto.randomBytes(8).toString('hex');
 
-            return outputPath;
-        } catch (error) {
-            devLogger.error('Error convirtiendo a WebP:', error);
-            throw error;
-        }
+    return `${timestamp}-${randomString}${ext}`;
+  }
+
+  /**
+   * Asegurar que el directorio existe
+   * @private
+   */
+  async _ensureDirectory(dirPath) {
+    try {
+      await fs.access(dirPath);
+    } catch (error) {
+      // Directorio no existe, crearlo
+      await fs.mkdir(dirPath, { recursive: true });
+      debugLog.log('UPLOAD', 'Directory created', { dirPath });
     }
+  }
+
+  /**
+   * Limpiar archivos temporales antiguos
+   * @param {number} maxAgeHours - Edad máxima en horas (default: 24)
+   * @returns {Promise<number>} Número de archivos eliminados
+   */
+  async cleanupTempFiles(maxAgeHours = 24) {
+    debugLog.log('UPLOAD', 'Cleaning up temp files', { maxAgeHours });
+
+    try {
+      const tempDir = this.uploadDirs.temp;
+      await this._ensureDirectory(tempDir);
+
+      const files = await fs.readdir(tempDir);
+      const now = Date.now();
+      const maxAgeMs = maxAgeHours * 60 * 60 * 1000;
+
+      let deletedCount = 0;
+
+      for (const filename of files) {
+        const filePath = path.join(tempDir, filename);
+        const stats = await fs.stat(filePath);
+
+        if (now - stats.mtimeMs > maxAgeMs) {
+          await fs.unlink(filePath);
+          deletedCount++;
+        }
+      }
+
+      debugLog.log('UPLOAD', 'Temp files cleaned', { deletedCount });
+
+      return deletedCount;
+    } catch (error) {
+      debugLog.error('UPLOAD', 'Error cleaning temp files', sanitizeError(error, 'cleanupTempFiles'));
+      throw error;
+    }
+  }
 }
 
-// Singleton instance
-let uploadServiceInstance = null;
-
-const getUploadService = () => {
-    if (!uploadServiceInstance) {
-        uploadServiceInstance = new UploadService();
-    }
-    return uploadServiceInstance;
-};
-
-module.exports = getUploadService();
+module.exports = new UploadService();
