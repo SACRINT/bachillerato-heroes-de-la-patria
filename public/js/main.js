@@ -1,5 +1,13 @@
 // Main JavaScript para el sitio web window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
 
+// ✅ LOGGER MANAGER - Cargar primero para centralizar logging
+(function loadLogger() {
+    const script = document.createElement('script');
+    script.src = 'js/logger-manager.js';
+    script.async = false;
+    document.head.appendChild(script);
+})();
+
 // Load event handler files FIRST (in order), then event-handler-registry
 // CRITICAL: event-handler-registry references functions from these modules
 // Must wait for all event handlers to load before loading event-handler-registry
