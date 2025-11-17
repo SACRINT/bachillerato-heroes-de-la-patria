@@ -42,6 +42,7 @@ const subscriptionsRoutes = require('./routes/subscriptions');
 const newslettersRoutes = require('./routes/newsletters');
 const egresadosRoutes = require('./routes/egresados');
 const analyticsDashboardRoutes = require('./routes/analytics-dashboard');
+const reportsRoutes = require('./routes/reports');  // ✅ REPORTS - SEMANA 7
 const bolsaTrabajoRoutes = require('./routes/bolsa-trabajo');
 const suscriptoresRoutes = require('./routes/suscriptores');
 const quejasRoutes = require('./routes/quejas');
@@ -267,6 +268,7 @@ app.use('/api/subscriptions', subscriptionsRoutes);
 app.use('/api/newsletters', newslettersRoutes);
 app.use('/api/egresados', egresadosRoutes);
 app.use('/api/analytics', analyticsDashboardRoutes);
+app.use('/api/reports', reportsRoutes);  // ✅ REPORTS - SEMANA 7
 app.use('/api/bolsa-trabajo', bolsaTrabajoRoutes);
 app.use('/api/suscriptores', suscriptoresRoutes);
 app.use('/api/quejas', quejasRoutes);
