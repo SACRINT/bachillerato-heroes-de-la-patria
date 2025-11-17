@@ -4,7 +4,7 @@
  * Fecha: 16 Noviembre 2025
  */
 
-const pool = require('./database');
+const { pool } = require('../config/database');
 
 /**
  * Soft delete de un registro
