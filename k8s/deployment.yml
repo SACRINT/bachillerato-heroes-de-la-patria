@@ -1,0 +1,91 @@
+# ===============================
+# ☸️ KUBERNETES DEPLOYMENT - BGE
+# Semana 6 - DevOps & CI/CD - Tarea 4
+# ===============================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bge-app
+  namespace: default
+  labels:
+    app: bge
+    tier: backend
+    version: v1
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: bge
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: bge
+        tier: backend
+        version: v1
+    spec:
+      containers:
+      - name: bge-app
+        image: bge:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "3000"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: bge-secrets
+              key: database-url
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: bge-secrets
+              key: jwt-secret
+        - name: SESSION_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: bge-secrets
+              key: session-secret
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: bge-config
+              key: redis-url
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          successThreshold: 1
+          failureThreshold: 3
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30

@@ -1,0 +1,23 @@
+# ===============================
+# ☸️ KUBERNETES SERVICE - BGE
+# Semana 6 - DevOps & CI/CD
+# ===============================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: bge-service
+  namespace: default
+  labels:
+    app: bge
+spec:
+  type: LoadBalancer
+  selector:
+    app: bge
+    tier: backend
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 3000
+  sessionAffinity: ClientIP
