@@ -27,6 +27,7 @@ const cspConfig = require('./config/csp-config');
 // Middleware
 const { errorHandler } = require('./middleware/errorHandler');
 const { securityMiddleware } = require('./middleware/security');
+const { tenantContext } = require('./middleware/tenant-context');  // ✅ MULTI-TENANCY MIDDLEWARE (17 NOV 2025)
 
 // Routes
 const authRoutes = require('./routes/auth');
@@ -228,6 +229,14 @@ app.use(session({
 devLogger.log('🌍 Configurando servidor de archivos estáticos...');
 app.use(express.static(path.join(__dirname, '../public')));
 
+// ============================================
+// 🏢 MULTI-TENANCY MIDDLEWARE (17 NOV 2025)
+// ============================================
+// IMPORTANTE: Registrar ANTES de todas las rutas API
+// Detecta tenant desde: subdomain, header X-Tenant-ID, JWT, query param
+// Agrega req.tenant con configuración del tenant
+devLogger.log('🏢 Configurando multi-tenancy middleware...');
+app.use(tenantContext);
 
 // ============================================
 // RUTAS DE API
