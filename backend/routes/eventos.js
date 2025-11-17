@@ -12,6 +12,7 @@ const router = express.Router();
 const { pool } = require('../config/database');
 const { body, validationResult } = require('express-validator');
 const { cacheMiddleware, TTL_CONFIG } = require('../middleware/cache');
+const { softDelete } = require('../data/soft-delete-helpers');
 
 // Función para generar slug
 function generateSlug(titulo) {
@@ -418,37 +419,33 @@ router.put('/:id', async (req, res) => {
 });
 
 // =====================================================
-// DELETE /api/eventos/:id - Eliminar (cancelar) evento
+// DELETE /api/eventos/:id - Eliminar evento (Soft Delete)
 // =====================================================
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        // Cancelar en lugar de eliminar
-        const result = await pool.query(`
-            UPDATE eventos
-            SET estado = 'cancelado', fecha_modificacion = NOW()
-            WHERE id = $1
-            RETURNING id, titulo
-        `, [id]);
+        const deleted = await softDelete('eventos', id);
 
-        if (result.rows.length === 0) {
+        if (!deleted) {
             return res.status(404).json({
                 success: false,
-                error: 'Evento no encontrado'
+                error: 'Evento no encontrado o ya eliminado'
             });
         }
 
+        debugLog.log('EVENTOS', `🗑️ Evento ${id} eliminado (soft delete)`);
+
         res.json({
             success: true,
-            message: 'Evento cancelado correctamente'
+            message: 'Evento eliminado correctamente'
         });
 
     } catch (error) {
-        debugLog.error('EVENTOS', '❌ Error al cancelar evento:', sanitizeError(error, 'eventos'));
+        debugLog.error('EVENTOS', '❌ Error al eliminar evento:', sanitizeError(error, 'eventos'));
         res.status(500).json({
             success: false,
-            error: 'Error al cancelar el evento'
+            error: 'Error al eliminar el evento'
         });
     }
 });

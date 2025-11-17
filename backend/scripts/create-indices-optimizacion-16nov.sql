@@ -17,7 +17,7 @@ CREATE INDEX IF NOT EXISTS idx_estudiantes_created_at ON estudiantes(created_at 
 
 -- TABLA: calificaciones (3 índices)
 CREATE INDEX IF NOT EXISTS idx_calificaciones_docente_id ON calificaciones(docente_id);
-CREATE INDEX IF NOT EXISTS idx_calificaciones_estudiante_materia ON calificaciones(estudiante_id, materia);
+CREATE INDEX IF NOT EXISTS idx_calificaciones_estudiante_materia ON calificaciones(estudiante_id, materia_id);
 CREATE INDEX IF NOT EXISTS idx_calificaciones_created_at ON calificaciones(created_at DESC);
 
 -- TABLA: usuarios (2 índices)
@@ -46,7 +46,11 @@ CREATE INDEX IF NOT EXISTS idx_avisos_fecha_creacion ON avisos(created_at DESC);
 -- TABLA: contactos (1 índice)
 CREATE INDEX IF NOT EXISTS idx_contactos_fecha_creacion ON contactos(created_at DESC);
 
+<<<<<<< HEAD
 -- ANÁLISIS para optimización de queries
+=======
+-- ANÁLISIS para optimización
+>>>>>>> claude/fix-csp-errors-01ESGL2jJ78S5gKkXhVdofRE
 ANALYZE docentes;
 ANALYZE estudiantes;
 ANALYZE calificaciones;
@@ -58,5 +62,9 @@ ANALYZE eventos;
 ANALYZE avisos;
 ANALYZE contactos;
 
+<<<<<<< HEAD
 -- Verificación de índices creados
+=======
+-- Verificación
+>>>>>>> claude/fix-csp-errors-01ESGL2jJ78S5gKkXhVdofRE
 SELECT COUNT(*) as total_indices FROM pg_indexes WHERE schemaname = 'public';
