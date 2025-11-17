@@ -17,7 +17,7 @@ CREATE INDEX IF NOT EXISTS idx_estudiantes_created_at ON estudiantes(created_at 
 
 -- TABLA: calificaciones (3 índices)
 CREATE INDEX IF NOT EXISTS idx_calificaciones_docente_id ON calificaciones(docente_id);
-CREATE INDEX IF NOT EXISTS idx_calificaciones_estudiante_materia ON calificaciones(estudiante_id, materia);
+CREATE INDEX IF NOT EXISTS idx_calificaciones_estudiante_materia ON calificaciones(estudiante_id, materia_id);
 CREATE INDEX IF NOT EXISTS idx_calificaciones_created_at ON calificaciones(created_at DESC);
 
 -- TABLA: usuarios (2 índices)
