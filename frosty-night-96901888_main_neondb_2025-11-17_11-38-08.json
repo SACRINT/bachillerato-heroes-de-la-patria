@@ -1,0 +1,8 @@
+[{
+  "id": 1,
+  "schema_name": "bge_heroes_de_la_patria",
+  "school_name": "Bachillerato General Estatal \"Héroes de la Patria\"",
+  "domain": "localhost:3000",
+  "nombre": "localhost:3000",
+  "status": "activo"
+}]

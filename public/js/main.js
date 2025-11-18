@@ -1,4 +1,4 @@
-// Main JavaScript para el sitio web window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
+// Main JavaScript para el sitio web
 
 // ✅ LOGGER MANAGER - Cargar primero para centralizar logging
 (function loadLogger() {

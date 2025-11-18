@@ -81,7 +81,11 @@ const cspConfig = {
             "https://www.google-analytics.com", // Google Analytics
             "https://www.googletagmanager.com", // Google Tag Manager
             "https://accounts.google.com",     // ✅ AGREGADO: Google OAuth
-            "https://www.googleapis.com"       // ✅ AGREGADO: Google APIs
+            "https://accounts.google.com/gsi/style", // ✅ Google Sign-In styles
+            "https://www.googleapis.com",      // ✅ AGREGADO: Google APIs
+            "https:",                          // ✅ AGREGADO: Allow all HTTPS connections (needed for Google APIs)
+            "ws:",                             // WebSocket
+            "wss:"                             // Secure WebSocket
         ],
 
         // 7. FRAMES - Solo embeds específicos
