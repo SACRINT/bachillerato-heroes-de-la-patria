@@ -256,7 +256,24 @@ class UnifiedAuthSystem {
         // Crear modal si no existe
         if (!document.getElementById('unified-auth-modal')) {
             const modalHTML = this.managers.ui.createModalHTML();
-            document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
+
+            // Sanitizar con fallback si sanitizeHTML no está disponible
+            let sanitizedHTML = modalHTML;
+            try {
+                if (typeof DOMPurify !== 'undefined' && typeof sanitizeHTML === 'function') {
+                    sanitizedHTML = DOMPurify.sanitize(sanitizeHTML(modalHTML, 'simple'));
+                } else if (typeof DOMPurify !== 'undefined') {
+                    // Fallback: usar solo DOMPurify si sanitizeHTML no está disponible
+                    sanitizedHTML = DOMPurify.sanitize(modalHTML);
+                }
+                // Si ni DOMPurify está disponible, usar el HTML directamente (último fallback)
+            } catch (error) {
+                debugLog.warn('ERROR', '⚠️ Error sanitizando modal HTML:', error.message);
+                // Usar HTML sin sanitizar como último recurso
+            }
+
+            document.body.insertAdjacentHTML('beforeend', sanitizedHTML);
+            debugLog.log('APP', '✅ Modal inyectada en el DOM');
         }
 
         // Actualizar UI según estado actual

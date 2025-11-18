@@ -1,12 +1,12 @@
 <!-- Navigation -->
 <header role="banner">
-<nav class="navbar navbar-expand-lg bg-light fixed-top shadow-sm" role="navigation" aria-label="Navegación principal">
+<nav class="navbar navbar-expand-lg bg-light fixed-top shadow-sm" role="navigation" aria-label="Navegación principal" style="padding: 0.4rem 1rem;">
     <div class="container-fluid" style="max-width: none; padding-left: 1rem; padding-right: 1rem;">
         <!-- Logo y Nombre de la Escuela con Botón Hamburguesa integrado -->
         <div class="d-flex align-items-center justify-content-between w-100">
             <a class="navbar-brand d-flex align-items-center" href="index.html" style="margin-right: 0;">
                 <!-- 🏢 TENANT-AWARE: Logo cargado dinámicamente desde config -->
-                <img data-tenant="school-logo" src="/images/logo-bachillerato-HDLP.webp" alt="Logo Bachillerato Héroes de la Patria" style="height: 45px; width: auto;">
+                <img data-tenant="school-logo" src="/images/logo-bachillerato-HDLP.webp" alt="Logo Bachillerato Héroes de la Patria" width="45" height="45">
                 <div class="ms-2">
                     <div class="fw-bold text-primary logo-main-text" style="font-size: 0.85rem; line-height: 1.1;">Bachillerato General Estatal</div>
                     <!-- 🏢 TENANT-AWARE: Nombre de escuela cargado dinámicamente desde config -->
@@ -333,7 +333,7 @@
                         </li>
                         <!-- Panel de Administración REMOVIDO - Integrado en dashboard -->
                         <li>
-                            <a class="dropdown-item admin-login-compact" href="#" onclick="handleAdminLogin(); return false;" style="cursor: pointer;" id="adminPanelMenuLink">
+                            <a class="dropdown-item admin-login-compact" href="#" data-action="admin-login" style="cursor: pointer;" id="adminPanelMenuLink">
                                 <i class="fas fa-shield-halved me-2"></i>Admin
                                 <span id="adminPanelSessionStatus" class="badge bg-success ms-1 d-none">✓</span>
                             </a>
@@ -376,7 +376,7 @@
             <div class="auth-section ms-3 d-flex align-items-center" id="authSection">
                 <!-- Botones de login cuando no está autenticado -->
                 <div id="loginButtons" class="d-flex align-items-center">
-                    <button type="button" class="btn btn-primary btn-sm me-2" id="loginBtn" data-bs-target="#unified-auth-modal" title="Iniciar Sesión">
+                    <button type="button" class="btn btn-primary btn-sm me-2" id="loginBtn" data-bs-toggle="modal" data-bs-target="#unified-auth-modal" title="Iniciar Sesión">
                         <i class="fas fa-sign-in-alt"></i>
                     </button>
                 </div>
@@ -426,16 +426,17 @@
 <!-- Estilos del Buscador -->
 <style>
     .search-container {
-        max-width: 300px;
-        min-width: 200px;
+        max-width: 400px;
+        min-width: 250px;
     }
 
     .search-input {
         border-radius: 25px;
-        padding-left: 40px;
-        padding-right: 15px;
+        padding: 10px 15px 10px 40px;
+        font-size: 1rem;
         border: 2px solid #dee2e6;
         transition: all 0.3s ease;
+        width: 100%;
     }
 
     .search-input:focus {
@@ -808,13 +809,14 @@
     </div>
 </div>
 
+<!-- 🔒 DOMPurify XSS Protection (DEBE CARGAR PRIMERO) -->
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+<script src="js/dompurify-config.js?v=2025111701"></script>
+<script src="js/dompurify-helper.js?v=2025111401"></script>
+
 <!-- Scripts de navegación y autenticación admin -->
 <script src="js/nested-dropdowns.js?v=2024091401"></script>
 <script src="js/admin-auth.js?v=2024091401"></script>
-
-<!-- 🔒 DOMPurify XSS Protection (FASE 2 BLOQUE 4) -->
-<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
-<script src="js/dompurify-helper.js?v=2025111401"></script>
 
 <!-- Sistema de Autenticación JWT - DESHABILITADO: Reemplazado por Unified Login System -->
 <!-- <script src="js/auth-manager.js?v=2024092301"></script> -->
