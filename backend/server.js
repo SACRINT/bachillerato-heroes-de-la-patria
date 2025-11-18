@@ -138,16 +138,21 @@ app.set('trust proxy', 1);
 // Registrar seguridad ANTES de helmet para asegurar que los headers CSP no sean overridden
 app.use(securityMiddleware);
 
-// ✅ CSP HABILITADO EN HELMET - FIJO 16 NOV 2025
+// ✅ CSP HABILITADO EN HELMET - FIJO 18 NOV 2025
 // Usar securityMiddleware + cspConfig para desarrollo local
 // En producción (Vercel), el CSP se define en vercel.json
-// FECHA: 16 Nov 2025 - Habilitado para desarrollo local, TinyMCE funcional
+// FECHA: 18 Nov 2025 - Habilitado para desarrollo local, TinyMCE + Google Sign-In funcional
 app.use(helmet({
     permissionsPolicy: {
         camera: ["'self'"],
     },
     contentSecurityPolicy: {
-        directives: cspConfig.directives,
+        directives: {
+            ...cspConfig.directives,
+            // ✅ AGREGADO: Garantizar que styleSrcElem sea reconocido por helmet
+            styleSrcElem: cspConfig.directives.styleSrcElem || cspConfig.directives.styleSrc,
+            scriptSrcElem: cspConfig.directives.scriptSrcElem || cspConfig.directives.scriptSrc
+        },
         reportOnly: cspConfig.reportOnly
     }
 }));
