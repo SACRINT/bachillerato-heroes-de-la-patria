@@ -138,24 +138,33 @@ app.set('trust proxy', 1);
 // Registrar seguridad ANTES de helmet para asegurar que los headers CSP no sean overridden
 app.use(securityMiddleware);
 
-// ✅ CSP HABILITADO EN HELMET - FIJO 18 NOV 2025
-// Usar securityMiddleware + cspConfig para desarrollo local
-// En producción (Vercel), el CSP se define en vercel.json
-// FECHA: 18 Nov 2025 - Habilitado para desarrollo local, TinyMCE + Google Sign-In funcional
-app.use(helmet({
+// ✅ CSP CONDICIONAL - Solo en desarrollo local
+// En producción Vercel, el CSP se define en vercel.json para evitar sobrescritura
+// FECHA: 18 Nov 2025 - Fix definitivo Google OAuth CSP
+const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL;
+const helmetConfig = {
     permissionsPolicy: {
         camera: ["'self'"],
-    },
-    contentSecurityPolicy: {
+    }
+};
+
+// Solo aplicar CSP en desarrollo local, NO en Vercel
+if (!isProduction) {
+    helmetConfig.contentSecurityPolicy = {
         directives: {
             ...cspConfig.directives,
-            // ✅ AGREGADO: Garantizar que styleSrcElem sea reconocido por helmet
             styleSrcElem: cspConfig.directives.styleSrcElem || cspConfig.directives.styleSrc,
             scriptSrcElem: cspConfig.directives.scriptSrcElem || cspConfig.directives.scriptSrc
         },
         reportOnly: cspConfig.reportOnly
-    }
-}));
+    };
+} else {
+    // En producción (Vercel), desactivar CSP de helmet
+    // El CSP viene de vercel.json (línea 41)
+    helmetConfig.contentSecurityPolicy = false;
+}
+
+app.use(helmet(helmetConfig));
 
 // CORS Configuration
 const corsOptions = {
