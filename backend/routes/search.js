@@ -8,7 +8,7 @@
 const express = require('express');
 const router = express.Router();
 const searchService = require('../services/search-service');
-const { authMiddleware } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 
 /**
  * GET /api/search/advanced
@@ -132,7 +132,7 @@ router.get('/suggestions', async (req, res) => {
  * Obtener términos más buscados (analytics)
  * Auth: Admin only
  */
-router.get('/analytics/top-terms', authMiddleware, async (req, res) => {
+router.get('/analytics/top-terms', authenticateToken, async (req, res) => {
     try {
         // Solo admins pueden ver analytics
         if (req.user.role !== 'admin') {
@@ -172,7 +172,7 @@ router.get('/analytics/top-terms', authMiddleware, async (req, res) => {
  * Obtener resumen de analytics de búsqueda
  * Auth: Admin only
  */
-router.get('/analytics/summary', authMiddleware, async (req, res) => {
+router.get('/analytics/summary', authenticateToken, async (req, res) => {
     try {
         // Solo admins pueden ver analytics
         if (req.user.role !== 'admin') {

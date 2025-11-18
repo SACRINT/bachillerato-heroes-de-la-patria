@@ -16,7 +16,7 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
-const { authMiddleware } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 const pool = require('../config/database');
 const devLogger = require('../utils/devLogger');
 
@@ -48,7 +48,7 @@ const RETRY_DELAYS = [1000, 5000, 15000]; // 1s, 5s, 15s
  * GET /api/webhooks
  * Listar todos los webhooks del tenant/usuario
  */
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
     try {
         const tenantId = req.tenantId || req.user.tenant_id;
 
@@ -88,7 +88,7 @@ router.get('/', authMiddleware, async (req, res) => {
  *   description: "Webhook para sincronización"
  * }
  */
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
     try {
         const { url, events = [], description = '' } = req.body;
         const tenantId = req.tenantId || req.user.tenant_id;
@@ -163,7 +163,7 @@ router.post('/', authMiddleware, async (req, res) => {
  * GET /api/webhooks/:id
  * Obtener detalles de un webhook específico
  */
-router.get('/:id', authMiddleware, async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
     try {
         const { id } = req.params;
         const tenantId = req.tenantId || req.user.tenant_id;
@@ -203,7 +203,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
  * PATCH /api/webhooks/:id
  * Actualizar webhook (URL, eventos, estado)
  */
-router.patch('/:id', authMiddleware, async (req, res) => {
+router.patch('/:id', authenticateToken, async (req, res) => {
     try {
         const { id } = req.params;
         const { url, events, description, status } = req.body;
@@ -298,7 +298,7 @@ router.patch('/:id', authMiddleware, async (req, res) => {
  * DELETE /api/webhooks/:id
  * Eliminar un webhook
  */
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
     try {
         const { id } = req.params;
         const tenantId = req.tenantId || req.user.tenant_id;
@@ -340,7 +340,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
  * GET /api/webhooks/:id/deliveries
  * Obtener historial de deliveries de un webhook
  */
-router.get('/:id/deliveries', authMiddleware, async (req, res) => {
+router.get('/:id/deliveries', authenticateToken, async (req, res) => {
     try {
         const { id } = req.params;
         const { limit = 50, offset = 0 } = req.query;
@@ -392,7 +392,7 @@ router.get('/:id/deliveries', authMiddleware, async (req, res) => {
  * POST /api/webhooks/:id/test
  * Enviar un evento de prueba al webhook
  */
-router.post('/:id/test', authMiddleware, async (req, res) => {
+router.post('/:id/test', authenticateToken, async (req, res) => {
     try {
         const { id } = req.params;
         const tenantId = req.tenantId || req.user.tenant_id;

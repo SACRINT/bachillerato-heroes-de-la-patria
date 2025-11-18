@@ -13,7 +13,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { authMiddleware } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 const devLogger = require('../utils/devLogger');
 
 /**
@@ -28,7 +28,7 @@ const devLogger = require('../utils/devLogger');
  *   metadata: object (opcional)
  * }
  */
-router.post('/send-to-user', authMiddleware, async (req, res) => {
+router.post('/send-to-user', authenticateToken, async (req, res) => {
     try {
         const { userId, type = 'info', message, metadata = {} } = req.body;
 
@@ -88,7 +88,7 @@ router.post('/send-to-user', authMiddleware, async (req, res) => {
  *   metadata: object (opcional)
  * }
  */
-router.post('/send-to-role', authMiddleware, async (req, res) => {
+router.post('/send-to-role', authenticateToken, async (req, res) => {
     try {
         const { role, type = 'info', message, metadata = {} } = req.body;
 
@@ -147,7 +147,7 @@ router.post('/send-to-role', authMiddleware, async (req, res) => {
  *   metadata: object (opcional)
  * }
  */
-router.post('/broadcast', authMiddleware, async (req, res) => {
+router.post('/broadcast', authenticateToken, async (req, res) => {
     try {
         // Solo admins pueden hacer broadcast
         if (req.user.role !== 'admin') {
@@ -213,7 +213,7 @@ router.post('/broadcast', authMiddleware, async (req, res) => {
  *   metadata: object (opcional)
  * }
  */
-router.post('/send-to-tenant', authMiddleware, async (req, res) => {
+router.post('/send-to-tenant', authenticateToken, async (req, res) => {
     try {
         const { tenantId, type = 'info', message, metadata = {} } = req.body;
 
@@ -265,7 +265,7 @@ router.post('/send-to-tenant', authMiddleware, async (req, res) => {
  * GET /api/notifications-realtime/history/:userId
  * Obtener historial de notificaciones de un usuario
  */
-router.get('/history/:userId', authMiddleware, async (req, res) => {
+router.get('/history/:userId', authenticateToken, async (req, res) => {
     try {
         const { userId } = req.params;
         const limit = parseInt(req.query.limit) || 50;
@@ -307,7 +307,7 @@ router.get('/history/:userId', authMiddleware, async (req, res) => {
  * GET /api/notifications-realtime/online-users
  * Obtener lista de usuarios conectados (solo admins)
  */
-router.get('/online-users', authMiddleware, async (req, res) => {
+router.get('/online-users', authenticateToken, async (req, res) => {
     try {
         if (req.user.role !== 'admin') {
             return res.status(403).json({
@@ -344,7 +344,7 @@ router.get('/online-users', authMiddleware, async (req, res) => {
  * Endpoint de prueba para testear notificaciones
  * (Solo para desarrollo/testing)
  */
-router.post('/example', authMiddleware, async (req, res) => {
+router.post('/example', authenticateToken, async (req, res) => {
     try {
         const socketService = req.app.socketService;
         if (!socketService) {

@@ -6,7 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const reportingService = require('../services/reporting-service');
-const { authMiddleware } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 
 // Middleware para verificar rol admin
 const adminOnly = (req, res, next) => {
@@ -20,7 +20,7 @@ const adminOnly = (req, res, next) => {
  * GET /api/reports/students
  * Generar reporte de estudiantes
  */
-router.get('/students', authMiddleware, adminOnly, async (req, res) => {
+router.get('/students', authenticateToken, adminOnly, async (req, res) => {
     try {
         const { period, grade, status } = req.query;
         const report = await reportingService.generateStudentsReport({ period, grade, status });
@@ -34,7 +34,7 @@ router.get('/students', authMiddleware, adminOnly, async (req, res) => {
  * GET /api/reports/financial
  * Generar reporte financiero
  */
-router.get('/financial', authMiddleware, adminOnly, async (req, res) => {
+router.get('/financial', authenticateToken, adminOnly, async (req, res) => {
     try {
         const { dateFrom, dateTo } = req.query;
         const report = await reportingService.generateFinancialReport({ from: dateFrom, to: dateTo });
@@ -48,7 +48,7 @@ router.get('/financial', authMiddleware, adminOnly, async (req, res) => {
  * GET /api/reports/approvals
  * Generar reporte de aprobaciones pendientes
  */
-router.get('/approvals', authMiddleware, adminOnly, async (req, res) => {
+router.get('/approvals', authenticateToken, adminOnly, async (req, res) => {
     try {
         const report = await reportingService.generateApprovalsReport();
         res.json(report);
@@ -61,7 +61,7 @@ router.get('/approvals', authMiddleware, adminOnly, async (req, res) => {
  * GET /api/reports/attendance
  * Generar reporte de asistencia
  */
-router.get('/attendance', authMiddleware, adminOnly, async (req, res) => {
+router.get('/attendance', authenticateToken, adminOnly, async (req, res) => {
     try {
         const { studentId, dateFrom, dateTo } = req.query;
         const report = await reportingService.generateAttendanceReport({
@@ -78,7 +78,7 @@ router.get('/attendance', authMiddleware, adminOnly, async (req, res) => {
  * GET /api/reports/predict/:metric
  * Predicción de tendencias (ML básico)
  */
-router.get('/predict/:metric', authMiddleware, adminOnly, async (req, res) => {
+router.get('/predict/:metric', authenticateToken, adminOnly, async (req, res) => {
     try {
         const { metric } = req.params;
         const prediction = await reportingService.predictTrend(metric);
@@ -92,7 +92,7 @@ router.get('/predict/:metric', authMiddleware, adminOnly, async (req, res) => {
  * POST /api/reports/schedule
  * Programar envío de reporte
  */
-router.post('/schedule', authMiddleware, adminOnly, async (req, res) => {
+router.post('/schedule', authenticateToken, adminOnly, async (req, res) => {
     try {
         const schedule = await reportingService.scheduleReport(req.body);
         res.json(schedule);
