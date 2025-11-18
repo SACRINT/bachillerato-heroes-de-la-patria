@@ -51,7 +51,7 @@ router.get('/', async (req, res) => {
                     fecha,
                     estado,
                     notas,
-                    fecha_registro
+                    created_at
                 FROM ingresos
                 ORDER BY fecha DESC
                 LIMIT 100
@@ -80,7 +80,7 @@ router.get('/', async (req, res) => {
                     estado,
                     proveedor,
                     notas,
-                    fecha_registro
+                    created_at
                 FROM gastos
                 ORDER BY fecha DESC
                 LIMIT 100
@@ -108,7 +108,7 @@ router.get('/', async (req, res) => {
                     fecha_vencimiento,
                     estado,
                     notas,
-                    fecha_registro
+                    created_at
                 FROM pagos_pendientes
                 WHERE estado = 'Pendiente'
                 ORDER BY fecha_vencimiento ASC

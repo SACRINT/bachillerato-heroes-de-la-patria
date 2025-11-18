@@ -8,7 +8,7 @@
 const express = require('express');
 const router = express.Router();
 const searchService = require('../services/search-service');
-const { authMiddleware } = require('../middleware/authMiddleware');
+const { authMiddleware } = require('../middleware/auth');
 
 /**
  * GET /api/search/advanced

@@ -100,12 +100,18 @@ async function tenantContextAdvanced(req, res, next) {
     // Establecer tenant_id en la sesión de PostgreSQL (RLS)
     const client = await pool.connect();
     try {
-      await client.query('SET app.current_tenant_id = $1', [tenantId]);
+      // Validar formato UUID antes de usar interpolación (seguridad crítica)
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(tenantId)) {
+        throw new Error('Invalid tenant ID format');
+      }
+
+      // PostgreSQL no permite placeholders en SET LOCAL, usar valor literal
+      await client.query(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
 
       // Si el usuario es super-admin, permitir ver todos los tenants
       const isSuperAdmin = req.user?.role === 'super_admin';
       if (isSuperAdmin) {
-        await client.query('SET app.is_super_admin = TRUE');
+        await client.query('SET LOCAL app.is_super_admin = TRUE');
         logger.debug('[TENANT-CONTEXT] Super-admin mode activado', {
           userId: req.user.id,
         });
@@ -114,7 +120,7 @@ async function tenantContextAdvanced(req, res, next) {
       // Adjuntar información de tenant al request
       req.tenant = {
         id: tenantId,
-        name: tenant.name,
+        name: tenant.nombre,
         subdomain: tenant.subdomain,
         domain: tenant.domain,
         plan: tenant.plan,
@@ -127,7 +133,7 @@ async function tenantContextAdvanced(req, res, next) {
 
       logger.info('[TENANT-CONTEXT] Contexto establecido exitosamente', {
         tenantId,
-        tenantName: tenant.name,
+        tenantName: tenant.nombre,
         strategy: detectionStrategy,
         userId: req.user?.id,
         isSuperAdmin,
@@ -194,7 +200,7 @@ function extractSubdomain(hostname) {
 async function getTenantBySubdomain(subdomain) {
   try {
     const result = await pool.query(
-      'SELECT id, name, subdomain, domain, plan, status, config_json FROM tenants WHERE subdomain = $1 AND status = $2',
+      'SELECT id, nombre, subdomain, domain, plan, status, config_json FROM tenants WHERE subdomain = $1 AND status = $2',
       [subdomain, 'active']
     );
 
@@ -214,7 +220,7 @@ async function getTenantBySubdomain(subdomain) {
 async function getTenantByDomain(domain) {
   try {
     const result = await pool.query(
-      'SELECT id, name, subdomain, domain, plan, status, config_json FROM tenants WHERE domain = $1 AND status = $2',
+      'SELECT id, nombre, subdomain, domain, plan, status, config_json FROM tenants WHERE domain = $1 AND status = $2',
       [domain, 'active']
     );
 
@@ -234,7 +240,7 @@ async function getTenantByDomain(domain) {
 async function getTenantById(tenantId) {
   try {
     const result = await pool.query(
-      'SELECT id, name, subdomain, domain, plan, status, config_json FROM tenants WHERE id = $1',
+      'SELECT id, nombre, subdomain, domain, plan, status, config_json FROM tenants WHERE id = $1',
       [tenantId]
     );
 
