@@ -20,12 +20,18 @@
 (function() {
   'use strict';
 
+  const MAX_RETRIES = 50; // Máximo 50 reintentos = 5 segundos
+  let retryCount = 0;
+
   // ✅ Esperar a que auth.js y api-client.js se carguen
   function initializeBridge() {
+    retryCount++;
+
     // Verificar que auth está disponible
     if (!window.getAuthToken || typeof window.getAuthToken !== 'function') {
-      if (typeof logger !== 'undefined') {
-        logger.warn('[AUTH-API-BRIDGE]', 'getAuthToken aún no disponible, reintentando...');
+      if (retryCount > MAX_RETRIES) {
+        console.error('[AUTH-API-BRIDGE] ❌ getAuthToken nunca estuvo disponible después de 5 segundos. Abortando.');
+        return;
       }
       setTimeout(initializeBridge, 100); // Reintentar en 100ms
       return;
@@ -33,8 +39,9 @@
 
     // Verificar que api-client está disponible
     if (!window.apiClient || typeof window.apiClient.setTokenProvider !== 'function') {
-      if (typeof logger !== 'undefined') {
-        logger.warn('[AUTH-API-BRIDGE]', 'apiClient aún no disponible, reintentando...');
+      if (retryCount > MAX_RETRIES) {
+        console.error('[AUTH-API-BRIDGE] ❌ apiClient nunca estuvo disponible después de 5 segundos. Abortando.');
+        return;
       }
       setTimeout(initializeBridge, 100); // Reintentar en 100ms
       return;
@@ -43,9 +50,7 @@
     // ✅ Bridge establecido: inyectar provider en api-client
     window.apiClient.setTokenProvider(window.getAuthToken);
 
-    if (typeof logger !== 'undefined') {
-      logger.info('[AUTH-API-BRIDGE]', 'Bridge auth ↔ api-client establecido correctamente');
-    }
+    console.log('[AUTH-API-BRIDGE] ✅ Bridge auth ↔ api-client establecido correctamente');
   }
 
   // ✅ Iniciar bridge cuando el DOM esté listo
@@ -67,7 +72,9 @@
       authAvailable: typeof window.getAuthToken === 'function',
       apiClientAvailable: typeof window.apiClient === 'object',
       tokenProviderInjected: window.apiClient && typeof window.apiClient._tokenProvider === 'function',
-      description: 'Bridge para desacoplar auth.js de api-client.js'
+      description: 'Bridge para desacoplar auth.js de api-client.js',
+      retryCount: retryCount,
+      maxRetries: MAX_RETRIES
     };
   };
 
