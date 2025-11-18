@@ -16,7 +16,7 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
-const { authMiddleware } = require('../middleware/authMiddleware');
+const { authMiddleware } = require('../middleware/auth');
 const pool = require('../config/database');
 const devLogger = require('../utils/devLogger');
 

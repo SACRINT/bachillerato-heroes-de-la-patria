@@ -6,7 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const reportingService = require('../services/reporting-service');
-const { authMiddleware } = require('../middleware/authMiddleware');
+const { authMiddleware } = require('../middleware/auth');
 
 // Middleware para verificar rol admin
 const adminOnly = (req, res, next) => {
