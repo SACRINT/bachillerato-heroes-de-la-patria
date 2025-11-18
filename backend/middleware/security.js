@@ -19,18 +19,23 @@ function securityHeadersMiddleware(req, res, next) {
     // Protección contra Clickjacking
     res.setHeader('X-Frame-Options', 'DENY');
 
-    // Content Security Policy (CSP) - ROBUSTA Y CORREGIDA
-    // 🔐 ACTUALIZADO: 18 Nov 2025 - Fix Google OAuth gsi/style CSP
-    res.setHeader(
-        'Content-Security-Policy',
-        "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live blob:; " +
-        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://accounts.google.com/gsi/style https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com; " +
-        "connect-src 'self' http://localhost:3000 http://localhost:3001 http://localhost:3002 http://localhost:3003 http://localhost:3004 http://localhost:3005 http://localhost:8000 http://127.0.0.1:8080 ws: wss: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live; " +
-        "img-src 'self' data: blob: https: https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com; " +
-        "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.tiny.cloud https://*.tiny.cloud; " +
-        "frame-src 'self' https://cdn.tiny.cloud https://*.tiny.cloud https://www.google.com https://accounts.google.com https://maps.google.com https://forms.gle https://vercel.live https://*.vercel.live;"
-    );
+    // ❌ CSP REMOVIDO - Helmet maneja CSP con config/csp-config.js
+    // 🔐 RAZÓN: Evitar conflictos entre múltiples configuraciones de CSP
+    // 🔐 FECHA: 18 Nov 2025 - Helmet tiene configuración más detallada en csp-config.js
+    // 🔐 UBICACIÓN: backend/config/csp-config.js (líneas 40-141) incluye Google OAuth gsi/style
+    // 🔐 ARQUITECTURA: helmet (línea 145 server.js) aplica CSP después de este middleware
+    // NOTA: En producción Vercel, el CSP se define en vercel.json (línea 41)
+    //
+    // res.setHeader(
+    //     'Content-Security-Policy',
+    //     "default-src 'self'; " +
+    //     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live blob:; " +
+    //     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://accounts.google.com/gsi/style https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com; " +
+    //     "connect-src 'self' http://localhost:3000 http://localhost:3001 http://localhost:3002 http://localhost:3003 http://localhost:3004 http://localhost:3005 http://localhost:8000 http://127.0.0.1:8080 ws: wss: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live; " +
+    //     "img-src 'self' data: blob: https: https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com; " +
+    //     "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.tiny.cloud https://*.tiny.cloud; " +
+    //     "frame-src 'self' https://cdn.tiny.cloud https://*.tiny.cloud https://www.google.com https://accounts.google.com https://maps.google.com https://forms.gle https://vercel.live https://*.vercel.live;"
+    // );
 
     // Strict Transport Security (HSTS)
     if (process.env.NODE_ENV === 'production') {
