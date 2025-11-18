@@ -141,7 +141,9 @@ app.use(securityMiddleware);
 // ✅ CSP CONDICIONAL - Solo en desarrollo local
 // En producción Vercel, el CSP se define en vercel.json para evitar sobrescritura
 // FECHA: 18 Nov 2025 - Fix definitivo Google OAuth CSP
-const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL;
+// FIX: Vercel automáticamente setea NODE_ENV=production en deployments
+const isProduction = process.env.NODE_ENV === 'production';
+console.log(`🔍 [SERVER] Detección de entorno: NODE_ENV=${process.env.NODE_ENV}, isProduction=${isProduction}`);
 const helmetConfig = {
     permissionsPolicy: {
         camera: ["'self'"],

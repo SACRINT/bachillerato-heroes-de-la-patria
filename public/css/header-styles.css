@@ -5,6 +5,50 @@
  * Fecha: 18 Nov 2025
  */
 
+/* ✅ FIX (18 Nov 2025): Asegurar que modales estén ocultos por defecto */
+/* Bootstrap modals con clase .fade deben estar ocultos hasta que se muestren con .show */
+.modal.fade {
+    display: none !important;
+}
+
+.modal.fade.show {
+    display: block !important;
+}
+
+/* ✅ FIX: Asegurar que el navbar se muestre correctamente en desktop */
+/* Forzar que el menú de navegación se muestre en pantallas grandes */
+@media (min-width: 992px) {
+    .navbar-expand-lg .navbar-collapse {
+        display: flex !important;
+        flex-basis: auto;
+    }
+
+    .navbar-expand-lg .navbar-nav {
+        flex-direction: row;
+    }
+
+    .navbar-expand-lg .navbar-toggler {
+        display: none;
+    }
+}
+
+/* Asegurar que el botón hamburguesa funcione en móvil */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        flex-basis: 100%;
+        flex-grow: 1;
+        align-items: center;
+    }
+
+    .navbar-collapse.collapse:not(.show) {
+        display: none;
+    }
+
+    .navbar-collapse.collapse.show {
+        display: block !important;
+    }
+}
+
 /* Search Container */
 .search-container {
     max-width: 400px;

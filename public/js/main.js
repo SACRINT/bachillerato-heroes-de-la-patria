@@ -422,9 +422,25 @@ async function loadHeaderFooter() {
                 headerContainer.insertAdjacentHTML('beforeend', sanitized);
                 console.log('✅ [MAIN.JS] Header HTML inyectado en el DOM');
 
-                // ✅ FASE 1.3: Los scripts ya se cargan de forma estática en header.html
-                // (nested-dropdowns.js y admin-auth.js en líneas 812-813)
-                // ELIMINADO: Carga dinámica que causaba race conditions
+                // ✅ FIX (18 Nov 2025): Cargar scripts del header dinámicamente
+                // Los <script> tags inyectados con insertAdjacentHTML NO se ejecutan por seguridad
+                // Debemos cargarlos manualmente con createElement + appendChild
+                console.log('📦 [MAIN.JS] Cargando scripts del header dinámicamente...');
+
+                const headerScripts = [
+                    'js/nested-dropdowns.js?v=2024091401',
+                    'js/admin-auth.js?v=2024091401'
+                ];
+
+                headerScripts.forEach(src => {
+                    if (!document.querySelector(`script[src="${src}"]`)) {
+                        const script = document.createElement('script');
+                        script.src = src;
+                        script.onload = () => console.log(`✅ [MAIN.JS] Script cargado: ${src}`);
+                        script.onerror = () => console.warn(`⚠️ [MAIN.JS] Error cargando: ${src}`);
+                        document.head.appendChild(script);
+                    }
+                });
 
                 // 🎯 RE-INICIALIZAR COMPONENTES BOOTSTRAP después de inyectar HTML
                 // Bootstrap necesita reinicializar dropdowns y popovers tras inyección dinámica
