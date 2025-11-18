@@ -745,9 +745,21 @@ class HeroesPatriaApp {
 // === INITIALIZE APP ===
 let app;
 
+// 🔒 Wait for DOMPurify before initializing app
+function waitForDOMPurifyBeforeInit() {
+    if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+        // DOMPurify is ready
+        app = new HeroesPatriaApp();
+        return;
+    }
+    // DOMPurify not ready yet, retry after 50ms
+    setTimeout(waitForDOMPurifyBeforeInit, 50);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    app = new HeroesPatriaApp();
-    
+    // Esperar a que DOMPurify esté disponible antes de inicializar la app
+    waitForDOMPurifyBeforeInit();
+
     // Asegurar que las funciones globales estén disponibles
     // REMOVIDO - funciones movidas a admin-auth.js
     // window.showAdminPanelAuth = showAdminPanelAuth;

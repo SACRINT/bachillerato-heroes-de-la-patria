@@ -61,10 +61,22 @@ function loadNextEventHandler() {
 
 loadNextEventHandler();
 
+// 🔒 WAIT FOR DOMPURIFY BEFORE INITIALIZING
+function waitForDOMPurifyAndInitialize() {
+    if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+        // DOMPurify is ready, initialize
+        initializeChatbot();
+        loadHeaderFooter();
+        document.dispatchEvent(new Event('dompurifyReady'));
+        return;
+    }
+    // DOMPurify not ready yet, retry after 50ms
+    setTimeout(waitForDOMPurifyAndInitialize, 50);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar componentes principales
-    initializeChatbot();
-    loadHeaderFooter();
+    // Esperar a que DOMPurify esté disponible antes de inicializar
+    waitForDOMPurifyAndInitialize();
 
     // 🏢 LISTENER: Cuando el tenant config esté cargado, actualizar header
     document.addEventListener('tenantConfigLoaded', updateHeaderWithTenantConfig);
@@ -109,7 +121,11 @@ function createDarkModeToggle() {
     button.className = 'nav-link btn btn-link border-0 bg-transparent';
     button.id = 'darkModeToggle';
     button.setAttribute('aria-label', 'Alternar modo oscuro');
-    button.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-moon" id="darkModeIcon"></i>', 'simple'));
+    // 🔒 Check if DOMPurify is available
+    const sanitizedMoonIcon = (typeof window.DOMPurify !== 'undefined' && DOMPurify.sanitize)
+        ? DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-moon" id="darkModeIcon"></i>', 'simple'))
+        : '<i class="fas fa-moon" id="darkModeIcon"></i>';
+    button.innerHTML = sanitizedMoonIcon;
     
     button.addEventListener('click', toggleDarkMode);
     
@@ -150,7 +166,11 @@ function createChatbot() {
     const chatButton = document.createElement('div');
     chatButton.id = 'chatbot-toggle';
     chatButton.className = 'chatbot-toggle';
-    chatButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'));
+    // 🔒 Check if DOMPurify is available before using it
+    const sanitizedIcon = (typeof window.DOMPurify !== 'undefined' && DOMPurify.sanitize)
+        ? DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'))
+        : '<i class="fas fa-comments"></i>';
+    chatButton.innerHTML = sanitizedIcon;
     chatButton.addEventListener('click', toggleChatbot);
     
     // Crear ventana del chatbot
@@ -220,10 +240,17 @@ function toggleChatbot() {
         
         const chatButton = document.getElementById('chatbot-toggle');
         if (chatButton) {
+            // 🔒 Check if DOMPurify is available
             if (chatWindow.classList.contains('d-none')) {
-                chatButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'));
+                const sanitizedComments = (typeof window.DOMPurify !== 'undefined' && DOMPurify.sanitize)
+                    ? DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'))
+                    : '<i class="fas fa-comments"></i>';
+                chatButton.innerHTML = sanitizedComments;
             } else {
-                chatButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-times"></i>', 'simple'));
+                const sanitizedTimes = (typeof window.DOMPurify !== 'undefined' && DOMPurify.sanitize)
+                    ? DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-times"></i>', 'simple'))
+                    : '<i class="fas fa-times"></i>';
+                chatButton.innerHTML = sanitizedTimes;
             }
         }
     }
@@ -232,9 +259,13 @@ function toggleChatbot() {
 function closeChatbot() {
     const chatWindow = document.getElementById('chatbot-window');
     const chatButton = document.getElementById('chatbot-toggle');
-    
+
     chatWindow.classList.add('d-none');
-    chatButton.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'));
+    // 🔒 Check if DOMPurify is available
+    const sanitizedIcon = (typeof window.DOMPurify !== 'undefined' && DOMPurify.sanitize)
+        ? DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'))
+        : '<i class="fas fa-comments"></i>';
+    chatButton.innerHTML = sanitizedIcon;
 }
 
 function sendMessage() {
