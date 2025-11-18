@@ -1092,6 +1092,34 @@ const app = express();
 // 🔧 FIX CRÍTICO: Confiar en proxy de Vercel para X-Forwarded-For headers
 app.set('trust proxy', 1);
 
+// --- Security Middleware ---
+// ✅ FIX (18 Nov 2025): CSP for Vercel serverless functions
+// Vercel.json CSP ONLY applies to static files, NOT to API routes/HTML responses
+// We MUST set CSP headers manually here for HTML pages served through API
+const helmet = require('helmet');
+
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://accounts.google.com", "https://www.googleapis.com", "https://cdn.tiny.cloud", "https://*.tiny.cloud", "https://sp.tinymce.com", "https://vercel.live", "https://*.vercel.live", "blob:"],
+            scriptSrcElem: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://accounts.google.com", "https://www.googleapis.com", "https://cdn.tiny.cloud", "https://*.tiny.cloud", "https://sp.tinymce.com", "https://vercel.live", "https://*.vercel.live"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://accounts.google.com", "https://accounts.google.com/gsi/style", "https://cdn.tiny.cloud", "https://*.tiny.cloud"],
+            styleSrcElem: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://accounts.google.com", "https://accounts.google.com/gsi/style", "https://cdn.tiny.cloud", "https://*.tiny.cloud"],
+            connectSrc: ["'self'", "https://bge-heroesdelapatria.vercel.app", "https://sp.tinymce.com", "https://www.google-analytics.com", "https://www.googletagmanager.com", "https:", "ws:", "wss:"],
+            imgSrc: ["'self'", "data:", "blob:", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://cdn.tiny.cloud", "https://*.tiny.cloud", "https:"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://cdn.tiny.cloud", "https://*.tiny.cloud"],
+            frameSrc: ["'self'", "https://accounts.google.com", "https://www.google.com", "https://maps.google.com", "https://forms.gle", "https://vercel.live", "https://*.vercel.live"],
+            objectSrc: ["'none'"],
+            formAction: ["'self'"],
+            baseUri: ["'self'"]
+        }
+    },
+    permissionsPolicy: {
+        camera: ["'self'"]
+    }
+}));
+
 // Middleware
 app.use(cookieParser());
 app.use(express.json());
