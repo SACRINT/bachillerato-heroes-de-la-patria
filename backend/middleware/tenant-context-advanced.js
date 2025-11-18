@@ -100,12 +100,18 @@ async function tenantContextAdvanced(req, res, next) {
     // Establecer tenant_id en la sesión de PostgreSQL (RLS)
     const client = await pool.connect();
     try {
-      await client.query('SET app.current_tenant_id = $1', [tenantId]);
+      // Validar formato UUID antes de usar interpolación (seguridad crítica)
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(tenantId)) {
+        throw new Error('Invalid tenant ID format');
+      }
+
+      // PostgreSQL no permite placeholders en SET LOCAL, usar valor literal
+      await client.query(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
 
       // Si el usuario es super-admin, permitir ver todos los tenants
       const isSuperAdmin = req.user?.role === 'super_admin';
       if (isSuperAdmin) {
-        await client.query('SET app.is_super_admin = TRUE');
+        await client.query('SET LOCAL app.is_super_admin = TRUE');
         logger.debug('[TENANT-CONTEXT] Super-admin mode activado', {
           userId: req.user.id,
         });
