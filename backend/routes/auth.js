@@ -523,8 +523,12 @@ router.post('/invalidate-user-sessions', authenticateToken, requireAdmin, [
 
 const fs = require('fs').promises;
 const path = require('path');
+const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 const { getPasswordGenerator } = require('../utils/passwordGenerator');
 const passwordGenerator = getPasswordGenerator();
+const emailService = require('../services/emailService');
+const pool = require('../config/database');
 
 // Rutas de archivos
 const REGISTRATION_REQUESTS_PATH = path.join(__dirname, '../data/registration-requests.json');
@@ -822,6 +826,331 @@ router.post('/google', async (req, res) => {
             success: false,
             error: 'Error procesando autenticación con Google',
             message: error.message
+        });
+    }
+});
+
+// ============================================
+// REGISTRO PÚBLICO CON VERIFICACIÓN DE EMAIL
+// ============================================
+
+// Validaciones para registro público
+const publicRegisterValidation = [
+    body('email')
+        .isEmail()
+        .normalizeEmail()
+        .withMessage('Email válido requerido'),
+    body('password')
+        .isLength({ min: 8 })
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+        .withMessage('Contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número'),
+    body('nombre')
+        .isLength({ min: 2, max: 100 })
+        .withMessage('Nombre entre 2 y 100 caracteres'),
+    body('apellido_paterno')
+        .isLength({ min: 2, max: 100 })
+        .withMessage('Apellido paterno entre 2 y 100 caracteres')
+];
+
+/**
+ * POST /api/auth/public-register
+ * Registro público - Crea usuario pendiente y envía email de verificación
+ */
+router.post('/public-register', registerLimiter, publicRegisterValidation, async (req, res) => {
+    try {
+        // Validar entrada
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                error: 'Datos de entrada inválidos',
+                details: errors.array()
+            });
+        }
+
+        const { email, password, nombre, apellido_paterno, apellido_materno = '' } = req.body;
+
+        debugLog.log('AUTH', `[PUBLIC-REGISTER] Intento de registro para email=${maskEmail(email)}`);
+
+        // Verificar si el email ya existe
+        const checkQuery = 'SELECT id, email_verified FROM usuarios WHERE email = $1';
+        const existingUser = await pool.query(checkQuery, [email.toLowerCase()]);
+
+        if (existingUser.rows.length > 0) {
+            const user = existingUser.rows[0];
+            if (user.email_verified) {
+                return res.status(409).json({
+                    success: false,
+                    error: 'Email ya registrado',
+                    message: 'Este email ya está registrado. Intenta iniciar sesión o recuperar tu contraseña.'
+                });
+            } else {
+                // Usuario existe pero no verificado - reenviar email
+                debugLog.log('AUTH', `[PUBLIC-REGISTER] Reenviando verificación para email=${maskEmail(email)}`);
+            }
+        }
+
+        // Generar hash de contraseña
+        const salt = await bcrypt.genSalt(10);
+        const passwordHash = await bcrypt.hash(password, salt);
+
+        // Generar username desde email
+        const username = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '_');
+
+        let userId;
+
+        if (existingUser.rows.length > 0) {
+            // Actualizar usuario existente
+            userId = existingUser.rows[0].id;
+            const updateQuery = `
+                UPDATE usuarios SET
+                    password_hash = $1,
+                    nombre = $2,
+                    apellido_paterno = $3,
+                    apellido_materno = $4
+                WHERE id = $5
+            `;
+            await pool.query(updateQuery, [passwordHash, nombre, apellido_paterno, apellido_materno, userId]);
+        } else {
+            // Crear nuevo usuario (pendiente de verificación)
+            const insertQuery = `
+                INSERT INTO usuarios (
+                    uuid, email, username, password_hash, role, status,
+                    nombre, apellido_paterno, apellido_materno, email_verified, created_at
+                ) VALUES (
+                    gen_random_uuid(), $1, $2, $3, 'estudiante', 'pendiente',
+                    $4, $5, $6, FALSE, NOW()
+                ) RETURNING id
+            `;
+            const result = await pool.query(insertQuery, [
+                email.toLowerCase(), username, passwordHash, nombre, apellido_paterno, apellido_materno
+            ]);
+            userId = result.rows[0].id;
+        }
+
+        // Generar token de verificación
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas
+
+        // Eliminar tokens anteriores para este usuario
+        await pool.query('DELETE FROM email_verification_tokens WHERE user_id = $1', [userId]);
+
+        // Insertar nuevo token
+        const tokenQuery = `
+            INSERT INTO email_verification_tokens (user_id, token, type, expires_at)
+            VALUES ($1, $2, 'registration', $3)
+        `;
+        await pool.query(tokenQuery, [userId, verificationToken, expiresAt]);
+
+        // Construir URL de verificación
+        const baseUrl = process.env.APP_URL || 'https://bge-heroesdelapatria.vercel.app';
+        const verificationUrl = `${baseUrl}/verify-email.html?token=${verificationToken}`;
+
+        // Enviar email de verificación
+        try {
+            await emailService.sendEmail({
+                to: email,
+                subject: 'Verifica tu Email - BGE Héroes de la Patria',
+                template: 'email-verification',
+                data: {
+                    nombre: nombre,
+                    verificationUrl: verificationUrl,
+                    expiresIn: '24 horas',
+                    currentYear: new Date().getFullYear()
+                }
+            });
+
+            debugLog.log('AUTH', `[PUBLIC-REGISTER] Email de verificación enviado a ${maskEmail(email)}`);
+        } catch (emailError) {
+            debugLog.error('AUTH', `[PUBLIC-REGISTER] Error enviando email: ${emailError.message}`);
+            // No fallar el registro si el email falla, pero logear
+        }
+
+        res.status(201).json({
+            success: true,
+            message: 'Registro exitoso. Revisa tu correo electrónico para verificar tu cuenta.',
+            data: {
+                email: email,
+                requiresVerification: true
+            }
+        });
+
+    } catch (error) {
+        debugLog.error('AUTH', `[PUBLIC-REGISTER] Error: ${error.message}`);
+        res.status(500).json({
+            success: false,
+            error: 'Error en el registro',
+            message: 'No se pudo completar el registro. Intenta de nuevo más tarde.'
+        });
+    }
+});
+
+/**
+ * POST /api/auth/verify-email
+ * Verificar token de email y activar cuenta
+ */
+router.post('/verify-email', async (req, res) => {
+    try {
+        const { token } = req.body;
+
+        if (!token) {
+            return res.status(400).json({
+                success: false,
+                error: 'Token requerido',
+                message: 'Debes proporcionar el token de verificación.'
+            });
+        }
+
+        debugLog.log('AUTH', `[VERIFY-EMAIL] Verificando token=${maskToken(token)}`);
+
+        // Buscar token válido
+        const tokenQuery = `
+            SELECT evt.*, u.email, u.nombre
+            FROM email_verification_tokens evt
+            JOIN usuarios u ON u.id = evt.user_id
+            WHERE evt.token = $1 AND evt.used_at IS NULL
+        `;
+        const tokenResult = await pool.query(tokenQuery, [token]);
+
+        if (tokenResult.rows.length === 0) {
+            return res.status(400).json({
+                success: false,
+                error: 'Token inválido',
+                message: 'El enlace de verificación no es válido o ya fue utilizado.'
+            });
+        }
+
+        const verificationData = tokenResult.rows[0];
+
+        // Verificar si el token expiró
+        if (new Date() > new Date(verificationData.expires_at)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Token expirado',
+                message: 'El enlace de verificación ha expirado. Solicita uno nuevo.'
+            });
+        }
+
+        // Activar usuario
+        const activateQuery = `
+            UPDATE usuarios SET
+                email_verified = TRUE,
+                email_verified_at = NOW(),
+                status = 'activo'
+            WHERE id = $1
+        `;
+        await pool.query(activateQuery, [verificationData.user_id]);
+
+        // Marcar token como usado
+        const markUsedQuery = `
+            UPDATE email_verification_tokens SET used_at = NOW()
+            WHERE token = $1
+        `;
+        await pool.query(markUsedQuery, [token]);
+
+        debugLog.log('AUTH', `[VERIFY-EMAIL] Email verificado para userId=${verificationData.user_id}`);
+
+        res.json({
+            success: true,
+            message: '¡Tu email ha sido verificado exitosamente! Ya puedes iniciar sesión.',
+            data: {
+                email: verificationData.email,
+                verified: true
+            }
+        });
+
+    } catch (error) {
+        debugLog.error('AUTH', `[VERIFY-EMAIL] Error: ${error.message}`);
+        res.status(500).json({
+            success: false,
+            error: 'Error en la verificación',
+            message: 'No se pudo verificar el email. Intenta de nuevo más tarde.'
+        });
+    }
+});
+
+/**
+ * POST /api/auth/resend-verification
+ * Reenviar email de verificación
+ */
+router.post('/resend-verification', registerLimiter, async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                error: 'Email requerido'
+            });
+        }
+
+        // Buscar usuario no verificado
+        const userQuery = `
+            SELECT id, nombre, email_verified FROM usuarios
+            WHERE email = $1
+        `;
+        const userResult = await pool.query(userQuery, [email.toLowerCase()]);
+
+        if (userResult.rows.length === 0) {
+            // No revelar si el email existe
+            return res.json({
+                success: true,
+                message: 'Si el email existe y no está verificado, recibirás un nuevo enlace.'
+            });
+        }
+
+        const user = userResult.rows[0];
+
+        if (user.email_verified) {
+            return res.status(400).json({
+                success: false,
+                error: 'Email ya verificado',
+                message: 'Este email ya está verificado. Puedes iniciar sesión.'
+            });
+        }
+
+        // Generar nuevo token
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+        // Eliminar tokens anteriores
+        await pool.query('DELETE FROM email_verification_tokens WHERE user_id = $1', [user.id]);
+
+        // Insertar nuevo token
+        await pool.query(
+            'INSERT INTO email_verification_tokens (user_id, token, type, expires_at) VALUES ($1, $2, $3, $4)',
+            [user.id, verificationToken, 'registration', expiresAt]
+        );
+
+        // Enviar email
+        const baseUrl = process.env.APP_URL || 'https://bge-heroesdelapatria.vercel.app';
+        const verificationUrl = `${baseUrl}/verify-email.html?token=${verificationToken}`;
+
+        await emailService.sendEmail({
+            to: email,
+            subject: 'Verifica tu Email - BGE Héroes de la Patria',
+            template: 'email-verification',
+            data: {
+                nombre: user.nombre,
+                verificationUrl: verificationUrl,
+                expiresIn: '24 horas',
+                currentYear: new Date().getFullYear()
+            }
+        });
+
+        debugLog.log('AUTH', `[RESEND-VERIFICATION] Email reenviado a ${maskEmail(email)}`);
+
+        res.json({
+            success: true,
+            message: 'Si el email existe y no está verificado, recibirás un nuevo enlace.'
+        });
+
+    } catch (error) {
+        debugLog.error('AUTH', `[RESEND-VERIFICATION] Error: ${error.message}`);
+        res.status(500).json({
+            success: false,
+            error: 'Error interno',
+            message: 'No se pudo procesar la solicitud.'
         });
     }
 });

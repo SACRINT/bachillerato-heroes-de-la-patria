@@ -813,12 +813,21 @@ class ManualLoginManager {
                 e.preventDefault();
                 this.handleManualLogin();
             }
+            // ✅ LISTENER PARA SUBMIT DEL FORMULARIO DE REGISTRO
+            if (e.target?.id === 'public-register-form') {
+                e.preventDefault();
+                this.handlePublicRegister();
+            }
         });
 
         // ✅ LISTENER PARA TOGGLE DE VISIBILIDAD DE CONTRASEÑA
         document.addEventListener('click', (e) => {
             if (e.target?.id === 'toggle-password' || e.target?.closest('#toggle-password')) {
                 this.togglePasswordVisibility();
+            }
+            // Toggle para formulario de registro
+            if (e.target?.id === 'toggle-register-password' || e.target?.closest('#toggle-register-password')) {
+                this.toggleRegisterPasswordVisibility();
             }
         });
 
@@ -974,6 +983,135 @@ class ManualLoginManager {
     }
 
     /**
+     * TOGGLE REGISTER PASSWORD VISIBILITY
+     */
+    toggleRegisterPasswordVisibility() {
+        const input = document.getElementById('register-password');
+        const icon = document.querySelector('#toggle-register-password i');
+
+        if (!input || !icon) return;
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+
+    /**
+     * MANEJAR REGISTRO PÚBLICO
+     */
+    async handlePublicRegister() {
+        const nombre = document.getElementById('register-nombre')?.value?.trim();
+        const apellido = document.getElementById('register-apellido')?.value?.trim();
+        const email = document.getElementById('register-email')?.value?.trim();
+        const password = document.getElementById('register-password')?.value;
+        const passwordConfirm = document.getElementById('register-password-confirm')?.value;
+        const acceptTerms = document.getElementById('accept-terms')?.checked;
+
+        // Validaciones
+        if (!nombre || !apellido || !email || !password || !passwordConfirm) {
+            this.auth.showWarning('Por favor completa todos los campos requeridos');
+            return;
+        }
+
+        if (!this.isValidEmail(email)) {
+            this.auth.showWarning('Email no válido');
+            return;
+        }
+
+        if (password.length < 8) {
+            this.auth.showWarning('La contraseña debe tener al menos 8 caracteres');
+            return;
+        }
+
+        // Validar complejidad de contraseña
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+        if (!passwordRegex.test(password)) {
+            this.auth.showWarning('La contraseña debe incluir mayúscula, minúscula y número');
+            return;
+        }
+
+        if (password !== passwordConfirm) {
+            this.auth.showWarning('Las contraseñas no coinciden');
+            return;
+        }
+
+        if (!acceptTerms) {
+            this.auth.showWarning('Debes aceptar los términos y condiciones');
+            return;
+        }
+
+        // Enviar registro
+        await this.submitRegister(email, password, nombre, apellido);
+    }
+
+    /**
+     * ENVIAR REGISTRO AL SERVIDOR
+     */
+    async submitRegister(email, password, nombre, apellido_paterno) {
+        this.setRegisterLoading(true);
+
+        try {
+            const response = await fetch(`${this.auth.config.apiBaseUrl}/auth/public-register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email,
+                    password,
+                    nombre,
+                    apellido_paterno
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // Registro exitoso - mostrar mensaje
+                this.auth.showSuccess(data.message || 'Registro exitoso. Revisa tu correo para verificar tu cuenta.');
+
+                // Limpiar formulario
+                document.getElementById('public-register-form')?.reset();
+
+                // Cambiar a tab de login después de 3 segundos
+                setTimeout(() => {
+                    const emailTab = document.getElementById('email-tab');
+                    if (emailTab) emailTab.click();
+                }, 3000);
+            } else {
+                this.auth.showError(data.message || data.error || 'Error en el registro');
+            }
+        } catch (error) {
+            debugLog.error('ERROR', 'Error en registro:', error);
+            this.auth.showError('Error de conexión con el servidor');
+        } finally {
+            this.setRegisterLoading(false);
+        }
+    }
+
+    /**
+     * SET REGISTER LOADING STATE
+     */
+    setRegisterLoading(isLoading) {
+        const submitBtn = document.querySelector('#public-register-form button[type="submit"]');
+        const form = document.getElementById('public-register-form');
+
+        if (submitBtn) {
+            submitBtn.disabled = isLoading;
+            submitBtn.innerHTML = isLoading
+                ? '<span class="spinner-border spinner-border-sm me-2"></span>Registrando...'
+                : '<i class="fas fa-user-plus me-2"></i>Crear Cuenta';
+        }
+
+        if (form) {
+            const inputs = form.querySelectorAll('input');
+            inputs.forEach(input => input.disabled = isLoading);
+        }
+    }
+
+    /**
      * SET LOADING STATE
      */
     setLoading(isLoading) {
@@ -1121,6 +1259,11 @@ class UIManager {
                                         <i class="fas fa-envelope me-2"></i>Email
                                     </button>
                                 </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-form">
+                                        <i class="fas fa-user-plus me-2"></i>Registro
+                                    </button>
+                                </li>
                             </ul>
 
                             <!-- Tab Content -->
@@ -1186,8 +1329,81 @@ class UIManager {
                                     <hr class="my-3">
 
                                     <div class="small text-muted">
-                                        <p><strong>¿No tienes cuenta?</strong> <a href="#" class="text-primary">Regístrate aquí</a></p>
+                                        <p><strong>¿No tienes cuenta?</strong> <a href="#" class="text-primary" data-bs-toggle="tab" data-bs-target="#register-form">Regístrate aquí</a></p>
                                         <p><strong>¿Olvidaste tu contraseña?</strong> <a href="#" class="text-primary">Recupérala aquí</a></p>
+                                    </div>
+                                </div>
+
+                                <!-- Register Form -->
+                                <div class="tab-pane fade" id="register-form">
+                                    <form id="public-register-form">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="register-nombre"
+                                                       placeholder="Tu nombre" required minlength="2">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold">Apellido Paterno <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="register-apellido"
+                                                       placeholder="Tu apellido" required minlength="2">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Email <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-envelope text-muted"></i>
+                                                </span>
+                                                <input type="email" class="form-control" id="register-email"
+                                                       placeholder="tu.email@ejemplo.com" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Contraseña <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-lock text-muted"></i>
+                                                </span>
+                                                <input type="password" class="form-control" id="register-password"
+                                                       placeholder="Mínimo 8 caracteres" required minlength="8">
+                                                <button class="btn btn-outline-secondary" type="button" id="toggle-register-password">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <small class="text-muted">Debe incluir mayúscula, minúscula y número</small>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Confirmar Contraseña <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-lock text-muted"></i>
+                                                </span>
+                                                <input type="password" class="form-control" id="register-password-confirm"
+                                                       placeholder="Repite tu contraseña" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="accept-terms" required>
+                                            <label class="form-check-label small" for="accept-terms">
+                                                Acepto los <a href="terminos.html" target="_blank">términos y condiciones</a>
+                                                y la <a href="privacidad.html" target="_blank">política de privacidad</a>
+                                            </label>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold">
+                                            <i class="fas fa-user-plus me-2"></i>Crear Cuenta
+                                        </button>
+                                    </form>
+
+                                    <hr class="my-3">
+
+                                    <div class="small text-muted text-center">
+                                        <p class="mb-0"><strong>¿Ya tienes cuenta?</strong> <a href="#" class="text-primary" data-bs-toggle="tab" data-bs-target="#email-login">Inicia sesión aquí</a></p>
                                     </div>
                                 </div>
                             </div>
