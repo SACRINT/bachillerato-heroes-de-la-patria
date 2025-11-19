@@ -29,7 +29,13 @@
   - newsletters (2 índices)
   - newsletter_envios (2 índices)
 
-🎯 PRÓXIMA TAREA: TAREA 1.2 - Setup de Testing con Jest
+⚡ SEMANA 1 - TAREA 1.2: SETUP DE TESTING CON JEST
+  ✅ Jest y Supertest instalados
+  ✅ 121 tests totales (108 pasando, 13 con issues de config)
+  ✅ Coverage report configurado
+  ✅ 4 test suites funcionando
+
+🎯 PRÓXIMA TAREA: TAREA 1.3 - Documentar Arquitectura Actual
 
 ---
 
