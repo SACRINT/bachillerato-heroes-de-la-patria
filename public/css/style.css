@@ -1318,6 +1318,26 @@ body.pwa-installed::after {
     color: #ffffff !important;
 }
 
+.bg-gradient-success {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%) !important;
+    color: #ffffff !important;
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%) !important;
+    color: #ffffff !important;
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #d39e00 100%) !important;
+    color: #212529 !important;
+}
+
+.bg-gradient-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%) !important;
+    color: #ffffff !important;
+}
+
 /* Ensure text visibility in hero sections */
 .page-hero .hero-title,
 .page-hero .hero-subtitle,

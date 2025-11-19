@@ -25,7 +25,9 @@ class AuthInterface {
      */
     initializeAuthInterface() {
         this.createAuthModal();
-        this.createAuthButton();
+        // ✅ DESHABILITADO (19 Nov 2025): Los botones de auth ya están en header.html
+        // this.createAuthButton() creaba botones duplicados que aparecían debajo del footer
+        // this.createAuthButton();
         this.attachEventListeners();
     }
 

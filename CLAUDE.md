@@ -155,6 +155,32 @@ El usuario Samuel perdió 22 terminales abiertas porque ejecuté estos comandos 
 
 ---
 
+### 2.6. 📢 IMPORTANTE: Páginas estudiantes.html y padres.html son INFORMATIVAS (19 NOV 2025)
+
+**CAMBIO CRÍTICO - Las páginas de estudiantes y padres ya NO tienen dashboard de login:**
+
+- ✅ **estudiantes.html** - Página informativa con:
+  - Link al SIGED de SEP para boletas oficiales
+  - Información de trámites escolares
+  - Teaser de IACoins
+
+- ✅ **padres.html** - Página informativa con:
+  - Link al SIGED de SEP para boletas oficiales
+  - Información de contacto con docentes
+  - Trámites escolares y calendario
+  - Teaser de IACoins
+
+**Por qué este cambio:**
+- La SEP ya tiene un sistema oficial para boletas (SIGED)
+- El login ahora es para el sistema de **gamificación IACoins**
+- Los usuarios ganan IACoins completando retos
+- Los usuarios gastan IACoins para usar IA (OpenAI, Anthropic, Gemini)
+
+**NO crear dashboards de calificaciones/asistencia para estudiantes/padres.**
+El sistema de login es exclusivamente para IACoins.
+
+---
+
 ## 3. ✍️ PROTOCOLO DE DOCUMENTACIÓN DE CAMBIOS
 
 El método antiguo de crear un archivo por tarea queda descontinuado. Usa este nuevo protocolo:
