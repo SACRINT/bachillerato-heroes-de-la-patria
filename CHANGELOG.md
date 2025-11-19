@@ -1,3 +1,51 @@
+[5.1.0] - 2025-11-19 (COMPLIANCE & ACCESSIBILITY)
+🔒 COMPLIANCE: Accesibilidad, Auditoría y GDPR
+✅ RAMA: claude/bge-architecture-planning-01WmbMGBtafZ1yRa1FSACTFs
+
+📊 RESUMEN v5.1.0:
+  - Archivos creados: 4
+  - Líneas de código: ~2,350+
+  - Cumplimiento: WCAG 2.1 AAA, GDPR, FERPA, SOC 2
+
+⚡ WCAG 2.1 AAA ACCESSIBILITY:
+  ✅ public/js/accessibility-service.js (900+ líneas)
+     - Panel de accesibilidad completo
+     - Ajuste de fuente/contraste/espaciado
+     - Soporte para dislexia (OpenDyslexic)
+     - Guía de lectura y text-to-speech
+     - Filtros para daltonismo (3 tipos)
+     - Atajos de teclado (Alt+1,2,3,A,C,M,R,S)
+     - Skip links para navegación rápida
+
+⚡ AUDIT LOG SERVICE (Compliance):
+  ✅ backend/services/AuditLogService.js (500+ líneas)
+     - 30+ tipos de eventos auditables
+     - Categorías: Auth, Data, Admin, Security
+     - Niveles de severidad (info→critical)
+     - Verificación de integridad (checksums)
+     - Batch processing para performance
+     - Exportación para compliance
+
+⚡ GDPR DATA EXPORT SERVICE:
+  ✅ backend/services/GDPRDataExportService.js (450+ líneas)
+     - Derecho de acceso (Art. 15)
+     - Derecho de portabilidad (Art. 20)
+     - Derecho de supresión (Art. 17)
+     - Gestión de consentimientos
+     - Verificación de retención legal
+     - Exportación JSON/CSV/ZIP
+
+⚡ EMAIL TEMPLATE SERVICE:
+  ✅ backend/services/EmailTemplateService.js (500+ líneas)
+     - 7 templates HTML responsivos
+     - Soporte multi-idioma (es/en)
+     - Variables dinámicas
+     - Envío masivo (bulk)
+     - Historial y estadísticas
+     - Preview antes de enviar
+
+---
+
 [5.0.0] - 2025-11-19 (ENTERPRISE FEATURES RELEASE)
 🚀 ENTERPRISE: Features avanzadas para producción empresarial
 ✅ RAMA: claude/bge-architecture-planning-01WmbMGBtafZ1yRa1FSACTFs
