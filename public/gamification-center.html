@@ -220,6 +220,11 @@
             background: #1f2937;
         }
     </style>
+    <!-- ✅ FIX (18 Nov 2025): Header/Footer styles loaded globally -->
+    <!-- These MUST be in <head> so they apply BEFORE dynamic header/footer injection -->
+    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+
 </head>
 <body>
     <!-- Skip link for accessibility -->

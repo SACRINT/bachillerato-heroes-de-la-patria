@@ -37,6 +37,19 @@ const DOMPURIFY_CONFIG_SIMPLE = {
   KEEP_CONTENT: true
 };
 
+// ✅ CONFIGURACIÓN PARA HEADER/FOOTER (18 Nov 2025)
+// Header y footer son contenido NUESTRO (no user-generated), necesitan más tags
+const DOMPURIFY_CONFIG_PARTIALS = {
+  ALLOWED_TAGS: ['nav', 'header', 'footer', 'div', 'ul', 'li', 'a', 'button', 'span', 'img', 'i', 'small', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'strong', 'em', 'br', 'hr', 'input', 'label', 'form', 'select', 'option', 'textarea', 'table', 'thead', 'tbody', 'tr', 'td', 'th', 'script', 'link', 'style'],
+  ALLOWED_ATTR: ['class', 'id', 'href', 'src', 'alt', 'title', 'target', 'rel', 'type', 'data-*', 'aria-*', 'role', 'style', 'placeholder', 'value', 'name', 'for', 'width', 'height', 'tabindex', 'data-bs-toggle', 'data-bs-target', 'data-bs-dismiss', 'data-action', 'data-tenant', 'onclick'],
+  ALLOW_DATA_ATTR: true,
+  ALLOW_ARIA_ATTR: true,
+  KEEP_CONTENT: true,
+  ADD_TAGS: ['script', 'link'],  // Permitir scripts y links del header
+  ADD_ATTR: ['src', 'rel', 'href'],  // Atributos para scripts y links
+  FORCE_BODY: false
+};
+
 // ============================================
 // FUNCIÓN HELPER: sanitizeHTML()
 // ============================================
@@ -88,6 +101,15 @@ function sanitizeHTML(html, context = 'tablas') {
       config = DOMPURIFY_CONFIG_SIMPLE;
       break;
 
+    case 'partials':
+    case 'header':
+    case 'footer':
+    case 'partial':
+      config = DOMPURIFY_CONFIG_PARTIALS;
+      console.log(`🧼 [DOMPURIFY-HELPER] Usando configuración PARTIALS para contexto "${context}"`);
+      console.log(`🧼 [DOMPURIFY-HELPER] ALLOWED_TAGS:`, config.ALLOWED_TAGS);
+      break;
+
     default:
       // Si no se reconoce el contexto, usar configuración más restrictiva
       console.warn(`[XSS] Contexto "${context}" no reconocido. Usando config SIMPLE por seguridad.`);
@@ -95,7 +117,15 @@ function sanitizeHTML(html, context = 'tablas') {
   }
 
   // Sanitizar y retornar
-  return DOMPurify.sanitize(html, config);
+  console.log(`🧼 [DOMPURIFY-HELPER] HTML antes de sanitizar (${html.length} chars):`, html.substring(0, 150));
+  const result = DOMPurify.sanitize(html, config);
+  console.log(`🧼 [DOMPURIFY-HELPER] HTML después de sanitizar (${result.length} chars):`, result.substring(0, 150));
+
+  if (result.length < html.length * 0.5) {
+    console.warn(`⚠️ [DOMPURIFY-HELPER] ADVERTENCIA: HTML sanitizado es ${((1 - result.length / html.length) * 100).toFixed(1)}% más pequeño. Posible eliminación excesiva de contenido.`);
+  }
+
+  return result;
 }
 
 /**
@@ -129,7 +159,8 @@ if (typeof window !== 'undefined') {
     TABLAS: DOMPURIFY_CONFIG_TABLAS,
     FORMULARIOS: DOMPURIFY_CONFIG_FORMULARIOS,
     UGC: DOMPURIFY_CONFIG_UGC,
-    SIMPLE: DOMPURIFY_CONFIG_SIMPLE
+    SIMPLE: DOMPURIFY_CONFIG_SIMPLE,
+    PARTIALS: DOMPURIFY_CONFIG_PARTIALS
   };
 
   console.log('✅ [DOMPURIFY-HELPER] Funciones de sanitización cargadas globalmente');
@@ -143,6 +174,7 @@ if (typeof module !== 'undefined' && module.exports) {
     DOMPURIFY_CONFIG_TABLAS,
     DOMPURIFY_CONFIG_FORMULARIOS,
     DOMPURIFY_CONFIG_UGC,
-    DOMPURIFY_CONFIG_SIMPLE
+    DOMPURIFY_CONFIG_SIMPLE,
+    DOMPURIFY_CONFIG_PARTIALS
   };
 }

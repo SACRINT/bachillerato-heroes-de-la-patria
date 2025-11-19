@@ -60,6 +60,11 @@
     }
     </script>
     <script src="js/meta-updater.js" defer></script>
+    <!-- ✅ FIX (18 Nov 2025): Header/Footer styles loaded globally -->
+    <!-- These MUST be in <head> so they apply BEFORE dynamic header/footer injection -->
+    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+
 </head>
 <body>
     <!-- Skip Links -->
@@ -856,40 +861,7 @@
         }
     </style>
 
-    <!-- Dark Mode Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const darkModeToggle = document.getElementById('darkModeToggle');
-            const body = document.body;
-            
-            // Check for saved dark mode preference
-            if (localStorage.getItem('darkMode') === 'enabled') {
-                body.classList.add('dark-mode');
-                updateDarkModeIcon(true);
-            }
-            
-            darkModeToggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                body.classList.toggle('dark-mode');
-                
-                if (body.classList.contains('dark-mode')) {
-                    localStorage.setItem('darkMode', 'enabled');
-                    updateDarkModeIcon(true);
-                } else {
-                    localStorage.setItem('darkMode', 'disabled');
-                    updateDarkModeIcon(false);
-                }
-            });
-            
-            function updateDarkModeIcon(isDark) {
-                if (darkModeToggle) {
-                    let icon = darkModeToggle.querySelector('i');
-                    if (icon) {
-                        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-                    }
-                }
-            }
-        });
-    </script>
+    <!-- 🌙 Dark Mode Script - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
+    <script src="js/dark-mode-simple.js?v=2025111801"></script>
 </body>
 </html>

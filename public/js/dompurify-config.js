@@ -23,6 +23,9 @@
             // Estructura
             'p', 'br', 'div', 'span', 'article', 'section', 'main',
 
+            // ✅ HEADER/FOOTER/NAV (18 Nov 2025 - FIX para header dinámico)
+            'header', 'footer', 'nav',
+
             // Texto
             'strong', 'b', 'em', 'i', 'u', 'mark', 'small', 'sub', 'sup',
 
@@ -49,6 +52,12 @@
 
             // Descripciones
             'dl', 'dt', 'dd',
+
+            // ✅ FORMULARIOS (18 Nov 2025 - FIX para header con search)
+            'form', 'input', 'label', 'select', 'option', 'textarea', 'button',
+
+            // ✅ SCRIPTS/STYLES (18 Nov 2025 - Permitir scripts del header)
+            'script', 'link', 'style',
         ],
 
         // Atributos permitidos por elemento
@@ -60,10 +69,22 @@
             'src', 'alt', 'width', 'height', 'loading',
 
             // Accesibilidad
-            'aria-label', 'aria-hidden', 'role', 'id', 'class',
+            'aria-label', 'aria-hidden', 'aria-expanded', 'aria-controls', 'role', 'id', 'class',
 
             // Data attributes (para framework)
             'data-*',
+
+            // ✅ BOOTSTRAP (18 Nov 2025 - FIX para navbar collapse y dropdowns)
+            'data-bs-toggle', 'data-bs-target', 'data-bs-dismiss',
+
+            // ✅ FORMULARIOS (18 Nov 2025 - FIX para search en header)
+            'type', 'placeholder', 'value', 'name', 'for', 'tabindex',
+
+            // ✅ ESTILOS INLINE (18 Nov 2025 - Permitir inline styles del header)
+            'style',
+
+            // ✅ TENANT AWARE (18 Nov 2025 - Atributos tenant-config-loader)
+            'data-tenant', 'data-action', 'data-context',
         ],
 
         // Politicas de parsing
@@ -78,6 +99,14 @@
 
         // URLs seguras (solo protocolos permitidos)
         ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|blob|urn|magnet):|[^a-z]|[a-z+.\-]*(?:[^a-z+.\-:]|$))/i,
+
+        // ✅ TAGS/ATTR ADICIONALES (18 Nov 2025 - Asegurar que scripts y links sean permitidos)
+        ADD_TAGS: ['script', 'link', 'style'],
+        ADD_ATTR: ['src', 'rel', 'href', 'type', 'crossorigin', 'integrity'],
+
+        // ✅ DATA ATTRIBUTES (18 Nov 2025 - Permitir todos los data-* y aria-*)
+        ALLOW_DATA_ATTR: true,
+        ALLOW_ARIA_ATTR: true,
 
         // Logging
         RETURN_TRUSTED_TYPE: true,
@@ -105,18 +134,32 @@
     /**
      * Sanitizar HTML puro (permite tags específicos)
      * @param {string} html - HTML a sanitizar
+     * @param {string} context - Contexto opcional (ignorado, para compatibilidad con dompurify-helper.js)
      * @returns {string} HTML sanitizado
      */
-    window.sanitizeHTML = function(html) {
+    window.sanitizeHTML = function(html, context) {
         if (!html || typeof html !== 'string') return '';
         if (!window.DOMPurify) {
             console.warn('[DOMPURIFY] DOMPurify no disponible, retornando texto sin HTML');
             return html;
         }
-        return DOMPurify.sanitize(html, {
+
+        const result = DOMPurify.sanitize(html, {
             ALLOWED_TAGS: BGE_DOMPURIFY_CONFIG.ALLOWED_TAGS,
             ALLOWED_ATTR: BGE_DOMPURIFY_CONFIG.ALLOWED_ATTR,
         });
+
+        // ✅ FIX (19 Nov 2025): Convertir TrustedHTML a string para compatibilidad
+        // DOMPurify con RETURN_TRUSTED_TYPE: true retorna TrustedHTML object, no string
+        // Necesitamos convertirlo a string para que .substring() y otras operaciones funcionen
+        if (typeof result === 'string') {
+            return result;
+        } else if (result && typeof result.toString === 'function') {
+            return result.toString();
+        } else {
+            console.warn('[DOMPURIFY] Resultado de sanitización no es string ni tiene toString():', typeof result);
+            return String(result || '');
+        }
     };
 
     /**

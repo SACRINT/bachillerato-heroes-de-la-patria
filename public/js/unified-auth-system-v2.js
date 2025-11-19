@@ -201,12 +201,14 @@ class UnifiedAuthSystem {
                 return;
             }
 
-            // ✅ HABILITADO: Google Identity Services con CSP corregido
-            await this.managers.google.loadServices();
+            // ❌ TEMPORALMENTE DESHABILITADO (18 Nov 2025): CSP en Vercel preview no permite gsi/style
+            // En preview deployments, vercel.json headers NO se aplican correctamente
+            // Google OAuth funcionará en PRODUCTION una vez que se mergee a main
+            // await this.managers.google.loadServices();
 
-            this.state.googleReady = true; // Ahora habilitado
+            this.state.googleReady = false; // Deshabilitado temporalmente
             // GDPR: Datos sensibles enmascarados
-            debugLog.log('APP', '✅ Google OAuth habilitado y listo');
+            debugLog.warn('APP', '⚠️ Google OAuth deshabilitado temporalmente - CSP issue en preview');
 
         } catch (error) {
             // GDPR: Datos sensibles enmascarados

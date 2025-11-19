@@ -1,0 +1,388 @@
+/**
+ * 🎨 HEADER STYLES - BGE HEROES DE LA PATRIA
+ * Estilos del header (navbar, search, dropdowns, auth)
+ * Extraído de inline styles para CSP compliance
+ * Fecha: 18 Nov 2025
+ */
+
+/* ✅ FIX (18 Nov 2025): Asegurar que modales estén ocultos por defecto */
+/* Bootstrap modals con clase .fade deben estar ocultos hasta que se muestren con .show */
+.modal.fade {
+    display: none !important;
+}
+
+.modal.fade.show {
+    display: block !important;
+}
+
+/* ✅ FIX: Asegurar que el navbar se muestre correctamente en desktop */
+/* Forzar que el menú de navegación se muestre en pantallas grandes */
+@media (min-width: 992px) {
+    .navbar-expand-lg .navbar-collapse {
+        display: flex !important;
+        flex-basis: auto;
+    }
+
+    .navbar-expand-lg .navbar-nav {
+        flex-direction: row;
+    }
+
+    .navbar-expand-lg .navbar-toggler {
+        display: none;
+    }
+}
+
+/* Asegurar que el botón hamburguesa funcione en móvil */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        flex-basis: 100%;
+        flex-grow: 1;
+        align-items: center;
+    }
+
+    .navbar-collapse.collapse:not(.show) {
+        display: none;
+    }
+
+    .navbar-collapse.collapse.show {
+        display: block !important;
+    }
+}
+
+/* Search Container */
+.search-container {
+    max-width: 400px;
+    min-width: 250px;
+}
+
+.search-input {
+    border-radius: 25px;
+    padding: 10px 15px 10px 40px;
+    font-size: 1rem;
+    border: 2px solid #dee2e6;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.search-input:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Remover cualquier contorno verde no deseado para uniformidad */
+.search-input {
+    border-color: #dee2e6 !important;
+}
+
+.search-input:not(:focus) {
+    border-color: #dee2e6 !important;
+    box-shadow: none !important;
+}
+
+.search-icon {
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    z-index: 10;
+}
+
+.search-results {
+    top: 100%;
+    z-index: 1050;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 5px;
+}
+
+.search-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.search-item:hover {
+    background-color: #f8f9fa;
+}
+
+.search-item:last-child {
+    border-bottom: none;
+}
+
+.search-item-title {
+    font-weight: 600;
+    color: var(--bs-primary);
+    margin-bottom: 4px;
+}
+
+.search-item-description {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 4px;
+}
+
+.search-item-url {
+    font-size: 0.75rem;
+    color: #28a745;
+}
+
+.no-results {
+    padding: 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+    .navbar-search {
+        margin-top: 1rem;
+        margin-left: 0 !important;
+    }
+
+    .search-container {
+        max-width: 100%;
+    }
+}
+
+/* Dark mode - MEJORADO CONTRASTE */
+[data-theme="dark"] .search-input,
+.dark-mode .search-input {
+    background-color: #2d3748 !important;
+    border-color: #4a5568 !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .search-input::placeholder,
+.dark-mode .search-input::placeholder {
+    color: #e2e8f0 !important;
+    opacity: 0.8 !important;
+}
+
+[data-theme="dark"] .search-input:focus,
+.dark-mode .search-input:focus {
+    border-color: #64b5f6 !important;
+    background-color: #2d3748 !important;
+    color: #ffffff !important;
+}
+
+.dark-mode .search-results {
+    background-color: #2d3748;
+    border-color: #4a5568;
+}
+
+.dark-mode .search-item {
+    border-color: #4a5568;
+}
+
+.dark-mode .search-item:hover {
+    background-color: #4a5568;
+}
+
+.dark-mode .search-item-description {
+    color: #a0aec0;
+}
+
+/* Submenús anidados - Enfoque CSS puro */
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu > .dropdown-menu {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+    border-radius: 0.375rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1001;
+    min-width: 220px;
+    width: auto;
+}
+
+/* Mostrar submenú en hover */
+.dropdown-submenu:hover > .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    display: block;
+}
+
+/* Indicador de flecha para submenús */
+.dropdown-submenu > .dropdown-toggle {
+    position: relative;
+    padding-right: 2rem !important;
+}
+
+.dropdown-submenu > .dropdown-toggle:after {
+    content: "";
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 0.3em solid transparent;
+    border-right: 0;
+    border-bottom: 0.3em solid transparent;
+    border-left: 0.3em solid;
+}
+
+.dropdown-submenu > .dropdown-toggle:hover:after {
+    border-left-color: var(--bs-primary);
+}
+
+/* Estilo mejorado para el botón de login admin */
+.admin-login-btn {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+    color: white !important;
+    border-radius: 6px !important;
+    margin: 2px 6px !important;
+    padding: 6px 12px !important;
+    font-weight: 500 !important;
+    font-size: 0.875rem !important;
+    transition: all 0.3s ease !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    display: block !important;
+    max-width: calc(100% - 12px) !important;
+    word-wrap: break-word !important;
+}
+
+.admin-login-btn:hover {
+    background: linear-gradient(135deg, #0056b3 0%, #003d82 100%) !important;
+    color: white !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.3) !important;
+}
+
+.admin-login-btn i {
+    opacity: 0.9;
+}
+
+/* Ajuste para contenedor dropdown */
+.dropdown-menu {
+    min-width: 260px !important;
+    max-width: 320px !important;
+}
+
+/* Ajuste específico para dropdown de contacto */
+.dropdown-menu-end {
+    min-width: 280px !important;
+    max-width: 320px !important;
+}
+
+/* Para dropdowns que van hacia la izquierda */
+.dropdown-submenu.dropstart > .dropdown-menu {
+    top: 0;
+    right: 100%;
+    left: auto;
+    margin-right: -1px;
+}
+
+/* Responsive: En móvil mostrar como lista normal */
+@media (max-width: 991.98px) {
+    .dropdown-submenu > .dropdown-menu {
+        position: static !important;
+        float: none;
+        width: auto;
+        margin-top: 0;
+        margin-left: 0;
+        background-color: rgba(0, 0, 0, 0.05);
+        border: none;
+        box-shadow: none;
+        padding-left: 1rem;
+        opacity: 1;
+        visibility: visible;
+        display: none;
+    }
+
+    .dropdown-submenu.open > .dropdown-menu {
+        display: block;
+    }
+
+    .dropdown-submenu > .dropdown-toggle:after {
+        transform: rotate(0deg);
+        border-left: 0.3em solid;
+        border-top: 0.3em solid transparent;
+        border-bottom: 0.3em solid transparent;
+    }
+}
+
+/* Estilo normal para botón admin - sin deformar el menú */
+.admin-login-compact {
+    /* Resetear cualquier estilo que deforme */
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+    border-radius: 0 !important;
+    transition: all 0.15s ease-in-out;
+    background: transparent !important;
+    border: none !important;
+    margin: 0 !important;
+    display: block !important;
+    align-items: normal !important;
+    justify-content: normal !important;
+    min-height: normal !important;
+    height: auto !important;
+    width: 100% !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+}
+
+.admin-login-compact:hover {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+    color: #495057 !important;
+    border: none !important;
+    transform: none !important;
+}
+
+.admin-login-compact.text-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    color: white !important;
+    font-weight: 500 !important;
+    border-radius: 0.25rem !important;
+}
+
+.admin-login-compact.text-success:hover {
+    background: linear-gradient(135deg, #218838 0%, #1c7430 100%) !important;
+    color: white !important;
+}
+
+.admin-login-compact i {
+    font-size: 0.875rem !important;
+    width: auto !important;
+    text-align: left !important;
+    margin-right: 0.5rem !important;
+}
+
+.admin-login-compact .badge {
+    font-size: 0.65rem !important;
+    padding: 0.15rem 0.4rem !important;
+    margin-left: 0.25rem !important;
+}
+
+/* LOGO CONTRASTE - Modo Oscuro */
+[data-theme="dark"] .logo-main-text,
+.dark-mode .logo-main-text {
+    color: #90caf9 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+}
+
+[data-theme="dark"] .logo-sub-text,
+.dark-mode .logo-sub-text {
+    color: #e8eaf6 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+}
+
+/* Mejor contraste para modo claro también */
+.logo-main-text {
+    color: #1565c0 !important;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.5) !important;
+}
+
+.logo-sub-text {
+    color: #424242 !important;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.5) !important;
+}
