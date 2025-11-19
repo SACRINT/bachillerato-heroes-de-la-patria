@@ -744,41 +744,35 @@ class ManualLoginManager {
      */
     setupListeners() {
         // ✅ LISTENER PARA BOTÓN DE INICIAR SESIÓN
+        // ✅ FIX (19 Nov 2025): Listener más robusto que detecta el botón por ID también
         document.addEventListener('click', (e) => {
-            if (e.target?.getAttribute('data-bs-target') === '#unified-auth-modal' ||
-                e.target?.closest('[data-bs-target="#unified-auth-modal"]')) {
+            const target = e.target;
+            const loginBtn = target.id === 'loginBtn' || target.closest('#loginBtn');
+            const hasDataTarget = target.getAttribute('data-bs-target') === '#unified-auth-modal' ||
+                                  target.closest('[data-bs-target="#unified-auth-modal"]');
+
+            if (loginBtn || hasDataTarget) {
                 e.preventDefault();
-                debugLog.log('APP', '📁 Botón de login clickeado, abriendo modal...');
+                e.stopPropagation();
+                console.log('[AUTH-V2] 📁 Botón de login clickeado, abriendo modal...');
 
                 // 🔧 MANIPULACIÓN DIRECTA DEL DOM - Evitar llamadas a métodos
                 const modal = document.getElementById('unified-auth-modal');
                 if (!modal) {
-                    debugLog.error('ERROR', '❌ Modal element not found in DOM');
+                    console.error('[AUTH-V2] ❌ Modal element not found in DOM');
+                    // Intentar crear el modal si no existe
+                    if (this.auth && this.auth.createLoginUI) {
+                        console.log('[AUTH-V2] ⚠️ Intentando crear modal...');
+                        this.auth.createLoginUI();
+                        const newModal = document.getElementById('unified-auth-modal');
+                        if (newModal) {
+                            this.showModalDirectly(newModal);
+                        }
+                    }
                     return;
                 }
 
-                try {
-                    // Mostrar el modal manipulando el DOM directamente
-                    modal.classList.add('show');
-                    modal.style.display = 'block';
-                    modal.setAttribute('aria-modal', 'true');
-                    document.body.classList.add('modal-open');
-
-                    // Crear o mostrar el backdrop
-                    let backdrop = document.querySelector('.modal-backdrop');
-                    if (!backdrop) {
-                        backdrop = document.createElement('div');
-                        backdrop.className = 'modal-backdrop fade show';
-                        document.body.appendChild(backdrop);
-                        debugLog.log('APP', '✅ Backdrop creado');
-                    } else {
-                        backdrop.classList.add('show');
-                    }
-
-                    debugLog.log('APP', '✅ Modal mostrado exitosamente (DOM directo)');
-                } catch (error) {
-                    debugLog.error('ERROR', '❌ Error abriendo modal:', error);
-                }
+                this.showModalDirectly(modal);
             }
         });
 
@@ -799,9 +793,10 @@ class ManualLoginManager {
 
         // ✅ LISTENER PARA CERRAR MODAL CON BOTÓN X
         document.addEventListener('click', (e) => {
-            if (e.target?.id === 'modal-close-btn' || e.target?.closest('#modal-close-btn')) {
+            if (e.target?.id === 'modal-close-btn' || e.target?.closest('#modal-close-btn') ||
+                e.target?.classList?.contains('btn-close') || e.target?.closest('.btn-close')) {
                 e.preventDefault();
-                debugLog.log('APP', '🔴 Botón de cerrar clickeado, cerrando modal...');
+                console.log('[AUTH-V2] 🔴 Botón de cerrar clickeado, cerrando modal...');
                 this.auth.managers.ui.hideModal();
             }
         });
@@ -809,10 +804,52 @@ class ManualLoginManager {
         // ✅ LISTENER PARA CERRAR MODAL CLICKEANDO EN EL BACKDROP
         document.addEventListener('click', (e) => {
             if (e.target?.classList?.contains('modal-backdrop')) {
-                debugLog.log('APP', '🔴 Backdrop clickeado, cerrando modal...');
+                console.log('[AUTH-V2] 🔴 Backdrop clickeado, cerrando modal...');
                 this.auth.managers.ui.hideModal();
             }
         });
+
+        // ✅ LISTENER PARA CERRAR MODAL CON ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('unified-auth-modal');
+                if (modal && modal.classList.contains('show')) {
+                    console.log('[AUTH-V2] 🔴 ESC presionado, cerrando modal...');
+                    this.auth.managers.ui.hideModal();
+                }
+            }
+        });
+
+        console.log('[AUTH-V2] ✅ Listeners de ManualLoginManager configurados');
+    }
+
+    /**
+     * MOSTRAR MODAL DIRECTAMENTE (manipulación DOM)
+     */
+    showModalDirectly(modal) {
+        try {
+            // Mostrar el modal manipulando el DOM directamente
+            modal.classList.add('show');
+            modal.style.display = 'block';
+            modal.setAttribute('aria-modal', 'true');
+            modal.setAttribute('role', 'dialog');
+            document.body.classList.add('modal-open');
+
+            // Crear o mostrar el backdrop
+            let backdrop = document.querySelector('.modal-backdrop');
+            if (!backdrop) {
+                backdrop = document.createElement('div');
+                backdrop.className = 'modal-backdrop fade show';
+                document.body.appendChild(backdrop);
+                console.log('[AUTH-V2] ✅ Backdrop creado');
+            } else {
+                backdrop.classList.add('show');
+            }
+
+            console.log('[AUTH-V2] ✅ Modal mostrado exitosamente (DOM directo)');
+        } catch (error) {
+            console.error('[AUTH-V2] ❌ Error abriendo modal:', error);
+        }
     }
 
     /**
