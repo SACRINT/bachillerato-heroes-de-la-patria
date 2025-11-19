@@ -14,7 +14,8 @@
     const bridges = [
         'js/data-event-emitter.js',      // Base event emitter (usado por otros bridges)
         'js/auth-context-bridge.js',     // Desacopla auth ↔ context
-        'js/auth-api-bridge.js'          // Desacopla api-client ↔ auth
+        'js/auth-api-bridge.js',         // Desacopla api-client ↔ auth
+        'js/unified-auth-system-v2.js'   // ✅ FIX (19 Nov 2025): Sistema de autenticación V2
     ];
 
     bridges.forEach(bridgePath => {
@@ -24,7 +25,7 @@
         document.head.appendChild(script);
     });
 
-    console.log('[MAIN.JS] ✅ 3 bridges cargados: data-event-emitter, auth-context-bridge, auth-api-bridge');
+    console.log('[MAIN.JS] ✅ 4 scripts cargados: bridges + unified-auth-system-v2');
 })();
 
 // Load event handler files FIRST (in order), then event-handler-registry
