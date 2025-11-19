@@ -115,27 +115,30 @@ class UnifiedAuthSystem {
             // 1. Esperar DOM
             await this.waitForDOM();
 
-            // 2. Cargar Google Client ID desde servidor (.env)
+            // ✅ FIX (19 Nov 2025): Inicializar managers y crear UI PRIMERO
+            // Esto asegura que el modal existe antes de cualquier operación async que pueda fallar
+
+            // 2. Inicializar managers (necesario para crear UI)
+            this.initializeManagers();
+
+            // 3. Crear UI TEMPRANO - antes de operaciones async que pueden fallar
+            this.createLoginUI();
+
+            // 4. Setup listeners TEMPRANO - para que el botón funcione aunque Google falle
+            this.setupEventListeners();
+
+            // 5. Cargar Google Client ID desde servidor (.env) - puede fallar sin afectar login manual
             const clientId = await this.loadGoogleClientIdFromServer();
             if (!clientId) {
                 debugLog.log('APP', '⚠️ Google Client ID no disponible, intentando fallback...');
                 this.config.googleClientId = this.getGoogleClientIdFallback();
             }
 
-            // 3. Inicializar managers
-            this.initializeManagers();
-
-            // 4. Cargar sesión guardada
+            // 6. Cargar sesión guardada
             await this.loadStoredSession();
 
-            // 5. Crear UI
-            this.createLoginUI();
-
-            // 6. Cargar Google Services
+            // 7. Cargar Google Services (opcional - si falla, login manual sigue funcionando)
             await this.initializeGoogleOAuth();
-
-            // 7. Setup listeners
-            this.setupEventListeners();
 
             // 8. Monitor actividad
             this.setupActivityMonitor();
@@ -148,7 +151,8 @@ class UnifiedAuthSystem {
 
         } catch (error) {
             debugLog.error('ERROR', '❌ Error inicializando autenticación:', error);
-            this.showError('Error inicializando sistema de autenticación');
+            // ✅ FIX (19 Nov 2025): No mostrar error al usuario, el login manual puede funcionar
+            // this.showError('Error inicializando sistema de autenticación');
         }
     }
 

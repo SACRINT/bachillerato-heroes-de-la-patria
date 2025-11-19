@@ -375,7 +375,8 @@
             <div class="auth-section ms-3 d-flex align-items-center" id="authSection">
                 <!-- Botones de login cuando no está autenticado -->
                 <div id="loginButtons" class="d-flex align-items-center">
-                    <button type="button" class="btn btn-primary btn-sm me-2" id="loginBtn" data-bs-toggle="modal" data-bs-target="#unified-auth-modal" title="Iniciar Sesión">
+                    <!-- ✅ FIX (19 Nov 2025): Removido data-bs-toggle para evitar que Bootstrap intente abrir modal inexistente -->
+                    <button type="button" class="btn btn-primary btn-sm me-2" id="loginBtn" data-bs-target="#unified-auth-modal" title="Iniciar Sesión" aria-label="Iniciar Sesión">
                         <i class="fas fa-sign-in-alt"></i>
                     </button>
                 </div>
