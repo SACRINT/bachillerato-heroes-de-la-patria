@@ -2378,7 +2378,8 @@ function createAdminLoginModal() {
     } else {
         console.warn('⚠️ [BGE-SECURITY] DOMPurify no disponible, usando HTML sin sanitizar');
     }
-    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizedHTML));
+    // ✅ FIX (19 Nov 2025): Eliminar doble sanitización - ya sanitizado en línea 2377
+    document.body.insertAdjacentHTML('beforeend', sanitizedHTML);
 
     // Configurar event listeners
     setupAdminLoginEvents();

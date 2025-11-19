@@ -56,7 +56,10 @@
     'handle-close-ticket': handleCloseTicket,
     'handle-reopen-ticket': handleReopenTicket,
     'handle-unwatch-ticket': handleUnwatchTicket,
-    'handle-watch-ticket': handleWatchTicket
+    'handle-watch-ticket': handleWatchTicket,
+    // ✅ FIX (19 Nov 2025): Admin login modal no abría - faltaba mapping
+    'admin-login': handleAdminLogin,
+    'logout-admin-panel': logoutAdminPanel
   };
 
   // Delegated event listener on document
