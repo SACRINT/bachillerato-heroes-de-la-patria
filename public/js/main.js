@@ -61,38 +61,11 @@ function loadNextEventHandler() {
 
 loadNextEventHandler();
 
-// 🔒 WAIT FOR DOMPURIFY BEFORE INITIALIZING
-function waitForDOMPurifyAndInitialize() {
-    if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize && typeof sanitizeHTML === 'function') {
-        // DOMPurify y sanitizeHTML están listos - cargar unified-auth-system-v2.js
-        console.log('[MAIN.JS] 🔐 Cargando Sistema de Autenticación Unificado V2...');
-        const authScript = document.createElement('script');
-        authScript.src = 'js/unified-auth-system-v2.js?v=2025111601';
-        authScript.async = false;
-        authScript.onload = function() {
-            console.log('[MAIN.JS] ✅ Sistema de Autenticación V2 cargado');
-            // Ahora inicializar chatbot y header
-            initializeChatbot();
-            loadHeaderFooter();
-            document.dispatchEvent(new Event('dompurifyReady'));
-        };
-        authScript.onerror = function() {
-            console.warn('[MAIN.JS] ⚠️ Error cargando Sistema de Autenticación V2, continuando sin auth modal');
-            // Continuar sin el sistema de autenticación
-            initializeChatbot();
-            loadHeaderFooter();
-            document.dispatchEvent(new Event('dompurifyReady'));
-        };
-        document.head.appendChild(authScript);
-        return;
-    }
-    // DOMPurify o sanitizeHTML no están listos, reintentar después de 50ms
-    setTimeout(waitForDOMPurifyAndInitialize, 50);
-}
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Esperar a que DOMPurify esté disponible antes de inicializar
-    waitForDOMPurifyAndInitialize();
+    // ✅ REVERTIDO A VERSIÓN SIMPLE QUE FUNCIONABA (commit eac16ff)
+    // Cargar header y footer directamente sin esperar a auth system
+    initializeChatbot();
+    loadHeaderFooter();
 
     // 🏢 LISTENER: Cuando el tenant config esté cargado, actualizar header
     document.addEventListener('tenantConfigLoaded', updateHeaderWithTenantConfig);
@@ -393,118 +366,60 @@ function formatResponse(responseData) {
 // ELIMINADO: loadScriptDynamically() y loadScriptsSequentially() (eran causa de race conditions)
 // Cambio: nested-dropdowns.js y admin-auth.js ahora se cargan en header.html líneas 812-813
 
-async function loadHeaderFooter() {
+function loadHeaderFooter() {
     console.log('🔍 [MAIN.JS] loadHeaderFooter() iniciando...');
 
-    // Buscar por el ID correcto: main-header (no header-placeholder)
+    // ✅ REVERTIDO A VERSIÓN SIMPLE QUE FUNCIONABA (commit eac16ff)
     const headerContainer = document.getElementById('main-header');
     const footerContainer = document.getElementById('main-footer');
 
-    console.log(`🔍 [MAIN.JS] headerContainer encontrado: ${!!headerContainer}, footerContainer encontrado: ${!!footerContainer}`);
+    if (headerContainer && !headerContainer.innerHTML.trim()) {
+        console.log('📥 [MAIN.JS] Iniciando fetch de header.html...');
 
-    // Cargar header
-    if (headerContainer && !headerContainer.children.length) {
-        try {
-            console.log('📥 [MAIN.JS] Iniciando fetch de header.html...');
-            const headerResponse = await fetch('./partials/header.html');
-
-            if (!headerResponse.ok) {
-                console.warn(`⚠️ [MAIN.JS] Header no encontrado (${headerResponse.status})`);
-            } else {
-                const headerHtml = await headerResponse.text();
-                console.log(`✅ [MAIN.JS] Header HTML recibido (${headerHtml.length} caracteres)`);
-
-                // ✅ REFACTORIZADO: Usar insertAdjacentHTML con DOMPurify en lugar de innerHTML
-                // DOMPurify sanitiza el HTML antes de insertarlo
-                const sanitized = typeof DOMPurify !== 'undefined' && DOMPurify.sanitize
-                    ? DOMPurify.sanitize(headerHtml)
-                    : headerHtml;
-                headerContainer.insertAdjacentHTML('beforeend', sanitized);
+        fetch('partials/header.html')
+            .then(response => {
+                console.log(`📥 [MAIN.JS] Header fetch status: ${response.status}`);
+                return response.text();
+            })
+            .then(data => {
+                headerContainer.innerHTML = sanitizeHTML(data, 'ugc');
                 console.log('✅ [MAIN.JS] Header HTML inyectado en el DOM');
 
-                // ✅ FIX (18 Nov 2025): Cargar scripts del header dinámicamente
-                // Los <script> tags inyectados con insertAdjacentHTML NO se ejecutan por seguridad
-                // Debemos cargarlos manualmente con createElement + appendChild
-                console.log('📦 [MAIN.JS] Cargando scripts del header dinámicamente...');
-
-                const headerScripts = [
-                    'js/nested-dropdowns.js?v=2024091401',
-                    'js/admin-auth.js?v=2024091401'
-                ];
-
-                headerScripts.forEach(src => {
-                    if (!document.querySelector(`script[src="${src}"]`)) {
-                        const script = document.createElement('script');
-                        script.src = src;
-                        script.onload = () => console.log(`✅ [MAIN.JS] Script cargado: ${src}`);
-                        script.onerror = () => console.warn(`⚠️ [MAIN.JS] Error cargando: ${src}`);
-                        document.head.appendChild(script);
-                    }
-                });
-
-                // 🎯 RE-INICIALIZAR COMPONENTES BOOTSTRAP después de inyectar HTML
-                // Bootstrap necesita reinicializar dropdowns y popovers tras inyección dinámica
-                setTimeout(() => {
-                    // Reinitialize Bootstrap dropdowns
-                    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-                    dropdownToggles.forEach(toggle => {
-                        // Use Bootstrap 5 API to recreate dropdown instances
-                        if (window.bootstrap && window.bootstrap.Dropdown) {
-                            const dropdown = window.bootstrap.Dropdown.getOrCreateInstance(toggle);
-                            console.log('✅ [MAIN.JS] Dropdown reinicialized');
-                        }
-                    });
-
-                    // Reinitialize any tooltips or popovers
-                    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-                    tooltips.forEach(el => {
-                        if (window.bootstrap && window.bootstrap.Tooltip) {
-                            new window.bootstrap.Tooltip(el);
-                        }
-                    });
-
-                    console.log('✅ [MAIN.JS] Bootstrap components re-initialized');
-                }, 50);
+                // ✅ FASE 1.3: Los scripts ya se cargan de forma estática en header.html
+                // (nested-dropdowns.js y admin-auth.js en líneas 812-813)
+                // ELIMINADO: Carga dinámica que causaba race conditions
 
                 // Disparar evento para que otros scripts sepan que el header está listo
                 console.log('📡 [MAIN.JS] Disparando evento headerLoaded...');
                 document.dispatchEvent(new Event('headerLoaded'));
-            }
-        } catch (error) {
-            console.warn('⚠️ [MAIN.JS] Error cargando header:', error.message);
-        }
+                console.log('✅ [MAIN.JS] loadHeaderFooter() completado exitosamente');
+            })
+            .catch(error => {
+                console.error('❌ [MAIN.JS] Error en loadHeaderFooter:', error);
+                console.error('❌ [MAIN.JS] Error stack:', error.stack);
+            });
     } else {
         console.log('⚠️ [MAIN.JS] Header container no encontrado o ya contiene datos');
     }
 
-    // Cargar footer
-    if (footerContainer && !footerContainer.children.length) {
-        try {
-            console.log('📥 [MAIN.JS] Iniciando fetch de footer.html...');
-            const footerResponse = await fetch('./partials/footer.html');
+    if (footerContainer && !footerContainer.innerHTML.trim()) {
+        console.log('📥 [MAIN.JS] Iniciando fetch de footer.html...');
 
-            if (!footerResponse.ok) {
-                console.warn(`⚠️ [MAIN.JS] Footer no encontrado (${footerResponse.status})`);
-            } else {
-                const footerHtml = await footerResponse.text();
-                console.log(`✅ [MAIN.JS] Footer HTML recibido (${footerHtml.length} caracteres)`);
-
-                // ✅ REFACTORIZADO: Usar insertAdjacentHTML con DOMPurify en lugar de innerHTML
-                // DOMPurify sanitiza el HTML antes de insertarlo
-                const sanitized = typeof DOMPurify !== 'undefined' && DOMPurify.sanitize
-                    ? DOMPurify.sanitize(footerHtml)
-                    : footerHtml;
-                footerContainer.insertAdjacentHTML('beforeend', sanitized);
+        fetch('partials/footer.html')
+            .then(response => {
+                console.log(`📥 [MAIN.JS] Footer fetch status: ${response.status}`);
+                return response.text();
+            })
+            .then(data => {
+                footerContainer.innerHTML = sanitizeHTML(data, 'ugc');
                 console.log('✅ [MAIN.JS] Footer cargado dinámicamente');
-            }
-        } catch (error) {
-            console.warn('⚠️ [MAIN.JS] Error cargando footer:', error.message);
-        }
+            })
+            .catch(error => {
+                console.error('❌ [MAIN.JS] Error en footer:', error);
+            });
     } else {
         console.log('⚠️ [MAIN.JS] Footer container no encontrado o ya contiene datos');
     }
-
-    console.log('✅ [MAIN.JS] loadHeaderFooter() completado');
 }
 
 
