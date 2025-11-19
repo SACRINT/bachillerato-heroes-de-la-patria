@@ -382,8 +382,8 @@ function loadHeaderFooter() {
                 return response.text();
             })
             .then(data => {
-                headerContainer.innerHTML = sanitizeHTML(data, 'ugc');
-                console.log('✅ [MAIN.JS] Header HTML inyectado en el DOM');
+                headerContainer.innerHTML = sanitizeHTML(data, 'partials');
+                console.log('✅ [MAIN.JS] Header HTML inyectado en el DOM (usando config PARTIALS)');
 
                 // ✅ FASE 1.3: Los scripts ya se cargan de forma estática en header.html
                 // (nested-dropdowns.js y admin-auth.js en líneas 812-813)
@@ -411,8 +411,8 @@ function loadHeaderFooter() {
                 return response.text();
             })
             .then(data => {
-                footerContainer.innerHTML = sanitizeHTML(data, 'ugc');
-                console.log('✅ [MAIN.JS] Footer cargado dinámicamente');
+                footerContainer.innerHTML = sanitizeHTML(data, 'partials');
+                console.log('✅ [MAIN.JS] Footer cargado dinámicamente (usando config PARTIALS)');
             })
             .catch(error => {
                 console.error('❌ [MAIN.JS] Error en footer:', error);
