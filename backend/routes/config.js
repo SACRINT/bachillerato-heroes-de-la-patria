@@ -173,6 +173,37 @@ router.get('/tenant', async (req, res) => {
         // 🔍 DIAGNÓSTICO DE RAÍZ (GDPR-compliant)
         debugLog.error('CONFIG', 'Error durante operación'); // Error en /api/config/tenant (stack trace masked)
 
+        // ✅ FIX (19 Nov 2025): Si la tabla no existe, retornar config por defecto
+        if (error.code === '42P01') { // Tabla no existe
+            const defaultConfig = {
+                school_name: 'Bachillerato General Estatal "Héroes de la Patria"',
+                school_short_name: 'BGE',
+                school_type: 'Bachillerato General por Competencias',
+                primary_color: '#2563eb',
+                secondary_color: '#1e40af',
+                logo_url: '/public/images/logo-bge.png',
+                contact_email: 'contacto@heroespatria.edu.mx',
+                contact_phone: '(777) 123-4567',
+                address: 'Calle Principal #123, Cuernavaca, Morelos',
+                enable_notifications: true,
+                enable_gamification: true
+            };
+
+            return res.json({
+                success: true,
+                isDefault: true,
+                tenant: {
+                    id: 1,
+                    uuid: 'default-uuid',
+                    school_name: defaultConfig.school_name,
+                    schema_name: 'public',
+                    domain: req.headers.host || 'localhost',
+                    status: 'activo'
+                },
+                config: defaultConfig
+            });
+        }
+
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',

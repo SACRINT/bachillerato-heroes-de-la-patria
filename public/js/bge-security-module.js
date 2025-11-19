@@ -2291,9 +2291,41 @@ window.handleAdminLogin = async function() {
         // Crear modal de login si no existe
         createAdminLoginModal();
 
-        // Mostrar modal
-        const modal = new bootstrap.Modal(document.getElementById('adminLoginModal'));
-        modal.show();
+        // ✅ FIX (19 Nov 2025): Verificar que Bootstrap esté cargado
+        const modalElement = document.getElementById('adminLoginModal');
+        if (!modalElement) {
+            console.error('❌ Modal adminLoginModal no encontrado en el DOM');
+            alert('Error: Modal de login no disponible');
+            return;
+        }
+
+        // Verificar que Bootstrap esté disponible
+        if (typeof bootstrap === 'undefined' || typeof bootstrap.Modal === 'undefined') {
+            console.error('❌ Bootstrap no está cargado');
+            // Fallback: mostrar modal manualmente
+            modalElement.classList.add('show');
+            modalElement.style.display = 'block';
+            modalElement.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('modal-open');
+
+            // Crear backdrop manualmente
+            let backdrop = document.querySelector('.modal-backdrop');
+            if (!backdrop) {
+                backdrop = document.createElement('div');
+                backdrop.className = 'modal-backdrop fade show';
+                document.body.appendChild(backdrop);
+            }
+            return;
+        }
+
+        // Mostrar modal con Bootstrap
+        const existingModal = bootstrap.Modal.getInstance(modalElement);
+        if (existingModal) {
+            existingModal.show();
+        } else {
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        }
 
     } catch (error) {
         console.error('❌ Error en handleAdminLogin:', error);
