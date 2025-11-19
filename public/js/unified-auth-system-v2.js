@@ -1,10 +1,12 @@
 // Debug Logger - Logging condicional (GDPR compliant)
+// ✅ FIX (19 Nov 2025): Fallback usa console.log para que los mensajes sean visibles
+console.log('[AUTH-V2] 📦 Script cargando...');
 if (typeof debugLog === 'undefined') {
-    // Fallback si debug-logger.js no está cargado
+    // Fallback si debug-logger.js no está cargado - usar console para debugging
     var debugLog = {
-        log: () => {},
-        warn: () => {},
-        error: () => {}
+        log: (category, ...args) => console.log(`[${category}]`, ...args),
+        warn: (category, ...args) => console.warn(`[${category}]`, ...args),
+        error: (category, ...args) => console.error(`[${category}]`, ...args)
     };
 }
 
@@ -355,7 +357,36 @@ class UnifiedAuthSystem {
         this.managers.manual.setupListeners();
         this.managers.google.setupListeners();
 
-        debugLog.log('APP', '✅ Event listeners configurados');
+        // ✅ FIX (19 Nov 2025): Listener DIRECTO al botón de login como respaldo
+        // Buscar el botón y agregarle listener directo además del delegado
+        const attachDirectListener = () => {
+            const loginBtn = document.getElementById('loginBtn');
+            if (loginBtn && !loginBtn._authListenerAttached) {
+                loginBtn._authListenerAttached = true;
+                loginBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('[AUTH-V2] 🔴 Click DIRECTO en loginBtn detectado');
+
+                    const modal = document.getElementById('unified-auth-modal');
+                    if (modal) {
+                        this.managers.ui.showModal();
+                    } else {
+                        console.log('[AUTH-V2] ⚠️ Modal no existe, creando...');
+                        this.createLoginUI();
+                        setTimeout(() => this.managers.ui.showModal(), 100);
+                    }
+                });
+                console.log('[AUTH-V2] ✅ Listener DIRECTO agregado a #loginBtn');
+            }
+        };
+
+        // Intentar agregar listener directo inmediatamente y después de un delay
+        attachDirectListener();
+        setTimeout(attachDirectListener, 1000);
+        setTimeout(attachDirectListener, 3000);
+
+        console.log('[AUTH-V2] ✅ Event listeners configurados');
     }
 
     /**
