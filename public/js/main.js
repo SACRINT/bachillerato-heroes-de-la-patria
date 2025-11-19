@@ -382,8 +382,25 @@ function loadHeaderFooter() {
                 return response.text();
             })
             .then(data => {
-                headerContainer.innerHTML = sanitizeHTML(data, 'partials');
+                console.log(`📏 [MAIN.JS] Header HTML original size: ${data.length} caracteres`);
+                console.log(`🔍 [MAIN.JS] Primeros 200 caracteres del HTML original:`, data.substring(0, 200));
+
+                const sanitizedHTML = sanitizeHTML(data, 'partials');
+                console.log(`🧼 [MAIN.JS] Header HTML sanitizado size: ${sanitizedHTML.length} caracteres`);
+                console.log(`🔍 [MAIN.JS] Primeros 200 caracteres del HTML sanitizado:`, sanitizedHTML.substring(0, 200));
+
+                headerContainer.innerHTML = sanitizedHTML;
                 console.log('✅ [MAIN.JS] Header HTML inyectado en el DOM (usando config PARTIALS)');
+
+                // Verificar si el navbar-collapse existe después de inyectar
+                const navbarCollapse = document.getElementById('mainNavbarCollapse');
+                if (navbarCollapse) {
+                    console.log('✅ [MAIN.JS] navbar-collapse encontrado:', navbarCollapse.className);
+                    console.log('✅ [MAIN.JS] navbar-collapse computed display:', window.getComputedStyle(navbarCollapse).display);
+                    console.log('✅ [MAIN.JS] navbar-collapse computed visibility:', window.getComputedStyle(navbarCollapse).visibility);
+                } else {
+                    console.error('❌ [MAIN.JS] navbar-collapse NO encontrado en el DOM');
+                }
 
                 // ✅ FASE 1.3: Los scripts ya se cargan de forma estática en header.html
                 // (nested-dropdowns.js y admin-auth.js en líneas 812-813)
