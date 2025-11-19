@@ -134,18 +134,32 @@
     /**
      * Sanitizar HTML puro (permite tags específicos)
      * @param {string} html - HTML a sanitizar
+     * @param {string} context - Contexto opcional (ignorado, para compatibilidad con dompurify-helper.js)
      * @returns {string} HTML sanitizado
      */
-    window.sanitizeHTML = function(html) {
+    window.sanitizeHTML = function(html, context) {
         if (!html || typeof html !== 'string') return '';
         if (!window.DOMPurify) {
             console.warn('[DOMPURIFY] DOMPurify no disponible, retornando texto sin HTML');
             return html;
         }
-        return DOMPurify.sanitize(html, {
+
+        const result = DOMPurify.sanitize(html, {
             ALLOWED_TAGS: BGE_DOMPURIFY_CONFIG.ALLOWED_TAGS,
             ALLOWED_ATTR: BGE_DOMPURIFY_CONFIG.ALLOWED_ATTR,
         });
+
+        // ✅ FIX (19 Nov 2025): Convertir TrustedHTML a string para compatibilidad
+        // DOMPurify con RETURN_TRUSTED_TYPE: true retorna TrustedHTML object, no string
+        // Necesitamos convertirlo a string para que .substring() y otras operaciones funcionen
+        if (typeof result === 'string') {
+            return result;
+        } else if (result && typeof result.toString === 'function') {
+            return result.toString();
+        } else {
+            console.warn('[DOMPURIFY] Resultado de sanitización no es string ni tiene toString():', typeof result);
+            return String(result || '');
+        }
     };
 
     /**
