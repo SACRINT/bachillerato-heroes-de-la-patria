@@ -22,25 +22,45 @@
 
   const MAX_RETRIES = 50; // Máximo 50 reintentos = 5 segundos
   let retryCount = 0;
+  let bridgeInitialized = false;
+
+  // ✅ FIX (19 Nov 2025): Fallback getAuthToken para páginas sin autenticación
+  function createFallbackAuthToken() {
+    if (!window.getAuthToken) {
+      window.getAuthToken = function() {
+        // Intentar obtener token de sessionStorage/localStorage
+        return sessionStorage.getItem('authToken') ||
+               localStorage.getItem('authToken') ||
+               null;
+      };
+      console.log('[AUTH-API-BRIDGE] ℹ️ Fallback getAuthToken creado (sin admin-auth.js)');
+    }
+  }
 
   // ✅ Esperar a que auth.js y api-client.js se carguen
   function initializeBridge() {
+    if (bridgeInitialized) return; // Evitar inicialización múltiple
     retryCount++;
 
     // Verificar que auth está disponible
     if (!window.getAuthToken || typeof window.getAuthToken !== 'function') {
       if (retryCount > MAX_RETRIES) {
-        console.error('[AUTH-API-BRIDGE] ❌ getAuthToken nunca estuvo disponible después de 5 segundos. Abortando.');
+        // ✅ FIX (19 Nov 2025): En lugar de abortar, crear fallback
+        console.warn('[AUTH-API-BRIDGE] ⚠️ getAuthToken no disponible después de 5s. Creando fallback.');
+        createFallbackAuthToken();
+        // Continuar con la inicialización
+      } else {
+        setTimeout(initializeBridge, 100); // Reintentar en 100ms
         return;
       }
-      setTimeout(initializeBridge, 100); // Reintentar en 100ms
-      return;
     }
 
     // Verificar que api-client está disponible
     if (!window.apiClient || typeof window.apiClient.setTokenProvider !== 'function') {
       if (retryCount > MAX_RETRIES) {
-        console.error('[AUTH-API-BRIDGE] ❌ apiClient nunca estuvo disponible después de 5 segundos. Abortando.');
+        // ✅ FIX (19 Nov 2025): Degradación graceful si apiClient no está disponible
+        console.warn('[AUTH-API-BRIDGE] ⚠️ apiClient no disponible después de 5s. Bridge no requerido en esta página.');
+        bridgeInitialized = true;
         return;
       }
       setTimeout(initializeBridge, 100); // Reintentar en 100ms
@@ -49,6 +69,7 @@
 
     // ✅ Bridge establecido: inyectar provider en api-client
     window.apiClient.setTokenProvider(window.getAuthToken);
+    bridgeInitialized = true;
 
     console.log('[AUTH-API-BRIDGE] ✅ Bridge auth ↔ api-client establecido correctamente');
   }

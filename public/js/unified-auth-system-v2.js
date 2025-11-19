@@ -1,10 +1,12 @@
 // Debug Logger - Logging condicional (GDPR compliant)
+// ✅ FIX (19 Nov 2025): Fallback usa console.log para que los mensajes sean visibles
+console.log('[AUTH-V2] 📦 Script cargando...');
 if (typeof debugLog === 'undefined') {
-    // Fallback si debug-logger.js no está cargado
+    // Fallback si debug-logger.js no está cargado - usar console para debugging
     var debugLog = {
-        log: () => {},
-        warn: () => {},
-        error: () => {}
+        log: (category, ...args) => console.log(`[${category}]`, ...args),
+        warn: (category, ...args) => console.warn(`[${category}]`, ...args),
+        error: (category, ...args) => console.error(`[${category}]`, ...args)
     };
 }
 
@@ -115,27 +117,30 @@ class UnifiedAuthSystem {
             // 1. Esperar DOM
             await this.waitForDOM();
 
-            // 2. Cargar Google Client ID desde servidor (.env)
+            // ✅ FIX (19 Nov 2025): Inicializar managers y crear UI PRIMERO
+            // Esto asegura que el modal existe antes de cualquier operación async que pueda fallar
+
+            // 2. Inicializar managers (necesario para crear UI)
+            this.initializeManagers();
+
+            // 3. Crear UI TEMPRANO - antes de operaciones async que pueden fallar
+            this.createLoginUI();
+
+            // 4. Setup listeners TEMPRANO - para que el botón funcione aunque Google falle
+            this.setupEventListeners();
+
+            // 5. Cargar Google Client ID desde servidor (.env) - puede fallar sin afectar login manual
             const clientId = await this.loadGoogleClientIdFromServer();
             if (!clientId) {
                 debugLog.log('APP', '⚠️ Google Client ID no disponible, intentando fallback...');
                 this.config.googleClientId = this.getGoogleClientIdFallback();
             }
 
-            // 3. Inicializar managers
-            this.initializeManagers();
-
-            // 4. Cargar sesión guardada
+            // 6. Cargar sesión guardada
             await this.loadStoredSession();
 
-            // 5. Crear UI
-            this.createLoginUI();
-
-            // 6. Cargar Google Services
+            // 7. Cargar Google Services (opcional - si falla, login manual sigue funcionando)
             await this.initializeGoogleOAuth();
-
-            // 7. Setup listeners
-            this.setupEventListeners();
 
             // 8. Monitor actividad
             this.setupActivityMonitor();
@@ -148,7 +153,8 @@ class UnifiedAuthSystem {
 
         } catch (error) {
             debugLog.error('ERROR', '❌ Error inicializando autenticación:', error);
-            this.showError('Error inicializando sistema de autenticación');
+            // ✅ FIX (19 Nov 2025): No mostrar error al usuario, el login manual puede funcionar
+            // this.showError('Error inicializando sistema de autenticación');
         }
     }
 
@@ -351,7 +357,36 @@ class UnifiedAuthSystem {
         this.managers.manual.setupListeners();
         this.managers.google.setupListeners();
 
-        debugLog.log('APP', '✅ Event listeners configurados');
+        // ✅ FIX (19 Nov 2025): Listener DIRECTO al botón de login como respaldo
+        // Buscar el botón y agregarle listener directo además del delegado
+        const attachDirectListener = () => {
+            const loginBtn = document.getElementById('loginBtn');
+            if (loginBtn && !loginBtn._authListenerAttached) {
+                loginBtn._authListenerAttached = true;
+                loginBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('[AUTH-V2] 🔴 Click DIRECTO en loginBtn detectado');
+
+                    const modal = document.getElementById('unified-auth-modal');
+                    if (modal) {
+                        this.managers.ui.showModal();
+                    } else {
+                        console.log('[AUTH-V2] ⚠️ Modal no existe, creando...');
+                        this.createLoginUI();
+                        setTimeout(() => this.managers.ui.showModal(), 100);
+                    }
+                });
+                console.log('[AUTH-V2] ✅ Listener DIRECTO agregado a #loginBtn');
+            }
+        };
+
+        // Intentar agregar listener directo inmediatamente y después de un delay
+        attachDirectListener();
+        setTimeout(attachDirectListener, 1000);
+        setTimeout(attachDirectListener, 3000);
+
+        console.log('[AUTH-V2] ✅ Event listeners configurados');
     }
 
     /**
@@ -740,41 +775,35 @@ class ManualLoginManager {
      */
     setupListeners() {
         // ✅ LISTENER PARA BOTÓN DE INICIAR SESIÓN
+        // ✅ FIX (19 Nov 2025): Listener más robusto que detecta el botón por ID también
         document.addEventListener('click', (e) => {
-            if (e.target?.getAttribute('data-bs-target') === '#unified-auth-modal' ||
-                e.target?.closest('[data-bs-target="#unified-auth-modal"]')) {
+            const target = e.target;
+            const loginBtn = target.id === 'loginBtn' || target.closest('#loginBtn');
+            const hasDataTarget = target.getAttribute('data-bs-target') === '#unified-auth-modal' ||
+                                  target.closest('[data-bs-target="#unified-auth-modal"]');
+
+            if (loginBtn || hasDataTarget) {
                 e.preventDefault();
-                debugLog.log('APP', '📁 Botón de login clickeado, abriendo modal...');
+                e.stopPropagation();
+                console.log('[AUTH-V2] 📁 Botón de login clickeado, abriendo modal...');
 
                 // 🔧 MANIPULACIÓN DIRECTA DEL DOM - Evitar llamadas a métodos
                 const modal = document.getElementById('unified-auth-modal');
                 if (!modal) {
-                    debugLog.error('ERROR', '❌ Modal element not found in DOM');
+                    console.error('[AUTH-V2] ❌ Modal element not found in DOM');
+                    // Intentar crear el modal si no existe
+                    if (this.auth && this.auth.createLoginUI) {
+                        console.log('[AUTH-V2] ⚠️ Intentando crear modal...');
+                        this.auth.createLoginUI();
+                        const newModal = document.getElementById('unified-auth-modal');
+                        if (newModal) {
+                            this.showModalDirectly(newModal);
+                        }
+                    }
                     return;
                 }
 
-                try {
-                    // Mostrar el modal manipulando el DOM directamente
-                    modal.classList.add('show');
-                    modal.style.display = 'block';
-                    modal.setAttribute('aria-modal', 'true');
-                    document.body.classList.add('modal-open');
-
-                    // Crear o mostrar el backdrop
-                    let backdrop = document.querySelector('.modal-backdrop');
-                    if (!backdrop) {
-                        backdrop = document.createElement('div');
-                        backdrop.className = 'modal-backdrop fade show';
-                        document.body.appendChild(backdrop);
-                        debugLog.log('APP', '✅ Backdrop creado');
-                    } else {
-                        backdrop.classList.add('show');
-                    }
-
-                    debugLog.log('APP', '✅ Modal mostrado exitosamente (DOM directo)');
-                } catch (error) {
-                    debugLog.error('ERROR', '❌ Error abriendo modal:', error);
-                }
+                this.showModalDirectly(modal);
             }
         });
 
@@ -784,6 +813,11 @@ class ManualLoginManager {
                 e.preventDefault();
                 this.handleManualLogin();
             }
+            // ✅ LISTENER PARA SUBMIT DEL FORMULARIO DE REGISTRO
+            if (e.target?.id === 'public-register-form') {
+                e.preventDefault();
+                this.handlePublicRegister();
+            }
         });
 
         // ✅ LISTENER PARA TOGGLE DE VISIBILIDAD DE CONTRASEÑA
@@ -791,13 +825,18 @@ class ManualLoginManager {
             if (e.target?.id === 'toggle-password' || e.target?.closest('#toggle-password')) {
                 this.togglePasswordVisibility();
             }
+            // Toggle para formulario de registro
+            if (e.target?.id === 'toggle-register-password' || e.target?.closest('#toggle-register-password')) {
+                this.toggleRegisterPasswordVisibility();
+            }
         });
 
         // ✅ LISTENER PARA CERRAR MODAL CON BOTÓN X
         document.addEventListener('click', (e) => {
-            if (e.target?.id === 'modal-close-btn' || e.target?.closest('#modal-close-btn')) {
+            if (e.target?.id === 'modal-close-btn' || e.target?.closest('#modal-close-btn') ||
+                e.target?.classList?.contains('btn-close') || e.target?.closest('.btn-close')) {
                 e.preventDefault();
-                debugLog.log('APP', '🔴 Botón de cerrar clickeado, cerrando modal...');
+                console.log('[AUTH-V2] 🔴 Botón de cerrar clickeado, cerrando modal...');
                 this.auth.managers.ui.hideModal();
             }
         });
@@ -805,10 +844,52 @@ class ManualLoginManager {
         // ✅ LISTENER PARA CERRAR MODAL CLICKEANDO EN EL BACKDROP
         document.addEventListener('click', (e) => {
             if (e.target?.classList?.contains('modal-backdrop')) {
-                debugLog.log('APP', '🔴 Backdrop clickeado, cerrando modal...');
+                console.log('[AUTH-V2] 🔴 Backdrop clickeado, cerrando modal...');
                 this.auth.managers.ui.hideModal();
             }
         });
+
+        // ✅ LISTENER PARA CERRAR MODAL CON ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('unified-auth-modal');
+                if (modal && modal.classList.contains('show')) {
+                    console.log('[AUTH-V2] 🔴 ESC presionado, cerrando modal...');
+                    this.auth.managers.ui.hideModal();
+                }
+            }
+        });
+
+        console.log('[AUTH-V2] ✅ Listeners de ManualLoginManager configurados');
+    }
+
+    /**
+     * MOSTRAR MODAL DIRECTAMENTE (manipulación DOM)
+     */
+    showModalDirectly(modal) {
+        try {
+            // Mostrar el modal manipulando el DOM directamente
+            modal.classList.add('show');
+            modal.style.display = 'block';
+            modal.setAttribute('aria-modal', 'true');
+            modal.setAttribute('role', 'dialog');
+            document.body.classList.add('modal-open');
+
+            // Crear o mostrar el backdrop
+            let backdrop = document.querySelector('.modal-backdrop');
+            if (!backdrop) {
+                backdrop = document.createElement('div');
+                backdrop.className = 'modal-backdrop fade show';
+                document.body.appendChild(backdrop);
+                console.log('[AUTH-V2] ✅ Backdrop creado');
+            } else {
+                backdrop.classList.add('show');
+            }
+
+            console.log('[AUTH-V2] ✅ Modal mostrado exitosamente (DOM directo)');
+        } catch (error) {
+            console.error('[AUTH-V2] ❌ Error abriendo modal:', error);
+        }
     }
 
     /**
@@ -898,6 +979,135 @@ class ManualLoginManager {
         } else {
             input.type = 'password';
             icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+
+    /**
+     * TOGGLE REGISTER PASSWORD VISIBILITY
+     */
+    toggleRegisterPasswordVisibility() {
+        const input = document.getElementById('register-password');
+        const icon = document.querySelector('#toggle-register-password i');
+
+        if (!input || !icon) return;
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+
+    /**
+     * MANEJAR REGISTRO PÚBLICO
+     */
+    async handlePublicRegister() {
+        const nombre = document.getElementById('register-nombre')?.value?.trim();
+        const apellido = document.getElementById('register-apellido')?.value?.trim();
+        const email = document.getElementById('register-email')?.value?.trim();
+        const password = document.getElementById('register-password')?.value;
+        const passwordConfirm = document.getElementById('register-password-confirm')?.value;
+        const acceptTerms = document.getElementById('accept-terms')?.checked;
+
+        // Validaciones
+        if (!nombre || !apellido || !email || !password || !passwordConfirm) {
+            this.auth.showWarning('Por favor completa todos los campos requeridos');
+            return;
+        }
+
+        if (!this.isValidEmail(email)) {
+            this.auth.showWarning('Email no válido');
+            return;
+        }
+
+        if (password.length < 8) {
+            this.auth.showWarning('La contraseña debe tener al menos 8 caracteres');
+            return;
+        }
+
+        // Validar complejidad de contraseña
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+        if (!passwordRegex.test(password)) {
+            this.auth.showWarning('La contraseña debe incluir mayúscula, minúscula y número');
+            return;
+        }
+
+        if (password !== passwordConfirm) {
+            this.auth.showWarning('Las contraseñas no coinciden');
+            return;
+        }
+
+        if (!acceptTerms) {
+            this.auth.showWarning('Debes aceptar los términos y condiciones');
+            return;
+        }
+
+        // Enviar registro
+        await this.submitRegister(email, password, nombre, apellido);
+    }
+
+    /**
+     * ENVIAR REGISTRO AL SERVIDOR
+     */
+    async submitRegister(email, password, nombre, apellido_paterno) {
+        this.setRegisterLoading(true);
+
+        try {
+            const response = await fetch(`${this.auth.config.apiBaseUrl}/auth/public-register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email,
+                    password,
+                    nombre,
+                    apellido_paterno
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // Registro exitoso - mostrar mensaje
+                this.auth.showSuccess(data.message || 'Registro exitoso. Revisa tu correo para verificar tu cuenta.');
+
+                // Limpiar formulario
+                document.getElementById('public-register-form')?.reset();
+
+                // Cambiar a tab de login después de 3 segundos
+                setTimeout(() => {
+                    const emailTab = document.getElementById('email-tab');
+                    if (emailTab) emailTab.click();
+                }, 3000);
+            } else {
+                this.auth.showError(data.message || data.error || 'Error en el registro');
+            }
+        } catch (error) {
+            debugLog.error('ERROR', 'Error en registro:', error);
+            this.auth.showError('Error de conexión con el servidor');
+        } finally {
+            this.setRegisterLoading(false);
+        }
+    }
+
+    /**
+     * SET REGISTER LOADING STATE
+     */
+    setRegisterLoading(isLoading) {
+        const submitBtn = document.querySelector('#public-register-form button[type="submit"]');
+        const form = document.getElementById('public-register-form');
+
+        if (submitBtn) {
+            submitBtn.disabled = isLoading;
+            submitBtn.innerHTML = isLoading
+                ? '<span class="spinner-border spinner-border-sm me-2"></span>Registrando...'
+                : '<i class="fas fa-user-plus me-2"></i>Crear Cuenta';
+        }
+
+        if (form) {
+            const inputs = form.querySelectorAll('input');
+            inputs.forEach(input => input.disabled = isLoading);
         }
     }
 
@@ -1049,6 +1259,11 @@ class UIManager {
                                         <i class="fas fa-envelope me-2"></i>Email
                                     </button>
                                 </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-form">
+                                        <i class="fas fa-user-plus me-2"></i>Registro
+                                    </button>
+                                </li>
                             </ul>
 
                             <!-- Tab Content -->
@@ -1114,8 +1329,81 @@ class UIManager {
                                     <hr class="my-3">
 
                                     <div class="small text-muted">
-                                        <p><strong>¿No tienes cuenta?</strong> <a href="#" class="text-primary">Regístrate aquí</a></p>
+                                        <p><strong>¿No tienes cuenta?</strong> <a href="#" class="text-primary" data-bs-toggle="tab" data-bs-target="#register-form">Regístrate aquí</a></p>
                                         <p><strong>¿Olvidaste tu contraseña?</strong> <a href="#" class="text-primary">Recupérala aquí</a></p>
+                                    </div>
+                                </div>
+
+                                <!-- Register Form -->
+                                <div class="tab-pane fade" id="register-form">
+                                    <form id="public-register-form">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="register-nombre"
+                                                       placeholder="Tu nombre" required minlength="2">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold">Apellido Paterno <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="register-apellido"
+                                                       placeholder="Tu apellido" required minlength="2">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Email <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-envelope text-muted"></i>
+                                                </span>
+                                                <input type="email" class="form-control" id="register-email"
+                                                       placeholder="tu.email@ejemplo.com" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Contraseña <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-lock text-muted"></i>
+                                                </span>
+                                                <input type="password" class="form-control" id="register-password"
+                                                       placeholder="Mínimo 8 caracteres" required minlength="8">
+                                                <button class="btn btn-outline-secondary" type="button" id="toggle-register-password">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <small class="text-muted">Debe incluir mayúscula, minúscula y número</small>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Confirmar Contraseña <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-lock text-muted"></i>
+                                                </span>
+                                                <input type="password" class="form-control" id="register-password-confirm"
+                                                       placeholder="Repite tu contraseña" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="accept-terms" required>
+                                            <label class="form-check-label small" for="accept-terms">
+                                                Acepto los <a href="terminos.html" target="_blank">términos y condiciones</a>
+                                                y la <a href="privacidad.html" target="_blank">política de privacidad</a>
+                                            </label>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold">
+                                            <i class="fas fa-user-plus me-2"></i>Crear Cuenta
+                                        </button>
+                                    </form>
+
+                                    <hr class="my-3">
+
+                                    <div class="small text-muted text-center">
+                                        <p class="mb-0"><strong>¿Ya tienes cuenta?</strong> <a href="#" class="text-primary" data-bs-toggle="tab" data-bs-target="#email-login">Inicia sesión aquí</a></p>
                                     </div>
                                 </div>
                             </div>

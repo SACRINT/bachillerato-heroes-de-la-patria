@@ -1180,9 +1180,10 @@ async function deleteCourse(courseId) {
 async function getTenantByDomain(domain) {
     try {
         devLogger.log(`[DAL] Buscando tenant por dominio: ${domain}`);
+        // ✅ FIX (19 Nov 2025): Buscar tanto 'active' como 'activo' para compatibilidad
         let query = {
-            text: 'SELECT * FROM tenants WHERE domain = $1 AND status = $2',
-            values: [domain, 'active'],
+            text: 'SELECT * FROM tenants WHERE domain = $1 AND status IN ($2, $3)',
+            values: [domain, 'active', 'activo'],
         };
         let result = await pool.query(query);
         let tenant = result.rows[0] || null;

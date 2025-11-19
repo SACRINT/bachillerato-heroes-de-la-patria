@@ -1102,13 +1102,15 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://accounts.google.com", "https://www.googleapis.com", "https://cdn.tiny.cloud", "https://*.tiny.cloud", "https://sp.tinymce.com", "https://vercel.live", "https://*.vercel.live", "blob:"],
-            scriptSrcElem: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://accounts.google.com", "https://www.googleapis.com", "https://cdn.tiny.cloud", "https://*.tiny.cloud", "https://sp.tinymce.com", "https://vercel.live", "https://*.vercel.live"],
+            // ✅ FIX (19 Nov 2025): Agregado 'unsafe-inline' y 'unsafe-eval' para inline scripts y TinyMCE
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://accounts.google.com", "https://www.googleapis.com", "https://cdn.tiny.cloud", "https://*.tiny.cloud", "https://sp.tinymce.com", "https://vercel.live", "https://*.vercel.live", "blob:"],
+            scriptSrcElem: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://accounts.google.com", "https://www.googleapis.com", "https://cdn.tiny.cloud", "https://*.tiny.cloud", "https://sp.tinymce.com", "https://vercel.live", "https://*.vercel.live"],
             styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://accounts.google.com", "https://accounts.google.com/gsi/style", "https://cdn.tiny.cloud", "https://*.tiny.cloud"],
             styleSrcElem: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://fonts.googleapis.com", "https://accounts.google.com", "https://accounts.google.com/gsi/style", "https://cdn.tiny.cloud", "https://*.tiny.cloud"],
             connectSrc: ["'self'", "https://bge-heroesdelapatria.vercel.app", "https://sp.tinymce.com", "https://www.google-analytics.com", "https://www.googletagmanager.com", "https:", "ws:", "wss:"],
             imgSrc: ["'self'", "data:", "blob:", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://cdn.tiny.cloud", "https://*.tiny.cloud", "https:"],
-            fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://cdn.tiny.cloud", "https://*.tiny.cloud"],
+            // ✅ FIX (19 Nov 2025): Agregado data: para fuentes inline
+            fontSrc: ["'self'", "data:", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://cdn.tiny.cloud", "https://*.tiny.cloud"],
             frameSrc: ["'self'", "https://accounts.google.com", "https://www.google.com", "https://maps.google.com", "https://forms.gle", "https://vercel.live", "https://*.vercel.live"],
             objectSrc: ["'none'"],
             formAction: ["'self'"],
