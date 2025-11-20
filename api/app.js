@@ -1285,6 +1285,9 @@ const levelsRoutes = require('../backend/routes/levels');  // ✅ XP, niveles, b
 // 📊 TEACHER ANALYTICS - ANALÍTICAS DOCENTES (20 NOV 2025 - SEMANA 9-10)
 const teacherAnalyticsRoutes = require('../backend/routes/teacher-analytics');  // ✅ Métricas, reportes, alertas
 
+// 🔔 REALTIME NOTIFICATIONS - NOTIFICACIONES TIEMPO REAL (20 NOV 2025 - SEMANA 11-12)
+const realtimeNotificationsRoutes = require('../backend/routes/realtime-notifications');  // ✅ Notificaciones, preferencias, broadcast
+
 // Register all route modules
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -1340,6 +1343,9 @@ app.use('/api/levels', levelsRoutes);  // ✅ XP, niveles, badges, perfil, leade
 
 // 📊 TEACHER ANALYTICS (20 NOV 2025 - SEMANA 9-10)
 app.use('/api/teacher-analytics', teacherAnalyticsRoutes);  // ✅ overview, students, reports, alerts, export
+
+// 🔔 REALTIME NOTIFICATIONS (20 NOV 2025 - SEMANA 11-12)
+app.use('/api/notifications', realtimeNotificationsRoutes);  // ✅ notifications, preferences, broadcast, cleanup
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
