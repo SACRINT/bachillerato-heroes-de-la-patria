@@ -1,414 +1,570 @@
 /**
- * 🏆 CHALLENGES ROUTES - SISTEMA DE RETOS
- * Gestión de desafíos educativos y recompensas
+ * 🏆 CHALLENGES ROUTES - SISTEMA DE RETOS v2.0
+ * Gestión de desafíos educativos, streaks y recompensas
+ * FASE 1 - Semana 5-6 (Actualizado)
  */
 
 const express = require('express');
-const { Pool } = require('pg');
-// GDPR Logging - Debug condicional y sanitización
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
-const { authenticateToken } = require('../middleware/auth');
-
 const router = express.Router();
+const { body, query, param, validationResult } = require('express-validator');
+const { authenticateToken } = require('../middleware/auth');
+const ChallengesService = require('../services/ChallengesService');
+const { executeQuery } = require('../data/database-access');
 
-// PostgreSQL connection pool
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
-
-// ============================================
-// ENDPOINT 1: GET /api/challenges
-// Listar todos los retos disponibles
-// ============================================
-router.get('/', authenticateToken, async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const { type, status = 'active' } = req.query;
-
-        debugLog.log('CHALLENGES', `[CHALLENGES] Listando retos para usuario ${userId}`);
-
-        let query = `
-            SELECT
-                c.id,
-                c.title,
-                c.description,
-                c.challenge_type,
-                c.difficulty,
-                c.reward_iacoins,
-                c.reward_xp,
-                c.max_completions,
-                c.starts_at,
-                c.ends_at,
-                c.is_active,
-                c.icon,
-                c.completion_criteria,
-                uc.id as user_challenge_id,
-                uc.is_completed,
-                uc.progress,
-                uc.completed_at,
-                uc.times_completed
-            FROM challenges c
-            LEFT JOIN user_challenges uc ON c.id = uc.challenge_id AND uc.user_id = $1
-            WHERE 1=1
-        `;
-        const params = [userId];
-
-        // Filtro por tipo
-        if (type && ['daily', 'weekly', 'monthly', 'special'].includes(type)) {
-            query += ` AND c.challenge_type = $${params.length + 1}`;
-            params.push(type);
-        }
-
-        // Filtro por estado
-        if (status === 'active') {
-            query += ` AND c.is_active = true`;
-            query += ` AND (c.starts_at IS NULL OR c.starts_at <= NOW())`;
-            query += ` AND (c.ends_at IS NULL OR c.ends_at >= NOW())`;
-        }
-
-        query += ` ORDER BY c.challenge_type, c.difficulty, c.id`;
-
-        const result = await pool.query(query, params);
-
-        // Agrupar por tipo
-        const challengesByType = {
-            all: result.rows,
-            daily: result.rows.filter(c => c.challenge_type === 'daily'),
-            weekly: result.rows.filter(c => c.challenge_type === 'weekly'),
-            monthly: result.rows.filter(c => c.challenge_type === 'monthly'),
-            special: result.rows.filter(c => c.challenge_type === 'special')
-        };
-
-        res.json({
-            challenges: type ? challengesByType[type] : challengesByType.all,
-            summary: {
-                total: result.rows.length,
-                completed: result.rows.filter(c => c.is_completed).length,
-                in_progress: result.rows.filter(c => c.user_challenge_id && !c.is_completed).length,
-                available: result.rows.filter(c => !c.user_challenge_id).length
-            }
-        });
-
-    } catch (error) {
-        debugLog.error('CHALLENGES', '[CHALLENGES] Error al listar retos:', error.message);
-        res.status(500).json({
-            error: 'Error al obtener retos',
-            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+// Middleware de validación
+const validate = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            message: 'Error de validación',
+            errors: errors.array()
         });
     }
-});
+    next();
+};
 
-// ============================================
-// ENDPOINT 2: GET /api/challenges/:id
-// Obtener detalles de un reto específico
-// ============================================
-router.get('/:id', authenticateToken, async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const { id } = req.params;
+// =====================================
+// OBTENER RETOS
+// =====================================
 
-        debugLog.log('CHALLENGES', `[CHALLENGES] Obteniendo detalles del reto ${id} para usuario ${userId}`);
+/**
+ * GET /api/challenges
+ * Listar todos los retos disponibles
+ */
+router.get('/',
+    authenticateToken,
+    [
+        query('category').optional().isIn(['academic', 'social', 'creative', 'physical', 'daily']),
+        query('difficulty').optional().isIn(['easy', 'medium', 'hard', 'expert']),
+        query('frequency').optional().isIn(['daily', 'weekly', 'monthly', 'one-time', 'event']),
+        query('subject').optional().isString().isLength({ max: 100 }),
+        query('limit').optional().isInt({ min: 1, max: 100 }),
+        query('offset').optional().isInt({ min: 0 })
+    ],
+    validate,
+    async (req, res) => {
+        try {
+            const userId = req.user.id;
+            const options = {
+                category: req.query.category,
+                difficulty: req.query.difficulty,
+                frequency: req.query.frequency,
+                subject: req.query.subject,
+                limit: parseInt(req.query.limit) || 50,
+                offset: parseInt(req.query.offset) || 0
+            };
 
-        const result = await pool.query(
-            `SELECT
-                c.id,
-                c.title,
-                c.description,
-                c.challenge_type,
-                c.difficulty,
-                c.reward_iacoins,
-                c.reward_xp,
-                c.max_completions,
-                c.starts_at,
-                c.ends_at,
-                c.is_active,
-                c.icon,
-                c.completion_criteria,
-                c.instructions,
-                c.created_at,
-                uc.id as user_challenge_id,
-                uc.is_completed,
-                uc.progress,
-                uc.completed_at,
-                uc.times_completed,
-                uc.started_at
-            FROM challenges c
-            LEFT JOIN user_challenges uc ON c.id = uc.challenge_id AND uc.user_id = $1
-            WHERE c.id = $2`,
-            [userId, id]
-        );
+            const challenges = await ChallengesService.getAvailableChallenges(userId, options);
 
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                error: 'Reto no encontrado'
+            // Agrupar por frecuencia
+            const grouped = {
+                all: challenges,
+                daily: challenges.filter(c => c.frequency === 'daily'),
+                weekly: challenges.filter(c => c.frequency === 'weekly'),
+                monthly: challenges.filter(c => c.frequency === 'monthly'),
+                oneTime: challenges.filter(c => c.frequency === 'one-time')
+            };
+
+            res.json({
+                success: true,
+                data: req.query.frequency ? grouped[req.query.frequency] || challenges : challenges,
+                summary: {
+                    total: challenges.length,
+                    completed: challenges.filter(c => c.user_status === 'claimed').length,
+                    in_progress: challenges.filter(c => c.user_status === 'in_progress').length,
+                    available: challenges.filter(c => !c.user_status).length
+                },
+                pagination: {
+                    limit: options.limit,
+                    offset: options.offset,
+                    count: challenges.length
+                }
+            });
+        } catch (error) {
+            console.error('[CHALLENGES] Error obteniendo retos:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al obtener retos'
             });
         }
+    }
+);
 
-        // Obtener estadísticas del reto
-        const statsResult = await pool.query(
-            `SELECT
-                COUNT(*) as total_participants,
-                COUNT(CASE WHEN is_completed = true THEN 1 END) as total_completions
-            FROM user_challenges
-            WHERE challenge_id = $1`,
-            [id]
-        );
+/**
+ * GET /api/challenges/daily
+ * Obtiene retos diarios
+ */
+router.get('/daily',
+    authenticateToken,
+    async (req, res) => {
+        try {
+            const challenges = await ChallengesService.getDailyChallenges(req.user.id);
 
+            res.json({
+                success: true,
+                data: challenges
+            });
+        } catch (error) {
+            console.error('[CHALLENGES] Error obteniendo retos diarios:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al obtener retos diarios'
+            });
+        }
+    }
+);
+
+/**
+ * GET /api/challenges/featured
+ * Obtiene retos destacados
+ */
+router.get('/featured',
+    authenticateToken,
+    async (req, res) => {
+        try {
+            const limit = parseInt(req.query.limit) || 5;
+            const challenges = await ChallengesService.getFeaturedChallenges(req.user.id, limit);
+
+            res.json({
+                success: true,
+                data: challenges
+            });
+        } catch (error) {
+            console.error('[CHALLENGES] Error obteniendo retos destacados:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al obtener retos destacados'
+            });
+        }
+    }
+);
+
+/**
+ * GET /api/challenges/user/streaks
+ * Obtiene streaks del usuario
+ */
+router.get('/user/streaks',
+    authenticateToken,
+    async (req, res) => {
+        try {
+            const streaks = await ChallengesService.getUserStreaks(req.user.id);
+
+            res.json({
+                success: true,
+                data: streaks
+            });
+        } catch (error) {
+            console.error('[CHALLENGES] Error obteniendo streaks:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al obtener streaks'
+            });
+        }
+    }
+);
+
+/**
+ * GET /api/challenges/user/stats
+ * Obtiene estadísticas del usuario
+ */
+router.get('/user/stats',
+    authenticateToken,
+    async (req, res) => {
+        try {
+            const stats = await ChallengesService.getUserChallengeStats(req.user.id);
+
+            res.json({
+                success: true,
+                data: stats
+            });
+        } catch (error) {
+            console.error('[CHALLENGES] Error obteniendo estadísticas:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al obtener estadísticas'
+            });
+        }
+    }
+);
+
+/**
+ * GET /api/challenges/streaks/multiplier
+ * Obtiene multiplicador por streak
+ */
+router.get('/streaks/multiplier',
+    authenticateToken,
+    async (req, res) => {
+        try {
+            const multiplier = await ChallengesService.getStreakMultiplier(req.user.id);
+
+            res.json({
+                success: true,
+                data: {
+                    multiplier,
+                    percentage: Math.round((multiplier - 1) * 100)
+                }
+            });
+        } catch (error) {
+            console.error('[CHALLENGES] Error obteniendo multiplicador:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al obtener multiplicador'
+            });
+        }
+    }
+);
+
+/**
+ * GET /api/challenges/meta/categories
+ * Obtiene categorías disponibles
+ */
+router.get('/meta/categories',
+    async (req, res) => {
         res.json({
-            challenge: result.rows[0],
-            stats: statsResult.rows[0]
-        });
-
-    } catch (error) {
-        debugLog.error('CHALLENGES', '[CHALLENGES] Error al obtener detalles del reto:', error.message);
-        res.status(500).json({
-            error: 'Error al obtener detalles del reto',
-            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+            success: true,
+            data: [
+                { id: 'academic', name: 'Académico', icon: 'fa-graduation-cap', color: '#4a90d9' },
+                { id: 'social', name: 'Social', icon: 'fa-users', color: '#6c5ce7' },
+                { id: 'creative', name: 'Creativo', icon: 'fa-paint-brush', color: '#e17055' },
+                { id: 'physical', name: 'Físico', icon: 'fa-running', color: '#00b894' },
+                { id: 'daily', name: 'Diario', icon: 'fa-calendar-day', color: '#f5a623' }
+            ]
         });
     }
-});
+);
 
-// ============================================
-// ENDPOINT 3: POST /api/challenges/:id/complete
-// Completar un reto y reclamar recompensas
-// ============================================
-router.post('/:id/complete', authenticateToken, async (req, res) => {
-    const client = await pool.connect();
+/**
+ * GET /api/challenges/meta/subjects
+ * Obtiene materias de BGE
+ */
+router.get('/meta/subjects',
+    async (req, res) => {
+        res.json({
+            success: true,
+            data: ChallengesService.subjects
+        });
+    }
+);
 
-    try {
-        const userId = req.user.id;
-        const { id } = req.params;
-        const { progress = {} } = req.body;
+/**
+ * GET /api/challenges/:id
+ * Obtiene detalles de un reto específico
+ */
+router.get('/:id',
+    authenticateToken,
+    [param('id').isInt({ min: 1 })],
+    validate,
+    async (req, res) => {
+        try {
+            const challenge = await ChallengesService.getChallengeById(
+                parseInt(req.params.id),
+                req.user.id
+            );
 
-        debugLog.log('CHALLENGES', `[CHALLENGES] Usuario ${userId} completando reto ${id}`);
-
-        await client.query('BEGIN');
-
-        // Obtener información del reto
-        const challengeResult = await client.query(
-            `SELECT * FROM challenges WHERE id = $1 AND is_active = true`,
-            [id]
-        );
-
-        if (challengeResult.rows.length === 0) {
-            await client.query('ROLLBACK');
-            return res.status(404).json({
-                error: 'Reto no encontrado o inactivo'
-            });
-        }
-
-        const challenge = challengeResult.rows[0];
-
-        // Verificar si el reto está dentro del período válido
-        const now = new Date();
-        if (challenge.starts_at && new Date(challenge.starts_at) > now) {
-            await client.query('ROLLBACK');
-            return res.status(400).json({
-                error: 'El reto aún no ha comenzado'
-            });
-        }
-
-        if (challenge.ends_at && new Date(challenge.ends_at) < now) {
-            await client.query('ROLLBACK');
-            return res.status(400).json({
-                error: 'El reto ha expirado'
-            });
-        }
-
-        // Verificar si el usuario ya completó este reto
-        const userChallengeResult = await client.query(
-            `SELECT * FROM user_challenges
-            WHERE user_id = $1 AND challenge_id = $2`,
-            [userId, id]
-        );
-
-        let userChallenge = userChallengeResult.rows[0];
-
-        if (userChallenge) {
-            // Verificar límite de completaciones
-            if (userChallenge.times_completed >= challenge.max_completions) {
-                await client.query('ROLLBACK');
-                return res.status(400).json({
-                    error: `Has alcanzado el límite de completaciones (${challenge.max_completions})`,
-                    times_completed: userChallenge.times_completed
+            if (!challenge) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Reto no encontrado'
                 });
             }
 
-            // Actualizar completación existente
-            await client.query(
-                `UPDATE user_challenges
-                SET is_completed = true,
-                    progress = $1,
-                    completed_at = NOW(),
-                    times_completed = times_completed + 1
-                WHERE id = $2`,
-                [JSON.stringify(progress), userChallenge.id]
-            );
-        } else {
-            // Crear nuevo registro de completación
-            await client.query(
-                `INSERT INTO user_challenges
-                (user_id, challenge_id, is_completed, progress, started_at, completed_at, times_completed)
-                VALUES ($1, $2, true, $3, NOW(), NOW(), 1)`,
-                [userId, id, JSON.stringify(progress)]
-            );
+            res.json({
+                success: true,
+                data: challenge
+            });
+        } catch (error) {
+            console.error('[CHALLENGES] Error obteniendo reto:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al obtener reto'
+            });
         }
-
-        // Otorgar recompensas - IACoins
-        if (challenge.reward_iacoins > 0) {
-            // Actualizar wallet
-            await client.query(
-                `INSERT INTO wallet (user_id, balance, total_earned, total_spent, total_purchased)
-                VALUES ($1, $2, $2, 0, 0)
-                ON CONFLICT (user_id)
-                DO UPDATE SET
-                    balance = wallet.balance + $2,
-                    total_earned = wallet.total_earned + $2,
-                    updated_at = NOW()`,
-                [userId, challenge.reward_iacoins]
-            );
-
-            // Registrar en historial
-            const walletResult = await client.query(
-                `SELECT balance FROM wallet WHERE user_id = $1`,
-                [userId]
-            );
-
-            await client.query(
-                `INSERT INTO wallet_history
-                (user_id, transaction_type, amount, balance_after, description, metadata)
-                VALUES ($1, 'earn', $2, $3, $4, $5)`,
-                [
-                    userId,
-                    challenge.reward_iacoins,
-                    walletResult.rows[0].balance,
-                    `Completar reto: ${challenge.title}`,
-                    JSON.stringify({ challenge_id: id, challenge_type: challenge.challenge_type })
-                ]
-            );
-        }
-
-        // TODO: Otorgar recompensas - XP (cuando se implemente sistema de niveles)
-
-        await client.query('COMMIT');
-
-        res.json({
-            success: true,
-            challenge: {
-                id: challenge.id,
-                title: challenge.title
-            },
-            rewards: {
-                iacoins: challenge.reward_iacoins,
-                xp: challenge.reward_xp
-            },
-            message: `¡Reto completado! Has ganado ${challenge.reward_iacoins} IA Coins y ${challenge.reward_xp} XP`
-        });
-
-    } catch (error) {
-        await client.query('ROLLBACK');
-        debugLog.error('CHALLENGES', '[CHALLENGES] Error al completar reto:', error.message);
-        res.status(500).json({
-            error: 'Error al completar el reto',
-            details: process.env.NODE_ENV === 'development' ? error.message : undefined
-        });
-    } finally {
-        client.release();
     }
-});
+);
 
-// ============================================
-// ENDPOINT 4: POST /api/challenges (ADMIN)
-// Crear un nuevo reto (solo administradores)
-// ============================================
-router.post('/', authenticateToken, async (req, res) => {
-    try {
-        // Verificar que sea administrador
-        if (req.user.role !== 'admin' && req.user.role !== 'administrativo') {
-            return res.status(403).json({
-                error: 'Acceso denegado. Solo administradores pueden crear retos.'
+// =====================================
+// ACCIONES DE RETOS
+// =====================================
+
+/**
+ * POST /api/challenges/:id/start
+ * Inicia un reto
+ */
+router.post('/:id/start',
+    authenticateToken,
+    [param('id').isInt({ min: 1 })],
+    validate,
+    async (req, res) => {
+        try {
+            const result = await ChallengesService.startChallenge(
+                req.user.id,
+                parseInt(req.params.id)
+            );
+
+            res.json(result);
+        } catch (error) {
+            console.error('[CHALLENGES] Error iniciando reto:', error);
+            res.status(400).json({
+                success: false,
+                message: error.message || 'Error al iniciar reto'
             });
         }
-
-        const {
-            title,
-            description,
-            challenge_type = 'special',
-            difficulty = 'medium',
-            reward_iacoins = 10,
-            reward_xp = 100,
-            max_completions = 1,
-            starts_at = null,
-            ends_at = null,
-            icon = '🎯',
-            completion_criteria = {},
-            instructions = null
-        } = req.body;
-
-        // Validaciones
-        if (!title || title.length < 3) {
-            return res.status(400).json({
-                error: 'El título debe tener al menos 3 caracteres'
-            });
-        }
-
-        if (!description || description.length < 10) {
-            return res.status(400).json({
-                error: 'La descripción debe tener al menos 10 caracteres'
-            });
-        }
-
-        if (!['daily', 'weekly', 'monthly', 'special'].includes(challenge_type)) {
-            return res.status(400).json({
-                error: 'Tipo de reto no válido'
-            });
-        }
-
-        if (!['easy', 'medium', 'hard', 'expert'].includes(difficulty)) {
-            return res.status(400).json({
-                error: 'Dificultad no válida'
-            });
-        }
-
-        debugLog.log('CHALLENGES', `[CHALLENGES] Admin ${req.user.id} creando nuevo reto: ${title}`);
-
-        const result = await pool.query(
-            `INSERT INTO challenges
-            (title, description, challenge_type, difficulty, reward_iacoins, reward_xp,
-             max_completions, starts_at, ends_at, icon, completion_criteria, instructions, is_active)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true)
-            RETURNING *`,
-            [
-                title,
-                description,
-                challenge_type,
-                difficulty,
-                reward_iacoins,
-                reward_xp,
-                max_completions,
-                starts_at,
-                ends_at,
-                icon,
-                JSON.stringify(completion_criteria),
-                instructions
-            ]
-        );
-
-        res.status(201).json({
-            success: true,
-            challenge: result.rows[0],
-            message: 'Reto creado exitosamente'
-        });
-
-    } catch (error) {
-        debugLog.error('CHALLENGES', '[CHALLENGES] Error al crear reto:', error.message);
-        res.status(500).json({
-            error: 'Error al crear el reto',
-            details: process.env.NODE_ENV === 'development' ? error.message : undefined
-        });
     }
-});
+);
+
+/**
+ * POST /api/challenges/:id/progress
+ * Actualiza progreso
+ */
+router.post('/:id/progress',
+    authenticateToken,
+    [
+        param('id').isInt({ min: 1 }),
+        body('increment').optional().isInt({ min: 1, max: 100 })
+    ],
+    validate,
+    async (req, res) => {
+        try {
+            const result = await ChallengesService.updateProgress(
+                req.user.id,
+                parseInt(req.params.id),
+                req.body.increment || 1,
+                req.body.progressData
+            );
+
+            res.json(result);
+        } catch (error) {
+            console.error('[CHALLENGES] Error actualizando progreso:', error);
+            res.status(400).json({
+                success: false,
+                message: error.message || 'Error al actualizar progreso'
+            });
+        }
+    }
+);
+
+/**
+ * POST /api/challenges/:id/complete
+ * Marca reto como completado (compatibilidad con v1)
+ */
+router.post('/:id/complete',
+    authenticateToken,
+    [param('id').isInt({ min: 1 })],
+    validate,
+    async (req, res) => {
+        try {
+            // Actualizar progreso al máximo
+            const progressResult = await ChallengesService.updateProgress(
+                req.user.id,
+                parseInt(req.params.id),
+                1000 // Asegurar que llega al target
+            );
+
+            if (!progressResult.completed) {
+                return res.json(progressResult);
+            }
+
+            // Reclamar recompensa automáticamente
+            const claimResult = await ChallengesService.claimReward(
+                req.user.id,
+                parseInt(req.params.id)
+            );
+
+            res.json({
+                success: true,
+                ...claimResult,
+                challenge: {
+                    id: parseInt(req.params.id)
+                }
+            });
+        } catch (error) {
+            console.error('[CHALLENGES] Error completando reto:', error);
+            res.status(400).json({
+                success: false,
+                message: error.message || 'Error al completar reto'
+            });
+        }
+    }
+);
+
+/**
+ * POST /api/challenges/:id/claim
+ * Reclama recompensa
+ */
+router.post('/:id/claim',
+    authenticateToken,
+    [param('id').isInt({ min: 1 })],
+    validate,
+    async (req, res) => {
+        try {
+            const result = await ChallengesService.claimReward(
+                req.user.id,
+                parseInt(req.params.id)
+            );
+
+            res.json(result);
+        } catch (error) {
+            console.error('[CHALLENGES] Error reclamando recompensa:', error);
+            res.status(400).json({
+                success: false,
+                message: error.message || 'Error al reclamar recompensa'
+            });
+        }
+    }
+);
+
+/**
+ * POST /api/challenges/streaks/update
+ * Actualiza streak de login
+ */
+router.post('/streaks/update',
+    authenticateToken,
+    async (req, res) => {
+        try {
+            const result = await ChallengesService.updateStreak(
+                req.user.id,
+                req.body.streakType || 'daily_login'
+            );
+
+            res.json({
+                success: true,
+                data: result
+            });
+        } catch (error) {
+            console.error('[CHALLENGES] Error actualizando streak:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al actualizar streak'
+            });
+        }
+    }
+);
+
+/**
+ * POST /api/challenges/:id/join
+ * Unirse a reto colaborativo
+ */
+router.post('/:id/join',
+    authenticateToken,
+    [param('id').isInt({ min: 1 })],
+    validate,
+    async (req, res) => {
+        try {
+            const result = await ChallengesService.joinCollaborativeChallenge(
+                req.user.id,
+                parseInt(req.params.id)
+            );
+
+            res.json(result);
+        } catch (error) {
+            console.error('[CHALLENGES] Error uniéndose a reto:', error);
+            res.status(400).json({
+                success: false,
+                message: error.message || 'Error al unirse al reto'
+            });
+        }
+    }
+);
+
+/**
+ * GET /api/challenges/:id/participants
+ * Obtiene participantes de reto colaborativo
+ */
+router.get('/:id/participants',
+    authenticateToken,
+    [param('id').isInt({ min: 1 })],
+    validate,
+    async (req, res) => {
+        try {
+            const participants = await ChallengesService.getCollaborativeParticipants(
+                parseInt(req.params.id)
+            );
+
+            res.json({
+                success: true,
+                data: participants
+            });
+        } catch (error) {
+            console.error('[CHALLENGES] Error obteniendo participantes:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al obtener participantes'
+            });
+        }
+    }
+);
+
+// =====================================
+// ADMIN ENDPOINTS
+// =====================================
+
+/**
+ * POST /api/challenges
+ * Crear nuevo reto (admin)
+ */
+router.post('/',
+    authenticateToken,
+    [
+        body('title').isString().isLength({ min: 3, max: 200 }),
+        body('description').isString().isLength({ min: 10 }),
+        body('category').isIn(['academic', 'social', 'creative', 'physical', 'daily']),
+        body('difficulty').optional().isIn(['easy', 'medium', 'hard', 'expert']),
+        body('frequency').optional().isIn(['daily', 'weekly', 'monthly', 'one-time', 'event']),
+        body('reward_coins').optional().isInt({ min: 1, max: 1000 }),
+        body('reward_xp').optional().isInt({ min: 1, max: 5000 })
+    ],
+    validate,
+    async (req, res) => {
+        try {
+            // Verificar permisos
+            if (!['admin', 'administrativo'].includes(req.user.role)) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Solo administradores pueden crear retos'
+                });
+            }
+
+            const {
+                title, description, category, subject, difficulty = 'medium',
+                challenge_type = 'assignment', frequency = 'one-time',
+                reward_coins = 10, reward_xp = 50, completion_criteria = {},
+                start_date, end_date, is_collaborative = false,
+                min_participants = 1, max_participants, icon = 'fa-trophy'
+            } = req.body;
+
+            const query = `
+                INSERT INTO challenges (
+                    title, description, category, subject, difficulty,
+                    challenge_type, frequency, reward_coins, reward_xp,
+                    completion_criteria, start_date, end_date,
+                    is_collaborative, min_participants, max_participants, icon
+                ) VALUES (
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
+                )
+                RETURNING *
+            `;
+
+            const result = await executeQuery(query, [
+                title, description, category, subject, difficulty,
+                challenge_type, frequency, reward_coins, reward_xp,
+                JSON.stringify(completion_criteria), start_date, end_date,
+                is_collaborative, min_participants, max_participants, icon
+            ]);
+
+            res.status(201).json({
+                success: true,
+                data: result[0],
+                message: 'Reto creado exitosamente'
+            });
+        } catch (error) {
+            console.error('[CHALLENGES] Error creando reto:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al crear reto'
+            });
+        }
+    }
+);
 
 module.exports = router;
