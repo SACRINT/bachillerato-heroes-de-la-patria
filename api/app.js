@@ -1273,6 +1273,9 @@ const teachersRoutes = require('../backend/routes/teachers');
 // 🎓 RUTAS RECIENTEMENTE REGISTRADAS (8 NOV 2025)
 const cursosRoutes = require('../backend/routes/cursos');  // ✅ Gestión de cursos educativos
 
+// 🪙 IACOINS - SISTEMA DE GAMIFICACIÓN (19 NOV 2025 - SEMANA 2)
+const iacoinsRoutes = require('../backend/routes/iacoins');  // ✅ Balance, transacciones, retos, logros
+
 // Register all route modules
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -1316,6 +1319,9 @@ app.use('/api/support-tickets', supportTicketsRoutes);
 app.use('/api/pendientes-aprobacion', pendientesAprobacionRoutes);
 app.use('/api/fix-aprobaciones', fixAprobacionesAutoRoutes);
 app.use('/api/diagnostico-aprobaciones', diagnosticoAprobacionesRoutes);
+
+// 🪙 IACOINS - GAMIFICACIÓN (19 NOV 2025 - SEMANA 2)
+app.use('/api/iacoins', iacoinsRoutes);  // ✅ Balance, transacciones, retos, logros, leaderboard
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
