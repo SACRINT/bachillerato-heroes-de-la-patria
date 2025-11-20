@@ -129,6 +129,9 @@ class UnifiedAuthSystem {
             // 4. Setup listeners TEMPRANO - para que el botón funcione aunque Google falle
             this.setupEventListeners();
 
+            // ✅ SEMANA 25: Inicializar WebAuthn Manager
+            await this.initializeWebAuthn();
+
             // 5. Cargar Google Client ID desde servidor (.env) - puede fallar sin afectar login manual
             const clientId = await this.loadGoogleClientIdFromServer();
             if (!clientId) {
@@ -258,6 +261,155 @@ class UnifiedAuthSystem {
     }
 
     /**
+     * ✅ SEMANA 25: INICIALIZAR WEBAUTHN
+     */
+    async initializeWebAuthn() {
+        debugLog.log('AUTH', '🔐 Inicializando WebAuthn...');
+
+        try {
+            // Create WebAuthn Manager instance
+            if (typeof WebAuthnManager === 'undefined') {
+                debugLog.warn('AUTH', '⚠️ WebAuthnManager no cargado, cargando script...');
+
+                // Load webauthn-manager.js dynamically
+                await this.loadScript('/js/webauthn-manager.js');
+            }
+
+            this.webauthn = new WebAuthnManager({
+                apiBaseUrl: this.config.apiBaseUrl,
+                onSuccess: (result) => {
+                    debugLog.log('AUTH', '✅ WebAuthn success:', result.type);
+                },
+                onError: (error) => {
+                    debugLog.error('AUTH', '❌ WebAuthn error:', error.type, error.error);
+                }
+            });
+
+            await this.webauthn.init();
+
+            this.state.webauthnReady = this.webauthn.isAvailable;
+
+            debugLog.log('AUTH', `WebAuthn ${this.state.webauthnReady ? 'disponible' : 'no disponible'}`);
+
+            // Update UI button visibility
+            this.updateBiometricButtonVisibility();
+
+        } catch (error) {
+            debugLog.warn('AUTH', '⚠️ WebAuthn no disponible:', error.message);
+            this.state.webauthnReady = false;
+        }
+    }
+
+    /**
+     * ✅ SEMANA 25: ACTUALIZAR VISIBILIDAD DEL BOTÓN BIOMÉTRICO
+     */
+    async updateBiometricButtonVisibility() {
+        const biometricBtn = document.getElementById('biometric-login-btn');
+        const statusText = document.getElementById('biometric-status-text');
+
+        if (!biometricBtn) return;
+
+        if (!this.state.webauthnReady) {
+            // WebAuthn not supported
+            biometricBtn.style.display = 'none';
+            return;
+        }
+
+        // Check if user has credentials registered
+        try {
+            const hasCredentials = this.state.isAuthenticated ?
+                await this.webauthn.hasCredentials() : false;
+
+            if (!hasCredentials && !this.state.isAuthenticated) {
+                // Not logged in and no credentials - hide button
+                biometricBtn.style.display = 'none';
+            } else {
+                // Show button
+                biometricBtn.style.display = 'block';
+
+                if (statusText) {
+                    statusText.innerHTML = hasCredentials ?
+                        '<i class="fas fa-check-circle me-1 text-success"></i> Dispositivo registrado' :
+                        '<i class="fas fa-info-circle me-1"></i> Touch ID, Face ID, Windows Hello';
+                }
+            }
+        } catch (error) {
+            // If checking fails (not authenticated), hide button
+            biometricBtn.style.display = 'none';
+        }
+    }
+
+    /**
+     * ✅ SEMANA 25: MANEJAR LOGIN BIOMÉTRICO
+     */
+    async handleBiometricLogin() {
+        debugLog.log('AUTH', '🔐 Iniciando login biométrico...');
+
+        if (!this.state.webauthnReady) {
+            this.showError('Tu navegador no soporta autenticación biométrica');
+            return;
+        }
+
+        const biometricBtn = document.getElementById('biometric-login-btn');
+        const originalHTML = biometricBtn.innerHTML;
+
+        biometricBtn.disabled = true;
+        biometricBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Autenticando...';
+
+        try {
+            // Authenticate with biometrics
+            const result = await this.webauthn.authenticate(null, false);
+
+            if (result.success) {
+                debugLog.log('AUTH', '✅ Login biométrico exitoso');
+
+                // Process login (save tokens, update UI)
+                const token = result.tokens.accessToken;
+                await this.processLogin(result.user, token, result.sessionInfo.rememberMe);
+
+                // Close modal
+                this.hideModal();
+
+                this.showSuccess('¡Autenticación biométrica exitosa!');
+            } else {
+                throw new Error('Autenticación fallida');
+            }
+
+        } catch (error) {
+            debugLog.error('AUTH', '❌ Error en login biométrico:', error);
+
+            let errorMessage = 'Error en la autenticación biométrica';
+
+            if (error.name === 'NotAllowedError') {
+                errorMessage = 'Autenticación cancelada o rechazada';
+            } else if (error.name === 'InvalidStateError') {
+                errorMessage = 'No tienes dispositivos biométricos registrados';
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            this.showError(errorMessage);
+
+        } finally {
+            biometricBtn.disabled = false;
+            biometricBtn.innerHTML = originalHTML;
+        }
+    }
+
+    /**
+     * CARGAR SCRIPT DINÁMICAMENTE
+     */
+    async loadScript(src) {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+            document.head.appendChild(script);
+        });
+    }
+
+    /**
      * CREAR UI DE LOGIN
      */
     createLoginUI() {
@@ -356,6 +508,14 @@ class UnifiedAuthSystem {
         // Listeners de managers
         this.managers.manual.setupListeners();
         this.managers.google.setupListeners();
+
+        // ✅ SEMANA 25: Listener para botón de login biométrico
+        document.addEventListener('click', (e) => {
+            if (e.target?.id === 'biometric-login-btn' || e.target?.closest('#biometric-login-btn')) {
+                e.preventDefault();
+                this.handleBiometricLogin();
+            }
+        });
 
         // ✅ FIX (19 Nov 2025): Listener DIRECTO al botón de login como respaldo
         // Buscar el botón y agregarle listener directo además del delegado
@@ -1642,6 +1802,18 @@ class UIManager {
                                             <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
                                         </button>
                                     </form>
+
+                                    <!-- ✅ SEMANA 25: Biometric Login Button -->
+                                    <div class="mt-3 text-center">
+                                        <button type="button" class="btn btn-outline-secondary w-100 py-2" id="biometric-login-btn">
+                                            <i class="fas fa-fingerprint me-2"></i>
+                                            Usar Biometría
+                                        </button>
+                                        <p class="text-muted small mt-2 mb-0" id="biometric-status-text">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            Touch ID, Face ID, Windows Hello
+                                        </p>
+                                    </div>
 
                                     <hr class="my-3">
 
