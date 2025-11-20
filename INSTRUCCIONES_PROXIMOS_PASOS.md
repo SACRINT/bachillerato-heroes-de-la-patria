@@ -74,13 +74,7 @@ SEMANA 2 - TAREA 2.1: Grades System Backend
 - Validaciones de datos académicos
 - Commit después de completar
 
-SEMANA 2 - TAREA 2.2: Parent Portal Inicio
-- Crear dashboard básico para padres
-- Ver calificaciones de hijo
-- Ver asistencia
-- Commit después de completar
-
-SEMANA 2 - TAREA 2.3: Improvements y Optimización
+SEMANA 2 - TAREA 2.2: Improvements y Optimización
 - Code review de cambios de SEMANA 1
 - Optimizaciones de performance
 - Testing de nuevos endpoints
@@ -153,14 +147,7 @@ Tarea 2.1: Grades System Backend
 - Validaciones: notas 0-10, estudiante debe existir
 - Resultado: 1,200-1,500 líneas + commit
 
-Tarea 2.2: Parent Portal Inicio
-- 4-6 horas
-- UI: Dashboard padre con hijos matriculados
-- Mostrar: Calificaciones, asistencia, mensajes
-- Funcionalidad: Filtros, exportar PDF
-- Resultado: 1,200-1,500 líneas + commit
-
-Tarea 2.3: Code Quality & Testing
+Tarea 2.2: Code Quality & Testing
 - 2-3 horas
 - Validar 28 nuevos endpoints
 - Testing manual en navegador
@@ -171,7 +158,7 @@ Tarea 2.3: Code Quality & Testing
 **5. Reporting (Cada Domingo):**
 ```
 REPORTE_SEMANAL_SEMANA_2.md debe contener:
-- Tareas completadas (2.1, 2.2, 2.3)
+- Tareas completadas (2.1, 2.2)
 - Commits realizados (7+)
 - Líneas de código (1,400-2,100)
 - Problemas encontrados (si alguno)
