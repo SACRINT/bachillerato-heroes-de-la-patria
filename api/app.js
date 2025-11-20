@@ -1303,6 +1303,9 @@ const tournamentsRoutes = require('../backend/routes/tournaments');  // ✅ Torn
 // 🛒 MARKETPLACE - MARKETPLACE DE RECURSOS (20 NOV 2025 - SEMANA 23-24)
 const marketplaceRoutes = require('../backend/routes/marketplace');  // ✅ Items, compras, reviews, favoritos, vendedor, ganancias
 
+// 📈 PERFORMANCE - MONITOREO DE RENDIMIENTO (20 NOV 2025 - SEMANA 25-26)
+const performanceRoutes = require('../backend/routes/performance');  // ✅ Caché, queries, BD, health, dashboard, métricas
+
 // Register all route modules
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -1376,6 +1379,9 @@ app.use('/api/tournaments', tournamentsRoutes);  // ✅ torneos, registro, match
 
 // 🛒 MARKETPLACE (20 NOV 2025 - SEMANA 23-24)
 app.use('/api/marketplace', marketplaceRoutes);  // ✅ items, purchases, reviews, favorites, seller, categories
+
+// 📈 PERFORMANCE (20 NOV 2025 - SEMANA 25-26)
+app.use('/api/performance', performanceRoutes);  // ✅ cache, queries, database, health, dashboard, metrics
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
