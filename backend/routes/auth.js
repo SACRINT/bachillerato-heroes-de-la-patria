@@ -17,6 +17,9 @@ const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-erro
 // ✅ SEMANA 25: 2FA Service integration
 const twoFactorService = require('../services/twoFactorService');
 
+// ✅ SEMANA 25: WebAuthn Service integration
+const webauthnService = require('../services/webauthnService');
+
 const router = express.Router();
 
 // Instancias de servicios
@@ -476,6 +479,286 @@ router.post('/2fa/verify-setup', authenticateToken, [
             success: false,
             error: 'Error en la verificación',
             message: 'Ocurrió un error al verificar el código'
+        });
+    }
+});
+
+// ============================================
+// ✅ SEMANA 25: WEBAUTHN (BIOMETRIC AUTH) ENDPOINTS
+// ============================================
+
+/**
+ * POST /api/auth/webauthn/register/options
+ * Generar opciones para registrar un nuevo dispositivo biométrico
+ */
+router.post('/webauthn/register/options', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const user = req.user;
+
+        debugLog.log('WEBAUTHN', `Generando opciones de registro para userId=${userId}`);
+
+        const result = await webauthnService.generateRegistrationOptions(
+            userId,
+            user.username || user.name,
+            user.email
+        );
+
+        res.json(result);
+
+    } catch (error) {
+        debugLog.error('WEBAUTHN', '❌ Error generando opciones de registro', sanitizeError(error, 'webauthn'));
+
+        res.status(500).json({
+            success: false,
+            error: 'Error al generar opciones de registro',
+            message: error.message
+        });
+    }
+});
+
+/**
+ * POST /api/auth/webauthn/register/verify
+ * Verificar y completar el registro de un dispositivo biométrico
+ */
+router.post('/webauthn/register/verify', authenticateToken, [
+    body('response').isObject().withMessage('Respuesta WebAuthn requerida'),
+    body('deviceName').optional().isString().isLength({ max: 255 })
+], async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                error: 'Datos inválidos',
+                details: errors.array()
+            });
+        }
+
+        const userId = req.user.userId;
+        const { response, deviceName } = req.body;
+
+        debugLog.log('WEBAUTHN', `Verificando registro de dispositivo para userId=${userId}`);
+
+        const result = await webauthnService.verifyRegistrationResponse(
+            userId,
+            response,
+            deviceName || 'Dispositivo Biométrico'
+        );
+
+        res.json({
+            success: true,
+            message: 'Dispositivo biométrico registrado exitosamente',
+            credentialId: result.credentialId
+        });
+
+    } catch (error) {
+        debugLog.error('WEBAUTHN', '❌ Error verificando registro', sanitizeError(error, 'webauthn'));
+
+        res.status(400).json({
+            success: false,
+            error: 'Error al verificar registro',
+            message: error.message
+        });
+    }
+});
+
+/**
+ * POST /api/auth/webauthn/authenticate/options
+ * Generar opciones para autenticación biométrica
+ */
+router.post('/webauthn/authenticate/options', async (req, res) => {
+    try {
+        const { userId } = req.body; // Optional: can be null for discoverable credentials
+
+        debugLog.log('WEBAUTHN', `Generando opciones de autenticación${userId ? ` para userId=${userId}` : ''}`);
+
+        const result = await webauthnService.generateAuthenticationOptions(userId || null);
+
+        res.json(result);
+
+    } catch (error) {
+        debugLog.error('WEBAUTHN', '❌ Error generando opciones de autenticación', sanitizeError(error, 'webauthn'));
+
+        res.status(500).json({
+            success: false,
+            error: 'Error al generar opciones de autenticación',
+            message: error.message
+        });
+    }
+});
+
+/**
+ * POST /api/auth/webauthn/authenticate/verify
+ * Verificar autenticación biométrica y generar JWT tokens
+ */
+router.post('/webauthn/authenticate/verify', loginLimiter, [
+    body('response').isObject().withMessage('Respuesta WebAuthn requerida'),
+    body('userId').optional().isInt(),
+    body('rememberMe').optional().isBoolean()
+], async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                error: 'Datos inválidos',
+                details: errors.array()
+            });
+        }
+
+        const { response, userId, rememberMe = false } = req.body;
+
+        debugLog.log('WEBAUTHN', 'Verificando autenticación biométrica');
+
+        // Verify WebAuthn response
+        const verificationResult = await webauthnService.verifyAuthenticationResponse(
+            response,
+            userId || null
+        );
+
+        if (!verificationResult.verified) {
+            return res.status(401).json({
+                success: false,
+                error: 'Autenticación biométrica fallida'
+            });
+        }
+
+        // Get user data
+        const { pool } = require('../config/database');
+        const userResult = await pool.query(
+            'SELECT id, username, email, nombre, apellido_paterno, role FROM usuarios WHERE id = $1',
+            [verificationResult.userId]
+        );
+
+        if (!userResult.rows.length) {
+            return res.status(404).json({
+                success: false,
+                error: 'Usuario no encontrado'
+            });
+        }
+
+        const user = userResult.rows[0];
+
+        // Generate JWT tokens
+        const userPayload = {
+            userId: user.id,
+            email: user.email,
+            username: user.username,
+            role: user.role,
+            permissions: authService.permissions[user.role] || []
+        };
+
+        const tokenPair = jwtUtils.generateTokenPair(userPayload, rememberMe);
+
+        debugLog.log('WEBAUTHN', `✅ Autenticación biométrica exitosa para userId=${user.id}`);
+
+        res.json({
+            success: true,
+            message: 'Autenticación biométrica exitosa',
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                nombre: user.nombre,
+                apellido_paterno: user.apellido_paterno,
+                role: user.role,
+                permissions: userPayload.permissions
+            },
+            tokens: tokenPair,
+            sessionInfo: {
+                loginTime: new Date().toISOString(),
+                rememberMe: rememberMe,
+                expiresAt: new Date(tokenPair.accessTokenExpiry * 1000).toISOString(),
+                biometricAuth: true
+            }
+        });
+
+    } catch (error) {
+        debugLog.error('WEBAUTHN', '❌ Error en autenticación biométrica', sanitizeError(error, 'webauthn'));
+
+        res.status(401).json({
+            success: false,
+            error: 'Error en la autenticación',
+            message: error.message
+        });
+    }
+});
+
+/**
+ * GET /api/auth/webauthn/credentials
+ * Listar dispositivos biométricos registrados del usuario
+ */
+router.get('/webauthn/credentials', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        const credentials = await webauthnService.getUserCredentials(userId);
+
+        // Sanitize response (don't send public keys to frontend)
+        const sanitizedCredentials = credentials.map(cred => ({
+            id: cred.id,
+            deviceName: cred.device_name,
+            transports: cred.transports,
+            createdAt: cred.created_at,
+            lastUsedAt: cred.last_used_at
+        }));
+
+        res.json({
+            success: true,
+            credentials: sanitizedCredentials,
+            count: sanitizedCredentials.length
+        });
+
+    } catch (error) {
+        debugLog.error('WEBAUTHN', '❌ Error listando credenciales', sanitizeError(error, 'webauthn'));
+
+        res.status(500).json({
+            success: false,
+            error: 'Error al listar dispositivos',
+            credentials: []
+        });
+    }
+});
+
+/**
+ * DELETE /api/auth/webauthn/credentials/:id
+ * Eliminar un dispositivo biométrico registrado
+ */
+router.delete('/webauthn/credentials/:id', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const credentialId = parseInt(req.params.id);
+
+        if (isNaN(credentialId)) {
+            return res.status(400).json({
+                success: false,
+                error: 'ID de credencial inválido'
+            });
+        }
+
+        const deleted = await webauthnService.deleteCredential(credentialId, userId);
+
+        if (!deleted) {
+            return res.status(404).json({
+                success: false,
+                error: 'Credencial no encontrada o no pertenece al usuario'
+            });
+        }
+
+        debugLog.log('WEBAUTHN', `Dispositivo eliminado: credentialId=${credentialId} para userId=${userId}`);
+
+        res.json({
+            success: true,
+            message: 'Dispositivo biométrico eliminado exitosamente'
+        });
+
+    } catch (error) {
+        debugLog.error('WEBAUTHN', '❌ Error eliminando credencial', sanitizeError(error, 'webauthn'));
+
+        res.status(500).json({
+            success: false,
+            error: 'Error al eliminar dispositivo'
         });
     }
 });
