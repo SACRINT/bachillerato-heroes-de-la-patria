@@ -1282,6 +1282,9 @@ const aiGenerationRoutes = require('../backend/routes/ai-generation');  // ✅ O
 // 🌟 LEVELS - SISTEMA DE NIVELES Y PROGRESIÓN (20 NOV 2025 - SEMANA 7-8)
 const levelsRoutes = require('../backend/routes/levels');  // ✅ XP, niveles, badges, perfil
 
+// 📊 TEACHER ANALYTICS - ANALÍTICAS DOCENTES (20 NOV 2025 - SEMANA 9-10)
+const teacherAnalyticsRoutes = require('../backend/routes/teacher-analytics');  // ✅ Métricas, reportes, alertas
+
 // Register all route modules
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -1334,6 +1337,9 @@ app.use('/api/ai', aiGenerationRoutes);  // ✅ generate, history, pricing, type
 
 // 🌟 LEVELS - SISTEMA DE NIVELES (20 NOV 2025 - SEMANA 7-8)
 app.use('/api/levels', levelsRoutes);  // ✅ XP, niveles, badges, perfil, leaderboard, unlocks
+
+// 📊 TEACHER ANALYTICS (20 NOV 2025 - SEMANA 9-10)
+app.use('/api/teacher-analytics', teacherAnalyticsRoutes);  // ✅ overview, students, reports, alerts, export
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
