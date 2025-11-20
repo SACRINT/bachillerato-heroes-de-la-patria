@@ -186,6 +186,252 @@ router.post('/batch',
 );
 
 // ============================================
+// OPERACIONES CRUD INDIVIDUALES
+// ============================================
+
+/**
+ * GET /api/grades/:id - Obtener una calificación específica por ID
+ */
+router.get('/:id',
+    authenticateToken,
+    [
+        param('id').isInt({ min: 1 }).withMessage('ID de calificación inválido')
+    ],
+    async (req, res) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Parámetros inválidos',
+                    errors: errors.array()
+                });
+            }
+
+            const { id } = req.params;
+
+            const calificacion = await executeQuery(`
+                SELECT
+                    c.id,
+                    c.estudiante_id,
+                    c.materia_id,
+                    c.docente_id,
+                    c.parcial,
+                    c.calificacion,
+                    c.ciclo_escolar,
+                    c.fecha_captura,
+                    c.observaciones,
+                    c.tipo_evaluacion,
+                    c.is_final,
+                    m.nombre as materia_nombre,
+                    m.clave as materia_clave,
+                    e.matricula as estudiante_matricula,
+                    ue.nombre as estudiante_nombre,
+                    ue.apellido_paterno as estudiante_apellido,
+                    ud.nombre as docente_nombre,
+                    ud.apellido_paterno as docente_apellido
+                FROM calificaciones c
+                JOIN materias m ON c.materia_id = m.id
+                JOIN estudiantes e ON c.estudiante_id = e.id
+                JOIN usuarios ue ON e.usuario_id = ue.id
+                LEFT JOIN docentes d ON c.docente_id = d.id
+                LEFT JOIN usuarios ud ON d.usuario_id = ud.id
+                WHERE c.id = $1
+            `, [id]);
+
+            if (calificacion.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Calificación no encontrada'
+                });
+            }
+
+            res.json({
+                success: true,
+                data: calificacion[0]
+            });
+
+        } catch (error) {
+            debugLog.error('GRADES', 'Error obteniendo calificación:', sanitizeError(error, 'grades'));
+            res.status(500).json({
+                success: false,
+                message: 'Error interno del servidor'
+            });
+        }
+    }
+);
+
+/**
+ * PUT /api/grades/:id - Actualizar una calificación específica
+ */
+router.put('/:id',
+    authenticateToken,
+    [
+        param('id').isInt({ min: 1 }).withMessage('ID de calificación inválido'),
+        body('calificacion').optional().isFloat({ min: 0, max: 10 }).withMessage('Calificación debe estar entre 0 y 10'),
+        body('observaciones').optional().isString(),
+        body('tipo_evaluacion').optional().isIn(['ordinario', 'extraordinario', 'titulo_suficiencia']),
+        body('is_final').optional().isBoolean()
+    ],
+    async (req, res) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Datos inválidos',
+                    errors: errors.array()
+                });
+            }
+
+            const { id } = req.params;
+            const { calificacion, observaciones, tipo_evaluacion, is_final } = req.body;
+
+            // Verificar que la calificación existe
+            const existing = await executeQuery(`
+                SELECT * FROM calificaciones WHERE id = $1
+            `, [id]);
+
+            if (existing.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Calificación no encontrada'
+                });
+            }
+
+            const oldGrade = existing[0];
+
+            // Construir query de actualización dinámico
+            const updates = [];
+            const values = [];
+            let paramIndex = 1;
+
+            if (calificacion !== undefined) {
+                updates.push(`calificacion = $${paramIndex++}`);
+                values.push(calificacion);
+            }
+            if (observaciones !== undefined) {
+                updates.push(`observaciones = $${paramIndex++}`);
+                values.push(observaciones);
+            }
+            if (tipo_evaluacion !== undefined) {
+                updates.push(`tipo_evaluacion = $${paramIndex++}`);
+                values.push(tipo_evaluacion);
+            }
+            if (is_final !== undefined) {
+                updates.push(`is_final = $${paramIndex++}`);
+                values.push(is_final);
+            }
+
+            if (updates.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'No hay campos para actualizar'
+                });
+            }
+
+            updates.push(`updated_at = CURRENT_TIMESTAMP`);
+            values.push(id);
+
+            await executeQuery(`
+                UPDATE calificaciones
+                SET ${updates.join(', ')}
+                WHERE id = $${paramIndex}
+            `, values);
+
+            // Registrar en historial si cambió la calificación
+            if (calificacion !== undefined && calificacion !== oldGrade.calificacion) {
+                await executeQuery(`
+                    INSERT INTO calificaciones_historial
+                    (calificacion_id, calificacion_anterior, calificacion_nueva, modificado_por, motivo_cambio)
+                    VALUES ($1, $2, $3, $4, $5)
+                `, [id, oldGrade.calificacion, calificacion, req.user.id, 'Actualización vía API']);
+
+                // Actualizar promedio del estudiante
+                await updateStudentAverage(oldGrade.estudiante_id, oldGrade.ciclo_escolar);
+            }
+
+            res.json({
+                success: true,
+                message: 'Calificación actualizada correctamente'
+            });
+
+        } catch (error) {
+            debugLog.error('GRADES', 'Error actualizando calificación:', sanitizeError(error, 'grades'));
+            res.status(500).json({
+                success: false,
+                message: 'Error interno del servidor'
+            });
+        }
+    }
+);
+
+/**
+ * DELETE /api/grades/:id - Eliminar una calificación
+ */
+router.delete('/:id',
+    authenticateToken,
+    [
+        param('id').isInt({ min: 1 }).withMessage('ID de calificación inválido')
+    ],
+    async (req, res) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Parámetros inválidos',
+                    errors: errors.array()
+                });
+            }
+
+            const { id } = req.params;
+
+            // Verificar que existe y obtener datos para actualizar promedio
+            const existing = await executeQuery(`
+                SELECT estudiante_id, ciclo_escolar, calificacion FROM calificaciones WHERE id = $1
+            `, [id]);
+
+            if (existing.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Calificación no encontrada'
+                });
+            }
+
+            const { estudiante_id, ciclo_escolar, calificacion } = existing[0];
+
+            // Registrar eliminación en historial
+            await executeQuery(`
+                INSERT INTO calificaciones_historial
+                (calificacion_id, calificacion_anterior, calificacion_nueva, modificado_por, motivo_cambio)
+                VALUES ($1, $2, NULL, $3, 'Eliminación vía API')
+            `, [id, calificacion, req.user.id]);
+
+            // Eliminar la calificación
+            await executeQuery(`
+                DELETE FROM calificaciones WHERE id = $1
+            `, [id]);
+
+            // Actualizar promedio del estudiante
+            await updateStudentAverage(estudiante_id, ciclo_escolar);
+
+            res.json({
+                success: true,
+                message: 'Calificación eliminada correctamente'
+            });
+
+        } catch (error) {
+            debugLog.error('GRADES', 'Error eliminando calificación:', sanitizeError(error, 'grades'));
+            res.status(500).json({
+                success: false,
+                message: 'Error interno del servidor'
+            });
+        }
+    }
+);
+
+// ============================================
 // CONSULTA DE CALIFICACIONES
 // ============================================
 
