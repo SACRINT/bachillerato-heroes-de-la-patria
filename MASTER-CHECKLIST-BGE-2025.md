@@ -276,7 +276,7 @@
 
 **Funcionalidades Restauradas:**
 - ✅ Admin Dashboard: Tabs de estadísticas, solicitudes, aprobaciones
-- ✅ Portal Estudiantes: Dashboard + historial académico
+- ✅ Páginas Estudiantes/Padres: Ahora informativas (enlace a SIGED SEP + IACoins teaser)
 - ✅ Búsqueda Unificada: Operativa
 - ✅ Calendario Interactivo: Disponible
 - ✅ Laboratorios Virtuales: Funcionales

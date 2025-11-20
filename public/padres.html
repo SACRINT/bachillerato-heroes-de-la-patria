@@ -104,13 +104,13 @@
                             comunícate con docentes y accede a recursos exclusivos.
                         </p>
                         <div class="hero-badges d-flex flex-wrap gap-2 justify-content-start">
-                            <a href="#loginSection" class="badge bg-light text-success fs-6 text-decoration-none">
-                                <i class="fas fa-sign-in-alt me-1" aria-hidden="true"></i>
-                                Acceso al Portal
+                            <a href="#info-padres" class="badge bg-light text-success fs-6 text-decoration-none">
+                                <i class="fas fa-file-alt me-1" aria-hidden="true"></i>
+                                Boletas y Trámites
                             </a>
                             <a href="#primera-vez" class="badge bg-light text-info fs-6 text-decoration-none">
                                 <i class="fas fa-info-circle me-1" aria-hidden="true"></i>
-                                ¿Primera vez en el portal?
+                                Información General
                             </a>
                             <a href="#preguntas-frecuentes" class="badge bg-light text-warning fs-6 text-decoration-none">
                                 <i class="fas fa-question-circle me-1" aria-hidden="true"></i>
@@ -127,301 +127,194 @@
             </div>
         </section>
 
-        <!-- Acceso al Portal -->
-        <section class="py-5 bg-light" id="loginSection">
+        <!-- Información Importante para Padres de Familia -->
+        <section id="info-padres" class="py-5">
             <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="login-container">
-                            <div class="card border-0 shadow-lg">
-                                <div class="card-header bg-success text-white text-center py-4">
-                                    <h3 class="mb-0">
-                                        <i class="fas fa-key me-2"></i>
-                                        Acceso al Portal
-                                    </h3>
-                                    <p class="mb-0 mt-2">Ingresa tus credenciales para acceder a la información de tu hijo(a)</p>
-                                </div>
-                                <div class="card-body p-5">
-                                    <form id="parentLoginForm" class="padres-form-dark">
-                                        <div class="row g-4">
-                                            <div class="col-12">
-                                                <label for="parentEmail" class="form-label">
-                                                    <i class="fas fa-envelope text-primary me-2"></i>
-                                                    Correo Electrónico
-                                                </label>
-                                                <input type="email" class="form-control form-control-lg" 
-                                                       id="parentEmail" name="parentEmail" required
-                                                       placeholder="tu.correo@ejemplo.com">
-                                            </div>
-                                            <div class="col-12">
-                                                <label for="studentId" class="form-label">
-                                                    <i class="fas fa-id-card text-primary me-2"></i>
-                                                    Matrícula del Estudiante
-                                                </label>
-                                                <input type="text" class="form-control form-control-lg" 
-                                                       id="studentId" name="studentId" required
-                                                       placeholder="BGE-2024-001">
-                                            </div>
-                                            <div class="col-12">
-                                                <label for="accessPassword" class="form-label">
-                                                    <i class="fas fa-lock text-primary me-2"></i>
-                                                    Contraseña de Acceso
-                                                </label>
-                                                <div class="input-group">
-                                                    <input type="password" class="form-control form-control-lg"
-                                                           id="accessPassword" name="accessPassword" required
-                                                           placeholder="Tu contraseña" autocomplete="current-password">
-                                                    <button class="btn btn-outline-secondary" type="button">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="rememberMe">
-                                                    <label class="form-check-label" for="rememberMe">
-                                                        Recordar mis datos en este dispositivo
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <button type="submit" class="btn btn-success btn-lg w-100">
-                                                    <i class="fas fa-sign-in-alt me-2"></i>
-                                                    Ingresar al Portal
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    
-                                    <div class="text-center mt-4">
-                                        <p class="text-muted mb-3">¿Problemas para acceder?</p>
-                                        <div class="d-flex gap-2 justify-content-center flex-wrap">
-                                            <button class="btn btn-outline-primary btn-sm" class="btn-password-recovery">
-                                                <i class="fas fa-question-circle me-1"></i>
-                                                Recuperar Contraseña
-                                            </button>
-                                            <button class="btn btn-outline-info btn-sm" class="btn-registration-help">
-                                                <i class="fas fa-user-plus me-1"></i>
-                                                Primer Acceso
-                                            </button>
-                                            <a href="contacto.html" class="btn btn-outline-secondary btn-sm">
-                                                <i class="fas fa-headset me-1"></i>
-                                                Soporte Técnico
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Dashboard del Portal (inicialmente oculto) -->
-        <section class="py-5 d-none" id="parentDashboard">
-            <div class="container">
-                <!-- Información del Estudiante -->
-                <div class="student-info-header mb-5">
-                    <div class="row align-items-center">
-                        <div class="col-lg-8">
-                            <div class="d-flex align-items-center">
-                                <div class="student-avatar bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                                    <i class="fas fa-user-graduate fa-2x"></i>
-                                </div>
-                                <div>
-                                    <h2 class="mb-1" id="studentName">Ana García Mendoza</h2>
-                                    <p class="text-muted mb-1">
-                                        <strong>Matrícula:</strong> <span id="displayStudentId">BGE-2024-156</span> • 
-                                        <strong>Grado:</strong> <span id="studentGrade">5° Semestre</span> • 
-                                        <strong>Grupo:</strong> <span id="studentGroup">A</span>
-                                    </p>
-                                    <p class="text-muted mb-0">
-                                        <strong>Tutor:</strong> <span id="tutorName">Prof. María Rodríguez</span> • 
-                                        <strong>Turno:</strong> <span id="studentShift">Matutino</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 text-end">
-                            <div class="quick-stats">
-                                <div class="stat-item">
-                                    <div class="stat-number text-success h4" id="currentAverage">8.7</div>
-                                    <div class="stat-label text-muted small">Promedio Actual</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-info-circle text-success me-3" aria-hidden="true"></i>
+                        Información Importante
+                    </h2>
+                    <p class="section-subtitle text-muted">
+                        Consulte la información académica de su hijo(a) y realice trámites escolares
+                    </p>
                 </div>
 
-                <!-- Panel de Acciones Rápidas -->
-                <div class="row g-4 mb-5">
-                    <div class="col-lg-3 col-sm-6">
-                        <button class="btn btn-outline-primary w-100 p-3 quick-action-btn" data-action="showGrades">
-                            <i class="fas fa-chart-line fa-2x d-block mb-2 text-primary"></i>
-                            <strong>Calificaciones</strong>
-                            <small class="d-block text-muted">Ver notas y promedios</small>
-                        </button>
-                    </div>
-                    <div class="col-lg-3 col-sm-6">
-                        <button class="btn btn-outline-success w-100 p-3 quick-action-btn" data-action="showAttendance">
-                            <i class="fas fa-calendar-check fa-2x d-block mb-2 text-success"></i>
-                            <strong>Asistencias</strong>
-                            <small class="d-block text-muted">Control de asistencias</small>
-                        </button>
-                    </div>
-                    <div class="col-lg-3 col-sm-6">
-                        <button class="btn btn-outline-info w-100 p-3 quick-action-btn" data-action="showCommunication">
-                            <i class="fas fa-comments fa-2x d-block mb-2 text-info"></i>
-                            <strong>Comunicación</strong>
-                            <small class="d-block text-muted">Mensajes y avisos</small>
-                        </button>
-                    </div>
-                    <div class="col-lg-3 col-sm-6">
-                        <button class="btn btn-outline-warning w-100 p-3 quick-action-btn" data-action="showSchedule">
-                            <i class="fas fa-clock fa-2x d-block mb-2 text-warning"></i>
-                            <strong>Horarios</strong>
-                            <small class="d-block text-muted">Clases y actividades</small>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Contenido Principal del Dashboard -->
-                <div class="row">
-                    <div class="col-lg-8">
-                        <!-- Panel Principal -->
-                        <div id="mainPanel">
-                            <!-- Resumen Académico -->
-                            <div class="card border-0 shadow-sm mb-4">
-                                <div class="card-header bg-primary text-white">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-chart-bar me-2"></i>
-                                        Resumen Académico
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row g-4">
-                                        <div class="col-md-4 text-center">
-                                            <div class="academic-stat">
-                                                <div class="stat-circle bg-success text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                                    <span class="h5 mb-0">8.7</span>
-                                                </div>
-                                                <h6>Promedio General</h6>
-                                                <small class="text-success">Rendimiento Satisfactorio</small>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 text-center">
-                                            <div class="academic-stat">
-                                                <div class="stat-circle bg-info text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                                    <span class="h5 mb-0">95%</span>
-                                                </div>
-                                                <h6>Asistencia</h6>
-                                                <small class="text-info">Excelente Puntualidad</small>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 text-center">
-                                            <div class="academic-stat">
-                                                <div class="stat-circle bg-warning text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                                    <span class="h5 mb-0">3</span>
-                                                </div>
-                                                <h6>Pendientes</h6>
-                                                <small class="text-warning">Tareas por Entregar</small>
-                                            </div>
-                                        </div>
+                <div class="row g-4">
+                    <!-- Boletas SEP -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-lg h-100 bg-gradient-success text-white">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="icon-circle bg-white text-success rounded-circle p-3 me-3">
+                                        <i class="fas fa-file-alt fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="card-title mb-1">Boletas de Calificaciones</h4>
+                                        <p class="mb-0 opacity-75">Sistema SIGED de la SEP</p>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Calificaciones Recientes -->
-                            <div class="card border-0 shadow-sm mb-4">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h6 class="mb-0">
-                                        <i class="fas fa-graduation-cap text-primary me-2"></i>
-                                        Calificaciones Recientes
-                                    </h6>
-                                    <button class="btn btn-sm btn-outline-primary" data-action="showGrades">Ver Todas</button>
-                                </div>
-                                <div class="card-body p-0">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover mb-0">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>Materia</th>
-                                                    <th>Evaluación</th>
-                                                    <th class="text-center">Calificación</th>
-                                                    <th>Fecha</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="recentGrades">
-                                                <!-- Las calificaciones se cargarán dinámicamente -->
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-lg-4">
-                        <!-- Sidebar con información adicional -->
-                        
-                        <!-- Próximos Eventos -->
-                        <div class="card border-0 shadow-sm mb-4">
-                            <div class="card-header bg-info text-white">
-                                <h6 class="mb-0">
-                                    <i class="fas fa-calendar-star me-2"></i>
-                                    Próximos Eventos
-                                </h6>
-                            </div>
-                            <div class="card-body p-0">
-                                <div class="list-group list-group-flush" id="upcomingEvents">
-                                    <!-- Los eventos se cargarán dinámicamente -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Comunicados Importantes -->
-                        <div class="card border-0 shadow-sm mb-4">
-                            <div class="card-header bg-warning text-dark">
-                                <h6 class="mb-0">
-                                    <i class="fas fa-bullhorn me-2"></i>
-                                    Comunicados
-                                </h6>
-                            </div>
-                            <div class="card-body p-0">
-                                <div class="list-group list-group-flush" id="announcements">
-                                    <!-- Los comunicados se cargarán dinámicamente -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Acciones Rápidas -->
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-header">
-                                <h6 class="mb-0">
-                                    <i class="fas fa-tools text-secondary me-2"></i>
-                                    Acciones Rápidas
-                                </h6>
-                            </div>
-                            <div class="card-body">
+                                <p class="card-text mb-4">
+                                    Descargue las boletas de calificaciones oficiales de su hijo(a) desde el Sistema de Información
+                                    y Gestión Educativa de la Secretaría de Educación Pública.
+                                </p>
                                 <div class="d-grid gap-2">
-                                    <button class="btn btn-outline-primary btn-sm" data-action="downloadReport">
-                                        <i class="fas fa-file-download me-2"></i>
-                                        Descargar Reporte
-                                    </button>
-                                    <button class="btn btn-outline-success btn-sm" data-action="scheduleAppointment">
-                                        <i class="fas fa-calendar-plus me-2"></i>
-                                        Agendar Cita
-                                    </button>
-                                    <button class="btn btn-outline-info btn-sm" data-action="contactTeacher">
-                                        <i class="fas fa-envelope me-2"></i>
-                                        Contactar Tutor
-                                    </button>
-                                    <button class="btn btn-outline-secondary btn-sm" data-action="parentLogout">
-                                        <i class="fas fa-sign-out-alt me-2"></i>
-                                        Cerrar Sesión
-                                    </button>
+                                    <a href="https://www.siged.sep.gob.mx/SIGED/alumnos.html"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="btn btn-light btn-lg">
+                                        <i class="fas fa-external-link-alt me-2"></i>
+                                        Ir al Sistema SIGED
+                                    </a>
                                 </div>
+                                <small class="d-block mt-3 opacity-75">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Necesitará el CURP del estudiante para acceder
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comunicación con Docentes -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-lg h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="icon-circle bg-primary text-white rounded-circle p-3 me-3">
+                                        <i class="fas fa-comments fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="card-title mb-1 text-primary">Comunicación Escolar</h4>
+                                        <p class="mb-0 text-muted">Manténgase informado</p>
+                                    </div>
+                                </div>
+                                <p class="card-text text-muted mb-3">
+                                    Para comunicarse con los docentes o solicitar citas, utilice los siguientes canales oficiales:
+                                </p>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2">
+                                        <i class="fas fa-phone text-primary me-2"></i>
+                                        Teléfono: (222) 123-4567
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-envelope text-primary me-2"></i>
+                                        Email: contacto@heroesdelapatria.edu.mx
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-calendar-check text-primary me-2"></i>
+                                        Citas presenciales en Control Escolar
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-clock text-primary me-2"></i>
+                                        Horario: Lunes a Viernes 8:00 - 14:00
+                                    </li>
+                                </ul>
+                                <a href="contacto.html" class="btn btn-primary">
+                                    <i class="fas fa-arrow-right me-2"></i>
+                                    Ver información de contacto
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Segunda fila de información -->
+                <div class="row g-4 mt-2">
+                    <!-- Trámites Escolares -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-lg h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="icon-circle bg-warning text-white rounded-circle p-3 me-3">
+                                        <i class="fas fa-clipboard-check fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="card-title mb-1 text-warning">Trámites Escolares</h4>
+                                        <p class="mb-0 text-muted">Solicite documentos oficiales</p>
+                                    </div>
+                                </div>
+                                <p class="card-text text-muted mb-3">
+                                    Solicite constancias y documentos oficiales directamente en Control Escolar:
+                                </p>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-warning me-2"></i>
+                                        Constancia de estudios
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-warning me-2"></i>
+                                        Constancia de buena conducta
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-warning me-2"></i>
+                                        Certificado parcial
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-warning me-2"></i>
+                                        Kardex académico
+                                    </li>
+                                </ul>
+                                <a href="servicios.html" class="btn btn-warning">
+                                    <i class="fas fa-arrow-right me-2"></i>
+                                    Ver todos los servicios
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendario Escolar -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-lg h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="icon-circle bg-info text-white rounded-circle p-3 me-3">
+                                        <i class="fas fa-calendar-alt fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="card-title mb-1 text-info">Calendario Escolar</h4>
+                                        <p class="mb-0 text-muted">Eventos y fechas importantes</p>
+                                    </div>
+                                </div>
+                                <p class="card-text text-muted mb-3">
+                                    Manténgase al tanto de las fechas importantes del ciclo escolar:
+                                </p>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2">
+                                        <i class="fas fa-star text-info me-2"></i>
+                                        Períodos de evaluación
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-star text-info me-2"></i>
+                                        Juntas con padres de familia
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-star text-info me-2"></i>
+                                        Días festivos y suspensiones
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-star text-info me-2"></i>
+                                        Eventos especiales
+                                    </li>
+                                </ul>
+                                <a href="calendario.html" class="btn btn-info">
+                                    <i class="fas fa-arrow-right me-2"></i>
+                                    Ver calendario completo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IACoins Teaser -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-success d-flex align-items-center" role="alert">
+                            <i class="fas fa-coins fa-2x me-3"></i>
+                            <div>
+                                <strong>¿Conoce nuestro sistema de IACoins?</strong>
+                                Use Inteligencia Artificial para generar materiales educativos, planes de estudio y recursos
+                                de apoyo para sus hijos.
+                                <a href="#" class="alert-link" id="parentLoginBtn">Inicie sesión</a> para acceder al sistema de gamificación.
                             </div>
                         </div>
                     </div>

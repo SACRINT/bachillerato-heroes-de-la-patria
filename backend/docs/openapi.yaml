@@ -1,0 +1,1033 @@
+openapi: 3.0.3
+info:
+  title: BGE Héroes de la Patria API
+  description: |
+    API REST del Sistema de Gestión Educativa BGE.
+
+    ## Autenticación
+    La mayoría de endpoints requieren autenticación JWT. Incluir el token en el header:
+    ```
+    Authorization: Bearer <token>
+    ```
+
+    ## Rate Limiting
+    - API General: 100 requests/minuto
+    - Autenticación: 5 intentos/5 minutos
+    - AI Endpoints: 50 requests/hora
+
+    ## Códigos de Error
+    - 400: Bad Request - Datos inválidos
+    - 401: Unauthorized - Token faltante o inválido
+    - 403: Forbidden - Sin permisos
+    - 404: Not Found - Recurso no encontrado
+    - 429: Too Many Requests - Rate limit excedido
+    - 500: Internal Server Error
+
+  version: 4.0.0
+  contact:
+    name: Soporte BGE
+    email: soporte@bge-heroes.edu.mx
+  license:
+    name: Proprietary
+    url: https://bge-heroes.edu.mx/terms
+
+servers:
+  - url: https://bge-heroes.edu.mx/api
+    description: Producción
+  - url: http://localhost:3000/api
+    description: Desarrollo
+
+tags:
+  - name: Auth
+    description: Autenticación y gestión de sesiones
+  - name: Users
+    description: Gestión de usuarios
+  - name: Students
+    description: Portal de estudiantes
+  - name: Teachers
+    description: Portal de docentes
+  - name: Parents
+    description: Portal de padres
+  - name: IACoins
+    description: Sistema de gamificación IACoins
+  - name: AI
+    description: Generación de contenido con IA
+  - name: Levels
+    description: Sistema de niveles y progresión
+  - name: Forums
+    description: Foros de discusión
+  - name: Tournaments
+    description: Torneos y competencias
+  - name: Marketplace
+    description: Marketplace de recursos educativos
+  - name: Notifications
+    description: Notificaciones en tiempo real
+  - name: Performance
+    description: Monitoreo de rendimiento
+  - name: Security
+    description: Auditoría y seguridad
+  - name: Admin
+    description: Panel de administración
+
+paths:
+  # ========================================
+  # AUTENTICACIÓN
+  # ========================================
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Iniciar sesión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 6
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Credenciales inválidas
+
+  /auth/google:
+    post:
+      tags: [Auth]
+      summary: Login con Google OAuth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [credential]
+              properties:
+                credential:
+                  type: string
+                  description: JWT de Google
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Refrescar token
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Token renovado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Cerrar sesión
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Sesión cerrada
+
+  # ========================================
+  # IACOINS
+  # ========================================
+  /iacoins/balance:
+    get:
+      tags: [IACoins]
+      summary: Obtener balance de IACoins
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Balance actual
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      balance:
+                        type: integer
+                      totalEarned:
+                        type: integer
+                      totalSpent:
+                        type: integer
+
+  /iacoins/transactions:
+    get:
+      tags: [IACoins]
+      summary: Historial de transacciones
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [earn, spend, transfer, reward]
+      responses:
+        '200':
+          description: Lista de transacciones
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse'
+
+  /iacoins/challenges:
+    get:
+      tags: [IACoins]
+      summary: Retos disponibles
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de retos activos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Challenge'
+
+  /iacoins/challenges/{id}/complete:
+    post:
+      tags: [IACoins]
+      summary: Completar un reto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                proof:
+                  type: string
+                  description: Evidencia de completado
+      responses:
+        '200':
+          description: Reto completado
+        '400':
+          description: Reto ya completado o inválido
+
+  /iacoins/leaderboard:
+    get:
+      tags: [IACoins]
+      summary: Tabla de clasificación
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [weekly, monthly, alltime]
+            default: weekly
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Top usuarios
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rank:
+                          type: integer
+                        userId:
+                          type: integer
+                        username:
+                          type: string
+                        balance:
+                          type: integer
+
+  # ========================================
+  # AI GENERATION
+  # ========================================
+  /ai/generate:
+    post:
+      tags: [AI]
+      summary: Generar contenido con IA
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [prompt, type]
+              properties:
+                prompt:
+                  type: string
+                  maxLength: 4000
+                type:
+                  type: string
+                  enum: [essay, explanation, quiz, summary, translation]
+                provider:
+                  type: string
+                  enum: [openai, anthropic, gemini]
+                  default: openai
+                options:
+                  type: object
+                  properties:
+                    maxTokens:
+                      type: integer
+                      default: 1000
+                    temperature:
+                      type: number
+                      default: 0.7
+      responses:
+        '200':
+          description: Contenido generado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      content:
+                        type: string
+                      tokensUsed:
+                        type: integer
+                      coinsCharged:
+                        type: integer
+        '402':
+          description: Saldo insuficiente de IACoins
+
+  /ai/history:
+    get:
+      tags: [AI]
+      summary: Historial de generaciones
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Historial
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse'
+
+  /ai/pricing:
+    get:
+      tags: [AI]
+      summary: Precios por tipo de generación
+      responses:
+        '200':
+          description: Tabla de precios en IACoins
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        provider:
+                          type: string
+                        costPerRequest:
+                          type: integer
+
+  # ========================================
+  # LEVELS
+  # ========================================
+  /levels/profile:
+    get:
+      tags: [Levels]
+      summary: Perfil de nivel del usuario
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Información de nivel
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      level:
+                        type: integer
+                      xp:
+                        type: integer
+                      xpToNextLevel:
+                        type: integer
+                      badges:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Badge'
+
+  /levels/badges:
+    get:
+      tags: [Levels]
+      summary: Badges disponibles
+      responses:
+        '200':
+          description: Lista de badges
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Badge'
+
+  # ========================================
+  # TOURNAMENTS
+  # ========================================
+  /tournaments:
+    get:
+      tags: [Tournaments]
+      summary: Listar torneos
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [upcoming, active, completed]
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [quiz, challenge, hackathon]
+      responses:
+        '200':
+          description: Lista de torneos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tournament'
+
+  /tournaments/{id}:
+    get:
+      tags: [Tournaments]
+      summary: Detalle de torneo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Información del torneo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Tournament'
+
+  /tournaments/{id}/register:
+    post:
+      tags: [Tournaments]
+      summary: Registrarse en torneo
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Registro exitoso
+        '400':
+          description: Torneo lleno o ya inscrito
+        '402':
+          description: IACoins insuficientes para cuota
+
+  /tournaments/{id}/leaderboard:
+    get:
+      tags: [Tournaments]
+      summary: Clasificación del torneo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tabla de posiciones
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rank:
+                          type: integer
+                        participant:
+                          type: object
+                        wins:
+                          type: integer
+                        score:
+                          type: number
+
+  # ========================================
+  # MARKETPLACE
+  # ========================================
+  /marketplace/items:
+    get:
+      tags: [Marketplace]
+      summary: Buscar items en marketplace
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: subject
+          in: query
+          schema:
+            type: string
+        - name: minPrice
+          in: query
+          schema:
+            type: integer
+        - name: maxPrice
+          in: query
+          schema:
+            type: integer
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [newest, popular, rating, price_asc, price_desc]
+        - name: page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse'
+
+    post:
+      tags: [Marketplace]
+      summary: Publicar item
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MarketplaceItemInput'
+      responses:
+        '201':
+          description: Item creado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/MarketplaceItem'
+
+  /marketplace/items/{id}/purchase:
+    post:
+      tags: [Marketplace]
+      summary: Comprar item
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Compra exitosa
+        '400':
+          description: Ya comprado o no disponible
+        '402':
+          description: IACoins insuficientes
+
+  /marketplace/seller/earnings:
+    get:
+      tags: [Marketplace]
+      summary: Ganancias del vendedor
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Resumen de ganancias
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      totalEarnings:
+                        type: integer
+                      availableBalance:
+                        type: integer
+                      totalSales:
+                        type: integer
+                      commissionRate:
+                        type: number
+
+  # ========================================
+  # NOTIFICATIONS
+  # ========================================
+  /notifications:
+    get:
+      tags: [Notifications]
+      summary: Obtener notificaciones
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: unreadOnly
+          in: query
+          schema:
+            type: boolean
+        - name: page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de notificaciones
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse'
+
+  /notifications/{id}/read:
+    put:
+      tags: [Notifications]
+      summary: Marcar como leída
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Marcada como leída
+
+  /notifications/preferences:
+    get:
+      tags: [Notifications]
+      summary: Preferencias de notificaciones
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Preferencias actuales
+    put:
+      tags: [Notifications]
+      summary: Actualizar preferencias
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: boolean
+                push:
+                  type: boolean
+                sms:
+                  type: boolean
+      responses:
+        '200':
+          description: Preferencias actualizadas
+
+  # ========================================
+  # PERFORMANCE
+  # ========================================
+  /performance/health:
+    get:
+      tags: [Performance]
+      summary: Health check del sistema
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Estado del sistema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum: [healthy, degraded, unhealthy]
+                      database:
+                        type: object
+                      cache:
+                        type: object
+                      queries:
+                        type: object
+
+  /performance/dashboard:
+    get:
+      tags: [Performance]
+      summary: Dashboard de performance
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Métricas completas
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /performance/metrics:
+    get:
+      tags: [Performance]
+      summary: Métricas en formato Prometheus
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Métricas
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  # ========================================
+  # SECURITY
+  # ========================================
+  /security/audit/logs:
+    get:
+      tags: [Security]
+      summary: Logs de auditoría
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: eventType
+          in: query
+          schema:
+            type: string
+        - name: severity
+          in: query
+          schema:
+            type: integer
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Logs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse'
+
+  /security/alerts:
+    get:
+      tags: [Security]
+      summary: Alertas de seguridad
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de alertas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    AuthResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            token:
+              type: string
+            user:
+              type: object
+              properties:
+                id:
+                  type: integer
+                email:
+                  type: string
+                role:
+                  type: string
+                nombre:
+                  type: string
+
+    PaginatedResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            type: object
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+            limit:
+              type: integer
+            total:
+              type: integer
+            totalPages:
+              type: integer
+
+    Challenge:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        challengeType:
+          type: string
+        coinsReward:
+          type: integer
+        xpReward:
+          type: integer
+        difficulty:
+          type: string
+          enum: [easy, medium, hard]
+        expiresAt:
+          type: string
+          format: date-time
+
+    Badge:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+        rarity:
+          type: string
+          enum: [common, uncommon, rare, epic, legendary]
+
+    Tournament:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        tournamentType:
+          type: string
+        format:
+          type: string
+        entryFeeCoins:
+          type: integer
+        prizePoolCoins:
+          type: integer
+        maxParticipants:
+          type: integer
+        currentParticipants:
+          type: integer
+        status:
+          type: string
+        startsAt:
+          type: string
+          format: date-time
+
+    MarketplaceItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        sellerId:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        itemType:
+          type: string
+        priceCoins:
+          type: integer
+        subject:
+          type: string
+        ratingAvg:
+          type: number
+        purchaseCount:
+          type: integer
+        status:
+          type: string
+
+    MarketplaceItemInput:
+      type: object
+      required: [title, description, itemType, priceCoins]
+      properties:
+        title:
+          type: string
+          maxLength: 300
+        description:
+          type: string
+        shortDescription:
+          type: string
+          maxLength: 500
+        itemType:
+          type: string
+          enum: [notes, guide, template, quiz_pack, tutorial, course]
+        priceCoins:
+          type: integer
+          minimum: 0
+        subject:
+          type: string
+        categoryId:
+          type: integer
+        tags:
+          type: array
+          items:
+            type: string

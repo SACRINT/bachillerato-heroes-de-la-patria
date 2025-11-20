@@ -493,36 +493,92 @@ class UnifiedAuthSystem {
      * ACTUALIZAR UI SEGÚN ESTADO
      */
     updateAuthUI() {
-        // Obtener elementos
-        const loginBtn = document.querySelector('[data-bs-target="#unified-auth-modal"]');
-        const userMenu = document.getElementById('user-menu-state');
-        const loginState = document.getElementById('login-button-state');
+        // Obtener elementos del header (IDs correctos de header.html)
+        const loginButtons = document.getElementById('loginButtons');
+        const userMenu = document.getElementById('userMenu');
+        const userMenuName = document.getElementById('userMenuName');
+        const userMenuRole = document.getElementById('userMenuRole');
+        const userMenuHeader = document.getElementById('userMenuHeader');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Elementos de menú específicos por rol
+        const adminMenuItems = document.getElementById('adminMenuItems');
+        const teacherMenuItems = document.getElementById('teacherMenuItems');
+        const studentMenuItems = document.getElementById('studentMenuItems');
+
+        console.log('[AUTH-UI] Actualizando UI, autenticado:', this.state.isAuthenticated);
 
         if (this.state.isAuthenticated && this.state.currentUser) {
-            // Usuario autenticado
-            if (loginState) loginState.style.display = 'none';
-            if (userMenu) {
-                userMenu.style.display = 'block';
-                const userName = userMenu.querySelector('#user-display-name');
-                if (userName) {
-                    userName.textContent = this.state.currentUser.nombre ||
-                        this.state.currentUser.name ||
-                        this.state.currentUser.email;
-                }
+            // Usuario autenticado - ocultar botón login, mostrar menú usuario
+            if (loginButtons) loginButtons.classList.add('d-none');
+            if (userMenu) userMenu.classList.remove('d-none');
+
+            // Actualizar nombre de usuario
+            if (userMenuName) {
+                userMenuName.textContent = this.state.currentUser.nombre ||
+                    this.state.currentUser.name ||
+                    this.state.currentUser.email?.split('@')[0] ||
+                    'Usuario';
             }
 
-            // Mostrar dashboard si es admin
-            const dashboardLink = document.getElementById('dashboard-link');
-            if (dashboardLink) {
-                dashboardLink.style.display =
-                    (this.state.currentUser.role === 'admin' || this.state.currentUser.role === 'administrator')
-                        ? 'block'
-                        : 'none';
+            // Actualizar rol
+            const role = this.state.currentUser.role || 'usuario';
+            if (userMenuRole) {
+                const roleLabels = {
+                    'admin': 'Admin',
+                    'administrator': 'Admin',
+                    'docente': 'Docente',
+                    'teacher': 'Docente',
+                    'estudiante': 'Estudiante',
+                    'student': 'Estudiante',
+                    'padre': 'Padre',
+                    'parent': 'Padre'
+                };
+                userMenuRole.textContent = roleLabels[role] || role;
             }
+
+            // Actualizar header del dropdown
+            if (userMenuHeader) {
+                userMenuHeader.textContent = this.state.currentUser.email || 'Usuario autenticado';
+            }
+
+            // Mostrar/ocultar opciones de menú según rol
+            if (adminMenuItems) {
+                adminMenuItems.classList.toggle('d-none', !['admin', 'administrator'].includes(role));
+            }
+            if (teacherMenuItems) {
+                teacherMenuItems.classList.toggle('d-none', !['docente', 'teacher'].includes(role));
+            }
+            if (studentMenuItems) {
+                studentMenuItems.classList.toggle('d-none', !['estudiante', 'student'].includes(role));
+            }
+
+            // Configurar evento de logout
+            if (logoutBtn && !logoutBtn.hasAttribute('data-logout-bound')) {
+                logoutBtn.setAttribute('data-logout-bound', 'true');
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.logout();
+                });
+            }
+
+            // Mostrar dashboard admin si es admin
+            const adminOnlySection = document.getElementById('adminOnlySection');
+            if (adminOnlySection) {
+                adminOnlySection.classList.toggle('d-none', !['admin', 'administrator'].includes(role));
+            }
+
+            console.log('[AUTH-UI] Usuario mostrado:', userMenuName?.textContent, 'Rol:', role);
         } else {
-            // Usuario no autenticado
-            if (loginState) loginState.style.display = 'block';
-            if (userMenu) userMenu.style.display = 'none';
+            // Usuario no autenticado - mostrar botón login, ocultar menú usuario
+            if (loginButtons) loginButtons.classList.remove('d-none');
+            if (userMenu) userMenu.classList.add('d-none');
+
+            // Ocultar secciones admin
+            const adminOnlySection = document.getElementById('adminOnlySection');
+            if (adminOnlySection) adminOnlySection.classList.add('d-none');
+
+            console.log('[AUTH-UI] Usuario no autenticado, mostrando botón login');
         }
     }
 

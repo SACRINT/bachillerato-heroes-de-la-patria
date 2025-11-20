@@ -1273,6 +1273,48 @@ const teachersRoutes = require('../backend/routes/teachers');
 // 🎓 RUTAS RECIENTEMENTE REGISTRADAS (8 NOV 2025)
 const cursosRoutes = require('../backend/routes/cursos');  // ✅ Gestión de cursos educativos
 
+// 🪙 IACOINS - SISTEMA DE GAMIFICACIÓN (19 NOV 2025 - SEMANA 2)
+const iacoinsRoutes = require('../backend/routes/iacoins');  // ✅ Balance, transacciones, retos, logros
+
+// 🤖 AI GENERATION - INTEGRACIÓN MULTI-PROVEEDOR (20 NOV 2025 - SEMANA 3-4)
+const aiGenerationRoutes = require('../backend/routes/ai-generation');  // ✅ OpenAI, Anthropic, Gemini
+
+// 🌟 LEVELS - SISTEMA DE NIVELES Y PROGRESIÓN (20 NOV 2025 - SEMANA 7-8)
+const levelsRoutes = require('../backend/routes/levels');  // ✅ XP, niveles, badges, perfil
+
+// 📊 TEACHER ANALYTICS - ANALÍTICAS DOCENTES (20 NOV 2025 - SEMANA 9-10)
+const teacherAnalyticsRoutes = require('../backend/routes/teacher-analytics');  // ✅ Métricas, reportes, alertas
+
+// 🔔 REALTIME NOTIFICATIONS - NOTIFICACIONES TIEMPO REAL (20 NOV 2025 - SEMANA 11-12)
+const realtimeNotificationsRoutes = require('../backend/routes/realtime-notifications');  // ✅ Notificaciones, preferencias, broadcast
+
+// 💬 FORUMS - FOROS DE DISCUSIÓN (20 NOV 2025 - SEMANA 15-16)
+const forumsRoutes = require('../backend/routes/forums');  // ✅ Categorías, temas, posts, reacciones, encuestas
+
+// 🧠 AI TUTOR - TUTOR IA PERSONALIZADO (20 NOV 2025 - SEMANA 17-18)
+const aiTutorRoutes = require('../backend/routes/ai-tutor');  // ✅ Perfiles, sesiones, rutas, recomendaciones, mastery
+
+// 📊 PREDICTIVE ANALYTICS - ANALÍTICAS PREDICTIVAS (20 NOV 2025 - SEMANA 19-20)
+const predictiveAnalyticsRoutes = require('../backend/routes/predictive-analytics');  // ✅ Riesgo, alertas, intervenciones, snapshots
+
+// 🏆 TOURNAMENTS - TORNEOS Y COMPETENCIAS (20 NOV 2025 - SEMANA 21-22)
+const tournamentsRoutes = require('../backend/routes/tournaments');  // ✅ Torneos, participantes, matches, leaderboard, premios
+
+// 🛒 MARKETPLACE - MARKETPLACE DE RECURSOS (20 NOV 2025 - SEMANA 23-24)
+const marketplaceRoutes = require('../backend/routes/marketplace');  // ✅ Items, compras, reviews, favoritos, vendedor, ganancias
+
+// 📈 PERFORMANCE - MONITOREO DE RENDIMIENTO (20 NOV 2025 - SEMANA 25-26)
+const performanceRoutes = require('../backend/routes/performance');  // ✅ Caché, queries, BD, health, dashboard, métricas
+
+// 🔒 SECURITY - SEGURIDAD AVANZADA (20 NOV 2025 - SEMANA 27-28)
+const securityRoutes = require('../backend/routes/security');  // ✅ Auditoría, rate limiting, alertas, IPs, sesiones
+
+// 📚 DOCS - DOCUMENTACIÓN API (20 NOV 2025 - SEMANA 29-30)
+const docsRoutes = require('../backend/routes/docs');  // ✅ Swagger UI, OpenAPI spec, endpoints, schemas
+
+// 📊 MONITORING - MONITOREO DEL SISTEMA (20 NOV 2025 - SEMANA 31-32)
+const monitoringRoutes = require('../backend/routes/monitoring');  // ✅ Health, métricas, alertas, dashboard
+
 // Register all route modules
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -1316,6 +1358,48 @@ app.use('/api/support-tickets', supportTicketsRoutes);
 app.use('/api/pendientes-aprobacion', pendientesAprobacionRoutes);
 app.use('/api/fix-aprobaciones', fixAprobacionesAutoRoutes);
 app.use('/api/diagnostico-aprobaciones', diagnosticoAprobacionesRoutes);
+
+// 🪙 IACOINS - GAMIFICACIÓN (19 NOV 2025 - SEMANA 2)
+app.use('/api/iacoins', iacoinsRoutes);  // ✅ Balance, transacciones, retos, logros, leaderboard
+
+// 🤖 AI GENERATION - MULTI-PROVEEDOR (20 NOV 2025 - SEMANA 3-4)
+app.use('/api/ai', aiGenerationRoutes);  // ✅ generate, history, pricing, types, essay, explain, quiz
+
+// 🌟 LEVELS - SISTEMA DE NIVELES (20 NOV 2025 - SEMANA 7-8)
+app.use('/api/levels', levelsRoutes);  // ✅ XP, niveles, badges, perfil, leaderboard, unlocks
+
+// 📊 TEACHER ANALYTICS (20 NOV 2025 - SEMANA 9-10)
+app.use('/api/teacher-analytics', teacherAnalyticsRoutes);  // ✅ overview, students, reports, alerts, export
+
+// 🔔 REALTIME NOTIFICATIONS (20 NOV 2025 - SEMANA 11-12)
+app.use('/api/notifications', realtimeNotificationsRoutes);  // ✅ notifications, preferences, broadcast, cleanup
+
+// 💬 FORUMS (20 NOV 2025 - SEMANA 15-16)
+app.use('/api/forums', forumsRoutes);  // ✅ categories, topics, posts, reactions, polls, stats
+
+// 🧠 AI TUTOR (20 NOV 2025 - SEMANA 17-18)
+app.use('/api/tutor', aiTutorRoutes);  // ✅ profile, sessions, paths, recommendations, mastery, stats
+
+// 📊 PREDICTIVE ANALYTICS (20 NOV 2025 - SEMANA 19-20)
+app.use('/api/predictive', predictiveAnalyticsRoutes);  // ✅ dashboard, risk-profiles, alerts, interventions, trends
+
+// 🏆 TOURNAMENTS (20 NOV 2025 - SEMANA 21-22)
+app.use('/api/tournaments', tournamentsRoutes);  // ✅ torneos, registro, matches, leaderboard, historial, achievements
+
+// 🛒 MARKETPLACE (20 NOV 2025 - SEMANA 23-24)
+app.use('/api/marketplace', marketplaceRoutes);  // ✅ items, purchases, reviews, favorites, seller, categories
+
+// 📈 PERFORMANCE (20 NOV 2025 - SEMANA 25-26)
+app.use('/api/performance', performanceRoutes);  // ✅ cache, queries, database, health, dashboard, metrics
+
+// 🔒 SECURITY (20 NOV 2025 - SEMANA 27-28)
+app.use('/api/security', securityRoutes);  // ✅ audit, rate-limit, alerts, blocked-ips, sessions
+
+// 📚 DOCS (20 NOV 2025 - SEMANA 29-30)
+app.use('/api/docs', docsRoutes);  // ✅ swagger, openapi, endpoints, schemas, search, postman
+
+// 📊 MONITORING (20 NOV 2025 - SEMANA 31-32)
+app.use('/api/monitoring', monitoringRoutes);  // ✅ health, metrics, alerts, dashboard, uptime
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas

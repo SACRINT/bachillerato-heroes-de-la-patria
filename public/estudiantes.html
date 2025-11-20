@@ -127,38 +127,110 @@
             </div>
         </section>
 
-        <!-- Dashboard Estudiantil -->
-        <section id="dashboard" class="py-5">
+        <!-- Información Importante para Estudiantes -->
+        <section id="info-estudiantes" class="py-5">
             <div class="container">
                 <div class="section-header text-center mb-5">
                     <h2 class="section-title">
-                        <i class="fas fa-tachometer-alt text-primary me-3" aria-hidden="true"></i>
-                        Dashboard Estudiantil
+                        <i class="fas fa-info-circle text-primary me-3" aria-hidden="true"></i>
+                        Información Importante
                     </h2>
                     <p class="section-subtitle text-muted">
-                        Accede a tu información académica personalizada
+                        Accede a tus documentos oficiales y trámites académicos
                     </p>
                 </div>
 
-                <!-- Contenedor del Dashboard -->
-                <div id="dashboardContainer" class="dashboard-container">
-                    <!-- Estado inicial: Botón para acceder al dashboard -->
-                    <div id="loginPrompt" class="text-center py-5">
-                        <div class="card border-0 shadow-sm mx-auto" style="max-width: 400px;">
+                <div class="row g-4">
+                    <!-- Boletas SEP -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-lg h-100 bg-gradient-primary text-white">
                             <div class="card-body p-4">
-                                <div class="mb-3">
-                                    <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="icon-circle bg-white text-primary rounded-circle p-3 me-3">
+                                        <i class="fas fa-file-alt fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="card-title mb-1">Boletas de Calificaciones</h4>
+                                        <p class="mb-0 opacity-75">Sistema SIGED de la SEP</p>
+                                    </div>
                                 </div>
-                                <h5 class="card-title text-primary mb-3">Accede a tu Dashboard</h5>
-                                <p class="text-muted mb-4">Inicia sesión para ver tu información académica personalizada</p>
-                                <button class="btn btn-primary btn-lg" data-action="show-student-login">
-                                    <i class="fas fa-sign-in-alt me-2"></i>
-                                    Iniciar Sesión
-                                </button>
+                                <p class="card-text mb-4">
+                                    Descarga tus boletas de calificaciones oficiales desde el Sistema de Información
+                                    y Gestión Educativa de la Secretaría de Educación Pública.
+                                </p>
+                                <div class="d-grid gap-2">
+                                    <a href="https://www.siged.sep.gob.mx/SIGED/alumnos.html"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="btn btn-light btn-lg">
+                                        <i class="fas fa-external-link-alt me-2"></i>
+                                        Ir al Sistema SIGED
+                                    </a>
+                                </div>
+                                <small class="d-block mt-3 opacity-75">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Necesitarás tu CURP para acceder
+                                </small>
                             </div>
                         </div>
                     </div>
-                    <!-- El dashboard se cargará dinámicamente aquí después del login -->
+
+                    <!-- Trámites Escolares -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-lg h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="icon-circle bg-success text-white rounded-circle p-3 me-3">
+                                        <i class="fas fa-clipboard-check fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="card-title mb-1 text-success">Trámites Escolares</h4>
+                                        <p class="mb-0 text-muted">Solicita tus documentos</p>
+                                    </div>
+                                </div>
+                                <p class="card-text text-muted mb-3">
+                                    Solicita constancias de estudios, certificados parciales y otros documentos
+                                    oficiales directamente en Control Escolar.
+                                </p>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Constancia de estudios
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Certificado parcial
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Kardex académico
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Carta de buena conducta
+                                    </li>
+                                </ul>
+                                <a href="servicios.html" class="btn btn-success">
+                                    <i class="fas fa-arrow-right me-2"></i>
+                                    Ver todos los servicios
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-info d-flex align-items-center" role="alert">
+                            <i class="fas fa-lightbulb fa-2x me-3"></i>
+                            <div>
+                                <strong>¿Sabías que?</strong> Puedes usar nuestro sistema de <strong>IACoins</strong>
+                                para generar mapas conceptuales, resúmenes y materiales de estudio con Inteligencia Artificial.
+                                <a href="#" class="alert-link" id="loginBtn">Inicia sesión</a> para acceder a estas herramientas.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
