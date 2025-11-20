@@ -1306,6 +1306,9 @@ const marketplaceRoutes = require('../backend/routes/marketplace');  // ✅ Item
 // 📈 PERFORMANCE - MONITOREO DE RENDIMIENTO (20 NOV 2025 - SEMANA 25-26)
 const performanceRoutes = require('../backend/routes/performance');  // ✅ Caché, queries, BD, health, dashboard, métricas
 
+// 🔒 SECURITY - SEGURIDAD AVANZADA (20 NOV 2025 - SEMANA 27-28)
+const securityRoutes = require('../backend/routes/security');  // ✅ Auditoría, rate limiting, alertas, IPs, sesiones
+
 // Register all route modules
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -1382,6 +1385,9 @@ app.use('/api/marketplace', marketplaceRoutes);  // ✅ items, purchases, review
 
 // 📈 PERFORMANCE (20 NOV 2025 - SEMANA 25-26)
 app.use('/api/performance', performanceRoutes);  // ✅ cache, queries, database, health, dashboard, metrics
+
+// 🔒 SECURITY (20 NOV 2025 - SEMANA 27-28)
+app.use('/api/security', securityRoutes);  // ✅ audit, rate-limit, alerts, blocked-ips, sessions
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
