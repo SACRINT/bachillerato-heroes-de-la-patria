@@ -80,6 +80,10 @@ const pendientesAprobacionRoutes = require('./routes/pendientes-aprobacion');
 const diagnosticoAprobacionesRoutes = require('./routes/diagnostico-aprobaciones');
 const gamificationRoutes = require('./routes/gamification');  // ✅ GAMIFICATION ROUTES - Sistema de logros y puntuaciones
 
+// ✅ SEMANA 2 - SERVICE LAYER ROUTES (20 NOV 2025)
+const studentsServiceRoutes = require('./routes/students-service');  // Estudiantes con Service Layer
+const gradesServiceRoutes = require('./routes/grades-service');  // Calificaciones con Service Layer
+
 // ✅ FASE 1.2: 28 RUTAS HUÉRFANAS - Registradas 11 NOV 2025
 // GRUPO 1: IA/ML CRÍTICAS (6 rutas)
 const aiDatabaseRoutes = require('./routes/ai-database');
@@ -337,6 +341,11 @@ app.use('/api/gamification', gamificationRoutes);  // ✅ GAMIFICATION ROUTES - 
 app.use('/api/wallet', walletRoutes);  // ✅ WALLET ROUTES - Gestión de IACoins (15 NOV 2025)
 app.use('/api/challenges', challengesRoutes);  // ✅ CHALLENGES ROUTES - Sistema de retos (15 NOV 2025)
 app.use('/api/store', storeRoutes);  // ✅ STORE ROUTES - Tienda virtual (15 NOV 2025)
+
+// ✅ SEMANA 2 - SERVICE LAYER ROUTES (20 NOV 2025)
+// Estas rutas usan el patrón Service Layer para separar lógica de negocio
+app.use('/api/students-v2', studentsServiceRoutes);  // Estudiantes con StudentService
+app.use('/api/grades-v2', gradesServiceRoutes);  // Calificaciones con GradesService
 
 // ✅ FASE 1.2: RUTAS HUÉRFANAS REGISTRADAS - 11 NOV 2025
 // ⚠️ NOTA: Algunas rutas requieren debugging (google-classroom, chatbot-ia, etc)

@@ -152,6 +152,50 @@ class StudentService {
   }
 
   /**
+   * Obtener estadísticas de estudiantes
+   * @param {Object} filters - Filtros opcionales (grado, grupo, status)
+   * @returns {Promise<Object>} Estadísticas de estudiantes
+   */
+  async getStats(filters = {}) {
+    debugLog.log('STUDENT', 'Fetching student statistics', { filterCount: Object.keys(filters).length });
+
+    try {
+      const stats = await db.getStudentStats(filters);
+      debugLog.log('STUDENT', 'Statistics fetched successfully');
+      return stats;
+    } catch (error) {
+      debugLog.error('STUDENT', 'Error fetching statistics', sanitizeError(error, 'getStats'));
+      throw error;
+    }
+  }
+
+  /**
+   * Obtener todos los estudiantes con paginación
+   * @param {Object} filters - Filtros de búsqueda
+   * @param {Object} pagination - Opciones de paginación {page, limit}
+   * @returns {Promise<Object>} Lista de estudiantes con metadata de paginación
+   */
+  async getAll(filters = {}, pagination = { page: 1, limit: 50 }) {
+    debugLog.log('STUDENT', 'Fetching all students with pagination', {
+      filterCount: Object.keys(filters).length,
+      page: pagination.page,
+      limit: pagination.limit
+    });
+
+    try {
+      const result = await db.getAllStudents(filters, pagination);
+      debugLog.log('STUDENT', 'Students fetched successfully', {
+        count: result.data.length,
+        total: result.total
+      });
+      return result;
+    } catch (error) {
+      debugLog.error('STUDENT', 'Error fetching all students', sanitizeError(error, 'getAll'));
+      throw error;
+    }
+  }
+
+  /**
    * Validar datos de estudiante
    * @private
    */

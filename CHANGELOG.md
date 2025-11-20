@@ -1,3 +1,53 @@
+[5.5.0] - 2025-11-20 (SEMANA 2: BACKEND SERVICE LAYER)
+🏗️ ARCHITECTURE: Implementación del patrón Service Layer para rutas principales
+✅ RAMA: claude/bge-architecture-planning-01WmbMGBtafZ1yRa1FSACTFs
+
+📊 RESUMEN v5.5.0:
+  - Archivos creados: 2 rutas con Service Layer
+  - Archivos modificados: 2 (StudentService, server.js)
+  - Patrón: Rutas → Services → DAL
+  - Endpoints nuevos: /api/students-v2, /api/grades-v2
+
+⚡ NUEVAS RUTAS CON SERVICE LAYER:
+  ✅ backend/routes/students-service.js (280 líneas)
+     - GET / - Lista con paginación y filtros
+     - GET /stats - Estadísticas de estudiantes
+     - GET /search - Búsqueda avanzada
+     - GET /export - Exportar CSV/JSON
+     - GET /:id - Detalle de estudiante
+     - GET /:id/grades - Calificaciones del estudiante
+     - GET /:id/attendance - Asistencias
+     - POST / - Crear estudiante
+     - PUT /:id - Actualizar estudiante
+     - DELETE /:id - Eliminar estudiante
+
+  ✅ backend/routes/grades-service.js (280 líneas)
+     - GET / - Lista con paginación y filtros
+     - GET /stats - Estadísticas de calificaciones
+     - GET /:id - Detalle de calificación
+     - GET /student/:id - Calificaciones por estudiante con promedios
+     - POST / - Crear calificación
+     - PUT /:id - Actualizar calificación
+     - DELETE /:id - Eliminar calificación
+     - POST /bulk - Crear en lote
+
+⚡ SERVICIOS VERIFICADOS:
+  ✅ backend/services/studentService.js - getAll, getStats, search, export
+  ✅ backend/services/GradesService.js - CRUD + stats + bulkCreate
+  ✅ backend/services/notificationService.js - WebSocket real-time
+
+⚡ ACTUALIZACIÓN StudentService.js:
+  - Agregado método getStats() con filtros
+  - Agregado método getAll() con paginación mejorada
+
+📝 ARQUITECTURA SERVICE LAYER:
+  Rutas (validación) → Services (lógica de negocio) → DAL (base de datos)
+  - Separación clara de responsabilidades
+  - Servicios reutilizables
+  - Mejor mantenibilidad y testing
+
+---
+
 [5.4.0] - 2025-11-19 (TESTING & STANDARDIZATION)
 🧪 TESTING: Utilidades de testing y estandarización de API
 ✅ RAMA: claude/bge-architecture-planning-01WmbMGBtafZ1yRa1FSACTFs
