@@ -1312,6 +1312,9 @@ const securityRoutes = require('../backend/routes/security');  // ✅ Auditoría
 // 📚 DOCS - DOCUMENTACIÓN API (20 NOV 2025 - SEMANA 29-30)
 const docsRoutes = require('../backend/routes/docs');  // ✅ Swagger UI, OpenAPI spec, endpoints, schemas
 
+// 📊 MONITORING - MONITOREO DEL SISTEMA (20 NOV 2025 - SEMANA 31-32)
+const monitoringRoutes = require('../backend/routes/monitoring');  // ✅ Health, métricas, alertas, dashboard
+
 // Register all route modules
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -1394,6 +1397,9 @@ app.use('/api/security', securityRoutes);  // ✅ audit, rate-limit, alerts, blo
 
 // 📚 DOCS (20 NOV 2025 - SEMANA 29-30)
 app.use('/api/docs', docsRoutes);  // ✅ swagger, openapi, endpoints, schemas, search, postman
+
+// 📊 MONITORING (20 NOV 2025 - SEMANA 31-32)
+app.use('/api/monitoring', monitoringRoutes);  // ✅ health, metrics, alerts, dashboard, uptime
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
