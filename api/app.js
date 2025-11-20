@@ -1279,6 +1279,9 @@ const iacoinsRoutes = require('../backend/routes/iacoins');  // ✅ Balance, tra
 // 🤖 AI GENERATION - INTEGRACIÓN MULTI-PROVEEDOR (20 NOV 2025 - SEMANA 3-4)
 const aiGenerationRoutes = require('../backend/routes/ai-generation');  // ✅ OpenAI, Anthropic, Gemini
 
+// 🌟 LEVELS - SISTEMA DE NIVELES Y PROGRESIÓN (20 NOV 2025 - SEMANA 7-8)
+const levelsRoutes = require('../backend/routes/levels');  // ✅ XP, niveles, badges, perfil
+
 // Register all route modules
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -1328,6 +1331,9 @@ app.use('/api/iacoins', iacoinsRoutes);  // ✅ Balance, transacciones, retos, l
 
 // 🤖 AI GENERATION - MULTI-PROVEEDOR (20 NOV 2025 - SEMANA 3-4)
 app.use('/api/ai', aiGenerationRoutes);  // ✅ generate, history, pricing, types, essay, explain, quiz
+
+// 🌟 LEVELS - SISTEMA DE NIVELES (20 NOV 2025 - SEMANA 7-8)
+app.use('/api/levels', levelsRoutes);  // ✅ XP, niveles, badges, perfil, leaderboard, unlocks
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
