@@ -1297,6 +1297,9 @@ const aiTutorRoutes = require('../backend/routes/ai-tutor');  // ✅ Perfiles, s
 // 📊 PREDICTIVE ANALYTICS - ANALÍTICAS PREDICTIVAS (20 NOV 2025 - SEMANA 19-20)
 const predictiveAnalyticsRoutes = require('../backend/routes/predictive-analytics');  // ✅ Riesgo, alertas, intervenciones, snapshots
 
+// 🏆 TOURNAMENTS - TORNEOS Y COMPETENCIAS (20 NOV 2025 - SEMANA 21-22)
+const tournamentsRoutes = require('../backend/routes/tournaments');  // ✅ Torneos, participantes, matches, leaderboard, premios
+
 // Register all route modules
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -1364,6 +1367,9 @@ app.use('/api/tutor', aiTutorRoutes);  // ✅ profile, sessions, paths, recommen
 
 // 📊 PREDICTIVE ANALYTICS (20 NOV 2025 - SEMANA 19-20)
 app.use('/api/predictive', predictiveAnalyticsRoutes);  // ✅ dashboard, risk-profiles, alerts, interventions, trends
+
+// 🏆 TOURNAMENTS (20 NOV 2025 - SEMANA 21-22)
+app.use('/api/tournaments', tournamentsRoutes);  // ✅ torneos, registro, matches, leaderboard, historial, achievements
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
