@@ -1291,6 +1291,9 @@ const realtimeNotificationsRoutes = require('../backend/routes/realtime-notifica
 // 💬 FORUMS - FOROS DE DISCUSIÓN (20 NOV 2025 - SEMANA 15-16)
 const forumsRoutes = require('../backend/routes/forums');  // ✅ Categorías, temas, posts, reacciones, encuestas
 
+// 🧠 AI TUTOR - TUTOR IA PERSONALIZADO (20 NOV 2025 - SEMANA 17-18)
+const aiTutorRoutes = require('../backend/routes/ai-tutor');  // ✅ Perfiles, sesiones, rutas, recomendaciones, mastery
+
 // Register all route modules
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -1352,6 +1355,9 @@ app.use('/api/notifications', realtimeNotificationsRoutes);  // ✅ notification
 
 // 💬 FORUMS (20 NOV 2025 - SEMANA 15-16)
 app.use('/api/forums', forumsRoutes);  // ✅ categories, topics, posts, reactions, polls, stats
+
+// 🧠 AI TUTOR (20 NOV 2025 - SEMANA 17-18)
+app.use('/api/tutor', aiTutorRoutes);  // ✅ profile, sessions, paths, recommendations, mastery, stats
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
