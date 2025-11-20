@@ -1309,6 +1309,9 @@ const performanceRoutes = require('../backend/routes/performance');  // ✅ Cach
 // 🔒 SECURITY - SEGURIDAD AVANZADA (20 NOV 2025 - SEMANA 27-28)
 const securityRoutes = require('../backend/routes/security');  // ✅ Auditoría, rate limiting, alertas, IPs, sesiones
 
+// 📚 DOCS - DOCUMENTACIÓN API (20 NOV 2025 - SEMANA 29-30)
+const docsRoutes = require('../backend/routes/docs');  // ✅ Swagger UI, OpenAPI spec, endpoints, schemas
+
 // Register all route modules
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -1388,6 +1391,9 @@ app.use('/api/performance', performanceRoutes);  // ✅ cache, queries, database
 
 // 🔒 SECURITY (20 NOV 2025 - SEMANA 27-28)
 app.use('/api/security', securityRoutes);  // ✅ audit, rate-limit, alerts, blocked-ips, sessions
+
+// 📚 DOCS (20 NOV 2025 - SEMANA 29-30)
+app.use('/api/docs', docsRoutes);  // ✅ swagger, openapi, endpoints, schemas, search, postman
 
 // ✅ 28 RUTAS FALTANTES REGISTRADAS (2 NOV 2025)
 // Debug: Primer grupo de 10 rutas
