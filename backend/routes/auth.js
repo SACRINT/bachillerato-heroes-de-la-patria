@@ -14,6 +14,12 @@ const { authenticateToken, requireAdmin, requireRole } = require('../middleware/
 const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
 
+// ✅ SEMANA 25: 2FA Service integration
+const twoFactorService = require('../services/twoFactorService');
+
+// ✅ SEMANA 25: WebAuthn Service integration
+const webauthnService = require('../services/webauthnService');
+
 const router = express.Router();
 
 // Instancias de servicios
@@ -139,6 +145,27 @@ router.post('/login', loginLimiter, loginValidation, async (req, res, next) => {
         // Autenticar usuario
         const user = await authService.authenticateUser(username, password);
 
+        // ✅ SEMANA 25: Check if user has 2FA enabled
+        const has2FA = await twoFactorService.isEnabled(user.id);
+
+        if (has2FA) {
+            debugLog.log('AUTH', `Usuario ${username} tiene 2FA habilitado - requiere verificación`);
+
+            // Return requires2FA response (no tokens yet)
+            return res.json({
+                success: true,
+                requires2FA: true,
+                message: 'Se requiere verificación de segundo factor',
+                userId: user.id, // Needed for 2FA verification
+                user: {
+                    username: user.username,
+                    email: maskEmail(user.email), // Masked for security
+                    role: user.role
+                }
+            });
+        }
+
+        // If no 2FA, continue with normal token generation
         // Generar tokens
         const userPayload = {
             userId: user.id,
@@ -182,6 +209,556 @@ router.post('/login', loginLimiter, loginValidation, async (req, res, next) => {
             success: false,
             error: 'Credenciales inválidas',
             message: 'Email o contraseña incorrectos'
+        });
+    }
+});
+
+/**
+ * ✅ SEMANA 25: POST /api/auth/verify-2fa
+ * Verificar código 2FA y completar el login
+ */
+router.post('/verify-2fa', loginLimiter, [
+    body('userId').isInt().withMessage('ID de usuario requerido'),
+    body('token').isString().isLength({ min: 6, max: 6 }).withMessage('Código de 6 dígitos requerido'),
+    body('rememberMe').optional().isBoolean()
+], async (req, res, next) => {
+    try {
+        // Validar entrada
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                error: 'Datos de entrada inválidos',
+                details: errors.array()
+            });
+        }
+
+        const { userId, token, rememberMe = false, useBackupCode = false } = req.body;
+
+        debugLog.log('AUTH', `Verificando 2FA para userId=${userId}, useBackupCode=${useBackupCode}`);
+
+        // Verificar el código (TOTP o backup code)
+        let verificationResult;
+        if (useBackupCode) {
+            verificationResult = await twoFactorService.verifyBackupCode(userId, token);
+        } else {
+            verificationResult = await twoFactorService.verify(userId, token);
+        }
+
+        if (!verificationResult.success) {
+            debugLog.warn('AUTH', `❌ 2FA verification failed for userId=${userId}`);
+            return res.status(401).json({
+                success: false,
+                error: 'Código 2FA inválido',
+                message: verificationResult.message || 'El código ingresado es incorrecto o ha expirado',
+                remainingCodes: verificationResult.remainingCodes
+            });
+        }
+
+        // 2FA verified successfully - get user data and generate tokens
+        const { pool } = require('../config/database');
+        const userResult = await pool.query(
+            'SELECT id, username, email, nombre, apellido_paterno, role FROM usuarios WHERE id = $1',
+            [userId]
+        );
+
+        if (!userResult.rows.length) {
+            return res.status(404).json({
+                success: false,
+                error: 'Usuario no encontrado'
+            });
+        }
+
+        const user = userResult.rows[0];
+
+        // Generar tokens
+        const userPayload = {
+            userId: user.id,
+            email: user.email,
+            username: user.username,
+            role: user.role,
+            permissions: authService.permissions[user.role] || []
+        };
+
+        const tokenPair = jwtUtils.generateTokenPair(userPayload, rememberMe);
+
+        // Log de login exitoso con 2FA
+        debugLog.log('AUTH', `✅ Login exitoso con 2FA para username=${user.username}, email=${maskEmail(user.email)}, role=${user.role}`);
+
+        // Respuesta exitosa
+        res.json({
+            success: true,
+            message: 'Autenticación 2FA exitosa',
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                nombre: user.nombre,
+                apellido_paterno: user.apellido_paterno,
+                role: user.role,
+                permissions: userPayload.permissions
+            },
+            tokens: tokenPair,
+            sessionInfo: {
+                loginTime: new Date().toISOString(),
+                rememberMe: rememberMe,
+                expiresAt: new Date(tokenPair.accessTokenExpiry * 1000).toISOString(),
+                twoFactorVerified: true
+            },
+            remainingBackupCodes: verificationResult.remainingCodes
+        });
+
+    } catch (error) {
+        debugLog.error('AUTH', '❌ Error en verificación 2FA', sanitizeError(error, 'auth'));
+
+        res.status(500).json({
+            success: false,
+            error: 'Error en la verificación',
+            message: 'Ocurrió un error al verificar el código 2FA'
+        });
+    }
+});
+
+/**
+ * ✅ SEMANA 25: POST /api/auth/2fa/enable
+ * Habilitar 2FA para el usuario autenticado
+ */
+router.post('/2fa/enable', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        debugLog.log('AUTH', `Habilitando 2FA para userId=${userId}`);
+
+        // Generate secret and backup codes
+        const result = await twoFactorService.enable(userId);
+
+        res.json({
+            success: true,
+            message: '2FA habilitado exitosamente. Escanea el código QR con tu app de autenticación.',
+            secret: result.secret,
+            qrUri: result.qrUri,
+            backupCodes: result.backupCodes
+        });
+
+    } catch (error) {
+        debugLog.error('AUTH', '❌ Error al habilitar 2FA', sanitizeError(error, 'auth'));
+
+        res.status(500).json({
+            success: false,
+            error: 'Error al habilitar 2FA',
+            message: 'No se pudo habilitar la autenticación de dos factores'
+        });
+    }
+});
+
+/**
+ * ✅ SEMANA 25: POST /api/auth/2fa/disable
+ * Deshabilitar 2FA para el usuario autenticado
+ */
+router.post('/2fa/disable', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        debugLog.log('AUTH', `Deshabilitando 2FA para userId=${userId}`);
+
+        await twoFactorService.disable(userId);
+
+        res.json({
+            success: true,
+            message: '2FA deshabilitado exitosamente'
+        });
+
+    } catch (error) {
+        debugLog.error('AUTH', '❌ Error al deshabilitar 2FA', sanitizeError(error, 'auth'));
+
+        res.status(500).json({
+            success: false,
+            error: 'Error al deshabilitar 2FA',
+            message: 'No se pudo deshabilitar la autenticación de dos factores'
+        });
+    }
+});
+
+/**
+ * ✅ SEMANA 25: POST /api/auth/2fa/regenerate-backup-codes
+ * Regenerar códigos de respaldo
+ */
+router.post('/2fa/regenerate-backup-codes', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        debugLog.log('AUTH', `Regenerando backup codes para userId=${userId}`);
+
+        const result = await twoFactorService.regenerateBackupCodes(userId);
+
+        res.json({
+            success: true,
+            message: 'Códigos de respaldo regenerados exitosamente',
+            backupCodes: result.backupCodes
+        });
+
+    } catch (error) {
+        debugLog.error('AUTH', '❌ Error al regenerar backup codes', sanitizeError(error, 'auth'));
+
+        res.status(500).json({
+            success: false,
+            error: 'Error al regenerar códigos',
+            message: 'No se pudieron regenerar los códigos de respaldo'
+        });
+    }
+});
+
+/**
+ * ✅ SEMANA 25: GET /api/auth/2fa/status
+ * Verificar si el usuario tiene 2FA habilitado
+ */
+router.get('/2fa/status', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        const isEnabled = await twoFactorService.isEnabled(userId);
+
+        res.json({
+            success: true,
+            enabled: isEnabled
+        });
+
+    } catch (error) {
+        debugLog.error('AUTH', '❌ Error al verificar estado 2FA', sanitizeError(error, 'auth'));
+
+        res.status(500).json({
+            success: false,
+            error: 'Error al verificar estado',
+            enabled: false
+        });
+    }
+});
+
+/**
+ * ✅ SEMANA 25: POST /api/auth/2fa/verify-setup
+ * Verificar código durante el setup inicial de 2FA
+ */
+router.post('/2fa/verify-setup', authenticateToken, [
+    body('token').isString().isLength({ min: 6, max: 6 }).withMessage('Código de 6 dígitos requerido')
+], async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                error: 'Datos inválidos',
+                details: errors.array()
+            });
+        }
+
+        const userId = req.user.userId;
+        const { token } = req.body;
+
+        debugLog.log('AUTH', `Verificando código de setup 2FA para userId=${userId}`);
+
+        // Verify the token (this will also enable 2FA on first successful verification)
+        const result = await twoFactorService.verify(userId, token);
+
+        if (result.success) {
+            res.json({
+                success: true,
+                message: 'Código verificado exitosamente. 2FA habilitado.'
+            });
+        } else {
+            res.status(400).json({
+                success: false,
+                error: 'Código inválido',
+                message: result.message || 'El código ingresado es incorrecto'
+            });
+        }
+
+    } catch (error) {
+        debugLog.error('AUTH', '❌ Error verificando código de setup', sanitizeError(error, 'auth'));
+
+        res.status(500).json({
+            success: false,
+            error: 'Error en la verificación',
+            message: 'Ocurrió un error al verificar el código'
+        });
+    }
+});
+
+// ============================================
+// ✅ SEMANA 25: WEBAUTHN (BIOMETRIC AUTH) ENDPOINTS
+// ============================================
+
+/**
+ * POST /api/auth/webauthn/register/options
+ * Generar opciones para registrar un nuevo dispositivo biométrico
+ */
+router.post('/webauthn/register/options', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const user = req.user;
+
+        debugLog.log('WEBAUTHN', `Generando opciones de registro para userId=${userId}`);
+
+        const result = await webauthnService.generateRegistrationOptions(
+            userId,
+            user.username || user.name,
+            user.email
+        );
+
+        res.json(result);
+
+    } catch (error) {
+        debugLog.error('WEBAUTHN', '❌ Error generando opciones de registro', sanitizeError(error, 'webauthn'));
+
+        res.status(500).json({
+            success: false,
+            error: 'Error al generar opciones de registro',
+            message: error.message
+        });
+    }
+});
+
+/**
+ * POST /api/auth/webauthn/register/verify
+ * Verificar y completar el registro de un dispositivo biométrico
+ */
+router.post('/webauthn/register/verify', authenticateToken, [
+    body('response').isObject().withMessage('Respuesta WebAuthn requerida'),
+    body('deviceName').optional().isString().isLength({ max: 255 })
+], async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                error: 'Datos inválidos',
+                details: errors.array()
+            });
+        }
+
+        const userId = req.user.userId;
+        const { response, deviceName } = req.body;
+
+        debugLog.log('WEBAUTHN', `Verificando registro de dispositivo para userId=${userId}`);
+
+        const result = await webauthnService.verifyRegistrationResponse(
+            userId,
+            response,
+            deviceName || 'Dispositivo Biométrico'
+        );
+
+        res.json({
+            success: true,
+            message: 'Dispositivo biométrico registrado exitosamente',
+            credentialId: result.credentialId
+        });
+
+    } catch (error) {
+        debugLog.error('WEBAUTHN', '❌ Error verificando registro', sanitizeError(error, 'webauthn'));
+
+        res.status(400).json({
+            success: false,
+            error: 'Error al verificar registro',
+            message: error.message
+        });
+    }
+});
+
+/**
+ * POST /api/auth/webauthn/authenticate/options
+ * Generar opciones para autenticación biométrica
+ */
+router.post('/webauthn/authenticate/options', async (req, res) => {
+    try {
+        const { userId } = req.body; // Optional: can be null for discoverable credentials
+
+        debugLog.log('WEBAUTHN', `Generando opciones de autenticación${userId ? ` para userId=${userId}` : ''}`);
+
+        const result = await webauthnService.generateAuthenticationOptions(userId || null);
+
+        res.json(result);
+
+    } catch (error) {
+        debugLog.error('WEBAUTHN', '❌ Error generando opciones de autenticación', sanitizeError(error, 'webauthn'));
+
+        res.status(500).json({
+            success: false,
+            error: 'Error al generar opciones de autenticación',
+            message: error.message
+        });
+    }
+});
+
+/**
+ * POST /api/auth/webauthn/authenticate/verify
+ * Verificar autenticación biométrica y generar JWT tokens
+ */
+router.post('/webauthn/authenticate/verify', loginLimiter, [
+    body('response').isObject().withMessage('Respuesta WebAuthn requerida'),
+    body('userId').optional().isInt(),
+    body('rememberMe').optional().isBoolean()
+], async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                error: 'Datos inválidos',
+                details: errors.array()
+            });
+        }
+
+        const { response, userId, rememberMe = false } = req.body;
+
+        debugLog.log('WEBAUTHN', 'Verificando autenticación biométrica');
+
+        // Verify WebAuthn response
+        const verificationResult = await webauthnService.verifyAuthenticationResponse(
+            response,
+            userId || null
+        );
+
+        if (!verificationResult.verified) {
+            return res.status(401).json({
+                success: false,
+                error: 'Autenticación biométrica fallida'
+            });
+        }
+
+        // Get user data
+        const { pool } = require('../config/database');
+        const userResult = await pool.query(
+            'SELECT id, username, email, nombre, apellido_paterno, role FROM usuarios WHERE id = $1',
+            [verificationResult.userId]
+        );
+
+        if (!userResult.rows.length) {
+            return res.status(404).json({
+                success: false,
+                error: 'Usuario no encontrado'
+            });
+        }
+
+        const user = userResult.rows[0];
+
+        // Generate JWT tokens
+        const userPayload = {
+            userId: user.id,
+            email: user.email,
+            username: user.username,
+            role: user.role,
+            permissions: authService.permissions[user.role] || []
+        };
+
+        const tokenPair = jwtUtils.generateTokenPair(userPayload, rememberMe);
+
+        debugLog.log('WEBAUTHN', `✅ Autenticación biométrica exitosa para userId=${user.id}`);
+
+        res.json({
+            success: true,
+            message: 'Autenticación biométrica exitosa',
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                nombre: user.nombre,
+                apellido_paterno: user.apellido_paterno,
+                role: user.role,
+                permissions: userPayload.permissions
+            },
+            tokens: tokenPair,
+            sessionInfo: {
+                loginTime: new Date().toISOString(),
+                rememberMe: rememberMe,
+                expiresAt: new Date(tokenPair.accessTokenExpiry * 1000).toISOString(),
+                biometricAuth: true
+            }
+        });
+
+    } catch (error) {
+        debugLog.error('WEBAUTHN', '❌ Error en autenticación biométrica', sanitizeError(error, 'webauthn'));
+
+        res.status(401).json({
+            success: false,
+            error: 'Error en la autenticación',
+            message: error.message
+        });
+    }
+});
+
+/**
+ * GET /api/auth/webauthn/credentials
+ * Listar dispositivos biométricos registrados del usuario
+ */
+router.get('/webauthn/credentials', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        const credentials = await webauthnService.getUserCredentials(userId);
+
+        // Sanitize response (don't send public keys to frontend)
+        const sanitizedCredentials = credentials.map(cred => ({
+            id: cred.id,
+            deviceName: cred.device_name,
+            transports: cred.transports,
+            createdAt: cred.created_at,
+            lastUsedAt: cred.last_used_at
+        }));
+
+        res.json({
+            success: true,
+            credentials: sanitizedCredentials,
+            count: sanitizedCredentials.length
+        });
+
+    } catch (error) {
+        debugLog.error('WEBAUTHN', '❌ Error listando credenciales', sanitizeError(error, 'webauthn'));
+
+        res.status(500).json({
+            success: false,
+            error: 'Error al listar dispositivos',
+            credentials: []
+        });
+    }
+});
+
+/**
+ * DELETE /api/auth/webauthn/credentials/:id
+ * Eliminar un dispositivo biométrico registrado
+ */
+router.delete('/webauthn/credentials/:id', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const credentialId = parseInt(req.params.id);
+
+        if (isNaN(credentialId)) {
+            return res.status(400).json({
+                success: false,
+                error: 'ID de credencial inválido'
+            });
+        }
+
+        const deleted = await webauthnService.deleteCredential(credentialId, userId);
+
+        if (!deleted) {
+            return res.status(404).json({
+                success: false,
+                error: 'Credencial no encontrada o no pertenece al usuario'
+            });
+        }
+
+        debugLog.log('WEBAUTHN', `Dispositivo eliminado: credentialId=${credentialId} para userId=${userId}`);
+
+        res.json({
+            success: true,
+            message: 'Dispositivo biométrico eliminado exitosamente'
+        });
+
+    } catch (error) {
+        debugLog.error('WEBAUTHN', '❌ Error eliminando credencial', sanitizeError(error, 'webauthn'));
+
+        res.status(500).json({
+            success: false,
+            error: 'Error al eliminar dispositivo'
         });
     }
 });

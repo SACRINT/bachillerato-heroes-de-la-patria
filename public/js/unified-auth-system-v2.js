@@ -129,6 +129,9 @@ class UnifiedAuthSystem {
             // 4. Setup listeners TEMPRANO - para que el botón funcione aunque Google falle
             this.setupEventListeners();
 
+            // ✅ SEMANA 25: Inicializar WebAuthn Manager
+            await this.initializeWebAuthn();
+
             // 5. Cargar Google Client ID desde servidor (.env) - puede fallar sin afectar login manual
             const clientId = await this.loadGoogleClientIdFromServer();
             if (!clientId) {
@@ -258,6 +261,155 @@ class UnifiedAuthSystem {
     }
 
     /**
+     * ✅ SEMANA 25: INICIALIZAR WEBAUTHN
+     */
+    async initializeWebAuthn() {
+        debugLog.log('AUTH', '🔐 Inicializando WebAuthn...');
+
+        try {
+            // Create WebAuthn Manager instance
+            if (typeof WebAuthnManager === 'undefined') {
+                debugLog.warn('AUTH', '⚠️ WebAuthnManager no cargado, cargando script...');
+
+                // Load webauthn-manager.js dynamically
+                await this.loadScript('/js/webauthn-manager.js');
+            }
+
+            this.webauthn = new WebAuthnManager({
+                apiBaseUrl: this.config.apiBaseUrl,
+                onSuccess: (result) => {
+                    debugLog.log('AUTH', '✅ WebAuthn success:', result.type);
+                },
+                onError: (error) => {
+                    debugLog.error('AUTH', '❌ WebAuthn error:', error.type, error.error);
+                }
+            });
+
+            await this.webauthn.init();
+
+            this.state.webauthnReady = this.webauthn.isAvailable;
+
+            debugLog.log('AUTH', `WebAuthn ${this.state.webauthnReady ? 'disponible' : 'no disponible'}`);
+
+            // Update UI button visibility
+            this.updateBiometricButtonVisibility();
+
+        } catch (error) {
+            debugLog.warn('AUTH', '⚠️ WebAuthn no disponible:', error.message);
+            this.state.webauthnReady = false;
+        }
+    }
+
+    /**
+     * ✅ SEMANA 25: ACTUALIZAR VISIBILIDAD DEL BOTÓN BIOMÉTRICO
+     */
+    async updateBiometricButtonVisibility() {
+        const biometricBtn = document.getElementById('biometric-login-btn');
+        const statusText = document.getElementById('biometric-status-text');
+
+        if (!biometricBtn) return;
+
+        if (!this.state.webauthnReady) {
+            // WebAuthn not supported
+            biometricBtn.style.display = 'none';
+            return;
+        }
+
+        // Check if user has credentials registered
+        try {
+            const hasCredentials = this.state.isAuthenticated ?
+                await this.webauthn.hasCredentials() : false;
+
+            if (!hasCredentials && !this.state.isAuthenticated) {
+                // Not logged in and no credentials - hide button
+                biometricBtn.style.display = 'none';
+            } else {
+                // Show button
+                biometricBtn.style.display = 'block';
+
+                if (statusText) {
+                    statusText.innerHTML = hasCredentials ?
+                        '<i class="fas fa-check-circle me-1 text-success"></i> Dispositivo registrado' :
+                        '<i class="fas fa-info-circle me-1"></i> Touch ID, Face ID, Windows Hello';
+                }
+            }
+        } catch (error) {
+            // If checking fails (not authenticated), hide button
+            biometricBtn.style.display = 'none';
+        }
+    }
+
+    /**
+     * ✅ SEMANA 25: MANEJAR LOGIN BIOMÉTRICO
+     */
+    async handleBiometricLogin() {
+        debugLog.log('AUTH', '🔐 Iniciando login biométrico...');
+
+        if (!this.state.webauthnReady) {
+            this.showError('Tu navegador no soporta autenticación biométrica');
+            return;
+        }
+
+        const biometricBtn = document.getElementById('biometric-login-btn');
+        const originalHTML = biometricBtn.innerHTML;
+
+        biometricBtn.disabled = true;
+        biometricBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Autenticando...';
+
+        try {
+            // Authenticate with biometrics
+            const result = await this.webauthn.authenticate(null, false);
+
+            if (result.success) {
+                debugLog.log('AUTH', '✅ Login biométrico exitoso');
+
+                // Process login (save tokens, update UI)
+                const token = result.tokens.accessToken;
+                await this.processLogin(result.user, token, result.sessionInfo.rememberMe);
+
+                // Close modal
+                this.hideModal();
+
+                this.showSuccess('¡Autenticación biométrica exitosa!');
+            } else {
+                throw new Error('Autenticación fallida');
+            }
+
+        } catch (error) {
+            debugLog.error('AUTH', '❌ Error en login biométrico:', error);
+
+            let errorMessage = 'Error en la autenticación biométrica';
+
+            if (error.name === 'NotAllowedError') {
+                errorMessage = 'Autenticación cancelada o rechazada';
+            } else if (error.name === 'InvalidStateError') {
+                errorMessage = 'No tienes dispositivos biométricos registrados';
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            this.showError(errorMessage);
+
+        } finally {
+            biometricBtn.disabled = false;
+            biometricBtn.innerHTML = originalHTML;
+        }
+    }
+
+    /**
+     * CARGAR SCRIPT DINÁMICAMENTE
+     */
+    async loadScript(src) {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+            document.head.appendChild(script);
+        });
+    }
+
+    /**
      * CREAR UI DE LOGIN
      */
     createLoginUI() {
@@ -356,6 +508,14 @@ class UnifiedAuthSystem {
         // Listeners de managers
         this.managers.manual.setupListeners();
         this.managers.google.setupListeners();
+
+        // ✅ SEMANA 25: Listener para botón de login biométrico
+        document.addEventListener('click', (e) => {
+            if (e.target?.id === 'biometric-login-btn' || e.target?.closest('#biometric-login-btn')) {
+                e.preventDefault();
+                this.handleBiometricLogin();
+            }
+        });
 
         // ✅ FIX (19 Nov 2025): Listener DIRECTO al botón de login como respaldo
         // Buscar el botón y agregarle listener directo además del delegado
@@ -595,6 +755,248 @@ class UnifiedAuthSystem {
 
     showWarning(message) {
         this.managers.ui.showAlert(message, 'warning');
+    }
+
+    /**
+     * ✅ SEMANA 25: MOSTRAR MODAL DE VERIFICACIÓN 2FA
+     */
+    show2FAVerificationModal() {
+        debugLog.log('AUTH', '🔐 Mostrando modal de verificación 2FA');
+
+        // Create 2FA modal if it doesn't exist
+        let modal2FA = document.getElementById('twofa-verification-modal');
+        if (!modal2FA) {
+            modal2FA = this.create2FAVerificationModal();
+            document.body.appendChild(modal2FA);
+        }
+
+        // Show the modal
+        modal2FA.classList.add('show');
+        modal2FA.style.display = 'block';
+        modal2FA.setAttribute('aria-modal', 'true');
+
+        // Add backdrop
+        document.body.classList.add('modal-open');
+        let backdrop = document.querySelector('.modal-backdrop');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show';
+            document.body.appendChild(backdrop);
+        }
+
+        // Focus on 2FA code input
+        setTimeout(() => {
+            const codeInput = document.getElementById('twofa-code');
+            if (codeInput) codeInput.focus();
+        }, 300);
+    }
+
+    /**
+     * ✅ SEMANA 25: CREAR MODAL DE VERIFICACIÓN 2FA
+     */
+    create2FAVerificationModal() {
+        const modal = document.createElement('div');
+        modal.id = 'twofa-verification-modal';
+        modal.className = 'modal fade';
+        modal.setAttribute('tabindex', '-1');
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-labelledby', 'twofa-modal-title');
+        modal.setAttribute('aria-hidden', 'true');
+
+        modal.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius: 15px; overflow: hidden;">
+                    <div class="modal-header bg-gradient" style="background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%); color: white; border-bottom: none;">
+                        <div>
+                            <h5 class="modal-title" id="twofa-modal-title">
+                                <i class="fas fa-shield-alt me-2"></i>
+                                Verificación en Dos Pasos
+                            </h5>
+                            <p class="mb-0 mt-1" style="font-size: 0.9rem; opacity: 0.9;">
+                                Ingresa el código de 6 dígitos
+                            </p>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body px-4 py-4">
+                        <!-- Alert para mensajes -->
+                        <div id="twofa-alert" class="alert d-none" role="alert"></div>
+
+                        <!-- Formulario de 2FA -->
+                        <form id="twofa-verification-form">
+                            <div class="mb-4 text-center">
+                                <i class="fas fa-mobile-alt" style="font-size: 3rem; color: #1a73e8;"></i>
+                                <p class="mt-3 text-muted">
+                                    Abre tu aplicación de autenticación (Google Authenticator, Authy, etc.) e ingresa el código de 6 dígitos.
+                                </p>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="twofa-code" class="form-label fw-bold">Código de Autenticación</label>
+                                <input type="text" class="form-control form-control-lg text-center" id="twofa-code"
+                                       placeholder="000000" maxlength="6" pattern="[0-9]{6}"
+                                       style="font-size: 1.5rem; letter-spacing: 0.5rem; font-family: monospace;"
+                                       required autocomplete="off">
+                                <div class="form-text text-center">
+                                    Código de 6 dígitos de tu app de autenticación
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold" id="verify-2fa-btn">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Verificar Código
+                            </button>
+                        </form>
+
+                        <div class="mt-4 text-center">
+                            <button type="button" class="btn btn-link text-decoration-none" id="use-backup-code-btn">
+                                <i class="fas fa-key me-1"></i>
+                                ¿Perdiste tu dispositivo? Usa un código de respaldo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add event listeners
+        const form = modal.querySelector('#twofa-verification-form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.verify2FACode(false);
+        });
+
+        const backupBtn = modal.querySelector('#use-backup-code-btn');
+        backupBtn.addEventListener('click', () => {
+            const codeLabel = modal.querySelector('label[for="twofa-code"]');
+            const codeInput = modal.querySelector('#twofa-code');
+            const formText = modal.querySelector('.form-text');
+
+            if (codeLabel.textContent.includes('Respaldo')) {
+                // Switch back to normal 2FA
+                codeLabel.innerHTML = 'Código de Autenticación';
+                codeInput.placeholder = '000000';
+                codeInput.maxLength = 6;
+                formText.textContent = 'Código de 6 dígitos de tu app de autenticación';
+                backupBtn.innerHTML = '<i class="fas fa-key me-1"></i> ¿Perdiste tu dispositivo? Usa un código de respaldo';
+                this.usingBackupCode = false;
+            } else {
+                // Switch to backup code
+                codeLabel.innerHTML = 'Código de Respaldo';
+                codeInput.placeholder = 'XXXX-XXXX';
+                codeInput.maxLength = 9;
+                formText.textContent = 'Ingresa uno de tus códigos de respaldo de 8 caracteres';
+                backupBtn.innerHTML = '<i class="fas fa-mobile-alt me-1"></i> Volver a código de autenticación';
+                this.usingBackupCode = true;
+            }
+        });
+
+        const closeBtn = modal.querySelector('[data-bs-dismiss="modal"]');
+        closeBtn.addEventListener('click', () => this.hide2FAModal());
+
+        return modal;
+    }
+
+    /**
+     * ✅ SEMANA 25: VERIFICAR CÓDIGO 2FA
+     */
+    async verify2FACode(useBackupCode = false) {
+        const codeInput = document.getElementById('twofa-code');
+        const code = codeInput.value.trim();
+
+        if (!code) {
+            this.show2FAError('Por favor ingresa el código');
+            return;
+        }
+
+        if (!useBackupCode && code.length !== 6) {
+            this.show2FAError('El código debe tener 6 dígitos');
+            return;
+        }
+
+        const pending2FA = this.pending2FAData;
+        if (!pending2FA) {
+            this.show2FAError('Error: datos de sesión perdidos. Por favor inicia sesión nuevamente.');
+            return;
+        }
+
+        const verifyBtn = document.getElementById('verify-2fa-btn');
+        verifyBtn.disabled = true;
+        verifyBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Verificando...';
+
+        try {
+            const response = await fetch(`${this.config.apiBaseUrl}/auth/verify-2fa`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: pending2FA.userId,
+                    token: code,
+                    rememberMe: pending2FA.rememberMe,
+                    useBackupCode: useBackupCode || this.usingBackupCode || false
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                debugLog.log('AUTH', '✅ 2FA verificado exitosamente');
+
+                // Process login with tokens
+                const accessToken = data.tokens.accessToken;
+                await this.processLogin(data.user, accessToken, pending2FA.rememberMe);
+
+                // Close 2FA modal
+                this.hide2FAModal();
+
+                // Clear pending data
+                delete this.pending2FAData;
+
+                this.showSuccess('¡Autenticación exitosa!');
+            } else {
+                this.show2FAError(data.message || 'Código inválido. Por favor intenta de nuevo.');
+                codeInput.value = '';
+                codeInput.focus();
+            }
+        } catch (error) {
+            debugLog.error('ERROR', 'Error en verificación 2FA:', error);
+            this.show2FAError('Error de conexión con el servidor');
+        } finally {
+            verifyBtn.disabled = false;
+            verifyBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i> Verificar Código';
+        }
+    }
+
+    /**
+     * ✅ SEMANA 25: MOSTRAR ERROR EN MODAL 2FA
+     */
+    show2FAError(message) {
+        const alert = document.getElementById('twofa-alert');
+        if (alert) {
+            alert.className = 'alert alert-danger';
+            alert.textContent = message;
+            alert.classList.remove('d-none');
+
+            setTimeout(() => alert.classList.add('d-none'), 5000);
+        }
+    }
+
+    /**
+     * ✅ SEMANA 25: OCULTAR MODAL 2FA
+     */
+    hide2FAModal() {
+        const modal = document.getElementById('twofa-verification-modal');
+        const backdrop = document.querySelector('.modal-backdrop');
+
+        if (modal) {
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+            modal.removeAttribute('aria-modal');
+        }
+
+        if (backdrop) backdrop.remove();
+        document.body.classList.remove('modal-open');
+
+        debugLog.log('AUTH', 'Modal 2FA cerrado');
     }
 
     showInfo(message) {
@@ -997,6 +1399,25 @@ class ManualLoginManager {
             const data = await response.json();
 
             if (response.ok && data.success) {
+                // ✅ SEMANA 25: Check if 2FA is required
+                if (data.requires2FA) {
+                    debugLog.log('AUTH', 'Login requiere 2FA - mostrando modal de verificación');
+
+                    // Store user data temporarily for 2FA verification
+                    this.auth.pending2FAData = {
+                        userId: data.userId,
+                        username: data.user.username,
+                        email: data.user.email,
+                        role: data.user.role,
+                        rememberMe: rememberMe
+                    };
+
+                    // Close login modal and show 2FA verification modal
+                    this.auth.closeModal();
+                    this.auth.show2FAVerificationModal();
+                    return;
+                }
+
                 // ✅ CORRECCIÓN CRÍTICA: El endpoint devuelve tokens.accessToken, no token
                 // Estructura: { success, message, user, tokens: { accessToken, refreshToken, ... }, sessionInfo }
                 const accessToken = data.tokens?.accessToken || data.token;
@@ -1381,6 +1802,18 @@ class UIManager {
                                             <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
                                         </button>
                                     </form>
+
+                                    <!-- ✅ SEMANA 25: Biometric Login Button -->
+                                    <div class="mt-3 text-center">
+                                        <button type="button" class="btn btn-outline-secondary w-100 py-2" id="biometric-login-btn">
+                                            <i class="fas fa-fingerprint me-2"></i>
+                                            Usar Biometría
+                                        </button>
+                                        <p class="text-muted small mt-2 mb-0" id="biometric-status-text">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            Touch ID, Face ID, Windows Hello
+                                        </p>
+                                    </div>
 
                                     <hr class="my-3">
 

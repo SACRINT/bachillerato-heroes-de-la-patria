@@ -59,6 +59,7 @@ const comunicadosRoutes = require('./routes/comunicados');
 const uploadRoutes = require('./routes/upload');
 const webhooksRoutes = require('./routes/webhooks');  // ✅ WEBHOOKS - SEMANA 8
 const healthRoutes = require('./routes/health');
+const testEventsRoutes = require('./routes/test-events');  // ✅ TESTING ROUTES - Event Bus testing (FASE 2)
 const chartsDataRoutes = require('./routes/charts-data');
 const searchRoutes = require('./routes/search');
 const emailsRoutes = require('./routes/emails');
@@ -115,7 +116,8 @@ const fixAprobacionesAutoRoutes = require('./routes/fix-aprobaciones-auto');
 const uploadsRoutes = require('./routes/uploads');
 
 // GRUPO 4: OPERACIONES Y MAINTENANCE BAJAS (5 rutas)
-const migrationRoutes = require('./routes/migration');
+// ⚠️ COMENTADO: migration.js requiere mysql2 (proyecto usa PostgreSQL)
+// const migrationRoutes = require('./routes/migration');
 const maintenanceRoutes = require('./routes/maintenance');
 const sslRoutes = require('./routes/ssl');
 const backupRoutes = require('./routes/backup');
@@ -128,6 +130,11 @@ const storeRoutes = require('./routes/store');  // 🛒 Virtual store (5 endpoin
 
 const { startCleanupService } = require('./services/cleanupService');
 const SocketService = require('./services/socket-service');  // ✅ SOCKET.IO SERVICE - SEMANA 5 (17 NOV 2025)
+
+// ✨ NUEVA ARQUITECTURA - Event-Driven Services (SEMANAS 1-12 REFACTORIZACIÓN)
+const eventBusService = require('./services/eventBus.service');
+const NotificationSubscriber = require('./subscribers/notification-subscriber');
+const AnalyticsSubscriber = require('./subscribers/analytics-subscriber');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -320,6 +327,7 @@ app.use('/api/admin/tenants', tenantsRoutes);  // ✅ MULTI-TENANT MANAGEMENT (8
 app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/health', healthRoutes);
+app.use('/api/test-events', testEventsRoutes);  // ✅ TESTING - Event Bus testing endpoints (FASE 2)
 app.use('/api/charts', chartsDataRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/emails', emailsRoutes);
@@ -361,36 +369,34 @@ app.use('/api/grades-v2', gradesServiceRoutes);  // Calificaciones con GradesSer
 // app.use('/api/recomendaciones-ml', recomendacionesMLRoutes);
 // app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes);
 
-// GRUPO 2: CORE FEATURES ALTAS (10 rutas) - ⚠️ Requieren debugging
-// Comentadas temporalmente para evitar errores en el servidor
-// app.use('/api/students', studentsRoutes);
-// app.use('/api/teachers', teachersRoutes);
-// app.use('/api/grades', gradesRoutes);
-// app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
-// app.use('/api/notifications', notificationsRoutes);
-// app.use('/api/information', informationRoutes);
-// app.use('/api/parent-teacher-communication', parentTeacherCommunicationRoutes);
-// app.use('/api/multi-tenant', multiTenantRoutes);
-// app.use('/api/subscriptions-service', subscriptionsServiceRoutes);
+// GRUPO 2: CORE FEATURES ALTAS (8 rutas activas + 1 comentada) - ✅ DESCOMENTADAS PARA FASE 3
+// Rutas críticas para funcionalidad básica del sistema
+app.use('/api/students', studentsRoutes);
+app.use('/api/teachers', teachersRoutes);
+app.use('/api/grades', gradesRoutes);
+app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
+app.use('/api/notifications', notificationsRoutes);
+app.use('/api/information', informationRoutes);
+app.use('/api/parent-teacher-communication', parentTeacherCommunicationRoutes);
+app.use('/api/multi-tenant', multiTenantRoutes);
+// app.use('/api/subscriptions-service', subscriptionsServiceRoutes); // ⚠️ Comentada: exporta Object en vez de Router
 
-// GRUPO 3: FEATURES SECUNDARIAS MEDIAS (7 rutas) - ⚠️ Requieren debugging
-// Comentadas temporalmente para evitar errores en el servidor
-// app.use('/api/chatbot', chatbotRoutes);
-// app.use('/api/chatbot-ia', chatbotIaRoutes);
-// app.use('/api/cms', cmsRoutes);
-// app.use('/api/newsletters-pg', newslettersPgRoutes);
-// app.use('/api/citas-improved', citasImprovedRoutes);
-// app.use('/api/fix-aprobaciones-auto', fixAprobacionesAutoRoutes);
-// app.use('/api/uploads', uploadsRoutes);
+// GRUPO 3: FEATURES SECUNDARIAS (7 rutas) - ✅ DESCOMENTADAS PARA FASE 3.2
+app.use('/api/chatbot', chatbotRoutes);
+app.use('/api/chatbot-ia', chatbotIaRoutes);
+app.use('/api/cms', cmsRoutes);
+app.use('/api/newsletters-pg', newslettersPgRoutes);
+app.use('/api/citas-improved', citasImprovedRoutes);
+app.use('/api/fix-aprobaciones-auto', fixAprobacionesAutoRoutes);
+app.use('/api/uploads', uploadsRoutes);
 
-// GRUPO 4: OPERACIONES Y MAINTENANCE BAJAS (5 rutas) - ⚠️ Requieren debugging
-// Comentadas temporalmente para evitar errores en el servidor
-// app.use('/api/migration', migrationRoutes);
-// app.use('/api/maintenance', maintenanceRoutes);
-// app.use('/api/ssl', sslRoutes);
-// app.use('/api/backup', backupRoutes);
+// GRUPO 4: OPERACIONES Y MAINTENANCE (3 rutas activas, 1 comentada) - ✅ DESCOMENTADAS PARA FASE 3.2
+// app.use('/api/migration', migrationRoutes); // ⚠️ Requiere mysql2 (no instalado)
+app.use('/api/maintenance', maintenanceRoutes);
+app.use('/api/ssl', sslRoutes);
+app.use('/api/backup', backupRoutes);
 
-devLogger.log('[FASE 1.2] 27 rutas comentadas temporalmente para debugging. Solo 43 rutas base activas.');
+devLogger.log('[FASE 3.2] 18 rutas adicionales descomentadas (GRUPO 3 + GRUPO 4). Migration comentada (requiere mysql2). 61 rutas activas.');
 
 // ============================================
 // CONFIGURACIÓN PÚBLICA (API KEYS PARA FRONTEND)
@@ -473,6 +479,26 @@ autoFixAprobaciones().catch(err => {
 
 // Iniciar el servicio de limpieza de tokens expirados (cada 12 horas)
 startCleanupService(12);
+
+// ✨ NUEVA ARQUITECTURA - Inicializar Event Bus (SEMANAS 1-12 REFACTORIZACIÓN)
+devLogger.log('[SERVER] 🚀 Inicializando Event Bus y subscribers...');
+
+// Inicializar Event Bus
+const eventBus = eventBusService.getInstance();
+devLogger.log('[SERVER] ✅ Event Bus inicializado');
+
+// Registrar Notification Subscriber
+const notifSubscriber = new NotificationSubscriber(eventBus);
+// ✅ subscribeToEvents() ya se llama en constructor - no duplicar
+devLogger.log('[SERVER] ✅ Notification Subscriber registrado (40+ event handlers)');
+
+// Registrar Analytics Subscriber
+const analyticsSubscriberInstance = new AnalyticsSubscriber(eventBus);
+// ✅ subscribeToEvents() ya se llama en constructor - no duplicar
+devLogger.log('[SERVER] ✅ Analytics Subscriber registrado (40+ event handlers)');
+
+// Hacer eventBus disponible globalmente para las rutas
+app.eventBus = eventBus;
 
 // ============================================
 // SERVER START CON SOCKET.IO

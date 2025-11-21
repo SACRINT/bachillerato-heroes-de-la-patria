@@ -1,0 +1,559 @@
+{
+  "timestamp": "2025-11-20T19:45:26.107Z",
+  "summary": {
+    "totalFiles": 324,
+    "totalSizeMB": "7.48",
+    "largeFilesCount": 20,
+    "mediumFilesCount": 156,
+    "smallFilesCount": 148
+  },
+  "largeFiles": [
+    {
+      "name": "dashboard-manager-2025.js",
+      "path": "/public/js/dashboard-manager-2025.js",
+      "sizeKB": "143.66",
+      "lines": 3581
+    },
+    {
+      "name": "bge-security-module.js",
+      "path": "/public/js/bge-security-module.js",
+      "sizeKB": "95.21",
+      "lines": 2663
+    },
+    {
+      "name": "digital-ecosystem.js",
+      "path": "/public/js/digital-ecosystem.js",
+      "sizeKB": "87.05",
+      "lines": 2246
+    },
+    {
+      "name": "unified-auth-system-v2.js",
+      "path": "/public/js/unified-auth-system-v2.js",
+      "sizeKB": "80.41",
+      "lines": 2108
+    },
+    {
+      "name": "emerging-technologies.js",
+      "path": "/public/js/emerging-technologies.js",
+      "sizeKB": "79.57",
+      "lines": 2034
+    },
+    {
+      "name": "chatbot.js",
+      "path": "/public/js/chatbot.js",
+      "sizeKB": "73.76",
+      "lines": 1855
+    },
+    {
+      "name": "google-auth-integration.js",
+      "path": "/public/js/google-auth-integration.js",
+      "sizeKB": "72.54",
+      "lines": 1611
+    },
+    {
+      "name": "advanced-gamification-system.js",
+      "path": "/public/js/advanced-gamification-system.js",
+      "sizeKB": "64.22",
+      "lines": 1938
+    },
+    {
+      "name": "dashboard-personalizer.js",
+      "path": "/public/js/dashboard-personalizer.js",
+      "sizeKB": "62.81",
+      "lines": 1838
+    },
+    {
+      "name": "admin-dashboard.js",
+      "path": "/public/js/admin-dashboard.js",
+      "sizeKB": "60.35",
+      "lines": 1645
+    },
+    {
+      "name": "admin-dashboard-advanced.js",
+      "path": "/public/js/admin-dashboard-advanced.js",
+      "sizeKB": "58.34",
+      "lines": 1591
+    },
+    {
+      "name": "ai-machine-learning.js",
+      "path": "/public/js/ai-machine-learning.js",
+      "sizeKB": "57.24",
+      "lines": 1507
+    },
+    {
+      "name": "ar-education-system.js",
+      "path": "/public/js/ar-education-system.js",
+      "sizeKB": "56.81",
+      "lines": 1833
+    },
+    {
+      "name": "bge-analytics-module.js",
+      "path": "/public/js/bge-analytics-module.js",
+      "sizeKB": "55.04",
+      "lines": 1698
+    },
+    {
+      "name": "egresados-dashboard.js",
+      "path": "/public/js/egresados-dashboard.js",
+      "sizeKB": "54.81",
+      "lines": 1430
+    },
+    {
+      "name": "parent-teacher-communication.js",
+      "path": "/public/js/parent-teacher-communication.js",
+      "sizeKB": "54.58",
+      "lines": 1377
+    },
+    {
+      "name": "mobile-student-dashboard.js",
+      "path": "/public/js/mobile-student-dashboard.js",
+      "sizeKB": "53.59",
+      "lines": 1529
+    },
+    {
+      "name": "mobile-student-dashboard.js",
+      "path": "/public/js/mobile/mobile-student-dashboard.js",
+      "sizeKB": "53.59",
+      "lines": 1529
+    },
+    {
+      "name": "accessibility-auditor-system.js",
+      "path": "/public/js/accessibility-auditor-system.js",
+      "sizeKB": "52.53",
+      "lines": 1361
+    },
+    {
+      "name": "bge-dashboard-monitor.js",
+      "path": "/public/js/bge-dashboard-monitor.js",
+      "sizeKB": "51.02",
+      "lines": 1545
+    }
+  ],
+  "duplicatePatterns": [
+    {
+      "library": "DOMPurify",
+      "files": [
+        {
+          "file": "academic-reports-manager.js",
+          "occurrences": 14
+        },
+        {
+          "file": "admin-auth.js",
+          "occurrences": 7
+        },
+        {
+          "file": "admin-dashboard-advanced.js",
+          "occurrences": 11
+        },
+        {
+          "file": "admin-dashboard.js",
+          "occurrences": 22
+        },
+        {
+          "file": "admin-newsletters.js",
+          "occurrences": 19
+        },
+        {
+          "file": "advanced-gamification-system.js",
+          "occurrences": 12
+        },
+        {
+          "file": "advanced-grades-analytics.js",
+          "occurrences": 10
+        },
+        {
+          "file": "advanced-lazy-loader.js",
+          "occurrences": 6
+        },
+        {
+          "file": "advanced-metrics-system.js",
+          "occurrences": 10
+        },
+        {
+          "file": "advanced-personalization-system.js",
+          "occurrences": 6
+        },
+        {
+          "file": "ai-machine-learning.js",
+          "occurrences": 10
+        },
+        {
+          "file": "ai-progress-dashboard.js",
+          "occurrences": 11
+        },
+        {
+          "file": "appointments.js",
+          "occurrences": 15
+        },
+        {
+          "file": "approvals-manager.js",
+          "occurrences": 10
+        },
+        {
+          "file": "ar-education-system.js",
+          "occurrences": 10
+        },
+        {
+          "file": "bge-dashboard-monitor.js",
+          "occurrences": 7
+        },
+        {
+          "file": "bge-deteccion-riesgos.js",
+          "occurrences": 11
+        },
+        {
+          "file": "bge-notification-admin.js",
+          "occurrences": 14
+        },
+        {
+          "file": "bge-security-module.js",
+          "occurrences": 21
+        },
+        {
+          "file": "citas-manager.js",
+          "occurrences": 9
+        },
+        {
+          "file": "dashboard-manager-2025.js",
+          "occurrences": 54
+        },
+        {
+          "file": "debuglog-init.js",
+          "occurrences": 13
+        },
+        {
+          "file": "digital-library-manager.js",
+          "occurrences": 6
+        },
+        {
+          "file": "dompurify-config.js",
+          "occurrences": 12
+        },
+        {
+          "file": "dompurify-helper.js",
+          "occurrences": 8
+        },
+        {
+          "file": "dompurify-loader.js",
+          "occurrences": 19
+        },
+        {
+          "file": "download-center.js",
+          "occurrences": 6
+        },
+        {
+          "file": "form-ui-helpers-global.js",
+          "occurrences": 28
+        },
+        {
+          "file": "global-search.js",
+          "occurrences": 12
+        },
+        {
+          "file": "inscriptions-client.js",
+          "occurrences": 6
+        },
+        {
+          "file": "integrated-calendar-manager.js",
+          "occurrences": 6
+        },
+        {
+          "file": "interactive-calendar.js",
+          "occurrences": 9
+        },
+        {
+          "file": "job-portal.js",
+          "occurrences": 7
+        },
+        {
+          "file": "lazy-loading-advanced.js",
+          "occurrences": 6
+        },
+        {
+          "file": "main.js",
+          "occurrences": 19
+        },
+        {
+          "file": "form-ui-helpers.js",
+          "occurrences": 28
+        },
+        {
+          "file": "parent-teacher-communication.js",
+          "occurrences": 13
+        },
+        {
+          "file": "parents-portal-manager.js",
+          "occurrences": 10
+        },
+        {
+          "file": "professional-forms.js",
+          "occurrences": 10
+        },
+        {
+          "file": "script.js",
+          "occurrences": 17
+        },
+        {
+          "file": "solicitudes-manager.js",
+          "occurrences": 9
+        },
+        {
+          "file": "student-dashboard.js",
+          "occurrences": 17
+        },
+        {
+          "file": "student-portal.js",
+          "occurrences": 7
+        },
+        {
+          "file": "support-tickets-manager.js",
+          "occurrences": 12
+        },
+        {
+          "file": "teachers-portal-manager.js",
+          "occurrences": 6
+        },
+        {
+          "file": "unified-auth-system-v2.js",
+          "occurrences": 7
+        }
+      ],
+      "count": 46
+    },
+    {
+      "library": "Bootstrap JS",
+      "files": [
+        {
+          "file": "admin-auth.js",
+          "occurrences": 13
+        },
+        {
+          "file": "admin-dashboard.js",
+          "occurrences": 6
+        },
+        {
+          "file": "appointments.js",
+          "occurrences": 21
+        },
+        {
+          "file": "auth-interface.js",
+          "occurrences": 7
+        },
+        {
+          "file": "bge-security-module.js",
+          "occurrences": 9
+        },
+        {
+          "file": "calificaciones-grades-system.js",
+          "occurrences": 11
+        },
+        {
+          "file": "cms-manager.js",
+          "occurrences": 9
+        },
+        {
+          "file": "login-modal-functions.js",
+          "occurrences": 6
+        },
+        {
+          "file": "dashboard-manager-2025.js",
+          "occurrences": 17
+        },
+        {
+          "file": "descargas-events.js",
+          "occurrences": 6
+        },
+        {
+          "file": "dynamic-finance-loader.js",
+          "occurrences": 7
+        },
+        {
+          "file": "dynamic-student-loader.js",
+          "occurrences": 11
+        },
+        {
+          "file": "dynamic-teacher-loader.js",
+          "occurrences": 12
+        },
+        {
+          "file": "estudiantes-portal.js",
+          "occurrences": 18
+        },
+        {
+          "file": "google-auth-integration.js",
+          "occurrences": 20
+        },
+        {
+          "file": "grades-platform.js",
+          "occurrences": 6
+        },
+        {
+          "file": "job-portal.js",
+          "occurrences": 8
+        },
+        {
+          "file": "news.js",
+          "occurrences": 6
+        },
+        {
+          "file": "padres-events.js",
+          "occurrences": 6
+        },
+        {
+          "file": "pagos-events.js",
+          "occurrences": 6
+        },
+        {
+          "file": "payment-system.js",
+          "occurrences": 8
+        },
+        {
+          "file": "quality-assurance.js",
+          "occurrences": 9
+        },
+        {
+          "file": "script.js",
+          "occurrences": 16
+        },
+        {
+          "file": "student-dashboard.js",
+          "occurrences": 7
+        },
+        {
+          "file": "student-portal.js",
+          "occurrences": 14
+        }
+      ],
+      "count": 25
+    },
+    {
+      "library": "Chart.js",
+      "files": [
+        {
+          "file": "admin-dashboard.js",
+          "occurrences": 11
+        },
+        {
+          "file": "dashboard-init.js",
+          "occurrences": 8
+        },
+        {
+          "file": "dashboard-charts.js",
+          "occurrences": 12
+        },
+        {
+          "file": "dashboard-manager-2025.js",
+          "occurrences": 14
+        }
+      ],
+      "count": 4
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "category": "Code Splitting",
+      "issue": "20 files are >50KB",
+      "files": [
+        "dashboard-manager-2025.js",
+        "bge-security-module.js",
+        "digital-ecosystem.js",
+        "unified-auth-system-v2.js",
+        "emerging-technologies.js",
+        "chatbot.js",
+        "google-auth-integration.js",
+        "advanced-gamification-system.js",
+        "dashboard-personalizer.js",
+        "admin-dashboard.js",
+        "admin-dashboard-advanced.js",
+        "ai-machine-learning.js",
+        "ar-education-system.js",
+        "bge-analytics-module.js",
+        "egresados-dashboard.js",
+        "parent-teacher-communication.js",
+        "mobile-student-dashboard.js",
+        "mobile-student-dashboard.js",
+        "accessibility-auditor-system.js",
+        "bge-dashboard-monitor.js"
+      ],
+      "solution": "Consider code splitting these large files into smaller modules"
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Library Deduplication",
+      "issue": "3 libraries found in multiple files",
+      "libraries": [
+        "DOMPurify",
+        "Bootstrap JS",
+        "Chart.js"
+      ],
+      "solution": "Load these libraries once globally or use a bundler"
+    },
+    {
+      "priority": "HIGH",
+      "category": "Total Bundle Size",
+      "issue": "Total JS size is 7.48MB",
+      "solution": "Implement lazy loading for non-critical scripts"
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Minification",
+      "issue": "324 files are not minified",
+      "solution": "Use Webpack/Rollup with minification for production"
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Lazy Loading",
+      "issue": "46 advanced feature files load on every page",
+      "files": [
+        "adaptive-ai-tutor.js",
+        "admin-dashboard-advanced.js",
+        "advanced-analytics-COMPLETO.js",
+        "advanced-analytics.js",
+        "advanced-authentication-system.js",
+        "advanced-filters.js",
+        "advanced-gamification-system.js",
+        "advanced-grades-analytics.js",
+        "advanced-lazy-loader.js",
+        "advanced-lazy-loading.js",
+        "advanced-metrics-system.js",
+        "advanced-personalization-system.js",
+        "advanced-web-apis.js",
+        "ai-analisis-predictivo.js",
+        "ai-coordinador-sistemas.js",
+        "ai-generador-contenido.js",
+        "ai-tutor-personalizado.js",
+        "ai-analisis-predictivo.js",
+        "ai-chat-realtime.js",
+        "ai-chatbot-widget.js",
+        "ai-coordinador-sistemas.js",
+        "ai-educational-system.js",
+        "ai-generador-contenido.js",
+        "ai-machine-learning.js",
+        "ai-progress-dashboard.js",
+        "ai-prompts-library-data.js",
+        "ai-prompts-library.js",
+        "ai-recommendation-engine.js",
+        "ai-tutor-interface.js",
+        "ai-tutor-personalizado.js",
+        "ai-vault-modal.js",
+        "ar-education-system.js",
+        "ar-vr-lab-events.js",
+        "bge-advanced-analytics.js",
+        "bge-analytics-advanced-system.js",
+        "bge-pwa-advanced.js",
+        "collaborative-ai-system.js",
+        "fullcalendar-check.js",
+        "gamification-system.js",
+        "integrated-calendar-manager.js",
+        "lazy-loading-advanced.js",
+        "mobile-ux-advanced.js",
+        "payment-system-advanced.js",
+        "pwa-advanced-features.js",
+        "pwa-advanced.js",
+        "advanced-authentication-system.js"
+      ],
+      "solution": "Lazy load these features only when needed"
+    }
+  ]
+}
