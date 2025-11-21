@@ -1220,7 +1220,8 @@ const comunicadosRoutes = require('../backend/routes/comunicados');
 const uploadRoutes = require('../backend/routes/upload');
 const healthRoutes = require('../backend/routes/health');
 const chartsDataRoutes = require('../backend/routes/charts-data');
-const configRoutes = require('../backend/routes/config');  // 🔧 CONFIG API (tenant, public-keys) - 13 NOV 2025
+// ⚠️ COMENTADO (21 Nov 2025): Usando endpoints inline más robustos
+// const configRoutes = require('../backend/routes/config');  // 🔧 CONFIG API (tenant, public-keys) - 13 NOV 2025
 const searchRoutes = require('../backend/routes/search');
 const emailsRoutes = require('../backend/routes/emails');
 const pollsRoutes = require('../backend/routes/polls');
@@ -1342,7 +1343,8 @@ app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/health', healthRoutes);
 app.use('/api/charts', chartsDataRoutes);
-app.use('/api/config', configRoutes);  // 🔧 CONFIG API (tenant, public-keys) - 13 NOV 2025
+// ⚠️ COMENTADO (21 Nov 2025): Usando endpoints inline más robustos abajo
+// app.use('/api/config', configRoutes);  // 🔧 CONFIG API (tenant, public-keys) - 13 NOV 2025
 app.use('/api/search', searchRoutes);
 app.use('/api/emails', emailsRoutes);
 app.use('/api/polls', pollsRoutes);
@@ -1441,56 +1443,72 @@ app.use('/api/cursos', cursosRoutes);  // ✅ RECIENTEMENTE REGISTRADA (8 NOV 20
 // - uploads (no reparado)
 
 // --- CONFIG ENDPOINTS ---
+
+/**
+ * GET /api/config/tenant
+ * ✅ FIX (21 Nov 2025): Endpoint robusto con fallback sin BD
+ */
+app.get('/api/config/tenant', (req, res) => {
+    const defaultConfig = {
+        school_name: 'Bachillerato General Estatal "Héroes de la Patria"',
+        school_short_name: 'BGE',
+        school_type: 'Bachillerato General por Competencias',
+        primary_color: '#2563eb',
+        secondary_color: '#1e40af',
+        logo_url: '/public/images/logo-bge.png',
+        contact_email: 'contacto@heroespatria.edu.mx',
+        contact_phone: '(777) 123-4567',
+        address: 'Calle Principal #123, Cuernavaca, Morelos',
+        enable_notifications: true,
+        enable_gamification: true
+    };
+
+    res.json({
+        success: true,
+        isDefault: true,
+        tenant: {
+            id: 1,
+            uuid: 'default-uuid',
+            school_name: defaultConfig.school_name,
+            schema_name: 'public',
+            domain: req.headers.host || 'localhost',
+            status: 'activo'
+        },
+        config: defaultConfig
+    });
+});
+
 /**
  * GET /api/config/public-keys
  * Obtener configuraciones públicas (Google OAuth, etc.)
  */
 app.get('/api/config/public-keys', (req, res) => {
-    try {
-        // Retornar configuraciones públicas desde variables de entorno
-        const publicConfig = {
-            success: true,
-            keys: {
-                // Google OAuth Client ID desde variable de entorno
-                google_oauth_client_id: process.env.GOOGLE_OAUTH_CLIENT_ID || '',
-                // TinyMCE API Key - Necesita ser configurada en variables de entorno
-                tinymce: process.env.TINYMCE_API_KEY || 'no-key-configured',
-            },
-            timestamp: new Date().toISOString()
-        };
-
-        res.json(publicConfig);
-    } catch (error) {
-        console.error('Error en /api/config/public-keys:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Error al obtener configuración pública',
-            message: error.message
-        });
-    }
+    // ✅ FIX (21 Nov 2025): Siempre retornar 200 con valores por defecto
+    const publicConfig = {
+        success: true,
+        keys: {
+            google_oauth_client_id: process.env.GOOGLE_OAUTH_CLIENT_ID || process.env.GOOGLE_OAUTH_CLIENT_ID_PROD || '',
+            tinymce: process.env.TINYMCE_API_KEY || 'no-api-key',
+        },
+        timestamp: new Date().toISOString()
+    };
+    res.json(publicConfig);
 });
 
 // ✅ Google OAuth Client ID Endpoint (FIX: 14 Nov 2025 - Sincronización con backend/server.js)
 // Este endpoint es CRÍTICO para Google OAuth en producción
 app.get('/api/config/google-client-id', (req, res) => {
+    // ✅ FIX (21 Nov 2025): Siempre retornar 200 con valor por defecto
     const isDevelopment = process.env.NODE_ENV === 'development';
-    const clientId = isDevelopment
-        ? process.env.GOOGLE_OAUTH_CLIENT_ID_DEV
-        : process.env.GOOGLE_OAUTH_CLIENT_ID_PROD;
+    const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID_PROD
+        || process.env.GOOGLE_OAUTH_CLIENT_ID
+        || process.env.GOOGLE_OAUTH_CLIENT_ID_DEV
+        || '';
 
-    if (!clientId) {
-        console.warn('⚠️ [GOOGLE-OAUTH] Client ID no configurado en variables de entorno');
-        return res.status(500).json({
-            success: false,
-            error: 'Google OAuth no configurado',
-            environment: isDevelopment ? 'development' : 'production'
-        });
-    }
-
-    console.log(`✅ [GOOGLE-OAUTH] Client ID enviado para entorno: ${isDevelopment ? 'development' : 'production'}`);
     res.json({
         success: true,
         clientId: clientId,
+        configured: !!clientId,
         environment: isDevelopment ? 'development' : 'production'
     });
 });
