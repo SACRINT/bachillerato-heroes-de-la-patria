@@ -115,7 +115,8 @@ const fixAprobacionesAutoRoutes = require('./routes/fix-aprobaciones-auto');
 const uploadsRoutes = require('./routes/uploads');
 
 // GRUPO 4: OPERACIONES Y MAINTENANCE BAJAS (5 rutas)
-const migrationRoutes = require('./routes/migration');
+// ⚠️ COMENTADO: migration.js requiere mysql2 (proyecto usa PostgreSQL)
+// const migrationRoutes = require('./routes/migration');
 const maintenanceRoutes = require('./routes/maintenance');
 const sslRoutes = require('./routes/ssl');
 const backupRoutes = require('./routes/backup');
@@ -128,6 +129,11 @@ const storeRoutes = require('./routes/store');  // 🛒 Virtual store (5 endpoin
 
 const { startCleanupService } = require('./services/cleanupService');
 const SocketService = require('./services/socket-service');  // ✅ SOCKET.IO SERVICE - SEMANA 5 (17 NOV 2025)
+
+// ✨ NUEVA ARQUITECTURA - Event-Driven Services (SEMANAS 1-12 REFACTORIZACIÓN)
+const eventBusService = require('./services/eventBus.service');
+const NotificationSubscriber = require('./subscribers/notification-subscriber');
+const AnalyticsSubscriber = require('./subscribers/analytics-subscriber');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -473,6 +479,26 @@ autoFixAprobaciones().catch(err => {
 
 // Iniciar el servicio de limpieza de tokens expirados (cada 12 horas)
 startCleanupService(12);
+
+// ✨ NUEVA ARQUITECTURA - Inicializar Event Bus (SEMANAS 1-12 REFACTORIZACIÓN)
+devLogger.log('[SERVER] 🚀 Inicializando Event Bus y subscribers...');
+
+// Inicializar Event Bus
+const eventBus = eventBusService.getInstance();
+devLogger.log('[SERVER] ✅ Event Bus inicializado');
+
+// Registrar Notification Subscriber
+const notifSubscriber = new NotificationSubscriber(eventBus);
+notifSubscriber.subscribeToEvents();
+devLogger.log('[SERVER] ✅ Notification Subscriber registrado (40+ event handlers)');
+
+// Registrar Analytics Subscriber
+const analyticsSubscriberInstance = new AnalyticsSubscriber(eventBus);
+analyticsSubscriberInstance.subscribeToEvents();
+devLogger.log('[SERVER] ✅ Analytics Subscriber registrado (40+ event handlers)');
+
+// Hacer eventBus disponible globalmente para las rutas
+app.eventBus = eventBus;
 
 // ============================================
 // SERVER START CON SOCKET.IO

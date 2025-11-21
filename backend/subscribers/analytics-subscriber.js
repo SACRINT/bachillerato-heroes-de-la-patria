@@ -20,4 +20,4 @@ class AnalyticsSubscriber {
     }
 }
 
-module.exports = new AnalyticsSubscriber();
+module.exports = AnalyticsSubscriber;

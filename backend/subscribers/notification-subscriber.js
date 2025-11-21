@@ -29,4 +29,4 @@ class NotificationSubscriber {
     }
 }
 
-module.exports = new NotificationSubscriber();
+module.exports = NotificationSubscriber;

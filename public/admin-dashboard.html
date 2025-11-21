@@ -3830,6 +3830,25 @@
     <!-- 🔌 API Client (CRÍTICO: debe cargarse ANTES de admin-dashboard.js) -->
     <script src="js/api-client.js?v=20251028"></script>
 
+    <!-- ✨ NUEVA ARQUITECTURA - Event-Driven System (SEMANAS 1-12 REFACTORIZACIÓN) -->
+    <!-- Event Bus: Sistema central de eventos para desacoplamiento -->
+    <script src="js/event-bus.js?v=20251121"></script>
+
+    <!-- Dashboard Core: Coordinador minimalista del dashboard -->
+    <script src="js/dashboard-core.js?v=20251121"></script>
+
+    <!-- Unified Auth: Sistema consolidado de autenticación (5 providers) -->
+    <script src="js/unified-auth-manager.js?v=20251121"></script>
+
+    <!-- Módulos Independientes: 0 dependencias directas, comunicación via Event Bus -->
+    <script src="js/modules/student-module.js?v=20251121"></script>
+    <script src="js/modules/grades-module.js?v=20251121"></script>
+    <script src="js/modules/attendance-module.js?v=20251121"></script>
+    <script src="js/modules/notifications-module.js?v=20251121"></script>
+    <script src="js/modules/reports-module.js?v=20251121"></script>
+    <script src="js/modules/settings-module.js?v=20251121"></script>
+    <!-- FIN NUEVA ARQUITECTURA -->
+
     <!-- 🚀 BGE Dashboard Managers (SIN defer para garantizar orden de carga) -->
     <script src="js/admin-dashboard.js?v=20251027" defer></script>
     <script src="js/chatbot.js" defer></script>
