@@ -311,7 +311,15 @@ module.exports = async (req, res) => {
 
         // GET /api/suscriptores/stats/general
         if (path === '/api/suscriptores/stats/general' && req.method === 'GET') {
-            return res.status(200).json({ success: true, total: 0, active: 0, unsubscribed: 0 });
+            return res.status(200).json({
+                success: true,
+                data: {
+                    total: 0,
+                    porEstado: [{ estado: 'activo', cantidad: 0 }],
+                    porVerificacion: [{ verificado: 1, cantidad: 0 }],
+                    nuevosUltimos7Dias: 0
+                }
+            });
         }
 
         // GET /api/finances
