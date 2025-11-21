@@ -381,24 +381,22 @@ app.use('/api/parent-teacher-communication', parentTeacherCommunicationRoutes);
 app.use('/api/multi-tenant', multiTenantRoutes);
 // app.use('/api/subscriptions-service', subscriptionsServiceRoutes); // ⚠️ Comentada: exporta Object en vez de Router
 
-// GRUPO 3: FEATURES SECUNDARIAS MEDIAS (7 rutas) - ⚠️ Requieren debugging
-// Comentadas temporalmente para evitar errores en el servidor
-// app.use('/api/chatbot', chatbotRoutes);
-// app.use('/api/chatbot-ia', chatbotIaRoutes);
-// app.use('/api/cms', cmsRoutes);
-// app.use('/api/newsletters-pg', newslettersPgRoutes);
-// app.use('/api/citas-improved', citasImprovedRoutes);
-// app.use('/api/fix-aprobaciones-auto', fixAprobacionesAutoRoutes);
-// app.use('/api/uploads', uploadsRoutes);
+// GRUPO 3: FEATURES SECUNDARIAS (7 rutas) - ✅ DESCOMENTADAS PARA FASE 3.2
+app.use('/api/chatbot', chatbotRoutes);
+app.use('/api/chatbot-ia', chatbotIaRoutes);
+app.use('/api/cms', cmsRoutes);
+app.use('/api/newsletters-pg', newslettersPgRoutes);
+app.use('/api/citas-improved', citasImprovedRoutes);
+app.use('/api/fix-aprobaciones-auto', fixAprobacionesAutoRoutes);
+app.use('/api/uploads', uploadsRoutes);
 
-// GRUPO 4: OPERACIONES Y MAINTENANCE BAJAS (5 rutas) - ⚠️ Requieren debugging
-// Comentadas temporalmente para evitar errores en el servidor
-// app.use('/api/migration', migrationRoutes);
-// app.use('/api/maintenance', maintenanceRoutes);
-// app.use('/api/ssl', sslRoutes);
-// app.use('/api/backup', backupRoutes);
+// GRUPO 4: OPERACIONES Y MAINTENANCE (3 rutas activas, 1 comentada) - ✅ DESCOMENTADAS PARA FASE 3.2
+// app.use('/api/migration', migrationRoutes); // ⚠️ Requiere mysql2 (no instalado)
+app.use('/api/maintenance', maintenanceRoutes);
+app.use('/api/ssl', sslRoutes);
+app.use('/api/backup', backupRoutes);
 
-devLogger.log('[FASE 3.1] 8 rutas CORE descomentadas (1 con error de exportación). 19 rutas aún comentadas. 51 rutas activas.');
+devLogger.log('[FASE 3.2] 18 rutas adicionales descomentadas (GRUPO 3 + GRUPO 4). Migration comentada (requiere mysql2). 61 rutas activas.');
 
 // ============================================
 // CONFIGURACIÓN PÚBLICA (API KEYS PARA FRONTEND)
