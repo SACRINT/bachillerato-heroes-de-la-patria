@@ -19,6 +19,44 @@ const corsHeaders = {
     'Content-Type': 'application/json'
 };
 
+// Helper para leer body manualmente si no viene parseado
+async function getRequestBody(req) {
+    // Si req.body ya tiene datos, usarlo
+    if (req.body && typeof req.body === 'object' && Object.keys(req.body).length > 0) {
+        return req.body;
+    }
+
+    // Si es string, parsearlo
+    if (typeof req.body === 'string' && req.body.length > 0) {
+        try {
+            return JSON.parse(req.body);
+        } catch (e) {
+            console.log('[BODY] Failed to parse string body');
+        }
+    }
+
+    // Leer del stream manualmente
+    return new Promise((resolve) => {
+        let data = '';
+        req.on('data', chunk => { data += chunk; });
+        req.on('end', () => {
+            if (data) {
+                try {
+                    resolve(JSON.parse(data));
+                } catch (e) {
+                    console.log('[BODY] Failed to parse stream data:', e.message);
+                    resolve({});
+                }
+            } else {
+                resolve({});
+            }
+        });
+        req.on('error', () => resolve({}));
+        // Timeout corto
+        setTimeout(() => resolve({}), 500);
+    });
+}
+
 // Handler principal
 module.exports = async (req, res) => {
     // Handle CORS preflight
@@ -35,9 +73,16 @@ module.exports = async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const path = url.pathname;
 
+    // Leer body para métodos POST/PUT
+    let body = {};
+    if (req.method === 'POST' || req.method === 'PUT') {
+        body = await getRequestBody(req);
+    }
+
     console.log('[API] Method:', req.method, 'Path:', path);
-    console.log('[API] Body type:', typeof req.body);
-    console.log('[API] Body:', JSON.stringify(req.body));
+    console.log('[API] req.body type:', typeof req.body);
+    console.log('[API] req.body:', JSON.stringify(req.body));
+    console.log('[API] Parsed body:', JSON.stringify(body));
 
     try {
         // ============================================
@@ -98,10 +143,8 @@ module.exports = async (req, res) => {
 
         // POST /api/auth/login
         if (path === '/api/auth/login' && req.method === 'POST') {
-            // En Vercel, req.body ya viene parseado
-            const body = req.body || {};
-
-            console.log('[LOGIN] Body received:', JSON.stringify(body));
+            // Usar body ya parseado al inicio del handler
+            console.log('[LOGIN] Using parsed body:', JSON.stringify(body));
 
             const email = body.email;
             const password = body.password;
@@ -111,9 +154,10 @@ module.exports = async (req, res) => {
                     success: false,
                     error: 'Email y contraseña son requeridos',
                     debug: {
-                        bodyReceived: !!req.body,
-                        bodyType: typeof req.body,
-                        bodyKeys: Object.keys(body),
+                        reqBodyType: typeof req.body,
+                        reqBodyKeys: req.body ? Object.keys(req.body) : [],
+                        parsedBodyKeys: Object.keys(body),
+                        parsedBody: JSON.stringify(body).substring(0, 100),
                         hasEmail: !!email,
                         hasPassword: !!password
                     }
