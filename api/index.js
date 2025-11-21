@@ -10,6 +10,20 @@ const app = express();
 // Middleware básico
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Middleware para manejar body de Vercel (ya viene parseado a veces)
+app.use((req, res, next) => {
+    // Si el body es un string, parsearlo
+    if (typeof req.body === 'string') {
+        try {
+            req.body = JSON.parse(req.body);
+        } catch (e) {
+            // Ignorar si no es JSON válido
+        }
+    }
+    next();
+});
 
 // Pool de PostgreSQL
 const pool = new Pool({
@@ -81,12 +95,28 @@ app.get('/api/config/google-client-id', (req, res) => {
 // POST /api/auth/login
 app.post('/api/auth/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        // Debug: Log del body recibido
+        console.log('Login request body:', JSON.stringify(req.body));
+        console.log('Body type:', typeof req.body);
+
+        // Obtener email y password del body
+        let email, password;
+
+        if (req.body && typeof req.body === 'object') {
+            email = req.body.email;
+            password = req.body.password;
+        }
 
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
-                error: 'Email y contraseña son requeridos'
+                error: 'Email y contraseña son requeridos',
+                debug: {
+                    bodyReceived: !!req.body,
+                    bodyType: typeof req.body,
+                    hasEmail: !!email,
+                    hasPassword: !!password
+                }
             });
         }
 
