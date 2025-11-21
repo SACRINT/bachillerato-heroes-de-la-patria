@@ -369,17 +369,17 @@ app.use('/api/grades-v2', gradesServiceRoutes);  // Calificaciones con GradesSer
 // app.use('/api/recomendaciones-ml', recomendacionesMLRoutes);
 // app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes);
 
-// GRUPO 2: CORE FEATURES ALTAS (10 rutas) - ⚠️ Requieren debugging
-// Comentadas temporalmente para evitar errores en el servidor
-// app.use('/api/students', studentsRoutes);
-// app.use('/api/teachers', teachersRoutes);
-// app.use('/api/grades', gradesRoutes);
-// app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
-// app.use('/api/notifications', notificationsRoutes);
-// app.use('/api/information', informationRoutes);
-// app.use('/api/parent-teacher-communication', parentTeacherCommunicationRoutes);
-// app.use('/api/multi-tenant', multiTenantRoutes);
-// app.use('/api/subscriptions-service', subscriptionsServiceRoutes);
+// GRUPO 2: CORE FEATURES ALTAS (8 rutas activas + 1 comentada) - ✅ DESCOMENTADAS PARA FASE 3
+// Rutas críticas para funcionalidad básica del sistema
+app.use('/api/students', studentsRoutes);
+app.use('/api/teachers', teachersRoutes);
+app.use('/api/grades', gradesRoutes);
+app.use('/api/gradesAnalytics', gradesAnalyticsRoutes);
+app.use('/api/notifications', notificationsRoutes);
+app.use('/api/information', informationRoutes);
+app.use('/api/parent-teacher-communication', parentTeacherCommunicationRoutes);
+app.use('/api/multi-tenant', multiTenantRoutes);
+// app.use('/api/subscriptions-service', subscriptionsServiceRoutes); // ⚠️ Comentada: exporta Object en vez de Router
 
 // GRUPO 3: FEATURES SECUNDARIAS MEDIAS (7 rutas) - ⚠️ Requieren debugging
 // Comentadas temporalmente para evitar errores en el servidor
@@ -398,7 +398,7 @@ app.use('/api/grades-v2', gradesServiceRoutes);  // Calificaciones con GradesSer
 // app.use('/api/ssl', sslRoutes);
 // app.use('/api/backup', backupRoutes);
 
-devLogger.log('[FASE 1.2] 27 rutas comentadas temporalmente para debugging. Solo 43 rutas base activas.');
+devLogger.log('[FASE 3.1] 8 rutas CORE descomentadas (1 con error de exportación). 19 rutas aún comentadas. 51 rutas activas.');
 
 // ============================================
 // CONFIGURACIÓN PÚBLICA (API KEYS PARA FRONTEND)
