@@ -7,21 +7,42 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 
-// Middleware básico
+// Middleware básico - ORDEN CRÍTICO para Vercel
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Middleware para manejar body de Vercel (ya viene parseado a veces)
+// Body parser con límite aumentado
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Middleware para debug y fix de body en Vercel
 app.use((req, res, next) => {
-    // Si el body es un string, parsearlo
-    if (typeof req.body === 'string') {
+    // Log para debug
+    console.log('[MIDDLEWARE] Path:', req.path);
+    console.log('[MIDDLEWARE] Method:', req.method);
+    console.log('[MIDDLEWARE] Content-Type:', req.headers['content-type']);
+    console.log('[MIDDLEWARE] Body before:', typeof req.body, req.body);
+
+    // Si el body es un string JSON, parsearlo
+    if (typeof req.body === 'string' && req.body.length > 0) {
         try {
             req.body = JSON.parse(req.body);
+            console.log('[MIDDLEWARE] Body parsed from string');
         } catch (e) {
-            // Ignorar si no es JSON válido
+            console.log('[MIDDLEWARE] Failed to parse body string:', e.message);
         }
     }
+
+    // Si el body es un objeto vacío pero hay datos raw, intentar leerlos
+    if ((!req.body || Object.keys(req.body).length === 0) && req.rawBody) {
+        try {
+            req.body = JSON.parse(req.rawBody);
+            console.log('[MIDDLEWARE] Body parsed from rawBody');
+        } catch (e) {
+            console.log('[MIDDLEWARE] Failed to parse rawBody:', e.message);
+        }
+    }
+
+    console.log('[MIDDLEWARE] Body after:', typeof req.body, JSON.stringify(req.body));
     next();
 });
 
