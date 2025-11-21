@@ -1574,8 +1574,24 @@ class BGESecurityModule extends BGEModule {
 
             if (!response.ok) {
                 await this.recordFailedAttempt(credentials.username);
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Credenciales inválidas');
+                let errorMessage = 'Credenciales inválidas';
+                try {
+                    const errorData = await response.json();
+                    // ✅ FIX (21 Nov 2025): Manejar diferentes formatos de error
+                    if (typeof errorData.error === 'string') {
+                        errorMessage = errorData.error;
+                    } else if (typeof errorData.message === 'string') {
+                        errorMessage = errorData.message;
+                    } else if (errorData.error && typeof errorData.error.message === 'string') {
+                        errorMessage = errorData.error.message;
+                    } else if (typeof errorData === 'string') {
+                        errorMessage = errorData;
+                    }
+                } catch (e) {
+                    // Si no puede parsear JSON, usar mensaje genérico
+                    errorMessage = `Error del servidor (${response.status})`;
+                }
+                throw new Error(errorMessage);
             }
 
             // ✅ Obtener datos reales del backend
