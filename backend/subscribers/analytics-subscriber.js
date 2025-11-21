@@ -12,9 +12,21 @@ class AnalyticsSubscriber {
     }
 
     subscribeToEvents() {
-        this.eventBus.subscribe('page.viewed', (e) => analyticsService.track('page_view', e.data));
-        this.eventBus.subscribe('button.clicked', (e) => analyticsService.track('button_click', e.data));
-        this.eventBus.subscribe('form.submitted', (e) => analyticsService.track('form_submit', e.data));
+        this.eventBus.subscribe('page.viewed', async (e) => {
+            console.log('[ANALYTICS] 📊 Tracking: page_view');
+            await analyticsService.trackCustomEvent({ type: 'page_view', ...e.data });
+        });
+
+        this.eventBus.subscribe('button.clicked', async (e) => {
+            console.log('[ANALYTICS] 📊 Tracking: button_click');
+            await analyticsService.trackCustomEvent({ type: 'button_click', ...e.data });
+        });
+
+        this.eventBus.subscribe('form.submitted', async (e) => {
+            console.log('[ANALYTICS] 📊 Tracking: form_submit');
+            await analyticsService.trackCustomEvent({ type: 'form_submit', ...e.data });
+        });
+
         // 50+ eventos más...
         console.log('[ANALYTICS-SUBSCRIBER] ✅ Escuchando 50+ eventos');
     }

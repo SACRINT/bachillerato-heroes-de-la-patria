@@ -59,6 +59,7 @@ const comunicadosRoutes = require('./routes/comunicados');
 const uploadRoutes = require('./routes/upload');
 const webhooksRoutes = require('./routes/webhooks');  // ✅ WEBHOOKS - SEMANA 8
 const healthRoutes = require('./routes/health');
+const testEventsRoutes = require('./routes/test-events');  // ✅ TESTING ROUTES - Event Bus testing (FASE 2)
 const chartsDataRoutes = require('./routes/charts-data');
 const searchRoutes = require('./routes/search');
 const emailsRoutes = require('./routes/emails');
@@ -326,6 +327,7 @@ app.use('/api/admin/tenants', tenantsRoutes);  // ✅ MULTI-TENANT MANAGEMENT (8
 app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/health', healthRoutes);
+app.use('/api/test-events', testEventsRoutes);  // ✅ TESTING - Event Bus testing endpoints (FASE 2)
 app.use('/api/charts', chartsDataRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/emails', emailsRoutes);
@@ -489,12 +491,12 @@ devLogger.log('[SERVER] ✅ Event Bus inicializado');
 
 // Registrar Notification Subscriber
 const notifSubscriber = new NotificationSubscriber(eventBus);
-notifSubscriber.subscribeToEvents();
+// ✅ subscribeToEvents() ya se llama en constructor - no duplicar
 devLogger.log('[SERVER] ✅ Notification Subscriber registrado (40+ event handlers)');
 
 // Registrar Analytics Subscriber
 const analyticsSubscriberInstance = new AnalyticsSubscriber(eventBus);
-analyticsSubscriberInstance.subscribeToEvents();
+// ✅ subscribeToEvents() ya se llama en constructor - no duplicar
 devLogger.log('[SERVER] ✅ Analytics Subscriber registrado (40+ event handlers)');
 
 // Hacer eventBus disponible globalmente para las rutas
