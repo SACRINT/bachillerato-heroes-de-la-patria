@@ -143,22 +143,20 @@ module.exports = async (req, res) => {
 
         // POST /api/auth/login
         if (path === '/api/auth/login' && req.method === 'POST') {
-            // Usar body ya parseado al inicio del handler
-            console.log('[LOGIN] Using parsed body:', JSON.stringify(body));
+            console.log('[LOGIN] Body received:', JSON.stringify(body));
 
-            const email = body.email;
+            // Aceptar tanto 'email' como 'username' del frontend
+            const email = body.email || body.username;
             const password = body.password;
 
             if (!email || !password) {
                 return res.status(400).json({
                     success: false,
-                    error: 'Email y contraseña son requeridos',
+                    error: 'Email/usuario y contraseña son requeridos',
                     debug: {
-                        reqBodyType: typeof req.body,
-                        reqBodyKeys: req.body ? Object.keys(req.body) : [],
-                        parsedBodyKeys: Object.keys(body),
-                        parsedBody: JSON.stringify(body).substring(0, 100),
-                        hasEmail: !!email,
+                        bodyKeys: Object.keys(body),
+                        hasEmail: !!body.email,
+                        hasUsername: !!body.username,
                         hasPassword: !!password
                     }
                 });
