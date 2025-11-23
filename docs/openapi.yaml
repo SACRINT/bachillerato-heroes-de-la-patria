@@ -1,669 +1,115 @@
 openapi: 3.0.3
 info:
-  title: BGE API - Bachillerato General Estatal "Héroes de la Patria"
-  description: |
-    API RESTful para el Sistema de Gestión Educativa BGE.
-
-    ## Autenticación
-    La API utiliza JWT (JSON Web Tokens) para autenticación.
-    Incluye el token en el header `Authorization: Bearer <token>`
-
-    ## Rate Limiting
-    - Endpoints públicos: 100 requests/15min
-    - Endpoints autenticados: 1000 requests/15min
-    - Login: 5 intentos/15min
-
-    ## Códigos de Error
-    - `400` - Bad Request (validación fallida)
-    - `401` - Unauthorized (token inválido/expirado)
-    - `403` - Forbidden (sin permisos)
-    - `404` - Not Found (recurso no existe)
-    - `429` - Too Many Requests (rate limit)
-    - `500` - Internal Server Error
-  version: 5.0.0
-  contact:
-    name: Soporte BGE
-    email: soporte@bge.edu.mx
-  license:
-    name: MIT
-    url: https://opensource.org/licenses/MIT
-
+  title: BGE Héroes de la Patria - API
+  description: |-
+    API para la plataforma de gestión educativa BGE Héroes de la Patria.
+    Esta documentación cubre todos los endpoints disponibles para la interacción con los servicios de backend, incluyendo gestión de usuarios, datos académicos, inteligencia artificial y más.
+  version: 6.0.0
 servers:
-  - url: https://bachillerato-heroes.vercel.app/api
-    description: Producción
+  - url: https://bachilleres-heroes-de-la-patria.vercel.app/api
+    description: Servidor de Producción (Vercel)
   - url: http://localhost:3000/api
-    description: Desarrollo local
-
+    description: Servidor de Desarrollo Local
 tags:
   - name: Auth
-    description: Autenticación y gestión de sesiones
+    description: Autenticación y gestión de sesiones de usuario
   - name: Students
-    description: Gestión de estudiantes
+    description: Gestión de la información de los estudiantes
   - name: Grades
-    description: Calificaciones y evaluaciones
-  - name: Teachers
-    description: Gestión de docentes
-  - name: Parents
-    description: Portal de padres
-  - name: Appointments
-    description: Sistema de citas
-  - name: Notifications
-    description: Sistema de notificaciones
-  - name: Reports
-    description: Generación de reportes
+    description: Gestión de calificaciones y rendimiento académico
+  - name: AI-Tutor
+    description: Endpoints para el sistema de Tutoría con Inteligencia Artificial
   - name: Admin
-    description: Administración del sistema
-
-paths:
-  /auth/login:
-    post:
-      tags:
-        - Auth
-      summary: Iniciar sesión
-      description: Autentica un usuario y devuelve tokens JWT
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - email
-                - password
-              properties:
-                email:
-                  type: string
-                  format: email
-                  example: admin@bge.edu.mx
-                password:
-                  type: string
-                  format: password
-                  minLength: 8
-                  example: "********"
-      responses:
-        '200':
-          description: Login exitoso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
-        '401':
-          description: Credenciales inválidas
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '429':
-          description: Demasiados intentos
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /auth/google:
-    post:
-      tags:
-        - Auth
-      summary: Login con Google OAuth
-      description: Autentica usuario con token de Google
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - credential
-              properties:
-                credential:
-                  type: string
-                  description: JWT token de Google
-      responses:
-        '200':
-          description: Login exitoso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
-        '401':
-          description: Token inválido
-
-  /auth/refresh:
-    post:
-      tags:
-        - Auth
-      summary: Renovar token
-      description: Obtiene nuevo access token usando refresh token
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Token renovado
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
-
-  /students:
-    get:
-      tags:
-        - Students
-      summary: Listar estudiantes
-      description: Obtiene lista paginada de estudiantes con filtros
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 1
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            default: 20
-            maximum: 100
-        - name: search
-          in: query
-          schema:
-            type: string
-          description: Buscar por nombre o matrícula
-        - name: grado
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 6
-        - name: grupo
-          in: query
-          schema:
-            type: string
-            enum: [A, B, C, D]
-        - name: status
-          in: query
-          schema:
-            type: string
-            enum: [activo, inactivo, egresado, baja]
-      responses:
-        '200':
-          description: Lista de estudiantes
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Student'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMeta'
-        '401':
-          description: No autorizado
-
-    post:
-      tags:
-        - Students
-      summary: Crear estudiante
-      description: Registra un nuevo estudiante
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/StudentInput'
-      responses:
-        '201':
-          description: Estudiante creado
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    $ref: '#/components/schemas/Student'
-        '400':
-          description: Datos inválidos
-
-  /students/{id}:
-    get:
-      tags:
-        - Students
-      summary: Obtener estudiante
-      description: Obtiene información detallada de un estudiante
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Datos del estudiante
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    $ref: '#/components/schemas/Student'
-        '404':
-          description: Estudiante no encontrado
-
-    put:
-      tags:
-        - Students
-      summary: Actualizar estudiante
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/StudentInput'
-      responses:
-        '200':
-          description: Estudiante actualizado
-        '404':
-          description: Estudiante no encontrado
-
-    delete:
-      tags:
-        - Students
-      summary: Eliminar estudiante
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Estudiante eliminado
-        '404':
-          description: No encontrado
-
-  /grades:
-    get:
-      tags:
-        - Grades
-      summary: Listar calificaciones
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: estudiante_id
-          in: query
-          schema:
-            type: integer
-        - name: materia_id
-          in: query
-          schema:
-            type: integer
-        - name: periodo
-          in: query
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Lista de calificaciones
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Grade'
-
-    post:
-      tags:
-        - Grades
-      summary: Registrar calificación
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GradeInput'
-      responses:
-        '201':
-          description: Calificación registrada
-
-  /grades/bulk:
-    post:
-      tags:
-        - Grades
-      summary: Registrar calificaciones en lote
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                grades:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/GradeInput'
-      responses:
-        '201':
-          description: Calificaciones registradas
-
-  /appointments:
-    get:
-      tags:
-        - Appointments
-      summary: Listar citas
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: status
-          in: query
-          schema:
-            type: string
-            enum: [pendiente, confirmada, cancelada, completada]
-        - name: fecha_inicio
-          in: query
-          schema:
-            type: string
-            format: date
-        - name: fecha_fin
-          in: query
-          schema:
-            type: string
-            format: date
-      responses:
-        '200':
-          description: Lista de citas
-
-    post:
-      tags:
-        - Appointments
-      summary: Solicitar cita
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AppointmentInput'
-      responses:
-        '201':
-          description: Cita solicitada
-
-  /notifications:
-    get:
-      tags:
-        - Notifications
-      summary: Obtener notificaciones
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: leida
-          in: query
-          schema:
-            type: boolean
-      responses:
-        '200':
-          description: Lista de notificaciones
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Notification'
-
-  /notifications/{id}/read:
-    patch:
-      tags:
-        - Notifications
-      summary: Marcar como leída
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Notificación actualizada
-
-  /reports/student/{id}:
-    get:
-      tags:
-        - Reports
-      summary: Reporte de estudiante
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: format
-          in: query
-          schema:
-            type: string
-            enum: [json, pdf, excel]
-            default: json
-      responses:
-        '200':
-          description: Reporte generado
-
-  /analytics/predictive/risk:
-    get:
-      tags:
-        - Reports
-      summary: Predicción de riesgo académico
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: threshold
-          in: query
-          schema:
-            type: number
-            default: 7.0
-      responses:
-        '200':
-          description: Predicciones de riesgo
-
-  /health:
-    get:
-      tags:
-        - Admin
-      summary: Estado del sistema
-      responses:
-        '200':
-          description: Sistema operativo
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: ok
-                  version:
-                    type: string
-                    example: 5.0.0
-                  timestamp:
-                    type: string
-                    format: date-time
-
-  /admin/users:
-    get:
-      tags:
-        - Admin
-      summary: Listar usuarios
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Lista de usuarios
-
-  /admin/tenant/config:
-    get:
-      tags:
-        - Admin
-      summary: Configuración del tenant
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Configuración actual
-
-    put:
-      tags:
-        - Admin
-      summary: Actualizar configuración
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        '200':
-          description: Configuración actualizada
-
+    description: Operaciones administrativas
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
   schemas:
-    AuthResponse:
+    User:
       type: object
       properties:
-        success:
-          type: boolean
-        data:
-          type: object
-          properties:
-            token:
-              type: string
-            refreshToken:
-              type: string
-            user:
-              type: object
-              properties:
-                id:
-                  type: integer
-                email:
-                  type: string
-                role:
-                  type: string
-                nombre:
-                  type: string
-
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: "samuel.c"
+        email:
+          type: string
+          format: email
+          example: "samuel.c@bge.edu.mx"
+        nombre:
+          type: string
+          example: "Samuel"
+        apellido_paterno:
+          type: string
+          example: "Castillo"
+        role:
+          type: string
+          enum: [admin, docente, estudiante, padre_familia]
+          example: "admin"
     Student:
       type: object
       properties:
         id:
           type: integer
-        matricula:
-          type: string
+          example: 1
         nombre:
           type: string
+          example: "Juan"
         apellido_paterno:
           type: string
-        apellido_materno:
-          type: string
+          example: "Pérez"
         email:
           type: string
           format: email
-        grado:
-          type: integer
-        grupo:
+        matricula:
           type: string
         semestre:
           type: integer
-        promedio:
-          type: number
-        status:
+        especialidad:
           type: string
-          enum: [activo, inactivo, egresado, baja]
-        created_at:
+        status_academico:
           type: string
-          format: date-time
-
-    StudentInput:
+          enum: [activo, baja, egresado]
+    NewStudent:
       type: object
       required:
         - nombre
-        - apellido_paterno
         - email
-        - grado
-        - grupo
       properties:
-        matricula:
-          type: string
         nombre:
-          type: string
-          minLength: 2
-        apellido_paterno:
-          type: string
-          minLength: 2
-        apellido_materno:
           type: string
         email:
           type: string
           format: email
-        grado:
-          type: integer
-          minimum: 1
-          maximum: 6
-        grupo:
+        matricula:
           type: string
-          enum: [A, B, C, D]
+        especialidad:
+          type: string
         semestre:
           type: integer
-          minimum: 1
-          maximum: 12
-        status:
-          type: string
-          enum: [activo, inactivo]
-
+    StudentList:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Student'
+        pagination:
+          type: object
+          properties:
+            totalItems:
+              type: integer
+            totalPages:
+              type: integer
+            currentPage:
+              type: integer
     Grade:
       type: object
       properties:
@@ -671,103 +117,730 @@ components:
           type: integer
         estudiante_id:
           type: integer
-        materia_id:
+        docente_id:
           type: integer
-        materia_nombre:
+        materia:
           type: string
+        parcial:
+          type: integer
         calificacion:
           type: number
-          minimum: 0
-          maximum: 10
-        periodo:
+          format: float
+        ciclo:
           type: string
-        fecha_registro:
-          type: string
-          format: date-time
-
-    GradeInput:
+    NewGrade:
       type: object
       required:
         - estudiante_id
-        - materia_id
+        - materia
         - calificacion
       properties:
         estudiante_id:
           type: integer
-        materia_id:
-          type: integer
+        materia:
+          type: string
         calificacion:
           type: number
-          minimum: 0
-          maximum: 10
-        periodo:
+          format: float
+        parcial:
+          type: integer
+        ciclo:
           type: string
-
-    AppointmentInput:
+    GradeList:
+       type: object
+       properties:
+         success:
+           type: boolean
+         data:
+           type: array
+           items:
+             $ref: '#/components/schemas/Grade'
+         pagination:
+           type: object
+           properties:
+             totalItems:
+               type: integer
+             totalPages:
+               type: integer
+             currentPage:
+               type: integer
+    TutorProfile:
+        type: object
+        properties:
+            user_id:
+                type: integer
+            learning_style:
+                type: string
+                enum: [visual, auditory, reading, kinesthetic, multimodal]
+            preferred_difficulty:
+                type: string
+                enum: [easy, medium, hard, adaptive]
+    TutorSession:
+        type: object
+        properties:
+            id:
+                type: integer
+            user_id:
+                type: integer
+            subject:
+                type: string
+            topic:
+                type: string
+            status:
+                type: string
+                enum: [in_progress, completed]
+    TutorMessage:
+        type: object
+        properties:
+            role:
+                type: string
+                enum: [user, assistant]
+            content:
+                type: string
+    LoginRequest:
       type: object
       required:
-        - motivo
-        - fecha_solicitada
-        - hora_solicitada
+        - username
+        - password
       properties:
-        motivo:
+        username:
           type: string
-          minLength: 10
-        fecha_solicitada:
+          example: "admin"
+        password:
           type: string
-          format: date
-        hora_solicitada:
-          type: string
-          pattern: '^([01]?[0-9]|2[0-3]):[0-5][0-9]$'
-        notas:
-          type: string
-
-    Notification:
-      type: object
-      properties:
-        id:
-          type: integer
-        usuario_id:
-          type: integer
-        titulo:
-          type: string
-        mensaje:
-          type: string
-        tipo:
-          type: string
-          enum: [info, warning, error, success]
-        leida:
+          format: password
+          example: "HeroesPatria2024!"
+        rememberMe:
           type: boolean
-        created_at:
-          type: string
-          format: date-time
-
-    PaginationMeta:
+          default: false
+    TokenPair:
       type: object
       properties:
-        page:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        accessTokenExpiry:
           type: integer
-        limit:
-          type: integer
-        total:
-          type: integer
-        totalPages:
-          type: integer
-
+    RegistrationRequest:
+        type: object
+        properties:
+            id:
+                type: string
+            fullName:
+                type: string
+            email:
+                type: string
+                format: email
+            requestedRole:
+                type: string
+                enum: [docente, estudiante, administrativo]
+            status:
+                type: string
+                enum: [pending, approved, rejected]
+    AdminStats:
+        type: object
+        properties:
+            total:
+                type: integer
+            pending:
+                type: integer
+            approved:
+                type: integer
+            rejected:
+                type: integer
     Error:
       type: object
       properties:
         success:
           type: boolean
           example: false
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-            message:
-              type: string
-            details:
-              type: array
-              items:
+        message:
+          type: string
+          example: 'Error en la solicitud'
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              msg:
+                type: string
+                example: "Parámetro 'email' inválido"
+              param:
+                type: string
+                example: "email"
+              location:
+                type: string
+                example: "body"
+security:
+  - bearerAuth: []
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Iniciar sesión
+      description: Autentica a un usuario y devuelve un par de tokens de acceso y de refresco.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Autenticación exitosa
+          content:
+            application/json:
+              schema:
                 type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  user:
+                    $ref: '#/components/schemas/User'
+                  tokens:
+                    $ref: '#/components/schemas/TokenPair'
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Credenciales inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Registrar un nuevo usuario (Solo Admin)
+      description: Permite a un administrador registrar un nuevo usuario en el sistema.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                username:
+                  type: string
+                nombre:
+                  type: string
+                apellido_paterno:
+                  type: string
+                role:
+                  type: string
+                  enum: [admin, docente, estudiante, padre_familia]
+      responses:
+        '201':
+          description: Usuario registrado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  user:
+                    $ref: '#/components/schemas/User'
+        '403':
+          description: No autorizado (no es admin)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/refresh:
+    post:
+      tags:
+        - Auth
+      summary: Renovar token de acceso
+      description: Genera un nuevo par de tokens a partir de un token de refresco válido.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Tokens renovados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  tokens:
+                    $ref: '#/components/schemas/TokenPair'
+        '403':
+          description: Token de refresco inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/profile:
+    get:
+      tags:
+        - Auth
+      summary: Obtener perfil de usuario
+      description: Devuelve el perfil del usuario autenticado actualmente.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Perfil del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /students-v2:
+    get:
+      tags:
+        - Students
+      summary: Obtener lista de estudiantes
+      description: Devuelve una lista paginada de estudiantes, con opciones de filtro y ordenamiento.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Término de búsqueda para nombre, email o matrícula.
+        - in: query
+          name: grado
+          schema:
+            type: integer
+          description: Filtrar por grado.
+        - in: query
+          name: status
+          schema:
+            type: string
+          description: Filtrar por status académico.
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Número de página.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+          description: Número de resultados por página.
+      responses:
+        '200':
+          description: Lista de estudiantes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentList'
+        '401':
+          description: No autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Students
+      summary: Crear un nuevo estudiante
+      description: Registra un nuevo estudiante en el sistema. Requiere permisos de administrador.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewStudent'
+      responses:
+        '201':
+          description: Estudiante creado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: Datos inválidos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /students-v2/{id}:
+    get:
+      tags:
+        - Students
+      summary: Obtener un estudiante por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalles del estudiante.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '404':
+          description: Estudiante no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Students
+      summary: Actualizar un estudiante
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewStudent'
+      responses:
+        '200':
+          description: Estudiante actualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+    delete:
+      tags:
+        - Students
+      summary: Eliminar un estudiante (Soft delete)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Estudiante eliminado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+  /grades-v2:
+    get:
+      tags:
+        - Grades
+      summary: Obtener lista de calificaciones
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: estudianteId
+          schema:
+            type: integer
+        - in: query
+          name: materia
+          schema:
+            type: string
+        - in: query
+          name: ciclo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de calificaciones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradeList'
+    post:
+      tags:
+        - Grades
+      summary: Crear una nueva calificación
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewGrade'
+      responses:
+        '201':
+          description: Calificación creada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grade'
+  /grades-v2/{id}:
+    get:
+      tags:
+        - Grades
+      summary: Obtener una calificación por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalles de la calificación.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grade'
+    put:
+      tags:
+        - Grades
+      summary: Actualizar una calificación
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewGrade'
+      responses:
+        '200':
+          description: Calificación actualizada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grade'
+    delete:
+      tags:
+        - Grades
+      summary: Eliminar una calificación
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Calificación eliminada.
+  /tutor/profile:
+    get:
+      tags:
+        - AI-Tutor
+      summary: Obtener perfil de aprendizaje del Tutor IA
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Perfil del usuario para el tutor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TutorProfile'
+  /tutor/sessions:
+    post:
+      tags:
+        - AI-Tutor
+      summary: Iniciar una nueva sesión de tutoría
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subject:
+                  type: string
+                topic:
+                  type: string
+      responses:
+        '201':
+          description: Sesión de tutoría iniciada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TutorSession'
+  /tutor/sessions/{sessionId}/messages:
+    post:
+      tags:
+        - AI-Tutor
+      summary: Enviar un mensaje a la sesión de tutoría
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: sessionId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+      responses:
+        '201':
+          description: Respuesta de la IA.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TutorMessage'
+  /admin/pending-registrations:
+    get:
+      tags:
+        - Admin
+      summary: Obtener solicitudes de registro pendientes
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de solicitudes pendientes.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RegistrationRequest'
+  /admin/all-registrations:
+    get:
+      tags:
+        - Admin
+      summary: Obtener todas las solicitudes de registro
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de todas las solicitudes y estadísticas.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stats:
+                    $ref: '#/components/schemas/AdminStats'
+                  requests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RegistrationRequest'
+  /admin/approve-registration:
+    post:
+      tags:
+        - Admin
+      summary: Aprobar una solicitud de registro
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requestId:
+                  type: string
+      responses:
+        '200':
+          description: Solicitud aprobada.
+  /admin/reject-registration:
+    post:
+      tags:
+        - Admin
+      summary: Rechazar una solicitud de registro
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requestId:
+                  type: string
+                reviewNotes:
+                  type: string
+      responses:
+        '200':
+          description: Solicitud rechazada.
+  /admin/users/{id}/role:
+    put:
+      tags:
+        - Admin
+      summary: Actualizar el rol de un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                  enum: [admin, docente, estudiante, padre_familia]
+      responses:
+        '200':
+          description: Rol actualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'

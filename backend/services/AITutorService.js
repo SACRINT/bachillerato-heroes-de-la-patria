@@ -5,9 +5,11 @@
  */
 
 const { executeQuery } = require('../data/database-access');
+const { getRealAIService } = require('./realAIService');
 
 class AITutorService {
     constructor() {
+        this.aiService = getRealAIService();
         // Niveles de XP del tutor
         this.tutorLevels = [
             { level: 1, xp: 0, title: 'Aprendiz' },
@@ -355,6 +357,12 @@ class AITutorService {
         return executeQuery(query, params);
     }
 
+    async getSessionById(sessionId) {
+        const query = `SELECT * FROM tutor_sessions WHERE id = $1`;
+        const results = await executeQuery(query, [sessionId]);
+        return results[0];
+    }
+    
     /**
      * Calcula dificultad adaptativa
      */

@@ -176,20 +176,27 @@ router.post('/sessions/:sessionId/messages',
     async (req, res) => {
         try {
             const { sessionId } = req.params;
-            const { role, content } = req.body;
+            const { content } = req.body;
+            const userId = req.user.id; // Asegurarse que el usuario solo acceda a sus sesiones
 
-            const session = await aiTutorService.addMessage(sessionId, role, content);
+            // Validar que el usuario es dueño de la sesión
+            const session = await aiTutorService.getSessionById(sessionId);
+            if (!session || session.user_id !== userId) {
+                return res.status(403).json({ success: false, message: 'Acceso no autorizado a esta sesión.' });
+            }
 
-            res.json({
+            const aiResponse = await aiTutorService.processUserMessage(sessionId, content);
+
+            res.status(201).json({
                 success: true,
-                message: 'Mensaje agregado',
-                data: session
+                message: 'Respuesta generada',
+                data: aiResponse
             });
         } catch (error) {
-            console.error('[AI-TUTOR] Error agregando mensaje:', error);
+            console.error('[AI-TUTOR] Error procesando mensaje:', error);
             res.status(500).json({
                 success: false,
-                message: 'Error al agregar mensaje'
+                message: 'Error al procesar el mensaje'
             });
         }
     }

@@ -63,6 +63,7 @@ const testEventsRoutes = require('./routes/test-events');  // ✅ TESTING ROUTES
 const chartsDataRoutes = require('./routes/charts-data');
 const searchRoutes = require('./routes/search');
 const emailsRoutes = require('./routes/emails');
+const apiDocsRoutes = require('./routes/api-docs'); // ✅ SWAGGER UI - SEMANA 29
 
 // ✅ API VERSIONING MIDDLEWARE - SEMANA 8
 const { apiVersioning, v1CompatibilityLayer, rateLimitByTier } = require('./middleware/api-versioning');
@@ -116,7 +117,7 @@ const fixAprobacionesAutoRoutes = require('./routes/fix-aprobaciones-auto');
 const uploadsRoutes = require('./routes/uploads');
 
 // GRUPO 4: OPERACIONES Y MAINTENANCE BAJAS (5 rutas)
-// ⚠️ COMENTADO: migration.js requiere mysql2 (proyecto usa PostgreSQL)
+// ⚠️ COMENTADO: migration.js requiere mysql2 (no instalado)
 // const migrationRoutes = require('./routes/migration');
 const maintenanceRoutes = require('./routes/maintenance');
 const sslRoutes = require('./routes/ssl');
@@ -130,6 +131,8 @@ const storeRoutes = require('./routes/store');  // 🛒 Virtual store (5 endpoin
 
 const { startCleanupService } = require('./services/cleanupService');
 const SocketService = require('./services/socket-service');  // ✅ SOCKET.IO SERVICE - SEMANA 5 (17 NOV 2025)
+const schedulerService = require('./services/schedulerService'); // Tareas programadas (GDPR)
+const dataRetentionService = require('./services/dataRetentionService'); // Lógica de retención de datos (GDPR)
 
 // ✨ NUEVA ARQUITECTURA - Event-Driven Services (SEMANAS 1-12 REFACTORIZACIÓN)
 const eventBusService = require('./services/eventBus.service');
@@ -349,10 +352,11 @@ app.use('/api/gamification', gamificationRoutes);  // ✅ GAMIFICATION ROUTES - 
 app.use('/api/wallet', walletRoutes);  // ✅ WALLET ROUTES - Gestión de IACoins (15 NOV 2025)
 app.use('/api/challenges', challengesRoutes);  // ✅ CHALLENGES ROUTES - Sistema de retos (15 NOV 2025)
 app.use('/api/store', storeRoutes);  // ✅ STORE ROUTES - Tienda virtual (15 NOV 2025)
+app.use('/api/docs', apiDocsRoutes); // ✅ SWAGGER UI - SEMANA 29
 
 // ✅ SEMANA 2 - SERVICE LAYER ROUTES (20 NOV 2025)
 // Estas rutas usan el patrón Service Layer para separar lógica de negocio
-app.use('/api/students-v2', studentsServiceRoutes);  // Estudiantes con StudentService
+app.use('/api/students-v2', studentsServiceRoutes);  // Estudiantes con Service Layer
 app.use('/api/grades-v2', gradesServiceRoutes);  // Calificaciones con GradesService
 
 // ✅ FASE 1.2: RUTAS HUÉRFANAS REGISTRADAS - 11 NOV 2025
@@ -479,6 +483,22 @@ autoFixAprobaciones().catch(err => {
 
 // Iniciar el servicio de limpieza de tokens expirados (cada 12 horas)
 startCleanupService(12);
+
+// ============================================
+// TAREAS PROGRAMADAS (CRON JOBS) - SEMANA 27 GDPR
+// ============================================
+devLogger.log('[Scheduler] Configurando tarea de limpieza de logs (GDPR)...');
+schedulerService.schedule(
+    'cleanup-system-logs',
+    '0 3 * * *', // Se ejecuta todos los días a las 3:00 AM
+    async () => {
+        devLogger.log('[Scheduler] Iniciando tarea programada: Limpieza de Logs del Sistema.');
+        await dataRetentionService.cleanupSystemLogs();
+    }
+);
+
+// Iniciar el servicio principal del programador de tareas
+schedulerService.start();
 
 // ✨ NUEVA ARQUITECTURA - Inicializar Event Bus (SEMANAS 1-12 REFACTORIZACIÓN)
 devLogger.log('[SERVER] 🚀 Inicializando Event Bus y subscribers...');

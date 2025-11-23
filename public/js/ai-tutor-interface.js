@@ -11,6 +11,7 @@ class AITutorInterface {
         this.currentConversation = [];
         this.userProfile = {};
         this.sessionActive = false;
+        this.currentSessionId = null; // ID de la sesión de tutoría activa
         this.tutorPersonality = 'friendly'; // friendly, formal, encouraging, adaptive
 
         this.config = {
@@ -34,7 +35,6 @@ class AITutorInterface {
     }
 
     async init() {
-        await this.waitForDependencies();
         this.setupInterface();
         this.loadUserProfile();
         this.initializeVoiceRecognition();
@@ -43,37 +43,9 @@ class AITutorInterface {
         console.log('🤖 AI Tutor Interface inicializado');
     }
 
-    async waitForDependencies() {
-        // Esperar a que los sistemas AI estén disponibles
-        const maxAttempts = 10;
-        let attempts = 0;
-
-        while (attempts < maxAttempts) {
-            if (window.aiEducationalSystem && window.aiRecommendationEngine) {
-                this.aiEducationalSystem = window.aiEducationalSystem;
-                this.aiRecommendationEngine = window.aiRecommendationEngine;
-                return;
-            }
-            await new Promise(resolve => setTimeout(resolve, 500));
-            attempts++;
-        }
-
-        console.warn('⚠️ Sistemas AI no disponibles, usando modo fallback');
-        this.initializeFallbackMode();
-    }
-
     initializeFallbackMode() {
-        // Modo de respaldo cuando los sistemas AI no están disponibles
+        // Este modo ya no es necesario, pero lo dejamos por si se requiere en el futuro
         this.fallbackMode = true;
-
-        // Configurar respuestas básicas predefinidas
-        this.fallbackResponses = {
-            greeting: ['¡Hola! Estoy aquí para ayudarte', 'Buenos días, ¿en qué puedo asistirte?'],
-            math: ['Las matemáticas pueden ser desafiantes, pero juntos lo resolveremos', 'Te ayudo con tu problema matemático'],
-            science: ['La ciencia es fascinante, exploremos juntos', 'Hablemos de ciencia'],
-            general: ['Interesante pregunta, déjame ayudarte', 'Estoy aquí para apoyarte en tu aprendizaje']
-        };
-
         console.log('🔄 Modo fallback del tutor AI activado');
     }
 
@@ -285,54 +257,89 @@ class AITutorInterface {
 
         if (!message) return;
 
-        // Agregar mensaje del usuario
         this.addMessage(message, 'user');
+        this.currentConversation.push({ role: 'user', content: message, timestamp: new Date().toISOString() });
         input.value = '';
-
-        // Mostrar indicador de escritura
         this.showTypingIndicator();
 
         try {
-            // Analizar emoción del mensaje
-            const emotion = this.analyzeMessageEmotion(message);
+            if (!this.sessionActive || !this.currentSessionId) {
+                await this.startNewTutorSession(message);
+            }
 
-            // Obtener respuesta de la IA
-            const response = await this.getAIResponse(message, emotion);
+            const aiResponse = await this.getAIResponse(message);
+            await this.addAIMessage(aiResponse.text);
+            this.currentConversation.push({ role: 'assistant', content: aiResponse.text, timestamp: new Date().toISOString() });
 
-            // Mostrar respuesta con efecto de escritura
-            await this.addAIMessage(response, emotion);
 
-            // Guardar conversación
             this.saveConversation();
-
-            // Actualizar recomendaciones si es necesario
-            this.updateRecommendations(message, response);
-
         } catch (error) {
             console.error('Error procesando mensaje:', error);
-            this.addMessage('Lo siento, ha ocurrido un error. Inténtalo de nuevo.', 'ai', 'error');
+            this.addMessage('Lo siento, ha ocurrido un error al comunicarme con el tutor. Por favor, inténtalo de nuevo.', 'ai', 'error');
+        } finally {
+            this.hideTypingIndicator();
         }
-
-        this.hideTypingIndicator();
     }
 
-    async getAIResponse(message, emotion) {
-        // Intentar usar el sistema AI educativo
-        if (this.aiEducationalSystem) {
-            try {
-                const userId = this.getCurrentUserId();
-                const response = await this.aiEducationalSystem.processMessage(message, userId);
+    async startNewTutorSession(initialMessage) {
+        // Extraer tema del primer mensaje de forma simple
+        const subject = this.extractSubjectFromMessage(initialMessage) || 'General';
 
-                // Adaptar respuesta según la emoción detectada
-                return this.adaptResponseToEmotion(response, emotion);
-            } catch (error) {
-                console.warn('Error en sistema AI:', error);
-            }
+        const response = await fetch('/api/tutor/sessions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.getToken()}`
+            },
+            body: JSON.stringify({
+                subject: subject,
+                topic: 'Introducción',
+                session_type: 'practice'
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('No se pudo iniciar una nueva sesión de tutoría.');
         }
 
-        // Fallback con respuestas predefinidas
-        return this.getFallbackResponse(message, emotion);
+        const result = await response.json();
+        this.currentSessionId = result.data.id;
+        this.sessionActive = true;
+        console.log(`Nueva sesión de tutoría iniciada con ID: ${this.currentSessionId}`);
     }
+
+    extractSubjectFromMessage(message) {
+        const lowerMessage = message.toLowerCase();
+        if (lowerMessage.includes('matemática')) return 'Matemáticas';
+        if (lowerMessage.includes('ciencia') || lowerMessage.includes('física') || lowerMessage.includes('química')) return 'Ciencias';
+        if (lowerMessage.includes('historia')) return 'Historia';
+        return null;
+    }
+
+
+    async getAIResponse(message) {
+        if (!this.currentSessionId) {
+            throw new Error("No hay una sesión de tutoría activa.");
+        }
+
+        const response = await fetch(`/api/tutor/sessions/${this.currentSessionId}/messages`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.getToken()}`
+            },
+            body: JSON.stringify({ content: message })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error en la comunicación con el tutor.');
+        }
+
+        const result = await response.json();
+        return result.data; // El backend ahora devuelve la respuesta de la IA directamente
+    }
+
 
     adaptResponseToEmotion(response, emotion) {
         if (!emotion || emotion === 'neutral') return response;
@@ -647,6 +654,11 @@ class AITutorInterface {
 
     generateUserId() {
         return 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+    }
+
+    getToken() {
+        // Asume que el token JWT se guarda en sessionStorage tras el login
+        return sessionStorage.getItem('jwt');
     }
 
     trackTutorSession(action) {
