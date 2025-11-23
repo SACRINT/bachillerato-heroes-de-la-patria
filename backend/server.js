@@ -64,6 +64,7 @@ const chartsDataRoutes = require('./routes/charts-data');
 const searchRoutes = require('./routes/search');
 const emailsRoutes = require('./routes/emails');
 const apiDocsRoutes = require('./routes/api-docs'); // ✅ SWAGGER UI - SEMANA 29
+const aiTutorRoutes = require('./routes/ai-tutor'); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
 
 // ✅ API VERSIONING MIDDLEWARE - SEMANA 8
 const { apiVersioning, v1CompatibilityLayer, rateLimitByTier } = require('./middleware/api-versioning');
@@ -353,6 +354,7 @@ app.use('/api/wallet', walletRoutes);  // ✅ WALLET ROUTES - Gestión de IACoin
 app.use('/api/challenges', challengesRoutes);  // ✅ CHALLENGES ROUTES - Sistema de retos (15 NOV 2025)
 app.use('/api/store', storeRoutes);  // ✅ STORE ROUTES - Tienda virtual (15 NOV 2025)
 app.use('/api/docs', apiDocsRoutes); // ✅ SWAGGER UI - SEMANA 29
+app.use('/api/tutor', aiTutorRoutes); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
 
 // ✅ SEMANA 2 - SERVICE LAYER ROUTES (20 NOV 2025)
 // Estas rutas usan el patrón Service Layer para separar lógica de negocio
