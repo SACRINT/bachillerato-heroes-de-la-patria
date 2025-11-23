@@ -63,6 +63,15 @@ function loadNextEventHandler() {
 loadNextEventHandler();
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Tarea de Accesibilidad WCAG - Semana 27
+    // Inyectar el enlace "Saltar al contenido principal" para accesibilidad.
+    // El ancla #main-content y los estilos .skip-link ya existen en los archivos HTML y CSS.
+    const skipLink = document.createElement('a');
+    skipLink.href = '#main-content';
+    skipLink.className = 'skip-link';
+    skipLink.textContent = 'Saltar al contenido principal';
+    document.body.prepend(skipLink);
+
     // ✅ REVERTIDO A VERSIÓN SIMPLE QUE FUNCIONABA (commit eac16ff)
     // Cargar header y footer directamente sin esperar a auth system
     initializeChatbot();

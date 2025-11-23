@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .header { background-color: #D32F2F; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; }
+        .content { padding: 30px 20px; }
+        .content h2 { color: #D32F2F; }
+        .details-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .details-table th, .details-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        .details-table th { background-color: #f2f2f2; font-weight: bold; }
+        .footer { text-align: center; font-size: 12px; color: #777; margin-top: 20px; }
+        .badge { display: inline-block; padding: 4px 8px; font-size: 14px; font-weight: bold; border-radius: 4px; color: white; }
+        .badge-old { background-color: #777; }
+        .badge-new { background-color: #D32F2F; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚨 Alerta de Seguridad Crítica</h1>
+        </div>
+        <div class="content">
+            <h2>Cambio de Rol a Administrador</h2>
+            <p>Hola Administrador,</p>
+            <p>
+                Este es un aviso de seguridad automático para informarte que se ha realizado un cambio de rol a <strong>Administrador</strong> en el sistema del <strong>Bachillerato General "Héroes de la Patria"</strong>.
+            </p>
+            <p>Esta es una acción de alta sensibilidad que otorga control total sobre el sistema. Si no reconoces esta actividad, por favor, investiga inmediatamente.</p>
+            
+            <table class="details-table">
+                <tr>
+                    <th>Concepto</th>
+                    <th>Detalle</th>
+                </tr>
+                <tr>
+                    <td><strong>Fecha del Evento</strong></td>
+                    <td>{{formatDateTime timestamp}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Acción Realizada Por</strong></td>
+                    <td>Admin ID: {{adminUser.id}} ({{adminUser.email}})</td>
+                </tr>
+                <tr>
+                    <td><strong>Usuario Modificado</strong></td>
+                    <td>User ID: {{targetUser.id}} ({{targetUser.email}})</td>
+                </tr>
+                <tr>
+                    <td><strong>Rol Anterior</strong></td>
+                    <td><span class="badge badge-old">{{oldRole}}</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Rol Nuevo</strong></td>
+                    <td><span class="badge badge-new">{{newRole}}</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Dirección IP de Origen</strong></td>
+                    <td>{{ipAddress}}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="footer">
+            <p>&copy; {{currentYear}} Bachillerato General "Héroes de la Patria". Todos los derechos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>

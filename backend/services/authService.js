@@ -438,6 +438,35 @@ class AuthService {
     }
 
     /**
+     * Actualizar el rol de un usuario.
+     * Tarea: Semana 28 - SOC2 Audit Trail
+     */
+    async updateUserRole(userId, newRole) {
+        devLogger.log(`[AuthService] Intentando actualizar rol para userId=${userId} a newRole=${newRole}`);
+        try {
+            // Validar que el rol sea válido
+            if (!Object.values(this.roles).includes(newRole)) {
+                throw new Error('Rol inválido proporcionado.');
+            }
+
+            const result = await executeQuery(
+                'UPDATE usuarios SET role = $1 WHERE id = $2 RETURNING id, email, username, role',
+                [newRole, userId]
+            );
+
+            if (result.length === 0) {
+                throw new Error('Usuario no encontrado para actualizar rol.');
+            }
+
+            devLogger.log(`[AuthService] Rol actualizado exitosamente para userId=${userId}.`);
+            return result[0];
+        } catch (error) {
+            devLogger.error(`[AuthService] Error al actualizar rol para userId=${userId}:`, error);
+            throw error;
+        }
+    }
+
+    /**
      * Verificar permisos
      */
     hasPermission(userRole, requiredPermission) {

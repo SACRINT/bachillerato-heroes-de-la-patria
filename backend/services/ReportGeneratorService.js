@@ -54,11 +54,12 @@ class ReportGeneratorService {
 
       // Obtener calificaciones
       const gradesResult = await pool.query(`
-        SELECT materia, parcial, calificacion, observaciones
-        FROM calificaciones
-        WHERE estudiante_id = $1 AND ciclo = $2
-        ORDER BY materia, parcial
-      `, [estudianteId, ciclo]);
+        SELECT m.nombre as materia, c.parcial, c.calificacion, c.observaciones
+        FROM calificaciones c
+        INNER JOIN materias m ON c.materia_id = m.id
+        WHERE c.estudiante_id = $1
+        ORDER BY m.nombre, c.parcial
+      `, [estudianteId]);
 
       // Agrupar por materia
       const byMateria = {};
@@ -172,11 +173,12 @@ class ReportGeneratorService {
 
       // Promedios por materia
       const byMateria = await pool.query(`
-        SELECT c.materia, AVG(c.calificacion) as promedio, COUNT(*) as total
+        SELECT m.nombre as materia, AVG(c.calificacion) as promedio, COUNT(*) as total
         FROM estudiantes e
         INNER JOIN calificaciones c ON e.id = c.estudiante_id
+        INNER JOIN materias m ON c.materia_id = m.id
         WHERE ${whereClause}
-        GROUP BY c.materia
+        GROUP BY m.nombre
         ORDER BY promedio DESC
       `, params);
 
@@ -326,10 +328,11 @@ class ReportGeneratorService {
 
       // Por materia
       const byMateria = await pool.query(`
-        SELECT materia, AVG(calificacion) as promedio, COUNT(*) as total
-        FROM calificaciones
-        WHERE docente_id = $1
-        GROUP BY materia
+        SELECT m.nombre as materia, AVG(c.calificacion) as promedio, COUNT(*) as total
+        FROM calificaciones c
+        INNER JOIN materias m ON c.materia_id = m.id
+        WHERE c.docente_id = $1
+        GROUP BY m.nombre
         ORDER BY total DESC
       `, [docenteId]);
 

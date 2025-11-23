@@ -1,0 +1,297 @@
+================================================================================
+                    ANÁLISIS VISUAL: BD NEON vs LOCAL
+================================================================================
+
+Fecha: 23 de Noviembre de 2025
+Estado: BD LOCAL VACÍA - NO SINCRONIZADA
+
+================================================================================
+                              COMPARACIÓN GRÁFICA
+================================================================================
+
+NEON (Producción)                        LOCAL (BGE_LOCAL)
+┌──────────────────────────────┐         ┌──────────────────────────────┐
+│ ✅ 65 TABLAS                 │         │ ❌ 0 TABLAS                  │
+│                              │         │                              │
+│ ├─ Usuarios & Auth (9)       │         │ [VACÍO]                      │
+│ ├─ Académico (10)            │         │                              │
+│ ├─ IACoins (10)              │         │                              │
+│ ├─ CMS (7)                   │         │                              │
+│ ├─ Solicitudes (9)           │         │                              │
+│ ├─ Email (3)                 │         │                              │
+│ ├─ Finanzas (4)              │         │                              │
+│ ├─ Seguridad (8)             │         │                              │
+│ └─ Sistema (5)               │         │                              │
+└──────────────────────────────┘         └──────────────────────────────┘
+
+NEON: 814 Columnas                       LOCAL: 0 Columnas
+NEON: 57 Secuencias                      LOCAL: 0 Secuencias
+NEON: 5 Tipos ENUM                       LOCAL: 0 Tipos ENUM
+
+================================================================================
+                        ARQUITECTURA DE NEON (PRODUCCIÓN)
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     ENTERPRISE POSTGRES ARCHITECTURE                        │
+│                                                                             │
+│  ┌─── CORE LAYER ───────────────────────────────────────────────┐         │
+│  │                                                               │         │
+│  │  ┌─ USUARIOS & AUTENTICACIÓN                              │         │
+│  │  │  • usuarios (21 cols)                                 │         │
+│  │  │  • user_sessions (3 cols)                             │         │
+│  │  │  • deleted_users (8 cols) ──► GDPR COMPLIANCE         │         │
+│  │  │  • webauthn_* (6, 9 cols) ──► PASSWORDLESS AUTH       │         │
+│  │  │  • rbac_permissions (6 cols, JSONB)                   │         │
+│  │  └─────────────────────────────────────────────────────── │         │
+│  │                                                               │         │
+│  │  ┌─ ACADÉMICO                                            │         │
+│  │  │  • estudiantes (21 cols) ──► ENUM gender, status      │         │
+│  │  │  • docentes (14 cols) ──► ENUM status                 │         │
+│  │  │  • calificaciones (15 cols)                           │         │
+│  │  │  • materias (9 cols) ──► ENUM area                    │         │
+│  │  │  • egresados (18 cols)                                │         │
+│  │  └─────────────────────────────────────────────────────── │         │
+│  │                                                               │         │
+│  │  ┌─ GAMIFICACIÓN (IACoins)                              │         │
+│  │  │  • iacoins_achievements (13 cols)                    │         │
+│  │  │  • iacoins_challenges (16 cols, JSONB)               │         │
+│  │  │  • iacoins_balances (9 cols)                         │         │
+│  │  │  • iacoins_transactions (12 cols)                    │         │
+│  │  └─────────────────────────────────────────────────────── │         │
+│  │                                                               │         │
+│  └─────────────────────────────────────────────────────────────┘         │
+│                                                                             │
+│  ┌─── CONTENT & COMMUNICATION LAYER ───────────────────────────┐          │
+│  │                                                               │          │
+│  │  ┌─ CMS CONTENT                                          │          │
+│  │  │  • avisos (26 cols, ARRAY etiquetas)                 │          │
+│  │  │  • comunicados (19 cols, ARRAY)                      │          │
+│  │  │  • eventos (27 cols, ARRAY)                          │          │
+│  │  │  • noticias (20 cols, ARRAY)                         │          │
+│  │  └─────────────────────────────────────────────────────── │          │
+│  │                                                               │          │
+│  │  ┌─ NOTIFICATIONS & SUSCRIPTIONS                         │          │
+│  │  │  • suscriptores_notificaciones (27 cols)             │          │
+│  │  │  • notificaciones_convocatorias (13 cols)            │          │
+│  │  └─────────────────────────────────────────────────────── │          │
+│  │                                                               │          │
+│  └─────────────────────────────────────────────────────────────┘          │
+│                                                                             │
+│  ┌─── WORKFLOWS & APPROVALS LAYER ────────────────────────────┐          │
+│  │                                                               │          │
+│  │  ┌─ PENDING STATES (JSONB Storage)                      │          │
+│  │  │  • citas (21 cols)                                   │          │
+│  │  │  • pending_approvals (10 cols)                       │          │
+│  │  │  • pending_submissions (15 cols)                     │          │
+│  │  │  • bolsa_trabajo (12 cols)                           │          │
+│  │  └─────────────────────────────────────────────────────── │          │
+│  │                                                               │          │
+│  └─────────────────────────────────────────────────────────────┘          │
+│                                                                             │
+│  ┌─── SECURITY & COMPLIANCE LAYER ───────────────────────────┐           │
+│  │                                                               │           │
+│  │  ┌─ AUDIT & LOGGING                                     │           │
+│  │  │  • audit_logs (9 cols, JSONB)                        │           │
+│  │  │  • soc2_audit_logs (13 cols, JSONB)                  │           │
+│  │  │  • change_management_log (12 cols, JSONB x3)         │           │
+│  │  └─────────────────────────────────────────────────────── │           │
+│  │                                                               │           │
+│  │  ┌─ COMPLIANCE                                          │           │
+│  │  │  • consents (9 cols, JSONB) ──► GDPR                 │           │
+│  │  │  • data_exports (8 cols, JSONB) ──► GDPR RIGHT TO    │           │
+│  │  │  • deleted_users (8 cols) ──► GDPR DELETION          │           │
+│  │  │  • data_breaches (11 cols, JSONB)                    │           │
+│  │  └─────────────────────────────────────────────────────── │           │
+│  │                                                               │           │
+│  └─────────────────────────────────────────────────────────────┘           │
+│                                                                             │
+│  ┌─── FINANCE LAYER ────────────────────────────────────────┐             │
+│  │  • gastos (14 cols)                                         │             │
+│  │  • ingresos (14 cols)                                       │             │
+│  │  • pagos_pendientes (16 cols)                               │             │
+│  │  • user_gamification_stats (10 cols)                        │             │
+│  └─────────────────────────────────────────────────────────────┘             │
+│                                                                             │
+│  ┌─── SYSTEM & CONFIGURATION LAYER ─────────────────────────┐             │
+│  │  • tenants (12 cols, UUID, JSONB) ──► MULTI-TENANCY     │             │
+│  │  • logs_sistema (8 cols, JSONB)                         │             │
+│  │  • privacy_policies (7 cols)                            │             │
+│  │  • encryption_keys (10 cols, JSONB)                     │             │
+│  │  • vendor_risk_assessments (11 cols, ARRAY, JSONB)      │             │
+│  └─────────────────────────────────────────────────────────────┘             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+                          TIPO DE DATOS ESPECIALES
+================================================================================
+
+TIPOS ENUM PERSONALIZADOS (5):
+┌──────────────────┬────────────────────────────────────────────────┐
+│ role_type        │ 'estudiante' | 'docente' | 'padre' | 'admin'   │
+│ status_type      │ 'activo' | 'inactivo' | 'suspendido'           │
+│ docente_status   │ 'activo' | 'licencia' | 'jubilado'             │
+│ status_academico │ 'inscrito' | 'activo' | 'egresado' | ...       │
+│ rarity_type      │ 'comun' | 'raro' | 'epico' | 'legendario'      │
+└──────────────────┴────────────────────────────────────────────────┘
+
+ALMACENAMIENTO JSONB (29 columnas):
+┌────────────────────────────────────────────────────────────────┐
+│ • audit_logs.metadata          ──► {action, ip, user_agent}    │
+│ • citas.metadata               ──► {notas, documentos}         │
+│ • consents.metadata            ──► {version, timestamp}        │
+│ • data_breaches.metadata       ──► {affected_records}          │
+│ • iacoins_challenges.requirements ──► {min_score, max_time}    │
+│ • pending_*.submission_data    ──► {form_values}               │
+│ • tenants.config_json          ──► {colors, logo_url}          │
+│ ... (23 más)                                                   │
+└────────────────────────────────────────────────────────────────┘
+
+COLUMNAS ARRAY (6 columnas):
+┌────────────────────────────────────────────────────────────────┐
+│ • avisos.etiquetas[]           ──► ['python', 'IA', 'math']    │
+│ • avisos.destinatarios[]       ──► ['user1', 'user2', ...]     │
+│ • eventos.etiquetas[]          ──► [...]                       │
+│ ... (3 más)                                                     │
+└────────────────────────────────────────────────────────────────┘
+
+UUIDs (6 columnas):
+┌────────────────────────────────────────────────────────────────┐
+│ Requieren: CREATE EXTENSION pgcrypto;                          │
+│ Función:  gen_random_uuid()                                    │
+│ Uso: Identificadores únicos globales para seguridad            │
+└────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+                         ESTADÍSTICAS DETALLADAS
+================================================================================
+
+DISTRIBUCIÓN DE TABLAS POR MÓDULO:
+
+  Usuarios & Autenticación    ████████░░░░░░░░░░░░░░░░░░░░░░░  13.8% (9 tablas)
+  Académico                   ██████████░░░░░░░░░░░░░░░░░░░░░  15.4% (10 tablas)
+  Gamificación                ██████████░░░░░░░░░░░░░░░░░░░░░  15.4% (10 tablas)
+  CMS & Comunicación          ██████░░░░░░░░░░░░░░░░░░░░░░░░░  10.8% (7 tablas)
+  Solicitudes & Aprobaciones  ██████████░░░░░░░░░░░░░░░░░░░░░  13.8% (9 tablas)
+  Confirmación Email          ████░░░░░░░░░░░░░░░░░░░░░░░░░░░   4.6% (3 tablas)
+  Finanzas                    ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   6.2% (4 tablas)
+  Seguridad & Compliance      ████████░░░░░░░░░░░░░░░░░░░░░░░  12.3% (8 tablas)
+  Sistema                     ███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   7.7% (5 tablas)
+
+PROMEDIO DE COLUMNAS POR TABLA: 12.5 columnas
+
+DISTRIBUCIÓN DE TIPOS DE DATOS:
+
+  Tipos Simples (INT, VARCHAR, TEXT, BOOLEAN)     ▓▓▓▓▓▓▓▓▓▓ 70%
+  JSONB (Semi-estructurado)                       ▓▓▓░░░░░░░ 20%
+  ARRAY (Colecciones)                             ░░░░░░░░░░  3%
+  ENUM (Personalizados)                           ░░░░░░░░░░  4%
+  UUID (Identificadores únicos)                   ░░░░░░░░░░  3%
+
+
+================================================================================
+                          FLUJO DE SINCRONIZACIÓN
+================================================================================
+
+PROBLEMA ACTUAL:
+
+  NEON (Producción)                LOCAL (BGE_LOCAL)
+  ════════════════════════════     ═════════════════════
+  ✅ 65 tablas                      ❌ 0 tablas
+  ✅ 814 columnas                   ❌ 0 columnas
+  ✅ Datos completos                ❌ Vacío
+  ✅ Producción activa              ❌ No sincronizada
+
+
+  CUELLO DE BOTELLA:
+  ═════════════════════════════════════════════════════════════════
+
+  sync-neon-local-simple.bat
+       ⬇️
+  pg_dump NEON
+       ⬇️ (Éxito)
+  neon_backup_YYYYMMDD_HHMMSS.dump (317 KB)
+       ⬇️
+  pg_restore → bge_local
+       ⬇️ (❌ FALLÓ - BD LOCAL VACÍA)
+
+  RESULTADO: 0 de 65 tablas restauradas
+
+
+================================================================================
+                              SOLUCIONES
+================================================================================
+
+OPCIÓN A: RESTAURACIÓN MANUAL (⏱️ 5 minutos)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Verificar backup existe
+  2. DROP DATABASE bge_local
+  3. CREATE DATABASE bge_local
+  4. pg_restore desde archivo dump
+  5. Verificar 65 tablas creadas
+
+  Resultado: BD local = BD Neon
+
+OPCIÓN B: DESCARGAR DDL DE NEON (⏱️ 10-15 minutos)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Ejecutar pg_dump en Neon Console
+  2. Guardar DDL en archivo SQL
+  3. Ejecutar SQL en BD local
+  4. Estructura + datos vacíos
+
+  Resultado: Estructura idéntica, datos vacíos
+
+OPCIÓN C: MANTENER NEON (⏱️ Inmediato) ⭐ RECOMENDADO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. .env.local → DB_HOST=Neon
+  2. BD local solo para testing
+  3. No sincronizar automáticamente
+
+  Ventajas:
+  • Datos siempre actualizados
+  • Menos complejidad
+  • Desarrollo contra única fuente de verdad
+
+
+================================================================================
+                            CHECKLIST FINAL
+================================================================================
+
+POST-RESTAURACIÓN:
+
+  ✓ Verificar 65 tablas en bge_local
+  ✓ Contar columnas (debe ser ~814)
+  ✓ Verificar tipos ENUM existen
+  ✓ Contar secuencias (debe ser 57)
+  ✓ Verificar extensión pgcrypto
+  ✓ Hacer query en usuarios (verificar datos)
+  ✓ Hacer query en estudiantes (verificar datos)
+  ✓ Hacer query en iacoins_achievements
+  ✓ Verificar 0 errores en BD
+  ✓ Actualizar .env.local si va a usar local
+  ✓ Reiniciar backend Node.js
+  ✓ Probar conectividad: curl http://localhost:3000/api/health
+
+
+================================================================================
+CONCLUSIÓN: BD LOCAL REQUIERE RESTAURACIÓN INMEDIATA
+================================================================================
+
+La BD local está VACÍA y NO está lista para uso.
+
+Recomendación: Ejecutar Opción A (Restauración Manual) + Opción C (Mantener Neon).
+
+Esto proporciona:
+1. Backup local de datos
+2. Neon como producción principal
+3. Desarrollo sincronizado y confiable
+
+Tiempo total de implementación: 5-20 minutos
+
+================================================================================
+Análisis Generado: 23 de Noviembre de 2025
+Arquitecto del Proyecto: [Tu Nombre]
+================================================================================

@@ -727,7 +727,7 @@
                     <h5 class="modal-title" id="studyTipsModalLabel">
                         <i class="fas fa-brain me-2"></i>Técnicas de Estudio Efectivas
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
                     <p class="lead mb-4">Estrategias comprobadas para mejorar tu rendimiento académico</p>
@@ -1327,7 +1327,7 @@
             alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1050; max-width: 400px;';
             alertDiv.innerHTML = `
                 ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
             `;
             
             document.body.appendChild(alertDiv);

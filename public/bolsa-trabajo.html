@@ -584,7 +584,7 @@
                         <i class="fas fa-briefcase me-2"></i>
                         Detalles del Empleo
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body" id="jobDetailContent">
                     <!-- El contenido se cargará dinámicamente -->
@@ -1037,7 +1037,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">${title}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                             </div>
                             <div class="modal-body">${content}</div>
                             <div class="modal-footer">
@@ -1061,7 +1061,7 @@
             alertDiv.style.cssText = 'top: 80px; right: 20px; z-index: 9999; max-width: 400px;';
             alertDiv.innerHTML = `
                 ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
             `;
             document.body.appendChild(alertDiv);
             setTimeout(() => { if (alertDiv.parentNode) alertDiv.remove(); }, 5000);

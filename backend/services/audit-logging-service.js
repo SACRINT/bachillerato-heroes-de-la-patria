@@ -6,6 +6,7 @@
 
 const pool = require('../config/database');
 const logger = require('../utils/winston-logger');
+const emailService = require('./emailService');
 
 /**
  * Categorías de eventos auditables
@@ -240,10 +241,10 @@ class AuditLoggingService {
   }
 
   /**
-   * Log de cambio de rol
+   * Log de cambio de rol y enviar alerta si es crítico.
    */
   async logRoleChanged(userId, oldRole, newRole, changedBy, tenantId) {
-    return await this.log({
+    const log = await this.log({
       event_type: AuditEventTypes.USER_ROLE_CHANGED,
       user_id: changedBy,
       tenant_id: tenantId,
@@ -256,6 +257,45 @@ class AuditLoggingService {
       severity: AuditSeverity.HIGH,
       success: true,
     });
+
+    // Si el nuevo rol es 'admin', enviar alerta de seguridad
+    if (newRole === 'admin') {
+      try {
+        devLogger.warn(`[AUDIT-LOG] ALERTA: Usuario ${userId} fue promovido a admin por usuario ${changedBy}. Enviando email.`);
+        
+        // Obtener detalles del admin y del usuario para el email
+        const adminUserResult = await pool.query('SELECT id, email, nombre FROM usuarios WHERE id = $1', [changedBy]);
+        const targetUserResult = await pool.query('SELECT id, email, nombre FROM usuarios WHERE id = $1', [userId]);
+
+        if (adminUserResult.rows.length > 0 && targetUserResult.rows.length > 0) {
+          const adminEmail = process.env.ADMIN_EMAIL;
+          if (!adminEmail) {
+            devLogger.error('[AUDIT-LOG] La variable de entorno ADMIN_EMAIL no está configurada. No se puede enviar la alerta de seguridad.');
+            return log;
+          }
+
+          await emailService.sendEmail({
+            to: adminEmail,
+            subject: '🚨 Alerta de Seguridad: Cambio de Rol a Administrador',
+            template: 'security-alert-role-change',
+            data: {
+              timestamp: new Date(),
+              adminUser: adminUserResult.rows[0],
+              targetUser: targetUserResult.rows[0],
+              oldRole,
+              newRole,
+              ipAddress: 'No disponible en este log', // Se puede mejorar pasando el objeto `req`
+              currentYear: new Date().getFullYear()
+            }
+          });
+          devLogger.log(`[AUDIT-LOG] Email de alerta de seguridad enviado a ${adminEmail}.`);
+        }
+      } catch (emailError) {
+        devLogger.error(`[AUDIT-LOG] Falló el envío del email de alerta de seguridad: ${emailError.message}`);
+      }
+    }
+
+    return log;
   }
 
   /**

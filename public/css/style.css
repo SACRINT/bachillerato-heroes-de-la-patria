@@ -179,10 +179,22 @@ h1, h2, h3, h4, h5, h6,
     color: white;
 }
 
-/* Enhanced Focus Styles */
-*:focus {
-    outline: 2px solid var(--bs-primary);
+/* Enhanced Focus Styles for Keyboard Users */
+:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+:focus-visible {
+    outline: 2px solid transparent;
     outline-offset: 2px;
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.5);
+    border-radius: 0.25rem; /* Consistent with Bootstrap's focus-ring */
+}
+
+/* Remove the default outline on form controls when using focus-visible */
+.form-control:focus-visible {
+    outline: none;
 }
 
 /* High Contrast Mode Support */

@@ -1,0 +1,556 @@
+{
+  "totalTables": 65,
+  "totalColumns": 814,
+  "avgColumnsPerTable": "12.5",
+  "tables": [
+    "achievements",
+    "audit_logs",
+    "avisos",
+    "bolsa_trabajo",
+    "bolsa_trabajo_pending_confirmation",
+    "calificaciones",
+    "change_management_log",
+    "citas",
+    "comunicados",
+    "consents",
+    "contactos",
+    "data_breaches",
+    "data_exports",
+    "deleted_users",
+    "docentes",
+    "docentes_activos",
+    "egresados",
+    "egresados_pending_confirmation",
+    "email_verification_tokens",
+    "encryption_keys",
+    "estudiantes",
+    "estudiantes_activos",
+    "eventos",
+    "gastos",
+    "iacoins_achievements",
+    "iacoins_ai_generations",
+    "iacoins_balances",
+    "iacoins_challenge_progress",
+    "iacoins_challenges",
+    "iacoins_pricing",
+    "iacoins_prompt_templates",
+    "iacoins_transactions",
+    "iacoins_user_achievements",
+    "ingresos",
+    "inscripciones_actividades",
+    "logs_sistema",
+    "materias",
+    "noticias",
+    "notificaciones_convocatorias",
+    "pagos_pendientes",
+    "parents",
+    "pendientes_aprobacion",
+    "pending_approvals",
+    "pending_inscriptions",
+    "pending_registrations",
+    "pending_submissions",
+    "privacy_policies",
+    "quejas",
+    "rbac_permissions",
+    "soc2_audit_logs",
+    "soc2_incidents",
+    "solicitudes_documentos",
+    "student_parents",
+    "suscriptores_notificaciones",
+    "tenants",
+    "user_achievements",
+    "user_gamification_stats",
+    "user_privacy_policy_acceptance",
+    "user_sessions",
+    "usuarios",
+    "usuarios_activos",
+    "vendor_risk_assessments",
+    "verification_tokens",
+    "webauthn_challenges",
+    "webauthn_credentials"
+  ],
+  "tableDetails": {
+    "achievements": 12,
+    "audit_logs": 9,
+    "avisos": 26,
+    "bolsa_trabajo": 12,
+    "bolsa_trabajo_pending_confirmation": 8,
+    "calificaciones": 15,
+    "change_management_log": 12,
+    "citas": 21,
+    "comunicados": 19,
+    "consents": 9,
+    "contactos": 19,
+    "data_breaches": 11,
+    "data_exports": 8,
+    "deleted_users": 8,
+    "docentes": 14,
+    "docentes_activos": 14,
+    "egresados": 18,
+    "egresados_pending_confirmation": 8,
+    "email_verification_tokens": 7,
+    "encryption_keys": 10,
+    "estudiantes": 21,
+    "estudiantes_activos": 21,
+    "eventos": 27,
+    "gastos": 14,
+    "iacoins_achievements": 13,
+    "iacoins_ai_generations": 16,
+    "iacoins_balances": 9,
+    "iacoins_challenge_progress": 9,
+    "iacoins_challenges": 16,
+    "iacoins_pricing": 8,
+    "iacoins_prompt_templates": 19,
+    "iacoins_transactions": 12,
+    "iacoins_user_achievements": 5,
+    "ingresos": 14,
+    "inscripciones_actividades": 16,
+    "logs_sistema": 8,
+    "materias": 9,
+    "noticias": 20,
+    "notificaciones_convocatorias": 13,
+    "pagos_pendientes": 16,
+    "parents": 7,
+    "pendientes_aprobacion": 13,
+    "pending_approvals": 10,
+    "pending_inscriptions": 6,
+    "pending_registrations": 6,
+    "pending_submissions": 15,
+    "privacy_policies": 7,
+    "quejas": 14,
+    "rbac_permissions": 6,
+    "soc2_audit_logs": 13,
+    "soc2_incidents": 15,
+    "solicitudes_documentos": 15,
+    "student_parents": 2,
+    "suscriptores_notificaciones": 27,
+    "tenants": 12,
+    "user_achievements": 5,
+    "user_gamification_stats": 10,
+    "user_privacy_policy_acceptance": 6,
+    "user_sessions": 3,
+    "usuarios": 21,
+    "usuarios_activos": 19,
+    "vendor_risk_assessments": 11,
+    "verification_tokens": 10,
+    "webauthn_challenges": 6,
+    "webauthn_credentials": 9
+  },
+  "dataTypes": [
+    "ARRAY",
+    "USER-DEFINED",
+    "bigint",
+    "boolean",
+    "character varying",
+    "date",
+    "integer",
+    "json",
+    "jsonb",
+    "numeric",
+    "text",
+    "time without time zone",
+    "timestamp with time zone",
+    "timestamp without time zone",
+    "uuid"
+  ],
+  "specialTypes": {
+    "USER-DEFINED": [
+      {
+        "table": "achievements",
+        "column": "category",
+        "type": "USER-DEFINED",
+        "default": null
+      },
+      {
+        "table": "achievements",
+        "column": "rarity",
+        "type": "USER-DEFINED",
+        "default": "'comun'::rarity_type"
+      },
+      {
+        "table": "docentes",
+        "column": "status",
+        "type": "USER-DEFINED",
+        "default": "'activo'::docente_status_type"
+      },
+      {
+        "table": "docentes_activos",
+        "column": "status",
+        "type": "USER-DEFINED",
+        "default": null
+      },
+      {
+        "table": "estudiantes",
+        "column": "genero",
+        "type": "USER-DEFINED",
+        "default": null
+      },
+      {
+        "table": "estudiantes",
+        "column": "status_academico",
+        "type": "USER-DEFINED",
+        "default": "'regular'::status_academico_type"
+      },
+      {
+        "table": "estudiantes_activos",
+        "column": "genero",
+        "type": "USER-DEFINED",
+        "default": null
+      },
+      {
+        "table": "estudiantes_activos",
+        "column": "status_academico",
+        "type": "USER-DEFINED",
+        "default": null
+      },
+      {
+        "table": "materias",
+        "column": "area",
+        "type": "USER-DEFINED",
+        "default": null
+      },
+      {
+        "table": "usuarios",
+        "column": "role",
+        "type": "USER-DEFINED",
+        "default": "'estudiante'::role_type"
+      },
+      {
+        "table": "usuarios",
+        "column": "status",
+        "type": "USER-DEFINED",
+        "default": "'activo'::status_type"
+      },
+      {
+        "table": "usuarios_activos",
+        "column": "role",
+        "type": "USER-DEFINED",
+        "default": null
+      },
+      {
+        "table": "usuarios_activos",
+        "column": "status",
+        "type": "USER-DEFINED",
+        "default": null
+      }
+    ],
+    "jsonb": [
+      {
+        "table": "audit_logs",
+        "column": "metadata",
+        "type": "jsonb",
+        "default": "'{}'::jsonb"
+      },
+      {
+        "table": "bolsa_trabajo_pending_confirmation",
+        "column": "datos_json",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "change_management_log",
+        "column": "before_state",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "change_management_log",
+        "column": "after_state",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "change_management_log",
+        "column": "metadata",
+        "type": "jsonb",
+        "default": "'{}'::jsonb"
+      },
+      {
+        "table": "citas",
+        "column": "metadata",
+        "type": "jsonb",
+        "default": "'{}'::jsonb"
+      },
+      {
+        "table": "consents",
+        "column": "metadata",
+        "type": "jsonb",
+        "default": "'{}'::jsonb"
+      },
+      {
+        "table": "data_breaches",
+        "column": "metadata",
+        "type": "jsonb",
+        "default": "'{}'::jsonb"
+      },
+      {
+        "table": "data_exports",
+        "column": "metadata",
+        "type": "jsonb",
+        "default": "'{}'::jsonb"
+      },
+      {
+        "table": "deleted_users",
+        "column": "backup_data",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "deleted_users",
+        "column": "metadata",
+        "type": "jsonb",
+        "default": "'{}'::jsonb"
+      },
+      {
+        "table": "egresados_pending_confirmation",
+        "column": "datos_json",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "encryption_keys",
+        "column": "metadata",
+        "type": "jsonb",
+        "default": "'{}'::jsonb"
+      },
+      {
+        "table": "iacoins_challenge_progress",
+        "column": "progress_data",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "iacoins_challenges",
+        "column": "requirements",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "iacoins_prompt_templates",
+        "column": "required_inputs",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "iacoins_prompt_templates",
+        "column": "optional_inputs",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "logs_sistema",
+        "column": "contexto",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "pendientes_aprobacion",
+        "column": "datos_json",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "pending_approvals",
+        "column": "submission_data",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "pending_inscriptions",
+        "column": "submission_data",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "pending_registrations",
+        "column": "submission_data",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "pending_submissions",
+        "column": "submission_data",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "rbac_permissions",
+        "column": "conditions",
+        "type": "jsonb",
+        "default": "'{}'::jsonb"
+      },
+      {
+        "table": "soc2_audit_logs",
+        "column": "details",
+        "type": "jsonb",
+        "default": "'{}'::jsonb"
+      },
+      {
+        "table": "soc2_incidents",
+        "column": "metadata",
+        "type": "jsonb",
+        "default": "'{}'::jsonb"
+      },
+      {
+        "table": "tenants",
+        "column": "config_json",
+        "type": "jsonb",
+        "default": null
+      },
+      {
+        "table": "vendor_risk_assessments",
+        "column": "metadata",
+        "type": "jsonb",
+        "default": "'{}'::jsonb"
+      },
+      {
+        "table": "verification_tokens",
+        "column": "form_data",
+        "type": "jsonb",
+        "default": null
+      }
+    ],
+    "ARRAY": [
+      {
+        "table": "avisos",
+        "column": "etiquetas",
+        "type": "ARRAY",
+        "default": null
+      },
+      {
+        "table": "avisos",
+        "column": "destinatarios",
+        "type": "ARRAY",
+        "default": null
+      },
+      {
+        "table": "comunicados",
+        "column": "etiquetas",
+        "type": "ARRAY",
+        "default": null
+      },
+      {
+        "table": "eventos",
+        "column": "etiquetas",
+        "type": "ARRAY",
+        "default": null
+      },
+      {
+        "table": "noticias",
+        "column": "etiquetas",
+        "type": "ARRAY",
+        "default": null
+      },
+      {
+        "table": "vendor_risk_assessments",
+        "column": "data_shared",
+        "type": "ARRAY",
+        "default": null
+      }
+    ],
+    "uuid": [
+      {
+        "table": "bolsa_trabajo_pending_confirmation",
+        "column": "uuid",
+        "type": "uuid",
+        "default": "gen_random_uuid()"
+      },
+      {
+        "table": "pendientes_aprobacion",
+        "column": "uuid",
+        "type": "uuid",
+        "default": "gen_random_uuid()"
+      },
+      {
+        "table": "tenants",
+        "column": "uuid",
+        "type": "uuid",
+        "default": "gen_random_uuid()"
+      },
+      {
+        "table": "usuarios",
+        "column": "uuid",
+        "type": "uuid",
+        "default": "gen_random_uuid()"
+      },
+      {
+        "table": "usuarios_activos",
+        "column": "uuid",
+        "type": "uuid",
+        "default": null
+      },
+      {
+        "table": "verification_tokens",
+        "column": "token",
+        "type": "uuid",
+        "default": null
+      }
+    ]
+  },
+  "sequences": [
+    "achievements_id_seq",
+    "audit_logs_id_seq",
+    "avisos_id_seq",
+    "bolsa_trabajo_id_seq",
+    "bolsa_trabajo_pending_confirmation_id_seq",
+    "calificaciones_id_seq",
+    "change_management_log_id_seq",
+    "citas_id_seq",
+    "comunicados_id_seq",
+    "consents_id_seq",
+    "contactos_id_seq",
+    "data_exports_id_seq",
+    "deleted_users_id_seq",
+    "docentes_id_seq",
+    "egresados_id_seq",
+    "egresados_pending_confirmation_id_seq",
+    "email_verification_tokens_id_seq",
+    "encryption_keys_id_seq",
+    "estudiantes_id_seq",
+    "eventos_id_seq",
+    "gastos_id_seq",
+    "iacoins_achievements_id_seq",
+    "iacoins_ai_generations_id_seq",
+    "iacoins_balances_id_seq",
+    "iacoins_challenge_progress_id_seq",
+    "iacoins_challenges_id_seq",
+    "iacoins_pricing_id_seq",
+    "iacoins_prompt_templates_id_seq",
+    "iacoins_transactions_id_seq",
+    "iacoins_user_achievements_id_seq",
+    "ingresos_id_seq",
+    "inscripciones_actividades_id_seq",
+    "logs_sistema_id_seq",
+    "materias_id_seq",
+    "noticias_id_seq",
+    "notificaciones_convocatorias_id_seq",
+    "pagos_pendientes_id_seq",
+    "parents_id_seq",
+    "pendientes_aprobacion_id_seq",
+    "pending_approvals_id_seq",
+    "pending_inscriptions_id_seq",
+    "pending_registrations_id_seq",
+    "pending_submissions_id_seq",
+    "privacy_policies_id_seq",
+    "quejas_id_seq",
+    "rbac_permissions_id_seq",
+    "solicitudes_documentos_id_seq",
+    "suscriptores_notificaciones_id_seq",
+    "tenants_id_seq",
+    "user_achievements_id_seq",
+    "user_gamification_stats_id_seq",
+    "user_privacy_policy_acceptance_id_seq",
+    "usuarios_id_seq",
+    "vendor_risk_assessments_id_seq",
+    "verification_tokens_id_seq",
+    "webauthn_challenges_id_seq",
+    "webauthn_credentials_id_seq"
+  ],
+  "enumTypes": [
+    "docente_status_type",
+    "rarity_type",
+    "role_type",
+    "status_academico_type",
+    "status_type"
+  ]
+}
