@@ -1,4 +1,7 @@
 openapi: 3.0.3
+externalDocs:
+  description: Portal de Desarrolladores de BGE Héroes de la Patria
+  url: /developer-portal.html
 info:
   title: BGE Héroes de la Patria - API
   description: |-
@@ -21,6 +24,12 @@ tags:
     description: Endpoints para el sistema de Tutoría con Inteligencia Artificial
   - name: Admin
     description: Operaciones administrativas
+  - name: JobBoard
+    description: Bolsa de Trabajo - Gestión de CVs y Solicitudes
+  - name: Appointments
+    description: Gestión de citas con validaciones y confirmaciones
+  - name: News
+    description: Sistema de Gestión de Noticias
 components:
   securitySchemes:
     bearerAuth:
@@ -197,31 +206,6 @@ components:
                 enum: [user, assistant]
             content:
                 type: string
-    LoginRequest:
-      type: object
-      required:
-        - username
-        - password
-      properties:
-        username:
-          type: string
-          example: "admin"
-        password:
-          type: string
-          format: password
-          example: "HeroesPatria2024!"
-        rememberMe:
-          type: boolean
-          default: false
-    TokenPair:
-      type: object
-      properties:
-        accessToken:
-          type: string
-        refreshToken:
-          type: string
-        accessTokenExpiry:
-          type: integer
     RegistrationRequest:
         type: object
         properties:
@@ -249,6 +233,329 @@ components:
                 type: integer
             rejected:
                 type: integer
+    CVProfileRequest:
+        type: object
+        required:
+            - name
+            - email
+            - phone
+            - graduationYear
+            - subject
+            - message
+        properties:
+            name:
+                type: string
+            email:
+                type: string
+                format: email
+            phone:
+                type: string
+            graduationYear:
+                type: string
+            subject:
+                type: string
+            message:
+                type: string
+            skills:
+                type: array
+                items:
+                    type: string
+    CVProfile:
+        type: object
+        properties:
+            id:
+                type: integer
+            nombre:
+                type: string
+            email:
+                type: string
+                format: email
+            telefono:
+                type: string
+            anio_egreso:
+                type: string
+            area_interes:
+                type: string
+            resumen_profesional:
+                type: string
+            habilidades:
+                type: array
+                items:
+                    type: string
+            status:
+                type: string
+                enum: [activo, inactivo, contratado]
+            fecha_registro:
+                type: string
+                format: date-time
+    CVStats:
+        type: object
+        properties:
+            total:
+                type: integer
+            activos:
+                type: integer
+            inactivos:
+                type: integer
+            contratados:
+                type: integer
+            hoy:
+                type: integer
+            esta_semana:
+                type: integer
+            verificados:
+                type: integer
+            byYear:
+                type: object
+            byArea:
+                type: object
+    ApprovalAction:
+        type: object
+        required:
+            - action
+        properties:
+            action:
+                type: string
+                enum: [approve, reject]
+            adminNotes:
+                type: string
+    Appointment:
+        type: object
+        properties:
+            id:
+                type: integer
+            cita_id:
+                type: string
+            nombre_completo:
+                type: string
+            email:
+                type: string
+                format: email
+            telefono:
+                type: string
+            tipo_persona:
+                type: string
+                enum: [estudiante, padre, madre, tutor, docente, administrativo, externo]
+            motivo:
+                type: string
+            descripcion:
+                type: string
+            fecha_solicitada:
+                type: string
+                format: date
+            hora_solicitada:
+                type: string
+            estado:
+                type: string
+                enum: [pendiente, aprobada, rechazada, completada]
+            confirmada:
+                type: boolean
+            notas_admin:
+                type: string
+            created_at:
+                type: string
+                format: date-time
+    NewAppointment:
+        type: object
+        required:
+            - nombre_completo
+            - email
+            - tipo_persona
+            - motivo
+            - fecha_solicitada
+            - hora_solicitada
+            - departamento
+        properties:
+            nombre_completo:
+                type: string
+            email:
+                type: string
+                format: email
+            telefono:
+                type: string
+            tipo_persona:
+                type: string
+                enum: [estudiante, padre, madre, tutor, docente, administrativo, externo]
+            motivo:
+                type: string
+            descripcion:
+                type: string
+            fecha_solicitada:
+                type: string
+                format: date
+            hora_solicitada:
+                type: string
+            departamento:
+                type: string
+    AppointmentStats:
+        type: object
+        properties:
+            pendientes:
+                type: integer
+            aprobadas:
+                type: integer
+            rechazadas:
+                type: integer
+            completadas:
+                type: integer
+            noConfirmadas:
+                type: integer
+            total:
+                type: integer
+    AvailableSlots:
+        type: object
+        properties:
+            hora:
+                type: string
+            disponibles:
+                type: integer
+            ocupados:
+                type: integer
+    ApproveRejectAppointment:
+        type: object
+        properties:
+            notas_admin:
+                type: string
+            motivo_rechazo:
+                type: string
+    NewsArticle:
+        type: object
+        properties:
+            id:
+                type: integer
+            titulo:
+                type: string
+            contenido:
+                type: string
+            resumen:
+                type: string
+            imagen_url:
+                type: string
+                format: url
+            categoria:
+                type: string
+            etiquetas:
+                type: array
+                items:
+                    type: string
+            estado:
+                type: string
+                enum: [borrador, publicada]
+            autor:
+                type: string
+            autor_id:
+                type: integer
+            slug:
+                type: string
+            meta_descripcion:
+                type: string
+            destacada:
+                type: boolean
+            fecha_publicacion:
+                type: string
+                format: date-time
+            fecha_creacion:
+                type: string
+                format: date-time
+            fecha_modificacion:
+                type: string
+                format: date-time
+    NewNewsArticle:
+        type: object
+        required:
+            - titulo
+            - contenido
+            - autor
+        properties:
+            titulo:
+                type: string
+            contenido:
+                type: string
+            resumen:
+                type: string
+            imagen_url:
+                type: string
+                format: url
+            categoria:
+                type: string
+            etiquetas:
+                type: array
+                items:
+                    type: string
+            estado:
+                type: string
+                enum: [borrador, publicada]
+            autor:
+                type: string
+            autor_id:
+                type: integer
+            meta_descripcion:
+                type: string
+            destacada:
+                type: boolean
+    UpdateNewsArticle:
+        type: object
+        properties:
+            titulo:
+                type: string
+            contenido:
+                type: string
+            resumen:
+                type: string
+            imagen_url:
+                type: string
+                format: url
+            categoria:
+                type: string
+            etiquetas:
+                type: array
+                items:
+                    type: string
+            estado:
+                type: string
+                enum: [borrador, publicada]
+            meta_descripcion:
+                type: string
+            destacada:
+                type: boolean
+    NewsStats:
+        type: object
+        properties:
+            total:
+                type: integer
+            publicadas:
+                type: integer
+            borradores:
+                type: integer
+            destacadas:
+                type: integer
+            vistas_totales:
+                type: integer
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: "admin"
+        password:
+          type: string
+          format: password
+          example: "HeroesPatria2024!"
+        rememberMe:
+          type: boolean
+          default: false
+    TokenPair:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        accessTokenExpiry:
+          type: integer
     Error:
       type: object
       properties:
@@ -707,7 +1014,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TutorSession'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/TutorSession'
   /tutor/sessions/{sessionId}/messages:
     post:
       tags:
@@ -736,7 +1050,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TutorMessage'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/TutorMessage'
   /admin/pending-registrations:
     get:
       tags:
@@ -750,9 +1071,21 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/RegistrationRequest'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  count:
+                    type: integer
+                  requests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RegistrationRequest'
+                  totalRequests:
+                    type: integer
+                  timestamp:
+                    type: string
+                    format: date-time
   /admin/all-registrations:
     get:
       tags:
@@ -768,12 +1101,17 @@ paths:
               schema:
                 type: object
                 properties:
+                  success:
+                    type: boolean
                   stats:
                     $ref: '#/components/schemas/AdminStats'
                   requests:
                     type: array
                     items:
                       $ref: '#/components/schemas/RegistrationRequest'
+                  timestamp:
+                    type: string
+                    format: date-time
   /admin/approve-registration:
     post:
       tags:
@@ -793,6 +1131,15 @@ paths:
       responses:
         '200':
           description: Solicitud aprobada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
   /admin/reject-registration:
     post:
       tags:
@@ -814,6 +1161,15 @@ paths:
       responses:
         '200':
           description: Solicitud rechazada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
   /admin/users/{id}/role:
     put:
       tags:
@@ -843,4 +1199,909 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+  /bolsa-trabajo/cv:
+    post:
+      tags:
+        - JobBoard
+      summary: Crear o actualizar perfil de CV
+      description: Envía un perfil de CV y un email de confirmación al usuario.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CVProfileRequest'
+      responses:
+        '201':
+          description: Solicitud de CV recibida y email de confirmación enviado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      nombre:
+                        type: string
+                      estado:
+                        type: string
+                      fecha_solicitud:
+                        type: string
+                        format: date-time
+                      nota:
+                        type: string
+    get:
+      tags:
+        - JobBoard
+      summary: Obtener lista de CVs
+      description: Devuelve una lista paginada de perfiles de CV.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+          description: Filtrar por estado del CV (activo, inactivo, contratado).
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Lista de CVs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CVProfile'
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+  /bolsa-trabajo/confirm-email/{token}:
+    post:
+      tags:
+        - JobBoard
+      summary: Confirmar email para perfil de CV
+      description: Confirma el email del usuario usando un token y mueve el CV a solicitudes de aprobación.
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Email confirmado y CV enviado a revisión.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      uuid:
+                        type: string
+                      approvalId:
+                        type: integer
+                      email:
+                        type: string
+                      status:
+                        type: string
+                      mensaje:
+                        type: string
+        '404':
+          description: Token inválido o expirado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /bolsa-trabajo/cv/stats:
+    get:
+      tags:
+        - JobBoard
+      summary: Obtener estadísticas de CVs
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Estadísticas de la bolsa de trabajo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/CVStats'
+  /bolsa-trabajo/cv/{id}:
+    get:
+      tags:
+        - JobBoard
+      summary: Obtener un CV por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalles del CV.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/CVProfile'
+        '404':
+          description: CV no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - JobBoard
+      summary: Actualizar un CV (Admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                telefono:
+                  type: string
+                anio_egreso:
+                  type: string
+                area_interes:
+                  type: string
+                resumen_profesional:
+                  type: string
+                habilidades:
+                  type: array
+                  items:
+                    type: string
+                status:
+                  type: string
+                  enum: [activo, inactivo, contratado]
+      responses:
+        '200':
+          description: CV actualizado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/CVProfile'
+        '404':
+          description: CV no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - JobBoard
+      summary: Eliminar un CV (Admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: CV eliminado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '404':
+          description: CV no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /bolsa-trabajo:
+    get:
+      tags:
+        - JobBoard
+      summary: Alias para obtener lista de CVs
+      description: Alias de /bolsa-trabajo/cv para compatibilidad frontend.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: estado
+          schema:
+            type: string
+          description: Filtrar por estado del CV.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Lista de CVs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CVProfile'
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+  /bolsa-trabajo/stats/general:
+    get:
+      tags:
+        - JobBoard
+      summary: Alias para obtener estadísticas generales de CVs
+      description: Alias de /bolsa-trabajo/cv/stats para compatibilidad frontend.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Estadísticas generales de la bolsa de trabajo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/CVStats'
+  /bolsa-trabajo/pending-approvals:
+    get:
+      tags:
+        - JobBoard
+      summary: Obtener solicitudes de CV pendientes de aprobación (Admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [pendiente, aprobada, rechazada]
+            default: pendiente
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: email_confirmado
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '200':
+          description: Lista de solicitudes pendientes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RegistrationRequest'
+                  total:
+                    type: integer
+  /bolsa-trabajo/approve-solicitud/{id}:
+    post:
+      tags:
+        - JobBoard
+      summary: Aprobar o rechazar una solicitud de CV (Admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovalAction'
+      responses:
+        '200':
+          description: Solicitud procesada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      solicitud_id:
+                        type: string
+                      uuid:
+                        type: string
+                      email:
+                        type: string
+                      estado:
+                        type: string
+                      bolsa_trabajo_id:
+                        type: integer
+                      admin_notas:
+                        type: string
+  /citas:
+    get:
+      tags:
+        - Appointments
+      summary: Obtener estado general y estadísticas del sistema de citas
+      description: Devuelve estadísticas agregadas de todas las citas.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Estado y estadísticas del sistema de citas.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  status:
+                    type: string
+                  stats:
+                    $ref: '#/components/schemas/AppointmentStats'
+                  message:
+                    type: string
+  /citas/create:
+    post:
+      tags:
+        - Appointments
+      summary: Crear una nueva solicitud de cita
+      description: Permite a los usuarios solicitar una cita, con validaciones de disponibilidad y envío de email de confirmación.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAppointment'
+      responses:
+        '200':
+          description: Solicitud de cita creada y email de confirmación enviado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  cita:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      estado:
+                        type: string
+                      fecha:
+                        type: string
+                        format: date
+                      hora:
+                        type: string
+                      emailSent:
+                        type: boolean
+        '400':
+          description: Datos inválidos.
+        '409':
+          description: Conflicto (horario no disponible, cita duplicada).
+        '429':
+          description: Demasiadas solicitudes.
+  /citas/available-slots:
+    get:
+      tags:
+        - Appointments
+      summary: Obtener horarios disponibles para agendar citas
+      description: Devuelve una lista de horarios con la cantidad de citas disponibles para una fecha y departamento específicos.
+      parameters:
+        - in: query
+          name: fecha
+          required: true
+          schema:
+            type: string
+            format: date
+          description: Fecha para consultar disponibilidad (YYYY-MM-DD).
+        - in: query
+          name: departamento
+          required: true
+          schema:
+            type: string
+          description: Departamento para el cual se consulta la disponibilidad.
+      responses:
+        '200':
+          description: Horarios disponibles.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  fecha:
+                    type: string
+                    format: date
+                  departamento:
+                    type: string
+                  horarios:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AvailableSlots'
+        '400':
+          description: Parámetros requeridos faltantes o inválidos.
+  /citas/confirm/{token}:
+    get:
+      tags:
+        - Appointments
+      summary: Confirmar una cita por token de email
+      description: Confirma una cita después de que el usuario hace clic en el enlace de verificación enviado por email.
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema:
+            type: string
+          description: Token de confirmación recibido en el email.
+      responses:
+        '200':
+          description: Cita confirmada exitosamente (HTML response).
+        '404':
+          description: Token inválido o cita ya confirmada.
+  /citas/list:
+    get:
+      tags:
+        - Appointments
+      summary: Listar todas las citas (Admin)
+      description: Devuelve una lista de citas con opciones de filtro. Requiere autenticación de administrador.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: estado
+          schema:
+            type: string
+            enum: [pendiente, aprobada, rechazada, completada]
+          description: Filtrar por estado de la cita.
+        - in: query
+          name: tipo_persona
+          schema:
+            type: string
+            enum: [estudiante, padre, madre, tutor, docente, administrativo, externo]
+          description: Filtrar por tipo de persona que solicitó la cita.
+        - in: query
+          name: fecha_desde
+          schema:
+            type: string
+            format: date
+          description: Filtrar citas a partir de esta fecha (YYYY-MM-DD).
+        - in: query
+          name: fecha_hasta
+          schema:
+            type: string
+            format: date
+          description: Filtrar citas hasta esta fecha (YYYY-MM-DD).
+      responses:
+        '200':
+          description: Lista de citas.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Appointment'
+                  total:
+                    type: integer
+  /citas/stats:
+    get:
+      tags:
+        - Appointments
+      summary: Obtener estadísticas detalladas de citas
+      description: Proporciona un desglose de las citas por estado (pendientes, aprobadas, etc.).
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Estadísticas de citas.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  statistics:
+                    $ref: '#/components/schemas/AppointmentStats'
+  /citas/{id}/approve:
+    put:
+      tags:
+        - Appointments
+      summary: Aprobar una cita pendiente (Admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveRejectAppointment'
+      responses:
+        '200':
+          description: Cita aprobada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  cita:
+                    $ref: '#/components/schemas/Appointment'
+        '404':
+          description: Cita no encontrada.
+  /citas/{id}/reject:
+    put:
+      tags:
+        - Appointments
+      summary: Rechazar una cita pendiente (Admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveRejectAppointment'
+      responses:
+        '200':
+          description: Cita rechazada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  cita:
+                    $ref: '#/components/schemas/Appointment'
+        '400':
+          description: Motivo de rechazo requerido.
+        '404':
+          description: Cita no encontrada.
+  /noticias:
+    post:
+      tags:
+        - News
+      summary: Crear una nueva noticia
+      description: Permite crear un nuevo artículo de noticia en el sistema.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewNewsArticle'
+      responses:
+        '201':
+          description: Noticia creada exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/NewsArticle'
+    get:
+      tags:
+        - News
+      summary: Obtener lista de noticias
+      description: Devuelve una lista paginada de artículos de noticias, con opciones de filtro.
+      parameters:
+        - in: query
+          name: estado
+          schema:
+            type: string
+            enum: [borrador, publicada]
+          description: Filtrar por estado de la noticia.
+        - in: query
+          name: categoria
+          schema:
+            type: string
+          description: Filtrar por categoría de la noticia.
+        - in: query
+          name: destacada
+          schema:
+            type: boolean
+          description: Filtrar por noticias destacadas.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Lista de noticias.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/NewsArticle'
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+  /noticias/stats:
+    get:
+      tags:
+        - News
+      summary: Obtener estadísticas de noticias
+      description: Devuelve estadísticas agregadas sobre los artículos de noticias.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Estadísticas de noticias.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/NewsStats'
+  /noticias/{id}:
+    get:
+      tags:
+        - News
+      summary: Obtener una noticia por ID
+      description: Devuelve un artículo de noticia específico por su ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalles de la noticia.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/NewsArticle'
+        '404':
+          description: Noticia no encontrada.
+    put:
+      tags:
+        - News
+      summary: Actualizar una noticia
+      description: Actualiza un artículo de noticia existente.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNewsArticle'
+      responses:
+        '200':
+          description: Noticia actualizada exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/NewsArticle'
+        '404':
+          description: Noticia no encontrada.
+    delete:
+      tags:
+        - News
+      summary: Eliminar una noticia (Soft Delete)
+      description: Elimina lógicamente un artículo de noticia, marcándolo como inactivo.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Noticia eliminada correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '404':
+          description: Noticia no encontrada o ya eliminada.
+  /noticias/slug/{slug}:
+    get:
+      tags:
+        - News
+      summary: Obtener una noticia por slug
+      description: Devuelve un artículo de noticia específico usando su slug amigable.
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detalles de la noticia.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/NewsArticle'
+        '404':
+          description: Noticia no encontrada.

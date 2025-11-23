@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGE Héroes de la Patria - Portal de Desarrolladores</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+        main {
+            flex: 1;
+            padding: 50px 0;
+        }
+        .jumbotron {
+            background-color: #e9ecef;
+            padding: 4rem 2rem;
+            margin-bottom: 2rem;
+            border-radius: .3rem;
+        }
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header dinámico -->
+    <header id="dynamic-header"></header>
+
+    <main class="container">
+        <div class="jumbotron text-center">
+            <h1 class="display-4">Portal de Desarrolladores</h1>
+            <p class="lead">Bienvenido al portal de desarrolladores de BGE Héroes de la Patria. Aquí encontrarás toda la documentación necesaria para integrar y extender nuestra plataforma.</p>
+            <hr class="my-4">
+            <p>Explora nuestra API interactiva para entender cómo funcionan nuestros servicios y cómo puedes utilizarlos en tus aplicaciones.</p>
+            <a class="btn btn-primary btn-lg" href="/api/docs" role="button">Explorar Documentación API</a>
+            <a class="btn btn-secondary btn-lg ms-3" href="#" role="button">Guías de Integración (Próximamente)</a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Documentación API</h5>
+                        <p class="card-text">Accede a la documentación completa de nuestra REST API, generada con OpenAPI (Swagger UI). Podrás probar los endpoints directamente desde tu navegador.</p>
+                        <a href="/api/docs" class="btn btn-outline-primary">Ver API Docs</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Guías de Integración</h5>
+                        <p class="card-text">Próximamente, encontrarás tutoriales y ejemplos de código para integrar fácilmente con nuestra plataforma, incluyendo autenticación, gestión de datos y webhooks.</p>
+                        <a href="#" class="btn btn-outline-secondary disabled">Más Información</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Soporte y Recursos</h5>
+                        <p class="card-text">Encuentra recursos útiles, preguntas frecuentes (FAQ) y formas de contactar a nuestro equipo de soporte técnico para desarrolladores.</p>
+                        <a href="#" class="btn btn-outline-info disabled">Obtener Soporte</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Novedades y Anuncios</h5>
+                        <p class="card-text">Mantente al día con las últimas actualizaciones de la API, nuevas funcionalidades y anuncios importantes para la comunidad de desarrolladores.</p>
+                        <a href="#" class="btn btn-outline-warning disabled">Ver Novedades</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer dinámico -->
+    <footer id="dynamic-footer"></footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- main.js para cargar header y footer dinámicamente y unified-auth-system-v2.js para el login modal -->
+    <script src="js/main.js"></script>
+</body>
+</html>
