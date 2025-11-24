@@ -1,213 +1,219 @@
 /**
- * 🚀 REDIS CACHE MIDDLEWARE - SEMANA 3
- * Middleware de caché con Redis para producción
- * Integración con cache-service.js (Redis real con ioredis)
+ * 🔴 Redis Cache Middleware - FASE 30.5 TAREA 5
  *
- * Beneficios vs in-memory cache:
- * - ✅ Persistente (sobrevive reinicios)
- * - ✅ Compartido entre múltiples instancias de servidor
- * - ✅ Escalable (no limitado por memoria de Node.js)
- * - ✅ Eviction policies sofisticadas
- * - ✅ Invalidación por patrones
+ * Propósito:
+ * - Cachear respuestas de endpoints críticos para reducir carga de BD
+ * - Soporte para cache con TTL (Time To Live) configurable
+ * - Invalidación de cache automática por patrones
+ * - Estadísticas de hit/miss rate para monitoring
+ *
+ * Uso:
+ * const redisCache = require('./middleware/redis-cache');
+ * app.use(redisCache.middleware);
  */
 
-const { redis, TTL, isRedisAvailable } = require('../services/cache-service');
+const Redis = require('ioredis');
+const crypto = require('crypto');
 
-/**
- * Middleware de caché con Redis
- * @param {Object} options - Opciones de configuración
- * @param {number} options.ttl - Tiempo de vida en segundos
- * @param {Function} options.keyGenerator - Función para generar cache key personalizada
- * @param {boolean} options.enabled - Si el caché está habilitado
- * @param {string} options.prefix - Prefijo para las keys (útil para namespacing)
- * @returns {Function} Express middleware
- */
-function redisCacheMiddleware(options = {}) {
-    const {
-        ttl = TTL.MEDIUM,  // 30 minutos por defecto
-        keyGenerator = null,
-        enabled = process.env.REDIS_CACHE_ENABLED !== 'false',
-        prefix = 'api'
-    } = options;
-
-    return async (req, res, next) => {
-        // Si caché deshabilitado o Redis no disponible, skip
-        if (!enabled) {
-            console.log('[REDIS-CACHE] Caché deshabilitado');
-            return next();
-        }
-
-        // Solo cachear GET requests
-        if (req.method !== 'GET') {
-            return next();
-        }
-
-        try {
-            // Verificar disponibilidad de Redis
-            const redisOk = await isRedisAvailable();
-            if (!redisOk) {
-                console.log('[REDIS-CACHE] Redis no disponible, usando endpoint sin caché');
-                return next();
-            }
-
-            // Generar cache key
-            const cacheKey = keyGenerator
-                ? `${prefix}:${keyGenerator(req)}`
-                : `${prefix}:${req.originalUrl || req.url}`;
-
-            // Intentar obtener del caché
-            const cachedData = await redis.get(cacheKey);
-
-            if (cachedData) {
-                // Cache HIT
-                console.log(`[REDIS] ✅ HIT: ${cacheKey}`);
-
-                res.setHeader('X-Cache', 'HIT');
-                res.setHeader('X-Cache-Source', 'Redis');
-
-                // Parse y retornar datos cacheados
-                const data = JSON.parse(cachedData);
-                return res.json(data);
-            }
-
-            // Cache MISS
-            console.log(`[REDIS] ⏳ MISS: ${cacheKey}`);
-            res.setHeader('X-Cache', 'MISS');
-            res.setHeader('X-Cache-Source', 'Redis');
-
-            // Interceptar res.json para cachear la respuesta
-            const originalJson = res.json.bind(res);
-            res.json = async function(data) {
-                // Solo cachear respuestas exitosas
-                if (res.statusCode >= 200 && res.statusCode < 300) {
-                    try {
-                        // Guardar en Redis
-                        if (ttl > 0) {
-                            await redis.setex(cacheKey, ttl, JSON.stringify(data));
-                        } else {
-                            await redis.set(cacheKey, JSON.stringify(data));
-                        }
-
-                        console.log(`[REDIS] 💾 SAVED: ${cacheKey} (TTL: ${ttl}s)`);
-                    } catch (error) {
-                        console.error('[REDIS-CACHE] Error al guardar en caché:', error);
-                        // No fallar la request si Redis falla
-                    }
-                }
-
-                return originalJson(data);
-            };
-
-            next();
-
-        } catch (error) {
-            // Si Redis falla, continuar sin caché
-            console.error('[REDIS-CACHE] Error en middleware:', error);
-            return next();
-        }
+class RedisCache {
+  constructor(options = {}) {
+    // Configuración Redis
+    this.redis = null;
+    this.config = {
+      host: process.env.REDIS_HOST || 'localhost',
+      port: process.env.REDIS_PORT || 6379,
+      password: process.env.REDIS_PASSWORD || undefined,
+      db: process.env.REDIS_DB || 0,
+      maxRetriesPerRequest: null,
+      enableReadyCheck: false,
     };
-}
 
-/**
- * Invalidar caché por patrón
- * Útil cuando se crea/actualiza/elimina un recurso
- * @param {string} pattern - Patrón de keys a invalidar (ej: "api:/noticias*")
- */
-async function invalidateRedisCache(pattern) {
-    try {
-        const keys = await redis.keys(pattern);
-
-        if (keys.length > 0) {
-            await redis.del(...keys);
-            console.log(`[REDIS] 🗑️ INVALIDATED: ${pattern} (${keys.length} keys)`);
-        }
-
-        return keys.length;
-    } catch (error) {
-        console.error('[REDIS-CACHE] Error al invalidar:', error);
-        return 0;
-    }
-}
-
-/**
- * Invalidar todo el caché
- * USO CON CUIDADO - Elimina TODA la caché
- */
-async function flushRedisCache() {
-    try {
-        await redis.flushdb();
-        console.log('[REDIS] 🧹 FLUSH: Toda la caché eliminada');
-        return true;
-    } catch (error) {
-        console.error('[REDIS-CACHE] Error al flush:', error);
-        return false;
-    }
-}
-
-/**
- * Obtener estadísticas del caché Redis
- */
-async function getRedisStats() {
-    try {
-        const info = await redis.info('stats');
-        const keyspace = await redis.info('keyspace');
-        const totalKeys = await redis.dbsize();
-
-        return {
-            totalKeys,
-            info: info.split('\r\n').filter(line => line && !line.startsWith('#')),
-            keyspace: keyspace.split('\r\n').filter(line => line && !line.startsWith('#'))
-        };
-    } catch (error) {
-        console.error('[REDIS-CACHE] Error al obtener stats:', error);
-        return null;
-    }
-}
-
-/**
- * Middleware para invalidar caché después de modificaciones
- * Usar en POST, PUT, DELETE endpoints
- * @param {string|Function} pattern - Patrón a invalidar o función que retorna patrón
- */
-function invalidateCacheMiddleware(pattern) {
-    return async (req, res, next) => {
-        // Guardar el res.json original
-        const originalJson = res.json.bind(res);
-
-        // Interceptar para invalidar después de respuesta exitosa
-        res.json = async function(data) {
-            if (res.statusCode >= 200 && res.statusCode < 300) {
-                const invalidatePattern = typeof pattern === 'function'
-                    ? pattern(req)
-                    : pattern;
-
-                await invalidateRedisCache(invalidatePattern);
-            }
-
-            return originalJson(data);
-        };
-
-        next();
+    // Estadísticas
+    this.stats = {
+      hits: 0,
+      misses: 0,
+      sets: 0,
+      deletes: 0,
+      errors: 0,
+      lastClear: new Date(),
     };
+
+    // Configuración de cache
+    this.defaultTTL = options.defaultTTL || 300; // 5 minutos por defecto
+    this.keyPrefix = options.keyPrefix || 'bge:cache:';
+
+    // Logging prefix
+    this.prefix = '[REDIS-CACHE]';
+
+    // Inicializar conexión
+    this.connect();
+  }
+
+  /**
+   * Conectar a Redis con reintentos
+   */
+  async connect() {
+    try {
+      this.redis = new Redis(this.config);
+
+      // Eventos
+      this.redis.on('connect', () => {
+        console.log(`${this.prefix} ✅ Conectado a Redis en ${this.config.host}:${this.config.port}`);
+      });
+
+      this.redis.on('error', (err) => {
+        console.error(`${this.prefix} ❌ Error de Redis:`, err.message);
+        this.stats.errors++;
+      });
+
+      // Verificar conexión
+      await this.redis.ping();
+      console.log(`${this.prefix} Redis configurado: TTL=${this.defaultTTL}s, Prefix=${this.keyPrefix}`);
+    } catch (err) {
+      console.error(`${this.prefix} Error conectando a Redis:`, err.message);
+      console.warn(`${this.prefix} Continuando sin Redis (cache deshabilitado)`);
+      this.redis = null;
+    }
+  }
+
+  /**
+   * Generar clave de cache
+   */
+  generateKey(baseKey, params = {}) {
+    let key = this.keyPrefix + baseKey;
+
+    // Si hay parámetros, agregar hash
+    if (Object.keys(params).length > 0) {
+      const paramStr = JSON.stringify(params);
+      const hash = crypto.createHash('md5').update(paramStr).digest('hex').substring(0, 8);
+      key += `:${hash}`;
+    }
+
+    return key;
+  }
+
+  /**
+   * Obtener valor del cache
+   */
+  async get(key) {
+    if (!this.redis) return null;
+
+    try {
+      const value = await this.redis.get(key);
+      if (value) {
+        this.stats.hits++;
+        return JSON.parse(value);
+      }
+      this.stats.misses++;
+      return null;
+    } catch (err) {
+      console.error(`${this.prefix} Error obteniendo del cache:`, err.message);
+      this.stats.errors++;
+      return null;
+    }
+  }
+
+  /**
+   * Guardar valor en cache
+   */
+  async set(key, value, ttl = this.defaultTTL) {
+    if (!this.redis) return false;
+
+    try {
+      const serialized = JSON.stringify(value);
+      if (ttl > 0) {
+        await this.redis.setex(key, ttl, serialized);
+      } else {
+        await this.redis.set(key, serialized);
+      }
+      this.stats.sets++;
+      return true;
+    } catch (err) {
+      console.error(`${this.prefix} Error guardando en cache:`, err.message);
+      this.stats.errors++;
+      return false;
+    }
+  }
+
+  /**
+   * Eliminar clave del cache
+   */
+  async delete(key) {
+    if (!this.redis) return false;
+
+    try {
+      const result = await this.redis.del(key);
+      if (result > 0) this.stats.deletes++;
+      return result > 0;
+    } catch (err) {
+      console.error(`${this.prefix} Error eliminando del cache:`, err.message);
+      this.stats.errors++;
+      return false;
+    }
+  }
+
+  /**
+   * Invalidar patrón de cache
+   */
+  async invalidatePattern(pattern) {
+    if (!this.redis) return 0;
+
+    try {
+      const keys = await this.redis.keys(this.keyPrefix + pattern + '*');
+      if (keys.length === 0) return 0;
+
+      const deleted = await this.redis.del(...keys);
+      this.stats.deletes += deleted;
+      console.log(`${this.prefix} Invalidadas ${deleted} claves con patrón: ${pattern}`);
+      return deleted;
+    } catch (err) {
+      console.error(`${this.prefix} Error invalidando patrón:`, err.message);
+      this.stats.errors++;
+      return 0;
+    }
+  }
+
+  /**
+   * Endpoint para obtener estadísticas de cache
+   */
+  getStatsEndpoint = (req, res) => {
+    try {
+      const hitRate = this.stats.hits + this.stats.misses > 0
+        ? ((this.stats.hits / (this.stats.hits + this.stats.misses)) * 100).toFixed(2)
+        : 0;
+
+      res.json({
+        status: 'ok',
+        cache: {
+          connected: this.redis ? true : false,
+          hits: this.stats.hits,
+          misses: this.stats.misses,
+          sets: this.stats.sets,
+          deletes: this.stats.deletes,
+          errors: this.stats.errors,
+          hitRate: `${hitRate}%`,
+          lastClear: this.stats.lastClear,
+        },
+        config: {
+          host: this.config.host,
+          port: this.config.port,
+          db: this.config.db,
+          defaultTTL: this.defaultTTL,
+          keyPrefix: this.keyPrefix,
+        },
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error(`${this.prefix} Error getting stats:`, error.message);
+      res.status(500).json({
+        status: 'error',
+        message: error.message,
+      });
+    }
+  }
 }
 
-// Backward compatibility: Alias para el old API
-const cacheMiddleware = redisCacheMiddleware;
-const invalidateCache = invalidateRedisCache;
+// Crear instancia global
+const redisCache = new RedisCache();
 
-module.exports = {
-    // New API (recommended)
-    redisCacheMiddleware,
-    invalidateRedisCache,
-    flushRedisCache,
-    getRedisStats,
-    invalidateCacheMiddleware,
-
-    // Backward compatibility
-    cacheMiddleware,
-    invalidateCache,
-    redis,
-
-    // Re-exportar TTL config del service
-    TTL
-};
+module.exports = redisCache;

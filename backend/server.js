@@ -90,6 +90,9 @@ const gradesServiceRoutes = require('./routes/grades-service');  // Calificacion
 // ✅ FASE 30.5 TAREA 4 - POOL MANAGER (24 NOV 2025)
 const poolManager = require('./middleware/pool-manager');  // Connection Pool monitoring
 
+// ✅ FASE 30.5 TAREA 5 - REDIS CACHE (24 NOV 2025)
+const redisCache = require('./middleware/redis-cache');  // Redis cache para endpoints críticos
+
 // ✅ FASE 1.2: 28 RUTAS HUÉRFANAS - Registradas 11 NOV 2025
 // GRUPO 1: IA/ML CRÍTICAS (6 rutas)
 const aiDatabaseRoutes = require('./routes/ai-database');
@@ -300,6 +303,13 @@ devLogger.log('🔌 Configurando Connection Pool Manager...');
 app.use('/api', poolManager.middleware);  // Registrar métricas de pool
 
 // ============================================
+// 🔴 REDIS CACHE MIDDLEWARE (FASE 30.5 TAREA 5)
+// ============================================
+// Cache de respuestas para reducir carga de BD
+devLogger.log('🔴 Configurando Redis Cache...');
+app.use('/api', redisCache.middleware);  // Middleware para cache
+
+// ============================================
 // RUTAS DE API
 // ============================================
 
@@ -341,6 +351,10 @@ app.use('/api/admin/tenants', tenantsRoutes);  // ✅ MULTI-TENANT MANAGEMENT (8
 app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/health', healthRoutes);
+
+// ✅ FASE 30.5 TAREA 5 - REDIS CACHE STATS ENDPOINTS
+app.get('/api/health/cache/stats', redisCache.getStatsEndpoint);  // Estadísticas de cache
+
 app.use('/api/test-events', testEventsRoutes);  // ✅ TESTING - Event Bus testing endpoints (FASE 2)
 app.use('/api/charts', chartsDataRoutes);
 app.use('/api/search', searchRoutes);
