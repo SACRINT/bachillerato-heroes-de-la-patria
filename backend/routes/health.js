@@ -293,4 +293,30 @@ router.get('/db', async (req, res) => {
     }
 });
 
+// ============================================
+// 🔌 CONNECTION POOL MANAGER ENDPOINTS (FASE 30.5 TAREA 4)
+// ============================================
+
+// Importar pool manager
+const poolManager = require('../middleware/pool-manager');
+
+/**
+ * GET /api/health/pool
+ * Estado actual del connection pool
+ */
+router.get('/pool', poolManager.getPoolStatusEndpoint);
+
+/**
+ * GET /api/health/pool/history
+ * Histórico de métricas del pool (últimas N muestras)
+ * Query params: ?limit=100
+ */
+router.get('/pool/history', poolManager.getPoolHistoryEndpoint);
+
+/**
+ * GET /api/health/pool/stats
+ * Estadísticas resumidas del pool
+ */
+router.get('/pool/stats', poolManager.getPoolStatsEndpoint);
+
 module.exports = router;

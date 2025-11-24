@@ -87,6 +87,9 @@ const gamificationRoutes = require('./routes/gamification');  // ✅ GAMIFICATIO
 const studentsServiceRoutes = require('./routes/students-service');  // Estudiantes con Service Layer
 const gradesServiceRoutes = require('./routes/grades-service');  // Calificaciones con Service Layer
 
+// ✅ FASE 30.5 TAREA 4 - POOL MANAGER (24 NOV 2025)
+const poolManager = require('./middleware/pool-manager');  // Connection Pool monitoring
+
 // ✅ FASE 1.2: 28 RUTAS HUÉRFANAS - Registradas 11 NOV 2025
 // GRUPO 1: IA/ML CRÍTICAS (6 rutas)
 const aiDatabaseRoutes = require('./routes/ai-database');
@@ -288,6 +291,13 @@ devLogger.log('🔀 Configurando API versioning middleware...');
 app.use('/api', apiVersioning);           // Detección de versión
 app.use('/api', v1CompatibilityLayer);    // Compatibilidad v1 → v2
 app.use('/api', rateLimitByTier);         // Rate limiting por plan del tenant
+
+// ============================================
+// 🔌 CONNECTION POOL MANAGER (FASE 30.5 TAREA 4)
+// ============================================
+// Monitorear utilización de pool en tiempo real
+devLogger.log('🔌 Configurando Connection Pool Manager...');
+app.use('/api', poolManager.middleware);  // Registrar métricas de pool
 
 // ============================================
 // RUTAS DE API
