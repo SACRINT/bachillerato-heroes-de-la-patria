@@ -11,7 +11,7 @@ const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const { body, validationResult } = require('express-validator');
 const { getGoogleClassroomService } = require('../services/googleClassroomService');
-const authMiddleware = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 const router = express.Router();
 
 // Obtener instancia del servicio
@@ -22,7 +22,7 @@ const googleClassroomService = getGoogleClassroomService();
  * Sincronizar datos de Google Classroom con el sistema BGE
  */
 router.post('/sync',
-    authMiddleware,
+    authenticateToken,
     [
         body('user').notEmpty().withMessage('User data is required'),
         body('courses').isArray().withMessage('Courses must be an array'),
@@ -69,7 +69,7 @@ router.post('/sync',
  * Obtener cursos sincronizados de un usuario
  */
 router.get('/courses/:userId',
-    authMiddleware,
+    authenticateToken,
     async (req, res) => {
         try {
             const { userId } = req.params;
@@ -103,7 +103,7 @@ router.get('/courses/:userId',
  * Obtener tareas de un curso específico
  */
 router.get('/assignments/:courseId',
-    authMiddleware,
+    authenticateToken,
     async (req, res) => {
         try {
             const { courseId } = req.params;
@@ -141,7 +141,7 @@ router.get('/assignments/:courseId',
  * Crear nueva tarea en Google Classroom
  */
 router.post('/assignments',
-    authMiddleware,
+    authenticateToken,
     [
         body('courseId').notEmpty().withMessage('Course ID is required'),
         body('title').isLength({ min: 1, max: 200 }).withMessage('Title must be 1-200 characters'),
@@ -189,7 +189,7 @@ router.post('/assignments',
  * Obtener calificaciones de una tarea específica
  */
 router.get('/grades/:courseId/:assignmentId',
-    authMiddleware,
+    authenticateToken,
     async (req, res) => {
         try {
             const { courseId, assignmentId } = req.params;
@@ -224,7 +224,7 @@ router.get('/grades/:courseId/:assignmentId',
  * Actualizar calificación de un estudiante
  */
 router.put('/grades',
-    authMiddleware,
+    authenticateToken,
     [
         body('courseId').notEmpty().withMessage('Course ID is required'),
         body('assignmentId').notEmpty().withMessage('Assignment ID is required'),
@@ -279,7 +279,7 @@ router.put('/grades',
  * Obtener estadísticas del usuario de Google Classroom
  */
 router.get('/stats/:userId',
-    authMiddleware,
+    authenticateToken,
     async (req, res) => {
         try {
             const { userId } = req.params;
@@ -349,7 +349,7 @@ router.post('/webhook',
  * Eliminar datos sincronizados de un usuario
  */
 router.delete('/sync/:userId',
-    authMiddleware,
+    authenticateToken,
     async (req, res) => {
         try {
             const { userId } = req.params;

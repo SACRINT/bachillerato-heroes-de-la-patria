@@ -1,0 +1,2464 @@
+{
+  "aggregate": {
+    "counters": {
+      "vusers.created_by_name.Notifications System": 1147,
+      "vusers.created": 7800,
+      "http.requests": 7800,
+      "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 1147,
+      "errors.ECONNREFUSED": 7800,
+      "vusers.failed": 7800,
+      "vusers.created_by_name.Students Management": 1545,
+      "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 1545,
+      "vusers.created_by_name.AI Tutor Conversations": 1970,
+      "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 1970,
+      "vusers.created_by_name.Grades and Assessments": 1577,
+      "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 1577,
+      "vusers.created_by_name.Health and Status Checks": 1561,
+      "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 1561
+    },
+    "rates": {
+      "http.request_rate": 2
+    },
+    "firstCounterAt": 1763938762230,
+    "lastCounterAt": 1763939597801,
+    "firstMetricAt": 1763938762230,
+    "lastMetricAt": 1763939597801,
+    "period": 1763939590000,
+    "summaries": {},
+    "histograms": {}
+  },
+  "intermediate": [
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 11,
+        "vusers.created": 79,
+        "http.requests": 79,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 11,
+        "errors.ECONNREFUSED": 79,
+        "vusers.failed": 79,
+        "vusers.created_by_name.Students Management": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.AI Tutor Conversations": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 23,
+        "vusers.created_by_name.Grades and Assessments": 12,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 12,
+        "vusers.created_by_name.Health and Status Checks": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 13
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938762230,
+      "lastCounterAt": 1763938769978,
+      "firstMetricAt": 1763938762230,
+      "lastMetricAt": 1763938769978,
+      "period": "1763938760000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 19,
+        "vusers.created": 98,
+        "http.requests": 98,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 19,
+        "errors.ECONNREFUSED": 98,
+        "vusers.failed": 98,
+        "vusers.created_by_name.Health and Status Checks": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 25,
+        "vusers.created_by_name.AI Tutor Conversations": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 25,
+        "vusers.created_by_name.Students Management": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.Notifications System": 11,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 11
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938770038,
+      "lastCounterAt": 1763938779955,
+      "firstMetricAt": 1763938770038,
+      "lastMetricAt": 1763938779955,
+      "period": "1763938770000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 23,
+        "vusers.created": 99,
+        "http.requests": 99,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 23,
+        "errors.ECONNREFUSED": 99,
+        "vusers.failed": 99,
+        "vusers.created_by_name.Students Management": 29,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 29,
+        "vusers.created_by_name.Health and Status Checks": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.Notifications System": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.Grades and Assessments": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 13
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938780015,
+      "lastCounterAt": 1763938789978,
+      "firstMetricAt": 1763938780015,
+      "lastMetricAt": 1763938789978,
+      "period": "1763938780000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 31,
+        "vusers.created": 99,
+        "http.requests": 99,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 31,
+        "errors.ECONNREFUSED": 99,
+        "vusers.failed": 99,
+        "vusers.created_by_name.Students Management": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Health and Status Checks": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.Notifications System": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.Grades and Assessments": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 17
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938790039,
+      "lastCounterAt": 1763938799816,
+      "firstMetricAt": 1763938790039,
+      "lastMetricAt": 1763938799816,
+      "period": "1763938790000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 27,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 27,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.Notifications System": 10,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 10,
+        "vusers.created_by_name.Grades and Assessments": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.AI Tutor Conversations": 24,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 24
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938800061,
+      "lastCounterAt": 1763938809905,
+      "firstMetricAt": 1763938800061,
+      "lastMetricAt": 1763938809905,
+      "period": "1763938800000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 29,
+        "vusers.created": 99,
+        "http.requests": 99,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 29,
+        "errors.ECONNREFUSED": 99,
+        "vusers.failed": 99,
+        "vusers.created_by_name.Grades and Assessments": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.Notifications System": 14,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 14,
+        "vusers.created_by_name.Health and Status Checks": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Students Management": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 18
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938810155,
+      "lastCounterAt": 1763938819951,
+      "firstMetricAt": 1763938810155,
+      "lastMetricAt": 1763938819951,
+      "period": "1763938810000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 17,
+        "vusers.created": 99,
+        "http.requests": 99,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 17,
+        "errors.ECONNREFUSED": 99,
+        "vusers.failed": 99,
+        "vusers.created_by_name.Health and Status Checks": 26,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 26,
+        "vusers.created_by_name.Grades and Assessments": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.Notifications System": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.AI Tutor Conversations": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 25
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938820011,
+      "lastCounterAt": 1763938829975,
+      "firstMetricAt": 1763938820011,
+      "lastMetricAt": 1763938829975,
+      "period": "1763938820000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 19,
+        "vusers.created": 98,
+        "http.requests": 98,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 19,
+        "errors.ECONNREFUSED": 98,
+        "vusers.failed": 98,
+        "vusers.created_by_name.Health and Status Checks": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.Notifications System": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.Grades and Assessments": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.Students Management": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 25
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938830034,
+      "lastCounterAt": 1763938839943,
+      "firstMetricAt": 1763938830034,
+      "lastMetricAt": 1763938839943,
+      "period": "1763938830000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 19,
+        "vusers.created": 99,
+        "http.requests": 99,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 19,
+        "errors.ECONNREFUSED": 99,
+        "vusers.failed": 99,
+        "vusers.created_by_name.AI Tutor Conversations": 24,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 24,
+        "vusers.created_by_name.Students Management": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.Grades and Assessments": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.Health and Status Checks": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 19
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938840004,
+      "lastCounterAt": 1763938849771,
+      "firstMetricAt": 1763938840004,
+      "lastMetricAt": 1763938849771,
+      "period": "1763938840000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Health and Status Checks": 21,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 21,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Notifications System": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.AI Tutor Conversations": 26,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 26,
+        "vusers.created_by_name.Grades and Assessments": 24,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 24,
+        "vusers.created_by_name.Students Management": 14,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 14
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938850034,
+      "lastCounterAt": 1763938859871,
+      "firstMetricAt": 1763938850034,
+      "lastMetricAt": 1763938859871,
+      "period": "1763938850000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 18,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 18,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Grades and Assessments": 26,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 26,
+        "vusers.created_by_name.Students Management": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.Health and Status Checks": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.Notifications System": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 16
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938860119,
+      "lastCounterAt": 1763938869968,
+      "firstMetricAt": 1763938860119,
+      "lastMetricAt": 1763938869968,
+      "period": "1763938860000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 25,
+        "vusers.created": 99,
+        "http.requests": 99,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 25,
+        "errors.ECONNREFUSED": 99,
+        "vusers.failed": 99,
+        "vusers.created_by_name.Notifications System": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.Grades and Assessments": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.Health and Status Checks": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.AI Tutor Conversations": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 21
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938870216,
+      "lastCounterAt": 1763938879994,
+      "firstMetricAt": 1763938870216,
+      "lastMetricAt": 1763938879994,
+      "period": "1763938870000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Health and Status Checks": 24,
+        "vusers.created": 99,
+        "http.requests": 99,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 24,
+        "errors.ECONNREFUSED": 99,
+        "vusers.failed": 99,
+        "vusers.created_by_name.Grades and Assessments": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.Notifications System": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.AI Tutor Conversations": 30,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 30,
+        "vusers.created_by_name.Students Management": 8,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 8
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938880054,
+      "lastCounterAt": 1763938889914,
+      "firstMetricAt": 1763938880054,
+      "lastMetricAt": 1763938889914,
+      "period": "1763938880000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 14,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 14,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Grades and Assessments": 28,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 28,
+        "vusers.created_by_name.Students Management": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.AI Tutor Conversations": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.Health and Status Checks": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 21
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938890002,
+      "lastCounterAt": 1763938899911,
+      "firstMetricAt": 1763938890002,
+      "lastMetricAt": 1763938899911,
+      "period": "1763938890000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Health and Status Checks": 22,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 22,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Students Management": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.Notifications System": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.AI Tutor Conversations": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.Grades and Assessments": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 23
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938900002,
+      "lastCounterAt": 1763938909911,
+      "firstMetricAt": 1763938900002,
+      "lastMetricAt": 1763938909911,
+      "period": "1763938900000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 24,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 24,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Grades and Assessments": 26,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 26,
+        "vusers.created_by_name.Notifications System": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.Students Management": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.Health and Status Checks": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 17
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938910002,
+      "lastCounterAt": 1763938919911,
+      "firstMetricAt": 1763938910002,
+      "lastMetricAt": 1763938919911,
+      "period": "1763938910000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 20,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 20,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 13,
+        "vusers.created_by_name.Grades and Assessments": 24,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 24,
+        "vusers.created_by_name.AI Tutor Conversations": 30,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 30,
+        "vusers.created_by_name.Students Management": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 13
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938920002,
+      "lastCounterAt": 1763938929912,
+      "firstMetricAt": 1763938920002,
+      "lastMetricAt": 1763938929912,
+      "period": "1763938920000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 25,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 25,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Students Management": 30,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 30,
+        "vusers.created_by_name.Grades and Assessments": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.Notifications System": 11,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 11,
+        "vusers.created_by_name.Health and Status Checks": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 16
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938930002,
+      "lastCounterAt": 1763938939911,
+      "firstMetricAt": 1763938930002,
+      "lastMetricAt": 1763938939911,
+      "period": "1763938930000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Health and Status Checks": 20,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 20,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.AI Tutor Conversations": 24,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 24,
+        "vusers.created_by_name.Notifications System": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Students Management": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.Grades and Assessments": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 20
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938940002,
+      "lastCounterAt": 1763938949911,
+      "firstMetricAt": 1763938940002,
+      "lastMetricAt": 1763938949911,
+      "period": "1763938940000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 29,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 29,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Students Management": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.Notifications System": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Grades and Assessments": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 21,
+        "vusers.created_by_name.Health and Status Checks": 12,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 12
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938950002,
+      "lastCounterAt": 1763938959911,
+      "firstMetricAt": 1763938950002,
+      "lastMetricAt": 1763938959911,
+      "period": "1763938950000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 20,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 20,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Students Management": 14,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 14,
+        "vusers.created_by_name.AI Tutor Conversations": 32,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 32,
+        "vusers.created_by_name.Grades and Assessments": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Health and Status Checks": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 18
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938960002,
+      "lastCounterAt": 1763938969911,
+      "firstMetricAt": 1763938960002,
+      "lastMetricAt": 1763938969911,
+      "period": "1763938960000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 19,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 19,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.AI Tutor Conversations": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 25,
+        "vusers.created_by_name.Students Management": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.Health and Status Checks": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.Notifications System": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 18
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938970002,
+      "lastCounterAt": 1763938979911,
+      "firstMetricAt": 1763938970002,
+      "lastMetricAt": 1763938979911,
+      "period": "1763938970000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 21,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 21,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.AI Tutor Conversations": 26,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 26,
+        "vusers.created_by_name.Students Management": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.Notifications System": 8,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 8,
+        "vusers.created_by_name.Health and Status Checks": 26,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 26
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938980002,
+      "lastCounterAt": 1763938989911,
+      "firstMetricAt": 1763938980002,
+      "lastMetricAt": 1763938989911,
+      "period": "1763938980000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 23,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 23,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.AI Tutor Conversations": 29,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 29,
+        "vusers.created_by_name.Notifications System": 14,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 14,
+        "vusers.created_by_name.Grades and Assessments": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 21,
+        "vusers.created_by_name.Health and Status Checks": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 13
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763938990002,
+      "lastCounterAt": 1763938999911,
+      "firstMetricAt": 1763938990002,
+      "lastMetricAt": 1763938999911,
+      "period": "1763938990000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 20,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 20,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Grades and Assessments": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.AI Tutor Conversations": 29,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 29,
+        "vusers.created_by_name.Notifications System": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.Health and Status Checks": 12,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 12
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939000002,
+      "lastCounterAt": 1763939009911,
+      "firstMetricAt": 1763939000002,
+      "lastMetricAt": 1763939009911,
+      "period": "1763939000000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 18,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 18,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Grades and Assessments": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.AI Tutor Conversations": 29,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 29,
+        "vusers.created_by_name.Health and Status Checks": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 21,
+        "vusers.created_by_name.Notifications System": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 15
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939010002,
+      "lastCounterAt": 1763939019911,
+      "firstMetricAt": 1763939010002,
+      "lastMetricAt": 1763939019911,
+      "period": "1763939010000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 25,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 25,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.AI Tutor Conversations": 27,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 27,
+        "vusers.created_by_name.Notifications System": 12,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 12,
+        "vusers.created_by_name.Students Management": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.Health and Status Checks": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 21
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939020002,
+      "lastCounterAt": 1763939029911,
+      "firstMetricAt": 1763939020002,
+      "lastMetricAt": 1763939029911,
+      "period": "1763939020000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 22,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 22,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 23,
+        "vusers.created_by_name.Students Management": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 13,
+        "vusers.created_by_name.AI Tutor Conversations": 30,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 30,
+        "vusers.created_by_name.Notifications System": 12,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 12
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939030002,
+      "lastCounterAt": 1763939039911,
+      "firstMetricAt": 1763939030002,
+      "lastMetricAt": 1763939039911,
+      "period": "1763939030000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 15,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 15,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 23,
+        "vusers.created_by_name.AI Tutor Conversations": 27,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 27,
+        "vusers.created_by_name.Grades and Assessments": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 23,
+        "vusers.created_by_name.Notifications System": 12,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 12
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939040002,
+      "lastCounterAt": 1763939049911,
+      "firstMetricAt": 1763939040002,
+      "lastMetricAt": 1763939049911,
+      "period": "1763939040000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Health and Status Checks": 25,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 25,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.AI Tutor Conversations": 26,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 26,
+        "vusers.created_by_name.Students Management": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.Notifications System": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.Grades and Assessments": 12,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 12
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939050002,
+      "lastCounterAt": 1763939059911,
+      "firstMetricAt": 1763939050002,
+      "lastMetricAt": 1763939059911,
+      "period": "1763939050000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Health and Status Checks": 12,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 12,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Notifications System": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.AI Tutor Conversations": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 21,
+        "vusers.created_by_name.Students Management": 27,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 27,
+        "vusers.created_by_name.Grades and Assessments": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 20
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939060002,
+      "lastCounterAt": 1763939069911,
+      "firstMetricAt": 1763939060002,
+      "lastMetricAt": 1763939069911,
+      "period": "1763939060000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 14,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 14,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.AI Tutor Conversations": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 25,
+        "vusers.created_by_name.Grades and Assessments": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.Students Management": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.Health and Status Checks": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 17
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939070002,
+      "lastCounterAt": 1763939079911,
+      "firstMetricAt": 1763939070002,
+      "lastMetricAt": 1763939079911,
+      "period": "1763939070000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 22,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 22,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Grades and Assessments": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.Health and Status Checks": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 25,
+        "vusers.created_by_name.AI Tutor Conversations": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.Notifications System": 9,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 9
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939080002,
+      "lastCounterAt": 1763939089912,
+      "firstMetricAt": 1763939080002,
+      "lastMetricAt": 1763939089912,
+      "period": "1763939080000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 20,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 20,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 21,
+        "vusers.created_by_name.Grades and Assessments": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.AI Tutor Conversations": 27,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 27,
+        "vusers.created_by_name.Notifications System": 10,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 10
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939090002,
+      "lastCounterAt": 1763939099911,
+      "firstMetricAt": 1763939090002,
+      "lastMetricAt": 1763939099911,
+      "period": "1763939090000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 19,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 19,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.AI Tutor Conversations": 28,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 28,
+        "vusers.created_by_name.Students Management": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Notifications System": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.Health and Status Checks": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 18
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939100002,
+      "lastCounterAt": 1763939109911,
+      "firstMetricAt": 1763939100002,
+      "lastMetricAt": 1763939109911,
+      "period": "1763939100000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 24,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 24,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.AI Tutor Conversations": 30,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 30,
+        "vusers.created_by_name.Health and Status Checks": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 21,
+        "vusers.created_by_name.Grades and Assessments": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.Notifications System": 8,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 8
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939110002,
+      "lastCounterAt": 1763939119911,
+      "firstMetricAt": 1763939110002,
+      "lastMetricAt": 1763939119911,
+      "period": "1763939110000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 25,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 25,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 24,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 24,
+        "vusers.created_by_name.Students Management": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.AI Tutor Conversations": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.Notifications System": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 15
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939120002,
+      "lastCounterAt": 1763939129912,
+      "firstMetricAt": 1763939120002,
+      "lastMetricAt": 1763939129912,
+      "period": "1763939120000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 26,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 26,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.Grades and Assessments": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.Students Management": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Notifications System": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 16
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939130002,
+      "lastCounterAt": 1763939139911,
+      "firstMetricAt": 1763939130002,
+      "lastMetricAt": 1763939139911,
+      "period": "1763939130000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 25,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 25,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Students Management": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.Notifications System": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 13,
+        "vusers.created_by_name.Health and Status Checks": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.AI Tutor Conversations": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 23
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939140002,
+      "lastCounterAt": 1763939149911,
+      "firstMetricAt": 1763939140002,
+      "lastMetricAt": 1763939149911,
+      "period": "1763939140000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 19,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 19,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Students Management": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.Grades and Assessments": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.Health and Status Checks": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.AI Tutor Conversations": 27,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 27
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939150002,
+      "lastCounterAt": 1763939159911,
+      "firstMetricAt": 1763939150002,
+      "lastMetricAt": 1763939159911,
+      "period": "1763939150000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 16,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 16,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.Grades and Assessments": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 23,
+        "vusers.created_by_name.Students Management": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 21,
+        "vusers.created_by_name.AI Tutor Conversations": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 18
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939160002,
+      "lastCounterAt": 1763939169911,
+      "firstMetricAt": 1763939160002,
+      "lastMetricAt": 1763939169911,
+      "period": "1763939160000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 24,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 24,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Grades and Assessments": 14,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 14,
+        "vusers.created_by_name.AI Tutor Conversations": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.Notifications System": 24,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 24
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939170002,
+      "lastCounterAt": 1763939179911,
+      "firstMetricAt": 1763939170002,
+      "lastMetricAt": 1763939179911,
+      "period": "1763939170000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 24,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 24,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.Grades and Assessments": 14,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 14,
+        "vusers.created_by_name.Notifications System": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.Students Management": 27,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 27
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939180002,
+      "lastCounterAt": 1763939189911,
+      "firstMetricAt": 1763939180002,
+      "lastMetricAt": 1763939189911,
+      "period": "1763939180000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 26,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 26,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 24,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 24,
+        "vusers.created_by_name.Notifications System": 9,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 9,
+        "vusers.created_by_name.Grades and Assessments": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 23,
+        "vusers.created_by_name.Students Management": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 18
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939190002,
+      "lastCounterAt": 1763939199911,
+      "firstMetricAt": 1763939190002,
+      "lastMetricAt": 1763939199911,
+      "period": "1763939190000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 25,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 25,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Notifications System": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.Health and Status Checks": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.Grades and Assessments": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.AI Tutor Conversations": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 16
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939200002,
+      "lastCounterAt": 1763939209911,
+      "firstMetricAt": 1763939200002,
+      "lastMetricAt": 1763939209911,
+      "period": "1763939200000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 24,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 24,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Grades and Assessments": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.AI Tutor Conversations": 28,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 28,
+        "vusers.created_by_name.Students Management": 12,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 12,
+        "vusers.created_by_name.Health and Status Checks": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 17
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939210002,
+      "lastCounterAt": 1763939219911,
+      "firstMetricAt": 1763939210002,
+      "lastMetricAt": 1763939219911,
+      "period": "1763939210000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 30,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 30,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.Students Management": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.AI Tutor Conversations": 26,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 26,
+        "vusers.created_by_name.Notifications System": 9,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 9
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939220002,
+      "lastCounterAt": 1763939229911,
+      "firstMetricAt": 1763939220002,
+      "lastMetricAt": 1763939229911,
+      "period": "1763939220000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 23,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 23,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Notifications System": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.AI Tutor Conversations": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 23,
+        "vusers.created_by_name.Grades and Assessments": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.Health and Status Checks": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 19
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939230002,
+      "lastCounterAt": 1763939239911,
+      "firstMetricAt": 1763939230002,
+      "lastMetricAt": 1763939239911,
+      "period": "1763939230000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 27,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 27,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.AI Tutor Conversations": 29,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 29,
+        "vusers.created_by_name.Notifications System": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 13,
+        "vusers.created_by_name.Grades and Assessments": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 15
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939240002,
+      "lastCounterAt": 1763939249911,
+      "firstMetricAt": 1763939240002,
+      "lastMetricAt": 1763939249911,
+      "period": "1763939240000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 14,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 14,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.AI Tutor Conversations": 33,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 33,
+        "vusers.created_by_name.Health and Status Checks": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.Grades and Assessments": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 21,
+        "vusers.created_by_name.Students Management": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 13
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939250002,
+      "lastCounterAt": 1763939259911,
+      "firstMetricAt": 1763939250002,
+      "lastMetricAt": 1763939259911,
+      "period": "1763939250000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Health and Status Checks": 25,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 25,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.AI Tutor Conversations": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.Notifications System": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 13,
+        "vusers.created_by_name.Students Management": 24,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 24,
+        "vusers.created_by_name.Grades and Assessments": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 16
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939260002,
+      "lastCounterAt": 1763939269911,
+      "firstMetricAt": 1763939260002,
+      "lastMetricAt": 1763939269911,
+      "period": "1763939260000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 20,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 20,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Students Management": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.Health and Status Checks": 28,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 28,
+        "vusers.created_by_name.AI Tutor Conversations": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.Notifications System": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 13
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939270002,
+      "lastCounterAt": 1763939279911,
+      "firstMetricAt": 1763939270002,
+      "lastMetricAt": 1763939279911,
+      "period": "1763939270000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 20,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 20,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Students Management": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 23,
+        "vusers.created_by_name.AI Tutor Conversations": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 25,
+        "vusers.created_by_name.Notifications System": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 13,
+        "vusers.created_by_name.Health and Status Checks": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 19
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939280002,
+      "lastCounterAt": 1763939289911,
+      "firstMetricAt": 1763939280002,
+      "lastMetricAt": 1763939289911,
+      "period": "1763939280000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 13,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 13,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Grades and Assessments": 22,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 22,
+        "vusers.created_by_name.AI Tutor Conversations": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Health and Status Checks": 29,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 29,
+        "vusers.created_by_name.Students Management": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 20
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939290002,
+      "lastCounterAt": 1763939299911,
+      "firstMetricAt": 1763939290002,
+      "lastMetricAt": 1763939299911,
+      "period": "1763939290000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 17,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 17,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.AI Tutor Conversations": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 25,
+        "vusers.created_by_name.Grades and Assessments": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.Students Management": 24,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 24,
+        "vusers.created_by_name.Health and Status Checks": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 17
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939300002,
+      "lastCounterAt": 1763939309911,
+      "firstMetricAt": 1763939300002,
+      "lastMetricAt": 1763939309911,
+      "period": "1763939300000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 17,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 17,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Grades and Assessments": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 25,
+        "vusers.created_by_name.Students Management": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.AI Tutor Conversations": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 25,
+        "vusers.created_by_name.Health and Status Checks": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 16
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939310002,
+      "lastCounterAt": 1763939319911,
+      "firstMetricAt": 1763939310002,
+      "lastMetricAt": 1763939319911,
+      "period": "1763939310000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 19,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 19,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Students Management": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.AI Tutor Conversations": 32,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 32,
+        "vusers.created_by_name.Notifications System": 11,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 11,
+        "vusers.created_by_name.Health and Status Checks": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 19
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939320002,
+      "lastCounterAt": 1763939329911,
+      "firstMetricAt": 1763939320002,
+      "lastMetricAt": 1763939329911,
+      "period": "1763939320000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Health and Status Checks": 20,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 20,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Grades and Assessments": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 13,
+        "vusers.created_by_name.Notifications System": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 13,
+        "vusers.created_by_name.AI Tutor Conversations": 27,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 27,
+        "vusers.created_by_name.Students Management": 27,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 27
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939330002,
+      "lastCounterAt": 1763939339911,
+      "firstMetricAt": 1763939330002,
+      "lastMetricAt": 1763939339911,
+      "period": "1763939330000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Health and Status Checks": 18,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 18,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Students Management": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.AI Tutor Conversations": 29,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 29,
+        "vusers.created_by_name.Grades and Assessments": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 23,
+        "vusers.created_by_name.Notifications System": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 15
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939340002,
+      "lastCounterAt": 1763939349911,
+      "firstMetricAt": 1763939340002,
+      "lastMetricAt": 1763939349911,
+      "period": "1763939340000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 23,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 23,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 28,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 28,
+        "vusers.created_by_name.AI Tutor Conversations": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.Students Management": 12,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 12,
+        "vusers.created_by_name.Notifications System": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 17
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939350002,
+      "lastCounterAt": 1763939359911,
+      "firstMetricAt": 1763939350002,
+      "lastMetricAt": 1763939359911,
+      "period": "1763939350000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 18,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 18,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 23,
+        "vusers.created_by_name.Notifications System": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Grades and Assessments": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.AI Tutor Conversations": 24,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 24
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939360002,
+      "lastCounterAt": 1763939369911,
+      "firstMetricAt": 1763939360002,
+      "lastMetricAt": 1763939369911,
+      "period": "1763939360000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 18,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 18,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Notifications System": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Health and Status Checks": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 21,
+        "vusers.created_by_name.AI Tutor Conversations": 30,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 30,
+        "vusers.created_by_name.Students Management": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 15
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939370002,
+      "lastCounterAt": 1763939379911,
+      "firstMetricAt": 1763939370002,
+      "lastMetricAt": 1763939379911,
+      "period": "1763939370000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 28,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 28,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.AI Tutor Conversations": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 23,
+        "vusers.created_by_name.Health and Status Checks": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 23,
+        "vusers.created_by_name.Students Management": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.Notifications System": 8,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 8
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939380002,
+      "lastCounterAt": 1763939389911,
+      "firstMetricAt": 1763939380002,
+      "lastMetricAt": 1763939389911,
+      "period": "1763939380000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 11,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 11,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Students Management": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.Health and Status Checks": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 25,
+        "vusers.created_by_name.Grades and Assessments": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 25,
+        "vusers.created_by_name.AI Tutor Conversations": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 20
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939390002,
+      "lastCounterAt": 1763939399911,
+      "firstMetricAt": 1763939390002,
+      "lastMetricAt": 1763939399911,
+      "period": "1763939390000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 20,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 20,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.AI Tutor Conversations": 30,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 30,
+        "vusers.created_by_name.Students Management": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Notifications System": 14,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 14,
+        "vusers.created_by_name.Health and Status Checks": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 20
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939400002,
+      "lastCounterAt": 1763939409911,
+      "firstMetricAt": 1763939400002,
+      "lastMetricAt": 1763939409911,
+      "period": "1763939400000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Health and Status Checks": 14,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 14,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Grades and Assessments": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.AI Tutor Conversations": 29,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 29,
+        "vusers.created_by_name.Notifications System": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.Students Management": 23,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 23
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939410002,
+      "lastCounterAt": 1763939419911,
+      "firstMetricAt": 1763939410002,
+      "lastMetricAt": 1763939419911,
+      "period": "1763939410000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Health and Status Checks": 22,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 22,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Notifications System": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.Students Management": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 21,
+        "vusers.created_by_name.Grades and Assessments": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.AI Tutor Conversations": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 25
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939420002,
+      "lastCounterAt": 1763939429911,
+      "firstMetricAt": 1763939420002,
+      "lastMetricAt": 1763939429911,
+      "period": "1763939420000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 27,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 27,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Grades and Assessments": 26,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 26,
+        "vusers.created_by_name.Health and Status Checks": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.Students Management": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.Notifications System": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 13
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939430002,
+      "lastCounterAt": 1763939439911,
+      "firstMetricAt": 1763939430002,
+      "lastMetricAt": 1763939439911,
+      "period": "1763939430000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 24,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 24,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Notifications System": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 13,
+        "vusers.created_by_name.AI Tutor Conversations": 29,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 29,
+        "vusers.created_by_name.Students Management": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.Health and Status Checks": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 19
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939440002,
+      "lastCounterAt": 1763939449911,
+      "firstMetricAt": 1763939440002,
+      "lastMetricAt": 1763939449911,
+      "period": "1763939440000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Health and Status Checks": 19,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 19,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Grades and Assessments": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 21,
+        "vusers.created_by_name.Students Management": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.AI Tutor Conversations": 32,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 32,
+        "vusers.created_by_name.Notifications System": 8,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 8
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939450002,
+      "lastCounterAt": 1763939459911,
+      "firstMetricAt": 1763939450002,
+      "lastMetricAt": 1763939459911,
+      "period": "1763939450000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 28,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 28,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.Notifications System": 9,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 9,
+        "vusers.created_by_name.AI Tutor Conversations": 27,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 27,
+        "vusers.created_by_name.Grades and Assessments": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 17
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939460002,
+      "lastCounterAt": 1763939469911,
+      "firstMetricAt": 1763939460002,
+      "lastMetricAt": 1763939469911,
+      "period": "1763939460000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 19,
+        "vusers.created": 100,
+        "http.requests": 100,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 19,
+        "errors.ECONNREFUSED": 100,
+        "vusers.failed": 100,
+        "vusers.created_by_name.Health and Status Checks": 20,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 20,
+        "vusers.created_by_name.Grades and Assessments": 25,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 25,
+        "vusers.created_by_name.Notifications System": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.Students Management": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 19
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939470002,
+      "lastCounterAt": 1763939479911,
+      "firstMetricAt": 1763939470002,
+      "lastMetricAt": 1763939479911,
+      "period": "1763939470000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 20,
+        "vusers.created": 99,
+        "http.requests": 99,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 20,
+        "errors.ECONNREFUSED": 99,
+        "vusers.failed": 99,
+        "vusers.created_by_name.Students Management": 26,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 26,
+        "vusers.created_by_name.Notifications System": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Grades and Assessments": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.Health and Status Checks": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 18
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939480002,
+      "lastCounterAt": 1763939489992,
+      "firstMetricAt": 1763939480002,
+      "lastMetricAt": 1763939489992,
+      "period": "1763939480000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 23,
+        "vusers.created": 88,
+        "http.requests": 88,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 23,
+        "errors.ECONNREFUSED": 88,
+        "vusers.failed": 88,
+        "vusers.created_by_name.Students Management": 21,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 21,
+        "vusers.created_by_name.Health and Status Checks": 12,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 12,
+        "vusers.created_by_name.Grades and Assessments": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.Notifications System": 14,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 14
+      },
+      "rates": {
+        "http.request_rate": 9
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939490084,
+      "lastCounterAt": 1763939499973,
+      "firstMetricAt": 1763939490084,
+      "lastMetricAt": 1763939499973,
+      "period": "1763939490000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 12,
+        "vusers.created": 80,
+        "http.requests": 80,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 12,
+        "errors.ECONNREFUSED": 80,
+        "vusers.failed": 80,
+        "vusers.created_by_name.Health and Status Checks": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Students Management": 14,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 14,
+        "vusers.created_by_name.AI Tutor Conversations": 27,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 27,
+        "vusers.created_by_name.Grades and Assessments": 11,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 11
+      },
+      "rates": {
+        "http.request_rate": 8
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939500048,
+      "lastCounterAt": 1763939509671,
+      "firstMetricAt": 1763939500048,
+      "lastMetricAt": 1763939509671,
+      "period": "1763939500000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Notifications System": 16,
+        "vusers.created": 73,
+        "http.requests": 73,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 16,
+        "errors.ECONNREFUSED": 73,
+        "vusers.failed": 73,
+        "vusers.created_by_name.Health and Status Checks": 17,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 17,
+        "vusers.created_by_name.Students Management": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.Grades and Assessments": 12,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 12,
+        "vusers.created_by_name.AI Tutor Conversations": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 13
+      },
+      "rates": {
+        "http.request_rate": 7
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939510058,
+      "lastCounterAt": 1763939519719,
+      "firstMetricAt": 1763939510058,
+      "lastMetricAt": 1763939519719,
+      "period": "1763939510000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Grades and Assessments": 10,
+        "vusers.created": 65,
+        "http.requests": 65,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 10,
+        "errors.ECONNREFUSED": 65,
+        "vusers.failed": 65,
+        "vusers.created_by_name.Health and Status Checks": 10,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 10,
+        "vusers.created_by_name.AI Tutor Conversations": 19,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 19,
+        "vusers.created_by_name.Notifications System": 11,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 11,
+        "vusers.created_by_name.Students Management": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 15
+      },
+      "rates": {
+        "http.request_rate": 7
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939520138,
+      "lastCounterAt": 1763939529705,
+      "firstMetricAt": 1763939520138,
+      "lastMetricAt": 1763939529705,
+      "period": "1763939520000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 5,
+        "vusers.created": 57,
+        "http.requests": 57,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 5,
+        "errors.ECONNREFUSED": 57,
+        "vusers.failed": 57,
+        "vusers.created_by_name.AI Tutor Conversations": 18,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 18,
+        "vusers.created_by_name.Grades and Assessments": 15,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 15,
+        "vusers.created_by_name.Health and Status Checks": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 16,
+        "vusers.created_by_name.Notifications System": 3,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 3
+      },
+      "rates": {
+        "http.request_rate": 6
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939530218,
+      "lastCounterAt": 1763939539557,
+      "firstMetricAt": 1763939530218,
+      "lastMetricAt": 1763939539557,
+      "period": "1763939530000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 9,
+        "vusers.created": 50,
+        "http.requests": 50,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 9,
+        "errors.ECONNREFUSED": 50,
+        "vusers.failed": 50,
+        "vusers.created_by_name.Health and Status Checks": 14,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 14,
+        "vusers.created_by_name.Grades and Assessments": 8,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 8,
+        "vusers.created_by_name.Students Management": 13,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 13,
+        "vusers.created_by_name.Notifications System": 6,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 6
+      },
+      "rates": {
+        "http.request_rate": 5
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939540276,
+      "lastCounterAt": 1763939549631,
+      "firstMetricAt": 1763939540276,
+      "lastMetricAt": 1763939549631,
+      "period": "1763939540000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 8,
+        "vusers.created": 40,
+        "http.requests": 40,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 8,
+        "errors.ECONNREFUSED": 40,
+        "vusers.failed": 40,
+        "vusers.created_by_name.Health and Status Checks": 11,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 11,
+        "vusers.created_by_name.Grades and Assessments": 11,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 11,
+        "vusers.created_by_name.AI Tutor Conversations": 8,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 8,
+        "vusers.created_by_name.Notifications System": 2,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 2
+      },
+      "rates": {
+        "http.request_rate": 4
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939550380,
+      "lastCounterAt": 1763939559656,
+      "firstMetricAt": 1763939550380,
+      "lastMetricAt": 1763939559656,
+      "period": "1763939550000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Health and Status Checks": 7,
+        "vusers.created": 32,
+        "http.requests": 32,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 7,
+        "errors.ECONNREFUSED": 32,
+        "vusers.failed": 32,
+        "vusers.created_by_name.Grades and Assessments": 8,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 8,
+        "vusers.created_by_name.Students Management": 6,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 6,
+        "vusers.created_by_name.AI Tutor Conversations": 4,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 4,
+        "vusers.created_by_name.Notifications System": 7,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 7
+      },
+      "rates": {
+        "http.request_rate": 5
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939560463,
+      "lastCounterAt": 1763939569668,
+      "firstMetricAt": 1763939560463,
+      "lastMetricAt": 1763939569668,
+      "period": "1763939560000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.AI Tutor Conversations": 10,
+        "vusers.created": 24,
+        "http.requests": 24,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 10,
+        "errors.ECONNREFUSED": 24,
+        "vusers.failed": 24,
+        "vusers.created_by_name.Health and Status Checks": 5,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 5,
+        "vusers.created_by_name.Grades and Assessments": 2,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 2,
+        "vusers.created_by_name.Students Management": 3,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 3,
+        "vusers.created_by_name.Notifications System": 4,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 4
+      },
+      "rates": {
+        "http.request_rate": 3
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939570552,
+      "lastCounterAt": 1763939579686,
+      "firstMetricAt": 1763939570552,
+      "lastMetricAt": 1763939579686,
+      "period": "1763939570000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 8,
+        "vusers.created": 16,
+        "http.requests": 16,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 8,
+        "errors.ECONNREFUSED": 16,
+        "vusers.failed": 16,
+        "vusers.created_by_name.Grades and Assessments": 2,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/grades.errors.ECONNREFUSED": 2,
+        "vusers.created_by_name.AI Tutor Conversations": 1,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 1,
+        "vusers.created_by_name.Health and Status Checks": 5,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 5
+      },
+      "rates": {
+        "http.request_rate": 2
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939580649,
+      "lastCounterAt": 1763939589727,
+      "firstMetricAt": 1763939580649,
+      "lastMetricAt": 1763939589727,
+      "period": "1763939580000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Students Management": 2,
+        "vusers.created": 8,
+        "http.requests": 8,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/students.errors.ECONNREFUSED": 2,
+        "errors.ECONNREFUSED": 8,
+        "vusers.failed": 8,
+        "vusers.created_by_name.Health and Status Checks": 1,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/health.errors.ECONNREFUSED": 1,
+        "vusers.created_by_name.AI Tutor Conversations": 4,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/tutor/profile.errors.ECONNREFUSED": 4,
+        "vusers.created_by_name.Notifications System": 1,
+        "plugins.metrics-by-endpoint.{{ baseUrl }}/notifications.errors.ECONNREFUSED": 1
+      },
+      "rates": {
+        "http.request_rate": 1
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1763939590737,
+      "lastCounterAt": 1763939597801,
+      "firstMetricAt": 1763939590737,
+      "lastMetricAt": 1763939597801,
+      "period": "1763939590000",
+      "summaries": {},
+      "histograms": {}
+    }
+  ]
+}

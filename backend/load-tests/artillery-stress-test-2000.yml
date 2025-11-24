@@ -1,0 +1,193 @@
+# ============================================================================
+# STRESS TEST CONFIGURATION - BGE v6.0.0 (SEMANA 30 - Fase 30.4)
+# ============================================================================
+# Propósito: Pruebas de stress simulando 2000+ usuarios concurrentes
+# Endpoints: AI Tutor, Estudiantes, Calificaciones, Notificaciones
+# Duración: 14 minutos de prueba (2 min ramp-up + 10 min sostenido + 2 min ramp-down)
+# Usuarios: 2000 concurrentes (2x desde Fase 30.3B)
+# ============================================================================
+
+config:
+  # Configuración general del test
+  target: "{{ $processEnvironment.TARGET_URL || 'http://localhost:3000' }}"
+  phases:
+    # Fase 1: Ramp-up (2 minutos) - Aumento gradual de 0 a 2400 usuarios
+    # arrivalRate: 20 usuarios/seg = 1200 usuarios/min = 2400 usuarios en 2 min
+    - duration: 120
+      arrivalRate: 20
+      rampTo: 20
+      name: "Ramp-up Phase (0→2400 usuarios)"
+
+    # Fase 2: Sostenido (10 minutos) - Mantener carga constante de 2400 usuarios
+    - duration: 600
+      arrivalRate: 20
+      name: "Sustained Load (2400 usuarios)"
+
+    # Fase 3: Ramp-down (2 minutos) - Reducción gradual
+    - duration: 120
+      arrivalRate: 20
+      rampTo: 0
+      name: "Ramp-down Phase"
+
+  # Configuración de conexiones y timeouts
+  http:
+    timeout: 10
+    max: 1000  # Máximo de conexiones simultáneas (aumentado para 2000 usuarios)
+
+  # Métricas y reportes
+  metrics:
+    newHistogram:
+      - name: latency
+        bins: [0, 100, 200, 300, 400, 500, 1000, 2000, 5000, 10000, 15000]
+
+  # Variables para requests
+  variables:
+    baseUrl: "/api"
+    authToken: ""
+    studentId: "{{ $randomNumber(1, 500) }}"  # Increased range para 2000 usuarios
+    gradeId: "{{ $randomNumber(1, 200) }}"
+    tutorSessionId: "{{ $randomString(8) }}"
+
+# ============================================================================
+# ESCENARIOS DE PRUEBA - Endpoints Críticos BGE (SIMPLIFICADO PARA STRESS)
+# ============================================================================
+
+scenarios:
+  # ESCENARIO 1: AI TUTOR SERVICE (25% del tráfico)
+  - name: "AI Tutor Conversations"
+    weight: 25
+    flow:
+      # GET: Obtener perfil de aprendizaje del usuario
+      - get:
+          url: "{{ baseUrl }}/tutor/profile"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+            Content-Type: "application/json"
+          expect:
+            - statusCode: 200
+              timeout: 5000
+
+      # POST: Procesar conversación con IA Tutor
+      - post:
+          url: "{{ baseUrl }}/tutor/conversation"
+          json:
+            message: "¿Cómo calculo la derivada?"
+            subject: "Matemáticas"
+            proficiency_level: "intermedio"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+            Content-Type: "application/json"
+          expect:
+            - statusCode: 200
+              timeout: 8000
+
+  # ESCENARIO 2: ESTUDIANTES API (20% del tráfico)
+  - name: "Students Management"
+    weight: 20
+    flow:
+      # GET: Listar estudiantes con paginación
+      - get:
+          url: "{{ baseUrl }}/students?page=1&limit=50&status=activo"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+            Content-Type: "application/json"
+          expect:
+            - statusCode: 200
+              timeout: 5000
+
+      # GET: Obtener detalles de un estudiante específico
+      - get:
+          url: "{{ baseUrl }}/students/{{ studentId }}"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+            Content-Type: "application/json"
+          expect:
+            - statusCode: 200
+              timeout: 4000
+
+  # ESCENARIO 3: CALIFICACIONES API (20% del tráfico)
+  - name: "Grades and Assessments"
+    weight: 20
+    flow:
+      # GET: Obtener calificaciones de un estudiante
+      - get:
+          url: "{{ baseUrl }}/grades?student_id={{ studentId }}&semester=1"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+            Content-Type: "application/json"
+          expect:
+            - statusCode: 200
+              timeout: 4000
+
+      # GET: Análisis de rendimiento
+      - get:
+          url: "{{ baseUrl }}/grades/{{ studentId }}/analytics"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+            Content-Type: "application/json"
+          expect:
+            - statusCode: 200
+              timeout: 5000
+
+  # ESCENARIO 4: NOTIFICACIONES (15% del tráfico)
+  - name: "Notifications System"
+    weight: 15
+    flow:
+      # GET: Obtener notificaciones del usuario
+      - get:
+          url: "{{ baseUrl }}/notifications?user_id={{ studentId }}&unread=true"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+            Content-Type: "application/json"
+          expect:
+            - statusCode: 200
+              timeout: 3000
+
+      # PUT: Marcar notificación como leída
+      - put:
+          url: "{{ baseUrl }}/notifications"
+          json:
+            status: "read"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+            Content-Type: "application/json"
+          expect:
+            - statusCode: 200
+              timeout: 2000
+
+  # ESCENARIO 5: HEALTH CHECK (20% del tráfico - endpoints públicos)
+  - name: "Health and Status Checks"
+    weight: 20
+    flow:
+      # GET: Health endpoint (sin autenticación)
+      - get:
+          url: "{{ baseUrl }}/health"
+          expect:
+            - statusCode: 200
+              timeout: 2000
+
+      # GET: Server status
+      - get:
+          url: "/api/status"
+          expect:
+            - statusCode: 200
+              timeout: 2000
+
+      # GET: Database connection check
+      - get:
+          url: "{{ baseUrl }}/health/db"
+          expect:
+            - statusCode: 200
+              timeout: 3000
+
+# ============================================================================
+# CONFIGURACIÓN DE REPORTE
+# ============================================================================
+
+processor: "load-test-processor.js"
+
+output:
+  - type: "statsd"
+    host: "localhost"
+    port: 8125
+    prefix: "bge_stress_test_2000"

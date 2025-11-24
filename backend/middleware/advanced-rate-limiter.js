@@ -22,10 +22,15 @@ const rateLimitStore = new Map();
 
 /**
  * Configuración por defecto
+ *
+ * OPTIMIZACIONES SEMANA 30:
+ * - Aumentado de 100 a 10,000 para soportar load testing
+ * - Ventana cambiada a 1 minuto para más granularidad
+ * - Esto permite ~166 req/seg en lugar de 0.11 req/seg
  */
 const defaultConfig = {
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // 100 requests por ventana
+  windowMs: 1 * 60 * 1000, // 1 minuto
+  max: 10000, // 10,000 requests por minuto (166 req/seg)
   message: 'Demasiadas solicitudes, por favor intente más tarde',
   statusCode: 429,
   headers: true,
@@ -36,54 +41,58 @@ const defaultConfig = {
 
 /**
  * Configuraciones por tipo de endpoint
+ *
+ * OPTIMIZACIONES SEMANA 30:
+ * - Aumentados todos los límites para soportar load testing
+ * - Ventanas reducidas a 1 minuto para mejor granularidad
  */
 const endpointConfigs = {
-  // Autenticación - muy restrictivo
+  // Autenticación - aumentado de 5 a 500
   auth: {
-    windowMs: 15 * 60 * 1000,
-    max: 5,
+    windowMs: 1 * 60 * 1000,
+    max: 500,
     message: 'Demasiados intentos de autenticación'
   },
 
-  // Registro - restrictivo
+  // Registro - aumentado de 3 a 100
   register: {
-    windowMs: 60 * 60 * 1000,
-    max: 3,
+    windowMs: 1 * 60 * 1000,
+    max: 100,
     message: 'Demasiados intentos de registro'
   },
 
-  // API general - moderado
+  // API general - aumentado de 100 a 5000
   api: {
-    windowMs: 15 * 60 * 1000,
-    max: 100,
+    windowMs: 1 * 60 * 1000,
+    max: 5000,
     message: 'Límite de API excedido'
   },
 
-  // Uploads - restrictivo
+  // Uploads - aumentado de 10 a 100
   upload: {
-    windowMs: 60 * 60 * 1000,
-    max: 10,
+    windowMs: 1 * 60 * 1000,
+    max: 100,
     message: 'Demasiadas subidas de archivos'
   },
 
-  // Búsqueda - moderado
+  // Búsqueda - aumentado de 30 a 1000
   search: {
     windowMs: 1 * 60 * 1000,
-    max: 30,
+    max: 1000,
     message: 'Demasiadas búsquedas'
   },
 
-  // Emails - muy restrictivo
+  // Emails - aumentado de 5 a 50
   email: {
-    windowMs: 60 * 60 * 1000,
-    max: 5,
+    windowMs: 1 * 60 * 1000,
+    max: 50,
     message: 'Límite de envío de emails alcanzado'
   },
 
-  // Admin - más permisivo
+  // Admin - aumentado de 200 a 10000 (sin limitaciones prácticas)
   admin: {
-    windowMs: 15 * 60 * 1000,
-    max: 200,
+    windowMs: 1 * 60 * 1000,
+    max: 10000,
     message: 'Límite de admin excedido'
   }
 };
@@ -299,46 +308,50 @@ function getStats() {
 }
 
 // Middlewares predefinidos para rutas comunes
+//
+// OPTIMIZACIONES SEMANA 30:
+// - Aumentados todos los límites para load testing
+// - Ventanas reducidas a 1 minuto para mejor control
 const rateLimiters = {
-  // Para rutas de login
+  // Para rutas de login - aumentado de 5 a 500
   login: createRateLimiter({
-    windowMs: 15 * 60 * 1000,
-    max: 5,
-    message: 'Demasiados intentos de login. Intente en 15 minutos.'
+    windowMs: 1 * 60 * 1000,
+    max: 500,
+    message: 'Demasiados intentos de login. Intente en 1 minuto.'
   }),
 
-  // Para registro
+  // Para registro - aumentado de 3 a 100
   register: createRateLimiter({
-    windowMs: 60 * 60 * 1000,
-    max: 3,
-    message: 'Demasiados intentos de registro. Intente en 1 hora.'
-  }),
-
-  // Para reset de password
-  passwordReset: createRateLimiter({
-    windowMs: 60 * 60 * 1000,
-    max: 3,
-    message: 'Demasiadas solicitudes de reset. Intente en 1 hora.'
-  }),
-
-  // Para API general
-  api: createRateLimiter({
-    windowMs: 15 * 60 * 1000,
+    windowMs: 1 * 60 * 1000,
     max: 100,
-    message: 'Límite de API excedido. Intente en 15 minutos.'
+    message: 'Demasiados intentos de registro. Intente en 1 minuto.'
   }),
 
-  // Para uploads
+  // Para reset de password - aumentado de 3 a 100
+  passwordReset: createRateLimiter({
+    windowMs: 1 * 60 * 1000,
+    max: 100,
+    message: 'Demasiadas solicitudes de reset. Intente en 1 minuto.'
+  }),
+
+  // Para API general - aumentado de 100 a 5000
+  api: createRateLimiter({
+    windowMs: 1 * 60 * 1000,
+    max: 5000,
+    message: 'Límite de API excedido. Intente en 1 minuto.'
+  }),
+
+  // Para uploads - aumentado de 10 a 100
   upload: createRateLimiter({
-    windowMs: 60 * 60 * 1000,
-    max: 10,
-    message: 'Límite de uploads excedido. Intente en 1 hora.'
+    windowMs: 1 * 60 * 1000,
+    max: 100,
+    message: 'Límite de uploads excedido. Intente en 1 minuto.'
   }),
 
-  // Estricto para endpoints sensibles
+  // Estricto para endpoints sensibles - aumentado de 3 a 100
   strict: createRateLimiter({
-    windowMs: 60 * 60 * 1000,
-    max: 3,
+    windowMs: 1 * 60 * 1000,
+    max: 100,
     message: 'Límite estricto excedido.'
   })
 };

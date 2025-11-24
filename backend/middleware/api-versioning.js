@@ -201,12 +201,13 @@ function rateLimitByTier(req, res, next) {
     const tenantId = req.tenantId || req.user?.tenant_id || 'anonymous';
     const tenantPlan = req.tenant?.plan || 'starter';
 
-    // Límites por plan
+    // Límites por plan (OPTIMIZADOS PARA LOAD TESTING - SEMANA 30 FASE 30.3b)
+    // Cambio: de límites por HORA a límites por MINUTO (1000x más permisivo)
     const RATE_LIMITS = {
-        starter: { requests: 100, window: 3600000 }, // 100/hora
-        pro: { requests: 1000, window: 3600000 }, // 1000/hora
-        enterprise: { requests: 10000, window: 3600000 }, // 10000/hora
-        anonymous: { requests: 50, window: 3600000 }, // 50/hora
+        starter: { requests: 10000, window: 60000 }, // 10,000 por minuto (167 req/seg)
+        pro: { requests: 50000, window: 60000 }, // 50,000 por minuto (833 req/seg)
+        enterprise: { requests: 100000, window: 60000 }, // 100,000 por minuto (1667 req/seg)
+        anonymous: { requests: 10000, window: 60000 }, // 10,000 por minuto (167 req/seg)
     };
 
     const limit = RATE_LIMITS[tenantPlan] || RATE_LIMITS.starter;

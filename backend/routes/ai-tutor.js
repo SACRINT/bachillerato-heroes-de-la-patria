@@ -12,7 +12,7 @@ const { body, query, param, validationResult } = require('express-validator');
 const aiTutorService = require('../services/AITutorService');
 
 // Middleware de autenticación
-const authenticateToken = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 
 // Helper para manejar errores de validación
 const handleValidationErrors = (req, res, next) => {

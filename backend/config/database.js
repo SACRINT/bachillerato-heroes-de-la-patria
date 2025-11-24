@@ -19,14 +19,20 @@ let useJsonFallback = false;
 // Configuración del pool de conexiones PostgreSQL
 // Prioridad 1: DATABASE_URL de Neon (Vercel)
 // Prioridad 2: Variables individuales (desarrollo local)
+//
+// OPTIMIZACIONES SEMANA 30:
+// - Aumentado de 10 a 100 para soportar load testing con 7,800 usuarios
+// - Ventana de idle aumentada a 60 segundos para mejor reutilización
+// - Timeout de conexión aumentado a 5 segundos
 const poolConfig = process.env.DATABASE_URL
     ? {
         connectionString: process.env.DATABASE_URL,
         // SSL configurable según variable de entorno (false para local, true para Neon)
         ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
-        max: parseInt(process.env.DB_CONNECTION_LIMIT) || 10,
-        idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 10000,
+        max: parseInt(process.env.DB_CONNECTION_LIMIT) || 100,  // Aumentado de 10 a 100
+        min: parseInt(process.env.DB_CONNECTION_MIN) || 10,      // Min = 10 conexiones
+        idleTimeoutMillis: 60000,                                // Aumentado de 30s a 60s
+        connectionTimeoutMillis: 5000,                           // Aumentado de 10s a 5s (más rápido)
     }
     : {
         host: process.env.DB_HOST || 'localhost',
@@ -34,9 +40,10 @@ const poolConfig = process.env.DATABASE_URL
         user: process.env.DB_USER || 'postgres',
         password: process.env.DB_PASSWORD || '',
         database: process.env.DB_NAME || 'heroes_patria_db',
-        max: parseInt(process.env.DB_CONNECTION_LIMIT) || 10,
-        idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 10000,
+        max: parseInt(process.env.DB_CONNECTION_LIMIT) || 100,   // Aumentado de 10 a 100
+        min: parseInt(process.env.DB_CONNECTION_MIN) || 10,      // Min = 10 conexiones
+        idleTimeoutMillis: 60000,                                // Aumentado de 30s a 60s
+        connectionTimeoutMillis: 5000,                           // Aumentado de 10s a 5s (más rápido)
         ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
     };
 

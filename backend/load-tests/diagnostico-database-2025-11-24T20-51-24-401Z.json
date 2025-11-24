@@ -1,0 +1,265 @@
+{
+  "timestamp": "2025-11-24T20:51:24.402Z",
+  "poolStats": {
+    "total": 1,
+    "idle": 1,
+    "waiting": 0,
+    "max": 10
+  },
+  "slowQueries": [],
+  "tables": [
+    {
+      "tablename": "achievements",
+      "index_count": "2"
+    },
+    {
+      "tablename": "audit_logs",
+      "index_count": "4"
+    },
+    {
+      "tablename": "avisos",
+      "index_count": "17"
+    },
+    {
+      "tablename": "bolsa_trabajo",
+      "index_count": "3"
+    },
+    {
+      "tablename": "bolsa_trabajo_pending_confirmation",
+      "index_count": "7"
+    },
+    {
+      "tablename": "calificaciones",
+      "index_count": "9"
+    },
+    {
+      "tablename": "change_management_log",
+      "index_count": "4"
+    },
+    {
+      "tablename": "citas",
+      "index_count": "6"
+    },
+    {
+      "tablename": "comunicados",
+      "index_count": "4"
+    },
+    {
+      "tablename": "consents",
+      "index_count": "5"
+    },
+    {
+      "tablename": "contactos",
+      "index_count": "4"
+    },
+    {
+      "tablename": "data_breaches",
+      "index_count": "4"
+    },
+    {
+      "tablename": "data_exports",
+      "index_count": "3"
+    },
+    {
+      "tablename": "deleted_users",
+      "index_count": "3"
+    },
+    {
+      "tablename": "docentes",
+      "index_count": "8"
+    },
+    {
+      "tablename": "egresados",
+      "index_count": "3"
+    },
+    {
+      "tablename": "egresados_pending_confirmation",
+      "index_count": "7"
+    },
+    {
+      "tablename": "email_verification_tokens",
+      "index_count": "6"
+    },
+    {
+      "tablename": "encryption_keys",
+      "index_count": "5"
+    },
+    {
+      "tablename": "estudiantes",
+      "index_count": "11"
+    },
+    {
+      "tablename": "eventos",
+      "index_count": "6"
+    },
+    {
+      "tablename": "gastos",
+      "index_count": "5"
+    },
+    {
+      "tablename": "iacoins_achievements",
+      "index_count": "1"
+    },
+    {
+      "tablename": "iacoins_ai_generations",
+      "index_count": "5"
+    },
+    {
+      "tablename": "iacoins_balances",
+      "index_count": "4"
+    },
+    {
+      "tablename": "iacoins_challenge_progress",
+      "index_count": "4"
+    },
+    {
+      "tablename": "iacoins_challenges",
+      "index_count": "3"
+    },
+    {
+      "tablename": "iacoins_pricing",
+      "index_count": "2"
+    },
+    {
+      "tablename": "iacoins_prompt_templates",
+      "index_count": "5"
+    },
+    {
+      "tablename": "iacoins_transactions",
+      "index_count": "5"
+    },
+    {
+      "tablename": "iacoins_user_achievements",
+      "index_count": "3"
+    },
+    {
+      "tablename": "ingresos",
+      "index_count": "5"
+    },
+    {
+      "tablename": "inscripciones_actividades",
+      "index_count": "3"
+    },
+    {
+      "tablename": "logs_sistema",
+      "index_count": "2"
+    },
+    {
+      "tablename": "materias",
+      "index_count": "2"
+    },
+    {
+      "tablename": "noticias",
+      "index_count": "9"
+    },
+    {
+      "tablename": "notificaciones_convocatorias",
+      "index_count": "5"
+    },
+    {
+      "tablename": "pagos_pendientes",
+      "index_count": "5"
+    },
+    {
+      "tablename": "parents",
+      "index_count": "2"
+    },
+    {
+      "tablename": "pendientes_aprobacion",
+      "index_count": "15"
+    },
+    {
+      "tablename": "pending_approvals",
+      "index_count": "4"
+    },
+    {
+      "tablename": "pending_inscriptions",
+      "index_count": "3"
+    },
+    {
+      "tablename": "pending_registrations",
+      "index_count": "3"
+    },
+    {
+      "tablename": "pending_submissions",
+      "index_count": "2"
+    },
+    {
+      "tablename": "privacy_policies",
+      "index_count": "5"
+    },
+    {
+      "tablename": "quejas",
+      "index_count": "2"
+    },
+    {
+      "tablename": "rbac_permissions",
+      "index_count": "5"
+    },
+    {
+      "tablename": "soc2_audit_logs",
+      "index_count": "7"
+    },
+    {
+      "tablename": "soc2_incidents",
+      "index_count": "5"
+    },
+    {
+      "tablename": "solicitudes_documentos",
+      "index_count": "4"
+    },
+    {
+      "tablename": "student_parents",
+      "index_count": "1"
+    },
+    {
+      "tablename": "suscriptores_notificaciones",
+      "index_count": "9"
+    },
+    {
+      "tablename": "tenants",
+      "index_count": "9"
+    },
+    {
+      "tablename": "user_achievements",
+      "index_count": "2"
+    },
+    {
+      "tablename": "user_gamification_stats",
+      "index_count": "2"
+    },
+    {
+      "tablename": "user_privacy_policy_acceptance",
+      "index_count": "4"
+    },
+    {
+      "tablename": "user_sessions",
+      "index_count": "2"
+    },
+    {
+      "tablename": "usuarios",
+      "index_count": "13"
+    },
+    {
+      "tablename": "vendor_risk_assessments",
+      "index_count": "4"
+    },
+    {
+      "tablename": "verification_tokens",
+      "index_count": "6"
+    },
+    {
+      "tablename": "webauthn_challenges",
+      "index_count": "3"
+    },
+    {
+      "tablename": "webauthn_credentials",
+      "index_count": "5"
+    }
+  ],
+  "recommendations": [
+    "✅ Pool tiene capacidad disponible",
+    "✅ Queries están optimizadas",
+    "✅ Todas las tablas tienen índices"
+  ]
+}

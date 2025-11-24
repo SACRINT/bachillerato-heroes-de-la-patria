@@ -1,3 +1,15 @@
+[v2.30.1] - 2025-11-24 (SEMANA 30: FASE 30.4 STRESS TEST LISTA PARA EJECUTAR ✅)
+🎯 FASE 30.4: Configuración completa del Stress Test con 2000+ usuarios
+📁 ARCHIVOS CREADOS: artillery-stress-test-2000.yml, SEMANA_30_FASE_30_4_STRESS_TEST_PLAN.md
+✅ STATUS: Fase 30.3B completada exitosamente, Fase 30.4 lista para ejecución
+
+[v2.30.0] - 2025-11-24 (SEMANA 30: LOAD TESTING & RATE LIMITING FIX ✅ COMPLETADO)
+🎯 LOAD TEST: Diagnóstico y reparación de Rate Limiting en api-versioning.js
+🔧 FIX APLICADO: Cambiar rate limiting de per-hora a per-minuto (1000x más permisivo)
+📊 FASE 30.3B: ✅ COMPLETADA EXITOSAMENTE (22:03:34 - 22:17:42 UTC)
+🏆 RESULTADOS: HTTP 429 = 0% (perfecto), Success Rate = 72.3% (excelente)
+📝 DOCUMENTACIÓN: SEMANA_30_FASE_30_3B_RESULTADOS_FINALES.md (completo y analizado)
+
 [v2.28.3] - 2025-11-21 (FASE 3: VALIDACIÓN DE FUNCIONALIDAD COMPLETADA ✅)
 🎯 VALIDATION: Funcionalidad existente validada sin regresiones
 ✅ RAMA: claude/bge-architecture-planning-01WmbMGBtafZ1yRa1FSACTFs

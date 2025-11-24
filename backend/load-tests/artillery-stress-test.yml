@@ -1,0 +1,177 @@
+# ============================================================================
+# STRESS TESTING CONFIGURATION - BGE v6.0.0 (SEMANA 30 - Fase 30.3)
+# ============================================================================
+# Propósito: Pruebas de estrés para encontrar límite del sistema
+# Objetivo: Simular 1500 usuarios concurrentes + picos de tráfico
+# Duración: 20 minutos - escalar hasta romper el sistema o encontrar límite
+# ============================================================================
+
+config:
+  target: "{{ $processEnvironment.TARGET_URL || 'http://localhost:3000' }}"
+
+  phases:
+    # Fase 1: Ramp-up rápido (3 minutos) - 0 a 500 usuarios
+    - duration: 180
+      arrivalRate: 2.78  # ~500 usuarios en 3 minutos
+      rampTo: 2.78
+      name: "Phase 1: Initial Load (500 users)"
+
+    # Fase 2: Aumento acelerado (3 minutos) - 500 a 1000 usuarios
+    - duration: 180
+      arrivalRate: 2.78
+      rampTo: 5.56
+      name: "Phase 2: Increased Load (1000 users)"
+
+    # Fase 3: Aproximarse al límite (5 minutos) - 1000 a 1500 usuarios
+    - duration: 300
+      arrivalRate: 5.56
+      rampTo: 8.33
+      name: "Phase 3: High Load (1500 users)"
+
+    # Fase 4: Mantener presión extrema (5 minutos) - 1500 usuarios constantes
+    - duration: 300
+      arrivalRate: 8.33
+      name: "Phase 4: Peak Stress (1500 sustained)"
+
+    # Fase 5: Picos de tráfico (4 minutos) - simular picos inesperados
+    - duration: 120
+      arrivalRate: 8.33
+      rampTo: 12.5  # Intenta 2000+ usuarios
+      name: "Phase 5: Traffic Spikes"
+
+    # Fase 6: Ramp-down gradual (4 minutos)
+    - duration: 240
+      arrivalRate: 12.5
+      rampTo: 0
+      name: "Phase 6: Ramp-down"
+
+  # Configuración de conexiones y timeouts más agresivos
+  http:
+    timeout: 15  # Timeout más largo para estrés
+    max: 2000    # Máximo de conexiones simultáneas
+
+  # Variables para requests
+  variables:
+    baseUrl: "/api"  # Literal API path (sin interpolación de env vars)
+    authToken: ""    # Token de autenticación (vacío para tests públicos)
+    studentId: "{{ $randomNumber(1, 1000) }}"
+
+# ============================================================================
+# ESCENARIOS DE STRESS TEST
+# ============================================================================
+
+scenarios:
+  # ESCENARIO 1: HEAVY AI TUTOR LOAD (40% - consume más recursos)
+  - name: "Heavy AI Tutor Load"
+    weight: 40
+    flow:
+      # Múltiples conversaciones simultáneas
+      - loop:
+        - post:
+            url: "{{ baseUrl }}/tutor/conversation"
+            json:
+              message: "Necesito ayuda con matemáticas avanzadas"
+              subject: "Matemáticas"
+              proficiency_level: "avanzado"
+            headers:
+              Authorization: "Bearer {{ authToken }}"
+              Content-Type: "application/json"
+            timeout: 10000
+
+        - think: 500  # Pequeña pausa entre requests
+
+        count: 3  # 3 conversaciones por sesión
+
+  # ESCENARIO 2: ESTUDIANTES CON PAGINACIÓN (30%)
+  - name: "Students Heavy Pagination"
+    weight: 30
+    flow:
+      - loop:
+        - get:
+            url: "{{ baseUrl }}/students?page={{ $loopCount }}&limit=100&status=activo"
+            headers:
+              Authorization: "Bearer {{ authToken }}"
+              Content-Type: "application/json"
+            timeout: 8000
+
+        - think: 300
+
+        count: 5  # Paginar 5 veces
+
+  # ESCENARIO 3: CALIFICACIONES MASIVAS (20%)
+  - name: "Grades Mass Operations"
+    weight: 20
+    flow:
+      - loop:
+        - post:
+            url: "{{ baseUrl }}/grades"
+            json:
+              student_id: "{{ $randomNumber(1, 1000) }}"
+              subject: "Asignatura {{ $loopCount }}"
+              grade: "{{ $randomNumber(70, 100) }}"
+              weight: 0.5
+            headers:
+              Authorization: "Bearer {{ authToken }}"
+              Content-Type: "application/json"
+            timeout: 6000
+
+        count: 2  # 2 calificaciones por sesión
+
+  # ESCENARIO 4: NOTIFICACIONES EN CASCADA (10%)
+  - name: "Notifications Cascade"
+    weight: 10
+    flow:
+      - get:
+          url: "{{ baseUrl }}/notifications?unread=true"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          timeout: 4000
+
+      - loop:
+        - put:
+            url: "{{ baseUrl }}/notifications/{{ $loopCount }}"
+            json:
+              status: "read"
+            headers:
+              Authorization: "Bearer {{ authToken }}"
+              Content-Type: "application/json"
+            timeout: 3000
+
+        count: 3  # Marcar 3 como leídas
+
+# ============================================================================
+# MÉTRICAS Y REPORTES
+# ============================================================================
+
+before:
+  flow:
+    - log: "Iniciando Stress Test BGE v6.0.0"
+    - log: "Target: {{ $processEnvironment.TARGET_URL || 'http://localhost:3000' }}"
+    - log: "Duración: 20 minutos"
+    - log: "Objetivo final: 2000+ usuarios concurrentes"
+
+after:
+  flow:
+    - log: "Stress test completado"
+    - log: "Revisar resultados en reporte de Artillery"
+
+after-response:
+  - log: "Response status: {{ statusCode }}"
+  - log: "Response time: {{ responseTime }}ms"
+
+# Configuración de reporte
+output:
+  - type: "statsd"
+    host: "localhost"
+    port: 8125
+    prefix: "bge_stress_test"
+
+# ============================================================================
+# CONFIGURACIÓN DE PLUGINS Y MONITOREO
+# ============================================================================
+
+plugins:
+  statsd:
+    prefix: "bge_stress"
+    host: "localhost"
+    port: 8125
