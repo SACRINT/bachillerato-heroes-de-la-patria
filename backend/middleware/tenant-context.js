@@ -168,7 +168,12 @@ async function getTenantConfig(tenantId) {
  */
 async function setRLSContext(tenantId) {
     try {
-        await pool.query(`SET LOCAL app.current_tenant_id = $1`, [tenantId]);
+        // ✅ CORREGIDO: Usar set_config() en lugar de SET LOCAL $1
+        // PostgreSQL no soporta parámetros en SET LOCAL, usa set_config() en su lugar
+        await pool.query(
+            `SELECT set_config($1, $2, false)`,
+            ['app.current_tenant_id', String(tenantId)]
+        );
         return true;
     } catch (error) {
         console.error(`[TENANT-CONTEXT] Error configurando RLS context:`, error.message);

@@ -91,7 +91,12 @@ const gradesServiceRoutes = require('./routes/grades-service');  // Calificacion
 const poolManager = require('./middleware/pool-manager');  // Connection Pool monitoring
 
 // ✅ FASE 30.5 TAREA 5 - REDIS CACHE (24 NOV 2025)
-const redisCache = require('./middleware/redis-cache');  // Redis cache para endpoints críticos
+// const redisCache = require('./middleware/redis-cache');  // ⏸️ COMENTADO - Redis no disponible localmente (FASE 30.5)
+
+// ✅ FASE 30.5 TAREA 3 - CIRCUIT BREAKER (26-27 NOV 2025)
+// Patrón de tolerancia a fallos: rechaza requests cuando sistema está degradado
+// Previene cascading failures cuando database es lento o memoria está saturada
+const { CircuitBreaker, createCircuitBreakerMiddleware } = require('./middleware/circuit-breaker');
 
 // ✅ FASE 1.2: 28 RUTAS HUÉRFANAS - Registradas 11 NOV 2025
 // GRUPO 1: IA/ML CRÍTICAS (6 rutas)
@@ -240,6 +245,21 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// ✅ CIRCUIT BREAKER MIDDLEWARE (FASE 30.5 TAREA 3)
+// Patrón de tolerancia a fallos: rechaza requests cuando memoria está saturada o database es lento
+// Evita cascading failures y permite al sistema recuperarse
+const circuitBreakerConfig = createCircuitBreakerMiddleware({
+    failureThreshold: parseInt(process.env.CIRCUIT_BREAKER_FAILURE_THRESHOLD) || 50,  // % de fallos
+    successThreshold: parseInt(process.env.CIRCUIT_BREAKER_SUCCESS_THRESHOLD) || 5,   // Intentos éxito en HALF_OPEN
+    timeout: parseInt(process.env.CIRCUIT_BREAKER_TIMEOUT) || 30000  // 30 segundos en OPEN
+});
+
+// Aplicar circuit breaker solo a API routes críticas
+app.use('/api/', circuitBreakerConfig.middleware);
+
+// Endpoint para métricas del circuit breaker (debugging y monitoring)
+app.get('/api/circuit-breaker/metrics', circuitBreakerConfig.metricsEndpoint);
+
 // Body Parsing Middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -307,7 +327,8 @@ app.use('/api', poolManager.middleware);  // Registrar métricas de pool
 // ============================================
 // Cache de respuestas para reducir carga de BD
 devLogger.log('🔴 Configurando Redis Cache...');
-app.use('/api', redisCache.middleware);  // Middleware para cache
+// app.use('/api', redisCache.middleware);  // ⏸️ COMENTADO: redisCache.middleware undefined (Redis no disponible)
+// Usando cacheService.js (en memoria) como fallback - ya inicializado arriba
 
 // ============================================
 // RUTAS DE API
@@ -353,7 +374,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/health', healthRoutes);
 
 // ✅ FASE 30.5 TAREA 5 - REDIS CACHE STATS ENDPOINTS
-app.get('/api/health/cache/stats', redisCache.getStatsEndpoint);  // Estadísticas de cache
+// app.get('/api/health/cache/stats', redisCache.getStatsEndpoint);  // ⏸️ COMENTADO - Redis no disponible localmente (FASE 30.5)
 
 app.use('/api/test-events', testEventsRoutes);  // ✅ TESTING - Event Bus testing endpoints (FASE 2)
 app.use('/api/charts', chartsDataRoutes);

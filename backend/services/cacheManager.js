@@ -113,51 +113,58 @@ class CacheManager {
     /**
      * INITIALIZE REDIS CONNECTION
      */
+    // ⏸️ COMENTADO - FASE 30.5 INTENTO-5: Redis no disponible en local
+    // async initRedis() {
+    //     try {
+    //         // Try to require ioredis (optional dependency)
+    //         let Redis;
+    //         try {
+    //             Redis = require('ioredis');
+    //         } catch (error) {
+    //             devLogger.warn('CACHE', '⚠️ ioredis not installed, Redis cache disabled');
+    //             return;
+    //         }
+
+    //         this.redisClient = new Redis({
+    //             host: this.config.redisHost,
+    //             port: this.config.redisPort,
+    //             password: this.config.redisPassword,
+    //             retryStrategy: (times) => {
+    //                 if (times > 3) {
+    //                     devLogger.error('CACHE', '❌ Redis connection failed after 3 retries');
+    //                     return null; // Stop retrying
+    //                 }
+    //                 return Math.min(times * 200, 2000); // Exponential backoff
+    //             }
+    //         });
+
+    //         this.redisClient.on('connect', () => {
+    //             this.redisConnected = true;
+    //             devLogger.log('CACHE', '✅ Redis connected');
+    //         });
+
+    //         this.redisClient.on('error', (error) => {
+    //             this.redisConnected = false;
+    //             this.stats.errors++;
+    //             devLogger.error('CACHE', `❌ Redis error: ${error.message}`);
+    //         });
+
+    //         this.redisClient.on('close', () => {
+    //             this.redisConnected = false;
+    //             devLogger.warn('CACHE', '⚠️ Redis disconnected');
+    //         });
+
+    //     } catch (error) {
+    //         devLogger.error('CACHE', `❌ Redis initialization failed: ${error.message}`);
+    //         this.redisClient = null;
+    //         this.redisConnected = false;
+    //     }
+    // }
+
     async initRedis() {
-        try {
-            // Try to require ioredis (optional dependency)
-            let Redis;
-            try {
-                Redis = require('ioredis');
-            } catch (error) {
-                devLogger.warn('CACHE', '⚠️ ioredis not installed, Redis cache disabled');
-                return;
-            }
-
-            this.redisClient = new Redis({
-                host: this.config.redisHost,
-                port: this.config.redisPort,
-                password: this.config.redisPassword,
-                retryStrategy: (times) => {
-                    if (times > 3) {
-                        devLogger.error('CACHE', '❌ Redis connection failed after 3 retries');
-                        return null; // Stop retrying
-                    }
-                    return Math.min(times * 200, 2000); // Exponential backoff
-                }
-            });
-
-            this.redisClient.on('connect', () => {
-                this.redisConnected = true;
-                devLogger.log('CACHE', '✅ Redis connected');
-            });
-
-            this.redisClient.on('error', (error) => {
-                this.redisConnected = false;
-                this.stats.errors++;
-                devLogger.error('CACHE', `❌ Redis error: ${error.message}`);
-            });
-
-            this.redisClient.on('close', () => {
-                this.redisConnected = false;
-                devLogger.warn('CACHE', '⚠️ Redis disconnected');
-            });
-
-        } catch (error) {
-            devLogger.error('CACHE', `❌ Redis initialization failed: ${error.message}`);
-            this.redisClient = null;
-            this.redisConnected = false;
-        }
+        // ⏸️ FASE 30.5 INTENTO-5: Deshabilitar Redis localmente
+        devLogger.warn('CACHE', '⚠️ Redis deshabilitado para desarrollo local (FASE 30.5 INTENTO-5)');
+        this.redisConnected = false;
     }
 
     /**

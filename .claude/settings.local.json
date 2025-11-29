@@ -1,10 +1,17 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node backend/load-tests/run-load-tests.js:*)",
+      "Bash(npx artillery:*)",
+      "Bash(curl -s -I http://localhost:3000/api/health)",
+      "Bash(powershell:*)",
+      "Bash(wmic process list:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
       "Bash(tee:*)",
-      "Bash(node:*)",
-      "Bash(python3:*)"
+      "Bash(curl:*)",
+      "Bash(npm audit fix:*)",
+      "Bash(npm audit:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

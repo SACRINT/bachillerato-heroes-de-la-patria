@@ -22,27 +22,51 @@
  * Estado: ✅ COMPLETADO
  */
 
-const Redis = require('ioredis');
+// ⏸️ COMENTADO - FASE 30.5 INTENTO-5: Redis no disponible en local
+// const Redis = require('ioredis');
 const devLogger = require('../utils/devLogger');
 
 // =============================================================================
 // CONFIGURACIÓN DE REDIS
 // =============================================================================
 
-const redis = new Redis({
-    host: process.env.REDIS_HOST || 'localhost',
-    port: process.env.REDIS_PORT || 6379,
-    password: process.env.REDIS_PASSWORD || undefined,
-    db: process.env.REDIS_DB || 1, // DB 1 para jobs (DB 0 es cache)
-    retryStrategy: (times) => {
-        const delay = Math.min(times * 50, 2000);
-        return delay;
-    },
-    maxRetriesPerRequest: 3,
-});
+// ⏸️ COMENTADO - FASE 30.5 INTENTO-5: Redis no disponible en local
+// const redis = new Redis({
+//     host: process.env.REDIS_HOST || 'localhost',
+//     port: process.env.REDIS_PORT || 6379,
+//     password: process.env.REDIS_PASSWORD || undefined,
+//     db: process.env.REDIS_DB || 1, // DB 1 para jobs (DB 0 es cache)
+//     retryStrategy: (times) => {
+//         const delay = Math.min(times * 50, 2000);
+//         return delay;
+//     },
+//     maxRetriesPerRequest: 3,
+// });
 
 // Subscriber (para pub/sub)
-const subscriber = redis.duplicate();
+// ⏸️ COMENTADO - FASE 30.5 INTENTO-5
+// const subscriber = redis.duplicate();
+
+// Mock Redis para desarrollo local sin Redis server
+const redis = {
+    hset: async () => true,
+    lpush: async () => true,
+    publish: async () => true,
+    rpop: async () => null,
+    hgetall: async () => null,
+    del: async () => true,
+    hincrby: async () => true,
+    keys: async () => [],
+    llen: async () => 0,
+    on: () => {},
+    off: () => {},
+};
+
+const subscriber = {
+    subscribe: async () => true,
+    on: () => {},
+    off: () => {},
+};
 
 // =============================================================================
 // CONFIGURACIÓN DE QUEUES
@@ -456,13 +480,16 @@ async function getQueueStats() {
 // EVENT LISTENERS
 // =============================================================================
 
-redis.on('connect', () => {
-    devLogger.log('[QUEUE] ✅ Conectado a Redis para jobs');
-});
+// ⏸️ COMENTADO - FASE 30.5 INTENTO-5
+// redis.on('connect', () => {
+//     devLogger.log('[QUEUE] ✅ Conectado a Redis para jobs');
+// });
 
-redis.on('error', (err) => {
-    devLogger.error('[QUEUE] ❌ Error de Redis:', err);
-});
+// redis.on('error', (err) => {
+//     devLogger.error('[QUEUE] ❌ Error de Redis:', err);
+// });
+
+devLogger.warn('[QUEUE] ⚠️ Redis deshabilitado para desarrollo local (FASE 30.5 INTENTO-5)');
 
 // =============================================================================
 // EXPORTS

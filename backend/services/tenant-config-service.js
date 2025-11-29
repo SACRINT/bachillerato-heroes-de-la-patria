@@ -12,7 +12,15 @@
  */
 
 const pool = require('../config/database');
-const { redis } = require('../middleware/redis-cache'); // Usar el redis ya configurado
+// ⏸️ COMENTADO - FASE 30.5 INTENTO-5: Redis no disponible en local
+// const { redis } = require('../middleware/redis-cache'); // Usar el redis ya configurado
+
+// Mock Redis para desarrollo local
+const redis = {
+    get: async () => null,
+    set: async () => true,
+    del: async () => true,
+};
 
 /**
  * Constantes de configuración

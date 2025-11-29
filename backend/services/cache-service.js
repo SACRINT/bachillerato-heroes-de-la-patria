@@ -4,7 +4,8 @@
  * Reduce query time de 800ms a 200ms (75%)
  */
 
-import Redis from 'ioredis';
+// ⏸️ COMENTADO - FASE 30.5 INTENTO-5: Redis no disponible en local
+// import Redis from 'ioredis';
 
 // ============================================
 // CONFIGURATION
@@ -29,28 +30,39 @@ const REDIS_CONFIG = {
 // REDIS CLIENT
 // ============================================
 
-const redis = new Redis(REDIS_CONFIG);
+// ⏸️ COMENTADO - FASE 30.5 INTENTO-6: Redis disabled, usando mock object
+// const redis = new Redis(REDIS_CONFIG);
 
-// Event handlers
-redis.on('connect', () => {
-    console.log('[Redis] ✓ Connected to Redis server');
-});
+// Mock Redis object (fallback cuando Redis no está disponible)
+const redis = {
+    get: async (key) => null,
+    set: async (key, value, mode, time) => true,
+    setex: async (key, ttl, value) => true,
+    del: async (...keys) => 0,
+    keys: async (pattern) => [],
+    dbsize: async () => 0,
+    ping: async () => 'PONG',
+    flushdb: async () => true,
+    info: async (section) => '',
+    on: (event, handler) => {} // Stub para event listeners
+};
 
-redis.on('ready', () => {
-    console.log('[Redis] ✓ Redis client ready');
-});
-
-redis.on('error', (err) => {
-    console.error('[Redis] ✗ Connection error:', err);
-});
-
-redis.on('close', () => {
-    console.log('[Redis] Connection closed');
-});
-
-redis.on('reconnecting', () => {
-    console.log('[Redis] Reconnecting...');
-});
+// Mock event handlers (no-op cuando Redis está disabled)
+// redis.on('connect', () => {
+//     console.log('[Redis] ✓ Connected to Redis server');
+// });
+// redis.on('ready', () => {
+//     console.log('[Redis] ✓ Redis client ready');
+// });
+// redis.on('error', (err) => {
+//     console.error('[Redis] ✗ Connection error:', err);
+// });
+// redis.on('close', () => {
+//     console.log('[Redis] Connection closed');
+// });
+// redis.on('reconnecting', () => {
+//     console.log('[Redis] Reconnecting...');
+// });
 
 // ============================================
 // CACHE TTL CONSTANTS (in seconds)

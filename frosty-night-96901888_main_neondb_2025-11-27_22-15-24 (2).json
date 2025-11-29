@@ -1,0 +1,1237 @@
+[{
+  "tablename": "achievements",
+  "indexname": "achievements_code_key",
+  "indexdef": "CREATE UNIQUE INDEX achievements_code_key ON public.achievements USING btree (code)"
+}, {
+  "tablename": "achievements",
+  "indexname": "achievements_pkey",
+  "indexdef": "CREATE UNIQUE INDEX achievements_pkey ON public.achievements USING btree (id)"
+}, {
+  "tablename": "audit_logs",
+  "indexname": "audit_logs_pkey",
+  "indexdef": "CREATE UNIQUE INDEX audit_logs_pkey ON public.audit_logs USING btree (id)"
+}, {
+  "tablename": "audit_logs",
+  "indexname": "idx_audit_logs_action",
+  "indexdef": "CREATE INDEX idx_audit_logs_action ON public.audit_logs USING btree (action)"
+}, {
+  "tablename": "audit_logs",
+  "indexname": "idx_audit_logs_timestamp",
+  "indexdef": "CREATE INDEX idx_audit_logs_timestamp ON public.audit_logs USING btree (\"timestamp\")"
+}, {
+  "tablename": "audit_logs",
+  "indexname": "idx_audit_logs_usuario_id",
+  "indexdef": "CREATE INDEX idx_audit_logs_usuario_id ON public.audit_logs USING btree (usuario_id)"
+}, {
+  "tablename": "avisos",
+  "indexname": "avisos_pkey",
+  "indexdef": "CREATE UNIQUE INDEX avisos_pkey ON public.avisos USING btree (id)"
+}, {
+  "tablename": "avisos",
+  "indexname": "avisos_slug_key",
+  "indexdef": "CREATE UNIQUE INDEX avisos_slug_key ON public.avisos USING btree (slug)"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_autor",
+  "indexdef": "CREATE INDEX idx_avisos_autor ON public.avisos USING btree (autor)"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_autor_id",
+  "indexdef": "CREATE INDEX idx_avisos_autor_id ON public.avisos USING btree (autor_id)"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_categoria",
+  "indexdef": "CREATE INDEX idx_avisos_categoria ON public.avisos USING btree (categoria)"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_deleted_at",
+  "indexdef": "CREATE INDEX idx_avisos_deleted_at ON public.avisos USING btree (deleted_at) WHERE (deleted_at IS NOT NULL)"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_destacada",
+  "indexdef": "CREATE INDEX idx_avisos_destacada ON public.avisos USING btree (destacada)"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_destinatarios",
+  "indexdef": "CREATE INDEX idx_avisos_destinatarios ON public.avisos USING gin (destinatarios)"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_estado",
+  "indexdef": "CREATE INDEX idx_avisos_estado ON public.avisos USING btree (estado)"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_etiquetas",
+  "indexdef": "CREATE INDEX idx_avisos_etiquetas ON public.avisos USING gin (etiquetas)"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_fecha_creacion",
+  "indexdef": "CREATE INDEX idx_avisos_fecha_creacion ON public.avisos USING btree (fecha_creacion DESC)"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_fecha_expiracion",
+  "indexdef": "CREATE INDEX idx_avisos_fecha_expiracion ON public.avisos USING btree (fecha_expiracion)"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_fecha_pub",
+  "indexdef": "CREATE INDEX idx_avisos_fecha_pub ON public.avisos USING btree (fecha_publicacion DESC)"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_fecha_publicacion",
+  "indexdef": "CREATE INDEX idx_avisos_fecha_publicacion ON public.avisos USING btree (fecha_publicacion)"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_prioridad",
+  "indexdef": "CREATE INDEX idx_avisos_prioridad ON public.avisos USING btree (prioridad)"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_search",
+  "indexdef": "CREATE INDEX idx_avisos_search ON public.avisos USING gin (to_tsvector('spanish'::regconfig, (((titulo)::text || ' '::text) || contenido)))"
+}, {
+  "tablename": "avisos",
+  "indexname": "idx_avisos_slug",
+  "indexdef": "CREATE INDEX idx_avisos_slug ON public.avisos USING btree (slug)"
+}, {
+  "tablename": "bolsa_trabajo",
+  "indexname": "bolsa_trabajo_email_key",
+  "indexdef": "CREATE UNIQUE INDEX bolsa_trabajo_email_key ON public.bolsa_trabajo USING btree (email)"
+}, {
+  "tablename": "bolsa_trabajo",
+  "indexname": "bolsa_trabajo_pkey",
+  "indexdef": "CREATE UNIQUE INDEX bolsa_trabajo_pkey ON public.bolsa_trabajo USING btree (id)"
+}, {
+  "tablename": "bolsa_trabajo",
+  "indexname": "idx_bolsa_trabajo_estado",
+  "indexdef": "CREATE INDEX idx_bolsa_trabajo_estado ON public.bolsa_trabajo USING btree (estado)"
+}, {
+  "tablename": "bolsa_trabajo_pending_confirmation",
+  "indexname": "bolsa_trabajo_pending_confirmation_email_usuario_key",
+  "indexdef": "CREATE UNIQUE INDEX bolsa_trabajo_pending_confirmation_email_usuario_key ON public.bolsa_trabajo_pending_confirmation USING btree (email_usuario)"
+}, {
+  "tablename": "bolsa_trabajo_pending_confirmation",
+  "indexname": "bolsa_trabajo_pending_confirmation_pkey",
+  "indexdef": "CREATE UNIQUE INDEX bolsa_trabajo_pending_confirmation_pkey ON public.bolsa_trabajo_pending_confirmation USING btree (id)"
+}, {
+  "tablename": "bolsa_trabajo_pending_confirmation",
+  "indexname": "bolsa_trabajo_pending_confirmation_token_confirmacion_key",
+  "indexdef": "CREATE UNIQUE INDEX bolsa_trabajo_pending_confirmation_token_confirmacion_key ON public.bolsa_trabajo_pending_confirmation USING btree (token_confirmacion)"
+}, {
+  "tablename": "bolsa_trabajo_pending_confirmation",
+  "indexname": "bolsa_trabajo_pending_confirmation_uuid_key",
+  "indexdef": "CREATE UNIQUE INDEX bolsa_trabajo_pending_confirmation_uuid_key ON public.bolsa_trabajo_pending_confirmation USING btree (uuid)"
+}, {
+  "tablename": "bolsa_trabajo_pending_confirmation",
+  "indexname": "idx_bolsa_trabajo_temp_email",
+  "indexdef": "CREATE INDEX idx_bolsa_trabajo_temp_email ON public.bolsa_trabajo_pending_confirmation USING btree (email_usuario)"
+}, {
+  "tablename": "bolsa_trabajo_pending_confirmation",
+  "indexname": "idx_bolsa_trabajo_temp_expires",
+  "indexdef": "CREATE INDEX idx_bolsa_trabajo_temp_expires ON public.bolsa_trabajo_pending_confirmation USING btree (token_expires_at)"
+}, {
+  "tablename": "bolsa_trabajo_pending_confirmation",
+  "indexname": "idx_bolsa_trabajo_temp_token",
+  "indexdef": "CREATE INDEX idx_bolsa_trabajo_temp_token ON public.bolsa_trabajo_pending_confirmation USING btree (token_confirmacion)"
+}, {
+  "tablename": "calificaciones",
+  "indexname": "calificaciones_pkey",
+  "indexdef": "CREATE UNIQUE INDEX calificaciones_pkey ON public.calificaciones USING btree (id)"
+}, {
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_created_at",
+  "indexdef": "CREATE INDEX idx_calificaciones_created_at ON public.calificaciones USING btree (created_at DESC)"
+}, {
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_deleted_at",
+  "indexdef": "CREATE INDEX idx_calificaciones_deleted_at ON public.calificaciones USING btree (deleted_at) WHERE (deleted_at IS NOT NULL)"
+}, {
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_docente_id",
+  "indexdef": "CREATE INDEX idx_calificaciones_docente_id ON public.calificaciones USING btree (docente_id)"
+}, {
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_estudiante",
+  "indexdef": "CREATE INDEX idx_calificaciones_estudiante ON public.calificaciones USING btree (estudiante_id)"
+}, {
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_estudiante_id",
+  "indexdef": "CREATE INDEX idx_calificaciones_estudiante_id ON public.calificaciones USING btree (estudiante_id)"
+}, {
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_estudiante_materia",
+  "indexdef": "CREATE INDEX idx_calificaciones_estudiante_materia ON public.calificaciones USING btree (estudiante_id, materia_id)"
+}, {
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_materia",
+  "indexdef": "CREATE INDEX idx_calificaciones_materia ON public.calificaciones USING btree (materia_id)"
+}, {
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_materia_id_estudiante_id",
+  "indexdef": "CREATE INDEX idx_calificaciones_materia_id_estudiante_id ON public.calificaciones USING btree (materia_id, estudiante_id)"
+}, {
+  "tablename": "change_management_log",
+  "indexname": "change_management_log_pkey",
+  "indexdef": "CREATE UNIQUE INDEX change_management_log_pkey ON public.change_management_log USING btree (id)"
+}, {
+  "tablename": "change_management_log",
+  "indexname": "idx_change_mgmt_requested_at",
+  "indexdef": "CREATE INDEX idx_change_mgmt_requested_at ON public.change_management_log USING btree (requested_at)"
+}, {
+  "tablename": "change_management_log",
+  "indexname": "idx_change_mgmt_status",
+  "indexdef": "CREATE INDEX idx_change_mgmt_status ON public.change_management_log USING btree (status)"
+}, {
+  "tablename": "change_management_log",
+  "indexname": "idx_change_mgmt_type",
+  "indexdef": "CREATE INDEX idx_change_mgmt_type ON public.change_management_log USING btree (change_type)"
+}, {
+  "tablename": "citas",
+  "indexname": "citas_cita_id_key",
+  "indexdef": "CREATE UNIQUE INDEX citas_cita_id_key ON public.citas USING btree (cita_id)"
+}, {
+  "tablename": "citas",
+  "indexname": "citas_pkey",
+  "indexdef": "CREATE UNIQUE INDEX citas_pkey ON public.citas USING btree (id)"
+}, {
+  "tablename": "citas",
+  "indexname": "citas_token_confirmacion_key",
+  "indexdef": "CREATE UNIQUE INDEX citas_token_confirmacion_key ON public.citas USING btree (token_confirmacion)"
+}, {
+  "tablename": "citas",
+  "indexname": "idx_citas_created_at",
+  "indexdef": "CREATE INDEX idx_citas_created_at ON public.citas USING btree (created_at DESC)"
+}, {
+  "tablename": "citas",
+  "indexname": "idx_citas_deleted_at",
+  "indexdef": "CREATE INDEX idx_citas_deleted_at ON public.citas USING btree (deleted_at) WHERE (deleted_at IS NOT NULL)"
+}, {
+  "tablename": "citas",
+  "indexname": "idx_citas_estado",
+  "indexdef": "CREATE INDEX idx_citas_estado ON public.citas USING btree (estado)"
+}, {
+  "tablename": "comunicados",
+  "indexname": "comunicados_pkey",
+  "indexdef": "CREATE UNIQUE INDEX comunicados_pkey ON public.comunicados USING btree (id)"
+}, {
+  "tablename": "comunicados",
+  "indexname": "comunicados_slug_key",
+  "indexdef": "CREATE UNIQUE INDEX comunicados_slug_key ON public.comunicados USING btree (slug)"
+}, {
+  "tablename": "comunicados",
+  "indexname": "idx_comunicados_estado",
+  "indexdef": "CREATE INDEX idx_comunicados_estado ON public.comunicados USING btree (estado)"
+}, {
+  "tablename": "comunicados",
+  "indexname": "idx_comunicados_slug",
+  "indexdef": "CREATE INDEX idx_comunicados_slug ON public.comunicados USING btree (slug)"
+}, {
+  "tablename": "consents",
+  "indexname": "consents_pkey",
+  "indexdef": "CREATE UNIQUE INDEX consents_pkey ON public.consents USING btree (id)"
+}, {
+  "tablename": "consents",
+  "indexname": "consents_usuario_id_consent_type_key",
+  "indexdef": "CREATE UNIQUE INDEX consents_usuario_id_consent_type_key ON public.consents USING btree (usuario_id, consent_type)"
+}, {
+  "tablename": "consents",
+  "indexname": "idx_consents_granted",
+  "indexdef": "CREATE INDEX idx_consents_granted ON public.consents USING btree (granted)"
+}, {
+  "tablename": "consents",
+  "indexname": "idx_consents_type",
+  "indexdef": "CREATE INDEX idx_consents_type ON public.consents USING btree (consent_type)"
+}, {
+  "tablename": "consents",
+  "indexname": "idx_consents_usuario_id",
+  "indexdef": "CREATE INDEX idx_consents_usuario_id ON public.consents USING btree (usuario_id)"
+}, {
+  "tablename": "contactos",
+  "indexname": "contactos_pkey",
+  "indexdef": "CREATE UNIQUE INDEX contactos_pkey ON public.contactos USING btree (id)"
+}, {
+  "tablename": "contactos",
+  "indexname": "idx_contactos_deleted_at",
+  "indexdef": "CREATE INDEX idx_contactos_deleted_at ON public.contactos USING btree (deleted_at) WHERE (deleted_at IS NOT NULL)"
+}, {
+  "tablename": "contactos",
+  "indexname": "idx_contactos_fecha_creacion",
+  "indexdef": "CREATE INDEX idx_contactos_fecha_creacion ON public.contactos USING btree (fecha_creacion DESC)"
+}, {
+  "tablename": "contactos",
+  "indexname": "idx_contactos_status",
+  "indexdef": "CREATE INDEX idx_contactos_status ON public.contactos USING btree (status)"
+}, {
+  "tablename": "data_breaches",
+  "indexname": "data_breaches_pkey",
+  "indexdef": "CREATE UNIQUE INDEX data_breaches_pkey ON public.data_breaches USING btree (id)"
+}, {
+  "tablename": "data_breaches",
+  "indexname": "idx_data_breaches_detected_at",
+  "indexdef": "CREATE INDEX idx_data_breaches_detected_at ON public.data_breaches USING btree (detected_at)"
+}, {
+  "tablename": "data_breaches",
+  "indexname": "idx_data_breaches_severity",
+  "indexdef": "CREATE INDEX idx_data_breaches_severity ON public.data_breaches USING btree (severity)"
+}, {
+  "tablename": "data_breaches",
+  "indexname": "idx_data_breaches_status",
+  "indexdef": "CREATE INDEX idx_data_breaches_status ON public.data_breaches USING btree (status)"
+}, {
+  "tablename": "data_exports",
+  "indexname": "data_exports_pkey",
+  "indexdef": "CREATE UNIQUE INDEX data_exports_pkey ON public.data_exports USING btree (id)"
+}, {
+  "tablename": "data_exports",
+  "indexname": "idx_data_exports_exported_at",
+  "indexdef": "CREATE INDEX idx_data_exports_exported_at ON public.data_exports USING btree (exported_at)"
+}, {
+  "tablename": "data_exports",
+  "indexname": "idx_data_exports_usuario_id",
+  "indexdef": "CREATE INDEX idx_data_exports_usuario_id ON public.data_exports USING btree (usuario_id)"
+}, {
+  "tablename": "deleted_users",
+  "indexname": "deleted_users_pkey",
+  "indexdef": "CREATE UNIQUE INDEX deleted_users_pkey ON public.deleted_users USING btree (id)"
+}, {
+  "tablename": "deleted_users",
+  "indexname": "idx_deleted_users_deletion_date",
+  "indexdef": "CREATE INDEX idx_deleted_users_deletion_date ON public.deleted_users USING btree (deletion_date)"
+}, {
+  "tablename": "deleted_users",
+  "indexname": "idx_deleted_users_user_id",
+  "indexdef": "CREATE INDEX idx_deleted_users_user_id ON public.deleted_users USING btree (user_id)"
+}, {
+  "tablename": "docentes",
+  "indexname": "docentes_numero_empleado_key",
+  "indexdef": "CREATE UNIQUE INDEX docentes_numero_empleado_key ON public.docentes USING btree (numero_empleado)"
+}, {
+  "tablename": "docentes",
+  "indexname": "docentes_pkey",
+  "indexdef": "CREATE UNIQUE INDEX docentes_pkey ON public.docentes USING btree (id)"
+}, {
+  "tablename": "docentes",
+  "indexname": "idx_docentes_apellidos_nombre",
+  "indexdef": "CREATE INDEX idx_docentes_apellidos_nombre ON public.docentes USING btree (apellido_paterno, apellido_materno, nombre)"
+}, {
+  "tablename": "docentes",
+  "indexname": "idx_docentes_created_at",
+  "indexdef": "CREATE INDEX idx_docentes_created_at ON public.docentes USING btree (created_at DESC)"
+}, {
+  "tablename": "docentes",
+  "indexname": "idx_docentes_deleted_at",
+  "indexdef": "CREATE INDEX idx_docentes_deleted_at ON public.docentes USING btree (deleted_at) WHERE (deleted_at IS NOT NULL)"
+}, {
+  "tablename": "docentes",
+  "indexname": "idx_docentes_numero_empleado",
+  "indexdef": "CREATE INDEX idx_docentes_numero_empleado ON public.docentes USING btree (numero_empleado)"
+}, {
+  "tablename": "docentes",
+  "indexname": "idx_docentes_status",
+  "indexdef": "CREATE INDEX idx_docentes_status ON public.docentes USING btree (status) WHERE (status = 'activo'::docente_status_type)"
+}, {
+  "tablename": "docentes",
+  "indexname": "idx_docentes_usuario_id",
+  "indexdef": "CREATE INDEX idx_docentes_usuario_id ON public.docentes USING btree (usuario_id)"
+}, {
+  "tablename": "egresados",
+  "indexname": "egresados_email_key",
+  "indexdef": "CREATE UNIQUE INDEX egresados_email_key ON public.egresados USING btree (email)"
+}, {
+  "tablename": "egresados",
+  "indexname": "egresados_pkey",
+  "indexdef": "CREATE UNIQUE INDEX egresados_pkey ON public.egresados USING btree (id)"
+}, {
+  "tablename": "egresados",
+  "indexname": "idx_egresados_generacion",
+  "indexdef": "CREATE INDEX idx_egresados_generacion ON public.egresados USING btree (generacion)"
+}, {
+  "tablename": "egresados_pending_confirmation",
+  "indexname": "egresados_pending_confirmation_confirmation_token_key",
+  "indexdef": "CREATE UNIQUE INDEX egresados_pending_confirmation_confirmation_token_key ON public.egresados_pending_confirmation USING btree (confirmation_token)"
+}, {
+  "tablename": "egresados_pending_confirmation",
+  "indexname": "egresados_pending_confirmation_pkey",
+  "indexdef": "CREATE UNIQUE INDEX egresados_pending_confirmation_pkey ON public.egresados_pending_confirmation USING btree (id)"
+}, {
+  "tablename": "egresados_pending_confirmation",
+  "indexname": "egresados_pending_email_unique",
+  "indexdef": "CREATE UNIQUE INDEX egresados_pending_email_unique ON public.egresados_pending_confirmation USING btree (email_usuario)"
+}, {
+  "tablename": "egresados_pending_confirmation",
+  "indexname": "idx_egresados_pending_confirmed",
+  "indexdef": "CREATE INDEX idx_egresados_pending_confirmed ON public.egresados_pending_confirmation USING btree (email_confirmado)"
+}, {
+  "tablename": "egresados_pending_confirmation",
+  "indexname": "idx_egresados_pending_created",
+  "indexdef": "CREATE INDEX idx_egresados_pending_created ON public.egresados_pending_confirmation USING btree (fecha_solicitud DESC)"
+}, {
+  "tablename": "egresados_pending_confirmation",
+  "indexname": "idx_egresados_pending_email",
+  "indexdef": "CREATE INDEX idx_egresados_pending_email ON public.egresados_pending_confirmation USING btree (email_usuario)"
+}, {
+  "tablename": "egresados_pending_confirmation",
+  "indexname": "idx_egresados_pending_token",
+  "indexdef": "CREATE INDEX idx_egresados_pending_token ON public.egresados_pending_confirmation USING btree (confirmation_token)"
+}, {
+  "tablename": "email_verification_tokens",
+  "indexname": "email_verification_tokens_pkey",
+  "indexdef": "CREATE UNIQUE INDEX email_verification_tokens_pkey ON public.email_verification_tokens USING btree (id)"
+}, {
+  "tablename": "email_verification_tokens",
+  "indexname": "email_verification_tokens_token_key",
+  "indexdef": "CREATE UNIQUE INDEX email_verification_tokens_token_key ON public.email_verification_tokens USING btree (token)"
+}, {
+  "tablename": "email_verification_tokens",
+  "indexname": "idx_verification_expires",
+  "indexdef": "CREATE INDEX idx_verification_expires ON public.email_verification_tokens USING btree (expires_at)"
+}, {
+  "tablename": "email_verification_tokens",
+  "indexname": "idx_verification_token",
+  "indexdef": "CREATE INDEX idx_verification_token ON public.email_verification_tokens USING btree (token)"
+}, {
+  "tablename": "email_verification_tokens",
+  "indexname": "idx_verification_type",
+  "indexdef": "CREATE INDEX idx_verification_type ON public.email_verification_tokens USING btree (type)"
+}, {
+  "tablename": "email_verification_tokens",
+  "indexname": "idx_verification_user",
+  "indexdef": "CREATE INDEX idx_verification_user ON public.email_verification_tokens USING btree (user_id)"
+}, {
+  "tablename": "encryption_keys",
+  "indexname": "encryption_keys_key_id_key",
+  "indexdef": "CREATE UNIQUE INDEX encryption_keys_key_id_key ON public.encryption_keys USING btree (key_id)"
+}, {
+  "tablename": "encryption_keys",
+  "indexname": "encryption_keys_pkey",
+  "indexdef": "CREATE UNIQUE INDEX encryption_keys_pkey ON public.encryption_keys USING btree (id)"
+}, {
+  "tablename": "encryption_keys",
+  "indexname": "idx_encryption_keys_expires_at",
+  "indexdef": "CREATE INDEX idx_encryption_keys_expires_at ON public.encryption_keys USING btree (expires_at)"
+}, {
+  "tablename": "encryption_keys",
+  "indexname": "idx_encryption_keys_key_id",
+  "indexdef": "CREATE INDEX idx_encryption_keys_key_id ON public.encryption_keys USING btree (key_id)"
+}, {
+  "tablename": "encryption_keys",
+  "indexname": "idx_encryption_keys_status",
+  "indexdef": "CREATE INDEX idx_encryption_keys_status ON public.encryption_keys USING btree (status)"
+}, {
+  "tablename": "estudiantes",
+  "indexname": "estudiantes_curp_key",
+  "indexdef": "CREATE UNIQUE INDEX estudiantes_curp_key ON public.estudiantes USING btree (curp)"
+}, {
+  "tablename": "estudiantes",
+  "indexname": "estudiantes_matricula_key",
+  "indexdef": "CREATE UNIQUE INDEX estudiantes_matricula_key ON public.estudiantes USING btree (matricula)"
+}, {
+  "tablename": "estudiantes",
+  "indexname": "estudiantes_pkey",
+  "indexdef": "CREATE UNIQUE INDEX estudiantes_pkey ON public.estudiantes USING btree (id)"
+}, {
+  "tablename": "estudiantes",
+  "indexname": "idx_estudiantes_apellidos_nombre",
+  "indexdef": "CREATE INDEX idx_estudiantes_apellidos_nombre ON public.estudiantes USING btree (apellido_paterno, apellido_materno, nombre)"
+}, {
+  "tablename": "estudiantes",
+  "indexname": "idx_estudiantes_apellidos_nombre_collate",
+  "indexdef": "CREATE INDEX idx_estudiantes_apellidos_nombre_collate ON public.estudiantes USING btree (apellido_paterno COLLATE \"C\", apellido_materno COLLATE \"C\", nombre COLLATE \"C\")"
+}, {
+  "tablename": "estudiantes",
+  "indexname": "idx_estudiantes_created_at",
+  "indexdef": "CREATE INDEX idx_estudiantes_created_at ON public.estudiantes USING btree (created_at DESC)"
+}, {
+  "tablename": "estudiantes",
+  "indexname": "idx_estudiantes_deleted_at",
+  "indexdef": "CREATE INDEX idx_estudiantes_deleted_at ON public.estudiantes USING btree (deleted_at) WHERE (deleted_at IS NOT NULL)"
+}, {
+  "tablename": "estudiantes",
+  "indexname": "idx_estudiantes_matricula",
+  "indexdef": "CREATE INDEX idx_estudiantes_matricula ON public.estudiantes USING btree (matricula)"
+}, {
+  "tablename": "estudiantes",
+  "indexname": "idx_estudiantes_semestre",
+  "indexdef": "CREATE INDEX idx_estudiantes_semestre ON public.estudiantes USING btree (semestre)"
+}, {
+  "tablename": "estudiantes",
+  "indexname": "idx_estudiantes_semestre_especialidad_status",
+  "indexdef": "CREATE INDEX idx_estudiantes_semestre_especialidad_status ON public.estudiantes USING btree (semestre, especialidad, status_academico)"
+}, {
+  "tablename": "estudiantes",
+  "indexname": "idx_estudiantes_usuario_id",
+  "indexdef": "CREATE INDEX idx_estudiantes_usuario_id ON public.estudiantes USING btree (usuario_id)"
+}, {
+  "tablename": "eventos",
+  "indexname": "eventos_pkey",
+  "indexdef": "CREATE UNIQUE INDEX eventos_pkey ON public.eventos USING btree (id)"
+}, {
+  "tablename": "eventos",
+  "indexname": "eventos_slug_key",
+  "indexdef": "CREATE UNIQUE INDEX eventos_slug_key ON public.eventos USING btree (slug)"
+}, {
+  "tablename": "eventos",
+  "indexname": "idx_eventos_deleted_at",
+  "indexdef": "CREATE INDEX idx_eventos_deleted_at ON public.eventos USING btree (deleted_at) WHERE (deleted_at IS NOT NULL)"
+}, {
+  "tablename": "eventos",
+  "indexname": "idx_eventos_estado",
+  "indexdef": "CREATE INDEX idx_eventos_estado ON public.eventos USING btree (estado)"
+}, {
+  "tablename": "eventos",
+  "indexname": "idx_eventos_fecha_inicio",
+  "indexdef": "CREATE INDEX idx_eventos_fecha_inicio ON public.eventos USING btree (fecha_inicio DESC)"
+}, {
+  "tablename": "eventos",
+  "indexname": "idx_eventos_slug",
+  "indexdef": "CREATE INDEX idx_eventos_slug ON public.eventos USING btree (slug)"
+}, {
+  "tablename": "gastos",
+  "indexname": "gastos_pkey",
+  "indexdef": "CREATE UNIQUE INDEX gastos_pkey ON public.gastos USING btree (id)"
+}, {
+  "tablename": "gastos",
+  "indexname": "idx_gastos_categoria",
+  "indexdef": "CREATE INDEX idx_gastos_categoria ON public.gastos USING btree (categoria)"
+}, {
+  "tablename": "gastos",
+  "indexname": "idx_gastos_estado",
+  "indexdef": "CREATE INDEX idx_gastos_estado ON public.gastos USING btree (estado)"
+}, {
+  "tablename": "gastos",
+  "indexname": "idx_gastos_fecha",
+  "indexdef": "CREATE INDEX idx_gastos_fecha ON public.gastos USING btree (fecha)"
+}, {
+  "tablename": "gastos",
+  "indexname": "idx_gastos_periodo",
+  "indexdef": "CREATE INDEX idx_gastos_periodo ON public.gastos USING btree (periodo_fiscal)"
+}, {
+  "tablename": "iacoins_achievements",
+  "indexname": "iacoins_achievements_pkey",
+  "indexdef": "CREATE UNIQUE INDEX iacoins_achievements_pkey ON public.iacoins_achievements USING btree (id)"
+}, {
+  "tablename": "iacoins_ai_generations",
+  "indexname": "iacoins_ai_generations_pkey",
+  "indexdef": "CREATE UNIQUE INDEX iacoins_ai_generations_pkey ON public.iacoins_ai_generations USING btree (id)"
+}, {
+  "tablename": "iacoins_ai_generations",
+  "indexname": "idx_generations_date",
+  "indexdef": "CREATE INDEX idx_generations_date ON public.iacoins_ai_generations USING btree (created_at)"
+}, {
+  "tablename": "iacoins_ai_generations",
+  "indexname": "idx_generations_provider",
+  "indexdef": "CREATE INDEX idx_generations_provider ON public.iacoins_ai_generations USING btree (ai_provider)"
+}, {
+  "tablename": "iacoins_ai_generations",
+  "indexname": "idx_generations_type",
+  "indexdef": "CREATE INDEX idx_generations_type ON public.iacoins_ai_generations USING btree (generation_type)"
+}, {
+  "tablename": "iacoins_ai_generations",
+  "indexname": "idx_generations_user",
+  "indexdef": "CREATE INDEX idx_generations_user ON public.iacoins_ai_generations USING btree (user_id)"
+}, {
+  "tablename": "iacoins_balances",
+  "indexname": "iacoins_balances_pkey",
+  "indexdef": "CREATE UNIQUE INDEX iacoins_balances_pkey ON public.iacoins_balances USING btree (id)"
+}, {
+  "tablename": "iacoins_balances",
+  "indexname": "idx_iacoins_level",
+  "indexdef": "CREATE INDEX idx_iacoins_level ON public.iacoins_balances USING btree (level)"
+}, {
+  "tablename": "iacoins_balances",
+  "indexname": "idx_iacoins_user",
+  "indexdef": "CREATE INDEX idx_iacoins_user ON public.iacoins_balances USING btree (user_id)"
+}, {
+  "tablename": "iacoins_balances",
+  "indexname": "unique_user_balance",
+  "indexdef": "CREATE UNIQUE INDEX unique_user_balance ON public.iacoins_balances USING btree (user_id)"
+}, {
+  "tablename": "iacoins_challenge_progress",
+  "indexname": "iacoins_challenge_progress_pkey",
+  "indexdef": "CREATE UNIQUE INDEX iacoins_challenge_progress_pkey ON public.iacoins_challenge_progress USING btree (id)"
+}, {
+  "tablename": "iacoins_challenge_progress",
+  "indexname": "idx_progress_status",
+  "indexdef": "CREATE INDEX idx_progress_status ON public.iacoins_challenge_progress USING btree (status)"
+}, {
+  "tablename": "iacoins_challenge_progress",
+  "indexname": "idx_progress_user",
+  "indexdef": "CREATE INDEX idx_progress_user ON public.iacoins_challenge_progress USING btree (user_id)"
+}, {
+  "tablename": "iacoins_challenge_progress",
+  "indexname": "unique_user_challenge",
+  "indexdef": "CREATE UNIQUE INDEX unique_user_challenge ON public.iacoins_challenge_progress USING btree (user_id, challenge_id)"
+}, {
+  "tablename": "iacoins_challenges",
+  "indexname": "iacoins_challenges_pkey",
+  "indexdef": "CREATE UNIQUE INDEX iacoins_challenges_pkey ON public.iacoins_challenges USING btree (id)"
+}, {
+  "tablename": "iacoins_challenges",
+  "indexname": "idx_challenges_active",
+  "indexdef": "CREATE INDEX idx_challenges_active ON public.iacoins_challenges USING btree (is_active)"
+}, {
+  "tablename": "iacoins_challenges",
+  "indexname": "idx_challenges_category",
+  "indexdef": "CREATE INDEX idx_challenges_category ON public.iacoins_challenges USING btree (category)"
+}, {
+  "tablename": "iacoins_pricing",
+  "indexname": "iacoins_pricing_pkey",
+  "indexdef": "CREATE UNIQUE INDEX iacoins_pricing_pkey ON public.iacoins_pricing USING btree (id)"
+}, {
+  "tablename": "iacoins_pricing",
+  "indexname": "unique_pricing",
+  "indexdef": "CREATE UNIQUE INDEX unique_pricing ON public.iacoins_pricing USING btree (ai_provider, ai_model, generation_type)"
+}, {
+  "tablename": "iacoins_prompt_templates",
+  "indexname": "iacoins_prompt_templates_pkey",
+  "indexdef": "CREATE UNIQUE INDEX iacoins_prompt_templates_pkey ON public.iacoins_prompt_templates USING btree (id)"
+}, {
+  "tablename": "iacoins_prompt_templates",
+  "indexname": "iacoins_prompt_templates_slug_key",
+  "indexdef": "CREATE UNIQUE INDEX iacoins_prompt_templates_slug_key ON public.iacoins_prompt_templates USING btree (slug)"
+}, {
+  "tablename": "iacoins_prompt_templates",
+  "indexname": "idx_templates_active",
+  "indexdef": "CREATE INDEX idx_templates_active ON public.iacoins_prompt_templates USING btree (is_active)"
+}, {
+  "tablename": "iacoins_prompt_templates",
+  "indexname": "idx_templates_category",
+  "indexdef": "CREATE INDEX idx_templates_category ON public.iacoins_prompt_templates USING btree (category)"
+}, {
+  "tablename": "iacoins_prompt_templates",
+  "indexname": "idx_templates_type",
+  "indexdef": "CREATE INDEX idx_templates_type ON public.iacoins_prompt_templates USING btree (generation_type)"
+}, {
+  "tablename": "iacoins_transactions",
+  "indexname": "iacoins_transactions_pkey",
+  "indexdef": "CREATE UNIQUE INDEX iacoins_transactions_pkey ON public.iacoins_transactions USING btree (id)"
+}, {
+  "tablename": "iacoins_transactions",
+  "indexname": "idx_transactions_date",
+  "indexdef": "CREATE INDEX idx_transactions_date ON public.iacoins_transactions USING btree (created_at)"
+}, {
+  "tablename": "iacoins_transactions",
+  "indexname": "idx_transactions_provider",
+  "indexdef": "CREATE INDEX idx_transactions_provider ON public.iacoins_transactions USING btree (ai_provider)"
+}, {
+  "tablename": "iacoins_transactions",
+  "indexname": "idx_transactions_type",
+  "indexdef": "CREATE INDEX idx_transactions_type ON public.iacoins_transactions USING btree (type)"
+}, {
+  "tablename": "iacoins_transactions",
+  "indexname": "idx_transactions_user",
+  "indexdef": "CREATE INDEX idx_transactions_user ON public.iacoins_transactions USING btree (user_id)"
+}, {
+  "tablename": "iacoins_user_achievements",
+  "indexname": "iacoins_user_achievements_pkey",
+  "indexdef": "CREATE UNIQUE INDEX iacoins_user_achievements_pkey ON public.iacoins_user_achievements USING btree (id)"
+}, {
+  "tablename": "iacoins_user_achievements",
+  "indexname": "idx_user_achievements",
+  "indexdef": "CREATE INDEX idx_user_achievements ON public.iacoins_user_achievements USING btree (user_id)"
+}, {
+  "tablename": "iacoins_user_achievements",
+  "indexname": "unique_user_achievement",
+  "indexdef": "CREATE UNIQUE INDEX unique_user_achievement ON public.iacoins_user_achievements USING btree (user_id, achievement_id)"
+}, {
+  "tablename": "ingresos",
+  "indexname": "idx_ingresos_categoria",
+  "indexdef": "CREATE INDEX idx_ingresos_categoria ON public.ingresos USING btree (categoria)"
+}, {
+  "tablename": "ingresos",
+  "indexname": "idx_ingresos_estado",
+  "indexdef": "CREATE INDEX idx_ingresos_estado ON public.ingresos USING btree (estado)"
+}, {
+  "tablename": "ingresos",
+  "indexname": "idx_ingresos_fecha",
+  "indexdef": "CREATE INDEX idx_ingresos_fecha ON public.ingresos USING btree (fecha)"
+}, {
+  "tablename": "ingresos",
+  "indexname": "idx_ingresos_periodo",
+  "indexdef": "CREATE INDEX idx_ingresos_periodo ON public.ingresos USING btree (periodo_fiscal)"
+}, {
+  "tablename": "ingresos",
+  "indexname": "ingresos_pkey",
+  "indexdef": "CREATE UNIQUE INDEX ingresos_pkey ON public.ingresos USING btree (id)"
+}, {
+  "tablename": "inscripciones_actividades",
+  "indexname": "idx_inscripciones_status",
+  "indexdef": "CREATE INDEX idx_inscripciones_status ON public.inscripciones_actividades USING btree (status)"
+}, {
+  "tablename": "inscripciones_actividades",
+  "indexname": "inscripciones_actividades_pkey",
+  "indexdef": "CREATE UNIQUE INDEX inscripciones_actividades_pkey ON public.inscripciones_actividades USING btree (id)"
+}, {
+  "tablename": "inscripciones_actividades",
+  "indexname": "unique_student_activity",
+  "indexdef": "CREATE UNIQUE INDEX unique_student_activity ON public.inscripciones_actividades USING btree (student_email, activity_id)"
+}, {
+  "tablename": "logs_sistema",
+  "indexname": "idx_logs_nivel",
+  "indexdef": "CREATE INDEX idx_logs_nivel ON public.logs_sistema USING btree (nivel)"
+}, {
+  "tablename": "logs_sistema",
+  "indexname": "logs_sistema_pkey",
+  "indexdef": "CREATE UNIQUE INDEX logs_sistema_pkey ON public.logs_sistema USING btree (id)"
+}, {
+  "tablename": "materias",
+  "indexname": "materias_codigo_key",
+  "indexdef": "CREATE UNIQUE INDEX materias_codigo_key ON public.materias USING btree (codigo)"
+}, {
+  "tablename": "materias",
+  "indexname": "materias_pkey",
+  "indexdef": "CREATE UNIQUE INDEX materias_pkey ON public.materias USING btree (id)"
+}, {
+  "tablename": "noticias",
+  "indexname": "idx_noticias_categoria",
+  "indexdef": "CREATE INDEX idx_noticias_categoria ON public.noticias USING btree (categoria)"
+}, {
+  "tablename": "noticias",
+  "indexname": "idx_noticias_deleted_at",
+  "indexdef": "CREATE INDEX idx_noticias_deleted_at ON public.noticias USING btree (deleted_at) WHERE (deleted_at IS NOT NULL)"
+}, {
+  "tablename": "noticias",
+  "indexname": "idx_noticias_destacada",
+  "indexdef": "CREATE INDEX idx_noticias_destacada ON public.noticias USING btree (destacada)"
+}, {
+  "tablename": "noticias",
+  "indexname": "idx_noticias_estado",
+  "indexdef": "CREATE INDEX idx_noticias_estado ON public.noticias USING btree (estado)"
+}, {
+  "tablename": "noticias",
+  "indexname": "idx_noticias_fecha_creacion",
+  "indexdef": "CREATE INDEX idx_noticias_fecha_creacion ON public.noticias USING btree (fecha_creacion DESC)"
+}, {
+  "tablename": "noticias",
+  "indexname": "idx_noticias_fecha_pub",
+  "indexdef": "CREATE INDEX idx_noticias_fecha_pub ON public.noticias USING btree (fecha_publicacion DESC)"
+}, {
+  "tablename": "noticias",
+  "indexname": "idx_noticias_slug",
+  "indexdef": "CREATE INDEX idx_noticias_slug ON public.noticias USING btree (slug)"
+}, {
+  "tablename": "noticias",
+  "indexname": "noticias_pkey",
+  "indexdef": "CREATE UNIQUE INDEX noticias_pkey ON public.noticias USING btree (id)"
+}, {
+  "tablename": "noticias",
+  "indexname": "noticias_slug_key",
+  "indexdef": "CREATE UNIQUE INDEX noticias_slug_key ON public.noticias USING btree (slug)"
+}, {
+  "tablename": "notificaciones_convocatorias",
+  "indexname": "idx_notif_convocatorias_email",
+  "indexdef": "CREATE INDEX idx_notif_convocatorias_email ON public.notificaciones_convocatorias USING btree (email)"
+}, {
+  "tablename": "notificaciones_convocatorias",
+  "indexname": "idx_notif_convocatorias_status",
+  "indexdef": "CREATE INDEX idx_notif_convocatorias_status ON public.notificaciones_convocatorias USING btree (status)"
+}, {
+  "tablename": "notificaciones_convocatorias",
+  "indexname": "idx_notif_convocatorias_verificado",
+  "indexdef": "CREATE INDEX idx_notif_convocatorias_verificado ON public.notificaciones_convocatorias USING btree (verificado)"
+}, {
+  "tablename": "notificaciones_convocatorias",
+  "indexname": "notificaciones_convocatorias_email_key",
+  "indexdef": "CREATE UNIQUE INDEX notificaciones_convocatorias_email_key ON public.notificaciones_convocatorias USING btree (email)"
+}, {
+  "tablename": "notificaciones_convocatorias",
+  "indexname": "notificaciones_convocatorias_pkey",
+  "indexdef": "CREATE UNIQUE INDEX notificaciones_convocatorias_pkey ON public.notificaciones_convocatorias USING btree (id)"
+}, {
+  "tablename": "pagos_pendientes",
+  "indexname": "idx_pagos_estado",
+  "indexdef": "CREATE INDEX idx_pagos_estado ON public.pagos_pendientes USING btree (estado)"
+}, {
+  "tablename": "pagos_pendientes",
+  "indexname": "idx_pagos_estudiante",
+  "indexdef": "CREATE INDEX idx_pagos_estudiante ON public.pagos_pendientes USING btree (estudiante_id)"
+}, {
+  "tablename": "pagos_pendientes",
+  "indexname": "idx_pagos_periodo",
+  "indexdef": "CREATE INDEX idx_pagos_periodo ON public.pagos_pendientes USING btree (periodo)"
+}, {
+  "tablename": "pagos_pendientes",
+  "indexname": "idx_pagos_vencimiento",
+  "indexdef": "CREATE INDEX idx_pagos_vencimiento ON public.pagos_pendientes USING btree (fecha_vencimiento)"
+}, {
+  "tablename": "pagos_pendientes",
+  "indexname": "pagos_pendientes_pkey",
+  "indexdef": "CREATE UNIQUE INDEX pagos_pendientes_pkey ON public.pagos_pendientes USING btree (id)"
+}, {
+  "tablename": "parents",
+  "indexname": "parents_email_key",
+  "indexdef": "CREATE UNIQUE INDEX parents_email_key ON public.parents USING btree (email)"
+}, {
+  "tablename": "parents",
+  "indexname": "parents_pkey",
+  "indexdef": "CREATE UNIQUE INDEX parents_pkey ON public.parents USING btree (id)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "idx_pendientes_aprobacion_admin_id",
+  "indexdef": "CREATE INDEX idx_pendientes_aprobacion_admin_id ON public.pendientes_aprobacion USING btree (admin_id)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "idx_pendientes_aprobacion_email",
+  "indexdef": "CREATE INDEX idx_pendientes_aprobacion_email ON public.pendientes_aprobacion USING btree (email_usuario)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "idx_pendientes_aprobacion_email_confirmado",
+  "indexdef": "CREATE INDEX idx_pendientes_aprobacion_email_confirmado ON public.pendientes_aprobacion USING btree (email_confirmado)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "idx_pendientes_aprobacion_email_usuario",
+  "indexdef": "CREATE INDEX idx_pendientes_aprobacion_email_usuario ON public.pendientes_aprobacion USING btree (email_usuario)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "idx_pendientes_aprobacion_estado",
+  "indexdef": "CREATE INDEX idx_pendientes_aprobacion_estado ON public.pendientes_aprobacion USING btree (estado)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "idx_pendientes_aprobacion_estado_confirmado",
+  "indexdef": "CREATE INDEX idx_pendientes_aprobacion_estado_confirmado ON public.pendientes_aprobacion USING btree (estado, email_confirmado)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "idx_pendientes_aprobacion_estado_tipo",
+  "indexdef": "CREATE INDEX idx_pendientes_aprobacion_estado_tipo ON public.pendientes_aprobacion USING btree (estado, tipo_solicitud)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "idx_pendientes_aprobacion_fecha",
+  "indexdef": "CREATE INDEX idx_pendientes_aprobacion_fecha ON public.pendientes_aprobacion USING btree (fecha_solicitud)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "idx_pendientes_aprobacion_fecha_solicitud",
+  "indexdef": "CREATE INDEX idx_pendientes_aprobacion_fecha_solicitud ON public.pendientes_aprobacion USING btree (fecha_solicitud DESC)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "idx_pendientes_aprobacion_tipo",
+  "indexdef": "CREATE INDEX idx_pendientes_aprobacion_tipo ON public.pendientes_aprobacion USING btree (tipo_solicitud)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "idx_pendientes_aprobacion_tipo_estado",
+  "indexdef": "CREATE INDEX idx_pendientes_aprobacion_tipo_estado ON public.pendientes_aprobacion USING btree (tipo_solicitud, estado)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "idx_pendientes_aprobacion_tipo_solicitud",
+  "indexdef": "CREATE INDEX idx_pendientes_aprobacion_tipo_solicitud ON public.pendientes_aprobacion USING btree (tipo_solicitud)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "idx_pendientes_email_confirmado",
+  "indexdef": "CREATE INDEX idx_pendientes_email_confirmado ON public.pendientes_aprobacion USING btree (email_confirmado, estado)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "pendientes_aprobacion_pkey",
+  "indexdef": "CREATE UNIQUE INDEX pendientes_aprobacion_pkey ON public.pendientes_aprobacion USING btree (id)"
+}, {
+  "tablename": "pendientes_aprobacion",
+  "indexname": "pendientes_aprobacion_uuid_key",
+  "indexdef": "CREATE UNIQUE INDEX pendientes_aprobacion_uuid_key ON public.pendientes_aprobacion USING btree (uuid)"
+}, {
+  "tablename": "pending_approvals",
+  "indexname": "idx_approvals_created",
+  "indexdef": "CREATE INDEX idx_approvals_created ON public.pending_approvals USING btree (created_at)"
+}, {
+  "tablename": "pending_approvals",
+  "indexname": "idx_approvals_form_type",
+  "indexdef": "CREATE INDEX idx_approvals_form_type ON public.pending_approvals USING btree (form_type)"
+}, {
+  "tablename": "pending_approvals",
+  "indexname": "idx_approvals_status",
+  "indexdef": "CREATE INDEX idx_approvals_status ON public.pending_approvals USING btree (status)"
+}, {
+  "tablename": "pending_approvals",
+  "indexname": "pending_approvals_pkey",
+  "indexdef": "CREATE UNIQUE INDEX pending_approvals_pkey ON public.pending_approvals USING btree (id)"
+}, {
+  "tablename": "pending_inscriptions",
+  "indexname": "idx_pending_inscriptions_created",
+  "indexdef": "CREATE INDEX idx_pending_inscriptions_created ON public.pending_inscriptions USING btree (created_at)"
+}, {
+  "tablename": "pending_inscriptions",
+  "indexname": "idx_pending_inscriptions_status",
+  "indexdef": "CREATE INDEX idx_pending_inscriptions_status ON public.pending_inscriptions USING btree (status)"
+}, {
+  "tablename": "pending_inscriptions",
+  "indexname": "pending_inscriptions_pkey",
+  "indexdef": "CREATE UNIQUE INDEX pending_inscriptions_pkey ON public.pending_inscriptions USING btree (id)"
+}, {
+  "tablename": "pending_registrations",
+  "indexname": "idx_pending_registrations_created",
+  "indexdef": "CREATE INDEX idx_pending_registrations_created ON public.pending_registrations USING btree (created_at)"
+}, {
+  "tablename": "pending_registrations",
+  "indexname": "idx_pending_registrations_status",
+  "indexdef": "CREATE INDEX idx_pending_registrations_status ON public.pending_registrations USING btree (status)"
+}, {
+  "tablename": "pending_registrations",
+  "indexname": "pending_registrations_pkey",
+  "indexdef": "CREATE UNIQUE INDEX pending_registrations_pkey ON public.pending_registrations USING btree (id)"
+}, {
+  "tablename": "pending_submissions",
+  "indexname": "idx_pending_status",
+  "indexdef": "CREATE INDEX idx_pending_status ON public.pending_submissions USING btree (status)"
+}, {
+  "tablename": "pending_submissions",
+  "indexname": "pending_submissions_pkey",
+  "indexdef": "CREATE UNIQUE INDEX pending_submissions_pkey ON public.pending_submissions USING btree (id)"
+}, {
+  "tablename": "privacy_policies",
+  "indexname": "idx_privacy_policies_active",
+  "indexdef": "CREATE INDEX idx_privacy_policies_active ON public.privacy_policies USING btree (is_active)"
+}, {
+  "tablename": "privacy_policies",
+  "indexname": "idx_privacy_policies_effective_date",
+  "indexdef": "CREATE INDEX idx_privacy_policies_effective_date ON public.privacy_policies USING btree (effective_date)"
+}, {
+  "tablename": "privacy_policies",
+  "indexname": "idx_privacy_policies_version",
+  "indexdef": "CREATE INDEX idx_privacy_policies_version ON public.privacy_policies USING btree (version)"
+}, {
+  "tablename": "privacy_policies",
+  "indexname": "privacy_policies_pkey",
+  "indexdef": "CREATE UNIQUE INDEX privacy_policies_pkey ON public.privacy_policies USING btree (id)"
+}, {
+  "tablename": "privacy_policies",
+  "indexname": "privacy_policies_version_key",
+  "indexdef": "CREATE UNIQUE INDEX privacy_policies_version_key ON public.privacy_policies USING btree (version)"
+}, {
+  "tablename": "quejas",
+  "indexname": "idx_quejas_status",
+  "indexdef": "CREATE INDEX idx_quejas_status ON public.quejas USING btree (status)"
+}, {
+  "tablename": "quejas",
+  "indexname": "quejas_pkey",
+  "indexdef": "CREATE UNIQUE INDEX quejas_pkey ON public.quejas USING btree (id)"
+}, {
+  "tablename": "rbac_permissions",
+  "indexname": "idx_rbac_permissions_action",
+  "indexdef": "CREATE INDEX idx_rbac_permissions_action ON public.rbac_permissions USING btree (action)"
+}, {
+  "tablename": "rbac_permissions",
+  "indexname": "idx_rbac_permissions_resource_type",
+  "indexdef": "CREATE INDEX idx_rbac_permissions_resource_type ON public.rbac_permissions USING btree (resource_type)"
+}, {
+  "tablename": "rbac_permissions",
+  "indexname": "idx_rbac_permissions_role",
+  "indexdef": "CREATE INDEX idx_rbac_permissions_role ON public.rbac_permissions USING btree (role)"
+}, {
+  "tablename": "rbac_permissions",
+  "indexname": "rbac_permissions_pkey",
+  "indexdef": "CREATE UNIQUE INDEX rbac_permissions_pkey ON public.rbac_permissions USING btree (id)"
+}, {
+  "tablename": "rbac_permissions",
+  "indexname": "rbac_permissions_role_action_resource_type_key",
+  "indexdef": "CREATE UNIQUE INDEX rbac_permissions_role_action_resource_type_key ON public.rbac_permissions USING btree (role, action, resource_type)"
+}, {
+  "tablename": "soc2_audit_logs",
+  "indexname": "idx_soc2_audit_logs_action",
+  "indexdef": "CREATE INDEX idx_soc2_audit_logs_action ON public.soc2_audit_logs USING btree (action)"
+}, {
+  "tablename": "soc2_audit_logs",
+  "indexname": "idx_soc2_audit_logs_category",
+  "indexdef": "CREATE INDEX idx_soc2_audit_logs_category ON public.soc2_audit_logs USING btree (category)"
+}, {
+  "tablename": "soc2_audit_logs",
+  "indexname": "idx_soc2_audit_logs_ip_address",
+  "indexdef": "CREATE INDEX idx_soc2_audit_logs_ip_address ON public.soc2_audit_logs USING btree (ip_address)"
+}, {
+  "tablename": "soc2_audit_logs",
+  "indexname": "idx_soc2_audit_logs_severity",
+  "indexdef": "CREATE INDEX idx_soc2_audit_logs_severity ON public.soc2_audit_logs USING btree (severity)"
+}, {
+  "tablename": "soc2_audit_logs",
+  "indexname": "idx_soc2_audit_logs_timestamp",
+  "indexdef": "CREATE INDEX idx_soc2_audit_logs_timestamp ON public.soc2_audit_logs USING btree (\"timestamp\")"
+}, {
+  "tablename": "soc2_audit_logs",
+  "indexname": "idx_soc2_audit_logs_user_id",
+  "indexdef": "CREATE INDEX idx_soc2_audit_logs_user_id ON public.soc2_audit_logs USING btree (user_id)"
+}, {
+  "tablename": "soc2_audit_logs",
+  "indexname": "soc2_audit_logs_pkey",
+  "indexdef": "CREATE UNIQUE INDEX soc2_audit_logs_pkey ON public.soc2_audit_logs USING btree (id)"
+}, {
+  "tablename": "soc2_incidents",
+  "indexname": "idx_soc2_incidents_detected_at",
+  "indexdef": "CREATE INDEX idx_soc2_incidents_detected_at ON public.soc2_incidents USING btree (detected_at)"
+}, {
+  "tablename": "soc2_incidents",
+  "indexname": "idx_soc2_incidents_severity",
+  "indexdef": "CREATE INDEX idx_soc2_incidents_severity ON public.soc2_incidents USING btree (severity)"
+}, {
+  "tablename": "soc2_incidents",
+  "indexname": "idx_soc2_incidents_status",
+  "indexdef": "CREATE INDEX idx_soc2_incidents_status ON public.soc2_incidents USING btree (status)"
+}, {
+  "tablename": "soc2_incidents",
+  "indexname": "idx_soc2_incidents_type",
+  "indexdef": "CREATE INDEX idx_soc2_incidents_type ON public.soc2_incidents USING btree (type)"
+}, {
+  "tablename": "soc2_incidents",
+  "indexname": "soc2_incidents_pkey",
+  "indexdef": "CREATE UNIQUE INDEX soc2_incidents_pkey ON public.soc2_incidents USING btree (id)"
+}, {
+  "tablename": "solicitudes_documentos",
+  "indexname": "idx_solicitudes_deleted_at",
+  "indexdef": "CREATE INDEX idx_solicitudes_deleted_at ON public.solicitudes_documentos USING btree (deleted_at) WHERE (deleted_at IS NOT NULL)"
+}, {
+  "tablename": "solicitudes_documentos",
+  "indexname": "idx_solicitudes_fecha",
+  "indexdef": "CREATE INDEX idx_solicitudes_fecha ON public.solicitudes_documentos USING btree (fecha_solicitud DESC)"
+}, {
+  "tablename": "solicitudes_documentos",
+  "indexname": "idx_solicitudes_status",
+  "indexdef": "CREATE INDEX idx_solicitudes_status ON public.solicitudes_documentos USING btree (status)"
+}, {
+  "tablename": "solicitudes_documentos",
+  "indexname": "solicitudes_documentos_pkey",
+  "indexdef": "CREATE UNIQUE INDEX solicitudes_documentos_pkey ON public.solicitudes_documentos USING btree (id)"
+}, {
+  "tablename": "student_parents",
+  "indexname": "student_parents_pkey",
+  "indexdef": "CREATE UNIQUE INDEX student_parents_pkey ON public.student_parents USING btree (parent_id, student_id)"
+}, {
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "idx_suscriptores_email",
+  "indexdef": "CREATE INDEX idx_suscriptores_email ON public.suscriptores_notificaciones USING btree (email)"
+}, {
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "idx_suscriptores_estado",
+  "indexdef": "CREATE INDEX idx_suscriptores_estado ON public.suscriptores_notificaciones USING btree (estado)"
+}, {
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "idx_suscriptores_fecha_registro",
+  "indexdef": "CREATE INDEX idx_suscriptores_fecha_registro ON public.suscriptores_notificaciones USING btree (fecha_registro)"
+}, {
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "idx_suscriptores_token",
+  "indexdef": "CREATE INDEX idx_suscriptores_token ON public.suscriptores_notificaciones USING btree (token_verificacion)"
+}, {
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "idx_suscriptores_verificado",
+  "indexdef": "CREATE INDEX idx_suscriptores_verificado ON public.suscriptores_notificaciones USING btree (verificado)"
+}, {
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "suscriptores_notificaciones_email_key",
+  "indexdef": "CREATE UNIQUE INDEX suscriptores_notificaciones_email_key ON public.suscriptores_notificaciones USING btree (email)"
+}, {
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "suscriptores_notificaciones_pkey",
+  "indexdef": "CREATE UNIQUE INDEX suscriptores_notificaciones_pkey ON public.suscriptores_notificaciones USING btree (id)"
+}, {
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "suscriptores_notificaciones_token_cancelacion_key",
+  "indexdef": "CREATE UNIQUE INDEX suscriptores_notificaciones_token_cancelacion_key ON public.suscriptores_notificaciones USING btree (token_cancelacion)"
+}, {
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "suscriptores_notificaciones_token_verificacion_key",
+  "indexdef": "CREATE UNIQUE INDEX suscriptores_notificaciones_token_verificacion_key ON public.suscriptores_notificaciones USING btree (token_verificacion)"
+}, {
+  "tablename": "tenants",
+  "indexname": "idx_tenants_domain",
+  "indexdef": "CREATE INDEX idx_tenants_domain ON public.tenants USING btree (domain)"
+}, {
+  "tablename": "tenants",
+  "indexname": "idx_tenants_dominio",
+  "indexdef": "CREATE INDEX idx_tenants_dominio ON public.tenants USING btree (dominio)"
+}, {
+  "tablename": "tenants",
+  "indexname": "idx_tenants_nombre",
+  "indexdef": "CREATE INDEX idx_tenants_nombre ON public.tenants USING btree (nombre)"
+}, {
+  "tablename": "tenants",
+  "indexname": "idx_tenants_schema_name",
+  "indexdef": "CREATE INDEX idx_tenants_schema_name ON public.tenants USING btree (schema_name)"
+}, {
+  "tablename": "tenants",
+  "indexname": "idx_tenants_status",
+  "indexdef": "CREATE INDEX idx_tenants_status ON public.tenants USING btree (status)"
+}, {
+  "tablename": "tenants",
+  "indexname": "idx_tenants_uuid",
+  "indexdef": "CREATE INDEX idx_tenants_uuid ON public.tenants USING btree (uuid)"
+}, {
+  "tablename": "tenants",
+  "indexname": "tenants_domain_key",
+  "indexdef": "CREATE UNIQUE INDEX tenants_domain_key ON public.tenants USING btree (domain)"
+}, {
+  "tablename": "tenants",
+  "indexname": "tenants_dominio_key",
+  "indexdef": "CREATE UNIQUE INDEX tenants_dominio_key ON public.tenants USING btree (dominio)"
+}, {
+  "tablename": "tenants",
+  "indexname": "tenants_pkey",
+  "indexdef": "CREATE UNIQUE INDEX tenants_pkey ON public.tenants USING btree (id)"
+}, {
+  "tablename": "tenants",
+  "indexname": "tenants_schema_name_key",
+  "indexdef": "CREATE UNIQUE INDEX tenants_schema_name_key ON public.tenants USING btree (schema_name)"
+}, {
+  "tablename": "tenants",
+  "indexname": "tenants_uuid_key",
+  "indexdef": "CREATE UNIQUE INDEX tenants_uuid_key ON public.tenants USING btree (uuid)"
+}, {
+  "tablename": "user_achievements",
+  "indexname": "user_achievements_pkey",
+  "indexdef": "CREATE UNIQUE INDEX user_achievements_pkey ON public.user_achievements USING btree (id)"
+}, {
+  "tablename": "user_achievements",
+  "indexname": "user_achievements_usuario_id_achievement_id_key",
+  "indexdef": "CREATE UNIQUE INDEX user_achievements_usuario_id_achievement_id_key ON public.user_achievements USING btree (usuario_id, achievement_id)"
+}, {
+  "tablename": "user_gamification_stats",
+  "indexname": "user_gamification_stats_pkey",
+  "indexdef": "CREATE UNIQUE INDEX user_gamification_stats_pkey ON public.user_gamification_stats USING btree (id)"
+}, {
+  "tablename": "user_gamification_stats",
+  "indexname": "user_gamification_stats_usuario_id_key",
+  "indexdef": "CREATE UNIQUE INDEX user_gamification_stats_usuario_id_key ON public.user_gamification_stats USING btree (usuario_id)"
+}, {
+  "tablename": "user_privacy_policy_acceptance",
+  "indexname": "idx_user_privacy_acceptance_policy_version",
+  "indexdef": "CREATE INDEX idx_user_privacy_acceptance_policy_version ON public.user_privacy_policy_acceptance USING btree (policy_version)"
+}, {
+  "tablename": "user_privacy_policy_acceptance",
+  "indexname": "idx_user_privacy_acceptance_usuario_id",
+  "indexdef": "CREATE INDEX idx_user_privacy_acceptance_usuario_id ON public.user_privacy_policy_acceptance USING btree (usuario_id)"
+}, {
+  "tablename": "user_privacy_policy_acceptance",
+  "indexname": "user_privacy_policy_acceptance_pkey",
+  "indexdef": "CREATE UNIQUE INDEX user_privacy_policy_acceptance_pkey ON public.user_privacy_policy_acceptance USING btree (id)"
+}, {
+  "tablename": "user_privacy_policy_acceptance",
+  "indexname": "user_privacy_policy_acceptance_usuario_id_policy_version_key",
+  "indexdef": "CREATE UNIQUE INDEX user_privacy_policy_acceptance_usuario_id_policy_version_key ON public.user_privacy_policy_acceptance USING btree (usuario_id, policy_version)"
+}, {
+  "tablename": "user_sessions",
+  "indexname": "idx_session_expire",
+  "indexdef": "CREATE INDEX idx_session_expire ON public.user_sessions USING btree (expire)"
+}, {
+  "tablename": "user_sessions",
+  "indexname": "session_pkey",
+  "indexdef": "CREATE UNIQUE INDEX session_pkey ON public.user_sessions USING btree (sid)"
+}, {
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_created_at",
+  "indexdef": "CREATE INDEX idx_usuarios_created_at ON public.usuarios USING btree (created_at DESC)"
+}, {
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_deleted_at",
+  "indexdef": "CREATE INDEX idx_usuarios_deleted_at ON public.usuarios USING btree (deleted_at) WHERE (deleted_at IS NOT NULL)"
+}, {
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_email",
+  "indexdef": "CREATE INDEX idx_usuarios_email ON public.usuarios USING btree (email)"
+}, {
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_google_id",
+  "indexdef": "CREATE INDEX idx_usuarios_google_id ON public.usuarios USING btree (google_id)"
+}, {
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_last_login",
+  "indexdef": "CREATE INDEX idx_usuarios_last_login ON public.usuarios USING btree (last_login DESC)"
+}, {
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_role",
+  "indexdef": "CREATE INDEX idx_usuarios_role ON public.usuarios USING btree (role)"
+}, {
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_role_nombre",
+  "indexdef": "CREATE INDEX idx_usuarios_role_nombre ON public.usuarios USING btree (role, nombre)"
+}, {
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_status",
+  "indexdef": "CREATE INDEX idx_usuarios_status ON public.usuarios USING btree (status)"
+}, {
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_username",
+  "indexdef": "CREATE INDEX idx_usuarios_username ON public.usuarios USING btree (username)"
+}, {
+  "tablename": "usuarios",
+  "indexname": "usuarios_email_key",
+  "indexdef": "CREATE UNIQUE INDEX usuarios_email_key ON public.usuarios USING btree (email)"
+}, {
+  "tablename": "usuarios",
+  "indexname": "usuarios_google_id_key",
+  "indexdef": "CREATE UNIQUE INDEX usuarios_google_id_key ON public.usuarios USING btree (google_id)"
+}, {
+  "tablename": "usuarios",
+  "indexname": "usuarios_pkey",
+  "indexdef": "CREATE UNIQUE INDEX usuarios_pkey ON public.usuarios USING btree (id)"
+}, {
+  "tablename": "usuarios",
+  "indexname": "usuarios_username_key",
+  "indexdef": "CREATE UNIQUE INDEX usuarios_username_key ON public.usuarios USING btree (username)"
+}, {
+  "tablename": "usuarios",
+  "indexname": "usuarios_uuid_key",
+  "indexdef": "CREATE UNIQUE INDEX usuarios_uuid_key ON public.usuarios USING btree (uuid)"
+}, {
+  "tablename": "vendor_risk_assessments",
+  "indexname": "idx_vendor_risk_level",
+  "indexdef": "CREATE INDEX idx_vendor_risk_level ON public.vendor_risk_assessments USING btree (risk_level)"
+}, {
+  "tablename": "vendor_risk_assessments",
+  "indexname": "idx_vendor_risk_next_review",
+  "indexdef": "CREATE INDEX idx_vendor_risk_next_review ON public.vendor_risk_assessments USING btree (next_review_date)"
+}, {
+  "tablename": "vendor_risk_assessments",
+  "indexname": "idx_vendor_risk_vendor_name",
+  "indexdef": "CREATE INDEX idx_vendor_risk_vendor_name ON public.vendor_risk_assessments USING btree (vendor_name)"
+}, {
+  "tablename": "vendor_risk_assessments",
+  "indexname": "vendor_risk_assessments_pkey",
+  "indexdef": "CREATE UNIQUE INDEX vendor_risk_assessments_pkey ON public.vendor_risk_assessments USING btree (id)"
+}, {
+  "tablename": "verification_tokens",
+  "indexname": "idx_verification_tokens_created_at",
+  "indexdef": "CREATE INDEX idx_verification_tokens_created_at ON public.verification_tokens USING btree (created_at)"
+}, {
+  "tablename": "verification_tokens",
+  "indexname": "idx_verification_tokens_email",
+  "indexdef": "CREATE INDEX idx_verification_tokens_email ON public.verification_tokens USING btree (email)"
+}, {
+  "tablename": "verification_tokens",
+  "indexname": "idx_verification_tokens_expires_at",
+  "indexdef": "CREATE INDEX idx_verification_tokens_expires_at ON public.verification_tokens USING btree (expires_at)"
+}, {
+  "tablename": "verification_tokens",
+  "indexname": "idx_verification_tokens_token",
+  "indexdef": "CREATE INDEX idx_verification_tokens_token ON public.verification_tokens USING btree (token)"
+}, {
+  "tablename": "verification_tokens",
+  "indexname": "verification_tokens_pkey",
+  "indexdef": "CREATE UNIQUE INDEX verification_tokens_pkey ON public.verification_tokens USING btree (id)"
+}, {
+  "tablename": "verification_tokens",
+  "indexname": "verification_tokens_token_key",
+  "indexdef": "CREATE UNIQUE INDEX verification_tokens_token_key ON public.verification_tokens USING btree (token)"
+}, {
+  "tablename": "webauthn_challenges",
+  "indexname": "idx_webauthn_challenges_expires",
+  "indexdef": "CREATE INDEX idx_webauthn_challenges_expires ON public.webauthn_challenges USING btree (expires_at)"
+}, {
+  "tablename": "webauthn_challenges",
+  "indexname": "webauthn_challenges_pkey",
+  "indexdef": "CREATE UNIQUE INDEX webauthn_challenges_pkey ON public.webauthn_challenges USING btree (id)"
+}, {
+  "tablename": "webauthn_challenges",
+  "indexname": "webauthn_challenges_user_id_type_key",
+  "indexdef": "CREATE UNIQUE INDEX webauthn_challenges_user_id_type_key ON public.webauthn_challenges USING btree (user_id, type)"
+}, {
+  "tablename": "webauthn_credentials",
+  "indexname": "idx_webauthn_credentials_credential_id",
+  "indexdef": "CREATE INDEX idx_webauthn_credentials_credential_id ON public.webauthn_credentials USING btree (credential_id)"
+}, {
+  "tablename": "webauthn_credentials",
+  "indexname": "idx_webauthn_credentials_last_used",
+  "indexdef": "CREATE INDEX idx_webauthn_credentials_last_used ON public.webauthn_credentials USING btree (last_used_at DESC)"
+}, {
+  "tablename": "webauthn_credentials",
+  "indexname": "idx_webauthn_credentials_user_id",
+  "indexdef": "CREATE INDEX idx_webauthn_credentials_user_id ON public.webauthn_credentials USING btree (user_id)"
+}, {
+  "tablename": "webauthn_credentials",
+  "indexname": "webauthn_credentials_credential_id_key",
+  "indexdef": "CREATE UNIQUE INDEX webauthn_credentials_credential_id_key ON public.webauthn_credentials USING btree (credential_id)"
+}, {
+  "tablename": "webauthn_credentials",
+  "indexname": "webauthn_credentials_pkey",
+  "indexdef": "CREATE UNIQUE INDEX webauthn_credentials_pkey ON public.webauthn_credentials USING btree (id)"
+}]

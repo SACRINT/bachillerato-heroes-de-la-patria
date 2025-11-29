@@ -1,0 +1,196 @@
+[{
+  "table_name": "achievements",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "audit_logs",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "avisos",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "bolsa_trabajo",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "bolsa_trabajo_pending_confirmation",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "calificaciones",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "change_management_log",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "citas",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "comunicados",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "consents",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "contactos",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "data_breaches",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "data_exports",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "deleted_users",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "docentes",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "docentes_activos",
+  "table_type": "VIEW"
+}, {
+  "table_name": "egresados",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "egresados_pending_confirmation",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "email_verification_tokens",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "encryption_keys",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "estudiantes",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "estudiantes_activos",
+  "table_type": "VIEW"
+}, {
+  "table_name": "eventos",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "gastos",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "iacoins_achievements",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "iacoins_ai_generations",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "iacoins_balances",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "iacoins_challenge_progress",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "iacoins_challenges",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "iacoins_pricing",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "iacoins_prompt_templates",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "iacoins_transactions",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "iacoins_user_achievements",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "ingresos",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "inscripciones_actividades",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "logs_sistema",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "materias",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "noticias",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "notificaciones_convocatorias",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "pagos_pendientes",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "parents",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "pendientes_aprobacion",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "pending_approvals",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "pending_inscriptions",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "pending_registrations",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "pending_submissions",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "privacy_policies",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "quejas",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "rbac_permissions",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "soc2_audit_logs",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "soc2_incidents",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "solicitudes_documentos",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "student_parents",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "suscriptores_notificaciones",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "tenants",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "user_achievements",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "user_gamification_stats",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "user_privacy_policy_acceptance",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "user_sessions",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "usuarios",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "usuarios_activos",
+  "table_type": "VIEW"
+}, {
+  "table_name": "vendor_risk_assessments",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "verification_tokens",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "webauthn_challenges",
+  "table_type": "BASE TABLE"
+}, {
+  "table_name": "webauthn_credentials",
+  "table_type": "BASE TABLE"
+}]

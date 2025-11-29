@@ -12,7 +12,8 @@
  * app.use(redisCache.middleware);
  */
 
-const Redis = require('ioredis');
+// ⏸️ COMENTADO - FASE 30.5 INTENTO-5: Redis no disponible en local
+// const Redis = require('ioredis');
 const crypto = require('crypto');
 
 class RedisCache {

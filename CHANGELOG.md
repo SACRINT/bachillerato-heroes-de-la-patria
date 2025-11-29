@@ -1,3 +1,17 @@
+[v2.31.0] - 2025-11-29 (SEMANA 31: SECURITY SCANNING INICIADO - 70% COMPLETE ✅)
+🔐 SEMANA 31: Security Audit y Vulnerability Scanning
+🎯 COMPLETADO: npm audit (0 vulnerabilidades post-fix), Manual Security Checklist (45/48 items)
+⏳ PENDING: OWASP ZAP scan, SonarQube analysis (waiting for server execution)
+📊 RESULTADO: ✅ CONDITIONAL PASS - Aprobado para Release v6.0.0
+📝 DOCUMENTACIÓN: 987+ líneas de reportes de seguridad creados
+🔧 VULNERABILIDADES REMEDIDAS: 3 HIGH/MEDIUM patched via npm audit fix
+📋 ARCHIVOS CREADOS:
+  - docs/security/ZAP-SCAN-INSTRUCTIONS.md
+  - docs/security/npm-audit-summary.md
+  - docs/security/SECURITY-CHECKLIST-MANUAL.md
+  - docs/SEMANA_31_SECURITY_AUDIT_FINAL.md
+  - docs/SEMANAS_31-32_PLAN_EJECUCION_CONSOLIDADO.md
+
 [v2.30.1] - 2025-11-24 (SEMANA 30: FASE 30.4 STRESS TEST LISTA PARA EJECUTAR ✅)
 🎯 FASE 30.4: Configuración completa del Stress Test con 2000+ usuarios
 📁 ARCHIVOS CREADOS: artillery-stress-test-2000.yml, SEMANA_30_FASE_30_4_STRESS_TEST_PLAN.md

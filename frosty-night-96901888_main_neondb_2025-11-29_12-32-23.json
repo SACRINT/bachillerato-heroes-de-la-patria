@@ -1,0 +1,125 @@
+[{
+  "schemaname": "public",
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_created_at"
+}, {
+  "schemaname": "public",
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_deleted_at"
+}, {
+  "schemaname": "public",
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_docente_id"
+}, {
+  "schemaname": "public",
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_estudiante"
+}, {
+  "schemaname": "public",
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_estudiante_id"
+}, {
+  "schemaname": "public",
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_estudiante_materia"
+}, {
+  "schemaname": "public",
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_fecha"
+}, {
+  "schemaname": "public",
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_materia"
+}, {
+  "schemaname": "public",
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_materia_id_estudiante_id"
+}, {
+  "schemaname": "public",
+  "tablename": "calificaciones",
+  "indexname": "idx_calificaciones_status"
+}, {
+  "schemaname": "public",
+  "tablename": "citas",
+  "indexname": "idx_citas_confirmada"
+}, {
+  "schemaname": "public",
+  "tablename": "citas",
+  "indexname": "idx_citas_created_at"
+}, {
+  "schemaname": "public",
+  "tablename": "citas",
+  "indexname": "idx_citas_deleted_at"
+}, {
+  "schemaname": "public",
+  "tablename": "citas",
+  "indexname": "idx_citas_email"
+}, {
+  "schemaname": "public",
+  "tablename": "citas",
+  "indexname": "idx_citas_estado"
+}, {
+  "schemaname": "public",
+  "tablename": "citas",
+  "indexname": "idx_citas_fecha_solicitada"
+}, {
+  "schemaname": "public",
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "idx_suscriptores_email"
+}, {
+  "schemaname": "public",
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "idx_suscriptores_estado"
+}, {
+  "schemaname": "public",
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "idx_suscriptores_fecha_registro"
+}, {
+  "schemaname": "public",
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "idx_suscriptores_fecha_suscripcion"
+}, {
+  "schemaname": "public",
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "idx_suscriptores_token"
+}, {
+  "schemaname": "public",
+  "tablename": "suscriptores_notificaciones",
+  "indexname": "idx_suscriptores_verificado"
+}, {
+  "schemaname": "public",
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_created_at"
+}, {
+  "schemaname": "public",
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_deleted_at"
+}, {
+  "schemaname": "public",
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_email"
+}, {
+  "schemaname": "public",
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_google_id"
+}, {
+  "schemaname": "public",
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_last_login"
+}, {
+  "schemaname": "public",
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_role"
+}, {
+  "schemaname": "public",
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_role_nombre"
+}, {
+  "schemaname": "public",
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_status"
+}, {
+  "schemaname": "public",
+  "tablename": "usuarios",
+  "indexname": "idx_usuarios_username"
+}]

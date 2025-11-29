@@ -16,10 +16,13 @@ const pool = require('../config/database');
 
 class PoolManager {
   constructor() {
+    // Obtener la configuración del pool de forma correcta
+    const maxConnections = pool._clients ? pool._clients.length : (pool.options?.max || 100);
+
     this.stats = {
       totalRequests: 0,
       activeConnections: 0,
-      maxConnections: pool.options.max,
+      maxConnections: maxConnections,
       utilizationHistory: [],
       alertsSent: 0,
       lastAlertTime: null,
