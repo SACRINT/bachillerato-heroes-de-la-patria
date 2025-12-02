@@ -531,9 +531,21 @@ module.exports = async (req, res) => {
         // ============================================
         if (path === '/api/challenges' && req.method === 'GET') {
             try {
-                const result = await pool.query('SELECT * FROM challenges WHERE end_date > NOW() OR end_date IS NULL LIMIT 20');
-                return res.status(200).json({ success: true, data: result.rows });
-            } catch (e) { return res.status(200).json({ success: true, data: [] }); }
+                const activeOnly = req.query?.active_only === 'true';
+                let query = 'SELECT * FROM challenges';
+
+                if (activeOnly) {
+                    query += ' WHERE (end_date > NOW() OR end_date IS NULL) AND is_active = true';
+                }
+
+                query += ' LIMIT 20';
+
+                const result = await pool.query(query);
+                return res.status(200).json({ success: true, data: result.rows || [] });
+            } catch (error) {
+                console.error('[API] Error fetching challenges:', error.message);
+                return res.status(200).json({ success: true, data: [] }); // Graceful degradation
+            }
         }
 
         if (path === '/api/challenges/daily' && req.method === 'GET') {
