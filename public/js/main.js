@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ✅ REVERTIDO A VERSIÓN SIMPLE QUE FUNCIONABA (commit eac16ff)
     // Cargar header y footer directamente sin esperar a auth system
-    initializeChatbot();
+    // initializeChatbot(); // ❌ REMOVED: Function doesn't exist, chatbot initialized by index-events.js
     loadHeaderFooter();
 
     // 🏢 LISTENER: Cuando el tenant config esté cargado, actualizar header
