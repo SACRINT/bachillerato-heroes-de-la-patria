@@ -1,5 +1,29 @@
 // Main JavaScript para el sitio web
 
+// ============================================
+// POLYFILL: sanitizeHTML function
+// ============================================
+// Define sanitizeHTML globally if not already defined
+if (typeof window.sanitizeHTML === 'undefined') {
+    window.sanitizeHTML = function (html, context = 'simple') {
+        // If DOMPurify is available, use it
+        if (typeof DOMPurify !== 'undefined') {
+            const config = {
+                ALLOWED_TAGS: ['div', 'p', 'span', 'a', 'strong', 'em', 'i', 'br', 'small', 'button', 'h1', 'h2', 'h3', 'h4', 'h5', 'ul', 'li', 'nav', 'header', 'footer', 'img'],
+                ALLOWED_ATTR: ['class', 'id', 'role', 'aria-*', 'href', 'src', 'alt', 'data-action', 'data-bs-toggle', 'data-bs-target', 'data-bs-dismiss'],
+                ALLOW_ARIA_ATTR: true,
+                ALLOW_DATA_ATTR: true,
+                KEEP_CONTENT: true
+            };
+            return DOMPurify.sanitize(html, config);
+        }
+        // Fallback: return empty string for safety if DOMPurify is not available
+        console.warn('[sanitizeHTML] DOMPurify not available, returning empty string');
+        return '';
+    };
+}
+
+
 // ✅ LOGGER MANAGER - Cargar primero para centralizar logging
 (function loadLogger() {
     const script = document.createElement('script');
