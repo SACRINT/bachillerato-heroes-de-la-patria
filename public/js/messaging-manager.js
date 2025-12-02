@@ -1,14 +1,13 @@
-/**
 // Debug Logger - Logging condicional (GDPR compliant)
 if (typeof debugLog === 'undefined') {
     var debugLog = {
-        log: () => {},
-        warn: () => {},
-        error: () => {}
+        log: () => { },
+        warn: () => { },
+        error: () => { }
     };
 }
 
-
+/**
  * ============================================
  * MESSAGING MANAGER - Sistema de Mensajería Interna BGE
  * ============================================
@@ -371,11 +370,11 @@ class MessagingManager {
         return attachments.map(att => `
             <div class="message-attachment mt-2">
                 ${att.file_type.startsWith('image/') ?
-                    `<img src="${att.file_url}" alt="${att.file_name}" class="img-fluid rounded" style="max-height: 200px;">` :
-                    `<a href="${att.file_url}" download class="btn btn-sm btn-outline-primary">
+                `<img src="${att.file_url}" alt="${att.file_name}" class="img-fluid rounded" style="max-height: 200px;">` :
+                `<a href="${att.file_url}" download class="btn btn-sm btn-outline-primary">
                         <i class="bi bi-file-earmark"></i> ${att.file_name}
                     </a>`
-                }
+            }
             </div>
         `).join('');
     }
