@@ -1197,6 +1197,30 @@ class DigitalLibraryManager {
      * Obtener token almacenado
      */
     getStoredToken() {
+        // 1. Check Student Token
+        const studentToken = localStorage.getItem('student_auth_token');
+        if (studentToken) return studentToken;
+
+        // 2. Check Teacher Token
+        const teacherToken = localStorage.getItem('teachers_auth_token');
+        if (teacherToken) return teacherToken;
+
+        // 3. Check Admin Token
+        const adminSession = localStorage.getItem('secure_admin_session');
+        if (adminSession) {
+            try {
+                const session = JSON.parse(adminSession);
+                if (session && session.token) return session.token;
+            } catch (e) {
+                console.error('Error parsing admin session', e);
+            }
+        }
+
+        // 4. Check Parent Token
+        const parentToken = localStorage.getItem('parentToken');
+        if (parentToken) return parentToken;
+
+        // 5. Fallback
         return localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
     }
 
