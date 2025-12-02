@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -56,15 +56,15 @@
         .btn:hover { background: #2563eb; }
     </style>
 
-    <!-- ðŸ¢ Multi-Tenancy Support -->
+    <!-- 🏢 Multi-Tenancy Support -->
     <script src="js/tenant-config-loader.js"></script>
-    <script src="js/tenant-replacer.js" defer></script>
+    <!-- tenant-replacer.js removed - functionality handled by tenant-config-loader.js -->
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>ðŸ“Š Performance Dashboard</h1>
-            <p>Monitoreo de métricas Core Web Vitals en tiempo real</p>
+            <h1>📊 Performance Dashboard</h1>
+            <p>Monitoreo de m�tricas Core Web Vitals en tiempo real</p>
         </div>
 
         <div class="grid">
@@ -104,20 +104,20 @@
                 <h2>Optimizations Applied</h2>
                 <div class="metric">
                     <span class="metric-label">Code Splitting</span>
-                    <span class="metric-value good">âœ“</span>
+                    <span class="metric-value good">✓</span>
                 </div>
                 <div class="metric">
                     <span class="metric-label">Lazy Loading</span>
-                    <span class="metric-value good">âœ“</span>
+                    <span class="metric-value good">✓</span>
                 </div>
                 <div class="metric">
                     <span class="metric-label">Service Worker</span>
-                    <span class="metric-value good">âœ“</span>
+                    <span class="metric-value good">✓</span>
                 </div>
             </div>
         </div>
 
-        <button class="btn" onclick="runAudit()">ðŸ” Run Lighthouse Audit</button>
+        <button class="btn" onclick="runAudit()">🔍 Run Lighthouse Audit</button>
     </div>
 
 
