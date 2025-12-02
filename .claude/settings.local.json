@@ -1,19 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx artillery:*)",
-      "Bash(curl -s -I http://localhost:3000/api/health)",
-      "Bash(powershell:*)",
-      "Bash(wmic process list:*)",
-      "Bash(netstat:*)",
-      "Bash(findstr:*)",
-      "Bash(tee:*)",
-      "Bash(curl:*)",
-      "Bash(npm audit fix:*)",
-      "Bash(npm audit:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(timeout 10 node:*)"
     ],
     "deny": [],
     "ask": []

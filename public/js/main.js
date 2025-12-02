@@ -33,7 +33,7 @@
 // Must wait for all event handlers to load before loading event-handler-registry
 
 let eventHandlersLoaded = 0;
-const eventHandlerFiles = ['js/bolsa-trabajo-events.js', 'js/calificaciones-events.js', 'js/citas-events.js', 'js/inscriptions-handler.js', 'js/index-form-handlers.js', 'js/orphan-handlers.js'];
+const eventHandlerFiles = ['js/bolsa-trabajo-events.js', 'js/calificaciones-events.js', 'js/citas-events.js', 'js/inscriptions-handler.js', 'js/orphan-handlers.js'];
 
 function loadNextEventHandler() {
     if (eventHandlersLoaded < eventHandlerFiles.length) {
