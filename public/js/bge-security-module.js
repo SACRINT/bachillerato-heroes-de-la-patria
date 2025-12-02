@@ -63,7 +63,7 @@ class BGESecurityModule extends BGEModule {
                 requireReauth: ['admin', 'teacher']
             },
             securityHeaders: {
-                'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; connect-src 'self'  http://localhost:3001 http://localhost:3002 http://localhost:3003 http://localhost:3004 http://localhost:3005 http://localhost:8000 http://127.0.0.1:8080 https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com https://www.googleapis.com",
+                'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: blob: https: https://ui-avatars.com; connect-src 'self'  http://localhost:3001 http://localhost:3002 http://localhost:3003 http://localhost:3004 http://localhost:3005 http://localhost:8000 http://127.0.0.1:8080 https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com https://www.googleapis.com",
                 'X-Frame-Options': 'DENY',
                 'X-Content-Type-Options': 'nosniff',
                 'X-XSS-Protection': '1; mode=block',
@@ -1331,7 +1331,7 @@ class BGESecurityModule extends BGEModule {
                         return /^[a-zA-Z0-9_]{3,20}$/.test(input);
                     case 'text':
                         return !this.securityManager.scanner.detectXSS(input) &&
-                               !this.securityManager.scanner.detectSQLInjection(input);
+                            !this.securityManager.scanner.detectSQLInjection(input);
                     default:
                         return true;
                 }
@@ -2300,7 +2300,7 @@ class BGESecurityModule extends BGEModule {
 window.BGESecurityModule = BGESecurityModule;
 
 // Función global para handleAdminLogin (requerida por header.html)
-window.handleAdminLogin = async function() {
+window.handleAdminLogin = async function () {
     try {
         console.log('🔑 handleAdminLogin llamado desde header');
 
@@ -2530,7 +2530,7 @@ window.updateAdminHeaderStatus = function updateAdminHeaderStatus(isLoggedIn, us
             // ✅ FALLBACK si DOMPurify no está disponible
             const adminHTML = `<i class="fas fa-shield-check me-2"></i>Admin (${user.username.split('@')[0]})`;
             if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
-                adminLink.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(adminHTML));
+                adminLink.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(adminHTML));
             } else {
                 // Fallback: HTML sin sanitizar (seguro porque lo generamos nosotros)
                 adminLink.innerHTML = DOMPurify.sanitize(adminHTML);
@@ -2562,7 +2562,7 @@ window.updateAdminHeaderStatus = function updateAdminHeaderStatus(isLoggedIn, us
             // ✅ FALLBACK si DOMPurify no está disponible
             const adminResetHTML = '<i class="fas fa-shield-halved me-2"></i>Admin';
             if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
-                adminLink.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(adminResetHTML));
+                adminLink.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(adminResetHTML));
             } else {
                 // Fallback: HTML sin sanitizar (seguro porque lo generamos nosotros)
                 adminLink.innerHTML = DOMPurify.sanitize(adminResetHTML);
@@ -2633,13 +2633,13 @@ if (typeof window !== 'undefined') {
     };
 
     // Función de inicialización para dashboard
-    window.initSecureAuthSystem = function() {
+    window.initSecureAuthSystem = function () {
         console.log('🔧 [SECURE AUTH] Sistema inicializado');
         return window.secureAdminAuth;
     };
 
     // Función global de logout para compatibilidad con header.html
-    window.logoutAdminPanel = function() {
+    window.logoutAdminPanel = function () {
         console.log('🚪 Cerrando sesión admin desde BGE Security Module...');
         if (window.secureAdminAuth && typeof window.secureAdminAuth.logout === 'function') {
             window.secureAdminAuth.logout();
