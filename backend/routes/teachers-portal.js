@@ -20,6 +20,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { pool } = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
+const { getJWTUtils } = require('../utils/jwtUtils');
+const jwtUtils = getJWTUtils();
 const router = express.Router();
 
 // ============================================
@@ -32,15 +34,30 @@ const requireTeacher = async (req, res, next) => {
 
         const client = await pool.connect();
         try {
+            console.log(`[TEACHER-AUTH] Verificando permisos para usuario ID: ${req.user.id}`);
+
             const result = await client.query(
-                `SELECT d.id, d.numero_empleado, d.especialidad, u.nombre, u.apellido_paterno, u.apellido_materno
+                `SELECT d.id, d.numero_empleado, d.especialidad, u.nombre, u.apellido_paterno, u.apellido_materno, u.status
                  FROM docentes d
                  JOIN usuarios u ON d.usuario_id = u.id
-                 WHERE u.id = $1 AND u.activo = TRUE`,
+                 WHERE u.id = $1`,
                 [req.user.id]
             );
 
-            if (result.rows.length === 0) {
+            console.log(`[TEACHER-AUTH] Resultado query: ${result.rows.length} filas found.`);
+            if (result.rows.length > 0) {
+                console.log(`[TEACHER-AUTH] Status usuario: ${result.rows[0].status}`);
+            }
+
+            // Filtrar por status activo en código para ver si es el problema
+            // Aceptamos 'activo' (español) o 'active' (inglés)
+            const teacher = result.rows.find(row => row.status === 'activo' || row.status === 'active');
+
+            if (!teacher) {
+                console.log('[TEACHER-AUTH] ❌ Usuario no encontrado o no activo en tabla docentes/usuarios');
+                if (result.rows.length > 0) {
+                    console.log(`[TEACHER-AUTH] Status actual: ${result.rows[0].status}`);
+                }
                 return res.status(403).json({
                     success: false,
                     error: 'No tiene permisos de docente'
@@ -48,7 +65,7 @@ const requireTeacher = async (req, res, next) => {
             }
 
             // Agregar información del docente al request
-            req.teacher = result.rows[0];
+            req.teacher = teacher;
             next();
         } finally {
             client.release();
@@ -86,7 +103,7 @@ router.post('/auth/login', async (req, res) => {
         // Buscar docente
         const docenteQuery = `
             SELECT
-                u.id, u.email, u.password_hash, u.activo,
+                u.id, u.email, u.password_hash, u.status as activo,
                 d.id as docente_id, d.numero_empleado, d.especialidad,
                 u.nombre, u.apellido_paterno, u.apellido_materno
             FROM usuarios u
@@ -130,16 +147,13 @@ router.post('/auth/login', async (req, res) => {
         );
 
         // Generar JWT
-        const token = jwt.sign(
-            {
-                id: docente.id,
-                email: docente.email,
-                role: 'teacher',
-                teacher_id: docente.docente_id
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: '7d' }
-        );
+        // Generar JWT usando jwtUtils para consistencia (audience, issuer, type)
+        const token = jwtUtils.generateAccessToken({
+            userId: docente.id,
+            email: docente.email,
+            role: 'docente', // Normalizado a 'docente'
+            teacher_id: docente.docente_id
+        });
 
         res.json({
             success: true,
@@ -178,59 +192,12 @@ router.get('/dashboard', authenticateToken, requireTeacher, async (req, res) => 
 
     try {
         const teacherId = req.teacher.id;
+        const userId = req.user.id;
 
-        // 1. Obtener clases activas
-        const classesQuery = await client.query(
-            `SELECT * FROM v_teacher_classes_summary WHERE teacher_id = $1 ORDER BY materia, grado, grupo`,
-            [teacherId]
-        );
+        debugLog.log('teachers-portal', `Cargando dashboard para docente ID: ${teacherId}`);
 
-        // 2. Total de estudiantes
-        const studentsQuery = await client.query(
-            `SELECT COUNT(DISTINCT tcs.student_id) as total
-             FROM teacher_class_students tcs
-             JOIN teacher_classes tc ON tcs.class_id = tc.id
-             WHERE tc.teacher_id = $1 AND tcs.activo = TRUE AND tc.activo = TRUE`,
-            [teacherId]
-        );
-
-        // 3. Notificaciones no leídas
-        const notificationsQuery = await client.query(
-            `SELECT COUNT(*) as total
-             FROM teacher_notifications
-             WHERE teacher_id = $1 AND leida = FALSE`,
-            [teacherId]
-        );
-
-        // 4. Mensajes no leídos (vienen de padres/estudiantes hacia el docente)
-        // Asumiendo que hay una tabla de mensajes inversa o que teacher_messages tiene un campo de respuesta
-        const messagesQuery = await client.query(
-            `SELECT COUNT(*) as total
-             FROM teacher_messages
-             WHERE teacher_id = $1 AND leido = FALSE`,
-            [teacherId]
-        );
-
-        // 5. Tareas pendientes de revisión
-        const pendingReviewsQuery = await client.query(
-            `SELECT * FROM v_pending_assignment_reviews WHERE teacher_id = $1`,
-            [teacherId]
-        );
-
-        // 6. Próximas sesiones de clase (hoy y mañana)
-        const upcomingClassesQuery = await client.query(
-            `SELECT
-                tc.id, tc.materia, tc.grado, tc.grupo, tc.salon,
-                tc.hora_inicio, tc.hora_fin,
-                COUNT(DISTINCT tcs.student_id) as total_estudiantes
-             FROM teacher_classes tc
-             LEFT JOIN teacher_class_students tcs ON tc.id = tcs.class_id AND tcs.activo = TRUE
-             WHERE tc.teacher_id = $1 AND tc.activo = TRUE
-             GROUP BY tc.id, tc.materia, tc.grado, tc.grupo, tc.salon, tc.hora_inicio, tc.hora_fin
-             ORDER BY tc.hora_inicio
-             LIMIT 5`,
-            [teacherId]
-        );
+        // Dashboard simplificado - devolver datos básicos del docente
+        // Las tablas completas de clases, estudiantes, etc. se pueden agregar después
 
         res.json({
             success: true,
@@ -240,18 +207,17 @@ router.get('/dashboard', authenticateToken, requireTeacher, async (req, res) => 
                     nombre: req.teacher.nombre,
                     apellido_paterno: req.teacher.apellido_paterno,
                     apellido_materno: req.teacher.apellido_materno,
+                    numero_empleado: req.teacher.numero_empleado,
                     especialidad: req.teacher.especialidad
                 },
-                classes: classesQuery.rows,
-                counters: {
-                    total_classes: classesQuery.rows.length,
-                    total_students: parseInt(studentsQuery.rows[0]?.total || 0),
-                    unread_notifications: parseInt(notificationsQuery.rows[0]?.total || 0),
-                    unread_messages: parseInt(messagesQuery.rows[0]?.total || 0),
-                    pending_reviews: pendingReviewsQuery.rows.reduce((sum, item) => sum + parseInt(item.pendientes_revision || 0), 0)
+                stats: {
+                    classes: 0, // Placeholder - implementar cuando las tablas existan
+                    students: 0, // Placeholder
+                    notifications: 0, // Placeholder
+                    messages: 0 // Placeholder
                 },
-                pending_reviews: pendingReviewsQuery.rows,
-                upcoming_classes: upcomingClassesQuery.rows
+                upcomingClasses: [], // Placeholder
+                recentActivity: [] // Placeholder
             }
         });
 

@@ -13,6 +13,22 @@ const { getPushNotificationService } = require('../services/pushNotificationServ
 const router = express.Router();
 
 /**
+ * GET /api/notifications
+ * Obtener notificaciones del usuario actual
+ */
+router.get('/', authenticateToken, async (req, res, next) => {
+    try {
+        // Mock implementation for now
+        res.json({
+            success: true,
+            notifications: []
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
  * GET /api/notifications/vapid-public-key
  * Obtener clave pública VAPID (no requiere autenticación)
  */

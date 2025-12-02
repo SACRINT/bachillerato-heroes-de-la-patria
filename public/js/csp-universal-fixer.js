@@ -561,5 +561,4 @@ if (document.readyState === 'loading') {
 
 console.log('✅ [CSP-UNIVERSAL-FIXER] Sistema cargado correctamente');
 
-// Exponer clase para uso global
-window.CSPUniversalFixer = CSPUniversalFixer;
+// Exponer clase para uso global

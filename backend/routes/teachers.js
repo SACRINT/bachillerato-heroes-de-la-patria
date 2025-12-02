@@ -20,7 +20,7 @@ const router = express.Router();
 router.get('/directory', async (req, res, next) => {
     try {
         const { especialidad } = req.query;
-        
+
         let query = `
             SELECT 
                 u.nombre,
@@ -33,9 +33,9 @@ router.get('/directory', async (req, res, next) => {
                 d.horario_atencion
             FROM docentes d
             JOIN usuarios u ON d.usuario_id = u.id
-            WHERE u.activo = TRUE AND d.visible_directorio = TRUE
+            WHERE u.status = 'activo' AND d.visible_directorio = TRUE
         `;
-        
+
         const params = [];
 
         if (especialidad) {
@@ -44,15 +44,15 @@ router.get('/directory', async (req, res, next) => {
         }
 
         query += ' ORDER BY u.apellido_paterno, u.apellido_materno, u.nombre';
-        
+
         const teachers = []; // await executeQuery(query, params);
-        
+
         res.json({
             success: true,
             data: teachers,
             total: teachers.length
         });
-        
+
     } catch (error) {
         next(error);
     }
@@ -73,7 +73,7 @@ router.get('/specialties', async (req, res, next) => {
                 COUNT(CASE WHEN visible_directorio = TRUE THEN 1 END) as docentes_publicos
             FROM docentes d
             JOIN usuarios u ON d.usuario_id = u.id
-            WHERE u.activo = TRUE
+            WHERE u.status = 'activo'
             GROUP BY especialidad
             ORDER BY especialidad
         `); */
@@ -82,7 +82,7 @@ router.get('/specialties', async (req, res, next) => {
             success: true,
             data: specialties
         });
-        
+
     } catch (error) {
         next(error);
     }
@@ -98,16 +98,16 @@ router.get('/specialties', async (req, res, next) => {
  */
 router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
     try {
-        const { 
-            page = 1, 
-            limit = 20, 
-            especialidad, 
+        const {
+            page = 1,
+            limit = 20,
+            especialidad,
             tipo_contrato,
-            search 
+            search
         } = req.query;
-        
+
         const offset = (page - 1) * limit;
-        
+
         let query = `
             SELECT 
                 d.id,
@@ -126,9 +126,9 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
                 d.visible_directorio
             FROM docentes d
             JOIN usuarios u ON d.usuario_id = u.id
-            WHERE u.activo = TRUE
+            WHERE u.status = 'activo'
         `;
-        
+
         const params = [];
 
         if (especialidad) {
@@ -155,15 +155,15 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
         query += ' ORDER BY u.apellido_paterno, u.apellido_materno, u.nombre';
         query += ' LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2);
         params.push(parseInt(limit), parseInt(offset));
-        
+
         const teachers = []; // await executeQuery(query, params);
-        
+
         // Contar total para paginación
         let countQuery = `
             SELECT COUNT(*) as total
             FROM docentes d
             JOIN usuarios u ON d.usuario_id = u.id
-            WHERE u.activo = TRUE
+            WHERE u.status = 'activo'
         `;
 
         const countParams = [];
@@ -188,10 +188,10 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
             )`;
             countParams.push(searchTerm, searchTerm, searchTerm, searchTerm);
         }
-        
+
         const countResult = []; // await executeQuery(countQuery, countParams);
         const total = countResult[0].total;
-        
+
         res.json({
             success: true,
             data: teachers,
@@ -207,7 +207,7 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
                 search: search || null
             }
         });
-        
+
     } catch (error) {
         next(error);
     }
@@ -220,7 +220,7 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
 router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => {
     try {
         const { id } = req.params;
-        
+
         // Información básica del docente
         const teacherInfo = []; /* await executeQuery(`
             SELECT
@@ -233,7 +233,7 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
                 u.ultimo_acceso
             FROM docentes d
             JOIN usuarios u ON d.usuario_id = u.id
-            WHERE d.id = $1 AND u.activo = TRUE
+            WHERE d.id = $1 AND u.status = 'activo'
         `, [id]); */
 
         if (teacherInfo.length === 0) {
@@ -281,7 +281,7 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
                 WHERE m2.docente_id = $2
             )
         `, [id, id]); */
-        
+
         res.json({
             success: true,
             data: {
@@ -295,7 +295,7 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
                 }
             }
         });
-        
+
     } catch (error) {
         next(error);
     }
@@ -323,7 +323,7 @@ router.post('/', authenticateToken, requireAdmin, [
                 details: errors.array()
             });
         }
-        
+
         const {
             email,
             password,
@@ -339,7 +339,7 @@ router.post('/', authenticateToken, requireAdmin, [
             telefono_oficina,
             horario_atencion
         } = req.body;
-        
+
         // Verificar que email no exista
         const existingUser = []; /* await executeQuery(
             'SELECT id FROM usuarios WHERE email = $1',
@@ -400,14 +400,14 @@ router.post('/', authenticateToken, requireAdmin, [
         ); */
 
         const teacherId = teacherResult[0].id;
-        
+
         debugLog.log('TEACHERS', 'Docente creado exitosamente', {
             teacherId: teacherId,
             userId: userId,
             numero_empleado: numero_empleado,
             creadoPor: req.user.id
         });
-        
+
         res.status(201).json({
             success: true,
             message: 'Docente creado exitosamente',
@@ -423,7 +423,7 @@ router.post('/', authenticateToken, requireAdmin, [
                 tipo_contrato: tipo_contrato
             }
         });
-        
+
     } catch (error) {
         next(error);
     }
@@ -447,11 +447,11 @@ router.put('/:id', authenticateToken, requireAdmin, [
                 details: errors.array()
             });
         }
-        
+
         const { id } = req.params;
         const updateFields = {};
         const updateValues = [];
-        
+
         const allowedFields = [
             'especialidad', 'anos_experiencia', 'grado_academico',
             'tipo_contrato', 'telefono_oficina', 'horario_atencion', 'visible_directorio'
@@ -481,25 +481,25 @@ router.put('/:id', authenticateToken, requireAdmin, [
             `UPDATE docentes SET ${setClause} WHERE id = $` + updateValues.length,
             updateValues
         ); */
-        
+
         if (result.affectedRows === 0) {
             return res.status(404).json({
                 error: 'Docente no encontrado',
                 message: 'El docente no existe'
             });
         }
-        
+
         debugLog.log('TEACHERS', 'Docente actualizado', {
             teacherId: id,
             camposActualizados: Object.keys(updateFields),
             actualizadoPor: req.user.id
         });
-        
+
         res.json({
             success: true,
             message: 'Docente actualizado exitosamente'
         });
-        
+
     } catch (error) {
         next(error);
     }
@@ -512,31 +512,31 @@ router.put('/:id', authenticateToken, requireAdmin, [
 router.delete('/:id', authenticateToken, requireAdmin, async (req, res, next) => {
     try {
         const { id } = req.params;
-        
+
         // Desactivar usuario asociado
         const result = []; /* await executeQuery(`
             UPDATE usuarios
             SET activo = FALSE
             WHERE id = (SELECT usuario_id FROM docentes WHERE id = $1)
         `, [id]); */
-        
+
         if (result.affectedRows === 0) {
             return res.status(404).json({
                 error: 'Docente no encontrado',
                 message: 'El docente no existe'
             });
         }
-        
+
         debugLog.log('TEACHERS', 'Docente desactivado', {
             teacherId: id,
             desactivadoPor: req.user.id
         });
-        
+
         res.json({
             success: true,
             message: 'Docente desactivado exitosamente'
         });
-        
+
     } catch (error) {
         next(error);
     }
@@ -549,7 +549,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res, next) =>
 router.get('/:id/schedule', authenticateToken, requireTeacher, async (req, res, next) => {
     try {
         const { id } = req.params;
-        
+
         const schedule = []; /* await executeQuery(`
             SELECT
                 m.id as materia_id,
@@ -566,12 +566,12 @@ router.get('/:id/schedule', authenticateToken, requireTeacher, async (req, res, 
             GROUP BY m.id
             ORDER BY m.horario
         `, [id]); */
-        
+
         res.json({
             success: true,
             data: schedule
         });
-        
+
     } catch (error) {
         next(error);
     }

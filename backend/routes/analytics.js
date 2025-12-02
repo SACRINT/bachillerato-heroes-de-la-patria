@@ -31,13 +31,13 @@ router.get('/dashboard', authenticateToken, requireTeacher, async (req, res, nex
         const studentStats = await executeQuery(`
             SELECT 
                 COUNT(*) as total_estudiantes,
-                COUNT(CASE WHEN e.estatus = 'activo' THEN 1 END) as estudiantes_activos,
-                COUNT(CASE WHEN e.estatus = 'egresado' THEN 1 END) as egresados,
-                COUNT(CASE WHEN e.estatus = 'suspendido' THEN 1 END) as suspendidos,
+                COUNT(CASE WHEN u.status = 'activo' THEN 1 END) as estudiantes_activos,
+                COUNT(CASE WHEN u.status = 'egresado' THEN 1 END) as egresados,
+                COUNT(CASE WHEN u.status = 'suspendido' THEN 1 END) as suspendidos,
                 COUNT(DISTINCT e.especialidad) as especialidades_activas
             FROM estudiantes e
             JOIN usuarios u ON e.usuario_id = u.id
-            WHERE u.activo = TRUE
+            WHERE u.status = 'activo'
         `);
         */
 
@@ -60,7 +60,7 @@ router.get('/dashboard', authenticateToken, requireTeacher, async (req, res, nex
                 AVG(d.anos_experiencia) as promedio_experiencia
             FROM docentes d
             JOIN usuarios u ON d.usuario_id = u.id
-            WHERE u.activo = TRUE
+            WHERE u.status = 'activo'
         `);
         */
 
@@ -141,11 +141,11 @@ router.get('/enrollment-trends', authenticateToken, requireTeacher, async (req, 
                 TO_CHAR(e.fecha_ingreso, 'YYYY-MM') as periodo,
                 COUNT(*) as nuevos_estudiantes,
                 e.especialidad,
-                COUNT(CASE WHEN e.estatus = 'activo' THEN 1 END) as actualmente_activos
+                COUNT(CASE WHEN u.status = 'activo' THEN 1 END) as actualmente_activos
             FROM estudiantes e
             JOIN usuarios u ON e.usuario_id = u.id
             WHERE e.fecha_ingreso >= NOW() - ($1 || ' months')::INTERVAL
-            AND u.activo = TRUE
+            AND u.status = 'activo'
             GROUP BY TO_CHAR(e.fecha_ingreso, 'YYYY-MM'), e.especialidad
             ORDER BY periodo DESC, e.especialidad
         `, [parseInt(months)]);
@@ -160,11 +160,11 @@ router.get('/enrollment-trends', authenticateToken, requireTeacher, async (req, 
                 e.especialidad,
                 COUNT(*) as total_estudiantes,
                 COUNT(CASE WHEN e.fecha_ingreso >= NOW() - INTERVAL '6 months' THEN 1 END) as nuevos_6_meses,
-                COUNT(CASE WHEN e.estatus = 'activo' THEN 1 END) as activos,
-                COUNT(CASE WHEN e.estatus = 'egresado' THEN 1 END) as egresados
+                COUNT(CASE WHEN u.status = 'activo' THEN 1 END) as activos,
+                COUNT(CASE WHEN u.status = 'egresado' THEN 1 END) as egresados
             FROM estudiantes e
             JOIN usuarios u ON e.usuario_id = u.id
-            WHERE u.activo = TRUE
+            WHERE u.status = 'activo'
             GROUP BY e.especialidad
             ORDER BY total_estudiantes DESC
         `);
@@ -190,10 +190,10 @@ router.get('/enrollment-trends', authenticateToken, requireTeacher, async (req, 
 router.get('/academic-performance', authenticateToken, requireTeacher, async (req, res, next) => {
     try {
         const { periodo, especialidad } = req.query;
-        
+
         let periodCondition = '';
         let params = [];
-        
+
         if (periodo) {
             periodCondition = 'AND cal.periodo = ?';
             params.push(periodo);
@@ -248,7 +248,7 @@ router.get('/academic-performance', authenticateToken, requireTeacher, async (re
             JOIN estudiantes e ON cal.estudiante_id = e.id
             JOIN usuarios u ON e.usuario_id = u.id
             JOIN materias m ON cal.materia_id = m.id
-            WHERE u.activo = TRUE ${periodCondition}
+            WHERE u.status = 'activo' ${periodCondition}
         `;
 
         let topParams = [...params];

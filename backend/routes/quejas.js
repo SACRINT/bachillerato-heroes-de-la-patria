@@ -5,6 +5,7 @@ const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const { pool } = require('../config/database');
+const emailService = require('../services/emailService');
 
 // =====================================================
 // POST /api/quejas - Crear nueva queja/sugerencia
@@ -46,6 +47,26 @@ router.post('/', [
         ]);
 
         debugLog.log('QUEJAS', '✅ Queja/sugerencia guardada:', result.rows[0].id);
+
+        // Enviar correo de confirmación
+        try {
+            if (email) {
+                await emailService.sendEmail({
+                    to: email,
+                    subject: 'Hemos recibido tu mensaje - Bachillerato Héroes de la Patria',
+                    template: 'contact-confirmation',
+                    data: {
+                        nombre: nombre || 'Usuario',
+                        subject: subject,
+                        fecha: new Date()
+                    }
+                });
+                console.log(`[Quejas] Correo de confirmación enviado a ${email}`);
+            }
+        } catch (emailError) {
+            console.error('[Quejas] Error al enviar correo de confirmación:', emailError);
+            // No fallamos la request si falla el correo, solo logueamos
+        }
 
         res.status(201).json({
             success: true,

@@ -9,7 +9,7 @@
  * Nota: Este archivo debe cargarse DESPUÉS de contacto.html
  */
 
-(function() {
+(function () {
     'use strict';
 
     if (document.readyState === 'loading') {
@@ -22,6 +22,7 @@
         console.log('[CONTACTO-EVENTS] Inicializando event handlers...');
 
         registerContactHandlers();
+        registerFormHandler();
 
         console.log('[CONTACTO-EVENTS] ✅ Event handlers inicializados correctamente');
     }
@@ -31,37 +32,105 @@
      */
     function registerContactHandlers() {
         // Buscar todos los elementos con atributos onclick para registro dinámico
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (e.target.closest('[onclick]')) {
                 const elem = e.target.closest('[onclick]');
                 const onclick = elem.getAttribute('onclick');
-                
+
                 // Procesar handlers genéricos que puedan existir
                 if (onclick) {
                     console.log('[CONTACTO-EVENTS] Evento capturado:', onclick);
-                    e.preventDefault();
+                    // e.preventDefault(); // Comentado para no romper enlaces legítimos
                 }
             }
         });
+    }
 
-        // Manejo de formularios
-        const forms = document.querySelectorAll('form[onsubmit]');
-        forms.forEach(form => {
-            const onsubmit = form.getAttribute('onsubmit');
-            if (onsubmit) {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    // Ejecutar la función del onsubmit si existe en window
-                    const match = onsubmit.match(/(\w+)\(/);
-                    if (match) {
-                        const funcName = match[1];
-                        if (window[funcName]) {
-                            window[funcName](e);
+    /**
+     * Manejo del formulario de contacto
+     */
+    function registerFormHandler() {
+        const contactForm = document.getElementById('contactForm');
+
+        if (contactForm) {
+            console.log('[CONTACTO-EVENTS] Formulario de contacto encontrado. Registrando handler...');
+
+            contactForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                if (!contactForm.checkValidity()) {
+                    e.stopPropagation();
+                    contactForm.classList.add('was-validated');
+                    return;
+                }
+
+                // Obtener botón submit para estado de carga
+                const submitBtn = contactForm.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Enviar';
+
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
+                }
+
+                try {
+                    // Recopilar datos
+                    const formData = new FormData(contactForm);
+                    const data = Object.fromEntries(formData.entries());
+
+                    // Enviar datos
+                    const response = await fetch('/api/contact/send', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Mostrar éxito
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                title: '¡Mensaje Enviado!',
+                                text: result.message || 'Hemos recibido tu mensaje. Te contactaremos pronto.',
+                                icon: 'success',
+                                confirmButtonColor: '#1976D2'
+                            });
+                        } else {
+                            alert(result.message || 'Mensaje enviado correctamente');
                         }
+
+                        // Limpiar formulario
+                        contactForm.reset();
+                        contactForm.classList.remove('was-validated');
+                    } else {
+                        throw new Error(result.message || 'Error al enviar el mensaje');
                     }
-                });
-            }
-        });
+
+                } catch (error) {
+                    console.error('[CONTACTO-EVENTS] Error:', error);
+
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            title: 'Error',
+                            text: error.message || 'Hubo un problema al enviar tu mensaje. Por favor intenta nuevamente.',
+                            icon: 'error',
+                            confirmButtonColor: '#d33'
+                        });
+                    } else {
+                        alert('Error: ' + (error.message || 'Hubo un problema al enviar tu mensaje'));
+                    }
+                } finally {
+                    // Restaurar botón
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                    }
+                }
+            });
+        }
     }
 
     // ============================================

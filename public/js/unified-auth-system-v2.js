@@ -1238,7 +1238,7 @@ class ManualLoginManager {
             const target = e.target;
             const loginBtn = target.id === 'loginBtn' || target.closest('#loginBtn');
             const hasDataTarget = target.getAttribute('data-bs-target') === '#unified-auth-modal' ||
-                                  target.closest('[data-bs-target="#unified-auth-modal"]');
+                target.closest('[data-bs-target="#unified-auth-modal"]');
 
             if (loginBtn || hasDataTarget) {
                 e.preventDefault();
@@ -1905,35 +1905,6 @@ class UIManager {
                             </small>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Estado de Autenticación -->
-            <div id="login-button-state" class="d-flex align-items-center">
-                <button class="btn btn-primary btn-sm" data-bs-target="#unified-auth-modal">
-                    <i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión
-                </button>
-            </div>
-
-            <div id="user-menu-state" style="display: none;" class="d-flex align-items-center">
-                <div class="dropdown">
-                    <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="userDropdown"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-user-circle me-1"></i>
-                        <span id="user-display-name">Usuario</span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="/profile.html" id="profile-link">
-                            <i class="fas fa-user me-2"></i>Mi Perfil
-                        </a></li>
-                        <li><a class="dropdown-item" href="/admin-dashboard.html" id="dashboard-link" style="display: none;">
-                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard Admin
-                        </a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger cursor-pointer" id="logout-button">
-                            <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
-                        </a></li>
-                    </ul>
                 </div>
             </div>
         `;

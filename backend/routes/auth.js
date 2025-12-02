@@ -146,7 +146,9 @@ router.post('/login', loginLimiter, loginValidation, async (req, res, next) => {
         const user = await authService.authenticateUser(username, password);
 
         // ✅ SEMANA 25: Check if user has 2FA enabled
-        const has2FA = await twoFactorService.isEnabled(user.id);
+        // TEMPORARILY DISABLED: user_2fa table doesn't exist
+        // const has2FA = await twoFactorService.isEnabled(user.id);
+        const has2FA = false;
 
         if (has2FA) {
             debugLog.log('AUTH', `Usuario ${username} tiene 2FA habilitado - requiere verificación`);

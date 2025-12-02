@@ -140,7 +140,7 @@ class GamificationSystem {
 
     createGamificationUI() {
         // Crear widget flotante de gamificación
-        this.createFloatingWidget();
+        // this.createFloatingWidget(); // ❌ DESHABILITADO - aparecía incorrectamente
 
         // Crear modal principal de gamificación
         this.createMainModal();
@@ -590,11 +590,11 @@ class GamificationSystem {
 
                         <div class="challenge-actions">
                             ${challenge.completed ?
-                                '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Completado</span>' :
-                                `<button class="btn btn-primary btn-sm" onclick="gamificationSystem.completeChallenge('${challenge.id}')">
+                '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Completado</span>' :
+                `<button class="btn btn-primary btn-sm" onclick="gamificationSystem.completeChallenge('${challenge.id}')">
                                     <i class="fas fa-play me-1"></i>Completar
                                 </button>`
-                            }
+            }
                         </div>
                     </div>
                 `).join('')}
@@ -730,7 +730,7 @@ class GamificationSystem {
             <div class="d-flex align-items-center">
                 <div class="notification-icon me-3">
                     ${notification.icon ? notification.icon :
-                      notification.type === 'achievement' ? '🏆' : '⭐'}
+                notification.type === 'achievement' ? '🏆' : '⭐'}
                 </div>
                 <div class="flex-grow-1">
                     <h6 class="mb-1">${notification.title}</h6>

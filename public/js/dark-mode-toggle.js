@@ -54,8 +54,8 @@ class DarkModeManager {
     }
 
     createToggleButton() {
-        // Buscar si ya existe
-        if (document.getElementById('dark-mode-toggle')) return;
+        // Buscar si ya existe (check both ID formats)
+        if (document.getElementById('dark-mode-toggle') || document.getElementById('darkModeToggle')) return;
 
         // Crear botón flotante
         const button = document.createElement('button');

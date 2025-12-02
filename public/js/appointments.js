@@ -8,9 +8,9 @@
 if (typeof debugLog === 'undefined') {
     // Fallback si debug-logger.js no está cargado
     var debugLog = {
-        log: () => {},
-        warn: () => {},
-        error: () => {}
+        log: () => { },
+        warn: () => { },
+        error: () => { }
     };
 }
 
@@ -82,7 +82,7 @@ class AppointmentSystem {
         this.selectedDate = null;
         this.selectedTime = null;
         this.selectedDepartment = null;
-        
+
         // Inicializar sistema de forma segura
         try {
             this.initializeSystem();
@@ -111,7 +111,7 @@ class AppointmentSystem {
                 maxDaily: 12,
                 schedule: {
                     monday: ['08:00', '13:00'],
-                    tuesday: ['08:00', '13:00'], 
+                    tuesday: ['08:00', '13:00'],
                     wednesday: ['08:00', '13:00'],
                     thursday: ['08:00', '13:00'],
                     friday: ['08:00', '13:00']
@@ -128,7 +128,7 @@ class AppointmentSystem {
                 schedule: {
                     monday: ['08:00', '13:30'],
                     tuesday: ['08:00', '13:30'],
-                    wednesday: ['08:00', '13:30'], 
+                    wednesday: ['08:00', '13:30'],
                     thursday: ['08:00', '13:30'],
                     friday: ['08:00', '13:30']
                 }
@@ -268,7 +268,7 @@ class AppointmentSystem {
         const year = this.currentMonth.getFullYear();
         const month = this.currentMonth.getMonth();
         const today = new Date();
-        
+
         // Actualizar el título del mes
         const monthYear = document.getElementById('currentMonthYear');
         if (monthYear) {
@@ -316,7 +316,7 @@ class AppointmentSystem {
                 const isPast = current < today;
                 const isWeekend = current.getDay() === 0 || current.getDay() === 6;
                 const isAvailable = this.isDayAvailable(current) && !isPast && !isWeekend;
-                
+
                 const classes = ['calendar-day'];
                 if (!isCurrentMonth) classes.push('other-month');
                 if (isToday) classes.push('today');
@@ -356,13 +356,13 @@ class AppointmentSystem {
 
     isDayAvailable(date) {
         if (!this.selectedDepartment) return false;
-        
+
         const dept = this.departments.find(d => d.id === this.selectedDepartment);
         if (!dept) return false;
 
         const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
         const dayName = dayNames[date.getDay()];
-        
+
         return dept.schedule[dayName] !== undefined;
     }
 
@@ -394,7 +394,7 @@ class AppointmentSystem {
         // Seleccionar nuevo día
         dayElement.classList.add('selected');
         this.selectedDate = new Date(dayElement.dataset.date + 'T00:00:00');
-        
+
         // Generar horarios disponibles
         this.renderAvailableTimeSlots();
     }
@@ -439,10 +439,10 @@ class AppointmentSystem {
         const slots = [];
         const start = this.timeToMinutes(startTime);
         const end = this.timeToMinutes(endTime);
-        
+
         for (let time = start; time + duration <= end; time += duration) {
             const timeStr = this.minutesToTime(time);
-            
+
             // Verificar si el slot no está ocupado
             if (!this.isSlotBooked(date, timeStr)) {
                 slots.push(timeStr);
@@ -465,9 +465,9 @@ class AppointmentSystem {
 
     isSlotBooked(date, time) {
         const dateStr = date.toISOString().split('T')[0];
-        return this.appointments.some(apt => 
-            apt.date === dateStr && 
-            apt.time === time && 
+        return this.appointments.some(apt =>
+            apt.date === dateStr &&
+            apt.time === time &&
             apt.department === this.selectedDepartment &&
             apt.status !== 'cancelled'
         );
@@ -491,7 +491,7 @@ class AppointmentSystem {
         const modal = document.getElementById('appointmentFormModal');
         if (modal) {
             const dept = this.departments.find(d => d.id === this.selectedDepartment);
-            
+
             // Actualizar información en el modal
             document.getElementById('appointmentDept').textContent = dept.name;
             document.getElementById('appointmentDate').textContent = this.selectedDate.toLocaleDateString('es-ES');
@@ -533,9 +533,9 @@ class AppointmentSystem {
         if (modal) {
             const dept = this.departments.find(d => d.id === this.selectedDepartment);
             document.getElementById('modalDepartmentName').textContent = dept.name;
-            
+
             this.renderCalendar();
-            
+
             const bootstrapModal = BootstrapHelper.showModal(modal);
             bootstrapModal.show();
         }
@@ -603,86 +603,115 @@ ${formData.get('reason')}
             reason: formData.get('reason'),
             status: 'pending_verification',
             createdAt: new Date().toISOString()
-        };
 
-        // Guardar temporalmente para procesarla después del email
-        window._pendingAppointment = appointment;
+        if(submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Agendando...';
+            }
 
-        // ✅ Escuchar evento de email enviado exitosamente
-        window.addEventListener('appointmentEmailSent', () => {
-            this.finalizeAppointment();
-        }, { once: true });
+        try {
+                const response = await fetch('/api/contact/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: appointment.name,
+                        email: appointment.email,
+                        phone: appointment.phone,
+                        subject: `Nueva Cita - ${dept.name}`,
+                        message: message,
+                        form_type: 'Agendamiento de Cita'
+                    })
+                });
 
-        return true; // Permitir que el form se envíe
+                const result = await response.json();
+
+                if(result.success) {
+                    // Guardar temporalmente para procesarla
+                    window._pendingAppointment = appointment;
+        this.finalizeAppointment();
+    } else {
+    this.showAlert(result.message || 'Error al agendar la cita. Por favor intenta nuevamente.', 'error');
+}
+        } catch (error) {
+    console.error('Error sending appointment:', error);
+    this.showAlert('Error de conexión. Por favor verifica tu internet e intenta nuevamente.', 'error');
+} finally {
+    if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    }
+}
     }
 
-    finalizeAppointment() {
-        const appointment = window._pendingAppointment;
-        if (!appointment) return;
+finalizeAppointment() {
+    const appointment = window._pendingAppointment;
+    if (!appointment) return;
 
-        // Actualizar estado
-        appointment.status = 'confirmed';
+    // Actualizar estado
+    appointment.status = 'confirmed';
 
-        // Guardar cita en localStorage
-        this.appointments.push(appointment);
-        this.saveAppointments();
+    // Guardar cita en localStorage
+    this.appointments.push(appointment);
+    this.saveAppointments();
 
-        // Mostrar confirmación
-        this.showConfirmation(appointment);
-        
-        // Cerrar modales de forma segura
-        try {
-            const appointmentModal = document.getElementById('appointmentFormModal');
-            const calendarModal = document.getElementById('calendarModal');
+    // Mostrar confirmación
+    this.showConfirmation(appointment);
 
-            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-                const appointmentModalInstance = bootstrap.Modal.getInstance(appointmentModal);
-                const calendarModalInstance = bootstrap.Modal.getInstance(calendarModal);
+    // Cerrar modales de forma segura
+    try {
+        const appointmentModal = document.getElementById('appointmentFormModal');
+        const calendarModal = document.getElementById('calendarModal');
 
-                if (appointmentModalInstance) appointmentModalInstance.hide();
-                if (calendarModalInstance) calendarModalInstance.hide();
-            } else {
-                // Fallback para cerrar modales sin Bootstrap
-                if (appointmentModal) appointmentModal.style.display = 'none';
-                if (calendarModal) calendarModal.style.display = 'none';
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            const appointmentModalInstance = bootstrap.Modal.getInstance(appointmentModal);
+            const calendarModalInstance = bootstrap.Modal.getInstance(calendarModal);
 
-                // Remover backdrop si existe
-                const backdrops = document.querySelectorAll('.modal-backdrop');
-                backdrops.forEach(backdrop => backdrop.remove());
+            if (appointmentModalInstance) appointmentModalInstance.hide();
+            if (calendarModalInstance) calendarModalInstance.hide();
+        } else {
+            // Fallback para cerrar modales sin Bootstrap
+            if (appointmentModal) appointmentModal.style.display = 'none';
+            if (calendarModal) calendarModal.style.display = 'none';
 
-                // Restaurar scroll del body
-                document.body.classList.remove('modal-open');
-                document.body.style.overflow = '';
-                document.body.style.paddingRight = '';
-            }
-        } catch (error) {
-            debugLog.warn('ERROR', '⚠️ Error cerrando modales:', error);
-            // Forzar cierre de modales
-            const modals = document.querySelectorAll('.modal');
-            modals.forEach(modal => {
-                modal.style.display = 'none';
-                modal.classList.remove('show');
-            });
-
-            // Limpiar backdrops
+            // Remover backdrop si existe
             const backdrops = document.querySelectorAll('.modal-backdrop');
             backdrops.forEach(backdrop => backdrop.remove());
 
+            // Restaurar scroll del body
             document.body.classList.remove('modal-open');
             document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
         }
-        
-        // Resetear selecciones
-        this.resetSelections();
+    } catch (error) {
+        debugLog.warn('ERROR', '⚠️ Error cerrando modales:', error);
+        // Forzar cierre de modales
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            modal.style.display = 'none';
+            modal.classList.remove('show');
+        });
+
+        // Limpiar backdrops
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(backdrop => backdrop.remove());
+
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
     }
 
-    generateId() {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2);
-    }
+    // Resetear selecciones
+    this.resetSelections();
+}
 
-    showConfirmation(appointment) {
-        const dept = this.departments.find(d => d.id === appointment.department);
-        const confirmationHTML = `
+generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+showConfirmation(appointment) {
+    const dept = this.departments.find(d => d.id === appointment.department);
+    const confirmationHTML = `
             <div class="modal fade" id="confirmationModal" tabindex="-1">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -737,22 +766,22 @@ ${formData.get('reason')}
             </div>
         `;
 
-        // Insertar y mostrar modal
-        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(confirmationHTML)));
-        const modal = BootstrapHelper.showModal(document.getElementById('confirmationModal'));
+    // Insertar y mostrar modal
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(DOMPurify.sanitize(confirmationHTML)));
+    const modal = BootstrapHelper.showModal(document.getElementById('confirmationModal'));
 
-        // Remover modal al cerrar
-        document.getElementById('confirmationModal').addEventListener('hidden.bs.modal', function() {
-            this.remove();
-        });
-    }
+    // Remover modal al cerrar
+    document.getElementById('confirmationModal').addEventListener('hidden.bs.modal', function () {
+        this.remove();
+    });
+}
 
-    downloadConfirmation(appointmentId) {
-        const appointment = this.appointments.find(a => a.id === appointmentId);
-        if (!appointment) return;
+downloadConfirmation(appointmentId) {
+    const appointment = this.appointments.find(a => a.id === appointmentId);
+    if (!appointment) return;
 
-        const dept = this.departments.find(d => d.id === appointment.department);
-        const content = `
+    const dept = this.departments.find(d => d.id === appointment.department);
+    const content = `
 CONFIRMACIÓN DE CITA
 Bachillerato General Estatal "Héroes de la Patria"
 
@@ -785,104 +814,104 @@ Bachillerato General Estatal "Héroes de la Patria"
 Coronel Tito Hernández, Venustiano Carranza, Puebla
         `;
 
-        const blob = new Blob([content], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Cita_${appointment.id}_${appointment.date}.txt`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Cita_${appointment.id}_${appointment.date}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
 
-    resetSelections() {
-        this.selectedDate = null;
-        this.selectedTime = null;
-        this.selectedDepartment = null;
-        
-        // Limpiar formulario
-        const form = document.getElementById('appointmentForm');
-        if (form) form.reset();
-    }
+resetSelections() {
+    this.selectedDate = null;
+    this.selectedTime = null;
+    this.selectedDepartment = null;
 
-    showAlert(message, type) {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
-        alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1060; max-width: 400px;';
-        alertDiv.innerHTML = DOMPurify.sanitize(`
+    // Limpiar formulario
+    const form = document.getElementById('appointmentForm');
+    if (form) form.reset();
+}
+
+showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1060; max-width: 400px;';
+    alertDiv.innerHTML = DOMPurify.sanitize(`
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `);
-        
-        document.body.appendChild(alertDiv);
-        
-        setTimeout(() => {
-            if (alertDiv.parentNode) {
-                alertDiv.remove();
-            }
-        }, 5000);
-    }
 
-    // Método para consultar citas (para futuros usos)
-    getAppointmentsByDate(date) {
-        const dateStr = typeof date === 'string' ? date : date.toISOString().split('T')[0];
-        return this.appointments.filter(apt => apt.date === dateStr && apt.status !== 'cancelled');
-    }
+    document.body.appendChild(alertDiv);
 
-    // Método para cancelar citas
-    cancelAppointment(appointmentId) {
-        const index = this.appointments.findIndex(apt => apt.id === appointmentId);
-        if (index !== -1) {
-            this.appointments[index].status = 'cancelled';
-            this.saveAppointments();
-            return true;
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
         }
-        return false;
+    }, 5000);
+}
+
+// Método para consultar citas (para futuros usos)
+getAppointmentsByDate(date) {
+    const dateStr = typeof date === 'string' ? date : date.toISOString().split('T')[0];
+    return this.appointments.filter(apt => apt.date === dateStr && apt.status !== 'cancelled');
+}
+
+// Método para cancelar citas
+cancelAppointment(appointmentId) {
+    const index = this.appointments.findIndex(apt => apt.id === appointmentId);
+    if (index !== -1) {
+        this.appointments[index].status = 'cancelled';
+        this.saveAppointments();
+        return true;
+    }
+    return false;
+}
+
+// Función para obtener todas las citas (para administradores)
+getAllAppointments() {
+    return this.appointments;
+}
+
+// Función para obtener estadísticas de citas
+getAppointmentStats() {
+    const total = this.appointments.length;
+    const today = new Date().toDateString();
+    const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toDateString();
+
+    const todayCitas = this.appointments.filter(apt =>
+        new Date(apt.date).toDateString() === today
+    ).length;
+
+    const tomorrowCitas = this.appointments.filter(apt =>
+        new Date(apt.date).toDateString() === tomorrow
+    ).length;
+
+    const byDepartment = {};
+    this.appointments.forEach(apt => {
+        byDepartment[apt.department] = (byDepartment[apt.department] || 0) + 1;
+    });
+
+    return {
+        total,
+        today: todayCitas,
+        tomorrow: tomorrowCitas,
+        byDepartment
+    };
+}
+
+// Función para ver todas las citas en formato tabla
+showAllAppointments() {
+    const appointments = this.getAllAppointments();
+    if (appointments.length === 0) {
+        alert('No hay citas programadas en el sistema.');
+        return;
     }
 
-    // Función para obtener todas las citas (para administradores)
-    getAllAppointments() {
-        return this.appointments;
-    }
-
-    // Función para obtener estadísticas de citas
-    getAppointmentStats() {
-        const total = this.appointments.length;
-        const today = new Date().toDateString();
-        const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toDateString();
-
-        const todayCitas = this.appointments.filter(apt =>
-            new Date(apt.date).toDateString() === today
-        ).length;
-
-        const tomorrowCitas = this.appointments.filter(apt =>
-            new Date(apt.date).toDateString() === tomorrow
-        ).length;
-
-        const byDepartment = {};
-        this.appointments.forEach(apt => {
-            byDepartment[apt.department] = (byDepartment[apt.department] || 0) + 1;
-        });
-
-        return {
-            total,
-            today: todayCitas,
-            tomorrow: tomorrowCitas,
-            byDepartment
-        };
-    }
-
-    // Función para ver todas las citas en formato tabla
-    showAllAppointments() {
-        const appointments = this.getAllAppointments();
-        if (appointments.length === 0) {
-            alert('No hay citas programadas en el sistema.');
-            return;
-        }
-
-        // Crear ventana de visualización
-        let html = `
+    // Crear ventana de visualización
+    let html = `
             <div class="modal fade" id="appointmentsViewModal" tabindex="-1">
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
@@ -937,28 +966,28 @@ Coronel Tito Hernández, Venustiano Carranza, Puebla
             </div>
         `;
 
-        // Añadir modal al DOM si no existe
-        let existingModal = document.getElementById('appointmentsViewModal');
-        if (existingModal) {
-            existingModal.remove();
-        }
-        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(html)));
-
-        // Mostrar modal
-        const modal = BootstrapHelper.showModal(document.getElementById('appointmentsViewModal'));
-
-        // Configurar búsqueda y filtros
-        this.setupAppointmentsSearch();
+    // Añadir modal al DOM si no existe
+    let existingModal = document.getElementById('appointmentsViewModal');
+    if (existingModal) {
+        existingModal.remove();
     }
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(DOMPurify.sanitize(html)));
 
-    generateAppointmentsTableRows(appointments) {
-        return appointments.map(apt => {
-            const dept = this.departments.find(d => d.id === apt.department);
-            const status = this.getAppointmentStatus(apt);
-            const statusClass = status.includes('Completada') ? 'success' :
-                               status.includes('Hoy') ? 'warning' : 'primary';
+    // Mostrar modal
+    const modal = BootstrapHelper.showModal(document.getElementById('appointmentsViewModal'));
 
-            return `
+    // Configurar búsqueda y filtros
+    this.setupAppointmentsSearch();
+}
+
+generateAppointmentsTableRows(appointments) {
+    return appointments.map(apt => {
+        const dept = this.departments.find(d => d.id === apt.department);
+        const status = this.getAppointmentStatus(apt);
+        const statusClass = status.includes('Completada') ? 'success' :
+            status.includes('Hoy') ? 'warning' : 'primary';
+
+        return `
                 <tr>
                     <td><code>${apt.id}</code></td>
                     <td>${this.formatDate(apt.date)}</td>
@@ -978,72 +1007,72 @@ Coronel Tito Hernández, Venustiano Carranza, Puebla
                     </td>
                 </tr>
             `;
-        }).join('');
+    }).join('');
+}
+
+getAppointmentStatus(appointment) {
+    const aptDate = new Date(appointment.date);
+    const today = new Date();
+    const todayStr = today.toDateString();
+
+    if (aptDate.toDateString() === todayStr) {
+        return 'Hoy';
+    } else if (aptDate < today) {
+        return 'Completada';
+    } else {
+        return 'Programada';
     }
+}
 
-    getAppointmentStatus(appointment) {
-        const aptDate = new Date(appointment.date);
-        const today = new Date();
-        const todayStr = today.toDateString();
+formatDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('es-ES', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
 
-        if (aptDate.toDateString() === todayStr) {
-            return 'Hoy';
-        } else if (aptDate < today) {
-            return 'Completada';
-        } else {
-            return 'Programada';
+setupAppointmentsSearch() {
+    const searchInput = document.getElementById('searchAppointments');
+    const filterSelect = document.getElementById('filterDepartment');
+
+    const filterAppointments = () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedDept = filterSelect.value;
+
+        let filteredAppointments = this.appointments;
+
+        if (searchTerm) {
+            filteredAppointments = filteredAppointments.filter(apt =>
+                apt.fullName.toLowerCase().includes(searchTerm) ||
+                apt.email.toLowerCase().includes(searchTerm) ||
+                apt.department.toLowerCase().includes(searchTerm)
+            );
         }
-    }
 
-    formatDate(dateStr) {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('es-ES', {
-            weekday: 'short',
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
-    }
+        if (selectedDept) {
+            filteredAppointments = filteredAppointments.filter(apt =>
+                apt.department === selectedDept
+            );
+        }
 
-    setupAppointmentsSearch() {
-        const searchInput = document.getElementById('searchAppointments');
-        const filterSelect = document.getElementById('filterDepartment');
+        document.getElementById('appointmentsTableBody').innerHTML =
+            this.generateAppointmentsTableRows(filteredAppointments);
+    };
 
-        const filterAppointments = () => {
-            const searchTerm = searchInput.value.toLowerCase();
-            const selectedDept = filterSelect.value;
+    searchInput.addEventListener('input', filterAppointments);
+    filterSelect.addEventListener('change', filterAppointments);
+}
 
-            let filteredAppointments = this.appointments;
+viewAppointmentDetails(appointmentId) {
+    const appointment = this.appointments.find(apt => apt.id === appointmentId);
+    if (!appointment) return;
 
-            if (searchTerm) {
-                filteredAppointments = filteredAppointments.filter(apt =>
-                    apt.fullName.toLowerCase().includes(searchTerm) ||
-                    apt.email.toLowerCase().includes(searchTerm) ||
-                    apt.department.toLowerCase().includes(searchTerm)
-                );
-            }
+    const dept = this.departments.find(d => d.id === appointment.department);
 
-            if (selectedDept) {
-                filteredAppointments = filteredAppointments.filter(apt =>
-                    apt.department === selectedDept
-                );
-            }
-
-            document.getElementById('appointmentsTableBody').innerHTML =
-                this.generateAppointmentsTableRows(filteredAppointments);
-        };
-
-        searchInput.addEventListener('input', filterAppointments);
-        filterSelect.addEventListener('change', filterAppointments);
-    }
-
-    viewAppointmentDetails(appointmentId) {
-        const appointment = this.appointments.find(apt => apt.id === appointmentId);
-        if (!appointment) return;
-
-        const dept = this.departments.find(d => d.id === appointment.department);
-
-        alert(`Detalles de la Cita:
+    alert(`Detalles de la Cita:
 
 ID: ${appointment.id}
 Fecha: ${this.formatDate(appointment.date)}
@@ -1056,60 +1085,60 @@ Teléfono: ${appointment.phone}
 Motivo: ${appointment.reason || 'No especificado'}
 Estado: ${this.getAppointmentStatus(appointment)}
         `);
+}
+
+cancelAppointment(appointmentId) {
+    if (!confirm('¿Estás seguro de que quieres cancelar esta cita?')) return;
+
+    this.appointments = this.appointments.filter(apt => apt.id !== appointmentId);
+    this.saveAppointments();
+
+    // Actualizar tabla
+    if (document.getElementById('appointmentsViewModal')) {
+        document.getElementById('appointmentsTableBody').innerHTML =
+            this.generateAppointmentsTableRows(this.appointments);
     }
 
-    cancelAppointment(appointmentId) {
-        if (!confirm('¿Estás seguro de que quieres cancelar esta cita?')) return;
+    alert('Cita cancelada exitosamente.');
+}
 
-        this.appointments = this.appointments.filter(apt => apt.id !== appointmentId);
-        this.saveAppointments();
-
-        // Actualizar tabla
-        if (document.getElementById('appointmentsViewModal')) {
-            document.getElementById('appointmentsTableBody').innerHTML =
-                this.generateAppointmentsTableRows(this.appointments);
-        }
-
-        alert('Cita cancelada exitosamente.');
+exportAppointments() {
+    if (this.appointments.length === 0) {
+        alert('No hay citas para exportar.');
+        return;
     }
 
-    exportAppointments() {
-        if (this.appointments.length === 0) {
-            alert('No hay citas para exportar.');
-            return;
-        }
+    const csv = this.appointmentsToCSV();
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `citas_bge_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
 
-        const csv = this.appointmentsToCSV();
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `citas_bge_${new Date().toISOString().split('T')[0]}.csv`;
-        a.click();
-        window.URL.revokeObjectURL(url);
-    }
+appointmentsToCSV() {
+    const headers = ['ID', 'Fecha', 'Hora', 'Departamento', 'Nombre', 'Email', 'Teléfono', 'Motivo', 'Estado'];
+    const rows = this.appointments.map(apt => {
+        const dept = this.departments.find(d => d.id === apt.department);
+        return [
+            apt.id,
+            apt.date,
+            apt.time,
+            dept?.name || apt.department,
+            apt.fullName,
+            apt.email,
+            apt.phone,
+            apt.reason || '',
+            this.getAppointmentStatus(apt)
+        ];
+    });
 
-    appointmentsToCSV() {
-        const headers = ['ID', 'Fecha', 'Hora', 'Departamento', 'Nombre', 'Email', 'Teléfono', 'Motivo', 'Estado'];
-        const rows = this.appointments.map(apt => {
-            const dept = this.departments.find(d => d.id === apt.department);
-            return [
-                apt.id,
-                apt.date,
-                apt.time,
-                dept?.name || apt.department,
-                apt.fullName,
-                apt.email,
-                apt.phone,
-                apt.reason || '',
-                this.getAppointmentStatus(apt)
-            ];
-        });
-
-        return [headers, ...rows].map(row =>
-            row.map(field => `"${field}"`).join(',')
-        ).join('\n');
-    }
+    return [headers, ...rows].map(row =>
+        row.map(field => `"${field}"`).join(',')
+    ).join('\n');
+}
 }
 
 // Estilos CSS adicionales para el calendario
@@ -1274,10 +1303,10 @@ function selectDepartment(departmentId) {
 }
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(appointmentStyles)));
+document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(DOMPurify.sanitize(appointmentStyles)));
 
 // Inicializar el sistema cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     if (document.getElementById('departmentsContainer')) {
         window.appointmentSystem = new AppointmentSystem();
     }
