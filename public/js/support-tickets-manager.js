@@ -1,29 +1,13 @@
-/**
 // Debug Logger - Logging condicional (GDPR compliant)
 if (typeof debugLog === 'undefined') {
     var debugLog = {
-        log: () => {},
-        warn: () => {},
-        error: () => {}
+        log: () => { },
+        warn: () => { },
+        error: () => { }
     };
 }
 
-
- * 🎫 SISTEMA DE TICKETS DE SOPORTE - FRONTEND MANAGER
- * Sistema completo de gestión de tickets con SLA tracking
- * Fase 3 - Ciclo 23 - BGE 2025
- *
- * @description Manager JavaScript para el sistema de tickets de soporte
- * @version 1.0.0
- * @author Claude Code - BGE Team
- */
-
-// ============================================
-// CONFIGURACIÓN Y CONSTANTES
-// ============================================
-
-import DOMPurify from 'isomorphic-dompurify';
-
+/**
 const API_BASE = '/api/support-tickets';
 
 // Estado global de la aplicación
@@ -151,7 +135,7 @@ function changeView(view) {
     // Configurar filtros según la vista
     resetFilters();
 
-    switch(view) {
+    switch (view) {
         case 'all':
             // Sin filtros adicionales
             updateTitle('Todos los Tickets');
@@ -367,7 +351,7 @@ function renderTickets(tickets) {
     const emptyState = document.getElementById('emptyState');
 
     if (!tickets || tickets.length === 0) {
-        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
+        container.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(''));
         emptyState?.classList.remove('hidden');
         return;
     }
@@ -435,7 +419,7 @@ function renderPagination(pagination) {
     const { currentPage, totalPages } = pagination;
 
     if (totalPages <= 1) {
-        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
+        container.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(''));
         return;
     }
 
