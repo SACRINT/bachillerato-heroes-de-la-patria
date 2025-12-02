@@ -11,6 +11,17 @@
  * - Exportación de resultados
  */
 
+// Helper para sanitizar HTML si no está definido globalmente
+if (typeof sanitizeHTML === 'undefined') {
+    window.sanitizeHTML = function (str) {
+        if (typeof DOMPurify !== 'undefined') {
+            return DOMPurify.sanitize(str);
+        }
+        console.warn('DOMPurify not found, returning unsanitized HTML');
+        return str;
+    };
+}
+
 class PollsManager {
     constructor(config = {}) {
         this.containerId = config.containerId || 'polls-container';
@@ -350,7 +361,7 @@ class PollsManager {
                 <div class="poll-rating-input">
                     <label>Califica del 1 al 10:</label>
                     <div class="rating-stars">
-                        ${Array.from({length: 10}, (_, i) => i + 1).map(num => `
+                        ${Array.from({ length: 10 }, (_, i) => i + 1).map(num => `
                             <input type="radio" id="rating-${num}" name="rating" value="${num}" required>
                             <label for="rating-${num}">${num}</label>
                         `).join('')}
@@ -619,7 +630,7 @@ class PollsManager {
                     },
                     tooltip: {
                         callbacks: {
-                            label: function(context) {
+                            label: function (context) {
                                 const option = options[context.dataIndex];
                                 return `${option.text}: ${option.votes_count} votos (${option.percentage}%)`;
                             }
