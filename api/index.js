@@ -640,21 +640,40 @@ module.exports = async (req, res) => {
             return res.status(200).json({ success: true, data: [], pagination: { total: 0 } });
         }
 
+        // ============================================
+        // RUTAS DE ATTENDANCE & SETTINGS (Fix 404)
+        // ============================================
+        if (path.startsWith('/api/attendance') && req.method === 'GET') {
+            return res.status(200).json({ success: true, data: [] });
+        }
+
+        if (path.startsWith('/api/settings') && req.method === 'GET') {
+            return res.status(200).json({
+                success: true,
+                data: {
+                    theme: 'light',
+                    notifications: true,
+                    language: 'es'
+                }
+            });
+        }
+    }
+
 
         // Ruta no encontrada
         return res.status(404).json({
-            success: false,
-            error: 'Endpoint no encontrado',
-            path: path,
-            method: req.method
-        });
+        success: false,
+        error: 'Endpoint no encontrado',
+        path: path,
+        method: req.method
+    });
 
-    } catch (error) {
-        console.error('[API] Error:', error);
-        return res.status(500).json({
-            success: false,
-            error: 'Error interno del servidor',
-            message: error.message
-        });
-    }
+} catch (error) {
+    console.error('[API] Error:', error);
+    return res.status(500).json({
+        success: false,
+        error: 'Error interno del servidor',
+        message: error.message
+    });
+}
 };
