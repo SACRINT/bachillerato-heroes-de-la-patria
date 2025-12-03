@@ -1,3 +1,16 @@
+[v2.30.5] - 2025-12-02 (SCRIPT COMPREHENSIVE - ARREGLAR TODOS LOS CARACTERES CORRUPTOS ✅)
+🔍 DESCUBRIMIENTO: Aún hay caracteres corruptos diferentes de †
+   ❌ ◊ (LOZENGE U+25CA): "R◊pidas", "D◊as", "Acad◊mico"
+   ❌ ¢ (CENT SIGN U+00A2): En nombres y palabras
+   ❌ Otros: à, y posiblemente más
+✅ NUEVO SCRIPT: fix-neon-utf8-data-COMPREHENSIVE.sql (200+ líneas)
+   - Reemplaza †, ◊, ¢, à por caracteres correctos
+   - Búsqueda de patrones específicos
+   - SECCIÓN 5: Busca CUALQUIER otro carácter corrupto
+📝 INSTRUCCIONES: PASO-FINAL-COMPREHENSIVE-SCRIPT.md
+🎯 PRÓXIMO PASO: Usuario ejecuta este script → verifica SECCIÓN 5
+⏱️ RESULTADO: 5 min script + 2 min reinicio = ~7 minutos total
+
 [v2.30.4] - 2025-12-02 (SCRIPT SQL FINAL - 100% BASADO EN SCHEMA REAL DESCOBERTO ✅)
 🎯 SCHEMA FINAL CONFIRMADO:
    ✅ usuarios: nombre, apellido_paterno, apellido_materno (NO apellido)
