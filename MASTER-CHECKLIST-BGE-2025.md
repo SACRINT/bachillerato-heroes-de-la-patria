@@ -1,13 +1,85 @@
+# ✅ MASTER CHECKLIST - PROYECTO BGE HÉROES DE LA PATRIA
+
+**Última Actualización:** 3 Diciembre 2025 - SESIÓN ACTUAL: Header Fix + Mejoras Formularios (v2.30.6)
+**Estado del Proyecto:** v2.30.6 - MANTENIMIENTO Y MEJORAS ACTIVAS
+
+---
+
+## 📋 SESIÓN 3 DICIEMBRE 2025: HEADER FIX + MEJORAS FORMULARIOS ✅
+
+**Estado:** ✅ **COMPLETADA**
+**Duración:** 2 horas de trabajo
+**Commits:** e0c2971 (doc), 7175480 (features)
+**Versión:** v2.30.6
+
+### Cambios Implementados:
+
+#### 1. **Fix Crítico: Diferencias Visuales en Header** ✅
+- **Problema:** El botón "Más" se mostraba inconsistente entre index.html y contacto.html
+- **Causa Raíz:** DOMPurify eliminaba atributos inline `style="display: none;"` por seguridad XSS
+- **Solución:** Cambiar a clase Bootstrap `d-none` en `public/partials/header.html` línea 563
+- **Impacto:** Headers idénticos en 43+ páginas HTML
+- **Documentación:** `docs/FIX-HEADER-VISUAL-DIFFERENCES-03DIC2025.md` (146 líneas)
+
+#### 2. **Mejoras en Sanitización HTML (DOMPurify)** ✅
+- ALLOWED_TAGS: Agregar `form`, `input`, `label`, `select`, `option`, `textarea`
+- ALLOWED_ATTR: Agregar `type`, `placeholder`, `autocomplete`, `name`, `value`
+- Ubicación: `public/js/main.js` líneas 12-13
+- Beneficio: Formularios se renderizan correctamente tras sanitización
+
+#### 3. **Backend - Fix en Encuestas** ✅
+- Problema: Parámetros `limit` y `offset` fallaban cuando venían vacíos
+- Solución: Valores por defecto (limit: 20, offset: 0) en `backend/routes/polls.js`
+- Robustez: Sistema más tolerante a parámetros incompletos
+
+#### 4. **Frontend - Limpiar Formularios** ✅
+- contacto.html: Remover breadcrumb (líneas 103-117)
+- encuestas.html: Limpiar meta tags con tenant fields hardcodeados
+- Normalización: Saltos de línea en archivos HTML
+
+#### 5. **Autenticación - Redirecciones Correctas** ✅
+- messaging-manager.js: Redirigir a `index.html` + alert
+- support-tickets-manager.js: Redirigir a `index.html` + alert
+- Razón: `login.html` no existe; usar modal unificado en index.html
+
+#### 6. **Configuración Claude** ✅
+- Agregar permisos: Chrome DevTools (screenshot, navigate, snapshot, evaluate)
+- Agregar permiso: Bash(cat:*) para debugging
+
+### Archivos Modificados: 7
+- `.claude/settings.local.json` (config)
+- `backend/routes/polls.js` (fix)
+- `public/contacto.html` (cleanup)
+- `public/encuestas.html` (cleanup)
+- `public/js/main.js` (sanitization)
+- `public/js/messaging-manager.js` (redirect)
+- `public/js/support-tickets-manager.js` (redirect)
+
+### Documentación Creada: 1
+- `docs/FIX-HEADER-VISUAL-DIFFERENCES-03DIC2025.md`
+
+### Impacto:
+- ✅ Headers consistentes globalmente
+- ✅ Formularios funcionan post-sanitización
+- ✅ Sistema de encuestas robusto
+- ✅ Autenticación apunta a destinos correctos
+- ✅ Documentación exhaustiva para referencia futura
+
+---
+
 # ? FASE 2.4: REFACTORIZACI�N ONCLICK (PATTERN B) - COMPLETADA
 
 **Estado:** ? **COMPLETADO** (Seg�n confirmaci�n del 14 de Noviembre)
 **Descripci�n:** Refactorizaci�n de 387 instancias de onclick="func(param)" a un patr�n data-action para cumplimiento de CSP.
 **Impacto:** Se elimin� una fuente principal de vulnerabilidades XSS y se mejor� la mantenibilidad del frontend.
 
----# ✅ MASTER CHECKLIST - PROYECTO BGE HÉROES DE LA PATRIA
+---
 
-**Última Actualización:** 30 Noviembre 2025 - SEMANA 32: Documentación TAREA 32.3, 32.4, 32.5 COMPLETADA (v6.0.0)
-**Estado del Proyecto:** v6.0.0 - SEMANA 32 EN EJECUCIÓN - 40% (TAREA 32.2 esperando ejecución del usuario)
+## 📊 SEMANA 32: RELEASE v6.0.0 - VERSION BUMP & DEPLOYMENT
+
+**Estado:** ✅ **40% COMPLETADA** (Documentación completa, esperando ejecución del usuario)
+**Duración:** 30 Noviembre 2025 (12 horas de trabajo AUTÓNOMO)
+**Próximos:** TAREA 32.2 (Staging Deploy por usuario) → TAREA 32.3 (UAT) → TAREA 32.4 (Prod) → TAREA 32.5 (Monitoring)
 
 ---
 

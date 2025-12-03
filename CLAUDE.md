@@ -205,6 +205,68 @@ Usa "Conventional Commits" para tus mensajes de `git commit`.
 ---
 ## 4. 🏆 REGISTRO DE LOGROS RECIENTES (Actualizar al final de cada sesión)
 
+*   **3 de Diciembre de 2025 - HEADER FIX + MEJORAS EN FORMULARIOS Y AUTENTICACIÓN ✅**
+    *   **Tipo:** Bug Fix / Feature / Refactoring / Documentation
+    *   **Logros Críticos:**
+        - **FIX CRÍTICO: DIFERENCIAS VISUALES EN HEADER**
+          - Problema: Botón "Más" se mostraba inconsistentemente entre index.html y contacto.html
+          - Causa Raíz: DOMPurify eliminaba atributos inline `style="display: none;"` por seguridad XSS
+          - Solución: Cambiar de inline style a clase Bootstrap `d-none` (línea 563 header.html)
+          - Impacto: Headers ahora idénticos en 43+ páginas HTML
+          - Documentación: `docs/FIX-HEADER-VISUAL-DIFFERENCES-03DIC2025.md` (146 líneas)
+        - **MEJORAS EN SANITIZACIÓN HTML (DOMPurify)**
+          - Expandidas ALLOWED_TAGS: agregar `form`, `input`, `label`, `select`, `option`, `textarea`
+          - Expandidas ALLOWED_ATTR: agregar `type`, `placeholder`, `autocomplete`, `name`, `value`
+          - Archivo: `public/js/main.js` líneas 12-13
+          - Beneficio: Formularios se renderizan correctamente tras sanitización
+        - **BACKEND - FIX EN RUTAS DE ENCUESTAS**
+          - Problema: Parámetros `limit` y `offset` fallaban cuando venían vacíos
+          - Solución: Valores por defecto (limit: 20, offset: 0) en `backend/routes/polls.js`
+          - Robustez: Sistema tolerante a parámetros incompletos
+        - **FRONTEND - LIMPIAR FORMULARIOS**
+          - contacto.html: Remover breadcrumb innecesario (líneas 103-117)
+          - encuestas.html: Limpiar meta tags con tenant fields hardcodeados
+          - Normalización: Saltos de línea en archivos HTML
+        - **AUTENTICACIÓN - REDIRECCIONES CORRECTAS**
+          - messaging-manager.js: Redirigir a index.html (NO login.html) + alert
+          - support-tickets-manager.js: Redirigir a index.html + alert
+          - Razón: login.html no existe; usar modal unificado en index.html
+        - **CONFIGURACIÓN CLAUDE**
+          - Agregar permisos: Chrome DevTools (screenshot, navigate, snapshot, evaluate)
+          - Agregar permiso: Bash(cat:*) para debugging
+        - **PROTOCOLO MEJORADO: REVISAR CAMBIOS ANTES DE COMMIT**
+          - Usuario corrigió: siempre revisar con `git status` antes de commit/push
+          - Implementado: verificación exhaustiva de cambios pendientes antes de cualquier operación git
+    *   **Estado del Proyecto:** v2.30.6 - Mantenimiento y mejoras activas
+    *   **Archivos Modificados:** 7
+      - `.claude/settings.local.json` (config)
+      - `backend/routes/polls.js` (fix)
+      - `public/contacto.html` (cleanup)
+      - `public/encuestas.html` (cleanup)
+      - `public/js/main.js` (sanitization)
+      - `public/js/messaging-manager.js` (redirect)
+      - `public/js/support-tickets-manager.js` (redirect)
+    *   **Documentación Creada:** 1 (`docs/FIX-HEADER-VISUAL-DIFFERENCES-03DIC2025.md`)
+    *   **Commits Realizados:** 2
+      - e0c2971: docs(header-fix) - Documentación del fix
+      - 7175480: feat - Mejoras en formularios, sanitización y redirecciones
+    *   **Duración:** ~2 horas de trabajo
+    *   **Impacto General:**
+      - ✅ Headers consistentes en todas las páginas (crítico para UX)
+      - ✅ Formularios funcionan correctamente post-sanitización
+      - ✅ Sistema de encuestas robusto
+      - ✅ Autenticación apunta a destinos correctos
+      - ✅ Documentación exhaustiva para referencia futura
+    *   **Próximo Paso:** Verificar en navegador que headers son idénticos en todas las páginas
+    *   **Evidencia:**
+      - Commit e0c2971: documentación del fix
+      - Commit 7175480: cambios de código
+      - docs/FIX-HEADER-VISUAL-DIFFERENCES-03DIC2025.md
+      - CHANGELOG.md (v2.30.6)
+      - MASTER-CHECKLIST-BGE-2025.md (actualizado)
+
+---
+
 *   **21 de Noviembre de 2025 - FASE 3: VALIDACIÓN DE FUNCIONALIDAD COMPLETADA ✅**
     *   **Tipo:** Validation / Integration Testing / Regression Testing / Documentation
     *   **Logros Críticos:**

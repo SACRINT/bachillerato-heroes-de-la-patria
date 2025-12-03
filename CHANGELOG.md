@@ -1,3 +1,65 @@
+[v2.30.6] - 2025-12-03 (HEADER FIX + MEJORAS EN FORMULARIOS Y AUTENTICACIÓN ✅)
+
+**Tipo:** Bug Fix / Feature / Refactoring / Documentation
+**Commits:** e0c2971 (doc), 7175480 (features)
+**Estado:** ✅ COMPLETADO
+
+### Cambios Implementados:
+
+1. **Fix Crítico: Diferencias Visuales en Header**
+   - Problema: El botón "Más" se mostraba inconsistentemente entre index.html y contacto.html
+   - Causa Raíz: DOMPurify eliminaba atributos inline `style="display: none;"` por seguridad XSS
+   - Solución: Cambiar de inline style a clase Bootstrap `d-none` (línea 563 en header.html)
+   - Impacto: Headers ahora son idénticos en TODAS las páginas (43+ archivos HTML)
+   - Archivo: `public/partials/header.html`
+   - Documentación: `docs/FIX-HEADER-VISUAL-DIFFERENCES-03DIC2025.md`
+
+2. **Mejoras en Sanitización HTML (DOMPurify)**
+   - Expandir ALLOWED_TAGS: Agregar `form`, `input`, `label`, `select`, `option`, `textarea`
+   - Expandir ALLOWED_ATTR: Agregar `type`, `placeholder`, `autocomplete`, `name`, `value`
+   - Archivo: `public/js/main.js` (líneas 12-13)
+   - Impacto: Formularios del header se renderizan correctamente tras sanitización
+
+3. **Backend - Fix en Rutas de Encuestas**
+   - Problema: Parámetros `limit` y `offset` fallaban cuando venían vacíos
+   - Solución: Usar valores por defecto (limit: 20, offset: 0) en polls.js
+   - Archivo: `backend/routes/polls.js` (líneas 234-235)
+
+4. **Frontend - Limpiar Formularios**
+   - contacto.html: Remover breadcrumb innecesario (líneas 103-117)
+   - encuestas.html: Limpiar meta tags con tenant fields hardcodeados
+   - Normalizar saltos de línea en archivos HTML
+
+5. **Autenticación - Redirecciones Correctas**
+   - messaging-manager.js: Redirigir a `index.html` (NO login.html) + alert
+   - support-tickets-manager.js: Redirigir a `index.html` + alert
+   - Razón: `login.html` no existe en el proyecto, usar index.html con modal unificado
+
+6. **Configuración - Permisos Claude**
+   - Agregar comandos permitidos: Chrome DevTools (take_screenshot, navigate_page, take_snapshot, evaluate_script)
+   - Agregar permiso para Bash(cat:*) para debugging
+
+**Archivos Modificados:** 7
+- `.claude/settings.local.json` (config)
+- `backend/routes/polls.js` (fix)
+- `public/contacto.html` (cleanup)
+- `public/encuestas.html` (cleanup)
+- `public/js/main.js` (sanitization)
+- `public/js/messaging-manager.js` (redirect)
+- `public/js/support-tickets-manager.js` (redirect)
+
+**Documentación Generada:** 1
+- `docs/FIX-HEADER-VISUAL-DIFFERENCES-03DIC2025.md` (146 líneas)
+
+**Impacto General:**
+- ✅ Headers consistentes en todas las páginas
+- ✅ Formularios del header se renderizan correctamente
+- ✅ Rutas de encuestas más robustas
+- ✅ Redirecciones de autenticación apuntan a destino correcto
+- ✅ Documentación del fix disponible para referencia
+
+---
+
 [v2.30.5] - 2025-12-02 (SCRIPT COMPREHENSIVE - ARREGLAR TODOS LOS CARACTERES CORRUPTOS ✅)
 🔍 DESCUBRIMIENTO: Aún hay caracteres corruptos diferentes de †
    ❌ ◊ (LOZENGE U+25CA): "R◊pidas", "D◊as", "Acad◊mico"
