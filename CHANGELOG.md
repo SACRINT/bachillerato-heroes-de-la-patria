@@ -1,3 +1,13 @@
+[v2.28.4] - 2025-12-02 (FIX CRÍTICO: FOOTER OVERLAY COMPLETAMENTE REPARADO ✅)
+🔧 FIX CRÍTICO: Footer apareciendo como overlay en 4 páginas
+🎯 CAUSA RAÍZ: Propiedades CSS width: 100vw, margin-left: 50%, transform: translateX(-50%)
+✅ SOLUCIÓN: Cambiar a width: 100%, margin: 0, padding: 2rem 0
+📊 PÁGINAS REPARADAS: gamification-center.html, challenges.html, iacoins-dashboard.html, iacoins-store.html
+📝 DOCUMENTACIÓN: FIX-FOOTER-OVERLAY-CRITICO.md (850+ líneas análisis detallado)
+✅ RESULTADO: Footer ahora aparece correctamente al final de cada página como en index.html
+🚀 COMMIT: 9a9bf31 - Push a main completado
+⏱️ USUARIO SATISFACTION: Problema crítico reportado en Message 16 RESUELTO
+
 [v2.31.0] - 2025-11-29 (SEMANA 31: SECURITY SCANNING INICIADO - 70% COMPLETE ✅)
 🔐 SEMANA 31: Security Audit y Vulnerability Scanning
 🎯 COMPLETADO: npm audit (0 vulnerabilidades post-fix), Manual Security Checklist (45/48 items)
