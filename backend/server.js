@@ -62,19 +62,6 @@ const pollsRoutes = require('./routes/polls');
 const attendanceRoutes = require('./routes/attendance');
 const settingsRoutes = require('./routes/settings');
 const healthRoutes = require('./routes/health');
-const testEventsRoutes = require('./routes/test-events');  // ✅ TESTING ROUTES - Event Bus testing (FASE 2)
-const chartsDataRoutes = require('./routes/charts-data');
-const searchRoutes = require('./routes/search');
-const emailsRoutes = require('./routes/emails');
-const apiDocsRoutes = require('./routes/api-docs'); // ✅ SWAGGER UI - SEMANA 29
-const aiTutorRoutes = require('./routes/ai-tutor'); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
-// ⏸️ const attendanceRoutes = require('./routes/attendance').default; // ✅ ATTENDANCE ROUTES (Compiled TS) - COMENTADO: archivo no existe
-// ⏸️ const settingsRoutes = require('./routes/settings'); // ✅ SETTINGS ROUTES - COMENTADO: archivo no existe
-
-// ✅ API VERSIONING MIDDLEWARE - SEMANA 8
-const { apiVersioning, v1CompatibilityLayer, rateLimitByTier } = require('./middleware/api-versioning');
-const pollsRoutes = require('./routes/polls');
-const parentsRoutes = require('./routes/parents');
 const installPollsRoutes = require('./routes/install-polls');
 const teachersPortalRoutes = require('./routes/teachers-portal');
 const messagingRoutes = require('./routes/messaging');
