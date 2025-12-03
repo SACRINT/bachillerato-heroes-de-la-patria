@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(timeout 10 node:*)"
+      "Bash(timeout 10 node:*)",
+      "Bash(for file in offline.html performance-dashboard.html test-dashboard.html verify-email.html)",
+      "Bash(do if grep -q \"footer-styles.css\" \"$file\")",
+      "Bash(then echo \"$file: TIENE\")",
+      "Bash(else echo \"$file: FALTA\")",
+      "Bash(fi)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []
