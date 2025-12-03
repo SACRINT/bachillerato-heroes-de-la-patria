@@ -66,17 +66,24 @@
             display: block;
         }
 
+        /* Dashboard Layout Container */
+        .dashboard-container {
+            display: flex;
+            flex-direction: row;
+            min-height: 100vh;
+            padding-top: 76px;
+        }
+
         /* Sidebar */
         .sidebar {
             background: var(--dark-color);
-            min-height: calc(100vh - 76px);
-            padding: 0;
-            position: fixed;
-            top: 76px;
-            left: 0;
             width: 250px;
+            padding: 0;
+            position: relative;
             transition: all 0.3s;
-            z-index: 1000;
+            z-index: 500;
+            overflow-y: auto;
+            flex-shrink: 0;
         }
 
         .sidebar .sidebar-header {
@@ -121,10 +128,10 @@
 
         /* Main Content */
         .main-content {
-            margin-left: 250px;
+            flex: 1;
             padding: 2rem;
-            padding-top: calc(2rem + 76px);
-            margin-top: -76px;
+            overflow-y: auto;
+            min-height: calc(100vh - 76px);
             transition: all 0.3s;
         }
 
@@ -230,16 +237,33 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            /* Change to column layout on mobile */
+            .dashboard-container {
+                flex-direction: column;
+                padding-top: 76px;
+            }
+
             .sidebar {
-                left: -250px;
+                width: 100%;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: auto;
+                max-height: 70vh;
+                transform: translateY(100%);
+                transition: transform 0.3s;
+                border-top: 1px solid rgba(255,255,255,0.1);
             }
 
             .sidebar.active {
-                left: 0;
+                transform: translateY(0);
             }
 
             .main-content {
-                margin-left: 0;
+                flex: 1;
+                min-height: calc(100vh - 76px);
+                padding: 1rem;
             }
 
             .stat-card {
@@ -284,7 +308,9 @@
     <!-- ✅ FIX (18 Nov 2025): Header/Footer styles loaded globally -->
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- DOMPurify for XSS protection (MUST load before main.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <!-- Main JS for dynamic header/footer loading -->
     <script src="js/main.js" defer></script>
 </head>
