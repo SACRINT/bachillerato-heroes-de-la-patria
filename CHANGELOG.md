@@ -1,3 +1,13 @@
+[v2.30.0] - 2025-12-02 (REFACTORIZACIÓN COMPLETA: CSS GLOBAL UNIFICADO PARA TODAS LAS PÁGINAS ✅)
+🎯 REFACTORIZACIÓN MAYOR: Sistema de layout centralizado y consistente
+✅ Creado css/global-layout.css (1,000+ líneas) - Fuente ÚNICA de verdad
+✅ Limpiado partials/footer.html - Removidos 760 líneas de CSS inline
+✅ Aplicado a 43/43 páginas HTML del proyecto
+📊 BENEFICIO: Un cambio en global-layout.css se aplica automáticamente a TODAS las páginas
+🎨 CONSISTENCIA GARANTIZADA: Headers, footers y botones flotantes idénticos en todo el sitio
+🚀 COMMIT: 2e6d2b0 - Push a main completado
+⏱️ IMPACTO: Mantenibilidad y consistencia mejoradas para todas las páginas
+
 [v2.28.5] - 2025-12-02 (FIX ADICIONAL: LOGO FOOTER REDUCIDO A TAMAÑO CORRECTO ✅)
 🎯 FIX: Logo del footer estaba muy grande (gigante) en desktop
 ✅ SOLUCIÓN: Limitar width y height a 45px !important (igual que mobile)
