@@ -69,10 +69,10 @@
         /* Sidebar */
         .sidebar {
             background: var(--dark-color);
-            min-height: 100vh;
+            min-height: calc(100vh - 76px);
             padding: 0;
             position: fixed;
-            top: 0;
+            top: 76px;
             left: 0;
             width: 250px;
             transition: all 0.3s;
@@ -123,6 +123,8 @@
         .main-content {
             margin-left: 250px;
             padding: 2rem;
+            padding-top: calc(2rem + 76px);
+            margin-top: -76px;
             transition: all 0.3s;
         }
 
