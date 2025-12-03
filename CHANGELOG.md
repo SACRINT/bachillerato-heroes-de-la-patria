@@ -1,3 +1,21 @@
+[v2.30.4] - 2025-12-02 (SCRIPT SQL FINAL - 100% BASADO EN SCHEMA REAL DESCOBERTO ✅)
+🎯 SCHEMA FINAL CONFIRMADO:
+   ✅ usuarios: nombre, apellido_paterno, apellido_materno (NO apellido)
+   ✅ estudiantes: nombre, apellido_paterno, apellido_materno (NO apellidos)
+   ✅ calificaciones: observaciones (NO nombre_asignatura)
+   ❌ challenges: NO EXISTE
+   ❌ desafios: NO EXISTE
+📝 SCRIPT FINAL: fix-neon-utf8-data-FINAL.sql (380+ líneas)
+📖 INSTRUCCIONES: PASO-FINAL-EJECUTAR-SCRIPT.md (275 líneas)
+🔧 CAMBIOS FINALES:
+   ✅ Eliminadas referencias a challenges y desafios (no existen)
+   ✅ Expandida verificación final (7 queries en lugar de 3)
+   ✅ Agregados ejemplos visuales de datos arreglados
+   ✅ 27 UPDATE statements para 3 tablas
+📊 ESTADO: 100% LISTO PARA EJECUTAR EN NEON
+🎯 PRÓXIMO PASO: Usuario ejecuta script → verifica SECCIÓN 5 (aún corruptas = 0)
+⏱️ TIEMPO: 5 min script + 2 min reinicio backend + 3 min verificar = ~12 min total
+
 [v2.30.3] - 2025-12-02 (SCRIPT SQL CORREGIDO - BASADO EN SCHEMA REAL DESCOBERTO ✅)
 🔧 BASADO EN DESCOBRIMIENTO: Tabla estudiantes tiene apellido_paterno, apellido_materno (NO apellidos)
 ✅ SCRIPT CORREGIDO: fix-neon-utf8-data-CORRECTED.sql (320+ líneas)
