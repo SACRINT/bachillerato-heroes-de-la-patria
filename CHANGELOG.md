@@ -1,3 +1,12 @@
+[v2.30.2] - 2025-12-02 (DESCOBRIMIENTO DE SCHEMA NEON - SCRIPT DE DISCOVERY CREADO ✅)
+🔍 DESCOBRIMIENTO: Acentos corruptos en datos dinámicos vienen de Neon database
+📊 PROBLEMA: Errores SQL revelaron estructura real ≠ estructura esperada
+✅ SOLUCIÓN: Creado discover-neon-schema.sql para mapear columnas reales
+📝 SCRIPT UBICACIÓN: backend/scripts/discover-neon-schema.sql (195 líneas)
+📋 INSTRUCCIONES: docs/PASO1-DESCUBRIR-ESQUEMA-NEON.md (176 líneas)
+🎯 PRÓXIMO PASO: Usuario ejecuta discovery script → pasa resultados → Claude reescribe fix script
+⏱️ IMPACTO: Permite escribir SQL correcto con nombres reales de columnas
+
 [v2.30.0] - 2025-12-02 (REFACTORIZACIÓN COMPLETA: CSS GLOBAL UNIFICADO PARA TODAS LAS PÁGINAS ✅)
 🎯 REFACTORIZACIÓN MAYOR: Sistema de layout centralizado y consistente
 ✅ Creado css/global-layout.css (1,000+ líneas) - Fuente ÚNICA de verdad
