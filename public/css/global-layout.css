@@ -160,6 +160,46 @@ body:not(.dark-mode) #main-footer {
     padding: 1rem 0 0.5rem;
 }
 
+/* Footer Grid - Asegurar que Bootstrap grid funciona */
+#main-footer .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+#main-footer .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -0.5rem;
+    margin-left: -0.5rem;
+}
+
+#main-footer .col-lg-2,
+#main-footer .col-lg-3,
+#main-footer .col-lg-4,
+#main-footer .col-md-6 {
+    position: relative;
+    width: 100%;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+@media (min-width: 992px) {
+    #main-footer .col-lg-2 {
+        flex: 0 0 16.666667%;
+        max-width: 16.666667%;
+    }
+
+    #main-footer .col-lg-3 {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+
+    #main-footer .col-lg-4 {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+}
+
 /* Footer Logo - TAMAÑO CONSISTENTE */
 #main-footer .footer-logo {
     width: var(--footer-logo-size) !important;
@@ -179,7 +219,7 @@ body:not(.dark-mode) #main-footer {
     background: transparent;
     border: none;
     border-radius: 0;
-    padding: var(--spacing-lg) var(--spacing-md);
+    padding: 0.75rem 0.5rem;
     transition: none;
     box-shadow: none;
     position: relative;
