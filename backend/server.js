@@ -58,6 +58,9 @@ const tenantsRoutes = require('./routes/tenants');  // ✅ MULTI-TENANT MANAGEME
 const comunicadosRoutes = require('./routes/comunicados');
 const uploadRoutes = require('./routes/upload');
 const webhooksRoutes = require('./routes/webhooks');  // ✅ WEBHOOKS - SEMANA 8
+const pollsRoutes = require('./routes/polls');
+const attendanceRoutes = require('./routes/attendance');
+const settingsRoutes = require('./routes/settings');
 const healthRoutes = require('./routes/health');
 const testEventsRoutes = require('./routes/test-events');  // ✅ TESTING ROUTES - Event Bus testing (FASE 2)
 const chartsDataRoutes = require('./routes/charts-data');
@@ -451,6 +454,9 @@ app.use('/api/uploads', uploadsRoutes);
 app.use('/api/maintenance', maintenanceRoutes);
 app.use('/api/ssl', sslRoutes);
 app.use('/api/backup', backupRoutes);
+app.use('/api/polls', pollsRoutes);
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/settings', settingsRoutes);
 
 devLogger.log('[FASE 3.2] 18 rutas adicionales descomentadas (GRUPO 3 + GRUPO 4). Migration comentada (requiere mysql2). 61 rutas activas.');
 
