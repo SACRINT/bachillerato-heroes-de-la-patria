@@ -28,8 +28,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/themes.css">
 
-    <!-- ✅ FIX (2 Dec 2025): Header/Footer styles loaded globally -->
-    <!-- These MUST be in <head> so they apply BEFORE dynamic header/footer injection -->
+    <!-- Global Layout Styles - Header, Footer, Floating Buttons -->
     <link rel="stylesheet" href="css/global-layout.css">
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
@@ -247,18 +246,11 @@
             background: #1f2937;
         }
     </style>
-    <!-- ✅ FIX (18 Nov 2025): Header/Footer styles loaded globally -->
-    <!-- These MUST be in <head> so they apply BEFORE dynamic header/footer injection -->
-    <link rel="stylesheet" href="css/global-layout.css">
-    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
-    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
-
 
     <!-- 🏢 Multi-Tenancy Support -->
     <script src="js/tenant-config-loader.js"></script>
     <!-- DOMPurify XSS Protection -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
-    <!-- tenant-replacer.js removed - functionality handled by tenant-config-loader.js -->
     <!-- Main JS for dynamic header/footer loading -->
     <script src="js/main.js" defer></script>
 </head>
