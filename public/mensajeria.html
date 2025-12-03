@@ -401,10 +401,12 @@
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="css/style.css">
+    <!-- Main JS for dynamic header/footer loading -->
+    <script src="js/main.js" defer></script>
 </head>
 <body>
-    <!-- Header -->
-    <div id="main-header"></div>
+    <!-- Header will be injected here -->
+    <header id="main-header"></header>
     <div class="messaging-container">
         <!-- Sidebar de conversaciones -->
         <div class="conversations-sidebar">
@@ -534,15 +536,14 @@
     <!-- Ã°Å¸â€Â§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
         <!-- Framework Core -->
     <script src="js/bge-framework-core.js"></script>
-    <script src="js/main.js"></script>
 
     <!-- Messaging Manager -->
     <script src="js/messaging-manager.js"></script>
     <!-- Ã°Å¸ÂÂ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
 
 
-    <!-- Footer -->
-    <div id="main-footer"></div>
+    <!-- Footer will be injected here -->
+    <footer id="main-footer"></footer>
     <script src="js/tenant-config-loader.js" defer></script>
 
         <!-- Dark Mode Toggle -->

@@ -283,10 +283,12 @@
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main JS for dynamic header/footer loading -->
+    <script src="js/main.js" defer></script>
 </head>
 <body>
-    <!-- Header -->
-    <div id="main-header"></div>
+    <!-- Header will be injected here -->
+    <header id="main-header"></header>
 
     <!-- Loading Spinner -->
     <div class="spinner-container" id="loadingSpinner">
@@ -780,8 +782,8 @@
 
 
 
-    <!-- Footer -->
-    <div id="main-footer"></div>
+    <!-- Footer will be injected here -->
+    <footer id="main-footer"></footer>
     <script>
         // Initialize Teachers Portal on page load
         document.addEventListener('DOMContentLoaded', () => {
@@ -793,8 +795,6 @@
 
     <!-- Framework Core -->
     <script src="js/bge-framework-core.js"></script>
-    <!-- Main JS -->
-    <script src="js/main.js"></script>
     <!-- Dark Mode Toggle -->
     <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
         <i class="fas fa-moon"></i>

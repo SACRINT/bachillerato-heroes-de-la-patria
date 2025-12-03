@@ -7,7 +7,7 @@
     <!-- CSP META TAG: Security headers for gamification center -->
     <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://ui-avatars.com https:; connect-src 'self' https:; frame-src 'self'; object-src 'none';">
-    <title>Centro de Gamificación - IACoins | BGE Héroes de la Patria</title>
+    <title>Centro de Gamificaciï¿½n - IACoins | BGE Hï¿½roes de la Patria</title>
 
     <!-- Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,8 +16,8 @@
 
     <!-- Meta tags -->
     <meta name="description"
-        content="Centro de Gamificación - Gana IACoins, completa retos, sube de nivel y desbloquea recompensas. Sistema Learn-to-Earn del BGE Héroes de la Patria.">
-    <meta name="keywords" content="gamificación, iacoins, retos, niveles, aprendizaje, recompensas">
+        content="Centro de Gamificaciï¿½n - Gana IACoins, completa retos, sube de nivel y desbloquea recompensas. Sistema Learn-to-Earn del BGE Hï¿½roes de la Patria.">
+    <meta name="keywords" content="gamificaciï¿½n, iacoins, retos, niveles, aprendizaje, recompensas">
     <meta name="theme-color" content="#1976D2">
 
     <!-- Bootstrap CSS -->
@@ -250,6 +250,8 @@
     <!-- ðŸ¢ Multi-Tenancy Support -->
     <script src="js/tenant-config-loader.js"></script>
     <!-- tenant-replacer.js removed - functionality handled by tenant-config-loader.js -->
+    <!-- Main JS for dynamic header/footer loading -->
+    <script src="js/main.js" defer></script>
 </head>
 
 <body>
@@ -266,7 +268,7 @@
             <div class="container position-relative">
                 <div class="text-center mb-4">
                     <h1 class="display-4 fw-bold mb-3">
-                        <i class="fas fa-gamepad me-3"></i>Centro de Gamificación
+                        <i class="fas fa-gamepad me-3"></i>Centro de Gamificaciï¿½n
                     </h1>
                     <p class="lead">Aprende, gana y crece con nuestro sistema de recompensas IACoins</p>
                 </div>
@@ -329,7 +331,7 @@
                             </div>
                             <div class="small opacity-75">
                                 <i class="fas fa-star me-2"></i>
-                                <span id="levelBenefits">Acceso básico a la plataforma</span>
+                                <span id="levelBenefits">Acceso bï¿½sico a la plataforma</span>
                             </div>
                         </div>
                     </div>
@@ -340,7 +342,7 @@
         <!-- Quick Actions -->
         <section class="py-5 bg-light">
             <div class="container">
-                <h2 class="h3 mb-4 text-center">Acciones Rápidas</h2>
+                <h2 class="h3 mb-4 text-center">Acciones Rï¿½pidas</h2>
                 <div class="row g-3">
                     <div class="col-md-3 col-6">
                         <a href="challenges.html" class="quick-action-btn">
@@ -367,7 +369,7 @@
                         <a href="#leaderboard" class="quick-action-btn">
                             <i class="fas fa-ranking-star fa-2x mb-2 text-danger"></i>
                             <div class="fw-semibold">Ranking</div>
-                            <small class="text-muted">Ver posición</small>
+                            <small class="text-muted">Ver posiciï¿½n</small>
                         </a>
                     </div>
                 </div>
@@ -377,7 +379,7 @@
         <!-- Stats Overview -->
         <section class="py-5">
             <div class="container">
-                <h2 class="h3 mb-4">Tus Estadísticas</h2>
+                <h2 class="h3 mb-4">Tus Estadï¿½sticas</h2>
                 <div class="row g-4">
                     <div class="col-md-3 col-sm-6">
                         <div class="stat-card text-center">
@@ -396,7 +398,7 @@
                                 <i class="fas fa-fire text-white"></i>
                             </div>
                             <h3 class="h2 fw-bold mb-1" id="currentStreak">0</h3>
-                            <p class="text-muted mb-0">Días Consecutivos</p>
+                            <p class="text-muted mb-0">Dï¿½as Consecutivos</p>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
@@ -440,8 +442,8 @@
                                     <span class="badge bg-warning text-dark">Diario</span>
                                     <i class="fas fa-sun text-warning fa-2x"></i>
                                 </div>
-                                <h4 class="h5 fw-bold mb-2">Madrugador Académico</h4>
-                                <p class="text-muted small mb-3">Inicia sesión antes de las 8:00 AM</p>
+                                <h4 class="h5 fw-bold mb-2">Madrugador Acadï¿½mico</h4>
+                                <p class="text-muted small mb-3">Inicia sesiï¿½n antes de las 8:00 AM</p>
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <span class="small text-muted">Progreso</span>
@@ -472,7 +474,7 @@
                                     <i class="fas fa-calendar-week text-primary fa-2x"></i>
                                 </div>
                                 <h4 class="h5 fw-bold mb-2">Racha Perfecta</h4>
-                                <p class="text-muted small mb-3">Inicia sesión durante 7 días consecutivos</p>
+                                <p class="text-muted small mb-3">Inicia sesiï¿½n durante 7 dï¿½as consecutivos</p>
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <span class="small text-muted">Progreso</span>
@@ -502,7 +504,7 @@
                                     <span class="badge bg-purple text-white" style="background: #8b5cf6;">Mensual</span>
                                     <i class="fas fa-calendar-alt text-purple fa-2x" style="color: #8b5cf6;"></i>
                                 </div>
-                                <h4 class="h5 fw-bold mb-2">Excelencia Académica</h4>
+                                <h4 class="h5 fw-bold mb-2">Excelencia Acadï¿½mica</h4>
                                 <p class="text-muted small mb-3">Logra un promedio de 90%+ este mes</p>
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -546,7 +548,7 @@
                                     alt="Avatar de Ana Martinez" class="rounded-circle me-3" width="45" height="45"
                                     alt="Avatar">
                                 <div class="flex-grow-1">
-                                    <div class="fw-semibold">Ana Martínez</div>
+                                    <div class="fw-semibold">Ana Martï¿½nez</div>
                                     <small class="text-muted">Nivel 5 - Maestro</small>
                                 </div>
                                 <div class="text-end">
@@ -561,7 +563,7 @@
                                     alt="Avatar de Carlos Lopez" class="rounded-circle me-3" width="45" height="45"
                                     alt="Avatar">
                                 <div class="flex-grow-1">
-                                    <div class="fw-semibold">Carlos López</div>
+                                    <div class="fw-semibold">Carlos Lï¿½pez</div>
                                     <small class="text-muted">Nivel 4 - Erudito</small>
                                 </div>
                                 <div class="text-end">
@@ -576,7 +578,7 @@
                                     alt="Avatar de Maria Garcia" class="rounded-circle me-3" width="45" height="45"
                                     alt="Avatar">
                                 <div class="flex-grow-1">
-                                    <div class="fw-semibold">María García</div>
+                                    <div class="fw-semibold">Marï¿½a Garcï¿½a</div>
                                     <small class="text-muted">Nivel 4 - Erudito</small>
                                 </div>
                                 <div class="text-end">
@@ -614,7 +616,7 @@
                                     <i class="fas fa-user-circle fa-3x text-warning"></i>
                                 </div>
                                 <h5 class="fw-bold mb-2">Perfil Completo</h5>
-                                <p class="small text-muted mb-3">Llenaste toda tu información</p>
+                                <p class="small text-muted mb-3">Llenaste toda tu informaciï¿½n</p>
                                 <span class="badge bg-success">Desbloqueado</span>
                             </div>
                         </div>
@@ -626,7 +628,7 @@
                                     <i class="fas fa-graduation-cap fa-3x text-muted"></i>
                                 </div>
                                 <h5 class="fw-bold mb-2">Primer 100</h5>
-                                <p class="small text-muted mb-3">Obtén tu primera calificación perfecta</p>
+                                <p class="small text-muted mb-3">Obtï¿½n tu primera calificaciï¿½n perfecta</p>
                                 <span class="badge bg-secondary">Bloqueado</span>
                             </div>
                         </div>
@@ -654,7 +656,7 @@
                         <div class="col-6">
                             <div class="card h-100 package-card" data-package="basic">
                                 <div class="card-body text-center">
-                                    <h6 class="fw-bold">Básico</h6>
+                                    <h6 class="fw-bold">Bï¿½sico</h6>
                                     <div class="h3 text-primary">50</div>
                                     <small class="text-muted">IACoins</small>
                                     <hr>
@@ -667,7 +669,7 @@
                             <div class="card h-100 package-card" data-package="standard">
                                 <div class="card-body text-center">
                                     <span class="badge bg-success mb-2">+5% Bonus</span>
-                                    <h6 class="fw-bold">Estándar</h6>
+                                    <h6 class="fw-bold">Estï¿½ndar</h6>
                                     <div class="h3 text-primary">105</div>
                                     <small class="text-muted">IACoins</small>
                                     <hr>
@@ -688,10 +690,8 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- ðŸ”§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
     <!-- Framework Core -->
     <script src="js/bge-framework-core.js"></script>
-    <script src="js/main.js"></script>
 
     <!-- Gamification Center Scripts -->
     <script>
@@ -837,13 +837,13 @@
         <div class="chatbot-header">
             <div>
                 <strong>Asistente Virtual</strong>
-                <div>Héroes de la Patria</div>
+                <div>Hï¿½roes de la Patria</div>
             </div>
-            <button aria-label="Cerrar chat">×</button>
+            <button aria-label="Cerrar chat">ï¿½</button>
         </div>
 
         <div class="chatbot-messages" id="chatbotMessages">
-            <!-- Los mensajes se cargarán dinámicamente -->
+            <!-- Los mensajes se cargarï¿½n dinï¿½micamente -->
         </div>
 
         <div id="typingIndicator" class="typing-indicator">
@@ -852,7 +852,7 @@
                 <div></div>
                 <div></div>
             </div>
-            <span>El asistente está escribiendo...</span>
+            <span>El asistente estï¿½ escribiendo...</span>
         </div>
 
         <div class="chatbot-input">
