@@ -59,6 +59,8 @@ const comunicadosRoutes = require('./routes/comunicados');
 const uploadRoutes = require('./routes/upload');
 const webhooksRoutes = require('./routes/webhooks');  // ✅ WEBHOOKS - SEMANA 8
 const pollsRoutes = require('./routes/polls');
+// ✅ API VERSIONING MIDDLEWARE - SEMANA 8
+const { apiVersioning, v1CompatibilityLayer, rateLimitByTier } = require('./middleware/api-versioning');
 const attendanceRoutes = require('./routes/attendance');
 const settingsRoutes = require('./routes/settings');
 const healthRoutes = require('./routes/health');
