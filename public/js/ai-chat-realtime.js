@@ -554,7 +554,7 @@ class AIChatRealtime {
         const userLevel = this.getUserLevel();
         const coins = this.getUserCoins();
 
-        return `🎯 Tu progreso actual en BGE:\n\n• Nivel: ${userLevel}\n• IA Coins: ${coins}\n• Prompts desbloqueados: ${this.availablePrompts.length}\n\n¡Sigue así! Cada vez que usas el chat IA ganas XP. ¿Qué objetivo quieres alcanzar próximamente?`;
+        return `🎯 Tu progreso actual en BGE:\n\n• Nivel: ${userLevel}\n• IA Coins: ${coins}\n• Prompts desbloqueadoss: ${this.availablePrompts.length}\n\n¡Sigue así! Cada vez que usas el chat IA ganas XP. ¿Qué objetivo quieres alcanzar próximamente?`;
     }
 
     getGeneralResponse(message) {

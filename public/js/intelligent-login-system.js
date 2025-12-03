@@ -762,7 +762,7 @@ class IntelligentLoginSystem {
      * 🎊 Mostrar celebración de subida de nivel
      */
     showLevelUpCelebration(profile) {
-        alert(`🎉 ¡NIVEL ${profile.level}!\n¡Nuevos prompts desbloqueados!`);
+        alert(`🎉 ¡NIVEL ${profile.level}!\n¡Nuevos prompts desbloqueadoss!`);
     }
 
     /**

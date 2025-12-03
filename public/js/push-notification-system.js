@@ -239,7 +239,7 @@ class BGEPushNotificationSystem {
                         <h6>¡Mejora tu experiencia educativa!</h6>
                         <p>Las notificaciones te ayudarán a:</p>
                         <ul class="list-unstyled">
-                            <li>🏆 Recibir logros desbloqueados al instante</li>
+                            <li>🏆 Recibir logros desbloqueadoss al instante</li>
                             <li>💡 Tips educativos personalizados</li>
                             <li>📚 Recordatorios de estudio inteligentes</li>
                             <li>🎮 Competencias y eventos BGE</li>
@@ -597,7 +597,7 @@ class BGEPushNotificationSystem {
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="checkbox" id="notif-achievements" ${this.preferences.achievements ? 'checked' : ''}>
                             <label class="form-check-label" for="notif-achievements">
-                                🏆 Logros desbloqueados
+                                🏆 Logros desbloqueadoss
                             </label>
                         </div>
                         <div class="form-check mb-3">

@@ -622,7 +622,7 @@ class GamificationSystem {
                     points: response.pointsEarned
                 });
 
-                // Mostrar logros desbloqueados
+                // Mostrar logros desbloqueadoss
                 if (response.achievements && response.achievements.length > 0) {
                     response.achievements.forEach(achievement => {
                         this.showNotification({

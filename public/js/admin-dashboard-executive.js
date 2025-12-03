@@ -211,7 +211,7 @@ class AdminDashboardExecutive {
                                 <p class="text-muted mb-2">Prompts IA Usados</p>
                                 <div class="d-flex justify-content-center align-items-center">
                                     <span class="badge bg-warning me-2">${data.achievementsUnlocked}</span>
-                                    <small class="text-muted">logros desbloqueados</small>
+                                    <small class="text-muted">logros desbloqueadoss</small>
                                 </div>
                                 <div class="progress mt-3" style="height: 6px;">
                                     <div class="progress-bar bg-warning" style="width: 92%"></div>
@@ -362,7 +362,7 @@ class AdminDashboardExecutive {
                                         <i class="fas fa-check-circle text-success me-2"></i>
                                         <div>
                                             <strong>🎉 Meta Alcanzada</strong><br>
-                                            <small>Se superó la meta de 100 logros institucionales desbloqueados</small>
+                                            <small>Se superó la meta de 100 logros institucionales desbloqueadoss</small>
                                         </div>
                                     </div>
                                 </div>

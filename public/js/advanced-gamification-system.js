@@ -473,7 +473,7 @@ class AdvancedGamificationSystem {
 
     checkAchievement(achievementId, currentValue, targetValue) {
         if (this.playerProfile.achievements.includes(achievementId)) {
-            return false; // Ya desbloqueado
+            return false; // Ya desbloqueados
         }
 
         if (currentValue >= targetValue) {
@@ -492,7 +492,7 @@ class AdvancedGamificationSystem {
         }
 
         if (this.playerProfile.achievements.includes(achievementId)) {
-            return; // Ya desbloqueado
+            return; // Ya desbloqueados
         }
 
         this.playerProfile.achievements.push(achievementId);
@@ -507,7 +507,7 @@ class AdvancedGamificationSystem {
         // Verificar logros en cadena
         this.checkChainedAchievements(achievementId);
 
-        console.log(`🏆 Logro desbloqueado: ${achievement.name}`);
+        console.log(`🏆 Logro desbloqueados: ${achievement.name}`);
     }
 
     findAchievementById(achievementId) {
@@ -519,7 +519,7 @@ class AdvancedGamificationSystem {
     }
 
     checkChainedAchievements(unlockedAchievementId) {
-        // Verificar si el logro desbloqueado activa otros logros
+        // Verificar si el logro desbloqueados activa otros logros
         const chainedChecks = {
             'first_steps': () => this.checkProgressAchievements(),
             'perfect_week': () => this.checkStreakAchievements(),
@@ -1282,7 +1282,7 @@ class AdvancedGamificationSystem {
     }
 
     showAchievementNotification(achievement) {
-        this.showNotification(`Logro desbloqueado: ${achievement.name}`, 'achievement');
+        this.showNotification(`Logro desbloqueados: ${achievement.name}`, 'achievement');
     }
 
     getNotificationIcon(type) {
@@ -1561,7 +1561,7 @@ class AdvancedGamificationSystem {
     }
 
     awardAchievement(achievement) {
-        console.log(`🎉 ¡Nuevo logro desbloqueado: ${achievement.title}!`);
+        console.log(`🎉 ¡Nuevo logro desbloqueados: ${achievement.title}!`);
 
         // Guardar logro
         const achievements = JSON.parse(localStorage.getItem('bge_achievements') || '[]');
