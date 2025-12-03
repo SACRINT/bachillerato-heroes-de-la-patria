@@ -151,7 +151,8 @@ class MessagingManager {
     }
 
     redirectToLogin() {
-        window.location.href = '/login.html';
+        alert('Debes iniciar sesión para acceder a Mensajería.');
+        window.location.href = '/index.html';
     }
 
     // ============================================

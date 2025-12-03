@@ -66,7 +66,8 @@ async function initSupportTickets() {
 async function checkAuthentication() {
     const token = localStorage.getItem('token');
     if (!token) {
-        window.location.href = '/login.html';
+        alert('Debes iniciar sesión para acceder a Soporte.');
+        window.location.href = '/index.html';
         throw new Error('No autenticado');
     }
 
@@ -78,7 +79,7 @@ async function checkAuthentication() {
     } catch (error) {
         debugLog.error('TOKEN', 'Error al decodificar token:', error);
         localStorage.removeItem('token');
-        window.location.href = '/login.html';
+        window.location.href = '/index.html';
     }
 }
 

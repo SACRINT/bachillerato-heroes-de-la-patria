@@ -231,8 +231,8 @@ router.get('/', async (req, res) => {
             data: [],
             pagination: {
                 total: 0,
-                limit: parseInt(limit),
-                offset: parseInt(offset),
+                limit: parseInt(req.query.limit || 20),
+                offset: parseInt(req.query.offset || 0),
                 hasMore: false
             }
         });
