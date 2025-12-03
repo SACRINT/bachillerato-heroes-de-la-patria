@@ -363,6 +363,13 @@
     margin-left: 0.25rem !important;
 }
 
+/* LOGO SIZING - Mantener tamaño consistente */
+.navbar-brand img {
+    height: 45px !important;
+    width: auto !important;
+    max-height: 45px !important;
+}
+
 /* LOGO CONTRASTE - Modo Oscuro */
 [data-theme="dark"] .logo-main-text,
 .dark-mode .logo-main-text {
