@@ -622,6 +622,13 @@ module.exports = async (req, res) => {
             return res.status(200).json({ success: true, data: [] });
         }
 
+        // ============================================
+        // RUTAS DE MESSAGING (Fix 500)
+        // ============================================
+        if (path.startsWith('/api/messaging/conversations') && req.method === 'GET') {
+            return res.status(200).json({ success: true, data: [], pagination: { total: 0 } });
+        }
+
 
         // Ruta no encontrada
         return res.status(404).json({
