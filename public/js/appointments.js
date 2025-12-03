@@ -541,7 +541,7 @@ class AppointmentSystem {
         }
     }
 
-    prepareAppointmentData() {
+    async prepareAppointmentData() {
         const form = document.getElementById('appointmentForm');
         const formData = new FormData(form);
 
