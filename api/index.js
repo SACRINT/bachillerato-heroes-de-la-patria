@@ -629,6 +629,17 @@ module.exports = async (req, res) => {
             return res.status(200).json({ success: true, data: [], pagination: { total: 0 } });
         }
 
+        // ============================================
+        // RUTAS DE POLLS (Fix 500)
+        // ============================================
+        if (path === '/api/polls/categories/list' && req.method === 'GET') {
+            return res.status(200).json({ success: true, data: [] });
+        }
+
+        if ((path === '/api/polls' || path.startsWith('/api/polls')) && req.method === 'GET') {
+            return res.status(200).json({ success: true, data: [], pagination: { total: 0 } });
+        }
+
 
         // Ruta no encontrada
         return res.status(404).json({
