@@ -76,9 +76,14 @@ body:not(.dark-mode) .footer-main {
 }
 
 .footer-logo {
+    width: 45px;
+    height: 45px;
+    max-width: 45px;
+    max-height: 45px;
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(25, 118, 210, 0.2);
     transition: transform 0.3s ease;
+    display: block;
 }
 
 .footer-logo:hover {
@@ -623,6 +628,8 @@ body:not(.dark-mode) .footer-legal-simple::after {
     .footer-logo {
         width: 40px;
         height: 40px;
+        max-width: 40px;
+        max-height: 40px;
     }
 
     .social-links {
