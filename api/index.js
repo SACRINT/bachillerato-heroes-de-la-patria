@@ -657,23 +657,23 @@ module.exports = async (req, res) => {
                 }
             });
         }
-    }
+
 
 
         // Ruta no encontrada
         return res.status(404).json({
-        success: false,
-        error: 'Endpoint no encontrado',
-        path: path,
-        method: req.method
-    });
+            success: false,
+            error: 'Endpoint no encontrado',
+            path: path,
+            method: req.method
+        });
 
-} catch (error) {
-    console.error('[API] Error:', error);
-    return res.status(500).json({
-        success: false,
-        error: 'Error interno del servidor',
-        message: error.message
-    });
-}
+    } catch (error) {
+        console.error('[API] Error:', error);
+        return res.status(500).json({
+            success: false,
+            error: 'Error interno del servidor',
+            message: error.message
+        });
+    }
 };
