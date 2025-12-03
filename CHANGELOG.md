@@ -1,3 +1,14 @@
+[v2.30.3] - 2025-12-02 (SCRIPT SQL CORREGIDO - BASADO EN SCHEMA REAL DESCOBERTO ✅)
+🔧 BASADO EN DESCOBRIMIENTO: Tabla estudiantes tiene apellido_paterno, apellido_materno (NO apellidos)
+✅ SCRIPT CORREGIDO: fix-neon-utf8-data-CORRECTED.sql (320+ líneas)
+📝 INSTRUCCIONES: PASO2-EJECUTAR-SCRIPT-CORREGIDO.md (234 líneas)
+🎯 CAMBIOS CLAVE:
+   - Reemplazar apellidos → apellido_paterno + apellido_materno
+   - Agregar búsquedas específicas: Gamificaci†n, posici†n, etc
+   - Mejorar verificación final
+📊 PRÓXIMO PASO: Usuario ejecuta script en Neon → verifica resultados → reinicia backend
+⏱️ IMPACTO: Acentos se arreglarán en BD Neon (Gamificación, López, García, etc)
+
 [v2.30.2] - 2025-12-02 (DESCOBRIMIENTO DE SCHEMA NEON - SCRIPT DE DISCOVERY CREADO ✅)
 🔍 DESCOBRIMIENTO: Acentos corruptos en datos dinámicos vienen de Neon database
 📊 PROBLEMA: Errores SQL revelaron estructura real ≠ estructura esperada
