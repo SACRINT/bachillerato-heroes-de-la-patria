@@ -43,32 +43,6 @@ class AuthInterface {
                         <div class="modal-header">
                             <h5 class="modal-title" id="authModalLabel">
                                 <i class="fas fa-sign-in-alt me-2"></i>
-                                Iniciar Sesión
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Google Sign-In Button -->
-                            <div class="text-center mb-4">
-                                <div id="g_id_onload"
-                                     data-client_id="411638938693-87nmapmm146kci8i0p80jo745cost08h.apps.googleusercontent.com"
-                                     data-callback="handleGoogleCredentialResponse"
-                                     data-auto_prompt="false">
-                                </div>
-                                <div class="g_id_signin"
-                                     data-type="standard"
-                                     data-size="large"
-                                     data-theme="outline"
-                                     data-text="sign_in_with"
-                                     data-shape="rectangular"
-                                     data-logo_alignment="left">
-                                </div>
-                            </div>
-
-                            <div class="row align-items-center mb-3">
-                                <div class="col"><hr></div>
-                                <div class="col-auto"><small class="text-muted">o continúa con</small></div>
-                                <div class="col"><hr></div>
                             </div>
 
                             <form id="loginForm">
