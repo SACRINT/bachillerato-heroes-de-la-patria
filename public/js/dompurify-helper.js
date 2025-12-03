@@ -62,9 +62,10 @@ const DOMPURIFY_CONFIG_PARTIALS = {
  */
 function sanitizeHTML(html, context = 'tablas') {
   // Verificar si DOMPurify está disponible
+  // Verificar si DOMPurify está disponible
   if (typeof DOMPurify === 'undefined') {
-    console.error('[XSS] DOMPurify no disponible. Retornando string vacío por seguridad.');
-    return '';
+    console.error('[XSS] DOMPurify no disponible. ⚠️ USANDO FALLBACK: Retornando HTML sin sanitizar.');
+    return html; // Fallback para evitar romper el sitio si falla la carga del CDN
   }
 
   // Si html es null o undefined, retornar string vacío
