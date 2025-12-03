@@ -19,6 +19,8 @@
     <!-- ? FIX (18 Nov 2025): Header/Footer styles loaded globally -->
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+    <!-- DOMPurify for XSS protection (MUST load before main.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <!-- Main JS for dynamic header/footer loading -->
     <script src="js/main.js" defer></script>
 </head>
