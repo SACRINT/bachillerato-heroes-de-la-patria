@@ -2589,6 +2589,201 @@ body .analytics-dashboard-toggle {
 }
 
 /* Deshabilitar :before para evitar duplicaciÃ³n con HTML inline */
+}
+
+body .ar-activation {
+    bottom: 30px !important;
+    right: 235px !important;
+}
+
+body .game-activation {
+    bottom: 30px !important;
+    right: 290px !important;
+}
+
+body .ai-dashboard-activation {
+    bottom: 265px !important;
+    right: 15px !important;
+}
+
+body .ai-tutor-activation {
+    bottom: 325px !important;
+    right: 15px !important;
+}
+
+body .ia-floating-button {
+    bottom: 385px !important;
+    right: 15px !important;
+    left: auto !important;
+}
+
+body .labs-activation {
+    bottom: 445px !important;
+    right: 15px !important;
+}
+
+body #back-to-top {
+    bottom: 25px !important;
+    left: 15px !important;
+}
+
+body .analytics-dashboard-toggle {
+    bottom: 85px !important;
+    left: 15px !important;
+}
+}
+
+/* ========================================= */
+/* FIN SISTEMA DE REORGANIZACIÃ“N FLOTANTES */
+/* ========================================= */
+
+/* ===========================================
+   MODAL CUSTOMIZATIONS - BOTONES CERRAR AZULES
+   =========================================== */
+
+/* BotÃ³n cerrar azul para todos los modales */
+.modal .btn-close {
+    background: #007bff !important;
+    border-radius: 50% !important;
+    opacity: 1 !important;
+    width: 32px !important;
+    height: 32px !important;
+    position: relative !important;
+}
+
+.modal .btn-close:before {
+    content: 'Ã—' !important;
+    color: white !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    line-height: 1 !important;
+}
+
+.modal .btn-close:hover {
+    background: #0056b3 !important;
+    transform: scale(1.1) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Mejorar spacing en headers de modales */
+.modal-header {
+    padding: 1rem 1.5rem !important;
+    border-bottom: 2px solid #dee2e6 !important;
+}
+
+.modal-header .modal-title {
+    font-weight: 600 !important;
+    color: #333 !important;
+}
+
+/* Headers especÃ­ficos para modales con fondo verde */
+.modal-header.bg-success .modal-title {
+    color: white !important;
+    font-weight: bold !important;
+}
+
+/* Override para asegurar que el botÃ³n cerrar siempre sea azul */
+.modal-header .btn-close {
+    background: #007bff !important;
+    border-radius: 50% !important;
+    opacity: 1 !important;
+    width: 32px !important;
+    height: 32px !important;
+    position: relative !important;
+    background-image: none !important;
+}
+
+.modal-header .btn-close:before {
+    content: 'Ã—' !important;
+    color: white !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    line-height: 1 !important;
+}
+
+/* ===========================================
+   OVERRIDE MÃXIMO PARA BOTÃ“N CERRAR AZUL
+   =========================================== */
+
+/* MÃ¡xima especificidad para botÃ³n cerrar - ESTILO TRANSPARENTE */
+.modal .modal-dialog .modal-content .modal-header .btn-close,
+.modal-fade .modal-dialog .modal-content .modal-header .btn-close,
+#eventoModal .modal-header .btn-close,
+#dynamicDetailModal .modal-header .btn-close {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    opacity: 1 !important;
+    width: 32px !important;
+    height: 32px !important;
+    position: relative !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+}
+
+.modal .modal-dialog .modal-content .modal-header .btn-close:before,
+.modal-fade .modal-dialog .modal-content .modal-header .btn-close:before,
+#eventoModal .modal-header .btn-close:before,
+#dynamicDetailModal .modal-header .btn-close:before {
+    content: 'Ã—' !important;
+    color: white !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    line-height: 1 !important;
+    display: block !important;
+}
+
+.modal .modal-dialog .modal-content .modal-header .btn-close:hover,
+#eventoModal .modal-header .btn-close:hover,
+#dynamicDetailModal .modal-header .btn-close:hover {
+    background: transparent !important;
+    background-color: transparent !important;
+    opacity: 0.7 !important;
+    transform: none !important;
+    transition: opacity 0.2s ease !important;
+}
+
+/* ===================================================================== */
+/* ESTILO ESPECÃFICO PARA MODALES DE NOTICIAS (header azul + botÃ³n blanco) */
+/* ===================================================================== */
+
+/* Header azul para modales de noticias */
+#dynamicDetailModal .modal-header {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+    border-bottom: none !important;
+    color: white !important;
+}
+
+#dynamicDetailModal .modal-title {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* FORZAR BOTÃ“N CERRAR BLANCO - MÃXIMA ESPECIFICIDAD */
+#dynamicDetailModal .modal-header .btn-close {
+    background: transparent !important;
+    border: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    color: white !important;
+}
+
+/* Deshabilitar :before para evitar duplicaciÃ³n con HTML inline */
 #dynamicDetailModal .modal-header .btn-close:before {
     content: none !important;
     display: none !important;
@@ -2596,4 +2791,28 @@ body .analytics-dashboard-toggle {
 
 #dynamicDetailModal .modal-header .btn-close:hover {
     opacity: 0.8 !important;
+}
+
+/* ==========================================================================
+   8. UTILITY CLASSES (Added to replace inline styles)
+   ========================================================================== */
+.feature-icon-lg {
+    width: 80px;
+    height: 80px;
+}
+
+.bg-purple {
+    background-color: #6f42c1 !important;
+}
+
+.text-purple {
+    color: #6f42c1 !important;
+}
+
+.bg-teal {
+    background-color: #20c997 !important;
+}
+
+.text-teal {
+    color: #20c997 !important;
 }

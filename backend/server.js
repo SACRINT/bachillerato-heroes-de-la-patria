@@ -76,6 +76,7 @@ const messagingRoutes = require('./routes/messaging');
 const digitalLibraryRoutes = require('./routes/digital-library');
 const supportTicketsRoutes = require('./routes/support-tickets');
 const installParentsRoutes = require('./routes/install-parents');
+const parentsRoutes = require('./routes/parents');
 const financesRoutes = require('./routes/finances');
 const citasRoutes = require('./routes/citas');
 const calendarRoutes = require('./routes/calendar');  // ✅ CALENDAR ROUTES - Eventos del calendario interactivo
