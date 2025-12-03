@@ -11,6 +11,7 @@ const crypto = require('crypto');
 // GDPR Logging - Debug condicional y sanitización
 const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
+const { executeQuery } = require('../config/database');
 
 const router = express.Router();
 
@@ -36,8 +37,7 @@ function getStudentService() {
 router.get('/count', async (req, res, next) => {
     try {
         // Simulated data (database call commented out)
-        const stats = [{ total_estudiantes: 450, activos: 420, inactivos: 10, egresados: 85, especialidades_disponibles: 6 }];
-        /* await executeQuery(`
+        const stats = await executeQuery(`
             SELECT
                 COUNT(*) as total_estudiantes,
                 COUNT(CASE WHEN estatus = 'activo' THEN 1 END) as activos,
@@ -46,14 +46,14 @@ router.get('/count', async (req, res, next) => {
                 COUNT(DISTINCT especialidad) as especialidades_disponibles
             FROM estudiantes e
             JOIN usuarios u ON e.usuario_id = u.id
-            WHERE u.activo = TRUE
-        `); */
+            WHERE u.status = 'activo'
+        `);
 
         res.json({
             success: true,
             data: stats[0]
         });
-        
+
     } catch (error) {
         next(error);
     }
@@ -66,24 +66,23 @@ router.get('/count', async (req, res, next) => {
 router.get('/specialties', async (req, res, next) => {
     try {
         // Simulated data (database call commented out)
-        const specialties = [];
-        /* await executeQuery(`
+        const specialties = await executeQuery(`
             SELECT
                 especialidad,
                 COUNT(*) as total_estudiantes,
                 COUNT(CASE WHEN estatus = 'activo' THEN 1 END) as estudiantes_activos
             FROM estudiantes e
             JOIN usuarios u ON e.usuario_id = u.id
-            WHERE u.activo = TRUE
+            WHERE u.status = 'activo'
             GROUP BY especialidad
             ORDER BY especialidad
-        `); */
+        `);
 
         res.json({
             success: true,
             data: specialties
         });
-        
+
     } catch (error) {
         next(error);
     }
@@ -97,42 +96,40 @@ router.get('/specialties', async (req, res, next) => {
  * GET /api/students
  * Obtener lista de estudiantes (con filtros y paginación)
  */
-router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
+router.get('/', authenticateToken, async (req, res, next) => {
     try {
-        const { 
-            page = 1, 
-            limit = 20, 
-            especialidad, 
-            semestre, 
+        const {
+            page = 1,
+            limit = 20,
+            especialidad,
+            semestre,
             estatus = 'activo',
-            search 
+            search
         } = req.query;
-        
+
         const offset = (page - 1) * limit;
-        
+
         let query = `
             SELECT 
                 e.id,
                 e.matricula,
-                e.nia,
                 u.nombre,
                 u.apellido_paterno,
                 u.apellido_materno,
                 u.email,
                 e.especialidad,
                 e.semestre,
-                e.generacion,
-                e.estatus,
+                u.status as estatus,
                 e.fecha_ingreso
             FROM estudiantes e
             JOIN usuarios u ON e.usuario_id = u.id
-            WHERE u.activo = TRUE
+            WHERE u.status = 'activo'
         `;
-        
+
         const params = [];
 
         if (estatus && estatus !== 'todos') {
-            query += ' AND e.estatus = $' + (params.length + 1);
+            query += ' AND u.status = $' + (params.length + 1);
             params.push(estatus);
         }
 
@@ -152,30 +149,29 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
                 u.nombre LIKE $` + (params.length + 1) + ` OR
                 u.apellido_paterno LIKE $` + (params.length + 2) + ` OR
                 u.apellido_materno LIKE $` + (params.length + 3) + ` OR
-                e.matricula LIKE $` + (params.length + 4) + ` OR
-                e.nia LIKE $` + (params.length + 5) + `
+                e.matricula LIKE $` + (params.length + 4) + `
             )`;
-            params.push(searchTerm, searchTerm, searchTerm, searchTerm, searchTerm);
+            params.push(searchTerm, searchTerm, searchTerm, searchTerm);
         }
 
         query += ' ORDER BY u.apellido_paterno, u.apellido_materno, u.nombre';
         query += ' LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2);
         params.push(parseInt(limit), parseInt(offset));
-        
-        const students = []; // await executeQuery(query, params);
-        
+
+        const students = await executeQuery(query, params);
+
         // Contar total para paginación
         let countQuery = `
             SELECT COUNT(*) as total
             FROM estudiantes e
             JOIN usuarios u ON e.usuario_id = u.id
-            WHERE u.activo = TRUE
+            WHERE u.status = 'activo'
         `;
 
         const countParams = [];
 
         if (estatus && estatus !== 'todos') {
-            countQuery += ' AND e.estatus = $' + (countParams.length + 1);
+            countQuery += ' AND u.status = $' + (countParams.length + 1);
             countParams.push(estatus);
         }
 
@@ -195,15 +191,14 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
                 u.nombre LIKE $` + (countParams.length + 1) + ` OR
                 u.apellido_paterno LIKE $` + (countParams.length + 2) + ` OR
                 u.apellido_materno LIKE $` + (countParams.length + 3) + ` OR
-                e.matricula LIKE $` + (countParams.length + 4) + ` OR
-                e.nia LIKE $` + (countParams.length + 5) + `
+                e.matricula LIKE $` + (countParams.length + 4) + `
             )`;
-            countParams.push(searchTerm, searchTerm, searchTerm, searchTerm, searchTerm);
+            countParams.push(searchTerm, searchTerm, searchTerm, searchTerm);
         }
-        
-        const countResult = []; // await executeQuery(countQuery, countParams);
-        const total = countResult[0].total;
-        
+
+        const countResult = await executeQuery(countQuery, countParams);
+        const total = countResult[0] ? countResult[0].total : 0;
+
         res.json({
             success: true,
             data: students,
@@ -220,9 +215,14 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
                 search: search || null
             }
         });
-        
+
     } catch (error) {
-        next(error);
+        debugLog.error('STUDENTS', 'Error getting students list', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error interno del servidor: ' + error.message,
+            error: error.message // Expose error for debugging
+        });
     }
 });
 
@@ -233,7 +233,7 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
 router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => {
     try {
         const { id } = req.params;
-        
+
         // Información básica del estudiante
         const studentInfo = []; /* await executeQuery(`
             SELECT
@@ -246,18 +246,18 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
                 u.ultimo_acceso
             FROM estudiantes e
             JOIN usuarios u ON e.usuario_id = u.id
-            WHERE e.id = $1 AND u.activo = TRUE
+            WHERE e.id = $1 AND u.status = 'activo'
         `, [id]); */
-        
+
         if (studentInfo.length === 0) {
             return res.status(404).json({
                 error: 'Estudiante no encontrado',
                 message: 'El estudiante no existe o no está activo'
             });
         }
-        
+
         const student = studentInfo[0];
-        
+
         // Obtener calificaciones recientes
         const grades = []; /* await executeQuery(`
             SELECT
@@ -290,7 +290,7 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
             AND EXTRACT(MONTH FROM fecha) = $2
             AND EXTRACT(YEAR FROM fecha) = $3
         `, [id, currentMonth, currentYear]); */
-        
+
         res.json({
             success: true,
             data: {
@@ -304,7 +304,7 @@ router.get('/:id', authenticateToken, requireTeacher, async (req, res, next) => 
                 }
             }
         });
-        
+
     } catch (error) {
         next(error);
     }
@@ -333,7 +333,7 @@ router.post('/', authenticateToken, requireAdmin, [
                 details: errors.array()
             });
         }
-        
+
         const {
             email,
             password,
@@ -347,7 +347,7 @@ router.post('/', authenticateToken, requireAdmin, [
             generacion,
             fecha_ingreso
         } = req.body;
-        
+
         // Verificar que email no exista
         const existingUser = []; /* await executeQuery(
             'SELECT id FROM usuarios WHERE email = $1',
@@ -366,14 +366,14 @@ router.post('/', authenticateToken, requireAdmin, [
             'SELECT id FROM estudiantes WHERE matricula = $1 OR nia = $2',
             [matricula, nia]
         ); */
-        
+
         if (existingStudent.length > 0) {
             return res.status(409).json({
                 error: 'Datos duplicados',
                 message: 'La matrícula o NIA ya están registrados'
             });
         }
-        
+
         // Crear usuario
         const bcrypt = require('bcryptjs');
         const saltRounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
@@ -397,14 +397,14 @@ router.post('/', authenticateToken, requireAdmin, [
         ); */
 
         const studentId = studentResult[0].id;
-        
+
         debugLog.log('STUDENTS', 'Estudiante creado exitosamente', {
             studentId: studentId,
             userId: userId,
             matricula: matricula,
             creadoPor: req.user.id
         });
-        
+
         res.status(201).json({
             success: true,
             message: 'Estudiante creado exitosamente',
@@ -422,7 +422,7 @@ router.post('/', authenticateToken, requireAdmin, [
                 generacion: generacion
             }
         });
-        
+
     } catch (error) {
         next(error);
     }
@@ -445,11 +445,11 @@ router.put('/:id', authenticateToken, requireAdmin, [
                 details: errors.array()
             });
         }
-        
+
         const { id } = req.params;
         const updateFields = {};
         const updateValues = [];
-        
+
         const allowedFields = ['especialidad', 'semestre', 'generacion', 'estatus'];
 
         allowedFields.forEach(field => {
@@ -476,25 +476,25 @@ router.put('/:id', authenticateToken, requireAdmin, [
             `UPDATE estudiantes SET ${setClause} WHERE id = $` + updateValues.length,
             updateValues
         ); */
-        
+
         if (result.affectedRows === 0) {
             return res.status(404).json({
                 error: 'Estudiante no encontrado',
                 message: 'El estudiante no existe'
             });
         }
-        
+
         debugLog.log('STUDENTS', 'Estudiante actualizado', {
             studentId: id,
             camposActualizados: Object.keys(updateFields),
             actualizadoPor: req.user.id
         });
-        
+
         res.json({
             success: true,
             message: 'Estudiante actualizado exitosamente'
         });
-        
+
     } catch (error) {
         next(error);
     }
@@ -507,31 +507,31 @@ router.put('/:id', authenticateToken, requireAdmin, [
 router.delete('/:id', authenticateToken, requireAdmin, async (req, res, next) => {
     try {
         const { id } = req.params;
-        
+
         // Desactivar usuario asociado
         const result = []; /* await executeQuery(`
             UPDATE usuarios
             SET activo = FALSE
             WHERE id = (SELECT usuario_id FROM estudiantes WHERE id = $1)
         `, [id]); */
-        
+
         if (result.affectedRows === 0) {
             return res.status(404).json({
                 error: 'Estudiante no encontrado',
                 message: 'El estudiante no existe'
             });
         }
-        
+
         debugLog.log('STUDENTS', 'Estudiante desactivado', {
             studentId: id,
             desactivadoPor: req.user.id
         });
-        
+
         res.json({
             success: true,
             message: 'Estudiante desactivado exitosamente'
         });
-        
+
     } catch (error) {
         next(error);
     }

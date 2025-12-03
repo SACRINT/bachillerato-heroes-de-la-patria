@@ -8,9 +8,9 @@
 if (typeof debugLog === 'undefined') {
     // Fallback si debug-logger.js no está cargado
     var debugLog = {
-        log: () => {},
-        warn: () => {},
-        error: () => {}
+        log: () => { },
+        warn: () => { },
+        error: () => { }
     };
 }
 
@@ -82,7 +82,7 @@ class AppointmentSystem {
         this.selectedDate = null;
         this.selectedTime = null;
         this.selectedDepartment = null;
-        
+
         // Inicializar sistema de forma segura
         try {
             this.initializeSystem();
@@ -111,7 +111,7 @@ class AppointmentSystem {
                 maxDaily: 12,
                 schedule: {
                     monday: ['08:00', '13:00'],
-                    tuesday: ['08:00', '13:00'], 
+                    tuesday: ['08:00', '13:00'],
                     wednesday: ['08:00', '13:00'],
                     thursday: ['08:00', '13:00'],
                     friday: ['08:00', '13:00']
@@ -128,7 +128,7 @@ class AppointmentSystem {
                 schedule: {
                     monday: ['08:00', '13:30'],
                     tuesday: ['08:00', '13:30'],
-                    wednesday: ['08:00', '13:30'], 
+                    wednesday: ['08:00', '13:30'],
                     thursday: ['08:00', '13:30'],
                     friday: ['08:00', '13:30']
                 }
@@ -268,7 +268,7 @@ class AppointmentSystem {
         const year = this.currentMonth.getFullYear();
         const month = this.currentMonth.getMonth();
         const today = new Date();
-        
+
         // Actualizar el título del mes
         const monthYear = document.getElementById('currentMonthYear');
         if (monthYear) {
@@ -316,7 +316,7 @@ class AppointmentSystem {
                 const isPast = current < today;
                 const isWeekend = current.getDay() === 0 || current.getDay() === 6;
                 const isAvailable = this.isDayAvailable(current) && !isPast && !isWeekend;
-                
+
                 const classes = ['calendar-day'];
                 if (!isCurrentMonth) classes.push('other-month');
                 if (isToday) classes.push('today');
@@ -356,13 +356,13 @@ class AppointmentSystem {
 
     isDayAvailable(date) {
         if (!this.selectedDepartment) return false;
-        
+
         const dept = this.departments.find(d => d.id === this.selectedDepartment);
         if (!dept) return false;
 
         const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
         const dayName = dayNames[date.getDay()];
-        
+
         return dept.schedule[dayName] !== undefined;
     }
 
@@ -394,7 +394,7 @@ class AppointmentSystem {
         // Seleccionar nuevo día
         dayElement.classList.add('selected');
         this.selectedDate = new Date(dayElement.dataset.date + 'T00:00:00');
-        
+
         // Generar horarios disponibles
         this.renderAvailableTimeSlots();
     }
@@ -439,10 +439,10 @@ class AppointmentSystem {
         const slots = [];
         const start = this.timeToMinutes(startTime);
         const end = this.timeToMinutes(endTime);
-        
+
         for (let time = start; time + duration <= end; time += duration) {
             const timeStr = this.minutesToTime(time);
-            
+
             // Verificar si el slot no está ocupado
             if (!this.isSlotBooked(date, timeStr)) {
                 slots.push(timeStr);
@@ -465,9 +465,9 @@ class AppointmentSystem {
 
     isSlotBooked(date, time) {
         const dateStr = date.toISOString().split('T')[0];
-        return this.appointments.some(apt => 
-            apt.date === dateStr && 
-            apt.time === time && 
+        return this.appointments.some(apt =>
+            apt.date === dateStr &&
+            apt.time === time &&
             apt.department === this.selectedDepartment &&
             apt.status !== 'cancelled'
         );
@@ -491,7 +491,7 @@ class AppointmentSystem {
         const modal = document.getElementById('appointmentFormModal');
         if (modal) {
             const dept = this.departments.find(d => d.id === this.selectedDepartment);
-            
+
             // Actualizar información en el modal
             document.getElementById('appointmentDept').textContent = dept.name;
             document.getElementById('appointmentDate').textContent = this.selectedDate.toLocaleDateString('es-ES');
@@ -533,15 +533,15 @@ class AppointmentSystem {
         if (modal) {
             const dept = this.departments.find(d => d.id === this.selectedDepartment);
             document.getElementById('modalDepartmentName').textContent = dept.name;
-            
+
             this.renderCalendar();
-            
+
             const bootstrapModal = BootstrapHelper.showModal(modal);
             bootstrapModal.show();
         }
     }
 
-    prepareAppointmentData() {
+    async prepareAppointmentData() {
         const form = document.getElementById('appointmentForm');
         const formData = new FormData(form);
 
@@ -605,15 +605,45 @@ ${formData.get('reason')}
             createdAt: new Date().toISOString()
         };
 
-        // Guardar temporalmente para procesarla después del email
-        window._pendingAppointment = appointment;
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Agendando...';
+        }
 
-        // ✅ Escuchar evento de email enviado exitosamente
-        window.addEventListener('appointmentEmailSent', () => {
-            this.finalizeAppointment();
-        }, { once: true });
+        try {
+            const response = await fetch('/api/contact/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: appointment.name,
+                    email: appointment.email,
+                    phone: appointment.phone,
+                    subject: `Nueva Cita - ${dept.name}`,
+                    message: message,
+                    form_type: 'Agendamiento de Cita'
+                })
+            });
 
-        return true; // Permitir que el form se envíe
+            const result = await response.json();
+
+            if (result.success) {
+                // Guardar temporalmente para procesarla
+                window._pendingAppointment = appointment;
+                this.finalizeAppointment();
+            } else {
+                this.showAlert(result.message || 'Error al agendar la cita. Por favor intenta nuevamente.', 'error');
+            }
+        } catch (error) {
+            console.error('Error sending appointment:', error);
+            this.showAlert('Error de conexión. Por favor verifica tu internet e intenta nuevamente.', 'error');
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        }
     }
 
     finalizeAppointment() {
@@ -629,7 +659,7 @@ ${formData.get('reason')}
 
         // Mostrar confirmación
         this.showConfirmation(appointment);
-        
+
         // Cerrar modales de forma segura
         try {
             const appointmentModal = document.getElementById('appointmentFormModal');
@@ -671,7 +701,7 @@ ${formData.get('reason')}
             document.body.classList.remove('modal-open');
             document.body.style.overflow = '';
         }
-        
+
         // Resetear selecciones
         this.resetSelections();
     }
@@ -738,11 +768,11 @@ ${formData.get('reason')}
         `;
 
         // Insertar y mostrar modal
-        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(confirmationHTML)));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(DOMPurify.sanitize(confirmationHTML)));
         const modal = BootstrapHelper.showModal(document.getElementById('confirmationModal'));
 
         // Remover modal al cerrar
-        document.getElementById('confirmationModal').addEventListener('hidden.bs.modal', function() {
+        document.getElementById('confirmationModal').addEventListener('hidden.bs.modal', function () {
             this.remove();
         });
     }
@@ -800,7 +830,7 @@ Coronel Tito Hernández, Venustiano Carranza, Puebla
         this.selectedDate = null;
         this.selectedTime = null;
         this.selectedDepartment = null;
-        
+
         // Limpiar formulario
         const form = document.getElementById('appointmentForm');
         if (form) form.reset();
@@ -814,9 +844,9 @@ Coronel Tito Hernández, Venustiano Carranza, Puebla
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `);
-        
+
         document.body.appendChild(alertDiv);
-        
+
         setTimeout(() => {
             if (alertDiv.parentNode) {
                 alertDiv.remove();
@@ -942,7 +972,7 @@ Coronel Tito Hernández, Venustiano Carranza, Puebla
         if (existingModal) {
             existingModal.remove();
         }
-        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(html)));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(DOMPurify.sanitize(html)));
 
         // Mostrar modal
         const modal = BootstrapHelper.showModal(document.getElementById('appointmentsViewModal'));
@@ -956,7 +986,7 @@ Coronel Tito Hernández, Venustiano Carranza, Puebla
             const dept = this.departments.find(d => d.id === apt.department);
             const status = this.getAppointmentStatus(apt);
             const statusClass = status.includes('Completada') ? 'success' :
-                               status.includes('Hoy') ? 'warning' : 'primary';
+                status.includes('Hoy') ? 'warning' : 'primary';
 
             return `
                 <tr>
@@ -1274,10 +1304,10 @@ function selectDepartment(departmentId) {
 }
 
 // Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(appointmentStyles)));
+document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(DOMPurify.sanitize(appointmentStyles)));
 
 // Inicializar el sistema cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     if (document.getElementById('departmentsContainer')) {
         window.appointmentSystem = new AppointmentSystem();
     }

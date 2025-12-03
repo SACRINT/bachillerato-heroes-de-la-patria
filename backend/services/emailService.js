@@ -31,9 +31,9 @@ class EmailService {
         }
 
         try {
-            // Configurar transporter según el entorno
-            if (process.env.NODE_ENV === 'production') {
-                // Configuración para producción (ej: SendGrid, AWS SES, etc.)
+            // Configurar transporter
+            // Prioridad 1: SMTP Configurado explícitamente (Producción o Dev con SMTP real)
+            if (process.env.SMTP_HOST && process.env.SMTP_USER) {
                 this.transporter = nodemailer.createTransport({
                     host: process.env.SMTP_HOST,
                     port: parseInt(process.env.SMTP_PORT || '587'),
@@ -43,8 +43,10 @@ class EmailService {
                         pass: process.env.SMTP_PASS
                     }
                 });
-            } else {
-                // Configuración para desarrollo (Ethereal Email - emails de prueba)
+                devLogger.log(`📧 Email Service usando SMTP Real: ${process.env.SMTP_HOST}`);
+            }
+            // Prioridad 2: Fallback a Ethereal (solo si no hay SMTP)
+            else {
                 const testAccount = await nodemailer.createTestAccount();
                 this.transporter = nodemailer.createTransport({
                     host: 'smtp.ethereal.email',
@@ -78,7 +80,7 @@ class EmailService {
      */
     registerHandlebarsHelpers() {
         // Helper para formatear fechas
-        handlebars.registerHelper('formatDate', function(date) {
+        handlebars.registerHelper('formatDate', function (date) {
             if (!date) return '';
             const d = new Date(date);
             return d.toLocaleDateString('es-MX', {
@@ -90,7 +92,7 @@ class EmailService {
         });
 
         // Helper para formatear fecha y hora
-        handlebars.registerHelper('formatDateTime', function(date) {
+        handlebars.registerHelper('formatDateTime', function (date) {
             if (!date) return '';
             const d = new Date(date);
             return d.toLocaleString('es-MX', {
@@ -104,12 +106,12 @@ class EmailService {
         });
 
         // Helper condicional
-        handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
+        handlebars.registerHelper('ifEquals', function (arg1, arg2, options) {
             return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
         });
 
         // Helper para URLs absolutas
-        handlebars.registerHelper('absoluteUrl', function(path) {
+        handlebars.registerHelper('absoluteUrl', function (path) {
             const baseUrl = process.env.APP_URL || 'http://localhost:3000';
             return `${baseUrl}${path}`;
         });

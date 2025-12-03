@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -72,8 +73,13 @@
         }
 
         @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .status-message h2 {
@@ -125,6 +131,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="verification-card">
         <div class="card-header">
@@ -149,7 +156,8 @@
                 </div>
                 <div class="status-message">
                     <h2>¡Verificación Exitosa!</h2>
-                    <p id="success-message">Tu email ha sido verificado correctamente. Ya puedes iniciar sesión con tu cuenta.</p>
+                    <p id="success-message">Tu email ha sido verificado correctamente. Ya puedes iniciar sesión con tu
+                        cuenta.</p>
                 </div>
                 <a href="index.html" class="btn btn-primary">
                     <i class="fas fa-sign-in-alt me-2"></i>Ir a Iniciar Sesión
@@ -165,7 +173,7 @@
                     <p id="error-message">No se pudo verificar tu email.</p>
                 </div>
                 <div class="d-flex gap-2 justify-content-center flex-wrap">
-                    <button class="btn btn-primary" onclick="resendVerification()">
+                    <button id="resend-verification-btn" class="btn btn-primary">
                         <i class="fas fa-redo me-2"></i>Reenviar Email
                     </button>
                     <a href="index.html" class="btn btn-secondary">
@@ -180,7 +188,8 @@
                 </div>
                 <div class="status-message">
                     <h2>Enlace Inválido</h2>
-                    <p>No se encontró un token de verificación válido en la URL. Por favor usa el enlace que recibiste en tu correo electrónico.</p>
+                    <p>No se encontró un token de verificación válido en la URL. Por favor usa el enlace que recibiste
+                        en tu correo electrónico.</p>
                 </div>
                 <a href="index.html" class="btn btn-primary">
                     <i class="fas fa-home me-2"></i>Ir al Inicio
@@ -277,7 +286,16 @@
         }
 
         // Ejecutar verificación al cargar
-        document.addEventListener('DOMContentLoaded', verifyEmail);
+        document.addEventListener('DOMContentLoaded', () => {
+            verifyEmail();
+
+            // Attach event listener to resend button
+            const resendBtn = document.getElementById('resend-verification-btn');
+            if (resendBtn) {
+                resendBtn.addEventListener('click', resendVerification);
+            }
+        });
     </script>
 </body>
+
 </html>

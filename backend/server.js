@@ -58,6 +58,11 @@ const tenantsRoutes = require('./routes/tenants');  // ✅ MULTI-TENANT MANAGEME
 const comunicadosRoutes = require('./routes/comunicados');
 const uploadRoutes = require('./routes/upload');
 const webhooksRoutes = require('./routes/webhooks');  // ✅ WEBHOOKS - SEMANA 8
+const pollsRoutes = require('./routes/polls');
+// ✅ API VERSIONING MIDDLEWARE - SEMANA 8
+const { apiVersioning, v1CompatibilityLayer, rateLimitByTier } = require('./middleware/api-versioning');
+const attendanceRoutes = require('./routes/attendance');
+const settingsRoutes = require('./routes/settings');
 const healthRoutes = require('./routes/health');
 const testEventsRoutes = require('./routes/test-events');  // ✅ TESTING ROUTES - Event Bus testing (FASE 2)
 const chartsDataRoutes = require('./routes/charts-data');
@@ -65,17 +70,13 @@ const searchRoutes = require('./routes/search');
 const emailsRoutes = require('./routes/emails');
 const apiDocsRoutes = require('./routes/api-docs'); // ✅ SWAGGER UI - SEMANA 29
 const aiTutorRoutes = require('./routes/ai-tutor'); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
-
-// ✅ API VERSIONING MIDDLEWARE - SEMANA 8
-const { apiVersioning, v1CompatibilityLayer, rateLimitByTier } = require('./middleware/api-versioning');
-const pollsRoutes = require('./routes/polls');
-const parentsRoutes = require('./routes/parents');
 const installPollsRoutes = require('./routes/install-polls');
 const teachersPortalRoutes = require('./routes/teachers-portal');
 const messagingRoutes = require('./routes/messaging');
 const digitalLibraryRoutes = require('./routes/digital-library');
 const supportTicketsRoutes = require('./routes/support-tickets');
 const installParentsRoutes = require('./routes/install-parents');
+const parentsRoutes = require('./routes/parents');
 const financesRoutes = require('./routes/finances');
 const citasRoutes = require('./routes/citas');
 const calendarRoutes = require('./routes/calendar');  // ✅ CALENDAR ROUTES - Eventos del calendario interactivo
@@ -371,7 +372,10 @@ app.use('/api/avisos', avisosRoutes);
 app.use('/api/admin/tenants', tenantsRoutes);  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
 app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/upload', uploadRoutes);
 app.use('/api/health', healthRoutes);
+// ⏸️ app.use('/api/attendance', attendanceRoutes); // ✅ ATTENDANCE ROUTES - COMENTADO: archivo no existe
+// ⏸️ app.use('/api/settings', settingsRoutes); // ✅ SETTINGS ROUTES - COMENTADO: archivo no existe
 
 // ✅ FASE 30.5 TAREA 5 - REDIS CACHE STATS ENDPOINTS
 // app.get('/api/health/cache/stats', redisCache.getStatsEndpoint);  // ⏸️ COMENTADO - Redis no disponible localmente (FASE 30.5)
@@ -446,6 +450,9 @@ app.use('/api/uploads', uploadsRoutes);
 app.use('/api/maintenance', maintenanceRoutes);
 app.use('/api/ssl', sslRoutes);
 app.use('/api/backup', backupRoutes);
+app.use('/api/polls', pollsRoutes);
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/settings', settingsRoutes);
 
 devLogger.log('[FASE 3.2] 18 rutas adicionales descomentadas (GRUPO 3 + GRUPO 4). Migration comentada (requiere mysql2). 61 rutas activas.');
 

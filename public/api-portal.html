@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BGE API Portal - Documentaci贸n Interactiva</title>
+    <title>BGE API Portal - Documentaci髇 Interactiva</title>
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -175,6 +175,10 @@
             display: block;
         }
     </style>
+
+    <!-- 馃彚 Multi-Tenancy Support -->
+    <script src="js/tenant-config-loader.js"></script>
+    <!-- tenant-replacer.js removed - functionality handled by tenant-config-loader.js -->
 </head>
 <body>
     <!-- Hero Section -->
@@ -183,11 +187,11 @@
             <div class="row align-items-center">
                 <div class="col-lg-8">
                     <h1><i class="fas fa-book"></i> BGE API Portal</h1>
-                    <p class="lead">Documentaci贸n interactiva completa de la API del sistema BGE</p>
-                    <p>OpenAPI 3.0 | RESTful | Autenticaci贸n JWT | 100+ Endpoints</p>
+                    <p class="lead">Documentaci髇 interactiva completa de la API del sistema BGE</p>
+                    <p>OpenAPI 3.0 | RESTful | Autenticaci髇 JWT | 100+ Endpoints</p>
                     <div class="mt-4">
                         <a href="/api-docs" class="btn cta-button me-3">
-                            <i class="fas fa-rocket"></i> Explorar Documentaci贸n
+                            <i class="fas fa-rocket"></i> Explorar Documentaci髇
                         </a>
                         <a href="/api-docs/spec.json" class="btn btn-outline-light btn-lg">
                             <i class="fas fa-download"></i> Descargar Spec
@@ -201,7 +205,7 @@
                     </div>
                     <div class="stats-box">
                         <h4>v5.5.0</h4>
-                        <p>Versi贸n API</p>
+                        <p>Versi髇 API</p>
                     </div>
                 </div>
             </div>
@@ -218,9 +222,9 @@
                         <i class="fas fa-play-circle"></i>
                     </div>
                     <h3>Quick Start</h3>
-                    <p>Empieza a usar la API en minutos con nuestra gu铆a interactiva.</p>
+                    <p>Empieza a usar la API en minutos con nuestra gu韆 interactiva.</p>
                     <ul class="feature-list">
-                        <li><i class="fas fa-check"></i> Autenticaci贸n JWT simple</li>
+                        <li><i class="fas fa-check"></i> Autenticaci髇 JWT simple</li>
                         <li><i class="fas fa-check"></i> Examples en cada endpoint</li>
                         <li><i class="fas fa-check"></i> Try it out en vivo</li>
                         <li><i class="fas fa-check"></i> Respuestas en tiempo real</li>
@@ -236,8 +240,8 @@
                     <div class="icon">
                         <i class="fas fa-code"></i>
                     </div>
-                    <h3>Autenticaci贸n</h3>
-                    <p>Obt茅n tu token JWT y comienza a hacer requests.</p>
+                    <h3>Autenticaci髇</h3>
+                    <p>Obt閚 tu token JWT y comienza a hacer requests.</p>
                     <div class="code-block">
 <pre>POST /api/auth/login
 Content-Type: application/json
@@ -264,7 +268,7 @@ Content-Type: application/json
         <!-- API Categories -->
         <div class="row mb-5">
             <div class="col-12">
-                <h2 class="text-white mb-4"><i class="fas fa-layer-group"></i> Categor铆as de API</h2>
+                <h2 class="text-white mb-4"><i class="fas fa-layer-group"></i> Categor韆s de API</h2>
             </div>
 
             <div class="col-md-4 mb-4">
@@ -273,7 +277,7 @@ Content-Type: application/json
                         <i class="fas fa-users"></i>
                     </div>
                     <h3>Usuarios</h3>
-                    <p>Gesti贸n completa de usuarios, roles y permisos.</p>
+                    <p>Gesti髇 completa de usuarios, roles y permisos.</p>
                     <div class="mt-3">
                         <span class="endpoint-badge badge-get">GET</span>
                         <span class="endpoint-badge badge-post">POST</span>
@@ -289,7 +293,7 @@ Content-Type: application/json
                         <i class="fas fa-graduation-cap"></i>
                     </div>
                     <h3>Estudiantes</h3>
-                    <p>Calificaciones, asistencias, reportes acad茅micos.</p>
+                    <p>Calificaciones, asistencias, reportes acad閙icos.</p>
                     <div class="mt-3">
                         <span class="endpoint-badge badge-get">GET</span>
                         <span class="endpoint-badge badge-post">POST</span>
@@ -332,7 +336,7 @@ Content-Type: application/json
                         <i class="fas fa-chart-line"></i>
                     </div>
                     <h3>Analytics</h3>
-                    <p>Reportes, estad铆sticas y m茅tricas del sistema.</p>
+                    <p>Reportes, estad韘ticas y m閠ricas del sistema.</p>
                     <div class="mt-3">
                         <span class="endpoint-badge badge-get">GET</span>
                     </div>
@@ -345,7 +349,7 @@ Content-Type: application/json
                         <i class="fas fa-cog"></i>
                     </div>
                     <h3>Admin</h3>
-                    <p>Configuraci贸n, backups, y gesti贸n del sistema.</p>
+                    <p>Configuraci髇, backups, y gesti髇 del sistema.</p>
                     <div class="mt-3">
                         <span class="endpoint-badge badge-get">GET</span>
                         <span class="endpoint-badge badge-post">POST</span>
@@ -358,7 +362,7 @@ Content-Type: application/json
         <!-- Features -->
         <div class="row mb-5">
             <div class="col-12">
-                <h2 class="text-white mb-4"><i class="fas fa-star"></i> Caracter铆sticas de la API</h2>
+                <h2 class="text-white mb-4"><i class="fas fa-star"></i> Caracter韘ticas de la API</h2>
             </div>
 
             <div class="col-md-6 mb-4">
@@ -366,7 +370,7 @@ Content-Type: application/json
                     <h3><i class="fas fa-rocket text-primary"></i> Performance Optimizado</h3>
                     <ul class="feature-list">
                         <li><i class="fas fa-check"></i> Cache multi-capa (L1 + L2 Redis)</li>
-                        <li><i class="fas fa-check"></i> Query optimization autom谩tica</li>
+                        <li><i class="fas fa-check"></i> Query optimization autom醫ica</li>
                         <li><i class="fas fa-check"></i> Response time < 100ms promedio</li>
                         <li><i class="fas fa-check"></i> Rate limiting inteligente</li>
                     </ul>
@@ -389,9 +393,9 @@ Content-Type: application/json
                 <div class="api-card">
                     <h3><i class="fas fa-globe text-info"></i> Compliance Total</h3>
                     <ul class="feature-list">
-                        <li><i class="fas fa-check"></i> GDPR compliant (7 art铆culos)</li>
+                        <li><i class="fas fa-check"></i> GDPR compliant (7 art韈ulos)</li>
                         <li><i class="fas fa-check"></i> WCAG 2.1 AA accessibility</li>
-                        <li><i class="fas fa-check"></i> SOC2 audit logging (7 a帽os)</li>
+                        <li><i class="fas fa-check"></i> SOC2 audit logging (7 a駉s)</li>
                         <li><i class="fas fa-check"></i> Incident response automation</li>
                     </ul>
                 </div>
@@ -413,7 +417,7 @@ Content-Type: application/json
         <!-- API Stats (Dynamic) -->
         <div class="row mb-5" id="api-stats-section" style="display:none;">
             <div class="col-12">
-                <h2 class="text-white mb-4"><i class="fas fa-chart-bar"></i> Estad铆sticas de la API</h2>
+                <h2 class="text-white mb-4"><i class="fas fa-chart-bar"></i> Estad韘ticas de la API</h2>
             </div>
             <div class="col-md-3 mb-3">
                 <div class="stats-box">
@@ -445,10 +449,10 @@ Content-Type: application/json
         <div class="row mb-5">
             <div class="col-12 text-center">
                 <div class="api-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                    <h2 style="color: white;">驴Listo para comenzar?</h2>
-                    <p class="lead">Explora la documentaci贸n completa y comienza a integrar la API BGE en tus aplicaciones.</p>
+                    <h2 style="color: white;">縇isto para comenzar?</h2>
+                    <p class="lead">Explora la documentaci髇 completa y comienza a integrar la API BGE en tus aplicaciones.</p>
                     <a href="/api-docs" class="btn btn-light btn-lg mt-3">
-                        <i class="fas fa-rocket"></i> Ir a la Documentaci贸n
+                        <i class="fas fa-rocket"></i> Ir a la Documentaci髇
                     </a>
                 </div>
             </div>
@@ -461,13 +465,13 @@ Content-Type: application/json
             <div class="row">
                 <div class="col-md-6">
                     <h5><i class="fas fa-graduation-cap"></i> BGE API Portal</h5>
-                    <p>Documentaci贸n oficial de la API del sistema de Bachillerato General por Competencias.</p>
-                    <p class="mb-0"><small>Versi贸n 5.5.0 | OpenAPI 3.0.3 | 脷ltima actualizaci贸n: 20 Nov 2025</small></p>
+                    <p>Documentaci髇 oficial de la API del sistema de Bachillerato General por Competencias.</p>
+                    <p class="mb-0"><small>Versi髇 5.5.0 | OpenAPI 3.0.3 | 脷ltima actualizaci髇: 20 Nov 2025</small></p>
                 </div>
                 <div class="col-md-3">
-                    <h6>Enlaces R谩pidos</h6>
+                    <h6>Enlaces R醦idos</h6>
                     <ul class="list-unstyled">
-                        <li><a href="/api-docs" class="text-white"><i class="fas fa-book"></i> Documentaci贸n</a></li>
+                        <li><a href="/api-docs" class="text-white"><i class="fas fa-book"></i> Documentaci髇</a></li>
                         <li><a href="/api-docs/spec.json" class="text-white"><i class="fas fa-download"></i> OpenAPI Spec</a></li>
                         <li><a href="/api/health" class="text-white"><i class="fas fa-heartbeat"></i> Health Check</a></li>
                     </ul>
@@ -488,6 +492,10 @@ Content-Type: application/json
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Custom Script -->
+
+
+    <!-- Footer -->
+    <div id="main-footer"></div>
     <script>
         // Load API stats from spec
         async function loadAPIStats() {

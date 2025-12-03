@@ -209,30 +209,42 @@ class TeachersPortalManager {
             document.getElementById('teacherName').textContent =
                 `${data.teacher.nombre} ${data.teacher.apellido_paterno}`;
 
-            // Update stats
-            document.getElementById('totalClasses').textContent = data.counters.total_classes;
-            document.getElementById('totalStudents').textContent = data.counters.total_students;
-            document.getElementById('pendingReviews').textContent = data.counters.pending_reviews;
-            document.getElementById('unreadMessages').textContent = data.counters.unread_messages;
-
-            // Update badges
-            if (data.counters.unread_notifications > 0) {
-                const badge = document.getElementById('unreadNotificationsCount');
-                badge.textContent = data.counters.unread_notifications;
-                badge.style.display = 'inline-block';
+            // Update stats (using new simplified format)
+            if (document.getElementById('totalClasses')) {
+                document.getElementById('totalClasses').textContent = data.stats?.classes || 0;
+            }
+            if (document.getElementById('totalStudents')) {
+                document.getElementById('totalStudents').textContent = data.stats?.students || 0;
+            }
+            if (document.getElementById('pendingReviews')) {
+                document.getElementById('pendingReviews').textContent = data.stats?.messages || 0;
+            }
+            if (document.getElementById('unreadMessages')) {
+                document.getElementById('unreadMessages').textContent = data.stats?.messages || 0;
             }
 
-            if (data.counters.unread_messages > 0) {
+            // Update badges
+            if (data.stats?.notifications > 0) {
+                const badge = document.getElementById('unreadNotificationsCount');
+                if (badge) {
+                    badge.textContent = data.stats.notifications;
+                    badge.style.display = 'inline-block';
+                }
+            }
+
+            if (data.stats?.messages > 0) {
                 const badge = document.getElementById('unreadMessagesCount');
-                badge.textContent = data.counters.unread_messages;
-                badge.style.display = 'inline-block';
+                if (badge) {
+                    badge.textContent = data.stats.messages;
+                    badge.style.display = 'inline-block';
+                }
             }
 
             // Update upcoming classes table
-            this.renderUpcomingClasses(data.upcoming_classes);
+            this.renderUpcomingClasses(data.upcomingClasses || []);
 
-            // Store classes
-            this.classes = data.classes;
+            // Store classes (empty for now in simplified dashboard)
+            this.classes = [];
 
             // Show dashboard
             this.showDashboard();

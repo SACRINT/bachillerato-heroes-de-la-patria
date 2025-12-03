@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏆 Retos y Logros - BGE Héroes de la Patria</title>
+    <title>ðŸ† Retos y Logros - BGE Héroes de la Patria</title>
 
     <!-- Bootstrap 5.3.2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -12,7 +13,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
 
     <style>
         :root {
@@ -33,7 +36,12 @@
             padding: 20px 0;
         }
 
-        h1, h2, h3, h4, h5, h6 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             font-family: 'Montserrat', sans-serif;
         }
 
@@ -374,13 +382,23 @@
             }
         }
     </style>
-    <!-- ✅ FIX (18 Nov 2025): Header/Footer styles loaded globally -->
+    <!-- âœ… FIX (18 Nov 2025): Header/Footer styles loaded globally -->
     <!-- These MUST be in <head> so they apply BEFORE dynamic header/footer injection -->
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
 
+
+    <!-- ðŸ¢ Multi-Tenancy Support -->
+    <script src="js/tenant-config-loader.js"></script>
+    <!-- tenant-replacer.js removed - functionality handled by tenant-config-loader.js -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Main JS for dynamic header/footer loading -->
+    <script src="js/main.js" defer></script>
 </head>
+
 <body>
+    <!-- Header will be injected here -->
+    <header id="main-header"></header>
     <div class="container challenges-container">
         <!-- Page Header -->
         <div class="page-header">
@@ -428,19 +446,18 @@
     <!-- Bootstrap 5.3.2 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Main.js (Carga header/footer dinámicamente) -->
-    <script src="public/js/main.js"></script>
-
+    <!-- Footer will be injected here -->
+    <footer id="main-footer"></footer>
     <script>
         let allChallenges = [];
         let currentFilter = 'all';
 
         // Mapeo de Iconos por Tipo
         const CHALLENGE_ICONS = {
-            daily: '☀️',
-            weekly: '📅',
-            monthly: '🗓️',
-            achievement: '🏆'
+            daily: 'â˜€ï¸',
+            weekly: 'ðŸ“…',
+            monthly: 'ðŸ—“ï¸',
+            achievement: 'ðŸ†'
         };
 
         // Cargar Retos desde API
@@ -496,7 +513,7 @@
             const card = document.createElement('div');
             card.className = `challenge-card ${challenge.challenge_type}`;
 
-            const icon = challenge.icon || CHALLENGE_ICONS[challenge.challenge_type] || '🎯';
+            const icon = challenge.icon || CHALLENGE_ICONS[challenge.challenge_type] || 'ðŸŽ¯';
             const isCompleted = challenge.user_progress && challenge.user_progress.is_completed;
             const progress = challenge.user_progress ? JSON.parse(challenge.user_progress.progress || '{}') : {};
             const progressPercentage = calculateProgress(challenge, progress);
@@ -717,13 +734,13 @@
                     const data = await response.json();
                     const challenge = data.challenge;
 
-                    alert(`🏆 ${challenge.title}\n\n` +
-                          `${challenge.description}\n\n` +
-                          `Recompensas:\n` +
-                          `• ${challenge.reward_iacoins} IA Coins\n` +
-                          `• ${challenge.reward_xp} XP\n\n` +
-                          `Tipo: ${formatType(challenge.challenge_type)}\n` +
-                          `Máximo de completaciones: ${challenge.max_completions}`);
+                    alert(`ðŸ† ${challenge.title}\n\n` +
+                        `${challenge.description}\n\n` +
+                        `Recompensas:\n` +
+                        `â€¢ ${challenge.reward_iacoins} IA Coins\n` +
+                        `â€¢ ${challenge.reward_xp} XP\n\n` +
+                        `Tipo: ${formatType(challenge.challenge_type)}\n` +
+                        `Máximo de completaciones: ${challenge.max_completions}`);
                 } else {
                     alert('Error al cargar detalles del reto');
                 }
@@ -757,12 +774,12 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    alert(`🎉 ¡Reto Completado!\n\n` +
-                          `Recompensas:\n` +
-                          `• +${data.rewards.iacoins} IA Coins\n` +
-                          `• +${data.rewards.xp} XP\n\n` +
-                          `Nuevo Saldo: ${data.new_balance} IA Coins\n` +
-                          `XP Total: ${data.new_xp}`);
+                    alert(`ðŸŽ‰ ¡Reto Completado!\n\n` +
+                        `Recompensas:\n` +
+                        `â€¢ +${data.rewards.iacoins} IA Coins\n` +
+                        `â€¢ +${data.rewards.xp} XP\n\n` +
+                        `Nuevo Saldo: ${data.new_balance} IA Coins\n` +
+                        `XP Total: ${data.new_xp}`);
 
                     // Recargar retos
                     loadChallenges();
@@ -806,7 +823,7 @@
 
         // Event Listeners para Filtros
         document.querySelectorAll('#challengeTypeTabs .nav-link').forEach(link => {
-            link.addEventListener('click', function(e) {
+            link.addEventListener('click', function (e) {
                 e.preventDefault();
 
                 // Actualizar tabs activos
@@ -822,14 +839,14 @@
         // ============================================
         // EVENT DELEGATION HANDLER (CSP Compliance)
         // ============================================
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             const actionElement = e.target.closest('[data-action]');
             if (!actionElement) return;
 
             const action = actionElement.dataset.action;
 
             // Handle actions
-            switch(action) {
+            switch (action) {
                 case 'view-challenge-details':
                     const detailsChallengeId = actionElement.dataset.challengeId;
                     if (detailsChallengeId) {
@@ -851,9 +868,40 @@
         });
 
         // Inicialización
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadChallenges();
         });
     </script>
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Chat Bot Toggle Button -->
+    <button class="chatbot-toggle" id="chatbotToggle" aria-label="Abrir chat de ayuda">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Chat Bot Container -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <h5 class="mb-0">
+                <i class="fas fa-robot me-2"></i>Asistente Virtual BGE
+            </h5>
+            <button class="btn btn-sm btn-link text-white" id="closeChatbot" aria-label="Cerrar chat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <!-- Los mensajes se cargarán dinámicamente -->
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Escribe tu mensaje..." aria-label="Escribe tu mensaje">
+            <button id="sendMessage" aria-label="Enviar mensaje">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
 </body>
+
 </html>

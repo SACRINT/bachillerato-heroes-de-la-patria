@@ -61,7 +61,8 @@ class SecurityHeaders {
                     "'self'",
                     "https:",
                     "data:",
-                    "blob:"
+                    "blob:",
+                    "https://ui-avatars.com"
                 ],
                 connectSrc: [
                     "'self'",

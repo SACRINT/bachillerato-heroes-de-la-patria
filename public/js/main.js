@@ -1,5 +1,29 @@
 // Main JavaScript para el sitio web
 
+// ============================================
+// POLYFILL: sanitizeHTML function
+// ============================================
+// Define sanitizeHTML globally if not already defined
+if (typeof window.sanitizeHTML === 'undefined') {
+    window.sanitizeHTML = function (html, context = 'simple') {
+        // If DOMPurify is available, use it
+        if (typeof DOMPurify !== 'undefined') {
+            const config = {
+                ALLOWED_TAGS: ['div', 'p', 'span', 'a', 'strong', 'em', 'i', 'br', 'small', 'button', 'h1', 'h2', 'h3', 'h4', 'h5', 'ul', 'li', 'nav', 'header', 'footer', 'img'],
+                ALLOWED_ATTR: ['class', 'id', 'role', 'aria-*', 'href', 'src', 'alt', 'data-action', 'data-bs-toggle', 'data-bs-target', 'data-bs-dismiss'],
+                ALLOW_ARIA_ATTR: true,
+                ALLOW_DATA_ATTR: true,
+                KEEP_CONTENT: true
+            };
+            return DOMPurify.sanitize(html, config);
+        }
+        // Fallback: return empty string for safety if DOMPurify is not available
+        console.warn('[sanitizeHTML] DOMPurify not available, returning empty string');
+        return '';
+    };
+}
+
+
 // ✅ LOGGER MANAGER - Cargar primero para centralizar logging
 (function loadLogger() {
     const script = document.createElement('script');
@@ -39,12 +63,12 @@ function loadNextEventHandler() {
     if (eventHandlersLoaded < eventHandlerFiles.length) {
         const script = document.createElement('script');
         script.src = eventHandlerFiles[eventHandlersLoaded];
-        script.onload = function() {
+        script.onload = function () {
             eventHandlersLoaded++;
             console.log(`[MAIN.JS] ✅ Loaded ${eventHandlerFiles[eventHandlersLoaded - 1]}`);
             loadNextEventHandler(); // Load next file
         };
-        script.onerror = function() {
+        script.onerror = function () {
             console.error(`[MAIN.JS] ❌ Failed to load ${eventHandlerFiles[eventHandlersLoaded]}`);
             eventHandlersLoaded++;
             loadNextEventHandler(); // Continue to next file
@@ -62,7 +86,7 @@ function loadNextEventHandler() {
 
 loadNextEventHandler();
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Tarea de Accesibilidad WCAG - Semana 27
     // Inyectar el enlace "Saltar al contenido principal" para accesibilidad.
     // El ancla #main-content y los estilos .skip-link ya existen en los archivos HTML y CSS.
@@ -74,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ✅ REVERTIDO A VERSIÓN SIMPLE QUE FUNCIONABA (commit eac16ff)
     // Cargar header y footer directamente sin esperar a auth system
-    initializeChatbot();
+    // initializeChatbot(); // ❌ REMOVED: Function doesn't exist, chatbot initialized by index-events.js
     loadHeaderFooter();
 
     // 🏢 LISTENER: Cuando el tenant config esté cargado, actualizar header
@@ -94,15 +118,15 @@ function initializeDarkMode() {
     if (document.getElementById('darkModeToggle')) {
         return;
     }
-    
+
     // Crear botón de modo oscuro
     const darkModeToggle = createDarkModeToggle();
-    
+
     // Añadir a la navegación
     const navbar = document.querySelector('.navbar-nav');
     if (navbar) {
         navbar.appendChild(darkModeToggle);
-        
+
         // Cargar preferencia guardada
         const savedTheme = localStorage.getItem('theme') || 'light';
         setTheme(savedTheme);
@@ -115,7 +139,7 @@ function initializeDarkMode() {
 function createDarkModeToggle() {
     const li = document.createElement('li');
     li.className = 'nav-item';
-    
+
     const button = document.createElement('button');
     button.className = 'nav-link btn btn-link border-0 bg-transparent';
     button.id = 'darkModeToggle';
@@ -125,9 +149,9 @@ function createDarkModeToggle() {
         ? DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-moon" id="darkModeIcon"></i>', 'simple'))
         : '<i class="fas fa-moon" id="darkModeIcon"></i>';
     button.innerHTML = sanitizedMoonIcon;
-    
+
     button.addEventListener('click', toggleDarkMode);
-    
+
     li.appendChild(button);
     return li;
 }
@@ -141,7 +165,7 @@ function toggleDarkMode() {
 function setTheme(theme) {
     const body = document.body;
     const icon = document.getElementById('darkModeIcon');
-    
+
     if (theme === 'dark') {
         body.classList.add('dark-mode');
         if (icon) icon.className = 'fas fa-sun';
@@ -154,29 +178,22 @@ function setTheme(theme) {
 }
 
 // ==========================================
-// CHATBOT
+// CHATBOT BUTTON - Compatible con CSP
 // ==========================================
-function initializeChatbot() {
-    createChatbot();
-}
+const chatButton = document.createElement('button');
+chatButton.className = 'btn btn-floating chatbot-toggle';
+chatButton.setAttribute('aria-label', 'Abrir chatbot');
+const sanitizedIcon = typeof DOMPurify !== 'undefined'
+    ? DOMPurify.sanitize('<i class="fas fa-comments"></i>')
+    : '<i class="fas fa-comments"></i>';
+chatButton.innerHTML = sanitizedIcon;
+chatButton.addEventListener('click', toggleChatbot);
 
-function createChatbot() {
-    // Crear botón flotante del chatbot
-    const chatButton = document.createElement('div');
-    chatButton.id = 'chatbot-toggle';
-    chatButton.className = 'chatbot-toggle';
-    // 🔒 Check if DOMPurify is available before using it
-    const sanitizedIcon = (typeof window.DOMPurify !== 'undefined' && DOMPurify.sanitize)
-        ? DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'))
-        : '<i class="fas fa-comments"></i>';
-    chatButton.innerHTML = sanitizedIcon;
-    chatButton.addEventListener('click', toggleChatbot);
-    
-    // Crear ventana del chatbot
-    const chatWindow = document.createElement('div');
-    chatWindow.id = 'chatbot-window';
-    chatWindow.className = 'chatbot-window d-none';
-    chatWindow.innerHTML = sanitizeHTML(`
+// Crear ventana del chatbot
+const chatWindow = document.createElement('div');
+chatWindow.id = 'chatbot-window';
+chatWindow.className = 'chatbot-window d-none';
+chatWindow.innerHTML = sanitizeHTML(`
         <div class="chatbot-header">
             <h5 class="mb-0">
                 <i class="fas fa-robot me-2"></i>Asistente Virtual BGE
@@ -202,41 +219,41 @@ function createChatbot() {
             </div>
         </div>
     `);
-    
-    // Añadir al body
-    document.body.appendChild(chatButton);
-    document.body.appendChild(chatWindow);
-    
-    // Event listener para Enter en el input
-    const chatbotInput = document.getElementById('chatbot-input');
-    if (chatbotInput) {
-        chatbotInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    } else {
-        console.warn('⚠️ [MAIN.JS] chatbot-input no encontrado en el DOM');
-    }
+
+// Añadir al body
+document.body.appendChild(chatButton);
+document.body.appendChild(chatWindow);
+
+// Event listener para Enter en el input
+const chatbotInput = document.getElementById('chatbot-input');
+if (chatbotInput) {
+    chatbotInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+} else {
+    console.warn('⚠️ [MAIN.JS] chatbot-input no encontrado en el DOM');
 }
+
 
 function toggleChatbot() {
     // Usar la función del chatbot.js si está disponible
     if (typeof window.toggleChatbot === 'function' && window.toggleChatbot !== toggleChatbot) {
         return window.toggleChatbot();
     }
-    
+
     const chatWindow = document.getElementById('chatbot-window');
     const chatContainer = document.getElementById('chatbotContainer');
-    
+
     if (chatContainer && typeof toggleChatbot !== 'undefined') {
         // Usar la función del chatbot.js
         return;
     }
-    
+
     if (chatWindow) {
         chatWindow.classList.toggle('d-none');
-        
+
         const chatButton = document.getElementById('chatbot-toggle');
         if (chatButton) {
             // 🔒 Check if DOMPurify is available
@@ -270,15 +287,15 @@ function closeChatbot() {
 function sendMessage() {
     const input = document.getElementById('chatbot-input');
     const message = input.value.trim();
-    
+
     if (!message) return;
-    
+
     // Añadir mensaje del usuario
     addMessage(message, 'user');
-    
+
     // Limpiar input
     input.value = '';
-    
+
     // Simular respuesta del bot
     setTimeout(() => {
         const response = generateBotResponse(message);
@@ -289,14 +306,14 @@ function sendMessage() {
 function addMessage(message, sender) {
     const messagesContainer = document.getElementById('chatbot-messages');
     const messageDiv = document.createElement('div');
-    
+
     messageDiv.className = `message ${sender}-message`;
     messageDiv.innerHTML = sanitizeHTML(`
         <div class="message-content">
             ${message}
         </div>
     `);
-    
+
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
@@ -306,10 +323,10 @@ function generateBotResponse(userMessage) {
     if (typeof processMessage === 'function') {
         return processMessage(userMessage);
     }
-    
+
     // Respuesta de fallback si no está disponible el chatbot principal
     const message = userMessage.toLowerCase();
-    
+
     if (message.includes('hola') || message.includes('buenos días') || message.includes('buenas tardes')) {
         return formatResponse({
             title: '👋 ¡Bienvenido!',
@@ -321,7 +338,7 @@ function generateBotResponse(userMessage) {
             footer: '¿En qué puedo asistirte hoy?'
         });
     }
-    
+
     return formatResponse({
         title: '💬 Asistencia Virtual',
         content: [
@@ -339,13 +356,13 @@ function formatResponse(responseData) {
     if (typeof responseData === 'string') {
         return `<div class="response-simple">${responseData}</div>`;
     }
-    
+
     let html = `<div class="response-professional">`;
-    
+
     if (responseData.title) {
         html += `<div class="response-title">${responseData.title}</div>`;
     }
-    
+
     if (responseData.content && Array.isArray(responseData.content)) {
         html += `<div class="response-content">`;
         responseData.content.forEach(item => {
@@ -360,11 +377,11 @@ function formatResponse(responseData) {
         });
         html += `</div>`;
     }
-    
+
     if (responseData.footer) {
         html += `<div class="response-footer">${responseData.footer}</div>`;
     }
-    
+
     html += `</div>`;
     return html;
 }
@@ -376,6 +393,17 @@ function formatResponse(responseData) {
 // ELIMINADO: loadScriptDynamically() y loadScriptsSequentially() (eran causa de race conditions)
 // Cambio: nested-dropdowns.js y admin-auth.js ahora se cargan en header.html líneas 812-813
 
+/**
+ * Fallback para sanitizeHTML si dompurify-config.js no está cargado
+ * Previene que el sitio se rompa en páginas skeleton
+ */
+if (typeof window.sanitizeHTML !== 'function') {
+    console.warn('⚠️ [MAIN.JS] sanitizeHTML no definido (dompurify-config.js faltante). Usando fallback simple.');
+    window.sanitizeHTML = function (html) {
+        return html; // Retornar HTML sin sanitizar (confiamos en nuestros partials internos)
+    };
+}
+
 function loadHeaderFooter() {
     console.log('🔍 [MAIN.JS] loadHeaderFooter() iniciando...');
 
@@ -386,7 +414,7 @@ function loadHeaderFooter() {
     if (headerContainer && !headerContainer.innerHTML.trim()) {
         console.log('📥 [MAIN.JS] Iniciando fetch de header.html...');
 
-        fetch('partials/header.html')
+        fetch('/partials/header.html')
             .then(response => {
                 console.log(`📥 [MAIN.JS] Header fetch status: ${response.status}`);
                 return response.text();
@@ -432,7 +460,7 @@ function loadHeaderFooter() {
     if (footerContainer && !footerContainer.innerHTML.trim()) {
         console.log('📥 [MAIN.JS] Iniciando fetch de footer.html...');
 
-        fetch('partials/footer.html')
+        fetch('/partials/footer.html')
             .then(response => {
                 console.log(`📥 [MAIN.JS] Footer fetch status: ${response.status}`);
                 return response.text();

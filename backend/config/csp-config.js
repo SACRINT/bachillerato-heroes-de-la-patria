@@ -53,11 +53,13 @@ const cspConfig = {
         // 4. FONTS - Solo desde whitelist de dominios
         fontSrc: [
             "'self'",
+            "data:",                           // ✅ Base64 fonts
             "https://fonts.gstatic.com",       // Google Fonts
             "https://cdnjs.cloudflare.com",    // Font Awesome
             "https://cdn.jsdelivr.net",        // Bootstrap Icons
             "https://cdn.tiny.cloud",          // TinyMCE fonts
-            "https://*.tiny.cloud"
+            "https://*.tiny.cloud",
+            "https://sp.tinymce.com"           // TinyMCE Spark
         ],
 
         // 5. IMÁGENES - Whitelist de dominios (no wildcard https:)
@@ -68,7 +70,8 @@ const cspConfig = {
             "https://cdn.jsdelivr.net",        // CDN images
             "https://cdnjs.cloudflare.com",    // CDN images
             "https://cdn.tiny.cloud",          // TinyMCE images
-            "https://*.tiny.cloud"
+            "https://*.tiny.cloud",
+            "https://sp.tinymce.com"           // TinyMCE Spark
         ],
 
         // 6. CONEXIONES - Endpoints específicos

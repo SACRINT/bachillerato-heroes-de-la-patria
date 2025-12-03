@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BGE HÃ©roes de la Patria - Portal de Desarrolladores</title>
+    <title>BGE Héroes de la Patria - Portal de Desarrolladores</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
@@ -31,27 +31,34 @@
             text-align: center;
         }
     </style>
+
+    <!-- ðŸ¢ Multi-Tenancy Support -->
+    <script src="js/tenant-config-loader.js"></script>
+    <!-- tenant-replacer.js removed - functionality handled by tenant-config-loader.js -->
 </head>
 <body>
-    <!-- Header dinÃ¡mico -->
+    <!-- Header dinámico -->
     <header id="dynamic-header"></header>
+
+    <!-- Header -->
+    <div id="main-header"></div>
 
     <main class="container">
         <div class="jumbotron text-center">
             <h1 class="display-4">Portal de Desarrolladores</h1>
-            <p class="lead">Bienvenido al portal de desarrolladores de BGE HÃ©roes de la Patria. AquÃ­ encontrarÃ¡s toda la documentaciÃ³n necesaria para integrar y extender nuestra plataforma.</p>
+            <p class="lead">Bienvenido al portal de desarrolladores de BGE Héroes de la Patria. Aquí encontrarás toda la documentación necesaria para integrar y extender nuestra plataforma.</p>
             <hr class="my-4">
-            <p>Explora nuestra API interactiva para entender cÃ³mo funcionan nuestros servicios y cÃ³mo puedes utilizarlos en tus aplicaciones.</p>
-            <a class="btn btn-primary btn-lg" href="/api/docs" role="button">Explorar DocumentaciÃ³n API</a>
-            <a class="btn btn-secondary btn-lg ms-3" href="#" role="button">GuÃ­as de IntegraciÃ³n (PrÃ³ximamente)</a>
+            <p>Explora nuestra API interactiva para entender cómo funcionan nuestros servicios y cómo puedes utilizarlos en tus aplicaciones.</p>
+            <a class="btn btn-primary btn-lg" href="/api/docs" role="button">Explorar Documentación API</a>
+            <a class="btn btn-secondary btn-lg ms-3" href="#" role="button">Guías de Integración (Próximamente)</a>
         </div>
 
         <div class="row">
             <div class="col-md-6 mb-4">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
-                        <h5 class="card-title">DocumentaciÃ³n API</h5>
-                        <p class="card-text">Accede a la documentaciÃ³n completa de nuestra REST API, generada con OpenAPI (Swagger UI). PodrÃ¡s probar los endpoints directamente desde tu navegador.</p>
+                        <h5 class="card-title">Documentación API</h5>
+                        <p class="card-text">Accede a la documentación completa de nuestra REST API, generada con OpenAPI (Swagger UI). Podrás probar los endpoints directamente desde tu navegador.</p>
                         <a href="/api/docs" class="btn btn-outline-primary">Ver API Docs</a>
                     </div>
                 </div>
@@ -59,9 +66,9 @@
             <div class="col-md-6 mb-4">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
-                        <h5 class="card-title">GuÃ­as de IntegraciÃ³n</h5>
-                        <p class="card-text">PrÃ³ximamente, encontrarÃ¡s tutoriales y ejemplos de cÃ³digo para integrar fÃ¡cilmente con nuestra plataforma, incluyendo autenticaciÃ³n, gestiÃ³n de datos y webhooks.</p>
-                        <a href="#" class="btn btn-outline-secondary disabled">MÃ¡s InformaciÃ³n</a>
+                        <h5 class="card-title">Guías de Integración</h5>
+                        <p class="card-text">Próximamente, encontrarás tutoriales y ejemplos de código para integrar fácilmente con nuestra plataforma, incluyendo autenticación, gestión de datos y webhooks.</p>
+                        <a href="#" class="btn btn-outline-secondary disabled">Más Información</a>
                     </div>
                 </div>
             </div>
@@ -72,7 +79,7 @@
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">Soporte y Recursos</h5>
-                        <p class="card-text">Encuentra recursos Ãºtiles, preguntas frecuentes (FAQ) y formas de contactar a nuestro equipo de soporte tÃ©cnico para desarrolladores.</p>
+                        <p class="card-text">Encuentra recursos útiles, preguntas frecuentes (FAQ) y formas de contactar a nuestro equipo de soporte técnico para desarrolladores.</p>
                         <a href="#" class="btn btn-outline-info disabled">Obtener Soporte</a>
                     </div>
                 </div>
@@ -81,7 +88,7 @@
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">Novedades y Anuncios</h5>
-                        <p class="card-text">Mantente al dÃ­a con las Ãºltimas actualizaciones de la API, nuevas funcionalidades y anuncios importantes para la comunidad de desarrolladores.</p>
+                        <p class="card-text">Mantente al día con las últimas actualizaciones de la API, nuevas funcionalidades y anuncios importantes para la comunidad de desarrolladores.</p>
                         <a href="#" class="btn btn-outline-warning disabled">Ver Novedades</a>
                     </div>
                 </div>
@@ -89,12 +96,16 @@
         </div>
     </main>
 
-    <!-- Footer dinÃ¡mico -->
+    <!-- Footer dinámico -->
     <footer id="dynamic-footer"></footer>
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- main.js para cargar header y footer dinÃ¡micamente y unified-auth-system-v2.js para el login modal -->
+    <!-- main.js para cargar header y footer dinámicamente y unified-auth-system-v2.js para el login modal -->
+
+
+    <!-- Footer -->
+    <div id="main-footer"></div>
     <script src="js/main.js"></script>
 </body>
 </html>

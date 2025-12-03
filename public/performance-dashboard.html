@@ -55,12 +55,16 @@
         }
         .btn:hover { background: #2563eb; }
     </style>
+
+    <!-- 🏢 Multi-Tenancy Support -->
+    <script src="js/tenant-config-loader.js"></script>
+    <!-- tenant-replacer.js removed - functionality handled by tenant-config-loader.js -->
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>📊 Performance Dashboard</h1>
-            <p>Monitoreo de métricas Core Web Vitals en tiempo real</p>
+            <p>Monitoreo de m�tricas Core Web Vitals en tiempo real</p>
         </div>
 
         <div class="grid">
@@ -116,6 +120,10 @@
         <button class="btn" onclick="runAudit()">🔍 Run Lighthouse Audit</button>
     </div>
 
+
+
+    <!-- Footer -->
+    <div id="main-footer"></div>
     <script>
         // Measure Core Web Vitals with web-vitals library
         async function measureVitals() {

@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title" data-base-title="Reglamento Escolar - Bachillerato "Héroes de la Patria"">Reglamento Escolar - Bachillerato "Héroes de la Patria"</title>
-    <meta name="description" id="page-description" content="Reglamento escolar oficial del Bachillerato General Estatal 'Héroes de la Patria'. Manual de Convivencia Escolar con clasificación completa de conductas y medidas disciplinarias.">
-    
+    <title id="page-title" data-base-title="Reglamento Escolar">Reglamento Escolar</title>
+    <meta name="description" id="page-description"
+        content="Reglamento escolar oficial del {school_name}. Manual de Convivencia Escolar con clasificación completa de conductas y medidas disciplinarias.">
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Custom Styles -->
     <link rel="stylesheet" href="css/style.css">
-    
+
     <style>
-        
         .conduct-card {
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(0,0,0,0.08);
+            border: 1px solid rgba(0, 0, 0, 0.08);
             background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
             height: 100%;
         }
-        
+
         .conduct-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             border-color: transparent;
         }
-        
+
         .conduct-icon {
             width: 80px;
             height: 80px;
@@ -39,15 +40,15 @@
             margin: 0 auto 1rem;
             transition: transform 0.3s ease;
         }
-        
+
         .conduct-card:hover .conduct-icon {
             transform: scale(1.1);
         }
-        
+
         .modal-xl {
             max-width: 1200px;
         }
-        
+
         .conduct-item {
             background: rgba(248, 249, 250, 0.6);
             border-radius: 8px;
@@ -56,25 +57,25 @@
             border-left: 4px solid transparent;
             transition: all 0.2s ease;
         }
-        
+
         .conduct-item:hover {
             background: rgba(248, 249, 250, 0.9);
             border-left-color: var(--bs-primary);
         }
-        
+
         .measure-item {
             background: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(0,0,0,0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             padding: 1rem;
             margin-bottom: 0.75rem;
             transition: all 0.2s ease;
         }
-        
+
         .measure-item:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        
+
         .note-badge {
             background: linear-gradient(45deg, #ffc107, #ff8c00);
             color: white;
@@ -83,10 +84,10 @@
             font-size: 0.75rem;
             font-weight: bold;
         }
-        
+
         .breadcrumb-section {
             background: rgba(248, 249, 250, 0.8);
-            border-bottom: 1px solid rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
             padding: 1rem 0;
         }
     </style>
@@ -97,11 +98,12 @@
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
 
 </head>
+
 <body>
     <!-- Header -->
     <!-- Header will be injected here -->
     <header id="main-header"></header>
-    
+
     <!-- Breadcrumb -->
     <section class="breadcrumb-section">
         <div class="container">
@@ -132,11 +134,12 @@
                         Manual de Convivencia Escolar
                     </h1>
                     <p class="hero-subtitle lead mb-4">
-                        Bachillerato General Estatal "Héroes de la Patria"<br>
+                        <span class="tenant-school-name"><span data-tenant-field="school_name">Bachillerato General Estatal <span data-tenant-field="school_name">"Héroes de la Patria"</span></span></span><br>
                         Clasificación de Conductas y Medidas Disciplinarias
                     </p>
                     <div class="hero-badges d-flex flex-wrap gap-2 justify-content-center">
-                        <a href="#clasificacion-conductas" class="badge bg-light text-primary fs-6 text-decoration-none">
+                        <a href="#clasificacion-conductas"
+                            class="badge bg-light text-primary fs-6 text-decoration-none">
                             <i class="fas fa-book me-1" aria-hidden="true"></i>
                             10 Categorías de Conductas
                         </a>
@@ -158,7 +161,8 @@
     <main class="container my-4">
         <!-- Download Section -->
         <div class="text-center mb-5">
-            <a href="documents/reglamento_escolar_heroes.pdf" target="_blank" class="btn btn-primary btn-lg shadow-sm me-3">
+            <a href="documents/reglamento_escolar_heroes.pdf" target="_blank"
+                class="btn btn-primary btn-lg shadow-sm me-3">
                 <i class="fas fa-file-pdf me-2"></i>Descargar PDF Completo
             </a>
             <a href="#medidas-disciplinarias" class="btn btn-outline-primary btn-lg me-3">
@@ -174,7 +178,8 @@
             <div class="col-12">
                 <h2 class="text-center fw-bold mb-4">Clasificación de Conductas</h2>
                 <p class="text-muted text-center mb-4">
-                    Conoce las diferentes categorías de conductas y sus implicaciones según el Manual de Convivencia Escolar.
+                    Conoce las diferentes categorías de conductas y sus implicaciones según el Manual de Convivencia
+                    Escolar.
                 </p>
             </div>
 
@@ -340,7 +345,7 @@
                     </p>
                 </div>
             </div>
-            
+
             <div class="card">
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">
@@ -356,127 +361,139 @@
                                     <span class="badge bg-primary me-3 mt-1">1</span>
                                     <div>
                                         <h6 class="fw-bold">Plática Docente-Alumno</h6>
-                                        <p class="mb-0 small">Conversación en clima de confianza para conocer causas y establecer oportunidades de mejora.</p>
+                                        <p class="mb-0 small">Conversación en clima de confianza para conocer causas y
+                                            establecer oportunidades de mejora.</p>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="measure-item">
                                 <div class="d-flex align-items-start">
                                     <span class="badge bg-primary me-3 mt-1">2</span>
                                     <div>
                                         <h6 class="fw-bold">Exhorto Verbal</h6>
-                                        <p class="mb-0 small">Reunión para hacer exhorto verbal y cambio de comportamiento.</p>
+                                        <p class="mb-0 small">Reunión para hacer exhorto verbal y cambio de
+                                            comportamiento.</p>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="measure-item">
                                 <div class="d-flex align-items-start">
                                     <span class="badge bg-warning me-3 mt-1">3</span>
                                     <div>
                                         <h6 class="fw-bold">Exhorto Escrito</h6>
-                                        <p class="mb-0 small">Amonestación por escrito por parte de Orientación, Trabajo Social o Prefectura.</p>
+                                        <p class="mb-0 small">Amonestación por escrito por parte de Orientación, Trabajo
+                                            Social o Prefectura.</p>
                                         <span class="note-badge">Nota 2</span>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="measure-item">
                                 <div class="d-flex align-items-start">
                                     <span class="badge bg-warning me-3 mt-1">4</span>
                                     <div>
                                         <h6 class="fw-bold">Reunión con Padres</h6>
-                                        <p class="mb-0 small">Reunión con madre, padre o tutor para establecimiento de compromisos.</p>
+                                        <p class="mb-0 small">Reunión con madre, padre o tutor para establecimiento de
+                                            compromisos.</p>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="measure-item">
                                 <div class="d-flex align-items-start">
                                     <span class="badge bg-info me-3 mt-1">5</span>
                                     <div>
                                         <h6 class="fw-bold">Actividades Extracurriculares</h6>
-                                        <p class="mb-0 small">Medida disciplinaria interna con actividades relacionadas a la falta cometida.</p>
+                                        <p class="mb-0 small">Medida disciplinaria interna con actividades relacionadas
+                                            a la falta cometida.</p>
                                         <span class="note-badge">Nota 2</span>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="measure-item">
                                 <div class="d-flex align-items-start">
                                     <span class="badge bg-success me-3 mt-1">6</span>
                                     <div>
                                         <h6 class="fw-bold">Suspensión de Clase</h6>
-                                        <p class="mb-0 small">Suspensión de una clase con actividades dirigidas dentro del plantel.</p>
+                                        <p class="mb-0 small">Suspensión de una clase con actividades dirigidas dentro
+                                            del plantel.</p>
                                         <span class="note-badge">Nota 2</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-lg-6">
                             <div class="measure-item">
                                 <div class="d-flex align-items-start">
                                     <span class="badge bg-danger me-3 mt-1">7</span>
                                     <div>
                                         <h6 class="fw-bold">Suspensión 3 Días</h6>
-                                        <p class="mb-0 small">Suspensión de 3 días con actividades dirigidas supervisadas dentro del plantel.</p>
+                                        <p class="mb-0 small">Suspensión de 3 días con actividades dirigidas
+                                            supervisadas dentro del plantel.</p>
                                         <span class="note-badge">Nota 2</span>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="measure-item">
                                 <div class="d-flex align-items-start">
                                     <span class="badge bg-danger me-3 mt-1">8</span>
                                     <div>
                                         <h6 class="fw-bold">Suspensión 3-5 Días</h6>
-                                        <p class="mb-0 small">Suspensión de 3 a 5 días con actividades dirigidas acordadas por el CTE.</p>
+                                        <p class="mb-0 small">Suspensión de 3 a 5 días con actividades dirigidas
+                                            acordadas por el CTE.</p>
                                         <span class="note-badge">Nota 2</span>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="measure-item">
                                 <div class="d-flex align-items-start">
                                     <span class="badge bg-info me-3 mt-1">9</span>
                                     <div>
                                         <h6 class="fw-bold">Atención Psicológica</h6>
-                                        <p class="mb-0 small">Invitación a los padres para atención psicológica en institución pública.</p>
+                                        <p class="mb-0 small">Invitación a los padres para atención psicológica en
+                                            institución pública.</p>
                                         <span class="note-badge">Nota 2</span>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="measure-item">
                                 <div class="d-flex align-items-start">
                                     <span class="badge bg-danger me-3 mt-1">10</span>
                                     <div>
                                         <h6 class="fw-bold">Suspensión Prolongada</h6>
-                                        <p class="mb-0 small">Suspensión continua de 5 a 8 días (secundarias técnicas) o 5 a 10 días (generales).</p>
+                                        <p class="mb-0 small">Suspensión continua de 5 a 8 días (secundarias técnicas) o
+                                            5 a 10 días (generales).</p>
                                         <span class="note-badge">Nota 2</span>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="measure-item">
                                 <div class="d-flex align-items-start">
                                     <span class="badge bg-warning me-3 mt-1">11</span>
                                     <div>
                                         <h6 class="fw-bold">Reubicación de Plantel</h6>
-                                        <p class="mb-0 small">Cambio de institución sugerido por CTE e Inspección de zona escolar.</p>
+                                        <p class="mb-0 small">Cambio de institución sugerido por CTE e Inspección de
+                                            zona escolar.</p>
                                         <span class="note-badge">Nota 8</span>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="measure-item">
                                 <div class="d-flex align-items-start">
                                     <span class="badge bg-dark me-3 mt-1">12</span>
                                     <div>
                                         <h6 class="fw-bold">Denuncia Legal</h6>
-                                        <p class="mb-0 small">Notificación a autoridad competente en casos de infracción a las leyes.</p>
+                                        <p class="mb-0 small">Notificación a autoridad competente en casos de infracción
+                                            a las leyes.</p>
                                         <span class="note-badge">Nota 9</span>
                                     </div>
                                 </div>
@@ -497,7 +514,7 @@
                     </p>
                 </div>
             </div>
-            
+
             <div class="row g-4">
                 <div class="col-lg-6">
                     <div class="card h-100">
@@ -509,7 +526,8 @@
                         </div>
                         <div class="card-body">
                             <p class="mb-0">
-                                <strong>Bajo ninguna circunstancia se impedirá el acceso a las alumnas o alumnos que lleguen tarde al plantel.</strong>
+                                <strong>Bajo ninguna circunstancia se impedirá el acceso a las alumnas o alumnos que
+                                    lleguen tarde al plantel.</strong>
                             </p>
                         </div>
                     </div>
@@ -525,7 +543,8 @@
                         </div>
                         <div class="card-body">
                             <p class="mb-0">
-                                Integrar expediente y levantar acta de aplicación de medidas disciplinarias, con participación de la Brigada Escolar.
+                                Integrar expediente y levantar acta de aplicación de medidas disciplinarias, con
+                                participación de la Brigada Escolar.
                             </p>
                         </div>
                     </div>
@@ -541,7 +560,10 @@
                         </div>
                         <div class="card-body">
                             <p class="mb-0">
-                                Si se comprueba que una alumna o alumno se apropió de algún objeto que pertenece a otra persona, la madre, padre o quien ejerza la patria potestad estará en obligación de pagarlo. La dirección del plantel deberá llamarles para convenir la reposición del objeto.
+                                Si se comprueba que una alumna o alumno se apropió de algún objeto que pertenece a otra
+                                persona, la madre, padre o quien ejerza la patria potestad estará en obligación de
+                                pagarlo. La dirección del plantel deberá llamarles para convenir la reposición del
+                                objeto.
                             </p>
                         </div>
                     </div>
@@ -557,7 +579,11 @@
                         </div>
                         <div class="card-body">
                             <p class="mb-0">
-                                La Brigada Escolar, conjuntamente con el CTE, además de actuar en la prevención y denuncia de aquellos hechos que por su gravedad alteren la seguridad de la escuela, podrá apoyar valorando las medidas disciplinarias aplicables. Asimismo, recomendar quién del estudiantado pueda requerir algún tratamiento especializado, con el consentimiento expreso de la familia.
+                                La Brigada Escolar, conjuntamente con el CTE, además de actuar en la prevención y
+                                denuncia de aquellos hechos que por su gravedad alteren la seguridad de la escuela,
+                                podrá apoyar valorando las medidas disciplinarias aplicables. Asimismo, recomendar quién
+                                del estudiantado pueda requerir algún tratamiento especializado, con el consentimiento
+                                expreso de la familia.
                             </p>
                         </div>
                     </div>
@@ -573,7 +599,10 @@
                         </div>
                         <div class="card-body">
                             <p class="mb-0">
-                                En caso de que se ocasione cualquier daño a la propiedad escolar o bienes pertenecientes a terceros y se necesite la reparación del daño, la dirección del plantel deberá llamar a la madre, padre o tutor(a) y convenir la reparación o reposición de los daños o bienes.
+                                En caso de que se ocasione cualquier daño a la propiedad escolar o bienes pertenecientes
+                                a terceros y se necesite la reparación del daño, la dirección del plantel deberá llamar
+                                a la madre, padre o tutor(a) y convenir la reparación o reposición de los daños o
+                                bienes.
                             </p>
                         </div>
                     </div>
@@ -589,7 +618,10 @@
                         </div>
                         <div class="card-body">
                             <p class="mb-0">
-                                En caso de que se ocasione cualquier lesión a alguna alumna, alumno o personal escolar, la dirección del plantel deberá llamar a la madre, padre o quien ejerza la tutela del agresor, para informarles sobre la situación y convenir el pago de la totalidad de los gastos médicos y medicamentos del agredido, hasta su completa recuperación.
+                                En caso de que se ocasione cualquier lesión a alguna alumna, alumno o personal escolar,
+                                la dirección del plantel deberá llamar a la madre, padre o quien ejerza la tutela del
+                                agresor, para informarles sobre la situación y convenir el pago de la totalidad de los
+                                gastos médicos y medicamentos del agredido, hasta su completa recuperación.
                             </p>
                         </div>
                     </div>
@@ -605,7 +637,13 @@
                         </div>
                         <div class="card-body">
                             <p class="mb-0">
-                                <strong>El acoso escolar o bullying</strong> es el maltrato físico, verbal, psicológico y/o social, deliberado y recurrente que recibe una alumna(o) agredida(o) por parte de otra(o) u otras(os) agresor(a) o agresoras(es), que se comportan con ella o él cruelmente con el objetivo de someterla(o) y asustarla(o), y que se caracteriza por la intencionalidad y reiteración en el tiempo. En casos de acoso escolar aplicar el procedimiento de actuación ante un conflicto, de este Manual para la Convivencia Escolar.
+                                <strong>El acoso escolar o bullying</strong> es el maltrato físico, verbal, psicológico
+                                y/o social, deliberado y recurrente que recibe una alumna(o) agredida(o) por parte de
+                                otra(o) u otras(os) agresor(a) o agresoras(es), que se comportan con ella o él
+                                cruelmente con el objetivo de someterla(o) y asustarla(o), y que se caracteriza por la
+                                intencionalidad y reiteración en el tiempo. En casos de acoso escolar aplicar el
+                                procedimiento de actuación ante un conflicto, de este Manual para la Convivencia
+                                Escolar.
                             </p>
                         </div>
                     </div>
@@ -621,10 +659,16 @@
                         </div>
                         <div class="card-body">
                             <p class="mb-3">
-                                Para la toma de decisiones en casos de conductas violentas, aplicar el procedimiento de actuación ante un conflicto, de este Manual para la Convivencia Escolar.
+                                Para la toma de decisiones en casos de conductas violentas, aplicar el procedimiento de
+                                actuación ante un conflicto, de este Manual para la Convivencia Escolar.
                             </p>
                             <div class="alert alert-info mb-0">
-                                <strong>Propósito:</strong> La medida disciplinaria denominada <em>"Reubicación de Plantel"</em> busca salvaguardar los derechos de todo el alumnado, en aquellos casos en que existan riesgos importantes que expongan la seguridad de la comunidad escolar; pero ante todo, se busca proteger al alumnado que presenta conductas contrarias a la sana convivencia, a fin de ofrecerle un ambiente más propicio para continuar con su proceso educativo.
+                                <strong>Propósito:</strong> La medida disciplinaria denominada <em>"Reubicación de
+                                    Plantel"</em> busca salvaguardar los derechos de todo el alumnado, en aquellos casos
+                                en que existan riesgos importantes que expongan la seguridad de la comunidad escolar;
+                                pero ante todo, se busca proteger al alumnado que presenta conductas contrarias a la
+                                sana convivencia, a fin de ofrecerle un ambiente más propicio para continuar con su
+                                proceso educativo.
                             </div>
                         </div>
                     </div>
@@ -640,7 +684,8 @@
                         </div>
                         <div class="card-body">
                             <p class="mb-0">
-                                <strong>Notificación a la autoridad competente y a la madre, padre o tutor(a), sólo aplica en casos de infracción a las leyes correspondientes.</strong>
+                                <strong>Notificación a la autoridad competente y a la madre, padre o tutor(a), sólo
+                                    aplica en casos de infracción a las leyes correspondientes.</strong>
                             </p>
                         </div>
                     </div>
@@ -656,7 +701,9 @@
                             <div>
                                 <h5 class="alert-heading">Disposición Final</h5>
                                 <p class="mb-2">
-                                    <strong>Todas las medidas disciplinarias adoptadas por el personal docente, que no estén consideradas en las tablas anteriores, para los niveles de preescolar, primaria y secundaria, deberán ser:</strong>
+                                    <strong>Todas las medidas disciplinarias adoptadas por el personal docente, que no
+                                        estén consideradas en las tablas anteriores, para los niveles de preescolar,
+                                        primaria y secundaria, deberán ser:</strong>
                                 </p>
                                 <ul class="mb-0">
                                     <li>Autorizadas por la Dirección de la escuela</li>
@@ -682,7 +729,9 @@
                         </div>
                         <div class="card-body">
                             <p class="mb-0">
-                                Las escuelas de Educación Básica del Estado de Puebla, podrán utilizar los modelos que se incluyen en la sección de anexos, para la formalización de compromisos en favor de la convivencia pacífica.
+                                Las escuelas de Educación Básica del Estado de Puebla, podrán utilizar los modelos que
+                                se incluyen en la sección de anexos, para la formalización de compromisos en favor de la
+                                convivencia pacífica.
                             </p>
                         </div>
                     </div>
@@ -704,7 +753,8 @@
                             <small class="opacity-75">Faltas menores de disciplina</small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="conduct-item">
@@ -722,19 +772,22 @@
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-info me-3 mt-1">3</span>
-                            <span>Llegar tarde a la escuela o a las clases sin justificación <span class="note-badge">Nota 1</span></span>
+                            <span>Llegar tarde a la escuela o a las clases sin justificación <span
+                                    class="note-badge">Nota 1</span></span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-info me-3 mt-1">4</span>
-                            <span>Utilizar dentro de la escuela objetos, equipos o materiales prohibidos sin autorización (teléfono celular u otros dispositivos electrónicos).</span>
+                            <span>Utilizar dentro de la escuela objetos, equipos o materiales prohibidos sin
+                                autorización (teléfono celular u otros dispositivos electrónicos).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-info me-3 mt-1">5</span>
-                            <span>Permanecer en áreas que no correspondan a sus actividades escolares dentro del plantel.</span>
+                            <span>Permanecer en áreas que no correspondan a sus actividades escolares dentro del
+                                plantel.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
@@ -746,7 +799,8 @@
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-info me-3 mt-1">7</span>
-                            <span>Usar las computadoras, teléfonos u otros equipos de la escuela sin autorización.</span>
+                            <span>Usar las computadoras, teléfonos u otros equipos de la escuela sin
+                                autorización.</span>
                         </div>
                     </div>
                 </div>
@@ -758,14 +812,16 @@
     </div>
 
     <!-- Modal Conductas Perturbadoras del Orden -->
-    <div class="modal fade" id="modalPerturbadoras" tabindex="-1" aria-labelledby="modalPerturbadorasLabel" aria-hidden="true">
+    <div class="modal fade" id="modalPerturbadoras" tabindex="-1" aria-labelledby="modalPerturbadorasLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-warning text-dark">
                     <div class="d-flex align-items-center">
                         <i class="fas fa-volume-up me-3 fs-4"></i>
                         <div>
-                            <h5 class="modal-title mb-0" id="modalPerturbadorasLabel">Conductas que Perturben el Orden</h5>
+                            <h5 class="modal-title mb-0" id="modalPerturbadorasLabel">Conductas que Perturben el Orden
+                            </h5>
                             <small class="opacity-75">Comportamientos disruptivos</small>
                         </div>
                     </div>
@@ -799,7 +855,8 @@
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-warning me-3 mt-1">5</span>
-                            <span>Comportarse de una manera que perturbe el proceso educativo (por ejemplo, hacer ruido excesivo, gritar, aventar objetos en el aula, la biblioteca o en los pasillos).</span>
+                            <span>Comportarse de una manera que perturbe el proceso educativo (por ejemplo, hacer ruido
+                                excesivo, gritar, aventar objetos en el aula, la biblioteca o en los pasillos).</span>
                         </div>
                     </div>
                 </div>
@@ -818,23 +875,28 @@
                     <div class="d-flex align-items-center">
                         <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
                         <div>
-                            <h5 class="modal-title mb-0" id="modalAltamenteLabel">Conductas Altamente Perturbadoras del Orden</h5>
+                            <h5 class="modal-title mb-0" id="modalAltamenteLabel">Conductas Altamente Perturbadoras del
+                                Orden</h5>
                             <small class="opacity-75">Faltas graves de disciplina</small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">1</span>
-                            <span>Salir de la clase sin permiso de la o el docente frente a grupo o de la escuela sin la autorización de alguna autoridad educativa.</span>
+                            <span>Salir de la clase sin permiso de la o el docente frente a grupo o de la escuela sin la
+                                autorización de alguna autoridad educativa.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">2</span>
-                            <span>Ingresar o intentar ingresar a clases sin permiso de la o el docente frente a grupo o a la escuela sin la autorización de alguna autoridad educativa, fuera de los horarios establecidos.</span>
+                            <span>Ingresar o intentar ingresar a clases sin permiso de la o el docente frente a grupo o
+                                a la escuela sin la autorización de alguna autoridad educativa, fuera de los horarios
+                                establecidos.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
@@ -846,31 +908,36 @@
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">4</span>
-                            <span>Dañar, cambiar o modificar un registro o documento escolar aplicando cualquier método, incluyendo el acceso a las computadoras u otros medios electrónicos.</span>
+                            <span>Dañar, cambiar o modificar un registro o documento escolar aplicando cualquier método,
+                                incluyendo el acceso a las computadoras u otros medios electrónicos.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">5</span>
-                            <span>Apropiarse o sustraer intencionalmente objetos que pertenecen a otra persona sin autorización. <span class="note-badge">Nota 3</span></span>
+                            <span>Apropiarse o sustraer intencionalmente objetos que pertenecen a otra persona sin
+                                autorización. <span class="note-badge">Nota 3</span></span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">6</span>
-                            <span>Violar el reglamento sobre el uso de internet (uso de la red para fines no educativos, violaciones de seguridad o privacidad).</span>
+                            <span>Violar el reglamento sobre el uso de internet (uso de la red para fines no educativos,
+                                violaciones de seguridad o privacidad).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">7</span>
-                            <span>Incurrir en conductas de deshonestidad académica: Engañar (copiar del examen de otro estudiante, utilizar material no autorizado, colaborar sin autorización, etc.).</span>
+                            <span>Incurrir en conductas de deshonestidad académica: Engañar (copiar del examen de otro
+                                estudiante, utilizar material no autorizado, colaborar sin autorización, etc.).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">8</span>
-                            <span>Plagiar (apropiarse del trabajo de otra persona, copiar de internet sin respetar derechos de autor). <span class="note-badge">Nota 4</span></span>
+                            <span>Plagiar (apropiarse del trabajo de otra persona, copiar de internet sin respetar
+                                derechos de autor). <span class="note-badge">Nota 4</span></span>
                         </div>
                     </div>
                 </div>
@@ -893,7 +960,8 @@
                             <small class="opacity-75">Acciones que ponen en riesgo la seguridad</small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="conduct-item">
@@ -917,7 +985,9 @@
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">4</span>
-                            <span>Realizar actos de vandalismo o daño intencional a los bienes de la escuela o pertenecientes a estudiantes, personal escolar o terceros. <span class="note-badge">Nota 5</span></span>
+                            <span>Realizar actos de vandalismo o daño intencional a los bienes de la escuela o
+                                pertenecientes a estudiantes, personal escolar o terceros. <span class="note-badge">Nota
+                                    5</span></span>
                         </div>
                     </div>
                 </div>
@@ -929,7 +999,8 @@
     </div>
 
     <!-- Modal Conductas Discriminatorias -->
-    <div class="modal fade" id="modalDiscriminatorias" tabindex="-1" aria-labelledby="modalDiscriminatoriasLabel" aria-hidden="true">
+    <div class="modal fade" id="modalDiscriminatorias" tabindex="-1" aria-labelledby="modalDiscriminatoriasLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-secondary text-white">
@@ -940,25 +1011,35 @@
                             <small class="opacity-75">Actos de discriminación</small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-secondary me-3 mt-1">1</span>
-                            <span>Emplear insultos relacionados con la apariencia, raza, etnia, nacionalidad o ciudadanía, religión, sexo, identidad, expresión u orientación sexual, discapacidad o características físicas.</span>
+                            <span>Emplear insultos relacionados con la apariencia, raza, etnia, nacionalidad o
+                                ciudadanía, religión, sexo, identidad, expresión u orientación sexual, discapacidad o
+                                características físicas.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-secondary me-3 mt-1">2</span>
-                            <span>Realizar actos de intimidación como amenazar o desafiar a algún miembro de la comunidad escolar, por consideraciones vinculadas a la apariencia, raza, color, etnia, nacionalidad, religión, sexo, identidad, expresión u orientación sexual, discapacidad o características físicas diferentes.</span>
+                            <span>Realizar actos de intimidación como amenazar o desafiar a algún miembro de la
+                                comunidad escolar, por consideraciones vinculadas a la apariencia, raza, color, etnia,
+                                nacionalidad, religión, sexo, identidad, expresión u orientación sexual, discapacidad o
+                                características físicas diferentes.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-secondary me-3 mt-1">3</span>
-                            <span>Tratar de infligir o causar daños físicos, emocionales y/o psicológicos a estudiantes o miembros del personal escolar por motivos referidos a la apariencia, raza, color, etnia, nacionalidad, religión, sexo, identidad, expresión u orientación sexual, discapacidad o características físicas diferentes. <span class="note-badge">Nota 6</span></span>
+                            <span>Tratar de infligir o causar daños físicos, emocionales y/o psicológicos a estudiantes
+                                o miembros del personal escolar por motivos referidos a la apariencia, raza, color,
+                                etnia, nacionalidad, religión, sexo, identidad, expresión u orientación sexual,
+                                discapacidad o características físicas diferentes. <span class="note-badge">Nota
+                                    6</span></span>
                         </div>
                     </div>
                 </div>
@@ -981,49 +1062,67 @@
                             <small class="opacity-75">Agresiones físicas y verbales</small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-dark me-3 mt-1">1</span>
-                            <span>Utilizar expresiones verbales groseras o irrespetuosas, lenguaje o gestos irreverentes, obscenos, vulgares o insultantes, dirigidos a alguna persona de la comunidad escolar.</span>
+                            <span>Utilizar expresiones verbales groseras o irrespetuosas, lenguaje o gestos
+                                irreverentes, obscenos, vulgares o insultantes, dirigidos a alguna persona de la
+                                comunidad escolar.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-dark me-3 mt-1">2</span>
-                            <span>Empujar o demostrar conductas de agresión física o similar, como juegos bruscos, empujones, disputas menores, arrojar objetos o escupir a otras personas.</span>
+                            <span>Empujar o demostrar conductas de agresión física o similar, como juegos bruscos,
+                                empujones, disputas menores, arrojar objetos o escupir a otras personas.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-dark me-3 mt-1">3</span>
-                            <span>Colocar o distribuir escritos, gráficos y/o videos, materiales que contengan calcomanías, amenazas, violencia, lesiones o daño, prejuicios o que describan acciones violentas u obscenas, imágenes vulgares (incluye colocar dicho material en internet en redes sociales), en contra de algún integrante de la comunidad escolar.</span>
+                            <span>Colocar o distribuir escritos, gráficos y/o videos, materiales que contengan
+                                calcomanías, amenazas, violencia, lesiones o daño, prejuicios o que describan acciones
+                                violentas u obscenas, imágenes vulgares (incluye colocar dicho material en internet en
+                                redes sociales), en contra de algún integrante de la comunidad escolar.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-dark me-3 mt-1">4</span>
-                            <span>Participar en un altercado, incurrir en conductas de agresión física y/o juegos o bromas, que impliquen un riesgo sustantivo de provocar o, de hecho, causar lesiones o heridas leves.</span>
+                            <span>Participar en un altercado, incurrir en conductas de agresión física y/o juegos o
+                                bromas, que impliquen un riesgo sustantivo de provocar o, de hecho, causar lesiones o
+                                heridas leves.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-dark me-3 mt-1">5</span>
-                            <span>Participar en actos de coerción o amenazas que impliquen violencia, daños o perjuicios a alguna persona de la comunidad escolar.</span>
+                            <span>Participar en actos de coerción o amenazas que impliquen violencia, daños o perjuicios
+                                a alguna persona de la comunidad escolar.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-dark me-3 mt-1">6</span>
-                            <span>Planear, participar, realizar u ordenar actos de acoso escolar o bullying, incluyendo el cibernético (amenazar, acechar, perseguir coercitivamente, obligar a un compañero a hacer algo; incurrir en acciones físicas o verbales que amenacen a otras personas con lesionarles. Burlarse y/o intimidar, incluyendo el uso de apodos ofensivos o calumnias que involucren consideraciones de apariencia, raza, etnia, color, nacionalidad, estatus migratorio, religión, sexo, identidad de género, orientación sexual o discapacidad). <span class="note-badge">Nota 7</span></span>
+                            <span>Planear, participar, realizar u ordenar actos de acoso escolar o bullying, incluyendo
+                                el cibernético (amenazar, acechar, perseguir coercitivamente, obligar a un compañero a
+                                hacer algo; incurrir en acciones físicas o verbales que amenacen a otras personas con
+                                lesionarles. Burlarse y/o intimidar, incluyendo el uso de apodos ofensivos o calumnias
+                                que involucren consideraciones de apariencia, raza, etnia, color, nacionalidad, estatus
+                                migratorio, religión, sexo, identidad de género, orientación sexual o discapacidad).
+                                <span class="note-badge">Nota 7</span></span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-dark me-3 mt-1">7</span>
-                            <span>Crear riesgo de lesiones ya sea mediante conductas imprudentes o la utilización de objetos que aparentemente podrían causar un daño físico (por ejemplo, encendedores, hebillas de cinturón, bóxer, fajillas, cinturones, navajas, entre otros).</span>
+                            <span>Crear riesgo de lesiones ya sea mediante conductas imprudentes o la utilización de
+                                objetos que aparentemente podrían causar un daño físico (por ejemplo, encendedores,
+                                hebillas de cinturón, bóxer, fajillas, cinturones, navajas, entre otros).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
@@ -1035,13 +1134,15 @@
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-dark me-3 mt-1">9</span>
-                            <span>Utilizar la fuerza o amenazar utilizando la fuerza para apropiarse de los bienes de otras personas.</span>
+                            <span>Utilizar la fuerza o amenazar utilizando la fuerza para apropiarse de los bienes de
+                                otras personas.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-dark me-3 mt-1">10</span>
-                            <span>Utilizar la fuerza contra algún miembro de la comunidad escolar o intentar infringirles serios daños físicos, emocionales y/o psicológicos.</span>
+                            <span>Utilizar la fuerza contra algún miembro de la comunidad escolar o intentar
+                                infringirles serios daños físicos, emocionales y/o psicológicos.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
@@ -1072,23 +1173,31 @@
                     <div class="d-flex align-items-center">
                         <i class="fas fa-user-shield me-3 fs-4"></i>
                         <div>
-                            <h5 class="modal-title mb-0" id="modalSexualesLabel">Conductas Agresivas de Ãndole Sexual</h5>
+                            <h5 class="modal-title mb-0" id="modalSexualesLabel">Conductas Agresivas de Índole Sexual
+                            </h5>
                             <small class="opacity-75">Acoso y agresión sexual</small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">1</span>
-                            <span>Emitir comentarios, insinuaciones, proposiciones verbales o no verbales con alguna sugerencia sexual, incurrir en conducta física de naturaleza sexual inapropiada e indeseada (por ejemplo, tocar, acariciar, pellizcar, presentar comportamientos públicos lascivos, obscenos o indecentes o enviar imágenes o mensajes sexualmente sugerentes o explícitos).</span>
+                            <span>Emitir comentarios, insinuaciones, proposiciones verbales o no verbales con alguna
+                                sugerencia sexual, incurrir en conducta física de naturaleza sexual inapropiada e
+                                indeseada (por ejemplo, tocar, acariciar, pellizcar, presentar comportamientos públicos
+                                lascivos, obscenos o indecentes o enviar imágenes o mensajes sexualmente sugerentes o
+                                explícitos).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">2</span>
-                            <span>Planear y realizar actos de agresión sexual física de manera individual o en grupo, u obligar o forzar a otras personas a participar de una actividad sexual. <span class="note-badge">Nota 9</span></span>
+                            <span>Planear y realizar actos de agresión sexual física de manera individual o en grupo, u
+                                obligar o forzar a otras personas a participar de una actividad sexual. <span
+                                    class="note-badge">Nota 9</span></span>
                         </div>
                     </div>
                 </div>
@@ -1100,14 +1209,16 @@
     </div>
 
     <!-- Modal Sustancias Tóxico-Adictivas -->
-    <div class="modal fade" id="modalSustancias" tabindex="-1" aria-labelledby="modalSustanciasLabel" aria-hidden="true">
+    <div class="modal fade" id="modalSustancias" tabindex="-1" aria-labelledby="modalSustanciasLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-warning text-dark">
                     <div class="d-flex align-items-center">
                         <i class="fas fa-pills me-3 fs-4"></i>
                         <div>
-                            <h5 class="modal-title mb-0" id="modalSustanciasLabel">Conductas de Riesgo por Sustancias Tóxico-Adictivas</h5>
+                            <h5 class="modal-title mb-0" id="modalSustanciasLabel">Conductas de Riesgo por Sustancias
+                                Tóxico-Adictivas</h5>
                             <small class="opacity-75">Posesión, consumo y distribución</small>
                         </div>
                     </div>
@@ -1117,19 +1228,22 @@
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-warning me-3 mt-1">1</span>
-                            <span>Posesión de sustancias tóxico-adictivas (cigarros, bebidas con contenido etílico).</span>
+                            <span>Posesión de sustancias tóxico-adictivas (cigarros, bebidas con contenido
+                                etílico).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-warning me-3 mt-1">2</span>
-                            <span>Consumo de sustancias tóxico-adictivas (cigarros, bebidas con contenido etílico).</span>
+                            <span>Consumo de sustancias tóxico-adictivas (cigarros, bebidas con contenido
+                                etílico).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-warning me-3 mt-1">3</span>
-                            <span>Distribución de sustancias tóxico-adictivas (cigarros, bebidas con contenido etílico).</span>
+                            <span>Distribución de sustancias tóxico-adictivas (cigarros, bebidas con contenido
+                                etílico).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
@@ -1153,19 +1267,22 @@
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-warning me-3 mt-1">7</span>
-                            <span>Posesión de sustancias químicas industriales (disolventes volátiles o inhalables).</span>
+                            <span>Posesión de sustancias químicas industriales (disolventes volátiles o
+                                inhalables).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-warning me-3 mt-1">8</span>
-                            <span>Consumo de sustancias químicas industriales (disolventes volátiles o inhalables).</span>
+                            <span>Consumo de sustancias químicas industriales (disolventes volátiles o
+                                inhalables).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-warning me-3 mt-1">9</span>
-                            <span>Distribución de sustancias químicas industriales (disolventes volátiles o inhalantes).</span>
+                            <span>Distribución de sustancias químicas industriales (disolventes volátiles o
+                                inhalantes).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
@@ -1195,18 +1312,21 @@
     </div>
 
     <!-- Modal Armas Blancas -->
-    <div class="modal fade" id="modalArmasBlancas" tabindex="-1" aria-labelledby="modalArmasBlancasLabel" aria-hidden="true">
+    <div class="modal fade" id="modalArmasBlancas" tabindex="-1" aria-labelledby="modalArmasBlancasLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
                     <div class="d-flex align-items-center">
                         <i class="fas fa-sword me-3 fs-4"></i>
                         <div>
-                            <h5 class="modal-title mb-0" id="modalArmasBlancasLabel">Conductas de Riesgo por Armas Blancas</h5>
+                            <h5 class="modal-title mb-0" id="modalArmasBlancasLabel">Conductas de Riesgo por Armas
+                                Blancas</h5>
                             <small class="opacity-75">Posesión y uso de armas blancas</small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="conduct-item">
@@ -1218,31 +1338,37 @@
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">2</span>
-                            <span>Productos químicos peligrosos o mortales (por ejemplo, aerosol de pimienta, gas lacrimógeno, entre otros).</span>
+                            <span>Productos químicos peligrosos o mortales (por ejemplo, aerosol de pimienta, gas
+                                lacrimógeno, entre otros).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">3</span>
-                            <span>Todo instrumento peligroso, mortal, de contención o con extremos en punta que se pueda utilizar como arma o esté destinado a ser utilizado como tal (por ejemplo, tijeras, limas de uña, vidrios rotos, cadenas o alambres).</span>
+                            <span>Todo instrumento peligroso, mortal, de contención o con extremos en punta que se pueda
+                                utilizar como arma o esté destinado a ser utilizado como tal (por ejemplo, tijeras,
+                                limas de uña, vidrios rotos, cadenas o alambres).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">4</span>
-                            <span>Navajas de muelle, cuchillas por gravedad, cuchillas "pilum ballistic" o bastones espada.</span>
+                            <span>Navajas de muelle, cuchillas por gravedad, cuchillas "pilum ballistic" o bastones
+                                espada.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">5</span>
-                            <span>Dagas, estiletes, puñales, navajas, cuchillos para abrir cartas, cuchillos de usos múltiples y cualquier otro tipo de cuchillos.</span>
+                            <span>Dagas, estiletes, puñales, navajas, cuchillos para abrir cartas, cuchillos de usos
+                                múltiples y cualquier otro tipo de cuchillos.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">6</span>
-                            <span>Palos "billy club", "blackjack", "bludgeon", "chuka stick", manoplas con nudillos de metal (bóxer).</span>
+                            <span>Palos "billy club", "blackjack", "bludgeon", "chuka stick", manoplas con nudillos de
+                                metal (bóxer).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
@@ -1254,19 +1380,22 @@
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">8</span>
-                            <span>Objetos para artes marciales, incluyendo estrellas de kung fu, "nunchakus" y "shirkens".</span>
+                            <span>Objetos para artes marciales, incluyendo estrellas de kung fu, "nunchakus" y
+                                "shirkens".</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">9</span>
-                            <span>Utilizar cualquier tipo de arma blanca, según lo descrito anteriormente, con el fin de tratar de causar lesiones a cualquier persona de la comunidad escolar u otras.</span>
+                            <span>Utilizar cualquier tipo de arma blanca, según lo descrito anteriormente, con el fin de
+                                tratar de causar lesiones a cualquier persona de la comunidad escolar u otras.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">10</span>
-                            <span>Utilizar cualquier arma de las descritas anteriormente, lesionando a cualquier persona de la comunidad escolar u otras. <span class="note-badge">Nota 9</span></span>
+                            <span>Utilizar cualquier arma de las descritas anteriormente, lesionando a cualquier persona
+                                de la comunidad escolar u otras. <span class="note-badge">Nota 9</span></span>
                         </div>
                     </div>
                 </div>
@@ -1278,18 +1407,21 @@
     </div>
 
     <!-- Modal Armas de Fuego -->
-    <div class="modal fade" id="modalArmasFuego" tabindex="-1" aria-labelledby="modalArmasFuegoLabel" aria-hidden="true">
+    <div class="modal fade" id="modalArmasFuego" tabindex="-1" aria-labelledby="modalArmasFuegoLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
                     <div class="d-flex align-items-center">
                         <i class="fas fa-crosshairs me-3 fs-4"></i>
                         <div>
-                            <h5 class="modal-title mb-0" id="modalArmasFuegoLabel">Conductas de Riesgo por Armas de Fuego y Explosivos</h5>
+                            <h5 class="modal-title mb-0" id="modalArmasFuegoLabel">Conductas de Riesgo por Armas de
+                                Fuego y Explosivos</h5>
                             <small class="opacity-75">Posesión y uso de armas de fuego</small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="conduct-item">
@@ -1307,37 +1439,46 @@
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">3</span>
-                            <span>Objetos que produzcan descargas eléctricas para defensa personal u otro tipo de armas similares.</span>
+                            <span>Objetos que produzcan descargas eléctricas para defensa personal u otro tipo de armas
+                                similares.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">4</span>
-                            <span>Armas de fuego, incluyendo pistola y revólver, silenciadores, dardos electrónicos y pistolas de descarga eléctrica.</span>
+                            <span>Armas de fuego, incluyendo pistola y revólver, silenciadores, dardos electrónicos y
+                                pistolas de descarga eléctrica.</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">5</span>
-                            <span>Pistolas de aire, pistola de resorte u otro instrumento o arma en que la fuerza propulsora sea resorte o aire y toda arma en la que se pueda utilizar cartuchos cargados o vacíos (por ejemplo, pistolas BB o pistolas con balas de pintura o marcadoras).</span>
+                            <span>Pistolas de aire, pistola de resorte u otro instrumento o arma en que la fuerza
+                                propulsora sea resorte o aire y toda arma en la que se pueda utilizar cartuchos cargados
+                                o vacíos (por ejemplo, pistolas BB o pistolas con balas de pintura o marcadoras).</span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">6</span>
-                            <span>Explosivos, fuegos artificiales y petardos. <span class="note-badge">Nota 9</span></span>
+                            <span>Explosivos, fuegos artificiales y petardos. <span class="note-badge">Nota
+                                    9</span></span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">7</span>
-                            <span>Utilizar cualquier arma de fuego, según lo descrito anteriormente, con el fin de tratar de causar lesiones a cualquier miembro de la comunidad escolar o terceros. <span class="note-badge">Nota 9</span></span>
+                            <span>Utilizar cualquier arma de fuego, según lo descrito anteriormente, con el fin de
+                                tratar de causar lesiones a cualquier miembro de la comunidad escolar o terceros. <span
+                                    class="note-badge">Nota 9</span></span>
                         </div>
                     </div>
                     <div class="conduct-item">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-danger me-3 mt-1">8</span>
-                            <span>Utilizar cualquier arma, de las descritas anteriormente, lesionando a cualquier miembro de la comunidad escolar o terceros. <span class="note-badge">Nota 9</span></span>
+                            <span>Utilizar cualquier arma, de las descritas anteriormente, lesionando a cualquier
+                                miembro de la comunidad escolar o terceros. <span class="note-badge">Nota
+                                    9</span></span>
                         </div>
                     </div>
                 </div>
@@ -1365,7 +1506,9 @@
                 <strong>Asistente Virtual</strong>
                 <div style="font-size: 12px; opacity: 0.8;">Héroes de la Patria</div>
             </div>
-            <button style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;" aria-label="Cerrar chat">×</button>
+            <button
+                style="background: none; border: none; color: white; font-size: 18px; position: absolute; top: 10px; right: 15px;"
+                aria-label="Cerrar chat">×</button>
         </div>
 
         <div class="chatbot-messages" id="chatbotMessages">
@@ -1397,7 +1540,7 @@
     <!-- Footer -->
     <footer id="main-footer"></footer>
 
-    <!-- ðŸš€ BGE FRAMEWORK MODULAR - PÃGINA REGLAMENTO -->
+    <!-- ðŸš€ BGE FRAMEWORK MODULAR - PÁGINA REGLAMENTO -->
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -1405,7 +1548,7 @@
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <script src="js/dompurify-config.js"></script>
 
-    <!-- ðŸ”§ MAIN.JS - CARGA DINÃMICA DE HEADER Y FOOTER -->
+    <!-- ðŸ”§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
     <script src="js/main.js"></script>
 
     <!-- ðŸ”§ SISTEMA CORE (OBLIGATORIO) -->
@@ -1417,13 +1560,15 @@
     <!-- ðŸŽ¯ BGE FRAMEWORK CORE -->
     <script src="js/bge-framework-core.js"></script>
 
-    <!-- ðŸ“Š MÃ“DULOS BGE PARA REGLAMENTO --><script src="js/bge-security-module.js"></script>    <!-- ðŸ”’ Seguridad y autenticación admin --><!-- ðŸ”§ FUNCIONALIDADES ESPECÃFICAS DE REGLAMENTO -->
+    <!-- ðŸ“Š MÃ“DULOS BGE PARA REGLAMENTO -->
+    <script src="js/bge-security-module.js"></script>
+    <!-- ðŸ”’ Seguridad y autenticación admin --><!-- ðŸ”§ FUNCIONALIDADES ESPECÍFICAS DE REGLAMENTO -->
     <script src="js/search-unified.js"></script>
     <script src="js/chatbot.js"></script>
     <script src="js/auth-interface.js"></script>
     <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
     <script src="js/tenant-config-loader.js" defer></script>
 
-    </body>
-</html>
+</body>
 
+</html>

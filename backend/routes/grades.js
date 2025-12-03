@@ -12,7 +12,25 @@ const { body, query, param, validationResult } = require('express-validator');
 const { executeQuery } = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
 const router = express.Router();
-
+// GET / - Dashboard endpoint
+router.get('/', authenticateToken, async (req, res) => {
+    try {
+        const calificaciones = await executeQuery(`
+            SELECT c.id, c.parcial, c.calificacion,
+                   m.nombre as materia_nombre,
+                   u.nombre as estudiante_nombre, u.apellido_paterno
+            FROM calificaciones c
+            JOIN materias m ON c.materia_id = m.id
+            JOIN estudiantes e ON c.estudiante_id = e.id
+            JOIN usuarios u ON e.usuario_id = u.id
+            ORDER BY c.id DESC LIMIT 50
+        `);
+        res.json({ success: true, grades: calificaciones });
+    } catch (error) {
+        debugLog.error('GRADES', 'Error:', sanitizeError(error, 'grades'));
+        res.status(500).json({ success: false, message: 'Error' });
+    }
+});
 // ============================================
 // CAPTURA DE CALIFICACIONES
 // ============================================
@@ -137,7 +155,7 @@ router.post('/batch',
                             SET calificacion = $1, observaciones = $2, docente_id = $3, fecha_captura = CURRENT_TIMESTAMP
                             WHERE estudiante_id = $4 AND materia_id = $5 AND parcial = $6 AND ciclo_escolar = $7
                         `, [cal.calificacion, cal.observaciones || '', docente_id,
-                            cal.estudiante_id, cal.materia_id, cal.parcial, cal.ciclo_escolar]);
+                        cal.estudiante_id, cal.materia_id, cal.parcial, cal.ciclo_escolar]);
 
                         results.push({ ...cal, action: 'updated', success: true });
                     } else {
@@ -147,7 +165,7 @@ router.post('/batch',
                             VALUES ($1, $2, $3, $4, $5, $6, $7)
                             RETURNING id
                         `, [cal.estudiante_id, cal.materia_id, cal.parcial, cal.calificacion,
-                            cal.ciclo_escolar, docente_id, cal.observaciones || '']);
+                        cal.ciclo_escolar, docente_id, cal.observaciones || '']);
 
                         results.push({ ...cal, action: 'created', success: true, id: result[0].id });
                     }

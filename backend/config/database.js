@@ -24,7 +24,9 @@ let useJsonFallback = false;
 // - Aumentado de 10 a 100 para soportar load testing con 7,800 usuarios
 // - Ventana de idle aumentada a 60 segundos para mejor reutilización
 // - Timeout de conexión aumentado a 5 segundos
-const poolConfig = process.env.DATABASE_URL
+// Prioridad 1: DATABASE_URL de Neon (Vercel) - IGNORAR SI ES PLACEHOLDER
+const hasValidUrl = process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('CHANGE_ME');
+const poolConfig = hasValidUrl
     ? {
         connectionString: process.env.DATABASE_URL,
         // SSL configurable según variable de entorno (false para local, true para Neon)
@@ -93,7 +95,7 @@ async function executeTransaction(queries) {
         await client.query('BEGIN');
 
         const results = [];
-        for (const {query, params = []} of queries) {
+        for (const { query, params = [] } of queries) {
             const result = await client.query(query, params);
             results.push(result.rows);
         }

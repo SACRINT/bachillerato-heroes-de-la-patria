@@ -43,32 +43,6 @@ class AuthInterface {
                         <div class="modal-header">
                             <h5 class="modal-title" id="authModalLabel">
                                 <i class="fas fa-sign-in-alt me-2"></i>
-                                Iniciar Sesión
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Google Sign-In Button -->
-                            <div class="text-center mb-4">
-                                <div id="g_id_onload"
-                                     data-client_id="YOUR_GOOGLE_CLIENT_ID"
-                                     data-callback="handleGoogleCredentialResponse"
-                                     data-auto_prompt="false">
-                                </div>
-                                <div class="g_id_signin"
-                                     data-type="standard"
-                                     data-size="large"
-                                     data-theme="outline"
-                                     data-text="sign_in_with"
-                                     data-shape="rectangular"
-                                     data-logo_alignment="left">
-                                </div>
-                            </div>
-
-                            <div class="row align-items-center mb-3">
-                                <div class="col"><hr></div>
-                                <div class="col-auto"><small class="text-muted">o continúa con</small></div>
-                                <div class="col"><hr></div>
                             </div>
 
                             <form id="loginForm">
@@ -129,7 +103,7 @@ class AuthInterface {
                 </div>
             </div>
         `;
-        
+
         document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
     }
 
@@ -254,7 +228,7 @@ class AuthInterface {
      */
     async handleLogin(event) {
         event.preventDefault();
-        
+
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
         const rememberMe = document.getElementById('rememberMe').checked;
@@ -269,10 +243,10 @@ class AuthInterface {
             }
 
             const response = await window.apiClient.login(email, password);
-            
+
             if (response.success && response.user) {
                 this.currentUser = response.user;
-                
+
                 // Guardar en sessionStorage si no es "recordar"
                 if (!rememberMe) {
                     localStorage.removeItem('heroes_auth_token');
@@ -282,7 +256,7 @@ class AuthInterface {
                 this.updateAuthInterface();
                 this.closeAuthModal();
                 this.showLoginSuccess();
-                
+
                 // GDPR: Datos sensibles enmascarados
                 //debugLog.log('APP', '✅ Login exitoso:', this.currentUser.email);
 
@@ -332,7 +306,7 @@ class AuthInterface {
             // Usuario autenticado
             authToggleBtn.classList.add('d-none');
             userDropdown.classList.remove('d-none');
-            
+
             const displayName = `${this.currentUser.nombre} ${this.currentUser.apellido_paterno}`;
             userName.textContent = displayName;
             userInfo.textContent = `${this.currentUser.email} • ${this.currentUser.tipo_usuario}`;
@@ -518,10 +492,10 @@ class AuthInterface {
         `;
 
         document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(modalHTML)));
-        
+
         // Agregar event listeners
         this.attachRegisterEventListeners();
-        
+
         return document.getElementById('registerModal');
     }
 
@@ -538,7 +512,7 @@ class AuthInterface {
             tipoUsuarioSelect.addEventListener('change', (e) => {
                 const shouldShow = e.target.value === 'estudiante' || e.target.value === 'padre_familia';
                 matriculaContainer.style.display = shouldShow ? 'block' : 'none';
-                
+
                 if (shouldShow) {
                     matriculaInput.required = true;
                 } else {
@@ -560,7 +534,7 @@ class AuthInterface {
      */
     async handleRegister(event) {
         event.preventDefault();
-        
+
         const formData = {
             nombre: document.getElementById('regNombre').value.trim(),
             apellido_paterno: document.getElementById('regApellidoPaterno').value.trim(),
@@ -602,7 +576,7 @@ class AuthInterface {
             // Fallback: Envío por email (para cuando no hay backend)
             await this.sendRegistrationByEmail(formData);
             this.showRegisterSuccess();
-            
+
             setTimeout(() => {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
                 if (modal) modal.hide();
@@ -729,7 +703,7 @@ Fecha: ${new Date().toLocaleString('es-MX')}
         const loginButton = document.getElementById('loginButton');
         const loginButtonText = document.getElementById('loginButtonText');
         const loginSpinner = document.getElementById('loginSpinner');
-        
+
         if (loading) {
             loginButton.disabled = true;
             loginButtonText.classList.add('d-none');
@@ -745,7 +719,7 @@ Fecha: ${new Date().toLocaleString('es-MX')}
         const registerButton = document.getElementById('registerButton');
         const registerButtonText = document.getElementById('registerButtonText');
         const registerSpinner = document.getElementById('registerSpinner');
-        
+
         if (registerButton && registerButtonText && registerSpinner) {
             if (loading) {
                 registerButton.disabled = true;
@@ -792,7 +766,7 @@ Fecha: ${new Date().toLocaleString('es-MX')}
     hideRegisterMessages() {
         const errorDiv = document.getElementById('registerError');
         const successDiv = document.getElementById('registerSuccess');
-        
+
         if (errorDiv) errorDiv.classList.add('d-none');
         if (successDiv) successDiv.classList.add('d-none');
     }
@@ -816,7 +790,7 @@ Fecha: ${new Date().toLocaleString('es-MX')}
         // Crear toast dinámicamente
         const toastContainer = document.getElementById('toast-container') || this.createToastContainer();
         const toastId = 'toast_' + Date.now();
-        
+
         const toastHTML = `
             <div class="toast align-items-center text-white bg-${type} border-0" role="alert" id="${toastId}">
                 <div class="d-flex">
@@ -828,13 +802,13 @@ Fecha: ${new Date().toLocaleString('es-MX')}
                 </div>
             </div>
         `;
-        
+
         toastContainer.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(toastHTML)));
-        
+
         const toastElement = document.getElementById(toastId);
         const toast = new bootstrap.Toast(toastElement);
         toast.show();
-        
+
         // Limpiar después de mostrar
         toastElement.addEventListener('hidden.bs.toast', () => {
             toastElement.remove();
@@ -851,7 +825,7 @@ Fecha: ${new Date().toLocaleString('es-MX')}
 
     formatDate(dateString) {
         if (!dateString) return 'No disponible';
-        
+
         try {
             const date = new Date(dateString);
             return date.toLocaleString('es-MX');
@@ -884,17 +858,17 @@ Fecha: ${new Date().toLocaleString('es-MX')}
 /**
  * Manejar respuesta de Google Sign-In
  */
-window.handleGoogleCredentialResponse = async function(response) {
+window.handleGoogleCredentialResponse = async function (response) {
     try {
         //debugLog.log('APP', '🔐 Google Sign-In response received');
-        
+
         if (!response.credential) {
             throw new Error('No se recibió credencial de Google');
         }
 
         // Decodificar el JWT token de Google
         const decoded = JSON.parse(atob(response.credential.split('.')[1]));
-        
+
         // Extraer información del usuario
         const googleUser = {
             email: decoded.email,
@@ -912,21 +886,21 @@ window.handleGoogleCredentialResponse = async function(response) {
         if (window.apiClient) {
             try {
                 const authResponse = await window.apiClient.loginWithGoogle(response.credential);
-                
+
                 if (authResponse.success && authResponse.user) {
                     window.authInterface.currentUser = authResponse.user;
                     window.authInterface.updateAuthInterface();
                     window.authInterface.closeAuthModal();
                     window.authInterface.showToast('success', '✅ Google Sign-In exitoso', `Bienvenido ${authResponse.user.nombre}`);
-                    
+
                     //debugLog.log('APP', '✅ Autenticación con Google exitosa');
                 } else {
                     throw new Error(authResponse.message || 'Error de autenticación con Google');
                 }
-                
+
             } catch (apiError) {
                 debugLog.warn('APP', '⚠️ Backend no disponible, usando autenticación local');
-                
+
                 // Fallback: autenticación local temporal
                 const localUser = {
                     id: googleUser.google_id,
@@ -938,12 +912,12 @@ window.handleGoogleCredentialResponse = async function(response) {
                     ultimo_acceso: new Date().toISOString(),
                     fecha_creacion: new Date().toISOString()
                 };
-                
+
                 window.authInterface.currentUser = localUser;
                 window.authInterface.updateAuthInterface();
                 window.authInterface.closeAuthModal();
                 window.authInterface.showToast('success', '✅ Acceso con Google', `Bienvenido ${localUser.nombre}`);
-                
+
                 // Guardar en sessionStorage
                 sessionStorage.setItem('google_user_session', JSON.stringify(localUser));
             }
@@ -964,12 +938,12 @@ function initializeGoogleSignIn() {
     // Verificar si AppConfig está disponible y si Google está configurado
     if (!window.AppConfig || !window.AppConfig.isEnabled || !window.AppConfig.isEnabled('google')) {
         //debugLog.log('APP', '⚠️ Google Sign-In no configurado - ocultando botón');
-        
+
         // Ocultar sección de Google Sign-In si no está configurado
         setTimeout(() => {
             const googleSection = document.getElementById('g_id_onload')?.parentElement;
             const separatorDiv = document.querySelector('.row.align-items-center.mb-3');
-            
+
             if (googleSection) {
                 googleSection.style.display = 'none';
                 //debugLog.log('APP', '🔐 Botón de Google Sign-In ocultado');
@@ -979,11 +953,11 @@ function initializeGoogleSignIn() {
                 //debugLog.log('APP', '🔐 Separador "o continúa con" ocultado');
             }
         }, 100);
-        
+
         //debugLog.log('APP', '🔐 Usando solo autenticación tradicional');
         return;
     }
-    
+
     // Cargar Google Sign-In SDK
     const script = document.createElement('script');
     script.src = sanitizeURL('https://accounts.google.com/gsi/client');
@@ -991,7 +965,7 @@ function initializeGoogleSignIn() {
     script.defer = true;
     script.onload = () => {
         //debugLog.log('APP', '📱 Google Sign-In SDK cargado');
-        
+
         // Configurar con client ID real
         const gOnloadElement = document.getElementById('g_id_onload');
         if (gOnloadElement) {
@@ -1002,17 +976,17 @@ function initializeGoogleSignIn() {
 }
 
 // Inicializar interfaz de autenticación cuando esté listo el DOM
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Esperar a que el API client esté disponible
     setTimeout(() => {
         window.authInterface = new AuthInterface();
         //debugLog.log('APP', '🔐 Interfaz de autenticación inicializada');
-        
+
         // Inicializar Google Sign-In
         setTimeout(() => {
             initializeGoogleSignIn();
         }, 500);
-        
+
         // Verificar sesión de Google existente
         const googleSession = sessionStorage.getItem('google_user_session');
         if (googleSession && !window.authInterface.currentUser) {
