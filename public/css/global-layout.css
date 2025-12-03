@@ -279,7 +279,8 @@ body {
 main,
 .container-main,
 .content-wrapper {
-    padding-top: var(--spacing-md);
+    padding-top: 0;
+    /* Body already has padding-top for header, no need to add more */
 }
 
 /* Scroll behavior smooth */

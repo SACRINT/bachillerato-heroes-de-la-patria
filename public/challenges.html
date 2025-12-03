@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ðŸ† Retos y Logros - BGE Héroes de la Patria</title>
+    <title>🏆 Retos y Logros - BGE Héroes de la Patria</title>
 
     <!-- Bootstrap 5.3.2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -463,7 +463,7 @@
 
         // Mapeo de Iconos por Tipo
         const CHALLENGE_ICONS = {
-            daily: 'â˜€ï¸',
+            daily: '☀️',
             weekly: 'ðŸ“…',
             monthly: 'ðŸ—“ï¸',
             achievement: 'ðŸ†'
@@ -522,7 +522,7 @@
             const card = document.createElement('div');
             card.className = `challenge-card ${challenge.challenge_type}`;
 
-            const icon = challenge.icon || CHALLENGE_ICONS[challenge.challenge_type] || 'ðŸŽ¯';
+            const icon = challenge.icon || CHALLENGE_ICONS[challenge.challenge_type] || '🎯';
             const isCompleted = challenge.user_progress && challenge.user_progress.is_completed;
             const progress = challenge.user_progress ? JSON.parse(challenge.user_progress.progress || '{}') : {};
             const progressPercentage = calculateProgress(challenge, progress);
@@ -746,8 +746,8 @@
                     alert(`ðŸ† ${challenge.title}\n\n` +
                         `${challenge.description}\n\n` +
                         `Recompensas:\n` +
-                        `â€¢ ${challenge.reward_iacoins} IA Coins\n` +
-                        `â€¢ ${challenge.reward_xp} XP\n\n` +
+                        `• ${challenge.reward_iacoins} IA Coins\n` +
+                        `• ${challenge.reward_xp} XP\n\n` +
                         `Tipo: ${formatType(challenge.challenge_type)}\n` +
                         `Máximo de completaciones: ${challenge.max_completions}`);
                 } else {
@@ -783,10 +783,10 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    alert(`ðŸŽ‰ ¡Reto Completado!\n\n` +
+                    alert(`🎉 ¡Reto Completado!\n\n` +
                         `Recompensas:\n` +
-                        `â€¢ +${data.rewards.iacoins} IA Coins\n` +
-                        `â€¢ +${data.rewards.xp} XP\n\n` +
+                        `• +${data.rewards.iacoins} IA Coins\n` +
+                        `• +${data.rewards.xp} XP\n\n` +
                         `Nuevo Saldo: ${data.new_balance} IA Coins\n` +
                         `XP Total: ${data.new_xp}`);
 
