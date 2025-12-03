@@ -370,18 +370,16 @@
     <!-- ✅ FIX (18 Nov 2025): Header/Footer styles loaded globally -->
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
-    <link rel="stylesheet" href="css/style.css">
     <!-- Main JS for dynamic header/footer loading -->
     <script src="js/main.js" defer></script>
 </head>
 
 <body>
-    <!-- Navbar -->
-    <!-- Navbar handled dynamically by main-header -->
+    <!-- Header will be injected here -->
+    <header id="main-header"></header>
 
-    <!-- Main Container -->
+    <!-- Support Container with Sidebar and Main Content -->
     <div class="support-container">
-        <!-- Sidebar -->
         <aside class="sidebar">
             <h6>Filtros Rápidos</h6>
             <div class="sidebar-item active" data-filter="all">
@@ -426,70 +424,69 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
-        <!-- Header will be injected here -->
-        <header id="main-header"></header>
-
         <main class="main-content">
-            <!-- Header -->
-            <div class="content-header">
-                <div>
-                    <h2 id="contentTitle">Todos los Tickets</h2>
-                    <p class="text-muted" id="contentSubtitle">Gestiona y da seguimiento a tickets de soporte</p>
-                </div>
-                <div>
-                    <button class="btn btn-primary" id="createTicketBtn">
-                        <i class="bi bi-plus-lg"></i> Nuevo Ticket
-                    </button>
-                </div>
+        <!-- Header -->
+        <div class="content-header">
+            <div>
+                <h2 id="contentTitle">Todos los Tickets</h2>
+                <p class="text-muted" id="contentSubtitle">Gestiona y da seguimiento a tickets de soporte</p>
             </div>
+            <div>
+                <button class="btn btn-primary" id="createTicketBtn">
+                    <i class="bi bi-plus-lg"></i> Nuevo Ticket
+                </button>
+            </div>
+        </div>
 
-            <!-- Stats Grid -->
-            <div class="stats-grid hidden" id="statsGrid">
-                <div class="stat-card">
-                    <div class="stat-value" id="stat-created">0</div>
-                    <div class="stat-label">Tickets Creados</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="stat-assigned">0</div>
-                    <div class="stat-label">Asignados a Mí</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="stat-watching">0</div>
-                    <div class="stat-label">Siguiendo</div>
-                </div>
+        <!-- Stats Grid -->
+        <div class="stats-grid hidden" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-value" id="stat-created">0</div>
+                <div class="stat-label">Tickets Creados</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-assigned">0</div>
+                <div class="stat-label">Asignados a Mí</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-watching">0</div>
+                <div class="stat-label">Siguiendo</div>
+            </div>
+        </div>
 
-            <!-- Loading -->
-            <div class="loading-spinner hidden" id="loadingSpinner">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Cargando...</span>
-                </div>
-                <p class="mt-3">Cargando tickets...</p>
+        <!-- Loading -->
+        <div class="loading-spinner hidden" id="loadingSpinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
             </div>
+            <p class="mt-3">Cargando tickets...</p>
+        </div>
 
-            <!-- Tickets List -->
-            <div id="ticketsList">
-                <!-- Tickets will be loaded here -->
-            </div>
+        <!-- Tickets List -->
+        <div id="ticketsList">
+            <!-- Tickets will be loaded here -->
+        </div>
 
-            <!-- Empty State -->
-            <div class="empty-state hidden" id="emptyState">
-                <i class="bi bi-inbox"></i>
-                <h4>No hay tickets</h4>
-                <p class="text-muted">Crea un nuevo ticket para comenzar</p>
-            </div>
+        <!-- Empty State -->
+        <div class="empty-state hidden" id="emptyState">
+            <i class="bi bi-inbox"></i>
+            <h4>No hay tickets</h4>
+            <p class="text-muted">Crea un nuevo ticket para comenzar</p>
+        </div>
 
-            <!-- Pagination -->
-            <div class="pagination-container">
-                <nav aria-label="Paginación">
-                    <ul class="pagination justify-content-center" id="pagination">
-                        <!-- Pagination will be loaded here -->
-                    </ul>
-                </nav>
-            </div>
+        <!-- Pagination -->
+        <div class="pagination-container">
+            <nav aria-label="Paginación">
+                <ul class="pagination justify-content-center" id="pagination">
+                    <!-- Pagination will be loaded here -->
+                </ul>
+            </nav>
+        </div>
         </main>
     </div>
+
+    <!-- Footer will be injected here -->
+    <footer id="main-footer"></footer>
 
     <!-- New Ticket Modal -->
     <div class="modal fade" id="newTicketModal" tabindex="-1">
@@ -585,12 +582,12 @@
     <!-- Ã°Å¸ÂÂ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
 
 
-    <!-- Footer will be injected here -->
-    <footer id="main-footer"></footer>
     <script src="js/tenant-config-loader.js" defer></script>
 
-    <!-- Dark Mode Toggle -->
-    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
+    <script src="js/dark-mode-toggle.js"></script>
+
+    <!-- Dark Mode Toggle Button -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Activar modo oscuro" title="Cambiar a modo oscuro" tabindex="108">
         <i class="fas fa-moon"></i>
     </button>
 
@@ -624,6 +621,6 @@
             </button>
         </div>
     </div>
-</body>
+    </body>
 
 </html>
