@@ -27,35 +27,38 @@
  */
 
 -- =====================================================
--- PASO 1: VERIFICACIÓN INICIAL
+-- SECCIÓN 1: VERIFICACIÓN INICIAL (SIN UNION)
 -- =====================================================
 
--- Ver cuántas filas tienen caracteres corruptos
-SELECT COUNT(*) as filas_corruptas
-FROM (
-    SELECT *
-    FROM usuarios WHERE nombre LIKE '%†%'
+-- Ver cuántos registros en USUARIOS tienen caracteres corruptos
+SELECT COUNT(*) as usuarios_corruptos FROM usuarios WHERE nombre LIKE '%†%';
+
+-- Ver cuántos registros en ESTUDIANTES tienen caracteres corruptos
+SELECT COUNT(*) as estudiantes_corrupto FROM estudiantes WHERE nombre LIKE '%†%';
+
+-- Ver cuántos registros en DESAFIOS/CHALLENGES tienen caracteres corruptos
+SELECT COUNT(*) as desafios_corruptos FROM (
+    SELECT 1 FROM desafios WHERE titulo LIKE '%†%' OR descripcion LIKE '%†%'
     UNION ALL
-    SELECT *
-    FROM estudiantes WHERE nombre LIKE '%†%'
-    UNION ALL
-    SELECT *
-    FROM desafios WHERE titulo LIKE '%†%' OR descripcion LIKE '%†%'
-    UNION ALL
-    SELECT *
-    FROM desafios WHERE descripcion LIKE '%†%'
-) as corrupted_data;
+    SELECT 1 FROM challenges WHERE title LIKE '%†%' OR description LIKE '%†%'
+) AS temp;
 
 -- =====================================================
--- PASO 2: ARREGLAR TABLA USUARIOS
+-- SECCIÓN 2: ARREGLAR TABLA USUARIOS
 -- =====================================================
+
+-- Reemplazar carácter † por í en tabla usuarios
+UPDATE usuarios
+SET nombre = REPLACE(nombre, '†', 'í')
+WHERE nombre LIKE '%†%';
 
 UPDATE usuarios
-SET
-    nombre = REPLACE(nombre, '†', 'í'),
-    apellido = REPLACE(apellido, '†', 'í'),
-    email = REPLACE(email, '†', 'í')
-WHERE nombre LIKE '%†%' OR apellido LIKE '%†%' OR email LIKE '%†%';
+SET apellido = REPLACE(apellido, '†', 'í')
+WHERE apellido LIKE '%†%';
+
+UPDATE usuarios
+SET email = REPLACE(email, '†', 'í')
+WHERE email LIKE '%†%';
 
 -- Arreglar nombres específicos con patrones
 UPDATE usuarios
@@ -71,19 +74,24 @@ SET nombre = REPLACE(nombre, 'Garc†a', 'García')
 WHERE nombre LIKE '%Garc†a%';
 
 -- =====================================================
--- PASO 3: ARREGLAR TABLA ESTUDIANTES
+-- SECCIÓN 3: ARREGLAR TABLA ESTUDIANTES
 -- =====================================================
 
 UPDATE estudiantes
-SET
-    nombre = REPLACE(nombre, '†', 'í'),
-    apellidos = REPLACE(apellidos, '†', 'í'),
-    nombre_padre = REPLACE(nombre_padre, '†', 'í'),
-    nombre_madre = REPLACE(nombre_madre, '†', 'í')
-WHERE nombre LIKE '%†%'
-   OR apellidos LIKE '%†%'
-   OR nombre_padre LIKE '%†%'
-   OR nombre_madre LIKE '%†%';
+SET nombre = REPLACE(nombre, '†', 'í')
+WHERE nombre LIKE '%†%';
+
+UPDATE estudiantes
+SET apellidos = REPLACE(apellidos, '†', 'í')
+WHERE apellidos LIKE '%†%';
+
+UPDATE estudiantes
+SET nombre_padre = REPLACE(nombre_padre, '†', 'í')
+WHERE nombre_padre LIKE '%†%';
+
+UPDATE estudiantes
+SET nombre_madre = REPLACE(nombre_madre, '†', 'í')
+WHERE nombre_madre LIKE '%†%';
 
 -- Arreglar nombres específicos
 UPDATE estudiantes
@@ -99,110 +107,130 @@ SET nombre = REPLACE(nombre, 'Garc†a', 'García')
 WHERE nombre LIKE '%Garc†a%';
 
 -- =====================================================
--- PASO 4: ARREGLAR TABLA DESAFIOS/CHALLENGES
+-- SECCIÓN 4: ARREGLAR TABLA DESAFIOS (si existe)
 -- =====================================================
 
--- Si la tabla se llama 'challenges'
-UPDATE challenges
-SET
-    title = REPLACE(title, '†', 'í'),
-    description = REPLACE(description, '†', 'í')
-WHERE title LIKE '%†%' OR description LIKE '%†%';
+-- Esta sección se ejecutará solo si la tabla existe
+-- Si no existe, será ignorada
 
--- Si la tabla se llama 'desafios'
-UPDATE desafios
-SET
-    titulo = REPLACE(titulo, '†', 'í'),
-    descripcion = REPLACE(descripcion, '†', 'í')
-WHERE titulo LIKE '%†%' OR descripcion LIKE '%†%';
+-- Reemplazar en tabla DESAFIOS
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'desafios') THEN
+        UPDATE desafios
+        SET titulo = REPLACE(titulo, '†', 'í')
+        WHERE titulo LIKE '%†%';
 
--- =====================================================
--- PASO 5: ARREGLAR TABLA TENANTS CONFIG
--- =====================================================
-
--- Los datos JSON en tenants pueden tener acentos corruptos
-UPDATE tenants
-SET config_json =
-    config_json::text
-    ||'->school'||'->'||'name'
-WHERE config_json::text LIKE '%†%';
-
--- O una forma más segura:
-UPDATE tenants
-SET config_json = jsonb_set(
-    config_json,
-    '{school, name}',
-    to_jsonb(REPLACE(config_json->'school'->>'name', '†', 'í'))
-)
-WHERE config_json->>'school.name' LIKE '%†%';
+        UPDATE desafios
+        SET descripcion = REPLACE(descripcion, '†', 'í')
+        WHERE descripcion LIKE '%†%';
+    END IF;
+END $$;
 
 -- =====================================================
--- PASO 6: ARREGLAR OTRAS TABLAS CON DATOS DE USUARIO
+-- SECCIÓN 5: ARREGLAR TABLA CHALLENGES (si existe)
 -- =====================================================
 
--- Tabla de calificaciones si tiene nombres
-UPDATE calificaciones
-SET nombre_asignatura = REPLACE(nombre_asignatura, '†', 'í')
-WHERE nombre_asignatura LIKE '%†%';
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'challenges') THEN
+        UPDATE challenges
+        SET title = REPLACE(title, '†', 'í')
+        WHERE title LIKE '%†%';
 
--- Tabla de cursos si existe
-UPDATE cursos
-SET nombre = REPLACE(nombre, '†', 'í')
-WHERE nombre LIKE '%†%';
-
--- Tabla de noticias si existe
-UPDATE noticias
-SET
-    titulo = REPLACE(titulo, '†', 'í'),
-    contenido = REPLACE(contenido, '†', 'í')
-WHERE titulo LIKE '%†%' OR contenido LIKE '%†%';
+        UPDATE challenges
+        SET description = REPLACE(description, '†', 'í')
+        WHERE description LIKE '%†%';
+    END IF;
+END $$;
 
 -- =====================================================
--- PASO 7: ARREGLAR CARACTERES ESPECIALES MÚLTIPLES
+-- SECCIÓN 6: ARREGLAR TABLA TENANTS (config JSON)
 -- =====================================================
 
--- En caso de que haya otros caracteres corruptos
--- Reemplazar bullets corruptos
-UPDATE usuarios SET nombre = REPLACE(nombre, '•', '•') WHERE nombre LIKE '%•%';
-UPDATE estudiantes SET nombre = REPLACE(nombre, '•', '•') WHERE nombre LIKE '%•%';
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'tenants') THEN
+        -- Actualizar config_json si contiene caracteres corruptos
+        UPDATE tenants
+        SET config_json = jsonb_set(
+            config_json,
+            '{school, name}',
+            to_jsonb(REPLACE(config_json->'school'->>'name', '†', 'í'))
+        )
+        WHERE config_json->>'school.name' LIKE '%†%';
+    END IF;
+END $$;
 
 -- =====================================================
--- PASO 8: VERIFICACIÓN FINAL
+-- SECCIÓN 7: ARREGLAR OTRAS TABLAS (si existen)
 -- =====================================================
 
--- Contar filas restantes con caracteres corruptos
-SELECT
-    'usuarios' as tabla,
-    COUNT(*) as filas_corruptas
+-- Tabla CALIFICACIONES
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'calificaciones') THEN
+        UPDATE calificaciones
+        SET nombre_asignatura = REPLACE(nombre_asignatura, '†', 'í')
+        WHERE nombre_asignatura LIKE '%†%';
+    END IF;
+END $$;
+
+-- Tabla CURSOS
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'cursos') THEN
+        UPDATE cursos
+        SET nombre = REPLACE(nombre, '†', 'í')
+        WHERE nombre LIKE '%†%';
+    END IF;
+END $$;
+
+-- Tabla NOTICIAS
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'noticias') THEN
+        UPDATE noticias
+        SET titulo = REPLACE(titulo, '†', 'í')
+        WHERE titulo LIKE '%†%';
+
+        UPDATE noticias
+        SET contenido = REPLACE(contenido, '†', 'í')
+        WHERE contenido LIKE '%†%';
+    END IF;
+END $$;
+
+-- =====================================================
+-- SECCIÓN 8: VERIFICACIÓN FINAL
+-- =====================================================
+
+-- Contar cuántas filas AÚN tienen caracteres corruptos en USUARIOS
+SELECT 'usuarios - aún corruptas' as tabla, COUNT(*) as cantidad
 FROM usuarios WHERE nombre LIKE '%†%'
 UNION ALL
-SELECT
-    'estudiantes' as tabla,
-    COUNT(*) as filas_corruptas
+-- Contar cuántas filas AÚN tienen caracteres corruptos en ESTUDIANTES
+SELECT 'estudiantes - aún corruptas' as tabla, COUNT(*) as cantidad
 FROM estudiantes WHERE nombre LIKE '%†%'
 UNION ALL
-SELECT
-    'challenges' as tabla,
-    COUNT(*) as filas_corruptas
-FROM challenges WHERE title LIKE '%†%' OR description LIKE '%†%'
+-- Ver algunos ejemplos de datos ARREGLADOS
+SELECT 'usuarios - Martínez' as tabla, COUNT(*) as cantidad
+FROM usuarios WHERE nombre LIKE '%Martínez%'
 UNION ALL
-SELECT
-    'desafios' as tabla,
-    COUNT(*) as filas_corruptas
-FROM desafios WHERE titulo LIKE '%†%' OR descripcion LIKE '%†%';
-
--- Ver algunos ejemplos de datos arreglados
-SELECT nombre FROM usuarios WHERE nombre LIKE '%Martínez%' LIMIT 5;
-SELECT nombre FROM estudiantes WHERE nombre LIKE '%García%' LIMIT 5;
+SELECT 'estudiantes - García' as tabla, COUNT(*) as cantidad
+FROM estudiantes WHERE nombre LIKE '%García%';
 
 -- =====================================================
--- PASO 9: RECARGAR CACHÉ (si Redis está activo)
+-- SECCIÓN 9: EJEMPLOS DE DATOS ARREGLADOS
 -- =====================================================
 
--- Si usas redis-cache middleware, este script invalida automáticamente
--- Ejecutar desde backend:
--- Redis FLUSHDB (cuidado con esto - borra TODO el caché)
--- O invalidar solo tenant:config
+-- Ver los primeros 5 usuarios con Martínez (arreglados)
+SELECT id, nombre FROM usuarios WHERE nombre LIKE '%Martínez%' LIMIT 5;
+
+-- Ver los primeros 5 estudiantes con García (arreglados)
+SELECT id, nombre FROM estudiantes WHERE nombre LIKE '%García%' LIMIT 5;
+
+-- Ver los primeros 5 usuarios con López (arreglados)
+SELECT id, nombre FROM usuarios WHERE nombre LIKE '%López%' LIMIT 5;
 
 -- =====================================================
 -- FIN DEL SCRIPT
@@ -215,6 +243,17 @@ SELECT nombre FROM estudiantes WHERE nombre LIKE '%García%' LIMIT 5;
  * 2. Después de ejecutar, los datos tendrán encoding correcto
  * 3. Los usuarios verán "Martínez" en lugar de "Mart†nez"
  * 4. Requiere acceso WRITE a la base de datos Neon
- * 5. Puede tomar algunos segundos si hay muchas filas
+ * 5. Usa DO $$...END$$ para ignorar tablas que no existen
  * 6. Si hay problemas, contactar al admin de Neon
+ *
+ * CÓMO EJECUTAR EN NEON:
+ * 1. Abrir https://console.neon.tech
+ * 2. Ir a SQL Editor
+ * 3. Copiar TODO este contenido
+ * 4. Pegar en el editor
+ * 5. Click "Run" o Ctrl+Enter
+ * 6. Esperar a que termine
+ * 7. Ver resultados en las secciones de VERIFICACIÓN
+ * 8. Reiniciar servidor backend
+ * 9. Hard refresh en navegador
  */
