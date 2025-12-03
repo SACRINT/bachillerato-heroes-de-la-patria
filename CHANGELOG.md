@@ -1,3 +1,10 @@
+[v2.28.5] - 2025-12-02 (FIX ADICIONAL: LOGO FOOTER REDUCIDO A TAMAÑO CORRECTO ✅)
+🎯 FIX: Logo del footer estaba muy grande (gigante) en desktop
+✅ SOLUCIÓN: Limitar width y height a 45px !important (igual que mobile)
+📊 PÁGINAS AFECTADAS: gamification-center.html, challenges.html, iacoins-dashboard.html, iacoins-store.html
+✅ RESULTADO: Footer ahora tiene logo compacto, exactamente como en index.html
+🚀 COMMIT: b625a54 - Push a main completado
+
 [v2.28.4] - 2025-12-02 (FIX CRÍTICO: FOOTER OVERLAY COMPLETAMENTE REPARADO ✅)
 🔧 FIX CRÍTICO: Footer apareciendo como overlay en 4 páginas
 🎯 CAUSA RAÍZ: Propiedades CSS width: 100vw, margin-left: 50%, transform: translateX(-50%)
