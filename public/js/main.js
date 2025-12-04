@@ -180,211 +180,31 @@ function setTheme(theme) {
 // ==========================================
 // CHATBOT BUTTON - Compatible con CSP
 // ==========================================
-const chatButton = document.createElement('button');
-chatButton.className = 'btn btn-floating chatbot-toggle';
-chatButton.setAttribute('aria-label', 'Abrir chatbot');
-const sanitizedIcon = typeof DOMPurify !== 'undefined'
-    ? DOMPurify.sanitize('<i class="fas fa-comments"></i>')
-    : '<i class="fas fa-comments"></i>';
-chatButton.innerHTML = sanitizedIcon;
-chatButton.addEventListener('click', toggleChatbot);
-
-// Crear ventana del chatbot
-const chatWindow = document.createElement('div');
-chatWindow.id = 'chatbot-window';
-chatWindow.className = 'chatbot-window d-none';
-chatWindow.innerHTML = sanitizeHTML(`
-        <div class="chatbot-header">
-            <h5 class="mb-0">
-                <i class="fas fa-robot me-2"></i>Asistente Virtual BGE
-            </h5>
-            <button class="btn btn-sm btn-link text-white" data-action="close-chatbot">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="chatbot-body" id="chatbot-messages">
-            <div class="message bot-message">
-                <div class="message-content">
-                    ¡Hola! Soy el asistente virtual del window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria'). 
-                    ¿En qué puedo ayudarte hoy?
-                </div>
-            </div>
-        </div>
-        <div class="chatbot-footer">
-            <div class="input-group">
-                <input type="text" class="form-control" id="chatbot-input" placeholder="Escribe tu mensaje...">
-                <button class="btn btn-primary" data-action="send-message">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-        </div>
-    `);
-
-// Añadir al body
-document.body.appendChild(chatButton);
-document.body.appendChild(chatWindow);
-
-// Event listener para Enter en el input
-const chatbotInput = document.getElementById('chatbot-input');
-if (chatbotInput) {
-    chatbotInput.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
-} else {
-    console.warn('⚠️ [MAIN.JS] chatbot-input no encontrado en el DOM');
-}
-
-
-function toggleChatbot() {
-    // Usar la función del chatbot.js si está disponible
-    if (typeof window.toggleChatbot === 'function' && window.toggleChatbot !== toggleChatbot) {
-        return window.toggleChatbot();
-    }
-
-    const chatWindow = document.getElementById('chatbot-window');
-    const chatContainer = document.getElementById('chatbotContainer');
-
-    if (chatContainer && typeof toggleChatbot !== 'undefined') {
-        // Usar la función del chatbot.js
-        return;
-    }
-
-    if (chatWindow) {
-        chatWindow.classList.toggle('d-none');
-
-        const chatButton = document.getElementById('chatbot-toggle');
-        if (chatButton) {
-            // 🔒 Check if DOMPurify is available
-            if (chatWindow.classList.contains('d-none')) {
-                const sanitizedComments = (typeof window.DOMPurify !== 'undefined' && DOMPurify.sanitize)
-                    ? DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'))
-                    : '<i class="fas fa-comments"></i>';
-                chatButton.innerHTML = sanitizedComments;
-            } else {
-                const sanitizedTimes = (typeof window.DOMPurify !== 'undefined' && DOMPurify.sanitize)
-                    ? DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-times"></i>', 'simple'))
-                    : '<i class="fas fa-times"></i>';
-                chatButton.innerHTML = sanitizedTimes;
-            }
-        }
-    }
-}
-
-function closeChatbot() {
-    const chatWindow = document.getElementById('chatbot-window');
-    const chatButton = document.getElementById('chatbot-toggle');
-
-    chatWindow.classList.add('d-none');
-    // 🔒 Check if DOMPurify is available
-    const sanitizedIcon = (typeof window.DOMPurify !== 'undefined' && DOMPurify.sanitize)
-        ? DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'))
+// Nota: El chatbot.js define chatbotContainer y chatbotToggle con IDs específicos
+// Solo crear el botón si chatbot.js no ha creado su propio botón
+if (!document.getElementById('chatbotToggle')) {
+    const chatButton = document.createElement('button');
+    chatButton.id = 'chatbotToggle';
+    chatButton.className = 'btn btn-floating chatbot-toggle';
+    chatButton.setAttribute('aria-label', 'Abrir chatbot');
+    chatButton.setAttribute('tabindex', '115');
+    const sanitizedIcon = typeof DOMPurify !== 'undefined'
+        ? DOMPurify.sanitize('<i class="fas fa-comments"></i>')
         : '<i class="fas fa-comments"></i>';
     chatButton.innerHTML = sanitizedIcon;
-}
-
-function sendMessage() {
-    const input = document.getElementById('chatbot-input');
-    const message = input.value.trim();
-
-    if (!message) return;
-
-    // Añadir mensaje del usuario
-    addMessage(message, 'user');
-
-    // Limpiar input
-    input.value = '';
-
-    // Simular respuesta del bot
-    setTimeout(() => {
-        const response = generateBotResponse(message);
-        addMessage(response, 'bot');
-    }, 1000);
-}
-
-function addMessage(message, sender) {
-    const messagesContainer = document.getElementById('chatbot-messages');
-    const messageDiv = document.createElement('div');
-
-    messageDiv.className = `message ${sender}-message`;
-    messageDiv.innerHTML = sanitizeHTML(`
-        <div class="message-content">
-            ${message}
-        </div>
-    `);
-
-    messagesContainer.appendChild(messageDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-
-function generateBotResponse(userMessage) {
-    // Usar la función del chatbot.js si está disponible
-    if (typeof processMessage === 'function') {
-        return processMessage(userMessage);
-    }
-
-    // Respuesta de fallback si no está disponible el chatbot principal
-    const message = userMessage.toLowerCase();
-
-    if (message.includes('hola') || message.includes('buenos días') || message.includes('buenas tardes')) {
-        return formatResponse({
-            title: '👋 ¡Bienvenido!',
-            content: [
-                {
-                    text: 'Hola, bienvenido al BGE Héroes de la Patria. Soy tu asistente virtual y estoy aquí para ayudarte.'
-                }
-            ],
-            footer: '¿En qué puedo asistirte hoy?'
-        });
-    }
-
-    return formatResponse({
-        title: '💬 Asistencia Virtual',
-        content: [
-            {
-                subtitle: 'Para obtener información específica, puedes:',
-                text: '• Agendar una <a href="citas.html">cita</a><br>• Visitar nuestra página de <a href="contacto.html">contacto</a><br>• Explorar nuestros <a href="servicios.html">servicios</a>'
-            }
-        ],
-        footer: '¿Hay algo específico en lo que pueda ayudarte?'
+    chatButton.addEventListener('click', function() {
+        if (typeof window.toggleChatbot === 'function') {
+            window.toggleChatbot();
+        }
     });
+    document.body.appendChild(chatButton);
+} else {
+    console.log('[MAIN.JS] ✅ Chatbot button ya fue creado por chatbot.js');
 }
 
-// Función para formatear respuestas profesionales
-function formatResponse(responseData) {
-    if (typeof responseData === 'string') {
-        return `<div class="response-simple">${responseData}</div>`;
-    }
-
-    let html = `<div class="response-professional">`;
-
-    if (responseData.title) {
-        html += `<div class="response-title">${responseData.title}</div>`;
-    }
-
-    if (responseData.content && Array.isArray(responseData.content)) {
-        html += `<div class="response-content">`;
-        responseData.content.forEach(item => {
-            html += `<div class="response-section">`;
-            if (item.subtitle) {
-                html += `<div class="response-subtitle">${item.subtitle}</div>`;
-            }
-            if (item.text) {
-                html += `<div class="response-text">${item.text}</div>`;
-            }
-            html += `</div>`;
-        });
-        html += `</div>`;
-    }
-
-    if (responseData.footer) {
-        html += `<div class="response-footer">${responseData.footer}</div>`;
-    }
-
-    html += `</div>`;
-    return html;
-}
+// NOTA: El chatbot.js crea su propia ventana y funcionalidad
+// No duplicar aquí para evitar conflictos
+console.log('[MAIN.JS] ✅ Chatbot button listo, chatbot.js se encargará del resto');
 
 // ==========================================
 // CARGA DE HEADER Y FOOTER
