@@ -33,7 +33,8 @@
       "Bash(if [ -f \"$service\" ])",
       "Bash(then)",
       "Bash(if node -c \"$service\")",
-      "Bash(else)"
+      "Bash(else)",
+      "Bash(git tag:*)"
     ],
     "deny": [],
     "ask": []
