@@ -1,72 +1,41 @@
-const { pool } = require('../config/database');
+/**
+ * Servicio de Limpieza Automática - v2.0.0
+ * Refactorizado: 04 Diciembre 2025
+ */
+
+const AuditDAO = require('../data/audit.dao');
 const { logAction } = require('../utils/logger');
 const devLogger = require('../utils/devLogger');
 
-/**
- * Elimina registros de una tabla que tienen más de 24 horas.
- * La tabla debe tener una columna 'created_at'.
- * @param {string} tableName - El nombre de la tabla a limpiar.
- */
 async function cleanupTable(tableName) {
-    const query = `
-        DELETE FROM ${tableName}
-        WHERE created_at < NOW() - INTERVAL '24 hours';
-    `;
     try {
-        const { rowCount } = await pool.query(query);
+        const rowCount = await AuditDAO.cleanupTable(tableName);
         if (rowCount > 0) {
-            const message = `Limpieza automática: ${rowCount} registro(s) eliminado(s) de la tabla '${tableName}'.`;
-            devLogger.log(message);
+            devLogger.log(`Limpieza automática: ${rowCount} registro(s) eliminado(s) de '${tableName}'.`);
             await logAction('auto_cleanup', { table: tableName, count: rowCount, status: 'success' });
         }
         return { table: tableName, cleaned: rowCount };
     } catch (error) {
-        const errorMessage = `Error durante la limpieza de la tabla '${tableName}': ${error.message}`;
-        devLogger.error(errorMessage);
+        devLogger.error(`Error durante la limpieza de '${tableName}': ${error.message}`);
         await logAction('auto_cleanup_error', { table: tableName, error: error.message, status: 'error' });
-        // Lanzar el error para que Promise.all lo capture si es necesario
         throw error;
     }
 }
 
-/**
- * Ejecuta todas las tareas de limpieza de la base de datos en paralelo.
- */
 async function runAllCleanups() {
     devLogger.log('Iniciando todas las tareas de limpieza de la base de datos...');
     try {
-        const results = await Promise.all([
-            cleanupTable('pending_inscriptions'),
-            cleanupTable('pending_registrations')
-        ]);
-        devLogger.log('Todas las tareas de limpieza de la base de datos han finalizado.');
+        const results = await Promise.all([cleanupTable('pending_inscriptions'), cleanupTable('pending_registrations')]);
+        devLogger.log('Todas las tareas de limpieza han finalizado.');
         await logAction('run_all_cleanups', { status: 'success', results });
         return results;
-    } catch (error) {
-        devLogger.error('Una o más tareas de limpieza fallaron:', error);
-        await logAction('run_all_cleanups_error', { status: 'error', error: error.message });
-        // El proceso puede continuar aunque la limpieza falle, así que no relanzamos el error.
-    }
+    } catch (error) { devLogger.error('Una o más tareas de limpieza fallaron:', error); await logAction('run_all_cleanups_error', { status: 'error', error: error.message }); }
 }
 
-/**
- * Inicia el servicio de limpieza automática
- * Ejecuta tareas de limpieza cada N horas
- * @param {number} intervalHours - Intervalo en horas para ejecutar la limpieza
- */
 function startCleanupService(intervalHours = 12) {
-    const intervalMs = intervalHours * 60 * 60 * 1000; // Convertir horas a milisegundos
-    devLogger.log(`[CLEANUP] Servicio de limpieza iniciado. Se ejecutará cada ${intervalHours} horas.`);
-
-    // Ejecutar inmediatamente
+    devLogger.log(`[CLEANUP] Servicio iniciado. Se ejecutará cada ${intervalHours} horas.`);
     runAllCleanups();
-
-    // Luego ejecutar periódicamente
-    setInterval(runAllCleanups, intervalMs);
+    setInterval(runAllCleanups, intervalHours * 3600000);
 }
 
-module.exports = {
-    cleanupTable,
-    runAllCleanups,
-    startCleanupService,
-};
+module.exports = { cleanupTable, runAllCleanups, startCleanupService };

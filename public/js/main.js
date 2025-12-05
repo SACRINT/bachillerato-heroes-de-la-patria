@@ -177,30 +177,8 @@ function setTheme(theme) {
     }
 }
 
-// ==========================================
-// CHATBOT BUTTON - Compatible con CSP
-// ==========================================
-// Nota: El chatbot.js define chatbotContainer y chatbotToggle con IDs específicos
-// Solo crear el botón si chatbot.js no ha creado su propio botón
-if (!document.getElementById('chatbotToggle')) {
-    const chatButton = document.createElement('button');
-    chatButton.id = 'chatbotToggle';
-    chatButton.className = 'btn btn-floating chatbot-toggle';
-    chatButton.setAttribute('aria-label', 'Abrir chatbot');
-    chatButton.setAttribute('tabindex', '115');
-    const sanitizedIcon = typeof DOMPurify !== 'undefined'
-        ? DOMPurify.sanitize('<i class="fas fa-comments"></i>')
-        : '<i class="fas fa-comments"></i>';
-    chatButton.innerHTML = sanitizedIcon;
-    chatButton.addEventListener('click', function() {
-        if (typeof window.toggleChatbot === 'function') {
-            window.toggleChatbot();
-        }
-    });
-    document.body.appendChild(chatButton);
-} else {
-    console.log('[MAIN.JS] ✅ Chatbot button ya fue creado por chatbot.js');
-}
+// ❌ CHATBOT BUTTON REMOVED: Managed entirely by chatbot.js
+// Logic moved to chatbot.js createChatbotUI() function
 
 // NOTA: El chatbot.js crea su propia ventana y funcionalidad
 // No duplicar aquí para evitar conflictos

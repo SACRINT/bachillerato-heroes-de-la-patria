@@ -47,10 +47,10 @@ router.post('/search', validateSearch, async (req, res) => {
         }
 
         const { query, user_type = 'visitante', limit = 5 } = req.body;
-        
+
         // Buscar en la base de conocimiento (adaptado para JSON)
         const results = await executeQuery(
-            `SELECT * FROM informacion_dinamica WHERE activo = true`,
+            `SELECT * FROM informacion_dinamica WHERE is_active = true`,
             [query.toLowerCase()]
         );
 
@@ -111,9 +111,9 @@ router.post('/message', validateMessage, async (req, res) => {
             });
         }
 
-        const { 
-            session_id, 
-            message, 
+        const {
+            session_id,
+            message,
             sender_type = 'user',
             intent = null,
             confidence = null,
@@ -159,7 +159,7 @@ router.post('/message', validateMessage, async (req, res) => {
 router.get('/analytics/daily', async (req, res) => {
     try {
         const { date = new Date().toISOString().split('T')[0] } = req.query;
-        
+
         // Para sistema JSON, devolver datos simulados pero realistas
         const analytics = {
             fecha: date,

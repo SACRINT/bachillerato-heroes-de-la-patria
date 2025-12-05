@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title" data-base-title="Soporte - <span data-tenant-field=" school_short_name">BGE Héroes de la
-        Patria</span>">Soporte - <span data-tenant-field="school_short_name">BGE Héroes de la Patria</span></title>
+    <title id="page-title" data-base-title="Soporte - <span data-tenant-field=" school_short_name">BGE H�roes de la
+        Patria</span>">Soporte - <span data-tenant-field="school_short_name">BGE H�roes de la Patria</span></title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -367,7 +367,7 @@
         }
     </style>
     <script src="js/meta-updater.js" defer></script>
-    <!-- ✅ FIX (18 Nov 2025): Header/Footer styles loaded globally -->
+    <!-- ? FIX (18 Nov 2025): Header/Footer styles loaded globally -->
     <link rel="stylesheet" href="css/global-layout.css">
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
@@ -382,7 +382,7 @@
     <!-- Support Container with Sidebar and Main Content -->
     <div class="support-container">
         <aside class="sidebar">
-            <h6>Filtros Rápidos</h6>
+            <h6>Filtros R�pidos</h6>
             <div class="sidebar-item active" data-filter="all">
                 <i class="bi bi-inbox me-2"></i> Todos los Tickets
                 <span class="badge bg-secondary" id="badge-all">0</span>
@@ -392,7 +392,7 @@
                 <span class="badge bg-primary" id="badge-my">0</span>
             </div>
             <div class="sidebar-item" data-filter="assigned">
-                <i class="bi bi-person-check me-2"></i> Asignados a mí
+                <i class="bi bi-person-check me-2"></i> Asignados a m�
                 <span class="badge bg-info" id="badge-assigned">0</span>
             </div>
             <div class="sidebar-item" data-filter="watching">
@@ -447,7 +447,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="stat-assigned">0</div>
-                <div class="stat-label">Asignados a Mí</div>
+                <div class="stat-label">Asignados a M�</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="stat-watching">0</div>
@@ -477,7 +477,7 @@
 
         <!-- Pagination -->
         <div class="pagination-container">
-            <nav aria-label="Paginación">
+            <nav aria-label="Paginaci�n">
                 <ul class="pagination justify-content-center" id="pagination">
                     <!-- Pagination will be loaded here -->
                 </ul>
@@ -504,7 +504,7 @@
                             <input type="text" class="form-control" id="ticketSubject" required>
                         </div>
                         <div class="mb-3">
-                            <label for="ticketDescription" class="form-label">Descripción *</label>
+                            <label for="ticketDescription" class="form-label">Descripci�n *</label>
                             <textarea class="form-control" id="ticketDescription" rows="5" required></textarea>
                         </div>
                         <div class="row">
@@ -515,7 +515,7 @@
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="ticketCategory" class="form-label">Categoría</label>
+                                <label for="ticketCategory" class="form-label">Categor�a</label>
                                 <select class="form-select" id="ticketCategory">
                                     <!-- Categories will be loaded here -->
                                 </select>
@@ -533,7 +533,7 @@
                         <div class="mb-3">
                             <label for="ticketAttachments" class="form-label">Archivos Adjuntos</label>
                             <input type="file" class="form-control" id="ticketAttachments" multiple>
-                            <div class="form-text">Máximo 10MB por archivo. Hasta 5 archivos.</div>
+                            <div class="form-text">M�ximo 10MB por archivo. Hasta 5 archivos.</div>
                         </div>
                     </form>
                 </div>
@@ -564,10 +564,10 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- ðŸ”’ DOMPurify XSS Protection -->
+    <!-- 🔒 DOMPurify XSS Protection -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <script src="js/dompurify-config.js"></script>
-    <!-- Ã°Å¸"Â§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
+    <!-- ðŸ"§ MAIN.JS - CARGA DIN�MICA DE HEADER Y FOOTER -->
     <!-- Framework Core -->
     <script src="js/bge-framework-core.js"></script>
     <!-- Support Manager -->
@@ -580,7 +580,7 @@
             });
         });
     </script>
-    <!-- Ã°Å¸ÂÂ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
+    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuraci�n multi-tenancy desde BD -->
 
 
     <script src="js/tenant-config-loader.js" defer></script>
@@ -592,36 +592,11 @@
         <i class="fas fa-moon"></i>
     </button>
 
-    <!-- Chat Bot Toggle Button -->
-    <button class="chatbot-toggle" id="chatbotToggle" aria-label="Abrir chat de ayuda">
-        <i class="fas fa-comments"></i>
-    </button>
+    
 
     <!-- Chat Bot Container -->
-    <div class="chatbot-container" id="chatbotContainer">
-        <div class="chatbot-header">
-            <h5 class="mb-0">
-                <i class="fas fa-robot me-2"></i>Asistente Virtual BGE
-            </h5>
-            <button class="btn btn-sm btn-link text-white" id="closeChatbot" aria-label="Cerrar chat">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="chatbot-messages" id="chatbotMessages">
-            <div class="message bot">
-                <div class="message-content">
-                    ¡Hola! Soy el asistente virtual del Bachillerato General Estatal Héroes de la Patria.
-                    ¿En qué puedo ayudarte hoy?
-                </div>
-            </div>
-        </div>
-        <div class="chatbot-input">
-            <input type="text" id="chatbotInput" placeholder="Escribe tu mensaje..." aria-label="Escribe tu mensaje">
-            <button id="sendMessage" aria-label="Enviar mensaje">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
-    </div>
-    </body>
+    
+        <script src="js/chatbot.js"></script>
+</body>
 
 </html>

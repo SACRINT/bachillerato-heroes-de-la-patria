@@ -81,8 +81,8 @@ async function checkDocumentPermission(req, res, next) {
         const userId = req.user.id;
         const userRole = req.user.role;
         const action = req.method === 'GET' ? 'can_view' :
-                      req.method === 'POST' ? 'can_comment' :
-                      req.method === 'PUT' || req.method === 'DELETE' ? 'can_edit' : 'can_view';
+            req.method === 'POST' ? 'can_comment' :
+                req.method === 'PUT' || req.method === 'DELETE' ? 'can_edit' : 'can_view';
 
         // Verificar permisos
         const permissionCheck = await client.query(`
@@ -412,8 +412,8 @@ router.get('/documents', async (req, res) => {
             success: true,
             documents: [],
             pagination: {
-                page: parseInt(page) || 1,
-                limit: parseInt(limit) || 20,
+                page: parseInt(req.query.page) || 1,
+                limit: parseInt(req.query.limit) || 20,
                 total: 0,
                 totalPages: 0
             },

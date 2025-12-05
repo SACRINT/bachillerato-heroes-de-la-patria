@@ -776,7 +776,7 @@ body.dark-mode .dropdown-item:focus {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    z-index: 1050 !important;
+    z-index: 2147483647 !important;
     transition: var(--transition-custom) !important;
 }
 
@@ -2165,7 +2165,7 @@ body .install-button {
 body .chatbot-toggle {
     bottom: 120px !important;
     right: 20px !important;
-    z-index: 1010 !important;
+    z-index: 2147483647 !important;
 }
 
 /* 2. Dark Mode Toggle - ABAJO del chatbot */

@@ -1,14 +1,20 @@
 /**
  * 🔔 REALTIME NOTIFICATIONS ROUTES
  * Endpoints para notificaciones en tiempo real
- * FASE 2 - Semana 11-12
+ * 
+ * REFACTORIZADO: 04 Diciembre 2025
+ * - Usa notification.service.js unificado
+ * - Usa RealtimeChannel para funcionalidad de usuarios online
  */
 
 const express = require('express');
 const router = express.Router();
 const { body, query, param, validationResult } = require('express-validator');
 const { authenticateToken } = require('../middleware/auth');
-const notificationService = require('../services/RealtimeNotificationService');
+
+// Servicios refactorizados
+const notificationService = require('../services/notification.service');
+const RealtimeChannel = require('../services/channels/RealtimeChannel');
 
 // Middleware de validación
 const validate = (req, res, next) => {
@@ -112,7 +118,7 @@ router.get('/online-users',
                 });
             }
 
-            const onlineUsers = notificationService.getOnlineUsers();
+            const onlineUsers = RealtimeChannel.getOnlineUsers();
 
             res.json({
                 success: true,

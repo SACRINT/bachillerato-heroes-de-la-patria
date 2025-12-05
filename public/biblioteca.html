@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -548,7 +548,7 @@
         }
     </style>
     <script src="js/meta-updater.js" defer></script>
-    <!-- ✅ FIX (18 Nov 2025): Header/Footer styles loaded globally -->
+    <!-- ? FIX (18 Nov 2025): Header/Footer styles loaded globally -->
     <link rel="stylesheet" href="css/global-layout.css">
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
@@ -600,7 +600,7 @@
     <div class="library-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h6>Categorías</h6>
+            <h6>Categor�as</h6>
             <div class="filter-group" id="categoriesFilter">
                 <!-- Categories will be loaded here -->
             </div>
@@ -619,7 +619,7 @@
                 </div>
                 <div class="filter-item" data-type="recurso">
                     <input type="checkbox" id="type-recurso">
-                    <label for="type-recurso">Recurso Académico</label>
+                    <label for="type-recurso">Recurso Acad�mico</label>
                     <span class="badge bg-secondary">0</span>
                 </div>
                 <div class="filter-item" data-type="formulario">
@@ -634,7 +634,7 @@
                 </div>
             </div>
 
-            <h6>Calificación</h6>
+            <h6>Calificaci�n</h6>
             <div class="filter-group">
                 <div class="filter-item" data-rating="5">
                     <input type="checkbox" id="rating-5">
@@ -677,10 +677,10 @@
             <h6>Ordenar por</h6>
             <div class="filter-group">
                 <select class="form-select" id="sortBy">
-                    <option value="created_at">Más reciente</option>
-                    <option value="title">Título (A-Z)</option>
-                    <option value="total_downloads">Más descargados</option>
-                    <option value="total_views">Más vistos</option>
+                    <option value="created_at">M�s reciente</option>
+                    <option value="title">T�tulo (A-Z)</option>
+                    <option value="total_downloads">M�s descargados</option>
+                    <option value="total_views">M�s vistos</option>
                     <option value="avg_rating">Mejor calificados</option>
                 </select>
             </div>
@@ -695,7 +695,7 @@
             <div class="content-header">
                 <div>
                     <h2 id="contentTitle">Todos los documentos</h2>
-                    <p class="text-muted" id="contentSubtitle">Explora nuestra colección de recursos digitales</p>
+                    <p class="text-muted" id="contentSubtitle">Explora nuestra colecci�n de recursos digitales</p>
                 </div>
                 <div class="view-toggles">
                     <button class="btn-toggle active" id="gridViewBtn">
@@ -729,12 +729,12 @@
             <div class="empty-state hidden" id="emptyState">
                 <i class="bi bi-inbox"></i>
                 <h4>No se encontraron documentos</h4>
-                <p class="text-muted">Intenta ajustar los filtros de búsqueda</p>
+                <p class="text-muted">Intenta ajustar los filtros de b�squeda</p>
             </div>
 
             <!-- Pagination -->
             <div class="pagination-container">
-                <nav aria-label="Paginación de documentos">
+                <nav aria-label="Paginaci�n de documentos">
                     <ul class="pagination" id="pagination">
                         <!-- Pagination will be loaded here -->
                     </ul>
@@ -769,16 +769,16 @@
                 <div class="modal-body">
                     <form id="uploadDocumentForm">
                         <div class="mb-3">
-                            <label for="docTitle" class="form-label">Título *</label>
+                            <label for="docTitle" class="form-label">T�tulo *</label>
                             <input type="text" class="form-control" id="docTitle" required>
                         </div>
                         <div class="mb-3">
-                            <label for="docDescription" class="form-label">Descripción</label>
+                            <label for="docDescription" class="form-label">Descripci�n</label>
                             <textarea class="form-control" id="docDescription" rows="3"></textarea>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="docCategory" class="form-label">Categoría *</label>
+                                <label for="docCategory" class="form-label">Categor�a *</label>
                                 <select class="form-select" id="docCategory" required>
                                     <!-- Categories will be loaded here -->
                                 </select>
@@ -788,7 +788,7 @@
                                 <select class="form-select" id="docType" required>
                                     <option value="reglamento">Reglamento</option>
                                     <option value="manual">Manual</option>
-                                    <option value="recurso">Recurso Académico</option>
+                                    <option value="recurso">Recurso Acad�mico</option>
                                     <option value="formulario">Formulario</option>
                                     <option value="otro">Otro</option>
                                 </select>
@@ -797,7 +797,7 @@
                         <div class="mb-3">
                             <label for="docFile" class="form-label">Archivo *</label>
                             <input type="file" class="form-control" id="docFile" required>
-                            <div class="form-text">Máximo 50MB. Formatos: PDF, Word, Excel, PowerPoint, imágenes</div>
+                            <div class="form-text">M�ximo 50MB. Formatos: PDF, Word, Excel, PowerPoint, im�genes</div>
                         </div>
                         <div class="mb-3">
                             <label for="docTags" class="form-label">Etiquetas</label>
@@ -824,11 +824,11 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- ðŸ”’ DOMPurify XSS Protection -->
+    <!-- 🔒 DOMPurify XSS Protection -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <script src="js/dompurify-config.js"></script>
-    <!-- Ã°Å¸"Â§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
-    <!-- (main.js se carga en línea 559 con defer, no cargar nuevamente) -->
+    <!-- ðŸ"§ MAIN.JS - CARGA DIN�MICA DE HEADER Y FOOTER -->
+    <!-- (main.js se carga en l�nea 559 con defer, no cargar nuevamente) -->
     <!-- Framework Core -->
     <script src="js/bge-framework-core.js"></script>
     <!-- Library Manager -->
@@ -841,7 +841,7 @@
             });
         });
     </script>
-    <!-- Ã°Å¸ÂÂ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
+    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuraci�n multi-tenancy desde BD -->
 
 
     <!-- Footer -->
@@ -853,37 +853,12 @@
         <i class="fas fa-moon"></i>
     </button>
 
-    <!-- Chat Bot Toggle Button -->
-    <button class="chatbot-toggle" id="chatbotToggle" aria-label="Abrir chat de ayuda">
-        <i class="fas fa-comments"></i>
-    </button>
+    
 
     <!-- Chat Bot Container -->
     <!-- Chat Bot Container -->
-    <div class="chatbot-container" id="chatbotContainer">
-        <div class="chatbot-header">
-            <h5 class="mb-0">
-                <i class="fas fa-robot me-2"></i>Asistente Virtual BGE
-            </h5>
-            <button class="btn btn-sm btn-link text-white" id="closeChatbot" aria-label="Cerrar chat">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="chatbot-messages" id="chatbotMessages">
-            <div class="message bot">
-                <div class="message-content">
-                    ¡Hola! Soy el asistente virtual del Bachillerato General Estatal Héroes de la Patria.
-                    ¿En qué puedo ayudarte hoy?
-                </div>
-            </div>
-        </div>
-        <div class="chatbot-input">
-            <input type="text" id="chatbotInput" placeholder="Escribe tu mensaje..." aria-label="Escribe tu mensaje">
-            <button id="sendMessage" aria-label="Enviar mensaje">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
-    </div>
+    
+    <script src="js/chatbot.js"></script>
 </body>
 
 </html>

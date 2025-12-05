@@ -58,12 +58,21 @@
     'handle-unwatch-ticket': handleUnwatchTicket,
     'handle-watch-ticket': handleWatchTicket,
     // ✅ FIX (19 Nov 2025): Admin login modal no abría - faltaba mapping
-    // ✅ FIX (19 Nov 2025): Usar window.* para funciones globales
+    // ✅ FIX (04 Dic 2025): Fallback directo si handleAdminLogin no está cargado aún
     'admin-login': function (event) {
       if (typeof window.handleAdminLogin === 'function') {
         window.handleAdminLogin();
       } else {
-        console.error('[EVENT-HANDLER] handleAdminLogin no está disponible en window');
+        // Fallback: Mostrar modal directamente si la función no está cargada
+        console.warn('[EVENT-HANDLER] handleAdminLogin no disponible, mostrando modal directamente');
+        const modalEl = document.getElementById('adminLoginModal');
+        if (modalEl && typeof bootstrap !== 'undefined') {
+          const modal = new bootstrap.Modal(modalEl);
+          modal.show();
+        } else {
+          // Último recurso: redirigir a página de admin
+          window.location.href = '/admin-dashboard.html';
+        }
       }
     },
     'logout-admin-panel': function (event) {

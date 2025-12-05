@@ -1,12 +1,16 @@
 /**
  * 📊 TEACHER ANALYTICS SERVICE
  * Analíticas avanzadas para docentes
- * FASE 2 - Semana 9-10
+ * 
+ * Refactorizado: 04 Diciembre 2025
+ * - Migrado a usar TeacherAnalyticsDAO
+ * - Sin SQL directo en el servicio
  */
 
-const { executeQuery } = require('../data/database-access');
+const TeacherAnalyticsDAO = require('../data/teacher-analytics.dao');
 
 class TeacherAnalyticsService {
+
     // =====================================
     // ANALÍTICAS DE ESTUDIANTES
     // =====================================
@@ -15,160 +19,42 @@ class TeacherAnalyticsService {
      * Obtiene resumen general de la clase
      */
     async getClassOverview(teacherId, courseId = null) {
-        let query = `
-            SELECT
-                COUNT(DISTINCT e.estudiante_id) as total_students,
-                COUNT(DISTINCT CASE WHEN ib.level >= 5 THEN e.estudiante_id END) as advanced_students,
-                AVG(ib.experience_points) as avg_xp,
-                AVG(ib.level) as avg_level,
-                AVG(cp_stats.completed) as avg_challenges_completed
-            FROM inscripciones e
-            JOIN usuarios u ON e.estudiante_id = u.id
-            LEFT JOIN iacoins_balance ib ON e.estudiante_id = ib.user_id
-            LEFT JOIN (
-                SELECT user_id, COUNT(*) as completed
-                FROM challenge_progress
-                WHERE status = 'claimed'
-                GROUP BY user_id
-            ) cp_stats ON e.estudiante_id = cp_stats.user_id
-            WHERE e.docente_id = $1
-        `;
-
-        const params = [teacherId];
-
-        if (courseId) {
-            query += ` AND e.curso_id = $2`;
-            params.push(courseId);
-        }
-
-        const result = await executeQuery(query, params);
-        return result[0];
+        return TeacherAnalyticsDAO.getClassOverview(teacherId, courseId);
     }
 
     /**
      * Obtiene lista de estudiantes con métricas
      */
     async getStudentsWithMetrics(teacherId, options = {}) {
-        const {
-            courseId,
-            sortBy = 'name',
-            sortOrder = 'ASC',
-            limit = 50,
-            offset = 0
-        } = options;
-
-        let query = `
-            SELECT
-                u.id,
-                u.nombre,
-                u.apellido_paterno,
-                u.apellido_materno,
-                u.email,
-                COALESCE(ib.level, 1) as level,
-                COALESCE(ib.experience_points, 0) as xp,
-                COALESCE(ib.balance, 0) as iacoins,
-                COALESCE(cp_stats.completed, 0) as challenges_completed,
-                COALESCE(us.current_streak, 0) as current_streak,
-                COALESCE(ag_stats.generations, 0) as ai_generations,
-                ld.title as level_title,
-                ld.icon as level_icon,
-                up.avatar_url
-            FROM inscripciones e
-            JOIN usuarios u ON e.estudiante_id = u.id
-            LEFT JOIN iacoins_balance ib ON u.id = ib.user_id
-            LEFT JOIN level_definitions ld ON ib.level = ld.level
-            LEFT JOIN user_profiles up ON u.id = up.user_id
-            LEFT JOIN user_streaks us ON u.id = us.user_id AND us.streak_type = 'daily_login'
-            LEFT JOIN (
-                SELECT user_id, COUNT(*) as completed
-                FROM challenge_progress
-                WHERE status = 'claimed'
-                GROUP BY user_id
-            ) cp_stats ON u.id = cp_stats.user_id
-            LEFT JOIN (
-                SELECT user_id, COUNT(*) as generations
-                FROM ai_generations
-                WHERE status = 'completed'
-                GROUP BY user_id
-            ) ag_stats ON u.id = ag_stats.user_id
-            WHERE e.docente_id = $1
-        `;
-
-        const params = [teacherId];
-        let paramIndex = 2;
-
-        if (courseId) {
-            query += ` AND e.curso_id = $${paramIndex++}`;
-            params.push(courseId);
-        }
-
-        // Ordenamiento
-        const sortFields = {
-            name: 'u.nombre',
-            level: 'ib.level DESC',
-            xp: 'ib.experience_points DESC',
-            challenges: 'cp_stats.completed DESC',
-            streak: 'us.current_streak DESC'
-        };
-
-        query += ` ORDER BY ${sortFields[sortBy] || 'u.nombre'} ${sortOrder}`;
-        query += ` LIMIT $${paramIndex++} OFFSET $${paramIndex}`;
-        params.push(limit, offset);
-
-        return executeQuery(query, params);
+        return TeacherAnalyticsDAO.getStudentsWithMetrics(teacherId, options);
     }
 
     /**
      * Obtiene detalles de un estudiante específico
      */
     async getStudentDetails(teacherId, studentId) {
-        // Verificar que el docente tiene acceso al estudiante
-        const accessCheck = await executeQuery(
-            `SELECT 1 FROM inscripciones WHERE docente_id = $1 AND estudiante_id = $2`,
-            [teacherId, studentId]
-        );
-
-        if (accessCheck.length === 0) {
+        // Verificar acceso
+        const hasAccess = await TeacherAnalyticsDAO.checkTeacherAccess(teacherId, studentId);
+        if (!hasAccess) {
             throw new Error('No tienes acceso a este estudiante');
         }
 
-        // Obtener datos completos del estudiante
-        const query = `
-            SELECT
-                u.id,
-                u.nombre,
-                u.apellido_paterno,
-                u.apellido_materno,
-                u.email,
-                u.created_at as joined_at,
-                ib.level,
-                ib.experience_points,
-                ib.balance,
-                ib.total_earned,
-                ib.total_spent,
-                ld.title as level_title,
-                ld.icon as level_icon,
-                up.bio,
-                up.avatar_url
-            FROM usuarios u
-            LEFT JOIN iacoins_balance ib ON u.id = ib.user_id
-            LEFT JOIN level_definitions ld ON ib.level = ld.level
-            LEFT JOIN user_profiles up ON u.id = up.user_id
-            WHERE u.id = $1
-        `;
+        // Obtener datos base
+        const student = await TeacherAnalyticsDAO.getStudentFullData(studentId);
+        if (!student) return null;
 
-        const studentResult = await executeQuery(query, [studentId]);
-        if (studentResult.length === 0) {
-            return null;
-        }
+        // Agregar estadísticas adicionales (en paralelo para eficiencia)
+        const [challenges, recentActivity, badges, weeklyProgress] = await Promise.all([
+            TeacherAnalyticsDAO.getStudentChallengeStats(studentId),
+            TeacherAnalyticsDAO.getStudentRecentActivity(studentId),
+            TeacherAnalyticsDAO.getStudentBadges(studentId),
+            TeacherAnalyticsDAO.getStudentWeeklyProgress(studentId)
+        ]);
 
-        const student = studentResult[0];
-
-        // Obtener estadísticas adicionales
-        student.challenges = await this.getStudentChallengeStats(studentId);
-        student.recentActivity = await this.getStudentRecentActivity(studentId);
-        student.badges = await this.getStudentBadges(studentId);
-        student.weeklyProgress = await this.getStudentWeeklyProgress(studentId);
+        student.challenges = challenges;
+        student.recentActivity = recentActivity;
+        student.badges = badges;
+        student.weeklyProgress = weeklyProgress;
 
         return student;
     }
@@ -177,120 +63,28 @@ class TeacherAnalyticsService {
      * Obtiene estadísticas de retos del estudiante
      */
     async getStudentChallengeStats(studentId) {
-        const query = `
-            SELECT
-                COUNT(*) FILTER (WHERE status = 'claimed') as completed,
-                COUNT(*) FILTER (WHERE status = 'in_progress') as in_progress,
-                SUM(coins_earned) as total_coins,
-                SUM(xp_earned) as total_xp,
-                AVG(
-                    CASE WHEN status = 'claimed'
-                    THEN EXTRACT(EPOCH FROM (claimed_at - started_at)) / 3600
-                    END
-                ) as avg_completion_hours
-            FROM challenge_progress
-            WHERE user_id = $1
-        `;
-
-        const result = await executeQuery(query, [studentId]);
-        return result[0];
+        return TeacherAnalyticsDAO.getStudentChallengeStats(studentId);
     }
 
     /**
      * Obtiene actividad reciente del estudiante
      */
     async getStudentRecentActivity(studentId, limit = 10) {
-        const query = `
-            (
-                SELECT
-                    'challenge_completed' as type,
-                    c.title as description,
-                    cp.claimed_at as timestamp,
-                    cp.coins_earned as value
-                FROM challenge_progress cp
-                JOIN challenges c ON cp.challenge_id = c.id
-                WHERE cp.user_id = $1 AND cp.status = 'claimed'
-                ORDER BY cp.claimed_at DESC
-                LIMIT 5
-            )
-            UNION ALL
-            (
-                SELECT
-                    'ai_generation' as type,
-                    CONCAT('Generación ', generation_type) as description,
-                    created_at as timestamp,
-                    coins_cost as value
-                FROM ai_generations
-                WHERE user_id = $1 AND status = 'completed'
-                ORDER BY created_at DESC
-                LIMIT 5
-            )
-            UNION ALL
-            (
-                SELECT
-                    'level_up' as type,
-                    CONCAT('Subió a nivel ', level) as description,
-                    achieved_at as timestamp,
-                    coins_earned as value
-                FROM level_history
-                WHERE user_id = $1
-                ORDER BY achieved_at DESC
-                LIMIT 5
-            )
-            ORDER BY timestamp DESC
-            LIMIT $2
-        `;
-
-        return executeQuery(query, [studentId, limit]);
+        return TeacherAnalyticsDAO.getStudentRecentActivity(studentId, limit);
     }
 
     /**
      * Obtiene badges del estudiante
      */
     async getStudentBadges(studentId) {
-        const query = `
-            SELECT
-                b.name,
-                b.icon,
-                b.color,
-                b.rarity,
-                ub.earned_at
-            FROM user_badges ub
-            JOIN badges b ON ub.badge_id = b.id
-            WHERE ub.user_id = $1
-            ORDER BY ub.earned_at DESC
-            LIMIT 10
-        `;
-
-        return executeQuery(query, [studentId]);
+        return TeacherAnalyticsDAO.getStudentBadges(studentId);
     }
 
     /**
      * Obtiene progreso semanal del estudiante
      */
     async getStudentWeeklyProgress(studentId) {
-        const query = `
-            SELECT
-                DATE_TRUNC('day', t.timestamp) as day,
-                SUM(CASE WHEN t.type = 'earn' THEN t.amount ELSE 0 END) as xp_earned,
-                COUNT(*) FILTER (WHERE t.type = 'challenge') as challenges
-            FROM (
-                SELECT created_at as timestamp, 'earn' as type, xp_earned as amount
-                FROM challenge_progress
-                WHERE user_id = $1
-                AND claimed_at >= NOW() - INTERVAL '7 days'
-                UNION ALL
-                SELECT created_at as timestamp, 'challenge' as type, 1 as amount
-                FROM challenge_progress
-                WHERE user_id = $1
-                AND status = 'claimed'
-                AND claimed_at >= NOW() - INTERVAL '7 days'
-            ) t
-            GROUP BY DATE_TRUNC('day', t.timestamp)
-            ORDER BY day
-        `;
-
-        return executeQuery(query, [studentId]);
+        return TeacherAnalyticsDAO.getStudentWeeklyProgress(studentId);
     }
 
     // =====================================
@@ -303,62 +97,13 @@ class TeacherAnalyticsService {
     async generateClassProgressReport(teacherId, courseId, dateRange = '30d') {
         const days = parseInt(dateRange) || 30;
 
-        // Distribución de niveles
-        const levelDistribution = await executeQuery(`
-            SELECT
-                ib.level,
-                ld.title,
-                COUNT(*) as count
-            FROM inscripciones e
-            JOIN iacoins_balance ib ON e.estudiante_id = ib.user_id
-            JOIN level_definitions ld ON ib.level = ld.level
-            WHERE e.docente_id = $1
-            ${courseId ? 'AND e.curso_id = $2' : ''}
-            GROUP BY ib.level, ld.title
-            ORDER BY ib.level
-        `, courseId ? [teacherId, courseId] : [teacherId]);
-
-        // Actividad diaria
-        const dailyActivity = await executeQuery(`
-            SELECT
-                DATE_TRUNC('day', t.created_at) as day,
-                COUNT(DISTINCT t.user_id) as active_users,
-                SUM(t.xp) as total_xp
-            FROM (
-                SELECT user_id, claimed_at as created_at, xp_earned as xp
-                FROM challenge_progress cp
-                JOIN inscripciones e ON cp.user_id = e.estudiante_id
-                WHERE e.docente_id = $1
-                ${courseId ? 'AND e.curso_id = $2' : ''}
-                AND cp.claimed_at >= NOW() - INTERVAL '${days} days'
-            ) t
-            GROUP BY DATE_TRUNC('day', t.created_at)
-            ORDER BY day
-        `, courseId ? [teacherId, courseId] : [teacherId]);
-
-        // Top performers
-        const topPerformers = await this.getStudentsWithMetrics(teacherId, {
-            courseId,
-            sortBy: 'xp',
-            limit: 5
-        });
-
-        // Retos más completados
-        const popularChallenges = await executeQuery(`
-            SELECT
-                c.title,
-                c.category,
-                COUNT(*) as completions
-            FROM challenge_progress cp
-            JOIN challenges c ON cp.challenge_id = c.id
-            JOIN inscripciones e ON cp.user_id = e.estudiante_id
-            WHERE e.docente_id = $1
-            ${courseId ? 'AND e.curso_id = $2' : ''}
-            AND cp.status = 'claimed'
-            GROUP BY c.id, c.title, c.category
-            ORDER BY completions DESC
-            LIMIT 5
-        `, courseId ? [teacherId, courseId] : [teacherId]);
+        // Ejecutar todas las queries en paralelo
+        const [levelDistribution, dailyActivity, topPerformers, popularChallenges] = await Promise.all([
+            TeacherAnalyticsDAO.getLevelDistribution(teacherId, courseId),
+            TeacherAnalyticsDAO.getDailyActivity(teacherId, courseId, days),
+            this.getStudentsWithMetrics(teacherId, { courseId, sortBy: 'xp', limit: 5 }),
+            TeacherAnalyticsDAO.getPopularChallenges(teacherId, courseId, 5)
+        ]);
 
         return {
             levelDistribution,
@@ -376,23 +121,14 @@ class TeacherAnalyticsService {
     async getStudentAlerts(teacherId, courseId = null) {
         const alerts = [];
 
-        // Estudiantes con streak roto
-        const brokenStreaks = await executeQuery(`
-            SELECT
-                u.id,
-                u.nombre,
-                u.apellido_paterno,
-                us.current_streak as previous_streak,
-                us.last_activity_date
-            FROM inscripciones e
-            JOIN usuarios u ON e.estudiante_id = u.id
-            LEFT JOIN user_streaks us ON u.id = us.user_id AND us.streak_type = 'daily_login'
-            WHERE e.docente_id = $1
-            ${courseId ? 'AND e.curso_id = $2' : ''}
-            AND us.last_activity_date < NOW() - INTERVAL '2 days'
-            AND us.current_streak >= 5
-        `, courseId ? [teacherId, courseId] : [teacherId]);
+        // Obtener todas las alertas en paralelo
+        const [brokenStreaks, inactive, highPerformers] = await Promise.all([
+            TeacherAnalyticsDAO.getBrokenStreaks(teacherId, courseId),
+            TeacherAnalyticsDAO.getInactiveStudents(teacherId, courseId),
+            TeacherAnalyticsDAO.getHighPerformers(teacherId, courseId)
+        ]);
 
+        // Procesar streaks rotos
         brokenStreaks.forEach(s => {
             alerts.push({
                 type: 'streak_broken',
@@ -402,23 +138,7 @@ class TeacherAnalyticsService {
             });
         });
 
-        // Estudiantes sin actividad
-        const inactive = await executeQuery(`
-            SELECT
-                u.id,
-                u.nombre,
-                u.apellido_paterno,
-                MAX(cp.updated_at) as last_activity
-            FROM inscripciones e
-            JOIN usuarios u ON e.estudiante_id = u.id
-            LEFT JOIN challenge_progress cp ON u.id = cp.user_id
-            WHERE e.docente_id = $1
-            ${courseId ? 'AND e.curso_id = $2' : ''}
-            GROUP BY u.id, u.nombre, u.apellido_paterno
-            HAVING MAX(cp.updated_at) < NOW() - INTERVAL '7 days'
-               OR MAX(cp.updated_at) IS NULL
-        `, courseId ? [teacherId, courseId] : [teacherId]);
-
+        // Procesar inactivos
         inactive.forEach(s => {
             alerts.push({
                 type: 'inactive',
@@ -428,23 +148,7 @@ class TeacherAnalyticsService {
             });
         });
 
-        // Estudiantes destacados
-        const highPerformers = await executeQuery(`
-            SELECT
-                u.id,
-                u.nombre,
-                u.apellido_paterno,
-                COUNT(*) as recent_completions
-            FROM inscripciones e
-            JOIN usuarios u ON e.estudiante_id = u.id
-            JOIN challenge_progress cp ON u.id = cp.user_id
-            WHERE e.docente_id = $1
-            ${courseId ? 'AND e.curso_id = $2' : ''}
-            AND cp.claimed_at >= NOW() - INTERVAL '7 days'
-            GROUP BY u.id, u.nombre, u.apellido_paterno
-            HAVING COUNT(*) >= 10
-        `, courseId ? [teacherId, courseId] : [teacherId]);
-
+        // Procesar destacados
         highPerformers.forEach(s => {
             alerts.push({
                 type: 'high_performer',
@@ -454,6 +158,7 @@ class TeacherAnalyticsService {
             });
         });
 
+        // Ordenar por severidad
         return alerts.sort((a, b) => {
             const severityOrder = { success: 3, warning: 2, info: 1 };
             return severityOrder[b.severity] - severityOrder[a.severity];
@@ -468,52 +173,14 @@ class TeacherAnalyticsService {
      * Compara rendimiento entre cursos
      */
     async compareCourses(teacherId) {
-        const query = `
-            SELECT
-                c.id as course_id,
-                c.nombre as course_name,
-                COUNT(DISTINCT e.estudiante_id) as students,
-                AVG(ib.level) as avg_level,
-                AVG(ib.experience_points) as avg_xp,
-                SUM(cp_stats.completed) as total_challenges
-            FROM cursos c
-            JOIN inscripciones e ON c.id = e.curso_id
-            LEFT JOIN iacoins_balance ib ON e.estudiante_id = ib.user_id
-            LEFT JOIN (
-                SELECT user_id, COUNT(*) as completed
-                FROM challenge_progress
-                WHERE status = 'claimed'
-                GROUP BY user_id
-            ) cp_stats ON e.estudiante_id = cp_stats.user_id
-            WHERE e.docente_id = $1
-            GROUP BY c.id, c.nombre
-            ORDER BY avg_xp DESC
-        `;
-
-        return executeQuery(query, [teacherId]);
+        return TeacherAnalyticsDAO.compareCourses(teacherId);
     }
 
     /**
      * Obtiene tendencias de la clase
      */
     async getClassTrends(teacherId, courseId, weeks = 4) {
-        const query = `
-            SELECT
-                DATE_TRUNC('week', cp.claimed_at) as week,
-                COUNT(DISTINCT cp.user_id) as active_students,
-                COUNT(*) as challenges_completed,
-                SUM(cp.xp_earned) as xp_earned,
-                AVG(EXTRACT(EPOCH FROM (cp.claimed_at - cp.started_at)) / 3600) as avg_completion_hours
-            FROM challenge_progress cp
-            JOIN inscripciones e ON cp.user_id = e.estudiante_id
-            WHERE e.docente_id = $1
-            ${courseId ? 'AND e.curso_id = $2' : ''}
-            AND cp.claimed_at >= NOW() - INTERVAL '${weeks} weeks'
-            GROUP BY DATE_TRUNC('week', cp.claimed_at)
-            ORDER BY week
-        `;
-
-        return executeQuery(query, courseId ? [teacherId, courseId] : [teacherId]);
+        return TeacherAnalyticsDAO.getClassTrends(teacherId, courseId, weeks);
     }
 }
 

@@ -367,7 +367,13 @@
         fallbackToggleChatbot() {
             const chatbot = document.getElementById('chatbotContainer') || document.querySelector('.chatbot');
             if (chatbot) {
-                chatbot.style.display = chatbot.style.display === 'none' ? 'block' : 'none';
+                // FIXED: Prefer real toggleChatbot from chatbot.js
+                if (typeof window.toggleChatbot === 'function') {
+                    window.toggleChatbot();
+                    this.logFix('Chatbot toggled');
+                    return;
+                }
+                chatbot.style.display = chatbot.style.display === 'none' ? 'flex' : 'none';
                 this.logFix('Chatbot toggled');
             }
         }

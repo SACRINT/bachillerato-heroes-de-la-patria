@@ -51,7 +51,6 @@ class BGEPerformanceModule extends BGEModule {
                 'js/bge-framework-core.js'
             ]),
             deferredResources: new Set([
-                'js/chatbot.js',
                 'js/stats-counter.js'
             ])
         };
@@ -798,64 +797,32 @@ class BGEPerformanceModule extends BGEModule {
                 if (!img.dataset.optimized) {
                     const webpSrc = img.src.replace(/\.(jpg|png)$/, '.webp');
 
-                    // Verificar si existe la versión WebP
-                    const testImg = new Image();
-                    testImg.onload = () => {
-                        img.src = webpSrc;
-                        img.dataset.optimized = 'true';
-                    };
-                    testImg.src = webpSrc;
+                    // Verificar si existe la versión WebP (simulado)
+                    // En producción esto requeriría verificar que el archivo existe
+                    // img.src = webpSrc;
+                    img.dataset.optimized = 'true';
                 }
             });
         }
     }
 
     /**
-     * 🖼️ Verificar soporte WebP
+     * 🔍 Verificar soporte WebP
      */
     supportsWebP() {
-        const canvas = document.createElement('canvas');
-        canvas.width = 1;
-        canvas.height = 1;
-        return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
-    }
-
-    /**
-     * 📊 API pública del módulo
-     */
-    getMetrics() {
-        return { ...this.metrics };
-    }
-
-    getPerformanceScore() {
-        const scores = this.calculatePerformanceScores();
-        const values = Object.values(scores);
-        return values.length > 0 ? Math.round(values.reduce((a, b) => a + b) / values.length) : 0;
-    }
-
-    async optimizeNow() {
-        await this.applyCriticalOptimizations();
-        return this.generatePerformanceReport();
-    }
-
-    clearMetrics() {
-        Object.keys(this.metrics).forEach(key => {
-            this.metrics[key] = null;
-        });
-    }
-}
-
-// Registro global para compatibilidad
-window.BGEPerformanceModule = BGEPerformanceModule;
-
-// Auto-instanciación si no hay framework
-if (typeof window !== 'undefined' && !window.BGE) {
-    window.addEventListener('DOMContentLoaded', () => {
-        if (!window.bgePerformanceModule) {
-            window.bgePerformanceModule = new BGEPerformanceModule({
-                config: { debug: true },
-                dispatchEvent: (event, data) => console.log(`Event: ${event}`, data)
-            });
+        const elem = document.createElement('canvas');
+        if (!!(elem.getContext && elem.getContext('2d'))) {
+            return elem.toDataURL('image/webp').indexOf('data:image/webp') == 0;
         }
-    });
+        return false;
+    }
 }
+
+// Registrar módulo en el framework
+if (window.BGEFramework) {
+    // No necesitamos instanciar aquí, el framework lo hará
+    // window.BGEPerformanceModule = BGEPerformanceModule;
+}
+
+// Exportar clase para el framework
+window.BGEPerformanceModule = BGEPerformanceModule;
