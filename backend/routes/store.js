@@ -1,10 +1,10 @@
 /**
  * 🛒 STORE ROUTES - TIENDA VIRTUAL
  * Gestión de items y compras con IACoins
+ * ✅ FASE 3 DAL - Refactorizado para usar DAO
  */
 
 const express = require('express');
-const { Pool } = require('pg');
 // GDPR Logging - Debug condicional y sanitización
 const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
@@ -12,11 +12,9 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// PostgreSQL connection pool
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+// ✅ FASE 3: Using DAO layer instead of direct pool access
+const StoreDAO = require('../data/store.dao');
+const { pool } = require('../config/database');
 
 // ============================================
 // ENDPOINT 1: GET /api/store/items
@@ -28,41 +26,11 @@ router.get('/items', authenticateToken, async (req, res) => {
 
         debugLog.log('STORE', '[STORE] Listando items de la tienda');
 
-        let query = `
-            SELECT
-                id,
-                name,
-                description,
-                category,
-                price_iacoins,
-                icon,
-                is_available,
-                stock,
-                max_per_user,
-                metadata,
-                created_at
-            FROM store_items
-            WHERE 1=1
-        `;
-        const params = [];
-
-        // Filtro por categoría
-        if (category) {
-            query += ` AND category = $${params.length + 1}`;
-            params.push(category);
-        }
-
-        // Filtro por disponibilidad
-        if (is_available === true || is_available === 'true') {
-            query += ` AND is_available = true AND (stock IS NULL OR stock > 0)`;
-        }
-
-        query += ` ORDER BY category, price_iacoins`;
-
-        const result = await pool.query(query, params);
+        // ✅ FASE 3: Using StoreDAO
+        const items = await StoreDAO.getItems({ category, is_available });
 
         // Agrupar por categoría
-        const itemsByCategory = result.rows.reduce((acc, item) => {
+        const itemsByCategory = items.reduce((acc, item) => {
             if (!acc[item.category]) {
                 acc[item.category] = [];
             }
@@ -71,10 +39,10 @@ router.get('/items', authenticateToken, async (req, res) => {
         }, {});
 
         res.json({
-            items: result.rows,
+            items: items,
             items_by_category: itemsByCategory,
             summary: {
-                total: result.rows.length,
+                total: items.length,
                 categories: Object.keys(itemsByCategory)
             }
         });
@@ -99,35 +67,24 @@ router.get('/items/:id', authenticateToken, async (req, res) => {
 
         debugLog.log('STORE', `[STORE] Obteniendo detalles del item ${id}`);
 
-        const itemResult = await pool.query(
-            `SELECT * FROM store_items WHERE id = $1`,
-            [id]
-        );
+        // ✅ FASE 3: Using StoreDAO
+        const item = await StoreDAO.getItemById(id);
 
-        if (itemResult.rows.length === 0) {
+        if (!item) {
             return res.status(404).json({
                 error: 'Item no encontrado'
             });
         }
 
-        // Verificar cuántas veces el usuario ha comprado este item
-        const purchaseResult = await pool.query(
-            `SELECT COUNT(*) as times_purchased
-            FROM user_items
-            WHERE user_id = $1 AND item_id = $2`,
-            [userId, id]
-        );
-
-        const item = itemResult.rows[0];
-        const timesPurchased = parseInt(purchaseResult.rows[0].times_purchased);
+        const timesPurchased = await StoreDAO.getUserPurchaseCount(userId, id);
 
         res.json({
             item,
             user_status: {
                 times_purchased: timesPurchased,
                 can_purchase: item.is_available &&
-                             (item.stock === null || item.stock > 0) &&
-                             (item.max_per_user === null || timesPurchased < item.max_per_user)
+                    (item.stock === null || item.stock > 0) &&
+                    (item.max_per_user === null || timesPurchased < item.max_per_user)
             }
         });
 
@@ -307,26 +264,11 @@ router.get('/my-items', authenticateToken, async (req, res) => {
 
         debugLog.log('STORE', `[STORE] Obteniendo items comprados por usuario ${userId}`);
 
-        const result = await pool.query(
-            `SELECT
-                ui.id as purchase_id,
-                ui.purchased_at,
-                si.id as item_id,
-                si.name,
-                si.description,
-                si.category,
-                si.price_iacoins,
-                si.icon,
-                si.metadata
-            FROM user_items ui
-            JOIN store_items si ON ui.item_id = si.id
-            WHERE ui.user_id = $1
-            ORDER BY ui.purchased_at DESC`,
-            [userId]
-        );
+        // ✅ FASE 3: Using StoreDAO
+        const items = await StoreDAO.getUserItems(userId);
 
         // Agrupar por categoría
-        const itemsByCategory = result.rows.reduce((acc, item) => {
+        const itemsByCategory = items.reduce((acc, item) => {
             if (!acc[item.category]) {
                 acc[item.category] = [];
             }
@@ -335,12 +277,12 @@ router.get('/my-items', authenticateToken, async (req, res) => {
         }, {});
 
         res.json({
-            items: result.rows,
+            items: items,
             items_by_category: itemsByCategory,
             summary: {
-                total: result.rows.length,
+                total: items.length,
                 categories: Object.keys(itemsByCategory),
-                total_spent: result.rows.reduce((sum, item) => sum + item.price_iacoins, 0)
+                total_spent: items.reduce((sum, item) => sum + item.price_iacoins, 0)
             }
         });
 
@@ -406,17 +348,14 @@ router.post('/items', authenticateToken, async (req, res) => {
 
         debugLog.log('STORE', `[STORE] Admin ${req.user.id} creando nuevo item: ${name}`);
 
-        const result = await pool.query(
-            `INSERT INTO store_items
-            (name, description, category, price_iacoins, icon, stock, max_per_user, metadata, is_available)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, true)
-            RETURNING *`,
-            [name, description, category, price_iacoins, icon, stock, max_per_user, JSON.stringify(metadata)]
-        );
+        // ✅ FASE 3: Using StoreDAO
+        const newItem = await StoreDAO.createItem({
+            name, description, category, price_iacoins, icon, stock, max_per_user, metadata
+        });
 
         res.status(201).json({
             success: true,
-            item: result.rows[0],
+            item: newItem,
             message: 'Item creado exitosamente'
         });
 

@@ -34,7 +34,7 @@ class StudentService {
         }
 
         // Emitir evento
-        EventBus.emit('student:loaded', { id, student });
+        EventBus.getInstance().emit('student:loaded', { id, student });
 
         debugLog.log('STUDENT', `📚 Estudiante cargado: ${student.nombre} ${student.apellido_paterno}`);
 
@@ -61,7 +61,7 @@ class StudentService {
         };
 
         // Emitir evento
-        EventBus.emit('student:profile:loaded', { id, profile });
+        EventBus.getInstance().emit('student:profile:loaded', { id, profile });
 
         return profile;
     }
@@ -130,7 +130,7 @@ class StudentService {
         const student = await StudentDAO.create(data);
 
         // Emitir evento
-        EventBus.emit('student:created', { student });
+        EventBus.getInstance().emit('student:created', { student });
 
         debugLog.log('STUDENT', `✅ Estudiante creado: ${student.nombre} ${student.apellido_paterno} (ID: ${student.id})`);
 
@@ -170,7 +170,7 @@ class StudentService {
         const student = await StudentDAO.update(id, data);
 
         // Emitir evento
-        EventBus.emit('student:updated', { id, student, previousData: existing });
+        EventBus.getInstance().emit('student:updated', { id, student, previousData: existing });
 
         debugLog.log('STUDENT', `📝 Estudiante actualizado: ${student.nombre} ${student.apellido_paterno} (ID: ${id})`);
 
@@ -190,7 +190,7 @@ class StudentService {
         await StudentDAO.delete(id);
 
         // Emitir evento
-        EventBus.emit('student:deleted', { id, student: existing });
+        EventBus.getInstance().emit('student:deleted', { id, student: existing });
 
         debugLog.log('STUDENT', `🗑️ Estudiante eliminado (soft): ${existing.nombre} ${existing.apellido_paterno} (ID: ${id})`);
 

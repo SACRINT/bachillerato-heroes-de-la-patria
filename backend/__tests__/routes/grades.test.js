@@ -5,8 +5,8 @@
 
 const request = require('supertest');
 
-// Mock de la base de datos
-jest.mock('../../data/database-access', () => ({
+// Mock de la base de datos (config/database es lo que realmente usa grades.js)
+jest.mock('../../config/database', () => ({
     executeQuery: jest.fn(),
     getPool: jest.fn()
 }));
@@ -19,7 +19,7 @@ jest.mock('../../middleware/auth', () => ({
     }
 }));
 
-const { executeQuery } = require('../../data/database-access');
+const { executeQuery } = require('../../config/database');
 
 // Importar el router después de los mocks
 const express = require('express');
@@ -32,7 +32,10 @@ app.use('/api/grades', gradesRoutes);
 
 describe('Grades API', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        jest.resetAllMocks();
+        executeQuery.mockImplementation((sql, params) => {
+            return Promise.resolve([]);
+        });
     });
 
     // =====================================

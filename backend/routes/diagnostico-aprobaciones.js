@@ -1,5 +1,6 @@
 /**
  * 🔍 DIAGNÓSTICO REAL DE APROBACIONES
+ * ✅ FASE 3 DAL - Refactorizado para usar AprobacionesDAO
  * Endpoint para ver EXACTAMENTE qué hay en la BD
  * Sin filtros, sin mentiras, información real
  */
@@ -9,7 +10,9 @@ const express = require('express');
 const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
-const { pool } = require('../config/database');
+
+// ✅ FASE 3: Using DAO layer
+const AprobacionesDAO = require('../data/aprobaciones.dao');
 
 /**
  * GET /api/diagnostico-aprobaciones/todos-registros
@@ -19,19 +22,9 @@ router.get('/todos-registros', async (req, res) => {
     debugLog.log('DIAGNOSTICO_APROBACIONES', '\n🔍 [DIAGNÓSTICO] Consultando TODOS los registros sin filtros...\n');
 
     try {
-        // QUERY 1: Resumen
-        const resumen = await pool.query(`
-            SELECT
-                COUNT(*) as total_registros,
-                COUNT(*) FILTER (WHERE estado='pendiente') as pendiente_count,
-                COUNT(*) FILTER (WHERE estado='aprobada') as aprobada_count,
-                COUNT(*) FILTER (WHERE estado='rechazada') as rechazada_count,
-                COUNT(*) FILTER (WHERE email_confirmado=true) as confirmados_count,
-                COUNT(*) FILTER (WHERE email_confirmado=false) as no_confirmados_count
-            FROM pendientes_aprobacion
-        `);
+        // ✅ FASE 3: Using AprobacionesDAO
+        const stats = await AprobacionesDAO.getResumenCompleto();
 
-        const stats = resumen.rows[0];
         debugLog.log('DIAGNOSTICO_APROBACIONES', '📊 [DIAGNÓSTICO] Estadísticas generales:');
         debugLog.log('DIAGNOSTICO_APROBACIONES', `   - Total registros: ${stats.total_registros}`);
         debugLog.log('DIAGNOSTICO_APROBACIONES', `   - Estado pendiente: ${stats.pendiente_count}`);
@@ -40,44 +33,26 @@ router.get('/todos-registros', async (req, res) => {
         debugLog.log('DIAGNOSTICO_APROBACIONES', `   - Email confirmados: ${stats.confirmados_count}`);
         debugLog.log('DIAGNOSTICO_APROBACIONES', `   - Email NO confirmados: ${stats.no_confirmados_count}`);
 
-        // QUERY 2: Desglose por estado
-        const porEstado = await pool.query(`
-            SELECT estado, COUNT(*) as cantidad
-            FROM pendientes_aprobacion
-            GROUP BY estado
-            ORDER BY cantidad DESC
-        `);
+        const porEstado = await AprobacionesDAO.getDesglosePorEstado();
 
         debugLog.log('DIAGNOSTICO_APROBACIONES', '\n📋 [DIAGNÓSTICO] Desglose por estado:');
-        porEstado.rows.forEach(row => {
+        porEstado.forEach(row => {
             debugLog.log('DIAGNOSTICO_APROBACIONES', `   - ${row.estado}: ${row.cantidad}`);
         });
 
-        // QUERY 3: TODOS los registros
-        const todos = await pool.query(`
-            SELECT
-                id,
-                tipo_solicitud,
-                email_usuario,
-                estado,
-                email_confirmado,
-                fecha_solicitud,
-                created_at
-            FROM pendientes_aprobacion
-            ORDER BY fecha_solicitud DESC
-        `);
+        const todos = await AprobacionesDAO.listarTodos();
 
-        debugLog.log('DIAGNOSTICO_APROBACIONES', `\n📋 [DIAGNÓSTICO] LISTADO COMPLETO (${todos.rows.length} registros):`);
-        todos.rows.forEach((row, idx) => {
-            debugLog.log('DIAGNOSTICO_APROBACIONES', `   ${idx+1}. ID ${row.id}: ${row.tipo_solicitud} | ${row.estado} | ${row.email_usuario}`);
+        debugLog.log('DIAGNOSTICO_APROBACIONES', `\n📋 [DIAGNÓSTICO] LISTADO COMPLETO (${todos.length} registros):`);
+        todos.forEach((row, idx) => {
+            debugLog.log('DIAGNOSTICO_APROBACIONES', `   ${idx + 1}. ID ${row.id}: ${row.tipo_solicitud} | ${row.estado} | ${row.email_usuario}`);
         });
 
         res.json({
             success: true,
             resumen: stats,
-            por_estado: porEstado.rows,
-            todos_registros: todos.rows,
-            total: todos.rows.length
+            por_estado: porEstado,
+            todos_registros: todos,
+            total: todos.length
         });
 
         debugLog.log('DIAGNOSTICO_APROBACIONES', '\n✅ [DIAGNÓSTICO] Completado\n');
@@ -99,28 +74,18 @@ router.get('/pendientes-solo', async (req, res) => {
     debugLog.log('DIAGNOSTICO_APROBACIONES', '\n🔍 [DIAGNÓSTICO] Consultando SOLO registros pendientes...\n');
 
     try {
-        const pendientes = await pool.query(`
-            SELECT
-                id,
-                tipo_solicitud,
-                email_usuario,
-                estado,
-                email_confirmado,
-                fecha_solicitud
-            FROM pendientes_aprobacion
-            WHERE estado = 'pendiente'
-            ORDER BY fecha_solicitud DESC
-        `);
+        // ✅ FASE 3: Using AprobacionesDAO
+        const pendientes = await AprobacionesDAO.listarPendientes(100);
 
-        debugLog.log('DIAGNOSTICO_APROBACIONES', `📊 [DIAGNÓSTICO] Registros pendientes: ${pendientes.rows.length}`);
-        pendientes.rows.forEach((row, idx) => {
-            debugLog.log('DIAGNOSTICO_APROBACIONES', `   ${idx+1}. ID ${row.id}: ${row.tipo_solicitud} | ${row.email_usuario} | Confirmado: ${row.email_confirmado}`);
+        debugLog.log('DIAGNOSTICO_APROBACIONES', `📊 [DIAGNÓSTICO] Registros pendientes: ${pendientes.length}`);
+        pendientes.forEach((row, idx) => {
+            debugLog.log('DIAGNOSTICO_APROBACIONES', `   ${idx + 1}. ID ${row.id}: ${row.tipo_solicitud} | ${row.email_usuario} | Confirmado: ${row.email_confirmado}`);
         });
 
         res.json({
             success: true,
-            pendientes: pendientes.rows,
-            total: pendientes.rows.length
+            pendientes: pendientes,
+            total: pendientes.length
         });
 
         debugLog.log('DIAGNOSTICO_APROBACIONES', '\n✅ [DIAGNÓSTICO] Completado\n');
@@ -142,30 +107,19 @@ router.get('/comparar', async (req, res) => {
     debugLog.log('DIAGNOSTICO_APROBACIONES', '\n🔍 [DIAGNÓSTICO] Comparando BD vs endpoint GET...\n');
 
     try {
-        // BD real
-        const bdReal = await pool.query(`
-            SELECT COUNT(*) as total
-            FROM pendientes_aprobacion
-            WHERE estado = 'pendiente'
-        `);
+        // ✅ FASE 3: Using AprobacionesDAO
+        const bdRealTotal = await AprobacionesDAO.contarPendientes();
+        const endpointNormal = await AprobacionesDAO.listarPendientesParaEndpoint(100);
 
-        // Lo que retorna el endpoint normal
-        const endpointNormal = await pool.query(`
-            SELECT * FROM pendientes_aprobacion
-            WHERE estado = 'pendiente'
-            ORDER BY fecha_solicitud DESC
-            LIMIT 100
-        `);
-
-        debugLog.log('DIAGNOSTICO_APROBACIONES', `📊 [DIAGNÓSTICO] BD real: ${bdReal.rows[0].total} pendientes`);
-        debugLog.log('DIAGNOSTICO_APROBACIONES', `📊 [DIAGNÓSTICO] Endpoint retorna: ${endpointNormal.rows.length} registros`);
+        debugLog.log('DIAGNOSTICO_APROBACIONES', `📊 [DIAGNÓSTICO] BD real: ${bdRealTotal} pendientes`);
+        debugLog.log('DIAGNOSTICO_APROBACIONES', `📊 [DIAGNÓSTICO] Endpoint retorna: ${endpointNormal.length} registros`);
 
         res.json({
             success: true,
-            bd_real_total: bdReal.rows[0].total,
-            endpoint_retorna: endpointNormal.rows.length,
-            registros: endpointNormal.rows,
-            corresponden: bdReal.rows[0].total === endpointNormal.rows.length
+            bd_real_total: bdRealTotal,
+            endpoint_retorna: endpointNormal.length,
+            registros: endpointNormal,
+            corresponden: bdRealTotal === endpointNormal.length
         });
 
         debugLog.log('DIAGNOSTICO_APROBACIONES', '\n✅ [DIAGNÓSTICO] Completado\n');

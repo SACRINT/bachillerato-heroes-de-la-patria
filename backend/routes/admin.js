@@ -8,7 +8,8 @@ const { body, validationResult } = require('express-validator');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const { getAuthService } = require('../services/authService');
 const { getPasswordGenerator } = require('../utils/passwordGenerator');
-const { pool } = require('../config/database');
+// ✅ FASE 3: Using DAO layer
+const AdminDAO = require('../data/admin.dao');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -110,7 +111,7 @@ router.get('/check-approval/:email', async (req, res) => {
         const data = await RegistrationHelpers.readRegistrationRequests();
         const approvedRequest = data.requests.find(
             req => req.email.toLowerCase() === email.toLowerCase() &&
-                   req.status === 'approved'
+                req.status === 'approved'
         );
         res.json({
             success: true,
@@ -148,8 +149,7 @@ router.get('/registration-stats', authenticateToken, requireAdmin, async (req, r
 
 router.get('/teachers', authenticateToken, requireAdmin, async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM docentes ORDER BY apellido_paterno, apellido_materno, nombre ASC');
-        const teachers = result.rows || [];
+        const teachers = await AdminDAO.getTeachers();
         res.json({ success: true, data: teachers });
     } catch (error) {
         debugLog.error('ADMIN', '❌ Error al obtener docentes', sanitizeError(new Error('Admin error'), 'admin'));
@@ -160,8 +160,7 @@ router.get('/teachers', authenticateToken, requireAdmin, async (req, res) => {
 router.get('/students', authenticateToken, requireAdmin, async (req, res) => {
     try {
         debugLog.log('ADMIN', '[DB_DEBUG] Ejecutando consulta: SELECT * FROM estudiantes');
-        const result = await pool.query('SELECT * FROM estudiantes ORDER BY apellido_paterno, apellido_materno, nombre ASC');
-        const students = result.rows || [];
+        const students = await AdminDAO.getStudents();
         debugLog.log('ADMIN', `[DB_DEBUG] ✅ Consulta exitosa: ${students.length} estudiantes encontrados`);
         res.json({ success: true, data: students });
     } catch (error) {
@@ -172,11 +171,7 @@ router.get('/students', authenticateToken, requireAdmin, async (req, res) => {
 
 router.get('/parents', authenticateToken, requireAdmin, async (req, res) => {
     try {
-        const result = await pool.query(`
-            SELECT p.id, p.nombre, p.email, p.telefono, p.fecha_creacion as fecha_registro, p.activo
-            FROM parents p ORDER BY p.nombre ASC
-        `);
-        const parents = result.rows || [];
+        const parents = await AdminDAO.getParents();
         res.json({ success: true, data: parents, total: parents.length });
     } catch (error) {
         debugLog.error('ADMIN', '❌ Error al obtener padres', sanitizeError(new Error('Admin error'), 'admin'));
@@ -203,11 +198,10 @@ router.put('/users/:id/role', authenticateToken, requireAdmin, [
 
     try {
         // 1. Obtener el estado actual del usuario para la auditoría
-        const userResult = await pool.query('SELECT * FROM usuarios WHERE id = $1', [userIdToUpdate]);
-        if (userResult.rows.length === 0) {
+        const oldUser = await AdminDAO.getUserById(userIdToUpdate);
+        if (!oldUser) {
             return res.status(404).json({ success: false, message: 'Usuario no encontrado.' });
         }
-        const oldUser = userResult.rows[0];
         const oldRole = oldUser.role;
 
         // Prevenir cambiar el propio rol a algo que no sea admin para evitar auto-bloqueo

@@ -9,7 +9,8 @@ const express = require('express');
 const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
-const { pool } = require('../config/database');
+// ✅ FASE 3: Using DAO layer instead of direct pool access
+const EventosDAO = require('../data/eventos.dao');
 const { body, validationResult } = require('express-validator');
 const { cacheMiddleware, TTL_CONFIG } = require('../middleware/cache');
 const { softDelete } = require('../data/soft-delete-helpers');
@@ -68,60 +69,26 @@ router.post('/', [
     const user_agent = req.get('User-Agent');
 
     try {
-        // Generar slug único
         let slug = generateSlug(titulo);
 
-        // Verificar si el slug ya existe
-        const slugCheck = await pool.query('SELECT id FROM eventos WHERE slug = $1', [slug]);
-        if (slugCheck.rows.length > 0) {
-            slug = `${slug}-${Date.now()}`;
-        }
+        // ✅ FASE 3: Using EventosDAO
+        const slugExists = await EventosDAO.slugExists(slug);
+        if (slugExists) slug = `${slug}-${Date.now()}`;
 
-        const query = `
-            INSERT INTO eventos (
-                titulo, descripcion, imagen_url,
-                fecha_inicio, fecha_fin, ubicacion, modalidad, link_virtual,
-                categoria, tipo, etiquetas, estado,
-                organizador, organizador_id, contacto_email, contacto_telefono,
-                capacidad_maxima, inscripciones_abiertas, requiere_inscripcion,
-                slug, destacado, ip_address, user_agent
-            )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
-            RETURNING *;
-        `;
+        const evento = await EventosDAO.create({
+            titulo, descripcion, imagen_url, fecha_inicio, fecha_fin,
+            ubicacion, modalidad, link_virtual, categoria, tipo, etiquetas, estado,
+            organizador, organizador_id, contacto_email, contacto_telefono,
+            capacidad_maxima, inscripciones_abiertas, requiere_inscripcion,
+            slug, destacado, ip_address, user_agent
+        });
 
-        const result = await pool.query(query, [
-            titulo,
-            descripcion,
-            imagen_url || null,
-            fecha_inicio,
-            fecha_fin || null,
-            ubicacion || null,
-            modalidad || 'presencial',
-            link_virtual || null,
-            categoria || 'General',
-            tipo || null,
-            etiquetas || [],
-            estado || 'borrador',
-            organizador || null,
-            organizador_id || null,
-            contacto_email || null,
-            contacto_telefono || null,
-            capacidad_maxima || null,
-            inscripciones_abiertas !== undefined ? inscripciones_abiertas : true,
-            requiere_inscripcion !== undefined ? requiere_inscripcion : false,
-            slug,
-            destacado || false,
-            ip_address,
-            user_agent
-        ]);
-
-        debugLog.log('EVENTOS', '✅ Nuevo evento creado:', result.rows[0].id);
+        debugLog.log('EVENTOS', '✅ Nuevo evento creado:', evento.id);
 
         res.status(201).json({
             success: true,
             message: 'Evento creado exitosamente',
-            data: result.rows[0]
+            data: evento
         });
 
     } catch (error) {
@@ -140,74 +107,13 @@ router.get('/', async (req, res) => {
     const { estado, categoria, modalidad, destacado, limit = 50, offset = 0 } = req.query;
 
     try {
-        let query = 'SELECT * FROM eventos WHERE 1=1';
-        const params = [];
-        let paramCount = 0;
-
-        if (estado) {
-            paramCount++;
-            query += ` AND estado = $${paramCount}`;
-            params.push(estado);
-        }
-
-        if (categoria) {
-            paramCount++;
-            query += ` AND categoria = $${paramCount}`;
-            params.push(categoria);
-        }
-
-        if (modalidad) {
-            paramCount++;
-            query += ` AND modalidad = $${paramCount}`;
-            params.push(modalidad);
-        }
-
-        if (destacado !== undefined) {
-            paramCount++;
-            query += ` AND destacado = $${paramCount}`;
-            params.push(destacado === 'true');
-        }
-
-        query += ` ORDER BY fecha_inicio DESC LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;
-        params.push(parseInt(limit), parseInt(offset));
-
-        const result = await pool.query(query, params);
-
-        // Contar total
-        let countQuery = 'SELECT COUNT(*) FROM eventos WHERE 1=1';
-        const countParams = [];
-        let countParamCount = 0;
-
-        if (estado) {
-            countParamCount++;
-            countQuery += ` AND estado = $${countParamCount}`;
-            countParams.push(estado);
-        }
-
-        if (categoria) {
-            countParamCount++;
-            countQuery += ` AND categoria = $${countParamCount}`;
-            countParams.push(categoria);
-        }
-
-        if (modalidad) {
-            countParamCount++;
-            countQuery += ` AND modalidad = $${countParamCount}`;
-            countParams.push(modalidad);
-        }
-
-        if (destacado !== undefined) {
-            countParamCount++;
-            countQuery += ` AND destacado = $${countParamCount}`;
-            countParams.push(destacado === 'true');
-        }
-
-        const countResult = await pool.query(countQuery, countParams);
+        // ✅ FASE 3: Using EventosDAO
+        const { eventos, total } = await EventosDAO.getAll({ estado, categoria, modalidad, destacado, limit, offset });
 
         res.json({
             success: true,
-            data: result.rows,
-            total: parseInt(countResult.rows[0].count),
+            data: eventos,
+            total,
             limit: parseInt(limit),
             offset: parseInt(offset)
         });
@@ -226,26 +132,9 @@ router.get('/', async (req, res) => {
 // =====================================================
 router.get('/stats', cacheMiddleware({ ttl: TTL_CONFIG.stats }), async (req, res) => {
     try {
-        const query = `
-            SELECT
-                COUNT(*) as total,
-                COUNT(*) FILTER (WHERE estado = 'publicado') as publicadas,
-                COUNT(*) FILTER (WHERE estado = 'borrador') as borradores,
-                COUNT(*) FILTER (WHERE estado = 'cancelado') as cancelados,
-                COUNT(*) FILTER (WHERE estado = 'finalizado') as finalizados,
-                COUNT(*) FILTER (WHERE destacado = true) as destacados,
-                COUNT(*) FILTER (WHERE modalidad = 'presencial') as presenciales,
-                COUNT(*) FILTER (WHERE modalidad = 'virtual') as virtuales,
-                COUNT(*) FILTER (WHERE modalidad = 'híbrido') as hibridos
-            FROM eventos;
-        `;
-
-        const result = await pool.query(query);
-
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using EventosDAO
+        const stats = await EventosDAO.getStats();
+        res.json({ success: true, data: stats });
 
     } catch (error) {
         debugLog.error('EVENTOS', '❌ Error al obtener estadísticas:', sanitizeError(error, 'eventos'));
@@ -263,19 +152,10 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const result = await pool.query('SELECT * FROM eventos WHERE id = $1', [id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Evento no encontrado'
-            });
-        }
-
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using EventosDAO
+        const evento = await EventosDAO.getById(id);
+        if (!evento) return res.status(404).json({ success: false, error: 'Evento no encontrado' });
+        res.json({ success: true, data: evento });
 
     } catch (error) {
         debugLog.error('EVENTOS', '❌ Error al obtener evento:', sanitizeError(error, 'eventos'));
@@ -293,19 +173,10 @@ router.get('/slug/:slug', async (req, res) => {
     const { slug } = req.params;
 
     try {
-        const result = await pool.query('SELECT * FROM eventos WHERE slug = $1', [slug]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Evento no encontrado'
-            });
-        }
-
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using EventosDAO
+        const evento = await EventosDAO.getBySlug(slug);
+        if (!evento) return res.status(404).json({ success: false, error: 'Evento no encontrado' });
+        res.json({ success: true, data: evento });
 
     } catch (error) {
         debugLog.error('EVENTOS', '❌ Error al obtener evento:', sanitizeError(error, 'eventos'));
@@ -344,70 +215,18 @@ router.put('/:id', async (req, res) => {
     } = req.body;
 
     try {
-        let updateQuery = `
-            UPDATE eventos
-            SET
-                titulo = COALESCE($1, titulo),
-                descripcion = COALESCE($2, descripcion),
-                imagen_url = COALESCE($3, imagen_url),
-                fecha_inicio = COALESCE($4, fecha_inicio),
-                fecha_fin = COALESCE($5, fecha_fin),
-                ubicacion = COALESCE($6, ubicacion),
-                modalidad = COALESCE($7, modalidad),
-                link_virtual = COALESCE($8, link_virtual),
-                categoria = COALESCE($9, categoria),
-                tipo = COALESCE($10, tipo),
-                etiquetas = COALESCE($11, etiquetas),
-                estado = COALESCE($12, estado),
-                organizador = COALESCE($13, organizador),
-                contacto_email = COALESCE($14, contacto_email),
-                contacto_telefono = COALESCE($15, contacto_telefono),
-                capacidad_maxima = COALESCE($16, capacidad_maxima),
-                inscripciones_abiertas = COALESCE($17, inscripciones_abiertas),
-                requiere_inscripcion = COALESCE($18, requiere_inscripcion),
-                destacado = COALESCE($19, destacado),
-                fecha_modificacion = NOW()
-            WHERE id = $20
-            RETURNING *;
-        `;
+        // ✅ FASE 3: Using EventosDAO
+        const evento = await EventosDAO.update(id, {
+            titulo, descripcion, imagen_url, fecha_inicio, fecha_fin, ubicacion,
+            modalidad, link_virtual, categoria, tipo, etiquetas, estado,
+            organizador, contacto_email, contacto_telefono, capacidad_maxima,
+            inscripciones_abiertas, requiere_inscripcion, destacado
+        });
 
-        const result = await pool.query(updateQuery, [
-            titulo,
-            descripcion,
-            imagen_url,
-            fecha_inicio,
-            fecha_fin,
-            ubicacion,
-            modalidad,
-            link_virtual,
-            categoria,
-            tipo,
-            etiquetas,
-            estado,
-            organizador,
-            contacto_email,
-            contacto_telefono,
-            capacidad_maxima,
-            inscripciones_abiertas,
-            requiere_inscripcion,
-            destacado,
-            id
-        ]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Evento no encontrado'
-            });
-        }
+        if (!evento) return res.status(404).json({ success: false, error: 'Evento no encontrado' });
 
         debugLog.log('EVENTOS', `✅ Evento ${id} actualizado`);
-
-        res.json({
-            success: true,
-            message: 'Evento actualizado correctamente',
-            data: result.rows[0]
-        });
+        res.json({ success: true, message: 'Evento actualizado correctamente', data: evento });
 
     } catch (error) {
         debugLog.error('EVENTOS', '❌ Error al actualizar evento:', sanitizeError(error, 'eventos'));
@@ -458,84 +277,22 @@ router.get('/calendar', async (req, res) => {
     try {
         const { start, end, categoria, modalidad } = req.query;
 
-        let query = `
-            SELECT
-                id,
-                slug,
-                titulo as title,
-                descripcion,
-                fecha_inicio as start,
-                fecha_fin as end,
-                categoria,
-                modalidad,
-                ubicacion,
-                cupo_maximo,
-                inscripciones_actuales,
-                destacado,
-                color_hex
-            FROM eventos
-            WHERE estado = 'publicado'
-        `;
+        // ✅ FASE 3: Using EventosDAO
+        const rows = await EventosDAO.getCalendarEvents({ start, end, categoria, modalidad });
 
-        const params = [];
-        let paramCount = 1;
-
-        // Filtro por rango de fechas
-        if (start) {
-            query += ` AND fecha_inicio >= $${paramCount}`;
-            params.push(start);
-            paramCount++;
-        }
-
-        if (end) {
-            query += ` AND fecha_fin <= $${paramCount}`;
-            params.push(end);
-            paramCount++;
-        }
-
-        // Filtro por categoría
-        if (categoria && categoria !== 'todas') {
-            query += ` AND categoria = $${paramCount}`;
-            params.push(categoria);
-            paramCount++;
-        }
-
-        // Filtro por modalidad
-        if (modalidad && modalidad !== 'todas') {
-            query += ` AND modalidad = $${paramCount}`;
-            params.push(modalidad);
-            paramCount++;
-        }
-
-        query += ` ORDER BY fecha_inicio ASC`;
-
-        const result = await pool.query(query, params);
-
-        // Formatear eventos para FullCalendar
-        const events = result.rows.map(evento => ({
-            id: evento.id,
-            title: evento.title,
-            start: evento.start,
-            end: evento.end,
+        const events = rows.map(evento => ({
+            id: evento.id, title: evento.title, start: evento.start, end: evento.end,
             description: evento.descripcion,
             extendedProps: {
-                categoria: evento.categoria,
-                modalidad: evento.modalidad,
-                ubicacion: evento.ubicacion,
-                cupoMaximo: evento.cupo_maximo,
-                inscripciones: evento.inscripciones_actuales,
-                destacado: evento.destacado,
-                slug: evento.slug
+                categoria: evento.categoria, modalidad: evento.modalidad, ubicacion: evento.ubicacion,
+                cupoMaximo: evento.cupo_maximo, inscripciones: evento.inscripciones_actuales,
+                destacado: evento.destacado, slug: evento.slug
             },
             backgroundColor: evento.color_hex || '#3788d8',
-            borderColor: evento.color_hex || '#3788d8',
-            textColor: '#ffffff'
+            borderColor: evento.color_hex || '#3788d8', textColor: '#ffffff'
         }));
 
-        res.json({
-            success: true,
-            events
-        });
+        res.json({ success: true, events });
     } catch (error) {
         debugLog.error('EVENTOS', 'Error en /calendar:', sanitizeError(error, 'eventos'));
         res.status(500).json({

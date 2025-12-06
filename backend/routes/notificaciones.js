@@ -9,7 +9,8 @@ const express = require('express');
 const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
-const { pool } = require('../config/database');
+// ✅ FASE 3: Using DAO layer instead of direct pool access
+const NotificacionesDAO = require('../data/notificaciones-convocatorias.dao');
 const { body, validationResult } = require('express-validator');
 
 // =====================================================
@@ -38,14 +39,10 @@ router.post('/', [
     const user_agent = req.get('User-Agent');
 
     try {
-        // Verificar si el email ya existe
-        const checkQuery = 'SELECT id, status FROM notificaciones_convocatorias WHERE email = $1';
-        const existingResult = await pool.query(checkQuery, [email]);
+        // ✅ FASE 3: Using NotificacionesDAO
+        const existing = await NotificacionesDAO.getByEmail(email);
 
-        if (existingResult.rows.length > 0) {
-            const existing = existingResult.rows[0];
-
-            // Si ya está activo
+        if (existing) {
             if (existing.status === 'activo') {
                 return res.json({
                     success: true,
@@ -54,67 +51,28 @@ router.post('/', [
                 });
             }
 
-            // Reactivar suscripción inactiva
-            const updateQuery = `
-                UPDATE notificaciones_convocatorias
-                SET
-                    nombre = COALESCE($1, nombre),
-                    tipo_interes = COALESCE($2, tipo_interes),
-                    status = 'activo',
-                    fecha_suscripcion = NOW(),
-                    fecha_baja = NULL,
-                    ip_address = $3,
-                    user_agent = $4
-                WHERE email = $5
-                RETURNING *;
-            `;
+            const result = await NotificacionesDAO.reactivate(email, {
+                nombre: finalNombre, tipo_interes: finalTipoInteres, ip_address, user_agent
+            });
 
-            const result = await pool.query(updateQuery, [
-                finalNombre,
-                finalTipoInteres,
-                ip_address,
-                user_agent,
-                email
-            ]);
-
-            debugLog.log('NOTIFICACIONES', '✅ Suscripción reactivada:', result.rows[0].id);
-
+            debugLog.log('NOTIFICACIONES', '✅ Suscripción reactivada:', result.id);
             return res.json({
                 success: true,
-                message: 'Tu suscripción ha sido reactivada exitosamente. Recibirás notificaciones de convocatorias.',
-                data: {
-                    id: result.rows[0].id,
-                    reactivated: true
-                }
+                message: 'Tu suscripción ha sido reactivada exitosamente.',
+                data: { id: result.id, reactivated: true }
             });
         }
 
-        // Insertar nueva suscripción
-        const insertQuery = `
-            INSERT INTO notificaciones_convocatorias (
-                nombre, email, tipo_interes, ip_address, user_agent
-            )
-            VALUES ($1, $2, $3, $4, $5)
-            RETURNING *;
-        `;
+        const result = await NotificacionesDAO.create({
+            nombre: finalNombre, email, tipo_interes: finalTipoInteres, ip_address, user_agent
+        });
 
-        const result = await pool.query(insertQuery, [
-            finalNombre,
-            email,
-            finalTipoInteres,
-            ip_address,
-            user_agent
-        ]);
-
-        debugLog.log('NOTIFICACIONES', '✅ Nueva suscripción creada:', result.rows[0].id);
+        debugLog.log('NOTIFICACIONES', '✅ Nueva suscripción creada:', result.id);
 
         res.status(201).json({
             success: true,
-            message: 'Te has suscrito exitosamente. Recibirás notificaciones sobre nuevas convocatorias.',
-            data: {
-                id: result.rows[0].id,
-                fecha: result.rows[0].fecha_suscripcion
-            }
+            message: 'Te has suscrito exitosamente.',
+            data: { id: result.id, fecha: result.fecha_suscripcion }
         });
 
     } catch (error) {
@@ -142,30 +100,13 @@ router.get('/', async (req, res) => {
     const { status, limit = 50, offset = 0 } = req.query;
 
     try {
-        let query = 'SELECT * FROM notificaciones_convocatorias';
-        const params = [];
-
-        if (status) {
-            query += ' WHERE status = $1';
-            params.push(status);
-        }
-
-        query += ` ORDER BY fecha_suscripcion DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-        params.push(parseInt(limit), parseInt(offset));
-
-        const result = await pool.query(query, params);
-
-        // Contar total
-        const countQuery = status ?
-            'SELECT COUNT(*) FROM notificaciones_convocatorias WHERE status = $1' :
-            'SELECT COUNT(*) FROM notificaciones_convocatorias';
-        const countParams = status ? [status] : [];
-        const countResult = await pool.query(countQuery, countParams);
+        // ✅ FASE 3: Using NotificacionesDAO
+        const { data, total } = await NotificacionesDAO.getAll({ status, limit, offset });
 
         res.json({
             success: true,
-            data: result.rows,
-            total: parseInt(countResult.rows[0].count),
+            data,
+            total,
             limit: parseInt(limit),
             offset: parseInt(offset)
         });
@@ -184,44 +125,9 @@ router.get('/', async (req, res) => {
 // =====================================================
 router.get('/stats', async (req, res) => {
     try {
-        const query = `
-            SELECT
-                COUNT(*) as total,
-                COUNT(*) FILTER (WHERE status = 'activo') as activos,
-                COUNT(*) FILTER (WHERE status = 'inactivo') as inactivos,
-                COUNT(*) FILTER (WHERE status = 'cancelado') as cancelados,
-                COUNT(*) FILTER (WHERE DATE(fecha_suscripcion) = CURRENT_DATE) as hoy,
-                COUNT(*) FILTER (WHERE DATE(fecha_suscripcion) >= CURRENT_DATE - INTERVAL '7 days') as esta_semana,
-                COUNT(*) FILTER (WHERE verificado = true) as verificados
-            FROM notificaciones_convocatorias;
-        `;
-
-        const result = await pool.query(query);
-
-        // Estadísticas por tipo de interés
-        const tipoQuery = `
-            SELECT tipo_interes, COUNT(*) as cantidad
-            FROM notificaciones_convocatorias
-            WHERE tipo_interes IS NOT NULL AND status = 'activo'
-            GROUP BY tipo_interes
-            ORDER BY cantidad DESC;
-        `;
-
-        const tipoResult = await pool.query(tipoQuery);
-        const byTipo = tipoResult.rows.reduce((acc, row) => {
-            acc[row.tipo_interes] = parseInt(row.cantidad);
-            return acc;
-        }, {});
-
-        const stats = {
-            ...result.rows[0],
-            byTipo
-        };
-
-        res.json({
-            success: true,
-            data: stats
-        });
+        // ✅ FASE 3: Using NotificacionesDAO
+        const stats = await NotificacionesDAO.getStats();
+        res.json({ success: true, data: stats });
 
     } catch (error) {
         debugLog.error('NOTIFICACIONES', '❌ Error al obtener estadísticas:', sanitizeError(error, 'notificaciones'));
@@ -239,19 +145,10 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const result = await pool.query('SELECT * FROM notificaciones_convocatorias WHERE id = $1', [id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Suscripción no encontrada'
-            });
-        }
-
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using NotificacionesDAO
+        const suscripcion = await NotificacionesDAO.getById(id);
+        if (!suscripcion) return res.status(404).json({ success: false, error: 'Suscripción no encontrada' });
+        res.json({ success: true, data: suscripcion });
 
     } catch (error) {
         debugLog.error('NOTIFICACIONES', '❌ Error al obtener suscripción:', sanitizeError(error, 'notificaciones'));
@@ -270,31 +167,10 @@ router.put('/:id', async (req, res) => {
     const { nombre, tipo_interes, status } = req.body;
 
     try {
-        const query = `
-            UPDATE notificaciones_convocatorias
-            SET
-                nombre = COALESCE($1, nombre),
-                tipo_interes = COALESCE($2, tipo_interes),
-                status = COALESCE($3, status),
-                fecha_baja = CASE WHEN $3 IN ('inactivo', 'cancelado') THEN NOW() ELSE fecha_baja END
-            WHERE id = $4
-            RETURNING *;
-        `;
-
-        const result = await pool.query(query, [nombre, tipo_interes, status, id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Suscripción no encontrada'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: 'Suscripción actualizada correctamente',
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using NotificacionesDAO
+        const result = await NotificacionesDAO.update(id, { nombre, tipo_interes, status });
+        if (!result) return res.status(404).json({ success: false, error: 'Suscripción no encontrada' });
+        res.json({ success: true, message: 'Suscripción actualizada correctamente', data: result });
 
     } catch (error) {
         debugLog.error('NOTIFICACIONES', '❌ Error al actualizar suscripción:', sanitizeError(error, 'notificaciones'));
@@ -312,25 +188,10 @@ router.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        // Marcar como cancelado en lugar de eliminar
-        const result = await pool.query(`
-            UPDATE notificaciones_convocatorias
-            SET status = 'cancelado', fecha_baja = NOW()
-            WHERE id = $1
-            RETURNING id, email
-        `, [id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Suscripción no encontrada'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: 'Suscripción cancelada correctamente'
-        });
+        // ✅ FASE 3: Using NotificacionesDAO
+        const result = await NotificacionesDAO.cancel(id);
+        if (!result) return res.status(404).json({ success: false, error: 'Suscripción no encontrada' });
+        res.json({ success: true, message: 'Suscripción cancelada correctamente' });
 
     } catch (error) {
         debugLog.error('NOTIFICACIONES', '❌ Error al cancelar suscripción:', sanitizeError(error, 'notificaciones'));
@@ -358,24 +219,10 @@ router.post('/unsubscribe', [
     const { email } = req.body;
 
     try {
-        const result = await pool.query(`
-            UPDATE notificaciones_convocatorias
-            SET status = 'cancelado', fecha_baja = NOW()
-            WHERE email = $1 AND status = 'activo'
-            RETURNING id
-        `, [email]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'No se encontró una suscripción activa con este email'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: 'Te has dado de baja exitosamente. Ya no recibirás notificaciones.'
-        });
+        // ✅ FASE 3: Using NotificacionesDAO
+        const result = await NotificacionesDAO.unsubscribeByEmail(email);
+        if (!result) return res.status(404).json({ success: false, error: 'No se encontró una suscripción activa con este email' });
+        res.json({ success: true, message: 'Te has dado de baja exitosamente.' });
 
     } catch (error) {
         debugLog.error('NOTIFICACIONES', '❌ Error al dar de baja:', sanitizeError(error, 'notificaciones'));

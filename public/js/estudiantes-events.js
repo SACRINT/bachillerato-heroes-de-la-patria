@@ -9,7 +9,7 @@
  * Nota: Este archivo debe cargarse DESPUÉS de estudiantes.html
  */
 
-(function() {
+(function () {
     'use strict';
 
     // ============================================
@@ -37,6 +37,7 @@
         registerFormHandlers();
         registerCardHoverEffects();
         registerChatbotHandlers();
+        registerContactLinkHandlers(); // CSP-compliant dynamic contact links
 
         console.log('[ESTUDIANTES-EVENTS] ✅ Event handlers inicializados correctamente');
     }
@@ -49,7 +50,7 @@
         const filterButtons = document.querySelectorAll('.filter-btn');
 
         filterButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
+            button.addEventListener('click', function (e) {
                 e.preventDefault();
                 const category = this.getAttribute('data-filter-category');
                 if (category) {
@@ -141,7 +142,7 @@
         // Formulario de clase en PWA
         const formClasePwa = document.getElementById('form-clase-pwa');
         if (formClasePwa) {
-            formClasePwa.addEventListener('submit', function(e) {
+            formClasePwa.addEventListener('submit', function (e) {
                 e.preventDefault();
                 // La lógica está en el script inline existente
                 // Este es solo un registro de evento para mantener estructura
@@ -162,12 +163,12 @@
     function registerCardHoverEffects() {
         const featureCards = document.querySelectorAll('.quick-access-card, .hover-lift');
         featureCards.forEach(card => {
-            card.addEventListener('mouseover', function() {
+            card.addEventListener('mouseover', function () {
                 this.style.transform = 'translateY(-5px)';
                 this.style.transition = 'all 0.3s ease';
             });
 
-            card.addEventListener('mouseout', function() {
+            card.addEventListener('mouseout', function () {
                 this.style.transform = 'translateY(0)';
             });
         });
@@ -175,11 +176,11 @@
         // Recursos PWA cards
         const recursoCards = document.querySelectorAll('.recurso-card');
         recursoCards.forEach(card => {
-            card.addEventListener('mouseenter', function() {
+            card.addEventListener('mouseenter', function () {
                 this.style.transform = 'translateY(-5px)';
             });
 
-            card.addEventListener('mouseleave', function() {
+            card.addEventListener('mouseleave', function () {
                 this.style.transform = 'translateY(0)';
             });
         });
@@ -205,7 +206,7 @@
         // Input del chatbot - Enter para enviar
         const chatbotInput = document.getElementById('chatbotInput');
         if (chatbotInput) {
-            chatbotInput.addEventListener('keypress', function(event) {
+            chatbotInput.addEventListener('keypress', function (event) {
                 if (event.key === 'Enter') {
                     sendMessage();
                 }
@@ -217,6 +218,51 @@
         if (chatbotSendBtn) {
             chatbotSendBtn.addEventListener('click', sendMessage);
         }
+    }
+
+    // ============================================
+    // CONTACT LINK HANDLERS (Dynamic Modal Content - CSP Compliant)
+    // ============================================
+
+    /**
+     * Event delegation para links de contacto generados dinámicamente
+     * Soporta: tel-link, mailto-link, whatsapp-link
+     */
+    function registerContactLinkHandlers() {
+        // Usar event delegation en el body para capturar clics en elementos dinámicos
+        document.body.addEventListener('click', function (e) {
+            const button = e.target.closest('[data-action]');
+            if (!button) return;
+
+            const action = button.getAttribute('data-action');
+
+            switch (action) {
+                case 'tel-link': {
+                    const phone = button.getAttribute('data-phone');
+                    if (phone) {
+                        window.location.href = 'tel:' + phone;
+                    }
+                    break;
+                }
+                case 'mailto-link': {
+                    const email = button.getAttribute('data-email');
+                    if (email) {
+                        window.location.href = 'mailto:' + email + '?subject=Información sobre evento estudiantil';
+                    }
+                    break;
+                }
+                case 'whatsapp-link': {
+                    const phone = button.getAttribute('data-phone');
+                    if (phone) {
+                        window.open('https://wa.me/' + phone + '?text=Hola, me interesa obtener información sobre los eventos estudiantiles', '_blank');
+                    }
+                    break;
+                }
+                // Otros actions se manejan en sus handlers específicos
+            }
+        });
+
+        console.log('[ESTUDIANTES-EVENTS] ✅ Contact link handlers registrados (event delegation)');
     }
 
     // ============================================

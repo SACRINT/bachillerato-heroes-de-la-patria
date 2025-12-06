@@ -17,6 +17,10 @@ const router = express.Router();
 const erasureService = require('../services/right-to-erasure-service');
 const { authenticateJWT, requireRole } = require('../middleware/auth');
 const rateLimit = require('express-rate-limit');
+const devLogger = require('../utils/devLogger');
+
+// ✅ FASE 3: Using DAO layer instead of direct pool access
+const ErasureDAO = require('../data/erasure.dao');
 
 // =============================================================================
 // RATE LIMITING
@@ -46,7 +50,7 @@ router.post('/request', authenticateJWT, erasureLimiter, async (req, res) => {
     const userId = req.user.id; // Del JWT
     const { reason } = req.body;
 
-    console.log(`[ERASURE-API] Erasure request from user: ${userId}`);
+    devLogger.log(`[ERASURE-API] Erasure request from user: ${userId}`);
 
     // 1. Validar si se puede eliminar
     const validation = await erasureService.validateErasureRequest(userId);
@@ -62,25 +66,11 @@ router.post('/request', authenticateJWT, erasureLimiter, async (req, res) => {
     }
 
     // 2. Si se puede eliminar, crear solicitud para revisión
-    const pool = require('../config/database');
-
+    // ✅ FASE 3: Using ErasureDAO
     const requestId = require('crypto').randomUUID();
+    await ErasureDAO.createDsarErasureRequest(requestId, userId, req.user.email, { reason, validation });
 
-    await pool.query(
-      `INSERT INTO dsar_requests (
-        id, user_id, request_type, email, status, metadata, created_at, due_date
-      ) VALUES (
-        $1, $2, 'erasure', $3, 'verified', $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + INTERVAL '30 days'
-      )`,
-      [
-        requestId,
-        userId,
-        req.user.email,
-        JSON.stringify({ reason, validation })
-      ]
-    );
-
-    console.log(`[ERASURE-API] Erasure request created: ${requestId}`);
+    devLogger.log(`[ERASURE-API] Erasure request created: ${requestId}`);
 
     res.status(201).json({
       success: true,
@@ -162,7 +152,7 @@ router.post('/execute/:userId', authenticateJWT, requireRole(['admin', 'administ
       });
     }
 
-    console.log(`[ERASURE-API] Admin ${adminId} executing erasure for user ${userId}`);
+    devLogger.log(`[ERASURE-API] Admin ${adminId} executing erasure for user ${userId}`);
 
     // Ejecutar eliminación
     const result = await erasureService.executeRightToErasure(userId, adminId, reason);
@@ -212,24 +202,12 @@ router.post('/restore/:userId', authenticateJWT, requireRole(['admin', 'administ
       });
     }
 
-    console.log(`[ERASURE-API] Admin ${adminId} restoring user ${userId}`);
+    devLogger.log(`[ERASURE-API] Admin ${adminId} restoring user ${userId}`);
 
     const result = await erasureService.restoreErasedUser(userId);
 
-    // Log restoration
-    const pool = require('../config/database');
-    await pool.query(
-      `INSERT INTO audit_logs (
-        user_id, action, resource, resource_id, changes, ip_address, user_agent, hash, previous_hash
-      ) VALUES (
-        $1, 'RESTORE_ERASED_USER', 'usuarios', $2, $3::jsonb, '0.0.0.0', 'System', '', ''
-      )`,
-      [
-        adminId,
-        userId,
-        JSON.stringify({ reason, restoredBy: adminId })
-      ]
-    );
+    // ✅ FASE 3: Using ErasureDAO for logging
+    await ErasureDAO.logErasureRestoration(adminId, userId, reason);
 
     res.status(200).json({
       success: true,
@@ -261,22 +239,12 @@ router.post('/restore/:userId', authenticateJWT, requireRole(['admin', 'administ
  */
 router.get('/admin/requests', authenticateJWT, requireRole(['admin', 'administrativo']), async (req, res) => {
   try {
-    const pool = require('../config/database');
-
-    const result = await pool.query(
-      `SELECT
-        dr.id, dr.user_id, dr.email, dr.status, dr.created_at, dr.due_date, dr.metadata,
-        u.nombre, u.apellido_paterno, u.email AS user_email, u.role, u.status AS user_status
-       FROM dsar_requests dr
-       LEFT JOIN usuarios u ON dr.user_id = u.uuid
-       WHERE dr.request_type = 'erasure'
-         AND dr.status IN ('verified', 'processing')
-       ORDER BY dr.created_at ASC`
-    );
+    // ✅ FASE 3: Using ErasureDAO
+    const pendingRequests = await ErasureDAO.getPendingErasureRequests();
 
     res.status(200).json({
       success: true,
-      pendingRequests: result.rows
+      pendingRequests
     });
 
   } catch (error) {

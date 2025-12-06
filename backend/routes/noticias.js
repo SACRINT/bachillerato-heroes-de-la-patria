@@ -9,7 +9,8 @@ const express = require('express');
 const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
-const { pool } = require('../config/database');
+// ✅ FASE 3: Using DAO layer instead of direct pool access
+const NoticiasDAO = require('../data/noticias.dao');
 const { body, validationResult } = require('express-validator');
 const { cacheMiddleware, TTL_CONFIG } = require('../middleware/cache');
 const { softDelete } = require('../data/soft-delete-helpers');
@@ -62,49 +63,24 @@ router.post('/', [
         // Generar slug único
         let slug = generateSlug(titulo);
 
-        // Verificar si el slug ya existe
-        const slugCheck = await pool.query('SELECT id FROM noticias WHERE slug = $1', [slug]);
-        if (slugCheck.rows.length > 0) {
+        // ✅ FASE 3: Using NoticiasDAO
+        const slugExists = await NoticiasDAO.slugExists(slug);
+        if (slugExists) {
             slug = `${slug}-${Date.now()}`;
         }
 
-        const query = `
-            INSERT INTO noticias (
-                titulo, contenido, resumen, imagen_url, categoria,
-                etiquetas, estado, autor, autor_id, slug,
-                meta_descripcion, destacada, ip_address, user_agent,
-                fecha_publicacion
-            )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-            RETURNING *;
-        `;
+        const noticia = await NoticiasDAO.create({
+            titulo, contenido, resumen, imagen_url, categoria,
+            etiquetas, estado, autor, autor_id, slug,
+            meta_descripcion, destacada, ip_address, user_agent
+        });
 
-        const fecha_pub = estado === 'publicada' ? new Date() : null;
-
-        const result = await pool.query(query, [
-            titulo,
-            contenido,
-            resumen || null,
-            imagen_url || null,
-            categoria || 'General',
-            etiquetas || [],
-            estado || 'borrador',
-            autor,
-            autor_id || null,
-            slug,
-            meta_descripcion || resumen || contenido.substring(0, 160),
-            destacada || false,
-            ip_address,
-            user_agent,
-            fecha_pub
-        ]);
-
-        debugLog.log('NOTICIAS', '✅ Nueva noticia creada:', result.rows[0].id);
+        debugLog.log('NOTICIAS', '✅ Nueva noticia creada:', noticia.id);
 
         res.status(201).json({
             success: true,
             message: 'Noticia creada exitosamente',
-            data: result.rows[0]
+            data: noticia
         });
 
     } catch (error) {
@@ -123,62 +99,13 @@ router.get('/', async (req, res) => {
     const { estado, categoria, destacada, limit = 50, offset = 0 } = req.query;
 
     try {
-        let query = 'SELECT * FROM noticias WHERE 1=1';
-        const params = [];
-        let paramCount = 0;
-
-        if (estado) {
-            paramCount++;
-            query += ` AND estado = $${paramCount}`;
-            params.push(estado);
-        }
-
-        if (categoria) {
-            paramCount++;
-            query += ` AND categoria = $${paramCount}`;
-            params.push(categoria);
-        }
-
-        if (destacada !== undefined) {
-            paramCount++;
-            query += ` AND destacada = $${paramCount}`;
-            params.push(destacada === 'true');
-        }
-
-        query += ` ORDER BY fecha_creacion DESC LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;
-        params.push(parseInt(limit), parseInt(offset));
-
-        const result = await pool.query(query, params);
-
-        // Contar total
-        let countQuery = 'SELECT COUNT(*) FROM noticias WHERE 1=1';
-        const countParams = [];
-        let countParamCount = 0;
-
-        if (estado) {
-            countParamCount++;
-            countQuery += ` AND estado = $${countParamCount}`;
-            countParams.push(estado);
-        }
-
-        if (categoria) {
-            countParamCount++;
-            countQuery += ` AND categoria = $${countParamCount}`;
-            countParams.push(categoria);
-        }
-
-        if (destacada !== undefined) {
-            countParamCount++;
-            countQuery += ` AND destacada = $${countParamCount}`;
-            countParams.push(destacada === 'true');
-        }
-
-        const countResult = await pool.query(countQuery, countParams);
+        // ✅ FASE 3: Using NoticiasDAO
+        const { noticias, total } = await NoticiasDAO.getAll({ estado, categoria, destacada, limit, offset });
 
         res.json({
             success: true,
-            data: result.rows,
-            total: parseInt(countResult.rows[0].count),
+            data: noticias,
+            total,
             limit: parseInt(limit),
             offset: parseInt(offset)
         });
@@ -197,21 +124,12 @@ router.get('/', async (req, res) => {
 // =====================================================
 router.get('/stats', cacheMiddleware({ ttl: TTL_CONFIG.stats }), async (req, res) => {
     try {
-        const query = `
-            SELECT
-                COUNT(*) as total,
-                COUNT(*) FILTER (WHERE estado = 'publicada') as publicadas,
-                COUNT(*) FILTER (WHERE estado = 'borrador') as borradores,
-                COUNT(*) FILTER (WHERE destacada = true) as destacadas,
-                SUM(vistas) as vistas_totales
-            FROM noticias;
-        `;
-
-        const result = await pool.query(query);
+        // ✅ FASE 3: Using NoticiasDAO
+        const stats = await NoticiasDAO.getStats();
 
         res.json({
             success: true,
-            data: result.rows[0]
+            data: stats
         });
 
     } catch (error) {
@@ -230,22 +148,16 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const result = await pool.query('SELECT * FROM noticias WHERE id = $1', [id]);
+        // ✅ FASE 3: Using NoticiasDAO
+        const noticia = await NoticiasDAO.getById(id);
 
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Noticia no encontrada'
-            });
+        if (!noticia) {
+            return res.status(404).json({ success: false, error: 'Noticia no encontrada' });
         }
 
-        // Incrementar vistas
-        await pool.query('UPDATE noticias SET vistas = vistas + 1 WHERE id = $1', [id]);
+        await NoticiasDAO.incrementViews(id, 'id');
 
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        res.json({ success: true, data: noticia });
 
     } catch (error) {
         debugLog.error('NOTICIAS', '❌ Error al obtener noticia:', sanitizeError(error, 'noticias'));
@@ -263,22 +175,16 @@ router.get('/slug/:slug', async (req, res) => {
     const { slug } = req.params;
 
     try {
-        const result = await pool.query('SELECT * FROM noticias WHERE slug = $1', [slug]);
+        // ✅ FASE 3: Using NoticiasDAO
+        const noticia = await NoticiasDAO.getBySlug(slug);
 
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Noticia no encontrada'
-            });
+        if (!noticia) {
+            return res.status(404).json({ success: false, error: 'Noticia no encontrada' });
         }
 
-        // Incrementar vistas
-        await pool.query('UPDATE noticias SET vistas = vistas + 1 WHERE slug = $1', [slug]);
+        await NoticiasDAO.incrementViews(slug, 'slug');
 
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        res.json({ success: true, data: noticia });
 
     } catch (error) {
         debugLog.error('NOTICIAS', '❌ Error al obtener noticia:', sanitizeError(error, 'noticias'));
@@ -307,46 +213,14 @@ router.put('/:id', async (req, res) => {
     } = req.body;
 
     try {
-        // Si cambia a publicada y no tenía fecha de publicación, establecerla
-        let updateQuery = `
-            UPDATE noticias
-            SET
-                titulo = COALESCE($1, titulo),
-                contenido = COALESCE($2, contenido),
-                resumen = COALESCE($3, resumen),
-                imagen_url = COALESCE($4, imagen_url),
-                categoria = COALESCE($5, categoria),
-                etiquetas = COALESCE($6, etiquetas),
-                estado = COALESCE($7, estado),
-                meta_descripcion = COALESCE($8, meta_descripcion),
-                destacada = COALESCE($9, destacada),
-                fecha_modificacion = NOW(),
-                fecha_publicacion = CASE
-                    WHEN $7 = 'publicada' AND fecha_publicacion IS NULL THEN NOW()
-                    ELSE fecha_publicacion
-                END
-            WHERE id = $10
-            RETURNING *;
-        `;
+        // ✅ FASE 3: Using NoticiasDAO
+        const noticia = await NoticiasDAO.update(id, {
+            titulo, contenido, resumen, imagen_url, categoria,
+            etiquetas, estado, meta_descripcion, destacada
+        });
 
-        const result = await pool.query(updateQuery, [
-            titulo,
-            contenido,
-            resumen,
-            imagen_url,
-            categoria,
-            etiquetas,
-            estado,
-            meta_descripcion,
-            destacada,
-            id
-        ]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Noticia no encontrada'
-            });
+        if (!noticia) {
+            return res.status(404).json({ success: false, error: 'Noticia no encontrada' });
         }
 
         debugLog.log('NOTICIAS', `✅ Noticia ${id} actualizada`);
@@ -354,7 +228,7 @@ router.put('/:id', async (req, res) => {
         res.json({
             success: true,
             message: 'Noticia actualizada correctamente',
-            data: result.rows[0]
+            data: noticia
         });
 
     } catch (error) {

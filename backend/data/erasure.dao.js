@@ -60,6 +60,59 @@ class ErasureDAO {
     }
 
     static getConnection() { return pool.connect(); }
+
+    /**
+     * Crear solicitud de eliminación DSAR
+     * @param {string} requestId - UUID de la solicitud
+     * @param {number} userId - ID del usuario
+     * @param {string} email - Email del usuario
+     * @param {Object} metadata - Metadata con razón y validación
+     */
+    static async createDsarErasureRequest(requestId, userId, email, metadata) {
+        await pool.query(
+            `INSERT INTO dsar_requests (
+                id, user_id, request_type, email, status, metadata, created_at, due_date
+            ) VALUES (
+                $1, $2, 'erasure', $3, 'verified', $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + INTERVAL '30 days'
+            )`,
+            [requestId, userId, email, JSON.stringify(metadata)]
+        );
+    }
+
+    /**
+     * Registrar restauración en audit_logs
+     * @param {number} adminId - ID del admin que restaura
+     * @param {string} userId - ID del usuario restaurado
+     * @param {string} reason - Razón de la restauración
+     */
+    static async logErasureRestoration(adminId, userId, reason) {
+        await pool.query(
+            `INSERT INTO audit_logs (
+                user_id, action, resource, resource_id, changes, ip_address, user_agent, hash, previous_hash
+            ) VALUES (
+                $1, 'RESTORE_ERASED_USER', 'usuarios', $2, $3::jsonb, '0.0.0.0', 'System', '', ''
+            )`,
+            [adminId, userId, JSON.stringify({ reason, restoredBy: adminId })]
+        );
+    }
+
+    /**
+     * Obtener solicitudes de eliminación pendientes
+     * @returns {Promise<Array>}
+     */
+    static async getPendingErasureRequests() {
+        const result = await pool.query(
+            `SELECT
+                dr.id, dr.user_id, dr.email, dr.status, dr.created_at, dr.due_date, dr.metadata,
+                u.nombre, u.apellido_paterno, u.email AS user_email, u.role, u.status AS user_status
+            FROM dsar_requests dr
+            LEFT JOIN usuarios u ON dr.user_id = u.uuid
+            WHERE dr.request_type = 'erasure'
+                AND dr.status IN ('verified', 'processing')
+            ORDER BY dr.created_at ASC`
+        );
+        return result.rows;
+    }
 }
 
 module.exports = ErasureDAO;

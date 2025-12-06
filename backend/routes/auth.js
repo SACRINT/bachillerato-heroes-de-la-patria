@@ -20,6 +20,9 @@ const twoFactorService = require('../services/twoFactorService');
 // ✅ SEMANA 25: WebAuthn Service integration
 const webauthnService = require('../services/webauthnService');
 
+// ✅ FASE 3: DAO Layer for data access
+const UserDAO = require('../data/user.dao');
+
 const router = express.Router();
 
 // Instancias de servicios
@@ -258,20 +261,15 @@ router.post('/verify-2fa', loginLimiter, [
         }
 
         // 2FA verified successfully - get user data and generate tokens
-        const { pool } = require('../config/database');
-        const userResult = await pool.query(
-            'SELECT id, username, email, nombre, apellido_paterno, role FROM usuarios WHERE id = $1',
-            [userId]
-        );
+        // ✅ FASE 3: Using UserDAO instead of direct pool.query
+        const user = await UserDAO.get(userId);
 
-        if (!userResult.rows.length) {
+        if (!user) {
             return res.status(404).json({
                 success: false,
                 error: 'Usuario no encontrado'
             });
         }
-
-        const user = userResult.rows[0];
 
         // Generar tokens
         const userPayload = {
@@ -627,20 +625,15 @@ router.post('/webauthn/authenticate/verify', loginLimiter, [
         }
 
         // Get user data
-        const { pool } = require('../config/database');
-        const userResult = await pool.query(
-            'SELECT id, username, email, nombre, apellido_paterno, role FROM usuarios WHERE id = $1',
-            [verificationResult.userId]
-        );
+        // ✅ FASE 3: Using UserDAO instead of direct pool.query
+        const user = await UserDAO.get(verificationResult.userId);
 
-        if (!userResult.rows.length) {
+        if (!user) {
             return res.status(404).json({
                 success: false,
                 error: 'Usuario no encontrado'
             });
         }
-
-        const user = userResult.rows[0];
 
         // Generate JWT tokens
         const userPayload = {
@@ -1451,20 +1444,13 @@ router.post('/public-register', registerLimiter, publicRegisterValidation, async
 
         debugLog.log('AUTH', `[PUBLIC-REGISTER] Intento de registro para email=${maskEmail(email)}`);
 
-        // Verificar si el email ya existe
-        const checkQuery = 'SELECT id, email_verified FROM usuarios WHERE email = $1';
-        const existingUser = await pool.query(checkQuery, [email.toLowerCase()]);
+        // ✅ FASE 3: Using UserDAO instead of direct pool.query
+        const existingUser = await UserDAO.checkEmailExists(email);
 
-        if (existingUser.rows.length > 0) {
-            const user = existingUser.rows[0];
-            if (user.email_verified) {
-                return res.status(409).json({
-                    success: false,
-                    error: 'Email ya registrado',
-                    message: 'Este email ya está registrado. Intenta iniciar sesión o recuperar tu contraseña.'
-                });
+        if (existingUser) {
+            if (existingUser.email_verified) {
+                return res.status(409).json({ success: false, error: 'Email ya registrado', message: 'Este email ya está registrado. Intenta iniciar sesión o recuperar tu contraseña.' });
             } else {
-                // Usuario existe pero no verificado - reenviar email
                 debugLog.log('AUTH', `[PUBLIC-REGISTER] Reenviando verificación para email=${maskEmail(email)}`);
             }
         }
@@ -1478,48 +1464,22 @@ router.post('/public-register', registerLimiter, publicRegisterValidation, async
 
         let userId;
 
-        if (existingUser.rows.length > 0) {
+        if (existingUser) {
             // Actualizar usuario existente
-            userId = existingUser.rows[0].id;
-            const updateQuery = `
-                UPDATE usuarios SET
-                    password_hash = $1,
-                    nombre = $2,
-                    apellido_paterno = $3,
-                    apellido_materno = $4
-                WHERE id = $5
-            `;
-            await pool.query(updateQuery, [passwordHash, nombre, apellido_paterno, apellido_materno, userId]);
+            userId = existingUser.id;
+            await UserDAO.updateUserRegistration(userId, passwordHash, nombre, apellido_paterno, apellido_materno);
         } else {
             // Crear nuevo usuario (pendiente de verificación)
-            const insertQuery = `
-                INSERT INTO usuarios (
-                    uuid, email, username, password_hash, role, status,
-                    nombre, apellido_paterno, apellido_materno, email_verified, created_at
-                ) VALUES (
-                    gen_random_uuid(), $1, $2, $3, 'estudiante', 'pendiente',
-                    $4, $5, $6, FALSE, NOW()
-                ) RETURNING id
-            `;
-            const result = await pool.query(insertQuery, [
-                email.toLowerCase(), username, passwordHash, nombre, apellido_paterno, apellido_materno
-            ]);
-            userId = result.rows[0].id;
+            userId = await UserDAO.createPendingUser(email, username, passwordHash, nombre, apellido_paterno, apellido_materno);
         }
 
         // Generar token de verificación
         const verificationToken = crypto.randomBytes(32).toString('hex');
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas
 
-        // Eliminar tokens anteriores para este usuario
-        await pool.query('DELETE FROM email_verification_tokens WHERE user_id = $1', [userId]);
-
-        // Insertar nuevo token
-        const tokenQuery = `
-            INSERT INTO email_verification_tokens (user_id, token, type, expires_at)
-            VALUES ($1, $2, 'registration', $3)
-        `;
-        await pool.query(tokenQuery, [userId, verificationToken, expiresAt]);
+        // ✅ FASE 3: Using UserDAO
+        await UserDAO.deleteVerificationTokens(userId);
+        await UserDAO.createVerificationToken(userId, verificationToken, 'registration', expiresAt);
 
         // Construir URL de verificación
         const baseUrl = process.env.APP_URL || 'https://bge-heroesdelapatria.vercel.app';
@@ -1583,23 +1543,12 @@ router.post('/verify-email', async (req, res) => {
         debugLog.log('AUTH', `[VERIFY-EMAIL] Verificando token=${maskToken(token)}`);
 
         // Buscar token válido
-        const tokenQuery = `
-            SELECT evt.*, u.email, u.nombre
-            FROM email_verification_tokens evt
-            JOIN usuarios u ON u.id = evt.user_id
-            WHERE evt.token = $1 AND evt.used_at IS NULL
-        `;
-        const tokenResult = await pool.query(tokenQuery, [token]);
+        // ✅ FASE 3: Using UserDAO
+        const verificationData = await UserDAO.getVerificationToken(token);
 
-        if (tokenResult.rows.length === 0) {
-            return res.status(400).json({
-                success: false,
-                error: 'Token inválido',
-                message: 'El enlace de verificación no es válido o ya fue utilizado.'
-            });
+        if (!verificationData) {
+            return res.status(400).json({ success: false, error: 'Token inválido', message: 'El enlace de verificación no es válido o ya fue utilizado.' });
         }
-
-        const verificationData = tokenResult.rows[0];
 
         // Verificar si el token expiró
         if (new Date() > new Date(verificationData.expires_at)) {
@@ -1610,22 +1559,9 @@ router.post('/verify-email', async (req, res) => {
             });
         }
 
-        // Activar usuario
-        const activateQuery = `
-            UPDATE usuarios SET
-                email_verified = TRUE,
-                email_verified_at = NOW(),
-                status = 'activo'
-            WHERE id = $1
-        `;
-        await pool.query(activateQuery, [verificationData.user_id]);
-
-        // Marcar token como usado
-        const markUsedQuery = `
-            UPDATE email_verification_tokens SET used_at = NOW()
-            WHERE token = $1
-        `;
-        await pool.query(markUsedQuery, [token]);
+        // ✅ FASE 3: Using UserDAO
+        await UserDAO.activateUser(verificationData.user_id);
+        await UserDAO.markTokenUsed(token);
 
         debugLog.log('AUTH', `[VERIFY-EMAIL] Email verificado para userId=${verificationData.user_id}`);
 
@@ -1663,22 +1599,12 @@ router.post('/resend-verification', registerLimiter, async (req, res) => {
             });
         }
 
-        // Buscar usuario no verificado
-        const userQuery = `
-            SELECT id, nombre, email_verified FROM usuarios
-            WHERE email = $1
-        `;
-        const userResult = await pool.query(userQuery, [email.toLowerCase()]);
+        // ✅ FASE 3: Using UserDAO
+        const user = await UserDAO.getUnverifiedUser(email);
 
-        if (userResult.rows.length === 0) {
-            // No revelar si el email existe
-            return res.json({
-                success: true,
-                message: 'Si el email existe y no está verificado, recibirás un nuevo enlace.'
-            });
+        if (!user) {
+            return res.json({ success: true, message: 'Si el email existe y no está verificado, recibirás un nuevo enlace.' });
         }
-
-        const user = userResult.rows[0];
 
         if (user.email_verified) {
             return res.status(400).json({
@@ -1692,14 +1618,9 @@ router.post('/resend-verification', registerLimiter, async (req, res) => {
         const verificationToken = crypto.randomBytes(32).toString('hex');
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-        // Eliminar tokens anteriores
-        await pool.query('DELETE FROM email_verification_tokens WHERE user_id = $1', [user.id]);
-
-        // Insertar nuevo token
-        await pool.query(
-            'INSERT INTO email_verification_tokens (user_id, token, type, expires_at) VALUES ($1, $2, $3, $4)',
-            [user.id, verificationToken, 'registration', expiresAt]
-        );
+        // ✅ FASE 3: Using UserDAO
+        await UserDAO.deleteVerificationTokens(user.id);
+        await UserDAO.createVerificationToken(user.id, verificationToken, 'registration', expiresAt);
 
         // Enviar email
         const baseUrl = process.env.APP_URL || 'https://bge-heroesdelapatria.vercel.app';

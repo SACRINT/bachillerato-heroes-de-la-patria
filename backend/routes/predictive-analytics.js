@@ -1,6 +1,7 @@
 /**
  * 📊 PREDICTIVE ANALYTICS ROUTES
  * SEMANA 20 - Predictive Analytics & Forecasting
+ * ✅ FASE 3 DAL - Refactorizado para usar DAO
  *
  * REST API para análisis predictivo y forecasting con ARIMA y Prophet
  *
@@ -26,8 +27,9 @@ const rateLimit = require('express-rate-limit');
 const { authenticateJWT } = require('../middleware/auth');
 const { requireRole } = require('../middleware/authorization');
 
-// Database
-const pool = require('../config/database');
+// ✅ FASE 3: Using DAO layer
+const AnalyticsDAO = require('../data/analytics.dao');
+const devLogger = require('../utils/devLogger');
 
 // ===========================================================================
 // RATE LIMITING
@@ -102,23 +104,8 @@ async function executePythonPrediction(payload) {
  */
 async function getHistoricalGrades(studentId) {
   try {
-    const query = `
-      SELECT
-        fecha_evaluacion AS date,
-        calificacion AS grade
-      FROM calificaciones
-      WHERE estudiante_id = $1
-        AND calificacion IS NOT NULL
-      ORDER BY fecha_evaluacion ASC
-    `;
-
-    const result = await pool.query(query, [studentId]);
-
-    return result.rows.map(row => ({
-      date: row.date.toISOString().split('T')[0],
-      grade: parseFloat(row.grade)
-    }));
-
+    // ✅ FASE 3: Using AnalyticsDAO
+    return await AnalyticsDAO.getHistoricalGrades(studentId);
   } catch (error) {
     console.error('[PREDICTIVE] Error fetching grades:', error);
     return [];
@@ -131,24 +118,8 @@ async function getHistoricalGrades(studentId) {
  */
 async function getHistoricalEnrollments() {
   try {
-    const query = `
-      SELECT
-        DATE_TRUNC('month', fecha_inscripcion) AS date,
-        COUNT(*) AS count
-      FROM usuarios
-      WHERE role = 'estudiante'
-        AND fecha_inscripcion IS NOT NULL
-      GROUP BY DATE_TRUNC('month', fecha_inscripcion)
-      ORDER BY date ASC
-    `;
-
-    const result = await pool.query(query);
-
-    return result.rows.map(row => ({
-      date: row.date.toISOString().split('T')[0],
-      count: parseInt(row.count)
-    }));
-
+    // ✅ FASE 3: Using AnalyticsDAO
+    return await AnalyticsDAO.getHistoricalEnrollments();
   } catch (error) {
     console.error('[PREDICTIVE] Error fetching enrollments:', error);
     return [];
@@ -161,25 +132,8 @@ async function getHistoricalEnrollments() {
  */
 async function getHistoricalDropout() {
   try {
-    const query = `
-      SELECT
-        DATE_TRUNC('month', created_at) AS date,
-        COUNT(*) AS dropout_count
-      FROM usuarios
-      WHERE role = 'estudiante'
-        AND status = 'inactivo'
-        AND created_at IS NOT NULL
-      GROUP BY DATE_TRUNC('month', created_at)
-      ORDER BY date ASC
-    `;
-
-    const result = await pool.query(query);
-
-    return result.rows.map(row => ({
-      date: row.date.toISOString().split('T')[0],
-      dropout_count: parseInt(row.dropout_count)
-    }));
-
+    // ✅ FASE 3: Using AnalyticsDAO
+    return await AnalyticsDAO.getHistoricalDropout();
   } catch (error) {
     console.error('[PREDICTIVE] Error fetching dropout:', error);
     return [];
@@ -199,7 +153,7 @@ router.post('/grades/:studentId', authenticateJWT, predictiveLimiter, async (req
     const { studentId } = req.params;
     const { forecast_months = 3 } = req.body;
 
-    console.log(`[PREDICTIVE] Forecasting grades for student ${studentId} (${forecast_months} months)`);
+    devLogger.log(`[PREDICTIVE] Forecasting grades for student ${studentId} (${forecast_months} months)`);
 
     // Obtener calificaciones históricas
     const historicalGrades = await getHistoricalGrades(studentId);
@@ -252,7 +206,7 @@ router.post('/enrollments', authenticateJWT, requireRole(['admin', 'directivo'])
   try {
     const { forecast_months = 6 } = req.body;
 
-    console.log(`[PREDICTIVE] Forecasting enrollments (${forecast_months} months)`);
+    devLogger.log(`[PREDICTIVE] Forecasting enrollments (${forecast_months} months)`);
 
     // Obtener inscripciones históricas
     const historicalEnrollments = await getHistoricalEnrollments();
@@ -303,7 +257,7 @@ router.post('/dropout', authenticateJWT, requireRole(['admin', 'directivo']), pr
   try {
     const { forecast_months = 6 } = req.body;
 
-    console.log(`[PREDICTIVE] Forecasting dropout trend (${forecast_months} months)`);
+    devLogger.log(`[PREDICTIVE] Forecasting dropout trend (${forecast_months} months)`);
 
     // Obtener deserción histórica
     const historicalDropout = await getHistoricalDropout();
@@ -362,7 +316,7 @@ router.post('/custom/arima', authenticateJWT, requireRole(['admin', 'directivo']
       });
     }
 
-    console.log(`[PREDICTIVE] Custom ARIMA forecast (${periods} periods, order ${order})`);
+    devLogger.log(`[PREDICTIVE] Custom ARIMA forecast (${periods} periods, order ${order})`);
 
     const prediction = await executePythonPrediction({
       type: 'custom_arima',
@@ -402,7 +356,7 @@ router.post('/custom/prophet', authenticateJWT, requireRole(['admin', 'directivo
       });
     }
 
-    console.log(`[PREDICTIVE] Custom Prophet forecast (${periods} periods, ${seasonality_mode})`);
+    devLogger.log(`[PREDICTIVE] Custom Prophet forecast (${periods} periods, ${seasonality_mode})`);
 
     const prediction = await executePythonPrediction({
       type: 'custom_prophet',
@@ -434,27 +388,17 @@ router.get('/trends/:metric', authenticateJWT, predictiveLimiter, async (req, re
     const { metric } = req.params;
     const { start_date, end_date } = req.query;
 
-    console.log(`[PREDICTIVE] Trend analysis for ${metric}`);
+    devLogger.log(`[PREDICTIVE] Trend analysis for ${metric}`);
 
     let data = [];
 
     switch (metric) {
       case 'grades':
-        const gradesQuery = `
-          SELECT
-            DATE_TRUNC('week', fecha_evaluacion) AS date,
-            AVG(calificacion) AS value
-          FROM calificaciones
-          WHERE fecha_evaluacion >= $1 AND fecha_evaluacion <= $2
-            AND calificacion IS NOT NULL
-          GROUP BY DATE_TRUNC('week', fecha_evaluacion)
-          ORDER BY date ASC
-        `;
-        const gradesResult = await pool.query(gradesQuery, [start_date || '2024-01-01', end_date || '2025-12-31']);
-        data = gradesResult.rows.map(row => ({
-          date: row.date.toISOString().split('T')[0],
-          value: parseFloat(row.value)
-        }));
+        // ✅ FASE 3: Using AnalyticsDAO.getGradesTrend
+        data = await AnalyticsDAO.getGradesTrend(
+          start_date || '2024-01-01',
+          end_date || '2025-12-31'
+        );
         break;
 
       case 'enrollments':
@@ -518,14 +462,16 @@ router.get('/trends/:metric', authenticateJWT, predictiveLimiter, async (req, re
  */
 router.get('/summary', authenticateJWT, requireRole(['admin', 'directivo']), async (req, res) => {
   try {
-    console.log('[PREDICTIVE] Generating analytics summary');
+    devLogger.log('[PREDICTIVE] Generating analytics summary');
 
-    // Obtener datos históricos en paralelo
-    const [enrollments, dropout, gradesCount] = await Promise.all([
+    // ✅ FASE 3: Using AnalyticsDAO
+    const [enrollments, dropout, gradesData] = await Promise.all([
       getHistoricalEnrollments(),
       getHistoricalDropout(),
-      pool.query('SELECT COUNT(DISTINCT estudiante_id) as count FROM calificaciones')
+      AnalyticsDAO.getPredictiveSummary()
     ]);
+
+    const gradesCount = gradesData.total_students_with_grades;
 
     const summary = {
       success: true,
@@ -543,9 +489,9 @@ router.get('/summary', authenticateJWT, requireRole(['admin', 'directivo']), asy
           status: dropout.length >= 12 ? 'ready' : 'insufficient_data'
         },
         grades: {
-          available: gradesCount.rows[0].count > 0,
-          students_with_grades: parseInt(gradesCount.rows[0].count),
-          status: gradesCount.rows[0].count > 0 ? 'ready' : 'no_data'
+          available: gradesCount > 0,
+          students_with_grades: gradesCount,
+          status: gradesCount > 0 ? 'ready' : 'no_data'
         }
       },
       latest_metrics: {

@@ -1,5 +1,6 @@
 /**
  * 🪝 WEBHOOKS ROUTES - SEMANA 8
+ * ✅ FASE 3 DAL - Refactorizado para usar WebhookDAO
  * Sistema de webhooks para notificaciones de eventos en tiempo real
  *
  * Características:
@@ -17,8 +18,10 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
 const { authenticateToken } = require('../middleware/auth');
-const pool = require('../config/database');
 const devLogger = require('../utils/devLogger');
+
+// ✅ FASE 3: Using DAO layer
+const WebhookDAO = require('../data/webhook.dao');
 
 // =============================================================================
 // CONFIGURACIÓN
@@ -52,18 +55,13 @@ router.get('/', authenticateToken, async (req, res) => {
     try {
         const tenantId = req.tenantId || req.user.tenant_id;
 
-        const result = await pool.query(
-            `SELECT id, url, events, status, secret_preview, created_at, updated_at
-             FROM webhooks
-             WHERE tenant_id = $1
-             ORDER BY created_at DESC`,
-            [tenantId]
-        );
+        // ✅ FASE 3: Using WebhookDAO
+        const webhooks = await WebhookDAO.listByTenant(tenantId);
 
         res.json({
             success: true,
-            webhooks: result.rows,
-            count: result.rows.length,
+            webhooks,
+            count: webhooks.length,
         });
 
     } catch (error) {
@@ -80,13 +78,6 @@ router.get('/', authenticateToken, async (req, res) => {
 /**
  * POST /api/webhooks
  * Crear un nuevo webhook
- *
- * Body:
- * {
- *   url: "https://example.com/webhook",
- *   events: ["user.created", "grade.updated"],
- *   description: "Webhook para sincronización"
- * }
  */
 router.post('/', authenticateToken, async (req, res) => {
     try {
@@ -127,15 +118,8 @@ router.post('/', authenticateToken, async (req, res) => {
         const secret = crypto.randomBytes(32).toString('hex');
         const secretPreview = secret.substring(0, 8) + '...' + secret.substring(secret.length - 8);
 
-        // Insertar en BD
-        const result = await pool.query(
-            `INSERT INTO webhooks (tenant_id, url, events, description, secret, secret_preview, status)
-             VALUES ($1, $2, $3, $4, $5, $6, 'active')
-             RETURNING id, url, events, description, secret_preview, status, created_at`,
-            [tenantId, url, JSON.stringify(events), description, secret, secretPreview]
-        );
-
-        const webhook = result.rows[0];
+        // ✅ FASE 3: Using WebhookDAO
+        const webhook = await WebhookDAO.createForTenant(tenantId, url, events, description, secret, secretPreview);
 
         devLogger.log(`[WEBHOOKS] Webhook creado: ${webhook.id} para tenant ${tenantId}`);
 
@@ -168,14 +152,10 @@ router.get('/:id', authenticateToken, async (req, res) => {
         const { id } = req.params;
         const tenantId = req.tenantId || req.user.tenant_id;
 
-        const result = await pool.query(
-            `SELECT id, url, events, description, status, secret_preview, created_at, updated_at
-             FROM webhooks
-             WHERE id = $1 AND tenant_id = $2`,
-            [id, tenantId]
-        );
+        // ✅ FASE 3: Using WebhookDAO
+        const webhook = await WebhookDAO.getByIdAndTenant(id, tenantId);
 
-        if (result.rows.length === 0) {
+        if (!webhook) {
             return res.status(404).json({
                 success: false,
                 error: 'WEBHOOK_NOT_FOUND',
@@ -185,7 +165,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
 
         res.json({
             success: true,
-            webhook: result.rows[0],
+            webhook,
         });
 
     } catch (error) {
@@ -209,46 +189,30 @@ router.patch('/:id', authenticateToken, async (req, res) => {
         const { url, events, description, status } = req.body;
         const tenantId = req.tenantId || req.user.tenant_id;
 
-        // Construir query dinámico
-        const updates = [];
-        const values = [];
-        let paramCounter = 1;
-
-        if (url !== undefined) {
-            if (!isValidUrl(url)) {
-                return res.status(400).json({
-                    success: false,
-                    error: 'INVALID_URL',
-                    message: 'URL inválida',
-                });
-            }
-            updates.push(`url = $${paramCounter++}`);
-            values.push(url);
+        // Validaciones
+        if (url !== undefined && !isValidUrl(url)) {
+            return res.status(400).json({
+                success: false,
+                error: 'INVALID_URL',
+                message: 'URL inválida',
+            });
         }
 
-        if (events !== undefined) {
-            updates.push(`events = $${paramCounter++}`);
-            values.push(JSON.stringify(events));
+        if (status !== undefined && !['active', 'inactive'].includes(status)) {
+            return res.status(400).json({
+                success: false,
+                error: 'INVALID_STATUS',
+                message: 'Estado inválido. Debe ser "active" o "inactive"',
+            });
         }
 
-        if (description !== undefined) {
-            updates.push(`description = $${paramCounter++}`);
-            values.push(description);
-        }
+        const updates = {};
+        if (url !== undefined) updates.url = url;
+        if (events !== undefined) updates.events = events;
+        if (description !== undefined) updates.description = description;
+        if (status !== undefined) updates.status = status;
 
-        if (status !== undefined) {
-            if (!['active', 'inactive'].includes(status)) {
-                return res.status(400).json({
-                    success: false,
-                    error: 'INVALID_STATUS',
-                    message: 'Estado inválido. Debe ser "active" o "inactive"',
-                });
-            }
-            updates.push(`status = $${paramCounter++}`);
-            values.push(status);
-        }
-
-        if (updates.length === 0) {
+        if (Object.keys(updates).length === 0) {
             return res.status(400).json({
                 success: false,
                 error: 'NO_UPDATES',
@@ -256,18 +220,10 @@ router.patch('/:id', authenticateToken, async (req, res) => {
             });
         }
 
-        updates.push(`updated_at = NOW()`);
-        values.push(id, tenantId);
+        // ✅ FASE 3: Using WebhookDAO
+        const webhook = await WebhookDAO.updateByIdAndTenant(id, tenantId, updates);
 
-        const result = await pool.query(
-            `UPDATE webhooks
-             SET ${updates.join(', ')}
-             WHERE id = $${paramCounter++} AND tenant_id = $${paramCounter++}
-             RETURNING id, url, events, description, status, updated_at`,
-            values
-        );
-
-        if (result.rows.length === 0) {
+        if (!webhook) {
             return res.status(404).json({
                 success: false,
                 error: 'WEBHOOK_NOT_FOUND',
@@ -280,7 +236,7 @@ router.patch('/:id', authenticateToken, async (req, res) => {
         res.json({
             success: true,
             message: 'Webhook actualizado exitosamente',
-            webhook: result.rows[0],
+            webhook,
         });
 
     } catch (error) {
@@ -303,14 +259,10 @@ router.delete('/:id', authenticateToken, async (req, res) => {
         const { id } = req.params;
         const tenantId = req.tenantId || req.user.tenant_id;
 
-        const result = await pool.query(
-            `DELETE FROM webhooks
-             WHERE id = $1 AND tenant_id = $2
-             RETURNING id`,
-            [id, tenantId]
-        );
+        // ✅ FASE 3: Using WebhookDAO
+        const deleted = await WebhookDAO.deleteByIdAndTenant(id, tenantId);
 
-        if (result.rows.length === 0) {
+        if (!deleted) {
             return res.status(404).json({
                 success: false,
                 error: 'WEBHOOK_NOT_FOUND',
@@ -346,13 +298,10 @@ router.get('/:id/deliveries', authenticateToken, async (req, res) => {
         const { limit = 50, offset = 0 } = req.query;
         const tenantId = req.tenantId || req.user.tenant_id;
 
-        // Verificar que el webhook pertenece al tenant
-        const webhookCheck = await pool.query(
-            `SELECT id FROM webhooks WHERE id = $1 AND tenant_id = $2`,
-            [id, tenantId]
-        );
+        // ✅ FASE 3: Using WebhookDAO
+        const belongs = await WebhookDAO.belongsToTenant(id, tenantId);
 
-        if (webhookCheck.rows.length === 0) {
+        if (!belongs) {
             return res.status(404).json({
                 success: false,
                 error: 'WEBHOOK_NOT_FOUND',
@@ -360,21 +309,13 @@ router.get('/:id/deliveries', authenticateToken, async (req, res) => {
             });
         }
 
-        // Obtener deliveries
-        const result = await pool.query(
-            `SELECT id, event_type, status, response_code, response_body,
-                    retry_count, delivered_at, created_at
-             FROM webhook_deliveries
-             WHERE webhook_id = $1
-             ORDER BY created_at DESC
-             LIMIT $2 OFFSET $3`,
-            [id, parseInt(limit), parseInt(offset)]
-        );
+        // ✅ FASE 3: Using WebhookDAO
+        const deliveries = await WebhookDAO.getDeliveries(id, limit, offset);
 
         res.json({
             success: true,
-            deliveries: result.rows,
-            count: result.rows.length,
+            deliveries,
+            count: deliveries.length,
         });
 
     } catch (error) {
@@ -397,22 +338,16 @@ router.post('/:id/test', authenticateToken, async (req, res) => {
         const { id } = req.params;
         const tenantId = req.tenantId || req.user.tenant_id;
 
-        // Obtener webhook
-        const webhookResult = await pool.query(
-            `SELECT id, url, secret, status FROM webhooks
-             WHERE id = $1 AND tenant_id = $2`,
-            [id, tenantId]
-        );
+        // ✅ FASE 3: Using WebhookDAO
+        const webhook = await WebhookDAO.getWithSecret(id, tenantId);
 
-        if (webhookResult.rows.length === 0) {
+        if (!webhook) {
             return res.status(404).json({
                 success: false,
                 error: 'WEBHOOK_NOT_FOUND',
                 message: 'Webhook no encontrado',
             });
         }
-
-        const webhook = webhookResult.rows[0];
 
         if (webhook.status !== 'active') {
             return res.status(400).json({
@@ -498,20 +433,15 @@ async function sendWebhook(webhook, payload, retryCount = 0) {
         const responseBody = await response.text();
         const success = response.ok;
 
-        // Guardar delivery log
-        await pool.query(
-            `INSERT INTO webhook_deliveries
-             (webhook_id, event_type, payload, status, response_code, response_body, retry_count)
-             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-            [
-                webhook.id,
-                payload.event,
-                JSON.stringify(payload),
-                success ? 'success' : 'failed',
-                response.status,
-                responseBody.substring(0, 1000), // Limitar tamaño
-                retryCount,
-            ]
+        // ✅ FASE 3: Using WebhookDAO
+        await WebhookDAO.logDeliveryFull(
+            webhook.id,
+            payload.event,
+            payload,
+            success ? 'success' : 'failed',
+            response.status,
+            responseBody,
+            retryCount
         );
 
         devLogger.log(`[WEBHOOKS] Delivery ${success ? 'exitoso' : 'fallido'}: webhook ${webhook.id}, status ${response.status}`);
@@ -532,18 +462,13 @@ async function sendWebhook(webhook, payload, retryCount = 0) {
     } catch (error) {
         devLogger.error(`[WEBHOOKS] Error al enviar webhook ${webhook.id}:`, error);
 
-        // Guardar error en BD
-        await pool.query(
-            `INSERT INTO webhook_deliveries
-             (webhook_id, event_type, payload, status, response_body, retry_count)
-             VALUES ($1, $2, $3, 'error', $4, $5)`,
-            [
-                webhook.id,
-                payload.event,
-                JSON.stringify(payload),
-                error.message,
-                retryCount,
-            ]
+        // ✅ FASE 3: Using WebhookDAO
+        await WebhookDAO.logDeliveryError(
+            webhook.id,
+            payload.event,
+            payload,
+            error.message,
+            retryCount
         );
 
         // Retry si quedan intentos
@@ -562,23 +487,11 @@ async function sendWebhook(webhook, payload, retryCount = 0) {
 
 /**
  * Dispara un evento webhook (llamado por otras partes del sistema)
- *
- * Ejemplo de uso:
- *   triggerWebhookEvent('user.created', { id: 123, email: 'user@example.com' }, tenantId)
  */
 async function triggerWebhookEvent(eventType, data, tenantId) {
     try {
-        // Obtener webhooks activos que escuchan este evento
-        const result = await pool.query(
-            `SELECT id, url, secret, events
-             FROM webhooks
-             WHERE tenant_id = $1
-               AND status = 'active'
-               AND events @> $2::jsonb`,
-            [tenantId, JSON.stringify([eventType])]
-        );
-
-        const webhooks = result.rows;
+        // ✅ FASE 3: Using WebhookDAO
+        const webhooks = await WebhookDAO.getActiveForEvent(tenantId, eventType);
 
         if (webhooks.length === 0) {
             devLogger.log(`[WEBHOOKS] No hay webhooks activos para evento ${eventType} en tenant ${tenantId}`);

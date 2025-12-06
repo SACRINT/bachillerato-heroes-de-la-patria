@@ -5,25 +5,15 @@
  * @jest-environment node
  */
 
-// IMPORTANTE: Los mocks DEBEN declararse ANTES de cualquier import
-jest.mock('nodemailer');
-jest.mock('fs', () => ({
-  promises: {
-    readFile: jest.fn(),
-  },
-}));
-jest.mock('handlebars', () => ({
-  compile: jest.fn(),
-  registerHelper: jest.fn(),
-}));
-
-const nodemailer = require('nodemailer');
-const handlebars = require('handlebars');
-const fs = require('fs').promises;
+// No usamos mocks globales, inyectamos directamente
+const { EmailService } = require('../../backend/services/emailService');
 
 describe('EmailService', () => {
   let emailService;
   let mockTransporter;
+  let mockNodemailer;
+  let mockFs;
+  let mockHandlebars;
   let mockCompiledTemplate;
 
   beforeEach(() => {
@@ -39,32 +29,34 @@ describe('EmailService', () => {
       }),
     };
 
-    // Mock de nodemailer.createTransport
-    nodemailer.createTransport.mockReturnValue(mockTransporter);
-
-    // Mock de nodemailer.createTestAccount para desarrollo
-    nodemailer.createTestAccount.mockResolvedValue({
-      user: 'test.user@ethereal.email',
-      pass: 'test-password',
-    });
-
-    // Mock de nodemailer.getTestMessageUrl
-    nodemailer.getTestMessageUrl.mockReturnValue('https://ethereal.email/message/test');
+    // Mock de nodemailer completo
+    mockNodemailer = {
+      createTransport: jest.fn().mockReturnValue(mockTransporter),
+      createTestAccount: jest.fn().mockResolvedValue({
+        user: 'test.user@ethereal.email',
+        pass: 'test-password',
+      }),
+      getTestMessageUrl: jest.fn().mockReturnValue('https://ethereal.email/message/test'),
+    };
 
     // Mock de handlebars.compile
     mockCompiledTemplate = jest.fn().mockReturnValue('<html>Test Email</html>');
-    handlebars.compile.mockReturnValue(mockCompiledTemplate);
+    mockHandlebars = {
+      compile: jest.fn().mockReturnValue(mockCompiledTemplate),
+      registerHelper: jest.fn(),
+    };
 
-    // Mock de fs.readFile
-    fs.readFile.mockResolvedValue('<html>{{nombre}}</html>');
+    // Mock de fs.promises
+    mockFs = {
+      readFile: jest.fn().mockResolvedValue('<html>{{nombre}}</html>'),
+    };
 
-    // Obtener instancia de EmailService (singleton)
-    emailService = require('../../backend/services/emailService');
-
-    // Resetear estado de inicialización del singleton
-    emailService.initialized = false;
-    emailService.transporter = null;
-    emailService.templatesCache = {};
+    // Crear instancia testeable con mocks inyectados
+    emailService = EmailService.createTestInstance({
+      nodemailerModule: mockNodemailer,
+      fsModule: mockFs,
+      handlebarsModule: mockHandlebars,
+    });
   });
 
   afterEach(() => {
@@ -99,8 +91,8 @@ describe('EmailService', () => {
     test('debería inicializar con cuenta de prueba Ethereal', async () => {
       await emailService.init();
 
-      expect(nodemailer.createTestAccount).toHaveBeenCalled();
-      expect(nodemailer.createTransport).toHaveBeenCalledWith({
+      expect(mockNodemailer.createTestAccount).toHaveBeenCalled();
+      expect(mockNodemailer.createTransport).toHaveBeenCalledWith({
         host: 'smtp.ethereal.email',
         port: 587,
         secure: false,
@@ -118,15 +110,15 @@ describe('EmailService', () => {
 
       await emailService.init();
 
-      expect(nodemailer.createTestAccount).not.toHaveBeenCalled();
+      expect(mockNodemailer.createTestAccount).not.toHaveBeenCalled();
     });
 
     test('debería registrar Handlebars helpers al inicializar', async () => {
       await emailService.init();
 
-      expect(handlebars.registerHelper).toHaveBeenCalled();
+      expect(mockHandlebars.registerHelper).toHaveBeenCalled();
       // Verificar que se registraron los helpers esperados
-      const helperNames = handlebars.registerHelper.mock.calls.map(call => call[0]);
+      const helperNames = mockHandlebars.registerHelper.mock.calls.map(call => call[0]);
       expect(helperNames).toContain('formatDate');
       expect(helperNames).toContain('formatDateTime');
       expect(helperNames).toContain('ifEquals');
@@ -156,7 +148,7 @@ describe('EmailService', () => {
     test('debería inicializar con configuración de producción', async () => {
       await emailService.init();
 
-      expect(nodemailer.createTransport).toHaveBeenCalledWith({
+      expect(mockNodemailer.createTransport).toHaveBeenCalledWith({
         host: 'smtp.production.com',
         port: 587,
         secure: true,
@@ -179,7 +171,7 @@ describe('EmailService', () => {
     });
 
     test('debería manejar error en createTestAccount()', async () => {
-      nodemailer.createTestAccount.mockRejectedValue(new Error('Test account creation failed'));
+      mockNodemailer.createTestAccount.mockRejectedValue(new Error('Test account creation failed'));
 
       await expect(emailService.init()).rejects.toThrow('Test account creation failed');
     });
@@ -189,8 +181,8 @@ describe('EmailService', () => {
     test('debería cargar y compilar una plantilla', async () => {
       const template = await emailService.loadTemplate('welcome');
 
-      expect(fs.readFile).toHaveBeenCalled();
-      expect(handlebars.compile).toHaveBeenCalledWith('<html>{{nombre}}</html>');
+      expect(mockFs.readFile).toHaveBeenCalled();
+      expect(mockHandlebars.compile).toHaveBeenCalledWith('<html>{{nombre}}</html>');
       expect(template).toBe(mockCompiledTemplate);
     });
 
@@ -202,7 +194,7 @@ describe('EmailService', () => {
       await emailService.loadTemplate('welcome');
 
       // fs.readFile solo debe ser llamado una vez
-      expect(fs.readFile).toHaveBeenCalledTimes(1);
+      expect(mockFs.readFile).toHaveBeenCalledTimes(1);
     });
 
     test('debería retornar plantilla del caché si existe', async () => {
@@ -211,12 +203,12 @@ describe('EmailService', () => {
 
       const template = await emailService.loadTemplate('cached-template');
 
-      expect(fs.readFile).not.toHaveBeenCalled();
+      expect(mockFs.readFile).not.toHaveBeenCalled();
       expect(template).toBe(mockCompiledTemplate);
     });
 
     test('debería lanzar error si la plantilla no existe', async () => {
-      fs.readFile.mockRejectedValue(new Error('ENOENT: no such file'));
+      mockFs.readFile.mockRejectedValue(new Error('ENOENT: no such file'));
 
       await expect(emailService.loadTemplate('nonexistent')).rejects.toThrow(
         'No se pudo cargar la plantilla de email: nonexistent'
@@ -238,7 +230,7 @@ describe('EmailService', () => {
         attachments: [],
       });
 
-      expect(fs.readFile).toHaveBeenCalled();
+      expect(mockFs.readFile).toHaveBeenCalled();
       expect(mockCompiledTemplate).toHaveBeenCalledWith({ nombre: 'Juan' });
       expect(mockTransporter.sendMail).toHaveBeenCalledWith({
         from: emailService.from,

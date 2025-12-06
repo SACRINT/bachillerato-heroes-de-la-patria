@@ -1,6 +1,7 @@
 /**
  * 🤖 ML PREDICTIONS API
  * SEMANA 17 - Machine Learning & AI
+ * ✅ FASE 3 DAL - Refactorizado para usar DAO donde aplicable
  *
  * Endpoints para predicciones de éxito estudiantil
  *
@@ -21,6 +22,10 @@ const pool = require('../config/database');
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs').promises;
+
+// ✅ FASE 3: Using DAO layer
+const AnalyticsDAO = require('../data/analytics.dao');
+const devLogger = require('../utils/devLogger');
 
 // =============================================================================
 // HELPER: EXECUTE PYTHON ML MODEL
@@ -75,67 +80,15 @@ async function executePythonPrediction(studentFeatures) {
 
 /**
  * Extrae features de un estudiante desde la BD
+ * ✅ FASE 3: Using AnalyticsDAO
  * @param {string} studentId - UUID del estudiante
  * @returns {Promise<object>} Features del estudiante
  */
 async function extractStudentFeatures(studentId) {
-  const query = `
-    WITH student_data AS (
-      SELECT
-        u.uuid AS student_id,
-        u.date_of_birth,
-        u.gender,
-        u.status,
+  // ✅ FASE 3: Using AnalyticsDAO.getStudentFeatures
+  const data = await AnalyticsDAO.getStudentFeatures(studentId);
 
-        -- Asistencia
-        COUNT(DISTINCT a.id) AS total_attendance_records,
-        SUM(CASE WHEN a.estado = 'presente' THEN 1 ELSE 0 END) AS days_present,
-        ROUND(
-          SUM(CASE WHEN a.estado = 'presente' THEN 1 ELSE 0 END)::NUMERIC /
-          NULLIF(COUNT(DISTINCT a.id), 0) * 100,
-          2
-        ) AS attendance_rate,
-
-        -- Calificaciones
-        AVG(c.calificacion) AS avg_grade,
-        MIN(c.calificacion) AS min_grade,
-        MAX(c.calificacion) AS max_grade,
-        STDDEV(c.calificacion) AS grade_stddev,
-
-        -- Engagement
-        COUNT(DISTINCT al.id) FILTER (WHERE al.action = 'LOGIN') AS login_count,
-        COUNT(DISTINCT te.id) AS assignments_submitted
-
-      FROM usuarios u
-      LEFT JOIN asistencia a ON u.uuid = a.estudiante_id
-      LEFT JOIN calificaciones c ON u.uuid = c.estudiante_id
-      LEFT JOIN audit_logs al ON u.uuid = al.user_id
-      LEFT JOIN tareas_estudiantes te ON u.uuid = te.estudiante_id
-
-      WHERE u.uuid = $1 AND u.role = 'estudiante'
-
-      GROUP BY u.uuid, u.date_of_birth, u.gender, u.status
-    )
-
-    SELECT
-      student_id,
-      COALESCE(attendance_rate, 0) AS attendance_rate,
-      COALESCE(avg_grade, 7.0) AS avg_grade,
-      COALESCE(min_grade, 6.0) AS min_grade,
-      COALESCE(max_grade, 8.0) AS max_grade,
-      COALESCE(grade_stddev, 0) AS grade_stddev,
-      COALESCE(login_count, 0) AS login_count,
-      COALESCE(assignments_submitted, 0) AS assignments_submitted,
-      EXTRACT(YEAR FROM AGE(CURRENT_DATE, date_of_birth)) AS age,
-      CASE WHEN gender = 'M' THEN 1 ELSE 0 END AS gender_male,
-      CASE WHEN gender = 'F' THEN 1 ELSE 0 END AS gender_female
-
-    FROM student_data
-  `;
-
-  const result = await pool.query(query, [studentId]);
-
-  if (result.rows.length === 0) {
+  if (!data) {
     throw new Error(`Student not found: ${studentId}`);
   }
 
@@ -218,7 +171,7 @@ router.post('/predict', authenticateJWT, async (req, res) => {
     // Ejecutar predicción
     const prediction = await executePythonPrediction(studentFeatures);
 
-    console.log(`[ML-API] Prediction for student ${studentId || 'manual'}:`, prediction.risk_category);
+    devLogger.log(`[ML-API] Prediction for student ${studentId || 'manual'}:`, prediction.risk_category);
 
     res.status(200).json({
       success: true,
@@ -258,7 +211,7 @@ router.get('/batch-predict', authenticateJWT, requireRole(['admin', 'administrat
       });
     }
 
-    console.log(`[ML-API] Batch prediction for ${ids.length} students`);
+    devLogger.log(`[ML-API] Batch prediction for ${ids.length} students`);
 
     const predictions = [];
 
@@ -328,17 +281,10 @@ router.get('/model-info', async (req, res) => {
  */
 router.get('/high-risk-students', authenticateJWT, requireRole(['admin', 'administrativo', 'docente']), async (req, res) => {
   try {
-    // Obtener todos los estudiantes activos
-    const studentsResult = await pool.query(
-      `SELECT uuid, nombre, apellido_paterno, email
-       FROM usuarios
-       WHERE role = 'estudiante' AND status = 'activo'
-       LIMIT 100`
-    );
+    // ✅ FASE 3: Using AnalyticsDAO
+    const students = await AnalyticsDAO.getActiveStudents(100);
 
-    const students = studentsResult.rows;
-
-    console.log(`[ML-API] Analyzing ${students.length} students for high risk...`);
+    devLogger.log(`[ML-API] Analyzing ${students.length} students for high risk...`);
 
     const highRiskStudents = [];
 
@@ -367,7 +313,7 @@ router.get('/high-risk-students', authenticateJWT, requireRole(['admin', 'admini
     // Ordenar por probabilidad de deserción (mayor a menor)
     highRiskStudents.sort((a, b) => b.dropout_probability - a.dropout_probability);
 
-    console.log(`[ML-API] Found ${highRiskStudents.length} high-risk students`);
+    devLogger.log(`[ML-API] Found ${highRiskStudents.length} high-risk students`);
 
     res.status(200).json({
       success: true,

@@ -9,7 +9,8 @@ const express = require('express');
 const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
-const { pool } = require('../config/database');
+// ✅ FASE 3: Using DAO layer
+const PasswordRecoveryDAO = require('../data/password-recovery.dao');
 const { body, validationResult } = require('express-validator');
 const crypto = require('crypto');
 const verificationService = require('../services/verificationService');
@@ -47,35 +48,14 @@ router.post('/', [
     const user_agent = req.get('User-Agent');
 
     try {
-        const insertQuery = `
-            INSERT INTO password_recovery_requests (
-                email, student_id, ip_address, user_agent
-            )
-            VALUES ($1, $2, $3, $4)
-            RETURNING *;
-        `;
+        // ✅ FASE 3: Using PasswordRecoveryDAO
+        const request = await PasswordRecoveryDAO.create({ email, student_id, ip_address, user_agent });
+        debugLog.log('PASSWORD_RECOVERY', '✅ Nueva solicitud de recuperación creada:', request.id);
 
-        const result = await pool.query(insertQuery, [
-            email,
-            student_id,
-            ip_address,
-            user_agent
-        ]);
-
-        debugLog.log('PASSWORD_RECOVERY', '✅ Nueva solicitud de recuperación creada:', result.rows[0].id);
-
-        // Generar token de recuperación único
         const recoveryToken = crypto.randomBytes(32).toString('hex');
-        const tokenExpiration = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas
+        const tokenExpiration = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        await PasswordRecoveryDAO.updateToken(request.id, recoveryToken, tokenExpiration);
 
-        // Actualizar la solicitud con el token
-        await pool.query(`
-            UPDATE password_recovery_requests
-            SET token = $1, token_expires_at = $2
-            WHERE id = $3
-        `, [recoveryToken, tokenExpiration, result.rows[0].id]);
-
-        // Enviar email con enlace de recuperación
         const recoveryLink = `${process.env.BASE_URL || 'http://localhost:3000'}/reset-password.html?token=${recoveryToken}`;
 
         try {
@@ -145,11 +125,8 @@ router.post('/', [
 
         res.status(201).json({
             success: true,
-            message: 'Se han enviado las instrucciones de recuperación a tu correo electrónico. Revisa tu bandeja de entrada y spam.',
-            data: {
-                id: result.rows[0].id,
-                fecha: result.rows[0].fecha_solicitud
-            }
+            message: 'Se han enviado las instrucciones de recuperación a tu correo electrónico.',
+            data: { id: request.id, fecha: request.fecha_solicitud }
         });
 
     } catch (error) {
@@ -168,33 +145,9 @@ router.get('/', async (req, res) => {
     const { status, limit = 50, offset = 0 } = req.query;
 
     try {
-        let query = 'SELECT * FROM password_recovery_requests';
-        const params = [];
-
-        if (status) {
-            query += ' WHERE status = $1';
-            params.push(status);
-        }
-
-        query += ` ORDER BY fecha_solicitud DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-        params.push(parseInt(limit), parseInt(offset));
-
-        const result = await pool.query(query, params);
-
-        // Contar total
-        const countQuery = status ?
-            'SELECT COUNT(*) FROM password_recovery_requests WHERE status = $1' :
-            'SELECT COUNT(*) FROM password_recovery_requests';
-        const countParams = status ? [status] : [];
-        const countResult = await pool.query(countQuery, countParams);
-
-        res.json({
-            success: true,
-            data: result.rows,
-            total: parseInt(countResult.rows[0].count),
-            limit: parseInt(limit),
-            offset: parseInt(offset)
-        });
+        // ✅ FASE 3: Using PasswordRecoveryDAO
+        const { data, total } = await PasswordRecoveryDAO.getAll({ status, limit, offset });
+        res.json({ success: true, data, total, limit: parseInt(limit), offset: parseInt(offset) });
 
     } catch (error) {
         debugLog.error('PASSWORD_RECOVERY', '❌ Error al obtener solicitudes:', sanitizeError(error, 'password-recovery'));
@@ -210,23 +163,9 @@ router.get('/', async (req, res) => {
 // =====================================================
 router.get('/stats', async (req, res) => {
     try {
-        const query = `
-            SELECT
-                COUNT(*) as total,
-                COUNT(*) FILTER (WHERE status = 'pending') as pendientes,
-                COUNT(*) FILTER (WHERE status = 'processed') as procesados,
-                COUNT(*) FILTER (WHERE status = 'expired') as expirados,
-                COUNT(*) FILTER (WHERE DATE(fecha_solicitud) = CURRENT_DATE) as hoy,
-                COUNT(*) FILTER (WHERE DATE(fecha_solicitud) >= CURRENT_DATE - INTERVAL '7 days') as esta_semana
-            FROM password_recovery_requests;
-        `;
-
-        const result = await pool.query(query);
-
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using PasswordRecoveryDAO
+        const stats = await PasswordRecoveryDAO.getStats();
+        res.json({ success: true, data: stats });
 
     } catch (error) {
         debugLog.error('PASSWORD_RECOVERY', '❌ Error al obtener estadísticas:', sanitizeError(error, 'password-recovery'));
@@ -245,31 +184,10 @@ router.put('/:id', async (req, res) => {
     const { status, notas_admin, procesado_por } = req.body;
 
     try {
-        const query = `
-            UPDATE password_recovery_requests
-            SET
-                status = COALESCE($1, status),
-                notas_admin = COALESCE($2, notas_admin),
-                procesado_por = COALESCE($3, procesado_por),
-                fecha_procesado = CASE WHEN $1 = 'processed' THEN NOW() ELSE fecha_procesado END
-            WHERE id = $4
-            RETURNING *;
-        `;
-
-        const result = await pool.query(query, [status, notas_admin, procesado_por, id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Solicitud no encontrada'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: 'Solicitud actualizada correctamente',
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using PasswordRecoveryDAO
+        const result = await PasswordRecoveryDAO.update(id, { status, notas_admin, procesado_por });
+        if (!result) return res.status(404).json({ success: false, error: 'Solicitud no encontrada' });
+        res.json({ success: true, message: 'Solicitud actualizada correctamente', data: result });
 
     } catch (error) {
         debugLog.error('PASSWORD_RECOVERY', '❌ Error al actualizar solicitud:', sanitizeError(error, 'password-recovery'));

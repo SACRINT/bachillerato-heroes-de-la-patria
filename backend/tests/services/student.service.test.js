@@ -9,7 +9,12 @@ const EventBus = require('../../services/eventBus.service');
 
 // Mock del DAO
 jest.mock('../../data/student.dao');
-jest.mock('../../services/eventBus.service');
+
+// Mock de EventBus con instancia persistente
+const mockEventBusInstance = { emit: jest.fn() };
+jest.mock('../../services/eventBus.service', () => ({
+    getInstance: () => mockEventBusInstance
+}));
 
 describe('StudentService', () => {
     // Test data
@@ -47,7 +52,7 @@ describe('StudentService', () => {
 
             expect(result).toEqual(mockStudent);
             expect(StudentDAO.get).toHaveBeenCalledWith(1);
-            expect(EventBus.emit).toHaveBeenCalledWith('student:loaded', {
+            expect(mockEventBusInstance.emit).toHaveBeenCalledWith('student:loaded', {
                 id: 1,
                 student: mockStudent
             });
@@ -88,7 +93,7 @@ describe('StudentService', () => {
             expect(result.id).toBe(2);
             expect(result.nombre).toBe('María');
             expect(StudentDAO.create).toHaveBeenCalledWith(newStudentData);
-            expect(EventBus.emit).toHaveBeenCalledWith('student:created', {
+            expect(mockEventBusInstance.emit).toHaveBeenCalledWith('student:created', {
                 student: expect.objectContaining({ nombre: 'María' })
             });
         });
@@ -147,7 +152,7 @@ describe('StudentService', () => {
 
             expect(result.telefono).toBe('2229876543');
             expect(StudentDAO.update).toHaveBeenCalledWith(1, updateData);
-            expect(EventBus.emit).toHaveBeenCalledWith('student:updated', {
+            expect(mockEventBusInstance.emit).toHaveBeenCalledWith('student:updated', {
                 id: 1,
                 student: updateData,
                 previousData: mockStudent
@@ -173,7 +178,7 @@ describe('StudentService', () => {
 
             expect(result).toBe(true);
             expect(StudentDAO.delete).toHaveBeenCalledWith(1);
-            expect(EventBus.emit).toHaveBeenCalledWith('student:deleted', {
+            expect(mockEventBusInstance.emit).toHaveBeenCalledWith('student:deleted', {
                 id: 1,
                 student: mockStudent
             });
@@ -244,7 +249,7 @@ describe('StudentService', () => {
             const result = await StudentService.getStudentProfile(1);
 
             expect(result.student).toEqual(mockStudent);
-            expect(EventBus.emit).toHaveBeenCalledWith('student:profile:loaded', {
+            expect(mockEventBusInstance.emit).toHaveBeenCalledWith('student:profile:loaded', {
                 id: 1,
                 profile: expect.any(Object)
             });

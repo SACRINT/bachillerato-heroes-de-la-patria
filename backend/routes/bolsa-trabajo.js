@@ -7,7 +7,9 @@
 
 const express = require('express');
 const router = express.Router();
-const { pool } = require('../config/database');
+// ✅ FASE 3: Using DAO layer
+const BolsaTrabajoDAO = require('../data/bolsa-trabajo.dao');
+const { pool } = require('../config/database'); // Needed for transactions in CV
 const { body, validationResult } = require('express-validator');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
@@ -38,7 +40,51 @@ const transporter = nodemailer.createTransport({
 // ✅ Si token expira → Cleanup service lo borra automáticamente cada 12 horas
 // ✅ Sin conflictos de email duplicado (UPSERT logic)
 // =====================================================
-router.post('/cv', [
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+// Configurar Multer para CVs
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = path.join(__dirname, '../../public/uploads/cvs');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, 'cv-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === 'application/pdf') {
+            cb(null, true);
+        } else {
+            cb(new Error('Solo se permiten archivos PDF'));
+        }
+    }
+});
+
+// =====================================================
+// POST /api/bolsa-trabajo/cv - Crear perfil de CV
+// 🎯 FLUJO CORRECTO (6 NOVIEMBRE 2025):
+// 1) Validar datos del formulario
+// 2) Generar token de confirmación
+// 3) Guardar TEMPORALMENTE en BD (tabla bolsa_trabajo_pending_confirmation)
+// 4) Enviar email con link de confirmación
+// 5) RESPONDER AL CLIENTE (sin guardar en pendientes_aprobacion aún)
+//
+// ✅ Usuario confirma email → ENTONCES se mueve a pendientes_aprobacion
+// ✅ Si token expira → Cleanup service lo borra automáticamente cada 12 horas
+// ✅ Sin conflictos de email duplicado (UPSERT logic)
+// =====================================================
+router.post('/cv', upload.single('additionalDocument'), [
     body('name').trim().notEmpty().withMessage('Nombre es requerido'),
     body('email').isEmail().withMessage('Email inválido'),
     body('phone').trim().notEmpty().withMessage('Teléfono es requerido'),
@@ -49,6 +95,10 @@ router.post('/cv', [
     // Validar datos
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+        // Si hay error, borrar archivo subido si existe
+        if (req.file) {
+            fs.unlinkSync(req.file.path);
+        }
         return res.status(400).json({
             success: false,
             errors: errors.array()
@@ -56,49 +106,20 @@ router.post('/cv', [
     }
 
     const { name, email, phone, graduationYear, subject, message, skills } = req.body;
+    const cvFile = req.file ? `/uploads/cvs/${req.file.filename}` : null;
+
     const client = await pool.connect();
 
     try {
         debugLog.log('BOLSA_TRABAJO', '[BOLSA-TRABAJO CV v2] Recibiendo CV');
-
-        // 🎯 PASO 1: Generar token de confirmación
         const confirmationToken = crypto.randomBytes(32).toString('hex');
+        const formData = { name, email, phone, graduationYear, subject, message, skills, cvPath: cvFile };
 
-        // 🎯 PASO 2: Preparar datos del formulario
-        const formData = {
-            name,
-            email,
-            phone,
-            graduationYear,
-            subject,
-            message,
-            skills
-        };
+        // ✅ FASE 3: Using BolsaTrabajoDAO
+        const result = await BolsaTrabajoDAO.createPendingConfirmation(email, formData, confirmationToken);
+        const finalToken = result.confirmation_token;
+        debugLog.log('BOLSA_TRABAJO', '[BOLSA-TRABAJO CV v2] Datos guardados en BD temporal');
 
-        // 🎯 PASO 3: Guardar TEMPORALMENTE en BD con UPSERT (reemplaza si ya existe)
-        const upsertQuery = `
-            INSERT INTO bolsa_trabajo_pending_confirmation
-            (email_usuario, datos_json, confirmation_token)
-            VALUES ($1, $2, $3)
-            ON CONFLICT (email_usuario) DO UPDATE SET
-                datos_json = EXCLUDED.datos_json,
-                confirmation_token = EXCLUDED.confirmation_token,
-                token_expires_at = (now() + '24 hours'::interval),
-                fecha_actualizacion = now()
-            RETURNING confirmation_token;
-        `;
-
-        const result = await client.query(upsertQuery, [
-            email,
-            JSON.stringify(formData),
-            confirmationToken
-        ]);
-
-        const finalToken = result.rows[0].confirmation_token;
-
-        debugLog.log('BOLSA_TRABAJO', '[BOLSA-TRABAJO CV v2] Datos guardados en BD temporal - Esperando confirmación');
-
-        // 🎯 PASO 4: Enviar email de confirmación
         const confirmationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/bolsa-trabajo.html#confirm-email`;
         const confirmLink = `${confirmationUrl}?token=${finalToken}`;
 
@@ -172,14 +193,7 @@ router.post('/cv', [
 
     } catch (error) {
         debugLog.error('BOLSA_TRABAJO', '[BOLSA-TRABAJO CV v2] Error al procesar solicitud de CV', sanitizeError(error, 'bolsa-trabajo'));
-
-        res.status(500).json({
-            success: false,
-            error: 'Error al procesar tu perfil. Por favor intenta nuevamente.',
-            detalle: error.message
-        });
-    } finally {
-        client.release();
+        res.status(500).json({ success: false, error: 'Error al procesar tu perfil.', detalle: error.message });
     }
 });
 
@@ -361,30 +375,13 @@ router.get('/cv', async (req, res) => {
     const { status, limit = 50, offset = 0 } = req.query;
 
     try {
-        let query = 'SELECT * FROM bolsa_trabajo';
-        const params = [];
-
-        if (status) {
-            query += ' WHERE status = $1';
-            params.push(status);
-        }
-
-        query += ` ORDER BY fecha_registro DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-        params.push(parseInt(limit), parseInt(offset));
-
-        const result = await pool.query(query, params);
-
-        // Contar total
-        const countQuery = status ?
-            'SELECT COUNT(*) FROM bolsa_trabajo WHERE status = $1' :
-            'SELECT COUNT(*) FROM bolsa_trabajo';
-        const countParams = status ? [status] : [];
-        const countResult = await pool.query(countQuery, countParams);
+        // ✅ FASE 3: Using BolsaTrabajoDAO
+        const { data, total } = await BolsaTrabajoDAO.getCvs({ status, limit: parseInt(limit), offset: parseInt(offset) });
 
         res.json({
             success: true,
-            data: result.rows,
-            total: parseInt(countResult.rows[0].count),
+            data,
+            total,
             limit: parseInt(limit),
             offset: parseInt(offset)
         });
@@ -403,55 +400,8 @@ router.get('/cv', async (req, res) => {
 // =====================================================
 router.get('/cv/stats', async (req, res) => {
     try {
-        const query = `
-            SELECT
-                COUNT(*) as total,
-                COUNT(*) FILTER (WHERE status = 'activo') as activos,
-                COUNT(*) FILTER (WHERE status = 'inactivo') as inactivos,
-                COUNT(*) FILTER (WHERE status = 'contratado') as contratados,
-                COUNT(*) FILTER (WHERE DATE(fecha_creacion) = CURRENT_DATE) as hoy,
-                COUNT(*) FILTER (WHERE DATE(fecha_creacion) >= CURRENT_DATE - INTERVAL '7 days') as esta_semana,
-                COUNT(*) FILTER (WHERE verificado = true) as verificados
-            FROM bolsa_trabajo;
-        `;
-
-        const result = await pool.query(query);
-
-        // Estadísticas por año de egreso
-        const yearQuery = `
-            SELECT anio_egreso, COUNT(*) as cantidad
-            FROM bolsa_trabajo
-            GROUP BY anio_egreso
-            ORDER BY anio_egreso DESC;
-        `;
-
-        const yearResult = await pool.query(yearQuery);
-        const byYear = yearResult.rows.reduce((acc, row) => {
-            acc[row.anio_egreso] = parseInt(row.cantidad);
-            return acc;
-        }, {});
-
-        // Estadísticas por área de interés
-        const areaQuery = `
-            SELECT area_interes, COUNT(*) as cantidad
-            FROM bolsa_trabajo
-            WHERE area_interes IS NOT NULL
-            GROUP BY area_interes
-            ORDER BY cantidad DESC
-            LIMIT 10;
-        `;
-
-        const areaResult = await pool.query(areaQuery);
-        const byArea = areaResult.rows.reduce((acc, row) => {
-            acc[row.area_interes] = parseInt(row.cantidad);
-            return acc;
-        }, {});
-
-        const stats = {
-            ...result.rows[0],
-            byYear,
-            byArea
-        };
+        // ✅ FASE 3: Using BolsaTrabajoDAO
+        const stats = await BolsaTrabajoDAO.getCvStats();
 
         res.json({
             success: true,
@@ -474,9 +424,10 @@ router.get('/cv/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const result = await pool.query('SELECT * FROM bolsa_trabajo WHERE id = $1', [id]);
+        // ✅ FASE 3: Using BolsaTrabajoDAO
+        const cv = await BolsaTrabajoDAO.getCvById(id);
 
-        if (result.rows.length === 0) {
+        if (!cv) {
             return res.status(404).json({
                 success: false,
                 error: 'CV no encontrado'
@@ -485,7 +436,7 @@ router.get('/cv/:id', async (req, res) => {
 
         res.json({
             success: true,
-            data: result.rows[0]
+            data: cv
         });
 
     } catch (error) {
@@ -505,28 +456,12 @@ router.put('/cv/:id', async (req, res) => {
     const { nombre, email, telefono, anio_egreso, area_interes, resumen_profesional, habilidades, status } = req.body;
 
     try {
-        const query = `
-            UPDATE bolsa_trabajo
-            SET
-                nombre = COALESCE($1, nombre),
-                email = COALESCE($2, email),
-                telefono = COALESCE($3, telefono),
-                anio_egreso = COALESCE($4, anio_egreso),
-                area_interes = COALESCE($5, area_interes),
-                resumen_profesional = COALESCE($6, resumen_profesional),
-                habilidades = COALESCE($7, habilidades),
-                status = COALESCE($8, status),
-                fecha_actualizacion = NOW()
-            WHERE id = $9
-            RETURNING *;
-        `;
+        // ✅ FASE 3: Using BolsaTrabajoDAO
+        const updated = await BolsaTrabajoDAO.updateCv(id, {
+            nombre, email, telefono, anio_egreso, area_interes, resumen_profesional, habilidades, status
+        });
 
-        const result = await pool.query(query, [
-            nombre, email, telefono, anio_egreso, area_interes,
-            resumen_profesional, habilidades, status, id
-        ]);
-
-        if (result.rows.length === 0) {
+        if (!updated) {
             return res.status(404).json({
                 success: false,
                 error: 'CV no encontrado'
@@ -536,7 +471,7 @@ router.put('/cv/:id', async (req, res) => {
         res.json({
             success: true,
             message: 'CV actualizado correctamente',
-            data: result.rows[0]
+            data: updated
         });
 
     } catch (error) {
@@ -555,9 +490,10 @@ router.delete('/cv/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const result = await pool.query('DELETE FROM bolsa_trabajo WHERE id = $1 RETURNING id', [id]);
+        // ✅ FASE 3: Using BolsaTrabajoDAO
+        const deleted = await BolsaTrabajoDAO.deleteCv(id);
 
-        if (result.rows.length === 0) {
+        if (!deleted) {
             return res.status(404).json({
                 success: false,
                 error: 'CV no encontrado'
@@ -592,32 +528,15 @@ router.get('/', async (req, res) => {
     try {
         debugLog.log('BOLSA_TRABAJO', '[BOLSA-TRABAJO] Obteniendo lista de candidatos');
 
-        let query = 'SELECT * FROM bolsa_trabajo';
-        const params = [];
-
-        if (estado) {
-            query += ' WHERE estado = $1';
-            params.push(estado);
-        }
-
-        query += ` ORDER BY fecha_registro DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-        params.push(parseInt(limit), parseInt(offset));
-
-        const result = await pool.query(query, params);
-
-        // Contar total
-        const countQuery = estado ?
-            'SELECT COUNT(*) FROM bolsa_trabajo WHERE estado = $1' :
-            'SELECT COUNT(*) FROM bolsa_trabajo';
-        const countParams = estado ? [estado] : [];
-        const countResult = await pool.query(countQuery, countParams);
+        // ✅ FASE 3: Using BolsaTrabajoDAO
+        const { data, total } = await BolsaTrabajoDAO.getAll({ estado, limit: parseInt(limit), offset: parseInt(offset) });
 
         debugLog.log('BOLSA_TRABAJO', '[BOLSA-TRABAJO] Candidatos encontrados');
 
         res.json({
             success: true,
-            data: result.rows,
-            total: parseInt(countResult.rows[0].count),
+            data,
+            total,
             limit: parseInt(limit),
             offset: parseInt(offset)
         });
@@ -640,58 +559,8 @@ router.get('/stats/general', async (req, res) => {
     try {
         debugLog.log('BOLSA_TRABAJO', '📊 [BOLSA-TRABAJO] Obteniendo estadísticas generales...');
 
-        const query = `
-            SELECT
-                COUNT(*) as total,
-                COUNT(*) FILTER (WHERE estado = 'nuevo') as nuevos,
-                COUNT(*) FILTER (WHERE estado = 'revisado') as revisados,
-                COUNT(*) FILTER (WHERE estado = 'contactado') as contactados,
-                COUNT(*) FILTER (WHERE DATE(fecha_registro) = CURRENT_DATE) as hoy,
-                COUNT(*) FILTER (WHERE DATE(fecha_registro) >= CURRENT_DATE - INTERVAL '7 days') as esta_semana
-            FROM bolsa_trabajo;
-        `;
-
-        const result = await pool.query(query);
-
-        // Estadísticas por generación
-        const yearQuery = `
-            SELECT generacion, COUNT(*) as cantidad
-            FROM bolsa_trabajo
-            WHERE generacion IS NOT NULL
-            GROUP BY generacion
-            ORDER BY generacion DESC;
-        `;
-
-        const yearResult = await pool.query(yearQuery);
-        const byYear = yearResult.rows.reduce((acc, row) => {
-            acc[row.generacion] = parseInt(row.cantidad);
-            return acc;
-        }, {});
-
-        // Estadísticas por experiencia
-        const expQuery = `
-            SELECT
-                CASE
-                    WHEN experiencia IS NULL OR experiencia = '' THEN 'Sin experiencia'
-                    ELSE 'Con experiencia'
-                END as tipo_experiencia,
-                COUNT(*) as cantidad
-            FROM bolsa_trabajo
-            GROUP BY tipo_experiencia
-            ORDER BY cantidad DESC;
-        `;
-
-        const expResult = await pool.query(expQuery);
-        const byExperiencia = expResult.rows.reduce((acc, row) => {
-            acc[row.tipo_experiencia] = parseInt(row.cantidad);
-            return acc;
-        }, {});
-
-        const stats = {
-            ...result.rows[0],
-            byYear,
-            byExperiencia
-        };
+        // ✅ FASE 3: Using BolsaTrabajoDAO
+        const stats = await BolsaTrabajoDAO.getGeneralStats();
 
         debugLog.log('BOLSA_TRABAJO', '✅ [BOLSA-TRABAJO] Estadísticas obtenidas');
 
@@ -720,70 +589,15 @@ router.get('/pending-approvals', async (req, res) => {
     try {
         debugLog.log('BOLSA_TRABAJO', `📋 [BOLSA-TRABAJO] Obteniendo solicitudes pendientes de aprobación...`);
 
-        let query = `
-            SELECT
-                id,
-                uuid,
-                tipo_solicitud,
-                email_usuario,
-                datos_json,
-                estado,
-                email_confirmado,
-                fecha_solicitud,
-                admin_id,
-                admin_notas
-            FROM pendientes_aprobacion
-            WHERE tipo_solicitud = 'bolsa_trabajo'
-        `;
+        // ✅ FASE 3: Using BolsaTrabajoDAO
+        const { data, total } = await BolsaTrabajoDAO.getPendingApprovals({ status, email_confirmado, limit: parseInt(limit), offset: parseInt(offset) });
 
-        const params = [];
-        let paramCount = 0;
-
-        // Filtrar por estado
-        if (status) {
-            query += ` AND estado = $${++paramCount}`;
-            params.push(status);
-        }
-
-        // Filtrar por email confirmado
-        if (email_confirmado !== undefined && email_confirmado !== 'undefined') {
-            query += ` AND email_confirmado = $${++paramCount}`;
-            params.push(email_confirmado === 'true' || email_confirmado === true);
-        }
-
-        // Orden y paginación
-        query += ` ORDER BY fecha_solicitud DESC LIMIT $${++paramCount} OFFSET $${++paramCount}`;
-        params.push(parseInt(limit), parseInt(offset));
-
-        const result = await pool.query(query, params);
-
-        // Contar total
-        let countQuery = `
-            SELECT COUNT(*) FROM pendientes_aprobacion
-            WHERE tipo_solicitud = 'bolsa_trabajo'
-        `;
-
-        const countParams = [];
-        let countParamIdx = 0;
-
-        if (status) {
-            countQuery += ` AND estado = $${++countParamIdx}`;
-            countParams.push(status);
-        }
-
-        if (email_confirmado !== undefined && email_confirmado !== 'undefined') {
-            countQuery += ` AND email_confirmado = $${++countParamIdx}`;
-            countParams.push(email_confirmado === 'true' || email_confirmado === true);
-        }
-
-        const countResult = await pool.query(countQuery, countParams);
-
-        debugLog.log('BOLSA_TRABAJO', `✅ [BOLSA-TRABAJO] ${result.rows.length} solicitudes encontradas`);
+        debugLog.log('BOLSA_TRABAJO', `✅ [BOLSA-TRABAJO] ${data.length} solicitudes encontradas`);
 
         res.json({
             success: true,
-            data: result.rows,
-            total: parseInt(countResult.rows[0].count),
+            data,
+            total,
             limit: parseInt(limit),
             offset: parseInt(offset)
         });
@@ -821,45 +635,22 @@ router.post('/approve-solicitud/:id', [
     try {
         debugLog.log('BOLSA_TRABAJO', `📋 [BOLSA-TRABAJO] Procesando solicitud ID ${id} con acción: ${action}`);
 
+        // ✅ FASE 3: Using BolsaTrabajoDAO
         // 1. Obtener la solicitud pendiente
-        const getQuery = `
-            SELECT id, uuid, email_usuario, datos_json, estado, tipo_solicitud
-            FROM pendientes_aprobacion
-            WHERE id = $1 AND tipo_solicitud = 'bolsa_trabajo'
-        `;
+        const solicitud = await BolsaTrabajoDAO.getSolicitudById(id);
 
-        const getResult = await pool.query(getQuery, [id]);
-
-        if (getResult.rows.length === 0) {
+        if (!solicitud) {
             return res.status(404).json({
                 success: false,
                 error: 'Solicitud no encontrada'
             });
         }
 
-        const solicitud = getResult.rows[0];
-
         // 2. Actualizar estado en pendientes_aprobacion
         const estado = action === 'approve' ? 'aprobada' : 'rechazada';
-        const updateQuery = `
-            UPDATE pendientes_aprobacion
-            SET
-                estado = $1,
-                admin_notas = $2,
-                admin_id = $3,
-                fecha_procesado = NOW()
-            WHERE id = $4
-            RETURNING id, uuid, estado, email_usuario;
-        `;
+        const updateResult = await BolsaTrabajoDAO.updateSolicitudStatus(id, estado, adminNotes, req.user?.id);
 
-        const updateResult = await pool.query(updateQuery, [
-            estado,
-            adminNotes || null,
-            req.user?.id || null, // ID del admin (si está autenticado)
-            id
-        ]);
-
-        if (!updateResult.rows.length) {
+        if (!updateResult) {
             throw new Error('No se pudo actualizar la solicitud');
         }
 
@@ -867,37 +658,8 @@ router.post('/approve-solicitud/:id', [
         let boletinResult = null;
         if (action === 'approve') {
             const formData = JSON.parse(solicitud.datos_json);
-
-            const insertQuery = `
-                INSERT INTO bolsa_trabajo (
-                    nombre,
-                    email,
-                    telefono,
-                    anio_egreso,
-                    area_interes,
-                    resumen_profesional,
-                    habilidades,
-                    estado,
-                    verificado,
-                    fecha_creacion
-                )
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())
-                RETURNING id, uuid;
-            `;
-
-            boletinResult = await pool.query(insertQuery, [
-                formData.name,
-                formData.email,
-                formData.phone,
-                formData.graduationYear,
-                formData.subject,
-                formData.message,
-                formData.skills ? JSON.stringify(formData.skills) : null,
-                'activo',
-                true
-            ]);
-
-            debugLog.log('BOLSA_TRABAJO', `✅ [BOLSA-TRABAJO] Solicitud aprobada y guardada en bolsa_trabajo: ID ${boletinResult.rows[0].id}`);
+            boletinResult = await BolsaTrabajoDAO.insertCvFromApproval(formData);
+            debugLog.log('BOLSA_TRABAJO', `✅ [BOLSA-TRABAJO] Solicitud aprobada y guardada en bolsa_trabajo: ID ${boletinResult.id}`);
         } else {
             debugLog.log('BOLSA_TRABAJO', `❌ [BOLSA-TRABAJO] Solicitud rechazada: ID ${solicitud.id}`);
         }
@@ -912,7 +674,7 @@ router.post('/approve-solicitud/:id', [
                 uuid: solicitud.uuid,
                 email: solicitud.email_usuario,
                 estado: estado,
-                bolsa_trabajo_id: boletinResult?.rows[0]?.id || null,
+                bolsa_trabajo_id: boletinResult?.id || null,
                 admin_notas: adminNotes || null
             }
         });

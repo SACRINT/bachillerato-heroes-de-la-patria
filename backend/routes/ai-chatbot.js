@@ -23,6 +23,9 @@ const router = express.Router();
 const openaiService = require('../services/openai-service');
 const { authenticateJWT, requireRole } = require('../middleware/auth');
 const rateLimit = require('express-rate-limit');
+const devLogger = require('../utils/devLogger');
+// ✅ FASE 3: Using DAO layer
+const AIChatbotDAO = require('../data/ai-chatbot.dao');
 
 // =============================================================================
 // RATE LIMITING
@@ -99,7 +102,7 @@ router.post('/message', async (req, res) => {
     const userId = req.user?.id || null;
     const isAuthenticated = userId !== null;
 
-    console.log(`[AI-CHATBOT-API] Message from ${isAuthenticated ? 'user ' + userId : 'anonymous'}`);
+    devLogger.log(`[AI-CHATBOT-API] Message from ${isAuthenticated ? 'user ' + userId : 'anonymous'}`);
 
     // Aplicar rate limiting según autenticación
     if (isAuthenticated) {
@@ -161,7 +164,7 @@ router.get('/history', authenticateJWT, async (req, res) => {
     const userId = req.user.id;
     const limit = Math.min(parseInt(req.query.limit) || 20, 100);
 
-    console.log(`[AI-CHATBOT-API] Fetching chat history for user ${userId} (limit: ${limit})`);
+    devLogger.log(`[AI-CHATBOT-API] Fetching chat history for user ${userId} (limit: ${limit})`);
 
     const history = await openaiService.getChatHistory(userId, limit);
 
@@ -189,21 +192,10 @@ router.get('/history', authenticateJWT, async (req, res) => {
 router.delete('/history', authenticateJWT, async (req, res) => {
   try {
     const userId = req.user.id;
-
-    console.log(`[AI-CHATBOT-API] Clearing chat history for user ${userId}`);
-
-    const pool = require('../config/database');
-
-    const result = await pool.query(
-      'DELETE FROM chat_history WHERE user_id = $1 RETURNING id',
-      [userId]
-    );
-
-    res.status(200).json({
-      success: true,
-      message: 'Historial de conversación eliminado exitosamente.',
-      deletedCount: result.rows.length
-    });
+    devLogger.log(`[AI-CHATBOT-API] Clearing chat history for user ${userId}`);
+    // ✅ FASE 3: Using AIChatbotDAO
+    const deletedCount = await AIChatbotDAO.deleteChatHistory(userId);
+    res.status(200).json({ success: true, message: 'Historial de conversación eliminado exitosamente.', deletedCount });
 
   } catch (error) {
     console.error('[AI-CHATBOT-API] Error clearing history:', error);
@@ -259,7 +251,7 @@ router.post('/faq', authenticateJWT, requireRole(['admin', 'administrativo']), a
       });
     }
 
-    console.log(`[AI-CHATBOT-API] Creating FAQ: ${pregunta.substring(0, 50)}...`);
+    devLogger.log(`[AI-CHATBOT-API] Creating FAQ: ${pregunta.substring(0, 50)}...`);
 
     const faq = await openaiService.createFAQ({
       pregunta,
@@ -311,7 +303,7 @@ router.put('/faq/:id', authenticateJWT, requireRole(['admin', 'administrativo'])
       });
     }
 
-    console.log(`[AI-CHATBOT-API] Updating FAQ: ${id}`);
+    devLogger.log(`[AI-CHATBOT-API] Updating FAQ: ${id}`);
 
     const faq = await openaiService.updateFAQ(id, updates);
 
@@ -346,28 +338,13 @@ router.put('/faq/:id', authenticateJWT, requireRole(['admin', 'administrativo'])
 router.delete('/faq/:id', authenticateJWT, requireRole(['admin', 'administrativo']), async (req, res) => {
   try {
     const { id } = req.params;
-
-    console.log(`[AI-CHATBOT-API] Deleting FAQ: ${id}`);
-
-    const pool = require('../config/database');
-
-    const result = await pool.query(
-      'DELETE FROM faqs_chatbot WHERE id = $1 RETURNING *',
-      [id]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        error: 'not_found',
-        message: 'FAQ no encontrado.'
-      });
+    devLogger.log(`[AI-CHATBOT-API] Deleting FAQ: ${id}`);
+    // ✅ FASE 3: Using AIChatbotDAO
+    const deletedFAQ = await AIChatbotDAO.deleteFaq(id);
+    if (!deletedFAQ) {
+      return res.status(404).json({ error: 'not_found', message: 'FAQ no encontrado.' });
     }
-
-    res.status(200).json({
-      success: true,
-      message: 'FAQ eliminado exitosamente.',
-      deletedFAQ: result.rows[0]
-    });
+    res.status(200).json({ success: true, message: 'FAQ eliminado exitosamente.', deletedFAQ });
 
   } catch (error) {
     console.error('[AI-CHATBOT-API] Error deleting FAQ:', error);
@@ -400,7 +377,7 @@ router.get('/faqs', authenticateJWT, requireRole(['admin', 'administrativo', 'do
     if (activo !== undefined) filters.activo = activo === 'true';
     if (search) filters.search = search;
 
-    console.log(`[AI-CHATBOT-API] Fetching FAQs with filters:`, filters);
+    devLogger.log(`[AI-CHATBOT-API] Fetching FAQs with filters:`, filters);
 
     const faqs = await openaiService.getAllFAQs(filters);
 
@@ -521,10 +498,11 @@ router.get('/analytics', authenticateJWT, requireRole(['admin', 'administrativo'
  */
 router.get('/health', async (req, res) => {
   try {
-    const pool = require('../config/database');
+    // ✅ FASE 3: Using HealthDAO
+    const HealthDAO = require('../data/health.dao');
 
     // Verificar conexión a BD
-    await pool.query('SELECT 1');
+    await HealthDAO.ping();
 
     // Verificar que OpenAI API key existe
     const hasApiKey = !!process.env.OPENAI_API_KEY;

@@ -17,6 +17,7 @@
 
 const express = require('express');
 const router = express.Router();
+const devLogger = require('../utils/devLogger');
 const { spawn } = require('child_process');
 const path = require('path');
 const pool = require('../config/database');
@@ -86,39 +87,14 @@ async function executePythonRecommendations(params) {
 
 /**
  * Obtiene popular items (fallback cuando ML falla)
+ * ✅ FASE 3: Using AnalyticsDAO
  * @param {string} type - Tipo de recomendación
  * @param {number} limit - Número de items
  * @returns {Promise<array>} Popular items
  */
 async function getPopularItems(type, limit = 10) {
-  const typeMap = {
-    'courses': 'cursos_disponibles',
-    'materials': 'materiales_estudio',
-    'activities': 'actividades_extra',
-    'resources': 'recursos_academicos'
-  };
-
-  const tableName = typeMap[type] || 'cursos_disponibles';
-
   try {
-    const result = await pool.query(`
-      SELECT
-        id AS item_id,
-        nombre,
-        descripcion,
-        categoria,
-        COALESCE(visualizaciones, 0) AS popularity_score
-      FROM ${tableName}
-      WHERE activo = true
-      ORDER BY visualizaciones DESC NULLS LAST, created_at DESC
-      LIMIT $1
-    `, [limit]);
-
-    return result.rows.map((row, index) => ({
-      ...row,
-      score: 1.0 - (index / limit) // Score decreciente
-    }));
-
+    return await AnalyticsDAO.getPopularItemsAlt(type, limit);
   } catch (error) {
     console.error('[RECOMMENDATIONS] Error fetching popular items:', error);
     return [];
@@ -154,7 +130,7 @@ router.get('/:type', authenticateJWT, recommendationsLimiter, async (req, res) =
       });
     }
 
-    console.log(`[RECOMMENDATIONS] Generating ${type} recommendations for user ${studentId}`);
+    devLogger.log(`[RECOMMENDATIONS] Generating ${type} recommendations for user ${studentId}`);
 
     try {
       // Ejecutar Python recommendation engine
@@ -166,7 +142,7 @@ router.get('/:type', authenticateJWT, recommendationsLimiter, async (req, res) =
 
       // Si no hay recomendaciones ML, usar fallback
       if (!result.success || result.recommendations.length === 0) {
-        console.log('[RECOMMENDATIONS] Using fallback popular items');
+        devLogger.log('[RECOMMENDATIONS] Using fallback popular items');
 
         const popular = await getPopularItems(type, limit);
 
@@ -254,14 +230,10 @@ router.post('/interaction', authenticateJWT, async (req, res) => {
       });
     }
 
-    console.log(`[RECOMMENDATIONS] Recording interaction: user ${userId} → ${interaction_type} on ${type}/${item_id}`);
+    devLogger.log(`[RECOMMENDATIONS] Recording interaction: user ${userId} → ${interaction_type} on ${type}/${item_id}`);
 
-    // Insertar interacción en BD
-    await pool.query(`
-      INSERT INTO recommendation_interactions (
-        user_id, item_type, item_id, interaction_type, rating, created_at
-      ) VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)
-    `, [userId, type, item_id, interaction_type, rating || null]);
+    // ✅ FASE 3: Using AnalyticsDAO
+    await AnalyticsDAO.recordInteraction(userId, type, item_id, interaction_type, rating || null);
 
     // Actualizar contador de visualizaciones/interacciones en tabla de items (opcional)
     // ...
@@ -308,7 +280,7 @@ router.get('/popular/:type', async (req, res) => {
       });
     }
 
-    console.log(`[RECOMMENDATIONS] Fetching popular ${type}`);
+    devLogger.log(`[RECOMMENDATIONS] Fetching popular ${type}`);
 
     const popular = await getPopularItems(type, limit);
 
@@ -350,40 +322,17 @@ router.get('/similar/:type/:itemId', async (req, res) => {
       });
     }
 
-    console.log(`[RECOMMENDATIONS] Fetching similar ${type} to item ${itemId}`);
+    devLogger.log(`[RECOMMENDATIONS] Fetching similar ${type} to item ${itemId}`);
 
-    // TODO: Implementar content-based similarity
-    // Por ahora, retornar items de la misma categoría
-
-    const typeMap = {
-      'courses': 'cursos_disponibles',
-      'materials': 'materiales_estudio',
-      'activities': 'actividades_extra',
-      'resources': 'recursos_academicos'
-    };
-
-    const tableName = typeMap[type];
-
-    const result = await pool.query(`
-      SELECT
-        s.id AS item_id,
-        s.nombre,
-        s.descripcion,
-        s.categoria
-      FROM ${tableName} s
-      WHERE s.activo = true
-        AND s.categoria = (SELECT categoria FROM ${tableName} WHERE id = $1)
-        AND s.id != $1
-      ORDER BY s.created_at DESC
-      LIMIT $2
-    `, [itemId, limit]);
+    // ✅ FASE 3: Using AnalyticsDAO
+    const similarItems = await AnalyticsDAO.getSimilarItemsAlt(type, itemId, limit);
 
     res.status(200).json({
       success: true,
       type,
       reference_item_id: itemId,
-      similar_items: result.rows,
-      count: result.rows.length,
+      similar_items: similarItems,
+      count: similarItems.length,
       algorithm: 'category-based (simple)',
       timestamp: new Date().toISOString()
     });
@@ -415,76 +364,12 @@ router.get('/admin/analytics', authenticateJWT, requireRole(['admin', 'administr
   try {
     const { dateFrom, dateTo } = req.query;
 
-    let whereClause = '1=1';
-    const params = [];
-    let paramIndex = 1;
-
-    if (dateFrom) {
-      whereClause += ` AND created_at >= $${paramIndex}`;
-      params.push(new Date(dateFrom));
-      paramIndex++;
-    }
-
-    if (dateTo) {
-      whereClause += ` AND created_at <= $${paramIndex}`;
-      params.push(new Date(dateTo));
-      paramIndex++;
-    }
-
-    // Total interactions
-    const totalInteractions = await pool.query(
-      `SELECT COUNT(*) AS total FROM recommendation_interactions WHERE ${whereClause}`,
-      params
-    );
-
-    // Interactions by type
-    const interactionsByType = await pool.query(
-      `SELECT
-        interaction_type,
-        COUNT(*) AS count
-       FROM recommendation_interactions
-       WHERE ${whereClause}
-       GROUP BY interaction_type
-       ORDER BY count DESC`,
-      params
-    );
-
-    // Most interacted items
-    const topItems = await pool.query(
-      `SELECT
-        item_type,
-        item_id,
-        COUNT(*) AS interaction_count,
-        AVG(CASE WHEN rating IS NOT NULL THEN rating ELSE NULL END) AS avg_rating
-       FROM recommendation_interactions
-       WHERE ${whereClause}
-       GROUP BY item_type, item_id
-       ORDER BY interaction_count DESC
-       LIMIT 20`,
-      params
-    );
-
-    // Users with most interactions
-    const topUsers = await pool.query(
-      `SELECT
-        user_id,
-        COUNT(*) AS interaction_count
-       FROM recommendation_interactions
-       WHERE ${whereClause}
-       GROUP BY user_id
-       ORDER BY interaction_count DESC
-       LIMIT 20`,
-      params
-    );
+    // ✅ FASE 3: Using AnalyticsDAO
+    const analytics = await AnalyticsDAO.getInteractionAnalytics({ dateFrom, dateTo });
 
     res.status(200).json({
       success: true,
-      analytics: {
-        total_interactions: parseInt(totalInteractions.rows[0].total),
-        interactions_by_type: interactionsByType.rows,
-        top_items: topItems.rows,
-        top_users: topUsers.rows
-      },
+      analytics,
       period: {
         from: dateFrom || 'all time',
         to: dateTo || 'now'
@@ -509,14 +394,11 @@ router.get('/admin/analytics', authenticateJWT, requireRole(['admin', 'administr
  */
 router.get('/health', async (req, res) => {
   try {
-    // Verificar conexión a BD
-    await pool.query('SELECT 1');
+    // ✅ FASE 3: Using HealthDAO + AnalyticsDAO
+    const HealthDAO = require('../data/health.dao');
+    await HealthDAO.ping();
 
-    // Verificar que tablas existen
-    const tables = await pool.query(`
-      SELECT tablename FROM pg_tables
-      WHERE tablename IN ('recommendation_interactions', 'cursos_disponibles')
-    `);
+    const healthInfo = await AnalyticsDAO.getRecommendationsHealth();
 
     res.status(200).json({
       success: true,
@@ -524,7 +406,7 @@ router.get('/health', async (req, res) => {
       status: 'healthy',
       checks: {
         database: 'ok',
-        tables: tables.rows.length === 2 ? 'ok' : 'missing'
+        tables: healthInfo.tables_found.length === 2 ? 'ok' : 'missing'
       },
       timestamp: new Date().toISOString()
     });

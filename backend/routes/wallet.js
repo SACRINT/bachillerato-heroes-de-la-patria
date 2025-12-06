@@ -1,10 +1,10 @@
 /**
  * 💰 WALLET ROUTES - SISTEMA DE IACOINS
  * Gestión de monedero virtual de estudiantes
+ * ✅ FASE 3 DAL - Refactorizado para usar DAO
  */
 
 const express = require('express');
-const { Pool } = require('pg');
 // GDPR Logging - Debug condicional y sanitización
 const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
@@ -12,11 +12,9 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// PostgreSQL connection pool
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+// ✅ FASE 3: Using DAO layer instead of direct pool access
+const WalletDAO = require('../data/wallet.dao');
+const { pool } = require('../config/database');
 
 // ============================================
 // ENDPOINT 1: GET /api/wallet
@@ -28,38 +26,19 @@ router.get('/', authenticateToken, async (req, res) => {
 
         debugLog.log('WALLET', `[WALLET] Obteniendo saldo para usuario ${userId}`);
 
-        const result = await pool.query(
-            `SELECT
-                user_id,
-                balance,
-                total_earned,
-                total_spent,
-                total_purchased,
-                created_at,
-                updated_at
-            FROM wallet
-            WHERE user_id = $1`,
-            [userId]
-        );
+        // ✅ FASE 3: Using WalletDAO
+        let wallet = await WalletDAO.getByUserId(userId);
 
-        if (result.rows.length === 0) {
+        if (!wallet) {
             // Crear wallet si no existe
-            const newWallet = await pool.query(
-                `INSERT INTO wallet (user_id, balance, total_earned, total_spent, total_purchased)
-                VALUES ($1, 0, 0, 0, 0)
-                RETURNING *`,
-                [userId]
-            );
-
+            wallet = await WalletDAO.create(userId, 0);
             return res.json({
-                wallet: newWallet.rows[0],
+                wallet,
                 message: 'Wallet creado exitosamente'
             });
         }
 
-        res.json({
-            wallet: result.rows[0]
-        });
+        res.json({ wallet });
 
     } catch (error) {
         debugLog.error('WALLET', '[WALLET] Error al obtener saldo:', error.message);
@@ -81,45 +60,20 @@ router.get('/history', authenticateToken, async (req, res) => {
 
         debugLog.log('WALLET', `[WALLET] Obteniendo historial para usuario ${userId}`);
 
-        let query = `
-            SELECT
-                id,
-                user_id,
-                transaction_type,
-                amount,
-                balance_after,
-                description,
-                metadata,
-                created_at
-            FROM wallet_history
-            WHERE user_id = $1
-        `;
-        const params = [userId];
-
-        // Filtro opcional por tipo
-        if (type && ['earn', 'spend', 'purchase'].includes(type)) {
-            query += ` AND transaction_type = $${params.length + 1}`;
-            params.push(type);
-        }
-
-        query += ` ORDER BY created_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-        params.push(parseInt(limit), parseInt(offset));
-
-        const result = await pool.query(query, params);
-
-        // Contar total de transacciones
-        const countResult = await pool.query(
-            `SELECT COUNT(*) as total FROM wallet_history WHERE user_id = $1`,
-            [userId]
-        );
+        // ✅ FASE 3: Using WalletDAO
+        const { transactions, total } = await WalletDAO.getHistory(userId, {
+            type,
+            limit: parseInt(limit),
+            offset: parseInt(offset)
+        });
 
         res.json({
-            transactions: result.rows,
+            transactions,
             pagination: {
-                total: parseInt(countResult.rows[0].total),
+                total,
                 limit: parseInt(limit),
                 offset: parseInt(offset),
-                hasMore: parseInt(offset) + result.rows.length < parseInt(countResult.rows[0].total)
+                hasMore: parseInt(offset) + transactions.length < total
             }
         });
 

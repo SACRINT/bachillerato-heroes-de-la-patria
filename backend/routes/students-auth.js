@@ -1,6 +1,7 @@
 /**
  * 🎓 AUTENTICACIÓN DE ESTUDIANTES - Versión PostgreSQL
  * Sistema de login para estudiantes conectado a la base de datos real.
+ * ✅ FASE 3 DAL - Refactorizado para usar DAOs
  */
 
 const express = require('express');
@@ -10,7 +11,10 @@ const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
-const { pool } = require('../config/database');
+
+// ✅ FASE 3: Using DAO layer instead of direct pool access
+const UserDAO = require('../data/user.dao');
+const StudentDAO = require('../data/student.dao');
 
 /**
  * 🔐 POST /api/students-auth/login
@@ -28,15 +32,12 @@ router.post('/login', [
 
         const { email, password } = req.body;
 
-        // Buscar al usuario en la tabla de usuarios con el rol de estudiante
-        const userQuery = `SELECT * FROM usuarios WHERE email = $1 AND role = 'estudiante';`;
-        const userResult = await pool.query(userQuery, [email]);
+        // ✅ FASE 3: Using UserDAO instead of direct pool.query
+        const user = await UserDAO.getByEmail(email);
 
-        if (userResult.rows.length === 0) {
+        if (!user || user.role !== 'estudiante') {
             return res.status(401).json({ success: false, message: 'Credenciales inválidas o el usuario no es un estudiante.' });
         }
-
-        const user = userResult.rows[0];
 
         // Verificar la contraseña hasheada
         const isMatch = await bcrypt.compare(password, user.password_hash);
@@ -49,15 +50,12 @@ router.post('/login', [
             return res.status(403).json({ success: false, message: 'Esta cuenta se encuentra inactiva.' });
         }
 
-        // Si las credenciales son correctas, buscar los detalles en la tabla de estudiantes
-        const studentQuery = 'SELECT * FROM estudiantes WHERE usuario_id = $1';
-        const studentResult = await pool.query(studentQuery, [user.id]);
+        // ✅ FASE 3: Using StudentDAO instead of direct pool.query
+        const student = await StudentDAO.getByUserId(user.id);
 
-        if (studentResult.rows.length === 0) {
+        if (!student) {
             return res.status(404).json({ success: false, message: 'Datos del estudiante no encontrados.' });
         }
-
-        const student = studentResult.rows[0];
 
         // Crear la sesión del estudiante
         req.session.student = {

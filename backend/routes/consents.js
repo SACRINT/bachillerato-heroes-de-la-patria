@@ -18,6 +18,7 @@ const express = require('express');
 const router = express.Router();
 const consentService = require('../services/consent-management-service');
 const { authenticateJWT, requireRole } = require('../middleware/auth');
+const devLogger = require('../utils/devLogger');
 
 // =============================================================================
 // PUBLIC ROUTES
@@ -150,7 +151,7 @@ router.post('/grant', authenticateJWT, async (req, res) => {
       }
     });
 
-    console.log(`[CONSENTS-API] Consent granted: ${consent.id}`);
+    devLogger.log(`[CONSENTS-API] Consent granted: ${consent.id}`);
 
     res.status(201).json({
       success: true,
@@ -196,7 +197,7 @@ router.post('/revoke', authenticateJWT, async (req, res) => {
 
     const result = await consentService.revokeConsent(userId, consentType);
 
-    console.log(`[CONSENTS-API] Consent revoked: ${consentType} for user ${userId}`);
+    devLogger.log(`[CONSENTS-API] Consent revoked: ${consentType} for user ${userId}`);
 
     res.status(200).json({
       success: true,
@@ -267,7 +268,7 @@ router.post('/bulk', authenticateJWT, async (req, res) => {
       }
     });
 
-    console.log(`[CONSENTS-API] Bulk consents granted: ${results.length} for user ${userId}`);
+    devLogger.log(`[CONSENTS-API] Bulk consents granted: ${results.length} for user ${userId}`);
 
     res.status(201).json({
       success: true,
@@ -345,7 +346,7 @@ router.post('/admin/privacy-policy', authenticateJWT, requireRole(['admin', 'adm
       requiresReconsent: requiresReconsent || false
     });
 
-    console.log(`[CONSENTS-API] Privacy policy version created: ${version} by ${createdBy}`);
+    devLogger.log(`[CONSENTS-API] Privacy policy version created: ${version} by ${createdBy}`);
 
     res.status(201).json({
       success: true,

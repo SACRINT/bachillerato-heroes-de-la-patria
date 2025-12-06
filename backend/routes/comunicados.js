@@ -9,7 +9,8 @@ const express = require('express');
 const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
-const { pool } = require('../config/database');
+// ✅ FASE 3: Using DAO layer instead of direct pool access
+const ComunicadosDAO = require('../data/comunicados.dao');
 const { body, validationResult } = require('express-validator');
 
 // Función para generar slug
@@ -57,52 +58,24 @@ router.post('/', [
     const user_agent = req.get('User-Agent');
 
     try {
-        // Generar slug único
         let slug = generateSlug(titulo);
 
-        // Verificar si el slug ya existe
-        const slugCheck = await pool.query('SELECT id FROM comunicados WHERE slug = $1', [slug]);
-        if (slugCheck.rows.length > 0) {
-            slug = `${slug}-${Date.now()}`;
-        }
+        // ✅ FASE 3: Using ComunicadosDAO
+        const slugExists = await ComunicadosDAO.slugExists(slug);
+        if (slugExists) slug = `${slug}-${Date.now()}`;
 
-        const query = `
-            INSERT INTO comunicados (
-                titulo, contenido, resumen, imagen_url, categoria,
-                etiquetas, estado, autor, autor_id, slug,
-                meta_descripcion, destacada, ip_address, user_agent,
-                fecha_publicacion
-            )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-            RETURNING *;
-        `;
+        const comunicado = await ComunicadosDAO.create({
+            titulo, contenido, resumen, imagen_url, categoria, etiquetas,
+            estado, autor, autor_id, slug, meta_descripcion, destacada,
+            ip_address, user_agent
+        });
 
-        const fecha_pub = estado === 'publicada' ? new Date() : null;
-
-        const result = await pool.query(query, [
-            titulo,
-            contenido,
-            resumen || null,
-            imagen_url || null,
-            categoria || 'General',
-            etiquetas || [],
-            estado || 'borrador',
-            autor,
-            autor_id || null,
-            slug,
-            meta_descripcion || resumen || contenido.substring(0, 160),
-            destacada || false,
-            ip_address,
-            user_agent,
-            fecha_pub
-        ]);
-
-        debugLog.log('COMUNICADOS', '✅ Nueva comunicado creada:', result.rows[0].id);
+        debugLog.log('COMUNICADOS', '✅ Nueva comunicado creada:', comunicado.id);
 
         res.status(201).json({
             success: true,
             message: 'Comunicado creada exitosamente',
-            data: result.rows[0]
+            data: comunicado
         });
 
     } catch (error) {
@@ -121,62 +94,13 @@ router.get('/', async (req, res) => {
     const { estado, categoria, destacada, limit = 50, offset = 0 } = req.query;
 
     try {
-        let query = 'SELECT * FROM comunicados WHERE 1=1';
-        const params = [];
-        let paramCount = 0;
-
-        if (estado) {
-            paramCount++;
-            query += ` AND estado = $${paramCount}`;
-            params.push(estado);
-        }
-
-        if (categoria) {
-            paramCount++;
-            query += ` AND categoria = $${paramCount}`;
-            params.push(categoria);
-        }
-
-        if (destacada !== undefined) {
-            paramCount++;
-            query += ` AND destacada = $${paramCount}`;
-            params.push(destacada === 'true');
-        }
-
-        query += ` ORDER BY fecha_creacion DESC LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;
-        params.push(parseInt(limit), parseInt(offset));
-
-        const result = await pool.query(query, params);
-
-        // Contar total
-        let countQuery = 'SELECT COUNT(*) FROM comunicados WHERE 1=1';
-        const countParams = [];
-        let countParamCount = 0;
-
-        if (estado) {
-            countParamCount++;
-            countQuery += ` AND estado = $${countParamCount}`;
-            countParams.push(estado);
-        }
-
-        if (categoria) {
-            countParamCount++;
-            countQuery += ` AND categoria = $${countParamCount}`;
-            countParams.push(categoria);
-        }
-
-        if (destacada !== undefined) {
-            countParamCount++;
-            countQuery += ` AND destacada = $${countParamCount}`;
-            countParams.push(destacada === 'true');
-        }
-
-        const countResult = await pool.query(countQuery, countParams);
+        // ✅ FASE 3: Using ComunicadosDAO
+        const { comunicados, total } = await ComunicadosDAO.getAll({ estado, categoria, destacada, limit, offset });
 
         res.json({
             success: true,
-            data: result.rows,
-            total: parseInt(countResult.rows[0].count),
+            data: comunicados,
+            total,
             limit: parseInt(limit),
             offset: parseInt(offset)
         });
@@ -195,22 +119,9 @@ router.get('/', async (req, res) => {
 // =====================================================
 router.get('/stats', async (req, res) => {
     try {
-        const query = `
-            SELECT
-                COUNT(*) as total,
-                COUNT(*) FILTER (WHERE estado = 'publicada') as publicadas,
-                COUNT(*) FILTER (WHERE estado = 'borrador') as borradores,
-                COUNT(*) FILTER (WHERE destacada = true) as destacadas,
-                SUM(vistas) as vistas_totales
-            FROM comunicados;
-        `;
-
-        const result = await pool.query(query);
-
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using ComunicadosDAO
+        const stats = await ComunicadosDAO.getStats();
+        res.json({ success: true, data: stats });
 
     } catch (error) {
         debugLog.error('COMUNICADOS', '❌ Error al obtener estadísticas:', sanitizeError(error, 'comunicados'));
@@ -228,22 +139,11 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const result = await pool.query('SELECT * FROM comunicados WHERE id = $1', [id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Comunicado no encontrada'
-            });
-        }
-
-        // Incrementar vistas
-        await pool.query('UPDATE comunicados SET vistas = vistas + 1 WHERE id = $1', [id]);
-
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using ComunicadosDAO
+        const comunicado = await ComunicadosDAO.getById(id);
+        if (!comunicado) return res.status(404).json({ success: false, error: 'Comunicado no encontrada' });
+        await ComunicadosDAO.incrementViews(id, 'id');
+        res.json({ success: true, data: comunicado });
 
     } catch (error) {
         debugLog.error('COMUNICADOS', '❌ Error al obtener comunicado:', sanitizeError(error, 'comunicados'));
@@ -261,22 +161,11 @@ router.get('/slug/:slug', async (req, res) => {
     const { slug } = req.params;
 
     try {
-        const result = await pool.query('SELECT * FROM comunicados WHERE slug = $1', [slug]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Comunicado no encontrada'
-            });
-        }
-
-        // Incrementar vistas
-        await pool.query('UPDATE comunicados SET vistas = vistas + 1 WHERE slug = $1', [slug]);
-
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using ComunicadosDAO
+        const comunicado = await ComunicadosDAO.getBySlug(slug);
+        if (!comunicado) return res.status(404).json({ success: false, error: 'Comunicado no encontrada' });
+        await ComunicadosDAO.incrementViews(slug, 'slug');
+        res.json({ success: true, data: comunicado });
 
     } catch (error) {
         debugLog.error('COMUNICADOS', '❌ Error al obtener comunicado:', sanitizeError(error, 'comunicados'));
@@ -305,55 +194,15 @@ router.put('/:id', async (req, res) => {
     } = req.body;
 
     try {
-        // Si cambia a publicada y no tenía fecha de publicación, establecerla
-        let updateQuery = `
-            UPDATE comunicados
-            SET
-                titulo = COALESCE($1, titulo),
-                contenido = COALESCE($2, contenido),
-                resumen = COALESCE($3, resumen),
-                imagen_url = COALESCE($4, imagen_url),
-                categoria = COALESCE($5, categoria),
-                etiquetas = COALESCE($6, etiquetas),
-                estado = COALESCE($7, estado),
-                meta_descripcion = COALESCE($8, meta_descripcion),
-                destacada = COALESCE($9, destacada),
-                fecha_modificacion = NOW(),
-                fecha_publicacion = CASE
-                    WHEN $7 = 'publicada' AND fecha_publicacion IS NULL THEN NOW()
-                    ELSE fecha_publicacion
-                END
-            WHERE id = $10
-            RETURNING *;
-        `;
+        // ✅ FASE 3: Using ComunicadosDAO
+        const comunicado = await ComunicadosDAO.update(id, {
+            titulo, contenido, resumen, imagen_url, categoria, etiquetas, estado, meta_descripcion, destacada
+        });
 
-        const result = await pool.query(updateQuery, [
-            titulo,
-            contenido,
-            resumen,
-            imagen_url,
-            categoria,
-            etiquetas,
-            estado,
-            meta_descripcion,
-            destacada,
-            id
-        ]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Comunicado no encontrada'
-            });
-        }
+        if (!comunicado) return res.status(404).json({ success: false, error: 'Comunicado no encontrada' });
 
         debugLog.log('COMUNICADOS', `✅ Comunicado ${id} actualizada`);
-
-        res.json({
-            success: true,
-            message: 'Comunicado actualizada correctamente',
-            data: result.rows[0]
-        });
+        res.json({ success: true, message: 'Comunicado actualizada correctamente', data: comunicado });
 
     } catch (error) {
         debugLog.error('COMUNICADOS', '❌ Error al actualizar comunicado:', sanitizeError(error, 'comunicados'));
@@ -371,25 +220,10 @@ router.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        // Archivar en lugar de eliminar
-        const result = await pool.query(`
-            UPDATE comunicados
-            SET estado = 'archivada', fecha_modificacion = NOW()
-            WHERE id = $1
-            RETURNING id, titulo
-        `, [id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Comunicado no encontrada'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: 'Comunicado archivada correctamente'
-        });
+        // ✅ FASE 3: Using ComunicadosDAO
+        const result = await ComunicadosDAO.archive(id);
+        if (!result) return res.status(404).json({ success: false, error: 'Comunicado no encontrada' });
+        res.json({ success: true, message: 'Comunicado archivada correctamente' });
 
     } catch (error) {
         debugLog.error('COMUNICADOS', '❌ Error al archivar comunicado:', sanitizeError(error, 'comunicados'));

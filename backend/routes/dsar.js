@@ -19,6 +19,10 @@ const { authenticateJWT } = require('../middleware/auth');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs').promises;
+const devLogger = require('../utils/devLogger');
+
+// ✅ FASE 3: Using DAO layer instead of direct pool access
+const DsarDAO = require('../data/dsar.dao');
 
 // =============================================================================
 // RATE LIMITING
@@ -84,7 +88,7 @@ router.post('/request', dsarLimiter, async (req, res) => {
       { reason }
     );
 
-    console.log(`[DSAR-API] Request created: ${dsarRequest.id} for user ${userId}`);
+    devLogger.log(`[DSAR-API] Request created: ${dsarRequest.id} for user ${userId}`);
 
     res.status(201).json({
       success: true,
@@ -154,20 +158,15 @@ router.get('/verify/:token', async (req, res) => {
 router.get('/status/:requestId', async (req, res) => {
   try {
     const { requestId } = req.params;
-    const pool = require('../config/database');
 
-    const result = await pool.query(
-      'SELECT id, request_type, status, created_at, due_date, completed_at FROM dsar_requests WHERE id = $1',
-      [requestId]
-    );
+    // ✅ FASE 3: Using DsarDAO
+    const request = await DsarDAO.getByIdPublic(requestId);
 
-    if (result.rows.length === 0) {
+    if (!request) {
       return res.status(404).json({
         error: 'DSAR request not found'
       });
     }
-
-    const request = result.rows[0];
 
     res.status(200).json({
       success: true,
@@ -203,21 +202,14 @@ router.get('/download/:requestId', authenticateJWT, async (req, res) => {
     const { requestId } = req.params;
     const userId = req.user.id; // Del JWT
 
-    const pool = require('../config/database');
+    // ✅ FASE 3: Using DsarDAO
+    const request = await DsarDAO.getById(requestId);
 
-    // Obtener solicitud
-    const result = await pool.query(
-      'SELECT * FROM dsar_requests WHERE id = $1',
-      [requestId]
-    );
-
-    if (result.rows.length === 0) {
+    if (!request) {
       return res.status(404).json({
         error: 'DSAR request not found'
       });
     }
-
-    const request = result.rows[0];
 
     // Verificar ownership
     if (request.user_id !== userId) {
@@ -260,7 +252,7 @@ router.get('/download/:requestId', authenticateJWT, async (req, res) => {
     }
 
     // Descargar archivo
-    console.log(`[DSAR-API] Download initiated: ${requestId} by user ${userId}`);
+    devLogger.log(`[DSAR-API] Download initiated: ${requestId} by user ${userId}`);
 
     res.download(exportPath, `personal_data_export_${requestId}.zip`, (err) => {
       if (err) {
@@ -272,7 +264,7 @@ router.get('/download/:requestId', authenticateJWT, async (req, res) => {
           });
         }
       } else {
-        console.log(`[DSAR-API] Download completed: ${requestId}`);
+        devLogger.log(`[DSAR-API] Download completed: ${requestId}`);
       }
     });
 
@@ -295,21 +287,13 @@ router.get('/download/:requestId', authenticateJWT, async (req, res) => {
 router.get('/my-requests', authenticateJWT, async (req, res) => {
   try {
     const userId = req.user.id;
-    const pool = require('../config/database');
 
-    const result = await pool.query(
-      `SELECT
-        id, request_type, status, created_at, due_date,
-        completed_at, verified_at
-       FROM dsar_requests
-       WHERE user_id = $1
-       ORDER BY created_at DESC`,
-      [userId]
-    );
+    // ✅ FASE 3: Using DsarDAO
+    const requests = await DsarDAO.getUserRequests(userId);
 
     res.status(200).json({
       success: true,
-      requests: result.rows
+      requests
     });
 
   } catch (error) {
@@ -330,21 +314,15 @@ router.delete('/cancel/:requestId', authenticateJWT, async (req, res) => {
   try {
     const { requestId } = req.params;
     const userId = req.user.id;
-    const pool = require('../config/database');
 
-    // Verificar ownership y status
-    const result = await pool.query(
-      'SELECT * FROM dsar_requests WHERE id = $1 AND user_id = $2',
-      [requestId, userId]
-    );
+    // ✅ FASE 3: Using DsarDAO
+    const request = await DsarDAO.getByIdAndUser(requestId, userId);
 
-    if (result.rows.length === 0) {
+    if (!request) {
       return res.status(404).json({
         error: 'DSAR request not found or you are not authorized'
       });
     }
-
-    const request = result.rows[0];
 
     if (request.status === 'completed') {
       return res.status(400).json({
@@ -353,14 +331,9 @@ router.delete('/cancel/:requestId', authenticateJWT, async (req, res) => {
     }
 
     // Cancelar (soft delete)
-    await pool.query(
-      `UPDATE dsar_requests
-       SET status = 'cancelled', updated_at = CURRENT_TIMESTAMP
-       WHERE id = $1`,
-      [requestId]
-    );
+    await DsarDAO.cancelRequest(requestId);
 
-    console.log(`[DSAR-API] Request cancelled: ${requestId} by user ${userId}`);
+    devLogger.log(`[DSAR-API] Request cancelled: ${requestId} by user ${userId}`);
 
     res.status(200).json({
       success: true,
@@ -394,22 +367,12 @@ router.get('/admin/pending', authenticateJWT, async (req, res) => {
       });
     }
 
-    const pool = require('../config/database');
-
-    const result = await pool.query(
-      `SELECT
-        dr.id, dr.user_id, dr.request_type, dr.status,
-        dr.created_at, dr.due_date, dr.email,
-        u.nombre, u.apellido_paterno, u.email AS user_email
-       FROM dsar_requests dr
-       LEFT JOIN usuarios u ON dr.user_id = u.uuid
-       WHERE dr.status IN ('verified', 'processing')
-       ORDER BY dr.created_at ASC`
-    );
+    // ✅ FASE 3: Using DsarDAO
+    const pendingRequests = await DsarDAO.getPendingAdmin();
 
     res.status(200).json({
       success: true,
-      pendingRequests: result.rows
+      pendingRequests
     });
 
   } catch (error) {

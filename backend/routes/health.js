@@ -14,6 +14,9 @@ const execAsync = promisify(exec);
 // Importar pool de PostgreSQL
 const { pool } = require('../config/database');
 
+// ✅ FASE 3: Using DAO layer
+const HealthDAO = require('../data/health.dao');
+
 /**
  * GET /api/health
  * Endpoint de health check completo del sistema
@@ -42,23 +45,20 @@ router.get('/', async (req, res) => {
         // ============================================
         try {
             const dbStart = Date.now();
-            const result = await pool.query('SELECT NOW() as current_time, version() as pg_version');
+            // ✅ FASE 3: Using HealthDAO
+            const dbInfo = await HealthDAO.getDbInfo();
             const dbLatency = Date.now() - dbStart;
 
             // Obtener estadísticas de conexiones del pool
-            const poolStats = {
-                total: pool.totalCount,
-                idle: pool.idleCount,
-                waiting: pool.waitingCount
-            };
+            const poolStats = HealthDAO.getPoolStats();
 
             healthCheck.services.database = {
                 status: 'healthy',
                 latency: `${dbLatency}ms`,
                 connection: 'active',
                 type: 'PostgreSQL',
-                version: result.rows[0].pg_version.split(' ')[1],
-                current_time: result.rows[0].current_time,
+                version: dbInfo.pg_version.split(' ')[1],
+                current_time: dbInfo.current_time,
                 pool: poolStats
             };
         } catch (dbError) {
@@ -239,7 +239,7 @@ router.get('/', async (req, res) => {
 
         // Código HTTP según el estado
         const statusCode = healthCheck.status === 'ok' ? 200 :
-                          healthCheck.status === 'degraded' ? 200 : 503;
+            healthCheck.status === 'degraded' ? 200 : 503;
 
         res.status(statusCode).json(healthCheck);
 
@@ -260,8 +260,8 @@ router.get('/', async (req, res) => {
  */
 router.get('/simple', async (req, res) => {
     try {
-        // Solo verificar si el servidor responde
-        await pool.query('SELECT 1');
+        // ✅ FASE 3: Using HealthDAO
+        await HealthDAO.ping();
         res.status(200).json({ status: 'ok' });
     } catch (error) {
         res.status(503).json({ status: 'unhealthy', error: error.message });
@@ -274,16 +274,15 @@ router.get('/simple', async (req, res) => {
  */
 router.get('/db', async (req, res) => {
     try {
-        const start = Date.now();
-        const result = await pool.query('SELECT NOW() as time, version() as version');
-        const latency = Date.now() - start;
+        // ✅ FASE 3: Using HealthDAO
+        const dbHealth = await HealthDAO.getDbHealth();
 
         res.status(200).json({
             status: 'healthy',
-            latency: `${latency}ms`,
+            latency: `${dbHealth.latency}ms`,
             connection: 'active',
-            time: result.rows[0].time,
-            version: result.rows[0].version
+            time: dbHealth.time,
+            version: dbHealth.version
         });
     } catch (error) {
         res.status(503).json({

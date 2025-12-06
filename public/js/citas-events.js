@@ -8,7 +8,7 @@
  * Fecha: Noviembre 2025
  */
 
-(function() {
+(function () {
     'use strict';
 
     if (document.readyState === 'loading') {
@@ -40,7 +40,7 @@
         departments.forEach(dept => {
             const buttons = document.querySelectorAll(`button[onclick*="selectDepartment('${dept}')"]`);
             buttons.forEach(btn => {
-                btn.addEventListener('click', function(e) {
+                btn.addEventListener('click', function (e) {
                     e.preventDefault();
                     selectDepartment(dept);
                 });
@@ -56,14 +56,14 @@
         // Botón Consultar Cita
         const consultarBtn = document.getElementById('consultarCitaBtn');
         if (consultarBtn) {
-            consultarBtn.addEventListener('click', function(e) {
+            consultarBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 consultarCita();
             });
         }
 
         // Botones dinámicos - Cancelar cita
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (e.target.closest('[onclick*="cancelarCita"]')) {
                 e.preventDefault();
                 const appointmentId = e.target.closest('[onclick*="cancelarCita"]')
@@ -73,14 +73,15 @@
             }
         });
 
-        // Botones dinámicos - Descargar confirmación
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('[onclick*="downloadConfirmation"]')) {
+        // Botones dinámicos - Descargar confirmación (CSP-compliant via data-action)
+        document.addEventListener('click', function (e) {
+            const btn = e.target.closest('[data-action="download-confirmation"]');
+            if (btn) {
                 e.preventDefault();
-                const appointmentId = e.target.closest('[onclick*="downloadConfirmation"]')
-                    .getAttribute('onclick')
-                    .match(/'([^']+)'/)[1];
-                window.appointmentSystem?.downloadConfirmation?.(appointmentId);
+                const appointmentId = btn.getAttribute('data-appointment-id');
+                if (appointmentId && window.appointmentSystem?.downloadConfirmation) {
+                    window.appointmentSystem.downloadConfirmation(appointmentId);
+                }
             }
         });
     }
@@ -110,7 +111,7 @@
         // Input del chatbot - Enter para enviar
         const chatInput = document.getElementById('chatbotInput');
         if (chatInput) {
-            chatInput.addEventListener('keypress', function(e) {
+            chatInput.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     sendMessage();

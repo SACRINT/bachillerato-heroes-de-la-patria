@@ -307,6 +307,20 @@ class StudentDAO {
         const result = await pool.query(query, [grado, grupo]);
         return result.rows;
     }
+
+    /**
+     * Obtener estudiante por usuario_id (para autenticación)
+     * @param {number} usuarioId - ID del usuario en tabla usuarios
+     * @returns {Promise<Object|null>}
+     */
+    static async getByUserId(usuarioId) {
+        const query = `
+            SELECT * FROM estudiantes
+            WHERE usuario_id = $1
+        `;
+        const result = await pool.query(query, [usuarioId]);
+        return result.rows[0] || null;
+    }
 }
 
 module.exports = StudentDAO;

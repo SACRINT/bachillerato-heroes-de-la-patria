@@ -9,7 +9,8 @@ const express = require('express');
 const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
-const { pool } = require('../config/database');
+// ✅ FASE 3: Using DAO layer
+const InscriptionsDAO = require('../data/inscriptions.dao');
 const { body, validationResult } = require('express-validator');
 
 // =====================================================
@@ -49,113 +50,24 @@ router.post('/register', [
     const user_agent = req.get('User-Agent');
 
     try {
-        // Verificar si ya existe una inscripción para esta actividad
-        const checkQuery = `
-            SELECT id, status
-            FROM inscripciones_actividades
-            WHERE student_email = $1 AND activity_id = $2
-        `;
-        const existingResult = await pool.query(checkQuery, [studentEmail, activityId]);
+        // ✅ FASE 3: Using InscriptionsDAO
+        const existing = await InscriptionsDAO.checkExisting(studentEmail, activityId);
 
-        if (existingResult.rows.length > 0) {
-            const existing = existingResult.rows[0];
-
-            if (existing.status === 'pending') {
-                return res.json({
-                    success: true,
-                    message: 'Ya tienes una solicitud pendiente para esta actividad. Te notificaremos cuando sea revisada.',
-                    data: { id: existing.id, already_pending: true }
-                });
-            }
-
-            if (existing.status === 'approved') {
-                return res.json({
-                    success: true,
-                    message: 'Ya estás inscrito en esta actividad.',
-                    data: { id: existing.id, already_approved: true }
-                });
-            }
-
-            // Si fue rechazada o cancelada, permitir nueva inscripción actualizando el registro
+        if (existing) {
+            if (existing.status === 'pending') return res.json({ success: true, message: 'Ya tienes una solicitud pendiente.', data: { id: existing.id, already_pending: true } });
+            if (existing.status === 'approved') return res.json({ success: true, message: 'Ya estás inscrito.', data: { id: existing.id, already_approved: true } });
             if (existing.status === 'rejected' || existing.status === 'cancelled') {
-                const updateQuery = `
-                    UPDATE inscripciones_actividades
-                    SET
-                        student_name = $1,
-                        student_id = $2,
-                        student_group = $3,
-                        emergency_contact = $4,
-                        additional_info = $5,
-                        status = 'pending',
-                        fecha_solicitud = NOW(),
-                        fecha_procesado = NULL,
-                        processed_by = NULL,
-                        admin_notes = NULL,
-                        ip_address = $6,
-                        user_agent = $7
-                    WHERE id = $8
-                    RETURNING *;
-                `;
-
-                const result = await pool.query(updateQuery, [
-                    studentName,
-                    studentId || 'Externo',
-                    studentGroup || 'No especificado',
-                    emergencyContact || 'No proporcionado',
-                    additionalInfo || '',
-                    ip_address,
-                    user_agent,
-                    existing.id
-                ]);
-
-                debugLog.log('INSCRIPTIONS', '✅ Inscripción actualizada (reintento):', result.rows[0].id);
-
-                return res.json({
-                    success: true,
-                    message: 'Tu nueva solicitud de inscripción ha sido enviada. Recibirás un email cuando sea revisada.',
-                    data: {
-                        id: result.rows[0].id,
-                        resubmitted: true
-                    }
-                });
+                const result = await InscriptionsDAO.updateResubmit(existing.id, { studentName, studentId, studentGroup, emergencyContact, additionalInfo, ip_address, user_agent });
+                debugLog.log('INSCRIPTIONS', '✅ Inscripción actualizada (reintento):', result.id);
+                return res.json({ success: true, message: 'Tu nueva solicitud ha sido enviada.', data: { id: result.id, resubmitted: true } });
             }
         }
 
-        // Insertar nueva inscripción
-        const insertQuery = `
-            INSERT INTO inscripciones_actividades (
-                activity_id, activity_name, student_id, student_name,
-                student_email, student_group, emergency_contact,
-                additional_info, ip_address, user_agent
-            )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-            RETURNING *;
-        `;
+        const result = await InscriptionsDAO.create({ activityId, activityName, studentId, studentName, studentEmail, studentGroup, emergencyContact, additionalInfo, ip_address, user_agent });
+        debugLog.log('INSCRIPTIONS', '✅ Nueva inscripción creada:', result.id);
+        res.status(201).json({ success: true, message: '¡Solicitud enviada exitosamente!', data: { id: result.id, activityName: result.activity_name, fecha: result.fecha_solicitud } });
 
-        const result = await pool.query(insertQuery, [
-            activityId,
-            activityName,
-            studentId || 'Externo',
-            studentName,
-            studentEmail,
-            studentGroup || 'No especificado',
-            emergencyContact || 'No proporcionado',
-            additionalInfo || '',
-            ip_address,
-            user_agent
-        ]);
 
-        debugLog.log('INSCRIPTIONS', '✅ Nueva inscripción creada:', result.rows[0].id);
-
-        res.status(201).json({
-            success: true,
-            message: '¡Solicitud enviada exitosamente! Tu inscripción será revisada por un administrador. Recibirás un email cuando sea aprobada o rechazada.',
-            data: {
-                id: result.rows[0].id,
-                activityName: result.rows[0].activity_name,
-                fecha: result.rows[0].fecha_solicitud
-            }
-        });
 
     } catch (error) {
         debugLog.error('INSCRIPTIONS', '❌ Error al crear inscripción:', sanitizeError(error, 'inscriptions'));
@@ -190,67 +102,10 @@ router.post('/create', async (req, res) => {
 // =====================================================
 router.get('/', async (req, res) => {
     const { status, activity_id, student_email, limit = 50, offset = 0 } = req.query;
-
     try {
-        let query = 'SELECT * FROM inscripciones_actividades WHERE 1=1';
-        const params = [];
-        let paramCount = 0;
-
-        if (status) {
-            paramCount++;
-            query += ` AND status = $${paramCount}`;
-            params.push(status);
-        }
-
-        if (activity_id) {
-            paramCount++;
-            query += ` AND activity_id = $${paramCount}`;
-            params.push(activity_id);
-        }
-
-        if (student_email) {
-            paramCount++;
-            query += ` AND student_email ILIKE $${paramCount}`;
-            params.push(`%${student_email}%`);
-        }
-
-        query += ` ORDER BY fecha_solicitud DESC LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;
-        params.push(parseInt(limit), parseInt(offset));
-
-        const result = await pool.query(query, params);
-
-        // Contar total
-        let countQuery = 'SELECT COUNT(*) FROM inscripciones_actividades WHERE 1=1';
-        const countParams = [];
-        let countParamCount = 0;
-
-        if (status) {
-            countParamCount++;
-            countQuery += ` AND status = $${countParamCount}`;
-            countParams.push(status);
-        }
-
-        if (activity_id) {
-            countParamCount++;
-            countQuery += ` AND activity_id = $${countParamCount}`;
-            countParams.push(activity_id);
-        }
-
-        if (student_email) {
-            countParamCount++;
-            countQuery += ` AND student_email ILIKE $${countParamCount}`;
-            countParams.push(`%${student_email}%`);
-        }
-
-        const countResult = await pool.query(countQuery, countParams);
-
-        res.json({
-            success: true,
-            data: result.rows,
-            total: parseInt(countResult.rows[0]?.count || 0),
-            limit: parseInt(limit),
-            offset: parseInt(offset)
-        });
+        // ✅ FASE 3: Using InscriptionsDAO
+        const { data, total } = await InscriptionsDAO.getAll({ status, activity_id, student_email, limit, offset });
+        res.json({ success: true, data, total, limit: parseInt(limit), offset: parseInt(offset) });
 
     } catch (error) {
         debugLog.error('INSCRIPTIONS', '❌ Error al obtener inscripciones:', sanitizeError(error, 'inscriptions'));
@@ -266,16 +121,9 @@ router.get('/', async (req, res) => {
 // =====================================================
 router.get('/list', async (req, res) => {
     try {
-        const result = await pool.query(`
-            SELECT * FROM inscripciones_actividades
-            ORDER BY fecha_solicitud DESC
-        `);
-
-        res.json({
-            success: true,
-            inscripciones: result.rows,
-            total: result.rows.length
-        });
+        // ✅ FASE 3: Using InscriptionsDAO
+        const inscripciones = await InscriptionsDAO.list();
+        res.json({ success: true, inscripciones, total: inscripciones.length });
 
     } catch (error) {
         debugLog.error('INSCRIPTIONS', '❌ Error al listar inscripciones:', sanitizeError(error, 'inscriptions'));
@@ -293,39 +141,9 @@ router.get('/list', async (req, res) => {
 // =====================================================
 router.get('/stats', async (req, res) => {
     try {
-        const query = `
-            SELECT
-                COUNT(*) as total,
-                COUNT(*) FILTER (WHERE status = 'pending') as pendientes,
-                COUNT(*) FILTER (WHERE status = 'approved') as aprobadas,
-                COUNT(*) FILTER (WHERE status = 'rejected') as rechazadas,
-                COUNT(*) FILTER (WHERE status = 'cancelled') as canceladas,
-                COUNT(*) FILTER (WHERE DATE(fecha_solicitud) = CURRENT_DATE) as hoy,
-                COUNT(*) FILTER (WHERE DATE(fecha_solicitud) >= CURRENT_DATE - INTERVAL '7 days') as esta_semana
-            FROM inscripciones_actividades;
-        `;
-
-        const result = await pool.query(query);
-
-        // Estadísticas por actividad
-        const activityQuery = `
-            SELECT activity_name, COUNT(*) as cantidad, status
-            FROM inscripciones_actividades
-            GROUP BY activity_name, status
-            ORDER BY cantidad DESC;
-        `;
-
-        const activityResult = await pool.query(activityQuery);
-
-        const stats = {
-            ...result.rows[0],
-            byActivity: activityResult.rows
-        };
-
-        res.json({
-            success: true,
-            data: stats
-        });
+        // ✅ FASE 3: Using InscriptionsDAO
+        const stats = await InscriptionsDAO.getStats();
+        res.json({ success: true, data: stats });
 
     } catch (error) {
         debugLog.error('INSCRIPTIONS', '❌ Error al obtener estadísticas:', sanitizeError(error, 'inscriptions'));
@@ -341,21 +159,11 @@ router.get('/stats', async (req, res) => {
 // =====================================================
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
-
     try {
-        const result = await pool.query('SELECT * FROM inscripciones_actividades WHERE id = $1', [id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Inscripción no encontrada'
-            });
-        }
-
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using InscriptionsDAO
+        const inscripcion = await InscriptionsDAO.getById(id);
+        if (!inscripcion) return res.status(404).json({ success: false, error: 'Inscripción no encontrada' });
+        res.json({ success: true, data: inscripcion });
 
     } catch (error) {
         debugLog.error('INSCRIPTIONS', '❌ Error al obtener inscripción:', sanitizeError(error, 'inscriptions'));
@@ -374,33 +182,11 @@ router.put('/:id', async (req, res) => {
     const { status, admin_notes, processed_by } = req.body;
 
     try {
-        const query = `
-            UPDATE inscripciones_actividades
-            SET
-                status = COALESCE($1, status),
-                admin_notes = COALESCE($2, admin_notes),
-                processed_by = COALESCE($3, processed_by),
-                fecha_procesado = CASE WHEN $1 IN ('approved', 'rejected') THEN NOW() ELSE fecha_procesado END
-            WHERE id = $4
-            RETURNING *;
-        `;
-
-        const result = await pool.query(query, [status, admin_notes, processed_by, id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Inscripción no encontrada'
-            });
-        }
-
+        // ✅ FASE 3: Using InscriptionsDAO
+        const result = await InscriptionsDAO.update(id, { status, admin_notes, processed_by });
+        if (!result) return res.status(404).json({ success: false, error: 'Inscripción no encontrada' });
         debugLog.log('INSCRIPTIONS', `✅ Inscripción ${id} actualizada: ${status}`);
-
-        res.json({
-            success: true,
-            message: 'Inscripción actualizada correctamente',
-            data: result.rows[0]
-        });
+        res.json({ success: true, message: 'Inscripción actualizada correctamente', data: result });
 
     } catch (error) {
         debugLog.error('INSCRIPTIONS', '❌ Error al actualizar inscripción:', sanitizeError(error, 'inscriptions'));
@@ -416,27 +202,11 @@ router.put('/:id', async (req, res) => {
 // =====================================================
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
-
     try {
-        // Marcar como cancelada en lugar de eliminar
-        const result = await pool.query(`
-            UPDATE inscripciones_actividades
-            SET status = 'cancelled', fecha_procesado = NOW()
-            WHERE id = $1
-            RETURNING id, activity_name
-        `, [id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Inscripción no encontrada'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: 'Inscripción cancelada correctamente'
-        });
+        // ✅ FASE 3: Using InscriptionsDAO
+        const result = await InscriptionsDAO.cancel(id);
+        if (!result) return res.status(404).json({ success: false, error: 'Inscripción no encontrada' });
+        res.json({ success: true, message: 'Inscripción cancelada correctamente' });
 
     } catch (error) {
         debugLog.error('INSCRIPTIONS', '❌ Error al cancelar inscripción:', sanitizeError(error, 'inscriptions'));

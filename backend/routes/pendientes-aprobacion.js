@@ -10,7 +10,8 @@ const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 
 const router = express.Router();
-const { pool } = require('../config/database');
+// ✅ FASE 3: Using DAO layer
+const PendientesDAO = require('../data/pendientes-aprobacion.dao');
 
 /**
  * GET /api/pendientes-aprobacion
@@ -23,82 +24,11 @@ const { pool } = require('../config/database');
  */
 router.get('/', async (req, res) => {
     try {
-        const { tipo, estado, limit = 50, offset = 0, todos } = req.query;
-
-        // 🎯 LÓGICA MEJORADA (5 NOVIEMBRE 2025):
-        // - Mostrar registros en estados: 'pendiente_confirmacion' Y 'pendiente'
-        // - Estos son los que aparecen en el admin dashboard
-        // - Si estado está especificado, usarlo
-        // - Si nada se especifica, mostrar AMBOS estados
-
-        let estadoFilter;
-        if (estado) {
-            // Usuario pidió estado específico
-            estadoFilter = estado;
-        } else {
-            // Default: mostrar 'pendiente_confirmacion' Y 'pendiente'
-            estadoFilter = null; // Sin filtro de estado (mostrará ambos)
-        }
-
-        // 🎯 NUEVA LÓGICA: Mostrar registros donde estado IN ('pendiente_confirmacion', 'pendiente')
-        // NO usar el filtro email_confirmado porque ahora el estado lo indica
-        let query = `
-            SELECT *
-            FROM pendientes_aprobacion
-            WHERE estado IN ('pendiente_confirmacion', 'pendiente')
-        `;
-        const params = [];
-
-        if (estadoFilter) {
-            query += ' AND estado = $' + (params.length + 1);
-            params.push(estadoFilter);
-        }
-
-        if (tipo) {
-            query += ' AND tipo_solicitud = $' + (params.length + 1);
-            params.push(tipo);
-        }
-
-        // Paginación
-        query += ' ORDER BY fecha_solicitud DESC';
-        query += ' LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2);
-        params.push(parseInt(limit), parseInt(offset));
-
-        debugLog.log('PENDIENTES', `📋 [GET /pendientes-aprobacion] Query: ${query}`);
-        debugLog.log('PENDIENTES', `   Parámetros: [${params.join(', ')}]`);
-
-        const result = await pool.query(query, params);
-
-        // Contar total
-        let countQuery = `
-            SELECT COUNT(*) as count
-            FROM pendientes_aprobacion
-            WHERE estado IN ('pendiente_confirmacion', 'pendiente')
-        `;
-        const countParams = [];
-
-        if (estadoFilter) {
-            countQuery += ' AND estado = $' + (countParams.length + 1);
-            countParams.push(estadoFilter);
-        }
-
-        if (tipo) {
-            countQuery += ' AND tipo_solicitud = $' + (countParams.length + 1);
-            countParams.push(tipo);
-        }
-
-        const countResult = await pool.query(countQuery, countParams);
-
-        const totalCount = parseInt(countResult.rows[0].count);
-        debugLog.log('PENDIENTES', `   ✅ Encontrados ${result.rows.length} registros, Total: ${totalCount}`);
-
-        res.json({
-            success: true,
-            data: result.rows,
-            total: totalCount,
-            limit: parseInt(limit),
-            offset: parseInt(offset)
-        });
+        const { tipo, estado, limit = 50, offset = 0 } = req.query;
+        // ✅ FASE 3: Using PendientesDAO
+        const { data, total } = await PendientesDAO.getAll({ tipo, estado, limit, offset });
+        debugLog.log('PENDIENTES', `   ✅ Encontrados ${data.length} registros, Total: ${total}`);
+        res.json({ success: true, data, total, limit: parseInt(limit), offset: parseInt(offset) });
 
     } catch (error) {
         debugLog.error('PENDIENTES', '❌ Error al obtener pendientes', sanitizeError(error, 'pendientes'));
@@ -116,23 +46,10 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-
-        const result = await pool.query(
-            'SELECT * FROM pendientes_aprobacion WHERE id = $1',
-            [id]
-        );
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Solicitud no encontrada'
-            });
-        }
-
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using PendientesDAO
+        const solicitud = await PendientesDAO.getById(id);
+        if (!solicitud) return res.status(404).json({ success: false, error: 'Solicitud no encontrada' });
+        res.json({ success: true, data: solicitud });
 
     } catch (error) {
         debugLog.error('PENDIENTES', '❌ Error al obtener solicitud', sanitizeError(error, 'pendientes'));
@@ -155,134 +72,26 @@ router.post('/aprobar/:id', async (req, res) => {
     const { admin_id, admin_notas } = req.body;
 
     debugLog.log('PENDIENTES', `\n🔵 [BACKEND APROBAR] POST /aprobar/${id} recibido`);
-    debugLog.log('PENDIENTES', `   Body: admin_id=${admin_id}, admin_notas=${admin_notas}`);
-    debugLog.log('PENDIENTES', `   Tipo de ID: ${typeof id}, Valor: ${id}`);
-
-    const client = await pool.connect();
 
     try {
-        // Obtener la solicitud pendiente
-        debugLog.log('PENDIENTES', `🔍 [BACKEND APROBAR] Buscando solicitud con id=${id}`);
-        const pendienteResult = await client.query(
-            'SELECT * FROM pendientes_aprobacion WHERE id = $1',
-            [id]
-        );
-
-        debugLog.log('PENDIENTES', `📊 [BACKEND APROBAR] Resultado de búsqueda: ${pendienteResult.rows.length} registros encontrados`);
-
-        if (pendienteResult.rows.length === 0) {
+        // ✅ FASE 3: Using PendientesDAO
+        const solicitud = await PendientesDAO.getById(id);
+        if (!solicitud) {
             debugLog.log('PENDIENTES', `⚠️ [BACKEND APROBAR] Solicitud ${id} NO ENCONTRADA`);
-            return res.status(404).json({
-                success: false,
-                error: 'Solicitud no encontrada'
-            });
+            return res.status(404).json({ success: false, error: 'Solicitud no encontrada' });
         }
 
-        const solicitud = pendienteResult.rows[0];
         const datos = solicitud.datos_json;
+        debugLog.log('PENDIENTES', `✅ [BACKEND APROBAR] Solicitud encontrada: Tipo=${solicitud.tipo_solicitud}`);
 
-        debugLog.log('PENDIENTES', `✅ [BACKEND APROBAR] Solicitud encontrada: ID=${solicitud.id}, Tipo=${solicitud.tipo_solicitud}, Email=${maskEmail(solicitud.email_usuario)}, Estado=${solicitud.estado}`);
+        await PendientesDAO.aprobar(id, solicitud, datos);
 
-        debugLog.log('PENDIENTES', `🔄 [BACKEND APROBAR] Iniciando transacción...`);
-        await client.query('BEGIN');
-
-        try {
-            // Insertar en la tabla final según el tipo de solicitud
-            if (solicitud.tipo_solicitud === 'egresado') {
-                debugLog.log('PENDIENTES', `📝 [BACKEND APROBAR] Insertando en tabla EGRESADOS...`);
-
-                const insertResult = await client.query(`
-                    INSERT INTO egresados (
-                        nombre, email, telefono,
-                        anio_egreso, carrera, generacion,
-                        ocupacion_actual, ciudad,
-                        verificado, fecha_registro, fecha_actualizacion
-                    ) VALUES (
-                        $1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW()
-                    )
-                    ON CONFLICT (email) DO NOTHING
-                `, [
-                    datos.nombre_completo || datos.name || datos.nombre || '',
-                    datos.email,
-                    datos.telefono || null,
-                    datos.anio_egreso || null,
-                    datos.carrera_tecnica || datos.carrera || null,
-                    datos.generacion || null,
-                    datos.experiencia_laboral || datos.trabajo || null,
-                    datos.ciudad || null,
-                    true
-                ]);
-
-                debugLog.log('PENDIENTES', `✅ [BACKEND APROBAR] Inserción en egresados completada. Filas afectadas: ${insertResult.rowCount}`);
-
-            } else if (solicitud.tipo_solicitud === 'bolsa_trabajo') {
-                debugLog.log('PENDIENTES', `📝 [BACKEND APROBAR] Insertando en tabla BOLSA_TRABAJO...`);
-
-                const insertResult = await client.query(`
-                    INSERT INTO bolsa_trabajo (
-                        nombre_completo, email, telefono, generacion,
-                        experiencia, habilidades
-                    ) VALUES (
-                        $1, $2, $3, $4, $5, $6
-                    )
-                    ON CONFLICT (email) DO NOTHING
-                `, [
-                    datos.name || datos.nombre_completo || '',
-                    datos.email,
-                    datos.phone || datos.telefono || null,
-                    datos.graduationYear || datos.generacion || null,
-                    datos.message || datos.experiencia || null,
-                    datos.skills || datos.habilidades || null
-                ]);
-
-                debugLog.log('PENDIENTES', `✅ [BACKEND APROBAR] Inserción en bolsa_trabajo completada. Filas afectadas: ${insertResult.rowCount}`);
-
-            } else {
-                throw new Error(`Tipo de solicitud desconocido: ${solicitud.tipo_solicitud}`);
-            }
-
-            // ✅ ELIMINAR de pendientes_aprobacion
-            debugLog.log('PENDIENTES', `🗑️ [BACKEND APROBAR] Eliminando de pendientes_aprobacion (id=${id})...`);
-            const deleteResult = await client.query(
-                'DELETE FROM pendientes_aprobacion WHERE id = $1 RETURNING id',
-                [id]
-            );
-
-            debugLog.log('PENDIENTES', `📊 [BACKEND APROBAR] Resultado de DELETE: ${deleteResult.rowCount} filas eliminadas`);
-
-            if (deleteResult.rows.length === 0) {
-                throw new Error(`No se pudo eliminar el registro ${id} de pendientes_aprobacion`);
-            }
-
-            debugLog.log('PENDIENTES', `✅ [BACKEND APROBAR] COMMIT de transacción...`);
-            await client.query('COMMIT');
-
-            debugLog.log('PENDIENTES', `🎉 [BACKEND APROBAR] ¡Solicitud aprobada exitosamente! ID=${id}, Tabla destino=${solicitud.tipo_solicitud}`);
-
-            res.json({
-                success: true,
-                message: 'Solicitud aprobada, movida a tabla final y eliminada de pendientes',
-                data: { id, estado: 'aprobada', action: 'deleted_from_pending' }
-            });
-
-        } catch (innerError) {
-            debugLog.error('PENDIENTES', `❌ [BACKEND APROBAR] Error en transacción`, sanitizeError(innerError, 'pendientes'));
-            debugLog.log('PENDIENTES', `🔄 [BACKEND APROBAR] Haciendo ROLLBACK...`);
-            await client.query('ROLLBACK');
-            throw innerError;
-        }
+        debugLog.log('PENDIENTES', `🎉 [BACKEND APROBAR] ¡Solicitud aprobada exitosamente! ID=${id}`);
+        res.json({ success: true, message: 'Solicitud aprobada y movida a tabla final', data: { id, estado: 'aprobada', action: 'deleted_from_pending' } });
 
     } catch (error) {
-        debugLog.error('PENDIENTES', `❌ [BACKEND APROBAR] Error fatal`, sanitizeError(error, 'pendientes'));
-
-        res.status(500).json({
-            success: false,
-            error: 'Error al procesar solicitud',
-            message: error.message
-        });
-    } finally {
-        debugLog.log('PENDIENTES', `🔓 [BACKEND APROBAR] Liberando cliente de conexión...`);
-        client.release();
+        debugLog.error('PENDIENTES', `❌ [BACKEND APROBAR] Error`, sanitizeError(error, 'pendientes'));
+        res.status(500).json({ success: false, error: 'Error al procesar solicitud', message: error.message });
     }
 });
 
@@ -293,45 +102,16 @@ router.post('/aprobar/:id', async (req, res) => {
 router.post('/rechazar/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { admin_id, admin_notas } = req.body;
+        const { admin_notas } = req.body;
 
-        // Verificar que la solicitud existe antes de eliminarla
-        const verifyResult = await pool.query(
-            'SELECT id, tipo_solicitud, email_usuario, datos_json FROM pendientes_aprobacion WHERE id = $1',
-            [id]
-        );
+        // ✅ FASE 3: Using PendientesDAO
+        const solicitud = await PendientesDAO.getById(id);
+        if (!solicitud) return res.status(404).json({ success: false, error: 'Solicitud no encontrada' });
 
-        if (verifyResult.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Solicitud no encontrada'
-            });
-        }
+        debugLog.log('PENDIENTES', `❌ Rechazando solicitud ${id}: ${solicitud.tipo_solicitud}`);
+        const deleted = await PendientesDAO.rechazar(id);
 
-        const solicitud = verifyResult.rows[0];
-
-        // ⚠️ NOTA: Para mantener auditoría, primero guardamos en un log antes de eliminar
-        // (Opcional: si se requiere auditoría completa)
-        debugLog.log('PENDIENTES', `❌ Rechazando solicitud ${id}: ${solicitud.tipo_solicitud} de ${maskEmail(solicitud.email_usuario)}`);
-        debugLog.log('PENDIENTES', `   Notas del admin: ${admin_notas || 'Sin notas'}`);
-
-        // ELIMINAR el registro de la base de datos
-        const deleteResult = await pool.query(
-            'DELETE FROM pendientes_aprobacion WHERE id = $1 RETURNING id',
-            [id]
-        );
-
-        res.json({
-            success: true,
-            message: 'Solicitud rechazada y eliminada de la base de datos',
-            data: {
-                id: deleteResult.rows[0].id,
-                tipo_solicitud: solicitud.tipo_solicitud,
-                email_usuario: solicitud.email_usuario,
-                action: 'deleted',
-                admin_notas: admin_notas || null
-            }
-        });
+        res.json({ success: true, message: 'Solicitud rechazada y eliminada', data: { id: deleted.id, tipo_solicitud: solicitud.tipo_solicitud, email_usuario: solicitud.email_usuario, action: 'deleted', admin_notas: admin_notas || null } });
 
     } catch (error) {
         debugLog.error('PENDIENTES', '❌ Error al rechazar solicitud', sanitizeError(error, 'pendientes'));
@@ -349,23 +129,10 @@ router.post('/rechazar/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-
-        const result = await pool.query(
-            'DELETE FROM pendientes_aprobacion WHERE id = $1 RETURNING id',
-            [id]
-        );
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Solicitud no encontrada'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: 'Solicitud eliminada'
-        });
+        // ✅ FASE 3: Using PendientesDAO
+        const result = await PendientesDAO.delete(id);
+        if (!result) return res.status(404).json({ success: false, error: 'Solicitud no encontrada' });
+        res.json({ success: true, message: 'Solicitud eliminada' });
 
     } catch (error) {
         debugLog.error('PENDIENTES', '❌ Error al eliminar solicitud', sanitizeError(error, 'pendientes'));
@@ -382,23 +149,9 @@ router.delete('/:id', async (req, res) => {
  */
 router.get('/stats/general', async (req, res) => {
     try {
-        const result = await pool.query(`
-            SELECT
-                COUNT(*) FILTER (WHERE estado = 'pendiente') as pendientes,
-                COUNT(*) FILTER (WHERE estado = 'aprobada') as aprobadas,
-                COUNT(*) FILTER (WHERE estado = 'rechazada') as rechazadas,
-                COUNT(*) FILTER (WHERE tipo_solicitud = 'egresado') as egresados,
-                COUNT(*) FILTER (WHERE tipo_solicitud = 'bolsa_trabajo') as bolsa_trabajo,
-                COUNT(*) FILTER (WHERE tipo_solicitud = 'egresado' AND estado = 'pendiente') as egresados_pendientes,
-                COUNT(*) FILTER (WHERE tipo_solicitud = 'bolsa_trabajo' AND estado = 'pendiente') as bolsa_trabajo_pendientes,
-                COUNT(*) as total
-            FROM pendientes_aprobacion
-        `);
-
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using PendientesDAO
+        const stats = await PendientesDAO.getStats();
+        res.json({ success: true, data: stats });
 
     } catch (error) {
         debugLog.error('PENDIENTES', '❌ Error al obtener estadísticas', sanitizeError(error, 'pendientes'));

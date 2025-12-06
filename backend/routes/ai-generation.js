@@ -6,6 +6,7 @@
 
 const express = require('express');
 const router = express.Router();
+const devLogger = require('../utils/devLogger');
 const { body, query, validationResult } = require('express-validator');
 const { authenticateToken } = require('../middleware/auth');
 const AIGenerationService = require('../services/AIGenerationService');
@@ -45,7 +46,7 @@ router.post('/generate',
                 temperature = 0.7
             } = req.body;
 
-            console.log(`[AI-GENERATION] Usuario ${userId} solicita generación ${generationType} con ${provider}/${model}`);
+            devLogger.log(`[AI-GENERATION] Usuario ${userId} solicita generación ${generationType} con ${provider}/${model}`);
 
             const result = await AIGenerationService.generate(userId, {
                 provider,
@@ -63,7 +64,7 @@ router.post('/generate',
             });
 
         } catch (error) {
-            console.error('[AI-GENERATION] Error:', error);
+            devLogger.error('[AI-GENERATION] Error:', error);
 
             // Manejar errores específicos
             if (error.message.includes('Saldo insuficiente')) {
@@ -110,7 +111,7 @@ router.get('/history',
             });
 
         } catch (error) {
-            console.error('[AI-GENERATION] Error obteniendo historial:', error);
+            devLogger.error('[AI-GENERATION] Error obteniendo historial:', error);
             res.status(500).json({
                 success: false,
                 message: 'Error al obtener historial de generaciones'
@@ -133,7 +134,7 @@ router.get('/pricing',
             });
 
         } catch (error) {
-            console.error('[AI-GENERATION] Error obteniendo precios:', error);
+            devLogger.error('[AI-GENERATION] Error obteniendo precios:', error);
             res.status(500).json({
                 success: false,
                 message: 'Error al obtener precios'
@@ -156,7 +157,7 @@ router.get('/types',
             });
 
         } catch (error) {
-            console.error('[AI-GENERATION] Error obteniendo tipos:', error);
+            devLogger.error('[AI-GENERATION] Error obteniendo tipos:', error);
             res.status(500).json({
                 success: false,
                 message: 'Error al obtener tipos de generación'
@@ -218,7 +219,7 @@ Longitud: ${length}`;
             });
 
         } catch (error) {
-            console.error('[AI-GENERATION] Error generando ensayo:', error);
+            devLogger.error('[AI-GENERATION] Error generando ensayo:', error);
 
             if (error.message.includes('Saldo insuficiente')) {
                 return res.status(402).json({
@@ -290,7 +291,7 @@ Incluye:
             });
 
         } catch (error) {
-            console.error('[AI-GENERATION] Error explicando concepto:', error);
+            devLogger.error('[AI-GENERATION] Error explicando concepto:', error);
 
             if (error.message.includes('Saldo insuficiente')) {
                 return res.status(402).json({
@@ -370,7 +371,7 @@ Formato JSON:
             });
 
         } catch (error) {
-            console.error('[AI-GENERATION] Error generando quiz:', error);
+            devLogger.error('[AI-GENERATION] Error generando quiz:', error);
 
             if (error.message.includes('Saldo insuficiente')) {
                 return res.status(402).json({

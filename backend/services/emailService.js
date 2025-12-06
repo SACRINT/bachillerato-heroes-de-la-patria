@@ -15,11 +15,32 @@ const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-erro
 
 
 class EmailService {
-    constructor() {
+    /**
+     * Constructor con soporte para inyección de dependencias (testing)
+     * @param {Object} options - Opciones de configuración
+     * @param {Object} options.nodemailerModule - Módulo nodemailer (para testing)
+     * @param {Object} options.fsModule - Módulo fs.promises (para testing)
+     * @param {Object} options.handlebarsModule - Módulo handlebars (para testing)
+     */
+    constructor(options = {}) {
+        // Dependencias inyectables (para testing)
+        this._nodemailer = options.nodemailerModule || nodemailer;
+        this._fs = options.fsModule || fs;
+        this._handlebars = options.handlebarsModule || handlebars;
+
         this.transporter = null;
         this.templatesCache = {};
         this.from = process.env.EMAIL_FROM || 'noreply@bachilleratoheroesdelapatria.edu.mx';
         this.initialized = false;
+    }
+
+    /**
+     * Factory method para crear instancia testeable con mocks inyectados
+     * @param {Object} mocks - Mocks de dependencias
+     * @returns {EmailService} Nueva instancia con mocks
+     */
+    static createTestInstance(mocks = {}) {
+        return new EmailService(mocks);
     }
 
     /**
@@ -34,7 +55,7 @@ class EmailService {
             // Configurar transporter
             // Prioridad 1: SMTP Configurado explícitamente (Producción o Dev con SMTP real)
             if (process.env.SMTP_HOST && process.env.SMTP_USER) {
-                this.transporter = nodemailer.createTransport({
+                this.transporter = this._nodemailer.createTransport({
                     host: process.env.SMTP_HOST,
                     port: parseInt(process.env.SMTP_PORT || '587'),
                     secure: process.env.SMTP_SECURE === 'true',
@@ -47,8 +68,8 @@ class EmailService {
             }
             // Prioridad 2: Fallback a Ethereal (solo si no hay SMTP)
             else {
-                const testAccount = await nodemailer.createTestAccount();
-                this.transporter = nodemailer.createTransport({
+                const testAccount = await this._nodemailer.createTestAccount();
+                this.transporter = this._nodemailer.createTransport({
                     host: 'smtp.ethereal.email',
                     port: 587,
                     secure: false,
@@ -80,7 +101,7 @@ class EmailService {
      */
     registerHandlebarsHelpers() {
         // Helper para formatear fechas
-        handlebars.registerHelper('formatDate', function (date) {
+        this._handlebars.registerHelper('formatDate', function (date) {
             if (!date) return '';
             const d = new Date(date);
             return d.toLocaleDateString('es-MX', {
@@ -92,7 +113,7 @@ class EmailService {
         });
 
         // Helper para formatear fecha y hora
-        handlebars.registerHelper('formatDateTime', function (date) {
+        this._handlebars.registerHelper('formatDateTime', function (date) {
             if (!date) return '';
             const d = new Date(date);
             return d.toLocaleString('es-MX', {
@@ -106,12 +127,12 @@ class EmailService {
         });
 
         // Helper condicional
-        handlebars.registerHelper('ifEquals', function (arg1, arg2, options) {
+        this._handlebars.registerHelper('ifEquals', function (arg1, arg2, options) {
             return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
         });
 
         // Helper para URLs absolutas
-        handlebars.registerHelper('absoluteUrl', function (path) {
+        this._handlebars.registerHelper('absoluteUrl', function (path) {
             const baseUrl = process.env.APP_URL || 'http://localhost:3000';
             return `${baseUrl}${path}`;
         });
@@ -130,8 +151,8 @@ class EmailService {
 
         try {
             const templatePath = path.join(__dirname, '../templates/emails', `${templateName}.hbs`);
-            const templateContent = await fs.readFile(templatePath, 'utf-8');
-            const compiledTemplate = handlebars.compile(templateContent);
+            const templateContent = await this._fs.readFile(templatePath, 'utf-8');
+            const compiledTemplate = this._handlebars.compile(templateContent);
 
             // Guardar en caché
             this.templatesCache[templateName] = compiledTemplate;
@@ -172,13 +193,13 @@ class EmailService {
 
             // En desarrollo, mostrar URL de previsualización
             if (process.env.NODE_ENV !== 'production') {
-                devLogger.log(`🔗 Vista previa: ${nodemailer.getTestMessageUrl(info)}`);
+                devLogger.log(`🔗 Vista previa: ${this._nodemailer.getTestMessageUrl(info)}`);
             }
 
             return {
                 success: true,
                 messageId: info.messageId,
-                previewUrl: nodemailer.getTestMessageUrl(info)
+                previewUrl: this._nodemailer.getTestMessageUrl(info)
             };
 
         } catch (error) {
@@ -346,6 +367,9 @@ class EmailService {
         devLogger.log('🗑️ Caché de plantillas limpiado');
     }
 }
+// Crear instancia singleton para producción
+const emailServiceInstance = new EmailService();
 
-// Exportar instancia única (singleton)
-module.exports = new EmailService();
+// Exportar instancia única (singleton) y clase para testing
+module.exports = emailServiceInstance;
+module.exports.EmailService = EmailService;

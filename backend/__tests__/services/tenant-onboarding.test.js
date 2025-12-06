@@ -28,6 +28,8 @@ describe('TenantOnboardingService', () => {
     };
 
     pool.connect = jest.fn().mockResolvedValue(mockClient);
+    // FIX: Unificar pool.query y client.query para que compartan los mocks
+    pool.query = mockClient.query;
 
     // Mock UUID generation
     crypto.randomUUID = jest.fn()
@@ -45,6 +47,7 @@ describe('TenantOnboardingService', () => {
         .mockResolvedValueOnce({ rows: [] }) // subdomain no existe
         .mockResolvedValueOnce({ rows: [] }) // domain no existe
         .mockResolvedValueOnce({ rows: [] }) // email no existe
+        .mockResolvedValueOnce({ rows: [] }) // BEGIN
         .mockResolvedValueOnce({ // INSERT tenant
           rows: [{
             id: 'tenant-uuid-123',
@@ -86,6 +89,8 @@ describe('TenantOnboardingService', () => {
     });
 
     it('should reject duplicate subdomain', async () => {
+      // Mock: BEGIN
+      mockClient.query.mockResolvedValueOnce({ rows: [] });
       // Mock: subdomain ya existe
       mockClient.query.mockResolvedValueOnce({
         rows: [{ id: 'existing-tenant' }]
@@ -107,6 +112,7 @@ describe('TenantOnboardingService', () => {
     it('should reject duplicate email', async () => {
       // Mock: subdomain y domain OK, pero email existe
       mockClient.query
+        .mockResolvedValueOnce({ rows: [] }) // BEGIN
         .mockResolvedValueOnce({ rows: [] }) // subdomain OK
         .mockResolvedValueOnce({ rows: [] }) // domain OK
         .mockResolvedValueOnce({ rows: [{ id: 'existing-user' }] }); // email existe
@@ -118,6 +124,7 @@ describe('TenantOnboardingService', () => {
           adminEmail: 'existing@test.com',
           adminPassword: 'password123',
           adminName: 'Admin',
+          domain: 'unique.com' // Explicit domain to ensure checkDomainExists is called
         })
       ).rejects.toThrow('El email "existing@test.com" ya está registrado');
 

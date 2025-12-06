@@ -1,6 +1,7 @@
 /**
  * 📊 CHARTS DATA ROUTES
  * Endpoints para datos de gráficas del dashboard
+ * ✅ FASE 3 DAL - Refactorizado para usar DAO
  * Fecha: 18 de Octubre, 2025
  */
 
@@ -9,7 +10,9 @@ const express = require('express');
 const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
-const { pool } = require('../config/database');
+
+// ✅ FASE 3: Using DAO layer
+const ChartsDataDAO = require('../data/charts-data.dao');
 
 /**
  * GET /api/charts/noticias-por-mes
@@ -17,23 +20,12 @@ const { pool } = require('../config/database');
  */
 router.get('/noticias-por-mes', async (req, res) => {
     try {
-        const query = `
-            SELECT
-                TO_CHAR(fecha_publicacion, 'Mon YYYY') as mes,
-                DATE_TRUNC('month', fecha_publicacion) as fecha_mes,
-                COUNT(*) as total
-            FROM noticias
-            WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '12 months'
-            AND estado = 'publicada'
-            GROUP BY DATE_TRUNC('month', fecha_publicacion), TO_CHAR(fecha_publicacion, 'Mon YYYY')
-            ORDER BY fecha_mes ASC
-        `;
-
-        const result = await pool.query(query);
+        // ✅ FASE 3: Using ChartsDataDAO
+        const rows = await ChartsDataDAO.getNoticiasPorMes();
 
         // Formatear datos para Chart.js
-        const labels = result.rows.map(row => row.mes);
-        const data = result.rows.map(row => parseInt(row.total));
+        const labels = rows.map(row => row.mes);
+        const data = rows.map(row => parseInt(row.total));
 
         res.json({
             success: true,
@@ -61,21 +53,12 @@ router.get('/noticias-por-mes', async (req, res) => {
  */
 router.get('/eventos-por-categoria', async (req, res) => {
     try {
-        const query = `
-            SELECT
-                categoria,
-                COUNT(*) as total
-            FROM eventos
-            WHERE estado = 'publicado'
-            GROUP BY categoria
-            ORDER BY total DESC
-        `;
-
-        const result = await pool.query(query);
+        // ✅ FASE 3: Using ChartsDataDAO
+        const rows = await ChartsDataDAO.getEventosPorCategoria();
 
         // Formatear datos para Chart.js
-        const labels = result.rows.map(row => row.categoria || 'Sin categoría');
-        const data = result.rows.map(row => parseInt(row.total));
+        const labels = rows.map(row => row.categoria || 'Sin categoría');
+        const data = rows.map(row => parseInt(row.total));
 
         // Colores para cada categoría
         const backgroundColors = [
@@ -115,21 +98,12 @@ router.get('/eventos-por-categoria', async (req, res) => {
  */
 router.get('/quejas-por-tipo', async (req, res) => {
     try {
-        const query = `
-            SELECT
-                subject as tipo,
-                COUNT(*) as total
-            FROM quejas
-            GROUP BY subject
-            ORDER BY total DESC
-            LIMIT 6
-        `;
-
-        const result = await pool.query(query);
+        // ✅ FASE 3: Using ChartsDataDAO
+        const rows = await ChartsDataDAO.getQuejasPorTipo();
 
         // Formatear datos para Chart.js
-        const labels = result.rows.map(row => row.tipo || 'Sin especificar');
-        const data = result.rows.map(row => parseInt(row.total));
+        const labels = rows.map(row => row.tipo || 'Sin especificar');
+        const data = rows.map(row => parseInt(row.total));
 
         // Colores para el pie chart
         const backgroundColors = [
@@ -167,25 +141,13 @@ router.get('/quejas-por-tipo', async (req, res) => {
  */
 router.get('/suscriptores-crecimiento', async (req, res) => {
     try {
-        const query = `
-            SELECT
-                TO_CHAR(fecha_suscripcion, 'Mon YYYY') as mes,
-                DATE_TRUNC('month', fecha_suscripcion) as fecha_mes,
-                COUNT(*) as nuevos,
-                SUM(COUNT(*)) OVER (ORDER BY DATE_TRUNC('month', fecha_suscripcion)) as acumulado
-            FROM suscriptores_notificaciones
-            WHERE fecha_suscripcion >= CURRENT_DATE - INTERVAL '12 months'
-            AND estado = 'activo'
-            GROUP BY DATE_TRUNC('month', fecha_suscripcion), TO_CHAR(fecha_suscripcion, 'Mon YYYY')
-            ORDER BY fecha_mes ASC
-        `;
-
-        const result = await pool.query(query);
+        // ✅ FASE 3: Using ChartsDataDAO
+        const rows = await ChartsDataDAO.getSuscriptoresCrecimiento();
 
         // Formatear datos para Chart.js
-        const labels = result.rows.map(row => row.mes);
-        const dataNuevos = result.rows.map(row => parseInt(row.nuevos));
-        const dataAcumulado = result.rows.map(row => parseInt(row.acumulado));
+        const labels = rows.map(row => row.mes);
+        const dataNuevos = rows.map(row => parseInt(row.nuevos));
+        const dataAcumulado = rows.map(row => parseInt(row.acumulado));
 
         res.json({
             success: true,
@@ -252,71 +214,26 @@ router.get('/suscriptores-crecimiento', async (req, res) => {
  */
 router.get('/resumen-general', async (req, res) => {
     try {
-        const [
-            noticiasResult,
-            eventosResult,
-            quejasResult,
-            suscriptoresResult
-        ] = await Promise.all([
-            // Total de noticias por estado
-            pool.query(`
-                SELECT
-                    estado,
-                    COUNT(*) as total
-                FROM noticias
-                GROUP BY estado
-            `),
-            // Eventos próximos vs pasados
-            pool.query(`
-                SELECT
-                    CASE
-                        WHEN fecha_inicio > CURRENT_DATE THEN 'Próximos'
-                        WHEN fecha_inicio <= CURRENT_DATE AND fecha_fin >= CURRENT_DATE THEN 'En curso'
-                        ELSE 'Pasados'
-                    END as tipo,
-                    COUNT(*) as total
-                FROM eventos
-                WHERE estado = 'publicado'
-                GROUP BY tipo
-            `),
-            // Quejas por estado
-            pool.query(`
-                SELECT
-                    status,
-                    COUNT(*) as total
-                FROM quejas
-                GROUP BY status
-            `),
-            // Suscriptores activos vs inactivos
-            pool.query(`
-                SELECT
-                    CASE
-                        WHEN estado = 'activo' THEN 'Activos'
-                        ELSE 'Inactivos'
-                    END as estado_sub,
-                    COUNT(*) as total
-                FROM suscriptores_notificaciones
-                GROUP BY estado
-            `)
-        ]);
+        // ✅ FASE 3: Using ChartsDataDAO
+        const { noticias, eventos, quejas, suscriptores } = await ChartsDataDAO.getResumenGeneral();
 
         res.json({
             success: true,
             noticias: {
-                labels: noticiasResult.rows.map(r => r.estado),
-                data: noticiasResult.rows.map(r => parseInt(r.total))
+                labels: noticias.map(r => r.estado),
+                data: noticias.map(r => parseInt(r.total))
             },
             eventos: {
-                labels: eventosResult.rows.map(r => r.tipo),
-                data: eventosResult.rows.map(r => parseInt(r.total))
+                labels: eventos.map(r => r.tipo),
+                data: eventos.map(r => parseInt(r.total))
             },
             quejas: {
-                labels: quejasResult.rows.map(r => r.status),
-                data: quejasResult.rows.map(r => parseInt(r.total))
+                labels: quejas.map(r => r.status),
+                data: quejas.map(r => parseInt(r.total))
             },
             suscriptores: {
-                labels: suscriptoresResult.rows.map(r => r.estado),
-                data: suscriptoresResult.rows.map(r => parseInt(r.total))
+                labels: suscriptores.map(r => r.estado_sub),
+                data: suscriptores.map(r => parseInt(r.total))
             }
         });
     } catch (error) {

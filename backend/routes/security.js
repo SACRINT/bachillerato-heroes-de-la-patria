@@ -12,7 +12,9 @@ const { authenticateToken } = require('../middleware/auth');
 const securityService = require('../services/SecurityService');
 const rateLimiter = require('../services/RateLimiterService');
 const auditService = require('../services/SecurityAuditService');
-const pool = require('../data/database-access').pool;
+
+// ✅ FASE 3: Using DAO layer instead of direct pool access
+const SecurityDAO = require('../data/security.dao');
 
 // Middleware para verificar rol admin
 const requireAdmin = (req, res, next) => {
@@ -575,29 +577,12 @@ router.get('/alerts', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { status, severity, page = 1, limit = 20 } = req.query;
 
-        let query = 'SELECT * FROM security_alerts WHERE 1=1';
-        const params = [];
-        let paramIndex = 1;
-
-        if (status) {
-            query += ` AND status = $${paramIndex++}`;
-            params.push(status);
-        }
-
-        if (severity) {
-            query += ` AND severity >= $${paramIndex++}`;
-            params.push(parseInt(severity));
-        }
-
-        query += ' ORDER BY created_at DESC';
-        query += ` LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
-        params.push(parseInt(limit), (parseInt(page) - 1) * parseInt(limit));
-
-        const result = await pool.query(query, params);
+        // ✅ FASE 3: Using SecurityDAO
+        const alerts = await SecurityDAO.getAlerts({ status, severity, limit: parseInt(limit), page: parseInt(page) });
 
         res.json({
             success: true,
-            data: result.rows
+            data: alerts
         });
     } catch (error) {
         console.error('[SECURITY] Error obteniendo alertas:', error);
@@ -617,16 +602,10 @@ router.put('/alerts/:id/acknowledge', authenticateToken, requireAdmin, async (re
     try {
         const { id } = req.params;
 
-        const result = await pool.query(`
-            UPDATE security_alerts
-            SET status = 'acknowledged',
-                acknowledged_by = $1,
-                acknowledged_at = NOW()
-            WHERE id = $2
-            RETURNING *
-        `, [req.user.id, id]);
+        // ✅ FASE 3: Using SecurityDAO
+        const alert = await SecurityDAO.acknowledgeAlert(id, req.user.id);
 
-        if (result.rowCount === 0) {
+        if (!alert) {
             return res.status(404).json({
                 success: false,
                 message: 'Alerta no encontrada'
@@ -635,7 +614,7 @@ router.put('/alerts/:id/acknowledge', authenticateToken, requireAdmin, async (re
 
         res.json({
             success: true,
-            data: result.rows[0]
+            data: alert
         });
     } catch (error) {
         console.error('[SECURITY] Error reconociendo alerta:', error);
@@ -656,17 +635,10 @@ router.put('/alerts/:id/resolve', authenticateToken, requireAdmin, async (req, r
         const { id } = req.params;
         const { notes } = req.body;
 
-        const result = await pool.query(`
-            UPDATE security_alerts
-            SET status = 'resolved',
-                resolved_by = $1,
-                resolved_at = NOW(),
-                resolution_notes = $2
-            WHERE id = $3
-            RETURNING *
-        `, [req.user.id, notes || null, id]);
+        // ✅ FASE 3: Using SecurityDAO
+        const alert = await SecurityDAO.resolveAlert(id, req.user.id, notes);
 
-        if (result.rowCount === 0) {
+        if (!alert) {
             return res.status(404).json({
                 success: false,
                 message: 'Alerta no encontrada'
@@ -675,7 +647,7 @@ router.put('/alerts/:id/resolve', authenticateToken, requireAdmin, async (req, r
 
         res.json({
             success: true,
-            data: result.rows[0]
+            data: alert
         });
     } catch (error) {
         console.error('[SECURITY] Error resolviendo alerta:', error);
@@ -697,16 +669,12 @@ router.put('/alerts/:id/resolve', authenticateToken, requireAdmin, async (req, r
  */
 router.get('/blocked-ips', authenticateToken, requireAdmin, async (req, res) => {
     try {
-        const result = await pool.query(`
-            SELECT bi.*, u.email as blocked_by_email
-            FROM blocked_ips bi
-            LEFT JOIN usuarios u ON bi.blocked_by = u.id
-            ORDER BY bi.created_at DESC
-        `);
+        // ✅ FASE 3: Using SecurityDAO
+        const blockedIPs = await SecurityDAO.getBlockedIPs();
 
         res.json({
             success: true,
-            data: result.rows
+            data: blockedIPs
         });
     } catch (error) {
         console.error('[SECURITY] Error obteniendo IPs bloqueadas:', error);
@@ -737,13 +705,8 @@ router.post('/blocked-ips', authenticateToken, requireAdmin, async (req, res) =>
             ? null
             : new Date(Date.now() + (durationMinutes || 60) * 60 * 1000).toISOString();
 
-        const result = await pool.query(`
-            INSERT INTO blocked_ips (ip_address, reason, blocked_by, is_permanent, blocked_until)
-            VALUES ($1, $2, $3, $4, $5)
-            ON CONFLICT (ip_address)
-            DO UPDATE SET reason = $2, blocked_by = $3, is_permanent = $4, blocked_until = $5
-            RETURNING *
-        `, [ip, reason || 'Manual block', req.user.id, isPermanent, blockedUntil]);
+        // ✅ FASE 3: Using SecurityDAO
+        const blockedIP = await SecurityDAO.blockIP(ip, reason, req.user.id, isPermanent, blockedUntil);
 
         await auditService.logAdminAction(
             req.user.id,
@@ -754,7 +717,7 @@ router.post('/blocked-ips', authenticateToken, requireAdmin, async (req, res) =>
 
         res.json({
             success: true,
-            data: result.rows[0]
+            data: blockedIP
         });
     } catch (error) {
         console.error('[SECURITY] Error bloqueando IP:', error);
@@ -774,13 +737,10 @@ router.delete('/blocked-ips/:ip', authenticateToken, requireAdmin, async (req, r
     try {
         const { ip } = req.params;
 
-        const result = await pool.query(`
-            DELETE FROM blocked_ips
-            WHERE ip_address = $1
-            RETURNING *
-        `, [ip]);
+        // ✅ FASE 3: Using SecurityDAO
+        const unblocked = await SecurityDAO.unblockIP(ip);
 
-        if (result.rowCount === 0) {
+        if (!unblocked) {
             return res.status(404).json({
                 success: false,
                 message: 'IP no encontrada en lista de bloqueados'
@@ -820,32 +780,12 @@ router.get('/sessions', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { userId, active } = req.query;
 
-        let query = `
-            SELECT s.*, u.email, u.nombre
-            FROM active_sessions s
-            JOIN usuarios u ON s.user_id = u.id
-            WHERE 1=1
-        `;
-        const params = [];
-        let paramIndex = 1;
-
-        if (userId) {
-            query += ` AND s.user_id = $${paramIndex++}`;
-            params.push(parseInt(userId));
-        }
-
-        if (active !== undefined) {
-            query += ` AND s.is_active = $${paramIndex++}`;
-            params.push(active === 'true');
-        }
-
-        query += ' ORDER BY s.last_activity DESC';
-
-        const result = await pool.query(query, params);
+        // ✅ FASE 3: Using SecurityDAO
+        const sessions = await SecurityDAO.getSessions({ userId, active });
 
         res.json({
             success: true,
-            data: result.rows
+            data: sessions
         });
     } catch (error) {
         console.error('[SECURITY] Error obteniendo sesiones:', error);
@@ -865,14 +805,10 @@ router.delete('/sessions/:sessionId', authenticateToken, requireAdmin, async (re
     try {
         const { sessionId } = req.params;
 
-        const result = await pool.query(`
-            UPDATE active_sessions
-            SET is_active = false
-            WHERE session_id = $1
-            RETURNING *
-        `, [sessionId]);
+        // ✅ FASE 3: Using SecurityDAO
+        const session = await SecurityDAO.terminateSession(sessionId);
 
-        if (result.rowCount === 0) {
+        if (!session) {
             return res.status(404).json({
                 success: false,
                 message: 'Sesión no encontrada'
@@ -906,11 +842,12 @@ router.delete('/sessions/:sessionId', authenticateToken, requireAdmin, async (re
  */
 router.post('/sessions/cleanup', authenticateToken, requireAdmin, async (req, res) => {
     try {
-        const result = await pool.query('SELECT cleanup_expired_sessions() as deleted');
+        // ✅ FASE 3: Using SecurityDAO
+        const deleted = await SecurityDAO.cleanupExpiredSessions();
 
         res.json({
             success: true,
-            message: `Eliminadas ${result.rows[0].deleted} sesiones expiradas`
+            message: `Eliminadas ${deleted} sesiones expiradas`
         });
     } catch (error) {
         console.error('[SECURITY] Error limpiando sesiones:', error);

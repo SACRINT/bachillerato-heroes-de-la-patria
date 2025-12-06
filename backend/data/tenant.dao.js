@@ -5,7 +5,7 @@
  * Refactorizado: 04 Diciembre 2025
  */
 
-const pool = require('../config/database');
+const { pool } = require('../config/database');
 
 class TenantDAO {
 

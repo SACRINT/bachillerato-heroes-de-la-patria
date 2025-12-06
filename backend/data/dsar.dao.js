@@ -71,6 +71,75 @@ class DsarDAO {
     static async getUserFiles(userId) {
         try { const result = await pool.query('SELECT id, filename, file_path, file_size, mime_type, uploaded_at, category FROM user_files WHERE user_id = $1 ORDER BY uploaded_at DESC', [userId]); return result.rows; } catch { return []; }
     }
+
+    /**
+     * Obtener solicitud por ID (campos públicos para status)
+     * @param {string} requestId
+     * @returns {Promise<Object|null>}
+     */
+    static async getByIdPublic(requestId) {
+        const result = await pool.query(
+            'SELECT id, request_type, status, created_at, due_date, completed_at FROM dsar_requests WHERE id = $1',
+            [requestId]
+        );
+        return result.rows[0] || null;
+    }
+
+    /**
+     * Obtener todas las solicitudes de un usuario
+     * @param {string} userId
+     * @returns {Promise<Array>}
+     */
+    static async getUserRequests(userId) {
+        const result = await pool.query(
+            `SELECT id, request_type, status, created_at, due_date, completed_at, verified_at
+             FROM dsar_requests WHERE user_id = $1 ORDER BY created_at DESC`,
+            [userId]
+        );
+        return result.rows;
+    }
+
+    /**
+     * Obtener solicitud verificando ownership
+     * @param {string} requestId
+     * @param {string} userId
+     * @returns {Promise<Object|null>}
+     */
+    static async getByIdAndUser(requestId, userId) {
+        const result = await pool.query(
+            'SELECT * FROM dsar_requests WHERE id = $1 AND user_id = $2',
+            [requestId, userId]
+        );
+        return result.rows[0] || null;
+    }
+
+    /**
+     * Cancelar solicitud (soft delete)
+     * @param {string} requestId
+     */
+    static async cancelRequest(requestId) {
+        await pool.query(
+            `UPDATE dsar_requests SET status = 'cancelled', updated_at = CURRENT_TIMESTAMP WHERE id = $1`,
+            [requestId]
+        );
+    }
+
+    /**
+     * Obtener solicitudes pendientes para admin
+     * @returns {Promise<Array>}
+     */
+    static async getPendingAdmin() {
+        const result = await pool.query(
+            `SELECT dr.id, dr.user_id, dr.request_type, dr.status, dr.created_at, dr.due_date, dr.email,
+                    u.nombre, u.apellido_paterno, u.email AS user_email
+             FROM dsar_requests dr
+             LEFT JOIN usuarios u ON dr.user_id = u.uuid
+             WHERE dr.status IN ('verified', 'processing')
+             ORDER BY dr.created_at ASC`
+        );
+        return result.rows;
+    }
 }
 
 module.exports = DsarDAO;
+

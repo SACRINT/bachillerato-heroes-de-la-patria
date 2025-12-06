@@ -44,7 +44,7 @@ const redis = {
     ping: async () => 'PONG',
     flushdb: async () => true,
     info: async (section) => '',
-    on: (event, handler) => {} // Stub para event listeners
+    on: (event, handler) => { } // Stub para event listeners
 };
 
 // Mock event handlers (no-op cuando Redis está disabled)
@@ -99,7 +99,7 @@ const TTL = {
  * @param {Function} queryFn - Función async que ejecuta el query
  * @returns {Promise<any>} Resultado del query (desde caché o DB)
  */
-export async function cacheQuery(key, ttl, queryFn) {
+async function cacheQuery(key, ttl, queryFn) {
     try {
         // 1. Buscar en caché primero
         const cached = await redis.get(key);
@@ -135,7 +135,7 @@ export async function cacheQuery(key, ttl, queryFn) {
  * @param {any} value - Valor a cachear
  * @param {number} ttl - Time to live (0 = sin expiración)
  */
-export async function setCache(key, value, ttl = TTL.MEDIUM) {
+async function setCache(key, value, ttl = TTL.MEDIUM) {
     try {
         if (ttl > 0) {
             await redis.setex(key, ttl, JSON.stringify(value));
@@ -153,7 +153,7 @@ export async function setCache(key, value, ttl = TTL.MEDIUM) {
  * @param {string} key - Cache key
  * @returns {Promise<any|null>} Valor cacheado o null
  */
-export async function getCache(key) {
+async function getCache(key) {
     try {
         const value = await redis.get(key);
         if (value) {
@@ -171,7 +171,7 @@ export async function getCache(key) {
  * Eliminar de caché
  * @param {string} key - Cache key
  */
-export async function deleteCache(key) {
+async function deleteCache(key) {
     try {
         await redis.del(key);
         console.log(`[Cache] DELETE: ${key}`);
@@ -184,7 +184,7 @@ export async function deleteCache(key) {
  * Invalidar caché por patrón
  * @param {string} pattern - Patrón de keys (ej: "estudiantes:*")
  */
-export async function invalidateCache(pattern) {
+async function invalidateCache(pattern) {
     try {
         const keys = await redis.keys(pattern);
 
@@ -200,7 +200,7 @@ export async function invalidateCache(pattern) {
 /**
  * Limpiar TODA la caché (usar con cuidado)
  */
-export async function clearAllCache() {
+async function clearAllCache() {
     try {
         await redis.flushdb();
         console.log('[Cache] ✓ All cache cleared');
@@ -217,7 +217,7 @@ export async function clearAllCache() {
  * Cache-Aside Pattern (Lazy Loading)
  * La aplicación verifica caché primero, si no existe, carga de DB y cachea
  */
-export async function cacheAside(key, ttl, loader) {
+async function cacheAside(key, ttl, loader) {
     return await cacheQuery(key, ttl, loader);
 }
 
@@ -225,7 +225,7 @@ export async function cacheAside(key, ttl, loader) {
  * Write-Through Pattern
  * Escritura en caché y DB simultáneamente
  */
-export async function writeThrough(key, value, ttl, dbWriter) {
+async function writeThrough(key, value, ttl, dbWriter) {
     try {
         // Escribir en DB primero
         await dbWriter(value);
@@ -244,7 +244,7 @@ export async function writeThrough(key, value, ttl, dbWriter) {
  * Write-Behind Pattern (Write-Back)
  * Escribir en caché primero, DB después (async)
  */
-export async function writeBehind(key, value, ttl, dbWriter) {
+async function writeBehind(key, value, ttl, dbWriter) {
     try {
         // Escribir en caché primero (sync)
         await setCache(key, value, ttl);
@@ -272,7 +272,7 @@ export async function writeBehind(key, value, ttl, dbWriter) {
 /**
  * Obtener estadísticas de caché
  */
-export async function getCacheStats() {
+async function getCacheStats() {
     try {
         const info = await redis.info('stats');
         const keyspace = await redis.info('keyspace');
@@ -291,7 +291,7 @@ export async function getCacheStats() {
 /**
  * Verificar si Redis está disponible
  */
-export async function isRedisAvailable() {
+async function isRedisAvailable() {
     try {
         await redis.ping();
         return true;
@@ -304,7 +304,7 @@ export async function isRedisAvailable() {
 // EXPORTS
 // ============================================
 
-export default {
+module.exports = {
     redis,
     TTL,
     cacheQuery,

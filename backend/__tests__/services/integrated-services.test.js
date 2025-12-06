@@ -14,7 +14,11 @@ const nodemailer = require('nodemailer');
 const handlebars = require('handlebars');
 
 // Mock dependencies BEFORE imports
-jest.mock('../../config/database');
+jest.mock('../../config/database', () => ({
+  executeQuery: jest.fn(),
+  query: jest.fn(),
+  getPool: jest.fn()
+}));
 jest.mock('../../utils/devLogger');
 jest.mock('nodemailer');
 jest.mock('fs', () => ({

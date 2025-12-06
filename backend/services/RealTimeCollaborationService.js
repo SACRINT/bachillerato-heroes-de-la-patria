@@ -9,6 +9,9 @@
 const { Pool } = require('pg');
 const crypto = require('crypto');
 
+// DAO Import - Capa de Acceso a Datos
+const collaborationDAO = require('../data/collaboration.dao');
+
 // ============================================
 // CONFIGURATION
 // ============================================
@@ -96,8 +99,10 @@ class RoomManager {
         ];
 
         try {
-            const result = await this.pool.query(query, values);
-            const room = result.rows[0];
+            const room = await collaborationDAO.createRoom({
+                roomId, type, name, hostId, accessCode,
+                scheduledStart, duration, maxParticipants, settings
+            });
 
             // Initialize in memory
             this.activeRooms.set(roomId, {
@@ -260,8 +265,7 @@ class RoomManager {
         `;
 
         try {
-            const result = await this.pool.query(query, [userId]);
-            return result.rows;
+            return await collaborationDAO.getUserRooms(userId);
         } catch (error) {
             console.error('[COLLAB] Error obteniendo salas:', error);
             return [];
@@ -279,13 +283,10 @@ class RoomManager {
     }
 
     async _loadRoom(roomId) {
-        const query = 'SELECT * FROM collaboration_rooms WHERE room_id = $1';
-
         try {
-            const result = await this.pool.query(query, [roomId]);
-            if (result.rows.length === 0) return null;
+            const room = await collaborationDAO.getRoomById(roomId);
+            if (!room) return null;
 
-            const room = result.rows[0];
             room.settings = typeof room.settings === 'string' ? JSON.parse(room.settings) : room.settings;
 
             this.activeRooms.set(roomId, {
@@ -303,10 +304,8 @@ class RoomManager {
     }
 
     async _updateRoomStatus(roomId, status) {
-        const query = 'UPDATE collaboration_rooms SET status = $1, updated_at = NOW() WHERE room_id = $2';
-
         try {
-            await this.pool.query(query, [status, roomId]);
+            await collaborationDAO.updateRoomStatus(roomId, status);
         } catch (error) {
             console.error('[COLLAB] Error actualizando status:', error);
         }
@@ -314,18 +313,9 @@ class RoomManager {
 
     async _logParticipant(roomId, odafiUserId, action) {
         if (action === 'join') {
-            const query = `
-                INSERT INTO room_participants (room_id, user_id, joined_at)
-                VALUES ($1, $2, NOW())
-            `;
-            await this.pool.query(query, [roomId, odafiUserId]).catch(() => {});
+            await collaborationDAO.logParticipantJoin(roomId, odafiUserId);
         } else {
-            const query = `
-                UPDATE room_participants
-                SET left_at = NOW()
-                WHERE room_id = $1 AND user_id = $2 AND left_at IS NULL
-            `;
-            await this.pool.query(query, [roomId, odafiUserId]).catch(() => {});
+            await collaborationDAO.logParticipantLeave(roomId, odafiUserId);
         }
     }
 }
@@ -497,24 +487,9 @@ class ChatManager {
             return messages;
         }
 
-        // Cargar de BD
-        let query = `
-            SELECT * FROM chat_messages
-            WHERE room_id = $1
-        `;
-        const values = [roomId];
-
-        if (before) {
-            query += ` AND timestamp < (SELECT timestamp FROM chat_messages WHERE id = $2)`;
-            values.push(before);
-        }
-
-        query += ` ORDER BY timestamp DESC LIMIT $${values.length + 1}`;
-        values.push(limit);
-
+        // Cargar de BD usando DAO
         try {
-            const result = await this.pool.query(query, values);
-            return result.rows.reverse();
+            return await collaborationDAO.getChatHistory(roomId, { limit, before });
         } catch (error) {
             console.error('[COLLAB] Error obteniendo chat:', error);
             return [];
@@ -535,13 +510,7 @@ class ChatManager {
             }
         }
 
-        const query = `
-            UPDATE chat_messages
-            SET content = $1, edited = true, edited_at = NOW()
-            WHERE id = $2 AND room_id = $3
-        `;
-
-        await this.pool.query(query, [newContent, messageId, roomId]).catch(() => {});
+        await collaborationDAO.editChatMessage(roomId, messageId, newContent);
 
         return { messageId, edited: true };
     }
@@ -555,24 +524,13 @@ class ChatManager {
             room.messages = room.messages.filter(m => m.id !== messageId);
         }
 
-        const query = 'DELETE FROM chat_messages WHERE id = $1 AND room_id = $2';
-        await this.pool.query(query, [messageId, roomId]).catch(() => {});
+        await collaborationDAO.deleteChatMessage(roomId, messageId);
 
         return { messageId, deleted: true };
     }
 
     async _persistMessage(message) {
-        const query = `
-            INSERT INTO chat_messages (
-                id, room_id, participant_id, user_id, content, type, reply_to, timestamp
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        `;
-
-        await this.pool.query(query, [
-            message.id, message.roomId, message.participantId,
-            message.userId, message.content, message.type,
-            message.replyTo, message.timestamp
-        ]).catch(err => console.error('[COLLAB] Error persistiendo mensaje:', err));
+        await collaborationDAO.persistChatMessage(message);
     }
 }
 
@@ -685,35 +643,16 @@ class DocumentCollaborationManager {
     }
 
     async _loadDocument(documentId) {
-        const query = 'SELECT content, version FROM collaborative_documents WHERE id = $1';
-
         try {
-            const result = await this.pool.query(query, [documentId]);
-            if (result.rows.length > 0) {
-                return {
-                    content: result.rows[0].content || '',
-                    version: result.rows[0].version || 0
-                };
-            }
+            return await collaborationDAO.loadDocument(documentId);
         } catch (error) {
             console.error('[COLLAB] Error cargando documento:', error);
+            return { content: '', version: 0 };
         }
-
-        return { content: '', version: 0 };
     }
 
     async _persistDocument(documentId, state) {
-        const query = `
-            INSERT INTO collaborative_documents (id, content, version, updated_at)
-            VALUES ($1, $2, $3, NOW())
-            ON CONFLICT (id) DO UPDATE SET
-                content = EXCLUDED.content,
-                version = EXCLUDED.version,
-                updated_at = NOW()
-        `;
-
-        await this.pool.query(query, [documentId, state.content, state.version])
-            .catch(err => console.error('[COLLAB] Error guardando documento:', err));
+        await collaborationDAO.persistDocument(documentId, state);
     }
 
     _startAutoSave(roomId) {

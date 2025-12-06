@@ -4,7 +4,8 @@ const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
-const { pool } = require('../config/database');
+// ✅ FASE 3: Using DAO layer
+const QuejasDAO = require('../data/quejas.dao');
 const emailService = require('../services/emailService');
 
 // =====================================================
@@ -30,52 +31,15 @@ router.post('/', [
     const user_agent = req.get('User-Agent');
 
     try {
-        const query = `
-            INSERT INTO quejas (nombre, email, subject, message, form_type, ip_address, user_agent)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING *;
-        `;
+        // ✅ FASE 3: Using QuejasDAO
+        const queja = await QuejasDAO.create({ nombre, email, subject, message, form_type, ip_address, user_agent });
+        debugLog.log('QUEJAS', '✅ Queja/sugerencia guardada:', queja.id);
 
-        const result = await pool.query(query, [
-            nombre,
-            email,
-            subject,
-            message,
-            form_type || 'quejas',
-            ip_address,
-            user_agent
-        ]);
-
-        debugLog.log('QUEJAS', '✅ Queja/sugerencia guardada:', result.rows[0].id);
-
-        // Enviar correo de confirmación
         try {
-            if (email) {
-                await emailService.sendEmail({
-                    to: email,
-                    subject: 'Hemos recibido tu mensaje - Bachillerato Héroes de la Patria',
-                    template: 'contact-confirmation',
-                    data: {
-                        nombre: nombre || 'Usuario',
-                        subject: subject,
-                        fecha: new Date()
-                    }
-                });
-                console.log(`[Quejas] Correo de confirmación enviado a ${email}`);
-            }
-        } catch (emailError) {
-            console.error('[Quejas] Error al enviar correo de confirmación:', emailError);
-            // No fallamos la request si falla el correo, solo logueamos
-        }
+            if (email) await emailService.sendEmail({ to: email, subject: 'Hemos recibido tu mensaje - Bachillerato Héroes de la Patria', template: 'contact-confirmation', data: { nombre: nombre || 'Usuario', subject, fecha: new Date() } });
+        } catch (emailError) { console.error('[Quejas] Error al enviar correo:', emailError); }
 
-        res.status(201).json({
-            success: true,
-            message: 'Tu mensaje ha sido recibido. Te responderemos pronto.',
-            data: {
-                id: result.rows[0].id,
-                fecha: result.rows[0].fecha_creacion
-            }
-        });
+        res.status(201).json({ success: true, message: 'Tu mensaje ha sido recibido.', data: { id: queja.id, fecha: queja.fecha_creacion } });
 
     } catch (error) {
         debugLog.error('QUEJAS', '❌ Error al guardar queja:', sanitizeError(error, 'quejas'));
@@ -93,24 +57,9 @@ router.get('/', async (req, res) => {
     const { status, limit = 50, offset = 0 } = req.query;
 
     try {
-        let query = 'SELECT * FROM quejas';
-        const params = [];
-
-        if (status) {
-            query += ' WHERE status = $1';
-            params.push(status);
-        }
-
-        query += ' ORDER BY fecha_creacion DESC LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2);
-        params.push(parseInt(limit), parseInt(offset));
-
-        const result = await pool.query(query, params);
-
-        res.json({
-            success: true,
-            data: result.rows,
-            total: result.rowCount
-        });
+        // ✅ FASE 3: Using QuejasDAO
+        const data = await QuejasDAO.getAll({ status, limit, offset });
+        res.json({ success: true, data, total: data.length });
 
     } catch (error) {
         debugLog.error('QUEJAS', '❌ Error al obtener quejas:', sanitizeError(error, 'quejas'));
@@ -126,26 +75,9 @@ router.get('/', async (req, res) => {
 // =====================================================
 router.get('/stats', async (req, res) => {
     try {
-        const query = `
-            SELECT
-                COUNT(*) as total,
-                COUNT(*) FILTER (WHERE status = 'pendiente') as pendientes,
-                COUNT(*) FILTER (WHERE status = 'en_revision') as en_revision,
-                COUNT(*) FILTER (WHERE status = 'respondida') as respondidas,
-                COUNT(*) FILTER (WHERE subject = 'queja') as quejas,
-                COUNT(*) FILTER (WHERE subject = 'sugerencia') as sugerencias,
-                COUNT(*) FILTER (WHERE subject = 'felicitacion') as felicitaciones,
-                COUNT(*) FILTER (WHERE DATE(fecha_creacion) = CURRENT_DATE) as hoy,
-                COUNT(*) FILTER (WHERE DATE(fecha_creacion) >= CURRENT_DATE - INTERVAL '7 days') as esta_semana
-            FROM quejas;
-        `;
-
-        const result = await pool.query(query);
-
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using QuejasDAO
+        const stats = await QuejasDAO.getStats();
+        res.json({ success: true, data: stats });
 
     } catch (error) {
         debugLog.error('QUEJAS', '❌ Error al obtener estadísticas:', sanitizeError(error, 'quejas'));
@@ -163,19 +95,10 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const result = await pool.query('SELECT * FROM quejas WHERE id = $1', [id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Queja no encontrada'
-            });
-        }
-
-        res.json({
-            success: true,
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using QuejasDAO
+        const queja = await QuejasDAO.getById(id);
+        if (!queja) return res.status(404).json({ success: false, error: 'Queja no encontrada' });
+        res.json({ success: true, data: queja });
 
     } catch (error) {
         debugLog.error('QUEJAS', '❌ Error al obtener queja:', sanitizeError(error, 'quejas'));
@@ -198,32 +121,10 @@ router.put('/:id', [
     const { status, respuesta, respondido_por } = req.body;
 
     try {
-        const query = `
-            UPDATE quejas
-            SET
-                status = COALESCE($1, status),
-                respuesta = COALESCE($2, respuesta),
-                respondido_por = COALESCE($3, respondido_por),
-                fecha_respuesta = CASE WHEN $2 IS NOT NULL THEN NOW() ELSE fecha_respuesta END,
-                fecha_actualizacion = NOW()
-            WHERE id = $4
-            RETURNING *;
-        `;
-
-        const result = await pool.query(query, [status, respuesta, respondido_por, id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Queja no encontrada'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: 'Queja actualizada correctamente',
-            data: result.rows[0]
-        });
+        // ✅ FASE 3: Using QuejasDAO
+        const result = await QuejasDAO.update(id, { status, respuesta, respondido_por });
+        if (!result) return res.status(404).json({ success: false, error: 'Queja no encontrada' });
+        res.json({ success: true, message: 'Queja actualizada correctamente', data: result });
 
     } catch (error) {
         debugLog.error('QUEJAS', '❌ Error al actualizar queja:', sanitizeError(error, 'quejas'));
@@ -241,19 +142,10 @@ router.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const result = await pool.query('DELETE FROM quejas WHERE id = $1 RETURNING id', [id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Queja no encontrada'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: 'Queja eliminada correctamente'
-        });
+        // ✅ FASE 3: Using QuejasDAO
+        const result = await QuejasDAO.delete(id);
+        if (!result) return res.status(404).json({ success: false, error: 'Queja no encontrada' });
+        res.json({ success: true, message: 'Queja eliminada correctamente' });
 
     } catch (error) {
         debugLog.error('QUEJAS', '❌ Error al eliminar queja:', sanitizeError(error, 'quejas'));

@@ -34,7 +34,7 @@ const requireTeacher = async (req, res, next) => {
 
         const client = await pool.connect();
         try {
-            console.log(`[TEACHER-AUTH] Verificando permisos para usuario ID: ${req.user.id}`);
+            debugLog.log('teachers-portal', `[TEACHER-AUTH] Verificando permisos para usuario ID: ${req.user.id}`);
 
             const result = await client.query(
                 `SELECT d.id, d.numero_empleado, d.especialidad, u.nombre, u.apellido_paterno, u.apellido_materno, u.status
@@ -44,9 +44,9 @@ const requireTeacher = async (req, res, next) => {
                 [req.user.id]
             );
 
-            console.log(`[TEACHER-AUTH] Resultado query: ${result.rows.length} filas found.`);
+            debugLog.log('teachers-portal', `[TEACHER-AUTH] Resultado query: ${result.rows.length} filas found.`);
             if (result.rows.length > 0) {
-                console.log(`[TEACHER-AUTH] Status usuario: ${result.rows[0].status}`);
+                debugLog.log('teachers-portal', `[TEACHER-AUTH] Status usuario: ${result.rows[0].status}`);
             }
 
             // Filtrar por status activo en código para ver si es el problema
@@ -54,9 +54,9 @@ const requireTeacher = async (req, res, next) => {
             const teacher = result.rows.find(row => row.status === 'activo' || row.status === 'active');
 
             if (!teacher) {
-                console.log('[TEACHER-AUTH] ❌ Usuario no encontrado o no activo en tabla docentes/usuarios');
+                debugLog.warn('teachers-portal', '[TEACHER-AUTH] ❌ Usuario no encontrado o no activo en tabla docentes/usuarios');
                 if (result.rows.length > 0) {
-                    console.log(`[TEACHER-AUTH] Status actual: ${result.rows[0].status}`);
+                    debugLog.warn('teachers-portal', `[TEACHER-AUTH] Status actual: ${result.rows[0].status}`);
                 }
                 return res.status(403).json({
                     success: false,

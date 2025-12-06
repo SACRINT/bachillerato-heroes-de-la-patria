@@ -487,7 +487,7 @@ describe('DAL - Data Access Layer Tests', () => {
             const callArg = pool.query.mock.calls[0][0];
             expect(callArg.text).toContain('FROM tenants');
             expect(callArg.text).toContain('WHERE domain = $1');
-            expect(callArg.values).toEqual(['bge-heroes.edu.mx', 'active']);
+            expect(callArg.values).toEqual(['bge-heroes.edu.mx', 'active', 'activo']);
         });
 
         test('debe retornar null cuando dominio no existe', async () => {

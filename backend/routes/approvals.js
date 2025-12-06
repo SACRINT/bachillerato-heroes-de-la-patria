@@ -11,7 +11,8 @@ const { debugLog } = require('../utils/debug-logger');
 const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
 
 const router = express.Router();
-const { pool } = require('../config/database');
+// ✅ FASE 3: Using DAO layer
+const ApprovalsDAO = require('../data/approvals.dao');
 const verificationService = require('../services/verificationService');
 const ApprovalService = require('../services/ApprovalService');
 
@@ -57,39 +58,9 @@ router.get('/pending', async (req, res) => {
 // =====================================================
 router.get('/stats', async (req, res) => {
     try {
-        const query = `
-            SELECT
-                COUNT(*) as total,
-                COUNT(*) FILTER (WHERE status = 'pending') as pendientes,
-                COUNT(*) FILTER (WHERE status = 'approved') as aprobadas,
-                COUNT(*) FILTER (WHERE status = 'rejected') as rechazadas,
-                COUNT(*) FILTER (WHERE email_verified = true) as emails_verificados,
-                COUNT(*) FILTER (WHERE DATE(created_at) = CURRENT_DATE) as hoy,
-                COUNT(*) FILTER (WHERE DATE(created_at) >= CURRENT_DATE - INTERVAL '7 days') as esta_semana
-            FROM pending_approvals;
-        `;
-
-        const result = await pool.query(query);
-
-        // Estadísticas por tipo de formulario
-        const typeQuery = `
-            SELECT form_type, status, COUNT(*) as cantidad
-            FROM pending_approvals
-            GROUP BY form_type, status
-            ORDER BY cantidad DESC;
-        `;
-
-        const typeResult = await pool.query(typeQuery);
-
-        const stats = {
-            ...result.rows[0],
-            byFormType: typeResult.rows
-        };
-
-        res.json({
-            success: true,
-            data: stats
-        });
+        // ✅ FASE 3: Using ApprovalsDAO
+        const stats = await ApprovalsDAO.getStats();
+        res.json({ success: true, data: stats });
 
     } catch (error) {
         debugLog.error('APPROVALS', '❌ Error al obtener estadísticas', sanitizeError(error, 'approvals'));
@@ -108,114 +79,39 @@ router.post('/approve/:id', async (req, res) => {
     const { reviewed_by, review_notes } = req.body;
 
     try {
-        // Obtener la solicitud pendiente
-        const getQuery = 'SELECT * FROM pending_approvals WHERE id = $1 AND status = \'pending\'';
-        const submission = await pool.query(getQuery, [id]);
-
-        if (submission.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Solicitud no encontrada o ya fue procesada'
-            });
+        // ✅ FASE 3: Using ApprovalsDAO
+        const record = await ApprovalsDAO.getById(id);
+        if (!record) {
+            return res.status(404).json({ success: false, error: 'Solicitud no encontrada o ya fue procesada' });
         }
 
-        const record = submission.rows[0];
         const formType = record.form_type;
         const data = record.submission_data;
-
         debugLog.log('APPROVALS', `📋 Aprobando solicitud ${id} de tipo: ${formType}`);
 
-        // Según el tipo de formulario, guardar en la tabla correspondiente
         let savedToFinalTable = false;
         let finalTableId = null;
 
         if (formType === 'bolsa_trabajo') {
-            // Guardar en la tabla bolsa_trabajo_cv
             try {
-                const insertQuery = `
-                    INSERT INTO bolsa_trabajo_cv (
-                        nombre, email, telefono, puesto_deseado, cv_path,
-                        nivel_experiencia, disponibilidad, comentarios_adicionales,
-                        ip_address, user_agent
-                    )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-                    RETURNING id
-                `;
-
-                const result = await pool.query(insertQuery, [
-                    data.name || data.nombre,
-                    data.email,
-                    data.phone || data.telefono || '',
-                    data.position || data.puesto_deseado || 'No especificado',
-                    data.cv || data.cv_path || '',
-                    data.experience || data.nivel_experiencia || 'Sin experiencia',
-                    data.availability || data.disponibilidad || 'Inmediata',
-                    data.comments || data.comentarios_adicionales || '',
-                    record.ip_address,
-                    record.user_agent
-                ]);
-
-                finalTableId = result.rows[0].id;
-                savedToFinalTable = true;
+                finalTableId = await ApprovalsDAO.saveToBolsaTrabajo(data, record.ip_address, record.user_agent);
+                savedToFinalTable = !!finalTableId;
                 debugLog.log('APPROVALS', `✅ Guardado en bolsa_trabajo_cv con ID: ${finalTableId}`);
-
             } catch (error) {
                 debugLog.error('APPROVALS', '❌ Error al guardar en bolsa_trabajo_cv', sanitizeError(error, 'approvals'));
             }
-
         } else if (formType === 'egresados') {
-            // Guardar en la tabla egresados
             try {
-                const insertQuery = `
-                    INSERT INTO egresados (
-                        nombre_completo, email, telefono, generacion,
-                        ocupacion_actual, empresa, ciudad, estado,
-                        comentarios, ip_address, user_agent
-                    )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-                    RETURNING id
-                `;
-
-                const result = await pool.query(insertQuery, [
-                    data.name || data.nombre_completo,
-                    data.email,
-                    data.phone || data.telefono || '',
-                    data.graduationYear || data.generacion || new Date().getFullYear(),
-                    data.currentJob || data.ocupacion_actual || 'No especificado',
-                    data.company || data.empresa || '',
-                    data.city || data.ciudad || '',
-                    data.state || data.estado || '',
-                    data.message || data.comentarios || '',
-                    record.ip_address,
-                    record.user_agent
-                ]);
-
-                finalTableId = result.rows[0].id;
-                savedToFinalTable = true;
+                finalTableId = await ApprovalsDAO.saveToEgresados(data, record.ip_address, record.user_agent);
+                savedToFinalTable = !!finalTableId;
                 debugLog.log('APPROVALS', `✅ Guardado en egresados con ID: ${finalTableId}`);
-
             } catch (error) {
                 debugLog.error('APPROVALS', '❌ Error al guardar en egresados', sanitizeError(error, 'approvals'));
             }
         }
 
-        // Actualizar estado en pending_approvals
-        const updateQuery = `
-            UPDATE pending_approvals
-            SET
-                status = 'approved',
-                reviewed_by = $1,
-                review_notes = $2,
-                reviewed_at = NOW()
-            WHERE id = $3
-            RETURNING *
-        `;
+        const updateResult = await ApprovalsDAO.approve(id, reviewed_by, review_notes || `Aprobado y guardado en tabla ${formType}`);
 
-        const updateResult = await pool.query(updateQuery, [
-            reviewed_by || 'Administrador',
-            review_notes || `Aprobado y guardado en tabla ${formType}`,
-            id
-        ]);
 
         // Enviar email de notificación al usuario
         try {
@@ -267,12 +163,7 @@ router.post('/approve/:id', async (req, res) => {
         res.json({
             success: true,
             message: 'Solicitud aprobada exitosamente',
-            data: {
-                id: updateResult.rows[0].id,
-                form_type: formType,
-                saved_to_final_table: savedToFinalTable,
-                final_table_id: finalTableId
-            }
+            data: { id: updateResult.id, form_type: formType, saved_to_final_table: savedToFinalTable, final_table_id: finalTableId }
         });
 
     } catch (error) {
@@ -292,39 +183,13 @@ router.post('/reject/:id', async (req, res) => {
     const { reviewed_by, review_notes, rejection_reason } = req.body;
 
     try {
-        // Obtener la solicitud pendiente
-        const getQuery = 'SELECT * FROM pending_approvals WHERE id = $1 AND status = \'pending\'';
-        const submission = await pool.query(getQuery, [id]);
-
-        if (submission.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Solicitud no encontrada o ya fue procesada'
-            });
+        // ✅ FASE 3: Using ApprovalsDAO
+        const record = await ApprovalsDAO.getById(id);
+        if (!record) {
+            return res.status(404).json({ success: false, error: 'Solicitud no encontrada o ya fue procesada' });
         }
 
-        const record = submission.rows[0];
-
-        // Actualizar estado en pending_approvals
-        const updateQuery = `
-            UPDATE pending_approvals
-            SET
-                status = 'rejected',
-                reviewed_by = $1,
-                review_notes = $2,
-                rejection_reason = $3,
-                reviewed_at = NOW()
-            WHERE id = $4
-            RETURNING *
-        `;
-
-        const result = await pool.query(updateQuery, [
-            reviewed_by || 'Administrador',
-            review_notes || '',
-            rejection_reason || 'Información incompleta o incorrecta',
-            id
-        ]);
-
+        const result = await ApprovalsDAO.reject(id, reviewed_by, review_notes, rejection_reason);
         debugLog.log('APPROVALS', `❌ Solicitud ${id} rechazada por: ${reviewed_by || 'Administrador'}`);
 
         // Enviar email de notificación al usuario
@@ -404,50 +269,18 @@ router.get('/history', async (req, res) => {
     const { status, form_type, limit = 50, offset = 0 } = req.query;
 
     try {
-        let query = 'SELECT * FROM pending_approvals WHERE status != \'pending\'';
-        const params = [];
-        let paramCount = 0;
-
-        if (status) {
-            paramCount++;
-            query += ` AND status = $${paramCount}`;
-            params.push(status);
-        }
-
-        if (form_type) {
-            paramCount++;
-            query += ` AND form_type = $${paramCount}`;
-            params.push(form_type);
-        }
-
-        query += ` ORDER BY reviewed_at DESC LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;
-        params.push(parseInt(limit), parseInt(offset));
-
-        const result = await pool.query(query, params);
-
-        // Contar total
-        let countQuery = 'SELECT COUNT(*) FROM pending_approvals WHERE status != \'pending\'';
-        const countParams = [];
-        let countParamCount = 0;
-
-        if (status) {
-            countParamCount++;
-            countQuery += ` AND status = $${countParamCount}`;
-            countParams.push(status);
-        }
-
-        if (form_type) {
-            countParamCount++;
-            countQuery += ` AND form_type = $${countParamCount}`;
-            countParams.push(form_type);
-        }
-
-        const countResult = await pool.query(countQuery, countParams);
+        // ✅ FASE 3: Using ApprovalsDAO instead of direct pool.query
+        const result = await ApprovalsDAO.getHistory({
+            status,
+            form_type,
+            limit: parseInt(limit),
+            offset: parseInt(offset)
+        });
 
         res.json({
             success: true,
-            data: result.rows,
-            total: parseInt(countResult.rows[0].count),
+            data: result.data,
+            total: result.total,
             limit: parseInt(limit),
             offset: parseInt(offset)
         });

@@ -4,34 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title" data-base-title="Sistema de Citas - <span data-tenant-field=" school_name">Bachillerato
-        General Estatal <span data-tenant-field="school_name">"Héroes de la Patria"</span></span>">Sistema de Citas -
-        <span data-tenant-field="school_name">Bachillerato General Estatal <span data-tenant-field="school_name">"Héroes
-                de la Patria"</span></span>
-    </title>
+    <title>Sistema de Citas - BGE Héroes de la Patria</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" id="page-description"
-        content="Agenda citas online con los diferentes departamentos del <span data-tenant-field=" school_short_name">
-    BGE Héroes de la Patria</span>. Sistema de reservas fácil y rápido para orientación, servicios escolares, dirección
-    y más.">
-    <meta name="keywords"
-        content="citas online, reservas, orientación educativa, servicios escolares, dirección, bachillerato">
-    <meta name="author" content="<span data-tenant-field=" school_short_name">BGE Héroes de la Patria</span>">
+    <meta name="description" content="Agenda citas online con los diferentes departamentos. Sistema de reservas fácil y rápido para orientación, servicios escolares, dirección y más.">
+    <meta name="keywords" content="citas online, reservas, orientación educativa, servicios escolares, dirección, bachillerato">
+    <meta name="author" content="BGE Héroes de la Patria">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Sistema de Citas - <span data-tenant-field=" school_short_name">BGE Héroes de la
-    Patria</span>">
-    <meta property="og:description"
-        content="Agenda citas online con facilidad. Sistema de reservas para estudiantes, padres y visitantes.">
+    <meta property="og:title" content="Sistema de Citas - BGE Héroes de la Patria">
+    <meta property="og:description" content="Agenda citas online con facilidad. Sistema de reservas para estudiantes, padres y visitantes.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://heroesdelapatria.edu.mx/citas.html">
     <meta property="og:image" content="https://heroesdelapatria.edu.mx/images/hero/fachada1.webp">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Sistema de Citas - <span data-tenant-field=" school_short_name">BGE Héroes de la
-    Patria</span>">
+    <meta name="twitter:title" content="Sistema de Citas - BGE Héroes de la Patria">
     <meta name="twitter:description" content="Reserva tu cita online de manera rápida y sencilla">
 
     <!-- Preconnects -->
@@ -92,21 +81,6 @@
 
     <!-- Main Content -->
     <main id="main-content" class="main-content">
-        <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="breadcrumb-nav">
-            <div class="container">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="index.html">
-                            <i class="fas fa-home" aria-hidden="true"></i>
-                            <span class="visually-hidden">Inicio</span>
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Sistema de Citas</li>
-                </ol>
-            </div>
-        </nav>
-
         <!-- Hero Section -->
         <section id="hero" class="page-hero bg-gradient-primary text-white py-5">
             <div class="container">
@@ -755,7 +729,7 @@
         <i class="fas fa-moon"></i>
     </button>
 
-    
+
 
     <!-- Back to Top -->
     <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none"
@@ -886,7 +860,7 @@
                                 <i class="fas fa-times me-2"></i>Cancelar Cita
                             </button>
                             ` : ''}
-                            <button type="button" class="btn btn-success" onclick="window.appointmentSystem.downloadConfirmation('${appointment.id}')">
+                            <button type="button" class="btn btn-success" data-action="download-confirmation" data-appointment-id="${appointment.id}">
                                 <i class="fas fa-download me-2"></i>Descargar
                             </button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>

@@ -11,6 +11,9 @@ const { Pool } = require('pg');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 
+// DAO Import - Capa de Acceso a Datos
+const securityDAO = require('../data/security-advanced.dao');
+
 // ============================================
 // CONFIGURATION
 // ============================================
@@ -108,19 +111,8 @@ class TwoFactorAuth {
             backupCodes.map(code => bcrypt.hash(code, 10))
         );
 
-        const query = `
-            INSERT INTO user_2fa (
-                user_id, totp_secret, backup_codes, enabled, created_at
-            ) VALUES ($1, $2, $3, false, NOW())
-            ON CONFLICT (user_id) DO UPDATE SET
-                totp_secret = EXCLUDED.totp_secret,
-                backup_codes = EXCLUDED.backup_codes,
-                enabled = false,
-                updated_at = NOW()
-            RETURNING id
-        `;
-
-        await this.pool.query(query, [userId, encryptedSecret, JSON.stringify(hashedBackupCodes)]);
+        // Usar DAO en lugar de query directa
+        await securityDAO.upsert2FASetup(userId, encryptedSecret, JSON.stringify(hashedBackupCodes));
 
         // Generar URL para QR
         const otpAuthUrl = `otpauth://totp/BGE:${userId}?secret=${secret}&issuer=BGE&algorithm=SHA1&digits=6&period=30`;
@@ -148,11 +140,8 @@ class TwoFactorAuth {
             throw new ServiceError('Código inválido', 'INVALID_CODE', 400);
         }
 
-        // Habilitar 2FA
-        await this.pool.query(
-            'UPDATE user_2fa SET enabled = true, verified_at = NOW() WHERE user_id = $1',
-            [userId]
-        );
+        // Habilitar 2FA usando DAO
+        await securityDAO.enable2FA(userId);
 
         console.log(`[SECURITY] 2FA habilitado para usuario ${userId}`);
 
@@ -250,10 +239,7 @@ class TwoFactorAuth {
      */
     async disable(userId, password) {
         // Verificar contraseña primero (en implementación real)
-        await this.pool.query(
-            'UPDATE user_2fa SET enabled = false WHERE user_id = $1',
-            [userId]
-        );
+        await securityDAO.disable2FA(userId);
 
         console.log(`[SECURITY] 2FA deshabilitado para usuario ${userId}`);
 
@@ -315,19 +301,15 @@ class TwoFactorAuth {
 
         const offset = hash[hash.length - 1] & 0xf;
         const binary = ((hash[offset] & 0x7f) << 24) |
-                      ((hash[offset + 1] & 0xff) << 16) |
-                      ((hash[offset + 2] & 0xff) << 8) |
-                      (hash[offset + 3] & 0xff);
+            ((hash[offset + 1] & 0xff) << 16) |
+            ((hash[offset + 2] & 0xff) << 8) |
+            (hash[offset + 3] & 0xff);
 
         return (binary % 1000000).toString().padStart(6, '0');
     }
 
     async _getUserAuth(userId) {
-        const result = await this.pool.query(
-            'SELECT * FROM user_2fa WHERE user_id = $1',
-            [userId]
-        );
-        return result.rows[0];
+        return await securityDAO.get2FAConfig(userId);
     }
 
     async _encryptSecret(secret) {
@@ -368,10 +350,7 @@ class TwoFactorAuth {
             if (isMatch) {
                 // Invalidar código usado
                 codes.splice(i, 1);
-                await this.pool.query(
-                    'UPDATE user_2fa SET backup_codes = $1 WHERE user_id = $2',
-                    [JSON.stringify(codes), userId]
-                );
+                await securityDAO.updateBackupCodes(userId, JSON.stringify(codes));
                 return true;
             }
         }
@@ -380,17 +359,11 @@ class TwoFactorAuth {
     }
 
     async _resetAttempts(userId) {
-        await this.pool.query(
-            'UPDATE user_2fa SET failed_attempts = 0 WHERE user_id = $1',
-            [userId]
-        );
+        await securityDAO.reset2FAAttempts(userId);
     }
 
     async _incrementFailedAttempts(userId) {
-        await this.pool.query(
-            'UPDATE user_2fa SET failed_attempts = failed_attempts + 1, last_failed_at = NOW() WHERE user_id = $1',
-            [userId]
-        );
+        await securityDAO.increment2FAFailedAttempts(userId);
     }
 }
 
@@ -650,12 +623,7 @@ class IntrusionDetectionSystem {
      * Registra amenaza en BD
      */
     async _logThreat(ip, threats) {
-        const query = `
-            INSERT INTO security_threats (ip_address, threats, detected_at)
-            VALUES ($1, $2, NOW())
-        `;
-
-        await this.pool.query(query, [ip, JSON.stringify(threats)])
+        await securityDAO.logSecurityThreat(ip, threats)
             .catch(err => console.error('[SECURITY] Error logging threat:', err));
     }
 }
@@ -678,20 +646,17 @@ class SessionManager {
         // Verificar límite de sesiones concurrentes
         await this._enforceSessionLimit(userId);
 
-        const query = `
-            INSERT INTO user_sessions (
-                session_id, user_id, token, device_info,
-                ip_address, user_agent, created_at, last_activity, expires_at
-            ) VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW(), $7)
-            RETURNING session_id
-        `;
-
         const expiresAt = new Date(Date.now() + CONFIG.session.absoluteTimeout);
 
-        await this.pool.query(query, [
-            sessionId, userId, token, JSON.stringify(deviceInfo),
-            deviceInfo.ip, deviceInfo.userAgent, expiresAt
-        ]);
+        // Usar DAO en lugar de query directa
+        await securityDAO.createSession({
+            userId,
+            sessionId,
+            tokenHash: token,
+            deviceInfo,
+            ipAddress: deviceInfo.ip,
+            expiresAt
+        });
 
         console.log(`[SECURITY] Sesión creada para usuario ${userId}`);
 
@@ -706,18 +671,13 @@ class SessionManager {
      * Valida sesión
      */
     async validate(sessionId, token) {
-        const query = `
-            SELECT * FROM user_sessions
-            WHERE session_id = $1 AND token = $2
-        `;
+        const session = await securityDAO.validateSession(sessionId, token);
 
-        const result = await this.pool.query(query, [sessionId, token]);
-
-        if (result.rows.length === 0) {
+        if (!session) {
             return { valid: false, reason: 'SESSION_NOT_FOUND' };
         }
 
-        const session = result.rows[0];
+
         const now = Date.now();
 
         // Verificar expiración absoluta
@@ -753,20 +713,14 @@ class SessionManager {
      * Destruye sesión
      */
     async destroy(sessionId) {
-        await this.pool.query(
-            'DELETE FROM user_sessions WHERE session_id = $1',
-            [sessionId]
-        );
+        await securityDAO.destroySession(sessionId);
     }
 
     /**
      * Destruye todas las sesiones de un usuario
      */
     async destroyAll(userId) {
-        await this.pool.query(
-            'DELETE FROM user_sessions WHERE user_id = $1',
-            [userId]
-        );
+        await securityDAO.destroyAllUserSessions(userId);
 
         console.log(`[SECURITY] Todas las sesiones destruidas para usuario ${userId}`);
     }
@@ -775,15 +729,8 @@ class SessionManager {
      * Lista sesiones activas de un usuario
      */
     async listUserSessions(userId) {
-        const query = `
-            SELECT session_id, device_info, ip_address, user_agent, created_at, last_activity
-            FROM user_sessions
-            WHERE user_id = $1 AND expires_at > NOW()
-            ORDER BY last_activity DESC
-        `;
-
-        const result = await this.pool.query(query, [userId]);
-        return result.rows.map(row => ({
+        const sessions = await securityDAO.listUserSessions(userId);
+        return sessions.map(row => ({
             ...row,
             device_info: typeof row.device_info === 'string' ? JSON.parse(row.device_info) : row.device_info
         }));
@@ -796,40 +743,21 @@ class SessionManager {
     }
 
     async _enforceSessionLimit(userId) {
-        const countResult = await this.pool.query(
-            'SELECT COUNT(*) FROM user_sessions WHERE user_id = $1 AND expires_at > NOW()',
-            [userId]
-        );
-
-        const count = parseInt(countResult.rows[0].count);
+        const count = await securityDAO.countActiveSessions(userId);
 
         if (count >= CONFIG.session.maxConcurrent) {
-            // Eliminar sesión más antigua
-            await this.pool.query(`
-                DELETE FROM user_sessions
-                WHERE session_id = (
-                    SELECT session_id FROM user_sessions
-                    WHERE user_id = $1
-                    ORDER BY last_activity ASC
-                    LIMIT 1
-                )
-            `, [userId]);
+            // Eliminar sesión más antigua usando DAO
+            await securityDAO.destroyOldestSessions(userId, CONFIG.session.maxConcurrent);
         }
     }
 
     async _updateActivity(sessionId) {
-        await this.pool.query(
-            'UPDATE user_sessions SET last_activity = NOW() WHERE session_id = $1',
-            [sessionId]
-        );
+        await securityDAO.updateSessionActivity(sessionId);
     }
 
     async _rotateToken(sessionId) {
         const newToken = this._generateToken();
-        await this.pool.query(
-            'UPDATE user_sessions SET token = $1 WHERE session_id = $2',
-            [newToken, sessionId]
-        );
+        await securityDAO.rotateSessionToken(sessionId, newToken);
         return newToken;
     }
 }
@@ -891,16 +819,9 @@ class PasswordValidator {
      * Verifica si contraseña fue usada anteriormente
      */
     async checkHistory(userId, password) {
-        const query = `
-            SELECT password_hash FROM password_history
-            WHERE user_id = $1
-            ORDER BY created_at DESC
-            LIMIT $2
-        `;
+        const history = await securityDAO.getPasswordHistory(userId, CONFIG.password.historyCount);
 
-        const result = await this.pool.query(query, [userId, CONFIG.password.historyCount]);
-
-        for (const row of result.rows) {
+        for (const row of history) {
             const match = await bcrypt.compare(password, row.password_hash);
             if (match) {
                 return {
@@ -917,37 +838,23 @@ class PasswordValidator {
      * Guarda contraseña en historial
      */
     async saveToHistory(userId, passwordHash) {
-        const query = `
-            INSERT INTO password_history (user_id, password_hash, created_at)
-            VALUES ($1, $2, NOW())
-        `;
+        await securityDAO.savePasswordToHistory(userId, passwordHash);
 
-        await this.pool.query(query, [userId, passwordHash]);
-
-        // Limpiar historial antiguo
-        await this.pool.query(`
-            DELETE FROM password_history
-            WHERE user_id = $1 AND id NOT IN (
-                SELECT id FROM password_history
-                WHERE user_id = $1
-                ORDER BY created_at DESC
-                LIMIT $2
-            )
-        `, [userId, CONFIG.password.historyCount]);
+        // Limpiar historial antiguo usando DAO
+        await securityDAO.cleanOldPasswordHistory(userId, CONFIG.password.historyCount);
     }
 
     /**
      * Verifica si contraseña necesita cambio
      */
     async needsChange(userId) {
-        const query = `
-            SELECT password_changed_at FROM usuarios WHERE id = $1
-        `;
+        const result = await securityDAO.checkPasswordAge(userId);
 
-        const result = await this.pool.query(query, [userId]);
-        if (result.rows.length === 0) return false;
+        if (result.needs_change || !result.last_changed) {
+            return true;
+        }
 
-        const lastChange = new Date(result.rows[0].password_changed_at).getTime();
+        const lastChange = new Date(result.last_changed).getTime();
         return Date.now() - lastChange > CONFIG.password.maxAge;
     }
 

@@ -8,7 +8,7 @@
  * Fecha: Noviembre 2025
  */
 
-(function() {
+(function () {
     'use strict';
 
     if (document.readyState === 'loading') {
@@ -46,7 +46,7 @@
         buttons.forEach(btn => {
             const action = btn.getAttribute('data-action');
             if (action && actionMap[action]) {
-                btn.addEventListener('click', function(e) {
+                btn.addEventListener('click', function (e) {
                     e.preventDefault();
                     actionMap[action]();
                 });
@@ -57,7 +57,7 @@
         Object.keys(actionMap).forEach(action => {
             const oldButtons = document.querySelectorAll(`button[onclick*="${action}"]`);
             oldButtons.forEach(btn => {
-                btn.addEventListener('click', function(e) {
+                btn.addEventListener('click', function (e) {
                     e.preventDefault();
                     actionMap[action]();
                 });
@@ -73,7 +73,7 @@
         // Nueva forma: por ID
         const showAllJobsBtn = document.getElementById('showAllJobsBtn');
         if (showAllJobsBtn) {
-            showAllJobsBtn.addEventListener('click', function(e) {
+            showAllJobsBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 showAllJobs();
             });
@@ -82,7 +82,7 @@
         // Fallback: por onclick attribute (compatibilidad)
         const buttons = document.querySelectorAll('button[onclick*="showAllJobs"]');
         buttons.forEach(btn => {
-            btn.addEventListener('click', function(e) {
+            btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 showAllJobs();
             });
@@ -95,7 +95,7 @@
      */
     function registerJobListingsHandlers() {
         // Aplicar a empleo
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (e.target.closest('button[onclick*="applyToJob"]')) {
                 e.preventDefault();
                 const jobId = e.target.closest('button[onclick*="applyToJob"]')
@@ -107,7 +107,7 @@
         });
 
         // Remover de guardados
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (e.target.closest('button[onclick*="removeFromSaved"]')) {
                 e.preventDefault();
                 const jobId = e.target.closest('button[onclick*="removeFromSaved"]')
@@ -119,7 +119,7 @@
         });
 
         // Guardar empleo
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (e.target.closest('button[onclick*="saveJob"]')) {
                 e.preventDefault();
                 const jobId = e.target.closest('button[onclick*="saveJob"]')
@@ -157,7 +157,7 @@
         // Input del chatbot - Enter para enviar
         const chatInput = document.getElementById('chatbotInput');
         if (chatInput) {
-            chatInput.addEventListener('keypress', function(e) {
+            chatInput.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     sendMessage();
@@ -171,16 +171,68 @@
     // ============================================
 
     /**
-     * 📤 Muestra modal para subir CV
+     * 📤 Muestra modal para subir CV y configura el envío
      */
     function showUploadCV() {
         console.log('[BOLSA-TRABAJO-EVENTS] Mostrando formulario de CV...');
-        const modal = document.getElementById('uploadCVModal');
-        if (modal) {
-            const bootstrapModal = new (window.bootstrap?.Modal || function(){
-                modal.style.display = 'block';
-            })(modal);
+        const modalElement = document.getElementById('uploadCVModal');
+        if (modalElement) {
+            const bootstrapModal = new (window.bootstrap?.Modal || function () {
+                modalElement.style.display = 'block';
+            })(modalElement);
             bootstrapModal.show?.();
+
+            // Configurar envío del formulario si no está ya configurado
+            const form = document.getElementById('cvUploadForm');
+            if (form && !form.dataset.handlerAttached) {
+                form.dataset.handlerAttached = 'true'; // Evitar múltiples listeners
+
+                form.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
+
+                    try {
+                        const formData = new FormData(form);
+
+                        // Validar archivo (opcional pero recomendado en frontend también)
+                        const fileInput = document.getElementById('additionalDocument');
+                        if (fileInput.files.length > 0) {
+                            const file = fileInput.files[0];
+                            if (file.size > 5 * 1024 * 1024) {
+                                throw new Error('El archivo excede el tamaño máximo de 5MB');
+                            }
+                            if (file.type !== 'application/pdf') {
+                                throw new Error('Solo se permiten archivos PDF');
+                            }
+                        }
+
+                        const response = await fetch('/api/bolsa-trabajo/cv', {
+                            method: 'POST',
+                            body: formData // Fetch maneja automáticamente el Content-Type para FormData
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            alert(result.message || 'CV enviado exitosamente. Por favor revisa tu correo para confirmar.');
+                            bootstrapModal.hide();
+                            form.reset();
+                        } else {
+                            throw new Error(result.error || result.message || 'Error al enviar el CV');
+                        }
+                    } catch (error) {
+                        console.error('[BOLSA-TRABAJO-EVENTS] Error:', error);
+                        alert('Error: ' + error.message);
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                    }
+                });
+            }
         }
     }
 

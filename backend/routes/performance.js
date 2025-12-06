@@ -2,6 +2,7 @@
  * Rutas de Monitoreo de Performance
  * BGE Héroes de la Patria
  * FASE 4 - Semana 25-26
+ * ✅ FASE 3 DAL - Refactorizado para usar DAO donde aplicable
  *
  * Endpoints para monitorear y optimizar el rendimiento del sistema
  */
@@ -12,6 +13,9 @@ const { authenticateToken } = require('../middleware/auth');
 const { cache, cacheKeys } = require('../services/CacheService');
 const queryOptimizer = require('../services/QueryOptimizer');
 const pool = require('../data/database-access').pool;
+
+// ✅ FASE 3: Using DAO layer
+const AnalyticsDAO = require('../data/analytics.dao');
 
 // Middleware para verificar rol admin
 const requireAdmin = (req, res, next) => {
@@ -288,34 +292,14 @@ router.get('/database/tables', authenticateToken, requireAdmin, async (req, res)
     try {
         const { table } = req.query;
 
-        let query = `
-            SELECT
-                relname as table_name,
-                n_live_tup as row_count,
-                n_dead_tup as dead_tuples,
-                last_vacuum,
-                last_autovacuum,
-                last_analyze,
-                last_autoanalyze,
-                pg_size_pretty(pg_total_relation_size(relid)) as total_size
-            FROM pg_stat_user_tables
-        `;
-
-        const params = [];
-        if (table) {
-            query += ' WHERE relname = $1';
-            params.push(table);
-        }
-
-        query += ' ORDER BY n_live_tup DESC';
-
-        const result = await pool.query(query, params);
+        // ✅ FASE 3: Using AnalyticsDAO
+        const tableStats = await AnalyticsDAO.getTableStats(table || null);
 
         res.json({
             success: true,
             data: {
-                tables: result.rows,
-                count: result.rowCount
+                tables: tableStats,
+                count: tableStats.length
             }
         });
     } catch (error) {
@@ -336,43 +320,14 @@ router.get('/database/indexes', authenticateToken, requireAdmin, async (req, res
     try {
         const { table, unused = false } = req.query;
 
-        let query = `
-            SELECT
-                schemaname,
-                relname as table_name,
-                indexrelname as index_name,
-                idx_scan as times_used,
-                idx_tup_read as tuples_read,
-                idx_tup_fetch as tuples_fetched,
-                pg_size_pretty(pg_relation_size(indexrelid)) as index_size
-            FROM pg_stat_user_indexes
-        `;
-
-        const conditions = [];
-        const params = [];
-
-        if (table) {
-            params.push(table);
-            conditions.push(`relname = $${params.length}`);
-        }
-
-        if (unused === 'true') {
-            conditions.push('idx_scan = 0');
-        }
-
-        if (conditions.length > 0) {
-            query += ' WHERE ' + conditions.join(' AND ');
-        }
-
-        query += ' ORDER BY idx_scan ASC';
-
-        const result = await pool.query(query, params);
+        // ✅ FASE 3: Using AnalyticsDAO
+        const indexes = await AnalyticsDAO.getIndexUsage(table || null, unused === 'true');
 
         res.json({
             success: true,
             data: {
-                indexes: result.rows,
-                count: result.rowCount
+                indexes: indexes,
+                count: indexes.length
             }
         });
     } catch (error) {
@@ -481,23 +436,8 @@ router.get('/dashboard', authenticateToken, requireAdmin, async (req, res) => {
             queryOptimizer.getPoolStatus()
         ]);
 
-        // Obtener top tables por tamaño
-        const tablesResult = await pool.query(`
-            SELECT
-                relname as name,
-                n_live_tup as rows,
-                pg_size_pretty(pg_total_relation_size(relid)) as size
-            FROM pg_stat_user_tables
-            ORDER BY pg_total_relation_size(relid) DESC
-            LIMIT 10
-        `);
-
-        // Obtener índices sin usar
-        const unusedIndexesResult = await pool.query(`
-            SELECT COUNT(*) as count
-            FROM pg_stat_user_indexes
-            WHERE idx_scan = 0
-        `);
+        // ✅ FASE 3: Using AnalyticsDAO
+        const systemHealth = await AnalyticsDAO.getSystemHealth();
 
         res.json({
             success: true,
@@ -513,8 +453,8 @@ router.get('/dashboard', authenticateToken, requireAdmin, async (req, res) => {
                 database: {
                     ...dbHealth,
                     pool: poolStatus,
-                    topTables: tablesResult.rows,
-                    unusedIndexes: parseInt(unusedIndexesResult.rows[0].count)
+                    topTables: systemHealth.top_tables,
+                    unusedIndexes: systemHealth.unused_indexes_count
                 },
                 cache: {
                     ...cacheStats,
@@ -619,13 +559,10 @@ router.post('/optimize/vacuum', authenticateToken, requireAdmin, async (req, res
             });
         }
 
-        // Validar que la tabla existe
-        const tableCheck = await pool.query(`
-            SELECT 1 FROM pg_tables
-            WHERE schemaname = 'public' AND tablename = $1
-        `, [table]);
+        // ✅ FASE 3: Using AnalyticsDAO
+        const exists = await AnalyticsDAO.tableExists(table);
 
-        if (tableCheck.rowCount === 0) {
+        if (!exists) {
             return res.status(404).json({
                 success: false,
                 message: `Tabla ${table} no encontrada`
@@ -634,7 +571,7 @@ router.post('/optimize/vacuum', authenticateToken, requireAdmin, async (req, res
 
         // Ejecutar VACUUM (nota: no se puede usar en transacción)
         const command = analyze ? `VACUUM ANALYZE ${table}` : `VACUUM ${table}`;
-        await pool.query(command);
+        await AnalyticsDAO.executeMaintenanceCommand(command);
 
         res.json({
             success: true,
@@ -667,20 +604,17 @@ router.post('/optimize/reindex', authenticateToken, requireAdmin, async (req, re
             });
         }
 
-        // Validar que la tabla existe
-        const tableCheck = await pool.query(`
-            SELECT 1 FROM pg_tables
-            WHERE schemaname = 'public' AND tablename = $1
-        `, [table]);
+        // ✅ FASE 3: Using AnalyticsDAO
+        const exists = await AnalyticsDAO.tableExists(table);
 
-        if (tableCheck.rowCount === 0) {
+        if (!exists) {
             return res.status(404).json({
                 success: false,
                 message: `Tabla ${table} no encontrada`
             });
         }
 
-        await pool.query(`REINDEX TABLE ${table}`);
+        await AnalyticsDAO.executeMaintenanceCommand(`REINDEX TABLE ${table}`);
 
         res.json({
             success: true,
