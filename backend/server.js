@@ -58,6 +58,7 @@ const tenantsRoutes = require('./routes/tenants');  // ✅ MULTI-TENANT MANAGEME
 const comunicadosRoutes = require('./routes/comunicados');
 const uploadRoutes = require('./routes/upload');
 const webhooksRoutes = require('./routes/webhooks');  // ✅ WEBHOOKS - SEMANA 8
+const superAdminDashboardRoutes = require('./routes/super-admin-dashboard');  // ✅ SUPER ADMIN - FASE 5 (7 DIC 2025)
 const pollsRoutes = require('./routes/polls');
 // ✅ API VERSIONING MIDDLEWARE - SEMANA 8
 const { apiVersioning, v1CompatibilityLayer, rateLimitByTier } = require('./middleware/api-versioning');
@@ -404,6 +405,7 @@ app.use('/api/challenges', challengesRoutes);  // ✅ CHALLENGES ROUTES - Sistem
 app.use('/api/store', storeRoutes);  // ✅ STORE ROUTES - Tienda virtual (15 NOV 2025)
 app.use('/api/docs', apiDocsRoutes); // ✅ SWAGGER UI - SEMANA 29
 app.use('/api/tutor', aiTutorRoutes); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
+app.use('/api/super-admin', superAdminDashboardRoutes); // ✅ SUPER ADMIN DASHBOARD - FASE 5 (7 DIC 2025)
 
 // ✅ SEMANA 2 - SERVICE LAYER ROUTES (20 NOV 2025)
 // Estas rutas usan el patrón Service Layer para separar lógica de negocio
