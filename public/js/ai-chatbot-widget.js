@@ -202,7 +202,7 @@ class AIChatbotWidget {
 
       .ai-chatbot-toggle {
         position: fixed;
-        bottom: 20px;
+        bottom: 0px;
         width: 60px;
         height: 60px;
         border-radius: 50%;
@@ -249,7 +249,7 @@ class AIChatbotWidget {
 
       .ai-chatbot-container {
         position: fixed;
-        bottom: 100px;
+        bottom: 400px;
         width: 380px;
         height: 600px;
         max-height: calc(100vh - 120px);
@@ -264,11 +264,11 @@ class AIChatbotWidget {
       }
 
       .ai-chatbot-container.bottom-right {
-        right: 20px;
+        right: 180px;
       }
 
       .ai-chatbot-container.bottom-left {
-        left: 20px;
+        left: 150px;
       }
 
       @keyframes slideInUp {
