@@ -1,22 +1,31 @@
 /**
- * 👨‍👩‍👧 PARENT SERVICE
+ * 👨‍👩‍👧 PARENT SERVICE - TypeScript
  * Lógica de negocio para el portal de padres
+ * Migración TypeScript: 07 Diciembre 2025
  */
 
-const ParentDAO = require('../data/parent.dao');
-const GradeDAO = require('../data/grade.dao');
-const AttendanceDAO = require('../data/attendance.dao');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-// const ServiceError = require('../utils/ServiceError');
-const devLogger = require('../utils/devLogger');
+import ParentDAO from '../data/parent.dao';
+import GradeDAO from '../data/grades.dao';
+import AttendanceDAO from '../data/attendance.dao';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import devLogger from '../utils/devLogger';
+
+export interface ParentLoginResponse {
+    token: string;
+    parent: {
+        id: number;
+        nombre: string;
+        email: string;
+    };
+}
 
 class ParentService {
 
     /**
      * Autenticación de padres
      */
-    async login(email, password) {
+    async login(email: string, password: string): Promise<ParentLoginResponse> {
         const parent = await ParentDAO.findByEmail(email);
 
         if (!parent) {
@@ -42,7 +51,7 @@ class ParentService {
                 email: parent.email,
                 role: 'parent'
             },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET || 'secret',
             { expiresIn: '7d' }
         );
 
@@ -50,7 +59,7 @@ class ParentService {
             token,
             parent: {
                 id: parent.id,
-                nombre: parent.nombre, // Esquema actual usa 'nombre'
+                nombre: parent.nombre,
                 email: parent.email
             }
         };
@@ -59,7 +68,7 @@ class ParentService {
     /**
      * Registro de nuevos padres
      */
-    async register(data) {
+    async register(data: any): Promise<any> {
         // Verificar si existe
         const existing = await ParentDAO.findByEmail(data.email);
         if (existing) {
@@ -83,7 +92,7 @@ class ParentService {
     /**
      * Obtener Dashboard completo
      */
-    async getDashboard(parentId) {
+    async getDashboard(parentId: number): Promise<any> {
         const students = await ParentDAO.getStudentsByParentId(parentId);
         const unreadNotifications = await ParentDAO.countUnreadNotifications(parentId);
         const unreadMessages = await ParentDAO.countUnreadMessages(parentId);
@@ -103,7 +112,7 @@ class ParentService {
     /**
      * Obtener calificaciones de un estudiante (con verificación de permisos)
      */
-    async getStudentGrades(parentId, studentId, filters = {}) {
+    async getStudentGrades(parentId: number, studentId: number, filters: any = {}): Promise<any> {
         // 1. Verificar permisos
         const permission = await ParentDAO.checkPermission(parentId, studentId);
         if (!permission) {
@@ -114,22 +123,19 @@ class ParentService {
         }
 
         // 2. Obtener calificaciones (usando GradeDAO)
-        // Filtros: periodo, ciclo_escolar
-        const grades = await GradeDAO.getByStudent(studentId, {
-            ...filters,
-            visible_padres: true
+        // Usamos getAll para poder filtrar si es necesario, aunque por defecto traemos todo del estudiante
+        const gradesResult = await GradeDAO.getAll({
+            estudianteId: studentId,
+            periodo: filters.periodo
         });
 
-        // 3. Calcular promedio (usando GradeDAO o calculando aquí)
-        // GradeDAO.getAverage devuelve promedio de un ciclo.
-        // Si no hay ciclo en filtros, quizás queramos el general.
-        // Por simplicidad, calculamos sobre los resultados devueltos si es necesario, 
-        // o llamamos a getAverage si tenemos ciclo.
+        const grades = gradesResult.rows;
 
+        // 3. Calcular promedio (usando GradeDAO o calculando aquí)
         let promedio = 0;
         if (grades && grades.length > 0) {
-            const sum = grades.reduce((acc, g) => acc + parseFloat(g.calificacion || 0), 0);
-            promedio = (sum / grades.length).toFixed(2);
+            const sum = grades.reduce((acc: number, g: any) => acc + parseFloat((g.calificacion || 0).toString()), 0);
+            promedio = parseFloat((sum / grades.length).toFixed(2));
         }
 
         return {
@@ -144,7 +150,7 @@ class ParentService {
     /**
      * Obtener asistencia de un estudiante
      */
-    async getStudentAttendance(parentId, studentId, filters = {}) {
+    async getStudentAttendance(parentId: number, studentId: number, filters: any = {}): Promise<any> {
         // 1. Verificar permisos
         const permission = await ParentDAO.checkPermission(parentId, studentId);
         if (!permission) {
@@ -170,19 +176,21 @@ class ParentService {
     // MÉTODOS ADMINISTRATIVOS
     // ==========================================
 
-    async getAllParents() {
+    async getAllParents(): Promise<any> {
         return await ParentDAO.findAll();
     }
 
-    async createParentAdmin(data) {
+    async createParentAdmin(data: any): Promise<any> {
         const existing = await ParentDAO.findByEmail(data.email);
         if (existing) throw new Error('El email ya está registrado');
 
         const password_hash = await bcrypt.hash(data.password, 10);
-        return await ParentDAO.create({ ...data, password_hash });
+        // Remove password from object before sending to DAO
+        const { password, ...otherData } = data;
+        return await ParentDAO.create({ ...otherData, password_hash });
     }
 
-    async updateParent(id, data) {
+    async updateParent(id: number, data: any): Promise<any> {
         // Si hay password, hashear
         if (data.password) {
             data.password_hash = await bcrypt.hash(data.password, 10);
@@ -200,9 +208,10 @@ class ParentService {
         return await ParentDAO.update(id, data);
     }
 
-    async deleteParent(id) {
+    async deleteParent(id: number): Promise<any> {
         return await ParentDAO.delete(id);
     }
 }
 
+export default new ParentService();
 module.exports = new ParentService();

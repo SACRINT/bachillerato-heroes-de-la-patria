@@ -1,32 +1,86 @@
 /**
- * 📊 ATTENDANCE SERVICE - Business Logic Layer
+ * 📊 ATTENDANCE SERVICE - TypeScript
  * Servicio de gestión de asistencias escolares
  * 
  * Patrón Service Layer - Lógica de negocio independiente
+ * Migración TypeScript: 07 Diciembre 2025
  */
 
-const AttendanceDAO = require('../data/attendance.dao');
-const EventBus = require('./eventBus.service').getInstance();
-const devLogger = require('../utils/devLogger');
+import AttendanceDAO from '../data/attendance.dao';
+import { AttendanceRow, AttendanceFilters, AttendanceRate, BulkAttendanceRecord } from '../data/attendance.dao';
+import devLogger from '../utils/devLogger';
 
-class ServiceError extends Error {
-    constructor(message, statusCode = 500) {
+// EventBus import - using dynamic require for JS module compatibility
+const EventBus = require('./eventBus.service').getInstance();
+
+// =====================================================
+// INTERFACES
+// =====================================================
+
+export class ServiceError extends Error {
+    statusCode: number;
+
+    constructor(message: string, statusCode: number = 500) {
         super(message);
         this.name = 'ServiceError';
         this.statusCode = statusCode;
     }
 }
 
+export interface AttendanceCreateData {
+    estudiante_id: number;
+    materia_id: number;
+    fecha: Date | string;
+    presente: boolean;
+    justificada?: boolean;
+    motivo?: string;
+    comentarios?: string;
+    registrado_por: number;
+}
+
+export interface BulkAttendanceResult {
+    attendances: AttendanceRow[];
+    stats: {
+        total: number;
+        present: number;
+        absent: number;
+    };
+}
+
+export interface AttendanceReportResult {
+    studentId: number;
+    period: { start: Date | string; end: Date | string };
+    stats: AttendanceRate;
+    records: AttendanceRow[];
+    hasIssues: boolean;
+}
+
+export interface ClassAttendanceResult {
+    attendances: AttendanceRow[];
+    stats: {
+        total: number;
+        present: number;
+        absent: number;
+        attendanceRate: string | number;
+    };
+    classId: number;
+    date: Date | string;
+}
+
+// =====================================================
+// ATTENDANCE SERVICE CLASS
+// =====================================================
+
 class AttendanceService {
 
     /**
      * Marcar asistencia individual
      */
-    async markAttendance(data) {
+    async markAttendance(data: AttendanceCreateData): Promise<AttendanceRow> {
         this._validateAttendanceData(data);
 
         try {
-            const attendance = await AttendanceDAO.create(data);
+            const attendance = await AttendanceDAO.create(data as any);
 
             // Emitir evento
             EventBus.emit('attendance:marked', {
@@ -49,11 +103,11 @@ class AttendanceService {
                 await this.checkAbsenteeismPattern(attendance.estudiante_id);
             }
 
-            devLogger.log(`✅ Asistencia marcada: Estudiante ${attendance.estudiante_id} - ${attendance.presente ? 'Presente' : 'Ausente'}`);
+            devLogger.log(`[AttendanceService] Asistencia marcada: Estudiante ${attendance.estudiante_id} - ${attendance.presente ? 'Presente' : 'Ausente'}`);
 
             return attendance;
-        } catch (error) {
-            devLogger.error('[AttendanceService] Error marcando asistencia:', error.message);
+        } catch (error: any) {
+            devLogger.error('[AttendanceService] Error marcando asistencia', error);
             throw new ServiceError('Error al marcar asistencia', 500);
         }
     }
@@ -61,7 +115,7 @@ class AttendanceService {
     /**
      * Marcar asistencia masiva (lista de clase)
      */
-    async markBulkAttendance(attendanceRecords, registeredBy) {
+    async markBulkAttendance(attendanceRecords: BulkAttendanceRecord[], registeredBy: number): Promise<BulkAttendanceResult> {
         if (!Array.isArray(attendanceRecords) || attendanceRecords.length === 0) {
             throw new ServiceError('Se requiere al menos un registro de asistencia', 400);
         }
@@ -89,11 +143,11 @@ class AttendanceService {
                 absent: results.filter(r => !r.presente).length
             };
 
-            devLogger.log(`✅ Asistencia masiva marcada: ${stats.present}/${stats.total} presentes`);
+            devLogger.log(`[AttendanceService] Asistencia masiva marcada: ${stats.present}/${stats.total} presentes`);
 
             return { attendances: results, stats };
-        } catch (error) {
-            devLogger.error('[AttendanceService] Error en asistencia masiva:', error.message);
+        } catch (error: any) {
+            devLogger.error('[AttendanceService] Error en asistencia masiva', error);
             throw new ServiceError('Error al marcar asistencia masiva', 500);
         }
     }
@@ -101,7 +155,7 @@ class AttendanceService {
     /**
      * Actualizar asistencia
      */
-    async updateAttendance(id, data, updatedBy) {
+    async updateAttendance(id: number, data: any, updatedBy: number): Promise<AttendanceRow> {
         if (!id) throw new ServiceError('ID requerido', 400);
 
         try {
@@ -116,9 +170,9 @@ class AttendanceService {
             });
 
             return updated;
-        } catch (error) {
+        } catch (error: any) {
             if (error instanceof ServiceError) throw error;
-            devLogger.error('[AttendanceService] Error actualizando asistencia:', error.message);
+            devLogger.error('[AttendanceService] Error actualizando asistencia', error);
             throw new ServiceError('Error al actualizar asistencia', 500);
         }
     }
@@ -126,7 +180,7 @@ class AttendanceService {
     /**
      * Eliminar asistencia
      */
-    async deleteAttendance(id, deletedBy) {
+    async deleteAttendance(id: number, deletedBy: number): Promise<boolean> {
         if (!id) throw new ServiceError('ID requerido', 400);
 
         try {
@@ -142,9 +196,9 @@ class AttendanceService {
             });
 
             return true;
-        } catch (error) {
+        } catch (error: any) {
             if (error instanceof ServiceError) throw error;
-            devLogger.error('[AttendanceService] Error eliminando asistencia:', error.message);
+            devLogger.error('[AttendanceService] Error eliminando asistencia', error);
             throw new ServiceError('Error al eliminar asistencia', 500);
         }
     }
@@ -152,16 +206,16 @@ class AttendanceService {
     /**
      * Obtener registro de asistencia
      */
-    async getAttendance(id) {
+    async getAttendance(id: number): Promise<AttendanceRow> {
         if (!id) throw new ServiceError('ID requerido', 400);
 
         try {
             const attendance = await AttendanceDAO.get(id);
             if (!attendance) throw new ServiceError('Registro no encontrado', 404);
             return attendance;
-        } catch (error) {
+        } catch (error: any) {
             if (error instanceof ServiceError) throw error;
-            devLogger.error('[AttendanceService] Error obteniendo asistencia:', error.message);
+            devLogger.error('[AttendanceService] Error obteniendo asistencia', error);
             throw new ServiceError('Error al obtener asistencia', 500);
         }
     }
@@ -169,12 +223,12 @@ class AttendanceService {
     /**
      * Listar asistencias con filtros
      */
-    async listAttendances(filters = {}) {
+    async listAttendances(filters: AttendanceFilters = {}): Promise<AttendanceRow[]> {
         try {
             const attendances = await AttendanceDAO.list(filters);
             return attendances;
-        } catch (error) {
-            devLogger.error('[AttendanceService] Error listando asistencias:', error.message);
+        } catch (error: any) {
+            devLogger.error('[AttendanceService] Error listando asistencias', error);
             throw new ServiceError('Error al listar asistencias', 500);
         }
     }
@@ -182,14 +236,14 @@ class AttendanceService {
     /**
      * Obtener asistencias de un estudiante
      */
-    async getStudentAttendances(studentId, filters = {}) {
+    async getStudentAttendances(studentId: number, filters: AttendanceFilters = {}): Promise<AttendanceRow[]> {
         if (!studentId) throw new ServiceError('ID de estudiante requerido', 400);
 
         try {
             const attendances = await AttendanceDAO.getByStudent(studentId, filters);
             return attendances;
-        } catch (error) {
-            devLogger.error('[AttendanceService] Error obteniendo asistencias del estudiante:', error.message);
+        } catch (error: any) {
+            devLogger.error('[AttendanceService] Error obteniendo asistencias del estudiante', error);
             throw new ServiceError('Error al obtener asistencias del estudiante', 500);
         }
     }
@@ -197,7 +251,7 @@ class AttendanceService {
     /**
      * Generar reporte de asistencia
      */
-    async generateAttendanceReport(studentId, startDate, endDate) {
+    async generateAttendanceReport(studentId: number, startDate: Date | string, endDate: Date | string): Promise<AttendanceReportResult> {
         if (!studentId) throw new ServiceError('ID de estudiante requerido', 400);
 
         try {
@@ -212,10 +266,10 @@ class AttendanceService {
                 period: { start: startDate, end: endDate },
                 stats,
                 records,
-                hasIssues: parseFloat(stats.porcentaje_asistencia) < 85
+                hasIssues: parseFloat(stats.porcentaje_asistencia?.toString() || '0') < 85
             };
-        } catch (error) {
-            devLogger.error('[AttendanceService] Error generando reporte:', error.message);
+        } catch (error: any) {
+            devLogger.error('[AttendanceService] Error generando reporte', error);
             throw new ServiceError('Error al generar reporte', 500);
         }
     }
@@ -223,7 +277,7 @@ class AttendanceService {
     /**
      * Obtener asistencia de una clase
      */
-    async getClassAttendance(classId, date) {
+    async getClassAttendance(classId: number, date: Date | string): Promise<ClassAttendanceResult> {
         if (!classId) throw new ServiceError('ID de clase requerido', 400);
         if (!date) throw new ServiceError('Fecha requerida', 400);
 
@@ -240,8 +294,8 @@ class AttendanceService {
             };
 
             return { attendances, stats, classId, date };
-        } catch (error) {
-            devLogger.error('[AttendanceService] Error obteniendo asistencia de clase:', error.message);
+        } catch (error: any) {
+            devLogger.error('[AttendanceService] Error obteniendo asistencia de clase', error);
             throw new ServiceError('Error al obtener asistencia de clase', 500);
         }
     }
@@ -249,7 +303,7 @@ class AttendanceService {
     /**
      * Verificar patrón de ausentismo
      */
-    async checkAbsenteeismPattern(studentId) {
+    async checkAbsenteeismPattern(studentId: number): Promise<{ hasPattern: boolean; patterns: any[] }> {
         try {
             const patterns = await AttendanceDAO.detectAbsenteeismPatterns(studentId);
 
@@ -264,12 +318,12 @@ class AttendanceService {
                     details: 'Más de 3 faltas en 5 días'
                 });
 
-                devLogger.log(`⚠️ Patrón de ausentismo detectado: Estudiante ${studentId}`);
+                devLogger.log(`[AttendanceService] ⚠️ Patrón de ausentismo detectado: Estudiante ${studentId}`);
             }
 
             return { hasPattern, patterns };
-        } catch (error) {
-            devLogger.error('[AttendanceService] Error verificando patrón de ausentismo:', error.message);
+        } catch (error: any) {
+            devLogger.error('[AttendanceService] Error verificando patrón de ausentismo', error);
             // No lanzar error, solo registrar
             return { hasPattern: false, patterns: [] };
         }
@@ -278,7 +332,7 @@ class AttendanceService {
     /**
      * Justificar falta
      */
-    async justifyAbsence(attendanceId, motivo, justifiedBy) {
+    async justifyAbsence(attendanceId: number, motivo: string, justifiedBy: number): Promise<AttendanceRow> {
         if (!attendanceId) throw new ServiceError('ID de asistencia requerido', 400);
         if (!motivo) throw new ServiceError('Motivo requerido', 400);
 
@@ -303,9 +357,9 @@ class AttendanceService {
             });
 
             return updated;
-        } catch (error) {
+        } catch (error: any) {
             if (error instanceof ServiceError) throw error;
-            devLogger.error('[AttendanceService] Error justificando falta:', error.message);
+            devLogger.error('[AttendanceService] Error justificando falta', error);
             throw new ServiceError('Error al justificar falta', 500);
         }
     }
@@ -314,7 +368,7 @@ class AttendanceService {
     // VALIDACIONES
     // ==========================================
 
-    _validateAttendanceData(data) {
+    private _validateAttendanceData(data: AttendanceCreateData): void {
         if (!data.estudiante_id) throw new ServiceError('ID de estudiante requerido', 400);
         if (!data.fecha) throw new ServiceError('Fecha requerida', 400);
         if (data.presente === undefined) throw new ServiceError('Estado de presencia requerido', 400);
@@ -330,5 +384,6 @@ class AttendanceService {
     }
 }
 
+export default new AttendanceService();
 module.exports = new AttendanceService();
 module.exports.ServiceError = ServiceError;

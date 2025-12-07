@@ -1,21 +1,36 @@
 /**
- * 👨‍🏫 TEACHER SERVICE - v1.0.0 (NEW)
+ * 👨‍🏫 TEACHER SERVICE - TypeScript
  * Capa de servicios para gestión de docentes
  * 
- * Características:
- * - Usa TeacherDAO y UserDAO (Sin SQL directo)
- * - Implementa EventBus
- * - Lógica de negocio centralizada
+ * Migración TypeScript: 07 Diciembre 2025
  */
 
-const TeacherDAO = require('../data/teacher.dao');
-const UserDAO = require('../data/user.dao');
-const EventBus = require('./eventBus.service').getInstance();
-const devLogger = require('../utils/devLogger');
-const bcrypt = require('bcryptjs');
+import TeacherDAO from '../data/teacher.dao';
+import UserDAO from '../data/user.dao';
+import EventBus from './eventBus.service';
+import devLogger from '../utils/devLogger';
+import bcrypt from 'bcryptjs';
 
-class ServiceError extends Error {
-    constructor(message, statusCode = 500) {
+// =====================================================
+// INTERFACES
+// =====================================================
+
+export interface TeacherData {
+    id?: number;
+    email: string;
+    password?: string;
+    nombre: string;
+    apellido_paterno: string;
+    apellido_materno?: string;
+    numero_empleado: string;
+    especialidad: string;
+    tipo_contrato: 'base' | 'contrato' | 'honorarios';
+    [key: string]: any;
+}
+
+export class ServiceError extends Error {
+    statusCode: number;
+    constructor(message: string, statusCode: number = 500) {
         super(message);
         this.name = 'ServiceError';
         this.statusCode = statusCode;
@@ -27,7 +42,7 @@ class TeacherService {
     /**
      * Obtener todos los docentes con filtros
      */
-    async getAll(options = {}) {
+    async getAll(options: any = {}): Promise<any> {
         try {
             const teachers = await TeacherDAO.list(options, options.limit || 20, options.offset || 0);
             const total = await TeacherDAO.count(options);
@@ -42,7 +57,7 @@ class TeacherService {
                     pages: Math.ceil(total / (options.limit || 20))
                 }
             };
-        } catch (error) {
+        } catch (error: any) {
             devLogger.error('[TeacherService] Error en getAll:', error.message);
             throw new ServiceError('Error al obtener docentes', 500);
         }
@@ -51,7 +66,7 @@ class TeacherService {
     /**
      * Obtener docente por ID
      */
-    async getById(id) {
+    async getById(id: number): Promise<any> {
         if (!id) throw new ServiceError('ID requerido', 400);
 
         try {
@@ -69,7 +84,7 @@ class TeacherService {
                     statistics: { total_materias: subjects.length }
                 }
             };
-        } catch (error) {
+        } catch (error: any) {
             if (error instanceof ServiceError) throw error;
             devLogger.error('[TeacherService] Error en getById:', error.message);
             throw new ServiceError('Error al obtener docente', 500);
@@ -79,7 +94,7 @@ class TeacherService {
     /**
      * Crear nuevo docente
      */
-    async create(data, createdBy) {
+    async create(data: TeacherData, createdBy: number): Promise<any> {
         this._validateCreateData(data);
 
         try {
@@ -96,7 +111,7 @@ class TeacherService {
             }
 
             // Crear usuario primero
-            const passwordHash = await bcrypt.hash(data.password, parseInt(process.env.BCRYPT_ROUNDS) || 12);
+            const passwordHash = await bcrypt.hash(data.password || 'default', parseInt(process.env.BCRYPT_ROUNDS || '12'));
             const newUser = await UserDAO.create({
                 email: data.email,
                 password_hash: passwordHash,
@@ -112,7 +127,7 @@ class TeacherService {
             const newTeacher = await TeacherDAO.create(newUser.id, data);
 
             // Emitir evento
-            EventBus.emit('teacher:created', {
+            EventBus.getInstance().emit('teacher:created', {
                 teacherId: newTeacher.id,
                 userId: newUser.id,
                 numero_empleado: data.numero_empleado,
@@ -126,7 +141,7 @@ class TeacherService {
                 data: { ...newTeacher, email: newUser.email },
                 message: 'Docente creado exitosamente'
             };
-        } catch (error) {
+        } catch (error: any) {
             if (error instanceof ServiceError) throw error;
             devLogger.error('[TeacherService] Error en create:', error.message);
             throw new ServiceError('Error al crear docente', 500);
@@ -136,7 +151,7 @@ class TeacherService {
     /**
      * Actualizar docente
      */
-    async update(id, data, updatedBy) {
+    async update(id: number, data: any, updatedBy: number): Promise<any> {
         if (!id) throw new ServiceError('ID requerido', 400);
 
         try {
@@ -145,7 +160,7 @@ class TeacherService {
 
             const updated = await TeacherDAO.update(id, data);
 
-            EventBus.emit('teacher:updated', {
+            EventBus.getInstance().emit('teacher:updated', {
                 teacherId: id,
                 updatedFields: Object.keys(data),
                 updatedBy
@@ -156,7 +171,7 @@ class TeacherService {
                 data: updated,
                 message: 'Docente actualizado'
             };
-        } catch (error) {
+        } catch (error: any) {
             if (error instanceof ServiceError) throw error;
             devLogger.error('[TeacherService] Error en update:', error.message);
             throw new ServiceError('Error al actualizar docente', 500);
@@ -166,7 +181,7 @@ class TeacherService {
     /**
      * Desactivar docente (soft delete)
      */
-    async deactivate(id, deactivatedBy) {
+    async deactivate(id: number, deactivatedBy: number): Promise<any> {
         if (!id) throw new ServiceError('ID requerido', 400);
 
         try {
@@ -175,7 +190,7 @@ class TeacherService {
 
             await TeacherDAO.deactivate(id);
 
-            EventBus.emit('teacher:deactivated', {
+            EventBus.getInstance().emit('teacher:deactivated', {
                 teacherId: id,
                 deactivatedBy
             });
@@ -184,7 +199,7 @@ class TeacherService {
                 success: true,
                 message: 'Docente desactivado'
             };
-        } catch (error) {
+        } catch (error: any) {
             if (error instanceof ServiceError) throw error;
             devLogger.error('[TeacherService] Error en deactivate:', error.message);
             throw new ServiceError('Error al desactivar docente', 500);
@@ -194,13 +209,13 @@ class TeacherService {
     /**
      * Obtener horario de un docente
      */
-    async getSchedule(teacherId) {
+    async getSchedule(teacherId: number): Promise<any> {
         if (!teacherId) throw new ServiceError('ID requerido', 400);
 
         try {
             const schedule = await TeacherDAO.getSchedule(teacherId);
             return { success: true, data: schedule };
-        } catch (error) {
+        } catch (error: any) {
             devLogger.error('[TeacherService] Error en getSchedule:', error.message);
             throw new ServiceError('Error al obtener horario', 500);
         }
@@ -209,7 +224,7 @@ class TeacherService {
     /**
      * Obtener directorio público de docentes
      */
-    async getPublicDirectory(especialidad = null) {
+    async getPublicDirectory(especialidad: string | null = null): Promise<any> {
         try {
             const teachers = await TeacherDAO.getPublicDirectory(especialidad);
             return {
@@ -217,7 +232,7 @@ class TeacherService {
                 data: teachers,
                 total: teachers.length
             };
-        } catch (error) {
+        } catch (error: any) {
             devLogger.error('[TeacherService] Error en getPublicDirectory:', error.message);
             throw new ServiceError('Error al obtener directorio', 500);
         }
@@ -226,11 +241,11 @@ class TeacherService {
     /**
      * Obtener especialidades disponibles
      */
-    async getSpecialties() {
+    async getSpecialties(): Promise<any> {
         try {
             const specialties = await TeacherDAO.getSpecialties();
             return { success: true, data: specialties };
-        } catch (error) {
+        } catch (error: any) {
             devLogger.error('[TeacherService] Error en getSpecialties:', error.message);
             throw new ServiceError('Error al obtener especialidades', 500);
         }
@@ -238,7 +253,7 @@ class TeacherService {
 
     // --- Private Helpers ---
 
-    _validateCreateData(data) {
+    private _validateCreateData(data: TeacherData) {
         if (!data.email) throw new ServiceError('Email requerido', 400);
         if (!data.password) throw new ServiceError('Contraseña requerida', 400);
         if (!data.nombre) throw new ServiceError('Nombre requerido', 400);
@@ -251,5 +266,6 @@ class TeacherService {
     }
 }
 
+export default new TeacherService();
 module.exports = new TeacherService();
 module.exports.ServiceError = ServiceError;
