@@ -764,8 +764,8 @@ tutorStyles.textContent = `
 
     .ai-tutor-widget {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
+        bottom: 270px;
+        right: 50px;
         width: 400px;
         height: 600px;
         background: white;
