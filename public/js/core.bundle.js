@@ -117,8 +117,8 @@ class AITutorInterface {
 
         widget.style.cssText = `
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 270px;
+            right: 50px;
             width: 320px;
             background: white;
             border-radius: 15px;
