@@ -54,7 +54,7 @@ const storage = multer.diskStorage({
     }
 });
 
-// Filtro de archivos - solo imágenes
+// Filtro de archivos - imágenes
 const fileFilter = (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif|webp|svg/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
@@ -67,13 +67,39 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-// Configurar Multer
+// Filtro de archivos - documentos
+const documentFilter = (req, file, cb) => {
+    const allowedTypes = /pdf|doc|docx/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+
+    // Lista de mimetypes permitidos para documentos
+    const allowedMimeTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
+
+    const mimetype = allowedMimeTypes.includes(file.mimetype);
+
+    if (mimetype && extname) {
+        return cb(null, true);
+    } else {
+        cb(new Error('Solo se permiten documentos (PDF, DOC, DOCX)'));
+    }
+};
+
+// Configurar Multer para imágenes
 const upload = multer({
     storage: storage,
-    limits: {
-        fileSize: 5 * 1024 * 1024  // Límite de 5MB
-    },
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
     fileFilter: fileFilter
+});
+
+// Configurar Multer para documentos
+const uploadDocument = multer({
+    storage: storage,
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB para documentos
+    fileFilter: documentFilter
 });
 
 // =====================================================
@@ -111,6 +137,45 @@ router.post('/image', upload.single('image'), async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Error al subir la imagen'
+        });
+    }
+});
+
+// =====================================================
+// POST /api/upload/document - Subir documento (PDF/DOC)
+// =====================================================
+router.post('/document', uploadDocument.single('file'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                error: 'No se proporcionó ningún archivo'
+            });
+        }
+
+        const contentType = req.body.contentType || 'documentos';
+        const fileUrl = `/uploads/${contentType}/${req.file.filename}`;
+
+        debugLog.log('UPLOAD', '✅ Documento subido:', fileUrl);
+
+        res.status(201).json({
+            success: true,
+            message: 'Documento subido exitosamente',
+            data: {
+                url: fileUrl,
+                filename: req.file.filename,
+                originalname: req.file.originalname,
+                size: req.file.size,
+                mimetype: req.file.mimetype,
+                contentType: contentType
+            }
+        });
+
+    } catch (error) {
+        debugLog.error('UPLOAD', '❌ Error al subir documento:', sanitizeError(error, 'upload'));
+        res.status(500).json({
+            success: false,
+            error: 'Error al subir el documento'
         });
     }
 });

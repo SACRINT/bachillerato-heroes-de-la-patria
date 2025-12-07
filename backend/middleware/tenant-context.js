@@ -10,7 +10,7 @@
  * 4. Query param (?tenant=tenant1)
  */
 
-const pool = require('../config/database');
+const { pool } = require('../config/database');
 
 /**
  * Cache de configuraciones de tenant (en memoria)
@@ -206,7 +206,7 @@ async function tenantContext(req, res, next) {
             config: tenantConfig.config_json || {},
 
             // Helper method para obtener valores de config
-            getConfig: function(key, defaultValue = null) {
+            getConfig: function (key, defaultValue = null) {
                 const keys = key.split('.');
                 let value = this.config;
 

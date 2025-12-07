@@ -4,14 +4,13 @@ class ParentPortal {
         this.currentSession = null;
         this.studentData = null;
         this.isLoggedIn = false;
-        
+
         this.initializePortal();
     }
 
     initializePortal() {
         this.checkExistingSession();
         this.setupEventListeners();
-        this.loadSampleData();
     }
 
     checkExistingSession() {
@@ -23,7 +22,7 @@ class ParentPortal {
                 const sessionTime = new Date(this.currentSession.loginTime);
                 const now = new Date();
                 const hoursDiff = (now - sessionTime) / (1000 * 60 * 60);
-                
+
                 if (hoursDiff < 24) {
                     this.loginSuccess(this.currentSession.studentData);
                 } else {
@@ -55,328 +54,46 @@ class ParentPortal {
         }
     }
 
-    loadSampleData() {
-        // Datos de muestra para demostración
-        this.sampleStudentData = {
-            id: 'BGE-2024-156',
-            name: 'Ana García Mendoza',
-            grade: '5° Semestre',
-            group: 'A',
-            shift: 'Matutino',
-            tutor: 'Prof. María Rodríguez',
-            currentAverage: 8.7,
-            attendance: 95,
-            pendingTasks: 3,
-            subjects: [
-                {
-                    id: 'mat5',
-                    name: 'Matemáticas V',
-                    teacher: 'Prof. Carlos Hernández',
-                    grades: [
-                        { type: 'Examen', grade: 9.2, date: '2024-09-15', weight: 40 },
-                        { type: 'Proyecto', grade: 8.5, date: '2024-09-10', weight: 30 },
-                        { type: 'Participación', grade: 8.8, date: '2024-09-05', weight: 20 },
-                        { type: 'Tareas', grade: 9.0, date: '2024-09-01', weight: 10 }
-                    ],
-                    average: 8.9,
-                    attendance: 96
-                },
-                {
-                    id: 'fis5',
-                    name: 'Física V',
-                    teacher: 'Prof. Laura Martínez',
-                    grades: [
-                        { type: 'Laboratorio', grade: 8.7, date: '2024-09-12', weight: 35 },
-                        { type: 'Examen', grade: 8.3, date: '2024-09-08', weight: 40 },
-                        { type: 'Investigación', grade: 9.1, date: '2024-09-03', weight: 25 }
-                    ],
-                    average: 8.6,
-                    attendance: 94
-                },
-                {
-                    id: 'qui5',
-                    name: 'Química V',
-                    teacher: 'Prof. Roberto Sánchez',
-                    grades: [
-                        { type: 'Práctica', grade: 8.9, date: '2024-09-14', weight: 30 },
-                        { type: 'Examen', grade: 8.1, date: '2024-09-09', weight: 45 },
-                        { type: 'Reporte', grade: 8.6, date: '2024-09-04', weight: 25 }
-                    ],
-                    average: 8.4,
-                    attendance: 97
-                },
-                {
-                    id: 'lit5',
-                    name: 'Literatura Universal',
-                    teacher: 'Prof. Ana Jiménez',
-                    grades: [
-                        { type: 'Ensayo', grade: 9.3, date: '2024-09-13', weight: 40 },
-                        { type: 'Exposición', grade: 8.8, date: '2024-09-07', weight: 30 },
-                        { type: 'Análisis', grade: 9.0, date: '2024-09-02', weight: 30 }
-                    ],
-                    average: 9.1,
-                    attendance: 98
-                },
-                {
-                    id: 'his5',
-                    name: 'Historia de México II',
-                    teacher: 'Prof. Miguel Torres',
-                    grades: [
-                        { type: 'Examen', grade: 8.4, date: '2024-09-11', weight: 50 },
-                        { type: 'Investigación', grade: 8.9, date: '2024-09-06', weight: 30 },
-                        { type: 'Participación', grade: 8.7, date: '2024-09-01', weight: 20 }
-                    ],
-                    average: 8.6,
-                    attendance: 93
-                }
-            ],
-            upcomingEvents: [
-                {
-                    title: 'Examen de Matemáticas V',
-                    date: '2024-09-20',
-                    type: 'exam',
-                    subject: 'Matemáticas V'
-                },
-                {
-                    title: 'Entrega de Proyecto Física',
-                    date: '2024-09-22',
-                    type: 'assignment',
-                    subject: 'Física V'
-                },
-                {
-                    title: 'Junta de Padres de Familia',
-                    date: '2024-09-25',
-                    type: 'meeting',
-                    subject: 'General'
-                },
-                {
-                    title: 'Festival de Otoño',
-                    date: '2024-09-28',
-                    type: 'event',
-                    subject: 'Actividades Culturales'
-                }
-            ],
-            announcements: [
-                {
-                    title: 'Cambio de Horario Temporal',
-                    content: 'Debido a trabajos de mantenimiento, las clases del turno matutino terminarán a las 1:00 PM esta semana.',
-                    date: '2024-09-16',
-                    priority: 'high',
-                    type: 'schedule'
-                },
-                {
-                    title: 'Periodo de Evaluaciones',
-                    content: 'Las evaluaciones del segundo parcial se realizarán del 25 de noviembre al 29 de noviembre.',
-                    date: '2024-09-15',
-                    priority: 'medium',
-                    type: 'academic'
-                },
-                {
-                    title: 'Recordatorio: Pago de Colegiaturas',
-                    content: 'Recuerda que el pago de colegiaturas vence el día 5 de cada mes.',
-                    date: '2024-09-14',
-                    priority: 'medium',
-                    type: 'payment'
-                }
-            ]
-        };
-    }
 
-    processLogin() {
+
+    async processLogin() {
         const email = document.getElementById('parentEmail').value;
         const studentId = document.getElementById('studentId').value;
         const password = document.getElementById('accessPassword').value;
         const rememberMe = document.getElementById('rememberMe').checked;
 
         // Validación básica
-        if (!email || !studentId || !password) {
-            this.showAlert('Por favor completa todos los campos', 'error');
+        if (!email || !password) {
+            this.showAlert('Por favor completa los campos de email y contraseña', 'error');
             return;
         }
 
-        // Simular autenticación (en producción sería una llamada al servidor)
         this.showAlert('Verificando credenciales...', 'info');
-        
-        setTimeout(() => {
-            if (this.authenticateParent(email, studentId, password)) {
-                this.loginSuccess(this.sampleStudentData, rememberMe);
+
+        try {
+            const response = await fetch('/api/parents/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Si el studentId es requerido para validación adicional (opcional según lógica de negocio)
+                // aquí podríamos verificar si el studentId ingresado coincide con alguno de los estudiantes del padre
+                // pero por ahora confiaremos en la autenticación del padre.
+
+                this.loginSuccess(data.data, rememberMe);
             } else {
-                this.showAlert('Credenciales incorrectas. Verifica tus datos.', 'error');
+                this.showAlert(data.error || 'Credenciales incorrectas.', 'error');
             }
-        }, 1500);
-    }
-
-    authenticateParent(email, studentId, password) {
-        // Simulación de autenticación
-        // En producción, esto sería una llamada segura al servidor
-        
-        // Credenciales de demostración
-        const validCredentials = [
-            {
-                email: 'padre@ejemplo.com',
-                studentId: 'BGE-2024-156',
-                password: 'demo123'
-            },
-            {
-                email: 'demo@padres.com',
-                studentId: 'BGE-2024-001',
-                password: 'padres2024'
-            }
-        ];
-
-        return validCredentials.some(cred => 
-            cred.email === email && 
-            cred.studentId === studentId && 
-            cred.password === password
-        );
-    }
-
-    loginSuccess(studentData, rememberMe = false) {
-        this.isLoggedIn = true;
-        this.studentData = studentData;
-
-        // Guardar sesión si se solicita
-        if (rememberMe) {
-            this.currentSession = {
-                studentData: studentData,
-                loginTime: new Date().toISOString()
-            };
-            localStorage.setItem('parent_session', JSON.stringify(this.currentSession));
+        } catch (error) {
+            console.error('Login error:', error);
+            this.showAlert('Error de conexión. Intente nuevamente.', 'error');
         }
-
-        // Ocultar sección de login y mostrar dashboard
-        document.getElementById('loginSection').classList.add('d-none');
-        document.getElementById('parentDashboard').classList.remove('d-none');
-
-        // Cargar datos en el dashboard
-        this.loadDashboard();
-        this.showAlert('Bienvenido al Portal de Padres', 'success');
-    }
-
-    loadDashboard() {
-        if (!this.studentData) return;
-
-        // Actualizar información del estudiante
-        document.getElementById('studentName').textContent = this.studentData.name;
-        document.getElementById('displayStudentId').textContent = this.studentData.id;
-        document.getElementById('studentGrade').textContent = this.studentData.grade;
-        document.getElementById('studentGroup').textContent = this.studentData.group;
-        document.getElementById('tutorName').textContent = this.studentData.tutor;
-        document.getElementById('studentShift').textContent = this.studentData.shift;
-        document.getElementById('currentAverage').textContent = this.studentData.currentAverage;
-
-        // Cargar calificaciones recientes
-        this.loadRecentGrades();
-        
-        // Cargar eventos próximos
-        this.loadUpcomingEvents();
-        
-        // Cargar comunicados
-        this.loadAnnouncements();
-    }
-
-    loadRecentGrades() {
-        const container = document.getElementById('recentGrades');
-        if (!container || !this.studentData.subjects) return;
-
-        let recentGrades = [];
-        
-        // Obtener las calificaciones más recientes de todas las materias
-        this.studentData.subjects.forEach(subject => {
-            if (subject.grades && subject.grades.length > 0) {
-                const latestGrade = subject.grades.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-                recentGrades.push({
-                    ...latestGrade,
-                    subject: subject.name
-                });
-            }
-        });
-
-        // Ordenar por fecha descendente
-        recentGrades = recentGrades.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
-
-        const html = recentGrades.map(grade => {
-            const gradeColor = this.getGradeColor(grade.grade);
-            const formattedDate = new Date(grade.date).toLocaleDateString('es-ES', {
-                day: 'numeric',
-                month: 'short'
-            });
-
-            return `
-                <tr>
-                    <td><strong>${grade.subject}</strong></td>
-                    <td>${grade.type}</td>
-                    <td class="text-center">
-                        <span class="badge bg-${gradeColor} fs-6">${grade.grade}</span>
-                    </td>
-                    <td><small class="text-muted">${formattedDate}</small></td>
-                </tr>
-            `;
-        }).join('');
-
-        container.innerHTML = DOMPurify.sanitize(sanitizeHTML(html, 'ugc'));
-    }
-
-    loadUpcomingEvents() {
-        const container = document.getElementById('upcomingEvents');
-        if (!container || !this.studentData.upcomingEvents) return;
-
-        const html = this.studentData.upcomingEvents.map(event => {
-            const eventDate = new Date(event.date);
-            const formattedDate = eventDate.toLocaleDateString('es-ES', {
-                day: 'numeric',
-                month: 'short'
-            });
-
-            const iconClass = this.getEventIcon(event.type);
-            const colorClass = this.getEventColor(event.type);
-
-            return `
-                <div class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold">
-                                <i class="${iconClass} text-${colorClass} me-2"></i>
-                                ${event.title}
-                            </div>
-                            <small class="text-muted">${event.subject}</small>
-                        </div>
-                        <small class="text-${colorClass} fw-bold">${formattedDate}</small>
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-        container.innerHTML = DOMPurify.sanitize(sanitizeHTML(html, 'ugc'));
-    }
-
-    loadAnnouncements() {
-        const container = document.getElementById('announcements');
-        if (!container || !this.studentData.announcements) return;
-
-        const html = this.studentData.announcements.map(announcement => {
-            const announcementDate = new Date(announcement.date);
-            const formattedDate = announcementDate.toLocaleDateString('es-ES', {
-                day: 'numeric',
-                month: 'short'
-            });
-
-            const priorityColor = this.getPriorityColor(announcement.priority);
-
-            return `
-                <div class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold">${announcement.title}</div>
-                            <p class="mb-1 small">${announcement.content}</p>
-                        </div>
-                        <span class="badge bg-${priorityColor} rounded-pill">${formattedDate}</span>
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-        container.innerHTML = DOMPurify.sanitize(sanitizeHTML(html, 'ugc'));
     }
 
     getGradeColor(grade) {
@@ -426,7 +143,7 @@ class ParentPortal {
 
         // Simular envío de recuperación
         this.showAlert('Enviando instrucciones...', 'info');
-        
+
         setTimeout(() => {
             this.showAlert('Se han enviado las instrucciones de recuperación a tu correo electrónico', 'success');
             bootstrap.Modal.getInstance(document.getElementById('passwordRecoveryModal')).hide();
@@ -439,16 +156,16 @@ class ParentPortal {
             this.isLoggedIn = false;
             this.studentData = null;
             this.currentSession = null;
-            
+
             localStorage.removeItem('parent_session');
-            
+
             // Mostrar sección de login y ocultar dashboard
             document.getElementById('loginSection').classList.remove('d-none');
             document.getElementById('parentDashboard').classList.add('d-none');
-            
+
             // Limpiar formulario
             document.getElementById('parentLoginForm').reset();
-            
+
             this.showAlert('Sesión cerrada exitosamente', 'info');
         }
     }
@@ -461,9 +178,9 @@ class ParentPortal {
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `);
-        
+
         document.body.appendChild(alertDiv);
-        
+
         setTimeout(() => {
             if (alertDiv.parentNode) {
                 alertDiv.remove();
@@ -476,7 +193,7 @@ class ParentPortal {
 function togglePassword(inputId) {
     const input = document.getElementById(inputId);
     const button = input.nextElementSibling.querySelector('i');
-    
+
     if (input.type === 'password') {
         input.type = 'text';
         button.classList.remove('fa-eye');
@@ -501,14 +218,14 @@ function showRegistrationHelp() {
 // Funciones del dashboard
 function showGrades() {
     if (!window.parentPortal || !window.parentPortal.isLoggedIn) return;
-    
+
     const studentData = window.parentPortal.studentData;
     let gradesHTML = '<div class="grades-detail">';
-    
+
     studentData.subjects.forEach(subject => {
         const subjectAverage = subject.average;
         const averageColor = window.parentPortal.getGradeColor(subjectAverage);
-        
+
         gradesHTML += `
             <div class="card mb-3">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -528,11 +245,11 @@ function showGrades() {
                             </thead>
                             <tbody>
         `;
-        
+
         subject.grades.forEach(grade => {
             const gradeColor = window.parentPortal.getGradeColor(grade.grade);
             const formattedDate = new Date(grade.date).toLocaleDateString('es-ES');
-            
+
             gradesHTML += `
                 <tr>
                     <td>${grade.type}</td>
@@ -542,7 +259,7 @@ function showGrades() {
                 </tr>
             `;
         });
-        
+
         gradesHTML += `
                             </tbody>
                         </table>
@@ -552,9 +269,9 @@ function showGrades() {
             </div>
         `;
     });
-    
+
     gradesHTML += '</div>';
-    
+
     document.getElementById('mainPanel').innerHTML = sanitizeHTML(`
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4><i class="fas fa-chart-line text-primary me-2"></i>Calificaciones Detalladas</h4>
@@ -568,10 +285,10 @@ function showGrades() {
 
 function showAttendance() {
     if (!window.parentPortal || !window.parentPortal.isLoggedIn) return;
-    
+
     const studentData = window.parentPortal.studentData;
     let attendanceHTML = '<div class="attendance-detail">';
-    
+
     attendanceHTML += `
         <div class="row mb-4">
             <div class="col-md-4 text-center">
@@ -600,11 +317,11 @@ function showAttendance() {
             </div>
         </div>
     `;
-    
+
     studentData.subjects.forEach(subject => {
         const attendancePercentage = subject.attendance;
         const attendanceColor = attendancePercentage >= 95 ? 'success' : attendancePercentage >= 90 ? 'warning' : 'danger';
-        
+
         attendanceHTML += `
             <div class="card mb-3">
                 <div class="card-body">
@@ -632,9 +349,9 @@ function showAttendance() {
             </div>
         `;
     });
-    
+
     attendanceHTML += '</div>';
-    
+
     document.getElementById('mainPanel').innerHTML = sanitizeHTML(`
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4><i class="fas fa-calendar-check text-success me-2"></i>Control de Asistencias</h4>
@@ -709,7 +426,7 @@ function showCommunication() {
             </div>
         </div>
     `;
-    
+
     document.getElementById('mainPanel').innerHTML = sanitizeHTML(communicationHTML, 'ugc');
 }
 
@@ -833,25 +550,25 @@ function showSchedule() {
             </div>
         </div>
     `;
-    
+
     document.getElementById('mainPanel').innerHTML = sanitizeHTML(scheduleHTML, 'ugc');
 }
 
 function loadMainDashboard() {
     if (!window.parentPortal || !window.parentPortal.isLoggedIn) return;
-    
+
     // Restaurar el dashboard principal
     window.parentPortal.loadDashboard();
 }
 
 function downloadReport() {
     if (!window.parentPortal || !window.parentPortal.isLoggedIn) return;
-    
+
     window.parentPortal.showAlert('Generando reporte académico...', 'info');
-    
+
     setTimeout(() => {
         window.parentPortal.showAlert('Reporte descargado exitosamente', 'success');
-        
+
         // Simular descarga
         const link = document.createElement('a');
         link.href = '#';
@@ -973,7 +690,7 @@ const parentPortalStyles = `
 document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(parentPortalStyles)));
 
 // Inicializar el portal cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     if (document.getElementById('parentLoginForm')) {
         window.parentPortal = new ParentPortal();
     }

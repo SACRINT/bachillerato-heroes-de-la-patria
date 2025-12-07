@@ -39,7 +39,8 @@ if (typeof window.sanitizeHTML === 'undefined') {
         'js/data-event-emitter.js',      // Base event emitter (usado por otros bridges)
         'js/auth-context-bridge.js',     // Desacopla auth ↔ context
         'js/auth-api-bridge.js',         // Desacopla api-client ↔ auth
-        'js/unified-auth-system-v2.js'   // ✅ FIX (19 Nov 2025): Sistema de autenticación V2
+        'js/unified-auth-system-v2.js',  // ✅ FIX (19 Nov 2025): Sistema de autenticación V2
+        'js/tenant-auto-updater.js'      // 🏢 FIX (6 Dic 2025): Multi-tenancy dinámico global
     ];
 
     bridges.forEach(bridgePath => {
@@ -49,7 +50,7 @@ if (typeof window.sanitizeHTML === 'undefined') {
         document.head.appendChild(script);
     });
 
-    console.log('[MAIN.JS] ✅ 4 scripts cargados: bridges + unified-auth-system-v2');
+    console.log('[MAIN.JS] ✅ 5 scripts cargados: bridges + unified-auth-system-v2 + tenant-auto-updater');
 })();
 
 // Load event handler files FIRST (in order), then event-handler-registry

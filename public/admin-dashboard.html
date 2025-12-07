@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" id="page-description" content="Dashboard Administrativo del Bachillerato General Estatal Héroes de la Patria">
+    <meta name="description" id="page-description"
+        content="Dashboard Administrativo del Bachillerato General Estatal Héroes de la Patria">
     <meta name="keywords" content="administración, dashboard, gestión, académico, control">
-    <title id="page-title" data-base-title="Dashboard Administrativo | BGE Héroes de la Patria">Dashboard Administrativo | BGE Héroes de la Patria</title>
-    
+    <title id="page-title" data-base-title="Dashboard Administrativo | BGE Héroes de la Patria">Dashboard Administrativo
+        | BGE Héroes de la Patria</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 
@@ -21,6 +26,7 @@
             position: relative;
             padding-left: 20px;
         }
+
         .timeline::before {
             content: '';
             position: absolute;
@@ -30,10 +36,12 @@
             width: 2px;
             background: #dee2e6;
         }
+
         .timeline-item {
             position: relative;
             margin-bottom: 15px;
         }
+
         .timeline-marker {
             position: absolute;
             left: -16px;
@@ -43,22 +51,25 @@
             border-radius: 50%;
             border: 2px solid white;
         }
+
         .timeline-content {
             margin-left: 0;
         }
-    
-    /* ✨ Hover effects reemplazados de inline handlers */
-    [data-action] {
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    [data-action]:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-    }
-    [data-action]:active {
-      transform: translateY(-2px);
-    }
+
+        /* ✨ Hover effects reemplazados de inline handlers */
+        [data-action] {
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        [data-action]:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        [data-action]:active {
+            transform: translateY(-2px);
+        }
     </style>
     <script src="js/meta-updater.js" defer></script>
     <!-- ✅ FIX (18 Nov 2025): Header/Footer styles loaded globally -->
@@ -68,6 +79,7 @@
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
 
 </head>
+
 <body>
     <!-- 🔒 PROTECCIÓN JWT - VERIFICA AUTENTICACIÓN ANTES DE CARGAR CONTENIDO -->
     <script src="js/dashboard/dashboard-auth-check.js"></script>
@@ -93,7 +105,7 @@
                         <i class="fas fa-tachometer-alt me-3"></i>Dashboard Administrativo
                     </h1>
                     <p class="lead mb-4">
-                        Panel de control integral para la gestión académica y administrativa 
+                        Panel de control integral para la gestión académica y administrativa
                         del BGE Héroes de la Patria.
                     </p>
                 </div>
@@ -117,18 +129,21 @@
             </div>
             <div class="row g-4">
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" data-action="scrollToSection">
+                    <div class="card h-100 border-0 shadow-sm feature-card"
+                        style="cursor: pointer; transition: transform 0.2s ease;" data-action="scrollToSection">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-chart-bar fa-3x text-primary"></i>
                             </div>
                             <h5 class="card-title">Gestión de Contenido</h5>
-                            <p class="card-text text-muted">Administre noticias, eventos, avisos y contenido dinámico del sitio</p>
+                            <p class="card-text text-muted">Administre noticias, eventos, avisos y contenido dinámico
+                                del sitio</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" data-action="showInfoModal">
+                    <div class="card h-100 border-0 shadow-sm feature-card"
+                        style="cursor: pointer; transition: transform 0.2s ease;" data-action="showInfoModal">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-info-circle fa-3x text-success"></i>
@@ -139,7 +154,8 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" data-action="scrollToSection">
+                    <div class="card h-100 border-0 shadow-sm feature-card"
+                        style="cursor: pointer; transition: transform 0.2s ease;" data-action="scrollToSection">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-th-large fa-3x text-warning"></i>
@@ -150,7 +166,8 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm feature-card" style="cursor: pointer; transition: transform 0.2s ease;" data-action="scrollToSection">
+                    <div class="card h-100 border-0 shadow-sm feature-card"
+                        style="cursor: pointer; transition: transform 0.2s ease;" data-action="scrollToSection">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-shield-alt fa-3x text-info"></i>
@@ -181,7 +198,8 @@
                                 <i class="fas fa-users fa-3x text-primary"></i>
                             </div>
                             <h5 class="card-title">Gestión de Estudiantes</h5>
-                            <p class="card-text text-muted">Control completo de matrículas, expedientes académicos, calificaciones y seguimiento estudiantil.</p>
+                            <p class="card-text text-muted">Control completo de matrículas, expedientes académicos,
+                                calificaciones y seguimiento estudiantil.</p>
                             <ul class="list-unstyled small text-start">
                                 <li><i class="fas fa-check text-success me-2"></i>Registro y actualización de datos</li>
                                 <li><i class="fas fa-check text-success me-2"></i>Historial académico completo</li>
@@ -198,7 +216,8 @@
                                 <i class="fas fa-chalkboard-teacher fa-3x text-success"></i>
                             </div>
                             <h5 class="card-title">Gestión de Docentes</h5>
-                            <p class="card-text text-muted">Administración del personal académico, asignación de materias y control de carga horaria.</p>
+                            <p class="card-text text-muted">Administración del personal académico, asignación de
+                                materias y control de carga horaria.</p>
                             <ul class="list-unstyled small text-start">
                                 <li><i class="fas fa-check text-success me-2"></i>Perfil completo de docentes</li>
                                 <li><i class="fas fa-check text-success me-2"></i>Asignación de materias</li>
@@ -215,7 +234,8 @@
                                 <i class="fas fa-chart-bar fa-3x text-info"></i>
                             </div>
                             <h5 class="card-title">Reportes y Estadísticas</h5>
-                            <p class="card-text text-muted">Generación de reportes académicos, financieros y estadísticas institucionales en tiempo real.</p>
+                            <p class="card-text text-muted">Generación de reportes académicos, financieros y
+                                estadísticas institucionales en tiempo real.</p>
                             <ul class="list-unstyled small text-start">
                                 <li><i class="fas fa-check text-success me-2"></i>Reportes académicos</li>
                                 <li><i class="fas fa-check text-success me-2"></i>Estadísticas de rendimiento</li>
@@ -232,7 +252,8 @@
                                 <i class="fas fa-dollar-sign fa-3x text-warning"></i>
                             </div>
                             <h5 class="card-title">Sistema de Pagos</h5>
-                            <p class="card-text text-muted">Control integral de colegiaturas, pagos pendientes y estado financiero de estudiantes.</p>
+                            <p class="card-text text-muted">Control integral de colegiaturas, pagos pendientes y estado
+                                financiero de estudiantes.</p>
                             <ul class="list-unstyled small text-start">
                                 <li><i class="fas fa-check text-success me-2"></i>Registro de pagos</li>
                                 <li><i class="fas fa-check text-success me-2"></i>Control de vencimientos</li>
@@ -249,7 +270,8 @@
                                 <i class="fas fa-calendar-alt fa-3x text-danger"></i>
                             </div>
                             <h5 class="card-title">Calendario Académico</h5>
-                            <p class="card-text text-muted">Gestión completa del calendario escolar, eventos importantes y fechas académicas.</p>
+                            <p class="card-text text-muted">Gestión completa del calendario escolar, eventos importantes
+                                y fechas académicas.</p>
                             <ul class="list-unstyled small text-start">
                                 <li><i class="fas fa-check text-success me-2"></i>Planificación de eventos</li>
                                 <li><i class="fas fa-check text-success me-2"></i>Fechas de exámenes</li>
@@ -266,7 +288,8 @@
                                 <i class="fas fa-bell fa-3x text-warning"></i>
                             </div>
                             <h5 class="card-title">Notificaciones Push</h5>
-                            <p class="card-text text-muted">Sistema avanzado de notificaciones push para comunicación efectiva con la comunidad educativa.</p>
+                            <p class="card-text text-muted">Sistema avanzado de notificaciones push para comunicación
+                                efectiva con la comunidad educativa.</p>
                             <ul class="list-unstyled small text-start">
                                 <li><i class="fas fa-check text-success me-2"></i>Comunicados oficiales</li>
                                 <li><i class="fas fa-check text-success me-2"></i>Recordatorios académicos</li>
@@ -286,7 +309,8 @@
                                 <i class="fas fa-cog fa-3x text-secondary"></i>
                             </div>
                             <h5 class="card-title">Configuración del Sistema</h5>
-                            <p class="card-text text-muted">Configuración avanzada de parámetros institucionales y personalización del sistema.</p>
+                            <p class="card-text text-muted">Configuración avanzada de parámetros institucionales y
+                                personalización del sistema.</p>
                             <ul class="list-unstyled small text-start">
                                 <li><i class="fas fa-check text-success me-2"></i>Configuración institucional</li>
                                 <li><i class="fas fa-check text-success me-2"></i>Personalización de reportes</li>
@@ -326,31 +350,37 @@
                                     <ul class="list-unstyled">
                                         <li class="mb-2">
                                             <i class="fas fa-check-circle text-success me-2"></i>
-                                            <strong>Autenticación Multifactor:</strong> Sistema de verificación en dos pasos para acceso administrativo
+                                            <strong>Autenticación Multifactor:</strong> Sistema de verificación en dos
+                                            pasos para acceso administrativo
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-check-circle text-success me-2"></i>
-                                            <strong>Roles y Permisos:</strong> Control granular de acceso según el nivel administrativo
+                                            <strong>Roles y Permisos:</strong> Control granular de acceso según el nivel
+                                            administrativo
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-check-circle text-success me-2"></i>
-                                            <strong>Sesiones Seguras:</strong> Timeout automático y cifrado de sesiones activas
+                                            <strong>Sesiones Seguras:</strong> Timeout automático y cifrado de sesiones
+                                            activas
                                         </li>
                                     </ul>
-                                    
+
                                     <h6 class="text-primary">Protección de Datos</h6>
                                     <ul class="list-unstyled">
                                         <li class="mb-2">
                                             <i class="fas fa-check-circle text-success me-2"></i>
-                                            <strong>Cifrado de Datos:</strong> Encriptación AES-256 para información sensible
+                                            <strong>Cifrado de Datos:</strong> Encriptación AES-256 para información
+                                            sensible
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-check-circle text-success me-2"></i>
-                                            <strong>Respaldos Automáticos:</strong> Copias de seguridad diarias y semanales
+                                            <strong>Respaldos Automáticos:</strong> Copias de seguridad diarias y
+                                            semanales
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-check-circle text-success me-2"></i>
-                                            <strong>Auditoría Completa:</strong> Registro de todas las acciones administrativas
+                                            <strong>Auditoría Completa:</strong> Registro de todas las acciones
+                                            administrativas
                                         </li>
                                     </ul>
                                 </div>
@@ -372,18 +402,21 @@
                                     <ul class="list-unstyled">
                                         <li class="mb-2">
                                             <i class="fas fa-gavel text-info me-2"></i>
-                                            <strong>Ley Federal de Protección de Datos:</strong> Cumplimiento total con normativas mexicanas
+                                            <strong>Ley Federal de Protección de Datos:</strong> Cumplimiento total con
+                                            normativas mexicanas
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-gavel text-info me-2"></i>
-                                            <strong>LOPD Educativa:</strong> Protección específica de datos académicos estudiantiles
+                                            <strong>LOPD Educativa:</strong> Protección específica de datos académicos
+                                            estudiantiles
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-gavel text-info me-2"></i>
-                                            <strong>Derecho al Olvido:</strong> Eliminación segura de datos según solicitud
+                                            <strong>Derecho al Olvido:</strong> Eliminación segura de datos según
+                                            solicitud
                                         </li>
                                     </ul>
-                                    
+
                                     <h6 class="text-success">Monitoreo y Alertas</h6>
                                     <ul class="list-unstyled">
                                         <li class="mb-2">
@@ -392,11 +425,13 @@
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-eye text-warning me-2"></i>
-                                            <strong>Alertas de Seguridad:</strong> Notificaciones inmediatas ante actividad sospechosa
+                                            <strong>Alertas de Seguridad:</strong> Notificaciones inmediatas ante
+                                            actividad sospechosa
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-eye text-warning me-2"></i>
-                                            <strong>Análisis de Comportamiento:</strong> Detección de patrones anómalos de acceso
+                                            <strong>Análisis de Comportamiento:</strong> Detección de patrones anómalos
+                                            de acceso
                                         </li>
                                     </ul>
                                 </div>
@@ -405,7 +440,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Panel de Estado de Seguridad -->
             <div class="row mt-4">
                 <div class="col-12">
@@ -565,7 +600,8 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label small fw-bold">Categoría</label>
-                                    <select class="form-select form-select-sm" id="calendarCategoriaFilter" data-change-handler="globalEventCalendar?.applyFilters({categoria: this.value})">
+                                    <select class="form-select form-select-sm" id="calendarCategoriaFilter"
+                                        data-change-handler="globalEventCalendar?.applyFilters({categoria: this.value})">
                                         <option value="todas">Todas las categorías</option>
                                         <option value="Académico">Académico</option>
                                         <option value="Cultural">Cultural</option>
@@ -576,7 +612,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label small fw-bold">Modalidad</label>
-                                    <select class="form-select form-select-sm" id="calendarModalidadFilter" data-change-handler="globalEventCalendar?.applyFilters({modalidad: this.value})">
+                                    <select class="form-select form-select-sm" id="calendarModalidadFilter"
+                                        data-change-handler="globalEventCalendar?.applyFilters({modalidad: this.value})">
                                         <option value="todas">Todas las modalidades</option>
                                         <option value="presencial">Presencial</option>
                                         <option value="virtual">Virtual</option>
@@ -674,11 +711,13 @@
                     <form id="adminLoginForm">
                         <div class="mb-3">
                             <label for="adminUsername" class="form-label">Usuario Administrativo</label>
-                            <input type="text" class="form-control" id="adminUsername" placeholder="Nombre de usuario" autocomplete="username" required>
+                            <input type="text" class="form-control" id="adminUsername" placeholder="Nombre de usuario"
+                                autocomplete="username" required>
                         </div>
                         <div class="mb-3">
                             <label for="adminPassword" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="adminPassword" autocomplete="current-password" required>
+                            <input type="password" class="form-control" id="adminPassword"
+                                autocomplete="current-password" required>
                         </div>
                         <div class="mb-3">
                             <label for="adminRole" class="form-label">Rol</label>
@@ -803,20 +842,29 @@
                         <div class="col-md-6">
                             <h6>🏥 Estado del Sistema</h6>
                             <ul class="list-unstyled">
-                                <li><i class="fas fa-circle text-success me-2"></i><span id="systemStatus">Sistema Operativo</span></li>
-                                <li><i class="fas fa-server text-info me-2"></i>Servidor: <span id="serverStatus">Online</span></li>
-                                <li><i class="fas fa-database text-warning me-2"></i>Base de Datos: <span id="dbStatus">Conectada</span></li>
-                                <li><i class="fas fa-wifi text-success me-2"></i>Conexión: <span id="connectionStatus">Estable</span></li>
-                                <li><i class="fas fa-clock text-primary me-2"></i>Última Act.: <span id="lastUpdate">Ahora</span></li>
+                                <li><i class="fas fa-circle text-success me-2"></i><span id="systemStatus">Sistema
+                                        Operativo</span></li>
+                                <li><i class="fas fa-server text-info me-2"></i>Servidor: <span
+                                        id="serverStatus">Online</span></li>
+                                <li><i class="fas fa-database text-warning me-2"></i>Base de Datos: <span
+                                        id="dbStatus">Conectada</span></li>
+                                <li><i class="fas fa-wifi text-success me-2"></i>Conexión: <span
+                                        id="connectionStatus">Estable</span></li>
+                                <li><i class="fas fa-clock text-primary me-2"></i>Última Act.: <span
+                                        id="lastUpdate">Ahora</span></li>
                             </ul>
                         </div>
                         <div class="col-md-6">
                             <h6>👤 Información de Sesión</h6>
                             <ul class="list-unstyled">
-                                <li><i class="fas fa-user text-primary me-2"></i>Usuario: <span id="currentUserName">Administrador</span></li>
-                                <li><i class="fas fa-shield-alt text-success me-2"></i>Rol: <span id="currentUserRole">Director</span></li>
-                                <li><i class="fas fa-calendar text-info me-2"></i>Login: <span id="loginTime">--</span></li>
-                                <li><i class="fas fa-key text-warning me-2"></i>Sesión: <span id="sessionStatus">Activa</span></li>
+                                <li><i class="fas fa-user text-primary me-2"></i>Usuario: <span
+                                        id="currentUserName">Administrador</span></li>
+                                <li><i class="fas fa-shield-alt text-success me-2"></i>Rol: <span
+                                        id="currentUserRole">Director</span></li>
+                                <li><i class="fas fa-calendar text-info me-2"></i>Login: <span id="loginTime">--</span>
+                                </li>
+                                <li><i class="fas fa-key text-warning me-2"></i>Sesión: <span
+                                        id="sessionStatus">Activa</span></li>
                                 <li><i class="fas fa-lock text-success me-2"></i>Seguridad: Habilitada</li>
                             </ul>
                         </div>
@@ -855,7 +903,8 @@
     </div>
 
     <!-- Modal Cambiar Contraseña -->
-    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -870,32 +919,32 @@
                             <label for="currentPassword" class="form-label">
                                 <i class="fas fa-lock me-2"></i>Contraseña Actual
                             </label>
-                            <input type="password" class="form-control" id="currentPassword" required autocomplete="current-password"
-                                   placeholder="Ingrese su contraseña actual">
+                            <input type="password" class="form-control" id="currentPassword" required
+                                autocomplete="current-password" placeholder="Ingrese su contraseña actual">
                         </div>
                         <div class="mb-3">
                             <label for="newPassword" class="form-label">
                                 <i class="fas fa-key me-2"></i>Nueva Contraseña
                             </label>
-                            <input type="password" class="form-control" id="newPassword" required autocomplete="new-password"
-                                   placeholder="Ingrese su nueva contraseña" minlength="8">
+                            <input type="password" class="form-control" id="newPassword" required
+                                autocomplete="new-password" placeholder="Ingrese su nueva contraseña" minlength="8">
                             <div class="form-text">La contraseña debe tener al menos 8 caracteres.</div>
                         </div>
                         <div class="mb-3">
                             <label for="confirmPassword" class="form-label">
                                 <i class="fas fa-check-circle me-2"></i>Confirmar Nueva Contraseña
                             </label>
-                            <input type="password" class="form-control" id="confirmPassword" required autocomplete="new-password"
-                                   placeholder="Confirme su nueva contraseña">
+                            <input type="password" class="form-control" id="confirmPassword" required
+                                autocomplete="new-password" placeholder="Confirme su nueva contraseña">
                         </div>
-                        <div id="passwordStrengthIndicator" class="mb-3" style="display: none;">
-                            <div class="progress" style="height: 5px;">
-                                <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                        <div id="passwordStrengthIndicator" class="mb-3 initially-hidden">
+                            <div class="progress h-5px">
+                                <div class="progress-bar w-0" role="progressbar"></div>
                             </div>
                             <small class="text-muted" id="strengthText">Fortaleza de la contraseña</small>
                         </div>
                     </form>
-                    <div id="passwordChangeMessage" class="alert" style="display: none;"></div>
+                    <div id="passwordChangeMessage" class="alert initially-hidden"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -908,14 +957,16 @@
     </div>
 
     <!-- Modal Configurar Estadísticas -->
-    <div class="modal fade" id="statisticsConfigModal" tabindex="-1" aria-labelledby="statisticsConfigModalLabel" aria-hidden="true">
+    <div class="modal fade" id="statisticsConfigModal" tabindex="-1" aria-labelledby="statisticsConfigModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="modal-header bg-gradient bg-gradient-custom">
                     <h5 class="modal-title text-white" id="statisticsConfigModalLabel">
                         <i class="fas fa-chart-line me-2"></i>Configurar Estadísticas Institucionales
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
                     <form id="statisticsConfigForm">
@@ -931,7 +982,7 @@
                                     </div>
                                     <div class="card-body">
                                         <input type="number" class="form-control form-control-lg text-center"
-                                               id="configTotalStudents" placeholder="Ej: 1247" min="0" max="9999">
+                                            id="configTotalStudents" placeholder="Ej: 1247" min="0" max="9999">
                                         <small class="text-muted">Número total de estudiantes matriculados</small>
                                     </div>
                                 </div>
@@ -945,7 +996,7 @@
                                     </div>
                                     <div class="card-body">
                                         <input type="number" class="form-control form-control-lg text-center"
-                                               id="configTotalSubjects" placeholder="Ej: 42" min="0" max="999">
+                                            id="configTotalSubjects" placeholder="Ej: 42" min="0" max="999">
                                         <small class="text-muted">Materias ofrecidas en el plantel</small>
                                     </div>
                                 </div>
@@ -962,7 +1013,7 @@
                                     </div>
                                     <div class="card-body">
                                         <input type="number" class="form-control form-control-lg text-center"
-                                               id="configTotalTeachers" placeholder="Ej: 68" min="0" max="999">
+                                            id="configTotalTeachers" placeholder="Ej: 68" min="0" max="999">
                                         <small class="text-muted">Personal docente activo</small>
                                     </div>
                                 </div>
@@ -976,7 +1027,7 @@
                                     </div>
                                     <div class="card-body">
                                         <input type="number" class="form-control form-control-lg text-center"
-                                               id="configGeneralAverage" placeholder="Ej: 8.4" min="0" max="10" step="0.1">
+                                            id="configGeneralAverage" placeholder="Ej: 8.4" min="0" max="10" step="0.1">
                                         <small class="text-muted">Promedio institucional actual</small>
                                     </div>
                                 </div>
@@ -988,12 +1039,14 @@
                                 <i class="fas fa-info-circle text-primary me-3 fa-2x"></i>
                                 <div>
                                     <strong>Configuración Avanzada</strong>
-                                    <p class="mb-0">Estos datos se almacenan de forma persistente y se actualizan automáticamente en todo el sistema. Los cambios son inmediatos y permanentes.</p>
+                                    <p class="mb-0">Estos datos se almacenan de forma persistente y se actualizan
+                                        automáticamente en todo el sistema. Los cambios son inmediatos y permanentes.
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </form>
-                    <div id="statisticsConfigMessage" class="alert" style="display: none;"></div>
+                    <div id="statisticsConfigMessage" class="alert initially-hidden"></div>
                 </div>
                 <div class="modal-footer border-0 bg-light">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
@@ -1010,7 +1063,7 @@
     <!-- Panel Administrativo - Siempre Visible -->
     <div id="adminPanel">
         <!-- Header del Dashboard -->
-        <section class="py-4 bg-primary text-white" style="margin-top: 20px;">
+        <section class="py-4 bg-primary text-white mt-20px">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-md-8">
@@ -1101,7 +1154,8 @@
                     </div>
                     <!-- Botón de configuración de estadísticas -->
                     <div class="col-12 text-center mt-4">
-                        <button class="btn btn-outline-primary btn-sm" data-action="showStatisticsConfigModal" title="Configurar estadísticas">
+                        <button class="btn btn-outline-primary btn-sm" data-action="showStatisticsConfigModal"
+                            title="Configurar estadísticas">
                             <i class="fas fa-cog me-2"></i>Configurar Estadísticas
                         </button>
                     </div>
@@ -1114,84 +1168,99 @@
             <div class="container">
                 <ul class="nav nav-pills nav-fill mb-4" id="adminTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="overview-tab" data-bs-toggle="pill" data-bs-target="#overview" type="button" role="tab">
+                        <button class="nav-link active" id="overview-tab" data-bs-toggle="pill"
+                            data-bs-target="#overview" type="button" role="tab">
                             <i class="fas fa-chart-pie me-2"></i>Resumen
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="students-tab" data-bs-toggle="pill" data-bs-target="#students" type="button" role="tab">
+                        <button class="nav-link" id="students-tab" data-bs-toggle="pill" data-bs-target="#students"
+                            type="button" role="tab">
                             <i class="fas fa-users me-2"></i>Estudiantes
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="teachers-tab" data-bs-toggle="pill" data-bs-target="#teachers" type="button" role="tab">
+                        <button class="nav-link" id="teachers-tab" data-bs-toggle="pill" data-bs-target="#teachers"
+                            type="button" role="tab">
                             <i class="fas fa-chalkboard-teacher me-2"></i>Docentes
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="parents-tab" data-bs-toggle="pill" data-bs-target="#parents" type="button" role="tab">
+                        <button class="nav-link" id="parents-tab" data-bs-toggle="pill" data-bs-target="#parents"
+                            type="button" role="tab">
                             <i class="fas fa-user-friends me-2"></i>Padres
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="registrations-tab" data-bs-toggle="pill" data-bs-target="#registrations" type="button" role="tab">
+                        <button class="nav-link" id="registrations-tab" data-bs-toggle="pill"
+                            data-bs-target="#registrations" type="button" role="tab">
                             <i class="fas fa-user-plus me-2"></i>Solicitudes
-                            <span class="badge bg-warning ms-1" id="pending-count" style="display: none;">0</span>
+                            <span class="badge bg-warning ms-1 initially-hidden" id="pending-count">0</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="egresados-tab" data-bs-toggle="pill" data-bs-target="#egresados" type="button" role="tab">
+                        <button class="nav-link" id="egresados-tab" data-bs-toggle="pill" data-bs-target="#egresados"
+                            type="button" role="tab">
                             <i class="fas fa-user-graduate me-2"></i>Egresados
                             <span class="badge bg-info ms-1" id="egresados-count">0</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="bolsa-trabajo-tab" data-bs-toggle="pill" data-bs-target="#bolsa-trabajo" type="button" role="tab">
+                        <button class="nav-link" id="bolsa-trabajo-tab" data-bs-toggle="pill"
+                            data-bs-target="#bolsa-trabajo" type="button" role="tab">
                             <i class="fas fa-briefcase me-2"></i>Bolsa de Trabajo
                             <span class="badge bg-warning ms-1" id="bolsa-trabajo-count">0</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="suscriptores-tab" data-bs-toggle="pill" data-bs-target="#suscriptores" type="button" role="tab">
+                        <button class="nav-link" id="suscriptores-tab" data-bs-toggle="pill"
+                            data-bs-target="#suscriptores" type="button" role="tab">
                             <i class="fas fa-envelope me-2"></i>Suscriptores
                             <span class="badge bg-primary ms-1" id="suscriptores-count">0</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="citas-tab" data-bs-toggle="pill" data-bs-target="#citas" type="button" role="tab">
+                        <button class="nav-link" id="citas-tab" data-bs-toggle="pill" data-bs-target="#citas"
+                            type="button" role="tab">
                             <i class="fas fa-calendar me-2"></i>Citas
                             <span class="badge bg-info ms-1" id="citas-count">0</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="approvals-tab" data-bs-toggle="pill" data-bs-target="#approvals" type="button" role="tab">
+                        <button class="nav-link" id="approvals-tab" data-bs-toggle="pill" data-bs-target="#approvals"
+                            type="button" role="tab">
                             <i class="fas fa-check-circle me-2"></i>Aprobaciones
                             <span class="badge bg-warning ms-1" id="approvals-count">0</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="activeusers-tab" data-bs-toggle="pill" data-bs-target="#activeusers" type="button" role="tab">
+                        <button class="nav-link" id="activeusers-tab" data-bs-toggle="pill"
+                            data-bs-target="#activeusers" type="button" role="tab">
                             <i class="fas fa-users-cog me-2"></i>Usuarios Activos
                             <span class="badge bg-success ms-1" id="active-users-count">0</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="finances-tab" data-bs-toggle="pill" data-bs-target="#finances" type="button" role="tab">
+                        <button class="nav-link" id="finances-tab" data-bs-toggle="pill" data-bs-target="#finances"
+                            type="button" role="tab">
                             <i class="fas fa-dollar-sign me-2"></i>Finanzas
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="content-tab" data-bs-toggle="pill" data-bs-target="#content" type="button" role="tab">
+                        <button class="nav-link" id="content-tab" data-bs-toggle="pill" data-bs-target="#content"
+                            type="button" role="tab">
                             <i class="fas fa-edit me-2"></i>Contenido
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="reports-tab" data-bs-toggle="pill" data-bs-target="#reports" type="button" role="tab">
+                        <button class="nav-link" id="reports-tab" data-bs-toggle="pill" data-bs-target="#reports"
+                            type="button" role="tab">
                             <i class="fas fa-file-alt me-2"></i>Reportes
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="manual-admin-tab" data-bs-toggle="pill" data-bs-target="#manual-admin" type="button" role="tab">
+                        <button class="nav-link" id="manual-admin-tab" data-bs-toggle="pill"
+                            data-bs-target="#manual-admin" type="button" role="tab">
                             <i class="fas fa-cogs me-2"></i>Sistema Manual
                         </button>
                     </li>
@@ -1208,7 +1277,7 @@
                                             <i class="fas fa-chart-bar me-2"></i>Evolución Académica
                                         </h5>
                                     </div>
-                                    <div class="card-body" style="position: relative; height: 250px;">
+                                    <div class="card-body relative-h-250px">
                                         <canvas id="academicChart"></canvas>
                                     </div>
                                 </div>
@@ -1235,7 +1304,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="card border-0 shadow-sm">
                                     <div class="card-header bg-warning text-white">
                                         <h6 class="mb-0">
@@ -1244,13 +1313,15 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="alert alert-warning mb-2">
-                                            <small><i class="fas fa-user me-1"></i>15 estudiantes en riesgo académico</small>
+                                            <small><i class="fas fa-user me-1"></i>15 estudiantes en riesgo
+                                                académico</small>
                                         </div>
                                         <div class="alert alert-info mb-2">
                                             <small><i class="fas fa-dollar-sign me-1"></i>23 pagos pendientes</small>
                                         </div>
                                         <div class="alert alert-success mb-0">
-                                            <small><i class="fas fa-check me-1"></i>Sistema funcionando correctamente</small>
+                                            <small><i class="fas fa-check me-1"></i>Sistema funcionando
+                                                correctamente</small>
                                         </div>
                                     </div>
                                 </div>
@@ -1269,8 +1340,9 @@
                                     <div class="card-body">
                                         <div class="row g-4">
                                             <div class="col-lg-8">
-                                                <div style="position: relative; height: 250px;">
-                                                    <canvas id="institutional-trends-chart" style="max-height: 250px;"></canvas>
+                                                <div class="relative-h-250px">
+                                                    <canvas id="institutional-trends-chart"
+                                                        class="max-h-250px"></canvas>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4">
@@ -1299,7 +1371,8 @@
                     <!-- Tab Estudiantes -->
                     <div class="tab-pane fade" id="students" role="tabpanel">
                         <div class="card border-0 shadow-sm">
-                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <div
+                                class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">
                                     <i class="fas fa-users me-2"></i>Gestión de Estudiantes
                                     <span class="badge bg-light text-primary ms-2" id="totalStudentsCount">0</span>
@@ -1330,7 +1403,8 @@
                                     <div class="col-md-4">
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                            <input type="text" class="form-control" id="studentSearchInput" placeholder="Buscar por nombre o matrícula...">
+                                            <input type="text" class="form-control" id="studentSearchInput"
+                                                placeholder="Buscar por nombre o matrícula...">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -1377,7 +1451,8 @@
                                                     <div class="spinner-border text-primary" role="status">
                                                         <span class="visually-hidden">Cargando...</span>
                                                     </div>
-                                                    <p class="mt-2 text-muted">Cargando información de estudiantes...</p>
+                                                    <p class="mt-2 text-muted">Cargando información de estudiantes...
+                                                    </p>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -1392,7 +1467,8 @@
                     <!-- Tab Docentes -->
                     <div class="tab-pane fade" id="teachers" role="tabpanel">
                         <div class="card border-0 shadow-sm">
-                            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <div
+                                class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">
                                     <i class="fas fa-chalkboard-teacher me-2"></i>Gestión de Docentes
                                     <span class="badge bg-light text-success ms-2" id="totalTeachersCount">0</span>
@@ -1416,7 +1492,8 @@
                                     <div class="col-md-4">
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                            <input type="text" class="form-control" id="teacherSearchInput" placeholder="Buscar por nombre o especialidad...">
+                                            <input type="text" class="form-control" id="teacherSearchInput"
+                                                placeholder="Buscar por nombre o especialidad...">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -1471,13 +1548,15 @@
                     <!-- Tab Padres -->
                     <div class="tab-pane fade" id="parents" role="tabpanel">
                         <div class="card border-0 shadow-sm">
-                            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                            <div
+                                class="card-header bg-info text-white d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">
                                     <i class="fas fa-user-friends me-2"></i>Gestión de Padres de Familia
                                     <span class="badge bg-light text-info ms-2" id="totalParentsCount">0</span>
                                 </h5>
                                 <div>
-                                    <button class="btn btn-light btn-sm" id="newParentBtn" data-action="showCreateParentModal">
+                                    <button class="btn btn-light btn-sm" id="newParentBtn"
+                                        data-action="showCreateParentModal">
                                         <i class="fas fa-plus me-1"></i>Nuevo Padre
                                     </button>
                                     <button class="btn btn-light btn-sm" data-action="reloadParents">
@@ -1490,7 +1569,8 @@
                                     <div class="col-md-6">
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                            <input type="text" class="form-control" id="parentSearchInput" placeholder="Buscar por nombre o email...">
+                                            <input type="text" class="form-control" id="parentSearchInput"
+                                                placeholder="Buscar por nombre o email...">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -1500,7 +1580,8 @@
                                         </select>
                                     </div>
                                     <div class="col-md-2">
-                                        <button class="btn btn-outline-secondary w-100" data-action="clearParentFilters">
+                                        <button class="btn btn-outline-secondary w-100"
+                                            data-action="clearParentFilters">
                                             <i class="fas fa-times me-1"></i>Limpiar
                                         </button>
                                     </div>
@@ -1534,13 +1615,15 @@
                     <!-- Tab Solicitudes de Registro -->
                     <div class="tab-pane fade" id="registrations" role="tabpanel">
                         <div class="card border-0 shadow-sm">
-                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <div
+                                class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">
                                     <i class="fas fa-user-plus me-2"></i>Solicitudes de Registro
                                 </h5>
                                 <div>
                                     <span class="badge bg-warning me-2" id="pending-counter">0 pendientes</span>
-                                    <button class="btn btn-success btn-sm me-2" data-action="adminDashboard" title="Generar solicitudes de prueba">
+                                    <button class="btn btn-success btn-sm me-2" data-action="adminDashboard"
+                                        title="Generar solicitudes de prueba">
                                         <i class="fas fa-flask me-1"></i>Generar Pruebas
                                     </button>
                                     <button class="btn btn-light btn-sm" data-action="adminDashboard">
@@ -1551,10 +1634,11 @@
                             <div class="card-body">
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
-                                    <strong>Gestión de Solicitudes:</strong> Aquí aparecerán todas las solicitudes de registro de nuevos usuarios.
+                                    <strong>Gestión de Solicitudes:</strong> Aquí aparecerán todas las solicitudes de
+                                    registro de nuevos usuarios.
                                     Puedes aprobar o rechazar cada solicitud después de revisar la información.
                                 </div>
-                                
+
                                 <!-- Contenedor de solicitudes -->
                                 <div id="pending-registrations-container">
                                     <div class="text-center py-4">
@@ -1655,24 +1739,29 @@
                                         <div class="row g-3">
                                             <div class="col-md-4">
                                                 <label class="form-label">Buscar por nombre</label>
-                                                <input type="text" class="form-control" id="search-egresado" placeholder="Ingrese nombre..." data-keyup-handler="filterEgresados()">
+                                                <input type="text" class="form-control" id="search-egresado"
+                                                    placeholder="Ingrese nombre..."
+                                                    data-keyup-handler="filterEgresados()">
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label">Generación</label>
-                                                <select class="form-select" id="filter-generacion" data-change-handler="filterEgresados()">
+                                                <select class="form-select" id="filter-generacion"
+                                                    data-change-handler="filterEgresados()">
                                                     <option value="">Todas las generaciones</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label">Estatus</label>
-                                                <select class="form-select" id="filter-estatus" data-change-handler="filterEgresados()">
+                                                <select class="form-select" id="filter-estatus"
+                                                    data-change-handler="filterEgresados()">
                                                     <option value="">Todos los estatus</option>
                                                     <!-- Se llenará dinámicamente desde la base de datos -->
                                                 </select>
                                             </div>
                                             <div class="col-md-2">
                                                 <label class="form-label">&nbsp;</label>
-                                                <button class="btn btn-outline-secondary w-100" id="clear-filters-egresados">
+                                                <button class="btn btn-outline-secondary w-100"
+                                                    id="clear-filters-egresados">
                                                     <i class="fas fa-times me-2"></i>Limpiar
                                                 </button>
                                             </div>
@@ -1684,7 +1773,8 @@
                             <!-- Tabla de Egresados -->
                             <div class="col-12">
                                 <div class="card border-0 shadow-sm">
-                                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                    <div
+                                        class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                                         <h5 class="mb-0"><i class="fas fa-table me-2"></i>Registro de Egresados</h5>
                                         <div>
                                             <button class="btn btn-light btn-sm me-2" data-action="exportEgresados">
@@ -1705,19 +1795,19 @@
                                         </div>
 
                                         <!-- Error State -->
-                                        <div id="egresados-error" class="alert alert-danger m-3" style="display: none;">
+                                        <div id="egresados-error" class="alert alert-danger m-3 initially-hidden">
                                             <i class="fas fa-exclamation-triangle me-2"></i>
                                             <span id="egresados-error-message">Error al cargar datos</span>
                                         </div>
 
                                         <!-- Empty State -->
-                                        <div id="egresados-empty" class="text-center py-5" style="display: none;">
+                                        <div id="egresados-empty" class="text-center py-5 initially-hidden">
                                             <i class="fas fa-user-graduate fa-3x text-muted mb-3"></i>
                                             <p class="text-muted">No hay egresados registrados</p>
                                         </div>
 
                                         <!-- Tabla Responsive -->
-                                        <div id="egresados-table-container" class="table-responsive" style="display: none;">
+                                        <div id="egresados-table-container" class="table-responsive initially-hidden">
                                             <table class="table table-hover align-middle mb-0" id="egresadosTable">
                                                 <thead class="table-light sticky-top">
                                                     <tr>
@@ -1739,7 +1829,8 @@
                                     <div class="card-footer bg-light">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <small class="text-muted">
-                                                Mostrando <span id="showing-count">0</span> de <span id="total-count">0</span> egresados
+                                                Mostrando <span id="showing-count">0</span> de <span
+                                                    id="total-count">0</span> egresados
                                             </small>
                                         </div>
                                     </div>
@@ -1839,11 +1930,14 @@
                                         <div class="row g-3">
                                             <div class="col-md-4">
                                                 <label class="form-label">Buscar por nombre</label>
-                                                <input type="text" class="form-control" id="search-bolsa" placeholder="Ingrese nombre..." data-keyup-handler="filterBolsaTrabajo()">
+                                                <input type="text" class="form-control" id="search-bolsa"
+                                                    placeholder="Ingrese nombre..."
+                                                    data-keyup-handler="filterBolsaTrabajo()">
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label">Estado</label>
-                                                <select class="form-select" id="filter-estado-bolsa" data-change-handler="filterBolsaTrabajo()">
+                                                <select class="form-select" id="filter-estado-bolsa"
+                                                    data-change-handler="filterBolsaTrabajo()">
                                                     <option value="">Todos los estados</option>
                                                     <option value="nuevo">Nuevo</option>
                                                     <option value="revisado">Revisado</option>
@@ -1855,14 +1949,16 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label">Generación</label>
-                                                <select class="form-select" id="filter-generacion-bolsa" data-change-handler="filterBolsaTrabajo()">
+                                                <select class="form-select" id="filter-generacion-bolsa"
+                                                    data-change-handler="filterBolsaTrabajo()">
                                                     <option value="">Todas las generaciones</option>
                                                     <!-- Se llenará dinámicamente -->
                                                 </select>
                                             </div>
                                             <div class="col-md-2">
                                                 <label class="form-label">&nbsp;</label>
-                                                <button class="btn btn-outline-secondary w-100" data-action="clearFiltersBolsaTrabajo">
+                                                <button class="btn btn-outline-secondary w-100"
+                                                    data-action="clearFiltersBolsaTrabajo">
                                                     <i class="fas fa-times me-2"></i>Limpiar
                                                 </button>
                                             </div>
@@ -1874,10 +1970,12 @@
                             <!-- Tabla de Bolsa de Trabajo -->
                             <div class="col-12">
                                 <div class="card border-0 shadow-sm">
-                                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                                    <div
+                                        class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
                                         <h5 class="mb-0"><i class="fas fa-table me-2"></i>Candidatos Registrados</h5>
                                         <div>
-                                            <button class="btn btn-dark btn-sm me-2" data-action="exportBolsaTrabajoCSV">
+                                            <button class="btn btn-dark btn-sm me-2"
+                                                data-action="exportBolsaTrabajoCSV">
                                                 <i class="fas fa-download me-2"></i>Exportar CSV
                                             </button>
                                             <button class="btn btn-dark btn-sm" data-action="loadBolsaTrabajo">
@@ -1895,19 +1993,20 @@
                                         </div>
 
                                         <!-- Error State -->
-                                        <div id="bolsa-error" class="alert alert-danger m-3" style="display: none;">
+                                        <div id="bolsa-error" class="alert alert-danger m-3 initially-hidden">
                                             <i class="fas fa-exclamation-triangle me-2"></i>
                                             <span id="bolsa-error-message">Error al cargar datos</span>
                                         </div>
 
                                         <!-- Empty State -->
-                                        <div id="bolsa-empty" class="text-center py-5" style="display: none;">
+                                        <div id="bolsa-empty" class="text-center py-5 initially-hidden">
                                             <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
-                                            <p class="text-muted">No hay candidatos registrados en la bolsa de trabajo</p>
+                                            <p class="text-muted">No hay candidatos registrados en la bolsa de trabajo
+                                            </p>
                                         </div>
 
                                         <!-- Tabla Responsive -->
-                                        <div id="bolsa-table-container" class="table-responsive" style="display: none;">
+                                        <div id="bolsa-table-container" class="table-responsive initially-hidden">
                                             <table class="table table-hover align-middle mb-0" id="bolsaTable">
                                                 <thead class="table-light sticky-top">
                                                     <tr>
@@ -1929,7 +2028,8 @@
                                     <div class="card-footer bg-light">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <small class="text-muted">
-                                                Mostrando <span id="showing-count-bolsa">0</span> de <span id="total-count-bolsa">0</span> candidatos
+                                                Mostrando <span id="showing-count-bolsa">0</span> de <span
+                                                    id="total-count-bolsa">0</span> candidatos
                                             </small>
                                         </div>
                                     </div>
@@ -2029,11 +2129,14 @@
                                         <div class="row g-3">
                                             <div class="col-md-4">
                                                 <label class="form-label">Buscar por email o nombre</label>
-                                                <input type="text" class="form-control" id="search-suscriptor" placeholder="Ingrese email o nombre..." data-keyup-handler="filterSuscriptores()">
+                                                <input type="text" class="form-control" id="search-suscriptor"
+                                                    placeholder="Ingrese email o nombre..."
+                                                    data-keyup-handler="filterSuscriptores()">
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label">Estado</label>
-                                                <select class="form-select" id="filter-estado-suscriptor" data-change-handler="filterSuscriptores()">
+                                                <select class="form-select" id="filter-estado-suscriptor"
+                                                    data-change-handler="filterSuscriptores()">
                                                     <option value="">Todos los estados</option>
                                                     <option value="activo">Activo</option>
                                                     <option value="inactivo">Inactivo</option>
@@ -2043,7 +2146,8 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label">Verificación</label>
-                                                <select class="form-select" id="filter-verificacion-suscriptor" data-change-handler="filterSuscriptores()">
+                                                <select class="form-select" id="filter-verificacion-suscriptor"
+                                                    data-change-handler="filterSuscriptores()">
                                                     <option value="">Todos</option>
                                                     <option value="verificado">Verificado</option>
                                                     <option value="no_verificado">No Verificado</option>
@@ -2051,7 +2155,8 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <label class="form-label">&nbsp;</label>
-                                                <button class="btn btn-outline-secondary w-100" data-action="clearFiltersSuscriptores">
+                                                <button class="btn btn-outline-secondary w-100"
+                                                    data-action="clearFiltersSuscriptores">
                                                     <i class="fas fa-times me-2"></i>Limpiar
                                                 </button>
                                             </div>
@@ -2063,10 +2168,12 @@
                             <!-- Tabla de Suscriptores -->
                             <div class="col-12">
                                 <div class="card border-0 shadow-sm">
-                                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                    <div
+                                        class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                                         <h5 class="mb-0"><i class="fas fa-table me-2"></i>Lista de Suscriptores</h5>
                                         <div>
-                                            <button class="btn btn-light btn-sm me-2" data-action="exportSuscriptoresCSV">
+                                            <button class="btn btn-light btn-sm me-2"
+                                                data-action="exportSuscriptoresCSV">
                                                 <i class="fas fa-download me-2"></i>Exportar CSV
                                             </button>
                                             <button class="btn btn-light btn-sm" data-action="loadSuscriptores">
@@ -2084,19 +2191,20 @@
                                         </div>
 
                                         <!-- Error State -->
-                                        <div id="suscriptores-error" class="alert alert-danger m-3" style="display: none;">
+                                        <div id="suscriptores-error" class="alert alert-danger m-3 initially-hidden">
                                             <i class="fas fa-exclamation-triangle me-2"></i>
                                             <span id="suscriptores-error-message">Error al cargar datos</span>
                                         </div>
 
                                         <!-- Empty State -->
-                                        <div id="suscriptores-empty" class="text-center py-5" style="display: none;">
+                                        <div id="suscriptores-empty" class="text-center py-5 initially-hidden">
                                             <i class="fas fa-envelope fa-3x text-muted mb-3"></i>
                                             <p class="text-muted">No hay suscriptores registrados</p>
                                         </div>
 
                                         <!-- Tabla Responsive -->
-                                        <div id="suscriptores-table-container" class="table-responsive" style="display: none;">
+                                        <div id="suscriptores-table-container"
+                                            class="table-responsive initially-hidden">
                                             <table class="table table-hover align-middle mb-0" id="suscriptoresTable">
                                                 <thead class="table-light sticky-top">
                                                     <tr>
@@ -2118,7 +2226,8 @@
                                     <div class="card-footer bg-light">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <small class="text-muted">
-                                                Mostrando <span id="showing-count-suscriptores">0</span> de <span id="total-count-suscriptores">0</span> suscriptores
+                                                Mostrando <span id="showing-count-suscriptores">0</span> de <span
+                                                    id="total-count-suscriptores">0</span> suscriptores
                                             </small>
                                         </div>
                                     </div>
@@ -2133,8 +2242,10 @@
                             <!-- Encabezado del Tab -->
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <div>
-                                    <h5 class="mb-0"><i class="fas fa-calendar-check text-primary me-2"></i>Gestión de Solicitudes de Citas</h5>
-                                    <small class="text-muted">Administra y monitorea todas las solicitudes de citas escolares</small>
+                                    <h5 class="mb-0"><i class="fas fa-calendar-check text-primary me-2"></i>Gestión de
+                                        Solicitudes de Citas</h5>
+                                    <small class="text-muted">Administra y monitorea todas las solicitudes de citas
+                                        escolares</small>
                                 </div>
                                 <button class="btn btn-primary" data-action="refreshCitas">
                                     <i class="fas fa-sync-alt me-1"></i>Actualizar
@@ -2152,12 +2263,12 @@
                                                     <h6 class="card-title mb-2 opacity-75">Total Solicitudes</h6>
                                                     <h2 class="mb-0 fw-bold" id="totalCitasCount">0</h2>
                                                 </div>
-                                                <div style="font-size: 2.5rem; opacity: 0.3;">
+                                                <div class="fs-2-5rem-opacity-0-3">
                                                     <i class="fas fa-calendar-alt"></i>
                                                 </div>
                                             </div>
-                                            <div class="progress mt-2" style="height: 4px; background-color: rgba(255,255,255,0.2);">
-                                                <div class="progress-bar bg-white" style="width: 70%;"></div>
+                                            <div class="progress mt-2 h-4px-bg-white-opacity-0-2">
+                                                <div class="progress-bar bg-white w-70"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -2172,12 +2283,12 @@
                                                     <h6 class="card-title mb-2 opacity-75">Pendientes de Aprobación</h6>
                                                     <h2 class="mb-0 fw-bold" id="citasPendientesCount">0</h2>
                                                 </div>
-                                                <div style="font-size: 2.5rem; opacity: 0.3;">
+                                                <div class="fs-2-5rem-opacity-0-3">
                                                     <i class="fas fa-hourglass-half"></i>
                                                 </div>
                                             </div>
-                                            <div class="progress mt-2" style="height: 4px; background-color: rgba(255,255,255,0.2);">
-                                                <div class="progress-bar bg-white" style="width: 45%;"></div>
+                                            <div class="progress mt-2 h-4px-bg-white-opacity-0-2">
+                                                <div class="progress-bar bg-white w-45"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -2192,12 +2303,12 @@
                                                     <h6 class="card-title mb-2 opacity-75">Aprobadas y Confirmadas</h6>
                                                     <h2 class="mb-0 fw-bold" id="citasAprobadosCount">0</h2>
                                                 </div>
-                                                <div style="font-size: 2.5rem; opacity: 0.3;">
+                                                <div class="fs-2-5rem-opacity-0-3">
                                                     <i class="fas fa-check-circle"></i>
                                                 </div>
                                             </div>
-                                            <div class="progress mt-2" style="height: 4px; background-color: rgba(255,255,255,0.2);">
-                                                <div class="progress-bar bg-white" style="width: 85%;"></div>
+                                            <div class="progress mt-2 h-4px-bg-white-opacity-0-2">
+                                                <div class="progress-bar bg-white w-85"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -2207,19 +2318,25 @@
                             <!-- Panel de Filtros y Búsqueda -->
                             <div class="card border-0 shadow-sm mb-4">
                                 <div class="card-header bg-light border-bottom">
-                                    <h6 class="mb-0"><i class="fas fa-filter me-2 text-info"></i>Filtros y Búsqueda Avanzada</h6>
+                                    <h6 class="mb-0"><i class="fas fa-filter me-2 text-info"></i>Filtros y Búsqueda
+                                        Avanzada</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="row g-3">
                                         <!-- Búsqueda por nombre/email -->
                                         <div class="col-lg-4 col-md-6">
-                                            <label class="form-label small fw-semibold mb-2"><i class="fas fa-search me-1 text-primary"></i>Buscar por Nombre o Email</label>
-                                            <input type="text" class="form-control form-control-sm" id="citasSearchInput" placeholder="ej: Juan Pérez, juan@email.com">
+                                            <label class="form-label small fw-semibold mb-2"><i
+                                                    class="fas fa-search me-1 text-primary"></i>Buscar por Nombre o
+                                                Email</label>
+                                            <input type="text" class="form-control form-control-sm"
+                                                id="citasSearchInput" placeholder="ej: Juan Pérez, juan@email.com">
                                         </div>
 
                                         <!-- Filtro por Estado -->
                                         <div class="col-lg-4 col-md-6">
-                                            <label class="form-label small fw-semibold mb-2"><i class="fas fa-info-circle me-1 text-warning"></i>Estado de la Cita</label>
+                                            <label class="form-label small fw-semibold mb-2"><i
+                                                    class="fas fa-info-circle me-1 text-warning"></i>Estado de la
+                                                Cita</label>
                                             <select class="form-select form-select-sm" id="citasStatusFilter">
                                                 <option value="">✓ Todos los estados</option>
                                                 <option value="pendiente">⏳ Pendiente</option>
@@ -2232,13 +2349,16 @@
 
                                         <!-- Filtro por Motivo -->
                                         <div class="col-lg-4 col-md-6">
-                                            <label class="form-label small fw-semibold mb-2"><i class="fas fa-tag me-1 text-success"></i>Motivo de la Cita</label>
+                                            <label class="form-label small fw-semibold mb-2"><i
+                                                    class="fas fa-tag me-1 text-success"></i>Motivo de la Cita</label>
                                             <select class="form-select form-select-sm" id="citasMotivosFilter">
                                                 <option value="">✓ Todos los motivos</option>
                                                 <option value="Asesoría Académica">📚 Asesoría Académica</option>
                                                 <option value="Inscripción">📝 Inscripción</option>
-                                                <option value="Orientación Vocacional">🎓 Orientación Vocacional</option>
-                                                <option value="Asuntos Administrativos">📋 Asuntos Administrativos</option>
+                                                <option value="Orientación Vocacional">🎓 Orientación Vocacional
+                                                </option>
+                                                <option value="Asuntos Administrativos">📋 Asuntos Administrativos
+                                                </option>
                                                 <option value="Reunión de Padres">👨‍👩‍👧 Reunión de Padres</option>
                                                 <option value="Disciplina">⚖️ Disciplina</option>
                                                 <option value="Bienestar Estudiantil">❤️ Bienestar Estudiantil</option>
@@ -2249,7 +2369,8 @@
 
                                     <!-- Botones de Acción -->
                                     <div class="mt-3 d-flex gap-2">
-                                        <button class="btn btn-sm btn-outline-secondary" data-action="clearCitasFilters">
+                                        <button class="btn btn-sm btn-outline-secondary"
+                                            data-action="clearCitasFilters">
                                             <i class="fas fa-redo me-1"></i> Limpiar Filtros
                                         </button>
                                         <button class="btn btn-sm btn-outline-info" data-action="exportCitasToCSV">
@@ -2277,13 +2398,15 @@
                                                 <th><i class="fas fa-briefcase me-1 text-success"></i>Motivo</th>
                                                 <th><i class="fas fa-calendar me-1 text-warning"></i>Fecha y Hora</th>
                                                 <th><i class="fas fa-flag me-1"></i>Estado</th>
-                                                <th class="text-center"><i class="fas fa-cogs me-1 text-secondary"></i>Acciones</th>
+                                                <th class="text-center"><i
+                                                        class="fas fa-cogs me-1 text-secondary"></i>Acciones</th>
                                             </tr>
                                         </thead>
                                         <tbody id="citasTable">
                                             <tr>
                                                 <td colspan="7" class="text-center text-muted py-4">
-                                                    <i class="fas fa-spinner fa-spin me-2"></i>Cargando solicitudes de citas...
+                                                    <i class="fas fa-spinner fa-spin me-2"></i>Cargando solicitudes de
+                                                    citas...
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -2300,7 +2423,8 @@
                     <!-- Tab Aprobaciones Pendientes -->
                     <div class="tab-pane fade" id="approvals" role="tabpanel">
                         <div class="card border-0 shadow-sm">
-                            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                            <div
+                                class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">
                                     <i class="fas fa-check-circle me-2"></i>Solicitudes Pendientes de Aprobación
                                 </h5>
@@ -2315,7 +2439,8 @@
                                 <div class="row mb-3">
                                     <div class="col-md-4">
                                         <label class="form-label">Filtrar por tipo:</label>
-                                        <select class="form-select" id="filter-form-type" data-change-handler="filterApprovals()">
+                                        <select class="form-select" id="filter-form-type"
+                                            data-change-handler="filterApprovals()">
                                             <option value="">Todos los formularios</option>
                                             <option value="bolsa_trabajo">Bolsa de Trabajo</option>
                                             <option value="egresados">Actualización de Egresados</option>
@@ -2324,7 +2449,8 @@
                                     <div class="col-md-8 text-end">
                                         <div class="alert alert-info mb-0 d-inline-block">
                                             <i class="fas fa-info-circle me-2"></i>
-                                            <strong>Total pendientes:</strong> <span id="total-pending-approvals">0</span>
+                                            <strong>Total pendientes:</strong> <span
+                                                id="total-pending-approvals">0</span>
                                         </div>
                                     </div>
                                 </div>
@@ -2345,13 +2471,16 @@
                     <!-- Tab Usuarios Activos -->
                     <div class="tab-pane fade" id="activeusers" role="tabpanel">
                         <div class="card border-0 shadow-sm">
-                            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <div
+                                class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">
                                     <i class="fas fa-users-cog me-2"></i>Gestión de Usuarios Activos
                                 </h5>
                                 <div>
-                                    <span class="badge bg-light text-success me-2" id="active-users-counter">0 usuarios</span>
-                                    <button class="btn btn-light btn-sm" data-action="if" title="Actualizar lista de usuarios">
+                                    <span class="badge bg-light text-success me-2" id="active-users-counter">0
+                                        usuarios</span>
+                                    <button class="btn btn-light btn-sm" data-action="if"
+                                        title="Actualizar lista de usuarios">
                                         <i class="fas fa-refresh me-1"></i>Actualizar
                                     </button>
                                 </div>
@@ -2360,7 +2489,8 @@
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
                                     <strong>Gestión de Usuarios Activos:</strong>
-                                    Aquí puedes ver todos los usuarios que tienen acceso al sistema, revocar acceso a usuarios problemáticos y restaurar acceso cuando sea necesario.
+                                    Aquí puedes ver todos los usuarios que tienen acceso al sistema, revocar acceso a
+                                    usuarios problemáticos y restaurar acceso cuando sea necesario.
                                 </div>
 
                                 <!-- Controles de búsqueda -->
@@ -2370,7 +2500,8 @@
                                             <span class="input-group-text">
                                                 <i class="fas fa-search"></i>
                                             </span>
-                                            <input type="text" class="form-control" placeholder="Buscar por email..." id="searchActiveUsers">
+                                            <input type="text" class="form-control" placeholder="Buscar por email..."
+                                                id="searchActiveUsers">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -2446,22 +2577,26 @@
                         <!-- Tabs de gestión financiera -->
                         <ul class="nav nav-pills nav-fill mb-4" id="financeTabs" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="overview-tab-2" data-bs-toggle="pill" data-bs-target="#overview-2" type="button" role="tab">
+                                <button class="nav-link active" id="overview-tab-2" data-bs-toggle="pill"
+                                    data-bs-target="#overview-2" type="button" role="tab">
                                     <i class="fas fa-chart-pie me-2"></i>Resumen
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="incomes-tab" data-bs-toggle="pill" data-bs-target="#incomes" type="button" role="tab">
+                                <button class="nav-link" id="incomes-tab" data-bs-toggle="pill"
+                                    data-bs-target="#incomes" type="button" role="tab">
                                     <i class="fas fa-arrow-up me-2"></i>Ingresos
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="expenses-tab" data-bs-toggle="pill" data-bs-target="#expenses" type="button" role="tab">
+                                <button class="nav-link" id="expenses-tab" data-bs-toggle="pill"
+                                    data-bs-target="#expenses" type="button" role="tab">
                                     <i class="fas fa-arrow-down me-2"></i>Gastos
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="pending-tab" data-bs-toggle="pill" data-bs-target="#pending" type="button" role="tab">
+                                <button class="nav-link" id="pending-tab" data-bs-toggle="pill"
+                                    data-bs-target="#pending" type="button" role="tab">
                                     <i class="fas fa-clock me-2"></i>Pendientes
                                 </button>
                             </li>
@@ -2475,7 +2610,8 @@
                                     <div class="col-md-6">
                                         <div class="card">
                                             <div class="card-header">
-                                                <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Indicadores Clave</h6>
+                                                <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Indicadores Clave
+                                                </h6>
                                             </div>
                                             <div class="card-body">
                                                 <div class="row text-center">
@@ -2496,7 +2632,8 @@
                                     <div class="col-md-6">
                                         <div class="card">
                                             <div class="card-header">
-                                                <h6 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Alertas</h6>
+                                                <h6 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Alertas
+                                                </h6>
                                             </div>
                                             <div class="card-body">
                                                 <div id="financeAlerts">
@@ -2526,7 +2663,7 @@
                                                         <i class="fas fa-search"></i>
                                                     </span>
                                                     <input type="text" class="form-control" id="searchIncomes"
-                                                           placeholder="Buscar por concepto, categoría o descripción...">
+                                                        placeholder="Buscar por concepto, categoría o descripción...">
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
@@ -2585,7 +2722,7 @@
                                                         <i class="fas fa-search"></i>
                                                     </span>
                                                     <input type="text" class="form-control" id="searchExpenses"
-                                                           placeholder="Buscar por concepto, categoría o descripción...">
+                                                        placeholder="Buscar por concepto, categoría o descripción...">
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
@@ -2641,7 +2778,7 @@
                                                         <i class="fas fa-search"></i>
                                                     </span>
                                                     <input type="text" class="form-control" id="searchPendingPayments"
-                                                           placeholder="Buscar por estudiante, matrícula o concepto...">
+                                                        placeholder="Buscar por estudiante, matrícula o concepto...">
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
@@ -2687,7 +2824,7 @@
                             <!-- Panel de Estadísticas del CMS -->
                             <div class="col-12">
                                 <div class="card border-0 shadow-sm">
-                                    <div class="card-header bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <div class="card-header bg-gradient bg-gradient-custom">
                                         <h5 class="text-white mb-0">
                                             <i class="fas fa-chart-pie me-2"></i>Sistema de Gestión de Contenido (CMS)
                                         </h5>
@@ -2746,22 +2883,26 @@
                                     <div class="card-body">
                                         <div class="row g-3">
                                             <div class="col-md-3">
-                                                <button class="btn btn-primary w-100" data-action="showCreateNoticiaModal">
+                                                <button class="btn btn-primary w-100"
+                                                    data-action="showCreateNoticiaModal">
                                                     <i class="fas fa-newspaper me-2"></i>Nueva Noticia
                                                 </button>
                                             </div>
                                             <div class="col-md-3">
-                                                <button class="btn btn-success w-100" data-action="showCreateEventoModal">
+                                                <button class="btn btn-success w-100"
+                                                    data-action="showCreateEventoModal">
                                                     <i class="fas fa-calendar-plus me-2"></i>Nuevo Evento
                                                 </button>
                                             </div>
                                             <div class="col-md-3">
-                                                <button class="btn btn-warning w-100" data-action="showCreateAvisoModal">
+                                                <button class="btn btn-warning w-100"
+                                                    data-action="showCreateAvisoModal">
                                                     <i class="fas fa-bullhorn me-2"></i>Nuevo Aviso
                                                 </button>
                                             </div>
                                             <div class="col-md-3">
-                                                <button class="btn btn-info w-100" data-action="showCreateComunicadoModal">
+                                                <button class="btn btn-info w-100"
+                                                    data-action="showCreateComunicadoModal">
                                                     <i class="fas fa-file-alt me-2"></i>Nuevo Comunicado
                                                 </button>
                                             </div>
@@ -2778,16 +2919,20 @@
                                             <i class="fas fa-list me-2 text-secondary"></i>Contenido Existente
                                         </h6>
                                         <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-outline-primary active" id="btnViewNoticias" data-action="viewContentType">
+                                            <button class="btn btn-outline-primary active" id="btnViewNoticias"
+                                                data-action="viewContentType">
                                                 Noticias
                                             </button>
-                                            <button class="btn btn-outline-success" id="btnViewEventos" data-action="viewContentType">
+                                            <button class="btn btn-outline-success" id="btnViewEventos"
+                                                data-action="viewContentType">
                                                 Eventos
                                             </button>
-                                            <button class="btn btn-outline-warning" id="btnViewAvisos" data-action="viewContentType">
+                                            <button class="btn btn-outline-warning" id="btnViewAvisos"
+                                                data-action="viewContentType">
                                                 Avisos
                                             </button>
-                                            <button class="btn btn-outline-info" id="btnViewComunicados" data-action="viewContentType">
+                                            <button class="btn btn-outline-info" id="btnViewComunicados"
+                                                data-action="viewContentType">
                                                 Comunicados
                                             </button>
                                         </div>
@@ -2797,7 +2942,8 @@
                                             <!-- Aquí se cargará dinámicamente el contenido -->
                                             <div class="text-center text-muted py-4">
                                                 <i class="fas fa-inbox fa-3x mb-3"></i>
-                                                <p>Seleccione un tipo de contenido para ver los elementos existentes.</p>
+                                                <p>Seleccione un tipo de contenido para ver los elementos existentes.
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -2815,17 +2961,20 @@
                                     <div class="card-body">
                                         <div class="row g-3">
                                             <div class="col-md-4">
-                                                <button class="btn btn-outline-secondary w-100" data-action="exportAllContent">
+                                                <button class="btn btn-outline-secondary w-100"
+                                                    data-action="exportAllContent">
                                                     <i class="fas fa-download me-2"></i>Exportar Todo
                                                 </button>
                                             </div>
                                             <div class="col-md-4">
-                                                <button class="btn btn-outline-primary w-100" data-action="refreshContentStats">
+                                                <button class="btn btn-outline-primary w-100"
+                                                    data-action="refreshContentStats">
                                                     <i class="fas fa-sync me-2"></i>Actualizar Estadísticas
                                                 </button>
                                             </div>
                                             <div class="col-md-4">
-                                                <button class="btn btn-outline-info w-100" data-action="showContentPreview">
+                                                <button class="btn btn-outline-info w-100"
+                                                    data-action="showContentPreview">
                                                     <i class="fas fa-eye me-2"></i>Vista Previa Web
                                                 </button>
                                             </div>
@@ -2893,7 +3042,9 @@
                             <div class="col-12">
                                 <div class="alert alert-warning">
                                     <h5><i class="fas fa-info-circle me-2"></i>Sistema de Administración Manual</h5>
-                                    <p class="mb-0"><strong>✅ Configuración Completada</strong> - El sistema ha sido configurado para usar edición manual via GitHub. Los métodos automáticos (OAuth/CMS) han sido deshabilitados por problemas de compatibilidad.</p>
+                                    <p class="mb-0"><strong>✅ Configuración Completada</strong> - El sistema ha sido
+                                        configurado para usar edición manual via GitHub. Los métodos automáticos
+                                        (OAuth/CMS) han sido deshabilitados por problemas de compatibilidad.</p>
                                 </div>
                             </div>
 
@@ -2909,15 +3060,18 @@
                                     <div class="card-body">
                                         <p class="card-text">La forma más simple y directa de editar el contenido:</p>
                                         <ol class="small">
-                                            <li>Ve a tu repositorio: <code>SACRINT/heroes_de_la_patria_oficial</code></li>
+                                            <li>Ve a tu repositorio: <code>SACRINT/heroes_de_la_patria_oficial</code>
+                                            </li>
                                             <li>Navega a la carpeta <code>data/</code></li>
                                             <li>Haz clic en el archivo que quieres editar</li>
-                                            <li>Haz clic en el ícono del lápiz <i class="fas fa-edit"></i> para editar</li>
+                                            <li>Haz clic en el ícono del lápiz <i class="fas fa-edit"></i> para editar
+                                            </li>
                                             <li>Modifica el contenido en formato JSON</li>
                                             <li>Haz clic en "Commit changes"</li>
                                         </ol>
                                         <div class="d-grid">
-                                            <a href="https://github.com/SACRINT/heroes_de_la_patria_oficial/tree/main/data" target="_blank" class="btn btn-success">
+                                            <a href="https://github.com/SACRINT/heroes_de_la_patria_oficial/tree/main/data"
+                                                target="_blank" class="btn btn-success">
                                                 <i class="fab fa-github me-2"></i>Ir a GitHub
                                             </a>
                                         </div>
@@ -2939,7 +3093,8 @@
                                                 <div class="list-group list-group-flush">
                                                     <div class="list-group-item px-0">
                                                         <strong>config.json</strong><br>
-                                                        <small class="text-muted">Información general de la institución</small>
+                                                        <small class="text-muted">Información general de la
+                                                            institución</small>
                                                     </div>
                                                     <div class="list-group-item px-0">
                                                         <strong>noticias.json</strong><br>
@@ -2970,10 +3125,12 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="d-grid gap-2">
-                                            <a href="https://desktop.github.com/" target="_blank" class="btn btn-outline-info btn-sm">
+                                            <a href="https://desktop.github.com/" target="_blank"
+                                                class="btn btn-outline-info btn-sm">
                                                 <i class="fas fa-download me-2"></i>GitHub Desktop
                                             </a>
-                                            <a href="https://jsoneditoronline.org/" target="_blank" class="btn btn-outline-secondary btn-sm">
+                                            <a href="https://jsoneditoronline.org/" target="_blank"
+                                                class="btn btn-outline-secondary btn-sm">
                                                 <i class="fas fa-code me-2"></i>Editor JSON Online
                                             </a>
                                         </div>
@@ -2991,13 +3148,16 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="d-grid gap-2">
-                                            <a href="https://SACRINT.github.io/heroes_de_la_patria_oficial/" target="_blank" class="btn btn-outline-primary btn-sm">
+                                            <a href="https://SACRINT.github.io/heroes_de_la_patria_oficial/"
+                                                target="_blank" class="btn btn-outline-primary btn-sm">
                                                 <i class="fas fa-globe me-2"></i>Ver Sitio Web
                                             </a>
-                                            <a href="https://github.com/SACRINT/heroes_de_la_patria_oficial" target="_blank" class="btn btn-outline-secondary btn-sm">
+                                            <a href="https://github.com/SACRINT/heroes_de_la_patria_oficial"
+                                                target="_blank" class="btn btn-outline-secondary btn-sm">
                                                 <i class="fab fa-github me-2"></i>Ver Repositorio
                                             </a>
-                                            <a href="https://github.com/SACRINT/heroes_de_la_patria_oficial/commits/main" target="_blank" class="btn btn-outline-info btn-sm">
+                                            <a href="https://github.com/SACRINT/heroes_de_la_patria_oficial/commits/main"
+                                                target="_blank" class="btn btn-outline-info btn-sm">
                                                 <i class="fas fa-history me-2"></i>Ver Cambios
                                             </a>
                                         </div>
@@ -3014,7 +3174,9 @@
                                         </h6>
                                     </div>
                                     <div class="card-body">
-                                        <p><strong>🔒 Sistema Seguro:</strong> Solo el propietario del repositorio GitHub puede realizar cambios. No se requieren contraseñas adicionales ya que GitHub maneja toda la autenticación.</p>
+                                        <p><strong>🔒 Sistema Seguro:</strong> Solo el propietario del repositorio
+                                            GitHub puede realizar cambios. No se requieren contraseñas adicionales ya
+                                            que GitHub maneja toda la autenticación.</p>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <ul class="list-unstyled small">
@@ -3043,14 +3205,14 @@
     <footer id="main-footer"></footer>
 
     <!-- CHATBOT INTELIGENTE (Importado de index.html) -->
-    
-    
+
+
 
     <!-- Dark Mode Toggle -->
     <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
         <i class="fas fa-moon"></i>
     </button>
-    
+
     <!-- Chatbot Tonto Eliminado -->
 
     <!-- 🚀 BGE FRAMEWORK MODULAR - ADMIN DASHBOARD -->
@@ -3059,7 +3221,9 @@
     <script src="js/dashboard/cache-cleaner.js"></script>
 
     <!-- 🎯 BGE FRAMEWORK CORE - MOTOR PRINCIPAL (MOVIDO AL HEAD) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
     <!-- 🔒 DOMPurify XSS Protection -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <script src="js/dompurify-config.js"></script>
@@ -3096,85 +3260,11 @@
 
     <!-- VERIFICACIÓN ADICIONAL DE AUTENTICACIÓN AL CARGAR DOM -->
     <script src="js/dashboard/dashboard-security-check.js" defer></script>
-    
+
     <!-- Funciones reales del dashboard - Ya no son temporales -->
     <script src="js/dashboard/login-modal-functions.js" defer></script>
 
     <!-- Dark Mode Styles & Script -->
-    <style>
-        .dark-mode-toggle {
-            position: fixed;
-            bottom: 6rem;
-            right: 2rem;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--bs-primary);
-            color: white;
-            border: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .dark-mode-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-        }
-
-        body.dark-mode {
-            background-color: #1a1a1a !important;
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .bg-light {
-            background-color: #2d2d2d !important;
-        }
-
-        body.dark-mode .card {
-            background-color: #2d2d2d !important;
-            border-color: #404040 !important;
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .text-muted {
-            color: #b0b0b0 !important;
-        }
-
-        body.dark-mode .text-dark {
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .table {
-            background-color: #2d2d2d !important;
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .table td,
-        body.dark-mode .table th {
-            border-color: #404040 !important;
-        }
-
-        body.dark-mode .form-control,
-        body.dark-mode .form-select {
-            background-color: #404040 !important;
-            border-color: #505050 !important;
-            color: #ffffff !important;
-        }
-
-        /* Fix para títulos visibles */
-        body.dark-mode h2.text-dark {
-            color: #ffffff !important;
-        }
-        
-        h2.text-dark {
-            color: #212529 !important;
-        }
-    </style>
 
     <script src="js/dashboard/dark-mode-toggle-dashboard.js" defer></script>
 
@@ -3206,7 +3296,8 @@
                                     <form id="noticiaForm">
                                         <div class="mb-3">
                                             <label for="noticiaId" class="form-label">ID</label>
-                                            <input type="text" class="form-control" id="noticiaId" placeholder="Se genera automáticamente" readonly>
+                                            <input type="text" class="form-control" id="noticiaId"
+                                                placeholder="Se genera automáticamente" readonly>
                                         </div>
                                         <div class="mb-3">
                                             <label for="noticiaTitulo" class="form-label">Título *</label>
@@ -3214,11 +3305,13 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="noticiaResumen" class="form-label">Resumen</label>
-                                            <textarea class="form-control" id="noticiaResumen" rows="2" placeholder="Breve resumen de la noticia"></textarea>
+                                            <textarea class="form-control" id="noticiaResumen" rows="2"
+                                                placeholder="Breve resumen de la noticia"></textarea>
                                         </div>
                                         <div class="mb-3">
                                             <label for="noticiaContenido" class="form-label">Contenido *</label>
-                                            <textarea class="form-control tinymce-auto" id="noticiaContenido" rows="4" data-tinymce-type="noticia" required></textarea>
+                                            <textarea class="form-control tinymce-auto" id="noticiaContenido" rows="4"
+                                                data-tinymce-type="noticia" required></textarea>
                                         </div>
                                         <div class="mb-3">
                                             <label for="noticiaAutor" class="form-label">Autor *</label>
@@ -3248,22 +3341,28 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="noticiaImagen" class="form-label">Imagen (URL)</label>
-                                            <input type="text" class="form-control" id="noticiaImagen" placeholder="images/noticias/imagen.jpg">
+                                            <input type="text" class="form-control" id="noticiaImagen"
+                                                placeholder="images/noticias/imagen.jpg">
                                         </div>
                                         <div class="mb-3">
-                                            <label for="noticiaTags" class="form-label">Tags (separados por comas)</label>
-                                            <input type="text" class="form-control" id="noticiaTags" placeholder="educación, estudiantes, eventos">
+                                            <label for="noticiaTags" class="form-label">Tags (separados por
+                                                comas)</label>
+                                            <input type="text" class="form-control" id="noticiaTags"
+                                                placeholder="educación, estudiantes, eventos">
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="noticiaDestacado">
-                                                    <label class="form-check-label" for="noticiaDestacado">Destacada</label>
+                                                    <input class="form-check-input" type="checkbox"
+                                                        id="noticiaDestacado">
+                                                    <label class="form-check-label"
+                                                        for="noticiaDestacado">Destacada</label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="noticiaActivo" checked>
+                                                    <input class="form-check-input" type="checkbox" id="noticiaActivo"
+                                                        checked>
                                                     <label class="form-check-label" for="noticiaActivo">Activa</label>
                                                 </div>
                                             </div>
@@ -3272,7 +3371,8 @@
                                             <button type="submit" class="btn btn-primary">
                                                 <i class="fas fa-save me-2"></i>Guardar Noticia
                                             </button>
-                                            <button type="button" class="btn btn-secondary" data-action="clearNoticiaForm">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-action="clearNoticiaForm">
                                                 <i class="fas fa-broom me-2"></i>Limpiar
                                             </button>
                                         </div>
@@ -3335,7 +3435,8 @@
                                     <form id="eventoForm">
                                         <div class="mb-3">
                                             <label for="eventoId" class="form-label">ID</label>
-                                            <input type="text" class="form-control" id="eventoId" placeholder="Se genera automáticamente" readonly>
+                                            <input type="text" class="form-control" id="eventoId"
+                                                placeholder="Se genera automáticamente" readonly>
                                         </div>
                                         <div class="mb-3">
                                             <label for="eventoTitulo" class="form-label">Título *</label>
@@ -3343,7 +3444,8 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="eventoDescripcion" class="form-label">Descripción *</label>
-                                            <textarea class="form-control" id="eventoDescripcion" rows="3" required></textarea>
+                                            <textarea class="form-control" id="eventoDescripcion" rows="3"
+                                                required></textarea>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
@@ -3405,23 +3507,29 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="eventoContacto" class="form-label">Contacto</label>
-                                            <input type="email" class="form-control" id="eventoContacto" placeholder="contacto@ejemplo.com">
+                                            <input type="email" class="form-control" id="eventoContacto"
+                                                placeholder="contacto@ejemplo.com">
                                         </div>
                                         <div class="mb-3">
                                             <label for="eventoImagen" class="form-label">Imagen (URL)</label>
-                                            <input type="text" class="form-control" id="eventoImagen" placeholder="images/eventos/evento.jpg">
+                                            <input type="text" class="form-control" id="eventoImagen"
+                                                placeholder="images/eventos/evento.jpg">
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="eventoInscripcion">
-                                                    <label class="form-check-label" for="eventoInscripcion">Requiere inscripción</label>
+                                                    <input class="form-check-input" type="checkbox"
+                                                        id="eventoInscripcion">
+                                                    <label class="form-check-label" for="eventoInscripcion">Requiere
+                                                        inscripción</label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="eventoDestacado">
-                                                    <label class="form-check-label" for="eventoDestacado">Destacado</label>
+                                                    <input class="form-check-input" type="checkbox"
+                                                        id="eventoDestacado">
+                                                    <label class="form-check-label"
+                                                        for="eventoDestacado">Destacado</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -3433,7 +3541,8 @@
                                             <button type="submit" class="btn btn-success">
                                                 <i class="fas fa-save me-2"></i>Guardar Evento
                                             </button>
-                                            <button type="button" class="btn btn-secondary" data-action="clearEventoForm">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-action="clearEventoForm">
                                                 <i class="fas fa-broom me-2"></i>Limpiar
                                             </button>
                                         </div>
@@ -3496,7 +3605,8 @@
                                     <form id="avisoForm">
                                         <div class="mb-3">
                                             <label for="avisoId" class="form-label">ID</label>
-                                            <input type="text" class="form-control" id="avisoId" placeholder="Se genera automáticamente" readonly>
+                                            <input type="text" class="form-control" id="avisoId"
+                                                placeholder="Se genera automáticamente" readonly>
                                         </div>
                                         <div class="mb-3">
                                             <label for="avisoTitulo" class="form-label">Título *</label>
@@ -3504,7 +3614,8 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="avisoContenido" class="form-label">Contenido *</label>
-                                            <textarea class="form-control" id="avisoContenido" rows="4" required></textarea>
+                                            <textarea class="form-control" id="avisoContenido" rows="4"
+                                                required></textarea>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
@@ -3534,8 +3645,10 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label for="avisoFechaInicio" class="form-label">Fecha Inicio *</label>
-                                                    <input type="date" class="form-control" id="avisoFechaInicio" required>
+                                                    <label for="avisoFechaInicio" class="form-label">Fecha Inicio
+                                                        *</label>
+                                                    <input type="date" class="form-control" id="avisoFechaInicio"
+                                                        required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -3559,11 +3672,13 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="avisoContacto" class="form-label">Contacto</label>
-                                            <input type="email" class="form-control" id="avisoContacto" placeholder="contacto@ejemplo.com">
+                                            <input type="email" class="form-control" id="avisoContacto"
+                                                placeholder="contacto@ejemplo.com">
                                         </div>
                                         <div class="mb-3">
                                             <label for="avisoImagen" class="form-label">Imagen (URL)</label>
-                                            <input type="text" class="form-control" id="avisoImagen" placeholder="images/avisos/aviso.jpg">
+                                            <input type="text" class="form-control" id="avisoImagen"
+                                                placeholder="images/avisos/aviso.jpg">
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="avisoActivo" checked>
@@ -3573,7 +3688,8 @@
                                             <button type="submit" class="btn btn-warning">
                                                 <i class="fas fa-save me-2"></i>Guardar Aviso
                                             </button>
-                                            <button type="button" class="btn btn-secondary" data-action="clearAvisoForm">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-action="clearAvisoForm">
                                                 <i class="fas fa-broom me-2"></i>Limpiar
                                             </button>
                                         </div>
@@ -3614,7 +3730,8 @@
     </div>
 
     <!-- Modal Gestión Comunicados -->
-    <div class="modal fade" id="comunicadosModal" tabindex="-1" aria-labelledby="comunicadosModalLabel" aria-hidden="true">
+    <div class="modal fade" id="comunicadosModal" tabindex="-1" aria-labelledby="comunicadosModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-info text-white">
@@ -3636,7 +3753,8 @@
                                     <form id="comunicadoForm">
                                         <div class="mb-3">
                                             <label for="comunicadoId" class="form-label">ID</label>
-                                            <input type="text" class="form-control" id="comunicadoId" placeholder="Se genera automáticamente" readonly>
+                                            <input type="text" class="form-control" id="comunicadoId"
+                                                placeholder="Se genera automáticamente" readonly>
                                         </div>
                                         <div class="mb-3">
                                             <label for="comunicadoTitulo" class="form-label">Título *</label>
@@ -3644,7 +3762,8 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="comunicadoContenido" class="form-label">Contenido *</label>
-                                            <textarea class="form-control tinymce-auto" id="comunicadoContenido" rows="4" data-tinymce-type="comunicado" required></textarea>
+                                            <textarea class="form-control tinymce-auto" id="comunicadoContenido"
+                                                rows="4" data-tinymce-type="comunicado" required></textarea>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
@@ -3654,8 +3773,10 @@
                                                         <option value="">Seleccionar...</option>
                                                         <option value="Dirección General">Dirección General</option>
                                                         <option value="Dirección Académica">Dirección Académica</option>
-                                                        <option value="Servicios Estudiantiles">Servicios Estudiantiles</option>
-                                                        <option value="Coordinación Académica">Coordinación Académica</option>
+                                                        <option value="Servicios Estudiantiles">Servicios Estudiantiles
+                                                        </option>
+                                                        <option value="Coordinación Académica">Coordinación Académica
+                                                        </option>
                                                         <option value="Subdirección">Subdirección</option>
                                                     </select>
                                                 </div>
@@ -3676,14 +3797,17 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label for="comunicadoFecha" class="form-label">Fecha Emisión *</label>
-                                                    <input type="date" class="form-control" id="comunicadoFecha" required>
+                                                    <label for="comunicadoFecha" class="form-label">Fecha Emisión
+                                                        *</label>
+                                                    <input type="date" class="form-control" id="comunicadoFecha"
+                                                        required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="comunicadoVigencia" class="form-label">Vigencia</label>
-                                                    <input type="text" class="form-control" id="comunicadoVigencia" placeholder="permanente, temporal, fecha">
+                                                    <input type="text" class="form-control" id="comunicadoVigencia"
+                                                        placeholder="permanente, temporal, fecha">
                                                 </div>
                                             </div>
                                         </div>
@@ -3697,37 +3821,48 @@
                                             </select>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="comunicadoDestinatarios" class="form-label">Destinatarios *</label>
+                                            <label for="comunicadoDestinatarios" class="form-label">Destinatarios
+                                                *</label>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="estudiantes" id="dest_estudiantes">
-                                                <label class="form-check-label" for="dest_estudiantes">Estudiantes</label>
+                                                <input class="form-check-input" type="checkbox" value="estudiantes"
+                                                    id="dest_estudiantes">
+                                                <label class="form-check-label"
+                                                    for="dest_estudiantes">Estudiantes</label>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="docentes" id="dest_docentes">
+                                                <input class="form-check-input" type="checkbox" value="docentes"
+                                                    id="dest_docentes">
                                                 <label class="form-check-label" for="dest_docentes">Docentes</label>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="personal administrativo" id="dest_admin">
-                                                <label class="form-check-label" for="dest_admin">Personal Administrativo</label>
+                                                <input class="form-check-input" type="checkbox"
+                                                    value="personal administrativo" id="dest_admin">
+                                                <label class="form-check-label" for="dest_admin">Personal
+                                                    Administrativo</label>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="padres de familia" id="dest_padres">
-                                                <label class="form-check-label" for="dest_padres">Padres de Familia</label>
+                                                <input class="form-check-input" type="checkbox"
+                                                    value="padres de familia" id="dest_padres">
+                                                <label class="form-check-label" for="dest_padres">Padres de
+                                                    Familia</label>
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <label for="comunicadoImagen" class="form-label">Imagen (URL)</label>
-                                            <input type="text" class="form-control" id="comunicadoImagen" placeholder="images/comunicados/comunicado.jpg">
+                                            <input type="text" class="form-control" id="comunicadoImagen"
+                                                placeholder="images/comunicados/comunicado.jpg">
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="comunicadoActivo" checked>
+                                            <input class="form-check-input" type="checkbox" id="comunicadoActivo"
+                                                checked>
                                             <label class="form-check-label" for="comunicadoActivo">Activo</label>
                                         </div>
                                         <div class="d-grid gap-2 mt-3">
                                             <button type="submit" class="btn btn-info">
                                                 <i class="fas fa-save me-2"></i>Guardar Comunicado
                                             </button>
-                                            <button type="button" class="btn btn-secondary" data-action="clearComunicadoForm">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-action="clearComunicadoForm">
                                                 <i class="fas fa-broom me-2"></i>Limpiar
                                             </button>
                                         </div>
@@ -3776,7 +3911,8 @@
                         <i class="fas fa-user-graduate me-2"></i>
                         Detalles del Egresado
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="egresado-detail-content">
                     <!-- Se llenará dinámicamente -->
@@ -3797,7 +3933,7 @@
     <script src="js/advanced-filters.js?v=20251019"></script>
     <script src="js/dashboard-filters-config.js?v=20251019"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<!-- 🔐 TinyMCE - Carga Dinámica Segura desde Backend -->
+    <!-- 🔐 TinyMCE - Carga Dinámica Segura desde Backend -->
     <!-- ✅ FIX (19 Nov 2025): Movido a archivo externo para cumplir con CSP (No inline scripts) -->
     <script src="js/tinymce-loader.js"></script>
     <!-- 🎨 TinyMCE Config - Inicialización Manual de Editores WYSIWYG -->
@@ -3862,11 +3998,11 @@
     <script src="/js/admin-dashboard-events.js" defer></script>
     <script src="/js/dashboard-tab-counters.js" defer></script>
 
-            <!-- ✅ INICIALIZACIÓN DE EVENT LISTENERS (Chatbot Tonto Eliminado) -->
+    <!-- ✅ INICIALIZACIÓN DE EVENT LISTENERS (Chatbot Tonto Eliminado) -->
     <!-- 🎯 EVENT LISTENERS - Refactorización de inline handlers -->
     <script src="js/dashboard/event-delegation-dashboard.js" defer></script>
 
 </body>
+
 </html>
 <!-- Trivial change to force Vercel cache update -->
-

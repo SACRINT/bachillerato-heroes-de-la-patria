@@ -42,7 +42,7 @@ const subscriptionsRoutes = require('./routes/subscriptions');
 const newslettersRoutes = require('./routes/newsletters');
 const egresadosRoutes = require('./routes/egresados');
 const analyticsDashboardRoutes = require('./routes/analytics-dashboard');
-const reportsRoutes = require('./routes/reports');  // ✅ REPORTS - SEMANA 7
+const reportsRoutes = require('./routes/reports');  // ✅ REPORTS - FASE 2
 const bolsaTrabajoRoutes = require('./routes/bolsa-trabajo');
 const suscriptoresRoutes = require('./routes/suscriptores');
 const quejasRoutes = require('./routes/quejas');
@@ -86,7 +86,7 @@ const gamificationRoutes = require('./routes/gamification');  // ✅ GAMIFICATIO
 
 // ✅ SEMANA 2 - SERVICE LAYER ROUTES (20 NOV 2025)
 const studentsServiceRoutes = require('./routes/students-service');  // Estudiantes con Service Layer
-const gradesServiceRoutes = require('./routes/grades-service');  // Calificaciones con Service Layer
+const gradesServiceRoutes = require('./routes/grades');  // Calificaciones con Service Layer
 
 // ✅ FASE 30.5 TAREA 4 - POOL MANAGER (24 NOV 2025)
 const poolManager = require('./middleware/pool-manager');  // Connection Pool monitoring
@@ -408,7 +408,7 @@ app.use('/api/tutor', aiTutorRoutes); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
 // ✅ SEMANA 2 - SERVICE LAYER ROUTES (20 NOV 2025)
 // Estas rutas usan el patrón Service Layer para separar lógica de negocio
 app.use('/api/students-v2', studentsServiceRoutes);  // Estudiantes con Service Layer
-app.use('/api/grades-v2', gradesServiceRoutes);  // Calificaciones con GradesService
+app.use('/api/grades', gradesServiceRoutes);  // Calificaciones con GradesService
 
 // ✅ FASE 1.2: RUTAS HUÉRFANAS REGISTRADAS - 11 NOV 2025
 // ⚠️ NOTA: Algunas rutas requieren debugging (google-classroom, chatbot-ia, etc)
@@ -444,6 +444,7 @@ app.use('/api/newsletters-pg', newslettersPgRoutes);
 app.use('/api/citas-improved', citasImprovedRoutes);
 app.use('/api/fix-aprobaciones-auto', fixAprobacionesAutoRoutes);
 app.use('/api/uploads', uploadsRoutes);
+app.use('/api/reports', reportsRoutes); // ✅ REPORTS - FASE 2
 
 // GRUPO 4: OPERACIONES Y MAINTENANCE (3 rutas activas, 1 comentada) - ✅ DESCOMENTADAS PARA FASE 3.2
 // app.use('/api/migration', migrationRoutes); // ⚠️ Requiere mysql2 (no instalado)

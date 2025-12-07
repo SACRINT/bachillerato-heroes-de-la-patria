@@ -359,16 +359,13 @@ router.post('/auth/login', async (req, res) => {
             [parent.id]
         );
 
-        // Generar JWT
-        const token = jwt.sign(
-            {
-                id: parent.id,
-                email: parent.email,
-                role: 'parent'
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: '7d' }
-        );
+        // Generar JWT usando utilidades estándar
+        const jwtUtils = require('../utils/jwtUtils').getJWTUtils();
+        const token = jwtUtils.generateAccessToken({
+            userId: parent.id,
+            email: parent.email,
+            role: 'parent'
+        });
 
         res.json({
             success: true,

@@ -286,8 +286,8 @@
                     <div class="col-lg-3 col-md-6">
                         <div class="card h-100 border-0 shadow-sm hover-lift quick-access-card">
                             <div class="card-body text-center p-4">
-                                <div class="quick-icon bg-success text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
-                                    style="width: 80px; height: 80px;">
+                                <div
+                                    class="quick-icon bg-success text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center quick-icon-lg">
                                     <i class="fas fa-calendar-alt fa-2x"></i>
                                 </div>
                                 <h4 class="card-title text-success mb-3">Mi Horario</h4>
@@ -304,8 +304,8 @@
                     <div class="col-lg-3 col-md-6">
                         <div class="card h-100 border-0 shadow-sm hover-lift quick-access-card">
                             <div class="card-body text-center p-4">
-                                <div class="quick-icon bg-warning text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
-                                    style="width: 80px; height: 80px;">
+                                <div
+                                    class="quick-icon bg-warning text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center quick-icon-lg">
                                     <i class="fas fa-tasks fa-2x"></i>
                                 </div>
                                 <h4 class="card-title text-warning mb-3">Tareas</h4>
@@ -321,8 +321,8 @@
                     <div class="col-lg-3 col-md-6">
                         <div class="card h-100 border-0 shadow-sm hover-lift quick-access-card">
                             <div class="card-body text-center p-4">
-                                <div class="quick-icon bg-info text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
-                                    style="width: 80px; height: 80px;">
+                                <div
+                                    class="quick-icon bg-info text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center quick-icon-lg">
                                     <i class="fas fa-file-alt fa-2x"></i>
                                 </div>
                                 <h4 class="card-title text-info mb-3">Documentos</h4>
@@ -656,7 +656,7 @@
                         <table class="table table-bordered" id="scheduleTable">
                             <thead class="table-primary">
                                 <tr>
-                                    <th style="width: 150px;">Módulo Horario</th>
+                                    <th class="w-150px">Módulo Horario</th>
                                     <th>Lunes</th>
                                     <th>Martes</th>
                                     <th>Miércoles</th>
@@ -747,8 +747,8 @@
                 </div>
                 <div class="modal-footer">
                     <div class="d-flex justify-content-between w-100">
-                        <button type="button" id="btn-eliminar-clase-modal-pwa" class="btn btn-danger"
-                            style="display: none;" data-action="delete-class">
+                        <button type="button" id="btn-eliminar-clase-modal-pwa" class="btn btn-danger d-none"
+                            data-action="delete-class">
                             <i class="fas fa-trash me-1"></i>Eliminar Clase
                         </button>
                         <div>
@@ -774,7 +774,7 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
-                <div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
+                <div class="modal-body p-4 scrollable-modal-body">
                     <p class="lead mb-4">Estrategias comprobadas para mejorar tu rendimiento académico</p>
 
                     <!-- Gestión del Tiempo -->
@@ -1031,8 +1031,7 @@
 
 
     <!-- Back to Top -->
-    <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none"
-        style="bottom: 2rem; right: 2rem; width: 50px; height: 50px; z-index: 1000;" aria-label="Volver arriba"
+    <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none" aria-label="Volver arriba"
         title="Volver arriba">
         <i class="fas fa-arrow-up"></i>
     </button>
@@ -1263,7 +1262,7 @@
 
                         html += `
                             <div class="col-lg-6 col-xl-4">
-                                <div class="card h-100 border-0 shadow-sm recurso-card" style="transition: transform 0.2s ease;">
+                                <div class="card h-100 border-0 shadow-sm recurso-card transition-transform-02s">
                                     <div class="card-header bg-${cardColor} text-white">
                                         <h6 class="mb-0">
                                             <i class="${recurso.icono} me-2"></i>
@@ -1420,8 +1419,7 @@
 
                         if (clase) {
                             html += `
-                                <td class="schedule-cell ${clase.color} text-white" 
-                                    style="cursor: pointer; min-height: 60px; position: relative;"
+                                <td class="schedule-cell ${clase.color} text-white schedule-cell-filled" 
                                     data-action="edit-class" data-param-1="'${dia}', '${modulo}'">
                                     <strong>${clase.materia}</strong>
                                     ${clase.profesor ? `<br><small>Prof. ${clase.profesor}</small>` : ''}
@@ -1430,8 +1428,7 @@
                             `;
                         } else {
                             html += `
-                                <td class="schedule-cell empty-cell" 
-                                    style="cursor: pointer; min-height: 60px; border: 2px dashed #dee2e6; text-align: center;"
+                                <td class="schedule-cell empty-cell schedule-cell-empty" 
                                     data-action="edit-class" data-param-1="'${dia}', '${modulo}'">
                                     <span class="text-muted">+</span>
                                 </td>

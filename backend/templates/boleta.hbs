@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            margin: 20px 40px;
+        }
+
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #333;
+            line-height: 1.4;
+            font-size: 11px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #0d47a1;
+            padding-bottom: 10px;
+        }
+
+        .header img {
+            height: 60px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            color: #0d47a1;
+            font-size: 18px;
+            text-transform: uppercase;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header h2 {
+            font-size: 14px;
+            margin: 5px 0 0;
+            font-weight: normal;
+        }
+
+        .info-grid {
+            display: table;
+            width: 100%;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .info-row {
+            display: table-row;
+        }
+
+        .info-cell {
+            display: table-cell;
+            padding: 4px 10px;
+            width: 50%;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+            display: inline-block;
+            width: 120px;
+        }
+
+        table.grades-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table.grades-table th,
+        table.grades-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table.grades-table th {
+            background-color: #0d47a1;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        table.grades-table td.center {
+            text-align: center;
+        }
+
+        table.grades-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 10px;
+            color: #777;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+
+        .signatures {
+            margin-top: 50px;
+            display: table;
+            width: 100%;
+        }
+
+        .signature-box {
+            display: table-cell;
+            text-align: center;
+            vertical-align: bottom;
+            width: 33%;
+            padding: 0 20px;
+        }
+
+        .line {
+            border-top: 1px solid #333;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <!-- Puedes usar base64 para el logo si puppeteer no carga recursos externos -->
+        <h1>Bachillerato General Estatal "Héroes de la Patria"</h1>
+        <h2>Boleta de Calificaciones</h2>
+        <h3>Ciclo Escolar: {{cicloEscolar}}</h3>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-row">
+            <div class="info-cell">
+                <span class="label">Estudiante:</span> {{nombreCompleto}}
+            </div>
+            <div class="info-cell">
+                <span class="label">Matrícula:</span> {{matricula}}
+            </div>
+        </div>
+        <div class="info-row">
+            <div class="info-cell">
+                <span class="label">Semestre:</span> {{semestre}}
+            </div>
+            <div class="info-cell">
+                <span class="label">Grupo:</span> {{grupo}}
+            </div>
+        </div>
+        <div class="info-row">
+            <div class="info-cell">
+                <span class="label">Fecha Emisión:</span> {{fechaEmision}}
+            </div>
+            <div class="info-cell">
+                <!-- Espacio libre -->
+            </div>
+        </div>
+    </div>
+
+    <table class="grades-table">
+        <thead>
+            <tr>
+                <th style="width: 10%">Clave</th>
+                <th style="width: 40%">Asignatura</th>
+                <th style="width: 10%">Créditos</th>
+                <th style="width: 10%">Parcial 1</th>
+                <th style="width: 10%">Parcial 2</th>
+                <th style="width: 10%">Parcial 3</th>
+                <th style="width: 10%">Promedio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each materias}}
+            <tr>
+                <td class="center">{{clave}}</td>
+                <td>{{materia}}</td>
+                <td class="center">{{creditos}}</td>
+                <td class="center">{{#if parciales.P1}}{{parciales.P1}}{{else}}-{{/if}}</td>
+                <td class="center">{{#if parciales.P2}}{{parciales.P2}}{{else}}-{{/if}}</td>
+                <td class="center">{{#if parciales.P3}}{{parciales.P3}}{{else}}-{{/if}}</td>
+                <td class="center" style="font-weight: bold;">{{promedio_final}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+    <div class="signatures">
+        <div class="signature-box">
+            <div class="line"></div>
+            Director(a) del Plantel
+        </div>
+        <div class="signature-box">
+            <!-- Espacio para sello -->
+        </div>
+        <div class="signature-box">
+            <div class="line"></div>
+            Tutor(a) / Padre de Familia
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Este documento es de carácter informativo. La validez oficial reside en los registros de control escolar.</p>
+        <p>Generado por Sistema de Gestión Escolar BGE - {{fechaEmision}}</p>
+    </div>
+</body>
+
+</html>

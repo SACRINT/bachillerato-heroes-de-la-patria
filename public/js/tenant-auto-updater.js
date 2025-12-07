@@ -41,7 +41,7 @@
         'primary_color': 'primary_color',
         'secondary_color': 'secondary_color',
         // Formato legacy (data-tenant) - usado en header/footer
-        'school-name': 'school_short_name',
+        'school-name': 'school_short_name', // Fix: Usar short_name (ahora configurado como "Héroes de la Patria")
         'school-name-copyright': 'school_name',
         'school-logo': 'logo_url',
         'school-address': 'address',

@@ -1,26 +1,26 @@
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg bg-light fixed-top shadow-sm" role="navigation" aria-label="Navegación principal"
-    style="padding: 0.4rem 1rem;">
-    <div class="container-fluid" style="max-width: none; padding-left: 1rem; padding-right: 1rem;">
+<nav class="navbar navbar-expand-lg bg-light fixed-top shadow-sm navbar-custom-padding" role="navigation"
+    aria-label="Navegación principal">
+    <div class="container-fluid container-custom-fluid">
         <!-- Logo y Nombre de la Escuela con Botón Hamburguesa integrado -->
         <div class="d-flex align-items-center justify-content-between w-100">
-            <a class="navbar-brand d-flex align-items-center" href="index.html" style="margin-right: 0;">
+            <a class="navbar-brand d-flex align-items-center navbar-brand-custom" href="index.html">
                 <!-- 🏢 TENANT-AWARE: Logo cargado dinámicamente desde config -->
                 <img data-tenant="school-logo" src="/images/logo-bachillerato-HDLP.webp"
                     alt="Logo Bachillerato Héroes de la Patria" width="45" height="45">
                 <div class="ms-2">
-                    <div class="fw-bold text-primary logo-main-text" style="font-size: 0.85rem; line-height: 1.1;">
+                    <div class="fw-bold text-primary logo-main-text logo-main-text-style">
                         Bachillerato General Estatal</div>
                     <!-- 🏢 TENANT-AWARE: Nombre de escuela cargado dinámicamente desde config -->
-                    <div class="text-secondary fw-semibold logo-sub-text" data-tenant="school-name"
-                        style="font-size: 0.75rem; line-height: 1.1;">"Héroes de la Patria"</div>
+                    <div class="text-secondary fw-semibold logo-sub-text logo-sub-text-style" data-tenant="school-name">
+                        "Héroes de la Patria"</div>
                 </div>
             </a>
 
             <!-- Botón Hamburguesa para Móvil - Reubicado -->
-            <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse"
+            <button class="navbar-toggler ms-2 navbar-toggler-custom-style" type="button" data-bs-toggle="collapse"
                 data-bs-target="#mainNavbarCollapse" aria-controls="mainNavbarCollapse" aria-expanded="false"
-                aria-label="Abrir menú de navegación" style="border: none; padding: 0.25rem 0.5rem;">
+                aria-label="Abrir menú de navegación">
                 <span class="navbar-toggler-icon" aria-hidden="true"></span>
             </button>
         </div>
@@ -221,6 +221,8 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="docentes.html#acceso-rapido"><i
                                             class="fas fa-sign-in-alt me-2"></i>Acceso Directo</a></li>
+                                <li><a class="dropdown-item" href="admin-calificaciones.html"><i
+                                            class="fas fa-edit me-2"></i>Captura de Calificaciones</a></li>
                                 <li><a class="dropdown-item" href="docentes.html#recursos-docentes"><i
                                             class="fas fa-book me-2"></i>Recursos para Docentes</a></li>
                             </ul>
@@ -504,8 +506,8 @@
                                     class="fas fa-question-circle me-2"></i>Preguntas Frecuentes</a></li>
                         <li><a class="dropdown-item" href="index.html#mapa-sitio"><i
                                     class="fas fa-sitemap me-2"></i>Mapa del Sitio</a></li>
-                        <li><a class="dropdown-item" href="soporte.html"><i
-                                    class="fas fa-headset me-2"></i>Centro de Soporte</a></li>
+                        <li><a class="dropdown-item" href="soporte.html"><i class="fas fa-headset me-2"></i>Centro de
+                                Soporte</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -986,6 +988,7 @@
     .logo-sub-text {
         color: #424242 !important;
         text-shadow: 0 1px 2px rgba(255,255,255,0.5) !important;
+    }
 
 <!-- Scripts de navegación y autenticación admin -->
 <script src="js/nested-dropdowns.js?v=2024091401"></script>

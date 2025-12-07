@@ -61,9 +61,9 @@ class TenantsAdminManager {
         const emptyEl = document.getElementById('emptyStateTenants');
 
         // Mostrar loading
-        loadingEl.style.display = 'block';
-        listEl.style.display = 'none';
-        emptyEl.style.display = 'none';
+        loadingEl.classList.remove('d-none');
+        listEl.classList.add('d-none');
+        emptyEl.classList.add('d-none');
 
         try {
             const response = await fetch('/api/admin/tenants', {
@@ -96,7 +96,7 @@ class TenantsAdminManager {
             this.tenants = [];
             this.renderTenantsTable();
         } finally {
-            loadingEl.style.display = 'none';
+            loadingEl.classList.add('d-none');
         }
     }
 
@@ -113,14 +113,14 @@ class TenantsAdminManager {
         tbody.innerHTML = DOMPurify.sanitize(sanitizeHTML(''));
 
         if (this.tenants.length === 0) {
-            listEl.style.display = 'none';
-            emptyEl.style.display = 'block';
+            listEl.classList.add('d-none');
+            emptyEl.classList.remove('d-none');
             console.log('[TENANTS-ADMIN] ℹ️ No hay tenants para mostrar');
             return;
         }
 
-        listEl.style.display = 'block';
-        emptyEl.style.display = 'none';
+        listEl.classList.remove('d-none');
+        emptyEl.classList.add('d-none');
 
         this.tenants.forEach(tenant => {
             const row = document.createElement('tr');
@@ -405,7 +405,7 @@ class TenantsAdminManager {
 }
 
 // Inicializar cuando DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('[TENANTS-ADMIN] 🎯 DOM cargado, iniciando TenantsAdminManager...');
     window.tenantsAdminManager = new TenantsAdminManager();
 });

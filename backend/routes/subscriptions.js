@@ -212,7 +212,7 @@ router.get('/list', async (req, res) => {
                 categories, source, active, emails_sent AS "emailsSent",
                 last_email_sent AS "lastEmailSent",
                 subscribed_at AS "subscribedAt"
-            FROM suscriptores
+            FROM suscriptores_notificaciones
             ORDER BY subscribed_at DESC
         `;
 
@@ -252,7 +252,7 @@ router.get('/stats', async (req, res) => {
                 COUNT(*) FILTER (WHERE active = false) AS inactive_subscribers,
                 COALESCE((SELECT COUNT(*) FROM newsletters), 0) AS newsletters_sent,
                 COALESCE(SUM(emails_sent), 0) AS total_emails_sent
-            FROM suscriptores
+            FROM suscriptores_notificaciones
         `;
 
         const result = await db.executeQuery(query);

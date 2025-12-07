@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captura de Calificaciones | Admin Portal</title>
+
+    <!-- CSS Dependencies -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/global-layout.css">
+    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+
+    <!-- Custom Styles for Grid -->
+    <style>
+        .grade-input {
+            width: 80px;
+            margin: 0 auto;
+            transition: all 0.2s;
+        }
+
+        .grade-input:focus {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+
+        .status-cell {
+            vertical-align: middle;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Sticky Header for large lists */
+        thead th {
+            position: sticky;
+            top: 0;
+            background: white !important;
+            z-index: 5;
+            box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Loading Overlay */
+        #loadingSpinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+            display: none;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <!-- Auth Check -->
+    <script src="js/dashboard/dashboard-auth-check.js"></script>
+
+    <!-- Header -->
+    <header id="main-header"></header>
+    <script src="js/dashboard/load-admin-header.js"></script>
+
+    <!-- Main Content -->
+    <main class="container py-5" style="margin-top: 80px;">
+
+        <!-- Header Section -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-0 text-primary fw-bold">
+                    <i class="fas fa-edit me-2"></i>Captura de Calificaciones
+                </h1>
+                <p class="text-muted mb-0">Gestión de evaluaciones y seguimiento académico</p>
+            </div>
+            <div>
+                <a href="admin-dashboard.html" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i>Volver al Dashboard
+                </a>
+            </div>
+        </div>
+        <!-- Grades Grid -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div id="gradesGrid" class="table-responsive" style="max-height: 70vh;">
+                    <div class="text-center py-5 text-muted">
+                        <i class="fas fa-chalkboard-teacher fa-3x mb-3 text-secondary opacity-50"></i>
+                        <h5>Seleccione una Materia y un Periodo</h5>
+                        <p>Los estudiantes aparecerán aquí para la captura de calificaciones.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner">
+        <div class="text-center">
+            <div class="spinner-border text-primary mb-2" role="status"></div>
+            <div class="fw-bold text-primary">Procesando...</div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core logic -->
+    <script src="js/admin-grades.js"></script>
+
+    <!-- Footer (Optional, can be skipped for cleaner app-like feel or included) -->
+    <!-- <script src="js/dashboard/load-admin-footer.js"></script> -->
+
+</body>
+
+</html>

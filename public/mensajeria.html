@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,402 +10,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
-    <style>
-        :root {
-            --primary-color: #0066cc;
-            --secondary-color: #e3f2fd;
-            --border-color: #dee2e6;
-            --unread-bg: #f8f9fa;
-            --message-sent: #dcf8c6;
-            --message-received: #ffffff;
-            --typing-color: #999;
-        }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #f0f2f5;
-        }
-
-        /* Layout principal */
-        .messaging-container {
-            display: flex;
-            height: 100vh;
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-        }
-
-        /* Sidebar de conversaciones */
-        .conversations-sidebar {
-            width: 350px;
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            background: white;
-        }
-
-        .sidebar-header {
-            padding: 15px 20px;
-            background: var(--primary-color);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .sidebar-header h5 {
-            margin: 0;
-            font-size: 1.1rem;
-        }
-
-        .search-box {
-            padding: 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            outline: none;
-            font-size: 14px;
-        }
-
-        .conversations-list {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .conversation-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f0f0f0;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            gap: 12px;
-            align-items: start;
-        }
-
-        .conversation-item:hover {
-            background: var(--unread-bg);
-        }
-
-        .conversation-item.active {
-            background: var(--secondary-color);
-        }
-
-        .conversation-item.unread {
-            background: #f0f8ff;
-            font-weight: 600;
-        }
-
-        .conversation-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-
-        .conversation-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .conversation-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-        }
-
-        .conversation-name {
-            font-weight: 600;
-            font-size: 15px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .conversation-time {
-            font-size: 12px;
-            color: #999;
-        }
-
-        .conversation-last-message {
-            font-size: 14px;
-            color: #666;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .unread-badge {
-            background: var(--primary-color);
-            color: white;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        /* Chat �rea */
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #e5ddd5;
-        }
-
-        .chat-header {
-            padding: 12px 20px;
-            background: white;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-header-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .chat-header-title {
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        .chat-header-subtitle {
-            font-size: 13px;
-            color: #999;
-        }
-
-        .messages-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .message {
-            display: flex;
-            margin-bottom: 8px;
-            animation: messageIn 0.3s ease;
-        }
-
-        @keyframes messageIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .message.sent {
-            justify-content: flex-end;
-        }
-
-        .message.received {
-            justify-content: flex-start;
-        }
-
-        .message-content {
-            max-width: 65%;
-            padding: 8px 12px;
-            border-radius: 8px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            position: relative;
-        }
-
-        .message.sent .message-content {
-            background: var(--message-sent);
-            border-bottom-right-radius: 2px;
-        }
-
-        .message.received .message-content {
-            background: var(--message-received);
-            border-bottom-left-radius: 2px;
-        }
-
-        .message-sender {
-            font-weight: 600;
-            font-size: 13px;
-            color: var(--primary-color);
-            margin-bottom: 4px;
-        }
-
-        .message-text {
-            font-size: 14px;
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-
-        .message-time {
-            font-size: 11px;
-            color: #999;
-            text-align: right;
-            margin-top: 4px;
-        }
-
-        .typing-indicator {
-            padding: 8px 12px;
-            background: white;
-            border-radius: 18px;
-            display: inline-flex;
-            gap: 4px;
-            align-items: center;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--typing-color);
-            animation: typing 1.4s infinite;
-        }
-
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-10px); }
-        }
-
-        /* Compose �rea */
-        .compose-area {
-            padding: 12px 20px;
-            background: white;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-        }
-
-        .compose-input {
-            flex: 1;
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 10px 15px;
-            resize: none;
-            max-height: 120px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .compose-input:focus {
-            border-color: var(--primary-color);
-        }
-
-        .compose-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .compose-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: none;
-            background: var(--primary-color);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .compose-btn:hover {
-            background: #0052a3;
-        }
-
-        /* Empty state */
-        .empty-state {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #999;
-            gap: 15px;
-        }
-
-        .empty-state i {
-            font-size: 80px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .conversations-sidebar {
-                width: 100%;
-            }
-
-            .chat-area {
-                display: none;
-            }
-
-            .chat-area.active {
-                display: flex;
-                position: absolute;
-                left: 0;
-                right: 0;
-                top: 0;
-                bottom: 0;
-                z-index: 10;
-            }
-        }
-
-        /* Modals */
-        .modal-header {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        /* Loading overlay */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-    </style>
     <script src="js/meta-updater.js" defer></script>
     <!-- ? FIX (18 Nov 2025): Header/Footer styles loaded globally -->
     <link rel="stylesheet" href="css/global-layout.css">
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
     <!-- Main JS for dynamic header/footer loading -->
     <script src="js/main.js" defer></script>
 </head>
+
 <body>
     <!-- Header will be injected here -->
     <header id="main-header"></header>
@@ -437,7 +54,7 @@
             </div>
 
             <!-- Chat activo -->
-            <div id="activeChat" class="hidden" style="display: flex; flex-direction: column; flex: 1;">
+            <div id="activeChat" class="hidden d-flex flex-column flex-grow-1">
                 <div class="chat-header">
                     <div class="chat-header-info">
                         <div class="conversation-avatar" id="chatAvatar">?</div>
@@ -466,14 +83,12 @@
                 </div>
 
                 <div class="compose-area">
-                    <input type="file" id="attachmentInput" class="d-none" accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                    <input type="file" id="attachmentInput" class="d-none"
+                        accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
                     <button class="compose-btn" id="attachmentBtn" title="Adjuntar archivo">
                         <i class="bi bi-paperclip"></i>
                     </button>
-                    <textarea
-                        id="messageInput"
-                        class="compose-input"
-                        placeholder="Escribe un mensaje..."
+                    <textarea id="messageInput" class="compose-input" placeholder="Escribe un mensaje..."
                         rows="1"></textarea>
                     <button class="compose-btn" id="sendMessageBtn" title="Enviar">
                         <i class="bi bi-send-fill"></i>
@@ -500,9 +115,10 @@
                                 <option value="group">Grupal</option>
                             </select>
                         </div>
-                        <div class="mb-3" id="groupTitleField" style="display: none;">
+                        <div class="mb-3 d-none" id="groupTitleField">
                             <label class="form-label">T�tulo del grupo</label>
-                            <input type="text" class="form-control" id="groupTitle" placeholder="Ej: Equipo de Matem�ticas">
+                            <input type="text" class="form-control" id="groupTitle"
+                                placeholder="Ej: Equipo de Matem�ticas">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Participantes</label>
@@ -535,7 +151,7 @@
     <script src="js/dompurify-config.js"></script>
 
     <!-- ðŸ"§ MAIN.JS - CARGA DIN�MICA DE HEADER Y FOOTER -->
-        <!-- Framework Core -->
+    <!-- Framework Core -->
     <script src="js/bge-framework-core.js"></script>
 
     <!-- Messaging Manager -->
@@ -547,18 +163,16 @@
     <footer id="main-footer"></footer>
     <script src="js/tenant-config-loader.js" defer></script>
 
-        <!-- Dark Mode Toggle -->
+    <!-- Dark Mode Toggle -->
     <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
         <i class="fas fa-moon"></i>
     </button>
 
-    
+
 
     <!-- Chat Bot Container -->
-    
+
     <script src="js/chatbot.js"></script>
 </body>
+
 </html>
-
-
-

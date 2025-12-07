@@ -43,7 +43,7 @@
 <!-- ✅ FIX (18 Nov 2025): Header/Footer styles loaded globally -->
 <!-- These MUST be in <head> so they apply BEFORE dynamic header/footer injection -->
 <link rel="stylesheet" href="css/global-layout.css">
-    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+<link rel="stylesheet" href="css/header-styles.css?v=2025111802">
 <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
 
 </head>
@@ -186,8 +186,8 @@
                                     </div>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="text-center p-3 border rounded h-100">
-                                            <div class="pilar-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                                                style="width: 60px; height: 60px;">
+                                            <div
+                                                class="pilar-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 pilar-icon-md">
                                                 <i class="fas fa-book fa-lg"></i>
                                             </div>
                                             <h6 class="fw-bold text-primary">Excelencia Académica</h6>
@@ -197,8 +197,8 @@
                                     </div>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="text-center p-3 border rounded h-100">
-                                            <div class="pilar-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                                                style="width: 60px; height: 60px;">
+                                            <div
+                                                class="pilar-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 pilar-icon-md">
                                                 <i class="fas fa-heart fa-lg"></i>
                                             </div>
                                             <h6 class="fw-bold text-success">Formación en Valores</h6>
@@ -208,8 +208,8 @@
                                     </div>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="text-center p-3 border rounded h-100">
-                                            <div class="pilar-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                                                style="width: 60px; height: 60px;">
+                                            <div
+                                                class="pilar-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 pilar-icon-md">
                                                 <i class="fas fa-tools fa-lg"></i>
                                             </div>
                                             <h6 class="fw-bold text-warning">Capacitación Laboral</h6>
@@ -219,8 +219,8 @@
                                     </div>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="text-center p-3 border rounded h-100">
-                                            <div class="pilar-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                                                style="width: 60px; height: 60px;">
+                                            <div
+                                                class="pilar-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 pilar-icon-md">
                                                 <i class="fas fa-globe fa-lg"></i>
                                             </div>
                                             <h6 class="fw-bold text-info">Ciudadanía Global</h6>
@@ -804,7 +804,7 @@
                             <div class="card-body p-4">
                                 <div class="d-flex align-items-center mb-3">
                                     <div class="feature-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                                        style="width: 50px; height: 50px;">
+                                        class="rounded-circle me-3 w-h-50px">
                                         <i class="fas fa-file-alt"></i>
                                     </div>
                                     <h5 class="card-title mb-0 text-primary fw-bold">Requisitos y Documentos</h5>
@@ -845,7 +845,7 @@
                             <div class="card-body p-4">
                                 <div class="d-flex align-items-center mb-3">
                                     <div class="feature-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                                        style="width: 50px; height: 50px;">
+                                        class="rounded-circle me-3 w-h-50px">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
                                     <h5 class="card-title mb-0 text-primary fw-bold">Fechas Importantes</h5>
@@ -864,7 +864,7 @@
                                 <div class="border-top pt-3">
                                     <div class="d-flex align-items-center mb-2">
                                         <div class="feature-icon bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                                            style="width: 40px; height: 40px;">
+                                            class="rounded-circle me-3 w-h-40px">
                                             <i class="fas fa-award"></i>
                                         </div>
                                         <h6 class="mb-0 text-primary fw-bold">Becas Disponibles</h6>
@@ -939,7 +939,7 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
+                    <div class="modal-body p-4 modal-body-scrollable">
                         <p class="lead mb-4">Programa de Comunicación Gráfica - Actividades Clave por Semestre</p>
 
                         <!-- 3er Semestre -->
@@ -1141,7 +1141,7 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
+                    <div class="modal-body p-4 modal-body-scrollable">
                         <p class="lead mb-4">Programa de Preparación de Alimentos Artesanales - Actividades Clave por
                             Semestre</p>
 
@@ -1338,7 +1338,7 @@
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
+                    <div class="modal-body p-4 modal-body-scrollable">
                         <p class="lead mb-4">Programa de Instalaciones Residenciales - Actividades Clave por Semestre
                         </p>
 
@@ -1540,7 +1540,7 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                    <div class="modal-body modal-body-scrollable">
                         <p class="lead">Al concluir sus estudios, nuestros alumnos habrán desarrollado:</p>
                         <div class="row mb-4">
                             <div class="col-md-6">
@@ -1839,11 +1839,11 @@
         <i class="fas fa-moon"></i>
     </button>
 
-    
+
 
     <!-- Back to Top -->
     <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none"
-        style="bottom: 2rem; right: 2rem; width: 50px; height: 50px; z-index: 1000;" aria-label="Volver arriba"
+        class="btn btn-primary rounded-circle position-fixed d-none back-to-top-custom" aria-label="Volver arriba"
         title="Volver arriba">
         <i class="fas fa-arrow-up"></i>
     </button>

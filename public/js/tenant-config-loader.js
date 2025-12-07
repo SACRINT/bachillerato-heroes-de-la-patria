@@ -12,7 +12,7 @@
  * @version 1.0.0
  */
 
-(function() {
+(function () {
     'use strict';
 
     // IIFE para evitar contaminación del scope global
@@ -25,8 +25,9 @@
     const DEFAULT_CONFIG = {
         id: null,
         uuid: null,
-        school_name: 'Bachillerato General por Competencias "Héroes de la Patria"',
-        school_short_name: 'BGE',
+        school_name: '"Héroes de la Patria"', // Nombre visual
+        school_official_name: 'Bachillerato General por Competencias "Héroes de la Patria"',
+        school_short_name: '"Héroes de la Patria"', // Fix: Reemplazar "BGE" por el nombre que el usuario prefiere
         domain: 'localhost:3000',
         address: 'Coronel Tito Hernández, Venustiano Carranza, Puebla',
         phone: '+52-xxx-xxx-xxxx',
@@ -91,11 +92,18 @@
             console.log('[TENANT-CONFIG] Configuración cargada exitosamente:', data.tenant.school_name);
 
             // Retornar la configuración del tenant (mergeada con defaults)
-            return {
+            const finalConfig = {
                 ...DEFAULT_CONFIG,
                 ...data.tenant,
                 config: data.config // Configuración adicional JSON
             };
+
+            // FIX: Forzar nombre visual correcto si la BD devuelve el default "BGE"
+            if (finalConfig.school_short_name === 'BGE') {
+                finalConfig.school_short_name = '"Héroes de la Patria"';
+            }
+
+            return finalConfig;
 
         } catch (error) {
             console.warn('[TENANT-CONFIG] Error cargando configuración:', error.message);
@@ -136,7 +144,7 @@
      * @param {*} defaultValue - Valor por defecto si no existe
      * @returns {*} El valor encontrado o el default
      */
-    window.getTenantConfigValue = function(path, defaultValue = null) {
+    window.getTenantConfigValue = function (path, defaultValue = null) {
         if (!window.TENANT_CONFIG) {
             return defaultValue;
         }

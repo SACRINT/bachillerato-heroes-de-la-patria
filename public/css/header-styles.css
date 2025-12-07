@@ -393,3 +393,64 @@
     color: #424242 !important;
     text-shadow: 0 1px 2px rgba(255,255,255,0.5) !important;
 }
+
+/* Custom Header Utilities */
+.navbar-padding-custom {
+    padding: 0.4rem 1rem !important;
+}
+
+.container-fluid-custom {
+    max-width: none !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+.fs-085-lh-11 {
+    font-size: 0.85rem !important;
+    line-height: 1.1 !important;
+}
+
+.fs-075-lh-11 {
+    font-size: 0.75rem !important;
+    line-height: 1.1 !important;
+}
+
+.navbar-toggler-custom {
+    border: none !important;
+    padding: 0.25rem 0.5rem !important;
+}
+
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
+
+/* Utility classes for header cleanup (Surgical) */
+.navbar-custom-padding {
+    padding: 0.4rem 1rem !important;
+}
+
+.container-custom-fluid {
+    max-width: none !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+.navbar-brand-custom {
+    margin-right: 0 !important;
+}
+
+.logo-main-text-style {
+    font-size: 0.85rem !important;
+    line-height: 1.1 !important;
+}
+
+.logo-sub-text-style {
+    font-size: 0.75rem !important;
+    line-height: 1.1 !important;
+}
+
+.navbar-toggler-custom-style {
+    border: none !important;
+    padding: 0.25rem 0.5rem !important;
+}
