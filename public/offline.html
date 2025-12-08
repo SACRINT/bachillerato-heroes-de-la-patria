@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title" data-base-title="Sin conexión - Bachillerato Héroes de la Patria">Sin conexión - Bachillerato Héroes de la Patria</title>
-    
+    <title id="page-title" data-base-title="Sin conexión - Bachillerato Héroes de la Patria">Sin conexión - Bachillerato
+        Héroes de la Patria</title>
+
     <!-- Inline critical styles for offline page -->
     <style>
         :root {
@@ -13,13 +15,13 @@
             --bs-light: #f8f9fa;
             --bs-dark: #212529;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Poppins', system-ui, -apple-system, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -31,7 +33,7 @@
             justify-content: center;
             padding: 1rem;
         }
-        
+
         .offline-container {
             background: white;
             border-radius: 20px;
@@ -39,11 +41,11 @@
             max-width: 500px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             position: relative;
             overflow: hidden;
         }
-        
+
         .offline-container::before {
             content: '';
             position: absolute;
@@ -54,7 +56,7 @@
             background: linear-gradient(45deg, transparent, rgba(25, 118, 210, 0.05), transparent);
             animation: shimmer 3s infinite;
         }
-        
+
         .offline-icon {
             font-size: 5rem;
             margin-bottom: 1.5rem;
@@ -63,7 +65,7 @@
             position: relative;
             z-index: 2;
         }
-        
+
         .offline-title {
             color: var(--bs-primary);
             font-size: 2.5rem;
@@ -72,7 +74,7 @@
             position: relative;
             z-index: 2;
         }
-        
+
         .offline-subtitle {
             color: var(--bs-secondary);
             font-size: 1.1rem;
@@ -81,7 +83,7 @@
             position: relative;
             z-index: 2;
         }
-        
+
         .offline-message {
             color: #666;
             margin-bottom: 2rem;
@@ -90,7 +92,7 @@
             position: relative;
             z-index: 2;
         }
-        
+
         .offline-features {
             background: var(--bs-light);
             border-radius: 15px;
@@ -100,26 +102,26 @@
             position: relative;
             z-index: 2;
         }
-        
+
         .offline-features h3 {
             color: var(--bs-primary);
             font-size: 1.2rem;
             margin-bottom: 1rem;
             text-align: center;
         }
-        
+
         .feature-list {
             list-style: none;
             padding: 0;
         }
-        
+
         .feature-list li {
             padding: 0.5rem 0;
             display: flex;
             align-items: center;
             color: #555;
         }
-        
+
         .feature-list li::before {
             content: 'âœ“';
             color: #28a745;
@@ -127,7 +129,7 @@
             margin-right: 0.75rem;
             font-size: 1.2rem;
         }
-        
+
         .button-group {
             display: flex;
             gap: 1rem;
@@ -137,7 +139,7 @@
             position: relative;
             z-index: 2;
         }
-        
+
         .btn {
             padding: 12px 24px;
             border: none;
@@ -151,29 +153,29 @@
             transition: all 0.3s ease;
             font-size: 1rem;
         }
-        
+
         .btn-primary {
             background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
             color: white;
         }
-        
+
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(25, 118, 210, 0.3);
         }
-        
+
         .btn-secondary {
             background: white;
             color: var(--bs-primary);
             border: 2px solid var(--bs-primary);
         }
-        
+
         .btn-secondary:hover {
             background: var(--bs-primary);
             color: white;
             transform: translateY(-2px);
         }
-        
+
         .connection-status {
             margin-top: 2rem;
             padding: 1rem;
@@ -182,25 +184,25 @@
             position: relative;
             z-index: 2;
         }
-        
+
         .status-offline {
             background: #ffe6e6;
             color: #d32f2f;
             border: 1px solid #ffcdd2;
         }
-        
+
         .status-checking {
             background: #fff3e0;
             color: #f57c00;
             border: 1px solid #ffcc02;
         }
-        
+
         .status-online {
             background: #e8f5e8;
             color: #2e7d32;
             border: 1px solid #c8e6c9;
         }
-        
+
         .brand-info {
             margin-top: 2rem;
             padding-top: 2rem;
@@ -208,7 +210,7 @@
             position: relative;
             z-index: 2;
         }
-        
+
         .brand-logo {
             width: 60px;
             height: 60px;
@@ -222,56 +224,89 @@
             font-size: 1.5rem;
             font-weight: bold;
         }
-        
+
         .brand-text {
             color: #666;
             font-size: 0.9rem;
             line-height: 1.4;
         }
-        
+
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
         }
-        
+
         @keyframes shimmer {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
-        
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
-        .offline-container > * {
+
+        .offline-container>* {
             animation: fadeIn 0.6s ease forwards;
         }
-        
-        .offline-container > *:nth-child(2) { animation-delay: 0.1s; }
-        .offline-container > *:nth-child(3) { animation-delay: 0.2s; }
-        .offline-container > *:nth-child(4) { animation-delay: 0.3s; }
-        .offline-container > *:nth-child(5) { animation-delay: 0.4s; }
-        .offline-container > *:nth-child(6) { animation-delay: 0.5s; }
-        
+
+        .offline-container>*:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .offline-container>*:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .offline-container>*:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .offline-container>*:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        .offline-container>*:nth-child(6) {
+            animation-delay: 0.5s;
+        }
+
         @media (max-width: 768px) {
             .offline-container {
                 padding: 2rem 1.5rem;
                 margin: 1rem;
             }
-            
+
             .offline-title {
                 font-size: 2rem;
             }
-            
+
             .offline-icon {
                 font-size: 4rem;
             }
-            
+
             .button-group {
                 flex-direction: column;
             }
-            
+
             .btn {
                 width: 100%;
                 justify-content: center;
@@ -285,10 +320,11 @@
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    
+
     <!-- Icons -->
     <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
-    
+    <link rel="apple-touch-icon" href="/images/logo/logo-bachillerato-HDLP.png">
+
     <!-- Theme Color -->
     <meta name="theme-color" content="#1976D2">
     <script src="js/meta-updater.js" defer></script>
@@ -297,20 +333,21 @@
     <!-- Main JS for dynamic header/footer loading -->
     <script src="js/main.js" defer></script>
 </head>
+
 <body>
     <!-- Header dinámico inyectado por main.js -->
     <header id="main-header"></header>
     <div class="offline-container">
         <div class="offline-icon" id="connectionIcon">ðŸ“¡</div>
-        
+
         <h1 class="offline-title">Sin conexión a Internet</h1>
         <h2 class="offline-subtitle">¡Pero no te preocupes!</h2>
-        
+
         <p class="offline-message">
-            Aunque no tienes conexión a Internet en este momento, algunas funciones 
+            Aunque no tienes conexión a Internet en este momento, algunas funciones
             de nuestro sitio siguen disponibles gracias a nuestra tecnología PWA.
         </p>
-        
+
         <div class="offline-features">
             <h3>ðŸš€ Funciones disponibles sin conexión:</h3>
             <ul class="feature-list">
@@ -321,7 +358,7 @@
                 <li>Acceder a documentos descargados</li>
             </ul>
         </div>
-        
+
         <div class="button-group">
             <button class="btn btn-primary" data-action="check-connection">
                 <span>ðŸ”„</span> Verificar conexión
@@ -330,11 +367,11 @@
                 <span>ðŸ </span> Ir al inicio
             </a>
         </div>
-        
+
         <div class="connection-status status-offline" id="connectionStatus">
             <strong>Estado:</strong> Sin conexión a Internet
         </div>
-        
+
         <div class="brand-info">
             <div class="brand-logo">
                 BGE
@@ -437,19 +474,19 @@
                     mode: 'no-cors',
                     signal: controller.signal
                 })
-                .then(() => {
-                    clearTimeout(timeoutId);
-                    this.updateConnectionIcon(true);
-                })
-                .catch(() => {
-                    clearTimeout(timeoutId);
-                    this.updateConnectionIcon(false);
-                })
-                .finally(() => {
-                    this.isCheckingConnection = false;
-                    button.disabled = false;
-                    button.innerHTML = '<span>ðŸ”„</span> Verificar conexión';
-                });
+                    .then(() => {
+                        clearTimeout(timeoutId);
+                        this.updateConnectionIcon(true);
+                    })
+                    .catch(() => {
+                        clearTimeout(timeoutId);
+                        this.updateConnectionIcon(false);
+                    })
+                    .finally(() => {
+                        this.isCheckingConnection = false;
+                        button.disabled = false;
+                        button.innerHTML = '<span>ðŸ”„</span> Verificar conexión';
+                    });
             }
 
             startAutoCheck() {
@@ -464,17 +501,23 @@
                             mode: 'no-cors',
                             signal: controller.signal
                         })
-                        .then(() => {
-                            this.updateConnectionIcon(true);
-                        })
-                        .catch(() => {
-                            // Still offline, do nothing
-                        });
+                            .then(() => {
+                                this.updateConnectionIcon(true);
+                            })
+                            .catch(() => {
+                                // Still offline, do nothing
+                            });
                     }
                 }, 30000); // Check every 30 seconds
             }
 
             setupEventListeners() {
+                // Button click handler for check connection
+                const checkBtn = document.querySelector('[data-action="check-connection"]');
+                if (checkBtn) {
+                    checkBtn.addEventListener('click', () => this.checkConnection());
+                }
+
                 // Listen for online/offline events
                 window.addEventListener('online', () => {
                     this.updateConnectionIcon(true);
@@ -540,7 +583,7 @@
 
     <!-- Footer dinámico inyectado por main.js -->
     <footer id="main-footer"></footer>
-        <script src="js/chatbot.js"></script>
+    <script src="js/chatbot.js"></script>
 </body>
-</html>
 
+</html>
