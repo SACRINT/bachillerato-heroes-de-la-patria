@@ -86,6 +86,8 @@ const calendarRoutes = require('./routes/calendar');  // ✅ CALENDAR ROUTES - E
 const pendientesAprobacionRoutes = require('./routes/pendientes-aprobacion');
 const diagnosticoAprobacionesRoutes = require('./routes/diagnostico-aprobaciones');
 const gamificationRoutes = require('./routes/gamification');  // ✅ GAMIFICATION ROUTES - Sistema de logros y puntuaciones
+const triviaGameRoutes = require('./routes/trivia-game');  // ✅ EDUCATIONAL GAMES - Trivia (7 DIC 2025)
+const conceptBuilderRoutes = require('./routes/concept-builder');  // ✅ EDUCATIONAL GAMES - Mapas conceptuales (7 DIC 2025)
 
 // ✅ SEMANA 2 - SERVICE LAYER ROUTES (20 NOV 2025)
 const studentsServiceRoutes = require('./routes/students-service');  // Estudiantes con Service Layer
@@ -410,6 +412,8 @@ app.use('/api/tutor', aiTutorRoutes); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
 app.use('/api/super-admin', superAdminDashboardRoutes); // ✅ SUPER ADMIN DASHBOARD - FASE 5 (7 DIC 2025)
 app.use('/api/stripe-webhooks', stripeWebhooksRoutes); // ✅ STRIPE WEBHOOKS - FASE 5.2 (7 DIC 2025)
 app.use('/api/ar', arExperiencesRoutes); // ✅ AR EXPERIENCES - FASE 5.3 (7 DIC 2025)
+app.use('/api/games/trivia', triviaGameRoutes); // ✅ EDUCATIONAL GAMES - Trivia (7 DIC 2025)
+app.use('/api/games/concepts', conceptBuilderRoutes); // ✅ EDUCATIONAL GAMES - Mapas conceptuales (7 DIC 2025)
 
 // ✅ SEMANA 2 - SERVICE LAYER ROUTES (20 NOV 2025)
 // Estas rutas usan el patrón Service Layer para separar lógica de negocio
