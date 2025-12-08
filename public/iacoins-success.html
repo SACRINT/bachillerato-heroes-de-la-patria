@@ -75,6 +75,7 @@
             font-weight: 800;
             background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin: 1rem 0;
         }
@@ -107,6 +108,18 @@
             display: block;
         }
 
+        .hidden {
+            display: none;
+        }
+
+        .visible {
+            display: block;
+        }
+
+        .error-icon {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+        }
+
         .spinner {
             width: 40px;
             height: 40px;
@@ -131,15 +144,15 @@
             <div class="spinner"></div>
             <p>Procesando tu compra...</p>
         </div>
-        <div id="success" style="display:none;">
+        <div id="success" class="hidden">
             <div class="success-icon">✓</div>
             <h1>¡Compra Exitosa!</h1>
             <div class="coins-received" id="coins-amount">--- IACoins</div>
             <p>Tus IACoins han sido acreditados a tu cuenta.</p>
             <a href="/iacoins-store.html" class="btn">Volver a la Tienda</a>
         </div>
-        <div id="error" style="display:none;">
-            <div class="success-icon" style="background:linear-gradient(135deg,#ef4444,#f97316);">✗</div>
+        <div id="error" class="hidden">
+            <div class="success-icon error-icon">✗</div>
             <h1>Error en el Pago</h1>
             <p id="error-msg">Hubo un problema procesando tu pago.</p>
             <a href="/iacoins-store.html" class="btn">Intentar de Nuevo</a>
