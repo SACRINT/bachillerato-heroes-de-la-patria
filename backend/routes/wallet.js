@@ -261,8 +261,123 @@ router.post('/spend', authenticateToken, async (req, res) => {
 });
 
 // ============================================
-// ENDPOINT 5: POST /api/wallet/purchase
-// Comprar IACoins con dinero real (Stripe/MercadoPago)
+// STRIPE INTEGRATION - Importar servicio
+// ============================================
+let stripePaymentsService;
+try {
+    stripePaymentsService = require('../services/stripePaymentsService.bridge');
+} catch (error) {
+    debugLog.warn('WALLET', '[WALLET] Stripe service no disponible, usando modo legacy');
+    stripePaymentsService = null;
+}
+
+// ============================================
+// ENDPOINT 5: GET /api/wallet/packages
+// Obtener paquetes de IACoins disponibles
+// ============================================
+router.get('/packages', async (req, res) => {
+    try {
+        if (stripePaymentsService) {
+            const packages = await stripePaymentsService.getAvailablePackages();
+            return res.json({ packages });
+        }
+
+        // Fallback: paquetes estáticos
+        const PACKAGES = [
+            { id: 'starter', name: 'Starter', iacoins_base: 100, bonus_percentage: 0, price_mxn: 49, icon: '🌟' },
+            { id: 'popular', name: 'Popular', iacoins_base: 500, bonus_percentage: 10, price_mxn: 199, icon: '🔥', is_featured: true },
+            { id: 'pro', name: 'Pro', iacoins_base: 1200, bonus_percentage: 15, price_mxn: 399, icon: '💎' },
+            { id: 'mega', name: 'Mega', iacoins_base: 3000, bonus_percentage: 25, price_mxn: 899, icon: '🚀' }
+        ];
+        res.json({ packages: PACKAGES });
+
+    } catch (error) {
+        debugLog.error('WALLET', '[WALLET] Error al obtener paquetes:', error.message);
+        res.status(500).json({ error: 'Error al obtener paquetes' });
+    }
+});
+
+// ============================================
+// ENDPOINT 6: POST /api/wallet/create-checkout
+// Crear sesión de checkout de Stripe
+// ============================================
+router.post('/create-checkout', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { package_id } = req.body;
+
+        if (!package_id) {
+            return res.status(400).json({ error: 'El package_id es requerido' });
+        }
+
+        debugLog.log('WALLET', `[WALLET] Usuario ${userId} iniciando checkout para paquete ${package_id}`);
+
+        if (!stripePaymentsService) {
+            return res.status(503).json({ error: 'Servicio de pagos no disponible' });
+        }
+
+        // URLs de retorno
+        const baseUrl = process.env.FRONTEND_URL || `${req.protocol}://${req.get('host')}`;
+        const successUrl = `${baseUrl}/iacoins-success.html`;
+        const cancelUrl = `${baseUrl}/iacoins-store.html`;
+
+        const session = await stripePaymentsService.createCheckoutSession(
+            userId,
+            package_id,
+            successUrl,
+            cancelUrl
+        );
+
+        res.json({
+            success: true,
+            session_id: session.sessionId,
+            checkout_url: session.sessionUrl,
+            package_id: session.packageId,
+            amount: session.amount,
+            iacoins: session.iacoins
+        });
+
+    } catch (error) {
+        debugLog.error('WALLET', '[WALLET] Error al crear checkout:', error.message);
+        res.status(500).json({
+            error: 'Error al crear sesión de pago',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+// ============================================
+// ENDPOINT 7: GET /api/wallet/purchase-history
+// Obtener historial de compras con dinero real
+// ============================================
+router.get('/purchase-history', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { limit = 20 } = req.query;
+
+        if (stripePaymentsService) {
+            const purchases = await stripePaymentsService.getUserPurchaseHistory(userId, parseInt(limit));
+            return res.json({ purchases });
+        }
+
+        // Fallback desde wallet_history
+        const result = await pool.query(
+            `SELECT * FROM wallet_history 
+             WHERE user_id = $1 AND transaction_type = 'purchase'
+             ORDER BY created_at DESC LIMIT $2`,
+            [userId, parseInt(limit)]
+        );
+        res.json({ purchases: result.rows });
+
+    } catch (error) {
+        debugLog.error('WALLET', '[WALLET] Error al obtener historial de compras:', error.message);
+        res.status(500).json({ error: 'Error al obtener historial' });
+    }
+});
+
+// ============================================
+// ENDPOINT 8: POST /api/wallet/purchase (LEGACY)
+// Comprar IACoins - Mantenido para compatibilidad
 // ============================================
 router.post('/purchase', authenticateToken, async (req, res) => {
     const client = await pool.connect();
@@ -271,41 +386,35 @@ router.post('/purchase', authenticateToken, async (req, res) => {
         const userId = req.user.id;
         const { package_id, payment_method, payment_reference } = req.body;
 
+        // Si tiene Stripe disponible, redirigir al nuevo flujo
+        if (stripePaymentsService && payment_method === 'stripe') {
+            return res.status(400).json({
+                error: 'Use /api/wallet/create-checkout para pagos con Stripe',
+                redirect: '/api/wallet/create-checkout'
+            });
+        }
+
         // Validaciones
         if (!package_id) {
-            return res.status(400).json({
-                error: 'El package_id es requerido'
-            });
+            return res.status(400).json({ error: 'El package_id es requerido' });
         }
 
-        if (!payment_method) {
-            return res.status(400).json({
-                error: 'El método de pago es requerido'
-            });
-        }
+        debugLog.log('WALLET', `[WALLET] Usuario ${userId} comprando paquete ${package_id} (legacy)`);
 
-        debugLog.log('WALLET', `[WALLET] Usuario ${userId} comprando paquete ${package_id} con ${payment_method}`);
-
-        // Configuración de paquetes (debería venir de BD o config)
+        // Configuración de paquetes legacy
         const PACKAGES = {
-            'starter': { iacoins: 100, bonus_percentage: 0, price_usd: 4.99 },
-            'basic': { iacoins: 250, bonus_percentage: 10, price_usd: 9.99 },
-            'popular': { iacoins: 500, bonus_percentage: 20, price_usd: 19.99 },
-            'premium': { iacoins: 1200, bonus_percentage: 30, price_usd: 39.99 },
-            'ultimate': { iacoins: 3000, bonus_percentage: 50, price_usd: 89.99 }
+            'starter': { iacoins: 100, bonus_percentage: 0, price_mxn: 49 },
+            'popular': { iacoins: 500, bonus_percentage: 10, price_mxn: 199 },
+            'pro': { iacoins: 1200, bonus_percentage: 15, price_mxn: 399 },
+            'mega': { iacoins: 3000, bonus_percentage: 25, price_mxn: 899 }
         };
 
         const pkg = PACKAGES[package_id];
         if (!pkg) {
-            return res.status(400).json({
-                error: 'Paquete no válido'
-            });
+            return res.status(400).json({ error: 'Paquete no válido' });
         }
 
         const totalCoins = Math.floor(pkg.iacoins * (1 + pkg.bonus_percentage / 100));
-
-        // TODO: Integrar con pasarela de pago real (Stripe/MercadoPago)
-        // Por ahora simulamos una compra exitosa
 
         await client.query('BEGIN');
 
@@ -321,7 +430,6 @@ router.post('/purchase', authenticateToken, async (req, res) => {
         );
 
         if (walletResult.rows.length === 0) {
-            // Crear wallet si no existe
             await client.query(
                 `INSERT INTO wallet (user_id, balance, total_earned, total_spent, total_purchased)
                 VALUES ($1, $2, 0, 0, $2)`,
@@ -343,11 +451,11 @@ router.post('/purchase', authenticateToken, async (req, res) => {
                 `Compra de paquete ${package_id}`,
                 JSON.stringify({
                     package_id,
-                    payment_method,
+                    payment_method: payment_method || 'legacy',
                     payment_reference,
                     base_coins: pkg.iacoins,
                     bonus_percentage: pkg.bonus_percentage,
-                    price_usd: pkg.price_usd
+                    price_mxn: pkg.price_mxn
                 })
             ]
         );
