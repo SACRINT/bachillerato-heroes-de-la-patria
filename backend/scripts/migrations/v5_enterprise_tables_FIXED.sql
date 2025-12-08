@@ -1,7 +1,28 @@
 -- ============================================
 -- BGE v5.0-5.2 Enterprise Tables Migration
--- Migración completa para servicios enterprise
+-- VERSIÓN CORREGIDA - Incluye tabla usuarios
 -- ============================================
+
+-- =============================================
+-- PREREQUISITO: TABLA USUARIOS (si no existe)
+-- =============================================
+
+CREATE TABLE IF NOT EXISTS usuarios (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    rol VARCHAR(20) DEFAULT 'estudiante' CHECK (rol IN ('admin', 'docente', 'estudiante', 'padre')),
+    activo BOOLEAN DEFAULT TRUE,
+    verificado BOOLEAN DEFAULT FALSE,
+    ultimo_acceso TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_usuarios_email ON usuarios(email);
+CREATE INDEX IF NOT EXISTS idx_usuarios_rol ON usuarios(rol);
+CREATE INDEX IF NOT EXISTS idx_usuarios_activo ON usuarios(activo);
 
 -- =============================================
 -- 1. SECURITY TABLES (AdvancedSecurityService)
@@ -27,7 +48,7 @@ CREATE INDEX IF NOT EXISTS idx_user_2fa_user_id ON user_2fa(user_id);
 -- Tabla para sesiones de usuario
 CREATE TABLE IF NOT EXISTS user_sessions (
     id BIGSERIAL PRIMARY KEY,
-    session_id UUID NOT NULL UNIQUE,
+    session_id VARCHAR(100) NOT NULL UNIQUE,
     user_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
     token TEXT NOT NULL,
     device_info JSONB,
@@ -330,6 +351,7 @@ BEGIN
     RAISE NOTICE 'BGE v5.0-5.2 Migration Completed!';
     RAISE NOTICE '======================================';
     RAISE NOTICE 'Tables created:';
+    RAISE NOTICE '  - Users: usuarios (prerequisito)';
     RAISE NOTICE '  - Security: user_2fa, user_sessions, password_history, security_threats';
     RAISE NOTICE '  - Collaboration: collaboration_rooms, room_participants, chat_messages, collaborative_documents';
     RAISE NOTICE '  - Audit: audit_logs';

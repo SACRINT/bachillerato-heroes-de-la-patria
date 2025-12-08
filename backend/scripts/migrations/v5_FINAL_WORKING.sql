@@ -1,13 +1,9 @@
 -- ============================================
 -- BGE v5.0-5.2 Enterprise Tables Migration
--- Migración completa para servicios enterprise
+-- VERSIÓN FINAL - Basada en estructura real
 -- ============================================
 
--- =============================================
--- 1. SECURITY TABLES (AdvancedSecurityService)
--- =============================================
-
--- Tabla para 2FA
+-- Security: 2FA
 CREATE TABLE IF NOT EXISTS user_2fa (
     id BIGSERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
@@ -21,13 +17,12 @@ CREATE TABLE IF NOT EXISTS user_2fa (
     updated_at TIMESTAMP WITH TIME ZONE,
     UNIQUE(user_id)
 );
-
 CREATE INDEX IF NOT EXISTS idx_user_2fa_user_id ON user_2fa(user_id);
 
--- Tabla para sesiones de usuario
+-- Security: Sessions
 CREATE TABLE IF NOT EXISTS user_sessions (
     id BIGSERIAL PRIMARY KEY,
-    session_id UUID NOT NULL UNIQUE,
+    session_id VARCHAR(100) NOT NULL UNIQUE,
     user_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
     token TEXT NOT NULL,
     device_info JSONB,
@@ -37,37 +32,30 @@ CREATE TABLE IF NOT EXISTS user_sessions (
     last_activity TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL
 );
-
 CREATE INDEX IF NOT EXISTS idx_user_sessions_user_id ON user_sessions(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_sessions_session_id ON user_sessions(session_id);
 CREATE INDEX IF NOT EXISTS idx_user_sessions_expires ON user_sessions(expires_at);
 
--- Tabla para historial de contraseñas
+-- Security: Password History
 CREATE TABLE IF NOT EXISTS password_history (
     id BIGSERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
     password_hash TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE INDEX IF NOT EXISTS idx_password_history_user_id ON password_history(user_id);
 
--- Tabla para amenazas de seguridad detectadas
+-- Security: Threats
 CREATE TABLE IF NOT EXISTS security_threats (
     id BIGSERIAL PRIMARY KEY,
     ip_address VARCHAR(45) NOT NULL,
     threats JSONB NOT NULL,
     detected_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE INDEX IF NOT EXISTS idx_security_threats_ip ON security_threats(ip_address);
 CREATE INDEX IF NOT EXISTS idx_security_threats_date ON security_threats(detected_at);
 
--- =============================================
--- 2. COLLABORATION TABLES (RealTimeCollaborationService)
--- =============================================
-
--- Tabla para salas de colaboración
+-- Collaboration: Rooms
 CREATE TABLE IF NOT EXISTS collaboration_rooms (
     id BIGSERIAL PRIMARY KEY,
     room_id VARCHAR(50) NOT NULL UNIQUE,
@@ -83,12 +71,11 @@ CREATE TABLE IF NOT EXISTS collaboration_rooms (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE
 );
-
 CREATE INDEX IF NOT EXISTS idx_collaboration_rooms_room_id ON collaboration_rooms(room_id);
 CREATE INDEX IF NOT EXISTS idx_collaboration_rooms_host ON collaboration_rooms(host_id);
 CREATE INDEX IF NOT EXISTS idx_collaboration_rooms_status ON collaboration_rooms(status);
 
--- Tabla para participantes de salas
+-- Collaboration: Participants
 CREATE TABLE IF NOT EXISTS room_participants (
     id BIGSERIAL PRIMARY KEY,
     room_id VARCHAR(50) NOT NULL,
@@ -97,11 +84,10 @@ CREATE TABLE IF NOT EXISTS room_participants (
     left_at TIMESTAMP WITH TIME ZONE,
     CONSTRAINT fk_room_participants_room FOREIGN KEY (room_id) REFERENCES collaboration_rooms(room_id) ON DELETE CASCADE
 );
-
 CREATE INDEX IF NOT EXISTS idx_room_participants_room ON room_participants(room_id);
 CREATE INDEX IF NOT EXISTS idx_room_participants_user ON room_participants(user_id);
 
--- Tabla para mensajes de chat
+-- Collaboration: Chat Messages
 CREATE TABLE IF NOT EXISTS chat_messages (
     id BIGSERIAL PRIMARY KEY,
     room_id VARCHAR(50) NOT NULL,
@@ -115,11 +101,10 @@ CREATE TABLE IF NOT EXISTS chat_messages (
     timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     CONSTRAINT fk_chat_messages_room FOREIGN KEY (room_id) REFERENCES collaboration_rooms(room_id) ON DELETE CASCADE
 );
-
 CREATE INDEX IF NOT EXISTS idx_chat_messages_room ON chat_messages(room_id);
 CREATE INDEX IF NOT EXISTS idx_chat_messages_timestamp ON chat_messages(timestamp);
 
--- Tabla para documentos colaborativos
+-- Collaboration: Documents
 CREATE TABLE IF NOT EXISTS collaborative_documents (
     id VARCHAR(100) PRIMARY KEY,
     content TEXT DEFAULT '',
@@ -128,11 +113,7 @@ CREATE TABLE IF NOT EXISTS collaborative_documents (
     updated_at TIMESTAMP WITH TIME ZONE
 );
 
--- =============================================
--- 3. AUDIT TABLES (AuditLogService)
--- =============================================
-
--- Tabla para logs de auditoría
+-- Audit: Logs
 CREATE TABLE IF NOT EXISTS audit_logs (
     id BIGSERIAL PRIMARY KEY,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -148,18 +129,13 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     checksum VARCHAR(64),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE INDEX IF NOT EXISTS idx_audit_logs_timestamp ON audit_logs(timestamp);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_user ON audit_logs(user_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_action ON audit_logs(action);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_category ON audit_logs(category);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_severity ON audit_logs(severity);
 
--- =============================================
--- 4. GDPR TABLES (GDPRDataExportService)
--- =============================================
-
--- Tabla para solicitudes GDPR
+-- GDPR: Requests
 CREATE TABLE IF NOT EXISTS gdpr_requests (
     id BIGSERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
@@ -173,12 +149,11 @@ CREATE TABLE IF NOT EXISTS gdpr_requests (
     export_expires_at TIMESTAMP WITH TIME ZONE,
     notes TEXT
 );
-
 CREATE INDEX IF NOT EXISTS idx_gdpr_requests_user ON gdpr_requests(user_id);
 CREATE INDEX IF NOT EXISTS idx_gdpr_requests_status ON gdpr_requests(status);
 CREATE INDEX IF NOT EXISTS idx_gdpr_requests_type ON gdpr_requests(request_type);
 
--- Tabla para consentimientos GDPR
+-- GDPR: Consents
 CREATE TABLE IF NOT EXISTS gdpr_consents (
     id BIGSERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
@@ -189,15 +164,10 @@ CREATE TABLE IF NOT EXISTS gdpr_consents (
     user_agent TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE INDEX IF NOT EXISTS idx_gdpr_consents_user ON gdpr_consents(user_id);
 CREATE INDEX IF NOT EXISTS idx_gdpr_consents_type ON gdpr_consents(consent_type);
 
--- =============================================
--- 5. BACKUP TABLES (BackupAutomationService)
--- =============================================
-
--- Tabla para historial de backups
+-- Backup: History
 CREATE TABLE IF NOT EXISTS backup_history (
     id BIGSERIAL PRIMARY KEY,
     level INTEGER NOT NULL CHECK (level IN (1, 2, 3)),
@@ -213,16 +183,11 @@ CREATE TABLE IF NOT EXISTS backup_history (
     error_message TEXT,
     metadata JSONB
 );
-
 CREATE INDEX IF NOT EXISTS idx_backup_history_level ON backup_history(level);
 CREATE INDEX IF NOT EXISTS idx_backup_history_status ON backup_history(status);
 CREATE INDEX IF NOT EXISTS idx_backup_history_date ON backup_history(started_at);
 
--- =============================================
--- 6. SMS NOTIFICATION TABLES
--- =============================================
-
--- Tabla para historial de SMS
+-- SMS: History
 CREATE TABLE IF NOT EXISTS sms_history (
     id BIGSERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
@@ -235,12 +200,11 @@ CREATE TABLE IF NOT EXISTS sms_history (
     error_message TEXT,
     sent_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE INDEX IF NOT EXISTS idx_sms_history_user ON sms_history(user_id);
 CREATE INDEX IF NOT EXISTS idx_sms_history_phone ON sms_history(phone_number);
 CREATE INDEX IF NOT EXISTS idx_sms_history_date ON sms_history(sent_at);
 
--- Tabla para códigos de verificación SMS
+-- SMS: Verification Codes
 CREATE TABLE IF NOT EXISTS sms_verification_codes (
     id BIGSERIAL PRIMARY KEY,
     phone_number VARCHAR(20) NOT NULL,
@@ -250,15 +214,10 @@ CREATE TABLE IF NOT EXISTS sms_verification_codes (
     verified_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE INDEX IF NOT EXISTS idx_sms_verification_phone ON sms_verification_codes(phone_number);
 CREATE INDEX IF NOT EXISTS idx_sms_verification_expires ON sms_verification_codes(expires_at);
 
--- =============================================
--- 7. EMAIL TEMPLATE TABLES
--- =============================================
-
--- Tabla para historial de emails
+-- Email: History
 CREATE TABLE IF NOT EXISTS email_history (
     id BIGSERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
@@ -270,16 +229,11 @@ CREATE TABLE IF NOT EXISTS email_history (
     opened_at TIMESTAMP WITH TIME ZONE,
     sent_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE INDEX IF NOT EXISTS idx_email_history_user ON email_history(user_id);
 CREATE INDEX IF NOT EXISTS idx_email_history_recipient ON email_history(recipient_email);
 CREATE INDEX IF NOT EXISTS idx_email_history_date ON email_history(sent_at);
 
--- =============================================
--- 8. INTERNATIONALIZATION TABLES
--- =============================================
-
--- Tabla para traducciones personalizadas
+-- i18n: Translations
 CREATE TABLE IF NOT EXISTS custom_translations (
     id BIGSERIAL PRIMARY KEY,
     locale VARCHAR(10) NOT NULL,
@@ -290,15 +244,10 @@ CREATE TABLE IF NOT EXISTS custom_translations (
     updated_at TIMESTAMP WITH TIME ZONE,
     UNIQUE(locale, key, tenant_id)
 );
-
 CREATE INDEX IF NOT EXISTS idx_custom_translations_locale ON custom_translations(locale);
 CREATE INDEX IF NOT EXISTS idx_custom_translations_key ON custom_translations(key);
 
--- =============================================
--- 9. PERFORMANCE METRICS TABLES
--- =============================================
-
--- Tabla para métricas de rendimiento
+-- Performance: Metrics
 CREATE TABLE IF NOT EXISTS performance_metrics (
     id BIGSERIAL PRIMARY KEY,
     page_url VARCHAR(500) NOT NULL,
@@ -316,28 +265,8 @@ CREATE TABLE IF NOT EXISTS performance_metrics (
     connection_type VARCHAR(30),
     recorded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE INDEX IF NOT EXISTS idx_performance_metrics_page ON performance_metrics(page_url);
 CREATE INDEX IF NOT EXISTS idx_performance_metrics_date ON performance_metrics(recorded_at);
 
--- =============================================
--- COMPLETION MESSAGE
--- =============================================
-
-DO $$
-BEGIN
-    RAISE NOTICE '======================================';
-    RAISE NOTICE 'BGE v5.0-5.2 Migration Completed!';
-    RAISE NOTICE '======================================';
-    RAISE NOTICE 'Tables created:';
-    RAISE NOTICE '  - Security: user_2fa, user_sessions, password_history, security_threats';
-    RAISE NOTICE '  - Collaboration: collaboration_rooms, room_participants, chat_messages, collaborative_documents';
-    RAISE NOTICE '  - Audit: audit_logs';
-    RAISE NOTICE '  - GDPR: gdpr_requests, gdpr_consents';
-    RAISE NOTICE '  - Backup: backup_history';
-    RAISE NOTICE '  - SMS: sms_history, sms_verification_codes';
-    RAISE NOTICE '  - Email: email_history';
-    RAISE NOTICE '  - i18n: custom_translations';
-    RAISE NOTICE '  - Performance: performance_metrics';
-    RAISE NOTICE '======================================';
-END $$;
+-- Success Message
+SELECT 'BGE v5.0-5.2 Enterprise Tables Migration Completed Successfully!' AS status;

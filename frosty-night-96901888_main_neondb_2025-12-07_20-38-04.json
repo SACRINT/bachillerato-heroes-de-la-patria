@@ -1,0 +1,106 @@
+[{
+  "column_name": "id",
+  "data_type": "integer",
+  "is_nullable": "NO",
+  "column_default": "nextval('usuarios_id_seq'::regclass)"
+}, {
+  "column_name": "uuid",
+  "data_type": "uuid",
+  "is_nullable": "NO",
+  "column_default": "gen_random_uuid()"
+}, {
+  "column_name": "username",
+  "data_type": "character varying",
+  "is_nullable": "NO",
+  "column_default": null
+}, {
+  "column_name": "email",
+  "data_type": "character varying",
+  "is_nullable": "NO",
+  "column_default": null
+}, {
+  "column_name": "password_hash",
+  "data_type": "character varying",
+  "is_nullable": "NO",
+  "column_default": null
+}, {
+  "column_name": "role",
+  "data_type": "USER-DEFINED",
+  "is_nullable": "NO",
+  "column_default": "'estudiante'::role_type"
+}, {
+  "column_name": "status",
+  "data_type": "USER-DEFINED",
+  "is_nullable": "NO",
+  "column_default": "'activo'::status_type"
+}, {
+  "column_name": "created_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES",
+  "column_default": "CURRENT_TIMESTAMP"
+}, {
+  "column_name": "updated_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES",
+  "column_default": "CURRENT_TIMESTAMP"
+}, {
+  "column_name": "last_login",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES",
+  "column_default": null
+}, {
+  "column_name": "login_attempts",
+  "data_type": "integer",
+  "is_nullable": "YES",
+  "column_default": "0"
+}, {
+  "column_name": "locked_until",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES",
+  "column_default": null
+}, {
+  "column_name": "nombre",
+  "data_type": "character varying",
+  "is_nullable": "YES",
+  "column_default": null
+}, {
+  "column_name": "apellido_paterno",
+  "data_type": "character varying",
+  "is_nullable": "YES",
+  "column_default": null
+}, {
+  "column_name": "apellido_materno",
+  "data_type": "character varying",
+  "is_nullable": "YES",
+  "column_default": null
+}, {
+  "column_name": "google_id",
+  "data_type": "character varying",
+  "is_nullable": "YES",
+  "column_default": null
+}, {
+  "column_name": "oauth_provider",
+  "data_type": "character varying",
+  "is_nullable": "YES",
+  "column_default": "'local'::character varying"
+}, {
+  "column_name": "profile_picture",
+  "data_type": "character varying",
+  "is_nullable": "YES",
+  "column_default": null
+}, {
+  "column_name": "deleted_at",
+  "data_type": "timestamp with time zone",
+  "is_nullable": "YES",
+  "column_default": null
+}, {
+  "column_name": "email_verified",
+  "data_type": "boolean",
+  "is_nullable": "YES",
+  "column_default": "false"
+}, {
+  "column_name": "email_verified_at",
+  "data_type": "timestamp without time zone",
+  "is_nullable": "YES",
+  "column_default": null
+}]

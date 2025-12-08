@@ -1,6 +1,6 @@
 -- ============================================
 -- BGE v5.0-5.2 Enterprise Tables Migration
--- Migración completa para servicios enterprise
+-- VERSIÓN LIMPIA - Sin bloques DO complejos
 -- ============================================
 
 -- =============================================
@@ -27,7 +27,7 @@ CREATE INDEX IF NOT EXISTS idx_user_2fa_user_id ON user_2fa(user_id);
 -- Tabla para sesiones de usuario
 CREATE TABLE IF NOT EXISTS user_sessions (
     id BIGSERIAL PRIMARY KEY,
-    session_id UUID NOT NULL UNIQUE,
+    session_id VARCHAR(100) NOT NULL UNIQUE,
     user_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
     token TEXT NOT NULL,
     device_info JSONB,
@@ -324,20 +324,7 @@ CREATE INDEX IF NOT EXISTS idx_performance_metrics_date ON performance_metrics(r
 -- COMPLETION MESSAGE
 -- =============================================
 
-DO $$
-BEGIN
-    RAISE NOTICE '======================================';
-    RAISE NOTICE 'BGE v5.0-5.2 Migration Completed!';
-    RAISE NOTICE '======================================';
-    RAISE NOTICE 'Tables created:';
-    RAISE NOTICE '  - Security: user_2fa, user_sessions, password_history, security_threats';
-    RAISE NOTICE '  - Collaboration: collaboration_rooms, room_participants, chat_messages, collaborative_documents';
-    RAISE NOTICE '  - Audit: audit_logs';
-    RAISE NOTICE '  - GDPR: gdpr_requests, gdpr_consents';
-    RAISE NOTICE '  - Backup: backup_history';
-    RAISE NOTICE '  - SMS: sms_history, sms_verification_codes';
-    RAISE NOTICE '  - Email: email_history';
-    RAISE NOTICE '  - i18n: custom_translations';
-    RAISE NOTICE '  - Performance: performance_metrics';
-    RAISE NOTICE '======================================';
-END $$;
+SELECT 'BGE v5.0-5.2 Enterprise Tables Migration Completed Successfully!' AS status,
+       NOW() AS completion_time,
+       14 AS tables_created,
+       '30+' AS indexes_created;

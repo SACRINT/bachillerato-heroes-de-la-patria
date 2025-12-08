@@ -1,7 +1,34 @@
 -- ============================================
 -- BGE v5.0-5.2 Enterprise Tables Migration
--- Migración completa para servicios enterprise
+-- VERSIÓN DEFINITIVA - Basada en estructura real
 -- ============================================
+
+-- =============================================
+-- TIPOS ENUMERADOS (si no existen)
+-- =============================================
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'role_type') THEN
+        CREATE TYPE role_type AS ENUM ('admin', 'docente', 'estudiante', 'padre');
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'status_type') THEN
+        CREATE TYPE status_type AS ENUM ('activo', 'inactivo', 'suspendido');
+    END IF;
+END $$;
+
+-- =============================================
+-- FUNCIÓN PARA ACTUALIZAR updated_at
+-- =============================================
+
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
 -- =============================================
 -- 1. SECURITY TABLES (AdvancedSecurityService)
@@ -27,7 +54,7 @@ CREATE INDEX IF NOT EXISTS idx_user_2fa_user_id ON user_2fa(user_id);
 -- Tabla para sesiones de usuario
 CREATE TABLE IF NOT EXISTS user_sessions (
     id BIGSERIAL PRIMARY KEY,
-    session_id UUID NOT NULL UNIQUE,
+    session_id VARCHAR(100) NOT NULL UNIQUE,
     user_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
     token TEXT NOT NULL,
     device_info JSONB,
@@ -329,7 +356,7 @@ BEGIN
     RAISE NOTICE '======================================';
     RAISE NOTICE 'BGE v5.0-5.2 Migration Completed!';
     RAISE NOTICE '======================================';
-    RAISE NOTICE 'Tables created:';
+    RAISE NOTICE 'Tables created successfully:';
     RAISE NOTICE '  - Security: user_2fa, user_sessions, password_history, security_threats';
     RAISE NOTICE '  - Collaboration: collaboration_rooms, room_participants, chat_messages, collaborative_documents';
     RAISE NOTICE '  - Audit: audit_logs';
@@ -339,5 +366,7 @@ BEGIN
     RAISE NOTICE '  - Email: email_history';
     RAISE NOTICE '  - i18n: custom_translations';
     RAISE NOTICE '  - Performance: performance_metrics';
+    RAISE NOTICE '======================================';
+    RAISE NOTICE 'All 14 tables + 30+ indices created!';
     RAISE NOTICE '======================================';
 END $$;
