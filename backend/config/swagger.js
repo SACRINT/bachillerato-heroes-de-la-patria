@@ -333,6 +333,26 @@ const options = {
         name: 'Webhooks',
         description: 'Gestión de webhooks',
       },
+      {
+        name: 'Wallet',
+        description: 'Sistema de IACoins - Monedero virtual',
+      },
+      {
+        name: 'Stripe',
+        description: 'Integración de pagos con Stripe',
+      },
+      {
+        name: 'AR/VR',
+        description: 'Experiencias de realidad aumentada/virtual',
+      },
+      {
+        name: 'Super-Admin',
+        description: 'Panel de administración SaaS (solo super-admin)',
+      },
+      {
+        name: 'Gamification',
+        description: 'Sistema de gamificación y logros',
+      },
     ],
   },
   apis: [

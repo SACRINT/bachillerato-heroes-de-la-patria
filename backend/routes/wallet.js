@@ -2,6 +2,11 @@
  * 💰 WALLET ROUTES - SISTEMA DE IACOINS
  * Gestión de monedero virtual de estudiantes
  * ✅ FASE 3 DAL - Refactorizado para usar DAO
+ * 
+ * @swagger
+ * tags:
+ *   name: Wallet
+ *   description: Sistema de IACoins - Monedero virtual
  */
 
 const express = require('express');
@@ -16,6 +21,35 @@ const router = express.Router();
 const WalletDAO = require('../data/wallet.dao');
 const { pool } = require('../config/database');
 
+/**
+ * @swagger
+ * /api/wallet:
+ *   get:
+ *     summary: Obtener saldo del wallet
+ *     tags: [Wallet]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Wallet del usuario
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 wallet:
+ *                   type: object
+ *                   properties:
+ *                     balance:
+ *                       type: integer
+ *                       description: Saldo actual en IACoins
+ *                     total_earned:
+ *                       type: integer
+ *                     total_spent:
+ *                       type: integer
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ */
 // ============================================
 // ENDPOINT 1: GET /api/wallet
 // Obtener saldo actual del wallet

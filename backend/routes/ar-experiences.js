@@ -3,6 +3,39 @@
  * API para gestión de experiencias AR/VR con IACoins
  * FASE 5.3 - Ecosistema AR/VR + Monetización
  * Creado: 07 Diciembre 2025
+ * 
+ * @swagger
+ * tags:
+ *   name: AR/VR
+ *   description: Experiencias de realidad aumentada/virtual
+ * 
+ * components:
+ *   schemas:
+ *     ARExperience:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           example: chemistry
+ *         name:
+ *           type: string
+ *           example: Laboratorio de Química AR
+ *         description:
+ *           type: string
+ *         cost:
+ *           type: integer
+ *           description: Costo en IACoins (0 = gratis)
+ *         reward:
+ *           type: integer
+ *           description: Recompensa en IACoins
+ *         duration:
+ *           type: integer
+ *           description: Duración en minutos
+ *         category:
+ *           type: string
+ *           enum: [science, social, math]
+ *         premium:
+ *           type: boolean
  */
 
 const express = require('express');
@@ -56,6 +89,29 @@ const AR_EXPERIENCES = {
     }
 };
 
+/**
+ * @swagger
+ * /api/ar/experiences:
+ *   get:
+ *     summary: Listar experiencias AR/VR disponibles
+ *     tags: [AR/VR]
+ *     responses:
+ *       200:
+ *         description: Lista de experiencias
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 experiences:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/ARExperience'
+ *                 total:
+ *                   type: integer
+ */
 // ============================================
 // GET /api/ar/experiences
 // Listar experiencias disponibles
