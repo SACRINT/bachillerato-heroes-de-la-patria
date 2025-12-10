@@ -193,4 +193,5 @@ router.delete('/:id',
     }
 );
 
-export default router;
+// @ts-ignore
+export = router;

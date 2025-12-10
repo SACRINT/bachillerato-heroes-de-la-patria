@@ -35,6 +35,7 @@ export interface ReportCardSubject {
     creditos: number;
     parciales: { [periodo: string]: number };
     promedio_final?: string;
+    docente?: string;
 }
 
 export interface ReportCard {
@@ -120,7 +121,8 @@ class GradesService {
                     clave: grade.materia_clave || '',
                     semestre: grade.semestre || '',
                     creditos: grade.creditos || 0,
-                    parciales: {}
+                    parciales: {},
+                    docente: grade.docente_nombre ? `${grade.docente_nombre} ${grade.docente_apellido || ''}`.trim() : 'Sin Asignar'
                 };
             }
             // Asignar calificación al periodo correspondiente
@@ -168,6 +170,24 @@ class GradesService {
      */
     async getSubjectStudents(materiaId: number): Promise<any[]> {
         return await SubjectDAO.getStudentsInSubject(materiaId);
+    }
+
+    /**
+     * Obtener calificaciones de un grupo para un periodo específico
+     */
+    async getGradesByGroup(materiaId: number, periodoId: number): Promise<any[]> {
+        const periodo = await PeriodosEvaluacionDAO.get(periodoId);
+        if (!periodo) throw new Error('Periodo no encontrado');
+
+        const periodoCode = periodo.codigo || periodo.id.toString();
+
+        const result = await GradeDAO.getAll({
+            materiaId,
+            periodo: periodoCode,
+            limit: 1000
+        });
+
+        return result.rows;
     }
 }
 

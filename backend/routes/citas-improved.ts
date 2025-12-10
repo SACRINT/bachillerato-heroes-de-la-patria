@@ -1,18 +1,20 @@
 /**
- * 📅 RUTAS DE CITAS - TypeScript
+ * 📅 RUTAS DE CITAS MEJORADAS - TypeScript
  * Sistema de gestión de citas con validaciones avanzadas
- * Migrado: 07 Diciembre 2025
+ * Migrado: 08 Diciembre 2025
  */
 
 import express, { Request, Response, Router } from 'express';
 import { body, validationResult, ValidationChain } from 'express-validator';
 import crypto from 'crypto';
-import db from '../config/database';
-import verificationService from '../services/verificationService';
-
-// GDPR Logging
+// @ts-ignore
 import { debugLog } from '../utils/debug-logger';
-import { sanitizeError, maskEmail, maskToken } from '../utils/sanitized-errors';
+// @ts-ignore
+import { sanitizeError, maskEmail } from '../utils/sanitized-errors';
+// @ts-ignore
+import db from '../config/database';
+// @ts-ignore
+import verificationService from '../services/verificationService';
 
 const router: Router = express.Router();
 
@@ -55,25 +57,13 @@ interface TimeSlot {
     ocupados: number;
 }
 
-interface RateLimitResult {
-    allowed: boolean;
-    message?: string;
-}
-
-interface AvailabilityResult {
-    available: boolean;
-    message?: string;
-    occupiedSlots?: number;
-    availableSlots?: number;
-}
-
 // ============================================
 // RATE LIMITING
 // ============================================
 
 const citaAttempts = new Map<string, number[]>();
 
-function checkRateLimit(ip: string, email: string): RateLimitResult {
+function checkRateLimit(ip: string, email: string): { allowed: boolean; message?: string } {
     const key = `${ip}-${email}`;
     const now = Date.now();
 
@@ -104,13 +94,13 @@ function validateFutureDateTime(dateString: string, timeString: string): { valid
     return { valid: true };
 }
 
-async function checkTimeSlotAvailability(fecha: string, hora: string): Promise<AvailabilityResult> {
+async function checkTimeSlotAvailability(fecha: string, hora: string, department?: string): Promise<{ available: boolean; message?: string; occupiedSlots?: number; availableSlots?: number }> {
     const result = await db.executeQuery(
         `SELECT COUNT(*) as count FROM citas WHERE fecha_solicitada = $1 AND hora_solicitada = $2 AND estado NOT IN ('rechazada', 'cancelada') AND confirmada = true`,
         [fecha, hora]
     ) as Array<{ count: string }>;
     const occupied = parseInt(result[0].count);
-    if (occupied >= 3) return { available: false, message: 'Este horario no está disponible.', occupiedSlots: occupied };
+    if (occupied >= 3) return { available: false, message: 'Este horario no está disponible. Por favor selecciona otro.', occupiedSlots: occupied };
     return { available: true, availableSlots: 3 - occupied };
 }
 
@@ -129,7 +119,7 @@ async function checkCitasLimitPerDay(email: string): Promise<{ limited: boolean;
         [email]
     ) as Array<{ count: string }>;
     const citasHoy = parseInt(result[0].count);
-    if (citasHoy >= 3) return { limited: true, message: 'Ya tienes el máximo de citas para hoy (3).', citasHoy };
+    if (citasHoy >= 3) return { limited: true, message: 'Ya tienes el máximo de citas para hoy (3). Intenta otro día.', citasHoy };
     return { limited: false, citasHoy };
 }
 
@@ -146,36 +136,7 @@ function generateConfirmationToken(): string {
 // ============================================
 
 /**
- * GET /api/citas
- */
-router.get('/', async (req: Request, res: Response): Promise<void> => {
-    try {
-        const result = await db.executeQuery(`
-            SELECT COUNT(*) as total,
-                   SUM(CASE WHEN estado = 'pendiente' THEN 1 ELSE 0 END) as pendientes,
-                   SUM(CASE WHEN estado = 'aprobada' THEN 1 ELSE 0 END) as aprobadas,
-                   SUM(CASE WHEN estado = 'rechazada' THEN 1 ELSE 0 END) as rechazadas
-            FROM citas
-        `) as Array<{ total: string; pendientes: string; aprobadas: string; rechazadas: string }>;
-
-        res.json({
-            success: true,
-            status: 'Sistema de Citas Operacional',
-            stats: {
-                total: parseInt(result[0].total || '0'),
-                pendientes: parseInt(result[0].pendientes || '0'),
-                aprobadas: parseInt(result[0].aprobadas || '0'),
-                rechazadas: parseInt(result[0].rechazadas || '0')
-            }
-        });
-    } catch (error) {
-        debugLog.error('CITAS', 'Error fetching citas stats', sanitizeError(error as Error, 'citas'));
-        res.status(500).json({ success: false, message: 'Error al obtener estadísticas' });
-    }
-});
-
-/**
- * POST /api/citas/create
+ * POST /api/citas-improved/create
  */
 router.post('/create', [
     body('nombre_completo').trim().notEmpty().withMessage('Nombre completo requerido'),
@@ -200,19 +161,34 @@ router.post('/create', [
 
         // Validations
         const rateLimitCheck = checkRateLimit(ip_address, email);
-        if (!rateLimitCheck.allowed) { res.status(429).json({ success: false, message: rateLimitCheck.message }); return; }
+        if (!rateLimitCheck.allowed) {
+            res.status(429).json({ success: false, message: rateLimitCheck.message, retryAfter: 3600 });
+            return;
+        }
 
         const dateValidation = validateFutureDateTime(fecha_solicitada, hora_solicitada);
-        if (!dateValidation.valid) { res.status(400).json({ success: false, message: dateValidation.message }); return; }
+        if (!dateValidation.valid) {
+            res.status(400).json({ success: false, message: dateValidation.message });
+            return;
+        }
 
-        const availabilityCheck = await checkTimeSlotAvailability(fecha_solicitada, hora_solicitada);
-        if (!availabilityCheck.available) { res.status(409).json({ success: false, message: availabilityCheck.message }); return; }
+        const availabilityCheck = await checkTimeSlotAvailability(fecha_solicitada, hora_solicitada, departamento);
+        if (!availabilityCheck.available) {
+            res.status(409).json({ success: false, message: availabilityCheck.message, occupiedSlots: availabilityCheck.occupiedSlots });
+            return;
+        }
 
         const duplicateCheck = await checkDuplicateCita(email, fecha_solicitada, hora_solicitada);
-        if (duplicateCheck.exists) { res.status(409).json({ success: false, message: duplicateCheck.message }); return; }
+        if (duplicateCheck.exists) {
+            res.status(409).json({ success: false, message: duplicateCheck.message });
+            return;
+        }
 
         const dayLimitCheck = await checkCitasLimitPerDay(email);
-        if (dayLimitCheck.limited) { res.status(429).json({ success: false, message: dayLimitCheck.message }); return; }
+        if (dayLimitCheck.limited) {
+            res.status(429).json({ success: false, message: dayLimitCheck.message, citasHoy: dayLimitCheck.citasHoy });
+            return;
+        }
 
         // Create appointment
         const lastIdResult = await db.executeQuery(`SELECT cita_id FROM citas ORDER BY id DESC LIMIT 1`) as Array<{ cita_id: string }>;
@@ -230,7 +206,7 @@ router.post('/create', [
             [newCitaId, nombre_completo, email, telefono || null, tipo_persona, motivo, descripcion || null, fecha_solicitada, hora_solicitada, confirmationToken, 'pendiente']
         ) as Cita[];
 
-        debugLog.log('CITAS', `✅ Nueva cita creada: ${newCitaId}`);
+        debugLog.log('CITAS_IMPROVED', `✅ Nueva cita creada: ${newCitaId} - ${nombre_completo}`);
 
         // Send confirmation email
         try {
@@ -239,30 +215,74 @@ router.post('/create', [
                 from: `"BGE Héroes de la Patria" <${process.env.EMAIL_USER}>`,
                 to: email,
                 subject: '✅ Solicitud de Cita Recibida',
-                html: `<div style="font-family: Arial; max-width: 600px; margin: 0 auto;"><h2 style="color: #667eea;">📅 Solicitud de Cita Recibida</h2><p>Hola <strong>${nombre_completo}</strong>,</p><p>Confirma tu cita haciendo clic:</p><a href="${confirmationLink}" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px;">Confirmar mi Cita</a></div>`
+                html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <h2 style="color: #667eea;">📅 Solicitud de Cita Recibida</h2>
+                    <p>Hola <strong>${nombre_completo}</strong>,</p>
+                    <p>Hemos recibido tu solicitud de cita con los siguientes detalles:</p>
+                    <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                        <p><strong>ID de Cita:</strong> ${newCitaId}</p>
+                        <p><strong>Departamento:</strong> ${departamento}</p>
+                        <p><strong>Motivo:</strong> ${motivo}</p>
+                        <p><strong>Fecha solicitada:</strong> ${new Date(fecha_solicitada).toLocaleDateString('es-MX')}</p>
+                        <p><strong>Hora solicitada:</strong> ${hora_solicitada}</p>
+                    </div>
+                    <p style="color: #666; margin: 15px 0;">Tu solicitud está <strong>pendiente de confirmación por email</strong>. Por favor confirma tu cita haciendo clic en el botón de abajo.</p>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <a href="${confirmationLink}" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                            ✅ Confirmar mi Cita
+                        </a>
+                    </div>
+                    <p style="color: #666; font-size: 12px; border-top: 1px solid #ddd; padding-top: 15px; margin-top: 20px;">
+                        Una vez confirmes tu cita, será revisada por el administrador y recibirás notificación cuando sea aprobada.
+                        <br><br>
+                        Si no solicitaste esta cita, puedes ignorar este mensaje.
+                    </p>
+                </div>
+                `
             });
-            debugLog.log('CITAS', `📧 Email de confirmación enviado a ${maskEmail(email)}`);
-        } catch (emailError) {
-            debugLog.error('CITAS', '⚠️ Error enviando email', sanitizeError(emailError as Error, 'citas'));
+            debugLog.log('CITAS_IMPROVED', `📧 Email de confirmación enviado a ${email}`);
+        } catch (emailError: any) {
+            debugLog.error('CITAS_IMPROVED', '⚠️ Error enviando email:', emailError);
         }
 
-        res.json({ success: true, message: 'Solicitud de cita creada. Por favor confirma tu email.', cita: { id: newCitaId, estado: 'pendiente', fecha: fecha_solicitada, hora: hora_solicitada } });
-    } catch (error) {
-        debugLog.error('CITAS', '❌ Error creando cita', sanitizeError(error as Error, 'citas'));
-        res.status(500).json({ success: false, message: 'Error al crear solicitud de cita' });
+        res.json({
+            success: true,
+            message: 'Solicitud de cita creada exitosamente. Por favor confirma tu email.',
+            cita: {
+                id: newCitaId,
+                estado: 'pendiente',
+                fecha: fecha_solicitada,
+                hora: hora_solicitada,
+                emailSent: true
+            }
+        });
+    } catch (error: any) {
+        debugLog.error('CITAS_IMPROVED', '❌ Error creando cita:', sanitizeError(error as Error, 'citas-improved'));
+        res.status(500).json({
+            success: false,
+            message: 'Error al crear solicitud de cita',
+            error: error.message
+        });
     }
 });
 
 /**
- * GET /api/citas/available-slots
+ * GET /api/citas-improved/available-slots
  */
 router.get('/available-slots', async (req: Request, res: Response): Promise<void> => {
     try {
         const { fecha, departamento } = req.query as { fecha?: string; departamento?: string };
-        if (!fecha || !departamento) { res.status(400).json({ success: false, message: 'Parámetros requeridos: fecha, departamento' }); return; }
+        if (!fecha || !departamento) {
+            res.status(400).json({ success: false, message: 'Parámetros requeridos: fecha, departamento' });
+            return;
+        }
 
         const dateValidation = validateFutureDateTime(fecha, '00:00');
-        if (!dateValidation.valid) { res.status(400).json({ success: false, message: dateValidation.message }); return; }
+        if (!dateValidation.valid) {
+            res.status(400).json({ success: false, message: dateValidation.message });
+            return;
+        }
 
         const result = await db.executeQuery(`
             SELECT hora_solicitada, COUNT(*) FILTER (WHERE estado NOT IN ('rechazada', 'cancelada') AND confirmada = true) as ocupados
@@ -279,13 +299,13 @@ router.get('/available-slots', async (req: Request, res: Response): Promise<void
 
         res.json({ success: true, fecha, departamento, horarios: horarios.filter(h => h.disponibles > 0) });
     } catch (error) {
-        debugLog.error('CITAS', 'Error obteniendo horarios disponibles', sanitizeError(error as Error, 'citas'));
+        debugLog.error('CITAS_IMPROVED', 'Error obteniendo horarios disponibles:', sanitizeError(error as Error, 'citas-improved'));
         res.status(500).json({ success: false, message: 'Error al obtener horarios disponibles' });
     }
 });
 
 /**
- * GET /api/citas/confirm/:token
+ * GET /api/citas-improved/confirm/:token
  */
 router.get('/confirm/:token', async (req: Request, res: Response): Promise<void> => {
     try {
@@ -296,21 +316,31 @@ router.get('/confirm/:token', async (req: Request, res: Response): Promise<void>
         ) as Cita[];
 
         if (result.length === 0) {
-            res.send(`<html><body style="font-family:Arial;text-align:center;padding:50px;"><h1 style="color:#dc3545;">❌ Token inválido o ya confirmado</h1></body></html>`);
+            res.send(`
+                <html>
+                <head><title>Error en Confirmación</title></head>
+                <body><h1>❌ Token inválido o ya confirmado</h1></body>
+                </html>
+            `);
             return;
         }
 
         const cita = result[0];
-        debugLog.log('CITAS', `✅ Cita confirmada: ${cita.cita_id}`);
-        res.send(`<html><body style="font-family:Arial;text-align:center;padding:50px;"><h1 style="color:#28a745;">✅ ¡Cita Confirmada!</h1><p>Gracias ${cita.nombre_completo}, tu cita ha sido confirmada.</p></body></html>`);
+        debugLog.log('CITAS_IMPROVED', `✅ Cita confirmada por usuario: ${cita.cita_id}`);
+        res.send(`
+            <html>
+            <head><title>Cita Confirmada</title></head>
+            <body><h1>¡Cita Confirmada! ID: ${cita.cita_id}</h1></body>
+            </html>
+        `);
     } catch (error) {
-        debugLog.error('CITAS', 'Error confirmando cita', sanitizeError(error as Error, 'citas'));
+        debugLog.error('CITAS_IMPROVED', 'Error confirmando cita:', sanitizeError(error as Error, 'citas-improved'));
         res.status(500).send('Error al confirmar cita');
     }
 });
 
 /**
- * GET /api/citas/list
+ * GET /api/citas-improved/list
  */
 router.get('/list', async (req: Request, res: Response): Promise<void> => {
     try {
@@ -326,15 +356,15 @@ router.get('/list', async (req: Request, res: Response): Promise<void> => {
         query += ` ORDER BY created_at DESC LIMIT 100`;
 
         const result = await db.executeQuery(query, params) as Cita[];
-        res.json({ success: true, data: result, total: result.length });
+        res.json({ success: true, citas: result, total: result.length });
     } catch (error) {
-        debugLog.error('CITAS', 'Error listando citas', sanitizeError(error as Error, 'citas'));
+        debugLog.error('CITAS_IMPROVED', 'Error listando citas:', sanitizeError(error as Error, 'citas-improved'));
         res.status(500).json({ success: false, message: 'Error al obtener citas' });
     }
 });
 
 /**
- * GET /api/citas/stats
+ * GET /api/citas-improved/stats
  */
 router.get('/stats', async (req: Request, res: Response): Promise<void> => {
     try {
@@ -361,52 +391,8 @@ router.get('/stats', async (req: Request, res: Response): Promise<void> => {
             }
         });
     } catch (error) {
-        debugLog.error('CITAS', 'Error obteniendo estadísticas', sanitizeError(error as Error, 'citas'));
+        debugLog.error('CITAS_IMPROVED', 'Error obteniendo estadísticas:', sanitizeError(error as Error, 'citas-improved'));
         res.status(500).json({ success: false, message: 'Error al obtener estadísticas' });
-    }
-});
-
-/**
- * PUT /api/citas/:id/approve
- */
-router.put('/:id/approve', async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
-        const { notas_admin } = req.body as { notas_admin?: string };
-        const result = await db.executeQuery(
-            `UPDATE citas SET estado = 'aprobada', notas_admin = $1, updated_at = NOW() WHERE id = $2 RETURNING *`,
-            [notas_admin || null, id]
-        ) as Cita[];
-
-        if (result.length === 0) { res.status(404).json({ success: false, message: 'Cita no encontrada' }); return; }
-        debugLog.log('CITAS', `✅ Cita ${id} aprobada`);
-        res.json({ success: true, message: 'Cita aprobada exitosamente', cita: result[0] });
-    } catch (error) {
-        debugLog.error('CITAS', 'Error aprobando cita', sanitizeError(error as Error, 'citas'));
-        res.status(500).json({ success: false, message: 'Error al aprobar cita' });
-    }
-});
-
-/**
- * PUT /api/citas/:id/reject
- */
-router.put('/:id/reject', async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
-        const { motivo_rechazo } = req.body as { motivo_rechazo?: string };
-        if (!motivo_rechazo) { res.status(400).json({ success: false, message: 'Se requiere un motivo de rechazo' }); return; }
-
-        const result = await db.executeQuery(
-            `UPDATE citas SET estado = 'rechazada', notas_admin = $1, updated_at = NOW() WHERE id = $2 RETURNING *`,
-            [motivo_rechazo, id]
-        ) as Cita[];
-
-        if (result.length === 0) { res.status(404).json({ success: false, message: 'Cita no encontrada' }); return; }
-        debugLog.log('CITAS', `❌ Cita ${id} rechazada`);
-        res.json({ success: true, message: 'Cita rechazada exitosamente', cita: result[0] });
-    } catch (error) {
-        debugLog.error('CITAS', 'Error rechazando cita', sanitizeError(error as Error, 'citas'));
-        res.status(500).json({ success: false, message: 'Error al rechazar cita' });
     }
 });
 

@@ -40,6 +40,9 @@ export interface AvisoCreateData {
     autor_id?: number;
     meta_descripcion?: string;
     destacada?: boolean;
+    slug?: string;
+    ip_address?: string;
+    user_agent?: string;
 }
 
 export interface AvisoUpdateData {
@@ -48,6 +51,7 @@ export interface AvisoUpdateData {
     resumen?: string;
     imagen_url?: string;
     categoria?: string;
+    etiquetas?: string[];
     estado?: string;
     destacada?: boolean;
 }
@@ -87,7 +91,7 @@ class AvisosDAO {
     static async create(avisoData: AvisoCreateData): Promise<AvisoRow> {
         const {
             titulo, contenido, resumen, imagen_url, categoria,
-            estado, autor_id, destacada
+            estado, autor_id, destacada, slug
         } = avisoData;
 
         const isPublic = estado === 'publicada';
@@ -98,9 +102,9 @@ class AvisosDAO {
             INSERT INTO noticias (
                 titulo, contenido, resumen, imagen_url, categoria,
                 autor_id, publico, destacada, fecha_publicacion,
-                activa, visualizaciones
+                activa, visualizaciones, slug
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 0)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 0, $11)
             RETURNING *;
         `;
 
@@ -111,7 +115,8 @@ class AvisosDAO {
             isPublic,
             destacada || false,
             fecha_pub,
-            true
+            true,
+            slug || titulo.toLowerCase().replace(/ /g, '-') // Fallback simple slug
         ]);
         return result[0];
     }
@@ -176,8 +181,20 @@ class AvisosDAO {
 
         try {
             const result = await executeQuery(query, []);
-            return result[0];
-        } catch {
+            if (!result || !result.length) {
+                return { total: 0, publicadas: 0, borradores: 0, destacadas: 0, vistas_totales: 0 };
+            }
+
+            const row = result[0];
+            return {
+                total: Number(row.total || 0),
+                publicadas: Number(row.publicadas || 0),
+                borradores: Number(row.borradores || 0),
+                destacadas: Number(row.destacadas || 0),
+                vistas_totales: Number(row.vistas_totales || 0)
+            };
+        } catch (error) {
+            console.error('[AVISOS DAO] Error getting stats:', error);
             return { total: 0, publicadas: 0, borradores: 0, destacadas: 0, vistas_totales: 0 };
         }
     }

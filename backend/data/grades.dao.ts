@@ -132,9 +132,11 @@ class GradesDAO {
 
     static async getByStudent(estudianteId: number): Promise<GradeRow[]> {
         const result = await pool.query(
-            `SELECT c.*, m.nombre as materia_nombre 
+            `SELECT c.*, m.nombre as materia_nombre, 
+                    u.nombre as docente_nombre, u.apellido_paterno as docente_apellido
              FROM calificaciones c 
              LEFT JOIN materias m ON c.materia_id = m.id 
+             LEFT JOIN usuarios u ON c.docente_id = u.id
              WHERE c.estudiante_id = $1 
              ORDER BY c.periodo_academico DESC, m.nombre`,
             [estudianteId]
@@ -241,7 +243,23 @@ class GradesDAO {
             client.release();
         }
     }
+    static async exists(estudianteId: number, materiaId: number, periodo: string | number): Promise<GradeRow | null> {
+        // Si es número, asumimos que es un ID de periodo que quizás no estamos guardando directamente,
+        // o asumimos que se pasa el string. Por compatibilidad, manejamos string.
+
+        let query = `SELECT * FROM calificaciones WHERE estudiante_id = $1 AND materia_id = $2`;
+        const params: (string | number)[] = [estudianteId, materiaId];
+
+        if (periodo) {
+            query += ` AND periodo_academico = $3`;
+            params.push(String(periodo));
+        }
+
+        const result = await pool.query(query, params);
+        return result.rows[0] || null;
+    }
 }
+
 
 export default GradesDAO;
 

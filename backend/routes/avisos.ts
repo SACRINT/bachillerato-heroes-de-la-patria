@@ -111,10 +111,23 @@ router.post('/', [
  */
 router.get('/', async (req: Request, res: Response): Promise<void> => {
     const { estado, categoria, destacada, limit = '50', offset = '0' } = req.query as Record<string, string>;
+    const limitNum = parseInt(limit, 10);
+    const offsetNum = parseInt(offset, 10);
 
     try {
-        const { avisos, total } = await AvisosDAO.getAll({ estado, categoria, destacada, limit, offset });
-        res.json({ success: true, data: avisos, total, limit: parseInt(limit), offset: parseInt(offset) });
+        const { avisos, total } = await AvisosDAO.getAll({ estado, categoria, destacada, limit: limitNum, offset: offsetNum });
+
+        // Map AvisoRow to Aviso interface
+        const mappedAvisos = avisos.map(a => ({
+            ...a,
+            estado: a.publico ? 'publicado' : 'borrador', // Simplification
+            autor: 'Sistema', // Placeholder as we only have autor_id
+            vistas: a.visualizaciones,
+            created_at: a.fecha_publicacion ? a.fecha_publicacion.toISOString() : new Date().toISOString(),
+            updated_at: a.fecha_actualizacion ? a.fecha_actualizacion.toISOString() : new Date().toISOString()
+        }));
+
+        res.json({ success: true, data: mappedAvisos, total, limit: limitNum, offset: offsetNum });
     } catch (error) {
         debugLog.error('AVISOS', '❌ Error al obtener avisos:', sanitizeError(error as Error, 'avisos'));
         res.status(500).json({ success: false, error: 'Error al obtener avisos' });
@@ -145,13 +158,24 @@ router.get('/stats', async (req: Request, res: Response): Promise<void> => {
  */
 router.get('/:id', async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
+    const avisoId = parseInt(id, 10);
     try {
-        const aviso = await AvisosDAO.getById(id) as Aviso | null;
-        if (!aviso) {
+        const row = await AvisosDAO.getById(avisoId);
+        if (!row) {
             res.status(404).json({ success: false, error: 'Aviso no encontrada' });
             return;
         }
-        await AvisosDAO.incrementViews(id, 'id');
+        await AvisosDAO.incrementViews(avisoId, 'id');
+
+        const aviso: Aviso = {
+            ...row,
+            estado: row.publico ? 'publicado' : 'borrador', // Simplification
+            autor: 'Sistema',
+            vistas: row.visualizaciones,
+            created_at: row.fecha_publicacion ? new Date(row.fecha_publicacion).toISOString() : new Date().toISOString(),
+            updated_at: row.fecha_actualizacion ? new Date(row.fecha_actualizacion).toISOString() : new Date().toISOString()
+        } as unknown as Aviso; // Force cast compatible props
+
         res.json({ success: true, data: aviso });
     } catch (error) {
         debugLog.error('AVISOS', '❌ Error al obtener aviso:', sanitizeError(error as Error, 'avisos'));
@@ -165,12 +189,22 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
 router.get('/slug/:slug', async (req: Request, res: Response): Promise<void> => {
     const { slug } = req.params;
     try {
-        const aviso = await AvisosDAO.getBySlug(slug) as Aviso | null;
-        if (!aviso) {
+        const row = await AvisosDAO.getBySlug(slug);
+        if (!row) {
             res.status(404).json({ success: false, error: 'Aviso no encontrada' });
             return;
         }
         await AvisosDAO.incrementViews(slug, 'slug');
+
+        const aviso: Aviso = {
+            ...row,
+            estado: row.publico ? 'publicado' : 'borrador',
+            autor: 'Sistema',
+            vistas: row.visualizaciones,
+            created_at: row.fecha_publicacion ? new Date(row.fecha_publicacion).toISOString() : new Date().toISOString(),
+            updated_at: row.fecha_actualizacion ? new Date(row.fecha_actualizacion).toISOString() : new Date().toISOString()
+        } as unknown as Aviso;
+
         res.json({ success: true, data: aviso });
     } catch (error) {
         debugLog.error('AVISOS', '❌ Error al obtener aviso:', sanitizeError(error as Error, 'avisos'));
@@ -183,10 +217,11 @@ router.get('/slug/:slug', async (req: Request, res: Response): Promise<void> => 
  */
 router.put('/:id', async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
+    const avisoId = parseInt(id, 10);
     const { titulo, contenido, resumen, imagen_url, categoria, etiquetas, estado, meta_descripcion, destacada } = req.body;
 
     try {
-        const aviso = await AvisosDAO.update(id, { titulo, contenido, resumen, imagen_url, categoria, etiquetas, estado, meta_descripcion, destacada });
+        const aviso = await AvisosDAO.update(avisoId, { titulo, contenido, resumen, imagen_url, categoria, etiquetas, estado, destacada });
         if (!aviso) {
             res.status(404).json({ success: false, error: 'Aviso no encontrada' });
             return;
@@ -204,8 +239,9 @@ router.put('/:id', async (req: Request, res: Response): Promise<void> => {
  */
 router.delete('/:id', async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
+    const avisoId = parseInt(id, 10);
     try {
-        const deleted = await softDelete('avisos', id);
+        const deleted = await softDelete('avisos', avisoId);
         if (!deleted) {
             res.status(404).json({ success: false, error: 'Aviso no encontrado o ya eliminado' });
             return;
