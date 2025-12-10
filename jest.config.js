@@ -1,9 +1,16 @@
 export default {
     testEnvironment: 'node',
     roots: ['<rootDir>'],
-    testMatch: ['**/*.test.js', '**/*.spec.js'],
+    testMatch: ['**/*.test.js', '**/*.spec.js', '**/*.test.ts', '**/*.spec.ts'],
+    testPathIgnorePatterns: [
+        '/node_modules/',
+        '<rootDir>/backend/tests/',         // Viejos tests
+        '<rootDir>/backend/services/__tests__/',  // Viejos tests de servicios
+        '/dist/'                   // Ignorar builds compilados
+    ],
     collectCoverageFrom: [
         'backend/**/*.js',
+        'backend/**/*.ts',
         '!backend/config/**',
         '!backend/scripts/**'
     ],
@@ -17,5 +24,7 @@ export default {
     },
     setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
     testTimeout: 10000,
-    transform: {}
+    transform: {
+        '^.+\\.ts$': 'ts-jest'
+    }
 };

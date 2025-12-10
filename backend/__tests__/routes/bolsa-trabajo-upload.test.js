@@ -5,7 +5,11 @@ const fs = require('fs');
 const BolsaTrabajoDAO = require('../../data/bolsa-trabajo.dao');
 
 // Mock dependencies
-jest.mock('../../data/bolsa-trabajo.dao');
+// Mock dependencies
+jest.mock('../../data/bolsa-trabajo.dao', () => ({
+    createPendingConfirmation: jest.fn()
+}));
+// Duplicate removed
 jest.mock('../../utils/debug-logger', () => ({
     debugLog: {
         log: jest.fn(),
@@ -21,8 +25,9 @@ jest.mock('nodemailer', () => ({
 // Setup Express App
 const app = express();
 app.use(express.json());
-const bolsaTrabajoRoutes = require('../../routes/bolsa-trabajo');
-app.use('/api/bolsa-trabajo', bolsaTrabajoRoutes);
+// Unwrap default export if present (TS compatibility)
+const bolsaTrabajoRoute = require('../../routes/bolsa-trabajo');
+app.use('/api/bolsa-trabajo', bolsaTrabajoRoute.default || bolsaTrabajoRoute);
 
 describe('POST /api/bolsa-trabajo/cv - File Upload', () => {
     const uploadDir = path.join(__dirname, '../../../public/uploads/cvs');

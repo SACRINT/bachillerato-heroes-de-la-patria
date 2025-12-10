@@ -320,6 +320,40 @@
                         </div>
                     </div>
                 </div>
+                <!-- Nuevo Módulo: Credenciales Padres -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-id-card fa-3x text-dark"></i>
+                            </div>
+                            <h5 class="card-title">Credenciales de Padres</h5>
+                            <p class="card-text text-muted">Generación masiva y gestión de accesos para padres de
+                                familia.</p>
+                            <button class="btn btn-dark w-100 mt-2" data-bs-toggle="modal"
+                                data-bs-target="#parentCredentialsModal">
+                                <i class="fas fa-cog me-2"></i>Gestionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Nuevo Módulo: Credenciales Padres -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-id-card fa-3x text-dark"></i>
+                            </div>
+                            <h5 class="card-title">Credenciales de Padres</h5>
+                            <p class="card-text text-muted">Generación masiva y gestión de accesos para padres de
+                                familia.</p>
+                            <button class="btn btn-dark w-100 mt-2" data-bs-toggle="modal"
+                                data-bs-target="#parentCredentialsModal">
+                                <i class="fas fa-cog me-2"></i>Gestionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -3902,6 +3936,87 @@
         </div>
     </div>
 
+
+    <!-- Modal Gestión Credenciales Padres -->
+    <div class="modal fade" id="parentCredentialsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title"><i class="fas fa-id-card me-2"></i>Gestión de Credenciales de Padres</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-header">Generar Bloque</div>
+                                <div class="card-body">
+                                    <form id="generateCredentialsForm">
+                                        <div class="mb-3">
+                                            <label class="form-label">Grado</label>
+                                            <select class="form-select" name="grado">
+                                                <option value="">Todos</option>
+                                                <option value="1">1°</option>
+                                                <option value="2">2°</option>
+                                                <option value="3">3°</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Grupo</label>
+                                            <select class="form-select" name="grupo">
+                                                <option value="">Todos</option>
+                                                <option value="A">A</option>
+                                                <option value="B">B</option>
+                                                <option value="C">C</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-magic me-2"></i>Generar Credenciales
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="alert alert-info small">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Las credenciales generadas mostrarán una contraseña temporal.
+                                <strong>Debe imprimir/exportar esta lista inmediatamente.</strong>
+                                Por seguridad, las contraseñas no se pueden recuperar después.
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6>Resultados / Lista Activa</h6>
+                                <button class="btn btn-outline-success btn-sm" id="exportCredentialsBtn">
+                                    <i class="fas fa-file-excel me-2"></i>Exportar CSV
+                                </button>
+                            </div>
+                            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                <table class="table table-sm table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Password Temp</th>
+                                            <th>Alumno</th>
+                                            <th>Gpo</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="credentialsTableBody">
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted">Seleccione filtros y genere
+                                                credenciales</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="credentialStats" class="mt-2 text-muted small"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal de Detalles de Egresado -->
     <div class="modal fade" id="egresadoDetailModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -4001,6 +4116,7 @@
     <!-- ✅ INICIALIZACIÓN DE EVENT LISTENERS (Chatbot Tonto Eliminado) -->
     <!-- 🎯 EVENT LISTENERS - Refactorización de inline handlers -->
     <script src="js/dashboard/event-delegation-dashboard.js" defer></script>
+    <script src="js/admin-parent-credentials.js" defer></script>
 
 </body>
 

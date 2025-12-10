@@ -1,64 +1,65 @@
+"use strict";
 /**
- * 🤖 CHATBOT SERVICE
+ * 🤖 CHATBOT SERVICE - TypeScript Version
  * Servicio centralizado para el chatbot inteligente
- * Refactorizado: Service Layer + DAO Pattern
+ * Migrado: 07 Diciembre 2025
  */
-
-const ConversationDAO = require('../data/conversation.dao');
-
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ChatbotService = void 0;
+const conversation_dao_1 = __importDefault(require("../data/conversation.dao"));
+// ==================== CHATBOT SERVICE ====================
 class ChatbotService {
-
     /**
      * Procesar un mensaje de usuario
-     * @param {string} userId - ID del usuario (o null si es anónimo)
-     * @param {string} message - Mensaje del usuario
-     * @param {string} sessionId - ID de sesión para contexto
      */
     async processMessage(userId, message, sessionId) {
         // 1. Buscar en FAQs primero (respuesta rápida y barata)
-        const faqs = await ConversationDAO.searchFAQs(message, 1);
+        const faqs = await conversation_dao_1.default.searchFAQs(message, 1);
         let assistantResponse = '';
         let source = 'ai';
-
         if (faqs.length > 0 && faqs[0].prioridad >= 8) {
             // Si hay un match de alta prioridad, usarlo
             assistantResponse = faqs[0].respuesta;
             source = 'faq';
-        } else {
-            // 2. Si no, generar respuesta con "IA" (Simulada por ahora o llamar a OpenAI real)
-            // Aquí iría la llamada real a OpenAIService si estuviera disponible y configurado
+        }
+        else {
+            // 2. Si no, generar respuesta con "IA" (Simulada por ahora)
             assistantResponse = this.generateMockAIResponse(message);
         }
-
-        // 3. Persistir interacción si hay usuario (o si decidimos guardar anónimos también)
+        // 3. Persistir interacción si hay usuario
         let savedInteraction = null;
-        if (userId) {
-            savedInteraction = await ConversationDAO.createMessage({
+        if (userId !== null) {
+            const messageData = {
                 user_id: userId,
                 user_message: message,
                 assistant_message: assistantResponse,
-                tokens_used: Math.ceil(message.length / 4), // Estimación burda
+                tokens_used: Math.ceil(message.length / 4), // Estimación
                 language: 'es',
                 session_id: sessionId
-            });
-
-            // 4. Actualizar analytics (simplificado, idealmente async o batch)
+            };
+            savedInteraction = await conversation_dao_1.default.createMessage(messageData);
+            // 4. Actualizar analytics
             const today = new Date().toISOString().split('T')[0];
-            await ConversationDAO.logDailyStats(today, {
-                conversations: 1, // Esto debería ser más inteligente para no contar doble
+            const stats = {
+                conversations: 1,
                 messages: 1,
                 unique_users: 1,
                 tokens: Math.ceil(message.length / 4)
-            });
+            };
+            await conversation_dao_1.default.logDailyStats(today, stats);
         }
-
         return {
             response: assistantResponse,
             source: source,
             interactionId: savedInteraction ? savedInteraction.id : null
         };
     }
-
+    /**
+     * Generar respuesta mock de IA
+     */
     generateMockAIResponse(message) {
         const lowerMsg = message.toLowerCase();
         if (lowerMsg.includes('hola') || lowerMsg.includes('buenos dias')) {
@@ -72,20 +73,27 @@ class ChatbotService {
         }
         return 'Entiendo tu consulta. Para darte una mejor respuesta, ¿podrías ser más específico o contactar a control escolar?';
     }
-
     // ==========================================
     // GESTIÓN DE FAQs
     // ==========================================
-
+    /**
+     * Crear una nueva FAQ
+     */
     async createFAQ(data) {
-        return await ConversationDAO.createFAQ(data);
+        return await conversation_dao_1.default.createFAQ(data);
     }
-
+    /**
+     * Obtener FAQs públicas
+     */
     async getPublicFAQs(category = null) {
         const filters = { activo: true };
-        if (category) filters.categoria = category;
-        return await ConversationDAO.getAllFAQs(filters);
+        if (category)
+            filters.categoria = category;
+        return await conversation_dao_1.default.getAllFAQs(filters);
     }
 }
-
-module.exports = new ChatbotService();
+exports.ChatbotService = ChatbotService;
+// ==================== EXPORTS ====================
+const chatbotService = new ChatbotService();
+exports.default = chatbotService;
+//# sourceMappingURL=chatbot.service.js.map

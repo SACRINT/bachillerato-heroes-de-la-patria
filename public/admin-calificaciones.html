@@ -86,6 +86,31 @@
                 </a>
             </div>
         </div>
+
+        <!-- Toolbar: Selectors -->
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="periodSelect" class="form-label fw-bold">Periodo de Evaluación</label>
+                        <select id="periodSelect" class="form-select" disabled>
+                            <option value="">Cargando periodos...</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label for="subjectSelect" class="form-label fw-bold">Materia / Grupo</label>
+                        <select id="subjectSelect" class="form-select" disabled>
+                            <option value="">Cargando materias...</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button id="refreshBtn" class="btn btn-primary w-100" disabled>
+                            <i class="fas fa-sync-alt me-2"></i>Cargar Lista
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Grades Grid -->
         <div class="card border-0 shadow-sm">
             <div class="card-body p-0">

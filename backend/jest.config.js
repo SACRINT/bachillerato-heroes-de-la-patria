@@ -3,10 +3,13 @@
  * Excluye archivos helper que no contienen tests
  */
 module.exports = {
+    preset: 'ts-jest',
     testEnvironment: 'node',
     testMatch: [
         '**/__tests__/**/*.test.js',
-        '**/tests/**/*.test.js'
+        '**/__tests__/**/*.test.ts', // Added TS support
+        '**/tests/**/*.test.js',
+        '**/tests/**/*.test.ts'
     ],
     testPathIgnorePatterns: [
         '/node_modules/',
@@ -26,5 +29,8 @@ module.exports = {
     verbose: true,
     testTimeout: 30000,
     forceExit: true,
-    detectOpenHandles: false
+    detectOpenHandles: false,
+    transform: {
+        '^.+\\.tsx?$': 'ts-jest'
+    }
 };

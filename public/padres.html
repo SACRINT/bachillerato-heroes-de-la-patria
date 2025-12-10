@@ -389,6 +389,23 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Botón Activar Cuenta -->
+                        <div class="mt-5">
+                            <div class="card bg-dark text-white border-0 shadow-sm">
+                                <div class="card-body p-4">
+                                    <h4 class="mb-3"><i class="fas fa-key me-2 text-warning"></i>¿Ya tienes tus
+                                        credenciales temporales?</h4>
+                                    <p>Si recibiste tu hoja de claves en Servicios Escolares, activa tu cuenta ahora
+                                        para acceder al portal.</p>
+                                    <button class="btn btn-warning btn-lg px-5 fw-bold" data-bs-toggle="modal"
+                                        data-bs-target="#activateAccountModal">
+                                        <i class="fas fa-rocket me-2"></i>ACTIVAR MI CUENTA
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -559,6 +576,81 @@
         </div>
     </div>
 
+    <!-- Modal ACTIVAR CUENTA (Nuevo) -->
+    <div class="modal fade" id="activateAccountModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title">
+                        <i class="fas fa-key me-2"></i>Activar Cuenta de Padre
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="accountActivationForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Usuario (Proporcionado por la escuela)</label>
+                                <input type="text" class="form-control" name="username" placeholder="Ej. P-2023001"
+                                    required>
+                                <div class="form-text">Generalmente empieza con 'P-' seguido de la matrícula.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Contraseña Temporal</label>
+                                <input type="text" class="form-control" name="temp_password"
+                                    placeholder="Clave de 8 dígitos de su hoja" required>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <h6 class="text-primary mb-3">Configure sus datos definitivos</h6>
+
+                        <div class="mb-3">
+                            <label class="form-label">Su Nombre Completo</label>
+                            <input type="text" class="form-control" name="nombre" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Correo Electrónico Personal</label>
+                                <input type="email" class="form-control" name="email" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Teléfono (Opcional)</label>
+                                <input type="tel" class="form-control" name="telefono">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Nueva Contraseña</label>
+                                <input type="password" class="form-control" id="newPassword" name="new_password"
+                                    required minlength="8">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Confirmar Nueva Contraseña</label>
+                                <input type="password" class="form-control" id="confirmPassword" required minlength="8">
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning small">
+                            <i class="fas fa-lock me-1"></i>
+                            Al activar su cuenta, la contraseña temporal dejará de funcionar. Use su correo y nueva
+                            contraseña para futuros accesos.
+                        </div>
+
+                        <div class="modal-footer px-0 pb-0 border-0">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-warning fw-bold">
+                                <i class="fas fa-check-circle me-2"></i>Activar y Acceder
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer id="main-footer"></footer>
 
@@ -617,6 +709,7 @@
 
     <!-- 🎯 EVENT HANDLERS - PORTAL PADRES (CSP-COMPLIANT) -->
     <script src="js/padres-events.js"></script>
+    <script src="js/parent-auth.js"></script>
 
     <!-- Estilos adicionales para modo oscuro - Padres -->
 

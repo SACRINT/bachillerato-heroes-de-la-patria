@@ -1,7 +1,9 @@
 ﻿# 🏫 Bachillerato General Estatal "Héroes de la Patria"
+
 ## Sistema Educativo Digital Avanzado - Visión 2025-2030
 
-### 📍 **ESTADO ACTUAL:** Plataforma Base Estable y Funcional, con Módulos Avanzados en Desarrollo.
+### 📍 **ESTADO ACTUAL:** Plataforma Base Estable y Funcional, con Módulos Avanzados en Desarrollo
+
 ### 📅 **ÚLTIMA ACTUALIZACIÓN:** 14 de Octubre de 2025
 
 ---
@@ -22,6 +24,10 @@ Para entender completamente el proyecto, su estado actual, y su evolución, por 
 
 Este documento es el punto de partida obligatorio para cualquier desarrollador, colaborador o agente de IA que trabaje en este proyecto.
 
+### 🛠️ **[docs/MIGRATION_REPORT.md](docs/MIGRATION_REPORT.md)**
+
+Reporte técnico detallado sobre la migración del backend a TypeScript (Diciembre 2025).
+
 ---
 
 ## 🚀 **Capacidades Actuales de la Plataforma**
@@ -41,16 +47,20 @@ La plataforma cuenta con una base robusta y funcional que incluye:
 ## 🛠️ **TECNOLOGÍAS PRINCIPALES**
 
 ### **Frontend:**
+
 - **HTML5, CSS3, JavaScript ES6+**
 - **Bootstrap 5.3.2**
 - **Progressive Web App (PWA)** con Service Workers
 
 ### **Backend:**
+
 - **Node.js + Express**
+- **TypeScript** (Rutas migradas)
 - **MySQL Database** (con Neon/PlanetScale para despliegue serverless)
 - **Autenticación JWT**
 
 ### **Integraciones:**
+
 - **Google OAuth 2.0**
 - **API de OpenAI/Claude** (para el chatbot)
 - **Nodemailer** (para el sistema de correos)
@@ -79,11 +89,11 @@ La estructura del proyecto ha sido optimizada para separar el código fuente, lo
 
 ## 🚀 **Cómo Empezar**
 
-1.  **Leer la documentación maestra:** `docs/historia_del_proyecto.md`.
-2.  Configurar el entorno de desarrollo local (Node.js, MySQL).
-3.  Instalar las dependencias del backend: `cd backend && npm install`.
-4.  Configurar el archivo `.env` con las credenciales necesarias.
-5.  Iniciar el servidor: `npm start` dentro de la carpeta `backend`.
+1. **Leer la documentación maestra:** `docs/historia_del_proyecto.md`.
+2. Configurar el entorno de desarrollo local (Node.js, MySQL).
+3. Instalar las dependencias del backend: `cd backend && npm install`.
+4. Configurar el archivo `.env` con las credenciales necesarias.
+5. Iniciar el servidor: `npm start` dentro de la carpeta `backend`.
 
 ---
 

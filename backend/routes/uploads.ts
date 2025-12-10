@@ -117,7 +117,7 @@ router.post('/image', authenticateToken, requireAdmin, upload.single('image'), a
             upload_date: new Date()
         };
 
-        const savedFile = await uploadService.saveFileInfo(fileInfo);
+        const savedFile = await (uploadService as any).saveFileInfo(fileInfo);
 
         res.json({
             success: true,
@@ -168,7 +168,7 @@ router.post('/document', authenticateToken, requireAdmin, upload.single('documen
             upload_date: new Date()
         };
 
-        const savedFile = await uploadService.saveFileInfo(fileInfo);
+        const savedFile = await (uploadService as any).saveFileInfo(fileInfo);
         res.json({ success: true, message: 'Documento subido', data: { id: savedFile.id, url: fileInfo.file_url } });
 
     } catch (error) {
@@ -182,7 +182,7 @@ router.post('/document', authenticateToken, requireAdmin, upload.single('documen
 router.get('/files', authenticateToken, async (req: Request, res: Response): Promise<void> => {
     try {
         const { category, type, limit = 20, offset = 0, search } = req.query as any;
-        const result = await uploadService.getFiles({ category, type, search, limit: parseInt(limit), offset: parseInt(offset) });
+        const result = await (uploadService as any).getFiles({ category, type, search, limit: parseInt(limit), offset: parseInt(offset) });
         res.json({ success: true, data: result.files, total: result.total });
     } catch (error) {
         res.status(500).json({ success: false, error: 'Error obteniendo archivos' });
@@ -194,7 +194,7 @@ router.get('/files', authenticateToken, async (req: Request, res: Response): Pro
  */
 router.post('/cleanup', authenticateToken, requireAdmin, async (req: Request, res: Response): Promise<void> => {
     try {
-        const result = await uploadService.cleanupOrphanedFiles();
+        const result = await (uploadService as any).cleanupOrphanedFiles();
         res.json({ success: true, message: 'Limpieza completada', data: result });
     } catch (error) {
         res.status(500).json({ success: false, error: 'Error en limpieza' });

@@ -612,6 +612,7 @@ router.get('/students/:studentId/grades', authenticateToken, async (req: Request
     try {
         const parentId = (req as any).user.id;
         const studentId = parseInt(req.params.studentId);
+        // @ts-ignore
         const { periodo, ciclo_escolar } = req.query;
 
         // Verificar permisos
@@ -638,69 +639,20 @@ router.get('/students/:studentId/grades', authenticateToken, async (req: Request
             return;
         }
 
-        // Construir query de calificaciones
-        let gradesQuery = `
-            SELECT
-                id,
-                materia,
-                profesor,
-                periodo,
-                ciclo_escolar,
-                calificacion,
-                calificacion_letra,
-                faltas,
-                retardos,
-                observaciones,
-                fecha_publicacion
-            FROM grades
-            WHERE student_id = $1
-            AND visible_padres = TRUE
-        `;
+        // Use GradesService to get the standardized report card
+        // This ensures consistency with the student portal
+        const GradesService = require('../services/grades.service').default;
+        const cicloEscolarStr = ciclo_escolar ? String(ciclo_escolar) : undefined;
 
-        const params: any[] = [studentId];
-        let paramIndex = 2;
-
-        if (periodo) {
-            gradesQuery += ` AND periodo = $${paramIndex}`;
-            params.push(periodo);
-            paramIndex++;
-        }
-
-        if (ciclo_escolar) {
-            gradesQuery += ` AND ciclo_escolar = $${paramIndex}`;
-            params.push(ciclo_escolar);
-            paramIndex++;
-        }
-
-        gradesQuery += ' ORDER BY materia, periodo';
-
-        const gradesResult = await client.query(gradesQuery, params);
-
-        // Calcular promedio general
-        const promedioQuery = `
-            SELECT
-                AVG(calificacion) as promedio_general,
-                COUNT(*) as total_materias
-            FROM grades
-            WHERE student_id = $1
-            AND visible_padres = TRUE
-            ${periodo ? 'AND periodo = $2' : ''}
-            ${ciclo_escolar ? `AND ciclo_escolar = $${periodo ? '3' : '2'}` : ''}
-        `;
-
-        const promedioParams: any[] = [studentId];
-        if (periodo) promedioParams.push(periodo);
-        if (ciclo_escolar) promedioParams.push(ciclo_escolar);
-
-        const promedioResult = await client.query(promedioQuery, promedioParams);
+        const reportCard = await GradesService.getStudentReportCard(studentId, cicloEscolarStr);
 
         res.json({
             success: true,
             data: {
-                grades: gradesResult.rows,
+                grades: reportCard.boleta, // Map boleta to grades expected structure if needed, or frontend adapts
                 summary: {
-                    promedio_general: parseFloat(promedioResult.rows[0].promedio_general || '0').toFixed(2),
-                    total_materias: parseInt(promedioResult.rows[0].total_materias)
+                    promedio_general: reportCard.promedio_general,
+                    total_materias: reportCard.materias_cursadas
                 }
             }
         });
@@ -815,6 +767,142 @@ router.get('/students/:studentId/attendance', authenticateToken, async (req: Req
             success: false,
             error: 'Error al cargar asistencia'
         });
+    } finally {
+        client.release();
+    }
+});
+
+
+// ============================================
+// SISTEMA DE CREDENCIALES (PRE-APROVISIONAMIENTO)
+// ============================================
+
+import ParentCredentialsDAO from '../data/parent-credentials.dao';
+
+/**
+ * GET /api/parents/credentials
+ * Listar credenciales activas (para imprimir/exportar)
+ */
+router.get('/credentials', authenticateToken, requireAdmin, async (req: Request, res: Response): Promise<void> => {
+    try {
+        const credentials = await ParentCredentialsDAO.getAllActive();
+        res.json({ success: true, data: credentials });
+    } catch (error: any) {
+        debugLog.error('parents', 'Error listando credenciales', sanitizeError(error, 'parents'));
+        res.status(500).json({ success: false, error: 'Error al listar credenciales' });
+    }
+});
+
+/**
+ * POST /api/parents/credentials/generate
+ * Generar credenciales masivas por grupo/grado
+ */
+router.post('/credentials/generate', authenticateToken, requireAdmin, async (req: Request, res: Response): Promise<void> => {
+    const client = await pool.connect();
+    try {
+        const { grado, grupo } = req.body;
+
+        let query = "SELECT id FROM students WHERE activo = TRUE";
+        const params: any[] = [];
+
+        if (grado) {
+            params.push(grado);
+            query += ` AND grado = $${params.length}`;
+        }
+        if (grupo) {
+            params.push(grupo);
+            query += ` AND grupo = $${params.length}`;
+        }
+
+        const students = await client.query(query, params);
+        const studentIds = students.rows.map((s: any) => s.id);
+
+        if (studentIds.length === 0) {
+            res.status(404).json({ success: false, message: 'No se encontraron estudiantes con esos filtros' });
+            return;
+        }
+
+        const generated = await ParentCredentialsDAO.generateBatch(studentIds);
+
+        res.json({
+            success: true,
+            message: `Se generaron ${generated.length} credenciales`,
+            data: generated // Returns temp passwords ONCE
+        });
+
+    } catch (error: any) {
+        debugLog.error('parents', 'Error generando credenciales', sanitizeError(error, 'parents'));
+        res.status(500).json({ success: false, error: 'Error al generar credenciales' });
+    } finally {
+        client.release();
+    }
+});
+
+/**
+ * POST /api/parents/auth/first-login
+ * Login por primera vez usando credencial impresa
+ */
+router.post('/auth/first-login', async (req: Request, res: Response): Promise<void> => {
+    const client = await pool.connect();
+    try {
+        const { username, temp_password, email, new_password, nombre, telefono } = req.body;
+
+        // 1. Validar credencial
+        const cred = await ParentCredentialsDAO.verifyCredential(username, temp_password);
+        if (!cred) {
+            res.status(401).json({ success: false, error: 'Credencial inválida o expirada' });
+            return;
+        }
+
+        // 2. Verificar que email no exista
+        const emailCheck = await client.query('SELECT id FROM parents WHERE email = $1', [email.toLowerCase()]);
+        if (emailCheck.rows.length > 0) {
+            res.status(409).json({ success: false, error: 'El email ya está registrado' });
+            return;
+        }
+
+        // 3. Crear cuenta de padre
+        const password_hash = await bcrypt.hash(new_password, 10);
+
+        // Iniciar transacción
+        await client.query('BEGIN');
+
+        const insertQuery = `
+            INSERT INTO parents (nombre, email, password_hash, telefono, created_at, updated_at, activo, email_verified)
+            VALUES ($1, $2, $3, $4, NOW(), NOW(), TRUE, TRUE)
+            RETURNING id
+        `;
+        const parentRes = await client.query(insertQuery, [nombre, email.toLowerCase(), password_hash, telefono || null]);
+        const parentId = parentRes.rows[0].id;
+
+        // 4. Vincular estudiante
+        await client.query(
+            "INSERT INTO parents_students (parent_id, student_id, activo, tipo_relacion) VALUES ($1, $2, TRUE, 'tutor')",
+            [parentId, cred.student_id]
+        );
+
+        // 5. Marcar credencial como reclamada
+        await ParentCredentialsDAO.markAsClaimed(cred.id);
+
+        await client.query('COMMIT');
+
+        // 6. Generar Token
+        const jwtUtils = getJWTUtils();
+        const token = jwtUtils.generateAccessToken({
+            userId: parentId,
+            email: email,
+            role: 'parent'
+        });
+
+        res.json({
+            success: true,
+            data: { token, parent: { id: parentId, email, nombre } }
+        });
+
+    } catch (error: any) {
+        await client.query('ROLLBACK');
+        debugLog.error('parents', 'Error en first-login', sanitizeError(error, 'parents'));
+        res.status(500).json({ success: false, error: 'Error al procesar primer acceso' });
     } finally {
         client.release();
     }

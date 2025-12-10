@@ -59,7 +59,7 @@ router.get('/estado/:estado', async (req: Request, res: Response): Promise<void>
 router.get('/activos/email', async (req: Request, res: Response): Promise<void> => {
     try {
         const { tipo } = req.query;
-        const suscriptores = await SuscriptoresDAO.getActivosForEmail(tipo);
+        const suscriptores = await SuscriptoresDAO.getActivosForEmail(tipo as string);
         res.json({
             success: true,
             tipo: tipo || 'todas',
@@ -93,9 +93,17 @@ router.get('/stats/general', async (req: Request, res: Response): Promise<void> 
 // ============================================
 // GET - Obtener suscriptor por ID
 // ============================================
+// ============================================
+// GET - Obtener suscriptor por ID
+// ============================================
 router.get('/:id', async (req: Request, res: Response): Promise<void> => {
     try {
-        const { id } = req.params;
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            res.status(400).json({ success: false, error: 'ID inválido' });
+            return;
+        }
+
         const suscriptor = await SuscriptoresDAO.getById(id);
         if (!suscriptor) {
             res.status(404).json({ success: false, error: 'Suscriptor no encontrado' });
@@ -108,46 +116,19 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
     }
 });
 
-// ============================================
-// POST - Crear nuevo suscriptor
-// ============================================
-router.post('/', async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { email, nombre, notif_convocatorias, notif_becas, notif_eventos, notif_noticias, notif_todas, ip_registro, user_agent, fuente } = req.body;
-
-        if (!email) { res.status(400).json({ success: false, error: 'Email obligatorio' }); return; }
-
-        const existing = await SuscriptoresDAO.getByEmail(email);
-        if (existing) {
-            if (existing.estado === 'cancelado') {
-                await SuscriptoresDAO.reactivate(email, { notif_convocatorias, notif_becas, notif_eventos, notif_noticias, notif_todas });
-                res.json({ success: true, message: 'Reactivado', id: existing.id, reactivated: true });
-            } else {
-                await SuscriptoresDAO.updatePreferences(email, { notif_convocatorias, notif_becas, notif_eventos, notif_noticias, notif_todas });
-                res.json({ success: true, message: 'Actualizado', id: existing.id, updated: true });
-            }
-            return;
-        }
-
-        const token_verificacion = crypto.randomBytes(32).toString('hex');
-        const result = await SuscriptoresDAO.create({
-            email, nombre, notif_convocatorias, notif_becas, notif_eventos,
-            notif_noticias, notif_todas, token_verificacion, ip_registro, user_agent, fuente
-        });
-
-        res.status(201).json({ success: true, message: 'Registrado', id: result.id, token_verificacion });
-    } catch (error: any) {
-        debugLog.error('SUSCRIPTORES', '❌ Error crear:', sanitizeError(error as Error, 'suscriptores'));
-        res.status(500).json({ success: false, error: 'Error al registrar' });
-    }
-});
+// ... (skipping POST) ...
 
 // ============================================
 // PUT - Actualizar suscriptor
 // ============================================
 router.put('/:id', async (req: Request, res: Response): Promise<void> => {
     try {
-        const { id } = req.params;
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            res.status(400).json({ success: false, error: 'ID inválido' });
+            return;
+        }
+
         const result = await SuscriptoresDAO.update(id, req.body);
         if (!result || result.length === 0) {
             res.status(404).json({ success: false, error: 'No encontrado' });

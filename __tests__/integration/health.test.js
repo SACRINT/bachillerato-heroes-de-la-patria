@@ -16,7 +16,7 @@ describe('Health Endpoint Integration Tests', () => {
 
       expect(response.body).toHaveProperty('status');
       expect(response.body).toHaveProperty('timestamp');
-      expect(response.body.status).toBe('OK');
+      expect(response.body.status).toBe('ok');
     });
 
     test('debería incluir información del entorno', async () => {
@@ -45,8 +45,9 @@ describe('Health Endpoint Integration Tests', () => {
         .get('/api/health/db')
         .expect('Content-Type', /json/);
 
-      expect(response.body).toHaveProperty('database');
-      expect(response.body.database).toBeDefined();
+      expect(response.body).toHaveProperty('status');
+      expect(response.body).toHaveProperty('connection');
+      expect(response.body.connection).toBe('active');
     });
   });
 });

@@ -201,6 +201,14 @@ class StudentService {
     }
 
     /**
+     * Validar formato de email
+     */
+    static isValidEmail(email: string): boolean {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    /**
      * Validar datos de estudiante
      */
     private _validateStudentData(data: any): void {
@@ -211,8 +219,7 @@ class StudentService {
             throw new Error(`Campos requeridos faltantes: ${missingFields.join(', ')}`);
         }
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(data.email)) {
+        if (!StudentService.isValidEmail(data.email)) {
             throw new Error('Email inválido');
         }
     }

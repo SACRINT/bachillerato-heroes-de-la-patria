@@ -26,7 +26,8 @@
         gradesGrid: document.getElementById('gradesGrid'),
         loadingSpinner: document.getElementById('loadingSpinner'),
         saveStatus: document.getElementById('saveStatus'),
-        searchInput: document.getElementById('searchStudent')
+        searchInput: document.getElementById('searchStudent'),
+        refreshBtn: document.getElementById('refreshBtn')
     };
 
     /**
@@ -34,12 +35,9 @@
      */
     async function init() {
         console.log('🚀 Inicializando Sistema de Captura de Calificaciones...');
-
-        // Verificar Auth (Usando el módulo de seguridad existente o check manual)
-        // Asumimos que secureAdminAuth o similar ya corrió, pero verificamos token.
-        const token = localStorage.getItem('authToken'); // O cookie
+        const token = localStorage.getItem('authToken');
         if (!token) {
-            window.location.href = '/login.html'; // O mostrar modal
+            window.location.href = '/login.html';
             return;
         }
 
@@ -50,7 +48,7 @@
             showLoading(false);
         } catch (error) {
             console.error('Error inicializando:', error);
-            showToast('Error al cargar datos iniciales. Verifique su conexión.', 'error');
+            showToast('Error al cargar datos iniciales.', 'error');
             showLoading(false);
         }
     }
@@ -67,6 +65,7 @@
             if (data.success) {
                 state.periods = data.data;
                 renderPeriodSelect();
+                elements.periodSelect.disabled = false;
             }
         } catch (error) {
             console.error('Error loading periods:', error);
@@ -85,6 +84,7 @@
             if (data.success) {
                 state.subjects = data.data;
                 renderSubjectSelect();
+                elements.subjectSelect.disabled = false;
             } else {
                 showToast('No se encontraron materias asignadas.', 'warning');
             }
@@ -99,13 +99,11 @@
     function renderPeriodSelect() {
         elements.periodSelect.innerHTML = '<option value="">Seleccione Periodo...</option>';
         state.periods.forEach(p => {
-            const isActive = p.estado === 'activo'; // TODO: validar fechas
+            const isActive = p.estado === 'activo';
             const option = document.createElement('option');
             option.value = p.id;
-            // Emoji para estado
             const statusIcon = isActive ? '🟢' : '🔒';
             option.textContent = `${statusIcon} ${p.nombre} (${p.codigo})`;
-            if (!isActive) option.disabled = true; // O permitir ver histórico
             elements.periodSelect.appendChild(option);
         });
     }
@@ -115,65 +113,86 @@
         state.subjects.forEach(s => {
             const option = document.createElement('option');
             option.value = s.id;
-            option.textContent = `${s.nombre} (${s.total_estudiantes || 0} alumnos)`;
+            option.textContent = `${s.nombre} (${s.total_estudiantes || 0} alumnos) - ${s.codigo || ''}`;
             elements.subjectSelect.appendChild(option);
         });
     }
 
     /**
-     * Cargar Estudiantes de la materia seleccionada
+     * Cargar Datos (Estudiantes + Calificaciones)
      */
-    async function loadStudents(materiaId) {
-        if (!materiaId) return;
+    async function loadData() {
+        const materiaId = elements.subjectSelect.value;
+        const periodoId = elements.periodSelect.value;
+
+        if (!materiaId || !periodoId) {
+            showToast('Seleccione Materia y Periodo', 'warning');
+            return;
+        }
+
+        state.currentSubjectId = parseInt(materiaId);
+        state.currentPeriodId = parseInt(periodoId);
 
         showLoading(true);
-        state.currentSubjectId = materiaId;
-        elements.gradesGrid.innerHTML = ''; // Limpiar
+        elements.gradesGrid.innerHTML = '';
+        elements.refreshBtn.disabled = true;
 
         try {
-            const response = await fetch(`/api/grades/subject/${materiaId}/students`, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
-            });
-            const data = await response.json();
-            if (data.success) {
-                state.students = data.data;
-                renderGradesGrid(); // TODO: Necesitamos también las calificaciones EXISTENTES
-                // Por ahora renderizamos lista vacía o fetch calificaciones existentes aquí?
-                // Lo ideal: fetch grades del grupo para este periodo.
-                // Pendiente: Endpoint GET /api/grades/subject/:id/period/:periodId
+            // Cargar estudiantes y calificaciones en paralelo
+            const [studentsRes, gradesRes] = await Promise.all([
+                fetch(`/api/grades/subject/${materiaId}/students`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+                }),
+                fetch(`/api/grades/batch?materiaId=${materiaId}&periodoId=${periodoId}`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+                })
+            ]);
 
-                // NOTA: Para simplicidad, podríamos asumir que al cargar estudiantes, si ya hay notas, 
-                // deberíamos cargarlas. 
-                // SOLUCIÓN RAPIDA: Usar el endpoint de boleta por estudiante es muy lento (N requests).
-                // NECESITAMOS: GET /api/grades/batch?materiaId=X&periodoId=Y
+            const studentsData = await studentsRes.json();
+            const gradesData = await gradesRes.json();
 
-                // Si no existe, podemos iterar (lento) o implementar endpoint batch.
-                // Implementaremos visualización limpia primero.
+            if (studentsData.success) {
+                state.students = studentsData.data;
+
+                // Mapear calificaciones existentes
+                state.grades = {};
+                if (gradesData.success && Array.isArray(gradesData.data)) {
+                    gradesData.data.forEach(g => {
+                        state.grades[g.estudiante_id] = g;
+                    });
+                }
+
+                renderGradesGrid();
+            } else {
+                throw new Error(studentsData.message || 'Error cargando estudiantes');
             }
+
         } catch (error) {
-            console.error('Error loading students:', error);
-            showToast('Error al cargar lista de estudiantes', 'error');
+            console.error('Error loading data:', error);
+            showToast('Error al cargar datos del grupo', 'error');
+            elements.gradesGrid.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
         } finally {
             showLoading(false);
+            elements.refreshBtn.disabled = false;
         }
     }
 
     /**
-     * Renderizar Grid de Calificaciones (Excel-like)
+     * Renderizar Grid de Calificaciones
      */
     function renderGradesGrid() {
-        if (!state.currentSubjectId || !state.currentPeriodId) {
-            elements.gradesGrid.innerHTML = '<div class="alert alert-info">Seleccione una materia y un periodo para comenzar la captura.</div>';
+        if (!state.students.length) {
+            elements.gradesGrid.innerHTML = '<div class="alert alert-info">No hay estudiantes inscritos en este grupo.</div>';
             return;
         }
 
         let html = `
-            <table class="table table-hover table-bordered align-middle">
-                <thead class="table-light">
+            <table class="table table-hover table-bordered align-middle table-striped">
+                <thead class="table-light sticky-top" style="top: 0; z-index: 5;">
                     <tr>
                         <th style="width: 5%">#</th>
                         <th style="width: 15%">Matrícula</th>
-                        <th style="width: 40%">Nombre del Estudiante</th>
+                        <th style="width: 35%">Nombre del Estudiante</th>
                         <th style="width: 15%" class="text-center">Calificación</th>
                         <th style="width: 15%" class="text-center">Faltas</th>
                         <th style="width: 10%" class="text-center">Estado</th>
@@ -184,9 +203,15 @@
         `;
 
         state.students.forEach((student, index) => {
-            // TODO: Buscar calificación existente en state.existingGrades (si tuvieramos batch load)
-            const gradeVal = ''; // student.grade; 
-            const faultsVal = ''; // student.faults;
+            const existingGrade = state.grades[student.estudiante_id] || {};
+            const gradeVal = existingGrade.calificacion !== undefined ? existingGrade.calificacion : '';
+            const faultsVal = existingGrade.observaciones ? (existingGrade.observaciones.match(/Faltas: (\d+)/) || [])[1] || '' : '';
+
+            // Determinar status visual
+            let statusBadge = '<span class="badge bg-secondary status-badge"><i class="fas fa-minus"></i></span>';
+            if (gradeVal !== '') {
+                statusBadge = '<span class="badge bg-success status-badge"><i class="fas fa-check"></i></span>';
+            }
 
             html += `
                 <tr data-student-id="${student.estudiante_id}">
@@ -212,7 +237,7 @@
                                placeholder="0">
                     </td>
                     <td class="text-center status-cell">
-                        <span class="badge bg-secondary status-badge"><i class="fas fa-minus"></i></span>
+                        ${statusBadge}
                     </td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-danger btn-pdf" 
@@ -228,13 +253,17 @@
         html += '</tbody></table>';
         elements.gradesGrid.innerHTML = html;
 
-        // Re-attach listeners for inputs
+        // Listeners for inputs
         document.querySelectorAll('.grade-input').forEach(input => {
             input.addEventListener('change', handleGradeChange);
-            input.addEventListener('keydown', handleNavigation); // Excel navigation
+            input.addEventListener('keydown', handleNavigation);
+            input.addEventListener('focus', (e) => e.target.select());
         });
 
-        // PDF listeners
+        document.querySelectorAll('.faults-input').forEach(input => {
+            input.addEventListener('change', handleGradeChange); // Guardar también al cambiar faltas
+        });
+
         document.querySelectorAll('.btn-pdf').forEach(btn => {
             btn.addEventListener('click', handleDownloadPDF);
         });
@@ -244,32 +273,40 @@
      * Descargar Boleta PDF
      */
     async function handleDownloadPDF(e) {
-        const btn = e.currentTarget; // btn es button, target puede ser icono
+        const btn = e.currentTarget;
         const studentId = btn.dataset.studentId;
 
         try {
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-            const response = await fetch(`/api/reports/boleta/${studentId}?ciclo=2025-2026`, {
+            // Ciclo escolar hardcoded por ahora, o venir del state
+            const cycle = '2024-2025';
+
+            // Realizar fetch al endpoint que devuelve BLOB
+            const response = await fetch(`/api/grades/student/${studentId}/pdf?cicloEscolar=${cycle}`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
             });
 
-            if (!response.ok) throw new Error('Error generando PDF');
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `boleta_${studentId}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+                showToast('Boleta descargada correctamente.', 'success');
+            } else {
+                const errData = await response.json();
+                throw new Error(errData.message || 'Error al generar PDF');
+            }
 
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `boleta_${studentId}_2025-2026.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-
-            showToast('Boleta descargada exitosamente', 'success');
         } catch (error) {
             console.error('Download error:', error);
-            showToast('Error al descargar la boleta', 'error');
+            showToast(`Error al descargar la boleta: ${error.message}`, 'error');
         } finally {
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-file-pdf"></i>';
@@ -281,30 +318,37 @@
      */
     async function handleGradeChange(e) {
         const input = e.target;
-        const studentId = input.dataset.studentId;
-        const val = parseFloat(input.value);
         const row = input.closest('tr');
+        const studentId = row.dataset.studentId;
+
+        const gradeInput = row.querySelector('.grade-input');
+        const faultsInput = row.querySelector('.faults-input');
         const statusBadge = row.querySelector('.status-badge');
 
-        if (isNaN(val) || val < 0 || val > 10) {
-            input.classList.add('is-invalid');
+        const val = parseFloat(gradeInput.value);
+        const faults = parseInt(faultsInput.value) || 0;
+
+        if (gradeInput.value !== '' && (isNaN(val) || val < 0 || val > 10)) {
+            gradeInput.classList.add('is-invalid');
             showToast('Calificación inválida (0-10)', 'warning');
             return;
         }
-        input.classList.remove('is-invalid');
+        gradeInput.classList.remove('is-invalid');
+
+        // Si el campo está vacío, no guardamos (o podríamos borrar, pero por seguridad mejor no)
+        if (gradeInput.value === '') return;
 
         // UI Optimista
         statusBadge.className = 'badge bg-warning status-badge';
         statusBadge.innerHTML = '<i class="fas fa-sync fa-spin"></i>';
 
-        // Guardar
         try {
             const payload = {
                 estudianteId: parseInt(studentId),
                 materiaId: state.currentSubjectId,
                 periodoEvaluacionId: state.currentPeriodId,
                 calificacion: val,
-                // TODO: Faltas
+                observaciones: `Faltas: ${faults}` // Guardamos faltas en observaciones por ahora
             };
 
             const response = await fetch('/api/grades', {
@@ -323,6 +367,14 @@
                 statusBadge.innerHTML = '<i class="fas fa-check"></i>';
                 row.classList.add('table-success');
                 setTimeout(() => row.classList.remove('table-success'), 1000);
+
+                // Actualizar cache local
+                state.grades[studentId] = {
+                    ...state.grades[studentId],
+                    calificacion: val,
+                    observaciones: payload.observaciones
+                };
+
             } else {
                 throw new Error(res.message);
             }
@@ -338,23 +390,24 @@
      * Navegación con teclado (Enter, Flechas)
      */
     function handleNavigation(e) {
-        if (e.key === 'Enter' || e.key === 'ArrowDown') {
+        if (['Enter', 'ArrowDown', 'ArrowUp'].includes(e.key)) {
             e.preventDefault();
             const currentInput = e.target;
             const currentRow = currentInput.closest('tr');
-            const nextRow = currentRow.nextElementSibling;
-            if (nextRow) {
-                const nextInput = nextRow.querySelector('.grade-input');
-                if (nextInput) nextInput.focus();
+            let targetRow;
+
+            if (e.key === 'Enter' || e.key === 'ArrowDown') {
+                targetRow = currentRow.nextElementSibling;
+            } else {
+                targetRow = currentRow.previousElementSibling;
             }
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            const currentInput = e.target;
-            const currentRow = currentInput.closest('tr');
-            const prevRow = currentRow.previousElementSibling;
-            if (prevRow) {
-                const prevInput = prevRow.querySelector('.grade-input');
-                if (prevInput) prevInput.focus();
+
+            if (targetRow) {
+                const nextInput = targetRow.querySelector('.grade-input');
+                if (nextInput) {
+                    nextInput.focus();
+                    nextInput.select();
+                }
             }
         }
     }
@@ -363,15 +416,15 @@
      * Event Listeners Globales
      */
     function setupEventListeners() {
-        elements.periodSelect.addEventListener('change', (e) => {
-            state.currentPeriodId = parseInt(e.target.value);
-            renderGradesGrid(); // Si ya hay materia, recargar grid
-        });
-
-        elements.subjectSelect.addEventListener('change', (e) => {
-            const materiaId = parseInt(e.target.value);
-            loadStudents(materiaId);
-        });
+        if (elements.refreshBtn) {
+            elements.refreshBtn.addEventListener('click', loadData);
+            // Habilitar botón solo cuando se seleccionen ambos
+            const checkEnable = () => {
+                elements.refreshBtn.disabled = !(elements.periodSelect.value && elements.subjectSelect.value);
+            };
+            elements.periodSelect.addEventListener('change', checkEnable);
+            elements.subjectSelect.addEventListener('change', checkEnable);
+        }
 
         if (elements.searchInput) {
             elements.searchInput.addEventListener('input', (e) => {
@@ -393,22 +446,30 @@
     }
 
     function showToast(msg, type = 'info') {
-        // Usar sistema de notificaciones global si existe, o alert fallback
         if (window.BGE && window.BGE.UI && window.BGE.UI.Toast) {
             window.BGE.UI.Toast.show(msg, type);
         } else {
             console.log(`[TOAST ${type}] ${msg}`);
-            // Fallback simple visual
-            const toastContainer = document.getElementById('toast-container') || createToastContainer();
-            const toast = document.createElement('div');
-            toast.className = `toast align-items-center text-white bg-${type === 'error' ? 'danger' : type === 'warning' ? 'warning' : 'success'} border-0 show`;
-            toast.innerHTML = `
-                <div class="d-flex">
-                    <div class="toast-body">${msg}</div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            // Fallback
+            const container = document.getElementById('toast-container') || createToastContainer();
+            const toastId = 'toast-' + Date.now();
+            const bgClass = type === 'error' ? 'bg-danger' : type === 'warning' ? 'bg-warning text-dark' : 'bg-success';
+
+            const toastHtml = `
+                <div id="${toastId}" class="toast align-items-center text-white ${bgClass} border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">${msg}</div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close" onclick="document.getElementById('${toastId}').remove()"></button>
+                    </div>
                 </div>`;
-            toastContainer.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+
+            const temp = document.createElement('div');
+            temp.innerHTML = toastHtml;
+            container.appendChild(temp.firstElementChild);
+            setTimeout(() => {
+                const el = document.getElementById(toastId);
+                if (el) el.remove();
+            }, 3000);
         }
     }
 

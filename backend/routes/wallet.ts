@@ -99,7 +99,7 @@ router.get('/history', authenticateToken, async (req: Request, res: Response): P
         debugLog.log('WALLET', `[WALLET] Obteniendo historial para usuario ${userId}`);
 
         const { transactions, total } = await WalletDAO.getHistory(userId, {
-            type,
+            type: type as any,
             limit: parseInt(limit as string),
             offset: parseInt(offset as string)
         });

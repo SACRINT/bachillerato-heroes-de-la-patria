@@ -30,68 +30,74 @@ const { errorHandler } = require('./middleware/errorHandler');
 const { securityMiddleware } = require('./middleware/security');
 const { tenantContext } = require('./middleware/tenant-context');  // ✅ MULTI-TENANCY MIDDLEWARE (17 NOV 2025)
 
+// Helper to load routes handling both CommonJS and ES Module default exports
+const loadRoute = (path) => {
+    const route = require(path);
+    return route.default || route;
+};
+
 // Routes
-const authRoutes = require('./routes/auth');
-const adminRoutes = require('./routes/admin');
-const configRoutes = require('./routes/config');  // ✅ CONFIG ROUTES - Multi-tenant configuration (9 NOV 2025)
-const dashboardRoutes = require('./routes/dashboard');
-const contactRoutes = require('./routes/contact');
-const inscriptionsRoutes = require('./routes/inscriptions');
-const studentsAuthRoutes = require('./routes/students-auth');
-const subscriptionsRoutes = require('./routes/subscriptions');
-const newslettersRoutes = require('./routes/newsletters');
-const egresadosRoutes = require('./routes/egresados');
-const analyticsDashboardRoutes = require('./routes/analytics');
-const reportsRoutes = require('./routes/reports');  // ✅ REPORTS - FASE 2
-const bolsaTrabajoRoutes = require('./routes/bolsa-trabajo');
-const suscriptoresRoutes = require('./routes/suscriptores');
-const quejasRoutes = require('./routes/quejas');
-const notificacionesRoutes = require('./routes/notificaciones');
-const notificationsRealtimeRoutes = require('./routes/notifications-realtime');  // ✅ SOCKET.IO NOTIFICATIONS - SEMANA 5
-const solicitudesRoutes = require('./routes/solicitudes');
-const passwordRecoveryRoutes = require('./routes/password-recovery');
-const approvalsRoutes = require('./routes/approvals');
-const noticiasRoutes = require('./routes/noticias');
-const eventosRoutes = require('./routes/eventos');
-const avisosRoutes = require('./routes/avisos');
-const tenantsRoutes = require('./routes/tenants');  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
-const comunicadosRoutes = require('./routes/comunicados');
-const uploadRoutes = require('./routes/upload');
-const webhooksRoutes = require('./routes/webhooks');  // ✅ WEBHOOKS - SEMANA 8
-const superAdminDashboardRoutes = require('./routes/super-admin-dashboard');  // ✅ SUPER ADMIN - FASE 5 (7 DIC 2025)
-const stripeWebhooksRoutes = require('./routes/stripe-webhooks');  // ✅ STRIPE WEBHOOKS - FASE 5.2 (7 DIC 2025)
-const arExperiencesRoutes = require('./routes/ar-experiences');  // ✅ AR EXPERIENCES - FASE 5.3 (7 DIC 2025)
-const pollsRoutes = require('./routes/polls');
+const authRoutes = loadRoute('./routes/auth');
+const adminRoutes = loadRoute('./routes/admin');
+const configRoutes = loadRoute('./routes/config');  // ✅ CONFIG ROUTES - Multi-tenant configuration (9 NOV 2025)
+const dashboardRoutes = loadRoute('./routes/dashboard');
+const contactRoutes = loadRoute('./routes/contact');
+const inscriptionsRoutes = loadRoute('./routes/inscriptions');
+const studentsAuthRoutes = loadRoute('./routes/students-auth');
+const subscriptionsRoutes = loadRoute('./routes/subscriptions');
+const newslettersRoutes = loadRoute('./routes/newsletters');
+const egresadosRoutes = loadRoute('./routes/egresados');
+const analyticsDashboardRoutes = loadRoute('./routes/analytics');
+const reportsRoutes = loadRoute('./routes/reports');  // ✅ REPORTS - FASE 2
+const bolsaTrabajoRoutes = loadRoute('./routes/bolsa-trabajo');
+const suscriptoresRoutes = loadRoute('./routes/suscriptores');
+const quejasRoutes = loadRoute('./routes/quejas');
+const notificacionesRoutes = loadRoute('./routes/notificaciones');
+const notificationsRealtimeRoutes = loadRoute('./routes/notifications-realtime');  // ✅ SOCKET.IO NOTIFICATIONS - SEMANA 5
+const solicitudesRoutes = loadRoute('./routes/solicitudes');
+const passwordRecoveryRoutes = loadRoute('./routes/password-recovery');
+const approvalsRoutes = loadRoute('./routes/approvals');
+const noticiasRoutes = loadRoute('./routes/noticias');
+const eventosRoutes = loadRoute('./routes/eventos');
+const avisosRoutes = loadRoute('./routes/avisos');
+const tenantsRoutes = loadRoute('./routes/tenants');  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
+const comunicadosRoutes = loadRoute('./routes/comunicados');
+const uploadRoutes = loadRoute('./routes/upload');
+const webhooksRoutes = loadRoute('./routes/webhooks');  // ✅ WEBHOOKS - SEMANA 8
+const superAdminDashboardRoutes = loadRoute('./routes/super-admin-dashboard');  // ✅ SUPER ADMIN - FASE 5 (7 DIC 2025)
+const stripeWebhooksRoutes = loadRoute('./routes/stripe-webhooks');  // ✅ STRIPE WEBHOOKS - FASE 5.2 (7 DIC 2025)
+const arExperiencesRoutes = loadRoute('./routes/ar-experiences');  // ✅ AR EXPERIENCES - FASE 5.3 (7 DIC 2025)
+const pollsRoutes = loadRoute('./routes/polls');
 // ✅ API VERSIONING MIDDLEWARE - SEMANA 8
 const { apiVersioning, v1CompatibilityLayer, rateLimitByTier } = require('./middleware/api-versioning');
-const attendanceRoutes = require('./routes/attendance');
-const settingsRoutes = require('./routes/settings');
-const healthRoutes = require('./routes/health');
-const testEventsRoutes = require('./routes/test-events');  // ✅ TESTING ROUTES - Event Bus testing (FASE 2)
-const chartsDataRoutes = require('./routes/charts-data');
-const searchRoutes = require('./routes/search');
-const emailsRoutes = require('./routes/emails');
-const apiDocsRoutes = require('./routes/api-docs'); // ✅ SWAGGER UI - SEMANA 29
-const aiTutorRoutes = require('./routes/ai-tutor'); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
-const installPollsRoutes = require('./routes/install-polls');
-const teachersPortalRoutes = require('./routes/teachers-portal');
-const messagingRoutes = require('./routes/messaging');
-const digitalLibraryRoutes = require('./routes/digital-library');
-const supportTicketsRoutes = require('./routes/support-tickets');
-const installParentsRoutes = require('./routes/install-parents');
-const parentsRoutes = require('./routes/parents');
-const financesRoutes = require('./routes/finances');
-const citasRoutes = require('./routes/citas');
-const calendarRoutes = require('./routes/calendar');  // ✅ CALENDAR ROUTES - Eventos del calendario interactivo
-const pendientesAprobacionRoutes = require('./routes/pendientes-aprobacion');
-const diagnosticoAprobacionesRoutes = require('./routes/diagnostico-aprobaciones');
-const gamificationRoutes = require('./routes/gamification');  // ✅ GAMIFICATION ROUTES - Sistema de logros y puntuaciones
-const triviaGameRoutes = require('./routes/trivia-game');  // ✅ EDUCATIONAL GAMES - Trivia (7 DIC 2025)
-const conceptBuilderRoutes = require('./routes/concept-builder');  // ✅ EDUCATIONAL GAMES - Mapas conceptuales (7 DIC 2025)
+const attendanceRoutes = loadRoute('./routes/attendance');
+const settingsRoutes = loadRoute('./routes/settings');
+const healthRoutes = loadRoute('./routes/health');
+const testEventsRoutes = loadRoute('./routes/test-events');  // ✅ TESTING ROUTES - Event Bus testing (FASE 2)
+const chartsDataRoutes = loadRoute('./routes/charts-data');
+const searchRoutes = loadRoute('./routes/search');
+const emailsRoutes = loadRoute('./routes/emails');
+const apiDocsRoutes = loadRoute('./routes/api-docs'); // ✅ SWAGGER UI - SEMANA 29
+const aiTutorRoutes = loadRoute('./routes/ai-tutor'); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
+const installPollsRoutes = loadRoute('./routes/install-polls');
+const teachersPortalRoutes = loadRoute('./routes/teachers-portal');
+const messagingRoutes = loadRoute('./routes/messaging');
+const digitalLibraryRoutes = loadRoute('./routes/digital-library');
+const supportTicketsRoutes = loadRoute('./routes/support-tickets');
+const installParentsRoutes = loadRoute('./routes/install-parents');
+const parentsRoutes = loadRoute('./routes/parents');
+const financesRoutes = loadRoute('./routes/finances');
+const citasRoutes = loadRoute('./routes/citas');
+const calendarRoutes = loadRoute('./routes/calendar');  // ✅ CALENDAR ROUTES - Eventos del calendario interactivo
+const pendientesAprobacionRoutes = loadRoute('./routes/pendientes-aprobacion');
+const diagnosticoAprobacionesRoutes = loadRoute('./routes/diagnostico-aprobaciones');
+const gamificationRoutes = loadRoute('./routes/gamification');  // ✅ GAMIFICATION ROUTES - Sistema de logros y puntuaciones
+const triviaGameRoutes = loadRoute('./routes/trivia-game');  // ✅ EDUCATIONAL GAMES - Trivia (7 DIC 2025)
+const conceptBuilderRoutes = loadRoute('./routes/concept-builder');  // ✅ EDUCATIONAL GAMES - Mapas conceptuales (7 DIC 2025)
 
 // ✅ SEMANA 2 - SERVICE LAYER ROUTES (20 NOV 2025)
-const studentsServiceRoutes = require('./routes/students-service');  // Estudiantes con Service Layer
-const gradesServiceRoutes = require('./routes/grades');  // Calificaciones con Service Layer
+const studentsServiceRoutes = loadRoute('./routes/students-service');  // Estudiantes con Service Layer
+const gradesServiceRoutes = loadRoute('./routes/grades');  // Calificaciones con Service Layer
 
 // ✅ FASE 30.5 TAREA 4 - POOL MANAGER (24 NOV 2025)
 const poolManager = require('./middleware/pool-manager');  // Connection Pool monitoring
@@ -106,46 +112,46 @@ const { CircuitBreaker, createCircuitBreakerMiddleware } = require('./middleware
 
 // ✅ FASE 1.2: 28 RUTAS HUÉRFANAS - Registradas 11 NOV 2025
 // GRUPO 1: IA/ML CRÍTICAS (6 rutas)
-const aiDatabaseRoutes = require('./routes/ai-database');
-const analyticsPredictivo = require('./routes/analytics-predictivo');
-const asistenteVirtualRoutes = require('./routes/asistente-virtual');
-const realAiRoutes = require('./routes/real-ai');
-const recomendacionesMLRoutes = require('./routes/recomendaciones-ml');
-const deteccionRiesgosRoutes = require('./routes/deteccion-riesgos');
+const aiDatabaseRoutes = loadRoute('./routes/ai-database');
+const analyticsPredictivo = loadRoute('./routes/analytics-predictivo');
+const asistenteVirtualRoutes = loadRoute('./routes/asistente-virtual');
+const realAiRoutes = loadRoute('./routes/real-ai');
+const recomendacionesMLRoutes = loadRoute('./routes/recomendaciones-ml');
+const deteccionRiesgosRoutes = loadRoute('./routes/deteccion-riesgos');
 
 // GRUPO 2: CORE FEATURES ALTAS (10 rutas)
-const studentsRoutes = require('./routes/students');
-const teachersRoutes = require('./routes/teachers');
-const gradesRoutes = require('./routes/grades');
-const gradesAnalyticsRoutes = require('./routes/gradesAnalytics');
-const notificationsRoutes = require('./routes/notifications');
-const informationRoutes = require('./routes/information');
-// ⚠️ REMOVIDO TEMPORALMENTE: const googleClassroomRoutes = require('./routes/google-classroom'); (TIENE ERROR: router.post() requiere callback)
-const parentTeacherCommunicationRoutes = require('./routes/parentTeacherCommunication');
-const multiTenantRoutes = require('./routes/multi-tenant');
-const subscriptionsServiceRoutes = require('./routes/subscriptions-service');
+const studentsRoutes = loadRoute('./routes/students');
+const teachersRoutes = loadRoute('./routes/teachers');
+const gradesRoutes = loadRoute('./routes/grades');
+const gradesAnalyticsRoutes = loadRoute('./routes/gradesAnalytics');
+const notificationsRoutes = loadRoute('./routes/notifications');
+const informationRoutes = loadRoute('./routes/information');
+// ⚠️ REMOVIDO TEMPORALMENTE: const googleClassroomRoutes = loadRoute('./routes/google-classroom'); (TIENE ERROR: router.post() requiere callback)
+const parentTeacherCommunicationRoutes = loadRoute('./routes/parentTeacherCommunication');
+const multiTenantRoutes = loadRoute('./routes/multi-tenant');
+const subscriptionsServiceRoutes = loadRoute('./routes/subscriptions-service');
 
 // GRUPO 3: FEATURES SECUNDARIAS MEDIAS (7 rutas)
-const chatbotRoutes = require('./routes/chatbot');
-const chatbotIaRoutes = require('./routes/chatbot-ia');
-const cmsRoutes = require('./routes/cms');
-const newslettersPgRoutes = require('./routes/newsletters-pg');
-const citasImprovedRoutes = require('./routes/citas-improved');
-const fixAprobacionesAutoRoutes = require('./routes/fix-aprobaciones-auto');
-const uploadsRoutes = require('./routes/uploads');
+const chatbotRoutes = loadRoute('./routes/chatbot');
+const chatbotIaRoutes = loadRoute('./routes/chatbot-ia');
+const cmsRoutes = loadRoute('./routes/cms');
+const newslettersPgRoutes = loadRoute('./routes/newsletters-pg');
+const citasImprovedRoutes = loadRoute('./routes/citas-improved');
+const fixAprobacionesAutoRoutes = loadRoute('./routes/fix-aprobaciones-auto');
+const uploadsRoutes = loadRoute('./routes/uploads');
 
 // GRUPO 4: OPERACIONES Y MAINTENANCE BAJAS (5 rutas)
 // ⚠️ COMENTADO: migration.js requiere mysql2 (no instalado)
-// const migrationRoutes = require('./routes/migration');
-const maintenanceRoutes = require('./routes/maintenance');
-const sslRoutes = require('./routes/ssl');
-const backupRoutes = require('./routes/backup');
-const gamificationDirectRoutes = require('./routes/gamification');  // ⚠️ Alias para evitar conflicto
+// const migrationRoutes = loadRoute('./routes/migration');
+const maintenanceRoutes = loadRoute('./routes/maintenance');
+const sslRoutes = loadRoute('./routes/ssl');
+const backupRoutes = loadRoute('./routes/backup');
+const gamificationDirectRoutes = loadRoute('./routes/gamification');  // ⚠️ Alias para evitar conflicto
 
 // GRUPO 5: SISTEMA DE GAMIFICACIÓN IACOINS (3 rutas) - 15 NOV 2025
-const walletRoutes = require('./routes/wallet');  // 💰 Wallet management (5 endpoints)
-const challengesRoutes = require('./routes/challenges');  // 🏆 Challenges system (4 endpoints)
-const storeRoutes = require('./routes/store');  // 🛒 Virtual store (5 endpoints)
+const walletRoutes = loadRoute('./routes/wallet');  // 💰 Wallet management (5 endpoints)
+const challengesRoutes = loadRoute('./routes/challenges');  // 🏆 Challenges system (4 endpoints)
+const storeRoutes = loadRoute('./routes/store');  // 🛒 Virtual store (5 endpoints)
 
 const { startCleanupService } = require('./services/cleanupService');
 const SocketService = require('./services/socket-service');  // ✅ SOCKET.IO SERVICE - SEMANA 5 (17 NOV 2025)

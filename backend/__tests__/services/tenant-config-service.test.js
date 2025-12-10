@@ -5,12 +5,7 @@
  */
 
 const tenantConfigService = require('../../services/tenant-config-service');
-const pool = require('../../config/database');
-
-// Mock pool
-jest.mock('../../config/database', () => ({
-  query: jest.fn()
-}));
+const TenantDAO = require('../../data/tenant.dao');
 
 // Mock redis
 jest.mock('../../middleware/redis-cache', () => ({
@@ -24,6 +19,8 @@ jest.mock('../../middleware/redis-cache', () => ({
 describe('TenantConfigService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Restaurar implementaciones originales antes de cada test para evitar contaminación
+    jest.restoreAllMocks();
   });
 
   describe('createTenant', () => {
@@ -40,9 +37,9 @@ describe('TenantConfigService', () => {
         }
       };
 
-      pool.query
-        .mockResolvedValueOnce({ rows: [] }) // Check existing
-        .mockResolvedValueOnce({ rows: [mockTenant] }); // Insert
+      // Spy on DAO methods
+      const checkExistsSpy = jest.spyOn(TenantDAO, 'checkExists').mockResolvedValue(false);
+      const createSpy = jest.spyOn(TenantDAO, 'create').mockResolvedValue(mockTenant);
 
       const result = await tenantConfigService.createTenant({
         id: 'test-tenant',
@@ -50,12 +47,13 @@ describe('TenantConfigService', () => {
         subdomain: 'test'
       });
 
-      expect(result).toHaveProperty('id', 'test-tenant');
-      expect(pool.query).toHaveBeenCalledTimes(2);
+      expect(result).toEqual(mockTenant);
+      expect(checkExistsSpy).toHaveBeenCalledWith('test-tenant', 'test');
+      expect(createSpy).toHaveBeenCalled();
     });
 
     it('should throw error if tenant already exists', async () => {
-      pool.query.mockResolvedValueOnce({ rows: [{ id: 'existing' }] });
+      jest.spyOn(TenantDAO, 'checkExists').mockResolvedValue(true);
 
       await expect(
         tenantConfigService.createTenant({
