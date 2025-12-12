@@ -4043,7 +4043,7 @@
 
     <script src="js/stats-counter.js?v=20251001"></script>
     <script src="js/pagination-manager.js?v=20251019"></script>
-    <script src="js/form-validator.js?v=20251019"></script>
+    <!-- <script src="js/form-validator.js?v=20251019"></script> -->
     <script src="js/form-validation-config.js?v=20251019"></script>
     <script src="js/advanced-filters.js?v=20251019"></script>
     <script src="js/dashboard-filters-config.js?v=20251019"></script>
@@ -4060,7 +4060,10 @@
     <script src="js/icon-check.js?v=20251001"></script>
 
     <!-- 🔌 API Client (CRÍTICO: debe cargarse ANTES de admin-dashboard.js) -->
-    <script src="js/api-client.js?v=20251028"></script>
+    <!-- <script src="js/api-client.js?v=20251028"></script> -->
+
+    <!-- 🟢 MIGRACIÓN TYPESCRIPT: Bundle Principal -->
+    <script src="dist/assets/main.js" type="module"></script>
 
     <!-- ✨ NUEVA ARQUITECTURA - Event-Driven System (SEMANAS 1-12 REFACTORIZACIÓN) -->
     <!-- Event Bus: Sistema central de eventos para desacoplamiento -->
@@ -4082,7 +4085,7 @@
     <!-- FIN NUEVA ARQUITECTURA -->
 
     <!-- 🚀 BGE Dashboard Managers (SIN defer para garantizar orden de carga) -->
-    <script src="js/admin-dashboard.js?v=20251027" defer></script>
+    <!-- <script src="js/admin-dashboard.js?v=20251027" defer></script> -->
     <script src="js/chatbot.js" defer></script>
     <script src="js/dynamic-student-loader.js?v=20251027" defer></script>
     <script src="js/dynamic-teacher-loader.js?v=20251027" defer></script>
