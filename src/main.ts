@@ -1,5 +1,14 @@
 console.log('🚀 Phase 5: Frontend Migration Initialized');
 
-// Future: Import migrated modules here
-// import './core/utils';
-// import './components/navbar';
+import { appConfig, loadRemoteConfig } from './core/config';
+import { apiClient } from './core/api-client';
+
+// Initial setup
+loadRemoteConfig().then(() => {
+    console.log('配置 cargada desde main.ts');
+});
+
+// Make globally available for legacy scripts debugging if needed (optional)
+(window as any).appConfig = appConfig;
+(window as any).apiClient = apiClient;
+
