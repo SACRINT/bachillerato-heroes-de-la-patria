@@ -4,6 +4,8 @@ import { appConfig, loadRemoteConfig } from './core/config';
 import { apiClient } from './core/api-client';
 import { authInterface } from './core/auth';
 import { formValidator } from './core/utils/validation';
+import { floatingToolbar } from './components/ui/FloatingToolbar';
+
 
 
 
@@ -17,6 +19,8 @@ loadRemoteConfig().then(() => {
 (window as any).apiClient = apiClient;
 (window as any).authInterface = authInterface;
 (window as any).formValidator = formValidator;
+(window as any).floatingToolbar = floatingToolbar;
+
 
 
 
