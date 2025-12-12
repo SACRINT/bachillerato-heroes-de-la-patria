@@ -3,6 +3,8 @@ console.log('🚀 Phase 5: Frontend Migration Initialized');
 import { appConfig, loadRemoteConfig } from './core/config';
 import { apiClient } from './core/api-client';
 import { authInterface } from './core/auth';
+import { formValidator } from './core/utils/validation';
+
 
 
 // Initial setup
@@ -14,5 +16,7 @@ loadRemoteConfig().then(() => {
 (window as any).appConfig = appConfig;
 (window as any).apiClient = apiClient;
 (window as any).authInterface = authInterface;
+(window as any).formValidator = formValidator;
+
 
 
