@@ -124,11 +124,11 @@ class FloatingToolbar {
                 gap: 10px;
                 z-index: 1000;
                 padding: 10px;
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(10px);
+                background: transparent;
+                backdrop-filter: none;
                 border-radius: 25px;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                border: none;
+                box-shadow: none;
             }
 
             .floating-toolbar-btn {
