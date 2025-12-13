@@ -17,7 +17,21 @@ const express = require('express');
 const router = express.Router();
 const { body, param, query, validationResult } = require('express-validator');
 const { authenticateToken } = require('../middleware/auth');
-const { executeQuery, getPool } = require('../data/database-access');
+const { getPool } = require('../data/database-access');
+
+// =====================================================
+// Helper function to execute queries (since executeQuery is not exported)
+// =====================================================
+async function executeQuery(sqlQuery, params = []) {
+    const pool = getPool();
+    const client = await pool.connect();
+    try {
+        const result = await client.query(sqlQuery, params);
+        return result.rows;
+    } finally {
+        client.release();
+    }
+}
 
 // =====================================================
 // GET /api/iacoins/balance - Obtener balance del usuario
