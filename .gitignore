@@ -152,4 +152,5 @@ EJECUTAR_EN_NEON.sql
 dist/
 public/dist/
 backend/node_modules/
-backend/package-lock.json
+# NOTA: backend/package-lock.json DEBE estar en GitHub para que npm ci funcione en Vercel
+# NO ignorar este archivo - es esencial para reproducibilidad en CI/CD
