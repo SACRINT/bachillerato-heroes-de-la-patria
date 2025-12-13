@@ -9,9 +9,9 @@ export class LegacyLoader {
     // Listado de scripts que se cargaban como "bridges"
     private readonly BRIDGES = [
         'js/data-event-emitter.js',
-        'js/auth-context-bridge.js',
-        'js/auth-api-bridge.js',
-        'js/unified-auth-system-v2.js',
+        'js/auth-api-bridge.js', // TODO: Migrar a TS
+        // 'js/auth-context-bridge.js', // Migrado a TS (auth.ts wrapper)
+        // 'js/unified-auth-system-v2.js', // Migrado a TS (src/core/auth/*)
         // 'js/tenant-auto-updater.js' // Migrado a TS
     ];
 
