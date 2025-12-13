@@ -1,9 +1,10 @@
 // api/index.js - Serverless handler nativo para Vercel (ESM)
-import pg from 'pg';
-const { Pool } = pg;
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import nodemailer from 'nodemailer';
+const { Pool } = require('pg');
+
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const { URL } = require('url');
 
 // Pool de PostgreSQL
 const pool = new Pool({
@@ -70,7 +71,7 @@ async function getRequestBody(req) {
 }
 
 // Handler principal
-export default async (req, res) => {
+module.exports = async (req, res) => {
     // Handle CORS preflight
     if (req.method === 'OPTIONS') {
         res.writeHead(200, corsHeaders);

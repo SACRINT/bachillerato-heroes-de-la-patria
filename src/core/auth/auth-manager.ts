@@ -153,7 +153,8 @@ export class AuthManager {
 
         } catch (error: any) {
             console.error('Login error', error);
-            this.ui.showAlert(error.message || 'Error de conexión', 'danger');
+            const errorMsg = (error as any).message || (error as any).error || 'Error de conexión';
+            this.ui.showAlert(errorMsg, 'danger');
         } finally {
             // Restore UI
             if (btn) (btn as HTMLButtonElement).disabled = false;
