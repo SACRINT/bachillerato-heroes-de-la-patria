@@ -145,6 +145,10 @@
 #main-footer {
     width: 100%;
     position: relative;
+    display: block;
+    overflow: visible;
+    /* Asegurar que el contenedor expande para incluir su contenido */
+    min-height: auto;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════ */
@@ -215,6 +219,7 @@
 
 /* Floating Buttons Responsive */
 @media (max-width: 768px) {
+
     .dark-mode-toggle,
     .chatbot-toggle {
         width: 45px;
@@ -239,6 +244,7 @@
 
 /* Reducir movimiento si el usuario lo prefiere */
 @media (prefers-reduced-motion: reduce) {
+
     #main-header,
     #main-footer,
     .dark-mode-toggle,
@@ -290,6 +296,7 @@ html {
 
 /* Print styles */
 @media print {
+
     #main-header,
     #main-footer,
     .dark-mode-toggle,

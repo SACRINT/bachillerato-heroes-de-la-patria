@@ -2449,7 +2449,7 @@ body .analytics-dashboard-toggle {
 }
 
 .modal .btn-close:before {
-    content: 'Ã—' !important;
+    content: '×' !important;
     color: white !important;
     font-size: 24px !important;
     font-weight: bold !important;
@@ -2495,7 +2495,7 @@ body .analytics-dashboard-toggle {
 }
 
 .modal-header .btn-close:before {
-    content: 'Ã—' !important;
+    content: '×' !important;
     color: white !important;
     font-size: 24px !important;
     font-weight: bold !important;
@@ -2533,7 +2533,7 @@ body .analytics-dashboard-toggle {
 .modal-fade .modal-dialog .modal-content .modal-header .btn-close:before,
 #eventoModal .modal-header .btn-close:before,
 #dynamicDetailModal .modal-header .btn-close:before {
-    content: 'Ã—' !important;
+    content: '×' !important;
     color: white !important;
     font-size: 24px !important;
     font-weight: bold !important;
@@ -2604,7 +2604,7 @@ body .analytics-dashboard-toggle {
 }
 
 .modal .btn-close:before {
-    content: 'Ã—' !important;
+    content: '×' !important;
     color: white !important;
     font-size: 24px !important;
     font-weight: bold !important;
@@ -2650,7 +2650,7 @@ body .analytics-dashboard-toggle {
 }
 
 .modal-header .btn-close:before {
-    content: 'Ã—' !important;
+    content: '×' !important;
     color: white !important;
     font-size: 24px !important;
     font-weight: bold !important;
@@ -2688,7 +2688,7 @@ body .analytics-dashboard-toggle {
 .modal-fade .modal-dialog .modal-content .modal-header .btn-close:before,
 #eventoModal .modal-header .btn-close:before,
 #dynamicDetailModal .modal-header .btn-close:before {
-    content: 'Ã—' !important;
+    content: '×' !important;
     color: white !important;
     font-size: 24px !important;
     font-weight: bold !important;

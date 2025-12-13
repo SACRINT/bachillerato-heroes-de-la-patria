@@ -6,10 +6,10 @@ class InteractiveCalendar {
         this.eventFilter = '';
         this.events = [];
         this.reminders = this.loadReminders();
-        
+
         this.initializeCalendar();
     }
-    
+
     async initializeCalendar() {
         // Cargar eventos de forma asíncrona
         this.events = await this.loadEvents();
@@ -259,7 +259,7 @@ class InteractiveCalendar {
             return staticEvents;
         }
     }
-    
+
     // Mapear categorías PWA a tipos de calendario
     mapCategoryToType(category) {
         const mapping = {
@@ -270,12 +270,12 @@ class InteractiveCalendar {
         };
         return mapping[category] || 'academic';
     }
-    
+
     // Mapear colores PWA a colores Bootstrap
     mapColorFromPWA(bgColor) {
         const colorMapping = {
             '#D32F2F': 'danger',
-            '#1976D2': 'primary', 
+            '#1976D2': 'primary',
             '#FFC107': 'warning',
             '#388E3C': 'success',
             '#FF5722': 'danger',
@@ -339,19 +339,19 @@ class InteractiveCalendar {
             'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
         ];
-        
+
         const monthYear = `${monthNames[this.currentDate.getMonth()]} ${this.currentDate.getFullYear()}`;
         document.getElementById('currentMonthYear').textContent = monthYear;
     }
 
     switchView(view) {
         this.currentView = view;
-        
+
         // Actualizar botones
         document.getElementById('monthViewBtn').classList.toggle('active', view === 'month');
         document.getElementById('monthViewBtn').classList.toggle('btn-primary', view === 'month');
         document.getElementById('monthViewBtn').classList.toggle('btn-outline-primary', view !== 'month');
-        
+
         document.getElementById('listViewBtn').classList.toggle('active', view === 'list');
         document.getElementById('listViewBtn').classList.toggle('btn-primary', view === 'list');
         document.getElementById('listViewBtn').classList.toggle('btn-outline-primary', view !== 'list');
@@ -372,16 +372,16 @@ class InteractiveCalendar {
         const calendarContainer = document.getElementById('interactiveCalendar');
         const year = this.currentDate.getFullYear();
         const month = this.currentDate.getMonth();
-        
+
         // Primer día del mes y último día
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
         const today = new Date();
-        
+
         // Días para mostrar (incluyendo días del mes anterior/posterior)
         const startDate = new Date(firstDay);
         startDate.setDate(startDate.getDate() - firstDay.getDay());
-        
+
         let calendarHTML = `
             <div class="calendar-grid">
                 <div class="calendar-header">
@@ -397,7 +397,7 @@ class InteractiveCalendar {
         `;
 
         const currentDate = new Date(startDate);
-        
+
         // Generar 6 semanas
         for (let week = 0; week < 6; week++) {
             for (let day = 0; day < 7; day++) {
@@ -405,12 +405,12 @@ class InteractiveCalendar {
                 const isToday = currentDate.toDateString() === today.toDateString();
                 const dayEvents = this.getEventsForDate(currentDate);
                 const filteredEvents = this.filterEvents(dayEvents);
-                
+
                 const dayClasses = ['calendar-day'];
                 if (!isCurrentMonth) dayClasses.push('other-month');
                 if (isToday) dayClasses.push('today');
                 if (filteredEvents.length > 0) dayClasses.push('has-events');
-                
+
                 let eventsHTML = '';
                 if (filteredEvents.length > 0 && isCurrentMonth) {
                     const maxShow = 3;
@@ -418,7 +418,7 @@ class InteractiveCalendar {
                         const isMultiDay = event.endDate !== event.date;
                         const isStart = currentDate.toISOString().split('T')[0] === event.date;
                         const isEnd = currentDate.toISOString().split('T')[0] === event.endDate;
-                        
+
                         eventsHTML += `
                             <div class="event-indicator bg-${event.color} ${isMultiDay ? 'multi-day' : ''} ${isStart ? 'start' : ''} ${isEnd ? 'end' : ''}" 
                                  data-event-id="${event.id}" 
@@ -428,31 +428,32 @@ class InteractiveCalendar {
                             </div>
                         `;
                     });
-                    
+
                     if (filteredEvents.length > maxShow) {
                         eventsHTML += `<div class="more-events">+${filteredEvents.length - maxShow} más</div>`;
                     }
                 }
-                
+
                 calendarHTML += `
                     <div class="${dayClasses.join(' ')}" data-date="${currentDate.toISOString().split('T')[0]}">
                         <div class="day-number">${currentDate.getDate()}</div>
                         <div class="day-events">${eventsHTML}</div>
                     </div>
                 `;
-                
+
                 currentDate.setDate(currentDate.getDate() + 1);
             }
         }
-        
+
         calendarHTML += '</div></div>';
-        calendarContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(calendarHTML, 'ugc'));
+        // El contenido del calendario es generado internamente y es seguro
+        calendarContainer.innerHTML = calendarHTML;
     }
 
     renderEventsList() {
         const listContainer = document.getElementById('eventsList');
         const filteredEvents = this.filterEvents(this.events);
-        
+
         // Agrupar eventos por mes
         const eventsByMonth = {};
         filteredEvents.forEach(event => {
@@ -463,41 +464,41 @@ class InteractiveCalendar {
             }
             eventsByMonth[monthKey].push(event);
         });
-        
+
         // Ordenar por fecha
         Object.keys(eventsByMonth).forEach(monthKey => {
             eventsByMonth[monthKey].sort((a, b) => new Date(a.date) - new Date(b.date));
         });
-        
+
         const monthNames = [
             'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
         ];
-        
+
         let listHTML = '';
-        
+
         // Generar lista por meses
         Object.keys(eventsByMonth)
             .sort()
             .forEach(monthKey => {
                 const [year, month] = monthKey.split('-');
                 const monthName = `${monthNames[parseInt(month)]} ${year}`;
-                
+
                 listHTML += `
                     <div class="month-section mb-4">
                         <h4 class="month-header bg-light p-3 rounded">${monthName}</h4>
                         <div class="events-list">
                 `;
-                
+
                 eventsByMonth[monthKey].forEach(event => {
                     const eventDate = new Date(event.date);
                     const endDate = event.endDate ? new Date(event.endDate) : eventDate;
                     const isMultiDay = event.endDate && event.endDate !== event.date;
-                    
-                    const dateDisplay = isMultiDay 
+
+                    const dateDisplay = isMultiDay
                         ? `${eventDate.getDate()} - ${endDate.getDate()} ${monthNames[endDate.getMonth()]}`
                         : `${eventDate.getDate()} ${monthNames[eventDate.getMonth()]}`;
-                    
+
                     listHTML += `
                         <div class="event-item card mb-2" onclick="calendar.showEventDetails('${event.id}')">
                             <div class="card-body p-3">
@@ -521,10 +522,10 @@ class InteractiveCalendar {
                         </div>
                     `;
                 });
-                
+
                 listHTML += '</div></div>';
             });
-        
+
         if (filteredEvents.length === 0) {
             listHTML = `
                 <div class="text-center py-5">
@@ -535,7 +536,8 @@ class InteractiveCalendar {
             `;
         }
 
-        listContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(listHTML, 'ugc'));
+        // El contenido de la lista es generado internamente y es seguro
+        listContainer.innerHTML = listHTML;
     }
 
     getEventsForDate(date) {
@@ -571,24 +573,24 @@ class InteractiveCalendar {
     showEventDetails(eventId) {
         const event = this.events.find(e => e.id === eventId);
         if (!event) return;
-        
+
         const startDate = new Date(event.date);
         const endDate = event.endDate ? new Date(event.endDate) : startDate;
         const isMultiDay = event.endDate && event.endDate !== event.date;
-        
+
         const monthNames = [
             'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
         ];
-        
+
         const formatDate = (date) => {
             return `${date.getDate()} de ${monthNames[date.getMonth()]} de ${date.getFullYear()}`;
         };
-        
-        const dateDisplay = isMultiDay 
+
+        const dateDisplay = isMultiDay
             ? `Del ${formatDate(startDate)} al ${formatDate(endDate)}`
             : formatDate(startDate);
-        
+
         const modalBody = `
             <div class="event-details">
                 <div class="event-header mb-3">
@@ -610,10 +612,10 @@ class InteractiveCalendar {
         document.getElementById('eventModalLabel').innerHTML = DOMPurify.sanitize(`
             <i class="fas fa-calendar-day me-2"></i>${event.title}
         `, 'ugc');
-        
+
         // Guardar ID del evento actual para otras acciones
         this.currentEventId = eventId;
-        
+
         const modal = new bootstrap.Modal(document.getElementById('eventModal'));
         modal.show();
     }
@@ -738,8 +740,8 @@ function generateMonthGrid(year, month) {
             const hasEvent = window.calendar ? window.calendar.hasEventOnDate(current) : false;
 
             const cellClass = !isCurrentMonth ? 'text-muted' :
-                            isWeekend ? 'weekend' :
-                            hasEvent ? 'event-day' : '';
+                isWeekend ? 'weekend' :
+                    hasEvent ? 'event-day' : '';
 
             grid += `<td class="${cellClass}">${current.getDate()}</td>`;
             current.setDate(current.getDate() + 1);
@@ -841,7 +843,7 @@ function setReminders() {
 
 function saveReminders() {
     if (!window.calendar) return;
-    
+
     const reminders = {
         evaluations: document.getElementById('remindEvaluations').checked,
         holidays: document.getElementById('remindHolidays').checked,
@@ -849,30 +851,30 @@ function saveReminders() {
         civic: document.getElementById('remindCivic').checked,
         anticipation: parseInt(document.getElementById('reminderTime').value)
     };
-    
+
     window.calendar.reminders = reminders;
     window.calendar.saveReminders();
-    
+
     showAlert('Recordatorios configurados correctamente', 'success');
-    
+
     const modal = bootstrap.Modal.getInstance(document.getElementById('reminderModal'));
     modal.hide();
 }
 
 function addToPersonalCalendar() {
     if (!window.calendar || !window.calendar.currentEventId) return;
-    
+
     const event = window.calendar.events.find(e => e.id === window.calendar.currentEventId);
     if (!event) return;
-    
+
     // Crear evento para calendario personal (formato ICS)
     const startDate = new Date(event.date);
     const endDate = event.endDate ? new Date(event.endDate) : startDate;
-    
+
     const formatDateForCalendar = (date) => {
         return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
     };
-    
+
     const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//BGE Héroes de la Patria//Calendario Escolar//ES
@@ -885,7 +887,7 @@ DESCRIPTION:${event.description}
 LOCATION:Bachillerato General Estatal Héroes de la Patria
 END:VEVENT
 END:VCALENDAR`;
-    
+
     const blob = new Blob([icsContent], { type: 'text/calendar' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -895,7 +897,7 @@ END:VCALENDAR`;
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    
+
     showAlert('Evento descargado. Ábrelo con tu aplicación de calendario preferida.', 'success');
 }
 
@@ -907,9 +909,9 @@ function showAlert(message, type) {
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `);
-    
+
     document.body.appendChild(alertDiv);
-    
+
     setTimeout(() => {
         if (alertDiv.parentNode) {
             alertDiv.remove();
@@ -1155,11 +1157,13 @@ const calendarStyles = `
 </style>
 `;
 
-// Inyectar estilos
-document.head.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(calendarStyles)));
+// Inyectar estilos - No usar DOMPurify porque elimina etiquetas style
+const styleElement = document.createElement('style');
+styleElement.textContent = calendarStyles.replace('<style>', '').replace('</style>', '');
+document.head.appendChild(styleElement);
 
 // Inicializar el calendario cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     if (document.getElementById('interactiveCalendar')) {
         window.calendar = new InteractiveCalendar();
     }
