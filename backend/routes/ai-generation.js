@@ -15,7 +15,7 @@ const express_validator_1 = require("express-validator");
 // @ts-ignore
 const auth_1 = require("../middleware/auth");
 // @ts-ignore
-const AIGenerationService_1 = __importDefault(require("../services/AIGenerationService"));
+const AIGenerationService_1 = __importDefault(require("../services/ai-generation.service"));
 const router = express_1.default.Router();
 // =====================================================
 // POST /api/ai/generate - Generar contenido con IA
