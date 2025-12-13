@@ -39,7 +39,7 @@ module.exports = {
 
         // Forms y validation
         'forms': './public/js/professional-forms.js',
-        'validator': './public/js/form-validator.js',
+        // 'validator': './public/js/form-validator.js', // Migrado a TypeScript bundle
 
         // Chatbot (73KB)
         'chatbot': './public/js/chatbot.js',

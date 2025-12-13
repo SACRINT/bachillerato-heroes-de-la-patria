@@ -90,6 +90,30 @@ router.get('/conversations', auth_1.authenticateToken, async (req, res) => {
         const { type, archived, page = '1', limit = '20' } = req.query;
         const limitNum = parseInt(limit);
         const offset = (parseInt(page) - 1) * limitNum;
+        // Verificar si la vista existe antes de consultarla
+        const viewCheck = await client.query(`
+            SELECT EXISTS (
+                SELECT FROM information_schema.views 
+                WHERE table_schema = 'public' 
+                AND table_name = 'v_user_conversations'
+            ) as view_exists
+        `);
+        if (!viewCheck.rows[0].view_exists) {
+            // La vista no existe - el sistema de mensajería no está inicializado
+            res.json({
+                success: true,
+                conversations: [],
+                pagination: {
+                    page: parseInt(page),
+                    limit: limitNum,
+                    total: 0,
+                    totalPages: 0
+                },
+                setup_required: true,
+                message: 'El sistema de mensajería requiere inicialización. Ejecute el script create-messaging-system-tables.sql'
+            });
+            return;
+        }
         let query = `
             SELECT * FROM v_user_conversations
             WHERE user_id = $1 AND user_role = $2
@@ -132,7 +156,19 @@ router.get('/conversations', auth_1.authenticateToken, async (req, res) => {
     }
     catch (error) {
         debug_logger_1.debugLog.error('messaging', 'Error al obtener conversaciones', (0, sanitized_errors_1.sanitizeError)(error, 'messaging'));
-        res.status(500).json({ success: false, error: 'Error al obtener conversaciones', details: error.message });
+        // Manejar el caso de tabla/vista no existente
+        const errorMessage = error.message;
+        if (errorMessage.includes('does not exist') || errorMessage.includes('no existe')) {
+            res.json({
+                success: true,
+                conversations: [],
+                pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
+                setup_required: true,
+                message: 'El sistema de mensajería requiere inicialización'
+            });
+            return;
+        }
+        res.status(500).json({ success: false, error: 'Error al obtener conversaciones', details: errorMessage });
     }
     finally {
         client.release();
@@ -227,4 +263,3 @@ router.post('/conversations/:id/messages', auth_1.authenticateToken, async (req,
     }
 });
 exports.default = router;
-//# sourceMappingURL=messaging.js.map

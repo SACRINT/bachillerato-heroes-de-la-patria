@@ -7,9 +7,10 @@ import { formValidator } from './core/utils/validation';
 import { floatingToolbar } from './components/ui/FloatingToolbar';
 import { adminDashboard } from './modules/admin/dashboard';
 
-
-
-
+// ✅ Nuevos módulos migrados a TypeScript (13 Dic 2025)
+import { bgeContext, BGEContextManager } from './core/context-manager';
+import { eventBus, EventBus } from './core/event-bus';
+import { debugLog } from './core/debug-logger';
 
 import { HeroesPatriaApp, MOUNT_CONFIG } from './core/heroes-app';
 import { TenantUpdater } from './core/tenant-updater';
@@ -19,7 +20,7 @@ import './styles/legacy-overrides.css';
 
 // Initial setup
 loadRemoteConfig().then(() => {
-    console.log('配置 cargada desde main.ts');
+    console.log('⚙️ Configuración cargada desde main.ts');
 
     // 0. Instalar Polyfills
     installPolyfills();
@@ -52,7 +53,12 @@ loadRemoteConfig().then(() => {
 (window as any).floatingToolbar = floatingToolbar;
 (window as any).adminDashboard = adminDashboard;
 
+// ✅ Exponer nuevos módulos TypeScript globalmente para legacy
+(window as any).BGEContext = bgeContext;
+(window as any).contextManager = bgeContext;
+(window as any).eventBus = eventBus;
+(window as any).BGEContextManager = BGEContextManager;
+(window as any).EventBus = EventBus;
+(window as any).debugLog = debugLog;
 
-
-
-
+console.log('✅ Frontend TypeScript modules initialized');
