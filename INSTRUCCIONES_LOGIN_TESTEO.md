@@ -20,22 +20,22 @@ El sistema de login falló porque **no hay usuarios en la base de datos de Neon*
 
 ### Paso 2: Usuarios Creados
 
-Se crearán **3 usuarios de prueba**:
+Se crearán **3 usuarios de prueba**. **IMPORTANTE: El login usa EMAIL, no username**
 
-| Username | Email | Password | Rol |
-|----------|-------|----------|-----|
-| `docente_test` | docente@test.com | `Test123!` | docente |
-| `admin_test` | admin@test.com | `Admin123!` | admin |
-| `estudiante_test` | estudiante@test.com | `Estudiante123!` | estudiante |
+| Email | Password | Rol |
+|-------|----------|-----|
+| `docente@test.com` | `Test123!` | Docente ✅ |
+| `admin@test.com` | `Admin123!` | Admin ✅ |
+| `estudiante@test.com` | `Estudiante123!` | Estudiante ✅ |
 
 ### Paso 3: Probar Login
 
-1. **Abre el navegador** en `http://localhost:3000/`
-2. **Recarga con Ctrl+Shift+R** (limpiar cache)
+1. **Abre el navegador** en `http://localhost:3000/` o `http://localhost:3000/docentes.html`
+2. **Recarga con Ctrl+Shift+R** (limpiar cache del navegador)
 3. **Haz clic en "Iniciar Sesión"**
-4. **Ingresa credenciales**:
-   - **Username**: `docente_test`
-   - **Password**: `Test123!`
+4. **Ingresa credenciales (USA EMAIL, NO USERNAME)**:
+   - **Email**: `docente@test.com` (o `admin@test.com`)
+   - **Password**: `Test123!` (o `Admin123!`)
 5. Haz clic en **Iniciar Sesión**
 
 ### Paso 4: Verificar Token
@@ -78,7 +78,7 @@ Intenta acceder a:
 Si no quieres usar el archivo SQL, puedes ejecutar esto directamente en Neon:
 
 ```sql
--- Usuario Docente
+-- Usuario Docente (email: docente@test.com, password: Test123!)
 INSERT INTO usuarios (username, email, password_hash, role, status, nombre, apellido_paterno, apellido_materno)
 VALUES (
     'docente_test',
@@ -89,9 +89,10 @@ VALUES (
     'Docente',
     'Test',
     'BGE'
-);
+)
+ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash;
 
--- Usuario Admin
+-- Usuario Admin (email: admin@test.com, password: Admin123!)
 INSERT INTO usuarios (username, email, password_hash, role, status, nombre, apellido_paterno, apellido_materno)
 VALUES (
     'admin_test',
@@ -102,7 +103,8 @@ VALUES (
     'Admin',
     'Test',
     'BGE'
-);
+)
+ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash;
 ```
 
 ---

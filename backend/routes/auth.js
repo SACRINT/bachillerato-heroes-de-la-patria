@@ -81,13 +81,13 @@ const refreshLimiter = (0, express_rate_limit_1.default)({
 // VALIDACIONES
 // ============================================
 const loginValidation = [
-    (0, express_validator_1.body)('username')
-        .isLength({ min: 3 })
-        .trim()
-        .withMessage('Nombre de usuario mínimo 3 caracteres'),
+    (0, express_validator_1.body)('email')
+        .isEmail()
+        .normalizeEmail()
+        .withMessage('Email válido requerido'),
     (0, express_validator_1.body)('password')
-        .isLength({ min: 6 })
-        .withMessage('Contraseña mínimo 6 caracteres'),
+        .isLength({ min: 3 })
+        .withMessage('Contraseña requerida'),
     (0, express_validator_1.body)('rememberMe')
         .optional()
         .isBoolean()
@@ -151,14 +151,14 @@ router.post('/login', loginLimiter, loginValidation, async (req, res) => {
             res.status(400).json({ success: false, error: 'Datos de entrada inválidos', details: errors.array() });
             return;
         }
-        const { username, password, rememberMe = false } = req.body;
-        debug_logger_1.debugLog.log('AUTH', `Intento de login para username=${username}`);
-        const user = await authService.authenticateUser(username, password);
+        const { email, password, rememberMe = false } = req.body;
+        debug_logger_1.debugLog.log('AUTH', `Intento de login para email=${(0, sanitized_errors_1.maskEmail)(email)}`);
+        const user = await authService.authenticateUser(email, password);
         // ✅ SEMANA 25: Check 2FA
         // const has2FA = await twoFactorService.isEnabled(user.id);
         const has2FA = false; // TEMPORARILY DISABLED
         if (has2FA) {
-            debug_logger_1.debugLog.log('AUTH', `Usuario ${username} tiene 2FA habilitado - requiere verificación`);
+            debug_logger_1.debugLog.log('AUTH', `Usuario ${email} tiene 2FA habilitado - requiere verificación`);
             res.json({
                 success: true,
                 requires2FA: true,
@@ -180,7 +180,7 @@ router.post('/login', loginLimiter, loginValidation, async (req, res) => {
             permissions: authService.permissions[user.role] || []
         };
         const tokenPair = jwtUtils.generateTokenPair(userPayload, rememberMe);
-        debug_logger_1.debugLog.log('AUTH', `Login exitoso para username=${username}, email=${(0, sanitized_errors_1.maskEmail)(user.email)}, role=${user.role}`);
+        debug_logger_1.debugLog.log('AUTH', `Login exitoso para email=${(0, sanitized_errors_1.maskEmail)(email)}, role=${user.role}`);
         res.json({
             success: true,
             message: 'Autenticación exitosa',

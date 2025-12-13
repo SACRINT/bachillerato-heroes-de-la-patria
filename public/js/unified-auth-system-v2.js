@@ -1384,13 +1384,13 @@ class ManualLoginManager {
         this.setLoading(true);
 
         try {
-            // ✅ CORRECCIÓN CRÍTICA: Usar 'username' en lugar de 'email'
-            // El endpoint /api/auth/login espera { username, password, rememberMe }
+            // ✅ CORRECCIÓN: Usar 'email' que es lo que el endpoint espera
+            // El endpoint /api/auth/login espera { email, password, rememberMe }
             const response = await fetch(`${this.auth.config.apiBaseUrl}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    username: email,  // ✅ El campo se llama 'username' en el backend
+                    email: email,  // ✅ El campo se llama 'email' en el backend
                     password: password,
                     rememberMe: rememberMe
                 })
