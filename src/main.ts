@@ -15,6 +15,7 @@ import { themeManager, ThemeManager } from './core/theme-manager';
 import { loaderSystem, LoaderSystem } from './core/loader';
 import { socketClient, SocketClient } from './core/socket-client';
 import { mobileUXManager, MobileUXManager } from './core/mobile-ux-manager'; // ✅ NEW
+import { notificationManager, NotificationManager } from './core/notification-manager'; // ✅ NEW
 
 import { HeroesPatriaApp, MOUNT_CONFIG } from './core/heroes-app';
 import { TenantUpdater } from './core/tenant-updater';
