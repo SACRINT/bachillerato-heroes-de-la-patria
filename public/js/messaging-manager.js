@@ -68,6 +68,13 @@ class MessagingManager {
             return;
         }
 
+        // Obtener usuario del sessionStorage (sistema unificado de autenticación)
+        const userStr = sessionStorage.getItem('bge_auth_user');
+        if (userStr) {
+            this.currentUser = JSON.parse(userStr);
+            debugLog.log('APP', '👤 Usuario actual:', this.currentUser.email || this.currentUser.name);
+        }
+
         this.setupEventListeners();
         this.loadConversations();
         this.setupPolling();

@@ -142,6 +142,10 @@ class UnifiedAuthSystem {
             // 6. Cargar sesión guardada
             await this.loadStoredSession();
 
+            // ✅ FIX (14 Dic 2025): Actualizar UI DESPUÉS de cargar la sesión guardada
+            // Esto asegura que si hay una sesión guardada, se muestre correctamente en el header
+            this.updateAuthUI();
+
             // 7. Cargar Google Services (opcional - si falla, login manual sigue funcionando)
             await this.initializeGoogleOAuth();
 
@@ -520,7 +524,7 @@ class UnifiedAuthSystem {
         // ✅ FIX (19 Nov 2025): Listener DIRECTO al botón de login como respaldo
         // Buscar el botón y agregarle listener directo además del delegado
         const attachDirectListener = () => {
-            const loginBtn = document.getElementById('loginBtn');
+            const loginBtn = document.getElementById('loginButton') || document.getElementById('loginBtn');
             if (loginBtn && !loginBtn._authListenerAttached) {
                 loginBtn._authListenerAttached = true;
                 loginBtn.addEventListener('click', (e) => {
@@ -530,14 +534,20 @@ class UnifiedAuthSystem {
 
                     const modal = document.getElementById('unified-auth-modal');
                     if (modal) {
-                        this.managers.ui.showModal();
+                        // Mostrar modal usando showModalDirectly
+                        this.managers.manual.showModalDirectly(modal);
                     } else {
                         console.log('[AUTH-V2] ⚠️ Modal no existe, creando...');
                         this.createLoginUI();
-                        setTimeout(() => this.managers.ui.showModal(), 100);
+                        setTimeout(() => {
+                            const newModal = document.getElementById('unified-auth-modal');
+                            if (newModal) {
+                                this.managers.manual.showModalDirectly(newModal);
+                            }
+                        }, 100);
                     }
                 });
-                console.log('[AUTH-V2] ✅ Listener DIRECTO agregado a #loginBtn');
+                console.log('[AUTH-V2] ✅ Listener DIRECTO agregado a #loginBtn o #loginButton');
             }
         };
 
@@ -1232,36 +1242,72 @@ class ManualLoginManager {
      * SETUP LISTENERS
      */
     setupListeners() {
-        // ✅ LISTENER PARA BOTÓN DE INICIAR SESIÓN
-        // ✅ FIX (19 Nov 2025): Listener más robusto que detecta el botón por ID también
-        document.addEventListener('click', (e) => {
-            const target = e.target;
-            const loginBtn = target.id === 'loginBtn' || target.closest('#loginBtn');
-            const hasDataTarget = target.getAttribute('data-bs-target') === '#unified-auth-modal' ||
-                target.closest('[data-bs-target="#unified-auth-modal"]');
+        // ✅ FUNCIÓN PARA ATTACHAR LISTENER AL BOTÓN
+        const attachButtonListener = () => {
+            const loginBtn = document.getElementById('authToggleBtn');
+            if (loginBtn && !loginBtn.dataset.listenerAttached) {
+                console.log('[AUTH-V2] ✅ Button found by ID "authToggleBtn", attaching direct click listener');
+                loginBtn.dataset.listenerAttached = 'true';
+                loginBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('[AUTH-V2] 🎯 CLICK DETECTED ON LOGIN BUTTON');
 
-            if (loginBtn || hasDataTarget) {
+                    const modal = document.getElementById('unified-auth-modal');
+                    if (!modal) {
+                        console.error('[AUTH-V2] ❌ Modal not found, creating...');
+                        this.createLoginUI();
+                        setTimeout(() => {
+                            const newModal = document.getElementById('unified-auth-modal');
+                            if (newModal) {
+                                this.showModalDirectly(newModal);
+                            }
+                        }, 100);
+                        return;
+                    }
+
+                    this.showModalDirectly(modal);
+                });
+                return true;
+            }
+            return false;
+        };
+
+        // ✅ INTENT INMEDIATO
+        if (!attachButtonListener()) {
+            console.warn('[AUTH-V2] ⚠️ Login button not found initially, setting up retry...');
+
+            // ✅ RETRY CON OBSERVADOR: Si el botón se carga después, lo detectamos
+            const observer = new MutationObserver((mutations) => {
+                if (attachButtonListener()) {
+                    console.log('[AUTH-V2] ✅ Button found after DOM mutation, listener attached');
+                    observer.disconnect();
+                }
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+                attributes: false
+            });
+
+            // ✅ TIMEOUT: Dejar de observar después de 5 segundos
+            setTimeout(() => {
+                observer.disconnect();
+                console.warn('[AUTH-V2] ⚠️ Button still not found after 5s, will use fallback');
+            }, 5000);
+        }
+
+        // ✅ FALLBACK: También escuchar clicks en cualquier elemento con data-bs-target="#unified-auth-modal"
+        document.addEventListener('click', (e) => {
+            if (e.target?.getAttribute('data-bs-target') === '#unified-auth-modal' ||
+                e.target?.closest('[data-bs-target="#unified-auth-modal"]')) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('[AUTH-V2] 📁 Botón de login clickeado, abriendo modal...');
-
-                // 🔧 MANIPULACIÓN DIRECTA DEL DOM - Evitar llamadas a métodos
                 const modal = document.getElementById('unified-auth-modal');
-                if (!modal) {
-                    console.error('[AUTH-V2] ❌ Modal element not found in DOM');
-                    // Intentar crear el modal si no existe
-                    if (this.auth && this.auth.createLoginUI) {
-                        console.log('[AUTH-V2] ⚠️ Intentando crear modal...');
-                        this.auth.createLoginUI();
-                        const newModal = document.getElementById('unified-auth-modal');
-                        if (newModal) {
-                            this.showModalDirectly(newModal);
-                        }
-                    }
-                    return;
+                if (modal) {
+                    this.showModalDirectly(modal);
                 }
-
-                this.showModalDirectly(modal);
             }
         });
 
@@ -1322,29 +1368,72 @@ class ManualLoginManager {
     }
 
     /**
-     * MOSTRAR MODAL DIRECTAMENTE (manipulación DOM)
+     * MOSTRAR MODAL DIRECTAMENTE (using Bootstrap Modal API)
      */
     showModalDirectly(modal) {
         try {
-            // Mostrar el modal manipulando el DOM directamente
+            if (!modal) {
+                console.error('[AUTH-V2] ❌ Modal element not found');
+                return;
+            }
+
+            // ✅ SOLUCIÓN DEFINITIVA: Hacer el modal visible directamente con !important
+            // Usar estilos inline agresivos para asegurar visibilidad
+
+            // Remover las clases que ocultan
+            modal.classList.remove('fade');
             modal.classList.add('show');
-            modal.style.display = 'block';
+
+            // Aplicar estilos inline con !important para forzar visibilidad
+            modal.setAttribute('style', `
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                z-index: 1060 !important;
+                width: 100% !important;
+                height: 100% !important;
+            `);
+
             modal.setAttribute('aria-modal', 'true');
             modal.setAttribute('role', 'dialog');
-            document.body.classList.add('modal-open');
+            modal.setAttribute('data-bs-backdrop', 'static');
 
-            // Crear o mostrar el backdrop
+            // Agregar clase modal-open al body
+            document.body.classList.add('modal-open');
+            document.body.style.overflow = 'hidden';
+
+            // Crear backdrop (fondo oscuro) si no existe
             let backdrop = document.querySelector('.modal-backdrop');
             if (!backdrop) {
                 backdrop = document.createElement('div');
-                backdrop.className = 'modal-backdrop fade show';
+                backdrop.className = 'modal-backdrop show';
+                backdrop.setAttribute('style', `
+                    display: block !important;
+                    opacity: 1 !important;
+                    background-color: rgba(0, 0, 0, 0.5) !important;
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    z-index: 1050 !important;
+                    width: 100% !important;
+                    height: 100% !important;
+                `);
                 document.body.appendChild(backdrop);
                 console.log('[AUTH-V2] ✅ Backdrop creado');
             } else {
                 backdrop.classList.add('show');
+                backdrop.setAttribute('style', `
+                    display: block !important;
+                    opacity: 1 !important;
+                    z-index: 1050 !important;
+                `);
             }
 
-            console.log('[AUTH-V2] ✅ Modal mostrado exitosamente (DOM directo)');
+            console.log('[AUTH-V2] ✅ Modal mostrado exitosamente');
+
         } catch (error) {
             console.error('[AUTH-V2] ❌ Error abriendo modal:', error);
         }
@@ -1629,6 +1718,15 @@ class SessionManager {
      */
     saveSession(userData, token, rememberMe = false) {
         const storage = rememberMe ? localStorage : sessionStorage;
+
+        // ✅ FIX (13 Dic 2025): Si guardamos en sessionStorage (NO rememberMe),
+        // limpiar localStorage primero para evitar conflictos entre sesiones
+        if (!rememberMe) {
+            Object.values(this.STORAGE_KEYS).forEach(key => {
+                localStorage.removeItem(key);
+            });
+            debugLog.log('APP', '🧹 Limpiado localStorage para evitar conflictos');
+        }
 
         storage.setItem(this.STORAGE_KEYS.token, token);
         storage.setItem(this.STORAGE_KEYS.user, JSON.stringify(userData));
@@ -2067,6 +2165,21 @@ if (!window.unifiedLogin) {
     debugLog.log('APP', '🔐 Inicializando Sistema de Autenticación V2 (Instancia Global)...');
     window.unifiedLogin = new UnifiedAuthSystem();
     debugLog.log('APP', '✅ Sistema de Autenticación V2 disponible en window.unifiedLogin');
+
+    // ✅ FIX (14 Dic 2025): Registrar listener de headerLoaded DESPUÉS de crear la instancia pero ANTES de que se dispare el evento
+    // El listener se registra aquí (sincronamente) para asegurar que está listo cuando main.js dispare 'headerLoaded'
+    document.addEventListener('headerLoaded', () => {
+        debugLog.log('APP', '📡 Evento headerLoaded recibido - actualizando UI de autenticación...');
+        // En este punto, la sesión ya ha sido cargada en init() de UnifiedAuthSystem
+        if (window.unifiedLogin && typeof window.unifiedLogin.updateAuthUI === 'function') {
+            // Pequeño delay para asegurar que loadStoredSession() ya terminó
+            setTimeout(() => {
+                window.unifiedLogin.updateAuthUI();
+            }, 100);
+        } else {
+            console.warn('⚠️ [APP] window.unifiedLogin no está disponible o updateAuthUI no es función');
+        }
+    }, { once: false });
 }
 
 // Mantener backward compatibility si algo usa window.bgeAuth

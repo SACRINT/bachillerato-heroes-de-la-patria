@@ -7,7 +7,10 @@ if (typeof debugLog === 'undefined') {
     };
 }
 
-/**
+// ============================================
+// CONFIGURACIÓN GLOBAL
+// ============================================
+
 const API_BASE = '/api/support-tickets';
 
 // Estado global de la aplicación
@@ -65,8 +68,8 @@ async function initSupportTickets() {
  */
 async function checkAuthentication() {
     // Buscar token en las claves correctas del sistema de autenticación unificado
-    const token = localStorage.getItem('bge_auth_token') ||
-                  sessionStorage.getItem('bge_auth_token') ||
+    const token = sessionStorage.getItem('bge_auth_token') ||
+                  localStorage.getItem('bge_auth_token') ||
                   localStorage.getItem('authToken') ||  // Fallback para compatibilidad
                   localStorage.getItem('token');
 
@@ -76,15 +79,23 @@ async function checkAuthentication() {
         throw new Error('No autenticado');
     }
 
-    // Obtener información del usuario del token (decodificar JWT)
+    // Obtener información del usuario de sessionStorage (sistema unificado de autenticación)
     try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        appState.user = payload;
-        debugLog.log('APP', '👤 Usuario autenticado:', appState.user.name);
+        const userStr = sessionStorage.getItem('bge_auth_user');
+        if (userStr) {
+            appState.user = JSON.parse(userStr);
+            debugLog.log('APP', '👤 Usuario autenticado:', appState.user.email || appState.user.name);
+        } else {
+            // Fallback: intentar decodificar token como JWT
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            appState.user = payload;
+            debugLog.log('APP', '👤 Usuario autenticado (JWT):', appState.user.name);
+        }
     } catch (error) {
-        debugLog.error('TOKEN', 'Error al decodificar token:', error);
+        debugLog.error('TOKEN', 'Error al procesar autenticación:', error);
         localStorage.removeItem('bge_auth_token');
         sessionStorage.removeItem('bge_auth_token');
+        sessionStorage.removeItem('bge_auth_user');
         localStorage.removeItem('authToken');
         localStorage.removeItem('token');
         window.location.href = '/index.html';
@@ -988,7 +999,11 @@ async function changePage(page) {
  * @returns {Promise} - Promesa con la respuesta
  */
 async function apiRequest(method, url, data = null) {
-    const token = localStorage.getItem('token');
+    // Buscar token en las claves correctas del sistema de autenticación unificado
+    const token = sessionStorage.getItem('bge_auth_token') ||
+                  localStorage.getItem('bge_auth_token') ||
+                  localStorage.getItem('authToken') ||
+                  localStorage.getItem('token');
 
     const options = {
         method,
