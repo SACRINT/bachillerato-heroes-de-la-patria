@@ -259,8 +259,15 @@ export class AuthInterface {
             console.warn('Logout API failed', error);
         } finally {
             apiClient.removeToken();
+            // ✅ FIX (13 Dic 2025): Limpiar tokens del sistema unificado
+            sessionStorage.removeItem('bge_auth_token');
+            localStorage.removeItem('bge_auth_token');
+            sessionStorage.removeItem('authToken');
+            localStorage.removeItem('authToken');
             sessionStorage.removeItem('google_user_session');
             sessionStorage.removeItem('heroes_auth_token');
+            localStorage.removeItem('heroes_auth_token');
+            localStorage.removeItem('userData');
 
             this.currentUser = null;
             this.updateAuthInterface();

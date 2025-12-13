@@ -247,7 +247,17 @@ export class BGEContextManager {
      * Obtener token de autenticación
      */
     getAuthToken(): string | null {
-        return this.authToken;
+        if (this.authToken) {
+            return this.authToken;
+        }
+
+        // Fallback robusto a almacenamiento (priorizando bge_auth_token)
+        return sessionStorage.getItem('bge_auth_token') ||
+            localStorage.getItem('bge_auth_token') ||
+            sessionStorage.getItem('authToken') ||
+            localStorage.getItem('authToken') ||
+            localStorage.getItem('heroes_auth_token') ||
+            sessionStorage.getItem('heroes_auth_token');
     }
 
     /**

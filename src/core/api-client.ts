@@ -64,14 +64,27 @@ export class APIClient {
     }
 
     private getStoredToken(): string | null {
-        // Priority 1: Secure admin session
+        // ✅ FIX (13 Dic 2025): Priorizar bge_auth_token del sistema unificado
+        // Priority 1: Session token from unified auth system
+        const sessionToken = sessionStorage.getItem('bge_auth_token');
+        if (sessionToken) {
+            return sessionToken;
+        }
+
+        // Priority 2: Local storage token from unified auth system
+        const localToken = localStorage.getItem('bge_auth_token');
+        if (localToken) {
+            return localToken;
+        }
+
+        // Priority 3: Secure admin session
         try {
             const secureSessionStr = localStorage.getItem('secure_admin_session');
             if (secureSessionStr) {
                 const sessionData = JSON.parse(secureSessionStr);
                 if (sessionData.token) {
                     if (sessionData.expiresAt && Date.now() >= sessionData.expiresAt) {
-                        console.warn('API: Token expired in secure_admin_session');
+                        console.warn('[API] Token expired in secure_admin_session');
                         localStorage.removeItem('secure_admin_session');
                         this.removeToken();
                     } else {
@@ -80,11 +93,11 @@ export class APIClient {
                 }
             }
         } catch (error) {
-            console.error('API: Error recovering secure_admin_session', error);
+            console.error('[API] Error recovering secure_admin_session', error);
         }
 
-        // Priority 2: Direct authToken
-        const directToken = localStorage.getItem('authToken');
+        // Priority 4: Legacy authToken
+        const directToken = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
         if (directToken) {
             try {
                 // Decode payload to check exp
@@ -94,21 +107,18 @@ export class APIClient {
                 if (payload.exp && payload.exp > now) {
                     return directToken;
                 } else {
-                    console.warn('API: Token expired detected');
+                    console.warn('[API] Token expired detected');
+                    sessionStorage.removeItem('authToken');
                     localStorage.removeItem('authToken');
                     localStorage.removeItem('userData');
-                    if (window.location.pathname.includes('admin-dashboard')) {
-                        alert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.');
-                        window.location.href = '/index.html';
-                    }
                     return null;
                 }
             } catch (error) {
-                console.error('API: Error verifying token expiration', error);
+                console.error('[API] Error verifying token expiration', error);
             }
         }
 
-        // Fallback: Legacy token
+        // Fallback: Legacy heroes token
         return localStorage.getItem('heroes_auth_token') || sessionStorage.getItem('heroes_auth_token');
     }
 
