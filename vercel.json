@@ -9,7 +9,7 @@
   "cleanUrls": false,
   "public": true,
   "functions": {
-    "api/index.js": {
+    "api/index.cjs": {
       "memory": 1024,
       "maxDuration": 60,
       "includeFiles": "backend/**"
