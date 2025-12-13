@@ -228,7 +228,7 @@ function loadHeaderFooter() {
     if (headerContainer && !headerContainer.innerHTML.trim()) {
         console.log('📥 [MAIN.JS] Iniciando fetch de header.html...');
 
-        fetch('/partials/header.html')
+        fetch('./partials/header.html')
             .then(response => {
                 console.log(`📥 [MAIN.JS] Header fetch status: ${response.status}`);
                 return response.text();
@@ -274,7 +274,7 @@ function loadHeaderFooter() {
     if (footerContainer && !footerContainer.innerHTML.trim()) {
         console.log('📥 [MAIN.JS] Iniciando fetch de footer.html...');
 
-        fetch('/partials/footer.html')
+        fetch('./partials/footer.html')
             .then(response => {
                 console.log(`📥 [MAIN.JS] Footer fetch status: ${response.status}`);
                 return response.text();
