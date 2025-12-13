@@ -96,8 +96,8 @@ router.get('/transactions',
             }
 
             const userId = req.user.id;
-            const limit = req.query.limit || 20;
-            const offset = req.query.offset || 0;
+            const limit = parseInt(req.query.limit) || 10;
+            const offset = parseInt(req.query.offset) || 0;
             const type = req.query.type;
 
             let query = `
