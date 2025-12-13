@@ -6,7 +6,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReportService = void 0;
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer'); // Lazy loaded
 const handlebars = require('handlebars');
 const fs = require('fs').promises;
 const path = require('path');
@@ -47,6 +47,14 @@ class ReportService {
             // Renderizar HTML
             const html = await this.renderTemplate('boleta', context);
             // Generar PDF con Puppeteer
+            let puppeteer;
+            try {
+                puppeteer = require('puppeteer');
+            } catch (e) {
+                console.warn('[REPORTS] Puppeteer no disponible:', e.message);
+                throw new Error('Generación de PDF no disponible en este entorno');
+            }
+
             const browser = await puppeteer.launch({
                 headless: 'new',
                 args: ['--no-sandbox', '--disable-setuid-sandbox']
