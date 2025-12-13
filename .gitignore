@@ -151,3 +151,5 @@ EJECUTAR_EN_NEON.sql
 # Directorios de Build
 dist/
 public/dist/
+backend/node_modules/
+backend/package-lock.json
