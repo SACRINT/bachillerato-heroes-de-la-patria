@@ -42,7 +42,10 @@
       "Bash(git checkout:*)",
       "mcp__chrome-devtools__wait_for",
       "mcp__chrome-devtools__list_console_messages",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "mcp__chrome-devtools__new_page",
+      "mcp__chrome-devtools__handle_dialog",
+      "mcp__chrome-devtools__close_page"
     ],
     "deny": [],
     "ask": []
