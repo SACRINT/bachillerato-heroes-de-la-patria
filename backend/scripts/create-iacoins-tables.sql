@@ -1,5 +1,5 @@
 -- =====================================================
--- IACoins Database Tables
+-- IACoins Database Tables - PostgreSQL
 -- Sistema de Gamificación para BGE
 -- =====================================================
 
@@ -27,9 +27,7 @@ CREATE TABLE IF NOT EXISTS iacoins_transactions (
     balance_after INTEGER,
     reference_type VARCHAR(50),
     reference_id INTEGER,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_user_created (user_id, created_at),
-    INDEX idx_type (type)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Tabla: iacoins_challenges (Retos disponibles)
@@ -44,9 +42,7 @@ CREATE TABLE IF NOT EXISTS iacoins_challenges (
     validation_type VARCHAR(50),
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_difficulty (difficulty),
-    INDEX idx_active (is_active)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Tabla: iacoins_user_challenges (Progreso del usuario en retos)
@@ -59,9 +55,7 @@ CREATE TABLE IF NOT EXISTS iacoins_user_challenges (
     started_at TIMESTAMP,
     completed_at TIMESTAMP,
     claimed_at TIMESTAMP,
-    UNIQUE(user_id, challenge_id),
-    INDEX idx_user_status (user_id, status),
-    INDEX idx_completed (completed_at)
+    UNIQUE(user_id, challenge_id)
 );
 
 -- Tabla: iacoins_achievements (Logros)
@@ -72,8 +66,7 @@ CREATE TABLE IF NOT EXISTS iacoins_achievements (
     icon VARCHAR(255),
     rarity VARCHAR(50) NOT NULL CHECK (rarity IN ('common', 'uncommon', 'rare', 'epic', 'legendary')),
     reward_coins INTEGER,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_rarity (rarity)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Tabla: iacoins_user_achievements (Logros desbloqueados del usuario)
@@ -82,20 +75,17 @@ CREATE TABLE IF NOT EXISTS iacoins_user_achievements (
     user_id UUID NOT NULL REFERENCES usuarios(uuid) ON DELETE CASCADE,
     achievement_id INTEGER NOT NULL REFERENCES iacoins_achievements(id) ON DELETE CASCADE,
     unlocked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id, achievement_id),
-    INDEX idx_user_unlocked (user_id, unlocked_at)
+    UNIQUE(user_id, achievement_id)
 );
 
--- Tabla: iacoins_leaderboard (Cache de leaderboard)
+-- Tabla: iacoins_leaderboard (Cache de leaderboard para performance)
 CREATE TABLE IF NOT EXISTS iacoins_leaderboard (
     id SERIAL PRIMARY KEY,
-    rank INTEGER NOT NULL,
+    rank INTEGER NOT NULL UNIQUE,
     user_id UUID NOT NULL REFERENCES usuarios(uuid) ON DELETE CASCADE,
     total_earned INTEGER NOT NULL,
     level INTEGER NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(rank),
-    INDEX idx_updated (updated_at)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Tabla: iacoins_ai_generations (Generaciones IA pagadas con IACoins)
@@ -108,13 +98,43 @@ CREATE TABLE IF NOT EXISTS iacoins_ai_generations (
     tokens_used INTEGER,
     coins_spent INTEGER NOT NULL,
     model VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_user_provider (user_id, ai_provider),
-    INDEX idx_created (created_at)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Indices adicionales para performance
+-- =====================================================
+-- INDICES - Creados después de las tablas (PostgreSQL)
+-- =====================================================
+
+-- Índices para iacoins_balances
 CREATE INDEX IF NOT EXISTS idx_iacoins_balances_user_id ON iacoins_balances(user_id);
+
+-- Índices para iacoins_transactions
 CREATE INDEX IF NOT EXISTS idx_iacoins_transactions_user_id ON iacoins_transactions(user_id);
+CREATE INDEX IF NOT EXISTS idx_iacoins_transactions_user_created ON iacoins_transactions(user_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_iacoins_transactions_type ON iacoins_transactions(type);
+
+-- Índices para iacoins_challenges
+CREATE INDEX IF NOT EXISTS idx_iacoins_challenges_difficulty ON iacoins_challenges(difficulty);
+CREATE INDEX IF NOT EXISTS idx_iacoins_challenges_active ON iacoins_challenges(is_active);
+
+-- Índices para iacoins_user_challenges
 CREATE INDEX IF NOT EXISTS idx_iacoins_user_challenges_user_id ON iacoins_user_challenges(user_id);
+CREATE INDEX IF NOT EXISTS idx_iacoins_user_challenges_user_status ON iacoins_user_challenges(user_id, status);
+CREATE INDEX IF NOT EXISTS idx_iacoins_user_challenges_completed ON iacoins_user_challenges(completed_at);
+
+-- Índices para iacoins_achievements
+CREATE INDEX IF NOT EXISTS idx_iacoins_achievements_rarity ON iacoins_achievements(rarity);
+
+-- Índices para iacoins_user_achievements
 CREATE INDEX IF NOT EXISTS idx_iacoins_user_achievements_user_id ON iacoins_user_achievements(user_id);
+CREATE INDEX IF NOT EXISTS idx_iacoins_user_achievements_user_unlocked ON iacoins_user_achievements(user_id, unlocked_at);
+
+-- Índices para iacoins_leaderboard
+CREATE INDEX IF NOT EXISTS idx_iacoins_leaderboard_user_id ON iacoins_leaderboard(user_id);
+CREATE INDEX IF NOT EXISTS idx_iacoins_leaderboard_updated ON iacoins_leaderboard(updated_at);
+
+-- Índices para iacoins_ai_generations
+CREATE INDEX IF NOT EXISTS idx_iacoins_ai_generations_user_id ON iacoins_ai_generations(user_id);
+CREATE INDEX IF NOT EXISTS idx_iacoins_ai_generations_user_provider ON iacoins_ai_generations(user_id, ai_provider);
+CREATE INDEX IF NOT EXISTS idx_iacoins_ai_generations_created ON iacoins_ai_generations(created_at);
+
