@@ -75,16 +75,20 @@ export class AuthManager {
         document.addEventListener('click', (e: Event) => {
             const target = e.target as HTMLElement;
 
-            // Login Buttons config
-            if (target.matches('#loginBtn, #loginButton, .login-btn-trigger')) {
+            // Login Buttons config - Updated IDs and use closest() for robustness
+            const loginTrigger = target.closest('#authToggleBtn, #loginBtn, #loginButton, .login-btn-trigger');
+            if (loginTrigger) {
                 e.preventDefault();
                 this.ui.showModal();
+                return;
             }
 
             // Logout
-            if (target.matches('#logoutBtn, .logout-btn-trigger')) {
+            const logoutTrigger = target.closest('#logoutBtn, .logout-btn-trigger');
+            if (logoutTrigger) {
                 e.preventDefault();
                 this.logout();
+                return;
             }
         });
 
