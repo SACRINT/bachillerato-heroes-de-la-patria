@@ -85,6 +85,16 @@ export class AdminDashboard {
     }
 
     private async init(): Promise<void> {
+        // Only run dashboard logic on admin pages
+        const currentPage = window.location.pathname;
+        const isAdminPage = currentPage.includes('admin-') || currentPage.includes('dashboard');
+
+        if (!isAdminPage) {
+            // On non-admin pages, just skip initialization
+            console.log('🔧 AdminDashboard: Skipping - not an admin page');
+            return;
+        }
+
         await this.checkAuthentication();
         this.setupInterface();
 

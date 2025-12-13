@@ -594,8 +594,9 @@
                 <!-- Botones de login cuando no está autenticado -->
                 <div id="loginButtons" class="d-flex align-items-center">
                     <!-- ✅ FIX (19 Nov 2025): Removido data-bs-toggle para evitar que Bootstrap intente abrir modal inexistente -->
-                    <button type="button" class="btn btn-primary btn-sm me-2" id="loginBtn"
-                        data-bs-target="#unified-auth-modal" title="Iniciar Sesión" aria-label="Iniciar Sesión">
+                    <!-- ✅ FIX (12 Dec 2025): ID Matching for AuthController and JS-controlled modal -->
+                    <button type="button" class="btn btn-primary btn-sm me-2" id="authToggleBtn" title="Iniciar Sesión"
+                        aria-label="Iniciar Sesión">
                         <i class="fas fa-sign-in-alt"></i>
                     </button>
                 </div>

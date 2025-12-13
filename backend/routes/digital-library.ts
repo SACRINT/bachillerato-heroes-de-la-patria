@@ -117,6 +117,44 @@ async function checkDocumentPermission(req: Request, res: Response, next: NextFu
 // RUTAS
 // ============================================
 
+/**
+ * GET /categories - Obtener todas las categorías de documentos
+ */
+router.get('/categories', async (req: Request, res: Response) => {
+    const client = await pool.connect();
+    try {
+        // Try to get categories from database, fallback to static if table doesn't exist
+        const result = await client.query(`
+            SELECT id, name, slug, description, icon, parent_id, sort_order, is_active
+            FROM library_categories
+            WHERE is_active = TRUE
+            ORDER BY sort_order, name
+        `);
+
+        res.json({
+            success: true,
+            categories: result.rows
+        });
+
+    } catch (error) {
+        debugLog.warn('digital-library', 'Categories table may not exist, using fallback', (error as Error).message);
+        // Fallback: return default categories when DB table doesn't exist
+        res.json({
+            success: true,
+            categories: [
+                { id: 1, name: 'Reglamentos', slug: 'reglamento', icon: 'bi-file-earmark-ruled', is_active: true },
+                { id: 2, name: 'Manuales', slug: 'manual', icon: 'bi-book', is_active: true },
+                { id: 3, name: 'Recursos Académicos', slug: 'recurso', icon: 'bi-journal-text', is_active: true },
+                { id: 4, name: 'Formularios', slug: 'formulario', icon: 'bi-file-earmark-text', is_active: true },
+                { id: 5, name: 'Otros', slug: 'otro', icon: 'bi-file-earmark', is_active: true }
+            ],
+            note: 'Using default categories - database table not available'
+        });
+    } finally {
+        client.release();
+    }
+});
+
 router.get('/documents', async (req: Request, res: Response) => {
     const client = await pool.connect();
     try {

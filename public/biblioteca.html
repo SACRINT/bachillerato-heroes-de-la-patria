@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -45,16 +45,18 @@
         }
 
         body {
-            padding-top: 76px;
-            /* Prevent header overlap */
+            padding-top: 0;
+            /* No padding, elements handle their own spacing */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Navbar */
+        /* Library Navbar - Positioned below global fixed header */
         .library-navbar {
+            margin-top: 76px;
+            /* Space for the fixed global header */
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
             padding: 1rem 0;
@@ -105,23 +107,26 @@
         /* Layout */
         .library-container {
             display: flex;
-            min-height: calc(100vh - 70px);
+            /* FIX: Removed min-height to prevent footer overlap */
         }
 
-        /* Sidebar */
+        /* Sidebar - Normal flow, not sticky */
         .sidebar {
             width: 280px;
-            background: var(--sidebar-bg);
+            background: #2c3e50;
+            /* Dark background for contrast */
             border-right: 1px solid var(--border-color);
             padding: 1.5rem;
             overflow-y: auto;
-            position: sticky;
-            top: 0;
-            height: calc(100vh - 70px);
+            flex-shrink: 0;
+            min-height: 500px;
+            color: white;
+            /* White text */
         }
 
         .sidebar h6 {
-            color: var(--secondary-color);
+            color: #f39c12;
+            /* Orange/gold for headings */
             font-weight: 600;
             margin-bottom: 1rem;
             margin-top: 1.5rem;
@@ -133,6 +138,25 @@
             margin-top: 0;
         }
 
+        .sidebar label {
+            color: white;
+            /* White labels */
+        }
+
+        .sidebar .badge {
+            background-color: #f39c12 !important;
+            /* Gold/orange badges */
+            color: #1a1a1a !important;
+            /* Dark text on badge */
+        }
+
+        .sidebar .form-select {
+            background-color: #1a1a1a;
+            color: white;
+            border-color: #3d566e;
+        }
+
+        /* Duplicate h6 styles removed - now using the new orange color defined above */
         .filter-group {
             margin-bottom: 1.5rem;
         }
@@ -249,6 +273,7 @@
             line-height: 1.3;
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -560,6 +585,9 @@
 </head>
 
 <body>
+    <!-- Global Header -->
+    <header id="main-header"></header>
+
     <!-- Navbar -->
     <nav class="library-navbar">
         <div class="container-fluid">
@@ -572,7 +600,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" id="globalSearch"
                             placeholder="Buscar documentos, reglamentos, manuales...">
-                        <button class="btn btn-light" type="button" id="searchBtn">
+                        <button class="btn btn-light" type="button" id="searchBtn" aria-label="Buscar" title="Buscar">
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
@@ -600,7 +628,7 @@
     <div class="library-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h6>Categor�as</h6>
+            <h6>Categorías</h6>
             <div class="filter-group" id="categoriesFilter">
                 <!-- Categories will be loaded here -->
             </div>
@@ -619,7 +647,7 @@
                 </div>
                 <div class="filter-item" data-type="recurso">
                     <input type="checkbox" id="type-recurso">
-                    <label for="type-recurso">Recurso Acad�mico</label>
+                    <label for="type-recurso">Recurso Académico</label>
                     <span class="badge bg-secondary">0</span>
                 </div>
                 <div class="filter-item" data-type="formulario">
@@ -634,10 +662,10 @@
                 </div>
             </div>
 
-            <h6>Calificaci�n</h6>
+            <h6>Calificación</h6>
             <div class="filter-group">
                 <div class="filter-item" data-rating="5">
-                    <input type="checkbox" id="rating-5">
+                    <input type="checkbox" id="rating-5" title="5 estrellas">
                     <label for="rating-5">
                         <div class="rating-stars">
                             <i class="bi bi-star-fill"></i>
@@ -649,7 +677,7 @@
                     </label>
                 </div>
                 <div class="filter-item" data-rating="4">
-                    <input type="checkbox" id="rating-4">
+                    <input type="checkbox" id="rating-4" title="4 estrellas">
                     <label for="rating-4">
                         <div class="rating-stars">
                             <i class="bi bi-star-fill"></i>
@@ -661,7 +689,7 @@
                     </label>
                 </div>
                 <div class="filter-item" data-rating="3">
-                    <input type="checkbox" id="rating-3">
+                    <input type="checkbox" id="rating-3" title="3 estrellas">
                     <label for="rating-3">
                         <div class="rating-stars">
                             <i class="bi bi-star-fill"></i>
@@ -676,26 +704,25 @@
 
             <h6>Ordenar por</h6>
             <div class="filter-group">
-                <select class="form-select" id="sortBy">
-                    <option value="created_at">M�s reciente</option>
-                    <option value="title">T�tulo (A-Z)</option>
-                    <option value="total_downloads">M�s descargados</option>
-                    <option value="total_views">M�s vistos</option>
+                <select class="form-select" id="sortBy" title="Ordenar por">
+                    <option value="created_at">Más reciente</option>
+                    <option value="title">Título (A-Z)</option>
+                    <option value="total_downloads">Más descargados</option>
+                    <option value="total_views">Más vistos</option>
                     <option value="avg_rating">Mejor calificados</option>
                 </select>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <!-- Header -->
-        <header id="main-header"></header>
+
 
         <main class="main-content">
             <!-- Header -->
             <div class="content-header">
                 <div>
                     <h2 id="contentTitle">Todos los documentos</h2>
-                    <p class="text-muted" id="contentSubtitle">Explora nuestra colecci�n de recursos digitales</p>
+                    <p class="text-muted" id="contentSubtitle">Explora nuestra colección de recursos digitales</p>
                 </div>
                 <div class="view-toggles">
                     <button class="btn-toggle active" id="gridViewBtn">
@@ -729,12 +756,12 @@
             <div class="empty-state hidden" id="emptyState">
                 <i class="bi bi-inbox"></i>
                 <h4>No se encontraron documentos</h4>
-                <p class="text-muted">Intenta ajustar los filtros de b�squeda</p>
+                <p class="text-muted">Intenta ajustar los filtros de búsqueda</p>
             </div>
 
             <!-- Pagination -->
             <div class="pagination-container">
-                <nav aria-label="Paginaci�n de documentos">
+                <nav aria-label="Paginación de documentos">
                     <ul class="pagination" id="pagination">
                         <!-- Pagination will be loaded here -->
                     </ul>
@@ -769,16 +796,16 @@
                 <div class="modal-body">
                     <form id="uploadDocumentForm">
                         <div class="mb-3">
-                            <label for="docTitle" class="form-label">T�tulo *</label>
+                            <label for="docTitle" class="form-label">Título *</label>
                             <input type="text" class="form-control" id="docTitle" required>
                         </div>
                         <div class="mb-3">
-                            <label for="docDescription" class="form-label">Descripci�n</label>
+                            <label for="docDescription" class="form-label">Descripción</label>
                             <textarea class="form-control" id="docDescription" rows="3"></textarea>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="docCategory" class="form-label">Categor�a *</label>
+                                <label for="docCategory" class="form-label">Categoría *</label>
                                 <select class="form-select" id="docCategory" required>
                                     <!-- Categories will be loaded here -->
                                 </select>
@@ -788,7 +815,7 @@
                                 <select class="form-select" id="docType" required>
                                     <option value="reglamento">Reglamento</option>
                                     <option value="manual">Manual</option>
-                                    <option value="recurso">Recurso Acad�mico</option>
+                                    <option value="recurso">Recurso Académico</option>
                                     <option value="formulario">Formulario</option>
                                     <option value="otro">Otro</option>
                                 </select>
@@ -797,7 +824,7 @@
                         <div class="mb-3">
                             <label for="docFile" class="form-label">Archivo *</label>
                             <input type="file" class="form-control" id="docFile" required>
-                            <div class="form-text">M�ximo 50MB. Formatos: PDF, Word, Excel, PowerPoint, im�genes</div>
+                            <div class="form-text">Máximo 50MB. Formatos: PDF, Word, Excel, PowerPoint, imágenes</div>
                         </div>
                         <div class="mb-3">
                             <label for="docTags" class="form-label">Etiquetas</label>
@@ -827,8 +854,8 @@
     <!-- 🔒 DOMPurify XSS Protection -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <script src="js/dompurify-config.js"></script>
-    <!-- ðŸ"§ MAIN.JS - CARGA DIN�MICA DE HEADER Y FOOTER -->
-    <!-- (main.js se carga en l�nea 559 con defer, no cargar nuevamente) -->
+    <!-- ðŸ"§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
+    <!-- (main.js se carga en línea 559 con defer, no cargar nuevamente) -->
     <!-- Framework Core -->
     <script src="js/bge-framework-core.js"></script>
     <!-- Library Manager -->
@@ -841,7 +868,7 @@
             });
         });
     </script>
-    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuraci�n multi-tenancy desde BD -->
+    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
 
 
     <!-- Footer -->
@@ -853,11 +880,11 @@
         <i class="fas fa-moon"></i>
     </button>
 
-    
+
 
     <!-- Chat Bot Container -->
     <!-- Chat Bot Container -->
-    
+
     <script src="js/chatbot.js"></script>
 </body>
 

@@ -7,9 +7,9 @@
 if (typeof debugLog === 'undefined') {
     // Fallback si debug-logger.js no está cargado
     var debugLog = {
-        log: () => {},
-        warn: () => {},
-        error: () => {}
+        log: () => { },
+        warn: () => { },
+        error: () => { }
     };
 }
 
@@ -50,12 +50,12 @@ class AdminDashboard {
         if (window.BGELogger && typeof window.BGELogger.debug === 'function') {
             debugLog.log('APP', 'Dashboard Manager', '🔧 Inicializando configuración de datos reales', {
                 version: '2025-10-01',
-            localStorage: {
-                totalStudents: localStorage.getItem('realData_totalStudents'),
-                totalTeachers: localStorage.getItem('realData_totalTeachers'),
-                totalSubjects: localStorage.getItem('realData_totalSubjects'),
-                generalAverage: localStorage.getItem('realData_generalAverage')
-            }
+                localStorage: {
+                    totalStudents: localStorage.getItem('realData_totalStudents'),
+                    totalTeachers: localStorage.getItem('realData_totalTeachers'),
+                    totalSubjects: localStorage.getItem('realData_totalSubjects'),
+                    generalAverage: localStorage.getItem('realData_generalAverage')
+                }
             });
         } else {
             debugLog.log('APP', '🔧 [Dashboard Manager] Inicializando configuración de datos reales');
@@ -95,13 +95,13 @@ class AdminDashboard {
             return;
         }
         navigator.clipboard.writeText(password).then(() => {
-            button.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-check"></i> Copiado'));
+            button.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize('<i class="fas fa-check"></i> Copiado'));
             setTimeout(() => {
-                button.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-copy"></i> Copiar'));
+                button.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize('<i class="fas fa-copy"></i> Copiar'));
             }, 2000);
         }).catch(err => {
             debugLog.error('ERROR', 'Error al copiar la contraseña: ', err);
-            button.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-times"></i> Error'));
+            button.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize('<i class="fas fa-times"></i> Error'));
         });
     }
 
@@ -142,7 +142,9 @@ class AdminDashboard {
             this.showAdvancedMetrics(); // Mostrar métricas avanzadas
             this.startAutoRefresh();
         } else {
-            this.showLoginPrompt();
+            // FIX: No forzar login en la carga inicial para permitir vista pública
+            debugLog.log('AUTH', 'ℹ️ Visitante en página pública. Panel administrativo oculto.');
+            this.hideAdminPanel();
         }
         debugLog.log('INIT', '✅ [INIT] Sistema AdminDashboard inicializado correctamente');
     }
@@ -291,9 +293,12 @@ class AdminDashboard {
         alert('Acceso restringido: Debes iniciar sesión como administrador para acceder al dashboard.');
 
         // Redirigir a la página principal
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 1000);
+        // Redirigir a la página principal solo si NO estamos ya allí
+        if (!window.location.pathname.endsWith('index.html') && window.location.pathname !== '/') {
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
     }
 
     showDashboard() {
@@ -566,11 +571,11 @@ class AdminDashboard {
 
         // Buscar un contenedor para mostrar el mensaje
         const dashboardContainer = document.querySelector('.dashboard-section') ||
-                                 document.querySelector('#adminPanel') ||
-                                 document.body;
+            document.querySelector('#adminPanel') ||
+            document.body;
 
         if (dashboardContainer) {
-            dashboardContainer.insertAdjacentHTML('afterbegin', DOMPurify.sanitize( DOMPurify.sanitize(errorMessage)));
+            dashboardContainer.insertAdjacentHTML('afterbegin', DOMPurify.sanitize(DOMPurify.sanitize(errorMessage)));
         }
     }
 
@@ -814,7 +819,7 @@ class AdminDashboard {
         const tbody = document.getElementById('studentsTable');
         if (!tbody) return;
 
-        tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
+        tbody.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(''));
 
         const students = window.dynamicStudentLoader.students.estudiantes || [];
 
@@ -875,26 +880,26 @@ class AdminDashboard {
             return;
         }
 
-        tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
+        tbody.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(''));
 
         // Verificar que dashboardData existe
         if (!this.dashboardData) {
             debugLog.log('DEBUG', '❌ [DEBUG] dashboardData no existe');
-            tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">Cargando datos...</td></tr>'));
+            tbody.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">Cargando datos...</td></tr>'));
             return;
         }
 
         // Verificar que students existe y es un array
         if (!this.dashboardData.students || !Array.isArray(this.dashboardData.students)) {
             debugLog.log('DEBUG', '❌ [DEBUG] students no es array válido:', this.dashboardData.students);
-            tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">No hay datos de estudiantes disponibles</td></tr>'));
+            tbody.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">No hay datos de estudiantes disponibles</td></tr>'));
             return;
         }
 
         // Verificar que students tiene elementos
         if (this.dashboardData.students.length === 0) {
             debugLog.log('DEBUG', 'ℹ️ [DEBUG] students array está vacío');
-            tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">No hay estudiantes registrados</td></tr>'));
+            tbody.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-muted">No hay estudiantes registrados</td></tr>'));
             return;
         }
 
@@ -902,12 +907,12 @@ class AdminDashboard {
 
         try {
             this.dashboardData.students.forEach(student => {
-            const row = document.createElement('tr');
+                const row = document.createElement('tr');
 
-            const statusBadge = this.getStudentStatusBadge(student.status);
-            const riskBadge = this.getRiskLevelBadge(student.riskLevel);
+                const statusBadge = this.getStudentStatusBadge(student.status);
+                const riskBadge = this.getRiskLevelBadge(student.riskLevel);
 
-            row.innerHTML = DOMPurify.sanitize(`
+                row.innerHTML = DOMPurify.sanitize(`
                 <td><strong>${student.id}</strong></td>
                 <td>${student.name}</td>
                 <td class="text-center">
@@ -937,11 +942,11 @@ class AdminDashboard {
                 </td>
             `);
 
-            tbody.appendChild(row);
-        });
+                tbody.appendChild(row);
+            });
         } catch (error) {
             debugLog.error('DEBUG', '❌ [DEBUG] Error en loadStudentsTable:', error);
-            tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-danger">Error cargando estudiantes</td></tr>'));
+            tbody.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize('<tr><td colspan="6" class="text-center text-danger">Error cargando estudiantes</td></tr>'));
         }
     }
 
@@ -978,7 +983,7 @@ class AdminDashboard {
         const tbody = document.getElementById('teachersTable');
         if (!tbody) return;
 
-        tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
+        tbody.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(''));
 
         const teachers = window.dynamicTeacherLoader.teachers.docentes || [];
 
@@ -1035,7 +1040,7 @@ class AdminDashboard {
         const tbody = document.getElementById('teachersTable');
         if (!tbody) return;
 
-        tbody.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
+        tbody.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(''));
 
         this.dashboardData.teachers.forEach(teacher => {
             const row = document.createElement('tr');
@@ -1512,7 +1517,7 @@ class AdminDashboard {
             </div>
         `;
 
-        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(html));
+        container.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(html));
         debugLog.log('DISPLAY', `✅ [DISPLAY] ${registrations.length} solicitudes renderizadas`);
     }
 
@@ -2209,7 +2214,7 @@ class AdminDashboard {
             </div>
         `).join('');
 
-        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(html, 'tablas'));
+        container.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(html, 'tablas'));
 
         // ACTUALIZAR CONTADORES EN BADGES
         const activeUsersCount = uniqueUsers.filter(user => user.status === 'active').length;
@@ -2656,7 +2661,7 @@ class AdminDashboard {
             existingModal.remove();
         }
 
-        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize( DOMPurify.sanitize(modalHTML)));
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(DOMPurify.sanitize(modalHTML)));
         const modal = new bootstrap.Modal(document.getElementById('dynamicModal'));
         modal.show();
     }
@@ -2970,7 +2975,7 @@ function updateSystemInfo() {
         promedio = parseFloat(localStorage.getItem('realData_generalAverage')) || 8.4;
     }
 
-    debugLog.log('INFO', '📊 [INFO] Datos estadísticos:', {estudiantes, docentes, materias, promedio});
+    debugLog.log('INFO', '📊 [INFO] Datos estadísticos:', { estudiantes, docentes, materias, promedio });
 
     modalBody.innerHTML = DOMPurify.sanitize(`
         <div class="row">
@@ -3148,11 +3153,11 @@ function updateRefreshButtonState() {
 
     refreshButtons.forEach(button => {
         if (hasCustomConfig) {
-            button.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-exclamation-triangle me-1"></i>⚠️ Configuración Personalizada', 'simple'));
+            button.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize('<i class="fas fa-exclamation-triangle me-1"></i>⚠️ Configuración Personalizada', 'simple'));
             button.className = 'btn btn-warning btn-sm';
             button.title = 'Datos personalizados configurados - Usar con precaución';
         } else {
-            button.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-sync me-1"></i>Actualizar', 'simple'));
+            button.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize('<i class="fas fa-sync me-1"></i>Actualizar', 'simple'));
             button.className = 'btn btn-outline-light btn-sm';
             button.title = 'Actualizar dashboard';
         }
@@ -3167,12 +3172,12 @@ function updateRefreshButtonState() {
 window.legacyContentManager = {
     items: JSON.parse(localStorage.getItem('siteContent') || '[]'),
 
-    save: function() {
+    save: function () {
         localStorage.setItem('siteContent', JSON.stringify(this.items));
         this.updateDisplay();
     },
 
-    create: function(data) {
+    create: function (data) {
         const newItem = {
             id: Date.now(),
             ...data,
@@ -3184,12 +3189,12 @@ window.legacyContentManager = {
         return newItem;
     },
 
-    delete: function(id) {
+    delete: function (id) {
         this.items = this.items.filter(item => item.id !== id);
         this.save();
     },
 
-    edit: function(id, newData) {
+    edit: function (id, newData) {
         const index = this.items.findIndex(item => item.id === id);
         if (index !== -1) {
             this.items[index] = { ...this.items[index], ...newData, updatedAt: new Date().toISOString() };
@@ -3197,7 +3202,7 @@ window.legacyContentManager = {
         }
     },
 
-    updateDisplay: function() {
+    updateDisplay: function () {
         const container = document.getElementById('contentList');
         const countElement = document.getElementById('contentCount');
         const filter = document.getElementById('contentFilter')?.value || 'all';
@@ -3225,10 +3230,10 @@ window.legacyContentManager = {
         }
 
         const html = filteredItems.map(item => this.renderItem(item)).join('');
-        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(html, 'tablas'));
+        container.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(html, 'tablas'));
     },
 
-    renderItem: function(item) {
+    renderItem: function (item) {
         const typeIcons = {
             aviso: '📢',
             evento: '📅',
@@ -3333,7 +3338,7 @@ function editContent(id) {
 
     // Cambiar el botón para modo edición
     const submitBtn = document.querySelector('#contentForm button[data-action="create-content"]');
-    submitBtn.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-save me-1"></i>Actualizar Contenido', 'simple'));
+    submitBtn.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize('<i class="fas fa-save me-1"></i>Actualizar Contenido', 'simple'));
     submitBtn.onclick = () => updateContent(id);
 
     // Scroll hacia el formulario
@@ -3359,7 +3364,7 @@ function updateContent(id) {
 
     // Restaurar el botón a modo creación
     const submitBtn = document.querySelector('#contentForm button[onclick^="updateContent"]');
-    submitBtn.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-plus me-1"></i>Crear Contenido', 'simple'));
+    submitBtn.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize('<i class="fas fa-plus me-1"></i>Crear Contenido', 'simple'));
     submitBtn.onclick = createContent;
 
     if (adminDashboard && typeof adminDashboard.showToast === 'function') {
@@ -3372,7 +3377,7 @@ function filterContent() {
 }
 
 // Inicializar gestión de contenido cuando se carga la página
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     debugLog.log('DOM', '📄 [DOM] DOMContentLoaded - NUEVA VERSIÓN 2025-09-15 16:30:00');
     // Cargar contenido existente si estamos en la página del dashboard
     if (document.getElementById('contentList')) {
@@ -3383,7 +3388,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Variable global para el dashboard (ya declarada anteriormente)
 
 // Inicializar dashboard cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     debugLog.log('INIT', '🚀 [INIT] Inicializando dashboard - NUEVA VERSIÓN 2025-09-15 16:30:00');
     // Verificar que Chart.js esté disponible
     if (typeof Chart === 'undefined') {
@@ -3391,11 +3396,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Intentar cargar Chart.js dinámicamente
         const script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js';
-        script.onload = function() {
+        script.onload = function () {
             debugLog.log('APP', 'Chart.js cargado dinámicamente');
             adminDashboard = new AdminDashboard();
         };
-        script.onerror = function() {
+        script.onerror = function () {
             debugLog.error('ERROR', 'No se pudo cargar Chart.js. Dashboard funcionará sin gráficos.');
             adminDashboard = new AdminDashboard();
         };
@@ -3493,7 +3498,7 @@ adminStyle.textContent = `
 document.head.appendChild(adminStyle);
 
 // Método para mostrar métricas avanzadas
-AdminDashboard.prototype.showAdvancedMetrics = function() {
+AdminDashboard.prototype.showAdvancedMetrics = function () {
     debugLog.log('METRICS', '📊 [METRICS] Mostrando sección de métricas avanzadas...');
 
     // Mostrar sección de métricas ejecutivas

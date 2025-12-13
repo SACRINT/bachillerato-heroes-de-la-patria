@@ -64,6 +64,7 @@ declare class GradesDAO {
     } | undefined>;
     static getStats(options: Partial<GradeGetAllOptions>): Promise<GradeStats>;
     static bulkCreate(grades: GradeCreateData[]): Promise<GradeRow[]>;
+    static exists(estudianteId: number, materiaId: number, periodo: string | number): Promise<GradeRow | null>;
 }
 export default GradesDAO;
 //# sourceMappingURL=grades.dao.d.ts.map

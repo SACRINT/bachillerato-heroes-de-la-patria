@@ -78,7 +78,7 @@ async function getTenantConfig(tenantId) {
                 config_json,
                 created_at
              FROM tenants
-             WHERE id = $1 OR subdomain = $1 OR dominio = $1
+             WHERE id::text = $1 OR subdomain = $1 OR dominio = $1
              LIMIT 1`,
             [tenantId]
         );
@@ -89,7 +89,7 @@ async function getTenantConfig(tenantId) {
 
             // Intentar obtener tenant 'default'
             const defaultResult = await pool.query(
-                `SELECT * FROM tenants WHERE id = 'default' OR subdomain = 'default' LIMIT 1`
+                `SELECT * FROM tenants WHERE id::text = 'default' OR subdomain = 'default' LIMIT 1`
             );
 
             if (defaultResult.rows.length === 0) {

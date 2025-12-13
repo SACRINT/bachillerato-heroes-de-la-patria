@@ -80,7 +80,8 @@ class GradesService {
                     clave: grade.materia_clave || '',
                     semestre: grade.semestre || '',
                     creditos: grade.creditos || 0,
-                    parciales: {}
+                    parciales: {},
+                    docente: grade.docente_nombre ? `${grade.docente_nombre} ${grade.docente_apellido || ''}`.trim() : 'Sin Asignar'
                 };
             }
             // Asignar calificación al periodo correspondiente
@@ -123,6 +124,21 @@ class GradesService {
      */
     async getSubjectStudents(materiaId) {
         return await subject_dao_1.default.getStudentsInSubject(materiaId);
+    }
+    /**
+     * Obtener calificaciones de un grupo para un periodo específico
+     */
+    async getGradesByGroup(materiaId, periodoId) {
+        const periodo = await periodos_evaluacion_dao_1.default.get(periodoId);
+        if (!periodo)
+            throw new Error('Periodo no encontrado');
+        const periodoCode = periodo.codigo || periodo.id.toString();
+        const result = await grades_dao_1.default.getAll({
+            materiaId,
+            periodo: periodoCode,
+            limit: 1000
+        });
+        return result.rows;
     }
 }
 exports.default = new GradesService();

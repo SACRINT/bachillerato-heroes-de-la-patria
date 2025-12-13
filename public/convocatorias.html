@@ -612,23 +612,7 @@
 
     <!-- 🎯 BGE FRAMEWORK CORE -->
     <script src="js/bge-framework-core.js"></script>
-    <script src="js/bge-security-module.js"></script> <!-- ðŸ”’ Seguridad y autenticación admin -->
-    const message = fallbackDoc ?
-    `La convocatoria de "${convocatoria}" está en proceso de actualización.\n\n` +
-    `Mientras tanto, puedes consultar nuestro reglamento escolar que contiene información relevante.\n\n` +
-    `¿Deseas abrir el documento disponible?` :
-    `La convocatoria de "${convocatoria}" se está preparando.\n\n` +
-    `Por favor contáctanos para más información:\n` +
-    `ðŸ“ž (123) 456-7890\n` +
-    `ðŸ“§ info@heroesdelapatria.edu.mx`;
-
-    if (fallbackDoc && confirm(message)) {
-    window.open(fallbackDoc, '_blank');
-    } else if (!fallbackDoc) {
-    alert(message);
-    }
-    }
-    </script>
+    <script src="js/bge-security-module.js"></script> <!-- 🔒 Seguridad y autenticación admin -->
 
     <!-- Dark mode handled by global script.js -->
 
@@ -851,7 +835,6 @@
         .hero-badges .badge:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
         }
 
         body.dark-mode .text-dark {

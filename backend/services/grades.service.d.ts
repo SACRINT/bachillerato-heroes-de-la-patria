@@ -25,6 +25,7 @@ export interface ReportCardSubject {
         [periodo: string]: number;
     };
     promedio_final?: string;
+    docente?: string;
 }
 export interface ReportCard {
     estudianteId: number;
@@ -53,6 +54,10 @@ declare class GradesService {
      * Obtener estudiantes inscritos en una materia para captura
      */
     getSubjectStudents(materiaId: number): Promise<any[]>;
+    /**
+     * Obtener calificaciones de un grupo para un periodo específico
+     */
+    getGradesByGroup(materiaId: number, periodoId: number): Promise<any[]>;
 }
 declare const _default: GradesService;
 export default _default;

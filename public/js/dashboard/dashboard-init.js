@@ -5,7 +5,7 @@
  * Líneas originales: 5181-6213 (1032 líneas)
  */
 
-(function() {
+(function () {
     'use strict';
 
     console.log('✅ [DASHBOARD-INIT] Script de inicialización cargado');
@@ -15,7 +15,7 @@
     // ================================================================
 
     // Función para refrescar estadísticas del dashboard
-    window.refreshStats = function() {
+    window.refreshStats = function () {
         console.log('🔄 [STATS] Actualizando estadísticas del dashboard...');
 
         if (window.adminDashboard && typeof window.adminDashboard.refreshStats === 'function') {
@@ -28,7 +28,7 @@
     }
 
     // Función para ver contenido por tipo (noticias, eventos, avisos, comunicados)
-    window.viewContentType = function(type) {
+    window.viewContentType = function (type) {
         console.log(`👁️ [VIEW] Visualizando contenido tipo: ${type}`);
         displayContentByType(type);
     }
@@ -43,57 +43,57 @@
         };
 
         alert(`${titles[type] || 'Contenido'}\n\n` +
-              `Esta sección mostraría una vista detallada de todos los ${type}.\n\n` +
-              `Funcionalidades:\n` +
-              `• Listado completo con paginación\n` +
-              `• Filtros por fecha, estado, categoría\n` +
-              `• Búsqueda de texto completo\n` +
-              `• Vista previa antes de publicar\n` +
-              `• Edición y eliminación\n\n` +
-              `En desarrollo para la próxima versión.`);
+            `Esta sección mostraría una vista detallada de todos los ${type}.\n\n` +
+            `Funcionalidades:\n` +
+            `• Listado completo con paginación\n` +
+            `• Filtros por fecha, estado, categoría\n` +
+            `• Búsqueda de texto completo\n` +
+            `• Vista previa antes de publicar\n` +
+            `• Edición y eliminación\n\n` +
+            `En desarrollo para la próxima versión.`);
     }
 
     // Función para editar contenido
-    window.editContent = function(type, id) {
+    window.editContent = function (type, id) {
         console.log(`✏️ [EDIT] Editando ${type} con ID: ${id}`);
         alert(`✏️ Editar ${type.charAt(0).toUpperCase() + type.slice(1)}\n\n` +
-              `ID: ${id}\n\n` +
-              `Esta función cargaría el editor con el contenido existente para permitir modificaciones.\n\n` +
-              `Funcionalidades:\n` +
-              `• Carga de datos desde la BD\n` +
-              `• Editor WYSIWYG TinyMCE\n` +
-              `• Guardado con versionado\n` +
-              `• Vista previa en tiempo real\n\n` +
-              `En desarrollo.`);
+            `ID: ${id}\n\n` +
+            `Esta función cargaría el editor con el contenido existente para permitir modificaciones.\n\n` +
+            `Funcionalidades:\n` +
+            `• Carga de datos desde la BD\n` +
+            `• Editor WYSIWYG TinyMCE\n` +
+            `• Guardado con versionado\n` +
+            `• Vista previa en tiempo real\n\n` +
+            `En desarrollo.`);
     }
 
     // Función para eliminar contenido
-    window.deleteContent = function(type, id) {
+    window.deleteContent = function (type, id) {
         console.log(`🗑️ [DELETE] Eliminando ${type} con ID: ${id}`);
 
         if (confirm(`¿Estás seguro de eliminar este ${type}?\n\nEsta acción no se puede deshacer.`)) {
             alert(`✅ ${type.charAt(0).toUpperCase() + type.slice(1)} eliminado correctamente.\n\n` +
-                  `En la versión completa, esto eliminaría el registro de la base de datos.`);
+                `En la versión completa, esto eliminaría el registro de la base de datos.`);
         }
     }
 
     // Funciones para crear contenido nuevo
-    window.showCreateNoticiaModal = function() {
+    window.showCreateNoticiaModal = function () {
         console.log('📰 [CREATE] Abriendo modal de crear noticia...');
         alert('📰 Crear Nueva Noticia\n\nModal de creación con editor TinyMCE (en desarrollo)');
     }
 
-    window.showCreateEventoModal = function() {
+    window.showCreateEventoModal = function () {
         console.log('📅 [CREATE] Abriendo modal de crear evento...');
         alert('📅 Crear Nuevo Evento\n\nModal de creación con calendario (en desarrollo)');
     }
 
-    window.showCreateAvisoModal = function() {
+    window.showCreateAvisoModal = function () {
         console.log('⚠️ [CREATE] Abriendo modal de crear aviso...');
         alert('⚠️ Crear Nuevo Aviso\n\nModal de creación con prioridades (en desarrollo)');
     }
 
-    window.showCreateComunicadoModal = function() {
+    window.showCreateComunicadoModal = function () {
         console.log('📋 [CREATE] Abriendo modal de crear comunicado...');
         alert('📋 Crear Nuevo Comunicado\n\nModal de creación formal (en desarrollo)');
     }
@@ -102,7 +102,7 @@
     // 📊 SISTEMA DE REPORTES
     // ================================================================
 
-    window.generateReport = function(type) {
+    window.generateReport = function (type) {
         console.log(`📊 [REPORT] Generando reporte tipo: ${type}`);
 
         const reports = {
@@ -135,26 +135,26 @@
         const report = reports[type] || reports.general;
 
         alert(`${report.title}\n\n${report.description}\n\n` +
-              `Incluye:\n` +
-              `• Gráficas y estadísticas\n` +
-              `• Tablas detalladas\n` +
-              `• Análisis comparativo\n` +
-              `• Exportación a PDF/Excel\n\n` +
-              `Generando reporte...`);
+            `Incluye:\n` +
+            `• Gráficas y estadísticas\n` +
+            `• Tablas detalladas\n` +
+            `• Análisis comparativo\n` +
+            `• Exportación a PDF/Excel\n\n` +
+            `Generando reporte...`);
     }
 
-    window.downloadReport = function(type) {
+    window.downloadReport = function (type) {
         console.log(`📥 [DOWNLOAD] Descargando reporte "${type}" en formato PDF...`);
         alert(`📥 Descargando Reporte "${type}"\n\n` +
-              `Formato: PDF\n` +
-              `Incluye: Gráficas, tablas y análisis detallado\n\n` +
-              `En la versión completa, esto generaría un PDF real con los datos actuales del sistema.`);
+            `Formato: PDF\n` +
+            `Incluye: Gráficas, tablas y análisis detallado\n\n` +
+            `En la versión completa, esto generaría un PDF real con los datos actuales del sistema.`);
     }
 
-    window.exportReport = function(type) {
+    window.exportReport = function (type) {
         console.log(`📊 [EXPORT] Exportando reporte "${type}" en formato Excel...`);
         alert(`📊 Exportando reporte "${type}" en formato Excel...\n\n` +
-              `En la versión completa, esto generaría un archivo Excel real con los datos actuales del sistema.`);
+            `En la versión completa, esto generaría un archivo Excel real con los datos actuales del sistema.`);
     }
 
     // ================================================================
@@ -184,7 +184,7 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', async function() {
+    document.addEventListener('DOMContentLoaded', async function () {
         console.log('🚀 [DASHBOARD] Inicializando AdminDashboard...');
 
         // ESPERAR a que el BGE Framework termine de cargar
@@ -193,7 +193,15 @@
 
         // Función para inicializar el dashboard
         function initializeDashboard() {
-            console.log('🔧 [DASHBOARD] Creando instancia de AdminDashboard...');
+            console.log('🔧 [DASHBOARD] Inicializando AdminDashboard...');
+
+            // ✅ CHECK: Si ya existe una instancia (desde bundle TypeScript), usarla
+            if (window.adminDashboard) {
+                console.log('✅ [DASHBOARD] Usando instancia existente de AdminDashboard (Bundle TS)');
+                return true;
+            }
+
+            console.log('🔧 [DASHBOARD] Creando nueva instancia de AdminDashboard (Legacy)...');
 
             if (typeof AdminDashboard === 'undefined') {
                 console.error('❌ [DASHBOARD] AdminDashboard no está definido');
@@ -266,7 +274,7 @@
             // Event listener para tab Padres
             const parentsTab = document.getElementById('parents-tab');
             if (parentsTab) {
-                parentsTab.addEventListener('shown.bs.tab', async function() {
+                parentsTab.addEventListener('shown.bs.tab', async function () {
                     console.log('👨‍👩‍👧‍👦 [TAB] Inicializando Gestión de Padres...');
                     if (!window.parentManager) {
                         window.parentManager = new ParentManager();
@@ -283,7 +291,7 @@
             // Event listener para tab Citas
             const citasTab = document.getElementById('citas-tab');
             if (citasTab) {
-                citasTab.addEventListener('shown.bs.tab', async function() {
+                citasTab.addEventListener('shown.bs.tab', async function () {
                     console.log('📅 [TAB] Inicializando Gestión de Citas...');
                     if (!window.citasManager) {
                         window.citasManager = new CitasManager();
@@ -455,7 +463,7 @@
     // ================================================================
 
     // Función para panel de gestión de notificaciones
-    window.openNotificationPanel = function() {
+    window.openNotificationPanel = function () {
         console.log('🔔 [NOTIFICATIONS] Abriendo panel de gestión de notificaciones...');
 
         const notificationModal = document.createElement('div');
@@ -530,13 +538,13 @@
         modalInstance.show();
 
         // Limpiar cuando se cierre
-        notificationModal.addEventListener('hidden.bs.modal', function() {
+        notificationModal.addEventListener('hidden.bs.modal', function () {
             notificationModal.remove();
         });
     }
 
     // Función para enviar notificación
-    window.sendNotification = function() {
+    window.sendNotification = function () {
         const title = document.getElementById('notificationTitle').value;
         const message = document.getElementById('notificationMessage').value;
         const targets = document.getElementById('notificationTargets').value;
@@ -565,7 +573,7 @@
     // ================================================================
 
     // Función para configurar estadísticas (botón "Configurar Estadísticas")
-    window.openStatsConfiguration = function() {
+    window.openStatsConfiguration = function () {
         console.log('⚙️ [STATS] Abriendo configuración de estadísticas...');
 
         // Buscar el modal existente y abrirlo
@@ -579,19 +587,19 @@
     }
 
     // Función para abrir sistema de pagos
-    window.openPaymentSystem = function() {
+    window.openPaymentSystem = function () {
         console.log('💰 [PAYMENTS] Abriendo sistema de pagos...');
         alert('💳 Sistema de Pagos\n\nEsta funcionalidad conectaría con:\n• Registro de pagos\n• Control de vencimientos\n• Alertas automáticas\n• Comunicados a padres\n• Reportes financieros\n\nEn desarrollo para la próxima versión.');
     }
 
     // Función para calendario académico
-    window.openAcademicCalendar = function() {
+    window.openAcademicCalendar = function () {
         console.log('📅 [CALENDAR] Abriendo calendario académico...');
         alert('📅 Calendario Académico\n\nFuncionalidades incluidas:\n• Planificación de eventos\n• Fechas de exámenes\n• Períodos vacacionales\n• Notificaciones automáticas\n• Eventos importantes\n\nSistema en desarrollo.');
     }
 
     // Función para configuración del sistema
-    window.openSystemConfiguration = function() {
+    window.openSystemConfiguration = function () {
         console.log('⚙️ [CONFIG] Abriendo configuración del sistema...');
         alert('🔧 Configuración del Sistema\n\nOpciones disponibles:\n• Configuración institucional\n• Personalización de reportes\n• Gestión de usuarios\n• Respaldos automáticos\n\nPanel de administración avanzado en construcción.');
     }
@@ -601,7 +609,7 @@
     // ================================================================
 
     // Función para hacer login de admin
-    window.loginAdmin = function() {
+    window.loginAdmin = function () {
         console.log('🔐 [LOGIN] Iniciando proceso de login...');
         // Esta función debe delegar al sistema de autenticación existente
         if (typeof handleAdminLogin === 'function') {
@@ -612,7 +620,7 @@
     }
 
     // Función para logout del admin
-    window.logoutAdmin = function() {
+    window.logoutAdmin = function () {
         console.log('👋 [LOGOUT] Cerrando sesión...');
         if (typeof window.secureAdminAuth !== 'undefined' && typeof window.secureAdminAuth.logout === 'function') {
             window.secureAdminAuth.logout();
@@ -627,13 +635,13 @@
     // ================================================================
 
     // Función para refrescar el dashboard
-    window.refreshDashboard = function() {
+    window.refreshDashboard = function () {
         console.log('🔄 [REFRESH] Refrescando dashboard...');
         location.reload();
     }
 
     // Función para recargar estudiantes
-    window.reloadStudents = function() {
+    window.reloadStudents = function () {
         console.log('👨‍🎓 [STUDENTS] Recargando lista de estudiantes...');
         if (typeof window.dynamicStudentLoader !== 'undefined' && typeof window.dynamicStudentLoader.loadStudents === 'function') {
             window.dynamicStudentLoader.loadStudents();
@@ -643,7 +651,7 @@
     }
 
     // Función para recargar docentes
-    window.reloadTeachers = function() {
+    window.reloadTeachers = function () {
         console.log('👨‍🏫 [TEACHERS] Recargando lista de docentes...');
         if (typeof window.dynamicTeacherLoader !== 'undefined' && typeof window.dynamicTeacherLoader.loadTeachers === 'function') {
             window.dynamicTeacherLoader.loadTeachers();
@@ -656,54 +664,54 @@
     // 📰 FUNCIONES ADICIONALES DE CMS Y GESTIÓN DE CONTENIDO
     // ================================================================
 
-    window.exportAllContent = function() {
+    window.exportAllContent = function () {
         console.log('📥 Exportar contenido');
         alert('Exportando contenido (en desarrollo)');
     }
 
-    window.refreshContentStats = function() {
+    window.refreshContentStats = function () {
         console.log('🔄 Refrescar stats');
         alert('Refrescando estadísticas (en desarrollo)');
     }
 
-    window.showContentPreview = function() {
+    window.showContentPreview = function () {
         console.log('👁️ Vista previa');
         alert('Vista previa de contenido (en desarrollo)');
     }
 
-    window.clearNoticiaForm = function() {
+    window.clearNoticiaForm = function () {
         console.log('🗑️ Limpiar formulario noticia');
     }
 
-    window.refreshNoticiasList = function() {
+    window.refreshNoticiasList = function () {
         console.log('🔄 Refrescar noticias');
     }
 
-    window.clearEventoForm = function() {
+    window.clearEventoForm = function () {
         console.log('🗑️ Limpiar formulario evento');
     }
 
-    window.refreshEventosList = function() {
+    window.refreshEventosList = function () {
         console.log('🔄 Refrescar eventos');
     }
 
-    window.clearAvisoForm = function() {
+    window.clearAvisoForm = function () {
         console.log('🗑️ Limpiar formulario aviso');
     }
 
-    window.refreshAvisosList = function() {
+    window.refreshAvisosList = function () {
         console.log('🔄 Refrescar avisos');
     }
 
-    window.clearComunicadoForm = function() {
+    window.clearComunicadoForm = function () {
         console.log('🗑️ Limpiar formulario comunicado');
     }
 
-    window.refreshComunicadosList = function() {
+    window.refreshComunicadosList = function () {
         console.log('🔄 Refrescar comunicados');
     }
 
-    window.showReportsManager = function() {
+    window.showReportsManager = function () {
         console.log('📊 Gestor de reportes');
         alert('Gestor de reportes (en desarrollo)');
     }
@@ -713,7 +721,7 @@
     // ================================================================
 
     // Función para cambiar contraseña
-    window.showChangePasswordModal = function() {
+    window.showChangePasswordModal = function () {
         console.log('🔑 [PASSWORD] Abriendo modal de cambio de contraseña...');
 
         const passwordModal = document.createElement('div');
@@ -765,13 +773,13 @@
         modalInstance.show();
 
         // Limpiar cuando se cierre
-        passwordModal.addEventListener('hidden.bs.modal', function() {
+        passwordModal.addEventListener('hidden.bs.modal', function () {
             passwordModal.remove();
         });
     }
 
     // Función para ejecutar cambio de contraseña
-    window.changePassword = function() {
+    window.changePassword = function () {
         const currentPassword = document.getElementById('currentPassword').value;
         const newPassword = document.getElementById('newPassword').value;
         const confirmPassword = document.getElementById('confirmPassword').value;

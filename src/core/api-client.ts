@@ -123,6 +123,11 @@ export class APIClient {
         sessionStorage.removeItem('heroes_auth_token');
     }
 
+    public isAuthenticated(): boolean {
+        return !!this.getStoredToken();
+    }
+
+
     private getHeaders(): Record<string, string> {
         const headers = { ...this.defaultHeaders };
         const token = this.tokenProvider ? this.tokenProvider() : this.getStoredToken();
@@ -221,6 +226,94 @@ export class APIClient {
             return true;
         } catch (error) {
             return false;
+        }
+    }
+
+    /**
+     * Generate a unique session ID for chatbot.
+     */
+    public generateSessionId(): string {
+        return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    /**
+     * Get user info from token.
+     */
+    public getUserInfo(): any {
+        const token = this.getStoredToken();
+        if (!token) return null;
+
+        try {
+            // Decodificar token JWT (solo la parte del payload)
+            const payload = token.split('.')[1];
+            const decoded = JSON.parse(atob(payload));
+            return {
+                userId: decoded.userId,
+                email: decoded.email,
+                tipo_usuario: decoded.tipo_usuario
+            };
+        } catch (error: any) {
+            console.warn('ERROR', 'No se pudo decodificar token:', error.message);
+            return null;
+        }
+    }
+
+    /**
+     * Search information in the backend.
+     */
+    public async searchInformation(query: string, userType: string = 'visitante', limit: number = 5): Promise<any> {
+        try {
+            return await this.request('/api/chatbot/search', {
+                method: 'POST',
+                body: {
+                    query: query,
+                    user_type: userType,
+                    limit: limit
+                }
+            });
+        } catch (error) {
+            console.warn('APP', '🔍 Búsqueda en DB falló, usando respuestas estáticas');
+            return null;
+        }
+    }
+
+    /**
+     * Log a message to the backend.
+     */
+    public async logMessage(sessionId: string, query: string, response: any, userType: string = 'visitante'): Promise<any> {
+        try {
+            return await this.request('/api/chatbot/message', {
+                method: 'POST',
+                body: {
+                    session_id: sessionId,
+                    query_text: query,
+                    response_text: response,
+                    user_type: userType,
+                    response_time_ms: 0 // Placeholder or calculate if needed
+                }
+            });
+        } catch (error: any) {
+            console.warn('ERROR', '📝 Log de mensaje falló:', error.message);
+            return null;
+        }
+    }
+
+    /**
+     * Submit feedback for the chatbot.
+     */
+    public async submitFeedback(sessionId: string, rating: number, comment: string = ''): Promise<any> {
+        try {
+            return await this.request('/api/chatbot/feedback', {
+                method: 'POST',
+                body: {
+                    session_id: sessionId,
+                    satisfaction_rating: rating,
+                    feedback_comment: comment
+                }
+            });
+        } catch (error: any) {
+            console.warn('ERROR', '⭐ Feedback falló:', error.message);
+            return null;
         }
     }
 }

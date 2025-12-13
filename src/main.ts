@@ -11,9 +11,37 @@ import { adminDashboard } from './modules/admin/dashboard';
 
 
 
+import { HeroesPatriaApp, MOUNT_CONFIG } from './core/heroes-app';
+import { TenantUpdater } from './core/tenant-updater';
+import { LegacyLoader } from './core/legacy-loader';
+import { installPolyfills } from './core/polyfills';
+import './styles/legacy-overrides.css';
+
 // Initial setup
 loadRemoteConfig().then(() => {
     console.log('配置 cargada desde main.ts');
+
+    // 0. Instalar Polyfills
+    installPolyfills();
+
+    // 1. Inicializar Legacy Loader (Bridges y Event Handlers críticos)
+    const legacyLoader = new LegacyLoader();
+    legacyLoader.init();
+
+    // 2. Inicializar Tenant Updater (Escuchar configs)
+    const tenantUpdater = new TenantUpdater();
+    tenantUpdater.init();
+
+    // 3. Inicializar App Principal
+    const app = new HeroesPatriaApp();
+    app.init();
+
+    // Exponer globales para compatibilidad legacy
+    (window as any).APP_CONFIG = MOUNT_CONFIG;
+    (window as any).HeroesPatria = {
+        showNotification: (msg: string, type: string, dur: number) => app.showNotification(msg, type, dur),
+        updatePageTitle: (title: string) => app.updatePageTitle(title)
+    };
 });
 
 // Make globally available for legacy scripts debugging if needed (optional)

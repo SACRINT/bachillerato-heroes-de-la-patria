@@ -1809,7 +1809,8 @@
                 <script src="js/dompurify-config.js"></script>
 
                 <!-- Ã°Å¸"Â§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
-                <script src="js/main.js"></script>
+                <!-- <script src="js/main.js"></script> --> <!-- Migrado a TS Bundle -->
+                <link rel="stylesheet" href="dist/assets/main.css">
 
                 <!-- Ã°Å¸ÂÂ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
                 <script src="js/tenant-config-loader.js"></script>
@@ -1837,19 +1838,21 @@
                 <!-- <script src="js/dev-override.js"></script> --> <!-- âÅ¡Â Ã¯Â¸Â DESHABILITADO PARA PRODUCCIÃƒ"N -->
                 <!-- <script src="js/dev-credentials.js"></script> -->
                 <!-- âÅ¡Â Ã¯Â¸Â DESHABILITADO PARA PRODUCCIÃƒ"N -->
-                <script src="js/script.js"></script> <!-- Ã°Å¸"' Script principal -->
+                <!-- <script src="js/script.js"></script> --> <!-- Ã°Å¸"' Script principal (Migrado a TS) -->
                 <script src="js/chatbot.js?v=FIX_AUTO_OPEN_V3"></script>
                 <!-- Ã°Å¸Â¤â€“ Chatbot principal -->
                 <script src="js/index-events.js"></script> <!-- Ã°Å¸"Å¸ Eventos específicos index -->
                 <script src="js/search-simple.js"></script> <!-- Ã°Å¸"Â Búsqueda simple -->
-                <script src="js/api-client.js"></script> <!-- Ã°Å¸"â€” Cliente API -->
+                <!-- <script src="js/api-client.js"></script> --> <!-- Ã°Å¸"â€” Cliente API (Reemplazado por Bundle) -->
+                <script type="module" src="dist/assets/main.js"></script>
 
                 <script src="js/gamification-system.js"></script> <!-- Ã°Å¸Å½Â® Sistema de Gamificación -->
                 <script src="js/dashboard-personalizer.js"></script> <!-- Ã°Å¸"â€¹ Personalizador Dashboard -->
                 <!-- Ã°Å¸Å¡â‚¬ BGE FRAMEWORK CORE BUNDLE (Consolidado) -->
                 <script src="js/core.bundle.js"></script> <!-- Ã°Å¸""Ã°Å¸Â¤â€“ Notificaciones + IA Tutor consolidado -->
                 <script src="js/ia-dashboard-access.js"></script> <!-- Ã°Å¸Â¤â€“ Acceso dashboard IA -->
-                <script src="js/floating-toolbar.js"></script> <!-- Ã°Å¸Å½Â¯ Barra de herramientas flotante -->
+                <!-- <script src="js/floating-toolbar.js"></script> -->
+                <!-- Ã°Å¸Å½Â¯ Barra de herramientas flotante (Reemplazado por Bundle) -->
                 <!-- <script src="js/notification-manager.js"></script> -->
                 <!-- âÂÅ’ DESHABILITADO: Ya incluido en core.bundle.js -->
                 <script src="js/notification-config-ui.js"></script> <!-- Ã°Å¸"" Botón flotante de notificaciones -->
@@ -2349,66 +2352,7 @@
                 <link rel="stylesheet" href="css/index-animations.css?v=2025111801">
 
                 <!-- Modal de Login JWT -->
-                <div class="modal fade" id="jwtLoginModal" tabindex="-1" aria-labelledby="jwtLoginModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title" id="jwtLoginModalLabel">
-                                    <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
-                                </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                    aria-label="Cerrar"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="jwtLoginForm">
-                                    <div class="mb-3">
-                                        <label for="jwtEmail" class="form-label">Email:</label>
-                                        <input type="email" class="form-control" id="jwtEmail" name="email"
-                                            placeholder="Ingresa tu email" autocomplete="email" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="jwtPassword" class="form-label">Contraseña:</label>
-                                        <input type="password" class="form-control" id="jwtPassword" name="password"
-                                            placeholder="Ingresa tu contraseña" autocomplete="current-password"
-                                            required>
-                                    </div>
-
-                                    <!-- Atajos de desarrollo -->
-                                    <div class="development-shortcuts mb-3" id="devShortcuts">
-                                        <small class="text-muted">Accesos rápidos (desarrollo):</small>
-                                        <div class="btn-group w-100 mt-2" role="group">
-                                            <button type="button" class="btn btn-outline-primary btn-sm">Admin</button>
-                                            <button type="button"
-                                                class="btn btn-outline-success btn-sm">Docente</button>
-                                            <button type="button"
-                                                class="btn btn-outline-info btn-sm">Estudiante</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="alert alert-danger d-none" id="jwtLoginError">
-                                        <i class="fas fa-exclamation-triangle me-2"></i>
-                                        <span id="jwtLoginErrorText">Error de autenticación</span>
-                                    </div>
-
-                                    <div class="alert alert-success d-none" id="jwtLoginSuccess">
-                                        <i class="fas fa-check-circle me-2"></i>
-                                        <span id="jwtLoginSuccessText">Login exitoso</span>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                    <i class="fas fa-times me-1"></i>Cancelar
-                                </button>
-                                <button type="submit" form="jwtLoginForm" class="btn btn-primary"
-                                    id="jwtLoginSubmitBtn">
-                                    <i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Modal de Login JWT Eliminado - Reemplazado por AuthInterface dinámico -->
 
 </body>
 

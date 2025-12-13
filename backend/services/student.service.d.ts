@@ -56,6 +56,10 @@ declare class StudentService {
      */
     getAll(filters?: StudentServiceFilters, pagination?: PaginationOptions): Promise<any>;
     /**
+     * Validar formato de email
+     */
+    static isValidEmail(email: string): boolean;
+    /**
      * Validar datos de estudiante
      */
     private _validateStudentData;

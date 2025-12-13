@@ -22,7 +22,7 @@ class AvisosDAO {
         }
     }
     static async create(avisoData) {
-        const { titulo, contenido, resumen, imagen_url, categoria, estado, autor_id, destacada } = avisoData;
+        const { titulo, contenido, resumen, imagen_url, categoria, estado, autor_id, destacada, slug } = avisoData;
         const isPublic = estado === 'publicada';
         const fecha_pub = new Date();
         const safeAutorId = autor_id || 1;
@@ -30,9 +30,9 @@ class AvisosDAO {
             INSERT INTO noticias (
                 titulo, contenido, resumen, imagen_url, categoria,
                 autor_id, publico, destacada, fecha_publicacion,
-                activa, visualizaciones
+                activa, visualizaciones, slug
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 0)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 0, $11)
             RETURNING *;
         `;
         const result = await (0, database_1.executeQuery)(query, [
@@ -42,7 +42,8 @@ class AvisosDAO {
             isPublic,
             destacada || false,
             fecha_pub,
-            true
+            true,
+            slug || titulo.toLowerCase().replace(/ /g, '-') // Fallback simple slug
         ]);
         return result[0];
     }
@@ -99,9 +100,20 @@ class AvisosDAO {
         `;
         try {
             const result = await (0, database_1.executeQuery)(query, []);
-            return result[0];
+            if (!result || !result.length) {
+                return { total: 0, publicadas: 0, borradores: 0, destacadas: 0, vistas_totales: 0 };
+            }
+            const row = result[0];
+            return {
+                total: Number(row.total || 0),
+                publicadas: Number(row.publicadas || 0),
+                borradores: Number(row.borradores || 0),
+                destacadas: Number(row.destacadas || 0),
+                vistas_totales: Number(row.vistas_totales || 0)
+            };
         }
-        catch {
+        catch (error) {
+            console.error('[AVISOS DAO] Error getting stats:', error);
             return { total: 0, publicadas: 0, borradores: 0, destacadas: 0, vistas_totales: 0 };
         }
     }

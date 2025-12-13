@@ -32,6 +32,9 @@ export interface AvisoCreateData {
     autor_id?: number;
     meta_descripcion?: string;
     destacada?: boolean;
+    slug?: string;
+    ip_address?: string;
+    user_agent?: string;
 }
 export interface AvisoUpdateData {
     titulo?: string;
@@ -39,6 +42,7 @@ export interface AvisoUpdateData {
     resumen?: string;
     imagen_url?: string;
     categoria?: string;
+    etiquetas?: string[];
     estado?: string;
     destacada?: boolean;
 }

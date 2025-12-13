@@ -62,7 +62,7 @@ const eventosRoutes = loadRoute('./routes/eventos');
 const avisosRoutes = loadRoute('./routes/avisos');
 const tenantsRoutes = loadRoute('./routes/tenants');  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
 const comunicadosRoutes = loadRoute('./routes/comunicados');
-const uploadRoutes = loadRoute('./routes/upload');
+
 const webhooksRoutes = loadRoute('./routes/webhooks');  // ✅ WEBHOOKS - SEMANA 8
 const superAdminDashboardRoutes = loadRoute('./routes/super-admin-dashboard');  // ✅ SUPER ADMIN - FASE 5 (7 DIC 2025)
 const stripeWebhooksRoutes = loadRoute('./routes/stripe-webhooks');  // ✅ STRIPE WEBHOOKS - FASE 5.2 (7 DIC 2025)
@@ -382,8 +382,7 @@ app.use('/api/eventos', eventosRoutes);
 app.use('/api/avisos', avisosRoutes);
 app.use('/api/admin/tenants', tenantsRoutes);  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
 app.use('/api/comunicados', comunicadosRoutes);
-app.use('/api/upload', uploadRoutes);
-app.use('/api/upload', uploadRoutes);
+app.use('/api/upload', uploadsRoutes);
 app.use('/api/health', healthRoutes);
 // ⏸️ app.use('/api/attendance', attendanceRoutes); // ✅ ATTENDANCE ROUTES - COMENTADO: archivo no existe
 // ⏸️ app.use('/api/settings', settingsRoutes); // ✅ SETTINGS ROUTES - COMENTADO: archivo no existe
