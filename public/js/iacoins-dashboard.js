@@ -11,7 +11,7 @@
     // CONFIGURACIÓN
     // =========================================
     const CONFIG = {
-        API_BASE: '/api/iacoins',
+        API_BASE: '/api/iacoins',  // ✅ FIX (14 Dic 2025): Ruta registrada en server.js línea 414
         ANIMATION_DURATION: 500,
         REFRESH_INTERVAL: 60000, // 1 minuto
         LEVELS: generateLevels()
@@ -57,7 +57,16 @@
     // API CALLS
     // =========================================
     async function fetchWithAuth(endpoint, options = {}) {
-        const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+        // Buscar token en el sistema unificado de autenticación
+        const token = sessionStorage.getItem('bge_auth_token') ||
+                     localStorage.getItem('bge_auth_token') ||
+                     sessionStorage.getItem('authToken') ||
+                     localStorage.getItem('authToken');
+
+        if (!token) {
+            console.warn('[IACOINS] ⚠️ No se encontró token de autenticación');
+            throw new Error('No autenticado - redirigiendo a login');
+        }
 
         const response = await fetch(`${CONFIG.API_BASE}${endpoint}`, {
             ...options,
@@ -69,6 +78,12 @@
         });
 
         if (!response.ok) {
+            if (response.status === 401) {
+                console.error('[IACOINS] 🔐 Token expirado o inválido');
+                sessionStorage.removeItem('bge_auth_token');
+                localStorage.removeItem('bge_auth_token');
+                window.location.href = '/index.html';
+            }
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
@@ -425,10 +440,18 @@
     async function init() {
         console.log('[IACOINS] Inicializando IACoins Dashboard...');
 
-        // Verificar autenticación
-        const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+        // Verificar autenticación (buscar token en sistema unificado)
+        const token = sessionStorage.getItem('bge_auth_token') ||
+                     localStorage.getItem('bge_auth_token') ||
+                     sessionStorage.getItem('authToken') ||
+                     localStorage.getItem('authToken');
+
         if (!token) {
-            console.warn('[IACOINS] Usuario no autenticado');
+            console.warn('[IACOINS] 🔐 Usuario no autenticado - redirigiendo a login');
+            // Esperar un poco antes de redirigir para que se cargue bien la página
+            setTimeout(() => {
+                window.location.href = '/index.html';
+            }, 1000);
             return;
         }
 

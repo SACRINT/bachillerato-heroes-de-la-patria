@@ -148,8 +148,9 @@ const sslRoutes = loadRoute('./routes/ssl');
 const backupRoutes = loadRoute('./routes/backup');
 const gamificationDirectRoutes = loadRoute('./routes/gamification');  // ⚠️ Alias para evitar conflicto
 
-// GRUPO 5: SISTEMA DE GAMIFICACIÓN IACOINS (3 rutas) - 15 NOV 2025
+// GRUPO 5: SISTEMA DE GAMIFICACIÓN IACOINS (4 rutas) - 15 NOV 2025
 const walletRoutes = loadRoute('./routes/wallet');  // 💰 Wallet management (5 endpoints)
+const iacoinsRoutes = loadRoute('./routes/iacoins');  // 🪙 IACoins Dashboard (8 endpoints) - 14 DIC 2025
 const challengesRoutes = loadRoute('./routes/challenges');  // 🏆 Challenges system (4 endpoints)
 const storeRoutes = loadRoute('./routes/store');  // 🛒 Virtual store (5 endpoints)
 
@@ -410,6 +411,7 @@ app.use('/api/digital-library', digitalLibraryRoutes);
 app.use('/api/support-tickets', supportTicketsRoutes);
 app.use('/api/gamification', gamificationRoutes);  // ✅ GAMIFICATION ROUTES - Sistema de logros y puntuaciones
 app.use('/api/wallet', walletRoutes);  // ✅ WALLET ROUTES - Gestión de IACoins (15 NOV 2025)
+app.use('/api/iacoins', iacoinsRoutes);  // ✅ IACOINS ROUTES - IACoins Dashboard (14 DIC 2025)
 app.use('/api/challenges', challengesRoutes);  // ✅ CHALLENGES ROUTES - Sistema de retos (15 NOV 2025)
 app.use('/api/store', storeRoutes);  // ✅ STORE ROUTES - Tienda virtual (15 NOV 2025)
 app.use('/api/docs', apiDocsRoutes); // ✅ SWAGGER UI - SEMANA 29
