@@ -47,6 +47,11 @@ class ReportService {
             // Renderizar HTML
             const html = await this.renderTemplate('boleta', context);
             // Generar PDF con Puppeteer
+            // NOTA: Puppeteer eliminado para reducir tamaño del bundle en Vercel (Serverless Function Size Limit)
+            console.warn('[REPORTS] Generación de PDF deshabilitada en Vercel para optimizar tamaño.');
+            throw new Error('La generación de PDF no está disponible en la versión Cloud.');
+
+            /*
             let puppeteer;
             try {
                 puppeteer = require('puppeteer');
@@ -73,6 +78,7 @@ class ReportService {
             });
             await browser.close();
             return pdfBuffer;
+            */
         }
         catch (error) {
             devLogger.error('REPORTS', 'Error generando boleta PDF', error);
