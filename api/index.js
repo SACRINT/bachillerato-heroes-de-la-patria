@@ -1,3 +1,5 @@
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 // api/index.js - Serverless handler nativo para Vercel (ESM)
 const { Pool } = require('pg');
 
@@ -71,7 +73,7 @@ async function getRequestBody(req) {
 }
 
 // Handler principal
-module.exports = async (req, res) => {
+export default async (req, res) => {
     // Handle CORS preflight
     if (req.method === 'OPTIONS') {
         res.writeHead(200, corsHeaders);

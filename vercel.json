@@ -3,13 +3,13 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/index.cjs"
+      "destination": "/api/index.js"
     }
   ],
   "cleanUrls": false,
   "public": true,
   "functions": {
-    "api/index.cjs": {
+    "api/index.js": {
       "memory": 1024,
       "maxDuration": 60,
       "includeFiles": "backend/**"
