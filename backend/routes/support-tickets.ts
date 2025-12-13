@@ -70,9 +70,38 @@ interface AuthenticatedRequest extends Request {
 router.get('/departments', authenticateToken, async (req: Request, res: Response) => {
     const client = await pool.connect();
     try {
+        // Check if view exists first
+        const viewCheck = await client.query(`
+            SELECT EXISTS (
+                SELECT 1 FROM information_schema.views 
+                WHERE table_name = 'v_support_department_stats'
+            ) as exists
+        `);
+
+        if (!viewCheck.rows[0]?.exists) {
+            // Return empty array with setup_required flag
+            res.json({
+                success: true,
+                departments: [],
+                setup_required: true,
+                message: 'Sistema de tickets no inicializado. Ejecutar script de creación de tablas.'
+            });
+            return;
+        }
+
         const result = await client.query('SELECT * FROM v_support_department_stats ORDER BY name');
         res.json({ success: true, departments: result.rows });
-    } catch (error) {
+    } catch (error: any) {
+        // Check if error is "does not exist"
+        if (error.message?.includes('does not exist')) {
+            res.json({
+                success: true,
+                departments: [],
+                setup_required: true,
+                message: 'Sistema de tickets no inicializado'
+            });
+            return;
+        }
         debugLog.error('support-tickets', 'Error al obtener departamentos', sanitizeError(error as Error, 'support-tickets'));
         res.status(500).json({ error: 'Error al obtener departamentos' });
     } finally {
@@ -87,6 +116,24 @@ router.get('/departments', authenticateToken, async (req: Request, res: Response
 router.get('/categories', authenticateToken, async (req: Request, res: Response) => {
     const client = await pool.connect();
     try {
+        // Check if table exists first
+        const tableCheck = await client.query(`
+            SELECT EXISTS (
+                SELECT 1 FROM information_schema.tables 
+                WHERE table_name = 'support_ticket_categories'
+            ) as exists
+        `);
+
+        if (!tableCheck.rows[0]?.exists) {
+            res.json({
+                success: true,
+                categories: [],
+                setup_required: true,
+                message: 'Sistema de tickets no inicializado'
+            });
+            return;
+        }
+
         const { department_id } = req.query;
         let query = 'SELECT * FROM support_ticket_categories WHERE is_active = TRUE';
         const params: any[] = [];
@@ -99,7 +146,16 @@ router.get('/categories', authenticateToken, async (req: Request, res: Response)
 
         const result = await client.query(query, params);
         res.json({ success: true, categories: result.rows });
-    } catch (error) {
+    } catch (error: any) {
+        if (error.message?.includes('does not exist')) {
+            res.json({
+                success: true,
+                categories: [],
+                setup_required: true,
+                message: 'Sistema de tickets no inicializado'
+            });
+            return;
+        }
         debugLog.error('support-tickets', 'Error al obtener categorías', sanitizeError(error as Error, 'support-tickets'));
         res.status(500).json({ error: 'Error al obtener categorías' });
     } finally {
@@ -114,6 +170,25 @@ router.get('/categories', authenticateToken, async (req: Request, res: Response)
 router.get('/tickets', authenticateToken, async (req: Request, res: Response) => {
     const client = await pool.connect();
     try {
+        // Check if view exists first
+        const viewCheck = await client.query(`
+            SELECT EXISTS (
+                SELECT 1 FROM information_schema.views 
+                WHERE table_name = 'v_support_tickets_full'
+            ) as exists
+        `);
+
+        if (!viewCheck.rows[0]?.exists) {
+            res.json({
+                success: true,
+                tickets: [],
+                pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
+                setup_required: true,
+                message: 'Sistema de tickets no inicializado. Ejecutar script de creación de tablas.'
+            });
+            return;
+        }
+
         const authReq = req as AuthenticatedRequest;
         const {
             status, priority, category_id, department_id,
