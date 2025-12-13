@@ -458,7 +458,9 @@ export class MobileUXManager {
                 input.addEventListener('blur', () => {
                     if (this.bottomNav) {
                         setTimeout(() => {
-                            this.bottomNav.style.transform = 'translateY(0)';
+                            if (this.bottomNav) {
+                                this.bottomNav.style.transform = 'translateY(0)';
+                            }
                         }, 300);
                     }
                 });

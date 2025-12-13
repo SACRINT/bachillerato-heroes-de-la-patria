@@ -41,7 +41,13 @@ export class PaginationManager {
     private onPageChange: (page: number, offset: number, limit: number) => void;
     private containerId?: string;
     private showInfo: boolean;
-    private labels: Required<PaginationOptions['labels']>;
+    private labels: {
+        previous: string;
+        next: string;
+        showing: string;
+        of: string;
+        results: string;
+    };
 
     constructor(options: PaginationOptions = {}) {
         this._currentPage = options.currentPage || 1;

@@ -150,7 +150,7 @@ export class ModuleLoader {
     /**
      * Load module with its dependencies
      */
-    private async loadModuleWithDependencies(moduleName: string, config: ModuleConfig): Promise<void> {
+    private async loadModuleWithDependencies(moduleName: string, config: ModuleConfig): Promise<boolean> {
         if (config.dependencies && config.dependencies.length > 0) {
             await Promise.all(
                 config.dependencies.map(dep => this.load(dep))
@@ -158,6 +158,7 @@ export class ModuleLoader {
         }
 
         await this.loadScript(config.path);
+        return true;
     }
 
     /**

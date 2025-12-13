@@ -27,7 +27,7 @@ export class DashboardManager {
         debugLog.log('DASHBOARD', '🚀 Dashboard Manager TS starting...');
 
         // Escuchar eventos de autenticación
-        window.addEventListener('bge-user-logged-in', ((e: CustomEvent) => this.handleLogin(e.detail.user)) as EventListener);
+        window.addEventListener('bge-user-logged-in', ((e: CustomEvent) => this.handleLogin(e.detail.user)) as unknown as EventListener);
         window.addEventListener('bge-user-logged-out', () => this.handleLogout());
         window.addEventListener('bge-auth-ready', () => this.checkInitialState());
 
