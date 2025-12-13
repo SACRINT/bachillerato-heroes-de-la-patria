@@ -13,16 +13,7 @@
       "memory": 1024,
       "maxDuration": 60,
       "includeFiles": "backend/templates/**",
-      "excludeFiles": [
-        "node_modules/puppeteer/**",
-        "backend/node_modules/**",
-        "**/*.d.ts",
-        "**/*.map",
-        "**/test/**",
-        "**/__tests__/**",
-        "docs/**",
-        "scripts/**"
-      ]
+      "excludeFiles": "{node_modules/puppeteer/**,backend/node_modules/**,**/*.d.ts,**/*.map,**/test/**,**/__tests__/**,docs/**,scripts/**}"
     }
   },
   "headers": [
