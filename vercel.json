@@ -12,7 +12,7 @@
     "api/index.js": {
       "memory": 1024,
       "maxDuration": 60,
-      "includeFiles": "backend/**"
+      "includeFiles": "backend/templates/**"
     }
   },
   "headers": [
