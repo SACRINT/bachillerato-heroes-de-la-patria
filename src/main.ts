@@ -7,10 +7,13 @@ import { formValidator } from './core/utils/validation';
 import { floatingToolbar } from './components/ui/FloatingToolbar';
 import { adminDashboard } from './modules/admin/dashboard';
 
-// ✅ Nuevos módulos migrados a TypeScript (13 Dic 2025)
+// ✅ Módulos migrados a TypeScript (13 Dic 2025)
 import { bgeContext, BGEContextManager } from './core/context-manager';
 import { eventBus, EventBus } from './core/event-bus';
 import { debugLog } from './core/debug-logger';
+import { themeManager, ThemeManager } from './core/theme-manager';
+import { loaderSystem, LoaderSystem } from './core/loader';
+import { socketClient, SocketClient } from './core/socket-client';
 
 import { HeroesPatriaApp, MOUNT_CONFIG } from './core/heroes-app';
 import { TenantUpdater } from './core/tenant-updater';
@@ -53,12 +56,23 @@ loadRemoteConfig().then(() => {
 (window as any).floatingToolbar = floatingToolbar;
 (window as any).adminDashboard = adminDashboard;
 
-// ✅ Exponer nuevos módulos TypeScript globalmente para legacy
+// ✅ Exponer módulos TypeScript globalmente para legacy
 (window as any).BGEContext = bgeContext;
 (window as any).contextManager = bgeContext;
 (window as any).eventBus = eventBus;
 (window as any).BGEContextManager = BGEContextManager;
 (window as any).EventBus = EventBus;
 (window as any).debugLog = debugLog;
+(window as any).themeManager = themeManager;
+(window as any).integratedThemeManager = themeManager;
+(window as any).ThemeManager = ThemeManager;
+(window as any).loaderSystem = loaderSystem;
+(window as any).LoaderSystem = LoaderSystem;
+(window as any).showLoader = () => loaderSystem.show();
+(window as any).hideLoader = () => loaderSystem.hide();
+if (socketClient) {
+    (window as any).socketClient = socketClient;
+}
+(window as any).SocketClient = SocketClient;
 
-console.log('✅ Frontend TypeScript modules initialized');
+console.log('✅ Frontend TypeScript modules initialized (15 modules)');
