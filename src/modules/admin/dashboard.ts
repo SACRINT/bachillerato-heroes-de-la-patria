@@ -130,7 +130,7 @@ export class AdminDashboard {
 
         // Check flexible roles
         const validRoles = ['admin', 'administrativo', 'directivo'];
-        return validRoles.includes(user.tipo_usuario) || validRoles.includes((user as any).role || '');
+        return validRoles.includes(user.tipo_usuario || '') || validRoles.includes((user as any).role || '');
     }
 
     private showLoginPrompt(): void {
