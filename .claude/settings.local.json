@@ -50,7 +50,8 @@
       "mcp__chrome-devtools__fill_form",
       "mcp__chrome-devtools__get_console_message",
       "mcp__mcp-server-commands__run_command",
-      "mcp__chrome-devtools__fill"
+      "mcp__chrome-devtools__fill",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

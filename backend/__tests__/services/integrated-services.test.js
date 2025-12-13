@@ -42,7 +42,7 @@ const mockFs = {
 };
 
 const mockHandlebars = {
-  compile: jest.fn().mockReturnValue((data) => `<html>Hello ${data.nombre}</html>`),
+  compile: jest.fn().mockReturnValue((data) => `<html>Hello ${data.name || data.nombre || 'undefined'}</html>`),
   registerHelper: jest.fn()
 };
 
@@ -53,12 +53,15 @@ const EmailServiceClass = emailServiceModule.EmailService || emailServiceModule.
 const { AuthService } = require('../../services/authService');
 const { executeQuery } = require('../../config/database');
 
+// GLOBAL VARIABLE
+let emailService;
+
 // =============================================================================
 // AUTH SERVICE TESTS
 // =============================================================================
 describe('AuthService - Autenticación y Roles', () => {
   let authService;
-  let emailService; // Variable para la instancia inyectada
+  // let emailService; // REMOVED LOCAL DECLARATION
   const mockJwtSecret = 'test-jwt-secret-key-12345';
 
   beforeAll(async () => {
@@ -78,236 +81,236 @@ describe('AuthService - Autenticación y Roles', () => {
     }
 
     // Inicializar
-    await emailService.init();
-  });
-  process.env.REFRESH_TOKEN_EXPIRY = '7d';
-  process.env.BCRYPT_ROUNDS = '10';
-});
-
-beforeEach(() => {
-  jest.clearAllMocks();
-  authService = new AuthService();
-});
-
-describe('Configuración y Roles', () => {
-  test('debe inicializar con roles correctos', () => {
-    expect(authService.roles.ADMIN).toBe('admin');
-    expect(authService.roles.DOCENTE).toBe('docente');
-    expect(authService.roles.ESTUDIANTE).toBe('estudiante');
-    expect(authService.roles.PADRE).toBe('padre_familia');
+    if (emailService && emailService.init) {
+      await emailService.init();
+    }
   });
 
-  test('debe tener permisos definidos para admin', () => {
-    expect(authService.permissions.admin).toContain('manage_users');
-    expect(authService.permissions.admin).toContain('manage_system');
-    expect(authService.permissions.admin.length).toBeGreaterThan(5);
+  beforeEach(() => {
+    jest.clearAllMocks();
+    authService = new AuthService();
   });
 
-  test('debe tener permisos definidos para docente', () => {
-    expect(authService.permissions.docente).toContain('write_grades');
-    expect(authService.permissions.docente).toContain('read_students');
+  describe('Configuración y Roles', () => {
+    test('debe inicializar con roles correctos', () => {
+      expect(authService.roles.ADMIN).toBe('admin');
+      expect(authService.roles.DOCENTE).toBe('docente');
+      expect(authService.roles.ESTUDIANTE).toBe('estudiante');
+      expect(authService.roles.PADRE).toBe('padre_familia');
+    });
+
+    test('debe tener permisos definidos para admin', () => {
+      expect(authService.permissions.admin).toContain('manage_users');
+      expect(authService.permissions.admin).toContain('manage_system');
+      expect(authService.permissions.admin.length).toBeGreaterThan(5);
+    });
+
+    test('debe tener permisos definidos para docente', () => {
+      expect(authService.permissions.docente).toContain('write_grades');
+      expect(authService.permissions.docente).toContain('read_students');
+    });
+
+    test('debe tener permisos definidos para estudiante', () => {
+      expect(authService.permissions.estudiante).toContain('read_own_profile');
+      expect(authService.permissions.estudiante).toContain('read_own_grades');
+    });
   });
 
-  test('debe tener permisos definidos para estudiante', () => {
-    expect(authService.permissions.estudiante).toContain('read_own_profile');
-    expect(authService.permissions.estudiante).toContain('read_own_grades');
-  });
-});
+  describe('Autenticación de Usuarios', () => {
+    const mockUser = {
+      id: 1,
+      username: 'testuser',
+      email: 'test@example.com',
+      password_hash: '$2a$10$validhash',
+      role: 'admin',
+      status: 'activo',
+      active: true
+    };
 
-describe('Autenticación de Usuarios', () => {
-  const mockUser = {
-    id: 1,
-    username: 'testuser',
-    email: 'test@example.com',
-    password_hash: '$2a$10$validhash',
-    role: 'admin',
-    status: 'activo',
-    active: true
-  };
+    test('debe autenticar usuario con credenciales válidas (PostgreSQL)', async () => {
+      executeQuery.mockResolvedValueOnce([mockUser]);
+      jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
+      executeQuery.mockResolvedValueOnce([]);
 
-  test('debe autenticar usuario con credenciales válidas (PostgreSQL)', async () => {
-    executeQuery.mockResolvedValueOnce([mockUser]);
-    jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
-    executeQuery.mockResolvedValueOnce([]);
+      const result = await authService.authenticateUser('testuser', 'password123');
 
-    const result = await authService.authenticateUser('testuser', 'password123');
+      expect(result).toHaveProperty('id', 1);
+      expect(result).toHaveProperty('username', 'testuser');
+      expect(result).not.toHaveProperty('password_hash');
+    });
 
-    expect(result).toHaveProperty('id', 1);
-    expect(result).toHaveProperty('username', 'testuser');
-    expect(result).not.toHaveProperty('password_hash');
-  });
+    test('debe lanzar error para usuario inexistente', async () => {
+      executeQuery.mockResolvedValueOnce([]);
 
-  test('debe lanzar error para usuario inexistente', async () => {
-    executeQuery.mockResolvedValueOnce([]);
+      await expect(
+        authService.authenticateUser('nonexistent', 'password123')
+      ).rejects.toThrow('Usuario no encontrado');
+    });
 
-    await expect(
-      authService.authenticateUser('nonexistent', 'password123')
-    ).rejects.toThrow('Usuario no encontrado');
-  });
+    test('debe lanzar error para usuario inactivo', async () => {
+      const inactiveUser = { ...mockUser, status: 'inactivo', active: false };
+      executeQuery.mockResolvedValueOnce([inactiveUser]);
 
-  test('debe lanzar error para usuario inactivo', async () => {
-    const inactiveUser = { ...mockUser, status: 'inactivo', active: false };
-    executeQuery.mockResolvedValueOnce([inactiveUser]);
+      await expect(
+        authService.authenticateUser('testuser', 'password123')
+      ).rejects.toThrow('Usuario inactivo');
+    });
 
-    await expect(
-      authService.authenticateUser('testuser', 'password123')
-    ).rejects.toThrow('Usuario inactivo');
-  });
+    test('debe lanzar error para contraseña incorrecta', async () => {
+      executeQuery.mockResolvedValueOnce([mockUser]);
+      jest.spyOn(bcrypt, 'compare').mockResolvedValue(false);
 
-  test('debe lanzar error para contraseña incorrecta', async () => {
-    executeQuery.mockResolvedValueOnce([mockUser]);
-    jest.spyOn(bcrypt, 'compare').mockResolvedValue(false);
+      await expect(
+        authService.authenticateUser('testuser', 'wrongpassword')
+      ).rejects.toThrow('Contraseña incorrecta');
+    });
 
-    await expect(
-      authService.authenticateUser('testuser', 'wrongpassword')
-    ).rejects.toThrow('Contraseña incorrecta');
-  });
+    test('debe actualizar last_login en autenticación exitosa', async () => {
+      executeQuery.mockResolvedValueOnce([mockUser]);
+      jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
+      executeQuery.mockResolvedValueOnce([]);
 
-  test('debe actualizar last_login en autenticación exitosa', async () => {
-    executeQuery.mockResolvedValueOnce([mockUser]);
-    jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
-    executeQuery.mockResolvedValueOnce([]);
+      await authService.authenticateUser('testuser', 'password123');
 
-    await authService.authenticateUser('testuser', 'password123');
-
-    expect(executeQuery).toHaveBeenCalledWith(
-      expect.stringContaining('UPDATE usuarios SET last_login'),
-      expect.arrayContaining([expect.any(String), 1])
-    );
-  });
-});
-
-describe('Generación de JWT Tokens', () => {
-  const mockUser = {
-    id: 1,
-    email: 'test@example.com',
-    username: 'testuser',
-    role: 'admin'
-  };
-
-  test('debe generar token de acceso válido', () => {
-    const token = authService.generateAccessToken(mockUser);
-
-    expect(token).toBeTruthy();
-    expect(typeof token).toBe('string');
-
-    const decoded = jwt.verify(token, mockJwtSecret);
-    expect(decoded.userId).toBe(1);
-    expect(decoded.email).toBe('test@example.com');
-    expect(decoded.type).toBe('access');
+      expect(executeQuery).toHaveBeenCalledWith(
+        expect.stringContaining('UPDATE usuarios SET last_login'),
+        expect.arrayContaining([expect.any(String), 1])
+      );
+    });
   });
 
-  test('debe incluir permisos en token de acceso', () => {
-    const token = authService.generateAccessToken(mockUser);
-    const decoded = jwt.verify(token, mockJwtSecret);
+  describe('Generación de JWT Tokens', () => {
+    const mockUser = {
+      id: 1,
+      email: 'test@example.com',
+      username: 'testuser',
+      role: 'admin'
+    };
 
-    expect(decoded.permissions).toBeInstanceOf(Array);
-    expect(decoded.permissions).toContain('manage_users');
+    test('debe generar token de acceso válido', () => {
+      const token = authService.generateAccessToken(mockUser);
+
+      expect(token).toBeTruthy();
+      expect(typeof token).toBe('string');
+
+      const decoded = jwt.verify(token, mockJwtSecret);
+      expect(decoded.userId).toBe(1);
+      expect(decoded.email).toBe('test@example.com');
+      expect(decoded.type).toBe('access');
+    });
+
+    test('debe incluir permisos en token de acceso', () => {
+      const token = authService.generateAccessToken(mockUser);
+      const decoded = jwt.verify(token, mockJwtSecret);
+
+      expect(decoded.permissions).toBeInstanceOf(Array);
+      expect(decoded.permissions).toContain('manage_users');
+    });
+
+    test('debe generar refresh token válido', () => {
+      const token = authService.generateRefreshToken(mockUser);
+
+      expect(token).toBeTruthy();
+      const decoded = jwt.verify(token, mockJwtSecret);
+      expect(decoded.type).toBe('refresh');
+    });
+
+    test('refresh token no debe incluir permisos', () => {
+      const token = authService.generateRefreshToken(mockUser);
+      const decoded = jwt.verify(token, mockJwtSecret);
+
+      expect(decoded.permissions).toBeUndefined();
+    });
   });
 
-  test('debe generar refresh token válido', () => {
-    const token = authService.generateRefreshToken(mockUser);
+  describe('Verificación de Tokens', () => {
+    const mockUser = {
+      id: 1,
+      email: 'test@example.com',
+      username: 'testuser',
+      role: 'admin'
+    };
 
-    expect(token).toBeTruthy();
-    const decoded = jwt.verify(token, mockJwtSecret);
-    expect(decoded.type).toBe('refresh');
+    test('debe verificar token válido', () => {
+      const token = authService.generateAccessToken(mockUser);
+      const decoded = authService.verifyToken(token);
+
+      expect(decoded.userId).toBe(1);
+      expect(decoded.email).toBe('test@example.com');
+    });
+
+    test('debe lanzar error para token inválido', () => {
+      expect(() => {
+        authService.verifyToken('invalid.token.here');
+      }).toThrow('Token inválido');
+    });
+
+    test('debe lanzar error para token expirado', () => {
+      const expiredToken = jwt.sign(
+        { userId: 1, email: 'test@example.com', type: 'access' },
+        mockJwtSecret,
+        { expiresIn: '-1h', issuer: 'bge-heroes-patria', audience: 'bge-users' }
+      );
+
+      expect(() => {
+        authService.verifyToken(expiredToken);
+      }).toThrow('Token inválido');
+    });
   });
 
-  test('refresh token no debe incluir permisos', () => {
-    const token = authService.generateRefreshToken(mockUser);
-    const decoded = jwt.verify(token, mockJwtSecret);
+  describe('Crear Usuario', () => {
+    const newUserData = {
+      email: 'newuser@example.com',
+      password: 'SecurePass123!',
+      username: 'newuser',
+      nombre: 'New',
+      apellido_paterno: 'User',
+      apellido_materno: 'Test',
+      role: 'estudiante'
+    };
 
-    expect(decoded.permissions).toBeUndefined();
-  });
-});
+    test('debe crear usuario nuevo con PostgreSQL', async () => {
+      executeQuery.mockResolvedValueOnce([]);
+      executeQuery.mockResolvedValueOnce([{ id: 2, ...newUserData }]);
 
-describe('Verificación de Tokens', () => {
-  const mockUser = {
-    id: 1,
-    email: 'test@example.com',
-    username: 'testuser',
-    role: 'admin'
-  };
+      const result = await authService.createUser(newUserData);
 
-  test('debe verificar token válido', () => {
-    const token = authService.generateAccessToken(mockUser);
-    const decoded = authService.verifyToken(token);
+      expect(result).toHaveProperty('id');
+      expect(result.email).toBe(newUserData.email);
+      expect(result).not.toHaveProperty('password_hash');
+    });
 
-    expect(decoded.userId).toBe(1);
-    expect(decoded.email).toBe('test@example.com');
-  });
+    test('debe lanzar error si email ya existe', async () => {
+      executeQuery.mockResolvedValueOnce([{ id: 1, email: newUserData.email }]);
 
-  test('debe lanzar error para token inválido', () => {
-    expect(() => {
-      authService.verifyToken('invalid.token.here');
-    }).toThrow('Token inválido');
-  });
+      await expect(
+        authService.createUser(newUserData)
+      ).rejects.toThrow('El email ya está registrado');
+    });
 
-  test('debe lanzar error para token expirado', () => {
-    const expiredToken = jwt.sign(
-      { userId: 1, email: 'test@example.com', type: 'access' },
-      mockJwtSecret,
-      { expiresIn: '-1h', issuer: 'bge-heroes-patria', audience: 'bge-users' }
-    );
+    test('debe lanzar error para rol inválido', async () => {
+      const invalidRoleData = { ...newUserData, role: 'invalid_role' };
+      executeQuery.mockResolvedValueOnce([]);
 
-    expect(() => {
-      authService.verifyToken(expiredToken);
-    }).toThrow('Token inválido');
-  });
-});
+      await expect(
+        authService.createUser(invalidRoleData)
+      ).rejects.toThrow('Rol inválido');
+    });
 
-describe('Crear Usuario', () => {
-  const newUserData = {
-    email: 'newuser@example.com',
-    password: 'SecurePass123!',
-    username: 'newuser',
-    nombre: 'New',
-    apellido_paterno: 'User',
-    apellido_materno: 'Test',
-    role: 'estudiante'
-  };
+    test('debe hashear contraseña antes de guardar', async () => {
+      executeQuery.mockResolvedValueOnce([]);
+      executeQuery.mockResolvedValueOnce([{ id: 2, ...newUserData }]);
 
-  test('debe crear usuario nuevo con PostgreSQL', async () => {
-    executeQuery.mockResolvedValueOnce([]);
-    executeQuery.mockResolvedValueOnce([{ id: 2, ...newUserData }]);
+      await authService.createUser(newUserData);
 
-    const result = await authService.createUser(newUserData);
+      const insertCall = executeQuery.mock.calls.find(call =>
+        call[0].includes('INSERT INTO usuarios')
+      );
 
-    expect(result).toHaveProperty('id');
-    expect(result.email).toBe(newUserData.email);
-    expect(result).not.toHaveProperty('password_hash');
-  });
-
-  test('debe lanzar error si email ya existe', async () => {
-    executeQuery.mockResolvedValueOnce([{ id: 1, email: newUserData.email }]);
-
-    await expect(
-      authService.createUser(newUserData)
-    ).rejects.toThrow('El email ya está registrado');
-  });
-
-  test('debe lanzar error para rol inválido', async () => {
-    const invalidRoleData = { ...newUserData, role: 'invalid_role' };
-    executeQuery.mockResolvedValueOnce([]);
-
-    await expect(
-      authService.createUser(invalidRoleData)
-    ).rejects.toThrow('Rol inválido');
-  });
-
-  test('debe hashear contraseña antes de guardar', async () => {
-    executeQuery.mockResolvedValueOnce([]);
-    executeQuery.mockResolvedValueOnce([{ id: 2, ...newUserData }]);
-
-    await authService.createUser(newUserData);
-
-    const insertCall = executeQuery.mock.calls.find(call =>
-      call[0].includes('INSERT INTO usuarios')
-    );
-
-    // Verificar que se llamó a INSERT con los parámetros correctos
-    expect(insertCall).toBeDefined();
-    expect(insertCall[0]).toContain('INSERT INTO usuarios');
+      // Verificar que se llamó a INSERT con los parámetros correctos
+      expect(insertCall).toBeDefined();
+      expect(insertCall[0]).toContain('INSERT INTO usuarios');
+    });
   });
 });
 
@@ -319,7 +322,7 @@ describe('EmailService - Plantillas y Envío', () => {
   let mockTransporter;
   let mockTestAccount;
 
-  beforeEach(() => {
+  beforeEach(async () => { // Changed to async to support initialization check
     jest.clearAllMocks();
 
     mockTransporter = {
@@ -335,21 +338,43 @@ describe('EmailService - Plantillas y Envío', () => {
       pass: 'test-password-12345'
     };
 
-    nodemailer.createTestAccount = jest.fn().mockResolvedValue(mockTestAccount);
-    nodemailer.createTransport = jest.fn().mockReturnValue(mockTransporter);
-    nodemailer.getTestMessageUrl = jest.fn().mockReturnValue('https://ethereal.email/message/test-id');
+    // Actualizar los mocks del objeto INYECTADO (mockNodemailer)
+    mockNodemailer.createTestAccount.mockResolvedValue(mockTestAccount);
+    mockNodemailer.createTransport.mockReturnValue(mockTransporter);
+    mockNodemailer.getTestMessageUrl.mockReturnValue('https://ethereal.email/message/test-id');
 
-    // Reset singleton state
-    emailServiceInstance.initialized = false;
-    emailServiceInstance.transporter = null;
-    emailServiceInstance.templatesCache = {};
+    // También actualizar el global por si acaso se usa en fallback
+    nodemailer.createTestAccount = mockNodemailer.createTestAccount;
+    nodemailer.createTransport = mockNodemailer.createTransport;
+    nodemailer.getTestMessageUrl = mockNodemailer.getTestMessageUrl;
+
+    // Ensure emailService is initialized
+    if (!emailService) {
+      if (EmailServiceClass && EmailServiceClass.createTestInstance) {
+        emailService = EmailServiceClass.createTestInstance({
+          nodemailerModule: mockNodemailer,
+          fsModule: mockFs,
+          handlebarsModule: mockHandlebars
+        });
+      } else {
+        emailService = emailServiceModule.default || emailServiceModule;
+      }
+      if (emailService && emailService.init) await emailService.init();
+    } else {
+      // Reset singleton state properties
+      emailService.initialized = false;
+      emailService.transporter = null;
+      emailService.templatesCache = {};
+    }
   });
 
   describe('Configuración', () => {
     test('debe tener propiedades iniciales', () => {
-      expect(emailServiceInstance).toHaveProperty('transporter');
-      expect(emailServiceInstance).toHaveProperty('templatesCache');
-      expect(emailServiceInstance).toHaveProperty('from');
+      // Si init ya corrió en beforeAll, initialized puede ser true.
+      // Pero beforeEach lo puso en false.
+      expect(emailService).toHaveProperty('transporter');
+      expect(emailService).toHaveProperty('templatesCache');
+      expect(emailService).toHaveProperty('from');
     });
   });
 
@@ -359,10 +384,10 @@ describe('EmailService - Plantillas y Envío', () => {
     });
 
     test('debe inicializar con cuenta de prueba Ethereal', async () => {
-      await emailServiceInstance.init();
+      await emailService.init();
 
-      expect(nodemailer.createTestAccount).toHaveBeenCalled();
-      expect(nodemailer.createTransport).toHaveBeenCalledWith({
+      expect(mockNodemailer.createTestAccount).toHaveBeenCalled();
+      expect(mockNodemailer.createTransport).toHaveBeenCalledWith({
         host: 'smtp.ethereal.email',
         port: 587,
         secure: false,
@@ -371,18 +396,18 @@ describe('EmailService - Plantillas y Envío', () => {
           pass: mockTestAccount.pass
         }
       });
-      expect(emailServiceInstance.initialized).toBe(true);
+      expect(emailService.initialized).toBe(true);
     });
 
     test('debe verificar conexión del transporter', async () => {
-      await emailServiceInstance.init();
+      await emailService.init();
       expect(mockTransporter.verify).toHaveBeenCalled();
     });
 
     test('debe registrar helpers de Handlebars', async () => {
       const registerSpy = jest.spyOn(handlebars, 'registerHelper');
 
-      await emailServiceInstance.init();
+      await emailService.init();
 
       expect(registerSpy).toHaveBeenCalledWith('formatDate', expect.any(Function));
       expect(registerSpy).toHaveBeenCalledWith('formatDateTime', expect.any(Function));
@@ -391,27 +416,27 @@ describe('EmailService - Plantillas y Envío', () => {
     });
 
     test('no debe reinicializar si ya está inicializado', async () => {
-      await emailServiceInstance.init();
-      nodemailer.createTestAccount.mockClear();
+      await emailService.init();
+      mockNodemailer.createTestAccount.mockClear();
 
-      await emailServiceInstance.init();
+      await emailService.init();
 
-      expect(nodemailer.createTestAccount).not.toHaveBeenCalled();
+      expect(mockNodemailer.createTestAccount).not.toHaveBeenCalled();
     });
   });
 
   describe('Carga de Plantillas', () => {
     beforeEach(async () => {
-      await emailServiceInstance.init();
+      await emailService.init();
     });
 
     test('debe cargar y compilar plantilla', async () => {
       const templateContent = '<h1>Hello {{name}}</h1>';
-      fs.readFile.mockResolvedValue(templateContent);
+      mockFs.readFile.mockResolvedValue(templateContent);
 
-      const compiledTemplate = await emailServiceInstance.loadTemplate('welcome');
+      const compiledTemplate = await emailService.loadTemplate('welcome');
 
-      expect(fs.readFile).toHaveBeenCalledWith(
+      expect(mockFs.readFile).toHaveBeenCalledWith(
         expect.stringContaining('welcome.hbs'),
         'utf-8'
       );
@@ -421,33 +446,33 @@ describe('EmailService - Plantillas y Envío', () => {
 
     test('debe cachear plantillas cargadas', async () => {
       const templateContent = '<h1>Cached Template</h1>';
-      fs.readFile.mockResolvedValue(templateContent);
+      mockFs.readFile.mockResolvedValue(templateContent);
 
-      await emailServiceInstance.loadTemplate('welcome');
-      fs.readFile.mockClear();
+      await emailService.loadTemplate('welcome');
+      mockFs.readFile.mockClear();
 
-      await emailServiceInstance.loadTemplate('welcome');
+      await emailService.loadTemplate('welcome');
 
-      expect(fs.readFile).not.toHaveBeenCalled();
+      expect(mockFs.readFile).not.toHaveBeenCalled();
     });
 
     test('debe lanzar error si plantilla no existe', async () => {
-      fs.readFile.mockRejectedValue(new Error('ENOENT: file not found'));
+      mockFs.readFile.mockRejectedValue(new Error('ENOENT: file not found'));
 
       await expect(
-        emailServiceInstance.loadTemplate('nonexistent')
+        emailService.loadTemplate('nonexistent')
       ).rejects.toThrow('No se pudo cargar la plantilla de email');
     });
   });
 
   describe('Envío de Emails', () => {
     beforeEach(async () => {
-      await emailServiceInstance.init();
-      fs.readFile.mockResolvedValue('<h1>Hello {{name}}</h1>');
+      await emailService.init();
+      mockFs.readFile.mockResolvedValue('<h1>Hello {{name}}</h1>');
     });
 
     test('debe enviar email con plantilla compilada', async () => {
-      const result = await emailServiceInstance.sendEmail({
+      const result = await emailService.sendEmail({
         to: 'test@example.com',
         subject: 'Test Email',
         template: 'welcome',
@@ -455,7 +480,7 @@ describe('EmailService - Plantillas y Envío', () => {
       });
 
       expect(mockTransporter.sendMail).toHaveBeenCalledWith({
-        from: emailServiceInstance.from,
+        from: emailService.from,
         to: 'test@example.com',
         subject: 'Test Email',
         html: '<h1>Hello Juan</h1>',
@@ -466,17 +491,17 @@ describe('EmailService - Plantillas y Envío', () => {
     });
 
     test('debe inicializar servicio si no está inicializado', async () => {
-      emailServiceInstance.initialized = false;
-      fs.readFile.mockResolvedValue('<h1>Test</h1>');
+      emailService.initialized = false;
+      mockFs.readFile.mockResolvedValue('<h1>Test</h1>');
 
-      await emailServiceInstance.sendEmail({
+      await emailService.sendEmail({
         to: 'test@example.com',
         subject: 'Test',
         template: 'test',
         data: {}
       });
 
-      expect(emailServiceInstance.initialized).toBe(true);
+      expect(emailService.initialized).toBe(true);
     });
 
     test('debe incluir attachments si se proporcionan', async () => {
@@ -484,7 +509,7 @@ describe('EmailService - Plantillas y Envío', () => {
         { filename: 'test.pdf', path: '/path/to/test.pdf' }
       ];
 
-      await emailServiceInstance.sendEmail({
+      await emailService.sendEmail({
         to: 'test@example.com',
         subject: 'Test with Attachment',
         template: 'welcome',
@@ -500,7 +525,7 @@ describe('EmailService - Plantillas y Envío', () => {
     test('debe retornar preview URL en desarrollo', async () => {
       process.env.NODE_ENV = 'development';
 
-      const result = await emailServiceInstance.sendEmail({
+      const result = await emailService.sendEmail({
         to: 'test@example.com',
         subject: 'Test',
         template: 'welcome',
@@ -514,7 +539,7 @@ describe('EmailService - Plantillas y Envío', () => {
       mockTransporter.sendMail.mockRejectedValue(new Error('SMTP connection failed'));
 
       await expect(
-        emailServiceInstance.sendEmail({
+        emailService.sendEmail({
           to: 'test@example.com',
           subject: 'Test',
           template: 'welcome',
@@ -526,8 +551,8 @@ describe('EmailService - Plantillas y Envío', () => {
 
   describe('Emails Predefinidos', () => {
     beforeEach(async () => {
-      await emailServiceInstance.init();
-      fs.readFile.mockResolvedValue('<h1>{{nombre}}</h1>');
+      await emailService.init();
+      mockFs.readFile.mockResolvedValue('<h1>{{nombre}}</h1>');
     });
 
     test('debe enviar email de bienvenida', async () => {
@@ -536,7 +561,7 @@ describe('EmailService - Plantillas y Envío', () => {
         nombre: 'Juan Pérez'
       };
 
-      await emailServiceInstance.sendWelcomeEmail(user);
+      await emailService.sendWelcomeEmail(user);
 
       expect(mockTransporter.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -555,7 +580,7 @@ describe('EmailService - Plantillas y Envío', () => {
         ubicacion: 'Auditorio Principal'
       };
 
-      await emailServiceInstance.sendEventNotification(user, event);
+      await emailService.sendEventNotification(user, event);
 
       expect(mockTransporter.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
