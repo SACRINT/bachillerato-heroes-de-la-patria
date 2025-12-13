@@ -7,7 +7,7 @@
   "scripts": {
     "start": "cd backend && npm start",
     "dev": "cd backend && npm run dev",
-    "build": "echo 'Skipping webpack build for API deployment' || true",
+    "build": "npm run build:frontend",
     "build:webpack": "webpack --mode production",
     "build:dev": "webpack --mode development",
     "build:analyze": "cross-env ANALYZE=true webpack --mode production",
