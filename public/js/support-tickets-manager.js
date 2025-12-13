@@ -64,7 +64,8 @@ async function initSupportTickets() {
  * Verifica la autenticación del usuario
  */
 async function checkAuthentication() {
-    const token = localStorage.getItem('token');
+    // Buscar token en ambas claves (authToken es estándar, token es fallback)
+    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
     if (!token) {
         alert('Debes iniciar sesión para acceder a Soporte.');
         window.location.href = '/index.html';
@@ -78,6 +79,7 @@ async function checkAuthentication() {
         debugLog.log('APP', '👤 Usuario autenticado:', appState.user.name);
     } catch (error) {
         debugLog.error('TOKEN', 'Error al decodificar token:', error);
+        localStorage.removeItem('authToken');
         localStorage.removeItem('token');
         window.location.href = '/index.html';
     }

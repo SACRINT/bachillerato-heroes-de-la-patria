@@ -41,7 +41,8 @@
       "Bash(powershell -Command \"\n$content = Get-Content ''public/partials/header.html'' -Raw\n$content = $content -replace ''dropdown-toggle\"\" href=\"\"[^\"\"#]*\\.html[^\"\"]*\"\"'', ''dropdown-toggle\"\" href=\"\"#\"\"''\nSet-Content ''public/partials/header.html'' $content -Encoding UTF8\nWrite-Host ''Reemplazo completado''\n\")",
       "Bash(git checkout:*)",
       "mcp__chrome-devtools__wait_for",
-      "mcp__chrome-devtools__list_console_messages"
+      "mcp__chrome-devtools__list_console_messages",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []
