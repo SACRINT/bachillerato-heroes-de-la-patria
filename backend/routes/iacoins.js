@@ -86,6 +86,10 @@ router.get('/transactions',
         query('type').optional().isIn(['earn', 'spend', 'bonus', 'refund', 'admin_adjustment'])
     ],
     async (req, res) => {
+        // Definir limit y offset ANTES del try block
+        const limitParam = parseInt(req.query.limit) || 10;
+        const offsetParam = parseInt(req.query.offset) || 0;
+
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -96,25 +100,23 @@ router.get('/transactions',
             }
 
             const userId = req.user.id;
-            const limit = parseInt(req.query.limit) || 10;
-            const offset = parseInt(req.query.offset) || 0;
             const type = req.query.type;
 
-            let query = `
+            let sqlQuery = `
                 SELECT * FROM iacoins_transactions
                 WHERE user_id = $1
             `;
             const params = [userId];
 
             if (type) {
-                query += ` AND type = $${params.length + 1}`;
+                sqlQuery += ` AND type = $${params.length + 1}`;
                 params.push(type);
             }
 
-            query += ` ORDER BY created_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-            params.push(limit, offset);
+            sqlQuery += ` ORDER BY created_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+            params.push(limitParam, offsetParam);
 
-            let transactions = await executeQuery(query, params).catch(err => {
+            let transactions = await executeQuery(sqlQuery, params).catch(err => {
                 console.warn('[IACOINS] Tabla iacoins_transactions no existe, usando datos demo');
                 return null;
             });
@@ -156,31 +158,31 @@ router.get('/transactions',
 
                 return res.json({
                     success: true,
-                    data: demoTransactions.slice(offset, offset + limit),
+                    data: demoTransactions.slice(offsetParam, offsetParam + limitParam),
                     pagination: {
                         total: demoTransactions.length,
-                        limit,
-                        offset
+                        limit: limitParam,
+                        offset: offsetParam
                     }
                 });
             }
 
             // Obtener total de transacciones
-            let countQuery = `SELECT COUNT(*) as total FROM iacoins_transactions WHERE user_id = $1`;
+            let countQuerySQL = `SELECT COUNT(*) as total FROM iacoins_transactions WHERE user_id = $1`;
             const countParams = [userId];
             if (type) {
-                countQuery += ` AND type = $2`;
+                countQuerySQL += ` AND type = $2`;
                 countParams.push(type);
             }
-            const countResult = await executeQuery(countQuery, countParams).catch(err => [{ total: 0 }]);
+            const countResult = await executeQuery(countQuerySQL, countParams).catch(err => [{ total: 0 }]);
 
             res.json({
                 success: true,
                 data: transactions,
                 pagination: {
                     total: parseInt(countResult[0].total),
-                    limit,
-                    offset
+                    limit: limitParam,
+                    offset: offsetParam
                 }
             });
         } catch (error) {
@@ -202,7 +204,7 @@ router.get('/transactions',
                 data: demoTransactions,
                 pagination: {
                     total: demoTransactions.length,
-                    limit,
+                    limit: limitParam,
                     offset: 0
                 }
             });
@@ -372,32 +374,26 @@ router.get('/challenges',
             const userId = req.user.id;
             const { category, difficulty } = req.query;
 
-            let query = `
-                SELECT c.*,
-                       cp.status as user_status,
-                       cp.completion_count as user_completions,
-                       cp.last_completed_at
+            let sqlQuery = `
+                SELECT c.*
                 FROM iacoins_challenges c
-                LEFT JOIN iacoins_challenge_progress cp ON c.id = cp.challenge_id AND cp.user_id = $1
                 WHERE c.is_active = true
-                AND (c.start_date IS NULL OR c.start_date <= NOW())
-                AND (c.end_date IS NULL OR c.end_date >= NOW())
             `;
             const params = [userId];
 
             if (category) {
-                query += ` AND c.category = $${params.length + 1}`;
+                sqlQuery += ` AND c.category = $${params.length + 1}`;
                 params.push(category);
             }
 
             if (difficulty) {
-                query += ` AND c.difficulty = $${params.length + 1}`;
+                sqlQuery += ` AND c.difficulty = $${params.length + 1}`;
                 params.push(difficulty);
             }
 
-            query += ` ORDER BY c.reward_coins DESC, c.difficulty ASC`;
+            sqlQuery += ` ORDER BY c.reward_coins DESC, c.difficulty ASC`;
 
-            let challenges = await executeQuery(query, params).catch(err => {
+            let challenges = await executeQuery(sqlQuery, params).catch(err => {
                 console.warn('[IACOINS] Tabla iacoins_challenges no existe, usando datos demo');
                 return null;
             });
