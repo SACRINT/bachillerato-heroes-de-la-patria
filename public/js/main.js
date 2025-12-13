@@ -88,6 +88,14 @@ function loadNextEventHandler() {
 loadNextEventHandler();
 
 document.addEventListener('DOMContentLoaded', function () {
+    // 🔧 FIX (12 Dic 2025): Mover #main-footer al body ANTES de cargar su contenido
+    const footerContainer = document.getElementById('main-footer');
+    if (footerContainer && footerContainer.parentElement !== document.body) {
+        console.warn('⚠️ [MAIN.JS] Footer está fuera del body, moviendo...');
+        document.body.appendChild(footerContainer);
+        console.log('✅ [MAIN.JS] Footer movido al body');
+    }
+
     // Tarea de Accesibilidad WCAG - Semana 27
     // Inyectar el enlace "Saltar al contenido principal" para accesibilidad.
     // El ancla #main-content y los estilos .skip-link ya existen en los archivos HTML y CSS.
@@ -209,6 +217,13 @@ function loadHeaderFooter() {
     // ✅ REVERTIDO A VERSIÓN SIMPLE QUE FUNCIONABA (commit eac16ff)
     const headerContainer = document.getElementById('main-header');
     const footerContainer = document.getElementById('main-footer');
+
+    // 🔧 FIX (12 Dic 2025): Asegurar que #main-footer está en el body, no dentro de un modal
+    if (footerContainer && footerContainer.parentElement?.id.includes('Modal')) {
+        console.warn('⚠️ [MAIN.JS] Footer está dentro de un modal, moviendo a body...');
+        document.body.appendChild(footerContainer);
+        console.log('✅ [MAIN.JS] Footer movido a body correctamente');
+    }
 
     if (headerContainer && !headerContainer.innerHTML.trim()) {
         console.log('📥 [MAIN.JS] Iniciando fetch de header.html...');

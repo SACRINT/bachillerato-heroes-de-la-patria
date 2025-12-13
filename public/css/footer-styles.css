@@ -19,10 +19,20 @@
     background: var(--footer-secondary-gradient);
     color: #E3F2FD;
     position: relative;
-    overflow: hidden;
-    width: 100vw;
-    margin-left: 50%;
-    transform: translateX(-50%);
+    overflow: visible;
+    width: 100%;
+    margin: 0;
+    padding: 2rem 0 1rem;
+    display: flex;
+    flex-direction: column;
+    min-height: auto;
+}
+
+/* Asegurar que el container-fluid dentro del footer se expande */
+.footer-main .container-fluid {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Light Mode Adjustments */

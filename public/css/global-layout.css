@@ -147,8 +147,11 @@
     position: relative;
     display: block;
     overflow: visible;
-    /* Asegurar que el contenedor expande para incluir su contenido */
     min-height: auto;
+    /* FIX (12 Dic 2025): Asegurar que el contenedor expande para incluir su contenido hijo */
+    contain: layout;
+    /* Forzar que recalcule la altura basada en su contenido */
+    height: auto;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════ */
