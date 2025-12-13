@@ -28,8 +28,10 @@
   function createFallbackAuthToken() {
     if (!window.getAuthToken) {
       window.getAuthToken = function() {
-        // Intentar obtener token de sessionStorage/localStorage
-        return sessionStorage.getItem('authToken') ||
+        // Intentar obtener token del sistema de autenticación unificado (bge_auth_token)
+        return sessionStorage.getItem('bge_auth_token') ||
+               localStorage.getItem('bge_auth_token') ||
+               sessionStorage.getItem('authToken') ||  // Fallback para compatibilidad
                localStorage.getItem('authToken') ||
                null;
       };

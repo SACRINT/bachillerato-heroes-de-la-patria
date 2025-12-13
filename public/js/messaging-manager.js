@@ -143,11 +143,15 @@ class MessagingManager {
     // ============================================
 
     getStoredToken() {
-        return localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+        // Buscar token con las claves correctas del sistema de autenticación unificado
+        return localStorage.getItem('bge_auth_token') ||
+               sessionStorage.getItem('bge_auth_token') ||
+               localStorage.getItem('authToken') ||  // Fallback para compatibilidad
+               sessionStorage.getItem('authToken');
     }
 
     setToken(token) {
-        localStorage.setItem('authToken', token);
+        localStorage.setItem('bge_auth_token', token);
     }
 
     redirectToLogin() {
