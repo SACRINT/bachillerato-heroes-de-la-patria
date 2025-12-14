@@ -1,1 +1,1 @@
-module.exports = require('../dist/services/realtime-collaboration.service');
+module.exports = require('./realtime-collaboration.service');

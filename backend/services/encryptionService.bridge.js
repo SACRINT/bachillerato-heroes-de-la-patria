@@ -1,1 +1,1 @@
-module.exports = require('../dist/services/encryption.service');
+module.exports = require('./encryption.service');

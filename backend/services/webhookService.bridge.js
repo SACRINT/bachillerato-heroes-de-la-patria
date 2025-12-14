@@ -1,1 +1,1 @@
-module.exports = require('../dist/services/webhook.service');
+module.exports = require('./webhook.service');

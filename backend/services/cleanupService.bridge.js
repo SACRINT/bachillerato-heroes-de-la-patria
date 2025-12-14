@@ -1,1 +1,1 @@
-module.exports = require('../dist/services/cleanup.service');
+module.exports = require('./cleanup.service');

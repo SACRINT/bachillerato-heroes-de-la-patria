@@ -1,1 +1,1 @@
-module.exports = require('../dist/services/ai-tutor.service');
+module.exports = require('./ai-tutor.service');

@@ -1,1 +1,1 @@
-module.exports = require('../dist/services/event-bus.service');
+module.exports = require('./event-bus.service');

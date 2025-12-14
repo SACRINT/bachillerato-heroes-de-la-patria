@@ -1,1 +1,1 @@
-module.exports = require('../dist/services/form.service');
+module.exports = require('./form.service');

@@ -1,1 +1,1 @@
-module.exports = require('../dist/services/analytics.service');
+module.exports = require('./analytics.service');

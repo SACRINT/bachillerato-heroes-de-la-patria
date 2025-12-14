@@ -15,7 +15,7 @@ const router = express_1.default.Router();
 let superAdminService;
 try {
     // @ts-ignore
-    superAdminService = require('../dist/services/super-admin.service').default;
+    superAdminService = require('./super-admin.service').default;
 }
 catch (e) {
     // @ts-ignore

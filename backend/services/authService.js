@@ -1,5 +1,5 @@
 /**
- * Bridge file: authService.js → dist/services/auth.service.js
- * Redirige imports al servicio TypeScript compilado
+ * Bridge file: authService.js → auth.service.js
+ * Redirige imports al servicio compilado
  */
-module.exports = require('../dist/services/auth.service');
+module.exports = require('./auth.service');

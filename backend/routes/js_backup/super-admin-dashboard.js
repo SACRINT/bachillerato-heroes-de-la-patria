@@ -12,7 +12,7 @@ const { authenticateToken, requireRole } = require('../middleware/auth');
 // Importar servicio (usará la versión compilada)
 let superAdminService;
 try {
-    superAdminService = require('../dist/services/super-admin.service').default;
+    superAdminService = require('./super-admin.service').default;
 } catch (e) {
     superAdminService = require('../services/super-admin.service').default;
 }

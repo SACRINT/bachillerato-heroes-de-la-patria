@@ -53,7 +53,8 @@
       "mcp__chrome-devtools__fill",
       "Bash(ls:*)",
       "mcp__chrome-devtools__list_network_requests",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(mcp__chrome-devtools__take_screenshot --url http://localhost:3000 --filename local_proyecto.png)"
     ],
     "deny": [],
     "ask": []

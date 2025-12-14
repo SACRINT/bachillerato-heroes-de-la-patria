@@ -1,5 +1,5 @@
 /**
  * Bridge for webSocketService.js -> websocket.service.ts
  */
-const WebSocketService = require('../dist/services/websocket.service');
+const WebSocketService = require('./websocket.service');
 module.exports = WebSocketService;

@@ -1,1 +1,1 @@
-module.exports = require('../dist/services/search.service');
+module.exports = require('./search.service');

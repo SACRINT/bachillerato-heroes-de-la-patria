@@ -1,1 +1,1 @@
-module.exports = require('../dist/services/webauthn.service');
+module.exports = require('./webauthn.service');

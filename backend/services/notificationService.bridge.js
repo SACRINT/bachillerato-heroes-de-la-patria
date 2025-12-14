@@ -1,5 +1,5 @@
 /**
  * Bridge file for pushNotificationService.js -> notification.service.ts
  */
-const NotificationService = require('../dist/services/notification.service');
+const NotificationService = require('./notification.service');
 module.exports = NotificationService;

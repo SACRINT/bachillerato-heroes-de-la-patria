@@ -1,1 +1,1 @@
-module.exports = require('../dist/services/performance.service');
+module.exports = require('./performance.service');

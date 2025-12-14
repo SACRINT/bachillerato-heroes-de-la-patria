@@ -1,1 +1,1 @@
-module.exports = require('../dist/services/challenges.service');
+module.exports = require('./challenges.service');
