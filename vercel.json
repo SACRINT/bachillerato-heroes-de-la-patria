@@ -12,8 +12,8 @@
     "api/index.js": {
       "memory": 1024,
       "maxDuration": 60,
-      "includeFiles": "backend/{server.js,package.json,config/**,routes/**,data/**,services/**,middleware/**,utils/**}",
-      "excludeFiles": "backend/{node_modules/**,.git/**,.env*,dist/**,*.ts,*.map}"
+      "includeFiles": "backend/**",
+      "excludeFiles": "node_modules/**"
     }
   },
   "headers": [
@@ -27,8 +27,8 @@
       ]
     }
   ],
-  "installCommand": "cd backend && npm install --production && cd ..",
+  "installCommand": "npm install && cd backend && npm install --production && cd ..",
   "framework": null,
   "outputDirectory": "public",
-  "buildCommand": "echo 'Skipping frontend build for serverless'"
+  "buildCommand": "npm run build:frontend"
 }
