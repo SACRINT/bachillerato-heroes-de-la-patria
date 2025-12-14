@@ -13,7 +13,7 @@
       "memory": 1024,
       "maxDuration": 60,
       "excludeFiles": "backend/{node_modules,dist,.git,.env.local,__tests__,load-tests,reports,backups,.DS_Store}/**",
-      "includeFiles": "backend/{server.js,package.json,package-lock.json,middleware/**,routes/**,data/**,config/**,services/**,migrations/**}"
+      "includeFiles": "backend/**"
     }
   },
   "headers": [
