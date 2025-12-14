@@ -1,3 +1,59 @@
+[v2.30.7] - 2025-12-13 (MODAL DE LOGIN REDESIGNED A ACCESO SEGURO ✅)
+
+**Tipo:** UI/UX / Feature / User Experience Improvement
+**Commit:** 65acd78 - feat(auth-modal): Replace tabbed modal design with modern Acceso Seguro single-form design
+**Estado:** ✅ COMPLETADO
+
+### 🎯 Cambio Implementado: Modal de Autenticación Modernizado
+
+**Problema:** El modal de login en local usaba un diseño con 3 tabs (Google | Email | Registro), mientras que el de producción tenía un diseño más moderno y limpio "Acceso Seguro" que los usuarios preferían.
+
+**Solución:** Rediseñe el modal en `public/js/unified-auth-system-v2.js` (método `createModalHTML()`, líneas 1803-1889):
+
+#### Cambios Visuales:
+- ✅ **Antes:** 3 tabs separados con contenido dinámico
+- ✅ **Después:** Formulario único y limpio con título "Acceso Seguro"
+
+#### Mejoras Implementadas:
+1. **Header Mejorado:**
+   - Icono de escudo (🛡️) con título "Acceso Seguro"
+   - Fondo claro con botón cerrar estándar
+
+2. **Formulario Principal:**
+   - Email con icono de sobre (✉️)
+   - Contraseña con icono de candado (🔒)
+   - Botón toggle para mostrar/ocultar contraseña
+   - Validación HTML5 nativa
+
+3. **Opciones Secundarias:**
+   - "Recordarme" checkbox (persiste sesión)
+   - "¿Olvidaste tu contraseña?" link (para recuperación)
+   - Ambos en la misma fila para compacidad
+
+4. **Autenticación Alternativa:**
+   - Divider con texto "O continúa con"
+   - Botón Google con ícono oficial de Firebase
+   - Botón Biometría (oculto por defecto, mostrado si soportado)
+
+5. **Footer:**
+   - "¿No tienes cuenta?" con link "Regístrate aquí"
+   - Texto centrado en fondo claro
+
+#### Impacto:
+- ✅ Consistencia visual entre local y producción
+- ✅ Mejor experiencia de usuario (UX)
+- ✅ Formulario más intuitivo y directo
+- ✅ Accesibilidad mejorada
+
+#### Archivos Modificados:
+- `public/js/unified-auth-system-v2.js` (+61 líneas, -181 líneas) - Neto: -120 líneas de código más limpio
+
+**Git:**
+- Commit: `65acd78`
+- Push: `03c341c..65acd78 main -> main` ✅
+
+---
+
 [v7.0.0] - 2025-12-04 (FASE 2 COMPLETADA: VALIDACIÓN E INTEGRACIÓN DE DAOS ✅)
 
 **Tipo:** Architecture / Testing / Validation / Release Preparation
