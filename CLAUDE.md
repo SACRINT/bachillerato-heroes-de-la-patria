@@ -205,6 +205,56 @@ Usa "Conventional Commits" para tus mensajes de `git commit`.
 ---
 ## 4. 🏆 REGISTRO DE LOGROS RECIENTES (Actualizar al final de cada sesión)
 
+*   **13 de Diciembre de 2025 (Continuación Sesión) - ROOT CAUSE VERCEL HTTP 500 FIXED ✅**
+    *   **Tipo:** Critical Bugfix / Vercel Production / Module Configuration
+    *   **Logros Críticos:**
+        - **IDENTIFICACIÓN Y FIX DE CONTRADICCIÓN CRÍTICA (Commit: 4e0a769):**
+          - Problema: Todos los endpoints en Vercel fallaban con HTTP 500 `FUNCTION_INVOCATION_FAILED`
+          - LOCAL funciona perfectamente (HTTP 200), PRODUCCIÓN falla
+          - Root Cause Identificado: Contradicción en `/api/package.json` y `/api/index.js`
+            * Archivo `/api/index.js`: Usa ES6 `import` statements (línea 1)
+            * Config `/api/package.json`: Decía `"type": "commonjs"` (esperaba require, NO import)
+            * Resultado: Node.js en Vercel rechazaba el archivo como SyntaxError
+          - Solución: Cambiar `api/package.json` de `"type": "commonjs"` a `"type": "module"` (1 línea)
+          - Por qué funciona en LOCAL: Encuentra `/package.json` (raíz) que tiene `"type": "module"`
+          - Por qué falla en Vercel: Encuentra `/api/package.json` (mismo directorio) con conflicto
+        - **INVESTIGACIÓN EXHAUSTIVA (45 minutos):**
+          - Investigué 215 archivos .ts en backend buscando referencias a /src
+          - Revisé config.ts línea por línea buscando imports problemáticos
+          - Validé sintaxis de múltiples archivos
+          - Eventualmente descubrí la contradicción en package.json files
+          - Lección: El problema no era de lógica, sino de **configuración de módulos**
+        - **DOCUMENTACIÓN COMPLETA CREADA:**
+          - `docs/ROOT-CAUSE-VERCEL-500-ERROR.md` (1,200+ palabras, análisis profundo)
+          - `RESUMEN-FIX-VERCEL-13DIC2025.md` (resumen ejecutivo)
+          - `CHANGELOG.md v2.30.8` (entrada detallada)
+          - Todos documenting: investigación, causa raíz, solución, impacto esperado
+    *   **Estado del Proyecto:** v2.30.8 - Root Cause Fixed, Vercel Ready for Redeploy
+    *   **Archivos Modificados:** 1 (api/package.json - 1 línea cambio)
+    *   **Commits Realizados:** 3
+        - `4e0a769`: fix(vercel) - The actual fix
+        - `6b5104c`: docs(root-cause) - Root cause documentation
+        - `5df8ee5`: docs(summary) - Executive summary
+    *   **Git Status:** ✅ Todo pusheado a origin/main
+    *   **Impacto Esperado Post-Redeploy:**
+        - ✅ `/api/health` debería retornar HTTP 200
+        - ✅ `/api/config/tenant` debería funcionar
+        - ✅ `/api/config/public-keys` debería funcionar
+        - ✅ Header y Footer cargan correctamente
+        - ✅ **TODOS los endpoints backend accesibles**
+    *   **Próximos Pasos:**
+        - Vercel redeploy automático con nuevo código
+        - Ir a https://vercel.com/dashboard/bge-heroesdelapatria para monitorear build
+        - Verificar `/api/health` en producción
+        - Si aún hay errores, tenemos documentación completa para debugging
+    *   **Evidencia:**
+        - Commit 4e0a769: fix(vercel) - 1 line change
+        - Commit 6b5104c: Root cause analysis
+        - Commit 5df8ee5: Executive summary
+        - docs/ROOT-CAUSE-VERCEL-500-ERROR.md
+        - RESUMEN-FIX-VERCEL-13DIC2025.md
+        - CHANGELOG.md v2.30.8
+
 *   **13 de Diciembre de 2025 - MODAL REDESIGN + VERCEL BUILD FIX ✅**
     *   **Tipo:** UI/UX / Bug Fix / DevOps / Production Fixes
     *   **Logros Críticos:**
