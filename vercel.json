@@ -27,13 +27,5 @@
       ]
     }
   ],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "regions": [
-    "iad1"
-  ],
-  "outputDirectory": "public",
-  "buildCommand": "npm run build",
-  "installCommand": "npm install && cd backend && npm install --production && cd .."
+  "installCommand": "npm install --production=false && cd backend && npm install --production && cd .."
 }
