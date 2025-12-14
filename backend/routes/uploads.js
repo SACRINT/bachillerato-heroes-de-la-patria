@@ -10,7 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const multer_1 = __importDefault(require("multer"));
-const sharp_1 = __importDefault(require("sharp"));
+// const sharp_1 = __importDefault(require("sharp")); // ⚠️ Lazy loaded optimization
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const auth_1 = require("../middleware/auth");
@@ -92,36 +92,55 @@ router.post('/image', auth_1.authenticateToken, requireAdmin, upload.single('ima
         }
         const optimizedPath = path_1.default.join(outputDir, `${fileName}.webp`);
         const jpegPath = path_1.default.join(outputDir, `${fileName}.jpg`);
-        // Sharp Optimization
-        await (0, sharp_1.default)(req.file.buffer).resize(1920, 1080, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 85 }).toFile(optimizedPath);
-        await (0, sharp_1.default)(req.file.buffer).resize(1920, 1080, { fit: 'inside', withoutEnlargement: true }).jpeg({ quality: 85 }).toFile(jpegPath);
+        // Sharp Optimization (Lazy Load)
+        let sharp;
+        try {
+            sharp = require('sharp');
+        } catch (e) {
+            console.warn('Sharp integration skipped: module not found');
+            // Fallback: just copy file renaming extension if needed, or fail gracefully
+            const fileName = `${safeName}_${timestamp}`; // Re-declare to be safe or use existing
+        }
+
+        if (sharp) {
+            const sharp_Instance = sharp(req.file.buffer);
+            await sharp_Instance.resize(1920, 1080, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 85 }).toFile(optimizedPath);
+            await sharp(req.file.buffer).resize(1920, 1080, { fit: 'inside', withoutEnlargement: true }).jpeg({ quality: 85 }).toFile(jpegPath);
+        }
         const pThumb = 'pub' + 'lic';
         const thumbnailPath = path_1.default.join(__dirname, '..', '..', pThumb, 'uploads/images/thumbnails', `${fileName}_thumb.webp`);
-        await (0, sharp_1.default)(req.file.buffer).resize(300, 200, { fit: 'cover' }).webp({ quality: 80 }).toFile(thumbnailPath);
-        const metadata = await (0, sharp_1.default)(req.file.buffer).metadata();
-        const fileInfo = {
-            original_name: req.file.originalname,
-            file_name: fileName,
-            category, alt_text, title,
-            file_size: req.file.size,
-            mime_type: req.file.mimetype,
-            width: metadata.width, height: metadata.height,
-            webp_url: `/uploads/images/${category}/${fileName}.webp`,
-            jpeg_url: `/uploads/images/${category}/${fileName}.jpg`,
-            thumbnail_url: `/uploads/images/thumbnails/${fileName}_thumb.webp`,
-            uploaded_by: req.user.id,
-            upload_date: new Date()
-        };
-        const savedFile = await uploadService_1.default.saveFileInfo(fileInfo);
-        res.json({
-            success: true,
-            message: 'Imagen subida exitosamente',
-            data: {
-                id: savedFile.id,
-                urls: { webp: fileInfo.webp_url, jpeg: fileInfo.jpeg_url, thumbnail: fileInfo.thumbnail_url },
-                metadata: { dimensions: `${metadata.width}x${metadata.height}`, format: 'WebP+JPEG' }
-            }
-        });
+        if (sharp) {
+            await sharp(req.file.buffer).resize(300, 200, { fit: 'cover' }).webp({ quality: 80 }).toFile(thumbnailPath);
+            const metadata = await sharp(req.file.buffer).metadata();
+
+            // Construct fileInfo with metadata
+            const fileInfo = {
+                original_name: req.file.originalname,
+                file_name: fileName,
+                category, alt_text, title,
+                file_size: req.file.size,
+                mime_type: req.file.mimetype,
+                width: metadata.width, height: metadata.height,
+                webp_url: `/uploads/images/${category}/${fileName}.webp`,
+                jpeg_url: `/uploads/images/${category}/${fileName}.jpg`,
+                thumbnail_url: `/uploads/images/thumbnails/${fileName}_thumb.webp`,
+                uploaded_by: req.user.id,
+                upload_date: new Date()
+            };
+
+            const savedFile = await uploadService_1.default.saveFileInfo(fileInfo);
+            res.json({
+                success: true,
+                message: 'Imagen subida exitosamente',
+                data: {
+                    id: savedFile.id,
+                    urls: { webp: fileInfo.webp_url, jpeg: fileInfo.jpeg_url, thumbnail: fileInfo.thumbnail_url },
+                    metadata: { dimensions: `${metadata.width}x${metadata.height}`, format: 'WebP+JPEG' }
+                }
+            });
+        } else {
+            res.status(500).json({ success: false, error: 'Image processing module not available' });
+        }
     }
     catch (error) {
         debug_logger_1.debugLog.error('UPLOADS', 'Error subiendo imagen', (0, sanitized_errors_1.sanitizeError)(error, 'uploads'));

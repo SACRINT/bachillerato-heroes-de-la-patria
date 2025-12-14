@@ -5,7 +5,7 @@
  * Fecha: 19 de Octubre, 2025
  */
 
-const sharp = require('sharp');
+// const sharp = require('sharp'); // ⚠️ Lazy loading to avoid bundling heavy binaries if unused
 const devLogger = require('../utils/devLogger');
 const fs = require('fs').promises;
 const path = require('path');
@@ -90,6 +90,14 @@ class ImageOptimizationService {
             };
 
             // Leer metadata de la imagen
+            let sharp;
+            try {
+                sharp = require('sharp');
+            } catch (e) {
+                devLogger.warn('Sharp not available for optimization');
+                return { original: inputPath, error: 'Sharp module missing' }; // Graceful fallback
+            }
+
             const metadata = await sharp(inputPath).metadata();
             devLogger.log(`📸 Procesando imagen: ${filename} (${metadata.width}x${metadata.height})`);
 
@@ -136,6 +144,7 @@ class ImageOptimizationService {
      * Crear versión optimizada de la imagen
      */
     async createOptimizedVersion(inputPath, outputPath, format) {
+        const sharp = require('sharp');
         const pipeline = sharp(inputPath);
 
         switch (format) {
@@ -161,6 +170,7 @@ class ImageOptimizationService {
      * Crear thumbnail
      */
     async createThumbnail(inputPath, outputPath, dimensions, format) {
+        const sharp = require('sharp');
         const pipeline = sharp(inputPath)
             .resize(dimensions.width, dimensions.height, {
                 fit: 'cover',
@@ -190,6 +200,7 @@ class ImageOptimizationService {
      * Convertir imagen a WebP
      */
     async convertToWebP(inputPath, outputPath, dimensions = null) {
+        const sharp = require('sharp');
         const pipeline = sharp(inputPath);
 
         if (dimensions) {
