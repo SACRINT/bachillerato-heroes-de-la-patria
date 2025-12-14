@@ -11,8 +11,7 @@ const __dirname = dirname(__filename);
 let app;
 try {
     // Intentar con path absoluto primero
-    // Estamos en backend/api/index.js, server.js está en backend/server.js
-    const serverPath = resolve(__dirname, '../server.js');
+    const serverPath = resolve(__dirname, '../backend/server.js');
     console.error(`[API] Intentando cargar: ${serverPath}`);
     app = require(serverPath);
     console.error('[API] Servidor cargado exitosamente');
@@ -23,7 +22,7 @@ try {
     // Intentar con path relativo como fallback
     try {
         console.error('[API] Intentando fallback con path relativo...');
-        app = require('../server.js');
+        app = require('../backend/server.js');
     } catch (fallbackError) {
         console.error('[API] Fallback también falló:', fallbackError.message);
         throw error; // Lanzar el error original
