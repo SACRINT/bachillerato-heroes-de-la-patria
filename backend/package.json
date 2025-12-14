@@ -59,26 +59,6 @@
     "ws": "^8.18.3",
     "yamljs": "^0.3.0"
   },
-  "devDependencies": {
-    "@types/bcrypt": "^6.0.0",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/jest": "^30.0.0",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/multer": "^2.0.0",
-    "@types/node": "^24.10.1",
-    "@types/nodemailer": "^7.0.4",
-    "@types/pdfkit": "^0.17.4",
-    "eslint": "^8.54.0",
-    "eslint-config-node": "^4.1.0",
-    "eslint-plugin-security": "^1.7.1",
-    "jest": "^29.7.0",
-    "nodemon": "^3.0.2",
-    "supertest": "^6.3.3",
-    "ts-jest": "^29.4.6",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
-  },
   "engines": {
     "node": ">=14.0.0",
     "npm": ">=6.0.0"
