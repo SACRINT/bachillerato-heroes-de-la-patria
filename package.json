@@ -118,7 +118,6 @@
     "jshint": "^2.13.6",
     "postcss-loader": "^8.2.0",
     "prettier": "^3.6.2",
-    "puppeteer": "^24.30.0",
     "style-loader": "^4.0.0",
     "stylelint": "^16.24.0",
     "supertest": "^7.1.4",

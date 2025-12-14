@@ -34,6 +34,6 @@
     "iad1"
   ],
   "outputDirectory": "public",
-  "buildCommand": "npm install",
-  "installCommand": "npm install && cd backend && npm ci --production && cd .."
+  "buildCommand": "npm run build",
+  "installCommand": "npm install && cd backend && npm install --production && cd .."
 }
