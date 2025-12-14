@@ -42,3 +42,4 @@ no_usados/
 node_modules/
 # NOTA: NO ignorar package-lock.json - es esencial para npm ci en Vercel
 # .vercelignore no debería ignorar archivos que npm ci necesita durante el build
+backend/node_modules/
