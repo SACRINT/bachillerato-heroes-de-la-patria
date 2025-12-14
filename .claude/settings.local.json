@@ -51,7 +51,9 @@
       "mcp__chrome-devtools__get_console_message",
       "mcp__mcp-server-commands__run_command",
       "mcp__chrome-devtools__fill",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "mcp__chrome-devtools__list_network_requests",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []
