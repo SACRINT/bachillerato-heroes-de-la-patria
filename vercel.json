@@ -1,11 +1,15 @@
 {
   "version": 2,
-  "buildCommand": "echo 'Build skipped'",
+  "buildCommand": "echo 'Skipping build - using pre-built assets'",
   "outputDirectory": "public",
   "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "/api/index.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "cleanUrls": false,
@@ -29,6 +33,5 @@
     }
   ],
   "installCommand": "cd backend && npm install --production && cd ..",
-  "framework": null,
-  "buildCommand": "echo 'Skipping build - using pre-built assets'"
+  "framework": null
 }
