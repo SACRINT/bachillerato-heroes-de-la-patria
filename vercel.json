@@ -1,24 +1,19 @@
 {
   "version": 2,
-  "buildCommand": "echo 'Skipping build - using pre-built assets'",
-  "outputDirectory": "public",
   "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "/api/index.js"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
     }
   ],
   "cleanUrls": false,
+  "public": true,
   "functions": {
     "api/index.js": {
       "memory": 1024,
       "maxDuration": 60,
       "includeFiles": "api/**,backend/**",
-      "excludeFiles": "**/*.ts,**/*.d.ts,**/*.map,public/**,backend/node_modules,backend/tests,backend/docs,backend/scripts,.git,node_modules"
+      "excludeFiles": "backend/{node_modules,tests,docs,scripts,**/*.ts,**/*.d.ts,**/*.map}/**,.git/**,node_modules/**"
     }
   },
   "headers": [
