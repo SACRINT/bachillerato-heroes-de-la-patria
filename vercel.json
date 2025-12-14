@@ -27,8 +27,8 @@
       ]
     }
   ],
-  "installCommand": "npm install --production=false && cd backend && npm install --production && cd ..",
+  "installCommand": "cd backend && npm install --production && cd ..",
   "framework": null,
   "outputDirectory": "public",
-  "buildCommand": "npm run build:frontend && npm prune --production"
+  "buildCommand": "echo 'Deploying pre-built assets from public/dist'"
 }
