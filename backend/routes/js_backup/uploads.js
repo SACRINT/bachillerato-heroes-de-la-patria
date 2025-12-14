@@ -12,7 +12,7 @@ const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
 
 const router = express.Router();
 const multer = require('multer');
-const sharp = require('sharp');
+// const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs').promises;
 const { authenticateToken, requireRole } = require('../middleware/auth');

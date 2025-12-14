@@ -16,7 +16,7 @@
     "api/index.js": {
       "memory": 1024,
       "maxDuration": 60,
-      "excludeFiles": "backend/**/*.ts,backend/**/*.d.ts,backend/**/*.map,backend/tests/**,backend/__tests__/**,backend/docs/**,backend/scripts/**,backend/seeds/**,backend/load-tests/**,backend/reports/**,backend/test-*.js,public/**,../public/**,**/*.md,**/*.log"
+      "excludeFiles": "backend/**/*.ts,backend/**/*.d.ts,backend/**/*.map,backend/tests/**,backend/__tests__/**,backend/docs/**,backend/scripts/**,backend/seeds/**,backend/load-tests/**,backend/reports/**,backend/test-*.js,backend/routes/js_backup/**,public/**,../public/**,**/*.md,**/*.log"
     }
   },
   "headers": [
