@@ -21,10 +21,14 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.3",
+    "@simplewebauthn/browser": "^13.2.2",
+    "@simplewebauthn/server": "^13.2.2",
     "archiver": "^7.0.1",
     "axios": "^1.12.2",
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
+    "connect-pg-simple": "^10.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
@@ -52,7 +56,8 @@
     "uuid": "^9.0.1",
     "web-push": "^3.6.7",
     "winston": "^3.18.3",
-    "ws": "^8.18.3"
+    "ws": "^8.18.3",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
