@@ -1047,7 +1047,10 @@
     <script src="js/dompurify-config.js"></script>
 
     <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
-    <script src="js/main.js"></script>
+    <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER (MIGRADO) -->
+    <!-- <script src="js/main.js"></script> -->
+    <link rel="stylesheet" href="dist/assets/main.css">
+    <script type="module" src="dist/assets/main.js"></script>
 
     <!-- 🏢 TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
     <script src="js/tenant-config-loader.js"></script>
@@ -1062,7 +1065,7 @@
     <script src="js/context-manager.js"></script> <!-- 🔒 Base del sistema -->
     <script src="js/config.js?v=2024091401"></script> <!-- 🔧 Configuración global -->
     <script src="js/theme-manager.js"></script> <!-- 🎨 Gestión de temas -->
-    <script src="js/script.js"></script> <!-- 🔒 Script principal -->
+    <!-- <script src="js/script.js"></script> --> <!-- 🔒 Script principal (Migrado a TS) -->
 
     <!-- 🎯 BGE FRAMEWORK CORE -->
     <script src="js/bge-framework-core.js"></script>
