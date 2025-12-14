@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Dashboard - BGE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            font-weight: 500;
+            color: #666;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .good {
+            color: #10b981;
+        }
+
+        .warning {
+            color: #f59e0b;
+        }
+
+        .poor {
+            color: #ef4444;
+        }
+
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+    </style>
+    <!-- Global Layout Styles - Header, Footer, Floating Buttons -->
+    <link rel="stylesheet" href="css/global-layout.css">
+    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+
+    <!-- 🏢 Multi-Tenancy Support -->
+    <script src="js/tenant-config-loader.js"></script>
+    <!-- tenant-replacer.js removed - functionality handled by tenant-config-loader.js -->
+    <!-- DOMPurify for XSS protection (MUST load before main.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <!-- Main JS for dynamic header/footer loading -->
+    <script src="js/main.js" defer></script>
+</head>
+
+<body>
+    <!-- Header dinámico inyectado por main.js -->
+    <header id="main-header"></header>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Performance Dashboard</h1>
+            <p>Monitoreo de m�tricas Core Web Vitals en tiempo real</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>Core Web Vitals</h2>
+                <div class="metric">
+                    <span class="metric-label">LCP (Largest Contentful Paint)</span>
+                    <span class="metric-value" id="lcp">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">FID (First Input Delay)</span>
+                    <span class="metric-value" id="fid">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">CLS (Cumulative Layout Shift)</span>
+                    <span class="metric-value" id="cls">-</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Bundle Sizes</h2>
+                <div class="metric">
+                    <span class="metric-label">Total JavaScript</span>
+                    <span class="metric-value" id="js-size">7.1 MB</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Total CSS</span>
+                    <span class="metric-value" id="css-size">180 KB</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Largest File</span>
+                    <span class="metric-value" id="largest">143 KB</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Optimizations Applied</h2>
+                <div class="metric">
+                    <span class="metric-label">Code Splitting</span>
+                    <span class="metric-value good">✓</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Lazy Loading</span>
+                    <span class="metric-value good">✓</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Service Worker</span>
+                    <span class="metric-value good">✓</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" id="runAuditBtn">🔍 Run Lighthouse Audit</button>
+    </div>
+
+
+
+    <!-- Footer -->
+    <footer id="main-footer"></footer>
+    <script>
+        // Measure Core Web Vitals with web-vitals library
+        async function measureVitals() {
+            try {
+                const { onLCP, onFID, onCLS } = await import('https://unpkg.com/web-vitals@3?module');
+
+                onLCP(metric => {
+                    const value = metric.value.toFixed(0);
+                    const el = document.getElementById('lcp');
+                    el.textContent = value + ' ms';
+                    el.className = value < 2500 ? 'metric-value good' : value < 4000 ? 'metric-value warning' : 'metric-value poor';
+                });
+
+                onFID(metric => {
+                    const value = metric.value.toFixed(0);
+                    const el = document.getElementById('fid');
+                    el.textContent = value + ' ms';
+                    el.className = value < 100 ? 'metric-value good' : value < 300 ? 'metric-value warning' : 'metric-value poor';
+                });
+
+                onCLS(metric => {
+                    const value = metric.value.toFixed(3);
+                    const el = document.getElementById('cls');
+                    el.textContent = value;
+                    el.className = value < 0.1 ? 'metric-value good' : value < 0.25 ? 'metric-value warning' : 'metric-value poor';
+                });
+            } catch (error) {
+                console.error('Error loading web-vitals:', error);
+            }
+        }
+
+        function runAudit() {
+            alert('Abriendo Lighthouse en DevTools...\n\n1. Abrir DevTools (F12)\n2. Tab "Lighthouse"\n3. Click "Analyze page load"');
+        }
+
+        // Auto-measure on load
+        measureVitals();
+
+        // ✅ CSP Compliant: Using addEventListener instead of onclick
+        document.getElementById('runAuditBtn')?.addEventListener('click', runAudit);
+    </script>
+    <!-- Footer dinámico inyectado por main.js -->
+    <footer id="main-footer"></footer>
+    <script src="js/chatbot.js"></script>
+</body>
+
+</html>

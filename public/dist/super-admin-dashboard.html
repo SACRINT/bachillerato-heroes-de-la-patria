@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Dashboard - BGE SaaS</title>
+    <meta name="description" content="Panel de administración para gestión de escuelas SaaS">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-surface: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #475569;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo span {
+            font-size: 1.5rem;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.1em;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .stat-icon.blue {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+        }
+
+        .stat-icon.green {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .stat-icon.yellow {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .stat-icon.red {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-change {
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .chart-container {
+            height: 250px;
+            position: relative;
+        }
+
+        /* Tenants Table */
+        .table-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-surface);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            outline: none;
+            width: 200px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+        }
+
+        th {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: var(--bg-surface);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .status-badge.trial {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+        }
+
+        .status-badge.expired {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .tenant-name {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tenant-name strong {
+            font-weight: 600;
+        }
+
+        .tenant-name span {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <span>🎓</span>
+                BGE Super Admin
+            </div>
+
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-title">Dashboard</div>
+                    <a href="#" class="nav-item active" data-section="overview">
+                        📊 Overview
+                    </a>
+                    <a href="#" class="nav-item" data-section="analytics">
+                        📈 Analytics
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Gestión</div>
+                    <a href="#" class="nav-item" data-section="tenants">
+                        🏢 Escuelas
+                    </a>
+                    <a href="#" class="nav-item" data-section="subscriptions">
+                        💳 Suscripciones
+                    </a>
+                    <a href="#" class="nav-item" data-section="plans">
+                        📋 Planes
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Sistema</div>
+                    <a href="#" class="nav-item" data-section="settings">
+                        ⚙️ Configuración
+                    </a>
+                    <a href="/admin-dashboard.html" class="nav-item">
+                        🔙 Admin Normal
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1>Dashboard Super Admin</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="btnRefresh">
+                        🔄 Actualizar
+                    </button>
+                    <button class="btn btn-primary" id="btnNewTenant">
+                        ➕ Nueva Escuela
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-label">Total Escuelas</div>
+                        <div class="stat-icon blue">🏫</div>
+                    </div>
+                    <div class="stat-value" id="totalTenants">--</div>
+                    <div class="stat-change positive" id="tenantsChange">
+                        <span>↑</span> --% vs mes anterior
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-label">Suscripciones Activas</div>
+                        <div class="stat-icon green">✅</div>
+                    </div>
+                    <div class="stat-value" id="activeSubscriptions">--</div>
+                    <div class="stat-change positive">
+                        <span id="trialCount">--</span> en trial
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-label">Ingresos del Mes</div>
+                        <div class="stat-icon yellow">💰</div>
+                    </div>
+                    <div class="stat-value" id="monthlyRevenue">--</div>
+                    <div class="stat-change positive">
+                        $<span id="yearlyRevenue">--</span> anual
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-label">Total Usuarios</div>
+                        <div class="stat-icon red">👥</div>
+                    </div>
+                    <div class="stat-value" id="totalUsers">--</div>
+                    <div class="stat-change">
+                        <span id="studentCount">--</span> estudiantes
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3 class="chart-title">📈 Crecimiento de Escuelas</h3>
+                    <div class="chart-container">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3 class="chart-title">💳 Suscripciones por Plan</h3>
+                    <div class="chart-container">
+                        <canvas id="subscriptionsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tenants Table -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>🏢 Escuelas Registradas</h3>
+                    <div class="search-box">
+                        🔍
+                        <input type="text" placeholder="Buscar escuela..." id="searchInput">
+                    </div>
+                </div>
+
+                <table id="tenantsTable">
+                    <thead>
+                        <tr>
+                            <th>Escuela</th>
+                            <th>Plan</th>
+                            <th>Estado</th>
+                            <th>Estudiantes</th>
+                            <th>Docentes</th>
+                            <th>Última Actividad</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tenantsBody">
+                        <tr>
+                            <td colspan="7" class="loading">
+                                <div class="spinner"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/super-admin/dashboard.js"></script>
+</body>
+
+</html>

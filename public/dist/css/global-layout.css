@@ -1,0 +1,312 @@
+/**
+ * 🎨 GLOBAL LAYOUT STYLES - BGE HEROES DE LA PATRIA
+ *
+ * PROPÓSITO: Archivo CSS ÚNICO y COMPARTIDO para:
+ * - Header dinámico (inyectado en #main-header)
+ * - Footer dinámico (inyectado en #main-footer)
+ * - Botones flotantes (dark mode + chatbot)
+ *
+ * VENTAJA: Un ÚNICO cambio aquí se aplica AUTOMÁTICAMENTE a TODAS las páginas
+ *
+ * CARGADO EN: Todas las páginas HTML via <link rel="stylesheet" href="css/global-layout.css">
+ * ORDEN CRÍTICO: Después de Bootstrap, antes de estilos específicos de página
+ *
+ * Fecha: 2 de Diciembre 2025
+ * Version: 1.0.0
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* SECCIÓN 1: VARIABLES CSS GLOBALES                                         */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+    /* Colores principales BGE */
+    --bge-primary: #1976D2;
+    --bge-primary-dark: #1565C0;
+    --bge-secondary: #37474F;
+    --bge-accent: #FFC107;
+
+    /* Header/Footer sizing */
+    --header-height: 76px;
+    --footer-logo-size: 45px;
+
+    /* Espaciado */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+
+    /* Transiciones */
+    --transition-fast: 0.15s ease-in-out;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+
+    /* Sombras */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* SECCIÓN 2: HEADER GLOBAL STYLES                                           */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+#main-header {
+    width: 100%;
+    background: white;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    z-index: 100;
+}
+
+#main-header .navbar {
+    padding: 0.5rem 0;
+    background: white;
+}
+
+#main-header .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+#main-header .navbar-brand img {
+    height: 45px !important;
+    width: auto !important;
+    max-height: 45px !important;
+}
+
+#main-header .navbar-brand .logo-main-text {
+    color: #1565C0 !important;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+#main-header .navbar-brand .logo-sub-text {
+    color: #424242 !important;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Dark Mode - Logo */
+[data-theme="dark"] #main-header .navbar-brand .logo-main-text,
+.dark-mode #main-header .navbar-brand .logo-main-text {
+    color: #90caf9 !important;
+}
+
+[data-theme="dark"] #main-header .navbar-brand .logo-sub-text,
+.dark-mode #main-header .navbar-brand .logo-sub-text {
+    color: #e8eaf6 !important;
+}
+
+/* Navbar collapse en desktop */
+@media (min-width: 992px) {
+    #main-header .navbar-expand-lg .navbar-collapse {
+        display: flex !important;
+        flex-basis: auto;
+    }
+
+    #main-header .navbar-expand-lg .navbar-nav {
+        flex-direction: row;
+    }
+
+    #main-header .navbar-expand-lg .navbar-toggler {
+        display: none;
+    }
+}
+
+/* Navbar collapse en mobile */
+@media (max-width: 991.98px) {
+    #main-header .navbar-collapse {
+        flex-basis: 100%;
+        flex-grow: 1;
+        align-items: center;
+    }
+
+    #main-header .navbar-collapse.collapse:not(.show) {
+        display: none;
+    }
+
+    #main-header .navbar-collapse.collapse.show {
+        display: block !important;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* SECCIÓN 3: FOOTER GLOBAL STYLES                                           */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ════════════════════════════════════════════════════════════════════════════ */
+/* FOOTER STYLES - Mínimo para no interferir con el <style> embebido en footer.html */
+/* ════════════════════════════════════════════════════════════════════════════ */
+
+#main-footer {
+    width: 100%;
+    position: relative;
+    display: block;
+    overflow: visible;
+    min-height: auto;
+    /* FIX (12 Dic 2025): Asegurar que el contenedor expande para incluir su contenido hijo */
+    contain: layout;
+    /* Forzar que recalcule la altura basada en su contenido */
+    height: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* SECCIÓN 4: BOTONES FLOTANTES GLOBALES                                     */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+    position: fixed;
+    bottom: 5rem;
+    right: 1.5rem;
+    z-index: 1030;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFB300 0%, #FF9500 100%);
+    border: none;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    box-shadow: 0 4px 15px rgba(255, 179, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aria-label: "Alternar modo oscuro";
+}
+
+.dark-mode-toggle:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 6px 20px rgba(255, 179, 0, 0.4);
+}
+
+.dark-mode-toggle:active {
+    transform: translateY(-1px) scale(1.05);
+}
+
+/* Chatbot Toggle */
+.chatbot-toggle {
+    position: fixed;
+    bottom: 9rem;
+    right: 1.5rem;
+    z-index: 1030;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    border: none;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aria-label: "Abrir chat de ayuda";
+}
+
+.chatbot-toggle:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.chatbot-toggle:active {
+    transform: translateY(-1px) scale(1.05);
+}
+
+/* Floating Buttons Responsive */
+@media (max-width: 768px) {
+
+    .dark-mode-toggle,
+    .chatbot-toggle {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+        bottom: auto;
+        right: 1rem;
+    }
+
+    .dark-mode-toggle {
+        bottom: 4.5rem;
+    }
+
+    .chatbot-toggle {
+        bottom: 8rem;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* SECCIÓN 5: ACCESIBILIDAD Y PREFERENCIAS                                   */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Reducir movimiento si el usuario lo prefiere */
+@media (prefers-reduced-motion: reduce) {
+
+    #main-header,
+    #main-footer,
+    .dark-mode-toggle,
+    .chatbot-toggle,
+    #back-to-top {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+    #main-header {
+        border-bottom: 2px solid #000;
+    }
+
+    #main-footer {
+        background: #000000 !important;
+        color: #ffffff !important;
+    }
+
+    #main-footer .footer-card {
+        background: #1a1a1a !important;
+        border-color: #333333 !important;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* SECCIÓN 6: UTILITIES Y FIXERS                                              */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Asegurar que el body tiene espacio para header */
+body {
+    padding-top: var(--header-height);
+}
+
+/* Asegurar que el main-content no está bajo el header */
+main,
+.container-main,
+.content-wrapper {
+    padding-top: 0;
+    /* Body already has padding-top for header, no need to add more */
+}
+
+/* Scroll behavior smooth */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Print styles */
+@media print {
+
+    #main-header,
+    #main-footer,
+    .dark-mode-toggle,
+    .chatbot-toggle,
+    #back-to-top,
+    .pwa-install-banner,
+    .chatbot-container {
+        display: none !important;
+    }
+}

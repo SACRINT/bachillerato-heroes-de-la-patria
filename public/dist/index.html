@@ -1,0 +1,2360 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <style>
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ? CSP META TAG (18 Nov 2025): Fallback for Vercel preview deployments -->
+    <!-- Vercel.json headers don't always apply in preview - meta tag ensures CSP is enforced -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live blob:; script-src-elem 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://accounts.google.com/gsi/style https://cdn.tiny.cloud https://*.tiny.cloud; style-src-elem 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://accounts.google.com/gsi/style https://cdn.tiny.cloud https://*.tiny.cloud; connect-src 'self' https://bge-heroesdelapatria.vercel.app https://sp.tinymce.com https://www.google-analytics.com https://www.googletagmanager.com https: ws: wss:; img-src 'self' data: blob: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tiny.cloud https://*.tiny.cloud https://ui-avatars.com https:; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.tiny.cloud https://*.tiny.cloud; frame-src 'self' https://accounts.google.com https://www.google.com https://maps.google.com https://forms.gle https://vercel.live https://*.vercel.live; object-src 'none'; form-action 'self'; base-uri 'self';">
+
+    <title id="page-title" data-base-title="Inicio" data-tenant-field="school_name">Bachillerato General Estatal "Héroes
+        de la Patria"</title>
+
+    <!-- Preconnects -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="images/hero/fachada1.webp" as="image" type="image/webp">
+    <link rel="preload" href="css/style.css" as="style">
+
+    <!-- Meta tags -->
+    <meta name="description" id="page-description"
+        content="Bachillerato General Estatal 'Héroes de la Patria' en Coronel Tito Hernández, Venustiano Carranza, Puebla. Educación media superior de calidad con formación integral.">
+    <meta name="keywords"
+        content="bachillerato, heroes de la patria, puebla, venustiano carranza, coronel tito hernandez, educacion media superior, prepa">
+    <meta name="theme-color" content="#1976D2">
+
+    <!-- Script para actualización dinámica de metadatos -->
+    <script src="js/meta-updater.js" defer></script>
+
+    <!-- 🏢 Multi-Tenancy: Carga y actualiza configuración del tenant -->
+    <script src="js/tenant-config-loader.js" defer></script>
+    <script src="js/tenant-auto-updater.js" defer></script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
+
+    <!-- ? FIX (18 Nov 2025): Header/Footer styles loaded globally -->
+    <!-- These MUST be in <head> so they apply BEFORE dynamic header/footer injection -->
+    <link rel="stylesheet" href="css/global-layout.css">
+    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+
+    <!-- Icons -->
+    <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- PWA Manifest -->
+
+
+    <!-- Build: 2025-01-09_07:45 - Force GitHub Pages Rebuild -->
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Bachillerato General Estatal Héroes de la Patria",
+      "alternateName": "BGE Héroes de la Patria",
+      "description": "Bachillerato General Estatal ubicado en Coronel Tito Hernández, Venustiano Carranza, Puebla. Ofrecemos educación media superior de calidad con formación integral.",
+      "url": "https://SACRINT.github.io/heroes_de_la_patria_oficial/",
+      "logo": "https://SACRINT.github.io/heroes_de_la_patria_oficial/images/logo/logo-bachillerato-HDLP.webp",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Coronel Tito Hernández",
+        "addressLocality": "Venustiano Carranza",
+        "addressRegion": "Puebla",
+        "addressCountry": "MX"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+52-xxx-xxx-xxxx",
+        "contactType": "Admissions"
+      },
+      "foundingDate": "1990",
+      "educationalLevel": "Upper Secondary Education"
+    }
+    </script>
+    <!-- ?? Estilos Personalizados (Refactored from inline styles) -->
+    <!-- ELIMINADO: css/index-styles.css (archivo no existe) -->
+</head>
+
+<body>
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+    <!-- Header will be injected here -->
+    <header id="main-header"></header>
+    </div>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Hero Section - Enhanced with Production Blue & Pattern -->
+        <section class="hero-section position-relative overflow-hidden bg-gradient">
+            <div class="position-absolute w-100 h-100 hero-pattern-bg-v2"></div>
+
+            <div class="container-fluid p-0 position-relative">
+                <div class="row g-0 align-items-center">
+                    <div class="col-lg-6 order-lg-2">
+                        <div class="hero-image position-relative">
+                            <div class="image-wrapper hero-image-hover">
+                                <picture>
+                                    <source srcset="images/hero/fachada1.webp" type="image/webp">
+                                    <img src="images/hero/fachada1.jpeg"
+                                        alt="Fachada del Bachillerato Héroes de la Patria"
+                                        class="img-fluid w-100 h-100 object-fit-cover rounded-3 shadow-lg"
+                                        loading="eager" width="800" height="600">
+                                </picture>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-lg-1">
+                        <div class="hero-content p-4 p-lg-5 text-white">
+                            <!-- Enhanced badges -->
+                            <div class="d-flex gap-2 mb-3">
+                                <span class="badge bg-warning bg-opacity-90 text-dark fs-6 px-3 py-2 rounded-pill">
+                                    <i class="fas fa-star me-2"></i>Excelencia Académica
+                                </span>
+                                <span class="badge bg-success bg-opacity-90 fs-6 px-3 py-2 rounded-pill">
+                                    <i class="fas fa-award me-2"></i>Certificación SEP
+                                </span>
+                            </div>
+
+                            <h1 class="display-3 fw-bold mb-3 text-white">
+                                <span class="position-relative">
+                                    Bachillerato General Estatal
+                                    <div
+                                        class="position-absolute bottom-0 start-0 w-100 h-1 bg-warning opacity-75 rounded">
+                                    </div>
+                                </span>
+                                <span class="d-block text-warning mt-2 display-5"
+                                    data-tenant-field="school_short_name">"Héroes
+                                    de la Patria"</span>
+                            </h1>
+
+                            <p class="fs-5 text-white-50 mb-4 lh-lg">
+                                ?? <strong>Formamos líderes del mañana</strong> con educación integral, valores
+                                sólidos
+                                y
+                                preparación universitaria de excelencia. Tu futuro comienza aquí.
+                            </p>
+
+                            <!-- Success Metrics -->
+                            <div class="row g-3 mb-4">
+                                <div class="col-4">
+                                    <div class="text-center p-3 rounded-3">
+                                        <h3 class="display-6 fw-bold text-warning mb-1 counter" data-target="27">0</h3>
+                                        <small class="text-white">Años de experiencia</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-center p-3 rounded-3">
+                                        <h3 class="display-6 fw-bold text-warning mb-1 counter" data-target="+1000">0
+                                        </h3>
+                                        <small class="text-white">Egresados exitosos</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-center p-3 rounded-3">
+                                        <h3 class="display-6 fw-bold text-warning mb-1 counter" data-target="97">0</h3>
+                                        <small class="text-white">% Aprobación</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Enhanced CTAs -->
+                            <div class="hero-actions d-flex flex-wrap gap-3">
+                                <a href="oferta-educativa.html"
+                                    class="btn btn-warning btn-lg px-5 py-3 rounded-pill fw-semibold shadow-lg">
+                                    <i class="fas fa-rocket me-2"></i>¡Inscríbete Ahora!
+                                </a>
+                                <a href="#why-choose-us"
+                                    class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-semibold">
+                                    <i class="fas fa-play-circle me-2"></i>¿Por qué elegirnos?
+                                </a>
+                            </div>
+
+                            <!-- Trust indicators -->
+                            <div class="mt-4 pt-3">
+                                <small class="text-white-50 d-flex align-items-center">
+                                    <i class="fas fa-shield-check text-success me-2"></i>
+                                    Institución oficial registrada ante la SEP • CCT: 21EBH0200X
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll indicator -->
+            <div class="position-absolute bottom-0 start-50 translate-middle-x pb-4">
+                <div class="scroll-indicator">
+                    <div class="scroll-arrow bounce">
+                        <i class="fas fa-chevron-down text-white"></i>
+                    </div>
+
+                    para
+                    tu futuro</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Choose Us Section - RESTORED -->
+        <section id="why-choose-us" class="py-5 bg-light">
+            <div class="container">
+                <div class="row text-center mb-5">
+                    <div class="col-12">
+                        <h2 class="display-5 fw-bold text-primary mb-3">¿Por qué elegir "Héroes de la Patria"?</h2>
+                        <p class="lead text-muted">Descubre lo que nos hace únicos y por qué somos la mejor opción para
+                            tu futuro</p>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3">
+                            <div class="feature-icon mb-4">
+                                <div
+                                    class="bg-primary bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center">
+                                    <i class="fas fa-award fa-2x text-white"></i>
+                                </div>
+                            </div>
+                            <h4 class="fw-bold text-primary mb-3">Educación Práctica</h4>
+                            <p class="text-muted">Habilidades para el trabajo, no solo teoría. Formación laboral en 3
+                                especialidades técnicas.</p>
+                            <div class="feature-highlight mt-3">
+                                <span class="badge bg-primary-subtle text-primary">? Certificaciones
+                                    Técnicas</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3">
+                            <div class="feature-icon mb-4">
+                                <div
+                                    class="bg-success bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center">
+                                    <i class="fas fa-users fa-2x text-white"></i>
+                                </div>
+                            </div>
+                            <h4 class="fw-bold text-success mb-3">Inclusión Total</h4>
+                            <p class="text-muted">Sin barreras económicas. Educación pública gratuita con beca Benito
+                                Juárez automática.</p>
+                            <div class="feature-highlight mt-3">
+                                <span class="badge bg-success-subtle text-success">? Beca Automática</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3">
+                            <div class="feature-icon mb-4">
+                                <div
+                                    class="bg-warning bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center">
+                                    <i class="fas fa-rocket fa-2x text-white"></i>
+                                </div>
+                            </div>
+                            <h4 class="fw-bold text-warning mb-3">Proyectos Reales</h4>
+                            <p class="text-muted">CTIM ganadores, vinculación comunitaria y proyectos de impacto social
+                                real.</p>
+                            <div class="feature-highlight mt-3">
+                                <span class="badge bg-warning-subtle text-warning">? Innovación</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3">
+                            <div class="feature-icon mb-4">
+                                <div
+                                    class="bg-info bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center">
+                                    <i class="fas fa-heart fa-2x text-white"></i>
+                                </div>
+                            </div>
+                            <h4 class="fw-bold text-info mb-3">Formación Integral</h4>
+                            <p class="text-muted">Competencias académicas + valores sólidos = ciudadanos responsables
+                                y
+                                exitosos.</p>
+                            <div class="feature-highlight mt-3">
+                                <span class="badge bg-info-subtle text-info">? Valores Sólidos</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3">
+                            <div class="feature-icon mb-4">
+                                <div
+                                    class="bg-secondary bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center">
+                                    <i class="fas fa-graduation-cap fa-2x text-white"></i>
+                                </div>
+                            </div>
+                            <h4 class="fw-bold text-secondary mb-3">Personal Experimentado</h4>
+                            <p class="text-muted">23+ años promedio de experiencia docente. Maestros comprometidos con
+                                tu éxito.</p>
+                            <div class="feature-highlight mt-3">
+                                <span class="badge bg-secondary-subtle text-secondary">? Experiencia</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card text-center p-4 h-100 border-0 shadow-sm rounded-3">
+                            <div class="feature-icon mb-4">
+                                <div
+                                    class="bg-danger bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center">
+                                    <i class="fas fa-laptop fa-2x text-white"></i>
+                                </div>
+                            </div>
+                            <h4 class="fw-bold text-danger mb-3">Tecnología Responsable</h4>
+                            <p class="text-muted">Herramientas digitales para el crecimiento personal y académico del
+                                siglo XXI.</p>
+                            <div class="feature-highlight mt-3">
+                                <span class="badge bg-danger-subtle text-danger">? Futuro Digital</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Access Cards -->
+        <section class="py-5 bg-light">
+            <div class="container">
+                <div class="row text-center mb-5">
+                    <div class="col-12">
+                        <h2 class="fw-bold text-primary mb-3">Acceso Rápido</h2>
+                        <p class="lead text-muted">Encuentra rápidamente la información que necesitas</p>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 border-0 shadow-sm hover-lift">
+                            <div class="card-body text-center p-4">
+                                <div
+                                    class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                                    <i class="fas fa-users fa-2x"></i>
+                                </div>
+                                <h4 class="card-title h5 mb-3">Conócenos</h4>
+                                <p class="card-text text-muted">Nuestra misión, visión, historia e infraestructura
+                                    educativa.</p>
+                                <a href="conocenos.html" class="btn btn-outline-primary">
+                                    Más información <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 border-0 shadow-sm hover-lift">
+                            <div class="card-body text-center p-4">
+                                <div
+                                    class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                                    <i class="fas fa-graduation-cap fa-2x"></i>
+                                </div>
+                                <h4 class="card-title h5 mb-3">Oferta Educativa</h4>
+                                <p class="card-text text-muted">Plan de estudios, formaciones laborales y proceso de
+                                    admisión.</p>
+                                <a href="oferta-educativa.html" class="btn btn-outline-success">
+                                    Ver oferta <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 border-0 shadow-sm hover-lift">
+                            <div class="card-body text-center p-4">
+                                <div
+                                    class="feature-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                                    <i class="fas fa-cogs fa-2x"></i>
+                                </div>
+                                <h4 class="card-title h5 mb-3">Servicios</h4>
+                                <p class="card-text text-muted">Servicios escolares y estudiantiles para apoyar tu
+                                    formación.</p>
+                                <a href="servicios.html" class="btn btn-outline-info">
+                                    Descubrir <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 border-0 shadow-sm hover-lift">
+                            <div class="card-body text-center p-4">
+                                <div
+                                    class="feature-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                                    <i class="fas fa-heart fa-2x"></i>
+                                </div>
+                                <h4 class="card-title h5 mb-3">Comunidad</h4>
+                                <p class="card-text text-muted">Vida estudiantil, testimonios de egresados y galería
+                                    fotográfica.</p>
+                                <a href="comunidad.html" class="btn btn-outline-warning">
+                                    Explorar <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent News -->
+        <section class="py-5">
+            <div class="container">
+                <div class="row mb-5">
+                    <div class="col-lg-8 mx-auto text-center">
+                        <h2 class="fw-bold text-primary mb-3">Noticias Recientes</h2>
+                        <p class="lead text-muted">Mantente al día con las últimas novedades de nuestra institución
+                        </p>
+                    </div>
+                </div>
+                <div class="row g-4" id="recent-news">
+                    <!-- News will be loaded dynamically via CMS Integration -->
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12 text-center">
+                        <a href="comunidad.html#noticias" class="btn btn-outline-primary">
+                            Ver todas las noticias <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upcoming Events -->
+        <section class="py-5 bg-light">
+            <div class="container">
+                <div class="row mb-5">
+                    <div class="col-lg-8 mx-auto text-center">
+                        <h2 class="fw-bold text-primary mb-3">Próximos Eventos</h2>
+                        <p class="lead text-muted">No te pierdas las fechas importantes del calendario escolar</p>
+                    </div>
+                </div>
+                <div class="row g-4" id="upcoming-events">
+                    <!-- Events will be loaded dynamically via CMS Integration -->
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12 text-center">
+                        <a href="calendario.html" class="btn btn-outline-primary">
+                            Ver calendario completo <i class="fas fa-calendar-alt ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="py-5 bg-primary text-white cta-dark-mode">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h3 class="fw-bold mb-3">¿Listo para formar parte de nuestra comunidad educativa?</h3>
+                        <p class="lead mb-0">
+                            Conoce nuestro proceso de admisión y comienza tu camino hacia la excelencia académica.
+                        </p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                        <a href="oferta-educativa.html#proceso-admision" class="btn btn-light btn-lg px-4 py-3">
+                            <i class="fas fa-user-plus me-2"></i>Proceso de Admisión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PWA Install Section -->
+        <section id="instalar-app" class="py-5 bg-gradient-primary text-white">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <div class="d-flex align-items-center mb-3">
+                            <div
+                                class="feature-icon bg-light text-primary rounded-circle d-flex align-items-center justify-content-center me-3">
+                                <i class="fas fa-mobile-alt fa-2x"></i>
+                            </div>
+                            <div>
+                                <h3 class="fw-bold mb-1">¡Instala Nuestra App!</h3>
+                                <p class="mb-0">Accede rápidamente desde tu pantalla de inicio</p>
+                            </div>
+                        </div>
+                        <p class="lead mb-0">
+                            Descarga nuestra aplicación web progresiva para tener acceso rápido a toda la información
+                            del bachillerato desde cualquier dispositivo.
+                        </p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                        <button class="btn btn-light btn-lg px-4 py-3 me-2" id="main-pwa-install-btn">
+                            <i class="fas fa-download me-2"></i>Instalar App
+                        </button>
+                        <div class="mt-2 small opacity-75">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Compatible con todos los dispositivos
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="py-5 bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center mb-5">
+                        <h2 class="fw-bold text-primary mb-3">Preguntas Frecuentes</h2>
+                        <p class="lead text-muted">Encuentra respuestas a las dudas más comunes sobre nuestro
+                            bachillerato</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-10 mx-auto">
+                        <div class="accordion faq-dark-mode" id="faqAccordion">
+                            <!-- Pregunta 1 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq1">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse1"
+                                        aria-expanded="false" aria-controls="collapse1">
+                                        <i class="fas fa-question-circle me-3 text-primary"></i>
+                                        ¿Cuáles son los requisitos para ingresar al bachillerato?
+                                    </button>
+                                </h3>
+                                <div id="collapse1" class="accordion-collapse collapse" aria-labelledby="faq1"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p><strong>Requisitos básicos:</strong></p>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item border-0 px-0">
+                                                <i class="fas fa-check text-success me-2"></i>Cédula de Registro y
+                                                Actualización de Datos (CRAD)
+                                            </li>
+                                            <li class="list-group-item border-0 px-0">
+                                                <i class="fas fa-check text-success me-2"></i>Acta de Nacimiento
+                                                (Original y copia)
+                                            </li>
+                                            <li class="list-group-item border-0 px-0">
+                                                <i class="fas fa-check text-success me-2"></i>Certificado de Educación
+                                                Secundaria (Original y copia)
+                                            </li>
+                                            <li class="list-group-item border-0 px-0">
+                                                <i class="fas fa-check text-success me-2"></i>Seis fotografías tamaño
+                                                infantil (B/N)
+                                            </li>
+                                            <li class="list-group-item border-0 px-0">
+                                                <i class="fas fa-check text-success me-2"></i>Copia de CURP y
+                                                Comprobante de Domicilio
+                                            </li>
+                                            <li class="list-group-item border-0 px-0">
+                                                <i class="fas fa-check text-success me-2"></i>Número de Identificación
+                                                del Alumno (NIA)
+                                            </li>
+                                        </ul>
+                                        <div class="alert alert-success mt-3">
+                                            <i class="fas fa-star me-2"></i>
+                                            <strong>¡No hay examen de admisión ni promedio mínimo! ¡Todos son
+                                                bienvenidos!</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 2 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq2">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse2"
+                                        aria-expanded="false" aria-controls="collapse2">
+                                        <i class="fas fa-tools me-3 text-primary"></i>
+                                        ¿Cuáles son las especialidades de formación para el trabajo?
+                                    </button>
+                                </h3>
+                                <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>Nuestro bachillerato general incluye 3 áreas de formación laboral:</p>
+                                        <div class="row g-4">
+                                            <div class="col-md-4">
+                                                <div class="card h-100 border-0 bg-light">
+                                                    <div class="card-body text-center">
+                                                        <i class="fas fa-palette fa-2x text-primary mb-3"></i>
+                                                        <h6 class="fw-bold">Comunicación Gráfica</h6>
+                                                        <small>Diseño, fotografía, medios impresos y digitales,
+                                                            sublimado</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="card h-100 border-0 bg-light">
+                                                    <div class="card-body text-center">
+                                                        <i class="fas fa-utensils fa-2x text-primary mb-3"></i>
+                                                        <h6 class="fw-bold">Preparación de Alimentos</h6>
+                                                        <small>Cocina tradicional, higiene alimentaria, técnicas
+                                                            artesanales</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="card h-100 border-0 bg-light">
+                                                    <div class="card-body text-center">
+                                                        <i class="fas fa-home fa-2x text-primary mb-3"></i>
+                                                        <h6 class="fw-bold">Instalaciones Residenciales</h6>
+                                                        <small>Electricidad, plomería, instalaciones hidráulicas y
+                                                            mantenimiento</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 3 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq3">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse3"
+                                        aria-expanded="false" aria-controls="collapse3">
+                                        <i class="fas fa-hand-holding-heart me-3 text-primary"></i>
+                                        ¿Ofrecen becas o apoyos económicos?
+                                    </button>
+                                </h3>
+                                <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="faq3"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <div class="alert alert-info">
+                                            <h6 class="fw-bold mb-2">
+                                                <i class="fas fa-medal me-2"></i>Beca Universal Benito Juárez
+                                            </h6>
+                                            <p class="mb-0">Todos nuestros estudiantes inscritos son automáticamente
+                                                considerados para esta beca,
+                                                que consiste en depósitos bimestrales. No se requiere trámite
+                                                adicional.
+                                            </p>
+                                        </div>
+                                        <p><strong>Para consultas:</strong></p>
+                                        <ul>
+                                            <li>Portal oficial: <a href="https://www.gob.mx/becasbenitojuarez"
+                                                    target="_blank" class="text-primary">gob.mx/becasbenitojuarez</a>
+                                            </li>
+                                            <li>Coordinación escolar del plantel</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 4 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq4">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse4"
+                                        aria-expanded="false" aria-controls="collapse4">
+                                        <i class="fas fa-running me-3 text-primary"></i>
+                                        ¿Qué actividades extracurriculares ofrecen?
+                                    </button>
+                                </h3>
+                                <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="faq4"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-primary">
+                                                    <i class="fas fa-palette me-2"></i>Arte y Cultura
+                                                </h6>
+                                                <ul class="list-unstyled">
+                                                    <li><i class="fas fa-music me-2 text-muted"></i>Ballet folklórico
+                                                    </li>
+                                                    <li><i class="fas fa-theater-masks me-2 text-muted"></i>Danza
+                                                        contemporánea</li>
+                                                    <li><i class="fas fa-drum me-2 text-muted"></i>Banda de guerra</li>
+                                                    <li><i class="fas fa-magic me-2 text-muted"></i>Bastoneras</li>
+                                                    <li><i class="fas fa-paint-brush me-2 text-muted"></i>Artes
+                                                        plásticas</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-primary">
+                                                    <i class="fas fa-trophy me-2"></i>Deportes y Clubes
+                                                </h6>
+                                                <ul class="list-unstyled">
+                                                    <li><i class="fas fa-futbol me-2 text-muted"></i>Fútbol</li>
+                                                    <li><i class="fas fa-basketball-ball me-2 text-muted"></i>Básquetbol
+                                                    </li>
+                                                    <li><i class="fas fa-volleyball-ball me-2 text-muted"></i>Voleibol
+                                                    </li>
+                                                    <li><i class="fas fa-robot me-2 text-muted"></i>Club de robótica
+                                                    </li>
+                                                    <li><i class="fas fa-flask me-2 text-muted"></i>Ferias de ciencias
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 5 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq5">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse5"
+                                        aria-expanded="false" aria-controls="collapse5">
+                                        <i class="fas fa-file-alt me-3 text-primary"></i>
+                                        ¿Cómo descargo mi boleta de calificaciones (SICEP)?
+                                    </button>
+                                </h3>
+                                <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="faq5"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-8">
+                                                <ol class="list-group list-group-numbered">
+                                                    <li class="list-group-item border-0 px-0">
+                                                        Ingresa a <a href="http://sisep.seppue.gob.mx/sicepconsulta/"
+                                                            target="_blank" class="text-primary">
+                                                            sisep.seppue.gob.mx/sicepconsulta/
+                                                        </a>
+                                                    </li>
+                                                    <li class="list-group-item border-0 px-0">
+                                                        Ten a la mano tu <strong>CURP</strong> y <strong>NIA</strong>
+                                                        (Número de Identificación del Alumno)
+                                                    </li>
+                                                    <li class="list-group-item border-0 px-0">
+                                                        Si tienes problemas, solicita ayuda en Control Escolar del
+                                                        plantel
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <div class="col-md-4 text-center">
+                                                <i class="fas fa-download fa-4x text-primary opacity-25"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 6 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq6">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse6"
+                                        aria-expanded="false" aria-controls="collapse6">
+                                        <i class="fas fa-tshirt me-3 text-primary"></i>
+                                        ¿Hay uniforme escolar?
+                                    </button>
+                                </h3>
+                                <div id="collapse6" class="accordion-collapse collapse" aria-labelledby="faq6"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>Sí, tenemos un uniforme sencillo y económico:</p>
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <div class="card border-0 bg-light">
+                                                    <div class="card-body">
+                                                        <h6 class="fw-bold text-primary">
+                                                            <i class="fas fa-male me-2"></i>Uniforme Masculino
+                                                        </h6>
+                                                        <p><strong>Deportivo:</strong> Playera blanca con logo,
+                                                            pantalón
+                                                            azul de mezclilla</p>
+                                                        <p><strong>Gala:</strong> Camisa blanca con logo, pantalón gris
+                                                            Oxford</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card border-0 bg-light">
+                                                    <div class="card-body">
+                                                        <h6 class="fw-bold text-primary">
+                                                            <i class="fas fa-female me-2"></i>Uniforme Femenino
+                                                        </h6>
+                                                        <p><strong>Deportivo:</strong> Playera blanca con logo,
+                                                            pantalón
+                                                            azul de mezclilla</p>
+                                                        <p><strong>Gala:</strong> Blusa blanca con logo, falda gris
+                                                            Oxford</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-info mt-3">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            <small>Puede mandarse a hacer con quien guste o confeccionarse en
+                                                casa.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 7 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq7">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse7"
+                                        aria-expanded="false" aria-controls="collapse7">
+                                        <i class="fas fa-clock me-3 text-primary"></i>
+                                        ¿Cuáles son los horarios de clases?
+                                    </button>
+                                </h3>
+                                <div id="collapse7" class="accordion-collapse collapse" aria-labelledby="faq7"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <div class="card border-0 bg-light">
+                                                    <div class="card-body text-center">
+                                                        <i class="fas fa-sun fa-2x text-warning mb-3"></i>
+                                                        <h6 class="fw-bold">Turno Matutino</h6>
+                                                        <p class="mb-0">8:00 AM - 1:30 PM</p>
+                                                        <small class="text-muted">Lunes a Viernes</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card border-0 bg-light">
+                                                    <div class="card-body text-center">
+                                                        <i class="fas fa-coffee fa-2x text-primary mb-3"></i>
+                                                        <h6 class="fw-bold">Receso</h6>
+                                                        <p class="mb-0">10:30 AM - 11:00 AM</p>
+                                                        <small class="text-muted">30 minutos</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-info mt-3">
+                                            <i class="fas fa-calendar-alt me-2"></i>
+                                            <small>Los horarios específicos por materia se dan a conocer al inicio del
+                                                semestre.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 8 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq8">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse8"
+                                        aria-expanded="false" aria-controls="collapse8">
+                                        <i class="fas fa-calendar-check me-3 text-primary"></i>
+                                        ¿Cuándo inician las inscripciones para el nuevo ciclo escolar?
+                                    </button>
+                                </h3>
+                                <div id="collapse8" class="accordion-collapse collapse" aria-labelledby="faq8"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <div class="row g-3">
+                                            <div class="col-12">
+                                                <h6 class="fw-bold text-primary">Calendario de Inscripciones 2025</h6>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card border-0 bg-light h-100">
+                                                    <div class="card-body">
+                                                        <h6 class="fw-bold">
+                                                            <i class="fas fa-user-plus me-2 text-success"></i>Nuevo
+                                                            Ingreso
+                                                        </h6>
+                                                        <p><strong>Pre-inscripción:</strong> Febrero - Marzo</p>
+                                                        <p><strong>Inscripción:</strong> Julio - Agosto</p>
+                                                        <small class="text-muted">Para estudiantes de nuevo
+                                                            ingreso</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card border-0 bg-light h-100">
+                                                    <div class="card-body">
+                                                        <h6 class="fw-bold">
+                                                            <i class="fas fa-redo me-2 text-info"></i>Reinscripción
+                                                        </h6>
+                                                        <p><strong>Semestre 2:</strong> Enero</p>
+                                                        <p><strong>Semestre 4 y 6:</strong> Agosto</p>
+                                                        <small class="text-muted">Para estudiantes regulares</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-warning mt-3">
+                                            <i class="fas fa-bell me-2"></i>
+                                            <strong>Importante:</strong> Las fechas exactas se publican en nuestro sitio
+                                            web y redes sociales.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 9 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq9">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse9"
+                                        aria-expanded="false" aria-controls="collapse9">
+                                        <i class="fas fa-dollar-sign me-3 text-primary"></i>
+                                        ¿Cuáles son los costos de inscripción y mensualidades?
+                                    </button>
+                                </h3>
+                                <div id="collapse9" class="accordion-collapse collapse" aria-labelledby="faq9"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <div class="alert alert-success">
+                                            <h6 class="fw-bold mb-2">
+                                                <i class="fas fa-gift me-2"></i>¡Educación Pública Gratuita!
+                                            </h6>
+                                            <p class="mb-0">Como bachillerato público, no cobramos inscripción ni
+                                                mensualidades.</p>
+                                        </div>
+                                        <p><strong>ÃƒÅ¡nicos costos aplicables:</strong></p>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item border-0 px-0">
+                                                <i class="fas fa-book me-2 text-muted"></i>Materiales didácticos
+                                                (opcional, según la materia)
+                                            </li>
+                                            <li class="list-group-item border-0 px-0">
+                                                <i class="fas fa-flask me-2 text-muted"></i>Prácticas de laboratorio
+                                                (costo mínimo)
+                                            </li>
+                                            <li class="list-group-item border-0 px-0">
+                                                <i class="fas fa-certificate me-2 text-muted"></i>Trámites de
+                                                certificación y titulación (según normativa SEP)
+                                            </li>
+                                            <li class="list-group-item border-0 px-0">
+                                                <i class="fas fa-tshirt me-2 text-muted"></i>Uniforme escolar (opcional)
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 10 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq10">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse10"
+                                        aria-expanded="false" aria-controls="collapse10">
+                                        <i class="fas fa-graduation-cap me-3 text-primary"></i>
+                                        ¿Cómo obtengo mi certificado de bachillerato?
+                                    </button>
+                                </h3>
+                                <div id="collapse10" class="accordion-collapse collapse" aria-labelledby="faq10"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p><strong>Requisitos para obtener tu certificado:</strong></p>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item border-0 px-0">
+                                                        <i class="fas fa-check text-success me-2"></i>Aprobar todas las
+                                                        materias del plan de estudios
+                                                    </li>
+                                                    <li class="list-group-item border-0 px-0">
+                                                        <i class="fas fa-check text-success me-2"></i>Cumplir con el
+                                                        servicio social (opcional)
+                                                    </li>
+                                                    <li class="list-group-item border-0 px-0">
+                                                        <i class="fas fa-check text-success me-2"></i>No tener adeudos
+                                                        administrativos
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item border-0 px-0">
+                                                        <i class="fas fa-check text-success me-2"></i>Presentar
+                                                        solicitud en Control Escolar
+                                                    </li>
+                                                    <li class="list-group-item border-0 px-0">
+                                                        <i class="fas fa-check text-success me-2"></i>Pago de derechos
+                                                        (según normativa)
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-info mt-3">
+                                            <i class="fas fa-clock me-2"></i>
+                                            <strong>Tiempo de entrega:</strong> De 15 a 30 días hábiles después de
+                                            presentar la solicitud completa.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 11 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq11">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse11"
+                                        aria-expanded="false" aria-controls="collapse11">
+                                        <i class="fas fa-university me-3 text-primary"></i>
+                                        ¿El certificado me permite ingresar a cualquier universidad?
+                                    </button>
+                                </h3>
+                                <div id="collapse11" class="accordion-collapse collapse" aria-labelledby="faq11"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <div class="alert alert-success">
+                                            <h6 class="fw-bold mb-2">
+                                                <i class="fas fa-award me-2"></i>Reconocimiento Oficial Total
+                                            </h6>
+                                            <p class="mb-0">Nuestro certificado tiene validez oficial ante la SEP y es
+                                                reconocido por todas las instituciones de educación superior en
+                                                México.
+                                            </p>
+                                        </div>
+                                        <p><strong>Con tu certificado puedes ingresar a:</strong></p>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item border-0 px-0">
+                                                        <i class="fas fa-university me-2 text-primary"></i>Universidades
+                                                        públicas
+                                                    </li>
+                                                    <li class="list-group-item border-0 px-0">
+                                                        <i class="fas fa-building me-2 text-primary"></i>Universidades
+                                                        privadas
+                                                    </li>
+                                                    <li class="list-group-item border-0 px-0">
+                                                        <i class="fas fa-cogs me-2 text-primary"></i>Institutos
+                                                        tecnológicos
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item border-0 px-0">
+                                                        <i class="fas fa-graduation-cap me-2 text-primary"></i>Escuelas
+                                                        normales
+                                                    </li>
+                                                    <li class="list-group-item border-0 px-0">
+                                                        <i class="fas fa-briefcase me-2 text-primary"></i>Instituciones
+                                                        técnicas superiores
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-info mt-3">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            <small>Cada universidad tiene sus propios procesos de admisión y exámenes
+                                                de
+                                                ingreso.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 12 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq12">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse12"
+                                        aria-expanded="false" aria-controls="collapse12">
+                                        <i class="fas fa-calendar-alt me-3 text-primary"></i>
+                                        ¿Cuáles son las fechas importantes del calendario escolar?
+                                    </button>
+                                </h3>
+                                <div id="collapse12" class="accordion-collapse collapse" aria-labelledby="faq12"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <div class="card border-0 bg-light h-100">
+                                                    <div class="card-body">
+                                                        <h6 class="fw-bold text-primary">
+                                                            <i class="fas fa-play me-2"></i>Primer Semestre
+                                                        </h6>
+                                                        <ul class="list-unstyled">
+                                                            <li><i
+                                                                    class="fas fa-calendar-check me-2 text-muted"></i>Inicio:
+                                                                Agosto</li>
+                                                            <li><i
+                                                                    class="fas fa-clipboard-check me-2 text-muted"></i>Exámenes:
+                                                                Diciembre</li>
+                                                            <li><i
+                                                                    class="fas fa-calendar-times me-2 text-muted"></i>Término:
+                                                                Enero</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card border-0 bg-light h-100">
+                                                    <div class="card-body">
+                                                        <h6 class="fw-bold text-primary">
+                                                            <i class="fas fa-forward me-2"></i>Segundo Semestre
+                                                        </h6>
+                                                        <ul class="list-unstyled">
+                                                            <li><i
+                                                                    class="fas fa-calendar-check me-2 text-muted"></i>Inicio:
+                                                                Enero</li>
+                                                            <li><i
+                                                                    class="fas fa-clipboard-check me-2 text-muted"></i>Exámenes:
+                                                                Junio</li>
+                                                            <li><i
+                                                                    class="fas fa-calendar-times me-2 text-muted"></i>Término:
+                                                                Julio</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <h6 class="fw-bold text-primary">Períodos de Vacaciones:</h6>
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item border-0 px-0">
+                                                    <i class="fas fa-snowflake me-2 text-info"></i>Vacaciones de
+                                                    Invierno: Diciembre - Enero (2 semanas)
+                                                </li>
+                                                <li class="list-group-item border-0 px-0">
+                                                    <i class="fas fa-cross me-2 text-warning"></i>Semana Santa:
+                                                    Marzo/Abril (1 semana)
+                                                </li>
+                                                <li class="list-group-item border-0 px-0">
+                                                    <i class="fas fa-sun me-2 text-warning"></i>Vacaciones de Verano:
+                                                    Julio - Agosto (3 semanas)
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 13 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq13">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse13"
+                                        aria-expanded="false" aria-controls="collapse13">
+                                        <i class="fas fa-bus me-3 text-primary"></i>
+                                        ¿Hay transporte escolar disponible?
+                                    </button>
+                                </h3>
+                                <div id="collapse13" class="accordion-collapse collapse" aria-labelledby="faq13"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <div class="alert alert-info">
+                                            <h6 class="fw-bold mb-2">
+                                                <i class="fas fa-route me-2"></i>Opciones de Transporte
+                                            </h6>
+                                            <p class="mb-0">El plantel no cuenta con transporte escolar propio, pero hay
+                                                varias opciones disponibles para los estudiantes.</p>
+                                        </div>
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <div class="card border-0 bg-light h-100">
+                                                    <div class="card-body">
+                                                        <h6 class="fw-bold text-primary">
+                                                            <i class="fas fa-bus me-2"></i>Transporte Público
+                                                        </h6>
+                                                        <ul class="list-unstyled">
+                                                            <li><i
+                                                                    class="fas fa-map-marker-alt me-2 text-muted"></i>Rutas
+                                                                de autobús urbano</li>
+                                                            <li><i class="fas fa-clock me-2 text-muted"></i>Servicio
+                                                                frecuente</li>
+                                                            <li><i class="fas fa-dollar-sign me-2 text-muted"></i>Costo
+                                                                accesible</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card border-0 bg-light h-100">
+                                                    <div class="card-body">
+                                                        <h6 class="fw-bold text-primary">
+                                                            <i class="fas fa-users me-2"></i>Transporte Privado
+                                                        </h6>
+                                                        <ul class="list-unstyled">
+                                                            <li><i class="fas fa-car me-2 text-muted"></i>Servicios
+                                                                particulares</li>
+                                                            <li><i class="fas fa-handshake me-2 text-muted"></i>Grupos
+                                                                de padres organizados</li>
+                                                            <li><i
+                                                                    class="fas fa-info-circle me-2 text-muted"></i>Consulta
+                                                                en la escuela por contactos</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-warning mt-3">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            <small>La escuela puede proporcionar información sobre opciones de
+                                                transporte, pero no se hace responsable por servicios externos.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 14 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq14">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse14"
+                                        aria-expanded="false" aria-controls="collapse14">
+                                        <i class="fas fa-utensils me-3 text-primary"></i>
+                                        ¿Hay servicio de cafetería o comedor escolar?
+                                    </button>
+                                </h3>
+                                <div id="collapse14" class="accordion-collapse collapse" aria-labelledby="faq14"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <div class="card border-0 bg-light h-100">
+                                                    <div class="card-body">
+                                                        <h6 class="fw-bold text-primary">
+                                                            <i class="fas fa-store me-2"></i>Cooperativa Escolar
+                                                        </h6>
+                                                        <ul class="list-unstyled">
+                                                            <li><i class="fas fa-sandwich me-2 text-muted"></i>Snacks y
+                                                                comida ligera</li>
+                                                            <li><i class="fas fa-coffee me-2 text-muted"></i>Bebidas
+                                                                frescas</li>
+                                                            <li><i class="fas fa-apple-alt me-2 text-muted"></i>Frutas y
+                                                                alimentos nutritivos</li>
+                                                            <li><i
+                                                                    class="fas fa-dollar-sign me-2 text-muted"></i>Precios
+                                                                accesibles</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card border-0 bg-light h-100">
+                                                    <div class="card-body">
+                                                        <h6 class="fw-bold text-primary">
+                                                            <i class="fas fa-clock me-2"></i>Horarios de Atención
+                                                        </h6>
+                                                        <ul class="list-unstyled">
+                                                            <li><i class="fas fa-sun me-2 text-muted"></i>Apertura: 7:30
+                                                                AM</li>
+                                                            <li><i class="fas fa-pause me-2 text-muted"></i>Receso:
+                                                                10:30 - 11:00 AM</li>
+                                                            <li><i class="fas fa-moon me-2 text-muted"></i>Cierre: 1:30
+                                                                PM</li>
+                                                            <li><i class="fas fa-calendar me-2 text-muted"></i>Lunes a
+                                                                Viernes</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-success mt-3">
+                                            <i class="fas fa-leaf me-2"></i>
+                                            <strong>Alimentación Saludable:</strong> Se promueve la venta de alimentos
+                                            nutritivos y se evita la comida chatarra.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 15 -->
+                            <div class="accordion-item mb-3 border-0 shadow-sm accordion-item-dark">
+                                <h3 class="accordion-header" id="faq15">
+                                    <button class="accordion-button collapsed fw-bold accordion-button-dark"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapse15"
+                                        aria-expanded="false" aria-controls="collapse15">
+                                        <i class="fas fa-question-circle me-3 text-primary"></i>
+                                        ¿Qué hacer si tengo problemas académicos o personales?
+                                    </button>
+                                </h3>
+                                <div id="collapse15" class="accordion-collapse collapse" aria-labelledby="faq15"
+                                    data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>Nuestro plantel cuenta con un sistema integral de apoyo para estudiantes:</p>
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <div class="card border-0 bg-light h-100">
+                                                    <div class="card-body">
+                                                        <h6 class="fw-bold text-primary">
+                                                            <i class="fas fa-user-friends me-2"></i>Apoyo Académico
+                                                        </h6>
+                                                        <ul class="list-unstyled">
+                                                            <li><i
+                                                                    class="fas fa-chalkboard-teacher me-2 text-muted"></i>Asesorías
+                                                                con maestros</li>
+                                                            <li><i class="fas fa-users me-2 text-muted"></i>Tutorías
+                                                                entre pares</li>
+                                                            <li><i class="fas fa-book me-2 text-muted"></i>Material de
+                                                                apoyo adicional</li>
+                                                            <li><i class="fas fa-clock me-2 text-muted"></i>Horarios
+                                                                flexibles de apoyo</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card border-0 bg-light h-100">
+                                                    <div class="card-body">
+                                                        <h6 class="fw-bold text-primary">
+                                                            <i class="fas fa-heart me-2"></i>Apoyo Personal
+                                                        </h6>
+                                                        <ul class="list-unstyled">
+                                                            <li><i
+                                                                    class="fas fa-user-tie me-2 text-muted"></i>Orientación
+                                                                vocacional</li>
+                                                            <li><i
+                                                                    class="fas fa-comments me-2 text-muted"></i>Consejería
+                                                                estudiantil</li>
+                                                            <li><i
+                                                                    class="fas fa-shield-alt me-2 text-muted"></i>Programa
+                                                                anti-bullying</li>
+                                                            <li><i
+                                                                    class="fas fa-handshake me-2 text-muted"></i>Mediación
+                                                                de conflictos</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-info mt-3">
+                                            <i class="fas fa-phone me-2"></i>
+                                            <strong>¿Necesitas ayuda?</strong> Acércate a cualquier maestro, prefecto
+                                            o
+                                            directivo.
+                                            Estamos aquí para apoyarte en tu desarrollo académico y personal.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-5">
+                    <div class="col-12 text-center">
+                        <p class="text-muted">
+                            <i class="fas fa-question-circle me-2"></i>
+                            ¿No encontraste la respuesta que buscabas?
+                            <a href="contacto.html" class="text-primary ms-2">Contáctanos directamente</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- Sección Contacto -->
+        <section id="contacto" class="py-5 bg-light" role="region" aria-labelledby="contacto-title">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center mb-5">
+                        <h2 class="fw-bold text-primary mb-3" id="contacto-title">Contacto</h2>
+                        <p class="lead text-muted">¿Tienes alguna pregunta? Contáctanos y te ayudaremos.</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm text-center">
+                            <div class="card-body p-4">
+                                <div
+                                    class="contact-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                                    <i class="fas fa-map-marker-alt fa-2x"></i>
+                                </div>
+                                <h5 class="card-title">Dirección</h5>
+                                <p class="card-text text-muted">
+                                    C. Manuel Ávila Camacho #7, Col. Centro<br>
+                                    Coronel Tito Hernández (María Andrea)<br>
+                                    Venustiano Carranza, Puebla<br>
+                                    C.P. 73030
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm text-center">
+                            <div class="card-body p-4">
+                                <div
+                                    class="contact-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                                    <i class="fas fa-envelope fa-2x"></i>
+                                </div>
+                                <h5 class="card-title">Email</h5>
+                                <p class="card-text text-muted">
+                                    <a href="mailto:21ebh0200x.sep@gmail.com">21ebh0200x.sep@gmail.com</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm text-center">
+                            <div class="card-body p-4">
+                                <div
+                                    class="contact-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                                    <i class="fas fa-clock fa-2x"></i>
+                                </div>
+                                <h5 class="card-title">Horarios</h5>
+                                <p class="card-text text-muted">
+                                    <strong>Clases:</strong> Lunes a Viernes<br>
+                                    8:00 AM - 1:30 PM<br>
+                                    <strong>Atención:</strong> Mismo horario
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Quejas y Sugerencias -->
+        <section id="quejas-sugerencias" class="py-5" role="region" aria-labelledby="quejas-title">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center mb-5">
+                        <h2 class="fw-bold text-primary mb-3" id="quejas-title">Quejas y Sugerencias</h2>
+                        <p class="lead text-muted">Tu opinión es importante para nosotros. Ayúdanos a mejorar.</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8 mx-auto">
+                        <div class="card border-0 shadow card-dark-mode">
+                            <div class="card-body p-5">
+                                <form id="quejas-form" method="POST" action="/api/quejas" class="professional-form"
+                                    novalidate>
+                                    <input type="hidden" name="form_type" value="quejas">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="nombre" class="form-label">Nombre completo</label>
+                                            <input type="text" class="form-control input-dark-mode" id="nombre"
+                                                name="nombre" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" class="form-control input-dark-mode" id="email"
+                                                name="email" required>
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="tipo" class="form-label">Tipo</label>
+                                            <select class="form-select select-dark-mode" id="tipo" name="subject"
+                                                required>
+                                                <option value="">Selecciona...</option>
+                                                <option value="queja">Queja</option>
+                                                <option value="sugerencia">Sugerencia</option>
+                                                <option value="felicitacion">Felicitación</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="mensaje" class="form-label">Mensaje</label>
+                                            <textarea class="form-control input-dark-mode" id="mensaje" name="message"
+                                                rows="5" required
+                                                placeholder="Describe detalladamente tu queja, sugerencia o comentario..."></textarea>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-paper-plane me-2"></i>Enviar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Mapa del Sitio Mejorada -->
+        <section id="mapa-sitio" class="py-5" role="region" aria-labelledby="mapa-title">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-10 mx-auto text-center mb-4">
+                        <h2 class="fw-bold mb-2" id="mapa-title">
+                            <i class="fas fa-sitemap me-2"></i>Mapa del Sitio
+                        </h2>
+                        <p class="text-muted mb-0">Navegación rápida y organizada de todas nuestras secciones</p>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Páginas Principales -->
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="sitemap-card sitemap-card-primary">
+                            <div class="sitemap-card-header">
+                                <div class="sitemap-icon">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <h6 class="sitemap-title">Páginas Principales</h6>
+                            </div>
+                            <div class="sitemap-links">
+                                <a href="index.html"><i class="fas fa-home"></i>Inicio</a>
+                                <a href="conocenos.html#hero"><i class="fas fa-users"></i>Conócenos</a>
+                                <a href="contacto.html#hero"><i class="fas fa-envelope"></i>Contacto</a>
+                                <a href="#quejas-sugerencias"><i class="fas fa-comment-dots"></i>Quejas y
+                                    Sugerencias</a>
+                                <a href="#faq"><i class="fas fa-question-circle"></i>Preguntas Frecuentes</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información Institucional -->
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="sitemap-card sitemap-card-success">
+                            <div class="sitemap-card-header">
+                                <div class="sitemap-icon">
+                                    <i class="fas fa-university"></i>
+                                </div>
+                                <h6 class="sitemap-title">Información Institucional</h6>
+                            </div>
+                            <div class="sitemap-links">
+                                <a href="conocenos.html#mensaje-director"><i class="fas fa-user-tie"></i>Mensaje del
+                                    Director</a>
+                                <a href="conocenos.html#mision-vision"><i class="fas fa-history"></i>Historia, Misión,
+                                    Visión</a>
+                                <a href="conocenos.html#organigrama"><i class="fas fa-sitemap"></i>Organigrama</a>
+                                <a href="conocenos.html#infraestructura"><i
+                                        class="fas fa-building"></i>Infraestructura</a>
+                                <a href="conocenos.html#video-institucional"><i class="fas fa-video"></i>Video
+                                    Institucional</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información Académica -->
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="sitemap-card sitemap-card-info">
+                            <div class="sitemap-card-header">
+                                <div class="sitemap-icon">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <h6 class="sitemap-title">Información Académica</h6>
+                            </div>
+                            <div class="sitemap-links">
+                                <a href="oferta-educativa.html#hero"><i class="fas fa-book-open"></i>Oferta
+                                    Educativa</a>
+                                <a href="oferta-educativa.html#plan-estudios"><i class="fas fa-book"></i>Plan de
+                                    Estudios</a>
+                                <a href="oferta-educativa.html#capacitacion-trabajo"><i
+                                        class="fas fa-tools"></i>Formación
+                                    para el Trabajo</a>
+                                <a href="oferta-educativa.html#proceso-admision"><i
+                                        class="fas fa-user-plus"></i>Admisiones</a>
+                                <a href="oferta-educativa.html#perfil-egreso"><i class="fas fa-certificate"></i>Perfil
+                                    de Egreso</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vida Escolar y Comunidad -->
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="sitemap-card sitemap-card-warning">
+                            <div class="sitemap-card-header">
+                                <div class="sitemap-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <h6 class="sitemap-title">Vida Escolar y Comunidad</h6>
+                            </div>
+                            <div class="sitemap-links">
+                                <a href="comunidad.html#hero"><i class="fas fa-users"></i>Vida Estudiantil</a>
+                                <a href="comunidad.html#noticias"><i class="fas fa-newspaper"></i>Noticias y Eventos</a>
+                                <a href="comunidad.html#galeria"><i class="fas fa-images"></i>Galería Fotográfica</a>
+                                <a href="comunidad.html#testimonios"><i class="fas fa-medal"></i>Testimonios</a>
+                                <a href="comunidad.html#eventos"><i class="fas fa-futbol"></i>Actividades
+                                    Extracurriculares</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Servicios -->
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="sitemap-card sitemap-card-danger">
+                            <div class="sitemap-card-header">
+                                <div class="sitemap-icon">
+                                    <i class="fas fa-cogs"></i>
+                                </div>
+                                <h6 class="sitemap-title">Servicios</h6>
+                            </div>
+                            <div class="sitemap-links">
+                                <a href="servicios.html#servicios-principales"><i
+                                        class="fas fa-concierge-bell"></i>Servicios Escolares</a>
+                                <a href="mensajeria.html"><i class="fas fa-envelope"></i>Mensajería</a>
+                                <a href="encuestas.html"><i class="fas fa-poll"></i>Encuestas</a>
+                                <a href="servicios.html#servicios-principales"><i
+                                        class="fas fa-file-signature"></i>Trámites</a>
+                                <a href="servicios.html#servicios-principales"><i
+                                        class="fas fa-hands-helping"></i>Orientación Educativa</a>
+                                <a href="servicios.html#requisitos"><i class="fas fa-clipboard-list"></i>Requisitos de
+                                    Trámites</a>
+                                <a href="descargas.html#hero"><i class="fas fa-download"></i>Centro de Descargas</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendarios y Eventos -->
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="sitemap-card sitemap-card-dark">
+                            <div class="sitemap-card-header">
+                                <div class="sitemap-icon">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                                <h6 class="sitemap-title">Calendarios y Eventos</h6>
+                            </div>
+                            <div class="sitemap-links">
+                                <a href="calendario.html#hero"><i class="fas fa-calendar-alt"></i>Calendario Escolar</a>
+                                <a href="convocatorias.html#hero"><i class="fas fa-bullhorn"></i>Convocatorias</a>
+                                <a href="calendario.html#periodos-academicos"><i class="fas fa-clock"></i>Horarios</a>
+                                <a href="calendario.html#tipos-eventos"><i class="fas fa-bell"></i>Eventos Próximos</a>
+                                <a href="calendario.html#ciclo-escolar"><i class="fas fa-graduation-cap"></i>Fechas
+                                    Importantes</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Portales Académicos -->
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="sitemap-card sitemap-card-secondary">
+                            <div class="sitemap-card-header">
+                                <div class="sitemap-icon">
+                                    <i class="fas fa-laptop"></i>
+                                </div>
+                                <h6 class="sitemap-title">Portales Académicos</h6>
+                            </div>
+                            <div class="sitemap-links">
+                                <a href="estudiantes.html#hero"><i class="fas fa-user-graduate"></i>Portal
+                                    Estudiantes</a>
+                                <a href="docentes.html#hero"><i class="fas fa-chalkboard-teacher"></i>Portal
+                                    Docentes</a>
+                                <a href="padres.html#hero"><i class="fas fa-user-friends"></i>Portal Padres</a>
+                                <a href="biblioteca.html#hero"><i class="fas fa-book-reader"></i>Biblioteca Digital</a>
+                                <a href="calificaciones.html#hero"><i class="fas fa-chart-line"></i>Calificaciones</a>
+                                <a href="citas.html#hero"><i class="fas fa-calendar-check"></i>Citas</a>
+                                <a href="index.html#instalar-app"><i class="fas fa-mobile-alt"></i>App Estudiantil</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Herramientas y Recursos ÃƒÅ¡tiles -->
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="sitemap-card sitemap-card-light">
+                            <div class="sitemap-card-header">
+                                <div class="sitemap-icon">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <h6 class="sitemap-title">Herramientas y Recursos ÃƒÅ¡tiles</h6>
+                            </div>
+                            <div class="sitemap-links">
+                                <a href="chatbot.html"><i class="fas fa-robot"></i>Asistente Virtual</a>
+                                <a href="pagos.html#hero"><i class="fas fa-credit-card"></i>Sistema de Pagos</a>
+                                <a href="bolsa-trabajo.html#hero"><i class="fas fa-graduation-cap"></i>Bolsa de
+                                    Trabajo</a>
+                                <a href="sitios-interes.html#hero"><i class="fas fa-external-link-alt"></i>Sitios de
+                                    Interés</a>
+                                <a href="egresados.html#hero"><i class="fas fa-user-graduate"></i>Portal de
+                                    Egresados</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comunicación -->
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="sitemap-card sitemap-card-primary">
+                            <div class="sitemap-card-header">
+                                <div class="sitemap-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <h6 class="sitemap-title">Comunicación</h6>
+                            </div>
+                            <div class="sitemap-links">
+                                <a href="contacto.html#hero"><i class="fas fa-envelope"></i>Contacto General</a>
+                                <a href="contacto.html#directorio"><i class="fas fa-phone"></i>Directorio
+                                    Telefónico</a>
+                                <a href="chatbot.html"><i class="fas fa-comment"></i>Chat en Línea</a>
+                                <a href="contacto.html#ubicacion"><i class="fas fa-map-marker-alt"></i>Ubicación</a>
+                                <a href="contacto.html#info-contacto"><i class="fas fa-clock"></i>Horarios de
+                                    Atención</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ayuda y Soporte -->
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="sitemap-card sitemap-card-success">
+                            <div class="sitemap-card-header">
+                                <div class="sitemap-icon">
+                                    <i class="fas fa-life-ring"></i>
+                                </div>
+                                <h6 class="sitemap-title">Ayuda y Soporte</h6>
+                            </div>
+                            <div class="sitemap-links">
+                                <a href="#faq"><i class="fas fa-question-circle"></i>Preguntas Frecuentes</a>
+                                <a href="soporte.html"><i class="fas fa-headset"></i>Centro de Soporte</a>
+                                <a href="chatbot.html"><i class="fas fa-robot"></i>Asistente Virtual</a>
+                                <a href="contacto.html#info-contacto"><i class="fas fa-phone"></i>Contacto</a>
+                                <a href="descargas.html"><i class="fas fa-file-pdf"></i>Manuales y Guías</a>
+                                <a href="#quejas-sugerencias"><i class="fas fa-comment-dots"></i>Reportar Problema</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transparencia y Normas -->
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="sitemap-card sitemap-card-info">
+                            <div class="sitemap-card-header">
+                                <div class="sitemap-icon">
+                                    <i class="fas fa-balance-scale"></i>
+                                </div>
+                                <h6 class="sitemap-title">Transparencia y Normas</h6>
+                            </div>
+                            <div class="sitemap-links">
+                                <a href="transparencia.html#hero"><i class="fas fa-eye"></i>Transparencia</a>
+                                <a href="normatividad.html#hero"><i class="fas fa-gavel"></i>Normatividad</a>
+                                <a href="privacidad.html"><i class="fas fa-shield-alt"></i>Política de Privacidad</a>
+                                <a href="terminos.html"><i class="fas fa-file-contract"></i>Términos y Condiciones</a>
+                                <a href="reglamento.html"><i class="fas fa-book"></i>Reglamento Interno</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- IA Coins y Gamificación -->
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="sitemap-card sitemap-card-warning">
+                            <div class="sitemap-card-header">
+                                <div class="sitemap-icon">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <h6 class="sitemap-title">IA Coins y Gamificación</h6>
+                            </div>
+                            <div class="sitemap-links">
+                                <a href="gamification-center.html"><i class="fas fa-gamepad"></i>Centro de
+                                    Gamificación</a>
+                                <a href="challenges.html"><i class="fas fa-trophy"></i>Desafíos Diarios</a>
+                                <a href="iacoins-dashboard.html"><i class="fas fa-chart-bar"></i>Dashboard IA Coins</a>
+                                <a href="iacoins-store.html"><i class="fas fa-store"></i>Tienda IA Coins</a>
+                                <a href="ar-vr-lab.html"><i class="fas fa-vr-cardboard"></i>Laboratorio AR/VR</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Herramientas Admin (Solo Administradores) -->
+                    <div class="col-lg-3 col-md-6 col-sm-12" id="admin-sitemap-section" style="display:none;">
+                        <div class="sitemap-card sitemap-card-dark">
+                            <div class="sitemap-card-header">
+                                <div class="sitemap-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <h6 class="sitemap-title">Herramientas Admin</h6>
+                            </div>
+                            <div class="sitemap-links">
+                                <a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard Admin</a>
+                                <a href="performance-dashboard.html"><i class="fas fa-chart-line"></i>Dashboard
+                                    Rendimiento</a>
+                                <a href="tenants-admin.html"><i class="fas fa-building"></i>Admin Multi-Tenant</a>
+                                <a href="api-portal.html"><i class="fas fa-code"></i>Portal API</a>
+                                <a href="developer-portal.html"><i class="fas fa-laptop-code"></i>Portal
+                                    Desarrolladores</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer will be injected here -->
+    <footer id="main-footer"></footer>
+
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
+        <i class="fas fa-moon"></i>
+    </button>
+
+
+
+    <!-- PWA Install Prompt -->
+    <div id="pwa-install-banner" class="pwa-install-banner d-none">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h6 class="mb-2"><i class="fas fa-mobile-alt me-2"></i>¡Instala nuestra App!</h6>
+                    <p class="mb-0 small">Accede rápidamente desde tu pantalla de inicio</p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-2 mt-lg-0">
+                    <button class="btn btn-sm btn-light me-2" id="pwa-install-btn">
+                        <i class="fas fa-download me-1"></i>Instalar
+                    </button>
+                    <button class="btn btn-sm btn-outline-light" id="pwa-close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="chatbot-input">
+                        <input type="text" id="pwaChatbotInput" placeholder="Escribe tu pregunta..."
+                            aria-label="Escribe tu pregunta">
+                        <button aria-label="Enviar mensaje">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ã°Å¸Å¡â‚¬ BGE FRAMEWORK MODULAR - SISTEMA CONSOLIDADO DE NUEVA GENERACIÃƒ"N -->
+
+                <!-- Bootstrap JS -->
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+                    crossorigin="anonymous"></script>
+
+                <!-- âÅ“â€¦ DebugLog Initialization (MUST be first) -->
+                <script src="js/debuglog-init.js"></script>
+
+                <!-- Ã°Å¸"' DOMPurify XSS Protection (Browser Version) -->
+                <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+                <script src="js/dompurify-config.js"></script>
+
+                <!-- Ã°Å¸"Â§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
+                <!-- <script src="js/main.js"></script> --> <!-- Migrado a TS Bundle -->
+
+                <!-- Ã°Å¸ÂÂ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
+                <script src="js/tenant-config-loader.js"></script>
+
+                <!-- Ã°Å¸"Â§ SISTEMA CORE (OBLIGATORIO - NO CONSOLIDADO) -->
+                <!-- Estos scripts DEBEN mantenerse separados por dependencias críticas -->
+                <script src="js/context-manager.js"></script> <!-- Ã°Å¸"' Base del sistema -->
+                <script src="js/config.js?v=2024091401"></script> <!-- Ã°Å¸"Â§ Configuración global -->
+                <script src="js/theme-manager.js"></script> <!-- Ã°Å¸Å½Â¨ Gestión de temas -->
+                <script src="js/dynamic-loader.js"></script> <!-- Ã°Å¸"Â¦ Carga dinámica -->
+
+                <!-- Ã°Å¸Å½Â¯ BGE FRAMEWORK CORE - MOTOR PRINCIPAL -->
+                <script src="js/bge-framework-core.js"></script>
+
+                <!-- Ã°Å¸"Å  MÃƒ"DULOS BGE CONSOLIDADOS (6 MÃƒ"DULOS PRINCIPALES) -->
+                <!-- âÅ¡¡ Performance y Core Web Vitals --><!-- Ã°Å¸"Å  Analytics y métricas avanzadas --><!-- Ã°Å¸Å½" IA educativa y tutorías --><!-- Ã°Å¸"Â± PWA y móvil optimizado -->
+                <script src="js/pwa-optimizer.js"></script> <!-- Ã°Å¸"Â± PWA Optimizer -->
+                <!-- Ã°Å¸"' Seguridad y autenticación --><!-- Ã°Å¸Å’Â APIs externas y conectividad -->
+                <script src="js/bge-security-module.js"></script>
+                <!-- âÅ“â€¦ Sistema de seguridad completo CON autenticación real JWT -->
+                <!-- <script src="js/admin-auth.js"></script> âÅ¡Â Ã¯Â¸Â DESHABILITADO: Funcionalidad básica, reemplazada por bge-security-module.js mejorado -->
+
+                <!-- Ã°Å¸"Â§ FUNCIONALIDADES ESPECÍFICAS DE INDEX.HTML -->
+                <!-- Estos scripts son específicos para la página principal -->
+                <!-- <script src="js/dev-override.js"></script> --> <!-- âÅ¡Â Ã¯Â¸Â DESHABILITADO PARA PRODUCCIÃƒ"N -->
+                <!-- <script src="js/dev-credentials.js"></script> -->
+                <!-- âÅ¡Â Ã¯Â¸Â DESHABILITADO PARA PRODUCCIÃƒ"N -->
+                <!-- <script src="js/script.js"></script> --> <!-- Ã°Å¸"' Script principal (Migrado a TS) -->
+                <script src="js/chatbot.js?v=FIX_AUTO_OPEN_V3"></script>
+                <!-- Ã°Å¸Â¤â€“ Chatbot principal -->
+                <script src="js/index-events.js"></script> <!-- Ã°Å¸"Å¸ Eventos específicos index -->
+                <script src="js/search-simple.js"></script> <!-- Ã°Å¸"Â Búsqueda simple -->
+                <!-- <script src="js/api-client.js"></script> --> <!-- Ã°Å¸"â€” Cliente API (Reemplazado por Bundle) -->
+
+                <script src="js/gamification-system.js"></script> <!-- Ã°Å¸Å½Â® Sistema de Gamificación -->
+                <script src="js/dashboard-personalizer.js"></script> <!-- Ã°Å¸"â€¹ Personalizador Dashboard -->
+                <!-- Ã°Å¸Å¡â‚¬ BGE FRAMEWORK CORE BUNDLE (Consolidado) -->
+                <script src="js/core.bundle.js"></script> <!-- Ã°Å¸""Ã°Å¸Â¤â€“ Notificaciones + IA Tutor consolidado -->
+                <script src="js/ia-dashboard-access.js"></script> <!-- Ã°Å¸Â¤â€“ Acceso dashboard IA -->
+                <!-- <script src="js/floating-toolbar.js"></script> -->
+                <!-- Ã°Å¸Å½Â¯ Barra de herramientas flotante (Reemplazado por Bundle) -->
+                <!-- <script src="js/notification-manager.js"></script> -->
+                <!-- âÂÅ’ DESHABILITADO: Ya incluido en core.bundle.js -->
+                <script src="js/notification-config-ui.js"></script> <!-- Ã°Å¸"" Botón flotante de notificaciones -->
+
+                <!-- Ã°Å¸"Â§ SISTEMAS ESPECIALES NO CONSOLIDADOS -->
+                <!-- Sistemas que requieren carga individual por compatibilidad -->
+                <!-- <script src="js/advanced-floating-widgets.js"></script> -->
+                <!-- Ã°Å¸Å½Â¨ DESHABILITADO: Widgets flotantes eran inapropiados para UX -->
+                <script src="js/ar-education-system.js"></script> <!-- Ã°Å¸Â¥Â½ Sistema educativo AR/VR -->
+                <!-- Ã°Å¸"Â Google Login OAuth - DEPRECATED: Reemplazado por unified-auth-system-v2.js desde main.js -->
+                <!-- <script src="js/google-auth-integration.js"></script> -->
+                <!-- <script src="js/widget-buttons-fix.js"></script> --> <!-- Ã°Å¸"Â§ Fix widgets - OBSOLETO -->
+
+                <!-- Ã°Å¸"Â Sistema de Login Unificado V2 - Se carga desde main.js en loadHeaderFooter() -->
+                <!-- <script src="js/unified-login-system.js"></script> --> <!-- DEPRECATED - Reemplazado por V2 -->
+
+                <script src="js/csp-universal-fixer.js"></script> <!-- Ã°Å¸"' CSP compliance (último) -->
+
+                <!-- Ã°Å¸Å¡â‚¬ SCRIPTS EMPAQUETADOS POR WEBPACK (ELIMINADOS - LEGACY BUILD SYSTEM) -->
+                <!-- Bundles webpack legacy removidos: runtime, vendors, main (artefactos de antiguo build system) -->
+
+                <!-- Service Worker Registration - DESACTIVADO (archivo sw-offline-first.js no existe) -->
+                <!--
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async () => {
+                // EVITAR RE-REGISTRO MÃƒÅ¡LTIPLE - Verificación mejorada
+                if (window.swAlreadyRegistered) {
+                    console.log('Ã°Å¸"' SW registration ya intentado, saltando...');
+                    return;
+                }
+                window.swAlreadyRegistered = true;
+
+                try {
+                    // Verificar si ya hay un SW registrado para evitar re-registros
+                    const existingRegistration = await navigator.serviceWorker.getRegistration();
+
+                    if (existingRegistration && existingRegistration.active &&
+                        existingRegistration.active.scriptURL.includes('sw-offline-first.js')) {
+                        console.log('âÅ“â€¦ Service Worker Offline-First ya está activo y funcionando');
+                        return; // No hacer nada si ya está registrado
+                    }
+
+                    console.log('Ã°Å¸"â€ž Registrando Service Worker Offline-First estable...');
+
+                    // Limpiar todos los SW anteriores para evitar conflictos
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        if (!registration.active?.scriptURL.includes('sw-offline-first.js')) {
+                            await registration.unregister();
+                            console.log('Ã°Å¸â€”â€˜Ã¯Â¸Â Cleaned old SW:', registration.active?.scriptURL);
+                        }
+                    }
+
+                    // Registrar el nuevo SW estable solo una vez
+                    let registration = await navigator.serviceWorker.register('./sw-offline-first.js', {
+                        updateViaCache: 'none', // Evitar cache del SW mismo
+                        scope: './' // Scope explícito
+                    });
+
+                    console.log('âÅ“â€¦ Service Worker ESTABLE registrado una sola vez:', registration);
+
+                    // NO manejar updatefound para evitar ciclos infinitos
+
+                } catch (error) {
+                    console.error('âÂÅ’ Service Worker registration failed:', error);
+                }
+            });
+        }
+    </script>
+    -->
+
+                <!-- Enhanced Index Styles and Animations -->
+                <style>
+                    /* Floating shapes animation */
+                    .floating-shapes {
+                        position: absolute;
+                        width: 100%;
+                        height: 100%;
+                        overflow: hidden;
+                    }
+
+                    .shape {
+                        position: absolute;
+                        background: rgba(255, 255, 255, 0.1);
+                        border-radius: 50%;
+                        animation: float 6s ease-in-out infinite;
+                    }
+
+                    .shape-1 {
+                        width: 80px;
+                        height: 80px;
+                        top: 20%;
+                        left: 10%;
+                        animation-delay: 0s;
+                    }
+
+                    .shape-2 {
+                        width: 60px;
+                        height: 60px;
+                        top: 60%;
+                        right: 20%;
+                        animation-delay: 2s;
+                    }
+
+                    .shape-3 {
+                        width: 100px;
+                        height: 100px;
+                        bottom: 20%;
+                        left: 70%;
+                        animation-delay: 4s;
+                    }
+
+                    @keyframes float {
+
+                        0%,
+                        100% {
+                            transform: translateY(0px) rotate(0deg);
+                        }
+
+                        50% {
+                            transform: translateY(-20px) rotate(180deg);
+                        }
+                    }
+
+                    /* Bounce animation for scroll indicator */
+                    .bounce {
+                        animation: bounce 2s infinite;
+                    }
+
+                    @keyframes bounce {
+
+                        0%,
+                        20%,
+                        50%,
+                        80%,
+                        100% {
+                            transform: translateY(0);
+                        }
+
+                        40% {
+                            transform: translateY(-10px);
+                        }
+
+                        60% {
+                            transform: translateY(-5px);
+                        }
+                    }
+
+                    /* Counter animation */
+                    .counter {
+                        transition: all 0.3s ease;
+                    }
+
+                    /* Feature card hover effects */
+                    .feature-card:hover {
+                        transform: translateY(-10px);
+                        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1) !important;
+                    }
+
+                    /* Image hover effect */
+                    .image-wrapper:hover {
+                        transform: perspective(1000px) rotateY(0deg) !important;
+                    }
+
+                    /* Responsive adjustments */
+                    @media (max-width: 768px) {
+                        .display-3 {
+                            font-size: 2.5rem !important;
+                        }
+
+                        .hero-content {
+                            text-align: center;
+                        }
+
+                        .image-wrapper {
+                            transform: none !important;
+                        }
+                    }
+
+                    /* ===== DARK MODE STYLES ===== */
+
+                    /* Próximos Eventos - Section background and content */
+                    body.dark-mode .py-5.bg-primary.text-white.cta-dark-mode {
+                        background-color: #1a1a1a !important;
+                    }
+
+                    body.dark-mode .py-5.bg-primary.text-white.cta-dark-mode .container {
+                        background-color: #1a1a1a !important;
+                    }
+
+                    /* FAQ Section - Accordion items */
+                    body.dark-mode .accordion.faq-dark-mode .accordion-item.accordion-item-dark {
+                        background-color: #2d2d2d !important;
+                        border-color: #404040 !important;
+                    }
+
+                    body.dark-mode .accordion.faq-dark-mode .accordion-button.accordion-button-dark {
+                        background-color: #2d2d2d !important;
+                        color: #ffffff !important;
+                        border-color: #404040 !important;
+                    }
+
+                    body.dark-mode .accordion.faq-dark-mode .accordion-button.accordion-button-dark:not(.collapsed) {
+                        background-color: #404040 !important;
+                        color: #ffffff !important;
+                        box-shadow: none !important;
+                    }
+
+                    /* Flechas de acordeón en modo oscuro */
+                    body.dark-mode .accordion.faq-dark-mode .accordion-button.accordion-button-dark::after {
+                        filter: invert(1) !important;
+                    }
+
+                    body.dark-mode .accordion.faq-dark-mode .accordion-body {
+                        background-color: #2d2d2d !important;
+                        color: #ffffff !important;
+                        border-color: #404040 !important;
+                    }
+
+                    /* Quejas y Sugerencias - Form elements */
+                    body.dark-mode .card.card-dark-mode {
+                        background-color: #2d2d2d !important;
+                        border-color: #404040 !important;
+                        color: #ffffff !important;
+                    }
+
+                    body.dark-mode .form-control.input-dark-mode {
+                        background-color: #404040 !important;
+                        border-color: #505050 !important;
+                        color: #ffffff !important;
+                    }
+
+                    body.dark-mode .form-control.input-dark-mode:focus {
+                        background-color: #505050 !important;
+                        border-color: #1976D2 !important;
+                        color: #ffffff !important;
+                        box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.25) !important;
+                    }
+
+                    body.dark-mode .form-control.input-dark-mode::placeholder {
+                        color: #b0b0b0 !important;
+                    }
+
+                    body.dark-mode .form-select.select-dark-mode {
+                        background-color: #404040 !important;
+                        border-color: #505050 !important;
+                        color: #ffffff !important;
+                    }
+
+                    body.dark-mode .form-select.select-dark-mode:focus {
+                        background-color: #505050 !important;
+                        border-color: #1976D2 !important;
+                        color: #ffffff !important;
+                        box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.25) !important;
+                    }
+
+                    /* Textarea en formulario de quejas */
+                    body.dark-mode textarea.form-control.input-dark-mode {
+                        background-color: #404040 !important;
+                        border-color: #505050 !important;
+                        color: #ffffff !important;
+                    }
+
+                    body.dark-mode textarea.form-control.input-dark-mode:focus {
+                        background-color: #505050 !important;
+                        border-color: #1976D2 !important;
+                        color: #ffffff !important;
+                        box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.25) !important;
+                    }
+
+                    body.dark-mode textarea.form-control.input-dark-mode::placeholder {
+                        color: #b0b0b0 !important;
+                    }
+
+                    /* Additional dark mode elements */
+                    body.dark-mode .text-muted {
+                        color: #b0b0b0 !important;
+                    }
+
+                    body.dark-mode .bg-light {
+                        background-color: #2d2d2d !important;
+                    }
+
+                    body.dark-mode .border {
+                        border-color: #404040 !important;
+                    }
+
+                    /* Sección Herramientas y Recursos ÃƒÅ¡tiles */
+                    body.dark-mode .card.bg-primary.text-white.herramientas-dark-mode {
+                        background-color: #2d2d2d !important;
+                        border-color: #404040 !important;
+                    }
+
+                    body.dark-mode .bg-primary.herramientas-dark-mode {
+                        background-color: #2d2d2d !important;
+                    }
+
+                    /* Nota PWA - Alert info */
+                    body.dark-mode .alert-info {
+                        background-color: #1e3a8a !important;
+                        border-color: #1e40af !important;
+                        color: #ffffff !important;
+                    }
+
+                    body.dark-mode .alert-info .alert-link {
+                        color: #60a5fa !important;
+                    }
+                </style>
+
+                <!-- âÅ“â€¦ Enhanced Index JavaScript - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
+                <script src="js/index-counter-animation.js?v=2025111801"></script>
+
+                <!-- Sitemap Cards CSS -->
+                <style>
+                    /* Sitemap Cards Professional Design */
+                    .sitemap-card {
+                        background: white;
+                        border-radius: 12px;
+                        padding: 1.5rem 1rem;
+                        height: 100%;
+                        transition: all 0.3s ease;
+                        border: 1px solid rgba(0, 0, 0, 0.08);
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                        position: relative;
+                        overflow: hidden;
+                    }
+
+                    .sitemap-card::before {
+                        content: '';
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        height: 3px;
+                        transition: all 0.3s ease;
+                    }
+
+                    .sitemap-card:hover {
+                        transform: translateY(-5px);
+                        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+                    }
+
+                    /* Card Color Themes */
+                    .sitemap-card-primary::before {
+                        background: linear-gradient(90deg, #007bff, #0056b3);
+                    }
+
+                    .sitemap-card-success::before {
+                        background: linear-gradient(90deg, #28a745, #1e7e34);
+                    }
+
+                    .sitemap-card-info::before {
+                        background: linear-gradient(90deg, #17a2b8, #117a8b);
+                    }
+
+                    .sitemap-card-warning::before {
+                        background: linear-gradient(90deg, #ffc107, #d39e00);
+                    }
+
+                    .sitemap-card-header {
+                        display: flex;
+                        align-items: center;
+                        margin-bottom: 1rem;
+                    }
+
+                    .sitemap-icon {
+                        width: 45px;
+                        height: 45px;
+                        border-radius: 10px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 1.2rem;
+                        color: white;
+                        margin-right: 0.75rem;
+                    }
+
+                    .sitemap-card-primary .sitemap-icon {
+                        background: linear-gradient(135deg, #007bff, #0056b3);
+                    }
+
+                    .sitemap-card-success .sitemap-icon {
+                        background: linear-gradient(135deg, #28a745, #1e7e34);
+                    }
+
+                    .sitemap-card-info .sitemap-icon {
+                        background: linear-gradient(135deg, #17a2b8, #117a8b);
+                    }
+
+                    .sitemap-card-warning .sitemap-icon {
+                        background: linear-gradient(135deg, #ffc107, #d39e00);
+                    }
+
+                    .sitemap-title {
+                        font-size: 1rem;
+                        font-weight: 700;
+                        color: #2c3e50;
+                        margin: 0;
+                        letter-spacing: -0.025em;
+                    }
+
+                    .sitemap-links {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                    }
+
+                    .sitemap-links a {
+                        color: #6c757d;
+                        text-decoration: none;
+                        display: flex;
+                        align-items: center;
+                        padding: 0.4rem 0.75rem;
+                        border-radius: 6px;
+                        transition: all 0.3s ease;
+                        font-size: 0.9rem;
+                        border: 1px solid transparent;
+                    }
+
+                    .sitemap-links a i {
+                        width: 18px;
+                        text-align: center;
+                        margin-right: 0.5rem;
+                        font-size: 0.85rem;
+                    }
+
+                    .sitemap-links a:hover {
+                        background: rgba(0, 123, 255, 0.1);
+                        color: #007bff;
+                        transform: translateX(5px);
+                        border-color: rgba(0, 123, 255, 0.2);
+                    }
+
+                    /* Dark Mode Support */
+                    [data-theme="dark"] .sitemap-card,
+                    .dark-mode .sitemap-card {
+                        background: #2d2d2d;
+                        border-color: rgba(255, 255, 255, 0.1);
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                    }
+
+                    [data-theme="dark"] .sitemap-title,
+                    .dark-mode .sitemap-title {
+                        color: #e3f2fd;
+                    }
+
+                    [data-theme="dark"] .sitemap-links a,
+                    .dark-mode .sitemap-links a {
+                        color: #b0bec5;
+                    }
+
+                    [data-theme="dark"] .sitemap-links a:hover,
+                    .dark-mode .sitemap-links a:hover {
+                        background: rgba(25, 118, 210, 0.2);
+                        color: #64b5f6;
+                    }
+
+                    /* Responsive Adjustments */
+                    @media (max-width: 768px) {
+                        .sitemap-card {
+                            padding: 1.25rem 0.75rem;
+                            margin-bottom: 1rem;
+                        }
+
+                        .sitemap-icon {
+                            width: 40px;
+                            height: 40px;
+                            font-size: 1.1rem;
+                        }
+
+                        .sitemap-title {
+                            font-size: 0.95rem;
+                        }
+
+                        .sitemap-links a {
+                            padding: 0.35rem 0.6rem;
+                            font-size: 0.85rem;
+                        }
+                    }
+                </style>
+
+                <!-- Back to Top Button -->
+                <button id="back-to-top" class="btn btn-primary d-none" aria-label="Volver arriba">
+                    <i class="fas fa-arrow-up"></i>
+                </button>
+
+                <!-- ===== BGE FRAMEWORK INICIALIZACIÃƒ"N ===== -->
+
+                <!-- âÅ“â€¦ Inicialización Framework BGE - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
+                <script src="js/index-framework-init.js?v=2025111801"></script>
+
+                <!-- âÅ“â€¦ PWA Optimizer - Inicialización - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
+                <script src="js/index-pwa-init.js?v=2025111801"></script>
+
+                <!-- âÅ“â€¦ Estilos para animaciones - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
+                <link rel="stylesheet" href="css/index-animations.css?v=2025111801">
+
+                <!-- Modal de Login JWT -->
+                <!-- Modal de Login JWT Eliminado - Reemplazado por AuthInterface dinámico -->
+
+                <!-- Build Assets (Restored) -->
+                <link rel="stylesheet" href="/dist/assets/main.css">
+                <script type="module" src="/dist/assets/main.js"></script>
+</body>
+
+</html>

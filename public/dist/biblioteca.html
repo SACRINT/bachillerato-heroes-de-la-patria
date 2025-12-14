@@ -1,0 +1,891 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title" data-base-title="Biblioteca Digital">Biblioteca Digital</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --text-color: #2c3e50;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --sidebar-bg: #ffffff;
+            --border-color: #dee2e6;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #ecf0f1;
+                --secondary-color: #3498db;
+                --accent-color: #e74c3c;
+                --text-color: #ecf0f1;
+                --bg-color: #1a1a1a;
+                --card-bg: #2d2d2d;
+                --sidebar-bg: #252525;
+                --border-color: #404040;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding-top: 0;
+            /* No padding, elements handle their own spacing */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Library Navbar - Positioned below global fixed header */
+        .library-navbar {
+            margin-top: 76px;
+            /* Space for the fixed global header */
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .library-navbar .navbar-brand {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .library-navbar .search-box {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 2rem;
+        }
+
+        .library-navbar .search-box input {
+            border-radius: 25px;
+            border: none;
+            padding: 0.7rem 1.5rem;
+        }
+
+        .library-navbar .user-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .library-navbar .btn-icon {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .library-navbar .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Layout */
+        .library-container {
+            display: flex;
+            /* FIX: Removed min-height to prevent footer overlap */
+        }
+
+        /* Sidebar - Normal flow, not sticky */
+        .sidebar {
+            width: 280px;
+            background: #2c3e50;
+            /* Dark background for contrast */
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex-shrink: 0;
+            min-height: 500px;
+            color: white;
+            /* White text */
+        }
+
+        .sidebar h6 {
+            color: #f39c12;
+            /* Orange/gold for headings */
+            font-weight: 600;
+            margin-bottom: 1rem;
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .sidebar h6:first-child {
+            margin-top: 0;
+        }
+
+        .sidebar label {
+            color: white;
+            /* White labels */
+        }
+
+        .sidebar .badge {
+            background-color: #f39c12 !important;
+            /* Gold/orange badges */
+            color: #1a1a1a !important;
+            /* Dark text on badge */
+        }
+
+        .sidebar .form-select {
+            background-color: #1a1a1a;
+            color: white;
+            border-color: #3d566e;
+        }
+
+        /* Duplicate h6 styles removed - now using the new orange color defined above */
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        .filter-item:hover {
+            background: var(--bg-color);
+        }
+
+        .filter-item.active {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .filter-item input[type="checkbox"] {
+            margin-right: 0.75rem;
+        }
+
+        .filter-item .badge {
+            margin-left: auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        /* Header Actions */
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .content-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .view-toggles {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-toggle {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-toggle.active {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        /* Documents Grid */
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .document-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .document-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .document-card .card-icon {
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .document-card .card-body {
+            padding-top: 76px;
+            /* Prevent header overlap */
+            padding: 1.25rem;
+        }
+
+        .document-card .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .document-card .card-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-bottom: 0.75rem;
+        }
+
+        .document-card .card-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .document-card .card-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .document-card .btn-sm {
+            flex: 1;
+        }
+
+        /* Documents List View */
+        .documents-list {
+            display: none;
+        }
+
+        .documents-list.active {
+            display: block;
+        }
+
+        .document-list-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .document-list-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .document-list-item .list-icon {
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .document-list-item .list-content {
+            flex: 1;
+        }
+
+        .document-list-item .list-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .document-list-item .list-description {
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-bottom: 0.75rem;
+        }
+
+        .document-list-item .list-meta {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        /* Rating Stars */
+        .rating-stars {
+            color: #f39c12;
+        }
+
+        .rating-stars i {
+            margin-right: 2px;
+        }
+
+        /* Tags */
+        .document-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .tag {
+            background: var(--bg-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-color);
+        }
+
+        /* Pagination */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        /* Modal */
+        .modal-content {
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .modal-header {
+            border-bottom-color: var(--border-color);
+        }
+
+        .modal-footer {
+            border-top-color: var(--border-color);
+        }
+
+        /* Document Detail */
+        .document-detail-header {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .document-detail-icon {
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            width: 150px;
+            height: 150px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .document-detail-info h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .document-detail-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-box {
+            background: var(--bg-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-box .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .stat-box .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 0.5rem;
+        }
+
+        /* Comments */
+        .comments-section {
+            margin-top: 3rem;
+        }
+
+        .comment {
+            background: var(--bg-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .comment-author {
+            font-weight: 600;
+        }
+
+        .comment-date {
+            font-size: 0.85rem;
+            opacity: 0.6;
+        }
+
+        .comment-content {
+            line-height: 1.6;
+        }
+
+        .comment-reply {
+            margin-left: 3rem;
+            margin-top: 1rem;
+        }
+
+        /* Versions */
+        .versions-list {
+            margin-top: 2rem;
+        }
+
+        .version-item {
+            background: var(--bg-color);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .version-item.current {
+            border: 2px solid var(--success-color);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h4 {
+            opacity: 0.6;
+        }
+
+        /* Loading */
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .documents-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .library-navbar .search-box {
+                margin: 0;
+            }
+
+            .document-detail-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Hidden elements */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+    <script src="js/meta-updater.js" defer></script>
+    <!-- ? FIX (18 Nov 2025): Header/Footer styles loaded globally -->
+    <link rel="stylesheet" href="css/global-layout.css">
+    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Main JS for dynamic header/footer loading -->
+    <script src="js/main.js" defer></script>
+</head>
+
+<body>
+    <!-- Global Header -->
+    <header id="main-header"></header>
+
+    <!-- Navbar -->
+    <nav class="library-navbar">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <a href="/" class="navbar-brand">
+                    <i class="bi bi-book-fill"></i> Biblioteca Digital
+                </a>
+
+                <div class="search-box">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="globalSearch"
+                            placeholder="Buscar documentos, reglamentos, manuales...">
+                        <button class="btn btn-light" type="button" id="searchBtn" aria-label="Buscar" title="Buscar">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="user-actions ms-auto">
+                    <button class="btn btn-icon" id="favoritesBtn" title="Favoritos">
+                        <i class="bi bi-heart-fill"></i>
+                    </button>
+                    <button class="btn btn-icon" id="historyBtn" title="Historial">
+                        <i class="bi bi-clock-history"></i>
+                    </button>
+                    <button class="btn btn-icon" id="uploadBtn" title="Subir documento">
+                        <i class="bi bi-upload"></i>
+                    </button>
+                    <button class="btn btn-icon" id="userMenuBtn" title="Mi cuenta">
+                        <i class="bi bi-person-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="library-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h6>Categorías</h6>
+            <div class="filter-group" id="categoriesFilter">
+                <!-- Categories will be loaded here -->
+            </div>
+
+            <h6>Tipo de Documento</h6>
+            <div class="filter-group">
+                <div class="filter-item" data-type="reglamento">
+                    <input type="checkbox" id="type-reglamento">
+                    <label for="type-reglamento">Reglamento</label>
+                    <span class="badge bg-secondary">0</span>
+                </div>
+                <div class="filter-item" data-type="manual">
+                    <input type="checkbox" id="type-manual">
+                    <label for="type-manual">Manual</label>
+                    <span class="badge bg-secondary">0</span>
+                </div>
+                <div class="filter-item" data-type="recurso">
+                    <input type="checkbox" id="type-recurso">
+                    <label for="type-recurso">Recurso Académico</label>
+                    <span class="badge bg-secondary">0</span>
+                </div>
+                <div class="filter-item" data-type="formulario">
+                    <input type="checkbox" id="type-formulario">
+                    <label for="type-formulario">Formulario</label>
+                    <span class="badge bg-secondary">0</span>
+                </div>
+                <div class="filter-item" data-type="otro">
+                    <input type="checkbox" id="type-otro">
+                    <label for="type-otro">Otro</label>
+                    <span class="badge bg-secondary">0</span>
+                </div>
+            </div>
+
+            <h6>Calificación</h6>
+            <div class="filter-group">
+                <div class="filter-item" data-rating="5">
+                    <input type="checkbox" id="rating-5" title="5 estrellas">
+                    <label for="rating-5">
+                        <div class="rating-stars">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                    </label>
+                </div>
+                <div class="filter-item" data-rating="4">
+                    <input type="checkbox" id="rating-4" title="4 estrellas">
+                    <label for="rating-4">
+                        <div class="rating-stars">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star"></i>
+                        </div>
+                    </label>
+                </div>
+                <div class="filter-item" data-rating="3">
+                    <input type="checkbox" id="rating-3" title="3 estrellas">
+                    <label for="rating-3">
+                        <div class="rating-stars">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <h6>Ordenar por</h6>
+            <div class="filter-group">
+                <select class="form-select" id="sortBy" title="Ordenar por">
+                    <option value="created_at">Más reciente</option>
+                    <option value="title">Título (A-Z)</option>
+                    <option value="total_downloads">Más descargados</option>
+                    <option value="total_views">Más vistos</option>
+                    <option value="avg_rating">Mejor calificados</option>
+                </select>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+
+
+        <main class="main-content">
+            <!-- Header -->
+            <div class="content-header">
+                <div>
+                    <h2 id="contentTitle">Todos los documentos</h2>
+                    <p class="text-muted" id="contentSubtitle">Explora nuestra colección de recursos digitales</p>
+                </div>
+                <div class="view-toggles">
+                    <button class="btn-toggle active" id="gridViewBtn">
+                        <i class="bi bi-grid-3x3-gap-fill"></i> Grid
+                    </button>
+                    <button class="btn-toggle" id="listViewBtn">
+                        <i class="bi bi-list-ul"></i> Lista
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading-spinner hidden" id="loadingSpinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-3">Cargando documentos...</p>
+            </div>
+
+            <!-- Documents Grid -->
+            <div class="documents-grid active" id="documentsGrid">
+                <!-- Documents will be loaded here -->
+            </div>
+
+            <!-- Documents List -->
+            <div class="documents-list" id="documentsList">
+                <!-- List view documents will be loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state hidden" id="emptyState">
+                <i class="bi bi-inbox"></i>
+                <h4>No se encontraron documentos</h4>
+                <p class="text-muted">Intenta ajustar los filtros de búsqueda</p>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <nav aria-label="Paginación de documentos">
+                    <ul class="pagination" id="pagination">
+                        <!-- Pagination will be loaded here -->
+                    </ul>
+                </nav>
+            </div>
+        </main>
+    </div>
+
+    <!-- Document Detail Modal -->
+    <div class="modal fade" id="documentDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalles del Documento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="documentDetailBody">
+                    <!-- Document details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Document Modal -->
+    <div class="modal fade" id="uploadDocumentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Subir Nuevo Documento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="uploadDocumentForm">
+                        <div class="mb-3">
+                            <label for="docTitle" class="form-label">Título *</label>
+                            <input type="text" class="form-control" id="docTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="docDescription" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="docDescription" rows="3"></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="docCategory" class="form-label">Categoría *</label>
+                                <select class="form-select" id="docCategory" required>
+                                    <!-- Categories will be loaded here -->
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="docType" class="form-label">Tipo de Documento *</label>
+                                <select class="form-select" id="docType" required>
+                                    <option value="reglamento">Reglamento</option>
+                                    <option value="manual">Manual</option>
+                                    <option value="recurso">Recurso Académico</option>
+                                    <option value="formulario">Formulario</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="docFile" class="form-label">Archivo *</label>
+                            <input type="file" class="form-control" id="docFile" required>
+                            <div class="form-text">Máximo 50MB. Formatos: PDF, Word, Excel, PowerPoint, imágenes</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="docTags" class="form-label">Etiquetas</label>
+                            <input type="text" class="form-control" id="docTags" placeholder="Separadas por comas">
+                            <div class="form-text">Ej: reglamento, estudiantes, 2025</div>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="docPublished">
+                            <label class="form-check-label" for="docPublished">
+                                Publicar inmediatamente
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveDocumentBtn">
+                        <i class="bi bi-upload"></i> Subir Documento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 🔒 DOMPurify XSS Protection -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <script src="js/dompurify-config.js"></script>
+    <!-- ðŸ"§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
+    <!-- (main.js se carga en línea 559 con defer, no cargar nuevamente) -->
+    <!-- Framework Core -->
+    <script src="js/bge-framework-core.js"></script>
+    <!-- Library Manager -->
+    <script src="js/digital-library-manager.js"></script>
+    <script>
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const library = new DigitalLibraryManager({
+                apiBaseURL: '/api/digital-library'
+            });
+        });
+    </script>
+    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
+
+
+    <!-- Footer -->
+    <footer id="main-footer"></footer>
+    <script src="js/tenant-config-loader.js" defer></script>
+
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
+        <i class="fas fa-moon"></i>
+    </button>
+
+
+
+    <!-- Chat Bot Container -->
+    <!-- Chat Bot Container -->
+
+    <script src="js/chatbot.js"></script>
+</body>
+
+</html>

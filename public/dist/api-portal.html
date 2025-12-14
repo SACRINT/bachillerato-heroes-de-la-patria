@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGE API Portal - Documentaci�n Interactiva</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Global Layout Styles - Header, Footer, Floating Buttons -->
+    <link rel="stylesheet" href="css/global-layout.css">
+    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 152, 219, 0.95));
+            color: white;
+            padding: 80px 0;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-section p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+        }
+
+        .api-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .api-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .api-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .api-card .icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list li i {
+            color: var(--success-color);
+            margin-right: 10px;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, var(--secondary-color), var(--success-color));
+            border: none;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            color: white;
+        }
+
+        .stats-box {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .stats-box h4 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .stats-box p {
+            color: var(--primary-color);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .endpoint-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .badge-get { background: #61affe; color: white; }
+        .badge-post { background: #49cc90; color: white; }
+        .badge-put { background: #fca130; color: white; }
+        .badge-delete { background: #f93e3e; color: white; }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .container-custom {
+            max-width: 1200px;
+        }
+
+        footer {
+            background: rgba(44, 62, 80, 0.95);
+            color: white;
+            padding: 30px 0;
+            margin-top: 80px;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+    </style>
+
+    <!-- 🏢 Multi-Tenancy Support -->
+    <script src="js/tenant-config-loader.js"></script>
+    <!-- tenant-replacer.js removed - functionality handled by tenant-config-loader.js -->
+    <!-- DOMPurify for XSS protection (MUST load before main.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <!-- Main JS for dynamic header/footer loading -->
+    <script src="js/main.js" defer></script>
+</head>
+<body>
+    <!-- Header dinámico inyectado por main.js -->
+    <header id="main-header"></header>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1><i class="fas fa-book"></i> BGE API Portal</h1>
+                    <p class="lead">Documentaci�n interactiva completa de la API del sistema BGE</p>
+                    <p>OpenAPI 3.0 | RESTful | Autenticaci�n JWT | 100+ Endpoints</p>
+                    <div class="mt-4">
+                        <a href="/api-docs" class="btn cta-button me-3">
+                            <i class="fas fa-rocket"></i> Explorar Documentaci�n
+                        </a>
+                        <a href="/api-docs/spec.json" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-download"></i> Descargar Spec
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="stats-box">
+                        <h4 id="endpoint-count">100+</h4>
+                        <p>Endpoints Documentados</p>
+                    </div>
+                    <div class="stats-box">
+                        <h4>v5.5.0</h4>
+                        <p>Versi�n API</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container container-custom">
+        <!-- Quick Start -->
+        <div class="row mb-5">
+            <div class="col-md-6">
+                <div class="api-card">
+                    <div class="icon">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <h3>Quick Start</h3>
+                    <p>Empieza a usar la API en minutos con nuestra gu�a interactiva.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Autenticaci�n JWT simple</li>
+                        <li><i class="fas fa-check"></i> Examples en cada endpoint</li>
+                        <li><i class="fas fa-check"></i> Try it out en vivo</li>
+                        <li><i class="fas fa-check"></i> Respuestas en tiempo real</li>
+                    </ul>
+                    <a href="/api-docs" class="btn btn-primary mt-3">
+                        <i class="fas fa-arrow-right"></i> Comenzar Ahora
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="api-card">
+                    <div class="icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Autenticaci�n</h3>
+                    <p>Obt�n tu token JWT y comienza a hacer requests.</p>
+                    <div class="code-block">
+<pre>POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "usuario@example.com",
+  "password": "tu_password"
+}
+
+// Response
+{
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIs...",
+  "user": { ... }
+}</pre>
+                    </div>
+                    <a href="/api-docs#/Authentication" class="btn btn-success mt-3">
+                        <i class="fas fa-lock"></i> Ver Endpoints de Auth
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Categories -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="text-white mb-4"><i class="fas fa-layer-group"></i> Categor�as de API</h2>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="api-card text-center">
+                    <div class="icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Usuarios</h3>
+                    <p>Gesti�n completa de usuarios, roles y permisos.</p>
+                    <div class="mt-3">
+                        <span class="endpoint-badge badge-get">GET</span>
+                        <span class="endpoint-badge badge-post">POST</span>
+                        <span class="endpoint-badge badge-put">PUT</span>
+                        <span class="endpoint-badge badge-delete">DELETE</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="api-card text-center">
+                    <div class="icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Estudiantes</h3>
+                    <p>Calificaciones, asistencias, reportes acad�micos.</p>
+                    <div class="mt-3">
+                        <span class="endpoint-badge badge-get">GET</span>
+                        <span class="endpoint-badge badge-post">POST</span>
+                        <span class="endpoint-badge badge-put">PUT</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="api-card text-center">
+                    <div class="icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Compliance</h3>
+                    <p>GDPR, WCAG, SOC2 endpoints de cumplimiento.</p>
+                    <div class="mt-3">
+                        <span class="endpoint-badge badge-get">GET</span>
+                        <span class="endpoint-badge badge-post">POST</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="api-card text-center">
+                    <div class="icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>Notificaciones</h3>
+                    <p>Sistema de notificaciones en tiempo real.</p>
+                    <div class="mt-3">
+                        <span class="endpoint-badge badge-get">GET</span>
+                        <span class="endpoint-badge badge-post">POST</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="api-card text-center">
+                    <div class="icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Analytics</h3>
+                    <p>Reportes, estad�sticas y m�tricas del sistema.</p>
+                    <div class="mt-3">
+                        <span class="endpoint-badge badge-get">GET</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="api-card text-center">
+                    <div class="icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <h3>Admin</h3>
+                    <p>Configuraci�n, backups, y gesti�n del sistema.</p>
+                    <div class="mt-3">
+                        <span class="endpoint-badge badge-get">GET</span>
+                        <span class="endpoint-badge badge-post">POST</span>
+                        <span class="endpoint-badge badge-put">PUT</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="text-white mb-4"><i class="fas fa-star"></i> Caracter�sticas de la API</h2>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="api-card">
+                    <h3><i class="fas fa-rocket text-primary"></i> Performance Optimizado</h3>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Cache multi-capa (L1 + L2 Redis)</li>
+                        <li><i class="fas fa-check"></i> Query optimization autom�tica</li>
+                        <li><i class="fas fa-check"></i> Response time < 100ms promedio</li>
+                        <li><i class="fas fa-check"></i> Rate limiting inteligente</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="api-card">
+                    <h3><i class="fas fa-lock text-success"></i> Seguridad Enterprise</h3>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> JWT authentication con refresh tokens</li>
+                        <li><i class="fas fa-check"></i> RBAC (Role-Based Access Control)</li>
+                        <li><i class="fas fa-check"></i> AES-256-GCM encryption</li>
+                        <li><i class="fas fa-check"></i> SOC2 Type II compliant</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="api-card">
+                    <h3><i class="fas fa-globe text-info"></i> Compliance Total</h3>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> GDPR compliant (7 art�culos)</li>
+                        <li><i class="fas fa-check"></i> WCAG 2.1 AA accessibility</li>
+                        <li><i class="fas fa-check"></i> SOC2 audit logging (7 a�os)</li>
+                        <li><i class="fas fa-check"></i> Incident response automation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="api-card">
+                    <h3><i class="fas fa-code text-warning"></i> Developer Experience</h3>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> OpenAPI 3.0 specification</li>
+                        <li><i class="fas fa-check"></i> Swagger UI interactivo</li>
+                        <li><i class="fas fa-check"></i> Examples en cada endpoint</li>
+                        <li><i class="fas fa-check"></i> Error messages descriptivos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Stats (Dynamic) -->
+        <div class="row mb-5" id="api-stats-section" style="display:none;">
+            <div class="col-12">
+                <h2 class="text-white mb-4"><i class="fas fa-chart-bar"></i> Estad�sticas de la API</h2>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stats-box">
+                    <h4 id="total-paths">0</h4>
+                    <p>Rutas Totales</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stats-box">
+                    <h4 id="total-schemas">0</h4>
+                    <p>Schemas</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stats-box">
+                    <h4 id="total-tags">0</h4>
+                    <p>Tags</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stats-box">
+                    <h4 id="total-security">2</h4>
+                    <p>Security Schemes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <div class="api-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h2 style="color: white;">�Listo para comenzar?</h2>
+                    <p class="lead">Explora la documentaci�n completa y comienza a integrar la API BGE en tus aplicaciones.</p>
+                    <a href="/api-docs" class="btn btn-light btn-lg mt-3">
+                        <i class="fas fa-rocket"></i> Ir a la Documentaci�n
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-graduation-cap"></i> BGE API Portal</h5>
+                    <p>Documentaci�n oficial de la API del sistema de Bachillerato General por Competencias.</p>
+                    <p class="mb-0"><small>Versi�n 5.5.0 | OpenAPI 3.0.3 | Última actualizaci�n: 20 Nov 2025</small></p>
+                </div>
+                <div class="col-md-3">
+                    <h6>Enlaces R�pidos</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="/api-docs" class="text-white"><i class="fas fa-book"></i> Documentaci�n</a></li>
+                        <li><a href="/api-docs/spec.json" class="text-white"><i class="fas fa-download"></i> OpenAPI Spec</a></li>
+                        <li><a href="/api/health" class="text-white"><i class="fas fa-heartbeat"></i> Health Check</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6>Soporte</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope"></i> support@bge.edu.mx</li>
+                        <li><i class="fas fa-phone"></i> +52 (33) 1234-5678</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Guadalajara, Jalisco</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom Script -->
+
+
+    <!-- Footer -->
+    <footer id="main-footer"></footer>
+    <script>
+        // Load API stats from spec
+        async function loadAPIStats() {
+            try {
+                const response = await fetch('/api-docs/spec.json');
+                const spec = await response.json();
+
+                // Update stats
+                document.getElementById('total-paths').textContent = Object.keys(spec.paths || {}).length;
+                document.getElementById('total-schemas').textContent = Object.keys(spec.components?.schemas || {}).length;
+                document.getElementById('total-tags').textContent = (spec.tags || []).length;
+                document.getElementById('endpoint-count').textContent = Object.keys(spec.paths || {}).length + '+';
+
+                // Show stats section
+                document.getElementById('api-stats-section').style.display = 'block';
+
+            } catch (error) {
+                console.log('Could not load API stats:', error);
+            }
+        }
+
+        // Load on page load
+        document.addEventListener('DOMContentLoaded', loadAPIStats);
+    </script>
+    <!-- Footer dinámico inyectado por main.js -->
+    <footer id="main-footer"></footer>
+    <script src="js/chatbot.js"></script>
+</body>
+</html>

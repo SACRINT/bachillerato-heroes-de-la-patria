@@ -1,0 +1,139 @@
+{
+  "tenantId": "bge-heroes-patria-001",
+  "version": "1.0.0",
+  "configType": "production",
+  "lastUpdated": "2025-09-25T00:00:00Z",
+
+  "institution": {
+    "name": "Bachillerato General Estatal Héroes de la Patria",
+    "shortName": "BGE Héroes de la Patria",
+    "type": "Bachillerato General Estatal",
+    "level": "Media Superior",
+    "address": {
+      "street": "Coronel Tito Hernández",
+      "city": "Venustiano Carranza",
+      "state": "Puebla",
+      "country": "México",
+      "postalCode": "73040"
+    },
+    "contact": {
+      "phone": "+52 276 123 4567",
+      "email": "contacto@bgeheroes.edu.mx",
+      "website": "https://bgeheroes.edu.mx"
+    },
+    "coordinates": {
+      "latitude": "19.4978",
+      "longitude": "-97.4628"
+    }
+  },
+
+  "branding": {
+    "primaryColor": "#1976D2",
+    "secondaryColor": "#FFC107",
+    "accentColor": "#FF5722",
+    "logoUrl": "/images/logo-bachillerato-HDLP.webp",
+    "faviconUrl": "/images/logo-bachillerato-HDLP.webp",
+    "heroImageUrl": "/images/hero/fachada1.webp",
+    "fontFamily": "'Segoe UI', Roboto, Arial, sans-serif"
+  },
+
+  "leadership": {
+    "director": {
+      "name": "Profr. Juan Carlos Méndez Ruiz",
+      "title": "Director General",
+      "photo": "/images/team/director.jpg",
+      "bio": "Licenciado en Educación con más de 20 años de experiencia en educación media superior."
+    },
+    "subdirector": {
+      "name": "Profra. María Elena Vázquez Torres",
+      "title": "Subdirectora Académica",
+      "photo": "/images/team/subdirectora.jpg"
+    },
+    "coordinator": {
+      "name": "Lic. Roberto Herrera Sánchez",
+      "title": "Coordinador de Servicios Escolares",
+      "photo": "/images/team/coordinador.jpg"
+    }
+  },
+
+  "socialMedia": {
+    "facebook": "https://facebook.com/BGEHeroesDeLaPatria",
+    "instagram": "https://instagram.com/bgeheroes_oficial",
+    "twitter": "https://twitter.com/BGEHeroesOficial",
+    "youtube": "https://youtube.com/@BGEHeroesPatria"
+  },
+
+  "academicInfo": {
+    "missionStatement": "Formar integralmente a jóvenes bachilleres con competencias académicas, ciudadanas y profesionales que les permitan continuar con éxito sus estudios superiores o incorporarse al ámbito laboral con una sólida base educativa.",
+    "visionStatement": "Ser reconocidos como la institución de educación media superior líder en la región, formando ciudadanos íntegros, competentes y comprometidos con el desarrollo social y económico de su comunidad.",
+    "values": [
+      "Excelencia académica",
+      "Integridad y honestidad",
+      "Respeto y tolerancia",
+      "Responsabilidad social",
+      "Innovación educativa"
+    ],
+    "educationalPrograms": [
+      {
+        "name": "Bachillerato General",
+        "description": "Programa de educación media superior que prepara a los estudiantes para continuar estudios universitarios",
+        "duration": "3 años (6 semestres)"
+      }
+    ],
+    "accreditation": "Reconocido por la Secretaría de Educación Pública (SEP) - Clave: 21EBH0123X",
+    "establishedYear": "2008"
+  },
+
+  "features": {
+    "chatbotEnabled": true,
+    "paymentsEnabled": true,
+    "calendarEnabled": true,
+    "gradesEnabled": true,
+    "appointmentsEnabled": true,
+    "newsEnabled": true,
+    "downloadsEnabled": true,
+    "communityEnabled": true,
+    "aiTutorEnabled": true,
+    "analyticsEnabled": true
+  },
+
+  "localization": {
+    "language": "es",
+    "timezone": "America/Mexico_City",
+    "currency": "MXN",
+    "dateFormat": "DD/MM/YYYY"
+  },
+
+  "customContent": {
+    "welcomeMessage": "¡Bienvenidos a la familia de Héroes de la Patria! Donde forjamos el futuro con educación de excelencia.",
+    "heroSlogan": "Forjando el Futuro con Excelencia Educativa",
+    "aboutUs": "Somos una institución comprometida con la formación integral de nuestros estudiantes, ubicada en el corazón de Puebla.",
+    "specializations": [
+      "Área Físico-Matemática",
+      "Área Químico-Biológica",
+      "Área Económico-Administrativa",
+      "Área Humanidades y Ciencias Sociales"
+    ]
+  },
+
+  "documents": {
+    "reglamento": "/documents/reglamento-escolar.pdf",
+    "manualEstudiante": "/documents/manual-estudiante-2024.pdf",
+    "calendarioEscolar": "/documents/calendario-escolar-2024-2025.pdf",
+    "formatoInscripcion": "/documents/formato-inscripcion.pdf"
+  },
+
+  "metadata": {
+    "keywords": [
+      "bachillerato",
+      "heroes de la patria",
+      "puebla",
+      "venustiano carranza",
+      "educacion media superior",
+      "preparatoria"
+    ],
+    "description": "Bachillerato General Estatal 'Héroes de la Patria' en Coronel Tito Hernández, Venustiano Carranza, Puebla. Educación media superior de calidad con formación integral.",
+    "ogTitle": "BGE Héroes de la Patria - Forjando el Futuro",
+    "ogDescription": "Educación media superior de excelencia en Puebla. ¡Únete a la familia de Héroes!"
+  }
+}

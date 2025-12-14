@@ -1,0 +1,29 @@
+{
+  "estudiantes": {
+    "total": 202,
+    "descripcion": "Estudiantes"
+  },
+  "docentes": {
+    "total": 12,
+    "descripcion": "Personal docente activo"
+  },
+  "materias": {
+    "total": 41,
+    "descripcion": "Materias ofrecidas en el plantel"
+  },
+  "promedio": {
+    "valor": 8.4,
+    "descripcion": "Promedio institucional actual"
+  },
+  "configuracion": {
+    "totalEstudiantes": 202,
+    "totalDocentes": 12,
+    "totalMaterias": 41,
+    "promedioGeneral": 8.4,
+    "descripcionEstudiantes": "Número total de estudiantes matriculados",
+    "descripcionDocentes": "Personal docente activo",
+    "descripcionMaterias": "Materias ofrecidas en el plantel",
+    "descripcionPromedio": "Promedio institucional actual"
+  },
+  "fechaActualizacion": "2024-09-19T02:45:00.000Z"
+}

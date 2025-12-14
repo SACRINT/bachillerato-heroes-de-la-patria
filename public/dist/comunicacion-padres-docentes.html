@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ✅ CSP META TAG -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live blob:; script-src-elem 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://accounts.google.com/gsi/style https://cdn.tiny.cloud https://*.tiny.cloud; style-src-elem 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://accounts.google.com/gsi/style https://cdn.tiny.cloud https://*.tiny.cloud; connect-src 'self' https://bge-heroesdelapatria.vercel.app https://sp.tinymce.com https://www.google-analytics.com https://www.googletagmanager.com https: ws: wss:; img-src 'self' data: blob: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tiny.cloud https://*.tiny.cloud https://ui-avatars.com https:; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.tiny.cloud https://*.tiny.cloud; frame-src 'self' https://accounts.google.com https://www.google.com https://maps.google.com https://forms.gle https://vercel.live https://*.vercel.live; object-src 'none'; form-action 'self'; base-uri 'self';">
+
+    <title>Comunicación Padres-Docentes | BGE Héroes de la Patria</title>
+
+    <!-- Preconnects -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
+    <!-- Meta tags -->
+    <meta name="description"
+        content="Plataforma de comunicación directa entre padres de familia y docentes del Bachillerato General Estatal Héroes de la Patria.">
+    <meta name="theme-color" content="#1976D2">
+
+    <!-- Script para actualización dinámica de metadatos -->
+    <script src="js/meta-updater.js" defer></script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
+
+    <!-- Header/Footer styles loaded globally -->
+    <link rel="stylesheet" href="css/global-layout.css">
+    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+
+    <!-- Icons -->
+    <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Main JS for dynamic header/footer loading -->
+    <script src="js/main.js" defer></script>
+
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            border-radius: 0 0 2rem 2rem;
+        }
+
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            background: rgba(var(--primary-rgb), 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .cta-section {
+            background-color: #f8f9fa;
+            padding: 4rem 0;
+            margin-top: 3rem;
+            border-radius: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header will be injected here -->
+    <header id="main-header"></header>
+
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section text-center">
+            <div class="container">
+                <h1 class="display-4 fw-bold mb-3">Comunicación Padres-Docentes</h1>
+                <p class="lead mb-4">Fortaleciendo el vínculo educativo para el éxito de nuestros estudiantes</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="#portal-acceso" class="btn btn-light btn-lg px-4 fw-bold text-primary">Acceder al
+                        Portal</a>
+                    <a href="#contacto" class="btn btn-outline-light btn-lg px-4">Más Información</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="container mb-5">
+            <!-- Intro -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <h2 class="mb-3">Una Alianza Educativa</h2>
+                    <p class="text-muted">
+                        La comunicación fluida entre el hogar y la escuela es fundamental. Nuestra plataforma digital
+                        facilita el seguimiento académico, la gestión de citas y el intercambio de información relevante
+                        para el desarrollo integral de los estudiantes.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="row g-4">
+                <!-- Card 1 -->
+                <div class="col-md-4">
+                    <div class="card feature-card p-4 text-center">
+                        <div class="card-body">
+                            <div class="icon-circle">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h3 class="h4 card-title mb-3">Mensajería Directa</h3>
+                            <p class="card-text text-muted">
+                                Comuníquese directamente con los docentes de sus hijos de manera segura y privada.
+                                Resuelva dudas académicas y manténgase informado sobre el progreso escolar.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="col-md-4">
+                    <div class="card feature-card p-4 text-center">
+                        <div class="card-body">
+                            <div class="icon-circle">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <h3 class="h4 card-title mb-3">Gestión de Citas</h3>
+                            <p class="card-text text-muted">
+                                Solicite y agende reuniones con tutores y profesores en horarios disponibles. Optimice
+                                su tiempo y asegure una atención personalizada.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-md-4">
+                    <div class="card feature-card p-4 text-center">
+                        <div class="card-body">
+                            <div class="icon-circle">
+                                <i class="fas fa-bullhorn"></i>
+                            </div>
+                            <h3 class="h4 card-title mb-3">Avisos y Reportes</h3>
+                            <p class="card-text text-muted">
+                                Reciba notificaciones instantáneas sobre eventos escolares, boletas de calificaciones,
+                                reportes de asistencia y comunicados oficiales de la institución.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA / Login Section -->
+            <section id="portal-acceso" class="cta-section text-center">
+                <div class="container">
+                    <h2 class="mb-4">Portal de Padres de Familia</h2>
+                    <p class="mb-4 text-muted">Acceda con sus credenciales institucionales para gestionar toda la
+                        información académica.</p>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card shadow-sm">
+                                <div class="card-body p-4">
+                                    <form>
+                                        <div class="mb-3 text-start">
+                                            <label for="email" class="form-label">Correo Electrónico / ID</label>
+                                            <input type="email" class="form-control" id="email"
+                                                placeholder="ejemplo@padres.bge.edu.mx">
+                                        </div>
+                                        <div class="mb-3 text-start">
+                                            <label for="password" class="form-label">Contraseña</label>
+                                            <input type="password" class="form-control" id="password">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary w-100 mb-3">Iniciar Sesión</button>
+                                        <a href="#" class="text-decoration-none small">¿Olvidó su contraseña?</a>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Info -->
+            <section id="contacto" class="mt-5 text-center">
+                <h3 class="mb-4">¿Necesita Ayuda?</h3>
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="alert alert-info d-flex align-items-center justify-content-center" role="alert">
+                            <i class="fas fa-headset me-3 fs-4"></i>
+                            <div>
+                                Para soporte técnico o problemas de acceso, contacte a
+                                <strong>soporte@bge-heroes.edu.mx</strong> o llame al <strong>(XXX) XXX-XXXX</strong>
+                                ext. 105.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer will be injected here -->
+    <footer id="main-footer"></footer>
+
+    <!-- Dark Mode Toggle Button -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Activar modo oscuro" title="Cambiar a modo oscuro"
+        tabindex="108">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    
+
+    <!-- Chat Bot Container -->
+    
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- DOMPurify -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <script src="js/dompurify-config.js"></script>
+
+    <!-- Framework Core -->
+    <script src="js/bge-framework-core.js"></script>
+
+    <!-- Tenant Config Loader -->
+    <script src="js/tenant-config-loader.js" defer></script>
+    <script src="js/chatbot.js"></script>
+</body>
+
+</html>

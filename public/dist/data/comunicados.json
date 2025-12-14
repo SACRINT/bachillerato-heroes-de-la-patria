@@ -1,0 +1,57 @@
+{
+  "comunicados": [
+    {
+      "id": "comunicado-001",
+      "titulo": "Protocolo de Seguridad y Salud Actualizado",
+      "contenido": "Se informa a toda la comunidad educativa sobre la actualización del protocolo de seguridad y salud en el plantel. Las nuevas medidas incluyen: uso obligatorio de cubrebocas en espacios cerrados, mantener sana distancia de 1.5 metros, aplicación de gel antibacterial al ingresar a cada aula, y ventilación constante de los espacios educativos. Estas medidas garantizan un ambiente seguro para el aprendizaje.",
+      "emisor": "Dirección General",
+      "fechaEmision": "2024-09-14",
+      "vigencia": "permanente",
+      "tipo": "oficial",
+      "destinatarios": ["estudiantes", "docentes", "personal administrativo", "padres de familia"],
+      "adjuntos": ["protocolo-seguridad-2024.pdf", "medidas-sanitarias.pdf"],
+      "prioridad": "alta",
+      "imagen": "images/comunicados/protocolo-seguridad.jpg",
+      "activo": true,
+      "fechaCreacion": "2024-09-14T15:00:00Z",
+      "tags": ["seguridad", "salud", "protocolo", "COVID-19", "medidas sanitarias"]
+    },
+    {
+      "id": "comunicado-002",
+      "titulo": "Resultados del Proceso de Evaluación Docente",
+      "contenido": "La Dirección Académica informa los resultados del proceso de evaluación docente correspondiente al ciclo escolar 2023-2024. El 95% de nuestros docentes obtuvieron calificaciones satisfactorias o excelentes. Se reconoce el compromiso y dedicación del personal académico en la formación integral de nuestros estudiantes. Los resultados individuales han sido notificados de manera personal a cada docente.",
+      "emisor": "Dirección Académica",
+      "fechaEmision": "2024-09-12",
+      "vigencia": "temporal",
+      "tipo": "informativo",
+      "destinatarios": ["docentes", "personal administrativo"],
+      "adjuntos": ["resultados-evaluacion-docente.pdf"],
+      "prioridad": "media",
+      "imagen": "images/comunicados/evaluacion-docente.jpg",
+      "activo": true,
+      "fechaCreacion": "2024-09-12T09:00:00Z",
+      "tags": ["evaluación", "docentes", "resultados", "calidad educativa"]
+    },
+    {
+      "id": "comunicado-003",
+      "titulo": "Convocatoria: Beca de Excelencia Académica 2024-2025",
+      "contenido": "Se abre la convocatoria para la Beca de Excelencia Académica dirigida a estudiantes que mantengan un promedio mínimo de 9.0. La beca cubre 100% de cuotas escolares y incluye apoyo para materiales didácticos. Los interesados deben presentar solicitud antes del 15 de octubre en Servicios Estudiantiles junto con la documentación requerida: constancia de calificaciones, carta de motivos y comprobante de ingresos familiares.",
+      "emisor": "Servicios Estudiantiles",
+      "fechaEmision": "2024-09-20",
+      "vigencia": "2024-10-15",
+      "tipo": "convocatoria",
+      "destinatarios": ["estudiantes", "padres de familia"],
+      "adjuntos": ["convocatoria-beca-excelencia.pdf", "requisitos-beca.pdf"],
+      "prioridad": "alta",
+      "imagen": "images/comunicados/beca-excelencia.jpg",
+      "activo": true,
+      "fechaCreacion": "2024-09-20T10:00:00Z",
+      "tags": ["beca", "excelencia académica", "convocatoria", "apoyo estudiantil"]
+    }
+  ],
+  "configuracion": {
+    "ultimaActualizacion": "2024-09-20T16:00:00Z",
+    "version": "1.0",
+    "totalElementos": 3
+  }
+}

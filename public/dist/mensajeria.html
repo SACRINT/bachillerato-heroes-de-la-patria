@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title" data-base-title="Mensajer�a Interna - BGE">Mensajer�a Interna - BGE</title>
+
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+
+    <script src="js/meta-updater.js" defer></script>
+    <!-- ? FIX (18 Nov 2025): Header/Footer styles loaded globally -->
+    <link rel="stylesheet" href="css/global-layout.css">
+    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Main JS for dynamic header/footer loading -->
+    <script src="js/main.js" defer></script>
+</head>
+
+<body>
+    <!-- Header will be injected here -->
+    <header id="main-header"></header>
+    <div class="messaging-container">
+        <!-- Sidebar de conversaciones -->
+        <div class="conversations-sidebar">
+            <div class="sidebar-header">
+                <h5><i class="bi bi-chat-dots-fill me-2"></i>Mensajer�a</h5>
+                <button class="btn btn-sm btn-light" id="newConversationBtn" title="Nueva conversaci�n">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="conversationsSearch" placeholder="Buscar conversaciones...">
+            </div>
+
+            <div class="conversations-list" id="conversationsList">
+                <!-- Conversaciones se cargan din�micamente -->
+            </div>
+        </div>
+
+        <!-- �rea de chat -->
+        <div class="chat-area" id="chatArea">
+            <!-- Empty state (sin conversaci�n seleccionada) -->
+            <div class="empty-state" id="emptyState">
+                <i class="bi bi-chat-text"></i>
+                <h4>Selecciona una conversación</h4>
+                <p>O inicia una nueva conversación</p>
+            </div>
+
+            <!-- Chat activo -->
+            <div id="activeChat" class="hidden d-flex flex-column flex-grow-1">
+                <div class="chat-header">
+                    <div class="chat-header-info">
+                        <div class="conversation-avatar" id="chatAvatar">?</div>
+                        <div>
+                            <div class="chat-header-title" id="chatTitle">Conversaci�n</div>
+                            <div class="chat-header-subtitle" id="chatSubtitle">Online</div>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary" id="chatSettingsBtn" title="Configuraciones">
+                            <i class="bi bi-gear"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="messages-container" id="messagesContainer">
+                    <!-- Mensajes se cargan din�micamente -->
+                </div>
+
+                <div id="typingIndicatorContainer" class="px-3 pb-2 hidden">
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+
+                <div class="compose-area">
+                    <input type="file" id="attachmentInput" class="d-none"
+                        accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                    <button class="compose-btn" id="attachmentBtn" title="Adjuntar archivo">
+                        <i class="bi bi-paperclip"></i>
+                    </button>
+                    <textarea id="messageInput" class="compose-input" placeholder="Escribe un mensaje..."
+                        rows="1"></textarea>
+                    <button class="compose-btn" id="sendMessageBtn" title="Enviar">
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Nueva Conversaci�n -->
+    <div class="modal fade" id="newConversationModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nueva Conversaci�n</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newConversationForm">
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de conversaci�n</label>
+                            <select class="form-select" id="conversationType" required>
+                                <option value="direct">Directa (1:1)</option>
+                                <option value="group">Grupal</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 d-none" id="groupTitleField">
+                            <label class="form-label">T�tulo del grupo</label>
+                            <input type="text" class="form-control" id="groupTitle"
+                                placeholder="Ej: Equipo de Matem�ticas">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Participantes</label>
+                            <select class="form-select" id="participantsSelect" multiple size="5" required>
+                                <!-- Se llena din�micamente -->
+                            </select>
+                            <small class="form-text text-muted">Mant�n Ctrl para seleccionar m�ltiples</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="createConversationBtn">Crear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner-border text-light" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 🔒 DOMPurify XSS Protection -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <script src="js/dompurify-config.js"></script>
+
+    <!-- ðŸ"§ MAIN.JS - CARGA DIN�MICA DE HEADER Y FOOTER -->
+    <!-- Framework Core -->
+    <script src="js/bge-framework-core.js"></script>
+
+    <!-- Messaging Manager -->
+    <script src="js/messaging-manager.js"></script>
+    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuraci�n multi-tenancy desde BD -->
+
+
+    <!-- Footer will be injected here -->
+    <footer id="main-footer"></footer>
+    <script src="js/tenant-config-loader.js" defer></script>
+
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
+        <i class="fas fa-moon"></i>
+    </button>
+
+
+
+    <!-- Chat Bot Container -->
+
+    <script src="js/chatbot.js"></script>
+</body>
+
+</html>

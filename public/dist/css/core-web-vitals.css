@@ -1,0 +1,415 @@
+/*
+============================================================================
+CORE WEB VITALS OPTIMIZATION CSS - BGE HÉROES DE LA PATRIA
+============================================================================
+CSS optimizado específicamente para mejorar métricas de Core Web Vitals:
+- LCP (Largest Contentful Paint)
+- FID (First Input Delay)
+- CLS (Cumulative Layout Shift)
+============================================================================
+*/
+
+/* ==========================================================================
+   CRITICAL PATH CSS - INLINE FIRST
+   ========================================================================== */
+
+/* Layout critical styles */
+.container, .container-fluid {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Prevent layout shifts */
+* {
+    box-sizing: border-box;
+}
+
+/* Font loading optimization */
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap; /* Mejora CLS */
+    src: local('Inter Regular'), local('Inter-Regular'),
+         url('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2') format('woff2');
+}
+
+/* ==========================================================================
+   LCP OPTIMIZATIONS
+   ========================================================================== */
+
+/* Hero section optimization */
+.hero-section {
+    min-height: 60vh;
+    position: relative;
+    contain: layout style paint;
+}
+
+/* Optimize hero image loading */
+.hero-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9; /* Prevent CLS */
+    object-fit: cover;
+    object-position: center;
+    /* Critical image should be preloaded via HTML */
+}
+
+/* LCP candidate elements */
+.lcp-candidate {
+    content-visibility: auto;
+    contain-intrinsic-size: 1200px 400px;
+}
+
+/* ==========================================================================
+   CLS PREVENTION
+   ========================================================================== */
+
+/* Reserve space for dynamic content */
+.dynamic-content {
+    min-height: 200px; /* Prevent layout shifts */
+}
+
+/* Image containers with aspect ratio */
+.img-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.img-container::before {
+    content: '';
+    display: block;
+    padding-top: 56.25%; /* 16:9 aspect ratio */
+}
+
+.img-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Card layouts with consistent heights */
+.card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    flex: 1;
+}
+
+/* Navigation stability */
+.navbar {
+    height: 60px; /* Fixed height to prevent shifts */
+}
+
+/* ==========================================================================
+   FID OPTIMIZATIONS
+   ========================================================================== */
+
+/* Reduce paint complexity */
+.complex-element {
+    will-change: transform;
+    transform: translateZ(0); /* Create stacking context */
+}
+
+/* Optimize interactive elements */
+button, .btn, a[role="button"] {
+    touch-action: manipulation;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Reduce input delay */
+input, textarea, select {
+    touch-action: manipulation;
+}
+
+/* ==========================================================================
+   PERFORMANCE UTILITIES
+   ========================================================================== */
+
+/* Content visibility for off-screen elements */
+.below-fold {
+    content-visibility: auto;
+    contain-intrinsic-size: 1200px 400px;
+}
+
+/* Lazy loading skeleton */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ==========================================================================
+   RESPONSIVE OPTIMIZATIONS
+   ========================================================================== */
+
+/* Mobile-first approach */
+@media (max-width: 767px) {
+    .hero-section {
+        min-height: 50vh;
+    }
+
+    /* Reduce complexity on mobile */
+    .complex-animations {
+        animation: none !important;
+    }
+
+    /* Optimize touch targets */
+    .btn, button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 750px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 970px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1170px;
+    }
+}
+
+/* ==========================================================================
+   ACCESSIBILITY & PERFORMANCE
+   ========================================================================== */
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* High contrast support */
+@media (prefers-contrast: high) {
+    .btn {
+        border: 2px solid;
+    }
+}
+
+/* ==========================================================================
+   CRITICAL COMPONENT STYLES
+   ========================================================================== */
+
+/* Navigation critical styles */
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.25rem;
+    text-decoration: none;
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+/* Button critical styles */
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    text-align: center;
+    vertical-align: middle;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+}
+
+/* Form critical styles */
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    transition: border-color 0.2s ease;
+}
+
+/* ==========================================================================
+   PRINT OPTIMIZATIONS
+   ========================================================================== */
+
+@media print {
+    /* Remove unnecessary elements */
+    .navbar,
+    .btn,
+    .form-control,
+    [aria-hidden="true"] {
+        display: none !important;
+    }
+
+    /* Optimize for print */
+    body {
+        font-size: 12pt;
+        line-height: 1.4;
+    }
+
+    h1, h2, h3 {
+        page-break-after: avoid;
+    }
+}
+
+/* ==========================================================================
+   PROGRESSIVE ENHANCEMENT
+   ========================================================================== */
+
+/* JavaScript disabled fallbacks */
+.no-js .js-only {
+    display: none !important;
+}
+
+.js .no-js-only {
+    display: none !important;
+}
+
+/* WebP support detection */
+.webp .webp-bg {
+    background-image: url('image.webp');
+}
+
+.no-webp .webp-bg {
+    background-image: url('image.jpg');
+}
+
+/* ==========================================================================
+   CUSTOM PROPERTIES (CSS Variables)
+   ========================================================================== */
+
+:root {
+    /* Performance-optimized color palette */
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #0dcaf0;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+
+    /* Typography */
+    --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-size-base: 1rem;
+    --line-height-base: 1.5;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 3rem;
+
+    /* Borders */
+    --border-radius: 0.375rem;
+    --border-width: 1px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.2s ease;
+    --transition-slow: 0.3s ease;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --light-color: #212529;
+        --dark-color: #f8f9fa;
+    }
+}
+
+/* ==========================================================================
+   UTILITY CLASSES
+   ========================================================================== */
+
+/* Display utilities */
+.d-none { display: none !important; }
+.d-block { display: block !important; }
+.d-flex { display: flex !important; }
+.d-grid { display: grid !important; }
+
+/* Flex utilities */
+.flex-column { flex-direction: column !important; }
+.flex-row { flex-direction: row !important; }
+.justify-content-center { justify-content: center !important; }
+.align-items-center { align-items: center !important; }
+
+/* Text utilities */
+.text-center { text-align: center !important; }
+.text-left { text-align: left !important; }
+.text-right { text-align: right !important; }
+
+/* Spacing utilities */
+.m-0 { margin: 0 !important; }
+.p-0 { padding: 0 !important; }
+.mt-3 { margin-top: var(--spacing-md) !important; }
+.mb-3 { margin-bottom: var(--spacing-md) !important; }
+.p-3 { padding: var(--spacing-md) !important; }
+
+/* Performance utilities */
+.gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+.no-select {
+    user-select: none;
+}
+
+.pointer-events-none {
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   LOADING STATES
+   ========================================================================== */
+
+.loading-placeholder {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    background-size: 200px 100%;
+    background-repeat: no-repeat;
+    animation: loading-animation 1.2s infinite;
+}
+
+@keyframes loading-animation {
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+}

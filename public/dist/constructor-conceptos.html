@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constructor de Conceptos - BGE</title>
+    <meta name="description" content="Construye mapas conceptuales y gana IACoins">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-dark: #7c3aed;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-surface: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --gold: #fbbf24;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .game-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), #ec4899);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-subtitle {
+            color: var(--text-secondary);
+        }
+
+        /* Topic Grid */
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .topic-card {
+            background: var(--bg-card);
+            border: 2px solid var(--bg-surface);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .topic-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .topic-card.selected {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .topic-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .topic-name {
+            font-weight: 600;
+        }
+
+        .topic-count {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Map List */
+        .map-list {
+            display: none;
+            margin-bottom: 2rem;
+        }
+
+        .map-list.active {
+            display: block;
+        }
+
+        .map-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .map-card:hover {
+            background: var(--bg-surface);
+        }
+
+        .map-info h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .map-info p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .map-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .difficulty-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .difficulty-badge.easy {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .difficulty-badge.medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .difficulty-badge.hard {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .points-badge {
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        /* Canvas Area */
+        .canvas-screen {
+            display: none;
+        }
+
+        .canvas-screen.active {
+            display: block;
+        }
+
+        .canvas-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .hints-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--warning);
+        }
+
+        .canvas-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            min-height: 400px;
+            position: relative;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .concept-node {
+            position: absolute;
+            background: var(--bg-surface);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            text-align: center;
+            min-width: 100px;
+            transform: translate(-50%, -50%);
+        }
+
+        .concept-node.central {
+            background: var(--primary);
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .connection-line {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .connection-label {
+            position: absolute;
+            background: var(--bg-card);
+            border: 2px dashed var(--text-secondary);
+            border-radius: 8px;
+            padding: 0.5rem;
+            min-width: 80px;
+            text-align: center;
+            font-size: 0.875rem;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .connection-label:hover {
+            border-color: var(--primary);
+        }
+
+        .connection-label.filled {
+            border-style: solid;
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .connection-label.correct {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .connection-label.incorrect {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        /* Labels Palette */
+        .labels-palette {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .labels-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .labels-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .label-chip {
+            background: var(--bg-surface);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .label-chip:hover {
+            border-color: var(--primary);
+        }
+
+        .label-chip.selected {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        .label-chip.used {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Actions */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+        }
+
+        /* Results */
+        .results-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .results-screen.active {
+            display: block;
+        }
+
+        .results-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .results-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .results-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: var(--text-primary);
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @media (max-width: 640px) {
+            .game-container {
+                padding: 1rem;
+            }
+
+            .game-title {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1 class="game-title">🧩 Constructor de Conceptos</h1>
+            <p class="game-subtitle">Conecta ideas y construye mapas conceptuales</p>
+        </header>
+
+        <!-- Menu Screen -->
+        <div id="menuScreen" class="screen active">
+            <h2 style="text-align: center; margin-bottom: 1rem; color: var(--text-secondary);">Elige un Tema</h2>
+
+            <div class="topic-grid" id="topicGrid">
+                <div class="topic-card" data-topic="biologia">
+                    <div class="topic-icon">🧬</div>
+                    <div class="topic-name">Biología</div>
+                    <div class="topic-count">2 mapas</div>
+                </div>
+                <div class="topic-card" data-topic="historia">
+                    <div class="topic-icon">📜</div>
+                    <div class="topic-name">Historia</div>
+                    <div class="topic-count">1 mapa</div>
+                </div>
+                <div class="topic-card" data-topic="matematicas">
+                    <div class="topic-icon">📐</div>
+                    <div class="topic-name">Matemáticas</div>
+                    <div class="topic-count">1 mapa</div>
+                </div>
+                <div class="topic-card" data-topic="quimica">
+                    <div class="topic-icon">⚗️</div>
+                    <div class="topic-name">Química</div>
+                    <div class="topic-count">1 mapa</div>
+                </div>
+            </div>
+
+            <div class="map-list" id="mapList">
+                <h3 style="margin-bottom: 1rem;">Mapas Disponibles</h3>
+                <div id="mapsContainer"></div>
+            </div>
+
+            <a href="/gamification-center.html" class="back-link" style="display: block; text-align: center;">← Volver
+                al Centro de Gamificación</a>
+        </div>
+
+        <!-- Canvas Screen -->
+        <div id="canvasScreen" class="screen">
+            <div class="canvas-header">
+                <div>
+                    <h2 id="mapTitle">Título del Mapa</h2>
+                    <p id="mapDescription" style="color: var(--text-secondary); font-size: 0.875rem;"></p>
+                </div>
+                <div class="hints-info">
+                    💡 Pistas: <span id="hintsCount">3</span>
+                </div>
+            </div>
+
+            <div class="canvas-container" id="canvasContainer">
+                <!-- Nodes and connections will be rendered here -->
+            </div>
+
+            <div class="labels-palette">
+                <div class="labels-title">Etiquetas disponibles (haz clic para seleccionar)</div>
+                <div class="labels-container" id="labelsContainer"></div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" id="hintBtn">💡 Pista</button>
+                <button class="btn btn-primary" id="submitBtn">✓ Verificar</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="screen">
+            <div class="results-icon" id="resultsIcon">🎉</div>
+            <h2 class="results-title" id="resultsTitle">¡Excelente!</h2>
+
+            <div class="results-stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="resultCorrect">0/0</div>
+                    <div class="stat-label">Conexiones</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="resultAttempts">0</div>
+                    <div class="stat-label">Intentos</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="resultCoins">0</div>
+                    <div class="stat-label">IACoins</div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="playAgainBtn">🎮 Otro Mapa</button>
+            <br>
+            <a href="/gamification-center.html" class="back-link">← Volver al Centro de Gamificación</a>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let state = {
+            sessionId: null,
+            topic: null,
+            map: null,
+            selectedLabel: null,
+            userConnections: {},
+            usedLabels: []
+        };
+
+        // Elements
+        const menuScreen = document.getElementById('menuScreen');
+        const canvasScreen = document.getElementById('canvasScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const topicGrid = document.getElementById('topicGrid');
+        const mapList = document.getElementById('mapList');
+        const mapsContainer = document.getElementById('mapsContainer');
+        const canvasContainer = document.getElementById('canvasContainer');
+        const labelsContainer = document.getElementById('labelsContainer');
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            setupTopicSelection();
+            document.getElementById('submitBtn').addEventListener('click', submitSolution);
+            document.getElementById('hintBtn').addEventListener('click', getHint);
+            document.getElementById('playAgainBtn').addEventListener('click', () => showScreen('menu'));
+        });
+
+        // Topic selection
+        function setupTopicSelection() {
+            topicGrid.querySelectorAll('.topic-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const topic = card.dataset.topic;
+                    state.topic = topic;
+                    loadMaps(topic);
+                });
+            });
+        }
+
+        // Load maps
+        async function loadMaps(topic) {
+            try {
+                const res = await fetch(`/api/games/concepts/maps/${topic}`);
+                const data = await res.json();
+
+                if (data.success) {
+                    mapsContainer.innerHTML = data.maps.map(m => `
+                        <div class="map-card" data-map-id="${m.id}">
+                            <div class="map-info">
+                                <h3>${m.title}</h3>
+                                <p>${m.description}</p>
+                            </div>
+                            <div class="map-meta">
+                                <span class="difficulty-badge ${m.difficulty}">${getDiffLabel(m.difficulty)}</span>
+                                <span class="points-badge">+${m.points} pts</span>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    mapsContainer.querySelectorAll('.map-card').forEach(card => {
+                        card.addEventListener('click', () => startMap(card.dataset.mapId));
+                    });
+
+                    mapList.classList.add('active');
+                }
+            } catch (e) {
+                console.error('Error:', e);
+            }
+        }
+
+        function getDiffLabel(d) {
+            return { easy: 'Fácil', medium: 'Medio', hard: 'Difícil' }[d] || d;
+        }
+
+        // Start map
+        async function startMap(mapId) {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Debes iniciar sesión');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/games/concepts/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ topic: state.topic, mapId })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    state.sessionId = data.sessionId;
+                    state.map = data.map;
+                    state.userConnections = {};
+                    state.usedLabels = [];
+
+                    document.getElementById('hintsCount').textContent = data.hints;
+                    renderMap(data.map);
+                    showScreen('canvas');
+                }
+            } catch (e) {
+                console.error('Error:', e);
+            }
+        }
+
+        // Render map
+        function renderMap(map) {
+            document.getElementById('mapTitle').textContent = map.title;
+            document.getElementById('mapDescription').textContent = map.description;
+
+            // Clear
+            canvasContainer.innerHTML = '';
+
+            // Render nodes
+            map.nodes.forEach(node => {
+                const el = document.createElement('div');
+                el.className = `concept-node ${node.type === 'central' ? 'central' : ''}`;
+                el.style.left = `${node.x}%`;
+                el.style.top = `${node.y}%`;
+                el.textContent = node.label;
+                el.dataset.id = node.id;
+                canvasContainer.appendChild(el);
+            });
+
+            // Render connection labels
+            map.connections.forEach((conn, i) => {
+                const fromNode = map.nodes.find(n => n.id === conn.from);
+                const toNode = map.nodes.find(n => n.id === conn.to);
+
+                const midX = (fromNode.x + toNode.x) / 2;
+                const midY = (fromNode.y + toNode.y) / 2;
+
+                const label = document.createElement('div');
+                label.className = 'connection-label';
+                label.style.left = `${midX}%`;
+                label.style.top = `${midY}%`;
+                label.textContent = '?';
+                label.dataset.index = i;
+                label.dataset.from = conn.from;
+                label.dataset.to = conn.to;
+
+                label.addEventListener('click', () => assignLabel(label));
+                canvasContainer.appendChild(label);
+            });
+
+            // Render available labels
+            labelsContainer.innerHTML = map.availableLabels.map(l => `
+                <div class="label-chip" data-label="${l}">${l}</div>
+            `).join('');
+
+            labelsContainer.querySelectorAll('.label-chip').forEach(chip => {
+                chip.addEventListener('click', () => selectLabel(chip));
+            });
+        }
+
+        // Select label
+        function selectLabel(chip) {
+            if (chip.classList.contains('used')) return;
+
+            labelsContainer.querySelectorAll('.label-chip').forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+            state.selectedLabel = chip.dataset.label;
+        }
+
+        // Assign label to connection
+        function assignLabel(connLabel) {
+            if (!state.selectedLabel) {
+                alert('Primero selecciona una etiqueta');
+                return;
+            }
+
+            const index = connLabel.dataset.index;
+            const prevLabel = state.userConnections[index];
+
+            // Remove previous
+            if (prevLabel) {
+                state.usedLabels = state.usedLabels.filter(l => l !== prevLabel);
+                labelsContainer.querySelector(`[data-label="${prevLabel}"]`)?.classList.remove('used');
+            }
+
+            // Assign new
+            state.userConnections[index] = state.selectedLabel;
+            connLabel.textContent = state.selectedLabel;
+            connLabel.classList.add('filled');
+
+            // Mark as used
+            state.usedLabels.push(state.selectedLabel);
+            labelsContainer.querySelector(`[data-label="${state.selectedLabel}"]`)?.classList.add('used');
+
+            state.selectedLabel = null;
+            labelsContainer.querySelectorAll('.label-chip').forEach(c => c.classList.remove('selected'));
+        }
+
+        // Submit solution
+        async function submitSolution() {
+            const token = localStorage.getItem('token');
+
+            // Build user connections array
+            const userConnections = state.map.connections.map((conn, i) => ({
+                from: conn.from,
+                to: conn.to,
+                label: state.userConnections[i] || ''
+            }));
+
+            try {
+                const res = await fetch('/api/games/concepts/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ sessionId: state.sessionId, userConnections })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    // Show feedback on connections
+                    data.results.forEach((r, i) => {
+                        const label = canvasContainer.querySelector(`[data-index="${i}"]`);
+                        if (label) {
+                            label.classList.remove('filled');
+                            label.classList.add(r.isCorrect ? 'correct' : 'incorrect');
+                            if (!r.isCorrect) {
+                                label.textContent = r.correctLabel;
+                            }
+                        }
+                    });
+
+                    if (data.completed) {
+                        setTimeout(() => showResults(data), 1500);
+                    } else {
+                        setTimeout(() => {
+                            alert(`${data.correct}/${data.total} correctas. ¡Sigue intentando!`);
+                            // Reset for another try
+                            renderMap(state.map);
+                        }, 1500);
+                    }
+                }
+            } catch (e) {
+                console.error('Error:', e);
+            }
+        }
+
+        // Get hint
+        async function getHint() {
+            const token = localStorage.getItem('token');
+            const emptyLabels = canvasContainer.querySelectorAll('.connection-label:not(.filled)');
+
+            if (emptyLabels.length === 0) {
+                alert('Todas las conexiones están llenas');
+                return;
+            }
+
+            const index = parseInt(emptyLabels[0].dataset.index);
+
+            try {
+                const res = await fetch('/api/games/concepts/hint', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ sessionId: state.sessionId, connectionIndex: index })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('hintsCount').textContent = data.hintsRemaining;
+                    alert(`Pista: ${data.hint}`);
+                } else {
+                    alert(data.error);
+                }
+            } catch (e) {
+                console.error('Error:', e);
+            }
+        }
+
+        // Show results
+        function showResults(data) {
+            showScreen('results');
+
+            document.getElementById('resultsIcon').textContent = data.firstTry ? '👑' : '🎉';
+            document.getElementById('resultsTitle').textContent = data.firstTry ? '¡Perfecto al primer intento!' : '¡Mapa Completado!';
+            document.getElementById('resultCorrect').textContent = `${data.correct}/${data.total}`;
+            document.getElementById('resultAttempts').textContent = data.attempts;
+            document.getElementById('resultCoins').textContent = `+${data.coinsEarned}`;
+        }
+
+        // Show screen
+        function showScreen(screen) {
+            menuScreen.classList.remove('active');
+            canvasScreen.classList.remove('active');
+            resultsScreen.classList.remove('active');
+
+            if (screen === 'menu') {
+                menuScreen.classList.add('active');
+                mapList.classList.remove('active');
+            }
+            if (screen === 'canvas') canvasScreen.classList.add('active');
+            if (screen === 'results') resultsScreen.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

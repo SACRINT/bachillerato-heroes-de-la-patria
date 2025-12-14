@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title" data-base-title="Soporte - <span data-tenant-field=" school_short_name">BGE Héroes de la
+        Patria</span>">Soporte - <span data-tenant-field="school_short_name">BGE Héroes de la Patria</span></title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #3498db;
+            --text-color: #2c3e50;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --sidebar-bg: #ffffff;
+            --border-color: #dee2e6;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #ecf0f1;
+                --text-color: #ecf0f1;
+                --bg-color: #1a1a1a;
+                --card-bg: #2d2d2d;
+                --sidebar-bg: #252525;
+                --border-color: #404040;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding-top: 76px;
+            /* Prevent header overlap */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Navbar */
+        .support-navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .support-navbar .navbar-brand {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .support-navbar .btn-icon {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Layout */
+        .support-container {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .sidebar h6 {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .sidebar h6:first-child {
+            margin-top: 0;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-item:hover {
+            background: var(--bg-color);
+        }
+
+        .sidebar-item.active {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .sidebar-item .badge {
+            margin-left: auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        /* Header */
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .content-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* Ticket Card */
+        .ticket-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .ticket-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .ticket-number {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .ticket-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .ticket-meta {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-top: 1rem;
+        }
+
+        /* Badges */
+        .priority-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .priority-urgent {
+            background: #dc3545;
+            color: white;
+        }
+
+        .priority-high {
+            background: #fd7e14;
+            color: white;
+        }
+
+        .priority-medium {
+            background: #0dcaf0;
+            color: white;
+        }
+
+        .priority-low {
+            background: #6c757d;
+            color: white;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-open {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .status-in_progress {
+            background: #fd7e14;
+            color: white;
+        }
+
+        .status-waiting_user {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .status-resolved {
+            background: #198754;
+            color: white;
+        }
+
+        .status-closed {
+            background: #6c757d;
+            color: white;
+        }
+
+        .status-reopened {
+            background: #d63384;
+            color: white;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 0.5rem;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            margin-top: 2rem;
+        }
+
+        .comment {
+            background: var(--bg-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .comment-author {
+            font-weight: 600;
+        }
+
+        .comment-reply {
+            margin-left: 2rem;
+            margin-top: 1rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        /* Loading */
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* SLA Indicator */
+        .sla-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .sla-ok {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .sla-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .sla-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+    <script src="js/meta-updater.js" defer></script>
+    <!-- ? FIX (18 Nov 2025): Header/Footer styles loaded globally -->
+    <link rel="stylesheet" href="css/global-layout.css">
+    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+    <!-- Main JS for dynamic header/footer loading -->
+    <script src="js/main.js" defer></script>
+</head>
+
+<body>
+    <!-- Header will be injected here -->
+    <header id="main-header"></header>
+
+    <!-- Support Container with Sidebar and Main Content -->
+    <div class="support-container">
+        <aside class="sidebar">
+            <h6>Filtros Rápidos</h6>
+            <div class="sidebar-item active" data-filter="all">
+                <i class="bi bi-inbox me-2"></i> Todos los Tickets
+                <span class="badge bg-secondary" id="badge-all">0</span>
+            </div>
+            <div class="sidebar-item" data-filter="my-tickets">
+                <i class="bi bi-person me-2"></i> Mis Tickets
+                <span class="badge bg-primary" id="badge-my">0</span>
+            </div>
+            <div class="sidebar-item" data-filter="assigned">
+                <i class="bi bi-person-check me-2"></i> Asignados a mí
+                <span class="badge bg-info" id="badge-assigned">0</span>
+            </div>
+            <div class="sidebar-item" data-filter="watching">
+                <i class="bi bi-eye me-2"></i> Siguiendo
+                <span class="badge bg-success" id="badge-watching">0</span>
+            </div>
+
+            <h6>Por Estado</h6>
+            <div class="sidebar-item" data-filter="status-open">
+                <i class="bi bi-circle me-2"></i> Abiertos
+                <span class="badge bg-primary" id="badge-open">0</span>
+            </div>
+            <div class="sidebar-item" data-filter="status-in_progress">
+                <i class="bi bi-hourglass-split me-2"></i> En Progreso
+                <span class="badge bg-warning" id="badge-progress">0</span>
+            </div>
+            <div class="sidebar-item" data-filter="status-resolved">
+                <i class="bi bi-check-circle me-2"></i> Resueltos
+                <span class="badge bg-success" id="badge-resolved">0</span>
+            </div>
+
+            <h6>Por Prioridad</h6>
+            <div class="sidebar-item" data-filter="priority-urgent">
+                <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i> Urgente
+                <span class="badge bg-danger" id="badge-urgent">0</span>
+            </div>
+            <div class="sidebar-item" data-filter="priority-high">
+                <i class="bi bi-arrow-up-circle me-2 text-warning"></i> Alta
+                <span class="badge bg-warning" id="badge-high">0</span>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Header -->
+            <div class="content-header">
+                <div>
+                    <h2 id="contentTitle">Todos los Tickets</h2>
+                    <p class="text-muted" id="contentSubtitle">Gestiona y da seguimiento a tickets de soporte</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary" id="createTicketBtn">
+                        <i class="bi bi-plus-lg"></i> Nuevo Ticket
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid hidden" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-created">0</div>
+                    <div class="stat-label">Tickets Creados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-assigned">0</div>
+                    <div class="stat-label">Asignados a M�</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-watching">0</div>
+                    <div class="stat-label">Siguiendo</div>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading-spinner hidden" id="loadingSpinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-3">Cargando tickets...</p>
+            </div>
+
+            <!-- Tickets List -->
+            <div id="ticketsList">
+                <!-- Tickets will be loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state hidden" id="emptyState">
+                <i class="bi bi-inbox"></i>
+                <h4>No hay tickets</h4>
+                <p class="text-muted">Crea un nuevo ticket para comenzar</p>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <nav aria-label="Paginaci�n">
+                    <ul class="pagination justify-content-center" id="pagination">
+                        <!-- Pagination will be loaded here -->
+                    </ul>
+                </nav>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer will be injected here -->
+    <footer id="main-footer"></footer>
+
+    <!-- New Ticket Modal -->
+    <div class="modal fade" id="newTicketModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Ticket de Soporte</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newTicketForm">
+                        <div class="mb-3">
+                            <label for="ticketSubject" class="form-label">Asunto *</label>
+                            <input type="text" class="form-control" id="ticketSubject" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ticketDescription" class="form-label">Descripci�n *</label>
+                            <textarea class="form-control" id="ticketDescription" rows="5" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="ticketDepartment" class="form-label">Departamento</label>
+                                <select class="form-select" id="ticketDepartment">
+                                    <!-- Departments will be loaded here -->
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="ticketCategory" class="form-label">Categor�a</label>
+                                <select class="form-select" id="ticketCategory">
+                                    <!-- Categories will be loaded here -->
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="ticketPriority" class="form-label">Prioridad *</label>
+                                <select class="form-select" id="ticketPriority" required>
+                                    <option value="low">Baja</option>
+                                    <option value="medium" selected>Media</option>
+                                    <option value="high">Alta</option>
+                                    <option value="urgent">Urgente</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ticketAttachments" class="form-label">Archivos Adjuntos</label>
+                            <input type="file" class="form-control" id="ticketAttachments" multiple>
+                            <div class="form-text">M�ximo 10MB por archivo. Hasta 5 archivos.</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveTicketBtn">
+                        <i class="bi bi-send"></i> Crear Ticket
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ticket Detail Modal -->
+    <div class="modal fade" id="ticketDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalles del Ticket</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="ticketDetailBody">
+                    <!-- Ticket details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 🔒 DOMPurify XSS Protection -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <script src="js/dompurify-config.js"></script>
+    <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
+    <!-- main.js ya cargado en head con defer -->
+    <!-- Framework Core -->
+    <script src="js/bge-framework-core.js"></script>
+    <!-- Support Manager -->
+    <script src="js/support-tickets-manager.js"></script>
+    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuraci�n multi-tenancy desde BD -->
+
+
+    <script src="js/tenant-config-loader.js" defer></script>
+
+    <script src="js/dark-mode-toggle.js"></script>
+
+    <!-- Dark Mode Toggle Button -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Activar modo oscuro" title="Cambiar a modo oscuro"
+        tabindex="108">
+        <i class="fas fa-moon"></i>
+    </button>
+
+
+
+    <!-- Chat Bot Container -->
+
+    <script src="js/chatbot.js"></script>
+</body>
+
+</html>

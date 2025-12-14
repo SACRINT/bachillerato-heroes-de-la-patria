@@ -1,0 +1,566 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" id="page-description"
+        content="Portal de Docentes - Bachillerato General del Estado Héroes de la Patria">
+    <title id="page-title" data-base-title="Portal de Docentes | BGE Héroes de la Patria">Portal de Docentes | BGE
+        Héroes de la Patria</title>
+
+    <!-- Bootstrap 5.3.0 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+
+    <script src="js/meta-updater.js" defer></script>
+    <!-- ? FIX (18 Nov 2025): Header/Footer styles loaded globally -->
+    <link rel="stylesheet" href="css/global-layout.css">
+    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- DOMPurify for XSS protection (MUST load before main.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <!-- Main JS for dynamic header/footer loading -->
+    <!-- Main JS for dynamic header/footer loading -->
+    <!-- <script src="js/main.js" defer></script> -->
+    <link rel="stylesheet" href="dist/assets/main.css">
+    <script type="module" src="dist/assets/main.js"></script>
+</head>
+
+<body>
+    <!-- Header will be injected here -->
+    <header id="main-header"></header>
+
+    <!-- Loading Spinner -->
+    <div class="spinner-container" id="loadingSpinner">
+        <div class="spinner-border text-light w-h-3rem" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- LOGIN SCREEN -->
+    <!-- ============================================ -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="images/logo-bachillerato-HDLP.webp" alt="BGE Logo">
+                <h3>Portal de Docentes</h3>
+                <p class="text-muted">BGE Héroes de la Patria</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label for="loginEmail" class="form-label">Correo Electrónico</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="profesor@ejemplo.com"
+                            autocomplete="email" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="loginPassword" class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="********"
+                            autocomplete="current-password" required>
+                    </div>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">Recordarme</label>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                    </button>
+                </div>
+
+                <div class="text-center mt-3">
+                    <a href="#" class="text-decoration-none">¿Olvidaste tu Contraseña?</a>
+                </div>
+            </form>
+
+            <div class="alert alert-danger mt-3 d-none" id="loginError" role="alert"></div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- DASHBOARD CONTAINER -->
+    <!-- ============================================ -->
+    <div class="dashboard-container" id="dashboardContainer">
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="images/logo-bachillerato-HDLP.webp" alt="BGE Logo" class="sidebar-logo">
+                <h4>Portal Docentes</h4>
+                <p class="text-muted small mb-0" id="teacherName">Bienvenido</p>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="#" class="menu-link active" data-section="dashboard"><i class="bi bi-house-door"></i>
+                        Dashboard</a></li>
+                <li><a href="#" class="menu-link" data-section="classes"><i class="bi bi-book"></i> Mis Clases</a></li>
+                <li><a href="#" class="menu-link" data-section="grades"><i class="bi bi-journal-check"></i>
+                        Calificaciones</a></li>
+                <li><a href="#" class="menu-link" data-section="attendance"><i class="bi bi-calendar-check"></i>
+                        Asistencia</a></li>
+                <li><a href="#" class="menu-link" data-section="resources"><i class="bi bi-folder"></i> Recursos</a>
+                </li>
+                <li><a href="#" class="menu-link" data-section="messages"><i class="bi bi-envelope"></i> Mensajes <span
+                            class="badge bg-danger d-none" id="unreadMessagesCount"></span></a></li>
+                <li><a href="#" class="menu-link" data-section="notifications"><i class="bi bi-bell"></i> Notificaciones
+                        <span class="badge bg-warning d-none" id="unreadNotificationsCount"></span></a></li>
+                <li>
+                    <hr class="my-2 border-white-10">
+                </li>
+                <li><a href="#" id="logoutBtn"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+
+            <!-- ============================================ -->
+            <!-- DASHBOARD SECTION -->
+            <!-- ============================================ -->
+            <div class="content-section active" id="section-dashboard">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-house-door"></i> Dashboard</h2>
+                    <button class="btn btn-outline-secondary d-md-none" id="toggleSidebar">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card primary">
+                            <div class="d-flex align-items-center">
+                                <div class="icon">
+                                    <i class="bi bi-book"></i>
+                                </div>
+                                <div class="ms-3 flex-grow-1">
+                                    <h6 class="text-muted mb-1">Clases Activas</h6>
+                                    <h3 class="mb-0" id="totalClasses">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card success">
+                            <div class="d-flex align-items-center">
+                                <div class="icon">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <div class="ms-3 flex-grow-1">
+                                    <h6 class="text-muted mb-1">Estudiantes</h6>
+                                    <h3 class="mb-0" id="totalStudents">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card warning">
+                            <div class="d-flex align-items-center">
+                                <div class="icon">
+                                    <i class="bi bi-journal-check"></i>
+                                </div>
+                                <div class="ms-3 flex-grow-1">
+                                    <h6 class="text-muted mb-1">Por Revisar</h6>
+                                    <h3 class="mb-0" id="pendingReviews">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card info">
+                            <div class="d-flex align-items-center">
+                                <div class="icon">
+                                    <i class="bi bi-envelope"></i>
+                                </div>
+                                <div class="ms-3 flex-grow-1">
+                                    <h6 class="text-muted mb-1">Mensajes</h6>
+                                    <h3 class="mb-0" id="unreadMessages">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Classes -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="data-table">
+                            <h5 class="mb-3"><i class="bi bi-calendar"></i> Próximas Clases</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Hora</th>
+                                            <th>Materia</th>
+                                            <th>Grupo</th>
+                                            <th>Salón</th>
+                                            <th>Estudiantes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="upcomingClassesTable">
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted">No hay clases Próximas</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="data-table">
+                            <h5 class="mb-3"><i class="bi bi-list-check"></i> Tareas Pendientes</h5>
+                            <div id="pendingTasksList">
+                                <p class="text-muted">No hay tareas pendientes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- CLASSES SECTION -->
+            <!-- ============================================ -->
+            <div class="content-section" id="section-classes">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-book"></i> Mis Clases</h2>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClassModal">
+                        <i class="bi bi-plus-circle"></i> Nueva Clase
+                    </button>
+                </div>
+
+                <div class="row" id="classesGrid">
+                    <div class="col-12 text-center text-muted">
+                        <p>No hay clases registradas</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- GRADES SECTION -->
+            <!-- ============================================ -->
+            <div class="content-section" id="section-grades">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-journal-check"></i> Calificaciones</h2>
+                    <div>
+                        <select class="form-select d-inline-block w-auto" id="gradesClassSelect">
+                            <option value="">Seleccionar clase...</option>
+                        </select>
+                        <select class="form-select d-inline-block w-auto ms-2" id="gradesPeriodSelect">
+                            <option value="">Periodo...</option>
+                            <option value="parcial_1">Parcial 1</option>
+                            <option value="parcial_2">Parcial 2</option>
+                            <option value="final">Final</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="data-table">
+                    <div class="table-responsive">
+                        <table class="table table-bordered grades-table">
+                            <thead>
+                                <tr>
+                                    <th>Matrícula</th>
+                                    <th>Estudiante</th>
+                                    <th>Calificación</th>
+                                    <th>Letra</th>
+                                    <th>Faltas</th>
+                                    <th>Retardos</th>
+                                    <th>Observaciones</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gradesTableBody">
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">Seleccione una clase y periodo</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-success" id="saveGradesBtn" disabled>
+                            <i class="bi bi-save"></i> Guardar Calificaciones
+                        </button>
+                        <button class="btn btn-outline-secondary ms-2" id="publishGradesBtn" disabled>
+                            <i class="bi bi-eye"></i> Publicar a Padres
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- ATTENDANCE SECTION -->
+            <!-- ============================================ -->
+            <div class="content-section" id="section-attendance">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-calendar-check"></i> Asistencia</h2>
+                    <button class="btn btn-primary" id="startAttendanceBtn">
+                        <i class="bi bi-plus-circle"></i> Iniciar Sesión
+                    </button>
+                </div>
+
+                <div id="attendanceContent">
+                    <p class="text-muted">Seleccione una clase e inicie una Sesión de asistencia</p>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- RESOURCES SECTION -->
+            <!-- ============================================ -->
+            <div class="content-section" id="section-resources">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-folder"></i> Recursos Educativos</h2>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addResourceModal">
+                        <i class="bi bi-upload"></i> Subir Recurso
+                    </button>
+                </div>
+
+                <div class="row" id="resourcesGrid">
+                    <div class="col-12 text-center text-muted">
+                        <p>No hay recursos disponibles</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- MESSAGES SECTION -->
+            <!-- ============================================ -->
+            <div class="content-section" id="section-messages">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-envelope"></i> Mensajes</h2>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newMessageModal">
+                        <i class="bi bi-plus-circle"></i> Nuevo Mensaje
+                    </button>
+                </div>
+
+                <div class="data-table">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>De</th>
+                                    <th>Asunto</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="messagesTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">No hay mensajes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- NOTIFICATIONS SECTION -->
+            <!-- ============================================ -->
+            <div class="content-section" id="section-notifications">
+                <h2 class="mb-4"><i class="bi bi-bell"></i> Notificaciones</h2>
+
+                <div class="data-table">
+                    <div id="notificationsList">
+                        <p class="text-muted">No hay notificaciones</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- MODALS -->
+    <!-- ============================================ -->
+
+    <!-- Add Class Modal -->
+    <div class="modal fade" id="addClassModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Nueva Clase</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addClassForm">
+                        <div class="mb-3">
+                            <label class="form-label">Materia</label>
+                            <input type="text" class="form-control" name="materia" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Grado</label>
+                                <select class="form-select" name="grado" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="1">1°</option>
+                                    <option value="2">2°</option>
+                                    <option value="3">3°</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Grupo</label>
+                                <input type="text" class="form-control" name="grupo" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ciclo Escolar</label>
+                            <input type="text" class="form-control" name="ciclo_escolar" value="2025-2026" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Salón</label>
+                            <input type="text" class="form-control" name="salon">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveClassBtn">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Resource Modal -->
+    <div class="modal fade" id="addResourceModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-upload"></i> Subir Recurso</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addResourceForm">
+                        <div class="mb-3">
+                            <label class="form-label">Título</label>
+                            <input type="text" class="form-control" name="titulo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea class="form-control" name="descripcion" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo</label>
+                            <select class="form-select" name="tipo" required>
+                                <option value="documento">Documento</option>
+                                <option value="presentacion">Presentación</option>
+                                <option value="video">Video</option>
+                                <option value="enlace">Enlace</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Archivo</label>
+                            <input type="file" class="form-control" name="archivo">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveResourceBtn">Subir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Message Modal -->
+    <div class="modal fade" id="newMessageModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-envelope"></i> Nuevo Mensaje</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newMessageForm">
+                        <div class="mb-3">
+                            <label class="form-label">Para</label>
+                            <select class="form-select" name="recipient_type" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="parent">Padre/Tutor</option>
+                                <option value="student">Estudiante</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Asunto</label>
+                            <input type="text" class="form-control" name="asunto" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mensaje</label>
+                            <textarea class="form-control" name="mensaje" rows="5" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="sendMessageBtn">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5.3.0 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 🔒 DOMPurify XSS Protection -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <script src="js/dompurify-config.js"></script>
+
+    <!-- 🔧 MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
+
+
+    <!-- 🏢 TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
+    <script src="js/tenant-config-loader.js"></script>
+
+    <!-- API Client -->
+    <!-- <script src="js/api-client.js"></script> -->
+
+    <!-- Teachers Portal Manager -->
+    <script src="js/teachers-portal-manager.js"></script>
+
+
+
+    <!-- Footer will be injected here -->
+    <footer id="main-footer"></footer>
+    <script>
+        // Initialize Teachers Portal on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            window.teachersPortal = new TeachersPortalManager({
+                apiBaseURL: '/api/teachers-portal'
+            });
+        });
+    </script>
+
+    <!-- Framework Core -->
+    <script src="js/bge-framework-core.js"></script>
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
+        <i class="fas fa-moon"></i>
+    </button>
+
+
+
+    <!-- Chat Bot Container -->
+
+    <script src="js/chatbot.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+[
+  {
+    "categoria": "Matemáticas",
+    "recursos": [
+      { "titulo": "Khan Academy - Matemáticas", "descripcion": "Tutoriales y ejercicios de Álgebra, Geometría, Cálculo y más.", "url": "https://es.khanacademy.org/math", "tipo": "enlace_externo", "icono": "fas fa-calculator" },
+      { "titulo": "Formulario de Trigonometría", "descripcion": "PDF con las principales fórmulas trigonométricas.", "url": "documents/formulario_trigonometria.pdf", "tipo": "pdf", "icono": "fas fa-file-pdf" },
+      { "titulo": "JulioProfe - Videos de Cálculo", "descripcion": "Explicaciones claras de temas de cálculo y matemáticas.", "url": "https://www.youtube.com/user/julioprofe", "tipo": "video_externo", "icono": "fab fa-youtube" },
+      { "titulo": "GeoGebra Matemáticas", "descripcion": "Herramientas interactivas para geometría, álgebra, hojas de cálculo, gráficos, estadística y cálculo.", "url": "https://www.geogebra.org/materials", "tipo": "enlace_externo", "icono": "fas fa-shapes" }
+    ]
+  },
+  {
+    "categoria": "Ciencias (Física, Química, Biología)",
+    "recursos": [
+      { "titulo": "PhET Simulaciones Interactivas", "descripcion": "Simulaciones de física, química, biología, ciencias de la tierra y matemáticas.", "url": "https://phet.colorado.edu/es/", "tipo": "enlace_externo", "icono": "fas fa-flask" },
+      { "titulo": "Tabla Periódica Interactiva (Ptable)", "descripcion": "Explora los elementos, sus propiedades y orbitales.", "url": "https://ptable.com/?lang=es", "tipo": "enlace_externo", "icono": "fas fa-atom" },
+      { "titulo": "NASA Ciencia para Niños y Jóvenes", "descripcion": "Juegos, animaciones y proyectos sobre el espacio y la ciencia de la NASA.", "url": "https://spaceplace.nasa.gov/sp/", "tipo": "enlace_externo", "icono": "fas fa-rocket" },
+      { "titulo": "BioInteractive (HHMI)", "descripcion": "Recursos multimedia de alta calidad para la enseñanza de la biología.", "url": "https://www.biointeractive.org/es", "tipo": "enlace_externo", "icono": "fas fa-dna" }
+    ]
+  },
+  {
+    "categoria": "Lenguaje, Comunicación y Humanidades",
+    "recursos": [
+      { "titulo": "RAE - Diccionario (DLE)", "descripcion": "Consulta el Diccionario de la lengua española.", "url": "https://dle.rae.es/", "tipo": "enlace_externo", "icono": "fas fa-book" },
+      { "titulo": "Guía de Ortografía Básica", "descripcion": "PDF con reglas ortográficas esenciales.", "url": "documentos_pwa/guia_ortografia.pdf", "tipo": "pdf", "icono": "fas fa-file-pdf" },
+      { "titulo": "Google Arts & Culture", "descripcion": "Explora colecciones de arte, lugares históricos y maravillas del mundo.", "url": "https://artsandculture.google.com/", "tipo": "enlace_externo", "icono": "fas fa-palette" },
+      { "titulo": "Filosofem - Filosofía para Todos", "descripcion": "Canal de YouTube con explicaciones accesibles de conceptos filosóficos.", "url": "https://www.youtube.com/c/Filosofem", "tipo": "video_externo", "icono": "fab fa-youtube" }
+    ]
+  },
+  {
+    "categoria": "Tecnología e Inteligencia Artificial",
+    "recursos": [
+      { "titulo": "Codecademy (Cursos Gratuitos)", "descripcion": "Aprende a programar con cursos interactivos gratuitos (HTML, CSS, JS, Python).", "url": "https://www.codecademy.com/catalog/language/javascript", "tipo": "enlace_externo", "icono": "fas fa-code" },
+      { "titulo": "Google AI - Aprende con Google AI", "descripcion": "Recursos y cursos para aprender sobre Inteligencia Artificial y Machine Learning.", "url": "https://ai.google/learn/", "tipo": "enlace_externo", "icono": "fas fa-brain" },
+      { "titulo": "Elements of AI (Curso Gratuito)", "descripcion": "Curso online gratuito sobre los fundamentos de la IA, de la Universidad de Helsinki.", "url": "https://www.elementsofai.com/es/", "tipo": "enlace_externo", "icono": "fas fa-graduation-cap" },
+      { "titulo": "MIT App Inventor", "descripcion": "Crea tus propias aplicaciones para Android de forma visual.", "url": "https://appinventor.mit.edu/", "tipo": "enlace_externo", "icono": "fas fa-mobile-alt" }
+    ]
+  },
+  {
+    "categoria": "Capacitación para el Empleo y Habilidades",
+    "recursos": [
+      { "titulo": "Capacítate para el Empleo (Fundación Slim)", "descripcion": "Plataforma con cursos gratuitos en línea para desarrollar habilidades laborales.", "url": "https://capacitateparaelempleo.org/", "tipo": "enlace_externo", "icono": "fas fa-briefcase" },
+      { "titulo": "Google Actívate - Cursos Online", "descripcion": "Cursos gratuitos de Google sobre marketing digital, desarrollo profesional y datos.", "url": "https://learndigital.withgoogle.com/activate/courses", "tipo": "enlace_externo", "icono": "fab fa-google" },
+      { "titulo": "Duolingo", "descripcion": "Aprende idiomas de forma gratuita y divertida.", "url": "https://es.duolingo.com/", "tipo": "enlace_externo", "icono": "fas fa-language" }
+    ]
+  },
+  {
+    "categoria": "Recursos Generales SEP",
+    "recursos": [
+      { "titulo": "Aprende en Casa (SEP)", "descripcion": "Recursos educativos oficiales de la SEP para diferentes niveles.", "url": "https://aprendeencasa.sep.gob.mx/", "tipo": "enlace_externo", "icono": "fas fa-school" },
+      { "titulo": "Libros de Texto Gratuitos (CONALITEG)", "descripcion": "Consulta los libros de texto gratuitos de la SEP.", "url": "https://www.conaliteg.sep.gob.mx/primaria.html", "tipo": "enlace_externo", "icono": "fas fa-book-open" }
+    ]
+  }
+]
