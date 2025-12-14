@@ -27,7 +27,7 @@
       ]
     }
   ],
-  "installCommand": "npm install && cd backend && npm install --production && cd ..",
+  "installCommand": "npm install --production=false && cd backend && npm install --production && cd ..",
   "framework": null,
   "outputDirectory": "public",
   "buildCommand": "npm run build:frontend"
