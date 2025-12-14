@@ -202,45 +202,38 @@ router.get('/tenant', async (req: Request, res: Response): Promise<void> => {
 
     } catch (error: unknown) {
         const err = error as Error & { code?: string };
-        debugLog.error('CONFIG', 'Error durante operación');
+        debugLog.error('CONFIG', '❌ Error en endpoint /config/tenant:', (err as Error).message);
 
-        // Si la tabla no existe, retornar config por defecto
-        if (err.code === '42P01') {
-            const defaultConfig: TenantConfig = {
-                school_name: 'Bachillerato General Estatal "Héroes de la Patria"',
-                school_short_name: 'BGE',
-                school_type: 'Bachillerato General por Competencias',
-                primary_color: '#2563eb',
-                secondary_color: '#1e40af',
-                logo_url: '/public/images/logo-bge.png',
-                contact_email: 'contacto@heroespatria.edu.mx',
-                contact_phone: '(777) 123-4567',
-                address: 'Calle Principal #123, Cuernavaca, Morelos',
-                enable_notifications: true,
-                enable_gamification: true
-            };
+        // ⚠️ FALLBACK CRÍTICO: En caso de CUALQUIER error, devolver config por defecto
+        // Esto asegura que el frontend SIEMPRE pueda cargar, incluso si hay problemas BD/conexión
+        const defaultConfig: TenantConfig = {
+            school_name: 'Bachillerato General Estatal "Héroes de la Patria"',
+            school_short_name: 'BGE',
+            school_type: 'Bachillerato General por Competencias',
+            primary_color: '#2563eb',
+            secondary_color: '#1e40af',
+            logo_url: '/public/images/logo-bge.png',
+            contact_email: 'contacto@heroespatria.edu.mx',
+            contact_phone: '(777) 123-4567',
+            address: 'Calle Principal #123, Cuernavaca, Morelos',
+            enable_notifications: true,
+            enable_gamification: true
+        };
 
-            res.json({
-                success: true,
-                isDefault: true,
-                tenant: {
-                    id: 1,
-                    uuid: 'default-uuid',
-                    school_name: defaultConfig.school_name,
-                    schema_name: 'public',
-                    domain: req.headers.host || 'localhost',
-                    status: 'activo'
-                },
-                config: defaultConfig
-            });
-            return;
-        }
-
-        res.status(500).json({
-            success: false,
-            error: 'Error interno del servidor',
-            details: err.message,
-            errorType: err.constructor.name
+        // Retornar config por defecto (no 500 error)
+        res.status(200).json({
+            success: true,
+            isDefault: true,
+            fallbackReason: 'Error en consulta a BD, usando configuración por defecto',
+            tenant: {
+                id: 1,
+                uuid: 'default-uuid',
+                school_name: defaultConfig.school_name,
+                schema_name: 'public',
+                domain: req.headers.host || 'localhost',
+                status: 'activo'
+            },
+            config: defaultConfig
         });
     }
 });
@@ -270,11 +263,20 @@ router.get('/public-keys', (req: Request, res: Response): void => {
         res.json(response);
 
     } catch (error: unknown) {
-        debugLog.error('CONFIG', '❌ Error obteniendo claves públicas:', sanitizeError(error as Error, 'config'));
-        res.status(500).json({
-            success: false,
-            error: 'Error al obtener claves públicas',
-            message: (error as Error).message
+        debugLog.error('CONFIG', '❌ Error en endpoint /config/public-keys:', (error as Error).message);
+
+        // ⚠️ FALLBACK CRÍTICO: Devolver respuesta segura incluso si hay errores
+        const isDevelopment = process.env.NODE_ENV === 'development';
+        res.status(200).json({
+            success: true,
+            keys: {
+                tinymce: process.env.TINYMCE_API_KEY || null,
+                google_oauth_client_id: isDevelopment
+                    ? process.env.GOOGLE_OAUTH_CLIENT_ID_DEV
+                    : process.env.GOOGLE_OAUTH_CLIENT_ID_PROD
+            },
+            environment: isDevelopment ? 'development' : 'production',
+            fallbackReason: 'Error procesando respuesta, usando valores de .env'
         });
     }
 });
