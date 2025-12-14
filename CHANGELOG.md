@@ -1,3 +1,37 @@
+[v2.30.8] - 2025-12-13 (ROOT CAUSE FIXED: Vercel HTTP 500 FUNCTION_INVOCATION_FAILED ✅)
+
+**Tipo:** Critical Bugfix / Vercel Production / Module Configuration
+**Commit:** 4e0a769 - fix(vercel): Change api/package.json type from commonjs to module
+**Estado:** ✅ COMPLETADO + DOCUMENTADO
+
+### 🔴 PROBLEMA CRÍTICO IDENTIFICADO Y RESUELTO
+
+**Síntoma:** HTTP 500 `FUNCTION_INVOCATION_FAILED` en TODOS los endpoints de Vercel
+**Causa Raíz:** Contradicción entre `api/package.json` ("type": "commonjs") y `/api/index.js` (ES6 imports)
+**Severidad:** CRÍTICA - Bloqueador de producción
+**Resolución:** Cambiar `api/package.json` "type" de "commonjs" a "module" (1 línea, 1 archivo)
+
+#### Investigación:
+- Inicialmente investigué 215 archivos .ts en backend
+- Revisé config.ts buscando referencias a /src
+- Eventualmente descubrí que `/api/package.json` contradecía `/api/index.js`
+  - Archivo: Usa `import` (ES6)
+  - Config: Decía "type": "commonjs" (require-only)
+  - Vercel: Rechazaba con SyntaxError → FUNCTION_INVOCATION_FAILED
+
+#### Documentación:
+- Creado: `docs/ROOT-CAUSE-VERCEL-500-ERROR.md` (root cause analysis completo)
+- Explicación detallada de por qué ocurre locally pero no en Vercel
+- Verificación y próximos pasos documentados
+
+#### Impacto Esperado:
+- ✅ /api/health debería retornar HTTP 200
+- ✅ /api/config/tenant debería funcionar
+- ✅ /api/config/public-keys debería funcionar
+- ✅ Todos los endpoints backend deberían ser accesibles
+
+---
+
 [v2.30.7] - 2025-12-13 (MODAL DE LOGIN REDESIGNED A ACCESO SEGURO ✅)
 
 **Tipo:** UI/UX / Feature / User Experience Improvement
