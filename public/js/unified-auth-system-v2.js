@@ -1802,205 +1802,85 @@ class UIManager {
      */
     createModalHTML() {
         return `
-            <!-- 🔐 MODAL DE AUTENTICACIÓN UNIFICADO V2 -->
+            <!-- 🔐 MODAL DE AUTENTICACIÓN UNIFICADO - DISEÑO PREMIUM -->
             <div class="modal fade" id="unified-auth-modal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content border-0 shadow-lg">
-                        <!-- Header -->
-                        <div class="modal-header border-0 bg-gradient pb-0">
-                            <div>
-                                <h5 class="modal-title fw-bold">
-                                    <i class="fas fa-shield-alt me-2 text-primary"></i>Iniciar Sesión
-                                </h5>
-                                <p class="text-muted small mb-0">Accede a tu cuenta de BGE</p>
-                            </div>
-                            <button type="button" class="btn-close" id="modal-close-btn" aria-label="Cerrar"></button>
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg overflow-hidden">
+                        <!-- Header Mejorado -->
+                        <div class="modal-header border-0 bg-light">
+                            <h5 class="modal-title fw-bold text-primary" id="authModalLabel">
+                                <i class="fas fa-shield-alt me-2"></i>Acceso Seguro
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
-                        <!-- Contenido -->
-                        <div class="modal-body pt-4">
-                            <!-- Alertas -->
-                            <div id="auth-alerts-container"></div>
+                        <!-- Contenido Principal -->
+                        <div class="modal-body p-4">
+                            <!-- Alerta dinámica -->
+                            <div id="auth-alert" class="alert d-none" role="alert"></div>
 
-                            <!-- Tabs -->
-                            <ul class="nav nav-pills nav-fill mb-4" id="auth-tabs">
-                                <li class="nav-item">
-                                    <button class="nav-link active" id="google-tab" data-bs-toggle="tab" data-bs-target="#google-login">
-                                        <i class="fab fa-google me-2"></i>Google
-                                    </button>
-                                </li>
-                                <li class="nav-item">
-                                    <button class="nav-link" id="email-tab" data-bs-toggle="tab" data-bs-target="#email-login">
-                                        <i class="fas fa-envelope me-2"></i>Email
-                                    </button>
-                                </li>
-                                <li class="nav-item">
-                                    <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-form">
-                                        <i class="fas fa-user-plus me-2"></i>Registro
-                                    </button>
-                                </li>
-                            </ul>
-
-                            <!-- Tab Content -->
-                            <div class="tab-content">
-                                <!-- Google Login -->
-                                <div class="tab-pane fade show active" id="google-login">
-                                    <div class="text-center py-5">
-                                        <i class="fab fa-google fa-3x text-danger mb-3 d-block"></i>
-                                        <p class="text-muted mb-4">Continúa con tu cuenta de Google de forma rápida y segura</p>
-                                        <button type="button" class="btn btn-outline-danger w-100 py-2" id="google-signin-btn">
-                                            <i class="fab fa-google me-2"></i>Continuar con Google
-                                        </button>
-                                    </div>
-
-                                    ${!this.auth.state.googleReady ? `
-                                        <div class="alert alert-info small" role="alert">
-                                            <i class="fas fa-info-circle me-2"></i>
-                                            Google OAuth no disponible en este momento. Usa email para iniciar sesión.
-                                        </div>
-                                    ` : ''}
-                                </div>
-
-                                <!-- Email Login -->
-                                <div class="tab-pane fade" id="email-login">
-                                    <form id="manual-login-form">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Email</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">
-                                                    <i class="fas fa-envelope text-muted"></i>
-                                                </span>
-                                                <input type="email" class="form-control" id="login-email"
-                                                       placeholder="ejemplo@bge.edu.mx" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Contraseña</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">
-                                                    <i class="fas fa-lock text-muted"></i>
-                                                </span>
-                                                <input type="password" class="form-control" id="login-password"
-                                                       placeholder="Tu contraseña" required>
-                                                <button class="btn btn-outline-secondary" type="button" id="toggle-password">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-check mb-3">
-                                            <input class="form-check-input" type="checkbox" id="remember-me">
-                                            <label class="form-check-label" for="remember-me">
-                                                Recordar esta sesión
-                                            </label>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
-                                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
-                                        </button>
-                                    </form>
-
-                                    <!-- ✅ SEMANA 25: Biometric Login Button -->
-                                    <div class="mt-3 text-center">
-                                        <button type="button" class="btn btn-outline-secondary w-100 py-2" id="biometric-login-btn">
-                                            <i class="fas fa-fingerprint me-2"></i>
-                                            Usar Biometría
-                                        </button>
-                                        <p class="text-muted small mt-2 mb-0" id="biometric-status-text">
-                                            <i class="fas fa-info-circle me-1"></i>
-                                            Touch ID, Face ID, Windows Hello
-                                        </p>
-                                    </div>
-
-                                    <hr class="my-3">
-
-                                    <div class="small text-muted">
-                                        <p><strong>¿No tienes cuenta?</strong> <a href="#" class="text-primary" data-bs-toggle="tab" data-bs-target="#register-form">Regístrate aquí</a></p>
-                                        <p><strong>¿Olvidaste tu contraseña?</strong> <a href="#" class="text-primary">Recupérala aquí</a></p>
+                            <!-- Formulario de Login Manual -->
+                            <form id="unified-login-form" class="needs-validation" novalidate>
+                                <div class="mb-3">
+                                    <label for="loginEmail" class="form-label fw-semibold">Correo Electrónico</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white text-muted"><i class="fas fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="loginEmail" placeholder="usuario@ejemplo.com" required autocomplete="email">
                                     </div>
                                 </div>
 
-                                <!-- Register Form -->
-                                <div class="tab-pane fade" id="register-form">
-                                    <form id="public-register-form">
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" id="register-nombre"
-                                                       placeholder="Tu nombre" required minlength="2">
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold">Apellido Paterno <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" id="register-apellido"
-                                                       placeholder="Tu apellido" required minlength="2">
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Email <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">
-                                                    <i class="fas fa-envelope text-muted"></i>
-                                                </span>
-                                                <input type="email" class="form-control" id="register-email"
-                                                       placeholder="tu.email@ejemplo.com" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Contraseña <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">
-                                                    <i class="fas fa-lock text-muted"></i>
-                                                </span>
-                                                <input type="password" class="form-control" id="register-password"
-                                                       placeholder="Mínimo 8 caracteres" required minlength="8">
-                                                <button class="btn btn-outline-secondary" type="button" id="toggle-register-password">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                            </div>
-                                            <small class="text-muted">Debe incluir mayúscula, minúscula y número</small>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Confirmar Contraseña <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">
-                                                    <i class="fas fa-lock text-muted"></i>
-                                                </span>
-                                                <input type="password" class="form-control" id="register-password-confirm"
-                                                       placeholder="Repite tu contraseña" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-check mb-3">
-                                            <input class="form-check-input" type="checkbox" id="accept-terms" required>
-                                            <label class="form-check-label small" for="accept-terms">
-                                                Acepto los <a href="terminos.html" target="_blank">términos y condiciones</a>
-                                                y la <a href="privacidad.html" target="_blank">política de privacidad</a>
-                                            </label>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold">
-                                            <i class="fas fa-user-plus me-2"></i>Crear Cuenta
+                                <div class="mb-3">
+                                    <label for="loginPassword" class="form-label fw-semibold">Contraseña</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white text-muted"><i class="fas fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="loginPassword" placeholder="******" required autocomplete="current-password">
+                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                            <i class="fas fa-eye"></i>
                                         </button>
-                                    </form>
-
-                                    <hr class="my-3">
-
-                                    <div class="small text-muted text-center">
-                                        <p class="mb-0"><strong>¿Ya tienes cuenta?</strong> <a href="#" class="text-primary" data-bs-toggle="tab" data-bs-target="#email-login">Inicia sesión aquí</a></p>
                                     </div>
                                 </div>
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                                        <label class="form-check-label text-muted small" for="rememberMe">
+                                            Recordarme
+                                        </label>
+                                    </div>
+                                    <a href="#" id="forgot-password-link" class="text-decoration-none small text-primary">¿Olvidaste tu contraseña?</a>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm" id="manual-login-btn">
+                                    <span class="normal-text">Iniciar Sesión</span>
+                                    <span class="loading-text d-none">
+                                        <span class="spinner-border spinner-border-sm me-2"></span> Entrando...
+                                    </span>
+                                </button>
+                            </form>
+
+                            <div class="text-center my-3 position-relative">
+                                <hr class="text-muted opacity-25">
+                                <span class="position-absolute top-50 start-50 translate-middle bg-white px-2 text-muted small">O continúa con</span>
                             </div>
+
+                            <div class="d-grid gap-2">
+                                <button id="google-signin-btn" class="btn btn-outline-dark py-2 d-flex align-items-center justify-content-center gap-2 transition-hover">
+                                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="18" height="18">
+                                    <span>Google</span>
+                                </button>
+
+                                <button id="biometric-login-btn" class="btn btn-outline-secondary py-2 d-flex align-items-center justify-content-center gap-2 transition-hover" style="display: none;">
+                                    <i class="fas fa-fingerprint text-success"></i>
+                                    <span>Biometría</span>
+                                </button>
+                            </div>
+
+                             <div class="mt-2 text-center" id="biometric-status-text"></div>
                         </div>
 
                         <!-- Footer -->
-                        <div class="modal-footer border-top bg-light d-flex justify-content-center">
-                            <small class="text-muted">
-                                <i class="fas fa-lock me-1"></i>Tu información está protegida y encriptada
-                            </small>
+                        <div class="modal-footer bg-light border-0 justify-content-center py-3">
+                            <p class="mb-0 small text-muted">¿No tienes cuenta? <a href="#" id="register-link" class="text-primary text-decoration-none fw-bold">Regístrate aquí</a></p>
                         </div>
                     </div>
                 </div>
