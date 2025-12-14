@@ -4,19 +4,16 @@
     {
       "source": "/api/(.*)",
       "destination": "/api/index.js"
-    },
-    {
-      "source": "/((?!assets/|images/|css/|js/|favicon.ico|manifest.json|robots.txt|sitemap.xml).*)",
-      "destination": "/index.html"
     }
   ],
   "cleanUrls": false,
-  "public": true,
+  "public": false,
   "functions": {
     "api/index.js": {
       "memory": 1024,
       "maxDuration": 60,
-      "excludeFiles": "**/*.ts,**/*.d.ts,**/*.map,**/*.md,**/*.log,public/**,../public/**,backend/routes/js_backup/**,backend/tests/**,backend/docs/**,backend/scripts/**"
+      "includeFiles": "api/**,backend/**",
+      "excludeFiles": "backend/{node_modules,tests,docs,scripts,**/*.ts,**/*.d.ts,**/*.map}"
     }
   },
   "headers": [
@@ -32,6 +29,5 @@
   ],
   "installCommand": "cd backend && npm install --production && cd ..",
   "framework": null,
-  "outputDirectory": "public",
-  "buildCommand": "echo 'Deploying pre-built assets from public/dist'"
+  "buildCommand": "echo 'Skipping build - using pre-built assets'"
 }
