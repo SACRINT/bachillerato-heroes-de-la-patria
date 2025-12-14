@@ -30,5 +30,5 @@
   "installCommand": "npm install --production=false && cd backend && npm install --production && cd ..",
   "framework": null,
   "outputDirectory": "public",
-  "buildCommand": "npm run build:frontend"
+  "buildCommand": "npm run build:frontend && npm prune --production"
 }
