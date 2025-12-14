@@ -537,8 +537,19 @@ app.get('/api/config/google-client-id', (req, res) => {
 // ============================================
 
 // SPA Fallback: Sirve index.html para rutas de navegación, ignorando archivos con extensiones.
+// SPA Fallback: Sirve index.html para rutas de navegación.
+// En producción (Vercel), esto es manejado por vercel.json rewrites, 
+// así evitamos que NFT empaquete toda la carpeta 'public' (260MB+).
 app.get(/^(?!\/api|.*\.\w+$).*$/, (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
+    if (process.env.NODE_ENV === 'production') {
+        // En Vercel, este endpoint no debería ser alcanzado si vercel.json está bien configurado.
+        // Pero si llega, evitamos intentar leer ../public
+        res.status(404).json({ error: 'SPA route not handled by backend in production' });
+    } else {
+        // En desarrollo local, servimos el archivo normalmente
+        const publicPath = path.resolve(__dirname, '..', 'public', 'index.html');
+        res.sendFile(publicPath);
+    }
 });
 
 // 404 Handler para rutas de API no encontradas
