@@ -1313,7 +1313,7 @@ class ManualLoginManager {
 
         // ✅ LISTENER PARA SUBMIT DEL FORMULARIO DE LOGIN
         document.addEventListener('submit', (e) => {
-            if (e.target?.id === 'manual-login-form') {
+            if (e.target?.id === 'unified-login-form' || e.target?.id === 'manual-login-form') {
                 e.preventDefault();
                 this.handleManualLogin();
             }
@@ -1326,7 +1326,8 @@ class ManualLoginManager {
 
         // ✅ LISTENER PARA TOGGLE DE VISIBILIDAD DE CONTRASEÑA
         document.addEventListener('click', (e) => {
-            if (e.target?.id === 'toggle-password' || e.target?.closest('#toggle-password')) {
+            if (e.target?.id === 'togglePassword' || e.target?.closest('#togglePassword') ||
+                e.target?.id === 'toggle-password' || e.target?.closest('#toggle-password')) {
                 this.togglePasswordVisibility();
             }
             // Toggle para formulario de registro
@@ -1398,6 +1399,7 @@ class ManualLoginManager {
             `);
 
             modal.setAttribute('aria-modal', 'true');
+            modal.setAttribute('aria-hidden', 'false');
             modal.setAttribute('role', 'dialog');
             modal.setAttribute('data-bs-backdrop', 'static');
 
@@ -1443,9 +1445,9 @@ class ManualLoginManager {
      * MANEJAR LOGIN MANUAL
      */
     async handleManualLogin() {
-        const email = document.getElementById('login-email')?.value?.trim();
-        const password = document.getElementById('login-password')?.value;
-        const rememberMe = document.getElementById('remember-me')?.checked || false;
+        const email = (document.getElementById('loginEmail') || document.getElementById('login-email'))?.value?.trim();
+        const password = (document.getElementById('loginPassword') || document.getElementById('login-password'))?.value;
+        const rememberMe = (document.getElementById('rememberMe') || document.getElementById('remember-me'))?.checked || false;
 
         // Validaciones
         if (!email || !password) {
@@ -1534,8 +1536,8 @@ class ManualLoginManager {
      * TOGGLE PASSWORD VISIBILITY
      */
     togglePasswordVisibility() {
-        const input = document.getElementById('login-password');
-        const icon = document.querySelector('#toggle-password i');
+        const input = document.getElementById('loginPassword') || document.getElementById('login-password');
+        const icon = document.querySelector('#togglePassword i') || document.querySelector('#toggle-password i');
 
         if (!input || !icon) return;
 
@@ -1950,6 +1952,7 @@ class UIManager {
             modal.classList.add('show');
             modal.style.display = 'block';
             modal.setAttribute('aria-modal', 'true');
+            modal.setAttribute('aria-hidden', 'false');
 
             // Agregar clase modal-open al body para deshabilitar scroll
             document.body.classList.add('modal-open');
@@ -1989,6 +1992,7 @@ class UIManager {
             if (modal) {
                 modal.classList.remove('show');
                 modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
                 modal.removeAttribute('aria-modal');
                 debugLog.log('APP', '✅ Modal ocultado');
             }
