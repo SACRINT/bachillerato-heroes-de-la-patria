@@ -8,6 +8,14 @@
   ],
   "cleanUrls": false,
   "public": true,
+  "functions": {
+    "api/index.js": {
+      "memory": 1024,
+      "maxDuration": 60,
+      "includeFiles": "backend/**",
+      "excludeFiles": "node_modules/**"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",
