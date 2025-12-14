@@ -51,9 +51,15 @@ const ensureDirectories = async () => {
         'uploads/documents', 'uploads/videos', 'uploads/temp'
     ];
     for (const dir of dirs) {
-        const fullPath = path_1.default.join(__dirname, '../../public', dir);
+        // OBFUSCATION: Prevenir que Vercel NFT rastree la carpeta publica desde aquí
+        const p = 'pub' + 'lic';
+        const fullPath = path_1.default.join(__dirname, '..', '..', p, dir);
         if (!fs_1.default.existsSync(fullPath)) {
-            fs_1.default.mkdirSync(fullPath, { recursive: true });
+            // En Vercel (read-only filesystem runtime), esto fallará si public no existe.
+            // Pero como excluimos public, y es readonly, mejor solo intentar si no es production lambda
+            if (process.env.NODE_ENV !== 'production') {
+                fs_1.default.mkdirSync(fullPath, { recursive: true });
+            }
         }
     }
 };
@@ -79,8 +85,9 @@ router.post('/image', auth_1.authenticateToken, requireAdmin, upload.single('ima
         const originalName = path_1.default.parse(req.file.originalname).name;
         const safeName = originalName.replace(/[^a-zA-Z0-9\-_]/g, '_');
         const fileName = `${safeName}_${timestamp}`;
-        const outputDir = path_1.default.join(__dirname, '../../public/uploads/images', category);
-        if (!fs_1.default.existsSync(outputDir)) {
+        const p = 'pub' + 'lic';
+        const outputDir = path_1.default.join(__dirname, '..', '..', p, 'uploads/images', category);
+        if (!fs_1.default.existsSync(outputDir) && process.env.NODE_ENV !== 'production') {
             fs_1.default.mkdirSync(outputDir, { recursive: true });
         }
         const optimizedPath = path_1.default.join(outputDir, `${fileName}.webp`);
@@ -88,7 +95,8 @@ router.post('/image', auth_1.authenticateToken, requireAdmin, upload.single('ima
         // Sharp Optimization
         await (0, sharp_1.default)(req.file.buffer).resize(1920, 1080, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 85 }).toFile(optimizedPath);
         await (0, sharp_1.default)(req.file.buffer).resize(1920, 1080, { fit: 'inside', withoutEnlargement: true }).jpeg({ quality: 85 }).toFile(jpegPath);
-        const thumbnailPath = path_1.default.join(__dirname, '../../public/uploads/images/thumbnails', `${fileName}_thumb.webp`);
+        const pThumb = 'pub' + 'lic';
+        const thumbnailPath = path_1.default.join(__dirname, '..', '..', pThumb, 'uploads/images/thumbnails', `${fileName}_thumb.webp`);
         await (0, sharp_1.default)(req.file.buffer).resize(300, 200, { fit: 'cover' }).webp({ quality: 80 }).toFile(thumbnailPath);
         const metadata = await (0, sharp_1.default)(req.file.buffer).metadata();
         const fileInfo = {
@@ -140,8 +148,9 @@ router.post('/document', auth_1.authenticateToken, requireAdmin, upload.single('
         const extension = path_1.default.extname(req.file.originalname);
         const safeName = originalName.replace(/[^a-zA-Z0-9\-_]/g, '_');
         const fileName = `${safeName}_${timestamp}${extension}`;
-        const outputDir = path_1.default.join(__dirname, '../../public/uploads/documents', category);
-        if (!fs_1.default.existsSync(outputDir)) {
+        const pDoc = 'pub' + 'lic';
+        const outputDir = path_1.default.join(__dirname, '..', '..', pDoc, 'uploads/documents', category);
+        if (!fs_1.default.existsSync(outputDir) && process.env.NODE_ENV !== 'production') {
             fs_1.default.mkdirSync(outputDir, { recursive: true });
         }
         const filePath = path_1.default.join(outputDir, fileName);
