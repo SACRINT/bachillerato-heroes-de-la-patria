@@ -13,11 +13,14 @@ const path = require('path');
 class ImageOptimizationService {
     constructor(options = {}) {
         // 🚨 FIX VERCEL: Usar /tmp en entornos serverless
+        // 🚨 FIX VERCEL: Usar /tmp en entornos serverless
         if (this.isServerlessEnvironment()) {
             this.uploadsDir = options.uploadsDir || '/tmp/uploads';
             devLogger.log('ℹ️ Image Optimization: Usando /tmp/uploads (entorno serverless)');
         } else {
-            this.uploadsDir = options.uploadsDir || path.join(__dirname, '../../public/uploads');
+            // OBFUSCATION: 'pub'+'lic' to prevent NFT tracing
+            const p = 'pub' + 'lic';
+            this.uploadsDir = options.uploadsDir || path.join(__dirname, '..', '..', p, 'uploads');
             devLogger.log('ℹ️ Image Optimization: Usando public/uploads (entorno local)');
         }
 
@@ -46,12 +49,12 @@ class ImageOptimizationService {
      */
     isServerlessEnvironment() {
         return process.env.VERCEL === '1' ||
-               process.env.VERCEL_ENV ||
-               process.env.AWS_LAMBDA_FUNCTION_NAME ||
-               process.env.AWS_EXECUTION_ENV ||
-               process.env.NETLIFY === 'true' ||
-               process.env.LAMBDA_TASK_ROOT ||
-               typeof process.env.LAMBDA_RUNTIME_DIR !== 'undefined';
+            process.env.VERCEL_ENV ||
+            process.env.AWS_LAMBDA_FUNCTION_NAME ||
+            process.env.AWS_EXECUTION_ENV ||
+            process.env.NETLIFY === 'true' ||
+            process.env.LAMBDA_TASK_ROOT ||
+            typeof process.env.LAMBDA_RUNTIME_DIR !== 'undefined';
     }
 
     /**

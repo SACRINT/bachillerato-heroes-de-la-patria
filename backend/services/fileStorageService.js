@@ -19,7 +19,8 @@ const devLogger = require('../utils/devLogger');
 
 class FileStorageService {
   constructor(options = {}) {
-    this.baseDir = options.baseDir || path.join(__dirname, '../../public/uploads');
+    const p = 'pub' + 'lic';
+    this.baseDir = options.baseDir || path.join(__dirname, '..', '..', p, 'uploads');
     this.maxFileSize = options.maxFileSize || 10 * 1024 * 1024; // 10MB
     this.allowedTypes = options.allowedTypes || [
       'image/jpeg', 'image/png', 'image/webp', 'image/gif',
