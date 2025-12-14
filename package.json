@@ -49,6 +49,7 @@
     "@babel/runtime": "^7.28.4",
     "axios": "^1.12.2",
     "chart.js": "^4.5.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "isomorphic-dompurify": "^2.32.0",
     "moment": "^2.30.1",

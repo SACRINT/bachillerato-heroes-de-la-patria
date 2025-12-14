@@ -8,11 +8,18 @@ const path = require('path');
 const devLogger = require('./utils/devLogger');
 
 // ORDEN CRÍTICA DE CARGA:
-// 1. Cargar .env.local PRIMERO (contiene secretos reales, NO versionado)
-require('dotenv').config({ path: path.resolve(__dirname, '../.env.local'), override: false });
+// Solo cargar .env si NO estamos en producción (Vercel inyecta variables automáticamente)
+if (process.env.NODE_ENV !== 'production') {
+    try {
+        // 1. Cargar .env.local PRIMERO (contiene secretos reales, NO versionado)
+        require('dotenv').config({ path: path.resolve(__dirname, '../.env.local'), override: false });
 
-// 2. Cargar .env SEGUNDO como fallback (publicable, neutralizado de secretos)
-require('dotenv').config({ path: path.resolve(__dirname, '../.env'), override: false });
+        // 2. Cargar .env SEGUNDO como fallback (publicable, neutralizado de secretos)
+        require('dotenv').config({ path: path.resolve(__dirname, '../.env'), override: false });
+    } catch (e) {
+        console.warn('[SERVER] Advertencia: No se pudieron cargar archivos .env locales (esperado en producción)');
+    }
+}
 
 const express = require('express');
 const http = require('http');  // ✅ HTTP Server para Socket.IO
