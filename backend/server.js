@@ -311,8 +311,12 @@ app.use(session({
 }));
 
 // --- UNIFIED STATIC FILE SERVING FROM /public ---
-devLogger.log('🌍 Configurando servidor de archivos estáticos...');
-app.use(express.static(path.join(__dirname, '../public')));
+if (process.env.NODE_ENV !== 'production') {
+    devLogger.log('🌍 Configurando servidor de archivos estáticos (Dev Mode)...');
+    // OBFUSCATION: Break static analysis for public folder
+    const p = 'pub' + 'lic';
+    app.use(express.static(path.join(__dirname, '..', p)));
+}
 
 // ============================================
 // 🏢 MULTI-TENANCY MIDDLEWARE (17 NOV 2025)
@@ -540,14 +544,19 @@ app.get('/api/config/google-client-id', (req, res) => {
 // SPA Fallback: Sirve index.html para rutas de navegación.
 // En producción (Vercel), esto es manejado por vercel.json rewrites, 
 // así evitamos que NFT empaquete toda la carpeta 'public' (260MB+).
+// SPA Fallback: Sirve index.html para rutas de navegación.
+// En producción (Vercel), esto es manejado por vercel.json rewrites, 
+// así evitamos que NFT empaquete toda la carpeta 'public' (260MB+).
 app.get(/^(?!\/api|.*\.\w+$).*$/, (req, res) => {
     if (process.env.NODE_ENV === 'production') {
         // En Vercel, este endpoint no debería ser alcanzado si vercel.json está bien configurado.
-        // Pero si llega, evitamos intentar leer ../public
         res.status(404).json({ error: 'SPA route not handled by backend in production' });
     } else {
         // En desarrollo local, servimos el archivo normalmente
-        const publicPath = path.resolve(__dirname, '..', 'public', 'index.html');
+        // OBFUSCATION: "pub"+"lic" to avoid static analysis wrapping the folder
+        const p = 'pub' + 'lic';
+        const i = 'ind' + 'ex.html';
+        const publicPath = path.resolve(__dirname, '..', p, i);
         res.sendFile(publicPath);
     }
 });
