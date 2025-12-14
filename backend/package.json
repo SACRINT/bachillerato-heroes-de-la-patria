@@ -45,7 +45,7 @@
     "openai": "^4.104.0",
     "pdfkit": "^0.17.2",
     "pg": "^8.11.3",
-    "sharp": "^0.34.4",
+    "sharp": "0.34.5",
     "socket.io": "^4.8.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",

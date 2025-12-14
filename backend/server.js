@@ -613,12 +613,19 @@ try {
 }
 
 if (require.main === module) {
-    httpServer.listen(PORT, () => {
+    const server = httpServer.listen(PORT, () => {
         devLogger.log(`🚀 Servidor backend iniciado en http://localhost:${PORT}`);
         devLogger.log('✅✅✅ ¡VERSIÓN CORRECTA DEL SERVIDOR EN EJECUCIÓN! ✅✅✅');
 
         if (socketService) {
             devLogger.log(`📡 Socket.IO escuchando en http://localhost:${PORT}`);
+        }
+    });
+
+    server.on('error', (e) => {
+        if (e.code === 'EADDRINUSE') {
+            devLogger.error(`❌ Puerto ${PORT} ocupado. Intentando cerrar proceso anterior...`);
+            process.exit(1); // Salir para que nodemon reinicie o el usuario cierre el proceso
         }
     });
 }
