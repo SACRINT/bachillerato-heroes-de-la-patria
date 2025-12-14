@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "buildCommand": "echo 'Build skipped'",
+  "outputDirectory": "public",
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -7,13 +9,12 @@
     }
   ],
   "cleanUrls": false,
-  "public": false,
   "functions": {
     "api/index.js": {
       "memory": 1024,
       "maxDuration": 60,
       "includeFiles": "api/**,backend/**",
-      "excludeFiles": "backend/{node_modules,tests,docs,scripts,**/*.ts,**/*.d.ts,**/*.map}"
+      "excludeFiles": "**/*.ts,**/*.d.ts,**/*.map,public/**,backend/node_modules,backend/tests,backend/docs,backend/scripts,.git,node_modules"
     }
   },
   "headers": [
