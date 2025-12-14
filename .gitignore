@@ -48,10 +48,10 @@ no_usados/
 !CHANGELOG.md
 !MASTER-CHECKLIST-BGE-2025.md
 !CLAUDE.md
-# !docs/*.md # Permitir todos los archivos .md dentro de docs/
+docs/*.md # Permitir todos los archivos .md dentro de docs/
 
 # Reportes de texto (ya cubierto por *.log, pero se mantiene si hay otros .txt)
-# *.txt
+*.txt
 
 # Backups
 *.backup

@@ -15,31 +15,30 @@ pnpm-debug.log*
 .vscode/
 .idea/
 
-# Debug files en /api/ que no son necesarios para producción
-api/debug-*.js
-api/debug-*.cjs
+# Excluir TODO el código fuente y artefactos de desarrollo del backend en producción
+backend/**/*.ts
+backend/**/*.map
+backend/**/*.d.ts
+backend/**/*.test.js
+backend/**/*.spec.js
+backend/tests/
+backend/__tests__/
+backend/test-utils/
+backend/docs/
+backend/scripts/
+backend/seeds/
+backend/load-tests/
+backend/reports/
+backend/backups/
+backend/test-*.js
+backend/debug-*.js
+backend/jest.config.js
+backend/.env*
+backend/no_usados/
 
-# Documentación local (no necesaria en producción)
-docs/
-CHANGELOG.md
-CLAUDE.md
-MASTER-CHECKLIST*.md
-SIGUIENTES_PASOS.md
-
-# Archivos de test
-__tests__/
-*.test.js
-jest.config.cjs
-jest.setup.cjs
-
-# Old/backup files
-no_usados/
-*.backup
-*-copy.js
-*~
-
-# Node
-node_modules/
-# NOTA: NO ignorar package-lock.json - es esencial para npm ci en Vercel
-# .vercelignore no debería ignorar archivos que npm ci necesita durante el build
+# Node modules local (ya ignorado, pero reforzamos)
 backend/node_modules/
+
+# Logs
+*.log
+npm-debug.log*
