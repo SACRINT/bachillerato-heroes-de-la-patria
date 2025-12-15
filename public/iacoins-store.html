@@ -437,6 +437,11 @@
                     sessionStorage.getItem('authToken') ||
                     localStorage.getItem('authToken');
 
+                if (!token) {
+                    console.log('Usuario no autenticado, mostrando items de demostración');
+                    throw new Error('No auth token');
+                }
+
                 const response = await fetch('/api/store/items', {
                     headers: {
                         'Authorization': `Bearer ${token}`

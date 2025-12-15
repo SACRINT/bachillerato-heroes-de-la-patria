@@ -2356,7 +2356,13 @@
                 <link rel="stylesheet" href="/dist/assets/main.css">
                 <!-- Fetch Interceptor - Fix /auth/* URLs to /api/auth/* (CSP Compliant) -->
                 <script src="/js/fetch-interceptor.js"></script>
-                <script type="module" src="/dist/assets/main.js"></script>
+
+                <!-- 🔐 MODERN AUTH SYSTEM - Unified Authentication V2 (ISSUE FIXED: 15 DEC 2025) -->
+                <!-- This replaces the old compiled /dist/assets/main.js which had incompatible auth logic -->
+                <script src="/js/unified-auth-system-v2.js"></script>
+
+                <!-- DISABLED: Old compiled main.js (was loading old auth system that didn't match backend) -->
+                <!-- <script type="module" src="/dist/assets/main.js"></script> -->
 </body>
 
 </html>
