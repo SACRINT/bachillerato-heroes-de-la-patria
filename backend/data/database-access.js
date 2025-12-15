@@ -1204,9 +1204,10 @@ async function getTenantByDomain(domain) {
         return tenant;
     } catch (error) {
         devLogger.error(`[DAL] ❌ Error en getTenantByDomain para el dominio "${domain}":`, error);
-        // Devolver null o lanzar el error, dependiendo de cómo deba manejarlo el resto de la app.
-        // Por seguridad, lanzamos para que el error 500 sea explícito.
-        throw error;
+        // 🔥 FAIL-SAFE: En lugar de reventar con 500, devolvemos null.
+        // Esto permite que el controlador (config.js) use la configuración por defecto (hardcoded)
+        // y la aplicación cargue visualmente aunque la BD falle.
+        return null;
     }
 }
 
