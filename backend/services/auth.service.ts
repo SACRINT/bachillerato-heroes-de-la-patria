@@ -198,7 +198,7 @@ export class AuthService {
 
             // Intentar primero con PostgreSQL
             try {
-                const result = await executeQuery('SELECT * FROM usuarios WHERE username = $1 OR email = $2', [username, username]);
+                const result = await executeQuery('SELECT * FROM usuarios WHERE username = $1 OR email = $1', [username]);
                 users = result as User[];
                 // devLogger.log('🔍 DEBUG: Usuarios retornados por PostgreSQL:', users);
                 user = users.find(u => u.username === username || u.email === username) || null;
