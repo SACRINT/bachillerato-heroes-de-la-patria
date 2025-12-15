@@ -1310,131 +1310,87 @@ class ManualLoginManager {
     /**
      * SETUP LISTENERS
      */
+    /**
+     * SETUP LISTENERS - ROBUST EVENT DELEGATION
+     */
     setupListeners() {
-        // ✅ FUNCIÓN PARA ATTACHAR LISTENER AL BOTÓN
-        const attachButtonListener = () => {
-            const loginBtn = document.getElementById('authToggleBtn');
-            if (loginBtn && !loginBtn.dataset.listenerAttached) {
-                console.log('[AUTH-V2] ✅ Button found by ID "authToggleBtn", attaching direct click listener');
-                loginBtn.dataset.listenerAttached = 'true';
-                loginBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('[AUTH-V2] 🎯 CLICK DETECTED ON LOGIN BUTTON');
+        console.log('[AUTH-V2] 🛡️ Configurando listeners robustos de ManualLoginManager...');
 
-                    const modal = document.getElementById('unified-auth-modal');
-                    if (!modal) {
-                        console.error('[AUTH-V2] ❌ Modal not found, creating...');
-                        this.createLoginUI();
-                        setTimeout(() => {
-                            const newModal = document.getElementById('unified-auth-modal');
-                            if (newModal) {
-                                this.showModalDirectly(newModal);
-                            }
-                        }, 100);
-                        return;
-                    }
-
-                    this.showModalDirectly(modal);
-                });
-                return true;
-            }
-            return false;
-        };
-
-        // ✅ INTENT INMEDIATO
-        if (!attachButtonListener()) {
-            console.warn('[AUTH-V2] ⚠️ Login button not found initially, setting up retry...');
-
-            // ✅ RETRY CON OBSERVADOR: Si el botón se carga después, lo detectamos
-            const observer = new MutationObserver((mutations) => {
-                if (attachButtonListener()) {
-                    console.log('[AUTH-V2] ✅ Button found after DOM mutation, listener attached');
-                    observer.disconnect();
-                }
-            });
-
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true,
-                attributes: false
-            });
-
-            // ✅ TIMEOUT: Dejar de observar después de 5 segundos
-            setTimeout(() => {
-                observer.disconnect();
-                console.warn('[AUTH-V2] ⚠️ Button still not found after 5s, will use fallback');
-            }, 5000);
-        }
-
-        // ✅ FALLBACK: También escuchar clicks en cualquier elemento con data-bs-target="#unified-auth-modal"
+        // 1. INTERCEPTAR TODOS LOS CLICS EN BOTONES DE LOGIN (Delegación Global)
         document.addEventListener('click', (e) => {
-            if (e.target?.getAttribute('data-bs-target') === '#unified-auth-modal' ||
-                e.target?.closest('[data-bs-target="#unified-auth-modal"]')) {
+            // Botón para abrir modal (cualquiera con ID o clase correcta)
+            const toggleBtn = e.target.closest('#authToggleBtn') ||
+                e.target.closest('#loginButton') ||
+                e.target.closest('.login-trigger');
+
+            if (toggleBtn) {
                 e.preventDefault();
-                e.stopPropagation();
-                const modal = document.getElementById('unified-auth-modal');
-                if (modal) {
-                    this.showModalDirectly(modal);
-                }
+                console.log('[AUTH-V2] 🎯 Click detectado en botón de login (Global Delegate)');
+                this.openModalSafe();
+                return;
+            }
+
+            // Botón "Iniciar Sesión" DENTRO del formulario
+            const submitBtn = e.target.closest('#manual-login-btn');
+            if (submitBtn) {
+                // No hacemos preventDefault aquí, dejamos que el evento 'submit' del form lo maneje
+                console.log('[AUTH-V2] 👆 Click en botón submit detectado');
             }
         });
 
-        // ✅ LISTENER PARA SUBMIT DEL FORMULARIO DE LOGIN
+        // 2. INTERCEPTAR ENVÍO DEL FORMULARIO (CRÍTICO)
+        // Usamos capture phase (true) para asegurar que lo atrapamos antes que nadie
         document.addEventListener('submit', (e) => {
-            if (e.target?.id === 'unified-login-form' || e.target?.id === 'manual-login-form') {
-                e.preventDefault();
-                this.handleManualLogin();
+            const form = e.target;
+
+            // Verificar si es nuestro formulario de login
+            if (form.id === 'unified-login-form' || form.id === 'manual-login-form' || form.closest('#unified-login-form')) {
+                e.preventDefault(); // 🛑 DETENER ENVÍO TRADICIONAL
+                e.stopPropagation(); // 🛑 DETENER PROPAGACIÓN
+
+                console.log('[AUTH-V2] 🚀 SUBMIT INTERCEPTADO CORRECTAMENTE');
+                this.handleManualLogin(); // ✅ EJECUTAR LÓGICA JS
+                return false;
             }
-            // ✅ LISTENER PARA SUBMIT DEL FORMULARIO DE REGISTRO
-            if (e.target?.id === 'public-register-form') {
+
+            // Formulario de registro
+            if (form.id === 'public-register-form') {
                 e.preventDefault();
                 this.handlePublicRegister();
             }
-        });
+        }, true); // <--- Use Capture Phase
 
-        // ✅ LISTENER PARA TOGGLE DE VISIBILIDAD DE CONTRASEÑA
+        // 3. LISTENERS AUXILIARES (UI)
         document.addEventListener('click', (e) => {
-            if (e.target?.id === 'togglePassword' || e.target?.closest('#togglePassword') ||
-                e.target?.id === 'toggle-password' || e.target?.closest('#toggle-password')) {
+            // Toggle Password
+            if (e.target.closest('#togglePassword') || e.target.closest('#toggle-password')) {
                 this.togglePasswordVisibility();
             }
-            // Toggle para formulario de registro
-            if (e.target?.id === 'toggle-register-password' || e.target?.closest('#toggle-register-password')) {
-                this.toggleRegisterPasswordVisibility();
-            }
-        });
-
-        // ✅ LISTENER PARA CERRAR MODAL CON BOTÓN X
-        document.addEventListener('click', (e) => {
-            if (e.target?.id === 'modal-close-btn' || e.target?.closest('#modal-close-btn') ||
-                e.target?.classList?.contains('btn-close') || e.target?.closest('.btn-close')) {
-                e.preventDefault();
-                console.log('[AUTH-V2] 🔴 Botón de cerrar clickeado, cerrando modal...');
+            // Cerrar Modal
+            if (e.target.closest('.btn-close') || e.target.closest('#modal-close-btn')) {
                 this.auth.managers.ui.hideModal();
             }
         });
 
-        // ✅ LISTENER PARA CERRAR MODAL CLICKEANDO EN EL BACKDROP
-        document.addEventListener('click', (e) => {
-            if (e.target?.classList?.contains('modal-backdrop')) {
-                console.log('[AUTH-V2] 🔴 Backdrop clickeado, cerrando modal...');
-                this.auth.managers.ui.hideModal();
-            }
-        });
+        console.log('[AUTH-V2] ✅ Listeners configurados (Modo Robusto)');
+    }
 
-        // ✅ LISTENER PARA CERRAR MODAL CON ESC
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                const modal = document.getElementById('unified-auth-modal');
-                if (modal && modal.classList.contains('show')) {
-                    console.log('[AUTH-V2] 🔴 ESC presionado, cerrando modal...');
-                    this.auth.managers.ui.hideModal();
-                }
-            }
-        });
-
-        console.log('[AUTH-V2] ✅ Listeners de ManualLoginManager configurados');
+    /**
+     * Helper param abrir modal de forma segura
+     */
+    openModalSafe() {
+        const modal = document.getElementById('unified-auth-modal');
+        if (modal) {
+            this.showModalDirectly(modal);
+        } else {
+            console.warn('[AUTH-V2] ⚠️ Modal no existe, creándolo on-the-fly...');
+            this.auth.createLoginUI();
+            // Pequeño delay para asegurar que el DOM se actualizó
+            setTimeout(() => {
+                const newModal = document.getElementById('unified-auth-modal');
+                if (newModal) this.showModalDirectly(newModal);
+            }, 50);
+        }
     }
 
     /**
@@ -1544,42 +1500,55 @@ class ManualLoginManager {
         this.setLoading(true);
 
         try {
-            // ✅ CORRECCIÓN: Usar 'email' que es lo que el endpoint espera
-            // El endpoint /api/auth/login espera { email, password, rememberMe }
+            // ✅ Petición al backend
             const response = await fetch(`${this.auth.config.apiBaseUrl}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: email,  // ✅ El campo se llama 'email' en el backend
-                    password: password,
-                    rememberMe: rememberMe
-                })
+                body: JSON.stringify({ email, password, rememberMe })
             });
 
             let data;
             try {
                 data = await response.json();
             } catch (parseError) {
-                debugLog.error('ERROR', 'Respuesta no es JSON válido:', parseError);
-                this.auth.showError('Respuesta inválida del servidor');
-                return;
+                console.error('[AUTH-LOGIN] ❌ Respuesta no es JSON:', parseError);
+                throw new Error('Respuesta del servidor no válida');
             }
 
-            if (response.ok && data.success) {
-                // 🔍 DEBUG: Log la respuesta completa del servidor
-                console.log('[AUTH-LOGIN] ✅ Respuesta del servidor:', {
+            // Debug masivo
+            console.log('[AUTH-DEBUG] ----------------------------------------');
+            console.log('[AUTH-DEBUG] Response Status:', response.status);
+            console.log('[AUTH-DEBUG] Response OK:', response.ok);
+            console.log('[AUTH-DEBUG] Data Success (Raw):', data?.success);
+            console.log('[AUTH-DEBUG] Data Message:', data?.message);
+
+            // Robust Success Check:
+            const responseOk = response.ok;
+            const dataSuccess = data?.success;
+            // 'exito', 'exitosa', 'successful', 'autenticación', 'bienvenido'
+            const messageHasSuccess = data?.message && (
+                data.message.toLowerCase().includes('exit') ||        // exitoso, exito, exitosa
+                data.message.toLowerCase().includes('success') ||     // success (English)
+                data.message.toLowerCase().includes('autenticaci') || // autenticación (Spanish)
+                data.message.toLowerCase().includes('bienvenid') ||   // bienvenido (Spanish)
+                data.message.toLowerCase().includes('correct')        // correcto (Spanish)
+            );
+
+            // OPCIÓN MÁS ROBUSTA: Si el mensaje suena exitoso, confiar en eso primero
+            const isSuccess = messageHasSuccess ||  // ← Primero check de mensaje (más fiable)
+                (responseOk && dataSuccess) ||      // ← Luego check de status + success flag
+                (String(dataSuccess) === 'true');   // ← Luego check de string "true"
+
+            console.log('[AUTH-LOGIN] Success Logic:', { responseOk, dataSuccess, messageHasSuccess, FINAL: isSuccess });
+
+            if (isSuccess) {
+                console.log('[AUTH-LOGIN] ✅ Respuesta del servidor (SUCCESS DETECTED):', {
                     success: data.success,
-                    message: data.message,
-                    user: data.user,
-                    tokens: data.tokens ? '(presente)' : '(ausente)',
-                    sessionInfo: data.sessionInfo ? '(presente)' : '(ausente)'
+                    user: data.user
                 });
 
-                // ✅ SEMANA 25: Check if 2FA is required
                 if (data.requires2FA) {
-                    debugLog.log('AUTH', 'Login requiere 2FA - mostrando modal de verificación');
-
-                    // Store user data temporarily for 2FA verification
+                    debugLog.log('AUTH', 'Login requiere 2FA');
                     this.auth.pending2FAData = {
                         userId: data.userId,
                         username: data.user.username,
@@ -1587,29 +1556,23 @@ class ManualLoginManager {
                         role: data.user.role,
                         rememberMe: rememberMe
                     };
-
-                    // Close login modal and show 2FA verification modal
-                    this.auth.closeModal();
-                    this.auth.show2FAVerificationModal();
+                    this.auth.managers.ui.closeModal();
+                    if (this.auth.show2FAVerificationModal) {
+                        this.auth.show2FAVerificationModal();
+                    } else {
+                        console.error('[AUTH] show2FAVerificationModal not found on auth system');
+                        // Fallback: try to show the modal by ID manually if possible, or just error
+                        this.auth.showError('Error: Sistema 2FA no encontrado');
+                    }
                     return;
                 }
 
-                // ✅ CORRECCIÓN CRÍTICA: El endpoint devuelve tokens.accessToken, no token
-                // Estructura: { success, message, user, tokens: { accessToken, refreshToken, ... }, sessionInfo }
                 const accessToken = data.tokens?.accessToken || data.token;
-
-                // 🔍 DEBUG: Verificar que data.user tiene los campos esperados
-                console.log('[AUTH-LOGIN] 📋 Datos del usuario recibidos:', {
-                    id: data.user?.id,
-                    username: data.user?.username,
-                    email: data.user?.email,
-                    nombre: data.user?.nombre,
-                    apellido_paterno: data.user?.apellido_paterno,
-                    role: data.user?.role
-                });
+                console.log('[AUTH-LOGIN] 📋 Datos recibidos -> Procesando login...');
 
                 await this.auth.processLogin(data.user, accessToken, rememberMe);
             } else {
+                console.warn('[AUTH-LOGIN] ❌ Respuesta del servidor (FAILURE DETECTED)');
                 const errorMsg = data.error || data.message || 'Credenciales inválidas';
                 debugLog.warn('AUTH', 'Login fallido:', errorMsg);
                 this.auth.showError(errorMsg);
@@ -2099,18 +2062,23 @@ class UIManager {
 
             if (modal) {
                 modal.classList.remove('show');
+                // ✅ FIX: Remover style attribute completo para eliminar !important previos
+                modal.removeAttribute('style');
                 modal.style.display = 'none';
                 modal.setAttribute('aria-hidden', 'true');
                 modal.removeAttribute('aria-modal');
-                debugLog.log('APP', '✅ Modal ocultado');
+                debugLog.log('APP', '✅ Modal ocultado (atributos limpiados)');
             }
 
             if (backdrop) {
                 backdrop.remove();
+                // Asegurar que no queden backdrops huérfanos
+                document.querySelectorAll('.modal-backdrop').forEach(bd => bd.remove());
                 debugLog.log('APP', '✅ Backdrop eliminado');
             }
 
             document.body.classList.remove('modal-open');
+            document.body.removeAttribute('style'); // Limpiar estilos del body tambien
             debugLog.log('APP', '✅ Modal cerrado completamente');
 
         } catch (error) {
