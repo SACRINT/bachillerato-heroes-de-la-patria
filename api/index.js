@@ -519,6 +519,799 @@ app.post('/api/auth/register', express.json(), async (req, res) => {
 });
 
 // ============================================
+// GAMIFICACIÓN - ENDPOINTS (IACOINS & WALLET)
+// ============================================
+
+// GET /api/wallet - Obtener billetera del usuario
+app.get('/api/wallet', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token requerido'
+            });
+        }
+
+        // Decodificar token para obtener userId
+        const jwt = require('jsonwebtoken');
+        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+
+        let decoded;
+        try {
+            decoded = jwt.verify(token, jwtSecret);
+        } catch (err) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token inválido'
+            });
+        }
+
+        const userId = decoded.userId;
+        const { Pool } = require('pg');
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        const client = await pool.connect();
+
+        try {
+            // Obtener saldo de IACoins del usuario
+            const balanceQuery = `
+                SELECT COALESCE(SUM(amount), 0) as total_coins
+                FROM iacoins_transactions
+                WHERE user_id = $1
+            `;
+
+            const balanceResult = await client.query(balanceQuery, [userId]);
+            const totalCoins = parseInt(balanceResult.rows[0]?.total_coins || 0);
+
+            // Obtener items del usuario en la tienda
+            const itemsQuery = `
+                SELECT id, name, description, price, image_url, category
+                FROM store_items
+                WHERE user_id = $1
+                LIMIT 50
+            `;
+
+            const itemsResult = await client.query(itemsQuery, [userId]);
+
+            res.json({
+                success: true,
+                wallet: {
+                    userId: userId,
+                    totalCoins: totalCoins,
+                    items: itemsResult.rows || [],
+                    lastUpdated: new Date().toISOString()
+                }
+            });
+
+        } finally {
+            client.release();
+            await pool.end();
+        }
+
+    } catch (error) {
+        console.error('[WALLET] Error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener billetera'
+        });
+    }
+});
+
+// GET /api/challenges - Obtener desafíos activos
+app.get('/api/challenges', async (req, res) => {
+    try {
+        const { Pool } = require('pg');
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        const client = await pool.connect();
+
+        try {
+            const query = `
+                SELECT id, title, description, difficulty, reward_coins, status, created_at
+                FROM challenges
+                WHERE status = 'active'
+                ORDER BY created_at DESC
+                LIMIT 20
+            `;
+
+            const result = await client.query(query);
+
+            res.json({
+                success: true,
+                challenges: result.rows || [],
+                total: result.rows.length
+            });
+
+        } finally {
+            client.release();
+            await pool.end();
+        }
+
+    } catch (error) {
+        console.error('[CHALLENGES] Error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener desafíos'
+        });
+    }
+});
+
+// GET /api/iacoins/balance - Obtener balance de IACoins
+app.get('/api/iacoins/balance', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token requerido'
+            });
+        }
+
+        const jwt = require('jsonwebtoken');
+        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+
+        let decoded;
+        try {
+            decoded = jwt.verify(token, jwtSecret);
+        } catch (err) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token inválido'
+            });
+        }
+
+        const { Pool } = require('pg');
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        const client = await pool.connect();
+
+        try {
+            const query = `
+                SELECT COALESCE(SUM(amount), 0) as balance
+                FROM iacoins_transactions
+                WHERE user_id = $1 AND status = 'completed'
+            `;
+
+            const result = await client.query(query, [decoded.userId]);
+            const balance = parseInt(result.rows[0]?.balance || 0);
+
+            res.json({
+                success: true,
+                userId: decoded.userId,
+                balance: balance,
+                currency: 'IACoins'
+            });
+
+        } finally {
+            client.release();
+            await pool.end();
+        }
+
+    } catch (error) {
+        console.error('[IACOINS-BALANCE] Error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener balance'
+        });
+    }
+});
+
+// GET /api/iacoins/achievements - Obtener logros del usuario
+app.get('/api/iacoins/achievements', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token requerido'
+            });
+        }
+
+        const jwt = require('jsonwebtoken');
+        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+
+        let decoded;
+        try {
+            decoded = jwt.verify(token, jwtSecret);
+        } catch (err) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token inválido'
+            });
+        }
+
+        const { Pool } = require('pg');
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        const client = await pool.connect();
+
+        try {
+            const query = `
+                SELECT id, title, description, icon_url, unlocked_at
+                FROM achievements
+                WHERE user_id = $1
+                ORDER BY unlocked_at DESC
+            `;
+
+            const result = await client.query(query, [decoded.userId]);
+
+            res.json({
+                success: true,
+                achievements: result.rows || [],
+                total: result.rows.length
+            });
+
+        } finally {
+            client.release();
+            await pool.end();
+        }
+
+    } catch (error) {
+        console.error('[ACHIEVEMENTS] Error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener logros'
+        });
+    }
+});
+
+// GET /api/iacoins/challenges - Obtener desafíos disponibles
+app.get('/api/iacoins/challenges', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token requerido'
+            });
+        }
+
+        const jwt = require('jsonwebtoken');
+        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+
+        let decoded;
+        try {
+            decoded = jwt.verify(token, jwtSecret);
+        } catch (err) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token inválido'
+            });
+        }
+
+        const { Pool } = require('pg');
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        const client = await pool.connect();
+
+        try {
+            const query = `
+                SELECT id, title, description, difficulty, reward_coins, status
+                FROM challenges
+                WHERE status = 'active'
+                ORDER BY difficulty, reward_coins DESC
+                LIMIT 30
+            `;
+
+            const result = await client.query(query);
+
+            res.json({
+                success: true,
+                challenges: result.rows || [],
+                total: result.rows.length
+            });
+
+        } finally {
+            client.release();
+            await pool.end();
+        }
+
+    } catch (error) {
+        console.error('[IACOINS-CHALLENGES] Error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener desafíos'
+        });
+    }
+});
+
+// GET /api/iacoins/leaderboard - Obtener tabla de líderes
+app.get('/api/iacoins/leaderboard', async (req, res) => {
+    try {
+        const { Pool } = require('pg');
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        const client = await pool.connect();
+
+        try {
+            const query = `
+                SELECT
+                    u.id,
+                    u.username,
+                    u.nombre,
+                    COALESCE(SUM(t.amount), 0) as total_coins,
+                    COUNT(a.id) as achievements_count
+                FROM usuarios u
+                LEFT JOIN iacoins_transactions t ON u.id = t.user_id AND t.status = 'completed'
+                LEFT JOIN achievements a ON u.id = a.user_id
+                GROUP BY u.id, u.username, u.nombre
+                ORDER BY total_coins DESC
+                LIMIT 50
+            `;
+
+            const result = await client.query(query);
+
+            // Agregar ranking
+            const leaderboard = result.rows.map((row, index) => ({
+                ...row,
+                rank: index + 1
+            }));
+
+            res.json({
+                success: true,
+                leaderboard: leaderboard,
+                total: leaderboard.length
+            });
+
+        } finally {
+            client.release();
+            await pool.end();
+        }
+
+    } catch (error) {
+        console.error('[LEADERBOARD] Error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener tabla de líderes'
+        });
+    }
+});
+
+// GET /api/iacoins/transactions - Obtener transacciones del usuario
+app.get('/api/iacoins/transactions', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token requerido'
+            });
+        }
+
+        const jwt = require('jsonwebtoken');
+        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+
+        let decoded;
+        try {
+            decoded = jwt.verify(token, jwtSecret);
+        } catch (err) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token inválido'
+            });
+        }
+
+        const { Pool } = require('pg');
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        const client = await pool.connect();
+
+        try {
+            const query = `
+                SELECT id, type, amount, reason, status, created_at
+                FROM iacoins_transactions
+                WHERE user_id = $1
+                ORDER BY created_at DESC
+                LIMIT 100
+            `;
+
+            const result = await client.query(query, [decoded.userId]);
+
+            res.json({
+                success: true,
+                transactions: result.rows || [],
+                total: result.rows.length
+            });
+
+        } finally {
+            client.release();
+            await pool.end();
+        }
+
+    } catch (error) {
+        console.error('[TRANSACTIONS] Error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener transacciones'
+        });
+    }
+});
+
+// ============================================
+// TIENDA (STORE)
+// ============================================
+
+// GET /api/store/items - Obtener items de la tienda
+app.get('/api/store/items', async (req, res) => {
+    try {
+        const { Pool } = require('pg');
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        const client = await pool.connect();
+
+        try {
+            const query = `
+                SELECT id, name, description, price, image_url, category, stock, created_at
+                FROM store_items
+                WHERE status = 'active'
+                ORDER BY category, name
+                LIMIT 100
+            `;
+
+            const result = await client.query(query);
+
+            res.json({
+                success: true,
+                items: result.rows || [],
+                total: result.rows.length
+            });
+
+        } finally {
+            client.release();
+            await pool.end();
+        }
+
+    } catch (error) {
+        console.error('[STORE-ITEMS] Error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener items de la tienda'
+        });
+    }
+});
+
+// ============================================
+// AUTENTICACIÓN - ENDPOINTS ADICIONALES
+// ============================================
+
+// GET /api/auth/profile - Obtener perfil del usuario
+app.get('/api/auth/profile', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token requerido'
+            });
+        }
+
+        const jwt = require('jsonwebtoken');
+        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+
+        let decoded;
+        try {
+            decoded = jwt.verify(token, jwtSecret);
+        } catch (err) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token inválido'
+            });
+        }
+
+        const { Pool } = require('pg');
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        const client = await pool.connect();
+
+        try {
+            const query = `
+                SELECT id, uuid, email, username, nombre, apellido_paterno, apellido_materno,
+                       role, status, created_at, avatar_url
+                FROM usuarios
+                WHERE id = $1
+            `;
+
+            const result = await client.query(query, [decoded.userId]);
+
+            if (result.rows.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Usuario no encontrado'
+                });
+            }
+
+            const user = result.rows[0];
+
+            res.json({
+                success: true,
+                user: {
+                    id: user.id,
+                    uuid: user.uuid,
+                    email: user.email,
+                    username: user.username,
+                    nombre: user.nombre,
+                    apellido_paterno: user.apellido_paterno,
+                    apellido_materno: user.apellido_materno,
+                    role: user.role,
+                    status: user.status,
+                    avatarUrl: user.avatar_url,
+                    createdAt: user.created_at
+                }
+            });
+
+        } finally {
+            client.release();
+            await pool.end();
+        }
+
+    } catch (error) {
+        console.error('[AUTH-PROFILE] Error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener perfil'
+        });
+    }
+});
+
+// GET /api/students-auth/check - Verificar sesión de estudiante
+app.get('/api/students-auth/check', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                authenticated: false,
+                error: 'Token requerido'
+            });
+        }
+
+        const jwt = require('jsonwebtoken');
+        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+
+        let decoded;
+        try {
+            decoded = jwt.verify(token, jwtSecret);
+        } catch (err) {
+            return res.status(401).json({
+                success: false,
+                authenticated: false,
+                error: 'Token inválido'
+            });
+        }
+
+        // Verificar que es estudiante
+        if (decoded.role !== 'estudiante') {
+            return res.status(403).json({
+                success: false,
+                authenticated: true,
+                isStudent: false,
+                error: 'Solo estudiantes pueden acceder'
+            });
+        }
+
+        res.json({
+            success: true,
+            authenticated: true,
+            isStudent: true,
+            userId: decoded.userId,
+            email: decoded.email,
+            username: decoded.username
+        });
+
+    } catch (error) {
+        console.error('[STUDENT-CHECK] Error:', error.message);
+        res.status(500).json({
+            success: false,
+            authenticated: false,
+            error: 'Error al verificar sesión'
+        });
+    }
+});
+
+// ============================================
+// BIBLIOTECA DIGITAL
+// ============================================
+
+// GET /api/digital-library/categories - Obtener categorías de la biblioteca
+app.get('/api/digital-library/categories', async (req, res) => {
+    try {
+        const { Pool } = require('pg');
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        const client = await pool.connect();
+
+        try {
+            const query = `
+                SELECT id, name, description, icon_url, document_count
+                FROM library_categories
+                WHERE status = 'active'
+                ORDER BY name
+            `;
+
+            const result = await client.query(query);
+
+            res.json({
+                success: true,
+                categories: result.rows || [],
+                total: result.rows.length
+            });
+
+        } finally {
+            client.release();
+            await pool.end();
+        }
+
+    } catch (error) {
+        console.error('[LIBRARY-CATEGORIES] Error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener categorías'
+        });
+    }
+});
+
+// GET /api/digital-library/documents - Obtener documentos de la biblioteca
+app.get('/api/digital-library/documents', async (req, res) => {
+    try {
+        const { category, search } = req.query;
+        const { Pool } = require('pg');
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        const client = await pool.connect();
+
+        try {
+            let query = `
+                SELECT id, title, description, category, file_url, created_at, view_count
+                FROM library_documents
+                WHERE status = 'active'
+            `;
+
+            const params = [];
+
+            if (category) {
+                query += ` AND category = $${params.length + 1}`;
+                params.push(category);
+            }
+
+            if (search) {
+                query += ` AND (title ILIKE $${params.length + 1} OR description ILIKE $${params.length + 1})`;
+                params.push(`%${search}%`);
+            }
+
+            query += ` ORDER BY created_at DESC LIMIT 100`;
+
+            const result = await client.query(query, params);
+
+            res.json({
+                success: true,
+                documents: result.rows || [],
+                total: result.rows.length
+            });
+
+        } finally {
+            client.release();
+            await pool.end();
+        }
+
+    } catch (error) {
+        console.error('[LIBRARY-DOCUMENTS] Error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener documentos'
+        });
+    }
+});
+
+// ============================================
+// MENSAJERÍA
+// ============================================
+
+// GET /api/messaging/conversations - Obtener conversaciones del usuario
+app.get('/api/messaging/conversations', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token requerido'
+            });
+        }
+
+        const jwt = require('jsonwebtoken');
+        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+
+        let decoded;
+        try {
+            decoded = jwt.verify(token, jwtSecret);
+        } catch (err) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token inválido'
+            });
+        }
+
+        const { Pool } = require('pg');
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        const client = await pool.connect();
+
+        try {
+            const query = `
+                SELECT id, title, participants, last_message, last_message_at, unread_count
+                FROM conversations
+                WHERE $1 = ANY(participants)
+                ORDER BY last_message_at DESC
+                LIMIT 50
+            `;
+
+            const result = await client.query(query, [decoded.userId]);
+
+            res.json({
+                success: true,
+                conversations: result.rows || [],
+                total: result.rows.length
+            });
+
+        } finally {
+            client.release();
+            await pool.end();
+        }
+
+    } catch (error) {
+        console.error('[MESSAGING] Error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener conversaciones'
+        });
+    }
+});
+
+// ============================================
 // ERROR HANDLING
 // ============================================
 app.use(errorHandler);
