@@ -2352,10 +2352,24 @@
                 <!-- Modal de Login JWT -->
                 <!-- Modal de Login JWT Eliminado - Reemplazado por AuthInterface dinámico -->
 
-                <!-- Build Assets (DEPRECATED) -->
-                <!-- ⚠️ REMOVED: /dist/assets/main.js - Conflicted with unified-auth-system-v2.js -->
-                <!-- The /dist/ files contained outdated authentication code using /auth/login instead of /api/auth/login -->
-                <!-- Authentication now handled exclusively by unified-auth-system-v2.js from header.html -->
+                <!-- Build Assets - CRITICAL FOR HEADER/FOOTER LOADING -->
+                <link rel="stylesheet" href="/dist/assets/main.css">
+                <script>
+                    // Patch: Fix /auth/* URLs to /api/auth/* before execution
+                    // The compiled main.js uses /auth/login instead of /api/auth/login
+                    const originalFetch = window.fetch;
+                    window.fetch = function(...args) {
+                        let url = args[0];
+                        if (typeof url === 'string' && url.includes('/auth/') && !url.includes('/api/auth/')) {
+                            url = url.replace(/\/auth\//g, '/api/auth/');
+                            console.log('[AUTH-INTERCEPTOR] Fixed URL to:', url);
+                            args[0] = url;
+                        }
+                        return originalFetch.apply(this, args);
+                    };
+                    console.log('[AUTH-INTERCEPTOR] Fetch interceptor installed');
+                </script>
+                <script type="module" src="/dist/assets/main.js"></script>
 </body>
 
 </html>
