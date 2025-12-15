@@ -37,6 +37,6 @@
       ]
     }
   ],
-  "installCommand": "npm install --production && cd backend && npm install --production && cd ..",
+  "installCommand": "npm install --production",
   "framework": null
 }
