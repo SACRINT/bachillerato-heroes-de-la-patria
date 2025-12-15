@@ -2357,6 +2357,10 @@
                 <!-- Fetch Interceptor - Fix /auth/* URLs to /api/auth/* (CSP Compliant) -->
                 <script src="/js/fetch-interceptor.js"></script>
                 <script type="module" src="/dist/assets/main.js"></script>
+
+                <!-- 🔧 AUTH LOGIN PATCH - Corregir lógica de validación (15 DIC 2025) -->
+                <!-- Este parche se ejecuta DESPUÉS de /dist/assets/main.js y corrige la validación del login -->
+                <script src="/js/auth-login-patch.js"></script>
 </body>
 
 </html>

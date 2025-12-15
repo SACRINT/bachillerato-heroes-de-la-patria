@@ -492,11 +492,11 @@
                 sessionStorage.getItem('authToken') ||
                 localStorage.getItem('authToken');
 
-            // if (!token) {
-            // Redirect to home if not authenticated
-            // window.location.href = 'index.html';
-            // return;
-            // }
+            if (!token) {
+                // Redirect to home if not authenticated
+                window.location.href = 'index.html';
+                return;
+            }
 
             // Load wallet data
             await loadWalletData();
@@ -508,7 +508,10 @@
 
         async function loadWalletData() {
             try {
-                const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+                const token = sessionStorage.getItem('bge_auth_token') ||
+                    localStorage.getItem('bge_auth_token') ||
+                    sessionStorage.getItem('authToken') ||
+                    localStorage.getItem('authToken');
                 const response = await fetch('/api/wallet', {
                     headers: {
                         'Authorization': `Bearer ${token}`
