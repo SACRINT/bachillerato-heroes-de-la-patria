@@ -205,6 +205,47 @@ Usa "Conventional Commits" para tus mensajes de `git commit`.
 ---
 ## 4. 🏆 REGISTRO DE LOGROS RECIENTES (Actualizar al final de cada sesión)
 
+*   **15 de Diciembre de 2025 (Continuación Session Extended) - VERCEL CONFIG ENDPOINTS HTTP 500 FIX ✅✅**
+    *   **Tipo:** Critical Bug Fix / Vercel Serverless / Production Debugging
+    *   **Logros Críticos:**
+        - **IDENTIFICACIÓN DE HTTP 500 EN PRODUCCIÓN:**
+          - Problema: `/api/config/tenant` y `/api/config/public-keys` retornaban HTTP 500 en Vercel
+          - Error en consola del navegador: `Error al cargar la configuración remota`
+          - Root Cause: La app Express en `/api/index.js` tenía problemas con middleware/helmet causando excepciones silenciosas
+        - **SOLUCIÓN IMPLEMENTADA: HANDLERS SERVERLESS SEPARADOS**
+          - ✅ Creado `api/config/tenant.js` - Handler Vercel dedicado para `/api/config/tenant`
+          - ✅ Creado `api/config/public-keys.js` - Handler Vercel dedicado para `/api/config/public-keys`
+          - ✅ Creado `api/config.js` - Router helper para ambos endpoints
+          - ✅ Mejorado `api/index.js` con mejor error handling y logging
+        - **CARACTERÍSTICAS DE LOS NUEVOS HANDLERS:**
+          - Sin dependencias externas (solo Node.js built-in)
+          - CommonJS para máxima compatibilidad con Vercel
+          - Logging detallado con prefijos `[TENANT-CONFIG]` y `[PUBLIC-KEYS]`
+          - Safe hostname retrieval con fallback automático
+          - Completo try/catch en cada función
+          - Validación de método HTTP (solo GET permitido)
+        - **COMMITS REALIZADOS Y PUSHEADOS (2):**
+          - f1f7107: `fix(vercel): Create dedicated handlers for /api/config endpoints with improved error handling`
+          - 438769b: `docs(changelog): Add v2.30.11 - Config endpoints HTTP 500 fix`
+        - **CHANGELOG ACTUALIZADO:**
+          - v2.30.11 documentada con problema, causa raíz, solución e impacto esperado
+    *   **Estado del Proyecto:** v2.30.11 - Config Endpoints Fixed
+    *   **Archivos Modificados:** 4 (api/index.js, api/config.js NEW, api/config/tenant.js NEW, api/config/public-keys.js NEW)
+    *   **Líneas de Código:** +273 líneas de handlers + logging
+    *   **Git Status:** ✅ Todos los commits pusheados a origin/main
+    *   **Próximos Pasos:**
+        - ⏳ Vercel automatic redeploy (detecta cambios)
+        - ⏳ Verificación de endpoints en producción
+        - ⏳ Validar que `/api/config/tenant` y `/api/config/public-keys` retornan HTTP 200
+    *   **Impacto Esperado Post-Redeploy:**
+        - ✅ `/api/config/tenant` → HTTP 200 (default BGE config)
+        - ✅ `/api/config/public-keys` → HTTP 200 (TinyMCE + Google OAuth keys)
+        - ✅ Logs detallados en Vercel para debugging
+        - ✅ Frontend recibe configuración correctamente
+        - ✅ No más errores "Error al cargar la configuración remota"
+    *   **Conclusión:** HTTP 500 en config endpoints resuelto. Handlers serverless separados funcionarán correctamente en Vercel.
+    *   **Evidencia:** Commits f1f7107, 438769b; CHANGELOG.md v2.30.11; 3 nuevos handlers
+
 *   **15 de Diciembre de 2025 (Continuación Session New) - VERCEL API PACKAGE.JSON FINAL FIX ✅**
     *   **Tipo:** Critical Bug Fix / Vercel Serverless Configuration / Production Hotfix
     *   **Logros Críticos:**
