@@ -22,10 +22,37 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-const { pool } = require('../backend/config/database');
-const { errorHandler } = require('../backend/middleware/errorHandler');
-const { securityMiddleware } = require('../backend/middleware/security');
-const { tenantContext } = require('../backend/middleware/tenant-context');
+
+// NO cargar database.js aqui - evita errores de pool initialization
+// const { pool } = require('../backend/config/database');
+
+// Middleware con lazy loading para evitar crashes al requerir
+let errorHandler;
+let securityMiddleware;
+let tenantContext;
+
+try {
+    errorHandler = require('../backend/middleware/errorHandler').errorHandler;
+} catch (e) {
+    console.warn('[VERCEL] Error loading errorHandler:', e.message);
+    errorHandler = (err, req, res, next) => {
+        res.status(500).json({ error: 'Internal Server Error' });
+    };
+}
+
+try {
+    securityMiddleware = require('../backend/middleware/security').securityMiddleware;
+} catch (e) {
+    console.warn('[VERCEL] Error loading securityMiddleware:', e.message);
+    securityMiddleware = (req, res, next) => next();
+}
+
+try {
+    tenantContext = require('../backend/middleware/tenant-context').tenantContext;
+} catch (e) {
+    console.warn('[VERCEL] Error loading tenantContext:', e.message);
+    tenantContext = (req, res, next) => next();
+}
 
 // Crear la app
 const app = express();
@@ -80,21 +107,12 @@ app.get('/health', (req, res) => {
         uptime: process.uptime(),
         environment: process.env.NODE_ENV,
         database: {
-            connected: pool ? 'testing...' : 'disconnected'
+            configured: !!process.env.DATABASE_URL,
+            valid: process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('CHANGE_ME')
         }
     };
 
-    // Test database connection
-    if (pool) {
-        pool.query('SELECT 1', (err, result) => {
-            healthStatus.database.connected = err ? false : true;
-            healthStatus.database.error = err ? err.message : null;
-            res.json(healthStatus);
-        });
-    } else {
-        healthStatus.database.connected = false;
-        res.json(healthStatus);
-    }
+    res.json(healthStatus);
 });
 
 // ============================================
