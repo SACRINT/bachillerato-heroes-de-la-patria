@@ -11,6 +11,7 @@
  */
 
 const { pool } = require('../config/database');
+const { getTenantByDomain } = require('../data/database-access'); // ✅ Importar función fail-safe
 
 /**
  * Cache de configuraciones de tenant (en memoria)

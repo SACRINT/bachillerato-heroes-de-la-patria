@@ -299,22 +299,33 @@ if (!SESSION_SECRET) {
 }
 
 // Configurar store de sesiones con PostgreSQL
-app.use(session({
+const sessionMiddleware = session({
     store: new pgSession({
-        pool: pool,                     // Pool de conexiones PostgreSQL
-        tableName: 'user_sessions',     // Tabla que creamos en PostgreSQL
-        pruneSessionInterval: 60 * 15,  // Limpiar sesiones expiradas cada 15 minutos
-        createTableIfMissing: false     // No crear tabla automáticamente (ya la creamos)
+        pool: pool,
+        tableName: 'user_sessions',
+        pruneSessionInterval: 60 * 15,
+        createTableIfMissing: false
     }),
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
-        httpOnly: true,                                // Prevent XSS
-        maxAge: 30 * 24 * 60 * 60 * 1000               // 30 días (como recomendaste)
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000
     }
-}));
+});
+
+// ✅ FIX 500 ERROR: Excluir session middleware de rutas de health y config pública
+// Si la BD falla, pgSession revienta. Estas rutas deben funcionar SIN BD.
+app.use((req, res, next) => {
+    if (req.path === '/health' ||
+        req.path.startsWith('/api/health') ||
+        req.path.startsWith('/api/config')) {
+        return next();
+    }
+    return sessionMiddleware(req, res, next);
+});
 
 // --- UNIFIED STATIC FILE SERVING FROM /public ---
 if (process.env.NODE_ENV !== 'production') {
