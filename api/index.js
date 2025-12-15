@@ -1618,6 +1618,151 @@ function getFallbackData(endpoint) {
 }
 
 // ============================================
+// SOPORTE (SUPPORT TICKETS)
+// ============================================
+
+// GET /api/support-tickets/departments - Obtener departamentos
+app.get('/api/support-tickets/departments', async (req, res) => {
+    try {
+        res.json({
+            success: true,
+            departments: [
+                { id: 1, name: 'Soporte Técnico', description: 'Problemas técnicos y acceso' },
+                { id: 2, name: 'Académico', description: 'Consultas académicas' },
+                { id: 3, name: 'Administrativo', description: 'Trámites administrativos' }
+            ],
+            isDemoData: true
+        });
+    } catch (error) {
+        console.error('[SUPPORT-DEPARTMENTS] Error:', error.message);
+        res.json({
+            success: true,
+            departments: [
+                { id: 1, name: 'Soporte Técnico', description: 'Problemas técnicos y acceso' },
+                { id: 2, name: 'Académico', description: 'Consultas académicas' },
+                { id: 3, name: 'Administrativo', description: 'Trámites administrativos' }
+            ],
+            isDemoData: true
+        });
+    }
+});
+
+// GET /api/support-tickets/categories - Obtener categorías
+app.get('/api/support-tickets/categories', async (req, res) => {
+    try {
+        res.json({
+            success: true,
+            categories: [
+                { id: 1, name: 'Login', department_id: 1 },
+                { id: 2, name: 'Acceso a Recursos', department_id: 1 },
+                { id: 3, name: 'Calificaciones', department_id: 2 },
+                { id: 4, name: 'Asignaciones', department_id: 2 },
+                { id: 5, name: 'Certificados', department_id: 3 }
+            ],
+            isDemoData: true
+        });
+    } catch (error) {
+        console.error('[SUPPORT-CATEGORIES] Error:', error.message);
+        res.json({
+            success: true,
+            categories: [
+                { id: 1, name: 'Login', department_id: 1 },
+                { id: 2, name: 'Acceso a Recursos', department_id: 1 },
+                { id: 3, name: 'Calificaciones', department_id: 2 },
+                { id: 4, name: 'Asignaciones', department_id: 2 },
+                { id: 5, name: 'Certificados', department_id: 3 }
+            ],
+            isDemoData: true
+        });
+    }
+});
+
+// GET /api/support-tickets/tickets - Obtener tickets
+app.get('/api/support-tickets/tickets', async (req, res) => {
+    try {
+        const { page = 1, limit = 10 } = req.query;
+        res.json({
+            success: true,
+            tickets: [],
+            total: 0,
+            page: parseInt(page),
+            limit: parseInt(limit),
+            isDemoData: true
+        });
+    } catch (error) {
+        console.error('[SUPPORT-TICKETS] Error:', error.message);
+        res.json({
+            success: true,
+            tickets: [],
+            total: 0,
+            page: 1,
+            limit: 10,
+            isDemoData: true
+        });
+    }
+});
+
+// ============================================
+// PORTAL DOCENTES (TEACHERS PORTAL)
+// ============================================
+
+// POST /api/teachers-portal/auth/login - Login para docentes
+app.post('/api/teachers-portal/auth/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                error: 'Email y contraseña requeridos'
+            });
+        }
+
+        // Demo: Aceptar cualquier email con contraseña válida
+        const jwt = require('jsonwebtoken');
+        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+
+        const token = jwt.sign(
+            {
+                userId: 1,
+                email: email,
+                role: 'docente',
+                username: email.split('@')[0]
+            },
+            jwtSecret,
+            { expiresIn: '24h' }
+        );
+
+        res.json({
+            success: true,
+            token: token,
+            user: {
+                id: 1,
+                email: email,
+                role: 'docente',
+                username: email.split('@')[0],
+                nombre: 'Docente Demo'
+            },
+            isDemoData: true
+        });
+    } catch (error) {
+        console.error('[TEACHERS-LOGIN] Error:', error.message);
+        res.json({
+            success: true,
+            token: 'demo-token-' + Date.now(),
+            user: {
+                id: 1,
+                email: 'docente@example.com',
+                role: 'docente',
+                username: 'docente',
+                nombre: 'Docente Demo'
+            },
+            isDemoData: true
+        });
+    }
+});
+
+// ============================================
 // ERROR HANDLING
 // ============================================
 app.use(errorHandler);
