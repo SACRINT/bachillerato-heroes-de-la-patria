@@ -230,14 +230,87 @@ app.post('/api/auth/login', express.json(), async (req, res) => {
 
         console.log('[AUTH] Login attempt for email:', email);
 
-        // En Vercel, retornamos un mensaje indicando que debe usar Google OAuth
-        // porque la BD no está disponible en el serverless
-        return res.status(401).json({
-            success: false,
-            error: 'Método de login no disponible en esta versión',
-            message: 'Por favor usa Google para iniciar sesión',
-            suggestion: 'Usa el botón de Google para una autenticación segura'
-        });
+        // Intentar usar el servicio de autenticación del backend
+        try {
+            // Lazy load del auth service
+            const { getAuthService } = require('../backend/services/auth.service');
+            const authService = getAuthService();
+
+            // Autenticar usuario
+            const user = await authService.authenticateUser(email, password);
+
+            // Generar tokens
+            const userPayload = {
+                userId: user.id,
+                email: user.email,
+                username: user.username,
+                role: user.role,
+                permissions: authService.permissions[user.role] || []
+            };
+
+            const jwt = require('jsonwebtoken');
+            const jwtSecret = process.env.JWT_SECRET || 'secret';
+
+            const accessToken = jwt.sign(
+                { ...userPayload, type: 'access' },
+                jwtSecret,
+                { expiresIn: '24h', audience: 'bge-users', issuer: 'bge-heroes-patria' }
+            );
+
+            const refreshToken = jwt.sign(
+                { userId: user.id, email: user.email, type: 'refresh' },
+                jwtSecret,
+                { expiresIn: '7d', audience: 'bge-users', issuer: 'bge-heroes-patria' }
+            );
+
+            const accessTokenExpiry = Math.floor(Date.now() / 1000) + (24 * 60 * 60);
+            const refreshTokenExpiry = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60);
+
+            console.log('[AUTH] Login exitoso para:', email);
+
+            return res.json({
+                success: true,
+                message: 'Autenticación exitosa',
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email,
+                    nombre: user.nombre,
+                    apellido_paterno: user.apellido_paterno,
+                    role: user.role,
+                    permissions: userPayload.permissions
+                },
+                tokens: {
+                    accessToken: accessToken,
+                    refreshToken: refreshToken,
+                    accessTokenExpiry: accessTokenExpiry,
+                    refreshTokenExpiry: refreshTokenExpiry,
+                    tokenType: 'Bearer'
+                },
+                sessionInfo: {
+                    loginTime: new Date().toISOString(),
+                    rememberMe: rememberMe,
+                    expiresAt: new Date(accessTokenExpiry * 1000).toISOString()
+                }
+            });
+
+        } catch (authError) {
+            console.error('[AUTH] Error en autenticación:', authError.message);
+
+            // Si el error es de usuario no encontrado o contraseña incorrecta
+            if (authError.message.includes('Usuario no encontrado') ||
+                authError.message.includes('Contraseña incorrecta') ||
+                authError.message.includes('inactivo')) {
+                return res.status(401).json({
+                    success: false,
+                    error: 'Credenciales inválidas',
+                    message: 'Email o contraseña incorrectos'
+                });
+            }
+
+            // Para otros errores
+            throw authError;
+        }
 
     } catch (error) {
         console.error('[AUTH] Error en login:', error.message);
