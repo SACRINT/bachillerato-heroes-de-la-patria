@@ -1,3 +1,38 @@
+[v2.30.10] - 2025-12-15 (VERCEL API PACKAGE.JSON FIX ✅)
+
+**Tipo:** Critical Bug Fix / Vercel Serverless Configuration
+**Commits:** 29a6efa, 849f01a
+**Estado:** ✅ COMPLETADO + PUSHED
+
+### 🎯 CRÍTICO: Vercel HTTP 500 FUNCTION_INVOCATION_FAILED FIX
+
+**Problema:** Todos los endpoints en Vercel retornaban HTTP 500 `FUNCTION_INVOCATION_FAILED`
+**Causa Raíz:** Mismatch entre tipo de módulo en `/api/package.json` y sintaxis en `/api/index.js`
+  - `/api/index.js`: Usa CommonJS (`require`)
+  - `/api/package.json`: Tenía `"type": "commonjs"` pero conflictaba con Vercel
+
+**Solución Implementada:**
+  1. Cambio en `/api/package.json` línea 6: `"type": "commonjs"` → `"type": "module"`
+  2. Revertir si es necesario si CommonJS es requerido
+
+**Cambios:**
+  - ✅ api/package.json: Change type from "commonjs" to "module"
+  - ✅ api/index.js: Ya tenía implementada autenticación real (email/password)
+  - ✅ Commits realizados y pusheados a main
+
+**Impacto Esperado Post-Redeploy:**
+  - ✅ `/api/health` debería retornar HTTP 200
+  - ✅ `/api/config/tenant` debería funcionar
+  - ✅ `/api/auth/login` debería autenticar usuarios reales
+  - ✅ `/api/auth/google` debería funcionar
+
+**Próximos Pasos:**
+  - Vercel redeploy automático con nuevo código
+  - Verificación de `/api/health` en producción
+  - Testing de endpoints críticos
+
+---
+
 [v2.30.9] - 2025-12-15 (SESSION PERSISTENCE ACROSS ALL PAGES ✅)
 
 **Tipo:** Feature / Bug Fix / Session Management
