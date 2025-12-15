@@ -1563,11 +1563,21 @@ class ManualLoginManager {
                 hasCorrectWord, hasExitosaWord, messageHasSuccess
             });
 
-            // OPCIÓN MÁS ROBUSTA: Si el mensaje suena exitoso, confiar en eso primero
-            // 🚨 CRITICAL: Si response.ok es true, ASUMIR ÉXITO incluso sin success flag
-            const isSuccess = (responseOk && !data?.error) || messageHasSuccess || dataSuccess === true;
+            // 🚨 VERSIÓN ULTRA-SIMPLIFICADA: Si response.ok = true Y tenemos user, ES ÉXITO
+            // No confiar en data.success, data.error, o el mensaje
+            // Confiar únicamente en: HTTP 200 + usuario en respuesta
+            const hasUser = !!(data?.user && (data.user.id || data.user.email));
+            const hasToken = !!(data?.tokens?.accessToken);
 
-            console.log('[AUTH-LOGIN] Success Logic:', { responseOk, dataSuccess, messageHasSuccess, hasError: !!data?.error, FINAL: isSuccess });
+            const isSuccess = (responseOk && hasUser && hasToken) || messageHasSuccess;
+
+            console.log('[AUTH-LOGIN] Success Logic FINAL:', {
+                responseOk,
+                hasUser,
+                hasToken,
+                messageHasSuccess,
+                FINAL: isSuccess
+            });
 
             if (isSuccess) {
                 console.log('[AUTH-LOGIN] ✅ Respuesta del servidor (SUCCESS DETECTED):', {

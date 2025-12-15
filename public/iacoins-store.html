@@ -25,8 +25,7 @@
 
     <!-- DOMPurify for XSS protection (MUST load before main.js) -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
-    <!-- Main JS for dynamic header/footer loading -->
-    <script src="js/main.js" defer></script>
+
 
 
 
@@ -38,7 +37,7 @@
     <!-- DOMPurify for XSS protection (MUST load before main.js) -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <!-- Main JS for dynamic header/footer loading -->
-    <script src="js/main.js" defer></script>
+    <script src="js/script.js" defer></script>
 </head>
 
 <body>
@@ -231,9 +230,9 @@
             try {
                 // Intentar obtener token desde unified auth system (prioridad)
                 const token = sessionStorage.getItem('bge_auth_token') ||
-                             localStorage.getItem('bge_auth_token') ||
-                             sessionStorage.getItem('authToken') ||
-                             localStorage.getItem('authToken');
+                    localStorage.getItem('bge_auth_token') ||
+                    sessionStorage.getItem('authToken') ||
+                    localStorage.getItem('authToken');
 
                 if (!token) {
                     console.warn('[IACOINS-STORE] Sin token de autenticación detectado');
@@ -398,9 +397,9 @@
             // Simular compra exitosa (remover en producción)
             try {
                 const token = sessionStorage.getItem('bge_auth_token') ||
-                             localStorage.getItem('bge_auth_token') ||
-                             sessionStorage.getItem('authToken') ||
-                             localStorage.getItem('authToken');
+                    localStorage.getItem('bge_auth_token') ||
+                    sessionStorage.getItem('authToken') ||
+                    localStorage.getItem('authToken');
 
                 const response = await fetch('/api/wallet/purchase', {
                     method: 'POST',
@@ -434,9 +433,9 @@
         async function loadStoreItems() {
             try {
                 const token = sessionStorage.getItem('bge_auth_token') ||
-                             localStorage.getItem('bge_auth_token') ||
-                             sessionStorage.getItem('authToken') ||
-                             localStorage.getItem('authToken');
+                    localStorage.getItem('bge_auth_token') ||
+                    sessionStorage.getItem('authToken') ||
+                    localStorage.getItem('authToken');
 
                 const response = await fetch('/api/store/items', {
                     headers: {
@@ -545,9 +544,9 @@
 
             try {
                 const token = sessionStorage.getItem('bge_auth_token') ||
-                             localStorage.getItem('bge_auth_token') ||
-                             sessionStorage.getItem('authToken') ||
-                             localStorage.getItem('authToken');
+                    localStorage.getItem('bge_auth_token') ||
+                    sessionStorage.getItem('authToken') ||
+                    localStorage.getItem('authToken');
 
                 const response = await fetch('/api/store/purchase', {
                     method: 'POST',

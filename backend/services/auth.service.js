@@ -173,7 +173,7 @@ class AuthService {
                 throw new Error('Usuario no encontrado');
             }
             // ✅ Validar estado activo - Compatible con PostgreSQL (status='activo') y JSON (active=true)
-            const isActive = user.active === true || user.status === 'activo' || user.status === 'active';
+            const isActive = user.active === true || user.status === 'activo' || user.status === 'active' || user.activo === true || user.activo === 1;
             if (!isActive) {
                 throw new Error('Usuario inactivo');
             }

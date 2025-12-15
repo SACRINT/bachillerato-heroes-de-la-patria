@@ -71,7 +71,8 @@ const cspConfig = {
             "https://cdnjs.cloudflare.com",    // CDN images
             "https://cdn.tiny.cloud",          // TinyMCE images
             "https://*.tiny.cloud",
-            "https://sp.tinymce.com"           // TinyMCE Spark
+            "https://sp.tinymce.com",           // TinyMCE Spark
+            "https://ui-avatars.com"           // User Avatars
         ],
 
         // 6. CONEXIONES - Endpoints específicos

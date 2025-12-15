@@ -167,8 +167,9 @@ app.get('/api/config/tenant', (req, res) => {
     }
 });
 
-// /api/config/public-keys - Endpoint seguro que no requiere BD
+// /api/config/public-keys
 app.get('/api/config/public-keys', (req, res) => {
+    // ... (existing code)
     try {
         const isDevelopment = process.env.NODE_ENV === 'development';
         res.json({
@@ -190,6 +191,25 @@ app.get('/api/config/public-keys', (req, res) => {
         });
     }
 });
+
+// ============================================
+// MOUNT BACKEND ROUTES (LAZY LOAD)
+// ============================================
+try {
+    const storeRoutes = require('../backend/routes/store');
+    app.use('/api/store', storeRoutes);
+    console.log('[VERCEL] ✅ Rutas de Store montadas');
+} catch (e) {
+    console.warn('[VERCEL] ⚠️ No se pudieron montar rutas de Store:', e.message);
+}
+
+try {
+    const walletRoutes = require('../backend/routes/wallet');
+    app.use('/api/wallet', walletRoutes);
+    console.log('[VERCEL] ✅ Rutas de Wallet montadas');
+} catch (e) {
+    console.warn('[VERCEL] ⚠️ No se pudieron montar rutas de Wallet:', e.message);
+}
 
 // ============================================
 // AUTHENTICATION ENDPOINTS (SIMPLIFIED FOR VERCEL)

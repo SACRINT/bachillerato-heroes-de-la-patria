@@ -61,7 +61,14 @@
       "Bash(timeout 15 npm run dev)",
       "Bash(timeout 20 npm run dev)",
       "Bash(timeout 25 npm run dev:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(npm run dev:*)",
+      "Bash(start http://localhost:3000/test-login-debug.html)",
+      "Bash(dir /B *.md *.txt)",
+      "Bash(dir /B public*.html publicjsdebug*)",
+      "Bash(start notepad LISTO_PARA_PROBAR_14DIC2025.md)",
+      "Bash(find:*)",
+      "Bash(git -C \"C:\\03_BachilleratoHeroesWeb\" log --oneline -20)"
     ],
     "deny": [],
     "ask": []
