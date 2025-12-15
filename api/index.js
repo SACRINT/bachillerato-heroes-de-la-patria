@@ -221,7 +221,7 @@ try {
 // AUTHENTICATION ENDPOINTS (SIMPLIFIED FOR VERCEL)
 // ============================================
 
-// POST /api/auth/login - Email/Password authentication (SIMPLIFIED FOR VERCEL)
+// POST /api/auth/login - Email/Password authentication (CONNECTED TO POSTGRESQL)
 app.post('/api/auth/login', express.json(), async (req, res) => {
     try {
         const { email, password, rememberMe = false } = req.body;
@@ -236,88 +236,118 @@ app.post('/api/auth/login', express.json(), async (req, res) => {
 
         console.log('[AUTH] Login attempt for email:', email);
 
-        // NOTA CRÍTICA: Vercel serverless NO tiene acceso a la base de datos en forma confiable
-        // El backend TypeScript (.ts) usa sintaxis ES6 import/export que no es compatible con CommonJS
-        // En Vercel, debemos usar solamente lógica simple sin dependencias del backend compilado
-
-        // Para esta versión serverless, retornamos un usuario demo
-        // El backend real maneja autenticación en localhost:3000
-
-        // Demo users para testing local
-        const demoUsers = {
-            'admin@test.com': { password: 'admin123', role: 'admin' },
-            'teacher@test.com': { password: 'teacher123', role: 'docente' },
-            'student@test.com': { password: 'student123', role: 'estudiante' }
-        };
-
-        const demoUser = demoUsers[email];
-
-        if (!demoUser || demoUser.password !== password) {
-            console.warn('[AUTH] Failed login attempt for:', email);
-            return res.status(401).json({
-                success: false,
-                error: 'Credenciales inválidas',
-                message: 'Email o contraseña incorrectos'
-            });
-        }
-
-        // Generar tokens
-        const userPayload = {
-            userId: email.split('@')[0],
-            email: email,
-            username: email.split('@')[0],
-            role: demoUser.role,
-            permissions: ['read_profile', 'read_grades']
-        };
-
+        // ✅ CONEXIÓN REAL A POSTGRESQL (Neon)
+        const { Pool } = require('pg');
+        const bcrypt = require('bcryptjs');
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || 'vercel-default-secret-key';
 
-        const accessToken = jwt.sign(
-            { ...userPayload, type: 'access' },
-            jwtSecret,
-            { expiresIn: '24h', audience: 'bge-users', issuer: 'bge-heroes-patria' }
-        );
-
-        const refreshToken = jwt.sign(
-            { userId: userPayload.userId, email: email, type: 'refresh' },
-            jwtSecret,
-            { expiresIn: '7d', audience: 'bge-users', issuer: 'bge-heroes-patria' }
-        );
-
-        const accessTokenExpiry = Math.floor(Date.now() / 1000) + (24 * 60 * 60);
-        const refreshTokenExpiry = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60);
-
-        console.log('[AUTH] Login exitoso para:', email, 'role:', demoUser.role);
-
-        return res.json({
-            success: true,
-            message: 'Autenticación exitosa (Demo en Vercel)',
-            user: {
-                id: userPayload.userId,
-                username: userPayload.username,
-                email: email,
-                nombre: email.split('@')[0],
-                apellido_paterno: 'Usuario',
-                role: demoUser.role,
-                permissions: userPayload.permissions
-            },
-            tokens: {
-                accessToken: accessToken,
-                refreshToken: refreshToken,
-                accessTokenExpiry: accessTokenExpiry,
-                refreshTokenExpiry: refreshTokenExpiry,
-                tokenType: 'Bearer'
-            },
-            sessionInfo: {
-                loginTime: new Date().toISOString(),
-                rememberMe: rememberMe,
-                expiresAt: new Date(accessTokenExpiry * 1000).toISOString()
-            }
+        // Crear pool de conexiones
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }  // Necesario para Neon
         });
 
+        const client = await pool.connect();
+
+        try {
+            // Buscar usuario por email en tabla 'usuarios'
+            const query = `
+                SELECT id, uuid, email, username, password_hash, nombre, apellido_paterno,
+                       apellido_materno, role, status, created_at
+                FROM usuarios
+                WHERE email = $1 AND status = 'activo'
+                LIMIT 1
+            `;
+
+            const result = await client.query(query, [email]);
+
+            if (result.rows.length === 0) {
+                console.warn('[AUTH] Usuario no encontrado:', email);
+                return res.status(401).json({
+                    success: false,
+                    error: 'Credenciales inválidas',
+                    message: 'Email o contraseña incorrectos'
+                });
+            }
+
+            const user = result.rows[0];
+
+            // Validar contraseña con bcrypt
+            const validPassword = await bcrypt.compare(password, user.password_hash);
+
+            if (!validPassword) {
+                console.warn('[AUTH] Contraseña incorrecta para:', email);
+                return res.status(401).json({
+                    success: false,
+                    error: 'Credenciales inválidas',
+                    message: 'Email o contraseña incorrectos'
+                });
+            }
+
+            // Generar tokens JWT
+            const userPayload = {
+                userId: user.id,
+                uuid: user.uuid,
+                email: user.email,
+                username: user.username,
+                role: user.role,
+                permissions: getPermissionsForRole(user.role)
+            };
+
+            const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+
+            const accessToken = jwt.sign(
+                { ...userPayload, type: 'access' },
+                jwtSecret,
+                { expiresIn: '24h', audience: 'bge-users', issuer: 'bge-heroes-patria' }
+            );
+
+            const refreshToken = jwt.sign(
+                { userId: user.id, uuid: user.uuid, email: user.email, type: 'refresh' },
+                jwtSecret,
+                { expiresIn: '7d', audience: 'bge-users', issuer: 'bge-heroes-patria' }
+            );
+
+            const accessTokenExpiry = Math.floor(Date.now() / 1000) + (24 * 60 * 60);
+            const refreshTokenExpiry = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60);
+
+            console.log('[AUTH] Login exitoso para:', email, 'role:', user.role);
+
+            return res.json({
+                success: true,
+                message: 'Autenticación exitosa',
+                user: {
+                    id: user.id,
+                    uuid: user.uuid,
+                    username: user.username,
+                    email: user.email,
+                    nombre: user.nombre,
+                    apellido_paterno: user.apellido_paterno,
+                    apellido_materno: user.apellido_materno,
+                    role: user.role,
+                    permissions: userPayload.permissions
+                },
+                tokens: {
+                    accessToken: accessToken,
+                    refreshToken: refreshToken,
+                    accessTokenExpiry: accessTokenExpiry,
+                    refreshTokenExpiry: refreshTokenExpiry,
+                    tokenType: 'Bearer'
+                },
+                sessionInfo: {
+                    loginTime: new Date().toISOString(),
+                    rememberMe: rememberMe,
+                    expiresAt: new Date(accessTokenExpiry * 1000).toISOString()
+                }
+            });
+
+        } finally {
+            client.release();
+            await pool.end();
+        }
+
     } catch (error) {
-        console.error('[AUTH] Error en login:', error.message);
+        console.error('[AUTH] Error en login:', error.message, error.stack);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
@@ -325,6 +355,18 @@ app.post('/api/auth/login', express.json(), async (req, res) => {
         });
     }
 });
+
+// Helper function para obtener permisos según el role
+function getPermissionsForRole(role) {
+    const rolePermissions = {
+        'admin': ['manage_users', 'manage_grades', 'manage_notifications', 'manage_reports', 'read_analytics'],
+        'docente': ['read_students', 'manage_grades', 'read_attendance', 'manage_assignments', 'read_analytics'],
+        'estudiante': ['read_profile', 'read_grades', 'read_attendance', 'view_assignments', 'submit_assignments'],
+        'padre': ['read_student_profile', 'read_grades', 'read_attendance', 'contact_teacher']
+    };
+
+    return rolePermissions[role] || ['read_profile'];
+}
 
 // POST /api/auth/google - Google OAuth authentication
 app.post('/api/auth/google', express.json(), async (req, res) => {
