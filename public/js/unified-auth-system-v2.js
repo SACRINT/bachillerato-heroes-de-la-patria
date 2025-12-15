@@ -590,6 +590,11 @@ class UnifiedAuthSystem {
      * PROCESAR LOGIN EXITOSO
      */
     async processLogin(userData, token, rememberMe = false) {
+        // 🔍 DEBUG: Log COMPLETO de userData
+        console.log('[AUTH-PROCESS] 📥 userData recibido en processLogin:', userData);
+        console.log('[AUTH-PROCESS] userData.nombre =', userData?.nombre);
+        console.log('[AUTH-PROCESS] userData.name =', userData?.name);
+
         // GDPR: Datos sensibles enmascarados
         debugLog.log('APP', '🔓 Procesando login para:', userData.nombre || userData.name);
 
@@ -597,11 +602,39 @@ class UnifiedAuthSystem {
         this.state.token = token;
         this.state.isAuthenticated = true;
 
+        // 🔍 DEBUG: Verificar que state.currentUser se asignó correctamente
+        console.log('[AUTH-PROCESS] ✅ state.currentUser asignado:', this.state.currentUser?.nombre);
+
         // Guardar sesión
         this.managers.session.saveSession(userData, token, rememberMe);
 
+        // 🔍 DEBUG: Antes de actualizar UI
+        console.log('[AUTH-PROCESS] 🎬 Llamando a updateAuthUI()...');
+
         // Actualizar UI
         this.updateAuthUI();
+
+        // 🔍 DEBUG: Después de actualizar UI, verificar elementos del DOM
+        setTimeout(() => {
+            const userMenuName = document.getElementById('userMenuName');
+            const loginButtons = document.getElementById('loginButtons');
+            const userMenu = document.getElementById('userMenu');
+            console.log('[AUTH-PROCESS] 📍 Después de updateAuthUI():', {
+                userMenuName: {
+                    existe: !!userMenuName,
+                    texto: userMenuName?.textContent,
+                    oculto: userMenuName?.classList.contains('d-none')
+                },
+                loginButtons: {
+                    existe: !!loginButtons,
+                    oculto: loginButtons?.classList.contains('d-none')
+                },
+                userMenu: {
+                    existe: !!userMenu,
+                    visible: !userMenu?.classList.contains('d-none')
+                }
+            });
+        }, 100);
 
         // Cerrar modal
         this.managers.ui.closeModal();
@@ -1514,6 +1547,15 @@ class ManualLoginManager {
             }
 
             if (response.ok && data.success) {
+                // 🔍 DEBUG: Log la respuesta completa del servidor
+                console.log('[AUTH-LOGIN] ✅ Respuesta del servidor:', {
+                    success: data.success,
+                    message: data.message,
+                    user: data.user,
+                    tokens: data.tokens ? '(presente)' : '(ausente)',
+                    sessionInfo: data.sessionInfo ? '(presente)' : '(ausente)'
+                });
+
                 // ✅ SEMANA 25: Check if 2FA is required
                 if (data.requires2FA) {
                     debugLog.log('AUTH', 'Login requiere 2FA - mostrando modal de verificación');
@@ -1536,6 +1578,17 @@ class ManualLoginManager {
                 // ✅ CORRECCIÓN CRÍTICA: El endpoint devuelve tokens.accessToken, no token
                 // Estructura: { success, message, user, tokens: { accessToken, refreshToken, ... }, sessionInfo }
                 const accessToken = data.tokens?.accessToken || data.token;
+
+                // 🔍 DEBUG: Verificar que data.user tiene los campos esperados
+                console.log('[AUTH-LOGIN] 📋 Datos del usuario recibidos:', {
+                    id: data.user?.id,
+                    username: data.user?.username,
+                    email: data.user?.email,
+                    nombre: data.user?.nombre,
+                    apellido_paterno: data.user?.apellido_paterno,
+                    role: data.user?.role
+                });
+
                 await this.auth.processLogin(data.user, accessToken, rememberMe);
             } else {
                 const errorMsg = data.error || data.message || 'Credenciales inválidas';
