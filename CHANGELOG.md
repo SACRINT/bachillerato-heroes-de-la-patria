@@ -1,3 +1,44 @@
+[v2.30.11] - 2025-12-15 (VERCEL CONFIG ENDPOINTS HTTP 500 FIX ✅)
+
+**Tipo:** Critical Bug Fix / Vercel Serverless / API Configuration
+**Commits:** f1f7107
+**Estado:** ✅ COMPLETADO + PUSHED
+
+### 🎯 CRÍTICO: /api/config/tenant y /api/config/public-keys HTTP 500 FIX
+
+**Problema:** Los endpoints `/api/config/tenant` y `/api/config/public-keys` retornaban HTTP 500 en producción
+**Root Cause:** La aplicación Express en `/api/index.js` tenía issues con middleware que causaban excepciones silenciosas
+**Solución:** Crear handlers Vercel serverless separados sin dependencias externas problemáticas
+
+**Cambios Implementados:**
+  1. **Nuevo archivo:** `api/config.js` - Handler router para ambos endpoints
+  2. **Nuevo archivo:** `api/config/tenant.js` - Handler Vercel para /api/config/tenant (CommonJS)
+  3. **Nuevo archivo:** `api/config/public-keys.js` - Handler Vercel para /api/config/public-keys (CommonJS)
+  4. **Mejorado:** `api/index.js` con mejor error handling en ambos endpoints
+
+**Características de los Nuevos Handlers:**
+  - ✅ Sin dependencias externas (solo Node.js + Vercel SDK)
+  - ✅ Sintaxis CommonJS para máxima compatibilidad
+  - ✅ Logging detallado con prefijos `[TENANT-CONFIG]` y `[PUBLIC-KEYS]`
+  - ✅ Safe hostname retrieval con fallback a valor por defecto
+  - ✅ Completo try/catch wrapper en cada función
+  - ✅ Validación de método HTTP (solo GET)
+  - ✅ Headers correctos: Content-Type: application/json
+
+**Archivos Modificados:** 4
+  - api/index.js (mejorado con better error messages)
+  - api/config.js (NEW)
+  - api/config/tenant.js (NEW)
+  - api/config/public-keys.js (NEW)
+
+**Impacto Esperado Post-Redeploy:**
+  - ✅ `/api/config/tenant` → HTTP 200 (default BGE config)
+  - ✅ `/api/config/public-keys` → HTTP 200 (TinyMCE + Google OAuth keys)
+  - ✅ Logs detallados en Vercel para debugging
+  - ✅ Sin más HTTP 500 en estos endpoints
+
+---
+
 [v2.30.10] - 2025-12-15 (VERCEL API PACKAGE.JSON FIX ✅)
 
 **Tipo:** Critical Bug Fix / Vercel Serverless Configuration
