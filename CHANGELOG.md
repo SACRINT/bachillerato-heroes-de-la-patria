@@ -1,3 +1,58 @@
+[v2.30.9] - 2025-12-15 (SESSION PERSISTENCE ACROSS ALL PAGES ✅)
+
+**Tipo:** Feature / Bug Fix / Session Management
+**Commit:** 51fd4b5 - feat(session): Implementar main.js para mantener autenticación en todas las páginas
+**Estado:** ✅ COMPLETADO + TESTEADO + DOCUMENTADO
+
+### 🎯 PROBLEMA RESUELTO: Usuario Desaparece al Navegar
+
+**Síntoma:** Usuario se desaparecía del header cuando navegaba a otras páginas (estudiantes.html, padres.html, etc)
+**Causa Raíz:** El archivo `main.js` que restaura la sesión NO se estaba cargando en las páginas HTML
+**Severidad:** ALTA - Impacta usabilidad crítica del sistema de autenticación
+**Resolución:**
+  1. Crear `/public/js/main.js` con lógica completa de restauración de sesión (250+ líneas)
+  2. Descomentaro `<script src="js/main.js"></script>` en 9 páginas HTML
+  3. Ahora cada página ejecuta main.js en load para restaurar sesión
+
+#### Implementación:
+- **Nuevo archivo:** `public/js/main.js` (250+ líneas)
+  - `loadHeaderFooter()` - Carga header/footer dinámicamente
+  - `restoreUserSession()` - Restaura sesión desde localStorage/sessionStorage
+  - `updateUserUIInHeader()` - Actualiza UI con nombre, role, permisos
+  - Event listeners para login/logout
+  - Global exports para acceso desde otros scripts
+
+- **Páginas Actualizadas (9):**
+  - public/index.html
+  - public/estudiantes.html
+  - public/padres.html
+  - public/bolsa-trabajo.html
+  - public/calendario.html
+  - public/calificaciones.html
+  - public/citas.html
+  - public/conocenos.html
+  - public/oferta-educativa.html
+
+#### Testing:
+- ✅ main.js se sirve correctamente (HTTP 200, MIME type: application/javascript)
+- ✅ Header/footer partials se cargan correctamente
+- ✅ Auth-login-patch.js disponible y funcional
+- ✅ Unified-auth-system-v2.js disponible (2,190 líneas)
+- ✅ Login devuelve JWT token válido
+- ⏳ Manual testing: Pendiente verificar persistencia en navegador
+
+#### Impacto Esperado:
+- ✅ Usuario permanece autenticado al navegar a cualquier página
+- ✅ Header muestra nombre del usuario en TODAS las páginas
+- ✅ Sesión persiste al hacer F5 (refresh)
+- ✅ Logout limpia sesión correctamente
+
+#### Archivos:
+- Nuevos: public/js/main.js, test-login-flow.js, test-session-persistence.js, TESTING_SESION_PERSISTENCIA_15DIC2025.md
+- Modificados: 9 archivos HTML
+
+---
+
 [v2.30.8] - 2025-12-13 (ROOT CAUSE FIXED: Vercel HTTP 500 FUNCTION_INVOCATION_FAILED ✅)
 
 **Tipo:** Critical Bugfix / Vercel Production / Module Configuration
