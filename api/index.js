@@ -142,7 +142,13 @@ app.get('/api/config/tenant', (req, res) => {
             enable_gamification: true
         };
 
-        const hostname = req.headers.host || req.host || 'localhost';
+        // Obtener hostname de forma segura
+        let hostname = 'bge-heroesdelapatria.vercel.app';
+        try {
+            hostname = req.headers.host || req.headers['x-forwarded-host'] || 'bge-heroesdelapatria.vercel.app';
+        } catch (e) {
+            console.warn('[VERCEL] Warning obtaining hostname:', e.message);
+        }
 
         res.json({
             success: true,
@@ -159,6 +165,7 @@ app.get('/api/config/tenant', (req, res) => {
         });
     } catch (error) {
         console.error('[VERCEL] Error en /api/config/tenant:', error.message);
+        console.error('[VERCEL] Stack:', error.stack);
         res.status(500).json({
             success: false,
             error: 'Error al obtener configuración',
@@ -169,21 +176,30 @@ app.get('/api/config/tenant', (req, res) => {
 
 // /api/config/public-keys
 app.get('/api/config/public-keys', (req, res) => {
-    // ... (existing code)
     try {
         const isDevelopment = process.env.NODE_ENV === 'development';
-        res.json({
+
+        // Safe key retrieval
+        const tinymceKey = process.env.TINYMCE_API_KEY || null;
+        const googleOAuthId = isDevelopment
+            ? (process.env.GOOGLE_OAUTH_CLIENT_ID_DEV || '')
+            : (process.env.GOOGLE_OAUTH_CLIENT_ID_PROD || '');
+
+        console.log('[VERCEL] /api/config/public-keys requested - NODE_ENV:', process.env.NODE_ENV);
+
+        const response = {
             success: true,
             environment: isDevelopment ? 'development' : 'production',
             keys: {
-                tinymce: process.env.TINYMCE_API_KEY || null,
-                google_oauth_client_id: isDevelopment
-                    ? (process.env.GOOGLE_OAUTH_CLIENT_ID_DEV || '')
-                    : (process.env.GOOGLE_OAUTH_CLIENT_ID_PROD || '')
+                tinymce: tinymceKey,
+                google_oauth_client_id: googleOAuthId
             }
-        });
+        };
+
+        res.json(response);
     } catch (error) {
         console.error('[VERCEL] Error en /api/config/public-keys:', error.message);
+        console.error('[VERCEL] Stack:', error.stack);
         res.status(500).json({
             success: false,
             error: 'Error al obtener keys',
@@ -490,4 +506,6 @@ app.use((req, res) => {
 // ============================================
 // EXPORTAR PARA VERCEL
 // ============================================
+// Vercel necesita que exportemos la app directamente
+// El routing se maneja dentro de la app Express
 module.exports = app;
