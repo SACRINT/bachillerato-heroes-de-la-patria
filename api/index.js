@@ -119,35 +119,70 @@ app.get('/health', (req, res) => {
 // RUTAS
 // ============================================
 
-// Helper para cargar rutas
-const loadRoute = (filePath) => {
+// ============================================
+// RUTAS API (LAZY LOADED ON DEMAND)
+// ============================================
+
+// /api/config/tenant - Lazy loader para evitar inicializar pool en startup
+app.get('/api/config/tenant', async (req, res) => {
     try {
-        const route = require(filePath);
-        return route.default || route;
-    } catch (e) {
-        console.error(`[VERCEL] Error cargando ruta ${filePath}:`, e.message);
-        return null;
-    }
-};
+        // Lazy load solo cuando sea necesario
+        const { getTenantByDomain } = require('../backend/data/database-access');
+        const hostname = req.headers.host || req.host || 'localhost';
+        const tenant = await getTenantByDomain(hostname);
 
-// Cargar rutas críticas
-try {
-    const configRoutes = loadRoute('../backend/routes/config');
-    if (configRoutes) {
-        app.use('/api/config', configRoutes);
-    }
-} catch (e) {
-    console.error('[VERCEL] Error cargando config routes:', e.message);
-}
+        const defaultConfig = {
+            school_name: 'Bachillerato General Estatal "Héroes de la Patria"',
+            school_short_name: 'BGE'
+        };
 
-try {
-    const authRoutes = loadRoute('../backend/routes/auth');
-    if (authRoutes) {
-        app.use('/api/auth', authRoutes);
+        if (!tenant) {
+            return res.json({
+                success: true,
+                isDefault: true,
+                tenant: { id: 1, school_name: defaultConfig.school_name },
+                config: defaultConfig
+            });
+        }
+
+        res.json({
+            success: true,
+            tenant: tenant,
+            config: tenant.config_json || defaultConfig
+        });
+    } catch (error) {
+        console.error('[VERCEL] Error en /api/config/tenant:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener configuración',
+            message: error.message
+        });
     }
-} catch (e) {
-    console.error('[VERCEL] Error cargando auth routes:', e.message);
-}
+});
+
+// /api/config/public-keys - Endpoint seguro que no requiere BD
+app.get('/api/config/public-keys', (req, res) => {
+    try {
+        const isDevelopment = process.env.NODE_ENV === 'development';
+        res.json({
+            success: true,
+            environment: isDevelopment ? 'development' : 'production',
+            keys: {
+                tinymce: process.env.TINYMCE_API_KEY || null,
+                google_oauth_client_id: isDevelopment
+                    ? (process.env.GOOGLE_OAUTH_CLIENT_ID_DEV || '')
+                    : (process.env.GOOGLE_OAUTH_CLIENT_ID_PROD || '')
+            }
+        });
+    } catch (error) {
+        console.error('[VERCEL] Error en /api/config/public-keys:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al obtener keys',
+            message: error.message
+        });
+    }
+});
 
 // ============================================
 // ERROR HANDLING
