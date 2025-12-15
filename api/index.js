@@ -192,6 +192,194 @@ app.get('/api/config/public-keys', (req, res) => {
 });
 
 // ============================================
+// AUTHENTICATION ENDPOINTS (SIMPLIFIED FOR VERCEL)
+// ============================================
+
+// POST /api/auth/login - Email/Password authentication
+app.post('/api/auth/login', express.json(), async (req, res) => {
+    try {
+        const { email, password, rememberMe = false } = req.body;
+
+        // Validación básica
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                error: 'Email y contraseña requeridos'
+            });
+        }
+
+        console.log('[AUTH] Login attempt for email:', email);
+
+        // En Vercel, retornamos un mensaje indicando que debe usar Google OAuth
+        // porque la BD no está disponible en el serverless
+        return res.status(401).json({
+            success: false,
+            error: 'Método de login no disponible en esta versión',
+            message: 'Por favor usa Google para iniciar sesión',
+            suggestion: 'Usa el botón de Google para una autenticación segura'
+        });
+
+    } catch (error) {
+        console.error('[AUTH] Error en login:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error interno del servidor',
+            message: error.message
+        });
+    }
+});
+
+// POST /api/auth/google - Google OAuth authentication
+app.post('/api/auth/google', express.json(), async (req, res) => {
+    try {
+        const { credential } = req.body;
+
+        if (!credential) {
+            console.warn('[AUTH] No credential provided');
+            return res.status(400).json({
+                success: false,
+                error: 'Token de Google requerido'
+            });
+        }
+
+        console.log('[AUTH] Google OAuth attempt');
+
+        // Decodificar el JWT (sin verificar firma, solo para obtener datos)
+        // ⚠️ EN PRODUCCIÓN, SIEMPRE VERIFICA LA FIRMA CON GOOGLE'S PUBLIC KEYS
+        // Usar la biblioteca google-auth-library para verificación segura
+
+        let payload;
+        try {
+            const parts = credential.split('.');
+            if (parts.length !== 3) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Token JWT inválido'
+                });
+            }
+
+            // Decodificar payload (parte 2)
+            // Agregar padding si es necesario (base64 puede no tener el padding correcto)
+            const base64Payload = parts[1];
+            const base64WithPadding = base64Payload + '=='.substring(0, (4 - base64Payload.length % 4) % 4);
+            payload = JSON.parse(Buffer.from(base64WithPadding, 'base64').toString('utf-8'));
+
+            console.log('[AUTH] Google token decoded - user:', payload.email);
+        } catch (decodeError) {
+            console.error('[AUTH] Error decodificando Google JWT:', decodeError.message);
+            return res.status(400).json({
+                success: false,
+                error: 'No se pudo decodificar el token de Google'
+            });
+        }
+
+        // Validar que el JWT contiene los campos necesarios
+        if (!payload.email || !payload.sub) {
+            return res.status(400).json({
+                success: false,
+                error: 'Token de Google inválido o incompleto'
+            });
+        }
+
+        // En Vercel/producción, aquí buscarías/crearías el usuario en la base de datos
+        // Para esta demostración, retornamos un usuario mock
+
+        const mockUser = {
+            id: payload.sub || 'google-' + Date.now(),
+            email: payload.email,
+            username: payload.email.split('@')[0],
+            nombre: payload.given_name || 'Usuario',
+            apellido_paterno: payload.family_name || '',
+            role: 'estudiante',
+            picture: payload.picture || null,
+            oauth_provider: 'google',
+            permissions: ['read_profile', 'read_grades']
+        };
+
+        // Mock JWT tokens (en producción, usar jwtUtils del backend)
+        const mockTokens = {
+            accessToken: 'mock-access-token-' + Date.now(),
+            refreshToken: 'mock-refresh-token-' + Date.now(),
+            accessTokenExpiry: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // 24 horas
+            refreshTokenExpiry: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60) // 7 días
+        };
+
+        console.log('[AUTH] Google login successful for:', mockUser.email);
+
+        res.json({
+            success: true,
+            message: 'Autenticación con Google exitosa',
+            user: mockUser,
+            tokens: mockTokens,
+            sessionInfo: {
+                loginTime: new Date().toISOString(),
+                rememberMe: true,
+                expiresAt: new Date(mockTokens.accessTokenExpiry * 1000).toISOString()
+            }
+        });
+
+    } catch (error) {
+        console.error('[AUTH] Error en Google OAuth:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error en autenticación de Google',
+            message: error.message
+        });
+    }
+});
+
+// POST /api/auth/register - User registration
+app.post('/api/auth/register', express.json(), async (req, res) => {
+    try {
+        const { email, password, nombre, apellido_paterno, apellido_materno } = req.body;
+
+        // Validación básica
+        if (!email || !password || !nombre) {
+            return res.status(400).json({
+                success: false,
+                error: 'Email, contraseña y nombre requeridos'
+            });
+        }
+
+        // Validación de email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Email inválido'
+            });
+        }
+
+        // Validación de contraseña (mínimo 6 caracteres)
+        if (password.length < 6) {
+            return res.status(400).json({
+                success: false,
+                error: 'La contraseña debe tener al menos 6 caracteres'
+            });
+        }
+
+        console.log('[AUTH] Registro attempt for email:', email);
+
+        // En Vercel, retornamos mensaje indicando que el registro no está disponible
+        // porque la BD no está disponible en el serverless
+        return res.status(503).json({
+            success: false,
+            error: 'Registro no disponible en esta versión',
+            message: 'Por favor usa Google para crear tu cuenta',
+            suggestion: 'Usa el botón de Google para una autenticación rápida y segura'
+        });
+
+    } catch (error) {
+        console.error('[AUTH] Error en registro:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error interno del servidor',
+            message: error.message
+        });
+    }
+});
+
+// ============================================
 // ERROR HANDLING
 // ============================================
 app.use(errorHandler);

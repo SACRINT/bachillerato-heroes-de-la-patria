@@ -1163,13 +1163,30 @@ class GoogleOAuthManager {
                 })
             });
 
-            const data = await response.json();
-            return data;
+            let data;
+            try {
+                data = await response.json();
+            } catch (parseError) {
+                debugLog.error('ERROR', 'Respuesta no es JSON válido:', parseError);
+                return {
+                    success: false,
+                    error: 'Respuesta inválida del servidor'
+                };
+            }
+
+            if (response.ok && data.success) {
+                return data;
+            } else {
+                return {
+                    success: false,
+                    error: data.error || data.message || 'Error en autenticación con Google'
+                };
+            }
         } catch (error) {
             debugLog.error('ERROR', 'Error verificando con backend:', error);
             return {
                 success: false,
-                error: 'Error de conexión'
+                error: 'Error de conexión: ' + error.message
             };
         }
     }
@@ -1487,7 +1504,14 @@ class ManualLoginManager {
                 })
             });
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (parseError) {
+                debugLog.error('ERROR', 'Respuesta no es JSON válido:', parseError);
+                this.auth.showError('Respuesta inválida del servidor');
+                return;
+            }
 
             if (response.ok && data.success) {
                 // ✅ SEMANA 25: Check if 2FA is required
@@ -1514,11 +1538,13 @@ class ManualLoginManager {
                 const accessToken = data.tokens?.accessToken || data.token;
                 await this.auth.processLogin(data.user, accessToken, rememberMe);
             } else {
-                this.auth.showError(data.error || data.message || 'Credenciales inválidas');
+                const errorMsg = data.error || data.message || 'Credenciales inválidas';
+                debugLog.warn('AUTH', 'Login fallido:', errorMsg);
+                this.auth.showError(errorMsg);
             }
         } catch (error) {
             debugLog.error('ERROR', 'Error en login:', error);
-            this.auth.showError('Error de conexión con el servidor');
+            this.auth.showError('Error de conexión con el servidor: ' + error.message);
         } finally {
             this.setLoading(false);
         }
@@ -1623,7 +1649,7 @@ class ManualLoginManager {
         this.setRegisterLoading(true);
 
         try {
-            const response = await fetch(`${this.auth.config.apiBaseUrl}/auth/public-register`, {
+            const response = await fetch(`${this.auth.config.apiBaseUrl}/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1634,7 +1660,15 @@ class ManualLoginManager {
                 })
             });
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (parseError) {
+                debugLog.error('ERROR', 'Respuesta no es JSON válido:', parseError);
+                this.auth.showError('Respuesta inválida del servidor');
+                this.setRegisterLoading(false);
+                return;
+            }
 
             if (response.ok && data.success) {
                 // Registro exitoso - mostrar mensaje
@@ -1649,11 +1683,13 @@ class ManualLoginManager {
                     if (emailTab) emailTab.click();
                 }, 3000);
             } else {
-                this.auth.showError(data.message || data.error || 'Error en el registro');
+                const errorMsg = data.message || data.error || 'Error en el registro';
+                debugLog.warn('AUTH', 'Registro fallido:', errorMsg);
+                this.auth.showError(errorMsg);
             }
         } catch (error) {
             debugLog.error('ERROR', 'Error en registro:', error);
-            this.auth.showError('Error de conexión con el servidor');
+            this.auth.showError('Error de conexión con el servidor: ' + error.message);
         } finally {
             this.setRegisterLoading(false);
         }
