@@ -162,27 +162,8 @@
     <!-- Polls Manager -->
     <script src="js/polls-manager.js"></script>
 
-    <!-- Page-Specific Initialization -->
-    <script>
-        // Initialize Dark Mode
-        const darkMode = new DarkModeManager();
-
-        // Initialize Polls Manager on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            const pollsManager = new PollsManager({
-                containerId: 'polls-container',
-                apiEndpoint: '/api/polls',
-                mode: 'public'
-            });
-
-            console.log('✅ Sistema de Encuestas inicializado');
-        });
-
-        // Mobile Navigation Toggle
-        document.querySelector('.nav-toggle')?.addEventListener('click', function () {
-            document.querySelector('.nav-menu')?.classList.toggle('active');
-        });
-    </script>
+    <!-- Page-Specific Initialization (CSP-Compliant External Script) -->
+    <script src="js/encuestas-init.js"></script>
 
     <!-- Page-Specific Styles -->
     <style>
