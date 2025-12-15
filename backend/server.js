@@ -291,11 +291,13 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
-// Session Configuration - Obligatoria SESSION_SECRET
-const SESSION_SECRET = process.env.SESSION_SECRET;
+// Session Configuration - SESSION_SECRET con fallback para Vercel
+let SESSION_SECRET = process.env.SESSION_SECRET;
 if (!SESSION_SECRET) {
-    devLogger.error('❌ ERROR: SESSION_SECRET environment variable is required');
-    process.exit(1);
+    devLogger.warn('⚠️ WARNING: SESSION_SECRET no configurada. Usando fallback temporal para Vercel.');
+    // Generar fallback seguro para development/Vercel
+    SESSION_SECRET = process.env.JWT_SECRET ||
+                     'fallback-session-secret-' + Date.now() + '-change-in-production';
 }
 
 // Configurar store de sesiones con PostgreSQL
@@ -506,53 +508,9 @@ devLogger.log('[FASE 3.2] 18 rutas adicionales descomentadas (GRUPO 3 + GRUPO 4)
 // ============================================
 // CONFIGURACIÓN PÚBLICA (API KEYS PARA FRONTEND)
 // ============================================
-
-/**
- * GET /api/config/public-keys
- * Endpoint para exponer configuraciones públicas de forma segura
- * No requiere autenticación (API keys públicas de CDNs)
- */
-app.get('/api/config/public-keys', (req, res) => {
-    const isDevelopment = process.env.NODE_ENV === 'development';
-
-    res.json({
-        success: true,
-        environment: isDevelopment ? 'development' : 'production',
-        keys: {
-            tinymce: process.env.TINYMCE_API_KEY || 'no-api-key',
-            // 🔑 Google OAuth Client ID - Se lee según el entorno (dev o prod)
-            google_oauth_client_id: isDevelopment
-                ? (process.env.GOOGLE_OAUTH_CLIENT_ID_DEV || '')
-                : (process.env.GOOGLE_OAUTH_CLIENT_ID_PROD || '')
-        }
-    });
-});
-
-/**
- * GET /api/config/google-client-id
- * Devuelve SOLO el Google Client ID según el entorno
- * Usado por unified-auth-system-v2.js
- */
-app.get('/api/config/google-client-id', (req, res) => {
-    const isDevelopment = process.env.NODE_ENV === 'development';
-    const clientId = isDevelopment
-        ? process.env.GOOGLE_OAUTH_CLIENT_ID_DEV
-        : process.env.GOOGLE_OAUTH_CLIENT_ID_PROD;
-
-    if (!clientId) {
-        return res.status(500).json({
-            success: false,
-            error: 'Google OAuth no configurado',
-            environment: isDevelopment ? 'development' : 'production'
-        });
-    }
-
-    res.json({
-        success: true,
-        clientId: clientId,
-        environment: isDevelopment ? 'development' : 'production'
-    });
-});
+// ✅ NOTA: Las rutas de configuración (/api/config/*) están registradas en
+//    app.use('/api/config', configRoutes) línea 393 desde config.js
+// ============================================
 
 // ============================================
 // FALLBACK & ERROR HANDLING
@@ -595,27 +553,32 @@ autoFixAprobaciones().catch(err => {
 });
 
 // ============================================
-// INICIAR SERVICIOS DE FONDO
+// INICIAR SERVICIOS DE FONDO (SOLO EN DEVELOPMENT, NO EN VERCEL)
 // ============================================
+const isServerless = process.env.VERCEL === '1' || process.env.AWS_LAMBDA_FUNCTION_NAME;
 
-// Iniciar el servicio de limpieza de tokens expirados (cada 12 horas)
-startCleanupService(12);
+if (!isServerless) {
+    // Iniciar el servicio de limpieza de tokens expirados (cada 12 horas)
+    startCleanupService(12);
 
-// ============================================
-// TAREAS PROGRAMADAS (CRON JOBS) - SEMANA 27 GDPR
-// ============================================
-devLogger.log('[Scheduler] Configurando tarea de limpieza de logs (GDPR)...');
-schedulerService.schedule(
-    'cleanup-system-logs',
-    '0 3 * * *', // Se ejecuta todos los días a las 3:00 AM
-    async () => {
-        devLogger.log('[Scheduler] Iniciando tarea programada: Limpieza de Logs del Sistema.');
-        await dataRetentionService.cleanupSystemLogs();
-    }
-);
+    // ============================================
+    // TAREAS PROGRAMADAS (CRON JOBS) - SEMANA 27 GDPR
+    // ============================================
+    devLogger.log('[Scheduler] Configurando tarea de limpieza de logs (GDPR)...');
+    schedulerService.schedule(
+        'cleanup-system-logs',
+        '0 3 * * *', // Se ejecuta todos los días a las 3:00 AM
+        async () => {
+            devLogger.log('[Scheduler] Iniciando tarea programada: Limpieza de Logs del Sistema.');
+            await dataRetentionService.cleanupSystemLogs();
+        }
+    );
 
-// Iniciar el servicio principal del programador de tareas
-schedulerService.start();
+    // Iniciar el servicio principal del programador de tareas
+    schedulerService.start();
+} else {
+    devLogger.warn('[SERVER] ⚠️ Entorno Serverless detectado (Vercel). Skipping background services.');
+}
 
 // ✨ NUEVA ARQUITECTURA - Inicializar Event Bus (SEMANAS 1-12 REFACTORIZACIÓN)
 devLogger.log('[SERVER] 🚀 Inicializando Event Bus y subscribers...');

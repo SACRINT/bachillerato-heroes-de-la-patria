@@ -1,3 +1,7 @@
 {
-  "type": "module"
+  "name": "bge-api-serverless",
+  "version": "1.0.0",
+  "description": "Vercel serverless API for BGE",
+  "main": "index.js",
+  "type": "commonjs"
 }
