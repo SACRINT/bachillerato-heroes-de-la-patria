@@ -52,6 +52,13 @@ const poolConfig = hasValidUrl
 // Crear pool de conexiones PostgreSQL
 const pool = new Pool(poolConfig);
 
+// 🛡️ CRITICAL FIX: Manejo de errores del pool para prevenir crashes del proceso
+pool.on('error', (err, client) => {
+    devLogger.error('❌ Error inesperado en el cliente PostgreSQL inactivo', err);
+    // No lanzar error aquí para evitar que el proceso se detenga (System Exit)
+    // Vercel serverless puede recuperar nuevas conexiones después
+});
+
 // Log de configuración (solo muestra DATABASE_URL presente o no, no el valor completo)
 devLogger.log('🔧 Configuración PostgreSQL:', {
     source: process.env.DATABASE_URL ? 'DATABASE_URL (Neon/Vercel)' : 'Variables individuales',
