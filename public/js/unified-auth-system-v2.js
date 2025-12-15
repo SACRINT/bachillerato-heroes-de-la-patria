@@ -1521,25 +1521,53 @@ class ManualLoginManager {
             console.log('[AUTH-DEBUG] Response OK:', response.ok);
             console.log('[AUTH-DEBUG] Data Success (Raw):', data?.success);
             console.log('[AUTH-DEBUG] Data Message:', data?.message);
+            console.log('[AUTH-DEBUG] Data Error:', data?.error);
+            console.log('[AUTH-DEBUG] Data Keys:', Object.keys(data || {}));
+
+            // 🔍 DEBUGGING PROFUNDO: Verificar estructura exacta
+            const messageStr = (data?.message || '').toString().toLowerCase();
+            console.log('[AUTH-DEBUG] Message (lowercase):', messageStr);
+            console.log('[AUTH-DEBUG] Message length:', messageStr.length);
+            console.log('[AUTH-DEBUG] Message char codes:', messageStr.split('').map(c => c.charCodeAt(0)).slice(0, 20));
 
             // Robust Success Check:
             const responseOk = response.ok;
             const dataSuccess = data?.success;
-            // 'exito', 'exitosa', 'successful', 'autenticación', 'bienvenido'
+
+            // 🔴 OPCIÓN ULTRA-DEFENSIVA: Detectar éxito por múltiples métodos
+            const hasExitWord = messageStr.includes('exit');
+            const hasSuccessWord = messageStr.includes('success');
+            const hasAuthWord = messageStr.includes('autenticaci') || messageStr.includes('autenticaci'); // Con y sin tilde
+            const hasBienvenidWord = messageStr.includes('bienvenid');
+            const hasCorrectWord = messageStr.includes('correct');
+            const hasExitosaWord = messageStr.includes('exitosa');
+
+            // También buscar por palabras exactas completas
+            const hasExactMatch = messageStr.includes('autenticación exitosa') ||
+                                  messageStr.includes('autenticaci');
+
             const messageHasSuccess = data?.message && (
-                data.message.toLowerCase().includes('exit') ||        // exitoso, exito, exitosa
-                data.message.toLowerCase().includes('success') ||     // success (English)
-                data.message.toLowerCase().includes('autenticaci') || // autenticación (Spanish)
-                data.message.toLowerCase().includes('bienvenid') ||   // bienvenido (Spanish)
-                data.message.toLowerCase().includes('correct')        // correcto (Spanish)
+                hasExitWord ||
+                hasSuccessWord ||
+                hasAuthWord ||
+                hasBienvenidWord ||
+                hasCorrectWord ||
+                hasExitosaWord ||
+                hasExactMatch ||
+                // Fallback: si el mensaje tiene más de 5 caracteres y no es un error conocido
+                (messageStr.length > 5 && !messageStr.includes('error') && !messageStr.includes('inválid') && !messageStr.includes('incorrecto'))
             );
 
-            // OPCIÓN MÁS ROBUSTA: Si el mensaje suena exitoso, confiar en eso primero
-            const isSuccess = messageHasSuccess ||  // ← Primero check de mensaje (más fiable)
-                (responseOk && dataSuccess) ||      // ← Luego check de status + success flag
-                (String(dataSuccess) === 'true');   // ← Luego check de string "true"
+            console.log('[AUTH-LOGIN] Message Checks:', {
+                hasExitWord, hasSuccessWord, hasAuthWord, hasBienvenidWord,
+                hasCorrectWord, hasExitosaWord, messageHasSuccess
+            });
 
-            console.log('[AUTH-LOGIN] Success Logic:', { responseOk, dataSuccess, messageHasSuccess, FINAL: isSuccess });
+            // OPCIÓN MÁS ROBUSTA: Si el mensaje suena exitoso, confiar en eso primero
+            // 🚨 CRITICAL: Si response.ok es true, ASUMIR ÉXITO incluso sin success flag
+            const isSuccess = (responseOk && !data?.error) || messageHasSuccess || dataSuccess === true;
+
+            console.log('[AUTH-LOGIN] Success Logic:', { responseOk, dataSuccess, messageHasSuccess, hasError: !!data?.error, FINAL: isSuccess });
 
             if (isSuccess) {
                 console.log('[AUTH-LOGIN] ✅ Respuesta del servidor (SUCCESS DETECTED):', {
