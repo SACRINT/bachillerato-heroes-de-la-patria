@@ -5,7 +5,7 @@
     // Base de datos de búsqueda expandida y completa
     const searchDatabase = [
         // ========== PÁGINAS PRINCIPALES ==========
-        { title: "Inicio", desc: "Página principal del window.getTenantConfigValue('school_full_name', 'Bachillerato General Estatal window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'window.getTenantConfigValue('school_institution_name', 'Héroes de la Patria')')')')')')')", url: "index.html", keywords: "inicio home principal bachillerato heroes patria bienvenida" },
+        { title: "Inicio", desc: "Página principal del Bachillerato General Estatal Héroes de la Patria", url: "index.html", keywords: "inicio home principal bachillerato heroes patria bienvenida" },
         
         // CONÓCENOS - Secciones completas
         { title: "Conócenos", desc: "Información institucional completa", url: "conocenos.html", keywords: "conocenos acerca sobre institución información" },

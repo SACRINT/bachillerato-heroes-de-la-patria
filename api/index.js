@@ -725,18 +725,14 @@ app.get('/api/iacoins/balance', async (req, res) => {
 
             res.json({
                 success: true,
-                userId: decoded.userId,
-                balance: balance,
-                currency: 'IACoins'
+                data: balance
             });
 
         } catch (dbError) {
             console.warn('[IACOINS-BALANCE] Database error, returning demo data:', dbError.message);
             res.json({
                 success: true,
-                userId: decoded.userId,
-                balance: 500,
-                currency: 'IACoins',
+                data: 500,
                 isDemoData: true
             });
         } finally {
@@ -748,9 +744,7 @@ app.get('/api/iacoins/balance', async (req, res) => {
         console.error('[IACOINS-BALANCE] Error:', error.message);
         res.json({
             success: true,
-            userId: 1,
-            balance: 500,
-            currency: 'IACoins',
+            data: 500,
             isDemoData: true
         });
     }
@@ -802,8 +796,7 @@ app.get('/api/iacoins/achievements', async (req, res) => {
 
                 res.json({
                     success: true,
-                    achievements: result.rows || [],
-                    total: result.rows.length
+                    data: result.rows || []
                 });
             } catch (dbError) {
                 // Si falla por columna faltante, intenta sin icon_url
@@ -818,16 +811,14 @@ app.get('/api/iacoins/achievements', async (req, res) => {
                         const result = await client.query(queryAlt, [decoded.userId]);
                         return res.json({
                             success: true,
-                            achievements: result.rows || [],
-                            total: result.rows.length
+                            data: result.rows || []
                         });
                     } catch (err2) {
                         // Tabla no existe, retornar demo data
                         console.warn('[ACHIEVEMENTS] Table missing, returning demo data');
                         return res.json({
                             success: true,
-                            achievements: [],
-                            total: 0,
+                            data: [],
                             isDemoData: true
                         });
                     }
@@ -837,8 +828,7 @@ app.get('/api/iacoins/achievements', async (req, res) => {
                 console.warn('[ACHIEVEMENTS] Database error, returning demo:', dbError.message);
                 return res.json({
                     success: true,
-                    achievements: [],
-                    total: 0,
+                    data: [],
                     isDemoData: true
                 });
             }
@@ -852,8 +842,7 @@ app.get('/api/iacoins/achievements', async (req, res) => {
         console.error('[ACHIEVEMENTS] Error:', error.message);
         res.json({
             success: true,
-            achievements: [],
-            total: 0,
+            data: [],
             isDemoData: true
         });
     }
@@ -906,15 +895,14 @@ app.get('/api/iacoins/challenges', async (req, res) => {
 
                 res.json({
                     success: true,
-                    challenges: result.rows || [],
-                    total: result.rows.length
+                    data: result.rows || []
                 });
             } catch (dbError) {
                 // Tabla no existe, retornar demo data
                 console.warn('[IACOINS-CHALLENGES] Database error, returning demo:', dbError.message);
                 res.json({
                     success: true,
-                    challenges: [
+                    data: [
                         {
                             id: 1,
                             title: 'Desafío Demo 1',
@@ -924,7 +912,6 @@ app.get('/api/iacoins/challenges', async (req, res) => {
                             status: 'active'
                         }
                     ],
-                    total: 1,
                     isDemoData: true
                 });
             }
@@ -938,7 +925,7 @@ app.get('/api/iacoins/challenges', async (req, res) => {
         console.error('[IACOINS-CHALLENGES] Error:', error.message);
         res.json({
             success: true,
-            challenges: [
+            data: [
                 {
                     id: 1,
                     title: 'Desafío Demo 1',
@@ -948,7 +935,6 @@ app.get('/api/iacoins/challenges', async (req, res) => {
                     status: 'active'
                 }
             ],
-            total: 1,
             isDemoData: true
         });
     }
@@ -992,15 +978,14 @@ app.get('/api/iacoins/leaderboard', async (req, res) => {
 
                 res.json({
                     success: true,
-                    leaderboard: leaderboard,
-                    total: leaderboard.length
+                    data: leaderboard
                 });
             } catch (dbError) {
                 // Tabla no existe, retornar demo data
                 console.warn('[LEADERBOARD] Database error, returning demo:', dbError.message);
                 res.json({
                     success: true,
-                    leaderboard: [
+                    data: [
                         {
                             rank: 1,
                             id: 1,
@@ -1010,7 +995,6 @@ app.get('/api/iacoins/leaderboard', async (req, res) => {
                             achievements_count: 0
                         }
                     ],
-                    total: 1,
                     isDemoData: true
                 });
             }
@@ -1024,7 +1008,7 @@ app.get('/api/iacoins/leaderboard', async (req, res) => {
         console.error('[LEADERBOARD] Error:', error.message);
         res.json({
             success: true,
-            leaderboard: [
+            data: [
                 {
                     rank: 1,
                     id: 1,
@@ -1034,7 +1018,6 @@ app.get('/api/iacoins/leaderboard', async (req, res) => {
                     achievements_count: 0
                 }
             ],
-            total: 1,
             isDemoData: true
         });
     }
@@ -1087,16 +1070,14 @@ app.get('/api/iacoins/transactions', async (req, res) => {
 
                 res.json({
                     success: true,
-                    transactions: result.rows || [],
-                    total: result.rows.length
+                    data: result.rows || []
                 });
             } catch (dbError) {
                 // Tabla no existe, retornar demo data vacío
                 console.warn('[TRANSACTIONS] Database error, returning demo:', dbError.message);
                 res.json({
                     success: true,
-                    transactions: [],
-                    total: 0,
+                    data: [],
                     isDemoData: true
                 });
             }
@@ -1110,8 +1091,7 @@ app.get('/api/iacoins/transactions', async (req, res) => {
         console.error('[TRANSACTIONS] Error:', error.message);
         res.json({
             success: true,
-            transactions: [],
-            total: 0,
+            data: [],
             isDemoData: true
         });
     }
@@ -1756,6 +1736,160 @@ app.post('/api/teachers-portal/auth/login', async (req, res) => {
                 role: 'docente',
                 username: 'docente',
                 nombre: 'Docente Demo'
+            },
+            isDemoData: true
+        });
+    }
+});
+
+// ============================================
+// ENCUESTAS (POLLS)
+// ============================================
+
+// GET /api/polls - Obtener encuestas
+app.get('/api/polls', async (req, res) => {
+    try {
+        const status = req.query.status || 'active';
+        const limit = parseInt(req.query.limit) || 20;
+        const offset = parseInt(req.query.offset) || 0;
+
+        // Demo data para encuestas
+        const demoPolls = [
+            {
+                id: 1,
+                title: '¿Cómo califica el desempeño académico?',
+                description: 'Queremos conocer tu opinión sobre la calidad educativa',
+                status: 'active',
+                created_at: new Date().toISOString(),
+                options: [
+                    { id: 1, text: 'Excelente', votes: 15 },
+                    { id: 2, text: 'Bueno', votes: 45 },
+                    { id: 3, text: 'Regular', votes: 20 },
+                    { id: 4, text: 'Malo', votes: 5 }
+                ]
+            },
+            {
+                id: 2,
+                title: '¿Qué actividades extracurriculares le interesan?',
+                description: 'Ayúdanos a planificar nuevas actividades',
+                status: 'active',
+                created_at: new Date().toISOString(),
+                options: [
+                    { id: 1, text: 'Deportes', votes: 32 },
+                    { id: 2, text: 'Arte', votes: 18 },
+                    { id: 3, text: 'Música', votes: 25 },
+                    { id: 4, text: 'Tecnología', votes: 42 }
+                ]
+            }
+        ];
+
+        res.json({
+            success: true,
+            data: demoPolls.slice(offset, offset + limit),
+            total: demoPolls.length,
+            isDemoData: true
+        });
+    } catch (error) {
+        console.error('[POLLS] Error:', error.message);
+        res.json({
+            success: true,
+            data: [],
+            total: 0,
+            isDemoData: true
+        });
+    }
+});
+
+// GET /api/polls/categories/list - Obtener categorías de encuestas
+app.get('/api/polls/categories/list', async (req, res) => {
+    try {
+        const demoCategories = [
+            { id: 1, name: 'Académica', count: 12 },
+            { id: 2, name: 'Bienestar', count: 8 },
+            { id: 3, name: 'Infraestructura', count: 5 },
+            { id: 4, name: 'Servicios', count: 6 }
+        ];
+
+        res.json({
+            success: true,
+            data: demoCategories,
+            total: demoCategories.length,
+            isDemoData: true
+        });
+    } catch (error) {
+        console.error('[POLLS-CATEGORIES] Error:', error.message);
+        res.json({
+            success: true,
+            data: [],
+            total: 0,
+            isDemoData: true
+        });
+    }
+});
+
+// ============================================
+// PORTAL DE DOCENTES
+// ============================================
+
+// GET /api/teachers-portal/dashboard - Dashboard de docentes
+app.get('/api/teachers-portal/dashboard', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token requerido'
+            });
+        }
+
+        // Demo dashboard data para docentes
+        const demoDashboard = {
+            teacher: {
+                id: 1,
+                name: 'Prof. Juan García',
+                email: 'juan.garcia@bge.edu.mx',
+                department: 'Matemáticas'
+            },
+            classes: [
+                {
+                    id: 1,
+                    name: '1A - Matemáticas',
+                    students_count: 35,
+                    schedule: 'Lunes a Viernes 8:00 - 9:00'
+                },
+                {
+                    id: 2,
+                    name: '2B - Matemáticas',
+                    students_count: 32,
+                    schedule: 'Lunes a Viernes 10:00 - 11:00'
+                }
+            ],
+            pending_tasks: [
+                { id: 1, title: 'Calificar examen de 1A', due_date: new Date().toISOString(), priority: 'high' },
+                { id: 2, title: 'Preparar material 2B', due_date: new Date().toISOString(), priority: 'medium' }
+            ],
+            statistics: {
+                total_students: 67,
+                average_grade: 7.8,
+                attendance_rate: 95.5
+            }
+        };
+
+        res.json({
+            success: true,
+            data: demoDashboard,
+            isDemoData: true
+        });
+    } catch (error) {
+        console.error('[TEACHERS-DASHBOARD] Error:', error.message);
+        res.json({
+            success: true,
+            data: {
+                teacher: { id: 1, name: 'Demo Teacher', email: 'demo@example.com' },
+                classes: [],
+                pending_tasks: [],
+                statistics: {}
             },
             isDemoData: true
         });
