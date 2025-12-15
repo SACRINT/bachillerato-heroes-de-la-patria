@@ -6,6 +6,14 @@
     {
       "source": "/api/(.*)",
       "destination": "/api/index.js"
+    },
+    {
+      "source": "/health",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/((?!assets/|images/|css/|js/|favicon.ico|manifest.json|robots.txt|sitemap.xml).*)",
+      "destination": "/index.html"
     }
   ],
   "cleanUrls": false,

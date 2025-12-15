@@ -219,7 +219,13 @@ const corsOptions = {
     origin: function (origin, callback) {
         const allowedOrigins = process.env.CORS_ORIGIN ?
             process.env.CORS_ORIGIN.split(',') :
-            ['http://localhost:8080', 'http://127.0.0.1:8080', 'http://localhost:3000'];
+            [
+                'http://localhost:8080',
+                'http://127.0.0.1:8080',
+                'http://localhost:3000',
+                'https://bge-heroesdelapatria.vercel.app', // 🌍 PRODUCCIÓN
+                'https://bge-heroesdelapatria.vercel.app/' // Variación con slash
+            ];
 
         // ✅ CORRECCIÓN: Permitir origin null (archivos HTML locales) y undefined
         if (!origin || origin === 'null') {
@@ -396,6 +402,7 @@ app.use('/api/admin/tenants', tenantsRoutes);  // ✅ MULTI-TENANT MANAGEMENT (8
 app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/upload', uploadsRoutes);
 app.use('/api/health', healthRoutes);
+app.use('/health', healthRoutes); // ✅ ALIAS: Soporte para frontend legacy que llama a /health raíz
 // ⏸️ app.use('/api/attendance', attendanceRoutes); // ✅ ATTENDANCE ROUTES - COMENTADO: archivo no existe
 // ⏸️ app.use('/api/settings', settingsRoutes); // ✅ SETTINGS ROUTES - COMENTADO: archivo no existe
 

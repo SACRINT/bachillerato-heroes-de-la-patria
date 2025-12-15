@@ -54,7 +54,14 @@
       "Bash(ls:*)",
       "mcp__chrome-devtools__list_network_requests",
       "Bash(npx tsc:*)",
-      "Bash(mcp__chrome-devtools__take_screenshot --url http://localhost:3000 --filename local_proyecto.png)"
+      "Bash(mcp__chrome-devtools__take_screenshot --url http://localhost:3000 --filename local_proyecto.png)",
+      "Bash(npm install)",
+      "Bash(timeout 10 npm run dev:*)",
+      "Bash(npm install:*)",
+      "Bash(timeout 15 npm run dev)",
+      "Bash(timeout 20 npm run dev)",
+      "Bash(timeout 25 npm run dev:*)",
+      "Bash(taskkill:*)"
     ],
     "deny": [],
     "ask": []
