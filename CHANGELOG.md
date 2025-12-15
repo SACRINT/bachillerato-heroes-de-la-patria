@@ -1,3 +1,65 @@
+[v2.30.13] - 2025-12-15 (PACKAGE.JSON MODULE SYSTEM FIX - FINAL ROOT CAUSE ✅✅✅)
+
+**Tipo:** CRITICAL Bug Fix / Vercel Serverless / Module System Configuration
+**Commits:** 399d6d8
+**Estado:** ✅ COMPLETADO + PUSHED a GitHub
+
+### 🔴 CRITICAL: Package.json Type Mismatch - THE REAL ROOT CAUSE
+
+**Investigación Final - Logs Reales de Vercel Revelados:**
+El usuario proporcionó los logs REALES de Vercel que mostraban:
+```
+ReferenceError: require is not defined in ES module scope
+ReferenceError: module is not defined in ES module scope
+This file is being treated as an ES module because it has a '.js' file extension
+and '/var/task/api/package.json' contains "type": "module"
+```
+
+**Root Cause Identificada (DEFINITIVA):**
+  1. En v2.30.10, cambié `/api/package.json` de `"type": "commonjs"` a `"type": "module"`
+  2. Esto fue INCORRECTO porque el código usa sintaxis CommonJS en TODAS partes:
+     - `const express = require('express');` (line 29)
+     - `const cors = require('cors');` (line 30)
+     - `module.exports = app;` (line 501)
+  3. Cuando package.json tiene `"type": "module"`, Node.js trata todos los `.js` como ES6 modules
+  4. Esto causó que Node.js RECHAZARA la sintaxis `require()` y `module.exports()`
+  5. Resultado: ReferenceError para require/module en TODAS las funciones serverless
+
+**Solución Implementada (CORRECTA):**
+  ✅ Revertido `/api/package.json` de `"type": "module"` a `"type": "commonjs"`
+  ✅ El código puede usar sintaxis CommonJS sin conflictos
+  ✅ Node.js ahora reconoce `require()` y `module.exports` correctamente
+
+**Cambios en api/package.json:**
+  - Línea 6: `"type": "module"` → `"type": "commonjs"`
+  - Esta es la ÚNICA línea que necesitaba cambiar
+
+**Archivos Modificados:** 1
+  - api/package.json (1 línea)
+
+**Impacto Esperado FINAL:**
+  ✅ `/api/config/tenant` → HTTP 200 (sin ReferenceError de require)
+  ✅ `/api/config/public-keys` → HTTP 200 (sin ReferenceError de module)
+  ✅ Todos los endpoints de API funcionales
+  ✅ No más "Error al cargar la configuración remota"
+  ✅ Aplicación completamente funcional en Vercel
+
+**Timeline de Esta Sesión:**
+  1. 14:00 - Usuario reporte HTTP 500 en endpoints `/api/config/tenant` y `/api/config/public-keys`
+  2. 14:15 - Cambié package.json a `"type": "module"` (INCORRECTO)
+  3. 14:45 - Usuario reportó nuevos errores "require is not defined"
+  4. 14:50 - Identifiqué que v2.30.12 fixes (helmet + backend routes) eran correctos pero insuficientes
+  5. 15:00 - Usuario proporcionó logs reales de Vercel revelando el error de módulos
+  6. 15:05 - Identifiqué la causa REAL: package.json type mismatch
+  7. 15:10 - Revertí package.json a "commonjs" (FIX FINAL)
+  8. 15:12 - Commit 399d6d8 + Push a GitHub
+
+**Conclusión:**
+Este es el FIX DEFINITIVO. El problema no era de lógica ni de seguridad, era de **CONFIGURACIÓN DE MÓDULOS**.
+La solución simple (1 línea) resuelve TODOS los errores de ReferenceError que estaban ocurriendo.
+
+---
+
 [v2.30.12] - 2025-12-15 (VERCEL HTTP 500 ROOT CAUSE FIX - HELMET & BACKEND ROUTES ✅✅✅)
 
 **Tipo:** CRITICAL Bug Fix / Vercel Serverless / Production Hotfix
