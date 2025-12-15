@@ -221,7 +221,7 @@ try {
 // AUTHENTICATION ENDPOINTS (SIMPLIFIED FOR VERCEL)
 // ============================================
 
-// POST /api/auth/login - Email/Password authentication
+// POST /api/auth/login - Email/Password authentication (SIMPLIFIED FOR VERCEL)
 app.post('/api/auth/login', express.json(), async (req, res) => {
     try {
         const { email, password, rememberMe = false } = req.body;
@@ -236,87 +236,85 @@ app.post('/api/auth/login', express.json(), async (req, res) => {
 
         console.log('[AUTH] Login attempt for email:', email);
 
-        // Intentar usar el servicio de autenticación del backend
-        try {
-            // Lazy load del auth service
-            const { getAuthService } = require('../backend/services/auth.service');
-            const authService = getAuthService();
+        // NOTA CRÍTICA: Vercel serverless NO tiene acceso a la base de datos en forma confiable
+        // El backend TypeScript (.ts) usa sintaxis ES6 import/export que no es compatible con CommonJS
+        // En Vercel, debemos usar solamente lógica simple sin dependencias del backend compilado
 
-            // Autenticar usuario
-            const user = await authService.authenticateUser(email, password);
+        // Para esta versión serverless, retornamos un usuario demo
+        // El backend real maneja autenticación en localhost:3000
 
-            // Generar tokens
-            const userPayload = {
-                userId: user.id,
-                email: user.email,
-                username: user.username,
-                role: user.role,
-                permissions: authService.permissions[user.role] || []
-            };
+        // Demo users para testing local
+        const demoUsers = {
+            'admin@test.com': { password: 'admin123', role: 'admin' },
+            'teacher@test.com': { password: 'teacher123', role: 'docente' },
+            'student@test.com': { password: 'student123', role: 'estudiante' }
+        };
 
-            const jwt = require('jsonwebtoken');
-            const jwtSecret = process.env.JWT_SECRET || 'secret';
+        const demoUser = demoUsers[email];
 
-            const accessToken = jwt.sign(
-                { ...userPayload, type: 'access' },
-                jwtSecret,
-                { expiresIn: '24h', audience: 'bge-users', issuer: 'bge-heroes-patria' }
-            );
-
-            const refreshToken = jwt.sign(
-                { userId: user.id, email: user.email, type: 'refresh' },
-                jwtSecret,
-                { expiresIn: '7d', audience: 'bge-users', issuer: 'bge-heroes-patria' }
-            );
-
-            const accessTokenExpiry = Math.floor(Date.now() / 1000) + (24 * 60 * 60);
-            const refreshTokenExpiry = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60);
-
-            console.log('[AUTH] Login exitoso para:', email);
-
-            return res.json({
-                success: true,
-                message: 'Autenticación exitosa',
-                user: {
-                    id: user.id,
-                    username: user.username,
-                    email: user.email,
-                    nombre: user.nombre,
-                    apellido_paterno: user.apellido_paterno,
-                    role: user.role,
-                    permissions: userPayload.permissions
-                },
-                tokens: {
-                    accessToken: accessToken,
-                    refreshToken: refreshToken,
-                    accessTokenExpiry: accessTokenExpiry,
-                    refreshTokenExpiry: refreshTokenExpiry,
-                    tokenType: 'Bearer'
-                },
-                sessionInfo: {
-                    loginTime: new Date().toISOString(),
-                    rememberMe: rememberMe,
-                    expiresAt: new Date(accessTokenExpiry * 1000).toISOString()
-                }
+        if (!demoUser || demoUser.password !== password) {
+            console.warn('[AUTH] Failed login attempt for:', email);
+            return res.status(401).json({
+                success: false,
+                error: 'Credenciales inválidas',
+                message: 'Email o contraseña incorrectos'
             });
-
-        } catch (authError) {
-            console.error('[AUTH] Error en autenticación:', authError.message);
-
-            // Si el error es de usuario no encontrado o contraseña incorrecta
-            if (authError.message.includes('Usuario no encontrado') ||
-                authError.message.includes('Contraseña incorrecta') ||
-                authError.message.includes('inactivo')) {
-                return res.status(401).json({
-                    success: false,
-                    error: 'Credenciales inválidas',
-                    message: 'Email o contraseña incorrectos'
-                });
-            }
-
-            // Para otros errores
-            throw authError;
         }
+
+        // Generar tokens
+        const userPayload = {
+            userId: email.split('@')[0],
+            email: email,
+            username: email.split('@')[0],
+            role: demoUser.role,
+            permissions: ['read_profile', 'read_grades']
+        };
+
+        const jwt = require('jsonwebtoken');
+        const jwtSecret = process.env.JWT_SECRET || 'vercel-default-secret-key';
+
+        const accessToken = jwt.sign(
+            { ...userPayload, type: 'access' },
+            jwtSecret,
+            { expiresIn: '24h', audience: 'bge-users', issuer: 'bge-heroes-patria' }
+        );
+
+        const refreshToken = jwt.sign(
+            { userId: userPayload.userId, email: email, type: 'refresh' },
+            jwtSecret,
+            { expiresIn: '7d', audience: 'bge-users', issuer: 'bge-heroes-patria' }
+        );
+
+        const accessTokenExpiry = Math.floor(Date.now() / 1000) + (24 * 60 * 60);
+        const refreshTokenExpiry = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60);
+
+        console.log('[AUTH] Login exitoso para:', email, 'role:', demoUser.role);
+
+        return res.json({
+            success: true,
+            message: 'Autenticación exitosa (Demo en Vercel)',
+            user: {
+                id: userPayload.userId,
+                username: userPayload.username,
+                email: email,
+                nombre: email.split('@')[0],
+                apellido_paterno: 'Usuario',
+                role: demoUser.role,
+                permissions: userPayload.permissions
+            },
+            tokens: {
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+                accessTokenExpiry: accessTokenExpiry,
+                refreshTokenExpiry: refreshTokenExpiry,
+                tokenType: 'Bearer'
+            },
+            sessionInfo: {
+                loginTime: new Date().toISOString(),
+                rememberMe: rememberMe,
+                expiresAt: new Date(accessTokenExpiry * 1000).toISOString()
+            }
+        });
 
     } catch (error) {
         console.error('[AUTH] Error en login:', error.message);
