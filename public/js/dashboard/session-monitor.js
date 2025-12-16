@@ -15,13 +15,60 @@
     function immediateSecurityCheck() {
         console.log('🔍 [SECURITY] Verificación inmediata de seguridad...');
 
-        const session = localStorage.getItem('secure_admin_session');
-        const hasValidAuth = window.secureAdminAuth &&
-            typeof window.secureAdminAuth.isUserAuthenticated === 'function' &&
-            window.secureAdminAuth.isUserAuthenticated();
+        // ✅ FIX (16 Dec 2025): Buscar credenciales en las claves correctas
+        // Sistema 1: JWT moderno (unified-auth-system-v2.js)
+        let hasValidAuth = false;
+
+        // Buscar en localStorage (usuario marcó "Recordarme")
+        const bgeToken = localStorage.getItem('bge_auth_token');
+        const bgeUser = localStorage.getItem('bge_auth_user');
+
+        // Si no en localStorage, buscar en sessionStorage
+        const bgeTokenSession = sessionStorage.getItem('bge_auth_token');
+        const bgeUserSession = sessionStorage.getItem('bge_auth_user');
+
+        if ((bgeToken && bgeUser) || (bgeTokenSession && bgeUserSession)) {
+            hasValidAuth = true;
+            console.log('✅ [SECURITY] Sistema JWT moderno detectado');
+        }
+
+        // Sistema 2: JWT legacy
+        if (!hasValidAuth) {
+            const legacyToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+            const legacyUser = localStorage.getItem('userData') || sessionStorage.getItem('userData');
+            if (legacyToken && legacyUser) {
+                hasValidAuth = true;
+                console.log('✅ [SECURITY] Sistema JWT legacy detectado');
+            }
+        }
+
+        // Sistema 3: Secure session (legacy)
+        if (!hasValidAuth) {
+            const session = localStorage.getItem('secure_admin_session') || sessionStorage.getItem('secure_admin_session');
+            if (session) {
+                try {
+                    const sessionData = JSON.parse(session);
+                    if (sessionData.isAuthenticated && sessionData.expiresAt && Date.now() < sessionData.expiresAt) {
+                        hasValidAuth = true;
+                        console.log('✅ [SECURITY] Sistema secure_admin_session detectado');
+                    }
+                } catch (e) {
+                    console.warn('⚠️ [SECURITY] Error parsing secure_admin_session:', e);
+                }
+            }
+        }
+
+        // Sistema 4: window.unifiedLogin (nuevo)
+        if (!hasValidAuth && window.unifiedLogin && typeof window.unifiedLogin.loadSession === 'function') {
+            const sessionData = window.unifiedLogin.loadSession();
+            if (sessionData && sessionData.token) {
+                hasValidAuth = true;
+                console.log('✅ [SECURITY] Sistema window.unifiedLogin detectado');
+            }
+        }
 
         // Si no hay sesión válida, bloquear inmediatamente
-        if (!session && !hasValidAuth) {
+        if (!hasValidAuth) {
             console.log('🚨 [SECURITY] Acceso no autorizado detectado - Bloqueando página');
             blockPageAndRedirect('Acceso no autorizado');
             return false;
@@ -83,33 +130,46 @@
             // Verificar múltiples formas de detectar cierre de sesión
             let isLoggedOut = false;
 
-            // 1. Verificar localStorage
-            const session = localStorage.getItem('secure_admin_session');
-            if (!session && hasEverBeenAuthenticated) {
-                console.log('🔒 [SECURITY] LocalStorage session eliminada');
+            // ✅ FIX (16 Dec 2025): Verificar claves correctas
+            // 1. Verificar JWT moderno (bge_auth_*)
+            const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
+            const bgeUser = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user');
+
+            const hasModernJWT = bgeToken && bgeUser;
+
+            // 2. Verificar JWT legacy
+            const legacyToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+            const legacyUser = localStorage.getItem('userData') || sessionStorage.getItem('userData');
+            const hasLegacyJWT = legacyToken && legacyUser;
+
+            // 3. Verificar secure_admin_session
+            const session = localStorage.getItem('secure_admin_session') || sessionStorage.getItem('secure_admin_session');
+            const hasSecureSession = session ? (() => {
+                try {
+                    const sessionData = JSON.parse(session);
+                    return sessionData.isAuthenticated && sessionData.expiresAt && Date.now() < sessionData.expiresAt;
+                } catch (e) {
+                    return false;
+                }
+            })() : false;
+
+            // 4. Verificar window.unifiedLogin
+            let hasUnifiedLogin = false;
+            if (window.unifiedLogin && typeof window.unifiedLogin.loadSession === 'function') {
+                const sessionData = window.unifiedLogin.loadSession();
+                hasUnifiedLogin = sessionData && sessionData.token;
+            }
+
+            // Si ALGUNO de los sistemas tiene autenticación válida, permitir acceso
+            const hasAnyValidAuth = hasModernJWT || hasLegacyJWT || hasSecureSession || hasUnifiedLogin;
+
+            // Si DU no tiene autenticación válida y ANTES estaba autenticado, es un logout
+            if (!hasAnyValidAuth && hasEverBeenAuthenticated) {
+                console.log('🔒 [SECURITY] Logout detectado - Ningún sistema de autenticación activo');
                 isLoggedOut = true;
             }
 
-            // 2. Verificar si el sistema de autenticación reporta logout
-            if (window.secureAdminAuth && typeof window.secureAdminAuth.isUserAuthenticated === 'function') {
-                const authStatus = window.secureAdminAuth.isUserAuthenticated();
-                if (!authStatus && hasEverBeenAuthenticated) {
-                    console.log('🔒 [SECURITY] Sistema de autenticación reporta logout');
-                    isLoggedOut = true;
-                }
-            }
-
-            // 3. Verificar si hay cambios en el estado
-            const currentSession = localStorage.getItem('secure_admin_session');
-            if (lastSessionCheck !== null && lastSessionCheck !== currentSession) {
-                console.log('🔒 [SECURITY] Cambio detectado en sesión');
-                if (!currentSession && hasEverBeenAuthenticated) {
-                    isLoggedOut = true;
-                }
-            }
-            lastSessionCheck = currentSession;
-
-            // 4. Verificar notificación de cierre en ventana
+            // Verificar notificación de cierre en ventana
             if (sessionStorage.getItem('admin_logout_redirect') === 'true') {
                 console.log('🔒 [SECURITY] Señal de logout detectada');
                 sessionStorage.removeItem('admin_logout_redirect');
@@ -135,13 +195,26 @@
         window.addEventListener('popstate', function(event) {
             console.log('🔒 [SECURITY] Intento de retroceso detectado');
 
-            // Verificar inmediatamente la sesión
-            const session = localStorage.getItem('secure_admin_session');
-            const hasValidAuth = window.secureAdminAuth &&
-                typeof window.secureAdminAuth.isUserAuthenticated === 'function' &&
-                window.secureAdminAuth.isUserAuthenticated();
+            // ✅ FIX (16 Dec 2025): Verificar claves correctas
+            // Verificar inmediatamente la sesión en claves correctas
+            const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
+            const bgeUser = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user');
+            const legacyToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+            const legacyUser = localStorage.getItem('userData') || sessionStorage.getItem('userData');
+            const session = localStorage.getItem('secure_admin_session') || sessionStorage.getItem('secure_admin_session');
 
-            if (!session && !hasValidAuth) {
+            let hasValidAuth = (bgeToken && bgeUser) || (legacyToken && legacyUser);
+
+            if (!hasValidAuth && session) {
+                try {
+                    const sessionData = JSON.parse(session);
+                    hasValidAuth = sessionData.isAuthenticated && sessionData.expiresAt && Date.now() < sessionData.expiresAt;
+                } catch (e) {
+                    // Ignore parse errors
+                }
+            }
+
+            if (!hasValidAuth) {
                 console.log('🚨 [SECURITY] Retroceso sin autenticación - Bloqueando');
                 blockPageAndRedirect('Navegación no autorizada');
             } else {
