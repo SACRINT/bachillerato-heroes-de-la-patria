@@ -1,8 +1,50 @@
 # ✅ MASTER CHECKLIST - PROYECTO BGE HÉROES DE LA PATRIA
 
-**Última Actualización:** 15 Diciembre 2025 - BÚSQUEDA + GOOGLE OAUTH REPARADOS
-**Estado del Proyecto:** v2.30.21 - ✅ BÚSQUEDA EN 10 PÁGINAS + GOOGLE OAUTH ENDPOINT
-**Release Status:** ✅ TODOS LOS ERRORES VERCEL REPARADOS (Deploy completado)
+**Última Actualización:** 16 Diciembre 2025 - LOGIN 400 ERROR REPARADO
+**Estado del Proyecto:** v2.30.22 - ✅ ERROR 400 EN LOGIN REPARADO
+**Release Status:** ✅ TODOS LOS ERRORES CRÍTICOS REPARADOS
+
+---
+
+## 🚀 SESIÓN 16 DICIEMBRE 2025: REPARACIÓN ERROR 400 EN LOGIN ✅
+
+**Estado:** ✅ **COMPLETADA**
+**Duración:** ~45 minutos
+**Versión:** v2.30.22 (después de reparar error 400)
+**Commits:** d04938d (middleware fix)
+
+### Problemas Resueltos
+
+#### 1. POST /api/auth/login Retorna 400 en Vercel ✅ REPARADO
+- **Problema:** Admin NO puede iniciar sesión en Vercel
+- **Error:** `Failed to load resource: the server responded with a status of 400`
+- **Root Cause:** Middleware `express.json()` aplicado MÚLTIPLES VECES
+  * Línea 93: `app.use(express.json())` (GLOBAL - CORRECTO)
+  * Línea 246: `app.post('/api/auth/login', express.json(), ...)` (DUPLICADO - INCORRECTO)
+  * Stream se consume 2 veces → `req.body` vacío en segundo middleware
+  * En Vercel (serverless) esto es fatal; en local funciona por diferencias de lifecycle
+- **Solución:** Remover `express.json()` duplicado de 3 rutas auth
+  * ✅ POST `/api/auth/login` (línea 246)
+  * ✅ POST `/api/auth/google` (línea 410)
+  * ✅ POST `/api/auth/register` (línea 509)
+- **Resultado:**
+  * ✅ `req.body` se parsea correctamente en Vercel
+  * ✅ 200 OK si credenciales correctas
+  * ✅ 401 Unauthorized si credenciales incorrectas
+  * ✅ 400 SOLO si falta email/password (validación real)
+- **Logging Agregado:** 16 líneas de debug logging en `/api/auth/login` para monitoreo
+- **Testing Local:**
+  ```bash
+  curl -X POST "http://localhost:3000/api/auth/login" \
+    -H "Content-Type: application/json" \
+    -d '{"email":"admin@bge.com","password":"123456"}'
+
+  Resultado: 401 (usuario no existe) ✅ CORRECTO
+  ```
+
+#### 2. Documentación Creada
+- Archivo: `FIX_LOGIN_400_ERROR_16DIC2025.md` (250+ líneas)
+- Contiene: Análisis completo, solución, verificación, checklist post-deploy
 
 ---
 
