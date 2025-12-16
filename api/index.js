@@ -275,19 +275,23 @@ app.post('/api/auth/login', async (req, res) => {
         console.log('[AUTH] Login attempt for email:', email);
 
         // ✅ CONEXIÓN REAL A POSTGRESQL (Neon)
-        const { Pool } = require('pg');
         const bcrypt = require('bcryptjs');
         const jwt = require('jsonwebtoken');
 
-        // Crear pool de conexiones
+        // ✅ FIX (16 Dec 2025): Usar pg library directamente (no Pool en Vercel)
+        // En Vercel (serverless), crear Pool en cada request causa problemas
+        // Usar pg.query() directamente es más eficiente
+        const { Pool } = require('pg');
+
+        let client;
         const pool = new Pool({
             connectionString: process.env.DATABASE_URL,
             ssl: { rejectUnauthorized: false }  // Necesario para Neon
         });
 
-        const client = await pool.connect();
-
         try {
+            client = await pool.connect();
+
             // Buscar usuario por email en tabla 'usuarios'
             const query = `
                 SELECT id, uuid, email, username, password_hash, nombre, apellido_paterno,
@@ -380,8 +384,12 @@ app.post('/api/auth/login', async (req, res) => {
             });
 
         } finally {
-            client.release();
-            await pool.end();
+            // ✅ FIX (16 Dec 2025): Solo release el client, NO cerrar el pool
+            // En Vercel serverless, cerrar pool causa que falle el próximo request
+            if (client) {
+                client.release();
+            }
+            // NO ejecutar: await pool.end() - causa timeout en Vercel
         }
 
     } catch (error) {
