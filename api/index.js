@@ -389,7 +389,7 @@ app.post('/api/auth/login', async (req, res) => {
             if (client) {
                 client.release();
             }
-            // NO ejecutar: await pool.end() - causa timeout en Vercel
+
         }
 
     } catch (error) {
@@ -650,7 +650,7 @@ app.get('/api/wallet', async (req, res) => {
             });
         } finally {
             client.release();
-            await pool.end();
+
         }
 
     } catch (error) {
@@ -712,7 +712,7 @@ app.get('/api/challenges', async (req, res) => {
             });
         } finally {
             client.release();
-            await pool.end();
+
         }
 
     } catch (error) {
@@ -783,7 +783,7 @@ app.get('/api/iacoins/balance', async (req, res) => {
             });
         } finally {
             client.release();
-            await pool.end();
+
         }
 
     } catch (error) {
@@ -881,7 +881,7 @@ app.get('/api/iacoins/achievements', async (req, res) => {
 
         } finally {
             client.release();
-            await pool.end();
+
         }
 
     } catch (error) {
@@ -964,7 +964,7 @@ app.get('/api/iacoins/challenges', async (req, res) => {
 
         } finally {
             client.release();
-            await pool.end();
+
         }
 
     } catch (error) {
@@ -1047,7 +1047,7 @@ app.get('/api/iacoins/leaderboard', async (req, res) => {
 
         } finally {
             client.release();
-            await pool.end();
+
         }
 
     } catch (error) {
@@ -1130,7 +1130,7 @@ app.get('/api/iacoins/transactions', async (req, res) => {
 
         } finally {
             client.release();
-            await pool.end();
+
         }
 
     } catch (error) {
@@ -1188,7 +1188,7 @@ app.get('/api/store/items', async (req, res) => {
 
         } finally {
             client.release();
-            await pool.end();
+
         }
 
     } catch (error) {
@@ -1323,7 +1323,7 @@ app.get('/api/auth/profile', async (req, res) => {
             });
         } finally {
             client.release();
-            await pool.end();
+
         }
 
     } catch (error) {
@@ -1452,7 +1452,7 @@ app.get('/api/digital-library/categories', async (req, res) => {
 
         } finally {
             client.release();
-            await pool.end();
+
         }
 
     } catch (error) {
@@ -1520,7 +1520,7 @@ app.get('/api/digital-library/documents', async (req, res) => {
 
         } finally {
             client.release();
-            await pool.end();
+
         }
 
     } catch (error) {
@@ -1601,7 +1601,7 @@ app.get('/api/messaging/conversations', async (req, res) => {
 
         } finally {
             client.release();
-            await pool.end();
+
         }
 
     } catch (error) {
