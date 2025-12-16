@@ -30,7 +30,23 @@
                 const headerElement = document.getElementById('main-header');
                 if (headerElement) {
                     headerElement.innerHTML = headerHTML;
-                    console.log('[MAIN.JS] ✅ Header cargado');
+
+                    // 🔧 EJECUTAR SCRIPTS DEL HEADER
+                    // Los scripts dentro de innerHTML no se ejecutan automáticamente por seguridad
+                    // Necesitamos extraerlos y ejecutarlos manualmente
+                    const scripts = headerElement.querySelectorAll('script');
+                    for (const script of scripts) {
+                        const newScript = document.createElement('script');
+                        if (script.src) {
+                            newScript.src = script.src;
+                            newScript.async = false;
+                        } else {
+                            newScript.textContent = script.textContent;
+                        }
+                        document.body.appendChild(newScript);
+                    }
+
+                    console.log('[MAIN.JS] ✅ Header cargado (scripts ejecutados)');
                 }
             }
 
@@ -41,7 +57,21 @@
                 const footerElement = document.getElementById('main-footer');
                 if (footerElement) {
                     footerElement.innerHTML = footerHTML;
-                    console.log('[MAIN.JS] ✅ Footer cargado');
+
+                    // 🔧 EJECUTAR SCRIPTS DEL FOOTER (si existen)
+                    const scripts = footerElement.querySelectorAll('script');
+                    for (const script of scripts) {
+                        const newScript = document.createElement('script');
+                        if (script.src) {
+                            newScript.src = script.src;
+                            newScript.async = false;
+                        } else {
+                            newScript.textContent = script.textContent;
+                        }
+                        document.body.appendChild(newScript);
+                    }
+
+                    console.log('[MAIN.JS] ✅ Footer cargado (scripts ejecutados)');
                 }
             }
 
