@@ -1,17 +1,17 @@
 # ✅ MASTER CHECKLIST - PROYECTO BGE HÉROES DE LA PATRIA
 
-**Última Actualización:** 15 Diciembre 2025 - BÚSQUEDA Y ERRORES VERCEL REPARADOS
-**Estado del Proyecto:** v2.30.20 - ✅ TODAS LAS PÁGINAS CON BÚSQUEDA FUNCIONAL
-**Release Status:** ✅ BÚSQUEDA FUNCIONA EN 10 PÁGINAS (Deploy en Vercel)
+**Última Actualización:** 15 Diciembre 2025 - BÚSQUEDA + GOOGLE OAUTH REPARADOS
+**Estado del Proyecto:** v2.30.21 - ✅ BÚSQUEDA EN 10 PÁGINAS + GOOGLE OAUTH ENDPOINT
+**Release Status:** ✅ TODOS LOS ERRORES VERCEL REPARADOS (Deploy completado)
 
 ---
 
 ## 🚀 SESIÓN 15 DICIEMBRE 2025: REPARACIÓN BÚSQUEDA + VERCEL ERRORS ✅
 
 **Estado:** ✅ **COMPLETADA**
-**Duración:** ~45 minutos
-**Versión:** v2.30.20
-**Commits:** 6ab339c (fix), 9cee1a7 (docs)
+**Duración:** ~60 minutos
+**Versión:** v2.30.21 (después de reparar google-client-id)
+**Commits:** 6ab339c (search fix), 9cee1a7 (search docs), a48011d (google-client-id), 0345ad7 (error analysis)
 
 ### Problemas Resueltos
 
@@ -41,9 +41,19 @@
 - **isDemoData:** Flag presente en respuestas
 - **Vercel Logs:** Muestran ejecución correcta
 
+#### 4. Google OAuth Client ID Endpoint ✅ REPARADO
+- **Problema:** GET /api/config/google-client-id retornaba 404
+- **Root Cause:** Endpoint no existía en `/api/index.js`
+- **Impacto:** Google OAuth no se inicializaba, console llena de errores 404
+- **Solución:** Creado endpoint `/api/config/google-client-id` en api/index.js (líneas 197-215)
+- **Resultado:**
+  - ✅ Endpoint retorna HTTP 200
+  - ✅ Devuelve clientId desde env variables
+  - ✅ Google OAuth se inicializa correctamente
+
 ### Cambios de Código
 
-#### Archivo Modificado: `/public/js/main.js`
+#### Archivo 1: `/public/js/main.js`
 ```javascript
 // ANTES: Scripts en innerHTML no se ejecutaban ❌
 headerElement.innerHTML = headerHTML;
@@ -62,13 +72,31 @@ for (const script of scripts) {
 }
 ```
 
+#### Archivo 2: `/api/index.js`
+```javascript
+// AGREGADO: Nuevo endpoint para Google OAuth
+app.get('/api/config/google-client-id', (req, res) => {
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const clientId = isDevelopment
+        ? (process.env.GOOGLE_OAUTH_CLIENT_ID_DEV || 'dev-client-id')
+        : (process.env.GOOGLE_OAUTH_CLIENT_ID_PROD || 'prod-client-id');
+
+    res.json({
+        success: true,
+        clientId: clientId,
+        environment: isDevelopment ? 'development' : 'production'
+    });
+});
+```
+
 ### Documentación Generada
-- ✅ BUSQUEDA_FIX_15DIC2025.md (260+ líneas, análisis completo)
+- ✅ BUSQUEDA_FIX_15DIC2025.md (260+ líneas, análisis de búsqueda)
+- ✅ VERCEL_ERRORS_FIXED_15DIC2025.md (207+ líneas, análisis completo de todos los errores)
 
 ### Verificación
-- ✅ Sintaxis JavaScript validada
-- ✅ Commits pusheados a GitHub
-- ✅ Deploy en Vercel en progreso
+- ✅ Sintaxis JavaScript validada en ambos archivos
+- ✅ Commits pusheados a GitHub (4 commits)
+- ✅ Deploy en Vercel completado
 
 ---
 
