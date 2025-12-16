@@ -12,7 +12,7 @@
  * Fecha: 15 Diciembre 2025
  */
 
-(function() {
+(function () {
     'use strict';
 
     console.log('[AUTH-PATCH] 🔧 Iniciando parche de autenticación...');
@@ -45,7 +45,7 @@
             if (window.authManager.handleManualLogin) {
                 const originalHandleLogin = window.authManager.handleManualLogin.bind(window.authManager);
 
-                window.authManager.handleManualLogin = async function() {
+                window.authManager.handleManualLogin = async function () {
                     console.log('[AUTH-PATCH] 🔐 handleManualLogin interceptado');
 
                     const emailInput = document.getElementById('loginEmail');
@@ -115,19 +115,36 @@
 
                         if (isSuccess) {
                             console.log('[AUTH-PATCH] ✅ Login EXITOSO');
-                            // Usar loginSuccess del auth manager
-                            if (this.loginSuccess) {
+
+                            // 1. Intentar usar el método nativo V2 (UnifiedAuthSystem)
+                            if (this.processLogin) {
+                                console.log('[AUTH-PATCH] 🔄 Usando processLogin nativo...');
+                                await this.processLogin(data.user, data.tokens.accessToken, rememberMe?.checked || false);
+                            }
+                            // 2. Intentar usar método legacy
+                            else if (this.loginSuccess) {
+                                console.log('[AUTH-PATCH] 🔄 Usando loginSuccess legacy...');
                                 await this.loginSuccess(data.user, data.tokens.accessToken, rememberMe?.checked || false);
-                            } else {
-                                // Fallback manual si loginSuccess no existe
+                            }
+                            // 3. Fallback manual (si no existen métodos)
+                            else {
+                                console.log('[AUTH-PATCH] ⚠️ Usando fallback manual...');
                                 this.state.currentUser = data.user;
                                 this.state.token = data.tokens.accessToken;
                                 this.state.isAuthenticated = true;
                                 this.session.saveSession(data.user, data.tokens.accessToken, rememberMe?.checked || false);
                                 this.ui.hideModal();
-                                this.ui.updateAuthUI(data.user, true);
+                                this.ui.updateAuthUI(); // Corregido: sin argumentos extra si no son necesarios
                                 this.ui.showAlert(`¡Bienvenido, ${data.user.nombre}!`, 'success');
                                 window.dispatchEvent(new CustomEvent('bge-user-logged-in', { detail: { user: data.user } }));
+
+                                // ✅ REDIRECCIÓN ADMIN MANUAL (Critical Fix)
+                                if (data.user.role === 'admin' || data.user.role === 'administrativo') {
+                                    console.log('[AUTH-PATCH] 🚀 Admin detectado en fallback - Redirigiendo...');
+                                    setTimeout(() => {
+                                        window.location.href = 'admin-dashboard.html';
+                                    }, 1000);
+                                }
                             }
                         } else {
                             console.error('[AUTH-PATCH] ❌ Login FALLIDO');

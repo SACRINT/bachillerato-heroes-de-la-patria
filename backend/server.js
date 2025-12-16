@@ -297,7 +297,7 @@ if (!SESSION_SECRET) {
     devLogger.warn('⚠️ WARNING: SESSION_SECRET no configurada. Usando fallback temporal para Vercel.');
     // Generar fallback seguro para development/Vercel
     SESSION_SECRET = process.env.JWT_SECRET ||
-                     'fallback-session-secret-' + Date.now() + '-change-in-production';
+        'fallback-session-secret-' + Date.now() + '-change-in-production';
 }
 
 // Configurar store de sesiones con PostgreSQL
@@ -623,7 +623,7 @@ try {
 if (require.main === module) {
     const server = httpServer.listen(PORT, () => {
         devLogger.log(`🚀 Servidor backend iniciado en http://localhost:${PORT}`);
-        devLogger.log('✅✅✅ ¡VERSIÓN CORRECTA DEL SERVIDOR EN EJECUCIÓN! ✅✅✅');
+        devLogger.log('✅✅✅ ¡VERSIÓN CORRECTA DEL SERVIDOR EN EJECUCIÓN (CSP UPDATED)! ✅✅✅');
 
         if (socketService) {
             devLogger.log(`📡 Socket.IO escuchando en http://localhost:${PORT}`);

@@ -67,9 +67,28 @@
         console.error('   - Error message:', error.message);
         console.error('   - Error stack:', error.stack);
 
-        // FALLBACK: Cargar TinyMCE con API key hardcodeada (solo para diagnóstico)
-        console.warn('⚠️ [TINYMCE-LOADER] Intentando carga de fallback...');
-        console.warn('⚠️ [TINYMCE-LOADER] Nota: Esto NO es seguro para producción');
+        // FALLBACK: Cargar TinyMCE desde un CDN público que no requiera API key (o versión community)
+        // Nota: Algunas funciones premium no estarán disponibles
+        console.warn('⚠️ [TINYMCE-LOADER] Intentando carga de fallback (CDNJS)...');
+
+        try {
+            const fallbackScript = document.createElement('script');
+            fallbackScript.referrerPolicy = 'origin';
+            fallbackScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js';
+
+            fallbackScript.onload = () => {
+                console.log('✅ [TINYMCE-LOADER] Fallback loaded successfully');
+                // Inicialización de emergencia si es necesaria
+            };
+
+            fallbackScript.onerror = (e) => {
+                console.error('❌ [TINYMCE-LOADER] Fallback failed:', e);
+            };
+
+            document.head.appendChild(fallbackScript);
+        } catch (fallbackError) {
+            console.error('❌ [TINYMCE-LOADER] Critical fallback error:', fallbackError);
+        }
     }
 
     console.log('═══════════════════════════════════════════════════');

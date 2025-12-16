@@ -82,7 +82,14 @@
 
 <body>
     <!-- 🔒 PROTECCIÓN JWT - VERIFICA AUTENTICACIÓN ANTES DE CARGAR CONTENIDO -->
-    <script src="js/dashboard/dashboard-auth-check.js"></script>
+    <script>
+        console.log("🔒 [DASHBOARD HTML] Iniciando carga...");
+        try {
+            console.log("🔒 [DASHBOARD HTML] Token bge:", localStorage.getItem('bge_auth_token') ? 'OK' : 'MISSING');
+            console.log("🔒 [DASHBOARD HTML] Secure Session:", localStorage.getItem('secure_admin_session') ? 'OK' : 'MISSING');
+        } catch (e) { console.error("Error reading storage", e); }
+    </script>
+    <script src="js/dashboard/dashboard-auth-check.js?v=DEBUG_FIX_Redir"></script>
 
     <!-- 🧹 LIMPIEZA DE CACHÉ Y SERVICE WORKER -->
     <script src="js/dashboard/cache-cleanup.js"></script>
@@ -4066,7 +4073,7 @@
     <script src="js/icon-check.js?v=20251001"></script>
 
     <!-- 🔌 API Client (CRÍTICO: debe cargarse ANTES de admin-dashboard.js) -->
-    <!-- <script src="js/api-client.js?v=20251028"></script> -->
+    <script src="js/api-client.js?v=20251028"></script>
 
     <!-- 🟢 MIGRACIÓN TYPESCRIPT: Bundle Principal -->
 
@@ -4090,7 +4097,7 @@
     <!-- FIN NUEVA ARQUITECTURA -->
 
     <!-- 🚀 BGE Dashboard Managers (SIN defer para garantizar orden de carga) -->
-    <!-- <script src="js/admin-dashboard.js?v=20251027" defer></script> -->
+    <script src="js/admin-dashboard.js?v=20251027" defer></script>
     <script src="js/chatbot.js" defer></script>
     <script src="js/dynamic-student-loader.js?v=20251027" defer></script>
     <script src="js/dynamic-teacher-loader.js?v=20251027" defer></script>

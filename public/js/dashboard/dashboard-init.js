@@ -162,23 +162,51 @@
     // ================================================================
 
     // Esperar a que el BGE Framework esté listo
+    // Esperar a que el BGE Framework esté listo
     function waitForBGEFramework() {
         return new Promise((resolve) => {
+            // Check 1: Framework moderno ya inicializado
+            if (window.BGE && typeof window.BGE.initialized === 'function' && window.BGE.initialized()) {
+                console.log('✅ [INIT] BGE Framework ya estaba listo al iniciar dashboard');
+                resolve();
+                return;
+            }
+
+            // Check 2: Instancia global directa (bgeFramework)
+            if (window.bgeFramework && window.bgeFramework.initialized) {
+                console.log('✅ [INIT] Objeto bgeFramework ya disponible');
+                resolve();
+                return;
+            }
+
+            // Check 3: Auth Legacy (Fallback)
             if (window.secureAdminAuth) {
-                console.log('✅ [INIT] secureAdminAuth ya disponible');
+                console.log('✅ [INIT] secureAdminAuth disponible (Legacy fallback)');
                 resolve();
                 return;
             }
 
             console.log('⏳ [INIT] Esperando evento bge:ready...');
-            window.addEventListener('bge:ready', (event) => {
+
+            // Listener para evento
+            const readyHandler = (event) => {
                 console.log('🎉 [INIT] Evento bge:ready recibido:', event.detail);
+                window.removeEventListener('bge:ready', readyHandler);
                 resolve();
-            });
+            };
+
+            window.addEventListener('bge:ready', readyHandler);
 
             // Timeout de seguridad (5 segundos)
             setTimeout(() => {
-                console.warn('⚠️ [INIT] Timeout esperando bge:ready, continuando...');
+                // Verificar una última vez antes de dar timeout
+                if ((window.BGE && window.BGE.initialized()) || (window.bgeFramework && window.bgeFramework.initialized)) {
+                    console.log('✅ [INIT] BGE Framework cargó justo antes del timeout');
+                    resolve();
+                    return;
+                }
+                console.warn('⚠️ [INIT] Timeout esperando bge:ready, continuando de todas formas...');
+                window.removeEventListener('bge:ready', readyHandler);
                 resolve();
             }, 5000);
         });

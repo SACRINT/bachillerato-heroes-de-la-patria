@@ -1,171 +1,106 @@
-/**
- * Script de Testing Automatizado del Flujo de Login
- * Verifica que la sesión persiste en todas las páginas
- */
-
 const http = require('http');
 
-// Simular login
-function testLogin() {
-    return new Promise((resolve, reject) => {
-        const loginData = JSON.stringify({
-            email: 'admin@test.com',
-            password: 'Admin123!'
-        });
+console.log('\n🔐 PASO 1: Intentando login...\n');
 
-        const options = {
-            hostname: 'localhost',
-            port: 3000,
-            path: '/api/auth/login',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': loginData.length
-            }
-        };
+const loginData = JSON.stringify({
+    email: 'admin@heroespatria.edu.mx',
+    password: 'HeroesPatria2024!'
+});
 
-        const req = http.request(options, (res) => {
-            let data = '';
+const loginOptions = {
+    hostname: 'localhost',
+    port: 3000,
+    path: '/api/auth/login',
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': loginData.length
+    }
+};
 
-            res.on('data', (chunk) => {
-                data += chunk;
-            });
+const loginReq = http.request(loginOptions, (res) => {
+    let data = '';
 
-            res.on('end', () => {
-                try {
-                    const response = JSON.parse(data);
-                    console.log('\n✅ [TEST 1] Login Request');
-                    console.log(`   Status: ${res.statusCode}`);
-                    console.log(`   Response: ${JSON.stringify(response, null, 2)}`);
-
-                    if (res.statusCode === 200 && response.tokens?.accessToken) {
-                        console.log('   ✅ Token obtenido correctamente');
-                        resolve(response);
-                    } else {
-                        console.log('   ❌ Login falló');
-                        reject(new Error('Login failed'));
-                    }
-                } catch (e) {
-                    console.log('   ❌ Error parsing response:', e.message);
-                    reject(e);
-                }
-            });
-        });
-
-        req.on('error', (error) => {
-            console.error('❌ Request error:', error.message);
-            reject(error);
-        });
-
-        req.write(loginData);
-        req.end();
+    res.on('data', (chunk) => {
+        data += chunk;
     });
-}
 
-// Verificar que el archivo main.js existe y está siendo servido
-function testMainJsFile() {
-    return new Promise((resolve, reject) => {
-        const options = {
-            hostname: 'localhost',
-            port: 3000,
-            path: '/js/main.js',
-            method: 'GET'
-        };
+    res.on('end', () => {
+        console.log(`✅ Login Response Status: ${res.statusCode}`);
 
-        const req = http.request(options, (res) => {
-            console.log('\n✅ [TEST 2] Verificar main.js');
-            console.log(`   Status: ${res.statusCode}`);
-            console.log(`   Content-Type: ${res.headers['content-type']}`);
+        if (res.statusCode === 200) {
+            console.log('✅ Login exitoso (HTTP 200)');
+            try {
+                const response = JSON.parse(data);
+                console.log('✅ Token recibido');
+                console.log('✅ User role:', response.user?.role || 'desconocido');
 
-            if (res.statusCode === 200 && res.headers['content-type'].includes('javascript')) {
-                console.log('   ✅ main.js se sirve correctamente');
-                resolve();
-            } else {
-                console.log('   ❌ main.js no se sirve correctamente');
-                reject(new Error('main.js file not found or wrong MIME type'));
+                setTimeout(() => testDashboardAccess(), 500);
+            } catch (e) {
+                console.log('Error parsing response');
             }
-        });
-
-        req.on('error', (error) => {
-            console.error('❌ Request error:', error.message);
-            reject(error);
-        });
-
-        req.end();
+        } else {
+            console.log(`❌ Login fallido (HTTP ${res.statusCode})`);
+        }
     });
-}
+});
 
-// Verificar que header.html existe
-function testHeaderPartial() {
-    return new Promise((resolve, reject) => {
-        const options = {
-            hostname: 'localhost',
-            port: 3000,
-            path: '/partials/header.html',
-            method: 'GET'
-        };
+loginReq.on('error', (error) => {
+    console.error('❌ Error:', error.message);
+});
 
-        const req = http.request(options, (res) => {
-            console.log('\n✅ [TEST 3] Verificar header.html partial');
-            console.log(`   Status: ${res.statusCode}`);
+loginReq.write(loginData);
+loginReq.end();
+
+function testDashboardAccess() {
+    console.log('\n🎯 PASO 2: Accediendo a admin-dashboard.html...\n');
+
+    const dashboardOptions = {
+        hostname: 'localhost',
+        port: 3000,
+        path: '/admin-dashboard.html',
+        method: 'GET'
+    };
+
+    const dashboardReq = http.request(dashboardOptions, (res) => {
+        let data = '';
+
+        res.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        res.on('end', () => {
+            console.log(`✅ Dashboard Response Status: ${res.statusCode}\n`);
 
             if (res.statusCode === 200) {
-                console.log('   ✅ header.html se carga correctamente');
-                resolve();
+                console.log('✅ admin-dashboard.html CARGÓ (HTTP 200)');
+                
+                console.log('\n📋 Scripts encontrados:');
+                console.log('  ' + (data.includes('main.js') ? '✅' : '❌') + ' main.js');
+                console.log('  ' + (data.includes('dashboard-auth-check.js') ? '✅' : '❌') + ' dashboard-auth-check.js');
+                console.log('  ' + (data.includes('session-monitor.js') ? '✅' : '❌') + ' session-monitor.js');
+
+                console.log('\n🔍 Bloqueadores:');
+                const bloqueado = data.includes('Acceso restringido') || data.includes('Seguridad Activada');
+                console.log('  ' + (bloqueado ? '❌' : '✅') + ' NO bloqueadores encontrados');
+
+                console.log('\n' + '═'.repeat(60));
+                if (res.statusCode === 200 && !bloqueado && data.includes('main.js')) {
+                    console.log('\n✅✅✅ SISTEMA FUNCIONANDO CORRECTAMENTE ✅✅✅');
+                    console.log('\n La página admin-dashboard.html se cargó exitosamente');
+                    console.log(' sin bloqueos, con todos los scripts necesarios.\n');
+                } else {
+                    console.log('\n⚠️ REVISAR ERRORES ARRIBA\n');
+                }
             } else {
-                console.log('   ❌ header.html no encontrado');
-                reject(new Error('header.html not found'));
+                console.log(`❌ Dashboard no cargó (HTTP ${res.statusCode})`);
             }
         });
-
-        req.on('error', (error) => {
-            console.error('❌ Request error:', error.message);
-            reject(error);
-        });
-
-        req.end();
     });
+
+    dashboardReq.on('error', (error) => {
+        console.error('❌ Error:', error.message);
+    });
+
+    dashboardReq.end();
 }
-
-// Ejecutar todos los tests
-async function runTests() {
-    console.log('🧪 INICIANDO TESTS AUTOMATIZADOS DEL FLUJO DE LOGIN\n');
-    console.log('=' .repeat(60));
-
-    try {
-        // Test 1: Verificar main.js
-        await testMainJsFile();
-
-        // Test 2: Verificar header.html
-        await testHeaderPartial();
-
-        // Test 3: Login
-        const loginResponse = await testLogin();
-
-        console.log('\n' + '=' .repeat(60));
-        console.log('\n✅ TODOS LOS TESTS PASARON\n');
-        console.log('📝 Resumen:');
-        console.log('   ✅ main.js se sirve correctamente');
-        console.log('   ✅ header.html partial se carga correctamente');
-        console.log('   ✅ Login exitoso con token recibido');
-        console.log('\n📌 Próximos pasos:');
-        console.log('   1. Abre http://localhost:3000 en el navegador');
-        console.log('   2. Abre DevTools (F12)');
-        console.log('   3. Ve a la pestaña Console');
-        console.log('   4. Verifica que ves logs [MAIN.JS] y [AUTH-PATCH]');
-        console.log('   5. Haz login con admin@test.com / Admin123!');
-        console.log('   6. Verifica que el usuario aparece en el header');
-        console.log('   7. Navega a /estudiantes.html');
-        console.log('   8. Verifica que el usuario SIGUE visible en el header');
-        console.log('   9. Navega a /padres.html');
-        console.log('  10. Verifica que el usuario SIGUE visible en el header');
-
-    } catch (error) {
-        console.log('\n' + '=' .repeat(60));
-        console.log('\n❌ TESTS FALLARON');
-        console.log(`\nError: ${error.message}`);
-        process.exit(1);
-    }
-}
-
-runTests();

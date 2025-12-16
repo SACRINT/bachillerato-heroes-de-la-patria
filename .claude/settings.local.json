@@ -68,7 +68,14 @@
       "Bash(dir /B public*.html publicjsdebug*)",
       "Bash(start notepad LISTO_PARA_PROBAR_14DIC2025.md)",
       "Bash(find:*)",
-      "Bash(git -C \"C:\\03_BachilleratoHeroesWeb\" log --oneline -20)"
+      "Bash(git -C \"C:\\03_BachilleratoHeroesWeb\" log --oneline -20)",
+      "Bash(npm start)",
+      "Bash(npm run:*)",
+      "Bash(lsof:*)",
+      "Bash(timeout 5 curl:*)",
+      "Bash(start http://localhost:3000/admin-dashboard.html)",
+      "Bash(powershell -Command \"Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.Screen]::PrimaryScreen | Select-Object -Property Bounds\")",
+      "Bash(powershell -Command \"Get-Process | Where-Object {$_ProcessName -match ''chrome|firefox|msedge''} | Select-Object ProcessName, Id\")"
     ],
     "deny": [],
     "ask": []

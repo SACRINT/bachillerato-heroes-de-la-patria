@@ -31,7 +31,9 @@ const cspConfig = {
             "https://cdn.tiny.cloud",          // TinyMCE editor CDN
             "https://*.tiny.cloud",            // TinyMCE subdomains
             "https://sp.tinymce.com",          // TinyMCE Spark plugin server
-            "https://vercel.live"              // Vercel analytics
+            "https://vercel.live",             // Vercel analytics
+            "https://www.gstatic.com",         // Google/Firebase Scripts
+            "https://apis.google.com"          // Google APIs
         ],
 
         // 3. STYLES - Permite estilos locales e inline dinámicos
@@ -72,7 +74,8 @@ const cspConfig = {
             "https://cdn.tiny.cloud",          // TinyMCE images
             "https://*.tiny.cloud",
             "https://sp.tinymce.com",           // TinyMCE Spark
-            "https://ui-avatars.com"           // User Avatars
+            "https://ui-avatars.com",          // User Avatars
+            "https://www.gstatic.com"          // Firebase Auth Images
         ],
 
         // 6. CONEXIONES - Endpoints específicos

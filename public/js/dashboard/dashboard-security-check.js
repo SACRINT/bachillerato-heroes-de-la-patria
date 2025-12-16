@@ -5,7 +5,7 @@
  */
 
 // Verificación adicional cuando el DOM esté completamente cargado
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('🔒 [DASHBOARD SECURITY] Verificación adicional de autenticación...');
 
     // Verificar nuevamente el estado de autenticación
@@ -29,7 +29,34 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Verificar localStorage como respaldo
+        // Verificar authentication moderna (bge_auth_*)
+        if (!isAuthenticated) {
+            const token = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
+            const userData = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user');
+
+            console.log('🔍 [DASHBOARD SECURITY] Checking storage keys:');
+            console.log('   - bge_auth_token present:', !!token);
+            console.log('   - bge_auth_user present:', !!userData);
+            if (userData) console.log('   - bge_auth_user content:', userData.substring(0, 100) + '...');
+
+            if (token && userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    console.log('   - Parsed user role:', user.role);
+
+                    if (user && (user.role === 'admin' || user.role === 'administrativo')) {
+                        isAuthenticated = true;
+                        console.log('✅ [DASHBOARD SECURITY] Sesión moderna válida (bge_auth_*)');
+                    } else {
+                        console.warn('⚠️ [DASHBOARD SECURITY] User role not admin:', user.role);
+                    }
+                } catch (e) {
+                    console.warn('⚠️ [DASHBOARD SECURITY] Error parsing modern auth data:', e);
+                }
+            }
+        }
+
+        // Verificar localStorage como respaldo (Legacy)
         if (!isAuthenticated) {
             try {
                 const session = localStorage.getItem('secure_admin_session');
@@ -37,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const sessionData = JSON.parse(session);
                     if (sessionData.token && sessionData.expiresAt && Date.now() < sessionData.expiresAt) {
                         isAuthenticated = true;
-                        console.log('✅ [DASHBOARD SECURITY] Sesión válida en localStorage');
+                        console.log('✅ [DASHBOARD SECURITY] Sesión válida en localStorage (Legacy)');
                     } else {
                         console.log('⏰ [DASHBOARD SECURITY] Sesión expirada en localStorage');
                         localStorage.removeItem('secure_admin_session');
@@ -50,7 +77,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!isAuthenticated) {
             console.log('🚫 [DASHBOARD SECURITY] Acceso denegado - Usuario no autenticado');
-            window.location.href = 'index.html';
+            // window.location.href = 'index.html';
+            console.error('🚫 [DASHBOARD SECURITY] Acceso denegado - Usuario no autenticado (REDIRECCION DESACTIVADA POR DEBUG)');
+
+            const errorMsg = document.createElement('div');
+            errorMsg.style.cssText = 'position:fixed;top:50px;right:0;width:400px;background:rgba(255,0,0,0.9);color:white;z-index:99999;padding:1rem;font-family:monospace;';
+            errorMsg.innerHTML = `
+                <h5>⛔ SECURITY CHECK FAILED</h5>
+                <p>El script <code>dashboard-security-check.js</code> intentó redirigir.</p>
+                <p>Verifica 'secure_admin_session' en Application > Local Storage.</p>
+                <button onclick="window.location.href='index.html'">Ir a Inicio</button>
+            `;
+            document.body.appendChild(errorMsg);
         } else {
             console.log('✅ [DASHBOARD SECURITY] Acceso confirmado - Usuario autenticado');
         }

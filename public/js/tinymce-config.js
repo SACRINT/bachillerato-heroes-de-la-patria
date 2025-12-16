@@ -4,6 +4,8 @@
  * VERSIÓN MEJORADA: Combina arquitectura OOP + Fix readonly crítico
  * Fecha: 14 de Noviembre, 2025
  */
+console.log('🚀 [TINYMCE CONFIG] Script loaded and executing...');
+
 
 class TinyMCEManager {
     constructor() {
@@ -23,10 +25,10 @@ class TinyMCEManager {
             // 🔧 SOLUCIÓN DEFINITIVA: Usar URL ABSOLUTA del CDN con API key
             // CRÍTICO: Rutas relativas NO funcionan porque se resuelven al dominio actual
             // window.TINYMCE_API_KEY es expuesta por admin-dashboard.html antes de cargar este script
-            base_url: window.TINYMCE_API_KEY
-                ? `https://cdn.tiny.cloud/1/${window.TINYMCE_API_KEY}/tinymce/6`
-                : 'https://cdn.tiny.cloud/1/9eomuls0jgbqziqkahugmesowt48tellxulfspshp9pa03bi/tinymce/6',
-            suffix: '.min',
+            // base_url: window.TINYMCE_API_KEY
+            //     ? `https://cdn.tiny.cloud/1/${window.TINYMCE_API_KEY}/tinymce/6`
+            //     : 'https://cdn.tiny.cloud/1/9eomuls0jgbqziqkahugmesowt48tellxulfspshp9pa03bi/tinymce/6',
+            // suffix: '.min',
 
             // Plugins
             plugins: [
@@ -328,7 +330,7 @@ if (document.readyState === 'loading') {
         console.log('🔧 [TINYMCE] Esperando carga de TinyMCE desde CDN...');
 
         let retries = 0;
-        const maxRetries = 20; // 20 intentos = 10 segundos
+        const maxRetries = 60; // 60 intentos = 30 segundos
         const retryInterval = 500; // 500ms
 
         // Esperar a que TinyMCE se cargue

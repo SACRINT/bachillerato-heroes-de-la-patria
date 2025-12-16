@@ -645,6 +645,19 @@ class UnifiedAuthSystem {
             detail: { user: userData }
         }));
 
+        // ✅ REDIRECCIÓN AUTOMÁTICA PARA ADMINS
+        if (userData.role === 'admin' || userData.role === 'administrativo') {
+            console.log('[AUTH-PROCESS] 🚀 Usuario admin detectado - Iniciando redirección...');
+            // Pequeño delay para que el usuario vea el mensaje de éxito
+            setTimeout(() => {
+                // Validación extra para evitar bucles si ya estamos en el dashboard
+                if (!window.location.pathname.includes('admin-dashboard.html')) {
+                    console.log('[AUTH-PROCESS] ➡️ Redirigiendo a admin-dashboard.html');
+                    window.location.href = 'admin-dashboard.html';
+                }
+            }, 1000);
+        }
+
         return true;
     }
 
@@ -1539,12 +1552,12 @@ class ManualLoginManager {
             const hasSuccessWord = messageStr.includes('success');
             const hasAuthWord = messageStr.includes('autenticaci') || messageStr.includes('autenticaci'); // Con y sin tilde
             const hasBienvenidWord = messageStr.includes('bienvenid');
-            const hasCorrectWord = messageStr.includes('correct');
+            const hasCorrectWord = messageStr.includes('correct') && !messageStr.includes('incorrect');
             const hasExitosaWord = messageStr.includes('exitosa');
 
             // También buscar por palabras exactas completas
             const hasExactMatch = messageStr.includes('autenticación exitosa') ||
-                                  messageStr.includes('autenticaci');
+                messageStr.includes('autenticaci');
 
             const messageHasSuccess = data?.message && (
                 hasExitWord ||
@@ -1567,11 +1580,20 @@ class ManualLoginManager {
             // No confiar en data.success, data.error, o el mensaje
             // Confiar únicamente en: HTTP 200 + usuario en respuesta
             const hasUser = !!(data?.user && (data.user.id || data.user.email));
-            const hasToken = !!(data?.tokens?.accessToken);
 
-            const isSuccess = (responseOk && hasUser && hasToken) || messageHasSuccess;
+            // Check for both token formats (tokens.accessToken or just token)
+            const hasToken = !!(data?.tokens?.accessToken || data?.token);
 
-            console.log('[AUTH-LOGIN] Success Logic FINAL:', {
+            // ✅ FIX (15 Dic 2025): Condición de éxito ultra-permisiva para corregir falso negativo
+            // Prioridad: 1. data.success explícito 2. Detección de usuario+token 3. Análisis de mensaje
+            const explicitSuccess = data?.success === true || data?.success === 'true';
+
+            const isSuccess = explicitSuccess ||
+                (responseOk && hasUser && hasToken) ||
+                messageHasSuccess;
+
+            console.log('[AUTH-LOGIN] Success Logic FINAL (FIXED):', {
+                explicitSuccess,
                 responseOk,
                 hasUser,
                 hasToken,

@@ -4,7 +4,7 @@
  * Fecha: 19 Nov 2025
  */
 
-(function() {
+(function () {
     'use strict';
     console.log('🔒 [DASHBOARD AUTH] Verificación unificada de autenticación...');
 
@@ -75,9 +75,31 @@
     // Verificación inmediata pero NO intrusiva
     if (!isAuthenticated()) {
         console.log('❌ [DASHBOARD AUTH] No autenticado - Redirigiendo...');
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 100);
+        // DEBUG MODE: Redirección Desactivada
+        // setTimeout(() => {
+        //     window.location.href = 'index.html';
+        // }, 100);
+
+        const debugInfo = {
+            token: !!localStorage.getItem('bge_auth_token'),
+            userData: localStorage.getItem('bge_auth_user'),
+            legacyToken: !!localStorage.getItem('authToken'),
+            secureSession: !!localStorage.getItem('secure_admin_session')
+        };
+
+        console.error('❌ [DASHBOARD AUTH] FALLO DETACTADO:', debugInfo);
+
+        const errorMsg = document.createElement('div');
+        errorMsg.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100vh;background:rgba(200,0,0,0.9);color:white;z-index:99999;padding:2rem;overflow:auto;';
+        errorMsg.innerHTML = `
+            <h1>⛔ ACCESO DENEGADO (DEBUG)</h1>
+            <p>El sistema de seguridad ha bloqueado el acceso. No se ha redirigido para permitir diagnóstico.</p>
+            <pre>${JSON.stringify(debugInfo, null, 2)}</pre>
+            <button onclick="window.location.reload()">Reintentar</button>
+            <button onclick="window.location.href='index.html'">Ir al Inicio</button>
+        `;
+        document.body.appendChild(errorMsg);
+
         return;
     }
 
