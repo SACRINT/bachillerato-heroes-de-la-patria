@@ -194,6 +194,26 @@ app.get('/api/config/public-keys', (req, res) => {
     res.json(response);
 });
 
+// /api/config/google-client-id (alias for unified-auth-system-v2.js)
+// Frontend busca específicamente este endpoint
+app.get('/api/config/google-client-id', (req, res) => {
+    console.log('[VERCEL-API] GET /api/config/google-client-id');
+
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const clientId = isDevelopment
+        ? (process.env.GOOGLE_OAUTH_CLIENT_ID_DEV || 'dev-client-id')
+        : (process.env.GOOGLE_OAUTH_CLIENT_ID_PROD || 'prod-client-id');
+
+    const response = {
+        success: true,
+        clientId: clientId,
+        environment: isDevelopment ? 'development' : 'production'
+    };
+
+    console.log('[VERCEL-API] Respondiendo /api/config/google-client-id con HTTP 200');
+    res.json(response);
+});
+
 // ============================================
 // MOUNT BACKEND ROUTES (COMMENTED OUT - CAUSING ISSUES)
 // ============================================
