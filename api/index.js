@@ -242,15 +242,33 @@ try {
 // ============================================
 
 // POST /api/auth/login - Email/Password authentication (CONNECTED TO POSTGRESQL)
-app.post('/api/auth/login', express.json(), async (req, res) => {
+// ℹ️ NO aplicar express.json() aquí - ya se aplica globalmente en línea 93
+app.post('/api/auth/login', async (req, res) => {
     try {
+        console.log('[AUTH-DETAILED] ============= LOGIN ATTEMPT =============');
+        console.log('[AUTH-DETAILED] Request Body (raw):', JSON.stringify(req.body));
+        console.log('[AUTH-DETAILED] Request Headers:', JSON.stringify(req.headers));
+        console.log('[AUTH-DETAILED] Request Content-Type:', req.headers['content-type']);
+
         const { email, password, rememberMe = false } = req.body;
+
+        console.log('[AUTH-DETAILED] Extracted email:', email);
+        console.log('[AUTH-DETAILED] Extracted password (length):', password ? password.length : 'undefined');
+        console.log('[AUTH-DETAILED] Extracted rememberMe:', rememberMe);
 
         // Validación básica
         if (!email || !password) {
+            console.log('[AUTH-DETAILED] ❌ Validation failed - missing email or password');
+            console.log('[AUTH-DETAILED] Email empty?', !email);
+            console.log('[AUTH-DETAILED] Password empty?', !password);
             return res.status(400).json({
                 success: false,
-                error: 'Email y contraseña requeridos'
+                error: 'Email y contraseña requeridos',
+                debug: {
+                    hasEmail: !!email,
+                    hasPassword: !!password,
+                    bodyKeys: Object.keys(req.body)
+                }
             });
         }
 
@@ -389,7 +407,7 @@ function getPermissionsForRole(role) {
 }
 
 // POST /api/auth/google - Google OAuth authentication
-app.post('/api/auth/google', express.json(), async (req, res) => {
+app.post('/api/auth/google', async (req, res) => {
     try {
         const { credential } = req.body;
 
@@ -488,7 +506,7 @@ app.post('/api/auth/google', express.json(), async (req, res) => {
 });
 
 // POST /api/auth/register - User registration
-app.post('/api/auth/register', express.json(), async (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
     try {
         const { email, password, nombre, apellido_paterno, apellido_materno } = req.body;
 
