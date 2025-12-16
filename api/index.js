@@ -1917,6 +1917,170 @@ app.get('/api/teachers-portal/dashboard', async (req, res) => {
 });
 
 // ============================================
+// MISSING DASHBOARD & ANALYTICS ENDPOINTS
+// ============================================
+
+// GET /api/analytics/dashboard
+app.get('/api/analytics/dashboard', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            visits_today: 156,
+            visits_this_month: 4230,
+            active_users: 89,
+            bounce_rate: 32.5,
+            top_pages: ['/', '/gamification-center.html', '/iacoins-store.html'],
+            trends: []
+        },
+        isDemoData: true
+    });
+});
+
+// GET /api/bolsa-trabajo/stats/general
+app.get('/api/bolsa-trabajo/stats/general', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            total_cvs: 45,
+            pending_review: 12,
+            approved: 28,
+            rejected: 5,
+            avg_review_time: '2.5 días'
+        },
+        isDemoData: true
+    });
+});
+
+// GET /api/charts/quejas-por-tipo
+app.get('/api/charts/quejas-por-tipo', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            categories: ['Académica', 'Administrativa', 'Disciplina', 'Servicios'],
+            values: [15, 8, 12, 5]
+        },
+        isDemoData: true
+    });
+});
+
+// GET /api/eventos/stats
+app.get('/api/eventos/stats', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            total_events: 23,
+            upcoming: 5,
+            past: 18,
+            attendees_avg: 45,
+            categories: ['Académica', 'Cultural', 'Deportiva']
+        },
+        isDemoData: true
+    });
+});
+
+// GET /api/noticias/stats
+app.get('/api/noticias/stats', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            total_news: 87,
+            published_this_month: 12,
+            avg_views: 234,
+            trending: ['Exámenes', 'Inscripciones', 'Actividades'],
+            engagement: 4.2
+        },
+        isDemoData: true
+    });
+});
+
+// GET /api/charts/suscriptores-crecimiento
+app.get('/api/charts/suscriptores-crecimiento', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            months: ['Ene', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            subscribers: [45, 52, 68, 78, 92, 105],
+            growth_rate: 8.5
+        },
+        isDemoData: true
+    });
+});
+
+// GET /api/avisos/stats
+app.get('/api/avisos/stats', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            total_notices: 34,
+            active: 12,
+            archived: 22,
+            categories: ['General', 'Académica', 'Administrativo'],
+            last_updated: new Date().toISOString()
+        },
+        isDemoData: true
+    });
+});
+
+// GET /api/comunicados/stats
+app.get('/api/comunicados/stats', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            total_announcements: 56,
+            this_month: 8,
+            recipients: 450,
+            engagement_rate: 67.5,
+            top_audience: ['Estudiantes', 'Padres', 'Docentes']
+        },
+        isDemoData: true
+    });
+});
+
+// GET /api/charts/eventos-por-categoria
+app.get('/api/charts/eventos-por-categoria', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            categories: ['Académica', 'Cultural', 'Deportiva', 'Social'],
+            events_count: [12, 8, 15, 6],
+            total: 41
+        },
+        isDemoData: true
+    });
+});
+
+// GET /api/charts/noticias-por-mes
+app.get('/api/charts/noticias-por-mes', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            months: ['Ene', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            news_count: [8, 10, 12, 9, 11, 12],
+            views: [145, 178, 234, 189, 201, 215]
+        },
+        isDemoData: true
+    });
+});
+
+// GET /api/pendientes-aprobacion
+app.get('/api/pendientes-aprobacion', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            total_pending: 23,
+            by_type: {
+                students_registration: 8,
+                cv_approvals: 12,
+                event_approvals: 3
+            },
+            oldest_pending_days: 5,
+            urgency: 'media'
+        },
+        isDemoData: true
+    });
+});
+
+// ============================================
 // ERROR HANDLING
 // ============================================
 app.use(errorHandler);
