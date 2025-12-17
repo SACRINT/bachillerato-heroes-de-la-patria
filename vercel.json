@@ -22,8 +22,8 @@
     "api/index.js": {
       "memory": 1024,
       "maxDuration": 60,
-      "includeFiles": "api/**,backend/**",
-      "excludeFiles": "backend/{node_modules,tests,docs,scripts,**/*.ts,**/*.d.ts,**/*.map}/**,.git/**,node_modules/**"
+      "includeFiles": "api/**,backend/middleware/**,backend/config/**,backend/utils/**,backend/data/**",
+      "excludeFiles": "backend/node_modules/**"
     }
   },
   "headers": [

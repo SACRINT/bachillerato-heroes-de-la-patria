@@ -77,7 +77,24 @@ class AdminDashboard {
                 }
             }
         } catch (error) {
+        } catch (error) {
             debugLog.warn('ERROR', '⚠️ Error verificando sesión segura:', error);
+        }
+
+        // ✅ NUEVO: Verificar autenticación moderna (bge_auth_*)
+        try {
+            const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
+            const bgeUserStr = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user');
+
+            if (bgeToken && bgeUserStr) {
+                const bgeUser = JSON.parse(bgeUserStr);
+                this.currentUser = bgeUser;
+                this.isLoggedIn = true;
+                //debugLog.log('APP', '✅ Usuario autenticado con sistema moderno (bge_auth_*)', this.currentUser);
+                return;
+            }
+        } catch (error) {
+            debugLog.warn('ERROR', '⚠️ Error verificando sesión moderna:', error);
         }
 
         // Fallback: Sistema viejo (mantener compatibilidad)
@@ -120,24 +137,68 @@ class AdminDashboard {
         // Mostrar mensaje de seguridad
         alert('Acceso restringido: Debes iniciar sesión como administrador para acceder al dashboard.');
 
-        // Redirigir a la página principal
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 1000);
+        // DEBUG REDIRECT
+        // window.location.href = 'index.html';
+        const debugOverlay = document.createElement('div');
+        debugOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);color:white;z-index:99999;padding:20px;overflow:auto;';
+        debugOverlay.innerHTML = `
+            <h2>⚠️ Acceso Denegado (Debug Mode)</h2>
+            <p>El sistema intentó redirigirte a index.html.</p>
+            <h3>Diagnóstico:</h3>
+            <ul>
+                <li><strong>isLoggedIn:</strong> ${this.isLoggedIn}</li>
+                <li><strong>currentUser:</strong> ${JSON.stringify(this.currentUser, null, 2)}</li>
+                <li><strong>Role Check:</strong> ${this.currentUser ? this.currentUser.role : 'N/A'} (Expected: 'admin')</li>
+                <li><strong>bge_auth_token (LS):</strong> ${localStorage.getItem('bge_auth_token') ? 'PRESENT' : 'MISSING'}</li>
+                <li><strong>bge_auth_token (SS):</strong> ${sessionStorage.getItem('bge_auth_token') ? 'PRESENT' : 'MISSING'}</li>
+                <li><strong>secure_admin_session:</strong> ${localStorage.getItem('secure_admin_session') ? 'PRESENT' : 'MISSING'}</li>
+            </ul>
+            <button onclick="window.location.reload()" class="btn btn-primary">Recargar</button>
+            <button onclick="window.location.href='index.html'" class="btn btn-danger">Ir a Inicio</button>
+        `;
+        document.body.appendChild(debugOverlay);
+        console.warn('Redirect suppressed. Auth State:', {
+            isLoggedIn: this.isLoggedIn,
+            currentUser: this.currentUser,
+            tokenLS: localStorage.getItem('bge_auth_token'),
+            tokenSS: sessionStorage.getItem('bge_auth_token')
+        });
     }
 
     showDashboard() {
         //debugLog.log('DASHBOARD', '📊 Mostrando dashboard');
-        // Mostrar sección del dashboard principal
+
+        // 1. Ocultar secciones de 'Landing Page' (Hero y Módulos públicos)
+        const heroSection = document.getElementById('hero');
+        if (heroSection) heroSection.style.display = 'none';
+
+        const modulosSection = document.getElementById('modulos-admin');
+        if (modulosSection) modulosSection.style.display = 'none';
+
+        const characteristicsSection = document.querySelector('section.py-5:not(.dashboard-section):not(#modulos-admin):not(#seguridad)');
+        if (characteristicsSection && characteristicsSection.querySelector('.feature-card')) {
+            characteristicsSection.style.display = 'none';
+        }
+
+        // 2. Mostrar secciones del Dashboard Integrado
         const dashboardSection = document.querySelector('.dashboard-section');
         if (dashboardSection) {
             dashboardSection.style.display = 'block';
         }
+
+        const adminPanel = document.getElementById('adminPanel');
+        if (adminPanel) {
+            adminPanel.classList.remove('d-none');
+        }
+
         // Ocultar sección de login si existe
         const loginSection = document.querySelector('.login-section');
         if (loginSection) {
             loginSection.style.display = 'none';
         }
+
+        // Ajustar padding del body para navbar fixed
+        document.body.style.paddingTop = '90px';
     }
 
     showAlert(message, type = 'info') {

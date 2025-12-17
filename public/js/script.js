@@ -41,7 +41,7 @@ class HeroesPatriaApp {
         try {
             // 1. Load HTML partials first
             await this.loadPartials();
-            
+
             // 2. Initialize core functionality
             this.initNavbar();
             this.initScrollEffects();
@@ -50,12 +50,12 @@ class HeroesPatriaApp {
             this.initBootstrapComponents();
             this.initAccessibility();
             this.initIntersectionObserver();
-            
+
             // 3. Set current year
             this.setCurrentYear();
-            
+
             //console.log('✅ Heroes Patria App initialized successfully');
-            
+
         } catch (error) {
             console.error('❌ Error initializing app:', error);
         }
@@ -68,10 +68,14 @@ class HeroesPatriaApp {
                 this.loadPartial(APP_CONFIG.selectors.header, APP_CONFIG.partials.header),
                 this.loadPartial(APP_CONFIG.selectors.footer, APP_CONFIG.partials.footer)
             ]);
-            
+
             // After loading header, initialize navbar functionality
             this.initNavbarEnhanced();
-            
+
+            // ✅ DISPATCH EVENT: Notificar que el header ha sido cargado e inyectado
+            // Esto es crucial para que unified-auth-system-v2.js actualice la UI de usuario
+            document.dispatchEvent(new Event('headerLoaded'));
+
             // Initialize simple search functionality after header loads
             setTimeout(() => {
                 if (typeof window.initSimpleSearch === 'function') {
@@ -79,13 +83,13 @@ class HeroesPatriaApp {
                     window.initSimpleSearch();
                 }
             }, 200);
-            
+
             // Re-initialize dark mode after header is loaded
             setTimeout(() => {
                 //console.log('🌙 Initializing dark mode...');
                 this.initDarkMode(); // REACTIVADO - sistema global centralizado
             }, 500);
-            
+
             // Initialize admin authentication after partials are loaded
             setTimeout(() => {
                 //console.log('🔐 Verificando inicialización de admin auth desde script.js...');
@@ -110,7 +114,7 @@ class HeroesPatriaApp {
                     }, 1000);
                 }
             }, 800);
-            
+
         } catch (error) {
             console.error('Error loading partials:', error);
         }
@@ -123,12 +127,12 @@ class HeroesPatriaApp {
         try {
             const response = await fetch(path);
             if (!response.ok) throw new Error(`Failed to load ${path}`);
-            
+
             const html = await response.text();
             element.innerHTML = DOMPurify.sanitize(html);
-            
+
             //console.log(`✅ Loaded partial: ${path}`);
-            
+
         } catch (error) {
             console.warn(`⚠️ Could not load ${path}:`, error);
             // Fallback content
@@ -157,10 +161,10 @@ class HeroesPatriaApp {
     initNavbarEnhanced() {
         // Mark active page in navigation
         this.setActiveNavItem();
-        
+
         // Smooth scroll for anchor links
         this.initSmoothScroll();
-        
+
         // Enhanced dropdown behavior
         this.initDropdownEnhancements();
     }
@@ -168,7 +172,7 @@ class HeroesPatriaApp {
     setActiveNavItem() {
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         const navLinks = document.querySelectorAll('.nav-link');
-        
+
         navLinks.forEach(link => {
             const href = link.getAttribute('href');
             if (href && href.includes(currentPage)) {
@@ -181,17 +185,17 @@ class HeroesPatriaApp {
         document.addEventListener('click', (e) => {
             const link = e.target.closest('a[href^="#"]');
             if (!link) return;
-            
+
             e.preventDefault();
             const targetId = link.getAttribute('href').slice(1);
             const targetElement = document.getElementById(targetId);
-            
+
             if (targetElement) {
                 targetElement.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start'
                 });
-                
+
                 // Update URL without jumping
                 history.pushState(null, null, `#${targetId}`);
             }
@@ -201,7 +205,7 @@ class HeroesPatriaApp {
     initDropdownEnhancements() {
         // Add keyboard navigation for dropdowns
         const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-        
+
         dropdownToggles.forEach(toggle => {
             toggle.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -219,7 +223,7 @@ class HeroesPatriaApp {
             const navbar = document.querySelector('#mainNavList');
             const masDropdown = document.querySelector('#masDropdownContainer');
             const masDropdownMenu = document.querySelector('#masDropdownMenu');
-            
+
             if (!navbar || !masDropdown || !masDropdownMenu) {
                 setTimeout(checkAndRun, 100);
                 return;
@@ -228,42 +232,42 @@ class HeroesPatriaApp {
             const handleNavbarResize = () => {
                 const secondaryItems = document.querySelectorAll('.nav-secondary');
                 const screenWidth = window.innerWidth;
-                
+
                 // Clean up existing dynamic items first
                 const existingDynamicItems = masDropdownMenu.querySelectorAll('.nav-secondary-in-dropdown, .nav-secondary-separator');
                 existingDynamicItems.forEach(item => item.remove());
-                
+
                 // For screens between 992px and 1199px, move secondary items to dropdown
                 if (screenWidth < 1200 && screenWidth >= 992) {
                     // Add separator
                     const dropdownSeparator = document.createElement('li');
                     dropdownSeparator.className = 'nav-secondary-separator';
                     dropdownSeparator.innerHTML = DOMPurify.sanitize('<hr class="dropdown-divider">');
-                    
+
                     // Find the first static item in mas dropdown
                     const firstStaticItem = masDropdownMenu.querySelector('li:first-child');
                     if (firstStaticItem) {
                         masDropdownMenu.insertBefore(dropdownSeparator, firstStaticItem);
                     }
-                    
+
                     // Move secondary nav items to dropdown
                     secondaryItems.forEach((item) => {
                         const link = item.querySelector('a');
                         if (!link) return;
-                        
+
                         const isDropdown = item.classList.contains('dropdown');
-                        
+
                         if (isDropdown) {
                             // Handle dropdown items
                             const submenu = item.querySelector('.dropdown-menu');
                             const submenuItems = submenu ? submenu.querySelectorAll('li a') : [];
-                            
+
                             // Add main dropdown title as header
                             const headerItem = document.createElement('li');
                             headerItem.className = 'nav-secondary-in-dropdown';
                             headerItem.innerHTML = DOMPurify.sanitize(sanitizeHTML(`<h6 class="dropdown-header">${link.textContent}</h6>`));
                             masDropdownMenu.insertBefore(headerItem, firstStaticItem);
-                            
+
                             // Add submenu items
                             submenuItems.forEach(subLink => {
                                 const subDropdownItem = document.createElement('li');
@@ -284,7 +288,7 @@ class HeroesPatriaApp {
 
             // Initial check
             setTimeout(handleNavbarResize, 100);
-            
+
             // Handle window resize with debouncing
             let resizeTimeout;
             window.addEventListener('resize', () => {
@@ -327,7 +331,7 @@ class HeroesPatriaApp {
     initScrollReveal() {
         // Animate elements on scroll
         const animatedElements = document.querySelectorAll('[data-aos], .hover-lift, .card');
-        
+
         if (animatedElements.length === 0) return;
 
         const observer = new IntersectionObserver((entries) => {
@@ -355,7 +359,7 @@ class HeroesPatriaApp {
         //console.log('🔍 Looking for dark mode toggle...');
         let toggle = document.querySelector(APP_CONFIG.selectors.darkModeToggle);
         //console.log('Toggle found:', toggle);
-        
+
         // If toggle doesn't exist, check for floating button or create navbar toggle
         if (!toggle) {
             //console.log('❌ No #darkModeToggle found, checking for floating button...');
@@ -377,13 +381,13 @@ class HeroesPatriaApp {
         // Load saved preference and apply dark mode
         const isDarkMode = localStorage.getItem(APP_CONFIG.storage.darkMode) === 'true';
         //console.log('Dark mode preference:', isDarkMode);
-        
+
         if (isDarkMode) {
             document.body.classList.add(APP_CONFIG.classes.darkMode);
         } else {
             document.body.classList.remove(APP_CONFIG.classes.darkMode);
         }
-        
+
         // Update icon to match current state
         this.updateDarkModeIcon(toggle, isDarkMode);
 
@@ -396,45 +400,45 @@ class HeroesPatriaApp {
         toggle.addEventListener('click', () => {
             const isCurrentlyDark = document.body.classList.contains(APP_CONFIG.classes.darkMode);
             const newDarkState = !isCurrentlyDark;
-            
+
             //console.log('Toggling dark mode from', isCurrentlyDark, 'to', newDarkState);
-            
+
             document.body.classList.toggle(APP_CONFIG.classes.darkMode, newDarkState);
             localStorage.setItem(APP_CONFIG.storage.darkMode, newDarkState.toString());
             this.updateDarkModeIcon(toggle, newDarkState);
-            
+
             // Smooth transition
             document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
             setTimeout(() => {
                 document.body.style.transition = '';
             }, 300);
         });
-        
+
         //console.log('✅ Dark mode initialized successfully');
     }
 
     createDarkModeToggle() {
         const navbar = document.querySelector('.navbar-nav');
         if (!navbar) return null;
-        
+
         // Create list item
         const li = document.createElement('li');
         li.className = 'nav-item';
-        
+
         // Create button
         const button = document.createElement('button');
         button.className = 'nav-link btn btn-link border-0 bg-transparent';
         button.id = 'darkModeToggle';
         button.setAttribute('aria-label', 'Alternar modo oscuro');
-        
+
         // Create icon
         const icon = document.createElement('i');
         icon.className = 'fas fa-moon';
         icon.id = 'darkModeIcon';
-        
+
         button.appendChild(icon);
         li.appendChild(button);
-        
+
         // Insert before the last item (to avoid interfering with login buttons)
         const lastItem = navbar.lastElementChild;
         if (lastItem) {
@@ -442,24 +446,24 @@ class HeroesPatriaApp {
         } else {
             navbar.appendChild(li);
         }
-        
+
         // Add event listener to the newly created button
         const self = this;
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const isCurrentlyDark = document.body.classList.contains(APP_CONFIG.classes.darkMode);
             const newDarkState = !isCurrentlyDark;
-            
+
             document.body.classList.toggle(APP_CONFIG.classes.darkMode, newDarkState);
             localStorage.setItem(APP_CONFIG.storage.darkMode, newDarkState.toString());
             self.updateDarkModeIcon(button, newDarkState);
-            
+
             // Smooth transition
             document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
             setTimeout(() => {
                 document.body.style.transition = '';
             }, 300);
         });
-        
+
         return button;
     }
 
@@ -481,14 +485,14 @@ class HeroesPatriaApp {
         const banner = document.querySelector(APP_CONFIG.selectors.pwaInstallBanner);
         const installBtn = document.querySelector(APP_CONFIG.selectors.pwaInstallBtn);
         const closeBtn = document.querySelector(APP_CONFIG.selectors.pwaCloseBtn);
-        
+
         if (!banner) return;
 
         // Listen for PWA install prompt
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             this.deferredPrompt = e;
-            
+
             // Show install banner if not dismissed
             const dismissed = localStorage.getItem(APP_CONFIG.storage.pwaInstallDismissed);
             if (!dismissed) {
@@ -502,14 +506,14 @@ class HeroesPatriaApp {
         if (installBtn) {
             installBtn.addEventListener('click', async () => {
                 if (!this.deferredPrompt) return;
-                
+
                 this.deferredPrompt.prompt();
                 const { outcome } = await this.deferredPrompt.userChoice;
-                
+
                 if (outcome === 'accepted') {
                     //console.log('PWA installed successfully');
                 }
-                
+
                 this.deferredPrompt = null;
                 banner.classList.add('d-none');
             });
@@ -570,9 +574,9 @@ class HeroesPatriaApp {
             <br>Recarga la página para obtener la última versión.
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `);
-        
+
         document.body.appendChild(notification);
-        
+
         // Auto dismiss after 10 seconds
         setTimeout(() => {
             if (notification.parentNode) {
@@ -665,12 +669,12 @@ class HeroesPatriaApp {
     initFocusManagement() {
         // Improve focus visibility
         const focusableElements = document.querySelectorAll('a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])');
-        
+
         focusableElements.forEach(element => {
             element.addEventListener('focus', () => {
                 element.classList.add('focused');
             });
-            
+
             element.addEventListener('blur', () => {
                 element.classList.remove('focused');
             });
@@ -712,7 +716,7 @@ class HeroesPatriaApp {
     setCurrentYear() {
         const yearElements = document.querySelectorAll('[data-current-year], .current-year');
         const currentYear = new Date().getFullYear();
-        
+
         yearElements.forEach(element => {
             element.textContent = currentYear;
         });
@@ -727,9 +731,9 @@ class HeroesPatriaApp {
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `);
-        
+
         document.body.appendChild(notification);
-        
+
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.remove();
@@ -820,7 +824,7 @@ class AdminPanelAuth {
             maxAttempts: 3,
             lockoutTime: 15 * 60 * 1000 // 15 minutos de bloqueo
         };
-        
+
         // No inicializar automáticamente - se llamará manualmente después de cargar partials
         this.setupEventListeners();
     }
@@ -845,7 +849,7 @@ class AdminPanelAuth {
             console.warn('Admin panel form not found, retrying...');
             setTimeout(() => this.setupEventListeners(), 500);
         }
-        
+
         // Inicializar indicador de sesión basado en el estado actual
         this.updateSessionIndicator(this.isAuthenticated());
     }
@@ -866,11 +870,11 @@ class AdminPanelAuth {
 
         // Limpiar formulario
         this.clearAuthForm();
-        
+
         // Mostrar modal
         const modal = new bootstrap.Modal(document.getElementById('adminPanelAuthModal'));
         modal.show();
-        
+
         // Focus en el campo de contraseña
         setTimeout(() => {
             document.getElementById('adminPanelPassword').focus();
@@ -880,9 +884,9 @@ class AdminPanelAuth {
     // Manejar envío del formulario
     handleAuthSubmit(e) {
         e.preventDefault();
-        
+
         const password = document.getElementById('adminPanelPassword').value;
-        
+
         if (this.validatePassword(password)) {
             this.grantAccess();
         } else {
@@ -903,22 +907,22 @@ class AdminPanelAuth {
             timestamp: Date.now(),
             expires: Date.now() + this.config.sessionDuration
         };
-        
+
         localStorage.setItem(this.config.storageKey, JSON.stringify(authData));
-        
+
         // Limpiar intentos fallidos
         localStorage.removeItem(this.config.storageKey + '_attempts');
-        
+
         // Actualizar indicador de sesión
         this.updateSessionIndicator(true);
-        
+
         // Cerrar modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('adminPanelAuthModal'));
         modal.hide();
-        
+
         // Mostrar mensaje de éxito
         this.showSuccessMessage('Acceso concedido. Abriendo Panel de Administración...');
-        
+
         // Abrir panel después de un breve delay
         setTimeout(() => {
             this.openAdminPanel();
@@ -933,13 +937,13 @@ class AdminPanelAuth {
             count: attempts,
             lastAttempt: Date.now()
         };
-        
+
         localStorage.setItem(this.config.storageKey + '_attempts', JSON.stringify(attemptsData));
-        
+
         // Mostrar error
         const errorDiv = document.getElementById('adminPanelAuthError');
         const errorText = document.getElementById('adminPanelAuthErrorText');
-        
+
         if (attempts >= this.config.maxAttempts) {
             // Bloquear acceso
             const lockoutData = {
@@ -947,11 +951,11 @@ class AdminPanelAuth {
                 lockoutTime: Date.now(),
                 unlockTime: Date.now() + this.config.lockoutTime
             };
-            
+
             localStorage.setItem(this.config.storageKey + '_lockout', JSON.stringify(lockoutData));
-            
+
             errorText.textContent = `Demasiados intentos fallidos. Acceso bloqueado por 15 minutos.`;
-            
+
             // Cerrar modal después de mostrar el error
             setTimeout(() => {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('adminPanelAuthModal'));
@@ -962,9 +966,9 @@ class AdminPanelAuth {
             const remainingAttempts = this.config.maxAttempts - attempts;
             errorText.textContent = `Contraseña incorrecta. Te quedan ${remainingAttempts} intento(s).`;
         }
-        
+
         errorDiv.classList.remove('d-none');
-        
+
         // Limpiar campo de contraseña
         document.getElementById('adminPanelPassword').value = '';
         document.getElementById('adminPanelPassword').focus();
@@ -974,7 +978,7 @@ class AdminPanelAuth {
     isAuthenticated() {
         const authData = localStorage.getItem(this.config.storageKey);
         if (!authData) return false;
-        
+
         try {
             const data = JSON.parse(authData);
             if (data.authenticated && Date.now() < data.expires) {
@@ -994,7 +998,7 @@ class AdminPanelAuth {
     isLockedOut() {
         const lockoutData = localStorage.getItem(this.config.storageKey + '_lockout');
         if (!lockoutData) return false;
-        
+
         try {
             const data = JSON.parse(lockoutData);
             if (data.lockedOut && Date.now() < data.unlockTime) {
@@ -1015,7 +1019,7 @@ class AdminPanelAuth {
     getFailedAttempts() {
         const attemptsData = localStorage.getItem(this.config.storageKey + '_attempts');
         if (!attemptsData) return 0;
-        
+
         try {
             const data = JSON.parse(attemptsData);
             return data.count || 0;
@@ -1028,7 +1032,7 @@ class AdminPanelAuth {
     showLockoutMessage() {
         const lockoutData = JSON.parse(localStorage.getItem(this.config.storageKey + '_lockout') || '{}');
         const remainingTime = Math.ceil((lockoutData.unlockTime - Date.now()) / (60 * 1000));
-        
+
         this.showErrorMessage(`Acceso bloqueado por seguridad. Intenta nuevamente en ${remainingTime} minuto(s).`);
     }
 
@@ -1036,8 +1040,8 @@ class AdminPanelAuth {
     openAdminPanel() {
         try {
             const popup = window.open('admin/manual.html', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no,status=no');
-            
-            if (popup === null || typeof(popup) === 'undefined') {
+
+            if (popup === null || typeof (popup) === 'undefined') {
                 // Popup bloqueado, abrir en la misma ventana
                 this.showErrorMessage('Popup bloqueado. Abriendo en nueva pestaña...');
                 setTimeout(() => {
@@ -1089,7 +1093,7 @@ class AdminPanelAuth {
         `);
 
         toastContainer.appendChild(toastElement);
-        
+
         const toast = new bootstrap.Toast(toastElement, {
             autohide: true,
             delay: 5000
@@ -1106,7 +1110,7 @@ class AdminPanelAuth {
         const statusBadge = document.getElementById('adminPanelSessionStatus');
         const logoutOption = document.getElementById('adminPanelLogoutOption');
         const menuLink = document.getElementById('adminPanelMenuLink');
-        
+
         if (isAuthenticated) {
             if (statusBadge) statusBadge.classList.remove('d-none');
             if (logoutOption) logoutOption.classList.remove('d-none');

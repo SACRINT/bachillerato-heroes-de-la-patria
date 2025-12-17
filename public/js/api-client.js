@@ -120,11 +120,8 @@ class APIClient {
                     localStorage.removeItem('authToken');
                     localStorage.removeItem('userData');
 
-                    // ✅ Redirigir a login si estamos en dashboard
-                    if (window.location.pathname.includes('admin-dashboard')) {
-                        alert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.');
-                        window.location.href = sanitizeURL('/index.html');
-                    }
+                    console.error('APIClient: Token expired. Redirect suppressed for debugging.');
+                    // window.location.href = sanitizeURL('/index.html');
                     return null;
                 }
             } catch (error) {

@@ -648,14 +648,22 @@ class UnifiedAuthSystem {
         // ✅ REDIRECCIÓN AUTOMÁTICA PARA ADMINS
         if (userData.role === 'admin' || userData.role === 'administrativo') {
             console.log('[AUTH-PROCESS] 🚀 Usuario admin detectado - Iniciando redirección...');
-            // Pequeño delay para que el usuario vea el mensaje de éxito
+
+            // FORCE REMEMBER ME para asegurar persistencia cruzada en LocalStorage
+            // Esto soluciona problemas donde sessionStorage se pierde en redirecciones raras
+            if (!rememberMe) {
+                console.log('[AUTH-PROCESS] ⚠️ Forzando RememberMe=true para Admin (Persistencia)');
+                this.managers.session.saveSession(userData, token, true);
+            }
+
+            // Pequeño delay para UX
             setTimeout(() => {
                 // Validación extra para evitar bucles si ya estamos en el dashboard
                 if (!window.location.pathname.includes('admin-dashboard.html')) {
-                    console.log('[AUTH-PROCESS] ➡️ Redirigiendo a admin-dashboard.html');
-                    window.location.href = 'admin-dashboard.html';
+                    console.log('[AUTH-PROCESS] ➡️ Redirigiendo a admin-dashboard.html (Replace)');
+                    window.location.replace('admin-dashboard.html');
                 }
-            }, 1000);
+            }, 500);
         }
 
         return true;
@@ -1850,7 +1858,16 @@ class SessionManager {
      * GUARDAR SESIÓN
      */
     saveSession(userData, token, rememberMe = false) {
+        console.log('[SESSION-DEBUG] 💾 saveSession CALLED', {
+            hasUserData: !!userData,
+            userEmail: userData?.email,
+            hasToken: !!token,
+            tokenLength: token?.length,
+            rememberMe: rememberMe
+        });
+
         const storage = rememberMe ? localStorage : sessionStorage;
+        const storageName = rememberMe ? 'localStorage' : 'sessionStorage';
 
         // ✅ FIX (13 Dic 2025): Si guardamos en sessionStorage (NO rememberMe),
         // limpiar localStorage primero para evitar conflictos entre sesiones
@@ -1858,18 +1875,37 @@ class SessionManager {
             Object.values(this.STORAGE_KEYS).forEach(key => {
                 localStorage.removeItem(key);
             });
-            debugLog.log('APP', '🧹 Limpiado localStorage para evitar conflictos');
+            console.log('[SESSION-DEBUG] 🧹 Limpiado localStorage para evitar conflictos');
         }
 
-        storage.setItem(this.STORAGE_KEYS.token, token);
-        storage.setItem(this.STORAGE_KEYS.user, JSON.stringify(userData));
+        try {
+            storage.setItem(this.STORAGE_KEYS.token, token);
+            storage.setItem(this.STORAGE_KEYS.user, JSON.stringify(userData));
 
-        // Guardar tiempo de expiración (24 horas)
-        const expiryTime = Date.now() + (24 * 60 * 60 * 1000);
-        storage.setItem(this.STORAGE_KEYS.expiry, expiryTime.toString());
+            // Guardar tiempo de expiración (24 horas)
+            const expiryTime = Date.now() + (24 * 60 * 60 * 1000);
+            storage.setItem(this.STORAGE_KEYS.expiry, expiryTime.toString());
 
-        // GDPR: Datos sensibles enmascarados
-        debugLog.log('APP', '✅ Sesión guardada en', rememberMe ? 'localStorage' : 'sessionStorage');
+            // VERIFICACIÓN INMEDIATA
+            const tokenCheck = storage.getItem(this.STORAGE_KEYS.token);
+            const userCheck = storage.getItem(this.STORAGE_KEYS.user);
+
+            console.log(`[SESSION-DEBUG] ✅ Verificación inmediata en ${storageName}:`, {
+                tokenSaved: !!tokenCheck,
+                tokenMatch: tokenCheck === token,
+                userSaved: !!userCheck,
+                userMatch: userCheck === JSON.stringify(userData)
+            });
+
+            if (!tokenCheck || !userCheck) {
+                console.error(`[SESSION-DEBUG] ❌ ERROR CRÍTICO: Falló la escritura en ${storageName}`);
+            }
+
+            // GDPR: Datos sensibles enmascarados
+            debugLog.log('APP', '✅ Sesión guardada en', storageName);
+        } catch (e) {
+            console.error('[SESSION-DEBUG] ❌ EXCEPCIÓN guardando sesión:', e);
+        }
     }
 
     /**

@@ -4,7 +4,7 @@
  * Fecha: 19 Nov 2025
  */
 
-(function() {
+(function () {
     'use strict';
 
     let lastSessionCheck = null;
@@ -14,6 +14,14 @@
     // 🚨 VERIFICACIÓN INMEDIATA AL CARGAR LA PÁGINA
     function immediateSecurityCheck() {
         console.log('🔍 [SECURITY] Verificación inmediata de seguridad...');
+        console.log('🔍 [SECURITY DEBUG] Storage State Check:');
+        console.log('   - LS bge_auth_token:', localStorage.getItem('bge_auth_token') ? 'PRESENT' : 'MISSING');
+        console.log('   - LS bge_auth_user:', localStorage.getItem('bge_auth_user') ? 'PRESENT' : 'MISSING');
+        console.log('   - SS bge_auth_token:', sessionStorage.getItem('bge_auth_token') ? 'PRESENT' : 'MISSING');
+        console.log('   - SS bge_auth_user:', sessionStorage.getItem('bge_auth_user') ? 'PRESENT' : 'MISSING');
+        console.log('   - LS authToken (legacy):', localStorage.getItem('authToken') ? 'PRESENT' : 'MISSING');
+        console.log('   - LS secure_admin_session:', localStorage.getItem('secure_admin_session') ? 'PRESENT' : 'MISSING');
+
 
         // ✅ FIX (16 Dec 2025): Buscar credenciales en las claves correctas
         // Sistema 1: JWT moderno (unified-auth-system-v2.js)
@@ -118,7 +126,8 @@
 
         // Redirigir después de un breve delay
         setTimeout(() => {
-            window.location.replace('index.html'); // replace evita volver con botón atrás
+            console.warn('Redirect suppressed for debugging.');
+            // window.location.replace('index.html'); // replace evita volver con botón atrás
         }, 2000);
     }
 
@@ -192,7 +201,7 @@
         history.pushState(null, null, location.href);
 
         // Interceptar evento de retroceso
-        window.addEventListener('popstate', function(event) {
+        window.addEventListener('popstate', function (event) {
             console.log('🔒 [SECURITY] Intento de retroceso detectado');
 
             // ✅ FIX (16 Dec 2025): Verificar claves correctas
@@ -225,7 +234,7 @@
     }
 
     // 🚀 INICIALIZACIÓN DEL SISTEMA DE SEGURIDAD
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Verificación inmediata
         if (!immediateSecurityCheck()) {
             return; // Ya se está redirigiendo
@@ -256,7 +265,7 @@
         }
 
         // Manejar cambios de visibilidad de la página (Page Visibility API)
-        document.addEventListener('visibilitychange', function() {
+        document.addEventListener('visibilitychange', function () {
             isPageVisible = !document.hidden;
 
             if (isPageVisible) {
@@ -275,14 +284,14 @@
         }
 
         // Verificar también cuando se enfoca la ventana
-        window.addEventListener('focus', function() {
+        window.addEventListener('focus', function () {
             if (!isRedirecting) {
                 checkSessionAndRedirect();
             }
         });
 
         // Verificar cuando hay cambios en localStorage desde otras pestañas
-        window.addEventListener('storage', function(e) {
+        window.addEventListener('storage', function (e) {
             if (e.key === 'secure_admin_session' && !e.newValue) {
                 console.log('🔒 [SECURITY] Logout detectado desde otra pestaña');
                 blockPageAndRedirect('Sesión cerrada en otra pestaña');
@@ -290,7 +299,7 @@
         });
 
         // Cleanup al salir de la página
-        window.addEventListener('beforeunload', function() {
+        window.addEventListener('beforeunload', function () {
             stopSecurityCheck();
         });
 

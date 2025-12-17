@@ -7,6 +7,10 @@
 // Verificación adicional cuando el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', function () {
     console.log('🔒 [DASHBOARD SECURITY] Verificación adicional de autenticación...');
+    console.log('🔍 [DASHBOARD SECURITY DEBUG] DOMReady Storage Check:');
+    console.log('   - LS bge_auth_token:', localStorage.getItem('bge_auth_token') ? 'PRESENT' : 'MISSING');
+    console.log('   - SS bge_auth_token:', sessionStorage.getItem('bge_auth_token') ? 'PRESENT' : 'MISSING');
+
 
     // Verificar nuevamente el estado de autenticación
     setTimeout(() => {

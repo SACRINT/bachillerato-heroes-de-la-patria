@@ -7,6 +7,10 @@
 (function () {
     'use strict';
     console.log('🔒 [DASHBOARD AUTH] Verificación unificada de autenticación...');
+    console.log('🔍 [DASHBOARD AUTH DEBUG] Initial Storage Check:');
+    console.log('   - LS bge_auth_token:', localStorage.getItem('bge_auth_token') ? 'PRESENT' : 'MISSING');
+    console.log('   - SS bge_auth_token:', sessionStorage.getItem('bge_auth_token') ? 'PRESENT' : 'MISSING');
+
 
     function isAuthenticated() {
         // ✅ FIX (16 Dec 2025): Buscar en localStorage Y sessionStorage con claves correctas
