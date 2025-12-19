@@ -36,6 +36,70 @@
     NONE: 4
   };
 
+  // Patrones de datos sensibles (PII) a sanitizar
+  const SENSITIVE_PATTERNS = [
+    { name: 'JWT Token', pattern: /eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g, replacement: '[JWT_REDACTED]' },
+    { name: 'Email', pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, replacement: '[EMAIL_REDACTED]' },
+    { name: 'Password field', pattern: /"password"\s*:\s*"[^"]+"/gi, replacement: '"password": "[REDACTED]"' },
+    { name: 'Password hash', pattern: /\$2[aby]?\$\d+\$[./A-Za-z0-9]+/g, replacement: '[HASH_REDACTED]' },
+    { name: 'API Key', pattern: /[a-zA-Z0-9_-]{32,}/g, replacement: '[API_KEY_REDACTED]' },
+    { name: 'Phone MX', pattern: /\+?52\s?\d{2,3}\s?\d{3,4}\s?\d{4}/g, replacement: '[PHONE_REDACTED]' },
+    { name: 'CURP', pattern: /[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]\d/g, replacement: '[CURP_REDACTED]' },
+    { name: 'Credit Card', pattern: /\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}/g, replacement: '[CC_REDACTED]' }
+  ];
+
+  // Bandera para habilitar/deshabilitar sanitización
+  let sanitizationEnabled = true;
+
+  /**
+   * Sanitiza datos sensibles de un string o objeto
+   * @param {any} data - Datos a sanitizar
+   * @returns {any} - Datos sanitizados
+   */
+  function sanitize(data) {
+    if (!sanitizationEnabled) return data;
+
+    if (typeof data === 'string') {
+      let sanitized = data;
+      SENSITIVE_PATTERNS.forEach(({ pattern, replacement }) => {
+        sanitized = sanitized.replace(pattern, replacement);
+      });
+      return sanitized;
+    }
+
+    if (typeof data === 'object' && data !== null) {
+      try {
+        let jsonStr = JSON.stringify(data);
+        SENSITIVE_PATTERNS.forEach(({ pattern, replacement }) => {
+          jsonStr = jsonStr.replace(pattern, replacement);
+        });
+        return JSON.parse(jsonStr);
+      } catch (e) {
+        return data; // Si falla la serialización, devolver original
+      }
+    }
+
+    return data;
+  }
+
+  /**
+   * Sanitiza array de argumentos
+   * @param {array} args - Argumentos a sanitizar
+   * @returns {array} - Argumentos sanitizados
+   */
+  function sanitizeArgs(args) {
+    return args.map(arg => sanitize(arg));
+  }
+
+  /**
+   * Habilitar/deshabilitar sanitización
+   * @param {boolean} enabled - Estado
+   */
+  function setSanitization(enabled) {
+    sanitizationEnabled = enabled;
+    info('[LOGGER]', `Sanitización de PII ${enabled ? 'habilitada' : 'deshabilitada'}`);
+  }
+
   // Estado global del logger
   let currentLevel = LEVELS.DEBUG; // Por defecto en desarrollo
   let isProduction = (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'production') ||
@@ -47,46 +111,50 @@
   }
 
   /**
-   * Logger de nivel DEBUG
+   * Logger de nivel DEBUG (sanitiza automáticamente datos sensibles)
    * @param {string} prefix - Prefijo del módulo (ej: '[ADMIN-DASHBOARD]')
    * @param {...any} args - Argumentos para log
    */
   function debug(prefix, ...args) {
     if (currentLevel <= LEVELS.DEBUG) {
-      console.log(`%c${prefix}`, 'color: #007bff; font-weight: bold;', ...args);
+      const sanitizedArgs = isProduction ? sanitizeArgs(args) : args;
+      console.log(`%c${prefix}`, 'color: #007bff; font-weight: bold;', ...sanitizedArgs);
     }
   }
 
   /**
-   * Logger de nivel INFO
+   * Logger de nivel INFO (sanitiza automáticamente datos sensibles)
    * @param {string} prefix - Prefijo del módulo
    * @param {...any} args - Argumentos para log
    */
   function info(prefix, ...args) {
     if (currentLevel <= LEVELS.INFO) {
-      console.info(`%c${prefix}`, 'color: #28a745; font-weight: bold;', ...args);
+      const sanitizedArgs = isProduction ? sanitizeArgs(args) : args;
+      console.info(`%c${prefix}`, 'color: #28a745; font-weight: bold;', ...sanitizedArgs);
     }
   }
 
   /**
-   * Logger de nivel WARN
+   * Logger de nivel WARN (sanitiza automáticamente datos sensibles)
    * @param {string} prefix - Prefijo del módulo
    * @param {...any} args - Argumentos para log
    */
   function warn(prefix, ...args) {
     if (currentLevel <= LEVELS.WARN) {
-      console.warn(`%c${prefix}`, 'color: #ff9800; font-weight: bold;', ...args);
+      const sanitizedArgs = sanitizeArgs(args); // Siempre sanitizar warnings
+      console.warn(`%c${prefix}`, 'color: #ff9800; font-weight: bold;', ...sanitizedArgs);
     }
   }
 
   /**
-   * Logger de nivel ERROR
+   * Logger de nivel ERROR (sanitiza automáticamente datos sensibles)
    * @param {string} prefix - Prefijo del módulo
    * @param {...any} args - Argumentos para log
    */
   function error(prefix, ...args) {
     if (currentLevel <= LEVELS.ERROR) {
-      console.error(`%c${prefix}`, 'color: #d32f2f; font-weight: bold;', ...args);
+      const sanitizedArgs = sanitizeArgs(args); // Siempre sanitizar errores
+      console.error(`%c${prefix}`, 'color: #d32f2f; font-weight: bold;', ...sanitizedArgs);
     }
   }
 
@@ -200,13 +268,16 @@
     error,
     setLevel,
     getLevel,
-    info: info_logger,
+    getInfo: info_logger,
     timestampedLog,
     contextLog,
     group,
     performance,
     table,
-    LEVELS: Object.keys(LEVELS)
+    sanitize,
+    setSanitization,
+    LEVELS: Object.keys(LEVELS),
+    SENSITIVE_PATTERNS: SENSITIVE_PATTERNS.map(p => p.name) // Exponer nombres de patrones
   };
 
   // Exponerlo globalmente
