@@ -73,6 +73,9 @@
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
 
+    <!-- ✅ Virtual Appointments Calendar Styling -->
+    <link rel="stylesheet" href="css/virtual-appointments.css">
+
 </head>
 
 <body>
@@ -146,7 +149,8 @@
                                     <small class="text-muted d-block">Horario: 8:00 AM - 1:00 PM</small>
                                     <small class="text-muted">Duración: 30 min</small>
                                 </div>
-                                <button class="btn btn-primary btn-sm mt-3 dept-selector" data-department="direccion">
+                                <button class="btn btn-primary btn-sm mt-3 dept-selector" data-department="direccion"
+                                    data-action="selectDepartment">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -165,7 +169,8 @@
                                     <small class="text-muted d-block">Horario: 9:00 AM - 1:00 PM</small>
                                     <small class="text-muted">Duración: 20 min</small>
                                 </div>
-                                <button class="btn btn-success btn-sm mt-3 dept-selector" data-department="servicios">
+                                <button class="btn btn-success btn-sm mt-3 dept-selector" data-department="servicios"
+                                    data-action="selectDepartment">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -184,7 +189,8 @@
                                     <small class="text-muted d-block">Horario: 8:00 AM - 12:30 PM</small>
                                     <small class="text-muted">Duración: 45 min</small>
                                 </div>
-                                <button class="btn btn-info btn-sm mt-3 dept-selector" data-department="orientacion">
+                                <button class="btn btn-info btn-sm mt-3 dept-selector" data-department="orientacion"
+                                    data-action="selectDepartment">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -204,7 +210,7 @@
                                     <small class="text-muted">Duración: 15 min</small>
                                 </div>
                                 <button class="btn btn-warning btn-sm mt-3 dept-selector"
-                                    data-department="administracion">
+                                    data-department="administracion" data-action="selectDepartment">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -223,7 +229,8 @@
                                     <small class="text-muted d-block">Horario: 8:00 AM - 1:00 PM</small>
                                     <small class="text-muted">Duración: 30 min</small>
                                 </div>
-                                <button class="btn btn-dark btn-sm mt-3 dept-selector" data-department="trabajo-social">
+                                <button class="btn btn-dark btn-sm mt-3 dept-selector" data-department="trabajo-social"
+                                    data-action="selectDepartment">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -242,8 +249,8 @@
                                     <small class="text-muted d-block">Horario: 9:00 AM - 12:00 PM</small>
                                     <small class="text-muted">Duración: 40 min</small>
                                 </div>
-                                <button class="btn btn-danger btn-sm mt-3 dept-selector"
-                                    data-department="nuevo-ingreso">
+                                <button class="btn btn-danger btn-sm mt-3 dept-selector" data-department="nuevo-ingreso"
+                                    data-action="selectDepartment">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -262,7 +269,8 @@
                                     <small class="text-muted d-block">Horario: 8:00 AM - 12:30 PM</small>
                                     <small class="text-muted">Duración: 25 min</small>
                                 </div>
-                                <button class="btn btn-info btn-sm mt-3 dept-selector" data-department="becas">
+                                <button class="btn btn-info btn-sm mt-3 dept-selector" data-department="becas"
+                                    data-action="selectDepartment">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -282,7 +290,7 @@
                                     <small class="text-muted">Duración: 30 min</small>
                                 </div>
                                 <button class="btn btn-success btn-sm mt-3 dept-selector"
-                                    data-department="inscripciones">
+                                    data-department="inscripciones" data-action="selectDepartment">
                                     <i class="fas fa-calendar-plus me-1"></i>Agendar Cita
                                 </button>
                             </div>
@@ -608,7 +616,7 @@
 
     <!-- Modal de Calendario -->
     <div class="modal fade" id="calendarModal" tabindex="-1" aria-labelledby="calendarModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="calendarModalLabel">
@@ -619,13 +627,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-lg-7">
+                        <div class="col-lg-8">
                             <h6 class="mb-3">Selecciona una fecha:</h6>
                             <div id="appointmentCalendar">
                                 <!-- El calendario se generará dinámicamente -->
                             </div>
                         </div>
-                        <div class="col-lg-5">
+                        <div class="col-lg-4">
                             <div id="timeSlotsContainer">
                                 <p class="text-muted">Primero selecciona una fecha disponible</p>
                             </div>
@@ -670,7 +678,7 @@
                     </div>
 
                     <!-- Formulario -->
-                    <form id="appointmentForm" class="professional-form">
+                    <form id="appointmentForm" data-handled-by="appointments.js" novalidate>
                         <!-- ✅ Campos ocultos para integración con appointments.js -->
                         <input type="hidden" id="appointment-department-hidden" name="department" value="">
                         <input type="hidden" id="appointment-date-hidden" name="date" value="">

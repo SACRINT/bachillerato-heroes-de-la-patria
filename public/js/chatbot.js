@@ -27,9 +27,10 @@ if (typeof window.BGE_CHATBOT_LOADED !== 'undefined') {
         endpoints: {
             search: '/chatbot/search',
             message: '/chatbot/message',
-            analytics: '/chatbot/analytics/daily'
+            analytics: '/chatbot/analytics/daily',
+            aiChat: '/ai/chat' // Endpoint RAG Real
         },
-        timeout: 5000
+        timeout: 15000 // Aumentar timeout para LLM (15s)
     };
 
     // 📱 Generador único de sesión
@@ -941,86 +942,60 @@ if (typeof window.BGE_CHATBOT_LOADED !== 'undefined') {
         async function processMessage(message) {
             const startTime = Date.now();
 
-            // Registrar mensaje del usuario en el backend
-            await logMessageToAPI(message, 'user');
+            // Registrar mensaje del usuario en el backend (opcional, fire & forget)
+            logMessageToAPI(message, 'user').catch(console.warn);
 
-            // FASE 1: Intentar buscar en el backend API primero
-            console.log('🔍 Buscando en backend API...');
-            const apiResponse = await searchBackendAPI(message, 'visitante');
+            // FASE 1: Intentar buscar en el backend API de IA (RAG)
+            console.log('🔍 Consultando Cerebro IA (RAG)...');
+            try {
+                const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.aiChat}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: message,
+                        history: [] // Implementar historial real si se desea
+                    }),
+                    signal: AbortSignal.timeout(API_CONFIG.timeout)
+                });
 
-            if (apiResponse && apiResponse.results && apiResponse.results.length > 0) {
-                console.log('✅ Respuesta encontrada en API backend');
-                const dbResult = apiResponse.results[0];
-                const formattedResponse = formatDatabaseResponse(dbResult);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.response) {
+                        console.log('✅ Respuesta IA Recibida');
 
-                // Registrar respuesta del bot
-                await logMessageToAPI(formattedResponse, 'bot', 'database_match');
+                        // Formatear respuesta Markdown/Texto a HTML bonito
+                        let formattedContent = data.response
+                            .replace(/\n\n/g, '<br><br>') // Párrafos
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Negritas
+                            .replace(/- /g, '• '); // Listas
 
-                return formattedResponse;
-            }
+                        // Añadir fuentes si existen
+                        if (data.sources && data.sources.length > 0) {
+                            formattedContent += `<br><br><small><em>Fuentes: ${[...new Set(data.sources)].join(', ')}</em></small>`;
+                        }
 
-            // FASE 2: Intentar usar los nuevos sistemas de IA como fallback
-            if (window.aiEducationalSystem && window.aiRecommendationEngine) {
-                try {
-                    const userId = getCurrentUserId();
+                        // Registrar la respuesta del bot para analíticos
+                        logMessageToAPI(formattedContent, 'bot', 'ai_rag_response').catch(console.warn);
 
-                    // Usar el sistema educativo AI para respuestas inteligentes
-                    const aiResponse = await window.aiEducationalSystem.processMessage(message, userId);
-
-                    if (aiResponse && aiResponse.response) {
-                        // Registrar interacción para recomendaciones
-                        window.aiRecommendationEngine.recordInteraction(userId, {
-                            timestamp: Date.now(),
-                            message: message,
-                            response: aiResponse.response,
-                            confidence: aiResponse.confidence || 0.8
+                        return formatResponse({
+                            title: '🤖 Asistente Virtual BGE',
+                            content: [{ text: formattedContent }],
+                            footer: 'Respuesta generada por Inteligencia Artificial'
                         });
-
-                        // Formatear respuesta AI
-                        return formatAIResponse(aiResponse);
                     }
-                } catch (error) {
-                    console.warn('🤖 Sistema AI no disponible, usando fallback:', error.message);
+                } else {
+                    console.warn('⚠️ IA API Error:', response.status);
                 }
+            } catch (error) {
+                console.warn('⚠️ Falló conexión con IA:', error);
             }
 
-            // Intentar buscar en la base de datos
-            if (isAPIConnected && window.apiClient) {
-                try {
-                    const userInfo = window.apiClient.getUserInfo();
-                    const userType = userInfo ? userInfo.tipo_usuario : 'visitante';
-
-                    // Buscar en base de datos
-                    const apiResponse = await window.apiClient.searchInformation(message, userType, 5);
-
-                    if (apiResponse && apiResponse.success && apiResponse.results.length > 0) {
-                        const dbResult = apiResponse.results[0];
-
-                        // Formatear respuesta de la base de datos
-                        const formattedResponse = formatDatabaseResponse(dbResult);
-
-                        // Registrar el mensaje en la base de datos
-                        await window.apiClient.logMessage(
-                            currentSessionId,
-                            message,
-                            formattedResponse,
-                            userType
-                        );
-
-                        return formattedResponse;
-                    }
-                } catch (error) {
-                    console.warn('🔄 API falló, usando respuestas locales:', error.message);
-                    isAPIConnected = false;
-                }
-            }
-
-            // FASE 3: Fallback a base de conocimiento local
+            // FASE 2: Fallback a base de conocimiento local (Si falla la IA o no hay internet)
             console.log('📚 Usando base de conocimiento local como fallback');
             const localResponse = processMessageLocal(message);
 
             // Registrar respuesta del bot
-            await logMessageToAPI(localResponse, 'bot', 'local_fallback');
+            logMessageToAPI(localResponse, 'bot', 'local_fallback').catch(console.warn);
 
             return localResponse;
         }

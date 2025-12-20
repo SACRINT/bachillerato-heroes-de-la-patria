@@ -24,6 +24,7 @@
     align-items: center;
     padding: 1rem 1.5rem;
     background: rgba(255, 255, 255, 0.95);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -336,7 +337,7 @@
     object-fit: cover;
 }
 
-.participant-avatar + span {
+.participant-avatar+span {
     font-weight: 500;
     color: #333;
 }
@@ -470,58 +471,238 @@
     font-weight: 600;
 }
 
+/* ============================================
+   CALENDARIO ELEGANTE Y PROFESIONAL
+   Diseño moderno con estética premium
+   ============================================ */
+
+/* Contenedor principal del calendario */
+.calendar-container {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 16px;
+    padding: 1rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Grid principal - NO usa display:contents, usa flex column */
 .calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 1px;
-    background: #e9ecef;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.calendar-day {
-    background: white;
-    min-height: 100px;
-    padding: 0.5rem;
-    position: relative;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.calendar-day:hover {
-    background: #f8f9fa;
-}
-
-.calendar-day.today {
-    background: rgba(102, 126, 234, 0.1);
-}
-
-.calendar-day.other-month {
-    color: #ccc;
-    background: #fafafa;
-}
-
-.day-number {
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 0.25rem;
-}
-
-.day-appointments {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    background: #ffffff;
+    border-radius: 12px;
+    /* overflow: visible;  <-- Causaba scroll si hijo era muy ancho */
+    overflow: hidden;
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
+    width: 100%;
+    max-width: 100%;
 }
 
-.calendar-appointment {
-    background: #667eea;
+/* Header con días de la semana - 7 columnas */
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: linear-gradient(135deg, #667eea 0%, #5a67d8 100%);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    width: 100%;
+}
+
+.calendar-weekdays .weekday {
+    padding: 0.5rem 0.1rem;
+    /* Padding reducido seguro */
+    text-align: center;
+    font-weight: 700;
     color: white;
-    padding: 0.125rem 0.25rem;
-    border-radius: 3px;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    /* Reducido para evitar overflow */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* Contenedor de días - 7 columnas */
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: #e2e8f0;
+    padding: 1px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    width: 100%;
+}
+
+/* Cada celda del día */
+.calendar-day {
+    background: #ffffff;
+    min-height: 50px;
+    /* Reducido para vista compacta */
+    padding: 0.1rem;
+    /* Padding interno reducido */
+    position: relative;
+    cursor: default;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid #f1f5f9;  <-- Eliminado para evitar doble borde con el gap */
+    box-sizing: border-box;
+    width: 100%;
+    /* Asegurar que no exceda la celda */
+}
+
+/* 1. Días Pasados y Fines de Semana (Gris) */
+.calendar-day.day-past,
+.calendar-day.day-weekend {
+    background: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.calendar-day.day-past .day-number,
+.calendar-day.day-weekend .day-number {
+    color: #9ca3af;
+}
+
+/* 2. Días Disponibles (Verde Claro - Solicitado) */
+.calendar-day.day-available {
+    background: #dcfce7 !important;
+    /* Verde muy claro */
+    color: #052e16 !important;
+    /* Verde casi negro */
+    cursor: pointer;
+    border: 1px solid #86efac;
+    font-weight: 600;
+}
+
+.calendar-day.day-available:hover {
+    background: #bbf7d0 !important;
+    transform: scale(1.05);
+    z-index: 2;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 3. Días No Disponibles Futuros (Rojo - Solicitado) */
+.calendar-day.day-unavailable {
+    background: #ef4444 !important;
+    /* Rojo vibrante */
+    color: #ffffff !important;
+    /* Texto blanco */
+    border: 1px solid #dc2626;
+    cursor: not-allowed;
+    opacity: 0.9;
+}
+
+.calendar-day.day-unavailable .day-number {
+    color: #ffffff !important;
+}
+
+/* 4. Otros meses */
+.calendar-day.other-month {
+    background: #f8fafc;
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* Día actual - círculo elegante (Prioridad visual) */
+.calendar-day.today .day-number {
+    box-shadow: 0 0 0 2px #3b82f6;
+    /* Anillo azul */
+    background: transparent;
+    color: inherit;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Excepción: Si hoy es 'available', mantener colores de available pero con anillo */
+
+/* Selección */
+.calendar-day.selected {
+    background: #2563eb !important;
+    /* Azul intenso */
+    color: white !important;
+    transform: scale(1.08);
+    /* Más grande */
+    z-index: 10;
+    box-shadow: 0 10px 15px rgba(37, 99, 235, 0.3) !important;
+    border: 2px solid white;
+}
+
+.calendar-day.selected .day-number {
+    color: white !important;
+}
+
+/* Número del día */
+.day-number {
+    font-size: 1rem;
+    margin-bottom: 0px;
+    z-index: 1;
+}
+
+/* Time slots - Grid Layout (Solicitado: Como un calendario) */
+.time-slots-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* 2 columnas exactas */
+    gap: 0.5rem;
+    /* Gap reducido */
+    padding: 0px;
+    /* Padding removido del grid para dar espacio */
+    width: 100%;
+}
+
+.time-slot {
+    width: 100%;
+    margin: 0 !important;
+    /* Remover margin Bootstrap */
+    padding: 0.4rem 0.1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    background: #e0f2fe;
+    /* Azul claro (Solicitado) */
+    border: 1px solid #bae6fd;
+    color: #0369a1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    min-width: unset;
+    /* Reset del estilo anterior */
+}
+
+.time-slot:hover {
+    background: #bae6fd;
+    color: #0c4a6e;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.time-slot.selected {
+    background: #2563eb !important;
+    color: white !important;
+    border-color: #2563eb;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.time-slot.disabled {
+    background: #f1f5f9;
+    border-color: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.time-slot.disabled:hover {
+    transform: none;
+    box-shadow: none;
 }
 
 /* Formulario de cita */
@@ -586,7 +767,7 @@
 }
 
 .modal-body {
-    padding: 1.5rem;
+    padding: 1rem;
     overflow-y: auto;
     max-height: 60vh;
 }
@@ -878,6 +1059,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -893,6 +1075,7 @@
         opacity: 0;
         transform: scale(0.9) translateY(-20px);
     }
+
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -925,8 +1108,13 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Scrollbars personalizadas */

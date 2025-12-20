@@ -75,7 +75,10 @@
       "Bash(timeout 5 curl:*)",
       "Bash(start http://localhost:3000/admin-dashboard.html)",
       "Bash(powershell -Command \"Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.Screen]::PrimaryScreen | Select-Object -Property Bounds\")",
-      "Bash(powershell -Command \"Get-Process | Where-Object {$_ProcessName -match ''chrome|firefox|msedge''} | Select-Object ProcessName, Id\")"
+      "Bash(powershell -Command \"Get-Process | Where-Object {$_ProcessName -match ''chrome|firefox|msedge''} | Select-Object ProcessName, Id\")",
+      "Bash(dir:*)",
+      "Bash(wc:*)",
+      "Skill(superpowers:systematic-debugging)"
     ],
     "deny": [],
     "ask": []

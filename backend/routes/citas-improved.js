@@ -215,22 +215,95 @@ router.get('/available-slots', async (req, res) => {
             res.status(400).json({ success: false, message: dateValidation.message });
             return;
         }
+
+        // Consultar ocupación real para esa fecha
         const result = await database_1.default.executeQuery(`
-            SELECT hora_solicitada, COUNT(*) FILTER (WHERE estado NOT IN ('rechazada', 'cancelada') AND confirmada = true) as ocupados
-            FROM citas WHERE fecha_solicitada = $1 GROUP BY hora_solicitada
+            SELECT hora_solicitada, COUNT(*) as ocupados
+            FROM citas 
+            WHERE fecha_solicitada = $1 
+            AND estado NOT IN ('rechazada', 'cancelada')
+            AND confirmada = true
+            GROUP BY hora_solicitada
         `, [fecha]);
+
         const horarios = [];
-        for (let hour = 8; hour < 17; hour++) {
-            const hora = `${String(hour).padStart(2, '0')}:00`;
-            const existente = result.find(r => r.hora_solicitada === hora);
-            const ocupados = existente ? parseInt(existente.ocupados) : 0;
-            horarios.push({ hora, disponibles: 3 - ocupados, ocupados });
+
+        // Generar slots cada 30 min desde las 8:00 hasta las 13:00 de forma explícita
+        // Hardcoded para asegurar intervalos de 30 min (08:00, 08:30, 09:00, ...)
+        for (let hour = 8; hour <= 13; hour++) {
+            const minutes = (hour === 13) ? [0] : [0, 30]; // 13:00 solo tiene :00
+
+            for (const min of minutes) {
+                const hora = `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+
+                // Buscar ocupación en DB (maneja formato HH:MM o HH:MM:SS)
+                const existente = result.find(r => r.hora_solicitada.startsWith(hora));
+                const ocupados = existente ? parseInt(existente.ocupados) : 0;
+
+                // Capacidad por slot = 3
+                const capacidad = 3;
+
+                horarios.push({
+                    hora,
+                    disponibles: Math.max(0, capacidad - ocupados),
+                    ocupados
+                });
+            }
         }
-        res.json({ success: true, fecha, departamento, horarios: horarios.filter(h => h.disponibles > 0) });
+
+        // DEBUG: Verificar slots generados
+        debug_logger_1.debugLog.log('CITAS_IMPROVED', `Slots generados para ${fecha}: ${horarios.length} slots. (Ej: ${horarios[0].hora}, ${horarios[1].hora}...)`);
+
+
+        // RETORNAR TODOS, incluso si full, para visualización en gris
+        res.json({ success: true, fecha, departamento, horarios });
     }
     catch (error) {
         debug_logger_1.debugLog.error('CITAS_IMPROVED', 'Error obteniendo horarios disponibles:', (0, sanitized_errors_1.sanitizeError)(error, 'citas-improved'));
         res.status(500).json({ success: false, message: 'Error al obtener horarios disponibles' });
+    }
+});
+
+/**
+ * GET /api/citas-improved/month-availability
+ * Retorna booking counts por día para un mes dado
+ */
+router.get('/month-availability', async (req, res) => {
+    try {
+        const { year, month, departamento } = req.query;
+
+        if (!year || !month) {
+            res.status(400).json({ success: false, message: 'Año y mes requeridos' });
+            return;
+        }
+
+        // Construir rango de fechas
+        const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
+        // Obtener último día del mes
+        const lastDay = new Date(parseInt(year), parseInt(month), 0).getDate();
+        const endDate = `${year}-${String(month).padStart(2, '0')}-${lastDay}`;
+
+        const result = await database_1.default.executeQuery(`
+            SELECT fecha_solicitada, COUNT(*) as total_citas
+            FROM citas 
+            WHERE fecha_solicitada >= $1 AND fecha_solicitada <= $2
+            AND estado NOT IN ('rechazada', 'cancelada')
+            AND confirmada = true
+            GROUP BY fecha_solicitada
+        `, [startDate, endDate]);
+
+        // Mapear a objeto simple { "2024-10-15": 5, ... }
+        const availability = {};
+        result.forEach(row => {
+            const dateKey = new Date(row.fecha_solicitada).toISOString().split('T')[0];
+            availability[dateKey] = parseInt(row.total_citas);
+        });
+
+        res.json({ success: true, availability });
+
+    } catch (error) {
+        debug_logger_1.debugLog.error('CITAS_IMPROVED', 'Error comprobando disponibilidad mensual:', (0, sanitized_errors_1.sanitizeError)(error, 'citas-improved'));
+        res.status(500).json({ success: false, message: 'Error al obtener disponibilidad' });
     }
 });
 /**

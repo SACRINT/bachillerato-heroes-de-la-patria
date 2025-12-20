@@ -1,6 +1,6 @@
 {
   "name": "bachillerato-heroes-patria-website",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "description": "Sitio web oficial del Bachillerato General Estatal Héroes de la Patria - DAO Refactoring Completado",
   "type": "commonjs",
   "main": "backend/server.js",

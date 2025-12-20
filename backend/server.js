@@ -4,6 +4,7 @@
  */
 
 // 🔴 CORRECCIÓN: Cargar .env desde el directorio raíz del proyecto
+// Force Reload: 2025-02-17
 const path = require('path');
 const devLogger = require('./utils/devLogger');
 
@@ -86,6 +87,10 @@ const searchRoutes = loadRoute('./routes/search');
 const emailsRoutes = loadRoute('./routes/emails');
 const apiDocsRoutes = loadRoute('./routes/api-docs'); // ✅ SWAGGER UI - SEMANA 29
 const aiTutorRoutes = loadRoute('./routes/ai-tutor'); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
+const aiAnalyticsRoutes = require('./ai/analytics/routes'); // ✅ AI ANALYTICS - SEMANA 9 (19 DIC 2025)
+const aiTutorAlphaRoutes = require('./ai/tutor/routes_alpha'); // ✅ AI TUTOR ALPHA - SEMANA 10 (19 DIC 2025)
+const mlopsRoutes = require('./ai/mlops/routes'); // ✅ MLOPS - SEMANA 11 (19 DIC 2025)
+const evaluationRoutes = require('./ai/evaluation/routes'); // ✅ EVALUATION - SEMANA 12 (19 DIC 2025)
 const installPollsRoutes = loadRoute('./routes/install-polls');
 const teachersPortalRoutes = loadRoute('./routes/teachers-portal');
 const messagingRoutes = loadRoute('./routes/messaging');
@@ -99,6 +104,7 @@ const calendarRoutes = loadRoute('./routes/calendar');  // ✅ CALENDAR ROUTES -
 const pendientesAprobacionRoutes = loadRoute('./routes/pendientes-aprobacion');
 const diagnosticoAprobacionesRoutes = loadRoute('./routes/diagnostico-aprobaciones');
 const gamificationRoutes = loadRoute('./routes/gamification');  // ✅ GAMIFICATION ROUTES - Sistema de logros y puntuaciones
+const gamificationExtendedRoutes = loadRoute('./routes/gamification-extended');  // ✅ GAMIFICATION EXTENDED - Streaks, Achievements, Leaderboards (18 DIC 2025)
 const triviaGameRoutes = loadRoute('./routes/trivia-game');  // ✅ EDUCATIONAL GAMES - Trivia (7 DIC 2025)
 const conceptBuilderRoutes = loadRoute('./routes/concept-builder');  // ✅ EDUCATIONAL GAMES - Mapas conceptuales (7 DIC 2025)
 
@@ -447,6 +453,10 @@ app.use('/api/challenges', challengesRoutes);  // ✅ CHALLENGES ROUTES - Sistem
 app.use('/api/store', storeRoutes);  // ✅ STORE ROUTES - Tienda virtual (15 NOV 2025)
 app.use('/api/docs', apiDocsRoutes); // ✅ SWAGGER UI - SEMANA 29
 app.use('/api/tutor', aiTutorRoutes); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
+app.use('/api/ai/analytics', aiAnalyticsRoutes); // ✅ AI DESCRIPTIVE ANALYTICS - SEMANA 9 (19 DIC 2025)
+app.use('/api/ai/tutor-alpha', aiTutorAlphaRoutes); // ✅ AI TUTOR ALPHA - SEMANA 10 (19 DIC 2025)
+app.use('/api/ai/mlops', mlopsRoutes); // ✅ MLOPS - SEMANA 11 (19 DIC 2025)
+app.use('/api/ai/evaluation', evaluationRoutes); // ✅ EVALUATION - SEMANA 12 (19 DIC 2025)
 app.use('/api/super-admin', superAdminDashboardRoutes); // ✅ SUPER ADMIN DASHBOARD - FASE 5 (7 DIC 2025)
 app.use('/api/stripe-webhooks', stripeWebhooksRoutes); // ✅ STRIPE WEBHOOKS - FASE 5.2 (7 DIC 2025)
 app.use('/api/ar', arExperiencesRoutes); // ✅ AR EXPERIENCES - FASE 5.3 (7 DIC 2025)

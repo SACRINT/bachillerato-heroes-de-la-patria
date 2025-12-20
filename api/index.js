@@ -1535,6 +1535,155 @@ app.get('/api/digital-library/documents', async (req, res) => {
 });
 
 // ============================================
+// CITAS IMPROVED (SERVERLESS COMPATIBLE)
+// ============================================
+
+// POST /api/citas-improved/create - Crear nueva cita
+app.post('/api/citas-improved/create', async (req, res) => {
+    try {
+        const { nombre_completo, email, telefono, tipo_persona, motivo, descripcion, fecha_solicitada, hora_solicitada, departamento } = req.body;
+
+        // Validaciones básicas
+        if (!nombre_completo || !email || !motivo || !fecha_solicitada || !hora_solicitada || !departamento) {
+            return res.status(400).json({
+                success: false,
+                message: 'Faltan campos requeridos'
+            });
+        }
+
+        const { Pool } = require('pg');
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        const client = await pool.connect();
+
+        try {
+            // Verificar disponibilidad (simple)
+            const countQuery = `
+                SELECT COUNT(*) as count 
+                FROM citas 
+                WHERE fecha_solicitada = $1 
+                AND hora_solicitada = $2 
+                AND estado NOT IN ('rechazada', 'cancelada')
+            `;
+            const countResult = await client.query(countQuery, [fecha_solicitada, hora_solicitada]);
+
+            if (parseInt(countResult.rows[0].count) >= 3) { // Hardcoded limit 3 per slot
+                return res.status(409).json({
+                    success: false,
+                    message: 'Este horario ya no está disponible'
+                });
+            }
+
+            // Generar ID y Token
+            const crypto = require('crypto');
+            const appointmentId = `CITA-${new Date().getFullYear()}-${Date.now().toString().slice(-4)}`;
+            const confirmationToken = crypto.randomBytes(32).toString('hex');
+
+            // Insertar
+            const insertQuery = `
+                INSERT INTO citas (
+                    cita_id, nombre_completo, email, telefono, tipo_persona, 
+                    motivo, descripcion, fecha_solicitada, hora_solicitada, 
+                    departamento, token_confirmacion, estado, created_at, updated_at
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'pendiente', NOW(), NOW())
+                RETURNING *
+            `;
+
+            const values = [
+                appointmentId, nombre_completo, email, telefono || null, tipo_persona || 'externo',
+                motivo, descripcion || null, fecha_solicitada, hora_solicitada,
+                departamento, confirmationToken
+            ];
+
+            const result = await client.query(insertQuery, values);
+
+            // TODO: Enviar email (requiere configurar nodemailer aquí o usar una tabla de 'emails_queue')
+
+            res.json({
+                success: true,
+                message: 'Cita solicitada exitosamente',
+                cita: {
+                    id: result.rows[0].cita_id,
+                    estado: 'pendiente'
+                }
+            });
+
+        } finally {
+            client.release();
+        }
+
+    } catch (error) {
+        console.error('[CITAS-CREATE] Error:', error.message);
+        res.status(500).json({
+            success: false,
+            message: 'Error al crear la cita',
+            error: error.message
+        });
+    }
+});
+
+// GET /api/citas-improved/available-slots - Verificar disponibilidad
+app.get('/api/citas-improved/available-slots', async (req, res) => {
+    try {
+        const { fecha, departamento } = req.query;
+
+        if (!fecha) {
+            return res.status(400).json({ success: false, message: 'Fecha requerida' });
+        }
+
+        const { Pool } = require('pg');
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        const client = await pool.connect();
+
+        try {
+            const query = `
+                SELECT hora_solicitada, COUNT(*) as ocupados
+                FROM citas 
+                WHERE fecha_solicitada = $1 
+                AND estado NOT IN ('rechazada', 'cancelada') 
+                GROUP BY hora_solicitada
+            `;
+
+            const result = await client.query(query, [fecha]);
+
+            // Generar estructura para frontend
+            const slots = [];
+            // Horario base: 8:00 a 14:00 (ajustar según dept si fuera necesario)
+            const baseSlots = ['08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30'];
+
+            const horarios = baseSlots.map(hora => {
+                const ocupado = result.rows.find(r => r.hora_solicitada === hora);
+                const count = ocupado ? parseInt(ocupado.ocupados) : 0;
+                return {
+                    hora,
+                    disponibles: 3 - count, // Limite 3
+                    ocupados: count
+                };
+            }).filter(h => h.disponibles > 0);
+
+            res.json({
+                success: true,
+                horarios: horarios
+            });
+
+        } finally {
+            client.release();
+        }
+
+    } catch (error) {
+        console.error('[CITAS-SLOTS] Error:', error.message);
+        res.status(500).json({ success: false, message: 'Error verificando disponibilidad' });
+    }
+});
+
+// ============================================
 // MENSAJERÍA
 // ============================================
 
@@ -1624,16 +1773,20 @@ function getFallbackData(endpoint) {
         '/api/iacoins/balance': { success: true, userId: 1, balance: 500, currency: 'IACoins', isDemoData: true },
         '/api/iacoins/achievements': { success: true, achievements: [], total: 0, isDemoData: true },
         '/api/iacoins/challenges': { success: true, challenges: [], total: 0, isDemoData: true },
-        '/api/iacoins/leaderboard': { success: true, leaderboard: [
-            { rank: 1, id: 1, username: 'admin', nombre: 'Administrador', total_coins: 1000, achievements_count: 5 }
-        ], total: 1, isDemoData: true },
+        '/api/iacoins/leaderboard': {
+            success: true, leaderboard: [
+                { rank: 1, id: 1, username: 'admin', nombre: 'Administrador', total_coins: 1000, achievements_count: 5 }
+            ], total: 1, isDemoData: true
+        },
         '/api/iacoins/transactions': { success: true, transactions: [], total: 0, isDemoData: true },
         '/api/store/items': { success: true, items: [], total: 0, isDemoData: true },
-        '/api/auth/profile': { success: true, user: {
-            id: 1, uuid: 'default-uuid', email: 'test@example.com', username: 'test',
-            nombre: 'Usuario', apellido_paterno: 'Prueba', apellido_materno: 'Sistema',
-            role: 'estudiante', status: 'activo', avatarUrl: null, createdAt: new Date().toISOString()
-        }, isDemoData: true },
+        '/api/auth/profile': {
+            success: true, user: {
+                id: 1, uuid: 'default-uuid', email: 'test@example.com', username: 'test',
+                nombre: 'Usuario', apellido_paterno: 'Prueba', apellido_materno: 'Sistema',
+                role: 'estudiante', status: 'activo', avatarUrl: null, createdAt: new Date().toISOString()
+            }, isDemoData: true
+        },
         '/api/students-auth/check': { success: true, authenticated: true, isStudent: true, userId: 1, email: 'test@example.com', username: 'test', isDemoData: true },
         '/api/digital-library/categories': { success: true, categories: [], total: 0, isDemoData: true },
         '/api/digital-library/documents': { success: true, documents: [], total: 0, isDemoData: true },
@@ -1869,6 +2022,84 @@ app.get('/api/polls/categories/list', async (req, res) => {
             data: [],
             total: 0,
             isDemoData: true
+        });
+    }
+});
+
+// ============================================
+// RUTAS IA (RAG)
+// ============================================
+app.post('/api/ai/chat', async (req, res) => {
+    try {
+        const { message, history } = req.body;
+
+        // Lazy load para no afectar cold start de otras rutas
+        const { processChatMessage } = require('../backend/ai/rag/chat_service');
+
+        if (!message) {
+            return res.status(400).json({ error: 'Mensaje requerido' });
+        }
+
+        const result = await processChatMessage(message, history || []);
+        res.json(result);
+
+    } catch (error) {
+        console.error('[API-AI] Error en chat:', error);
+        res.status(503).json({
+            error: 'Servicio de IA no disponible',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+// ============================================
+// RUTAS IA (TUTOR)
+// ============================================
+app.post('/api/ai/tutor', async (req, res) => {
+    try {
+        const { message, history, subject } = req.body;
+
+        // Lazy load
+        const { processTutorInteraction } = require('../backend/ai/tutor/tutor_service');
+
+        if (!message) {
+            return res.status(400).json({ error: 'Mensaje requerido' });
+        }
+
+        const result = await processTutorInteraction(message, history || [], subject);
+        res.json(result);
+
+    } catch (error) {
+        console.error('[API-TUTOR] Error:', error);
+        res.status(503).json({ error: 'Tutor no disponible' });
+    }
+});
+
+// ============================================
+// RUTAS IA (PREDICTIVE)
+// ============================================
+app.post('/api/ai/predict/dropout', async (req, res) => {
+    try {
+        const { studentId } = req.body;
+
+        // Lazy load
+        const { getStudentRiskPrediction } = require('../backend/ai/models/dropout_prediction/inference_service');
+
+        if (!studentId) {
+            return res.status(400).json({ error: 'ID de estudiante requerido' });
+        }
+
+        // Mock Auth Check (En prod usar middleware real)
+        // if (!req.user || !req.user.isAdmin) return res.status(403)...
+
+        const prediction = await getStudentRiskPrediction(studentId);
+        res.json(prediction);
+
+    } catch (error) {
+        console.error('[API-AI] Error en predicción:', error);
+        res.status(500).json({
+            error: 'Error calculando riesgo',
+            details: error.message
         });
     }
 });

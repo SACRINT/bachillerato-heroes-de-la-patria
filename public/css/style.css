@@ -627,6 +627,7 @@ body.dark-mode .dropdown-item:focus {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     border-radius: 30px;
     /* MÃ¡s redondeado estilo pÃ­ldora elegante */
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     /* Efecto cristal */
     position: relative;
@@ -1683,6 +1684,7 @@ body.dark-mode .chatbot-message.bot,
         0 2px 10px rgba(0, 0, 0, 0.04),
         inset 0 1px 0 rgba(255, 255, 255, 0.9);
     height: auto;
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     position: relative;
     overflow: hidden;
@@ -2341,7 +2343,7 @@ body .analytics-dashboard-toggle {
 
 /* Evitar espacios gigantes en dashboard - EXCEPTO mÃ©tricas ejecutivas */
 .dashboard-section {
-    min-height: auto !important;
+    min-height: 0 !important;
     max-height: 500px !important;
 }
 
@@ -5355,4 +5357,386 @@ body #why-choose-us {
 .hero-content {
     position: relative;
     z-index: 5;
+}
+
+/* ==========================================================================
+   20. APPOINTMENT CALENDAR STYLES - SISTEMA DE CITAS
+   ========================================================================== */
+
+/* Calendar Modal Styles */
+#calendarModal .modal-content {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+#calendarModal .modal-header {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%);
+    border-bottom: none;
+    padding: 1.25rem 1.5rem;
+}
+
+#calendarModal .modal-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+#calendarModal .modal-body {
+    padding: 1.5rem;
+}
+
+/* Calendar Container */
+#appointmentCalendar {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Calendar Header with Navigation */
+#appointmentCalendar .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    margin-bottom: 1rem;
+}
+
+#appointmentCalendar .calendar-header h5,
+#appointmentCalendar #currentMonthYear {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    text-transform: capitalize;
+    margin: 0;
+}
+
+#appointmentCalendar .calendar-header button {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    color: var(--bs-primary);
+    transition: all 0.2s ease;
+}
+
+#appointmentCalendar .calendar-header button:hover {
+    background: var(--bs-primary);
+    color: white;
+    border-color: var(--bs-primary);
+}
+
+/* Calendar Grid Container */
+.calendar-grid {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 0.5rem;
+}
+
+/* Calendar Weekdays Header */
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.calendar-weekdays .weekday {
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.5rem 0;
+}
+
+/* Calendar Days Grid */
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+/* Individual Day Cells */
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: default;
+    transition: all 0.2s ease;
+    background: #ffffff;
+    color: #333;
+    min-height: 40px;
+}
+
+/* Available days - Can be selected */
+.calendar-day.available {
+    cursor: pointer;
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    color: #2e7d32;
+    font-weight: 600;
+    border: 1px solid #a5d6a7;
+}
+
+.calendar-day.available:hover {
+    background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(102, 187, 106, 0.4);
+}
+
+/* Today's date */
+.calendar-day.today {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%);
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+}
+
+.calendar-day.today.available {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%);
+    color: white;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px var(--bs-primary), 0 4px 12px rgba(25, 118, 210, 0.3);
+}
+
+/* Selected date */
+.calendar-day.selected {
+    background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%) !important;
+    color: white !important;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(13, 71, 161, 0.4);
+    transform: scale(1.05);
+}
+
+/* Disabled days (past, other month, weekends) */
+.calendar-day.disabled {
+    color: #bdbdbd;
+    cursor: not-allowed;
+    background: #fafafa;
+}
+
+.calendar-day.other-month {
+    color: #e0e0e0;
+    background: transparent;
+}
+
+.calendar-day.weekend {
+    color: #ef9a9a;
+    background: #ffebee;
+}
+
+/* Time Slots Container Styles */
+#timeSlotsContainer {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1rem;
+    min-height: 300px;
+}
+
+#timeSlotsContainer h6 {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--bs-primary);
+}
+
+#timeSlotsContainer .text-muted {
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    text-align: center;
+}
+
+/* Time Slot Buttons */
+.time-slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    margin: 0.25rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 80px;
+}
+
+.time-slot:hover {
+    border-color: var(--bs-primary);
+    color: var(--bs-primary);
+    background: rgba(25, 118, 210, 0.05);
+}
+
+.time-slot.selected {
+    background: var(--bs-primary);
+    color: white;
+    border-color: var(--bs-primary);
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+}
+
+.time-slot:disabled,
+.time-slot.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f5f5f5;
+    border-color: #e0e0e0;
+}
+
+/* Department Icon Styles for Cards */
+.department-icon-lg {
+    width: 70px;
+    height: 70px;
+}
+
+/* Department Card hover effects */
+.department-card {
+    transition: all 0.3s ease;
+}
+
+.department-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Step indicator styles */
+.step-number {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+}
+
+.step-indicator {
+    width: 30px;
+    height: 30px;
+    background: var(--bs-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+/* Appointment Form Modal Styles */
+#appointmentFormModal .modal-content {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+#appointmentFormModal .alert-info {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+#appointmentFormModal .alert-info .row {
+    margin-bottom: 0.25rem;
+}
+
+#appointmentFormModal .alert-info .row:last-child {
+    margin-bottom: 0;
+}
+
+/* Responsive Calendar */
+@media (max-width: 768px) {
+    #calendarModal .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    #calendarModal .modal-body .row {
+        flex-direction: column;
+    }
+
+    #calendarModal .modal-body .col-lg-7,
+    #calendarModal .modal-body .col-lg-5 {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    #calendarModal .modal-body .col-lg-5 {
+        margin-top: 1.5rem;
+    }
+
+    .calendar-day {
+        font-size: 0.8rem;
+        min-height: 35px;
+    }
+
+    .calendar-weekdays .weekday {
+        font-size: 0.65rem;
+    }
+}
+
+/* Dark Mode Calendar Styles */
+body.dark-mode #calendarModal .modal-content {
+    background: var(--dark-bg-secondary);
+}
+
+body.dark-mode #calendarModal .modal-body {
+    background: var(--dark-bg-secondary);
+}
+
+body.dark-mode #appointmentCalendar {
+    background: var(--dark-bg-tertiary);
+}
+
+body.dark-mode .calendar-grid {
+    background: var(--dark-bg-primary);
+}
+
+body.dark-mode .calendar-weekdays .weekday {
+    color: var(--dark-text-secondary);
+}
+
+body.dark-mode .calendar-day {
+    background: var(--dark-bg-secondary);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .calendar-day.disabled {
+    color: #555;
+    background: var(--dark-bg-primary);
+}
+
+body.dark-mode .calendar-day.other-month {
+    color: #444;
+}
+
+body.dark-mode #timeSlotsContainer {
+    background: var(--dark-bg-tertiary);
+}
+
+body.dark-mode #timeSlotsContainer h6 {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .time-slot {
+    background: var(--dark-bg-secondary);
+    color: var(--dark-text-primary);
+    border-color: var(--dark-border);
+}
+
+body.dark-mode .time-slot:hover {
+    background: rgba(25, 118, 210, 0.2);
 }
