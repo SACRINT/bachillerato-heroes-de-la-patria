@@ -147,7 +147,7 @@
     position: relative;
     display: block;
     overflow: visible;
-    min-height: auto;
+    min-height: 0;
     /* FIX (12 Dic 2025): Asegurar que el contenedor expande para incluir su contenido hijo */
     contain: layout;
     /* Forzar que recalcule la altura basada en su contenido */
@@ -177,7 +177,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    aria-label: "Alternar modo oscuro";
 }
 
 .dark-mode-toggle:hover {
@@ -208,7 +207,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    aria-label: "Abrir chat de ayuda";
 }
 
 .chatbot-toggle:hover {
@@ -306,7 +304,45 @@ html {
     .chatbot-toggle,
     #back-to-top,
     .pwa-install-banner,
+
     .chatbot-container {
         display: none !important;
     }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* SECCIÓN 7: BACK TO TOP BUTTON                                             */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+#back-to-top {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    z-index: 1020;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--bge-primary);
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+}
+
+#back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+#back-to-top:hover {
+    transform: translateY(-3px) scale(1.1);
+    background: var(--bge-primary-dark);
+    box-shadow: 0 6px 20px rgba(21, 101, 192, 0.4);
 }

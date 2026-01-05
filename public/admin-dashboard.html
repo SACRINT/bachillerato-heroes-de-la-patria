@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1976D2">
     <meta name="description" id="page-description"
         content="Dashboard Administrativo del Bachillerato General Estatal Héroes de la Patria">
     <meta name="keywords" content="administración, dashboard, gestión, académico, control">
@@ -15,62 +16,15 @@
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin-style.css">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
 
     <!-- 🎯 BGE FRAMEWORK CORE - MOTOR PRINCIPAL (MOVIDO AL HEAD PARA PRE-CARGA) -->
     <script src="js/bge-framework-core.js"></script>
 
     <!-- CSS adicional para métricas avanzadas -->
-    <style>
-        .timeline {
-            position: relative;
-            padding-left: 20px;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 8px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: #dee2e6;
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        .timeline-marker {
-            position: absolute;
-            left: -16px;
-            top: 2px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            border: 2px solid white;
-        }
-
-        .timeline-content {
-            margin-left: 0;
-        }
-
-        /* ✨ Hover effects reemplazados de inline handlers */
-        [data-action] {
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        [data-action]:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-        }
-
-        [data-action]:active {
-            transform: translateY(-2px);
-        }
-    </style>
+    <!-- Estilos específicos de admin movidos a admin-style.css -->
     <script src="js/meta-updater.js" defer></script>
     <!-- ✅ FIX (18 Nov 2025): Header/Footer styles loaded globally -->
     <!-- These MUST be in <head> so they apply BEFORE dynamic header/footer injection -->
@@ -130,14 +84,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center mb-5">
-                    <h2 class="fw-bold text-dark" style="color: #212529 !important;">Características del Sistema</h2>
+                    <h2 class="fw-bold text-dark text-dark-override">Características del Sistema</h2>
                     <p class="text-muted">Herramientas completas para la gestión escolar</p>
                 </div>
             </div>
             <div class="row g-4">
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm feature-card"
-                        style="cursor: pointer; transition: transform 0.2s ease;" data-action="scrollToSection">
+                    <div class="card h-100 border-0 shadow-sm feature-card" data-action="scrollToSection">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-chart-bar fa-3x text-primary"></i>
@@ -149,8 +102,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm feature-card"
-                        style="cursor: pointer; transition: transform 0.2s ease;" data-action="showInfoModal">
+                    <div class="card h-100 border-0 shadow-sm feature-card" data-action="showInfoModal">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-info-circle fa-3x text-success"></i>
@@ -161,8 +113,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm feature-card"
-                        style="cursor: pointer; transition: transform 0.2s ease;" data-action="scrollToSection">
+                    <div class="card h-100 border-0 shadow-sm feature-card" data-action="scrollToSection">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-th-large fa-3x text-warning"></i>
@@ -173,8 +124,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm feature-card"
-                        style="cursor: pointer; transition: transform 0.2s ease;" data-action="scrollToSection">
+                    <div class="card h-100 border-0 shadow-sm feature-card" data-action="scrollToSection">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <i class="fas fa-shield-alt fa-3x text-info"></i>
@@ -538,7 +488,7 @@
     </section>
 
     <!-- Sección de Métricas Ejecutivas Avanzadas -->
-    <section class="py-5 bg-light dashboard-section" id="executive-metrics-section" style="display: none;">
+    <section class="py-5 bg-light dashboard-section" id="executive-metrics-section">
         <div class="container">
             <div class="row mb-4">
                 <div class="col-12">
@@ -586,28 +536,28 @@
                             <div class="row">
                                 <!-- Gráfica: Noticias por Mes -->
                                 <div class="col-md-6 mb-4">
-                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                    <div class="chart-container chart-container-300">
                                         <canvas id="chartNoticiasPorMes"></canvas>
                                     </div>
                                 </div>
 
                                 <!-- Gráfica: Eventos por Categoría -->
                                 <div class="col-md-6 mb-4">
-                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                    <div class="chart-container chart-container-300">
                                         <canvas id="chartEventosPorCategoria"></canvas>
                                     </div>
                                 </div>
 
                                 <!-- Gráfica: Quejas por Tipo -->
                                 <div class="col-md-6 mb-4">
-                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                    <div class="chart-container chart-container-300">
                                         <canvas id="chartQuejasPorTipo"></canvas>
                                     </div>
                                 </div>
 
                                 <!-- Gráfica: Crecimiento de Suscriptores -->
                                 <div class="col-md-6 mb-4">
-                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                    <div class="chart-container chart-container-300">
                                         <canvas id="chartSuscriptoresCrecimiento"></canvas>
                                     </div>
                                 </div>
@@ -640,8 +590,10 @@
                             <!-- Filtros del calendario -->
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label small fw-bold">Categoría</label>
+                                    <label class="form-label small fw-bold"
+                                        for="calendarCategoriaFilter">Categoría</label>
                                     <select class="form-select form-select-sm" id="calendarCategoriaFilter"
+                                        aria-label="Filtro de categoría" title="Filtrar por categoría"
                                         data-change-handler="globalEventCalendar?.applyFilters({categoria: this.value})">
                                         <option value="todas">Todas las categorías</option>
                                         <option value="Académico">Académico</option>
@@ -652,8 +604,10 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label small fw-bold">Modalidad</label>
+                                    <label class="form-label small fw-bold"
+                                        for="calendarModalidadFilter">Modalidad</label>
                                     <select class="form-select form-select-sm" id="calendarModalidadFilter"
+                                        aria-label="Filtro de modalidad" title="Filtrar por modalidad"
                                         data-change-handler="globalEventCalendar?.applyFilters({modalidad: this.value})">
                                         <option value="todas">Todas las modalidades</option>
                                         <option value="presencial">Presencial</option>
@@ -762,7 +716,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="adminRole" class="form-label">Rol</label>
-                            <select class="form-select" id="adminRole" required>
+                            <select class="form-select" id="adminRole" aria-label="Seleccionar rol" required>
                                 <option value="">Seleccionar rol</option>
                                 <option value="director">Director</option>
                                 <option value="subdirector">Subdirector</option>
@@ -1449,7 +1403,8 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <select class="form-select" id="studentFilterSemester">
+                                        <select class="form-select" id="studentFilterSemester"
+                                            aria-label="Filtrar por semestre">
                                             <option value="">Todos los semestres</option>
                                             <option value="1°">1° Semestre</option>
                                             <option value="2°">2° Semestre</option>
@@ -1460,7 +1415,8 @@
                                         </select>
                                     </div>
                                     <div class="col-md-3">
-                                        <select class="form-select" id="studentFilterStatus">
+                                        <select class="form-select" id="studentFilterStatus"
+                                            aria-label="Filtrar por estado del estudiante">
                                             <option value="">Todos los estados</option>
                                             <option value="Activo">Activos</option>
                                             <option value="En Riesgo">En Riesgo</option>
@@ -1538,12 +1494,14 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <select class="form-select" id="teacherFilterSpecialty">
+                                        <select class="form-select" id="teacherFilterSpecialty"
+                                            aria-label="Filtrar por especialidad">
                                             <option value="">Todas las especialidades</option>
                                         </select>
                                     </div>
                                     <div class="col-md-3">
-                                        <select class="form-select" id="teacherFilterStatus">
+                                        <select class="form-select" id="teacherFilterStatus"
+                                            aria-label="Filtrar por estado del docente">
                                             <option value="">Todos los estados</option>
                                             <option value="Activo">Activos</option>
                                             <option value="Inactivo">Inactivos</option>
@@ -1615,7 +1573,8 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <select class="form-select" id="parentFilterStudent">
+                                        <select class="form-select" id="parentFilterStudent"
+                                            aria-label="Filtrar por estudiante">
                                             <option value="">Todos los estudiantes</option>
                                             <!-- Opciones de estudiantes se cargarán dinámicamente -->
                                         </select>
@@ -1787,14 +1746,16 @@
                                             <div class="col-md-3">
                                                 <label class="form-label">Generación</label>
                                                 <select class="form-select" id="filter-generacion"
-                                                    data-change-handler="filterEgresados()">
+                                                    data-change-handler="filterEgresados()"
+                                                    aria-label="Filtrar por generación">
                                                     <option value="">Todas las generaciones</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label">Estatus</label>
                                                 <select class="form-select" id="filter-estatus"
-                                                    data-change-handler="filterEgresados()">
+                                                    data-change-handler="filterEgresados()"
+                                                    aria-label="Filtrar por estatus">
                                                     <option value="">Todos los estatus</option>
                                                     <!-- Se llenará dinámicamente desde la base de datos -->
                                                 </select>
@@ -1978,7 +1939,8 @@
                                             <div class="col-md-3">
                                                 <label class="form-label">Estado</label>
                                                 <select class="form-select" id="filter-estado-bolsa"
-                                                    data-change-handler="filterBolsaTrabajo()">
+                                                    data-change-handler="filterBolsaTrabajo()"
+                                                    aria-label="Filtrar por estado">
                                                     <option value="">Todos los estados</option>
                                                     <option value="nuevo">Nuevo</option>
                                                     <option value="revisado">Revisado</option>
@@ -1991,7 +1953,8 @@
                                             <div class="col-md-3">
                                                 <label class="form-label">Generación</label>
                                                 <select class="form-select" id="filter-generacion-bolsa"
-                                                    data-change-handler="filterBolsaTrabajo()">
+                                                    data-change-handler="filterBolsaTrabajo()"
+                                                    aria-label="Filtrar por generación">
                                                     <option value="">Todas las generaciones</option>
                                                     <!-- Se llenará dinámicamente -->
                                                 </select>
@@ -2177,7 +2140,8 @@
                                             <div class="col-md-3">
                                                 <label class="form-label">Estado</label>
                                                 <select class="form-select" id="filter-estado-suscriptor"
-                                                    data-change-handler="filterSuscriptores()">
+                                                    data-change-handler="filterSuscriptores()"
+                                                    aria-label="Filtrar por estado del suscriptor">
                                                     <option value="">Todos los estados</option>
                                                     <option value="activo">Activo</option>
                                                     <option value="inactivo">Inactivo</option>
@@ -2188,7 +2152,8 @@
                                             <div class="col-md-3">
                                                 <label class="form-label">Verificación</label>
                                                 <select class="form-select" id="filter-verificacion-suscriptor"
-                                                    data-change-handler="filterSuscriptores()">
+                                                    data-change-handler="filterSuscriptores()"
+                                                    aria-label="Filtrar por verificación">
                                                     <option value="">Todos</option>
                                                     <option value="verificado">Verificado</option>
                                                     <option value="no_verificado">No Verificado</option>
@@ -2378,7 +2343,8 @@
                                             <label class="form-label small fw-semibold mb-2"><i
                                                     class="fas fa-info-circle me-1 text-warning"></i>Estado de la
                                                 Cita</label>
-                                            <select class="form-select form-select-sm" id="citasStatusFilter">
+                                            <select class="form-select form-select-sm" id="citasStatusFilter"
+                                                aria-label="Filtrar por estado de la cita">
                                                 <option value="">✓ Todos los estados</option>
                                                 <option value="pendiente">⏳ Pendiente</option>
                                                 <option value="aprobada">✅ Aprobada</option>
@@ -2392,7 +2358,8 @@
                                         <div class="col-lg-4 col-md-6">
                                             <label class="form-label small fw-semibold mb-2"><i
                                                     class="fas fa-tag me-1 text-success"></i>Motivo de la Cita</label>
-                                            <select class="form-select form-select-sm" id="citasMotivosFilter">
+                                            <select class="form-select form-select-sm" id="citasMotivosFilter"
+                                                aria-label="Filtrar por motivo de la cita">
                                                 <option value="">✓ Todos los motivos</option>
                                                 <option value="Asesoría Académica">📚 Asesoría Académica</option>
                                                 <option value="Inscripción">📝 Inscripción</option>
@@ -2481,7 +2448,8 @@
                                     <div class="col-md-4">
                                         <label class="form-label">Filtrar por tipo:</label>
                                         <select class="form-select" id="filter-form-type"
-                                            data-change-handler="filterApprovals()">
+                                            data-change-handler="filterApprovals()"
+                                            aria-label="Filtrar por tipo de formulario">
                                             <option value="">Todos los formularios</option>
                                             <option value="bolsa_trabajo">Bolsa de Trabajo</option>
                                             <option value="egresados">Actualización de Egresados</option>
@@ -2546,7 +2514,8 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <select class="form-select" id="filterUserStatus">
+                                        <select class="form-select" id="filterUserStatus"
+                                            aria-label="Filtrar por estado del usuario">
                                             <option value="">Todos los usuarios</option>
                                             <option value="active">Solo usuarios activos</option>
                                             <option value="revoked">Solo usuarios revocados</option>
@@ -2708,7 +2677,8 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
-                                                <select class="form-select" id="filterIncomeCategory">
+                                                <select class="form-select" id="filterIncomeCategory"
+                                                    aria-label="Filtrar por categoría de ingreso">
                                                     <option value="all">Todas las categorías</option>
                                                     <option value="Colegiaturas">Colegiaturas</option>
                                                     <option value="Inscripciones">Inscripciones</option>
@@ -2767,7 +2737,8 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
-                                                <select class="form-select" id="filterExpenseCategory">
+                                                <select class="form-select" id="filterExpenseCategory"
+                                                    aria-label="Filtrar por categoría de egreso">
                                                     <option value="all">Todas las categorías</option>
                                                     <option value="Personal">Personal</option>
                                                     <option value="Servicios">Servicios</option>
@@ -2823,7 +2794,8 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
-                                                <select class="form-select" id="filterPaymentStatus">
+                                                <select class="form-select" id="filterPaymentStatus"
+                                                    aria-label="Filtrar por estado de pago">
                                                     <option value="all">Todos los estados</option>
                                                     <option value="Vencido">Vencido</option>
                                                     <option value="Próximo">Próximo</option>
@@ -3112,7 +3084,7 @@
                                         </ol>
                                         <div class="d-grid">
                                             <a href="https://github.com/SACRINT/heroes_de_la_patria_oficial/tree/main/data"
-                                                target="_blank" class="btn btn-success">
+                                                target="_blank" rel="noopener" class="btn btn-success">
                                                 <i class="fab fa-github me-2"></i>Ir a GitHub
                                             </a>
                                         </div>
@@ -3166,11 +3138,11 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="d-grid gap-2">
-                                            <a href="https://desktop.github.com/" target="_blank"
+                                            <a href="https://desktop.github.com/" target="_blank" rel="noopener"
                                                 class="btn btn-outline-info btn-sm">
                                                 <i class="fas fa-download me-2"></i>GitHub Desktop
                                             </a>
-                                            <a href="https://jsoneditoronline.org/" target="_blank"
+                                            <a href="https://jsoneditoronline.org/" target="_blank" rel="noopener"
                                                 class="btn btn-outline-secondary btn-sm">
                                                 <i class="fas fa-code me-2"></i>Editor JSON Online
                                             </a>
@@ -3190,15 +3162,15 @@
                                     <div class="card-body">
                                         <div class="d-grid gap-2">
                                             <a href="https://SACRINT.github.io/heroes_de_la_patria_oficial/"
-                                                target="_blank" class="btn btn-outline-primary btn-sm">
+                                                target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm">
                                                 <i class="fas fa-globe me-2"></i>Ver Sitio Web
                                             </a>
                                             <a href="https://github.com/SACRINT/heroes_de_la_patria_oficial"
-                                                target="_blank" class="btn btn-outline-secondary btn-sm">
+                                                target="_blank" rel="noopener" class="btn btn-outline-secondary btn-sm">
                                                 <i class="fab fa-github me-2"></i>Ver Repositorio
                                             </a>
                                             <a href="https://github.com/SACRINT/heroes_de_la_patria_oficial/commits/main"
-                                                target="_blank" class="btn btn-outline-info btn-sm">
+                                                target="_blank" rel="noopener" class="btn btn-outline-info btn-sm">
                                                 <i class="fas fa-history me-2"></i>Ver Cambios
                                             </a>
                                         </div>
@@ -3374,7 +3346,8 @@
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="noticiaCategoria" class="form-label">Categoría *</label>
-                                                    <select class="form-select" id="noticiaCategoria" required>
+                                                    <select class="form-select" id="noticiaCategoria" required
+                                                        title="Seleccionar categoría de noticia">
                                                         <option value="">Seleccionar...</option>
                                                         <option value="académico">Académico</option>
                                                         <option value="administrativo">Administrativo</option>
@@ -3518,7 +3491,8 @@
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="eventoModalidad" class="form-label">Modalidad *</label>
-                                                    <select class="form-select" id="eventoModalidad" required>
+                                                    <select class="form-select" id="eventoModalidad" required
+                                                        title="Seleccionar modalidad del evento">
                                                         <option value="">Seleccionar...</option>
                                                         <option value="presencial" selected>Presencial</option>
                                                         <option value="virtual">Virtual</option>
@@ -3535,7 +3509,8 @@
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="eventoCategoria" class="form-label">Categoría *</label>
-                                                    <select class="form-select" id="eventoCategoria" required>
+                                                    <select class="form-select" id="eventoCategoria" required
+                                                        title="Seleccionar categoría del evento">
                                                         <option value="">Seleccionar...</option>
                                                         <option value="académico">Académico</option>
                                                         <option value="cultural">Cultural</option>
@@ -3668,7 +3643,8 @@
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="avisoTipo" class="form-label">Tipo *</label>
-                                                    <select class="form-select" id="avisoTipo" required>
+                                                    <select class="form-select" id="avisoTipo" required
+                                                        title="Seleccionar tipo de aviso">
                                                         <option value="">Seleccionar...</option>
                                                         <option value="importante">Importante</option>
                                                         <option value="informativo">Informativo</option>
@@ -3680,7 +3656,8 @@
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="avisoPrioridad" class="form-label">Prioridad *</label>
-                                                    <select class="form-select" id="avisoPrioridad" required>
+                                                    <select class="form-select" id="avisoPrioridad" required
+                                                        title="Seleccionar prioridad del aviso">
                                                         <option value="">Seleccionar...</option>
                                                         <option value="alta">Alta</option>
                                                         <option value="media">Media</option>
@@ -3707,7 +3684,8 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="avisoDirigidoA" class="form-label">Dirigido a *</label>
-                                            <select class="form-select" id="avisoDirigidoA" required>
+                                            <select class="form-select" id="avisoDirigidoA" required
+                                                title="Seleccionar destinatario del aviso">
                                                 <option value="">Seleccionar...</option>
                                                 <option value="toda la comunidad">Toda la comunidad</option>
                                                 <option value="estudiantes">Estudiantes</option>
@@ -3816,7 +3794,8 @@
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="comunicadoEmisor" class="form-label">Emisor *</label>
-                                                    <select class="form-select" id="comunicadoEmisor" required>
+                                                    <select class="form-select" id="comunicadoEmisor" required
+                                                        title="Seleccionar emisor del comunicado">
                                                         <option value="">Seleccionar...</option>
                                                         <option value="Dirección General">Dirección General</option>
                                                         <option value="Dirección Académica">Dirección Académica</option>
@@ -3831,7 +3810,8 @@
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="comunicadoTipo" class="form-label">Tipo *</label>
-                                                    <select class="form-select" id="comunicadoTipo" required>
+                                                    <select class="form-select" id="comunicadoTipo" required
+                                                        title="Seleccionar tipo de comunicado">
                                                         <option value="">Seleccionar...</option>
                                                         <option value="oficial">Oficial</option>
                                                         <option value="informativo">Informativo</option>
@@ -3860,7 +3840,8 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="comunicadoPrioridad" class="form-label">Prioridad *</label>
-                                            <select class="form-select" id="comunicadoPrioridad" required>
+                                            <select class="form-select" id="comunicadoPrioridad" required
+                                                title="Seleccionar prioridad del comunicado">
                                                 <option value="">Seleccionar...</option>
                                                 <option value="alta">Alta</option>
                                                 <option value="media">Media</option>
@@ -3966,8 +3947,9 @@
                                 <div class="card-body">
                                     <form id="generateCredentialsForm">
                                         <div class="mb-3">
-                                            <label class="form-label">Grado</label>
-                                            <select class="form-select" name="grado">
+                                            <label class="form-label" for="filterGrado">Grado</label>
+                                            <select class="form-select" name="grado" id="filterGrado"
+                                                title="Seleccionar grado">
                                                 <option value="">Todos</option>
                                                 <option value="1">1°</option>
                                                 <option value="2">2°</option>
@@ -3976,7 +3958,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Grupo</label>
-                                            <select class="form-select" name="grupo">
+                                            <select class="form-select" name="grupo" aria-label="Seleccionar grupo">
                                                 <option value="">Todos</option>
                                                 <option value="A">A</option>
                                                 <option value="B">B</option>
@@ -4003,7 +3985,7 @@
                                     <i class="fas fa-file-excel me-2"></i>Exportar CSV
                                 </button>
                             </div>
-                            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <div class="table-responsive table-responsive-scroll-400">
                                 <table class="table table-sm table-striped">
                                     <thead>
                                         <tr>

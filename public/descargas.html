@@ -50,6 +50,7 @@
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
+    <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
     <meta name="theme-color" content="#1976D2">
 
     <!-- Breadcrumb Schema -->
@@ -445,7 +446,8 @@
                                         placeholder="Nombre del documento o palabra clave...">
                                 </div>
                                 <div class="col-md-4">
-                                    <select class="form-select" id="categoryFilter">
+                                    <select class="form-select" id="categoryFilter"
+                                        aria-label="Filtrar documentos por categoría">
                                         <option value="">Todas las categorías</option>
                                         <option value="academic">Académicos</option>
                                         <option value="administrative">Administrativos</option>
@@ -654,7 +656,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="requesterType" class="form-label">Tipo de usuario *</label>
-                            <select class="form-select" id="requesterType" name="requesterType" required>
+                            <select class="form-select" id="requesterType" name="requesterType"
+                                aria-label="Seleccionar tipo de usuario" required>
                                 <option value="">Seleccionar...</option>
                                 <option value="student">Estudiante</option>
                                 <option value="parent">Padre de familia</option>
@@ -674,7 +677,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="urgencyLevel" class="form-label">Nivel de urgencia</label>
-                            <select class="form-select" id="urgencyLevel" name="urgencyLevel">
+                            <select class="form-select" id="urgencyLevel" name="urgencyLevel"
+                                aria-label="Seleccionar nivel de urgencia">
                                 <option value="low">Baja</option>
                                 <option value="normal" selected>Normal</option>
                                 <option value="high">Alta</option>

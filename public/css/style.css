@@ -328,31 +328,7 @@ section.hero-section.bg-gradient {
    5. DARK MODE IMPLEMENTATION
    ========================================================================== */
 
-/* Dark Mode Toggle Button - Esquina inferior derecha TODAS las pÃ¡ginas */
-.dark-mode-toggle {
-    position: fixed !important;
-    bottom: 30px !important;
-    right: 20px !important;
-    z-index: 10050 !important;
-    background: var(--bs-primary) !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 50% !important;
-    width: 50px !important;
-    height: 50px !important;
-    font-size: 1.2rem !important;
-    cursor: pointer !important;
-    box-shadow: var(--box-shadow-custom) !important;
-    transition: var(--transition-custom) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.dark-mode-toggle:hover {
-    transform: scale(1.1);
-    box-shadow: var(--box-shadow-hover);
-}
+/* Dark Mode Toggle moved to global-layout.css */
 
 /* Dark Mode Styles */
 body.dark-mode {
@@ -748,66 +724,9 @@ body.dark-mode .dropdown-item:focus {
 }
 
 /* Chatbot Toggle Button - PosiciÃ³n intermedia derecha TODAS las pÃ¡ginas */
-.chatbot-toggle {
-    position: fixed !important;
-    bottom: 100px !important;
-    right: 20px !important;
-    width: 60px !important;
-    height: 60px !important;
-    background: var(--bs-secondary) !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 50% !important;
-    cursor: pointer !important;
-    box-shadow: var(--box-shadow-custom) !important;
-    font-size: 24px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    z-index: 2147483647 !important;
-    transition: var(--transition-custom) !important;
-}
+/* Chatbot Toggle Button - Styles moved to global-layout.css */
 
-.chatbot-toggle:hover {
-    transform: scale(1.1);
-    box-shadow: var(--box-shadow-hover);
-}
-
-/* Back to Top Button - Esquina inferior izquierda TODAS las pÃ¡ginas */
-#back-to-top {
-    position: fixed !important;
-    bottom: 30px !important;
-    left: 20px !important;
-    width: 45px !important;
-    height: 45px !important;
-    background: var(--bs-success) !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 50% !important;
-    cursor: pointer !important;
-    box-shadow: var(--box-shadow-custom) !important;
-    font-size: 18px !important;
-    z-index: 990 !important;
-    transition: var(--transition-custom) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    transform: translateY(20px) !important;
-}
-
-/* Show back-to-top button when not d-none */
-#back-to-top:not(.d-none) {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: translateY(0) !important;
-}
-
-#back-to-top:hover {
-    transform: scale(1.1) !important;
-    box-shadow: var(--box-shadow-hover) !important;
-}
+/* Back to Top Button moved to global-layout.css */
 
 /* Dark Mode Chatbot */
 body.dark-mode .chatbot-container {
@@ -1039,14 +958,6 @@ body.dark-mode .chatbot-message.bot,
 
 @media (max-width: 767.98px) {
 
-    /* BotÃ³n modo oscuro - esquina inferior derecha */
-    .dark-mode-toggle {
-        bottom: 30px !important;
-        right: 15px !important;
-        width: 40px !important;
-        height: 40px !important;
-        font-size: 0.9rem !important;
-    }
 
     /* Contenedor chatbot */
     .chatbot-container {
@@ -1057,23 +968,9 @@ body.dark-mode .chatbot-message.bot,
         max-width: 360px !important;
     }
 
-    /* BotÃ³n chatbot - posiciÃ³n intermedia derecha */
-    .chatbot-toggle {
-        width: 50px !important;
-        height: 50px !important;
-        right: 15px !important;
-        bottom: 85px !important;
-        font-size: 18px !important;
-    }
 
-    /* BotÃ³n back-to-top - esquina inferior izquierda */
-    #back-to-top {
-        width: 40px !important;
-        height: 40px !important;
-        left: 15px !important;
-        bottom: 30px !important;
-        font-size: 16px !important;
-    }
+
+
 
     /* Agregar scroll a los menÃºs desplegables */
     .navbar-collapse {
@@ -2110,32 +2007,31 @@ body.dark-mode .chatbot-message.bot,
 /* ========================================= */
 
 /* FILA HORIZONTAL - Como solicitado en imagen #3 */
-/* Botones principales permanecen en posiciÃ³n vertical derecha */
-body .dark-mode-toggle {
-    bottom: 30px !important;
-    right: 20px !important;
+
+/* Generic Feature Card (moved from inline) */
+.feature-card {
+    cursor: pointer !important;
+    transition: transform 0.2s ease !important;
 }
 
-body .chatbot-toggle {
-    bottom: 95px !important;
-    right: 20px !important;
+.feature-card:hover {
+    transform: translateY(-5px);
 }
+
+/* Scrollable Table Utility */
+.table-responsive-scroll-400 {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Botones principales permanecen en posiciÃ³n vertical derecha */
+
 
 /* Botones de gamificaciÃ³n y AR en FILA HORIZONTAL hacia la izquierda */
 /* 5. Iniciar AR (al final) */
-body .ar-activation {
-    bottom: 30px !important;
-    /* Misma lÃ­nea que dark-mode */
-    right: 510px !important;
-    /* Al final de la fila */
-}
 
-body .game-activation {
-    bottom: 30px !important;
-    /* Misma lÃ­nea que dark-mode */
-    right: 160px !important;
-    /* 140px separaciÃ³n horizontal */
-}
+
+
 
 /* CONFIGURACIÃ“N ANTIGUA REMOVIDA - AHORA ESTÃ EN LA LÃNEA HORIZONTAL PRINCIPAL */
 
@@ -2156,18 +2052,10 @@ body .install-button {
 /* REORGANIZACIÃ“N CORRECTA DE BOTONES FLOTANTES */
 
 /* 1. Chatbot Toggle - POSICIÃ“N ORIGINAL (no mover) */
-body .chatbot-toggle {
-    bottom: 120px !important;
-    right: 20px !important;
-    z-index: 2147483647 !important;
-}
+
 
 /* 2. Dark Mode Toggle - ABAJO del chatbot */
-body .dark-mode-toggle {
-    bottom: 60px !important;
-    right: 20px !important;
-    z-index: 1009 !important;
-}
+
 
 /* LÃNEA HORIZONTAL INFERIOR - 7 BOTONES CON ESPACIADO CORRECTO */
 /* 3. IA Floating Button - PosiciÃ³n 1 */
@@ -2231,11 +2119,7 @@ body .labs-activation {
 
 /* LADO IZQUIERDO */
 /* Back to top mantiene su posiciÃ³n */
-body #back-to-top {
-    bottom: 30px !important;
-    left: 20px !important;
-    z-index: 997 !important;
-}
+
 
 /* Analytics Dashboard arriba del back-to-top */
 body .analytics-dashboard-toggle {

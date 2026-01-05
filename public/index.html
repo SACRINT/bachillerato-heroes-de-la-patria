@@ -2,12 +2,7 @@
 <html lang="es">
 
 <head>
-    <style>
-        body {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-    </style>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -58,6 +53,7 @@
 
     <!-- Icons -->
     <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
+    <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -643,7 +639,8 @@
                                         <p><strong>Para consultas:</strong></p>
                                         <ul>
                                             <li>Portal oficial: <a href="https://www.gob.mx/becasbenitojuarez"
-                                                    target="_blank" class="text-primary">gob.mx/becasbenitojuarez</a>
+                                                    target="_blank" rel="noopener"
+                                                    class="text-primary">gob.mx/becasbenitojuarez</a>
                                             </li>
                                             <li>Coordinación escolar del plantel</li>
                                         </ul>
@@ -719,7 +716,7 @@
                                                 <ol class="list-group list-group-numbered">
                                                     <li class="list-group-item border-0 px-0">
                                                         Ingresa a <a href="http://sisep.seppue.gob.mx/sicepconsulta/"
-                                                            target="_blank" class="text-primary">
+                                                            target="_blank" rel="noopener" class="text-primary">
                                                             sisep.seppue.gob.mx/sicepconsulta/
                                                         </a>
                                                     </li>
@@ -1736,7 +1733,7 @@
                     </div>
 
                     <!-- Herramientas Admin (Solo Administradores) -->
-                    <div class="col-lg-3 col-md-6 col-sm-12" id="admin-sitemap-section" style="display:none;">
+                    <div class="col-lg-3 col-md-6 col-sm-12 d-none" id="admin-sitemap-section">
                         <div class="sitemap-card sitemap-card-dark">
                             <div class="sitemap-card-header">
                                 <div class="sitemap-icon">
@@ -1782,7 +1779,7 @@
                     <button class="btn btn-sm btn-light me-2" id="pwa-install-btn">
                         <i class="fas fa-download me-1"></i>Instalar
                     </button>
-                    <button class="btn btn-sm btn-outline-light" id="pwa-close-btn">
+                    <button class="btn btn-sm btn-outline-light" id="pwa-close-btn" aria-label="Cerrar">
                         <i class="fas fa-times"></i>
                     </button>
                     <div class="chatbot-input">

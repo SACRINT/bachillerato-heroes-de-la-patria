@@ -1,0 +1,126 @@
+/* Admin Dashboard Styles */
+
+/* Feature Cards */
+.feature-card {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+/* Text Colors */
+.text-dark-override {
+    color: #212529 !important;
+}
+
+/* Charts */
+.chart-container-300 {
+    position: relative;
+    height: 300px;
+}
+
+/* Executive Metrics Section */
+#executive-metrics-section {
+    display: none;
+}
+
+.table-responsive-70vh {
+    max-height: 70vh;
+}
+
+/* --- Grades Capture Styles --- */
+
+.grade-input {
+    width: 80px;
+    margin: 0 auto;
+    transition: all 0.2s;
+}
+
+.grade-input:focus {
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.status-cell {
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Sticky Header */
+thead th.sticky-header {
+    position: sticky;
+    top: 0;
+    background: white !important;
+    z-index: 5;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+/* Loading Overlay */
+#loadingSpinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000;
+    display: none;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.main-content-adjusted {
+    margin-top: 80px;
+}
+
+
+/* --- Timeline Styles --- */
+.timeline {
+    position: relative;
+    padding-left: 20px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #dee2e6;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -16px;
+    top: 2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.timeline-content {
+    margin-left: 0;
+}
+
+/* --- Interactive Elements --- */
+[data-action] {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-action]:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+[data-action]:active {
+    transform: translateY(-2px);
+}

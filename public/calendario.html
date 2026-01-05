@@ -42,6 +42,7 @@
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
+    <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
     <meta name="theme-color" content="#1976D2">
 
     <!-- Breadcrumb Schema -->
@@ -395,11 +396,11 @@
                     <div class="col-lg-8">
                         <div class="calendar-controls d-flex align-items-center flex-wrap gap-3">
                             <div class="calendar-nav d-flex align-items-center">
-                                <button class="btn btn-outline-primary me-2" id="prevMonth">
+                                <button class="btn btn-outline-primary me-2" id="prevMonth" aria-label="Mes anterior">
                                     <i class="fas fa-chevron-left"></i>
                                 </button>
                                 <h4 class="current-month mb-0 mx-3" id="currentMonthYear">Septiembre 2024</h4>
-                                <button class="btn btn-outline-primary ms-2" id="nextMonth">
+                                <button class="btn btn-outline-primary ms-2" id="nextMonth" aria-label="Mes siguiente">
                                     <i class="fas fa-chevron-right"></i>
                                 </button>
                             </div>
@@ -415,7 +416,7 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="event-filters">
-                            <select class="form-select" id="eventFilter">
+                            <select class="form-select" id="eventFilter" aria-label="Filtrar eventos por tipo">
                                 <option value="">Todos los eventos</option>
                                 <option value="academic">Académicos</option>
                                 <option value="holiday">Vacaciones</option>
@@ -688,8 +689,7 @@
 
 
     <!-- Back to Top -->
-    <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none"
-        style="bottom: 2rem; right: 2rem; width: 50px; height: 50px; z-index: 1000;" aria-label="Volver arriba"
+    <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none" aria-label="Volver arriba"
         title="Volver arriba">
         <i class="fas fa-arrow-up"></i>
     </button>

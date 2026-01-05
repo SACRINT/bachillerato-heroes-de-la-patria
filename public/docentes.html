@@ -135,7 +135,8 @@
             <div class="content-section active" id="section-dashboard">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2><i class="bi bi-house-door"></i> Dashboard</h2>
-                    <button class="btn btn-outline-secondary d-md-none" id="toggleSidebar">
+                    <button class="btn btn-outline-secondary d-md-none" id="toggleSidebar"
+                        aria-label="Alternar menú lateral">
                         <i class="bi bi-list"></i>
                     </button>
                 </div>
@@ -261,10 +262,12 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2><i class="bi bi-journal-check"></i> Calificaciones</h2>
                     <div>
-                        <select class="form-select d-inline-block w-auto" id="gradesClassSelect">
+                        <select class="form-select d-inline-block w-auto" id="gradesClassSelect"
+                            aria-label="Seleccionar clase para calificaciones">
                             <option value="">Seleccionar clase...</option>
                         </select>
-                        <select class="form-select d-inline-block w-auto ms-2" id="gradesPeriodSelect">
+                        <select class="form-select d-inline-block w-auto ms-2" id="gradesPeriodSelect"
+                            aria-label="Seleccionar periodo de evaluación">
                             <option value="">Periodo...</option>
                             <option value="parcial_1">Parcial 1</option>
                             <option value="parcial_2">Parcial 2</option>
@@ -404,13 +407,14 @@
                 <div class="modal-body">
                     <form id="addClassForm">
                         <div class="mb-3">
-                            <label class="form-label">Materia</label>
-                            <input type="text" class="form-control" name="materia" required>
+                            <label class="form-label" for="addClassMateria">Materia</label>
+                            <input type="text" class="form-control" name="materia" id="addClassMateria" required>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Grado</label>
-                                <select class="form-select" name="grado" required>
+                                <label class="form-label" for="addClassGrado">Grado</label>
+                                <select class="form-select" name="grado" id="addClassGrado"
+                                    aria-label="Seleccionar grado" required>
                                     <option value="">Seleccionar...</option>
                                     <option value="1">1°</option>
                                     <option value="2">2°</option>
@@ -418,17 +422,18 @@
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Grupo</label>
-                                <input type="text" class="form-control" name="grupo" required>
+                                <label class="form-label" for="addClassGrupo">Grupo</label>
+                                <input type="text" class="form-control" name="grupo" id="addClassGrupo" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Ciclo Escolar</label>
-                            <input type="text" class="form-control" name="ciclo_escolar" value="2025-2026" required>
+                            <label class="form-label" for="addClassCiclo">Ciclo Escolar</label>
+                            <input type="text" class="form-control" name="ciclo_escolar" id="addClassCiclo"
+                                value="2025-2026" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Salón</label>
-                            <input type="text" class="form-control" name="salon">
+                            <label class="form-label" for="addClassSalon">Salón</label>
+                            <input type="text" class="form-control" name="salon" id="addClassSalon">
                         </div>
                     </form>
                 </div>
@@ -451,16 +456,18 @@
                 <div class="modal-body">
                     <form id="addResourceForm">
                         <div class="mb-3">
-                            <label class="form-label">Título</label>
-                            <input type="text" class="form-control" name="titulo" required>
+                            <label class="form-label" for="resourceTitulo">Título</label>
+                            <input type="text" class="form-control" name="titulo" id="resourceTitulo" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Descripción</label>
-                            <textarea class="form-control" name="descripcion" rows="3"></textarea>
+                            <label class="form-label" for="resourceDescripcion">Descripción</label>
+                            <textarea class="form-control" name="descripcion" id="resourceDescripcion"
+                                rows="3"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Tipo</label>
-                            <select class="form-select" name="tipo" required>
+                            <label class="form-label" for="resourceTipo">Tipo</label>
+                            <select class="form-select" name="tipo" id="resourceTipo"
+                                aria-label="Seleccionar tipo de recurso" required>
                                 <option value="documento">Documento</option>
                                 <option value="presentacion">Presentación</option>
                                 <option value="video">Video</option>
@@ -468,8 +475,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Archivo</label>
-                            <input type="file" class="form-control" name="archivo">
+                            <label class="form-label" for="resourceArchivo">Archivo</label>
+                            <input type="file" class="form-control" name="archivo" id="resourceArchivo">
                         </div>
                     </form>
                 </div>
@@ -492,20 +499,22 @@
                 <div class="modal-body">
                     <form id="newMessageForm">
                         <div class="mb-3">
-                            <label class="form-label">Para</label>
-                            <select class="form-select" name="recipient_type" required>
+                            <label class="form-label" for="messageRecipient">Para</label>
+                            <select class="form-select" name="recipient_type" id="messageRecipient"
+                                aria-label="Seleccionar destinatario" required>
                                 <option value="">Seleccionar...</option>
                                 <option value="parent">Padre/Tutor</option>
                                 <option value="student">Estudiante</option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Asunto</label>
-                            <input type="text" class="form-control" name="asunto" required>
+                            <label class="form-label" for="messageAsunto">Asunto</label>
+                            <input type="text" class="form-control" name="asunto" id="messageAsunto" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Mensaje</label>
-                            <textarea class="form-control" name="mensaje" rows="5" required></textarea>
+                            <label class="form-label" for="messageCuerpo">Mensaje</label>
+                            <textarea class="form-control" name="mensaje" id="messageCuerpo" rows="5"
+                                required></textarea>
                         </div>
                     </form>
                 </div>
