@@ -1,233 +1,77 @@
-# 📱 Bachillerato Héroes - Mobile App (iOS/Android)
+# 📱 BGE Héroes Mobile App
 
-**SEMANA 21 - React Native Mobile App**
+Este directorio contiene el código fuente para la aplicación móvil nativa (Android/iOS) de la plataforma BGE Héroes de la Patria.
 
-Aplicación móvil nativa para iOS y Android del sistema de gestión académica.
+## 🏗 Arquitectura
 
----
-
-## 🎯 Features
-
-### Autenticación
-- ✅ Login con email/contraseña
-- ✅ Autenticación biométrica (Touch ID / Face ID)
-- ✅ Session persistence con AsyncStorage
-- ✅ Token auto-refresh
-
-### Dashboard Personalizado
-- ✅ Métricas académicas en tiempo real
-- ✅ Gráficas de calificaciones (Chart.js)
-- ✅ Asistencia y tareas pendientes
-- ✅ Pull-to-refresh
-
-### Calificaciones
-- ✅ Consulta de calificaciones por materia
-- ✅ Historial completo
-- ✅ Predicción de desempeño (ML integration)
-
-### Notificaciones Push
-- ✅ Firebase Cloud Messaging (FCM)
-- ✅ Notificaciones de calificaciones nuevas
-- ✅ Alertas de eventos
-- ✅ Mensajes de tutores
-
-### Chat con Tutores
-- ✅ Mensajería en tiempo real
-- ✅ Historial de conversaciones
-- ✅ Typing indicators
-
-### Calendario
-- ✅ Eventos académicos
-- ✅ Exámenes y entregas
-- ✅ Sincronización con backend
-
-### Modo Offline
-- ✅ Caché de datos con AsyncStorage
-- ✅ Sincronización automática al reconectar
-
----
-
-## 🏗️ Arquitectura
+El proyecto sigue una estructura estándar de React Native optimizada para escalabilidad:
 
 ```
 mobile/
-├── App.js                      # Entry point
-├── package.json                # Dependencies
 ├── src/
-│   ├── screens/                # Pantallas principales
-│   │   ├── SplashScreen.js
-│   │   ├── LoginScreen.js
-│   │   ├── DashboardScreen.js
-│   │   ├── GradesScreen.js
-│   │   ├── CalendarScreen.js
-│   │   ├── NotificationsScreen.js
-│   │   ├── ProfileScreen.js
-│   │   ├── ChatScreen.js
-│   │   ├── PredictiveAnalyticsScreen.js
-│   │   └── RecommendationsScreen.js
-│   ├── services/               # API Services
-│   │   ├── AuthService.js      # Autenticación
-│   │   ├── NotificationService.js
-│   │   ├── APIClient.js
-│   │   └── SyncService.js
-│   ├── components/             # Reusable components
-│   ├── navigation/             # Navigation config
-│   └── utils/                  # Utilities
-├── android/                    # Android native code
-└── ios/                        # iOS native code
+│   ├── components/  # Componentes UI reutilizables (Botones, Cards, Inputs)
+│   ├── screens/     # Pantallas de la aplicación (Login, Home, Perfil)
+│   ├── navigation/  # Configuración de React Navigation
+│   ├── services/    # Clientes API y lógica de negocio
+│   ├── utils/       # Helpers y constantes
+│   └── assets/      # Imágenes y fuentes
+├── README.md        # Esta documentación
+└── package.json     # Dependencias (a generar al inicializar)
 ```
 
----
+## 🚀 Inicialización del Proyecto
 
-## 🚀 Setup
+Dado que este entorno es un repositorio existente, sigue estos pasos para inicializar el proyecto React Native:
 
-### 1. Instalar Dependencias
+1. **Prerrequisitos:**
+   - Node.js >= 18
+   - JDK 11 o superior
+   - Android Studio (para Android) o Xcode (para iOS)
 
-```bash
-cd mobile
-npm install
+2. **Inicializar React Native (si aún no existe):**
 
-# iOS (solo macOS)
-cd ios && pod install && cd ..
+   ```bash
+   npx react-native init BGEMobile --directory .
+   ```
+
+   *Nota: Esto sobrescribirá archivos en la raíz de `mobile/`, asegúrate de respaldar si ya hay trabajo.*
+
+3. **Instalar Dependencias Clave:**
+
+   ```bash
+   npm install @react-navigation/native @react-navigation/native-stack
+   npm install react-native-screens react-native-safe-area-context
+   npm install axios react-native-biometrics
+   ```
+
+4. **Ejecutar la App:**
+
+   ```bash
+   npx react-native run-android
+   # o
+   npx react-native run-ios
+   ```
+
+## 🔐 Autenticación Biométrica
+
+La app está diseñada para integrarse con el backend mediante `mobile-auth.service.js`.
+
+- Endpoint de Registro: `POST /api/mobile/auth/device-register`
+- Endpoint de Login: `POST /api/mobile/auth/biometric-login`
+
+Utiliza la librería `react-native-biometrics` para generar pares de claves RSA y firmar el payload de login.
+
+## 📡 API Client
+
+Configura tu cliente Axios en `src/services/api.js` apuntando a tu servidor local o de producción:
+
+```javascript
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://10.0.2.2:3000/api', // 10.0.2.2 para emulador Android
+  timeout: 10000,
+});
+
+export default api;
 ```
-
-### 2. Configurar Variables de Entorno
-
-Crear archivo `.env`:
-
-```env
-API_BASE_URL=https://your-production-url.com/api
-FIREBASE_API_KEY=your_firebase_key
-FIREBASE_PROJECT_ID=your_project_id
-GOOGLE_SERVICES_JSON_PATH=./android/app/google-services.json
-```
-
-### 3. Configurar Firebase
-
-1. Descargar `google-services.json` (Android) y `GoogleService-Info.plist` (iOS)
-2. Colocar en `android/app/` y `ios/` respectivamente
-
-### 4. Ejecutar en Desarrollo
-
-**Android:**
-```bash
-npm run android
-```
-
-**iOS (solo macOS):**
-```bash
-npm run ios
-```
-
----
-
-## 📦 Build para Producción
-
-### Android APK
-
-```bash
-npm run build:android
-# Output: android/app/build/outputs/apk/release/app-release.apk
-```
-
-### iOS (solo macOS)
-
-```bash
-npm run build:ios
-# Requiere: Xcode + Apple Developer Account
-```
-
----
-
-## 🔧 Tecnologías
-
-| Categoría | Tecnología |
-|-----------|-----------|
-| Framework | React Native 0.72.6 |
-| Navigation | React Navigation 6 |
-| State Management | React Hooks + Context API |
-| Storage | AsyncStorage |
-| API Client | Axios |
-| Push Notifications | Firebase Cloud Messaging |
-| Charts | react-native-chart-kit |
-| Biometrics | react-native-biometrics |
-| Icons | react-native-vector-icons |
-
----
-
-## 📱 Screenshots
-
-*(TODO: Agregar screenshots de la app)*
-
----
-
-## 🐛 Troubleshooting
-
-### Error: "Unable to resolve module"
-
-```bash
-# Limpiar cache
-npm start -- --reset-cache
-```
-
-### Android Build Fails
-
-```bash
-cd android
-./gradlew clean
-cd ..
-npm run android
-```
-
-### iOS Pod Install Fails
-
-```bash
-cd ios
-pod deintegrate
-pod install
-cd ..
-```
-
----
-
-## 📝 Testing
-
-```bash
-# Unit tests
-npm test
-
-# E2E tests (Detox)
-npm run test:e2e
-```
-
----
-
-## 🚀 Deployment
-
-### Google Play Store
-
-1. Generar keystore
-2. Build signed APK
-3. Subir a Play Console
-4. Configurar listing
-
-### Apple App Store
-
-1. Configurar certificados
-2. Build archive con Xcode
-3. Upload a TestFlight
-4. Submit for review
-
----
-
-## 📚 Documentación Adicional
-
-- [React Native Docs](https://reactnative.dev/docs/getting-started)
-- [React Navigation](https://reactnavigation.org/)
-- [Firebase for React Native](https://rnfirebase.io/)
-
----
-
-**Estado:** ✅ SEMANA 21 COMPLETADA
-**Versión:** 1.0.0
-**Fecha:** 17 Noviembre 2025

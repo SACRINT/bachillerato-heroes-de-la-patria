@@ -8,8 +8,8 @@
 
 **Objetivo:** AI que identifica el perfil de aprendizaje
 
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
+| # | Tarea | Tipo | Prioridad | Estado |
+|---|-------|------|-----------|--------|
 | 1 | Diseño de esquema BD: personality_profiles, learning_styles | SQL | CRÍTICA | ✅ |
 | 2 | Crear PersonalityProfilingService.js | Backend | CRÍTICA | ✅ |
 | 3 | Implementar assessment quiz de estilos de aprendizaje | Backend | CRÍTICA | ✅ |
@@ -29,8 +29,8 @@
 
 **Objetivo:** Contenido que se adapta en tiempo real
 
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
+| # | Tarea | Tipo | Prioridad | Estado |
+|---|-------|------|-----------|--------|
 | 1 | Diseño de esquema BD: content_adaptations, difficulty_logs | SQL | CRÍTICA | ✅ |
 | 2 | Crear AdaptiveContentService.js | Backend | CRÍTICA | ✅ |
 | 3 | Implementar algoritmo de ajuste de dificultad | Backend | CRÍTICA | ✅ |
@@ -69,8 +69,8 @@
 
 **Objetivo:** Mapa visual del conocimiento personal
 
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
+| # | Tarea | Tipo | Prioridad | Estado |
+|---|-------|------|-----------|--------|
 | 1 | Diseño de esquema BD: knowledge_nodes, concept_links | SQL | CRÍTICA | ✅ |
 | 2 | Crear KnowledgeGraphService.js | Backend | CRÍTICA | ✅ |
 | 3 | Implementar Personal Knowledge Map con D3.js | Frontend | CRÍTICA | ✅ |
@@ -98,19 +98,8 @@ Se han implementado todos los sistemas críticos de Hiperpersonalización.
 
 **Objetivo:** Automatización del ciclo de vida de los modelos IA
 
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
-| 1 | Diseño de esquema BD: model_registry, model_versions, metrics | SQL | CRÍTICA |
-| 2 | Crear MLOpsService.js con registro y versionado | Backend | CRÍTICA |
-| 3 | Implementar dashboard administrativo MLOps | Frontend | ALTA |
-| 4 | Crear endpoint POST /api/ai/mlops/register | Backend | CRÍTICA |
-| 5 | Implementar Drift Detection básico (latencia, accuracy) | Backend | ALTA |
-| 6 | Script de simulación de pipeline CI/CD | DevOps | ALTA |
-| 7 | Migración de modelos existentes a Registry | Ops | MEDIA |
-| 8 | Endpoint GET /api/ai/mlops/dashboard | Backend | ALTA |
-| 9 | Implementar alertas de Performance Drift | Backend | MEDIA |
-| 10 | Optimizar inferencia de modelos en producción | Backend | MEDIA |
-| 11 | Crear reportes automatizados de rendimiento | Backend | BAJA |
+| # | Tarea | Tipo | Prioridad | Estado |
+|---|-------|------|-----------|--------|
 | 1 | Diseño de esquema BD: model_registry, model_versions, metrics | SQL | CRÍTICA | ✅ |
 | 2 | Crear MLOpsService.js con registro y versionado | Backend | CRÍTICA | ✅ |
 | 3 | Implementar dashboard administrativo MLOps | Frontend | ALTA | ✅ |
@@ -132,8 +121,8 @@ Se han implementado todos los sistemas críticos de Hiperpersonalización.
 
 **Objetivo:** Infraestructura para experimentación y mejora continua
 
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
+| # | Tarea | Tipo | Prioridad | Estado |
+|---|-------|------|-----------|--------|
 | 1 | Diseño esquema BD: experiments, variants, allocations | SQL | CRÍTICA | ✅ |
 | 2 | Crear ExperimentService.js con asignación determinista | Backend | CRÍTICA | ✅ |
 | 3 | Implementar Shadow Mode para modelos candidatos | Backend | ALTA | ✅ |

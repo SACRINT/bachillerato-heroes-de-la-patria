@@ -93,7 +93,7 @@ const mlopsRoutes = loadRoute('./routes/ai-mlops'); // ✅ MLOPS - SEMANA 11 (20
 const evaluationRoutes = require('./ai/evaluation/routes'); // ✅ EVALUATION - SEMANA 12 (19 DIC 2025)
 const dropoutPredictionRoutes = require('./ai/dropout-prediction/routes'); // ✅ DROPOUT PREDICTION - SEMANA 13 (4 ENE 2026)
 const sentimentAnalysisRoutes = require('./ai/sentiment-analysis/routes'); // ✅ SENTIMENT ANALYSIS - SEMANA 14 (4 ENE 2026)
-const contentRecommendationRoutes = require('./ai/recommendations/routes'); // ✅ CONTENT RECOMMENDATIONS - SEMANA 15 (4 ENE 2026)
+// const contentRecommendationRoutes = require('./ai/recommendations/routes'); // REMOVED DUPLICATE - USAR LINEA 103
 const adminAutomationRoutes = require('./ai/automation/routes'); // ✅ ADMIN AUTOMATION RPA - SEMANA 16 (4 ENE 2026)
 const multimodalChatbotRoutes = require('./ai/multimodal/routes'); // ✅ MULTIMODAL CHATBOT - SEMANA 17 (4 ENE 2026)
 const learningPathRoutes = require('./ai/learning-path/routes'); // ✅ LEARNING PATH - SEMANA 18 (4 ENE 2026)
@@ -137,7 +137,26 @@ const year2FinalRoutes = require('./ai/year2-final/routes'); // ✅ YEAR 2 FINAL
 const installPollsRoutes = loadRoute('./routes/install-polls');
 const teachersPortalRoutes = loadRoute('./routes/teachers-portal');
 const messagingRoutes = loadRoute('./routes/messaging');
-const digitalLibraryRoutes = loadRoute('./routes/digital-library');
+const mobileAuthRoutes = require('./routes/mobile/auth'); // ✅ MOBILE AUTH - SEMANA 17
+const microlearningRoutes = require('./routes/microlearning'); // ✅ MICROLEARNING - SEMANA 18
+const voiceInterfaceRoutes = require('./routes/voice-interface'); // ✅ VOICE INTERFACE - SEMANA 19
+const mobileSocialRoutes = require('./routes/mobile/social'); // ✅ MOBILE SOCIAL - SEMANA 20
+const mobileGamificationRoutes = require('./routes/mobile/gamification'); // ✅ MOBILE GAME - SEMANA 21
+const mobileWidgetRoutes = require('./routes/mobile/widgets'); // ✅ MOBILE WIDGETS - SEMANA 22
+const mobileSyncRoutes = require('./routes/mobile/sync'); // ✅ MOBILE SYNC - SEMANA 23
+
+// ... (otros requires)
+
+// API V1 Routes
+app.use('/api', apiLimiter);
+app.use('/api/mobile/auth', mobileAuthRoutes);
+app.use('/api/microlearning', microlearningRoutes);
+app.use('/api/voice', voiceInterfaceRoutes);
+app.use('/api/social', mobileSocialRoutes);
+app.use('/api/gamification', mobileGamificationRoutes);
+app.use('/api/widgets', mobileWidgetRoutes);
+app.use('/api/sync', mobileSyncRoutes);
+
 const supportTicketsRoutes = loadRoute('./routes/support-tickets');
 const installParentsRoutes = loadRoute('./routes/install-parents');
 const parentsRoutes = loadRoute('./routes/parents');
