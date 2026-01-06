@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario | BGE Héroes de la Patria</title>
+
+    <!-- Fuentes y Libs -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+
+<body>
+
+    <!-- Simple Nav -->
+    <nav class="navbar navbar-dark bg-transparent px-4 fixed-top"
+        style="background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px);">
+        <a class="navbar-brand fw-bold" href="iacoins-dashboard.html">
+            <i class="fas fa-chevron-left me-2"></i> Dashboard
+        </a>
+        <div class="user-actions">
+            <button id="btn-edit-profile" class="btn btn-outline-light btn-sm d-none">
+                <i class="fas fa-pen me-2"></i> Editar Perfil
+            </button>
+        </div>
+    </nav>
+
+    <div class="profile-container" id="profile-container">
+        <!-- Skeleton Loading -->
+        <div class="text-center py-5 mt-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-3 text-muted">Cargando perfil...</p>
+        </div>
+    </div>
+
+    <!-- Template para Perfil Cargado -->
+    <template id="profile-template">
+        <header class="profile-header">
+            <div class="cover-photo" id="cover-photo"></div>
+
+            <div class="profile-avatar-container">
+                <div class="avatar-display">
+                    <div class="avatar-layer" id="av-bg"></div>
+                    <div class="avatar-layer" id="av-base"></div>
+                    <div class="avatar-layer" id="av-acc"></div>
+                    <div class="avatar-layer" id="av-frame"></div>
+                </div>
+            </div>
+
+            <div class="header-content">
+                <div class="user-identity">
+                    <h1 id="p-username">User</h1>
+                    <p class="user-tagline" id="p-bio">Sin biografía aún...</p>
+                    <div class="header-meta mt-2 text-muted small">
+                        <span id="p-role" class="badge bg-secondary me-2">Estudiante</span>
+                        <i class="far fa-calendar-alt"></i> Se unió el <span id="p-joined">...</span>
+                        <span class="ms-3" id="p-location-container"><i class="fas fa-map-marker-alt"></i> <span
+                                id="p-location"></span></span>
+                    </div>
+                </div>
+
+                <div class="level-display">
+                    <div class="level-badge-large">
+                        <i class="fas fa-star"></i>
+                        <span>Nivel <span id="p-level">1</span></span>
+                    </div>
+                    <div class="text-center mt-2 small text-muted" id="p-level-title">Novato</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-value" id="p-streak">0</span>
+                <span class="stat-label"><i class="fas fa-fire text-danger"></i> Racha (Días)</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="p-achievements-count">0</span>
+                <span class="stat-label"><i class="fas fa-trophy text-warning"></i> Logros</span>
+            </div>
+            <!-- Future: Points, etc. -->
+        </section>
+
+        <div class="content-grid">
+            <div class="main-column">
+                <div class="content-card">
+                    <h3><i class="fas fa-medal me-2 text-warning"></i> Vitrina de Logros</h3>
+                    <div class="achievement-showcase" id="achievement-grid">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3><i class="fas fa-user mb-2 me-2"></i> Sobre Mí</h3>
+                    <p id="p-full-bio" class="text-muted">No hay información adicional.</p>
+                </div>
+            </div>
+
+            <aside class="side-column">
+                <div class="content-card">
+                    <h3><i class="fas fa-link me-2"></i> Conexiones</h3>
+                    <ul class="list-unstyled" id="social-links-list">
+                        <!-- Links -->
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </template>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">Editar Perfil</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-profile-form">
+                        <div class="mb-3">
+                            <label class="form-label">Biografía</label>
+                            <textarea class="form-control bg-dark text-light border-secondary" id="edit-bio" rows="3"
+                                maxlength="300"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ubicación</label>
+                            <input type="text" class="form-control bg-dark text-light border-secondary"
+                                id="edit-location" maxlength="50">
+                        </div>
+
+                        <h6 class="mt-4 mb-2 border-bottom border-secondary pb-1">Redes Sociales</h6>
+                        <div class="mb-2 input-group">
+                            <span class="input-group-text bg-dark border-secondary text-light"><i
+                                    class="fab fa-twitter"></i></span>
+                            <input type="text" class="form-control bg-dark text-light border-secondary"
+                                id="edit-twitter" placeholder="URL Twitter">
+                        </div>
+                        <div class="mb-2 input-group">
+                            <span class="input-group-text bg-dark border-secondary text-light"><i
+                                    class="fab fa-instagram"></i></span>
+                            <input type="text" class="form-control bg-dark text-light border-secondary"
+                                id="edit-instagram" placeholder="URL Instagram">
+                        </div>
+                        <div class="mb-2 input-group">
+                            <span class="input-group-text bg-dark border-secondary text-light"><i
+                                    class="fab fa-github"></i></span>
+                            <input type="text" class="form-control bg-dark text-light border-secondary" id="edit-github"
+                                placeholder="URL GitHub">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="saveProfileChanges()">Guardar
+                        Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/profile-viewer.js"></script>
+</body>
+
+</html>

@@ -52,11 +52,18 @@
 | `dal.test.js` | 31 | ✅ |
 | `student.service.test.js` | 20 | ✅ |
 | `grades.test.js` | 16 | ✅ |
+| `emotional-analytics.service.test.js` | 5 | ✅ (Nuevo) |
 | `integrated-services.test.js` | 35 | ✅ |
 | `emailService.test.js` | 26 | ✅ (Refactorizado con DI) |
 | `security-advanced.dao.test.js` | 20 | ✅ |
 | `collaboration.dao.test.js` | 14 | ✅ |
 | `collaborative-editing.dao.test.js` | 15 | ✅ |
+
+**Frontend (Semana 14):**
+
+- Monitor de emociones implementado en `estudiantes.html` con Chart.js.
+- Modal de intervención implementado en `adaptive-lesson.html`.
+- Widget de registro de ánimo en sidebar.
 
 **Patrón de Mock para DAOs:**
 

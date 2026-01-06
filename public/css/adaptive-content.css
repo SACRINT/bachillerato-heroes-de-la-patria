@@ -1,0 +1,91 @@
+/* Adaptive Content Styles */
+:root {
+    --bg-light: #f8f9fa;
+    --text-dark: #1e293b;
+    --primary: #6366f1;
+}
+
+.adaptive-lesson-body {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    font-family: 'Inter', sans-serif;
+}
+
+.lesson-container {
+    max-width: 1400px;
+}
+
+.content-card {
+    min-height: 500px;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.adaptation-badge {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.profile-icon-sm {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+}
+
+.profile-icon-sm.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* Content Types */
+.content-video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    /* 16:9 */
+    height: 0;
+}
+
+.content-video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.content-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #334155;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.content-interactive {
+    background: #f1f5f9;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.v-hidden {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}

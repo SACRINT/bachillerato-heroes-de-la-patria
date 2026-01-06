@@ -8,13 +8,15 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken, requireRole } = require('../middleware/auth');
 const gamificationDAO = require('../data/gamification-extended.dao');
 const devLogger = require('../utils/devLogger');
 
 // ============================================
 // SISTEMA DE STREAKS (RACHAS)
 // ============================================
+
+const streakService = require('../services/streak.service');
 
 /**
  * GET /api/gamification-ext/streaks/:userId
@@ -23,22 +25,15 @@ const devLogger = require('../utils/devLogger');
 router.get('/streaks/:userId', authenticateToken, async (req, res, next) => {
     try {
         const { userId } = req.params;
-        const { streakType = 'daily_login' } = req.query;
+        // Ignoramos streakType por ahora ya que el sistema v2 es racha única global
 
-        devLogger.info('[GAMIFICATION-EXT] Obteniendo racha', { userId, streakType });
+        devLogger.info('[GAMIFICATION-EXT] Obteniendo racha (v2)', { userId });
 
-        const streak = await gamificationDAO.getUserStreak(parseInt(userId), streakType);
+        const streak = await streakService.getStreak(parseInt(userId));
 
         res.json({
             success: true,
-            data: streak || {
-                user_id: parseInt(userId),
-                streak_type: streakType,
-                current_streak: 0,
-                longest_streak: 0,
-                total_days_active: 0,
-                message: 'Sin racha registrada aún'
-            }
+            data: streak
         });
     } catch (error) {
         devLogger.error('[GAMIFICATION-EXT] Error obteniendo racha', error);
@@ -48,36 +43,80 @@ router.get('/streaks/:userId', authenticateToken, async (req, res, next) => {
 
 /**
  * POST /api/gamification-ext/streaks/update
- * Actualizar racha del usuario (llamar al hacer login diario)
+ * Actualizar racha del usuario (Check-in diario)
+ * Soporta freezes y milestones automáticos
  */
 router.post('/streaks/update', authenticateToken, async (req, res, next) => {
     try {
         const authReq = req;
         const userId = authReq.user.id;
-        const { streakType = 'daily_login' } = req.body;
 
-        devLogger.info('[GAMIFICATION-EXT] Actualizando racha', { userId, streakType });
+        devLogger.info('[GAMIFICATION-EXT] Realizando check-in de racha', { userId });
 
-        const updatedStreak = await gamificationDAO.updateUserStreak(userId, streakType);
+        const result = await streakService.checkIn(userId);
 
-        // Verificar si ganó bonus por racha
-        let bonusMessage = null;
-        if (updatedStreak.current_streak === 7) {
-            bonusMessage = '¡Bonus de 7 días! +50 IACoins';
-        } else if (updatedStreak.current_streak === 30) {
-            bonusMessage = '¡Bonus de 30 días! +150 IACoins';
-        } else if (updatedStreak.current_streak === 100) {
-            bonusMessage = '¡Bonus de 100 días! +500 IACoins';
+        if (result.status === 'already_checked_in') {
+            return res.json({
+                success: true,
+                data: result.streak_data,
+                message: result.message,
+                alreadyCheckedIn: true
+            });
+        }
+
+        let message = result.streak_frozen
+            ? `¡Racha salvada! Usaste un protector de racha.`
+            : `¡Racha actualizada! ${result.current_streak} días seguidos.`;
+
+        if (result.xp_gained > 0) {
+            message += ` +${result.xp_gained} XP`;
+        }
+
+        if (result.level_up) {
+            message += ` ¡Subiste al nivel ${result.level_up.newLevel}!`;
         }
 
         res.json({
             success: true,
-            data: updatedStreak,
-            bonusMessage,
-            message: `Racha actualizada: ${updatedStreak.current_streak} días consecutivos`
+            data: {
+                current_streak: result.current_streak,
+                streak_frozen: result.streak_frozen,
+                milestones_awarded: result.milestones_awarded,
+                xp_gained: result.xp_gained,
+                level_up: result.level_up
+            },
+            message: message,
+            milestones: result.milestones_awarded
         });
     } catch (error) {
-        devLogger.error('[GAMIFICATION-EXT] Error actualizando racha', error);
+        devLogger.error('[GAMIFICATION-EXT] Error en check-in de racha', error);
+        next(error);
+    }
+});
+
+// ============================================
+// SISTEMA DE XP & NIVELES
+// ============================================
+
+const xpService = require('../services/xp.service');
+
+/**
+ * GET /api/gamification-ext/xp/profile/:userId
+ * Obtener perfil detallado de XP y nivel
+ */
+router.get('/xp/profile/:userId', authenticateToken, async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        devLogger.info('[GAMIFICATION-EXT] Obteniendo perfil XP', { userId });
+
+        const profile = await xpService.getXPProfile(parseInt(userId));
+
+        res.json({
+            success: true,
+            data: profile
+        });
+    } catch (error) {
+        devLogger.error('[GAMIFICATION-EXT] Error obteniendo perfil XP', error);
         next(error);
     }
 });
@@ -108,9 +147,9 @@ router.get('/streaks/top', async (req, res, next) => {
     }
 });
 
-// ============================================
-// SISTEMA DE ACHIEVEMENTS (LOGROS)
-// ============================================
+const achievementService = require('../services/achievement.service');
+
+// ... (existing code)
 
 /**
  * GET /api/gamification-ext/achievements
@@ -119,6 +158,12 @@ router.get('/streaks/top', async (req, res, next) => {
 router.get('/achievements', async (req, res, next) => {
     try {
         devLogger.info('[GAMIFICATION-EXT] Obteniendo todos los achievements');
+        // Usamos DAO o Service, Service está bien para future-proof
+        // Por ahora mantenemos DAO para lectura masiva si es más simple, pero unificaremos.
+        // achievementService.getUserAchievements pide userId, aquí es general.
+        // Usaremos el DAO existente para la lista general o crearemos método en Service.
+        // Para consistencia rápida, llamaremos al DAO directamente aquí como estaba, pero
+        // para user achievements usaremos el service si aporta valor.
 
         const achievements = await gamificationDAO.getAllAchievements();
 
@@ -155,7 +200,7 @@ router.get('/achievements/user/:userId', authenticateToken, async (req, res, nex
 
         devLogger.info('[GAMIFICATION-EXT] Obteniendo achievements del usuario', { userId });
 
-        const userAchievements = await gamificationDAO.getUserAchievements(parseInt(userId));
+        const userAchievements = await achievementService.getUserAchievements(parseInt(userId));
 
         // Separar ganados y no ganados
         const earned = userAchievements.filter(a => a.earned_at);
@@ -187,7 +232,7 @@ router.post('/achievements/grant', authenticateToken, async (req, res, next) => 
         const authReq = req;
         const { userId, achievementCode } = req.body;
 
-        // Verificar permisos (admin o self-grant para achievements automáticos)
+        // Verificar permisos (admin o self-grant para testing/debugging controlado)
         if (authReq.user.role !== 'admin' && authReq.user.id !== userId) {
             return res.status(403).json({
                 success: false,
@@ -197,9 +242,13 @@ router.post('/achievements/grant', authenticateToken, async (req, res, next) => 
 
         devLogger.info('[GAMIFICATION-EXT] Otorgando achievement', { userId, achievementCode });
 
-        const result = await gamificationDAO.grantAchievement(userId, achievementCode);
+        const result = await achievementService.unlockAchievement(userId, achievementCode);
 
-        if (result.already_earned) {
+        if (!result) {
+            return res.status(404).json({ success: false, error: 'Logro no encontrado' });
+        }
+
+        if (result.status === 'already_earned') {
             return res.json({
                 success: true,
                 message: 'El usuario ya tiene este achievement',
@@ -522,4 +571,270 @@ router.get('/summary/:userId', authenticateToken, async (req, res, next) => {
     }
 });
 
+const avatarService = require('../services/avatar.service');
+
+// ... (previous endpoints) ...
+
+// ============================================
+// SISTEMA DE AVATARES Y PERFIL
+// ============================================
+
+/**
+ * GET /api/gamification-ext/avatar/my-avatar
+ * Obtener configuración actual del avatar
+ */
+router.get('/avatar/my-avatar', authenticateToken, async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const avatar = await avatarService.getUserAvatar(userId);
+        res.json({ success: true, data: avatar });
+    } catch (error) {
+        devLogger.error('[GAMIFICATION-EXT] Error obteniendo avatar', error);
+        next(error);
+    }
+});
+
+/**
+ * GET /api/gamification-ext/avatar/shop
+ * Obtener catálogo de items (y estado de ownership)
+ */
+router.get('/avatar/shop', authenticateToken, async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const items = await avatarService.getCatalog(userId);
+        res.json({ success: true, data: items });
+    } catch (error) {
+        devLogger.error('[GAMIFICATION-EXT] Error obteniendo tienda de avatares', error);
+        next(error);
+    }
+});
+
+/**
+ * POST /api/gamification-ext/avatar/buy
+ * Comprar item
+ */
+router.post('/avatar/buy', authenticateToken, async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const { itemId } = req.body;
+
+        const result = await avatarService.purchaseItem(userId, itemId);
+        res.json({ success: true, message: 'Item comprado exitosamente', data: result });
+    } catch (error) {
+        devLogger.error('[GAMIFICATION-EXT] Error comprando item', error);
+        res.status(400).json({ success: false, error: error.message });
+    }
+});
+
+/**
+ * POST /api/gamification-ext/avatar/equip
+ * Equipar item
+ */
+router.post('/avatar/equip', authenticateToken, async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const { itemId } = req.body;
+
+        const result = await avatarService.equipItem(userId, itemId);
+        res.json({ success: true, message: 'Avatar actualizado' });
+    } catch (error) {
+        devLogger.error('[GAMIFICATION-EXT] Error equipando item', error);
+        res.status(400).json({ success: false, error: error.message });
+    }
+});
+
+const profileService = require('../services/profile.service');
+
+// ============================================
+// PERFILES PÚBLICOS Y EDICIÓN
+// ============================================
+
+/**
+ * GET /api/gamification-ext/profile/public/:username
+ * Obtener perfil público
+ */
+router.get('/profile/public/:username', async (req, res, next) => {
+    try {
+        const { username } = req.params;
+        const profile = await profileService.getProfileByUsername(username);
+
+        if (!profile) {
+            return res.status(404).json({ success: false, error: 'Usuario no encontrado' });
+        }
+
+        // Filter private info if needed based on privacy settings
+        // (Aunque el SQL ya trae solo info segura, el privacy_show_email se procesa aquí si queremos ocultar algo más)
+
+        res.json({ success: true, data: profile });
+    } catch (error) {
+        devLogger.error('[GAMIFICATION-EXT] Error obteniendo perfil público', error);
+        next(error);
+    }
+});
+
+/**
+ * GET /api/gamification-ext/profile/me
+ * Obtener mi perfil para edición
+ */
+router.get('/profile/me', authenticateToken, async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const profile = await profileService.getProfileById(userId);
+        res.json({ success: true, data: profile });
+    } catch (error) {
+        devLogger.error('[GAMIFICATION-EXT] Error obteniendo mi perfil', error);
+        next(error);
+    }
+});
+
+/**
+ * POST /api/gamification-ext/profile/update
+ * Actualizar mi perfil
+ */
+router.post('/profile/update', authenticateToken, async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const updateData = req.body; // { bio, location, social_links, etc }
+
+        const updated = await profileService.updateProfile(userId, updateData);
+        res.json({ success: true, message: 'Perfil actualizado', data: updated });
+    } catch (error) {
+        devLogger.error('[GAMIFICATION-EXT] Error actualizando perfil', error);
+        res.status(400).json({ success: false, error: error.message });
+    }
+});
+
+const leaderboardService = require('../services/leaderboard.service');
+
+// ============================================
+// LEADERBOARDS AVANZADOS
+// ============================================
+
+/**
+ * GET /api/gamification-ext/leaderboard/global
+ */
+router.get('/leaderboard/global', async (req, res, next) => {
+    try {
+        const limit = parseInt(req.query.limit) || 20;
+        const ranking = await leaderboardService.getGlobalLeaderboard(limit);
+        res.json({ success: true, data: ranking });
+    } catch (error) {
+        devLogger.error('[GAMIFICATION-EXT] Error leaderboard global', error);
+        next(error);
+    }
+});
+
+/**
+ * GET /api/gamification-ext/leaderboard/streaks
+ */
+router.get('/leaderboard/streaks', async (req, res, next) => {
+    try {
+        const limit = parseInt(req.query.limit) || 10;
+        const ranking = await leaderboardService.getStreakLeaderboard(limit);
+        res.json({ success: true, data: ranking });
+    } catch (error) {
+        devLogger.error('[GAMIFICATION-EXT] Error leaderboard streaks', error);
+        next(error);
+    }
+});
+
+const tournamentService = require('../services/tournament.service');
+
+// ============================================
+// TORNEOS Y EVENTOS
+// ============================================
+
+/**
+ * GET /api/gamification-ext/tournaments
+ * Listar torneos activos
+ */
+router.get('/tournaments', authenticateToken, async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const tournaments = await tournamentService.getActiveTournaments(userId);
+        res.json({ success: true, data: tournaments });
+    } catch (error) {
+        devLogger.error('[GAMIFICATION-EXT] Error listing tournaments', error);
+        next(error);
+    }
+});
+
+/**
+ * POST /api/gamification-ext/tournaments/:id/join
+ * Unirse a torneo
+ */
+router.post('/tournaments/:id/join', authenticateToken, async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const tournamentId = req.params.id;
+
+        await tournamentService.joinTournament(userId, tournamentId);
+        res.json({ success: true, message: 'Te has unido al torneo' });
+    } catch (error) {
+        devLogger.error('[GAMIFICATION-EXT] Error joining tournament', error);
+        res.status(400).json({ success: false, error: error.message });
+    }
+});
+
+/**
+ * GET /api/gamification-ext/tournaments/:id/leaderboard
+ * Ranking del torneo
+ */
+router.get('/tournaments/:id/leaderboard', async (req, res, next) => {
+    try {
+        const tournamentId = req.params.id;
+        const ranking = await tournamentService.getTournamentLeaderboard(tournamentId);
+        res.json({ success: true, data: ranking });
+    } catch (error) {
+        next(error);
+    }
+});
+
+const gamificationAnalyticsService = require('../services/gamification-analytics.service');
+
+// ============================================
+// ANALYTICS & REPORTING (Admin/Docente Only)
+// ============================================
+
+/**
+ * GET /api/gamification-ext/analytics/overview
+ * Resumen general
+ */
+router.get('/analytics/overview', authenticateToken, requireRole(['admin', 'docente', 'directivo']), async (req, res, next) => {
+    try {
+        const stats = await gamificationAnalyticsService.getGlobalStats();
+        res.json({ success: true, data: stats });
+    } catch (error) {
+        devLogger.error('[GAMIFICATION-EXT] Error analytics overview', error);
+        next(error);
+    }
+});
+
+/**
+ * GET /api/gamification-ext/analytics/levels
+ * Distribución de niveles
+ */
+router.get('/analytics/levels', authenticateToken, requireRole(['admin', 'docente', 'directivo']), async (req, res, next) => {
+    try {
+        const distribution = await gamificationAnalyticsService.getLevelDistribution();
+        res.json({ success: true, data: distribution });
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * GET /api/gamification-ext/analytics/weekly-top
+ * Top semanal
+ */
+router.get('/analytics/weekly-top', authenticateToken, requireRole(['admin', 'docente', 'directivo']), async (req, res, next) => {
+    try {
+        const top = await gamificationAnalyticsService.getWeeklyTopEarners();
+        res.json({ success: true, data: top });
+    } catch (error) {
+        next(error);
+    }
+});
+
 module.exports = router;
+

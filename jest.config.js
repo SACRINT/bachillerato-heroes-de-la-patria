@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     testEnvironment: 'node',
     roots: ['<rootDir>'],
     testMatch: ['**/*.test.js', '**/*.spec.js', '**/*.test.ts', '**/*.spec.ts'],

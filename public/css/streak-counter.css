@@ -1,0 +1,78 @@
+/* =========================================
+   STREAK COUNTER (Fuego Animado)
+   ========================================= */
+.streak-card {
+    background: linear-gradient(135deg, #ff512f 0%, #dd2476 100%);
+    border-radius: 16px;
+    padding: 24px;
+    color: white;
+    box-shadow: 0 8px 32px rgba(221, 36, 118, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.streak-fire-container {
+    position: relative;
+    width: 60px;
+    height: 80px;
+}
+
+.streak-fire {
+    font-size: 60px;
+    color: #ffd700;
+    text-shadow: 0 0 20px #ff4500;
+    animation: fireBurn 1s infinite alternate;
+    transform-origin: center bottom;
+}
+
+.streak-days {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.streak-label {
+    font-size: 14px;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.streak-frozen {
+    color: #00d2ff;
+    text-shadow: 0 0 10px #0056b3;
+    animation: none;
+    font-size: 60px;
+}
+
+@keyframes fireBurn {
+    0% {
+        transform: scale(1) rotate(-2deg);
+        text-shadow: 0 0 20px #ff4500;
+    }
+
+    100% {
+        transform: scale(1.1) rotate(2deg);
+        text-shadow: 0 0 30px #ffff00;
+    }
+}
+
+/* Ajuste responsive para que encaje con el layout */
+@media (max-width: 768px) {
+    .streak-card {
+        padding: 16px;
+    }
+
+    .streak-fire {
+        font-size: 40px;
+    }
+
+    .streak-days {
+        font-size: 32px;
+    }
+}

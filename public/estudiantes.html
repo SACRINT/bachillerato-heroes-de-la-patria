@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title" data-base-title="Portal del Estudiante - <span data-tenant-field=" school_name">Bachillerato
-        General Estatal <span data-tenant-field="school_name">"HÃ©roes de la Patria"</span></span>">Portal del Estudiante
+        General Estatal <span data-tenant-field="school_name">"HÃ©roes de la Patria"</span></span>">Portal del
+        Estudiante
         - <span data-tenant-field="school_name">Bachillerato General Estatal <span
                 data-tenant-field="school_name">"HÃ©roes de la Patria"</span></span></title>
 
@@ -48,7 +49,8 @@
 
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">`r`n    <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
+    <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">`r`n
+    <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
     <meta name="theme-color" content="#1976D2">
 
     <!-- Breadcrumb Schema -->
@@ -73,6 +75,7 @@
     }
     </script>
     <script src="js/meta-updater.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- âœ… FIX (18 Nov 2025): Header/Footer styles loaded globally -->
     <!-- These MUST be in <head> so they apply BEFORE dynamic header/footer injection -->
     <link rel="stylesheet" href="css/global-layout.css">
@@ -334,68 +337,194 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Nueva Tarjeta: Gamificación y AI -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 border-0 shadow-sm hover-lift quick-access-card border-warning">
+                            <div class="card-body text-center p-4">
+                                <div
+                                    class="quick-icon bg-warning text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center quick-icon-lg">
+                                    <i class="fas fa-gamepad fa-2x"></i>
+                                </div>
+                                <h4 class="card-title text-warning mb-3">Zona XP & AI</h4>
+                                <p class="text-muted mb-3">Gestiona tu avatar, niveles y perfil de aprendizaje</p>
+                                <div class="d-grid gap-2">
+                                    <a href="iacoins-dashboard.html" class="btn btn-warning btn-sm text-white">
+                                        <i class="fas fa-trophy me-2"></i>Ir a Gamificación
+                                    </a>
+                                    <a href="profile.html" class="btn btn-outline-warning btn-sm">
+                                        <i class="fas fa-user-circle me-2"></i>Mi Perfil Público
+                                    </a>
+                                    <button class="btn btn-outline-info btn-sm mt-2" data-bs-toggle="modal"
+                                        data-bs-target="#emotionalModal" onclick="loadEmotionalHistory()">
+                                        <i class="fas fa-heartbeat me-2"></i>Mi Bienestar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Recursos AcadÃ©micos PWA -->
+        <!-- Recursos Académicos & Plan Inteligente -->
         <section id="recursos-academicos" class="py-5 bg-light">
             <div class="container">
                 <div class="section-header text-center mb-5">
                     <h2 class="section-title">
                         <i class="fas fa-book-open text-primary me-3" aria-hidden="true"></i>
-                        Recursos AcadÃ©micos
+                        Tu Espacio de Aprendizaje
                     </h2>
                     <p class="section-subtitle text-muted">
-                        Herramientas y materiales organizados por categorÃ­as para potenciar tu aprendizaje
+                        Recursos y planes personalizados potenciados por IA
                     </p>
-                    <!-- Filtros de categorÃ­as -->
-                    <div class="category-filters mt-4">
-                        <button class="btn btn-outline-primary me-2 mb-2 filter-btn active" data-filter-category="all">
-                            <i class="fas fa-th me-1"></i>Todos
-                        </button>
-                        <button class="btn btn-outline-primary me-2 mb-2 filter-btn" data-filter-category="MatemÃ¡ticas">
-                            <i class="fas fa-calculator me-1"></i>MatemÃ¡ticas
-                        </button>
-                        <button class="btn btn-outline-primary me-2 mb-2 filter-btn"
-                            data-filter-category="Ciencias (FÃ­sica, QuÃ­mica, BiologÃ­a)">
-                            <i class="fas fa-flask me-1"></i>Ciencias
-                        </button>
-                        <button class="btn btn-outline-primary me-2 mb-2 filter-btn"
-                            data-filter-category="Lenguaje, ComunicaciÃ³n y Humanidades">
-                            <i class="fas fa-book me-1"></i>Humanidades
-                        </button>
-                        <button class="btn btn-outline-primary me-2 mb-2 filter-btn"
-                            data-filter-category="TecnologÃ­a e Inteligencia Artificial">
-                            <i class="fas fa-code me-1"></i>TecnologÃ­a
-                        </button>
-                        <button class="btn btn-outline-primary me-2 mb-2 filter-btn"
-                            data-filter-category="CapacitaciÃ³n para el Empleo y Habilidades">
-                            <i class="fas fa-briefcase me-1"></i>Empleo
-                        </button>
-                    </div>
                 </div>
 
-                <!-- Contenedor dinÃ¡mico para recursos PWA -->
-                <div id="recursos-pwa-container" class="row g-4">
-                    <!-- Los recursos se cargarÃ¡n dinÃ¡micamente aquÃ­ -->
-                    <div class="col-12 text-center">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Cargando recursos...</span>
+                <!-- Tabs Navigation -->
+                <ul class="nav nav-pills nav-fill mb-4" id="studyTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="resources-tab" data-bs-toggle="tab"
+                            data-bs-target="#resources-content" type="button" role="tab"
+                            aria-controls="resources-content" aria-selected="true">
+                            <i class="fas fa-layer-group me-2"></i>Recursos Académicos
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="plan-tab" data-bs-toggle="tab" data-bs-target="#plan-content"
+                            type="button" role="tab" aria-controls="plan-content" aria-selected="false"
+                            onclick="loadStudyPlan()">
+                            <i class="fas fa-calendar-check me-2"></i>Mi Plan Inteligente
+                            <span class="badge bg-warning text-dark ms-2">Beta</span>
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tabs Content -->
+                <div class="tab-content" id="studyTabsContent">
+
+                    <!-- Pestaña 1: Recursos (Existente) -->
+                    <div class="tab-pane fade show active" id="resources-content" role="tabpanel"
+                        aria-labelledby="resources-tab">
+
+                        <!-- AI Recommendations Section -->
+                        <div id="ai-recommendations-wrapper" class="mb-5 d-none">
+                            <h5 class="mb-3 fw-bold text-primary"><i class="fas fa-robot me-2"></i>Seleccionado para ti
+                                por IA</h5>
+                            <div class="row g-3" id="ai-recommendations-container">
+                                <!-- Recomendaciones dinámicas aquí -->
+                            </div>
+                            <hr class="my-4">
                         </div>
-                        <p class="mt-2 text-muted">Cargando recursos acadÃ©micos...</p>
+
+                        <!-- Filtros de categorías -->
+                        <div class="text-center mb-4">
+                            <h5 class="mb-3 text-muted">Explorar Biblioteca</h5>
+                            <div class="category-filters">
+                                <button class="btn btn-outline-primary me-2 mb-2 filter-btn active"
+                                    data-filter-category="all">
+                                    <i class="fas fa-th me-1"></i>Todos
+                                </button>
+                                <button class="btn btn-outline-primary me-2 mb-2 filter-btn"
+                                    data-filter-category="MatemÃ¡ticas">
+                                    <i class="fas fa-calculator me-1"></i>MatemÃ¡ticas
+                                </button>
+                                <button class="btn btn-outline-primary me-2 mb-2 filter-btn"
+                                    data-filter-category="Ciencias (FÃ­sica, QuÃ­mica, BiologÃ­a)">
+                                    <i class="fas fa-flask me-1"></i>Ciencias
+                                </button>
+                                <button class="btn btn-outline-primary me-2 mb-2 filter-btn"
+                                    data-filter-category="Lenguaje, ComunicaciÃ³n y Humanidades">
+                                    <i class="fas fa-book me-1"></i>Humanidades
+                                </button>
+                                <button class="btn btn-outline-primary me-2 mb-2 filter-btn"
+                                    data-filter-category="TecnologÃ­a e Inteligencia Artificial">
+                                    <i class="fas fa-code me-1"></i>TecnologÃ­a
+                                </button>
+                                <button class="btn btn-outline-primary me-2 mb-2 filter-btn"
+                                    data-filter-category="CapacitaciÃ³n para el Empleo y Habilidades">
+                                    <i class="fas fa-briefcase me-1"></i>Empleo
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Contenedor dinámico de recursos -->
+                        <div id="recursos-pwa-container" class="row g-4">
+                            <!-- Loading spinner -->
+                            <div class="col-12 text-center">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Cargando recursos...</span>
+                                </div>
+                                <p class="mt-2 text-muted">Cargando recursos acadÃ©micos...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pestaña 2: Plan Inteligente (Nuevo) -->
+                    <div class="tab-pane fade" id="plan-content" role="tabpanel" aria-labelledby="plan-tab">
+                        <div class="row">
+                            <!-- Columna Izquierda: Resumen y Generador -->
+                            <div class="col-lg-4 mb-4">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="mb-0"><i class="fas fa-robot me-2"></i>Asistente de Estudio</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-muted small">
+                                            Nuestra IA analiza tu rendimiento y estado emocional para crear un plan
+                                            semanal optimizado.
+                                        </p>
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-primary" onclick="generateNewPlan()">
+                                                <i class="fas fa-magic me-2"></i>Generar Nuevo Plan
+                                            </button>
+                                            <button class="btn btn-outline-secondary" data-bs-toggle="modal"
+                                                data-bs-target="#addGoalModal">
+                                                <i class="fas fa-flag me-2"></i>Definir Meta
+                                            </button>
+                                        </div>
+                                        <hr>
+                                        <h6 class="fw-bold text-dark mb-3">Tus Metas Activas</h6>
+                                        <div id="active-goals-list">
+                                            <p class="text-muted small text-center check-auth-msg">Inicia sesión para
+                                                ver tus metas.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Columna Derecha: Calendario Semanal -->
+                            <div class="col-lg-8">
+                                <div class="card border-0 shadow-sm">
+                                    <div
+                                        class="card-header bg-white border-bottom-0 d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0 fw-bold text-primary">Tu Semana</h5>
+                                        <span class="badge bg-light text-dark border" id="plan-date-range">-- a
+                                            --</span>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div class="list-group list-group-flush" id="weekly-plan-container">
+                                            <!-- Items del plan dinámicos -->
+                                            <div class="text-center py-5">
+                                                <i class="fas fa-calendar-day fa-3x text-muted mb-3 opacity-50"></i>
+                                                <p class="text-muted">No tienes un plan activo esta semana.</p>
+                                                <button class="btn btn-sm btn-outline-primary"
+                                                    onclick="generateNewPlan()">Generar Ahora</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Herramientas adicionales -->
+                <!-- Herramientas adicionales (Mantener fuera de tabs o mover a Recursos) -->
+                <!-- Moviendo herramientas al final para que sean comunes -->
                 <div class="row g-4 mt-4">
                     <div class="col-lg-6">
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-header bg-success text-white">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-calculator me-2"></i>
-                                    Calculadora de Promedio
-                                </h5>
+                                <h5 class="mb-0"><i class="fas fa-calculator me-2"></i>Calculadora de Promedio</h5>
                             </div>
                             <div class="card-body">
                                 <p class="card-text">Calcula tu promedio actual y proyecta las calificaciones
@@ -416,8 +545,7 @@
                                         </div>
                                     </div>
                                     <button class="btn btn-success btn-sm mt-2 w-100" data-action="calculateAverage">
-                                        <i class="fas fa-calculator me-2"></i>
-                                        Calcular Promedio
+                                        <i class="fas fa-calculator me-2"></i>Calcular Promedio
                                     </button>
                                     <div class="alert alert-info mt-2 d-none" id="averageResult"></div>
                                 </div>
@@ -428,24 +556,17 @@
                     <div class="col-lg-6">
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-header bg-warning text-dark">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-brain me-2"></i>
-                                    TÃ©cnicas de Estudio
-                                </h5>
+                                <h5 class="mb-0"><i class="fas fa-brain me-2"></i>Técnicas de Estudio</h5>
                             </div>
                             <div class="card-body">
-                                <p class="card-text">GuÃ­as y consejos para mejorar tus hÃ¡bitos de estudio y rendimiento
-                                    acadÃ©mico.</p>
+                                <p class="card-text">Guías y consejos prácticos para mejorar tus hábitos.</p>
                                 <ul class="list-unstyled">
-                                    <li><i class="fas fa-lightbulb text-warning me-2"></i>MÃ©todos de memorizaciÃ³n</li>
-                                    <li><i class="fas fa-lightbulb text-warning me-2"></i>OrganizaciÃ³n del tiempo</li>
-                                    <li><i class="fas fa-lightbulb text-warning me-2"></i>PreparaciÃ³n de exÃ¡menes</li>
-                                    <li><i class="fas fa-lightbulb text-warning me-2"></i>Toma de notas efectiva</li>
+                                    <li><i class="fas fa-lightbulb text-warning me-2"></i>Métodos de memorización</li>
+                                    <li><i class="fas fa-lightbulb text-warning me-2"></i>Organización del tiempo</li>
                                 </ul>
                                 <a href="#" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#studyTipsModal">
-                                    <i class="fas fa-book me-2"></i>
-                                    Ver consejos
+                                    <i class="fas fa-book me-2"></i>Ver consejos
                                 </a>
                             </div>
                         </div>
@@ -647,7 +768,8 @@
                             </div>
                         </div>
                         <div class="col-md-6 text-md-end">
-                            <small class="text-muted">Haz clic en cualquier celda para aÃ±adir o editar una clase</small>
+                            <small class="text-muted">Haz clic en cualquier celda para aÃ±adir o editar una
+                                clase</small>
                         </div>
                     </div>
 
@@ -764,6 +886,30 @@
         </div>
     </div>
 
+    <!-- Modal Historial Emocional -->
+    <div class="modal fade" id="emotionalModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-info text-white border-0">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-heartbeat me-2"></i>Mi Historial Emocional</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="text-center mb-4">
+                        <p class="text-muted">Visualiza cómo te has sentido en tus últimas sesiones de estudio.</p>
+                    </div>
+                    <div class="chart-container" style="position: relative; height:300px; width:100%">
+                        <canvas id="emotionalHistoryChart"></canvas>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal TÃ©cnicas de Estudio -->
     <div class="modal fade" id="studyTipsModal" tabindex="-1" aria-labelledby="studyTipsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -793,7 +939,8 @@
                                 <div>
                                     <h6 class="fw-bold">TÃ©cnica Pomodoro</h6>
                                     <p class="mb-0 small text-muted">Estudia por 25 minutos concentrado, luego descansa
-                                        5 minutos. DespuÃ©s de 4 ciclos, toma un descanso mÃ¡s largo de 15-30 minutos.</p>
+                                        5 minutos. DespuÃ©s de 4 ciclos, toma un descanso mÃ¡s largo de 15-30 minutos.
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -818,7 +965,8 @@
                                 </span>
                                 <div>
                                     <h6 class="fw-bold">PriorizaciÃ³n Inteligente</h6>
-                                    <p class="mb-0 small text-muted">Identifica las materias mÃ¡s difÃ­ciles y dedÃ­cales
+                                    <p class="mb-0 small text-muted">Identifica las materias mÃ¡s difÃ­ciles y
+                                        dedÃ­cales
                                         mÃ¡s tiempo cuando tengas mayor energÃ­a mental.</p>
                                 </div>
                             </div>
@@ -840,7 +988,8 @@
                                 </span>
                                 <div>
                                     <h6 class="fw-bold">RepeticiÃ³n Espaciada</h6>
-                                    <p class="mb-0 small text-muted">Repasa el material en intervalos crecientes: 1 dÃ­a,
+                                    <p class="mb-0 small text-muted">Repasa el material en intervalos crecientes: 1
+                                        dÃ­a,
                                         3 dÃ­as, 1 semana, 2 semanas. Maximiza la retenciÃ³n a largo plazo.</p>
                                 </div>
                             </div>
@@ -996,7 +1145,8 @@
                         <div class="col-md-6">
                             <h6>DescripciÃ³n</h6>
                             <p id="eventDescription">Actividad educativa diseÃ±ada para complementar la formaciÃ³n
-                                acadÃ©mica de nuestros estudiantes, promoviendo valores y competencias necesarias para su
+                                acadÃ©mica de nuestros estudiantes, promoviendo valores y competencias necesarias para
+                                su
                                 desarrollo integral.</p>
                         </div>
                     </div>
@@ -2078,6 +2228,8 @@
 
     <!-- ðŸŽ¯ ESTUDIANTES EVENT HANDLERS - CSP Compliant -->
     <script src="js/estudiantes-events.js"></script>
+    <script src="js/emotional-analytics-monitor.js"></script>
+    <script src="js/study-plans-ui.js"></script>
 </body>
 
 </html>

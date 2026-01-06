@@ -46,7 +46,7 @@ const poolConfig = hasValidUrl
         min: parseInt(process.env.DB_CONNECTION_MIN) || 10,      // Min = 10 conexiones
         idleTimeoutMillis: 60000,                                // Aumentado de 30s a 60s
         connectionTimeoutMillis: 5000,                           // Aumentado de 10s a 5s (más rápido)
-        ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
+        ssl: false // Forzar false para desarrollo local si no hay DATABASE_URL
     };
 
 // Crear pool de conexiones PostgreSQL

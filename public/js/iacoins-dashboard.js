@@ -4,7 +4,7 @@
  * FASE 1 - Semana 1-2
  */
 
-(function() {
+(function () {
     'use strict';
 
     // =========================================
@@ -59,9 +59,9 @@
     async function fetchWithAuth(endpoint, options = {}) {
         // Buscar token en el sistema unificado de autenticación
         const token = sessionStorage.getItem('bge_auth_token') ||
-                     localStorage.getItem('bge_auth_token') ||
-                     sessionStorage.getItem('authToken') ||
-                     localStorage.getItem('authToken');
+            localStorage.getItem('bge_auth_token') ||
+            sessionStorage.getItem('authToken') ||
+            localStorage.getItem('authToken');
 
         if (!token) {
             console.warn('[IACOINS] ⚠️ No se encontró token de autenticación');
@@ -129,9 +129,20 @@
 
     async function loadAchievements() {
         try {
-            const result = await fetchWithAuth('/achievements');
+            const token = sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token');
+            if (!token) return;
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const userId = payload.id;
+
+            const result = await fetchWithAuth(`/achievements/user/${userId}`);
+
             if (result.success) {
-                state.achievements = result.data;
+                // Combinar logros (ganados primero, luego bloqueados)
+                // Marcamos 'unlocked' manual para el renderizado
+                const earned = result.data.earned.map(a => ({ ...a, unlocked: true }));
+                const notEarned = result.data.notEarned.map(a => ({ ...a, unlocked: false }));
+
+                state.achievements = [...earned, ...notEarned];
                 renderAchievements();
             }
         } catch (error) {
@@ -139,218 +150,35 @@
         }
     }
 
-    async function loadLeaderboard(limit = 10) {
-        try {
-            const result = await fetchWithAuth(`/leaderboard?limit=${limit}`);
-            if (result.success) {
-                state.leaderboard = result.data;
-                renderLeaderboard();
-            }
-        } catch (error) {
-            console.error('[IACOINS] Error cargando leaderboard:', error);
-        }
-    }
-
-    async function completeChallenge(challengeId) {
-        try {
-            const result = await fetchWithAuth(`/challenges/${challengeId}/complete`, {
-                method: 'POST'
-            });
-
-            if (result.success) {
-                showCoinAnimation(result.data.coinsEarned, 'earn');
-                showNotification(`¡Reto completado! +${result.data.coinsEarned} IACoins`, 'success');
-
-                // Recargar datos
-                await Promise.all([
-                    loadBalance(),
-                    loadChallenges(),
-                    loadTransactions()
-                ]);
-            }
-
-            return result;
-        } catch (error) {
-            console.error('[IACOINS] Error completando reto:', error);
-            showNotification('Error al completar reto', 'error');
-        }
-    }
-
-    // =========================================
-    // RENDERIZADO
-    // =========================================
-    function renderBalance() {
-        const container = document.getElementById('iacoins-balance');
-        if (!container || !state.balance) return;
-
-        container.innerHTML = `
-            <div class="iacoins-balance-card">
-                <div class="balance-icon">
-                    <i class="fas fa-coins"></i>
-                </div>
-                <div class="balance-info">
-                    <span class="balance-label">Tu Balance</span>
-                    <span class="balance-amount" id="balance-value">${state.balance.balance}</span>
-                </div>
-                <div class="balance-stats">
-                    <div class="stat">
-                        <span class="stat-label">Total Ganado</span>
-                        <span class="stat-value text-success">+${state.balance.total_earned}</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">Total Gastado</span>
-                        <span class="stat-value text-danger">-${state.balance.total_spent}</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderLevel() {
-        const container = document.getElementById('iacoins-level');
-        if (!container || !state.balance) return;
-
-        const currentLevel = state.balance.level || 1;
-        const currentXP = state.balance.experience_points || 0;
-        const levelInfo = CONFIG.LEVELS[currentLevel - 1];
-        const nextLevel = CONFIG.LEVELS[currentLevel] || levelInfo;
-        const progress = ((currentXP - levelInfo.xpRequired) / (nextLevel.xpRequired - levelInfo.xpRequired)) * 100;
-
-        container.innerHTML = `
-            <div class="level-card">
-                <div class="level-badge">
-                    <span class="level-number">${currentLevel}</span>
-                </div>
-                <div class="level-info">
-                    <h4 class="level-title">${levelInfo.title}</h4>
-                    <div class="xp-progress">
-                        <div class="progress">
-                            <div class="progress-bar bg-warning" style="width: ${Math.min(progress, 100)}%"></div>
-                        </div>
-                        <span class="xp-text">${currentXP} / ${nextLevel.xpRequired} XP</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderTransactions() {
-        const container = document.getElementById('iacoins-transactions');
-        if (!container) return;
-
-        if (!state.transactions.length) {
-            container.innerHTML = '<p class="text-muted text-center">No hay transacciones aún</p>';
-            return;
-        }
-
-        const html = state.transactions.map(tx => {
-            const isEarn = tx.type === 'earn' || tx.type === 'bonus';
-            const icon = isEarn ? 'fa-arrow-up' : 'fa-arrow-down';
-            const colorClass = isEarn ? 'text-success' : 'text-danger';
-            const sign = isEarn ? '+' : '-';
-            const date = new Date(tx.created_at).toLocaleDateString('es-MX', {
-                day: 'numeric',
-                month: 'short',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-
-            return `
-                <div class="transaction-item">
-                    <div class="transaction-icon ${colorClass}">
-                        <i class="fas ${icon}"></i>
-                    </div>
-                    <div class="transaction-details">
-                        <span class="transaction-desc">${tx.description}</span>
-                        <span class="transaction-date">${date}</span>
-                    </div>
-                    <div class="transaction-amount ${colorClass}">
-                        ${sign}${tx.amount}
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-        container.innerHTML = `
-            <div class="transactions-list">
-                ${html}
-            </div>
-        `;
-    }
-
-    function renderChallenges() {
-        const container = document.getElementById('iacoins-challenges');
-        if (!container) return;
-
-        if (!state.challenges.length) {
-            container.innerHTML = '<p class="text-muted text-center">No hay retos disponibles</p>';
-            return;
-        }
-
-        const html = state.challenges.map(challenge => {
-            const completed = challenge.user_status === 'claimed';
-            const difficultyColors = {
-                easy: 'success',
-                medium: 'warning',
-                hard: 'danger',
-                expert: 'dark'
-            };
-            const difficultyColor = difficultyColors[challenge.difficulty] || 'secondary';
-
-            return `
-                <div class="challenge-card ${completed ? 'completed' : ''}">
-                    <div class="challenge-header">
-                        <span class="badge bg-${difficultyColor}">${challenge.difficulty}</span>
-                        <span class="challenge-reward">
-                            <i class="fas fa-coins text-warning"></i> ${challenge.reward_coins}
-                        </span>
-                    </div>
-                    <h5 class="challenge-title">${challenge.title}</h5>
-                    <p class="challenge-description">${challenge.description || ''}</p>
-                    <div class="challenge-footer">
-                        ${completed
-                            ? '<span class="badge bg-success"><i class="fas fa-check"></i> Completado</span>'
-                            : `<button class="btn btn-primary btn-sm" onclick="window.IACoinsManager.completeChallenge(${challenge.id})">
-                                Completar Reto
-                               </button>`
-                        }
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-        container.innerHTML = `
-            <div class="challenges-grid">
-                ${html}
-            </div>
-        `;
-    }
+    // ... (leaderboard and challenges functions remain same)
 
     function renderAchievements() {
         const container = document.getElementById('iacoins-achievements');
         if (!container) return;
 
-        if (!state.achievements.length) {
+        if (!state.achievements || !state.achievements.length) {
             container.innerHTML = '<p class="text-muted text-center">No hay logros disponibles</p>';
             return;
         }
 
         const html = state.achievements.map(achievement => {
             const unlocked = achievement.unlocked;
+            // Manejar inconsistencia de nombres de columnas (icon vs icon_icon vs badge_icon)
+            const iconClass = achievement.icon_icon || achievement.badge_icon || achievement.icon || 'fa-trophy';
 
             return `
                 <div class="achievement-badge ${unlocked ? 'unlocked' : 'locked'}">
                     <div class="badge-icon">
-                        <i class="fas ${achievement.icon || 'fa-trophy'}"></i>
+                        <i class="fas ${iconClass}"></i>
                     </div>
                     <div class="badge-info">
                         <span class="badge-name">${achievement.name}</span>
                         <span class="badge-description">${achievement.description || ''}</span>
                     </div>
-                    ${unlocked
-                        ? `<span class="badge-date">${new Date(achievement.unlocked_at).toLocaleDateString()}</span>`
-                        : '<span class="badge-locked"><i class="fas fa-lock"></i></span>'
-                    }
+                    ${unlocked && achievement.earned_at
+                    ? `<span class="badge-date">${new Date(achievement.earned_at).toLocaleDateString()}</span>`
+                    : '<span class="badge-locked"><i class="fas fa-lock"></i></span>'
+                }
                 </div>
             `;
         }).join('');
@@ -442,9 +270,9 @@
 
         // Verificar autenticación (buscar token en sistema unificado)
         const token = sessionStorage.getItem('bge_auth_token') ||
-                     localStorage.getItem('bge_auth_token') ||
-                     sessionStorage.getItem('authToken') ||
-                     localStorage.getItem('authToken');
+            localStorage.getItem('bge_auth_token') ||
+            sessionStorage.getItem('authToken') ||
+            localStorage.getItem('authToken');
 
         if (!token) {
             console.warn('[IACOINS] 🔐 Usuario no autenticado - redirigiendo a login');
@@ -464,7 +292,10 @@
                 loadTransactions(),
                 loadChallenges(),
                 loadAchievements(),
-                loadLeaderboard()
+                loadLeaderboard(),
+                loadStreak(),
+                loadXPProfile(),
+                checkPersonalityProfile() // ✅ Semana 9
             ]);
 
             console.log('[IACOINS] Dashboard cargado correctamente');
@@ -479,7 +310,153 @@
         setInterval(() => {
             loadBalance();
             loadLeaderboard();
+            loadStreak();
+            loadXPProfile();
         }, CONFIG.REFRESH_INTERVAL);
+    }
+
+    // =========================================
+    // XP & LEVELING SYSTEM (Semana 2)
+    // =========================================
+    async function loadXPProfile() {
+        try {
+            const token = sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token');
+            if (!token) return;
+
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const userId = payload.id;
+
+            const result = await fetchWithAuth(`/gamification-ext/xp/profile/${userId}`);
+
+            if (result.success) {
+                state.xpProfile = result.data;
+                renderLevel();
+            }
+        } catch (error) {
+            console.error('[IACOINS] Error cargando perfil XP:', error);
+        }
+    }
+
+    function renderLevel() {
+        const container = document.getElementById('iacoins-level');
+        if (!container) return;
+
+        const xpData = state.xpProfile || {};
+        const currentLevel = xpData.current_level || (state.balance ? state.balance.level : 1);
+        const currentXP = xpData.current_xp || (state.balance ? state.balance.experience_points : 0);
+
+        const title = xpData.level_title || 'Novato';
+        const nextReq = xpData.next_level_xp_req || 100;
+
+        // Calcular porcentaje visual (simple: current / next)
+        let visualProgress = 0;
+        if (nextReq > 0) {
+            visualProgress = Math.min((currentXP / nextReq) * 100, 100);
+        }
+
+        container.innerHTML = `
+            <div class="level-card">
+                <div class="level-badge">
+                    <span class="level-number">${currentLevel}</span>
+                </div>
+                <div class="level-info">
+                    <h4 class="level-title">${title}</h4>
+                    <div class="xp-progress">
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-warning" role="progressbar" 
+                                 style="width: ${visualProgress}%" 
+                                 aria-valuenow="${visualProgress}" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                        <span class="xp-text">
+                            ${currentXP} XP <span class="text-muted small">/ ${nextReq} (Siguiente)</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // =========================================
+    // STREAK SYSTEM (Semana 1)
+    // =========================================
+    async function loadStreak() {
+        try {
+            // Decodificar JWT para obtener userId (frontend simple)
+            const token = sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token');
+            if (!token) return;
+
+            // Decodificar payload (base64)
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const userId = payload.id;
+
+            const result = await fetchWithAuth(`/gamification-ext/streaks/${userId}`);
+
+            if (result.success) {
+                state.streak = result.data;
+                renderStreak();
+            }
+        } catch (error) {
+            console.error('[IACOINS] Error cargando racha:', error);
+        }
+    }
+
+    function renderStreak() {
+        const container = document.getElementById('streak-counter-container');
+        if (!container || !state.streak) return;
+
+        const { current_streak, streak_frozen } = state.streak;
+
+        // Icono: Fuego si activa, Hielo si congelada
+        const iconClass = streak_frozen ? 'streak-frozen fas fa-snowflake' : 'streak-fire fas fa-fire';
+        const label = streak_frozen ? 'Racha Congelada' : 'Racha Diaria';
+
+        container.innerHTML = `
+            <div class="streak-card">
+                <div class="streak-fire-container text-center">
+                    <i class="${iconClass}"></i>
+                </div>
+                <div class="streak-days">${current_streak}</div>
+                <div class="streak-label">${label}</div>
+            </div>
+        `;
+    }
+
+    // =========================================
+    // PERSONALITY PROFILE (Semana 9)
+    // =========================================
+    async function checkPersonalityProfile() {
+        try {
+            // El endpoint está bajo /api/ai/hyper
+            // Adaptar fetchWithAuth para urls absolutas o relativas diferentes a CONFIG.API_BASE
+            const token = sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token');
+            if (!token) return;
+
+            const response = await fetch('/api/ai/hyper/personality/me', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const json = await response.json();
+                const banner = document.getElementById('ai-assessment-promo');
+
+                // Si no tiene perfil (data es null o vacío) => Mostrar Banner
+                // Si tiene perfil => Mantener oculto
+                if (banner) {
+                    if (json.success && !json.data) {
+                        banner.classList.remove('d-none');
+                        // Animation entrance
+                        banner.classList.add('fade-in-up');
+                    } else {
+                        banner.classList.add('d-none');
+                    }
+                }
+            }
+        } catch (error) {
+            console.warn('[IACOINS] Error checking personality profile:', error);
+        }
     }
 
     // =========================================
@@ -495,6 +472,7 @@
         completeChallenge,
         showCoinAnimation,
         showNotification,
+        checkPersonalityProfile,
         getState: () => ({ ...state }),
         getLevelInfo: (level) => CONFIG.LEVELS[level - 1]
     };

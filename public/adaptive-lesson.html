@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lección Adaptativa - Héroes de la Patria</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/adaptive-content.css">
+</head>
+
+<body class="adaptive-lesson-body">
+
+    <!-- Navbar simplificado -->
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <i class="fas fa-brain text-primary me-2"></i> AI Learning Hub
+            </span>
+            <a href="iacoins-dashboard.html" class="btn btn-outline-light btn-sm">Volver al Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container lesson-container">
+
+        <!-- Header de la Lección -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-sucess text-uppercase mb-2" id="lesson-subject">Historia</span>
+                        <h1 class="display-5 fw-bold" id="lesson-title">Cargando Lección...</h1>
+                    </div>
+                    <div class="adaptation-badge" id="adaptation-badge">
+                        <i class="fas fa-magic me-1"></i> Adaptado para ti
+                    </div>
+                </div>
+                <p class="lead text-muted" id="adaptation-reason">
+                    Optimizando contenido basado en tu perfil...
+                </p>
+            </div>
+        </div>
+
+        <!-- Contenido Principal -->
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Content Viewer -->
+                <div class="card shadow-lg mb-4 content-card" id="content-viewer">
+                    <div class="card-body p-0">
+                        <div id="content-placeholder" class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p class="mt-3">Nuestra IA está seleccionando el mejor formato para ti...</p>
+                        </div>
+
+                        <!-- Dynamic Content Injection Area -->
+                        <div id="adaptive-content-area" class="d-none p-4">
+                            <!-- Video, Text, or Interactive element goes here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback / Interaction -->
+                <div class="card mb-4 border-0 bg-transparent">
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-outline-danger" onclick="logFeedback('too_hard')">
+                            <i class="fas fa-thumbs-down me-2"></i> Muy Difícil
+                        </button>
+                        <button class="btn btn-primary px-5" onclick="completeLesson()">
+                            Completar Lección <i class="fas fa-check ms-2"></i>
+                        </button>
+                        <button class="btn btn-outline-success" onclick="logFeedback('too_easy')">
+                            Muy Fácil <i class="fas fa-thumbs-up me-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Emotional Tracker Widget -->
+                <div class="card shadow-sm mb-4 border-info">
+                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fs-6"><i class="fas fa-heartbeat me-2"></i>Estado Emocional</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <p class="small text-muted mb-3">¿Cómo te sientes con este tema?</p>
+                        <div class="btn-group w-100 mb-2" role="group">
+                            <button type="button" class="btn btn-outline-danger btn-sm"
+                                onclick="trackMood('Frustrated')" title="Frustrado">
+                                <i class="fas fa-angry fa-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="trackMood('Bored')"
+                                title="Aburrido">
+                                <i class="fas fa-meh fa-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm"
+                                onclick="trackMood('Confident')" title="Confiado">
+                                <i class="fas fa-smile fa-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-success btn-sm" onclick="trackMood('Flow')"
+                                title="En racha (Flow)">
+                                <i class="fas fa-bolt fa-lg"></i>
+                            </button>
+                        </div>
+                        <div id="mood-feedback" class="small text-success fw-bold v-hidden">¡Registrado!</div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Tu Perfil de Aprendizaje</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="profile-icon-sm visual active me-3">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">Estilo Dominante</small>
+                                <strong id="user-style-label">Visual</strong>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Nivel de Adaptación</small>
+                            <div class="progress mt-1" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Conceptos Relacionados</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-transparent">
+                            <i class="fas fa-lock text-muted me-2"></i> Causas de la Revolución
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <i class="fas fa-lock text-muted me-2"></i> El Porfiriato (Actual)
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <i class="fas fa-lock text-muted me-2"></i> Constitución de 1917
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Intervention Modal -->
+    <div class="modal fade" id="interventionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-soft-primary border-0">
+                    <h5 class="modal-title fw-bold text-primary"><i class="fas fa-hand-holding-heart me-2"></i>Hey, un
+                        momento...</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3">
+                        <i class="fas fa-mug-hot fa-4x text-warning intervention-icon"></i>
+                    </div>
+                    <h4 class="mb-3" id="interventionTitle">¿Necesitas un descanso?</h4>
+                    <p class="text-muted" id="interventionMessage">
+                        Hemos notado que este tema está siendo un poco difícil. Tomar un respiro de 5 minutos ayuda a
+                        reiniciar tu concentración.
+                    </p>
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">No, quiero
+                        seguir</button>
+                    <button type="button" class="btn btn-primary" onclick="takeBreak()">
+                        <i class="fas fa-check me-2"></i>Sí, tomar un break
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/adaptive-lesson.js"></script>
+</body>
+
+</html>

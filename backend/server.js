@@ -89,7 +89,7 @@ const apiDocsRoutes = loadRoute('./routes/api-docs'); // ✅ SWAGGER UI - SEMANA
 const aiTutorRoutes = loadRoute('./routes/ai-tutor'); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
 const aiAnalyticsRoutes = require('./ai/analytics/routes'); // ✅ AI ANALYTICS - SEMANA 9 (19 DIC 2025)
 const aiTutorAlphaRoutes = require('./ai/tutor/routes_alpha'); // ✅ AI TUTOR ALPHA - SEMANA 10 (19 DIC 2025)
-const mlopsRoutes = require('./ai/mlops/routes'); // ✅ MLOPS - SEMANA 11 (19 DIC 2025)
+const mlopsRoutes = loadRoute('./routes/ai-mlops'); // ✅ MLOPS - SEMANA 11 (2025/12/05)
 const evaluationRoutes = require('./ai/evaluation/routes'); // ✅ EVALUATION - SEMANA 12 (19 DIC 2025)
 const dropoutPredictionRoutes = require('./ai/dropout-prediction/routes'); // ✅ DROPOUT PREDICTION - SEMANA 13 (4 ENE 2026)
 const sentimentAnalysisRoutes = require('./ai/sentiment-analysis/routes'); // ✅ SENTIMENT ANALYSIS - SEMANA 14 (4 ENE 2026)
@@ -98,6 +98,13 @@ const adminAutomationRoutes = require('./ai/automation/routes'); // ✅ ADMIN AU
 const multimodalChatbotRoutes = require('./ai/multimodal/routes'); // ✅ MULTIMODAL CHATBOT - SEMANA 17 (4 ENE 2026)
 const learningPathRoutes = require('./ai/learning-path/routes'); // ✅ LEARNING PATH - SEMANA 18 (4 ENE 2026)
 const teacherToolsRoutes = require('./ai/teacher-tools/routes'); // ✅ TEACHER TOOLS - SEMANA 19 (4 ENE 2026)
+const emotionsRoutes = require('./routes/emotions'); // ✅ EMOTIONAL ANALYTICS - SEMANA 14 (ADDON)
+const studyPlansRoutes = require('./routes/study-plans'); // ✅ PERSONALIZED PLANS - SEMANA 15
+const contentRecommendationRoutes = require('./routes/content-recommendations'); // ✅ CONTENT RECOMMENDATIONS - SEMANA 15
+const personalityRoutes = require('./routes/personality'); // ✅ PERSONALITY PROFILING - SEMANA 9
+const adaptiveContentRoutes = require('./routes/adaptive-content'); // ✅ ADAPTIVE CONTENT - SEMANA 10
+const knowledgeGraphRoutes = require('./routes/knowledge-graph'); // ✅ KNOWLEDGE GRAPH - SEMANA 16
+const abTestingRoutes = require('./routes/ab-testing'); // ✅ A/B TESTING - SEMANA 12 (COMPLETION)
 const optimizationRoutes = require('./ai/optimization/routes'); // ✅ OPTIMIZATION - SEMANA 20 (4 ENE 2026)
 const mlopsAdvancedRoutes = require('./ai/mlops-advanced/routes'); // ✅ MLOPS ADVANCED - SEMANA 21 (4 ENE 2026)
 const qaTestingRoutes = require('./ai/qa-testing/routes'); // ✅ QA TESTING - SEMANA 22 (4 ENE 2026)
@@ -483,6 +490,8 @@ app.use('/api/messaging', messagingRoutes);
 app.use('/api/digital-library', digitalLibraryRoutes);
 app.use('/api/support-tickets', supportTicketsRoutes);
 app.use('/api/gamification', gamificationRoutes);  // ✅ GAMIFICATION ROUTES - Sistema de logros y puntuaciones
+app.use('/api/gamification-ext', gamificationExtendedRoutes); // ✅ GAMIFICATION EXTENDED (Semanas 1-8)
+app.use('/api/ai/hyper', require('./routes/ai-hyperpersonalization')); // ✅ AI HYPERPERSONALIZATION (Semana 9+)
 app.use('/api/wallet', walletRoutes);  // ✅ WALLET ROUTES - Gestión de IACoins (15 NOV 2025)
 app.use('/api/iacoins', iacoinsRoutes);  // ✅ IACOINS ROUTES - IACoins Dashboard (14 DIC 2025)
 app.use('/api/challenges', challengesRoutes);  // ✅ CHALLENGES ROUTES - Sistema de retos (15 NOV 2025)
@@ -495,7 +504,11 @@ app.use('/api/ai/mlops', mlopsRoutes); // ✅ MLOPS - SEMANA 11 (19 DIC 2025)
 app.use('/api/ai/evaluation', evaluationRoutes); // ✅ EVALUATION - SEMANA 12 (19 DIC 2025)
 app.use('/api/ai/dropout', dropoutPredictionRoutes); // ✅ DROPOUT PREDICTION - SEMANA 13 (4 ENE 2026)
 app.use('/api/ai/sentiment', sentimentAnalysisRoutes); // ✅ SENTIMENT ANALYSIS - SEMANA 14 (4 ENE 2026)
-app.use('/api/ai/recommendations', contentRecommendationRoutes); // ✅ CONTENT RECOMMENDATIONS - SEMANA 15 (4 ENE 2026)
+app.use('/api/emotions', emotionsRoutes); // ✅ EMOTIONAL LEARNING ANALYTICS - SEMANA 14 (ADDON)
+app.use('/api/study-plans', studyPlansRoutes); // ✅ PERSONALIZED PLANS - SEMANA 15
+app.use('/api/ai/recommendations', contentRecommendationRoutes); // ✅ CONTENT RECOMMENDATIONS - SEMANA 15
+app.use('/api/personality', personalityRoutes); // ✅ PERSONALITY PROFILING - SEMANA 9
+app.use('/api/adaptive-content', adaptiveContentRoutes); // ✅ ADAPTIVE CONTENT - SEMANA 10
 app.use('/api/ai/automation', adminAutomationRoutes); // ✅ ADMIN AUTOMATION RPA - SEMANA 16 (4 ENE 2026)
 app.use('/api/ai/multimodal', multimodalChatbotRoutes); // ✅ MULTIMODAL CHATBOT - SEMANA 17 (4 ENE 2026)
 app.use('/api/ai/learning-path', learningPathRoutes); // ✅ LEARNING PATH - SEMANA 18 (4 ENE 2026)

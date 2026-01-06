@@ -181,6 +181,13 @@ router.post('/login', loginLimiter, loginValidation, async (req, res) => {
         };
         const tokenPair = jwtUtils.generateTokenPair(userPayload, rememberMe);
         debug_logger_1.debugLog.log('AUTH', `Login exitoso para email=${(0, sanitized_errors_1.maskEmail)(email)}, role=${user.role}`);
+
+        // ✅ GAMIFICATION: Check Login Achievements (Async - Fire & Forget)
+        const achievementService = require('../services/achievement.service');
+        achievementService.checkLoginAchievements(user.id).catch(err =>
+            console.error('[AUTH] Achievement check failed:', err)
+        );
+
         res.json({
             success: true,
             message: 'Autenticación exitosa',
