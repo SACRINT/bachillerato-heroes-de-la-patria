@@ -513,3 +513,16 @@
 [data-theme="dark"] .challenge-description {
     color: #a0aec0;
 }
+
+/* Promo Card Utilities */
+.bg-gradient-promo {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.position-circle-promo {
+    width: 300px;
+    height: 300px;
+    margin-right: -100px;
+    margin-top: -50px;
+}
+

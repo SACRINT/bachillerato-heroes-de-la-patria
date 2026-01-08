@@ -216,3 +216,9 @@ body {
         justify-content: center;
     }
 }
+/* Navbar Blur Utility */
+.navbar-blur {
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(10px);
+}
+

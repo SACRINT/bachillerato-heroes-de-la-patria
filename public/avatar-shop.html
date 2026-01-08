@@ -13,6 +13,10 @@
 
     <!-- Estilos Propios -->
     <link rel="stylesheet" href="css/avatar-shop.css">
+
+    <!-- PWA y Metadatos -->
+    <meta name="theme-color" content="#0d6efd">
+    <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
 </head>
 
 <body>
@@ -59,18 +63,18 @@
         <main class="shop-section">
             <h2 class="mb-4"><i class="fas fa-store me-2 text-warning"></i> Tienda de Personalización</h2>
 
-            <div class="shop-tabs">
-                <button class="shop-tab active" data-type="all">Todo</button>
-                <button class="shop-tab" data-type="bases">Avatares</button>
-                <button class="shop-tab" data-type="frames">Marcos</button>
-                <button class="shop-tab" data-type="bgs">Fondos</button>
-                <button class="shop-tab" data-type="accessories">Accesorios</button>
+            <div class="shop-tabs" role="tablist">
+                <button class="shop-tab active" data-type="all" role="tab" aria-selected="true">Todo</button>
+                <button class="shop-tab" data-type="bases" role="tab" aria-selected="false">Avatares</button>
+                <button class="shop-tab" data-type="frames" role="tab" aria-selected="false">Marcos</button>
+                <button class="shop-tab" data-type="bgs" role="tab" aria-selected="false">Fondos</button>
+                <button class="shop-tab" data-type="accessories" role="tab" aria-selected="false">Accesorios</button>
             </div>
 
             <div id="items-grid" class="items-grid">
                 <!-- Dynamic Items Here -->
                 <div class="text-center w-100 py-5">
-                    <div class="spinner-border text-primary" role="status">
+                    <div class="spinner-border text-primary" role="status" title="Cargando artículos">
                         <span class="visually-hidden">Cargando...</span>
                     </div>
                 </div>

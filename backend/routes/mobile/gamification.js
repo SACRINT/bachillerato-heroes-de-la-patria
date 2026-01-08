@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const mobileGamificationService = require('../services/mobile-gamification.service');
-const { authenticateToken } = require('../middleware/auth');
+const mobileGamificationService = require('../../services/mobile-gamification.service');
+const { authenticateToken } = require('../../middleware/auth');
 
 // POST /api/gamification/spin
 // Girar la ruleta diaria

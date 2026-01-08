@@ -1,0 +1,226 @@
+/**
+ * 🎨 CONTENT STUDIO STYLES
+ * Propósito: Interfaz premium para creación de contenido interactivo
+ */
+
+:root {
+    --studio-bg: #f8fafc;
+    --studio-sidebar-bg: #ffffff;
+    --studio-primary: #4f46e5;
+    --studio-secondary: #6366f1;
+    --studio-border: #e2e8f0;
+    --studio-text: #1e293b;
+    --studio-canvas-bg: #ffffff;
+}
+
+body.studio-mode {
+    background-color: var(--studio-bg);
+    color: var(--studio-text);
+    overflow: hidden;
+    height: 100vh;
+}
+
+.studio-container {
+    display: grid;
+    grid-template-columns: 280px 1fr 320px;
+    grid-template-rows: 64px 1fr;
+    height: 100vh;
+}
+
+/* Header */
+.studio-header {
+    grid-column: 1 / span 3;
+    background: white;
+    border-bottom: 1px solid var(--studio-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 10;
+}
+
+.studio-logo {
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--studio-primary);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Sidebar Elements */
+.studio-sidebar {
+    background: var(--studio-sidebar-bg);
+    border-right: 1px solid var(--studio-border);
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.sidebar-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 16px;
+    letter-spacing: 0.05em;
+}
+
+.element-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.draggable-element {
+    background: #f1f5f9;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    cursor: grab;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.draggable-element:hover {
+    border-color: var(--studio-primary);
+    background: #eef2ff;
+    transform: translateY(-2px);
+}
+
+.draggable-element i {
+    font-size: 1.5rem;
+    color: var(--studio-primary);
+}
+
+.draggable-element span {
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+/* Main Canvas */
+.studio-canvas-area {
+    padding: 40px;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.studio-canvas {
+    width: 100%;
+    max-width: 900px;
+    min-height: 1000px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    position: relative;
+    border: 2px dashed #e2e8f0;
+}
+
+.studio-canvas.drag-over {
+    border-color: var(--studio-primary);
+    background-color: #f5f3ff;
+}
+
+/* Element in Canvas */
+.canvas-element {
+    position: relative;
+    margin-bottom: 24px;
+    padding: 20px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.canvas-element:hover {
+    border-color: var(--studio-primary);
+    background: #f8fafc;
+}
+
+.canvas-element.active {
+    border-color: var(--studio-primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.element-controls {
+    position: absolute;
+    top: -12px;
+    right: 12px;
+    display: none;
+    gap: 4px;
+}
+
+.canvas-element:hover .element-controls,
+.canvas-element.active .element-controls {
+    display: flex;
+}
+
+.control-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background: white;
+    border: 1px solid var(--studio-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.control-btn:hover {
+    background: #f8fafc;
+    color: var(--studio-primary);
+}
+
+.control-btn.delete:hover {
+    color: #ef4444;
+}
+
+/* Properties Panel */
+.studio-properties {
+    background: white;
+    border-left: 1px solid var(--studio-border);
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.properties-header {
+    border-bottom: 1px solid var(--studio-border);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+}
+
+.property-group {
+    margin-bottom: 20px;
+}
+
+.property-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #475569;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.canvas-element {
+    animation: fadeIn 0.3s ease-out;
+}

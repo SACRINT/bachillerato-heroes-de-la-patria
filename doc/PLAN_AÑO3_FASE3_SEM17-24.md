@@ -37,16 +37,16 @@
 | 2 | Crear MicrolearningService.js | Backend | CRÍTICA | ✅ |
 | 3 | Implementar 5-Minute Lessons format | Backend | CRÍTICA | ✅ |
 | 4 | Crear endpoint GET /api/microlearn/next | Backend | CRÍTICA | ✅ |
-| 5 | Implementar Swipe Learning UI (estilo TikTok) | Mobile | ALTA | ✅ (Básico) |
+| 5 | Implementar Swipe Learning UI (estilo TikTok) | Mobile | ALTA | ✅ |
 | 6 | Crear Vertical Video player nativo | Mobile | ALTA | ⏳ |
 | 7 | Implementar Quick Quizzes de 1 minuto | Mobile | ALTA | ⏳ |
-| 8 | Diseñar cards de contenido micro | Mobile | ALTA | ✅ (LessonCard) |
-| 9 | Crear Audio Learning mode | Mobile | MEDIA |
-| 10 | Implementar background audio playback | Mobile | MEDIA |
-| 11 | Crear progress tracking por micro-lesson | Backend | MEDIA |
-| 12 | Diseñar transiciones entre contenidos | Mobile | BAJA |
-| 13 | Implementar content preloading | Mobile | BAJA |
-| 14 | Escribir tests para MicrolearningService | Testing | BAJA |
+| 8 | Diseñar cards de contenido micro | Mobile | ALTA | ✅ |
+| 9 | Crear Audio Learning mode | Mobile | MEDIA | ⏳ |
+| 10 | Implementar background audio playback | Mobile | MEDIA | ⏳ |
+| 11 | Crear progress tracking por micro-lesson | Backend | MEDIA | ⏳ |
+| 12 | Diseñar transiciones entre contenidos | Mobile | BAJA | ⏳ |
+| 13 | Implementar content preloading | Mobile | BAJA | ⏳ |
+| 14 | Escribir tests para MicrolearningService | Testing | BAJA | ⏳ |
 
 ---
 
@@ -125,20 +125,20 @@
 
 | # | Tarea | Tipo | Prioridad | Estado |
 |---|-------|------|-----------|--------|
-| 1 | Diseñar widgets para iOS (SwiftUI) y Android (Jetpack) | Mobile | CRÍTICA | ✅ (Mobile Widget Service) |
+| 1 | Diseñar widgets para iOS (SwiftUI) y Android (Jetpack) | Mobile | CRÍTICA | ✅ |
 | 2 | Crear Endpoint para datos de Widgets | Backend | CRÍTICA | ✅ |
-| 3 | Implementar "Streak Widget" pequeño | Mobile | CRÍTICA | ✅ (Endpoint GET /widgets/streak) |
-| 4 | Implementar "Upcoming Lesson" widget mediano | Mobile | ALTA | ✅ (API) |
+| 3 | Implementar "Streak Widget" pequeño | Mobile | CRÍTICA | ✅ |
+| 4 | Implementar "Upcoming Lesson" widget mediano | Mobile | ALTA | ✅ |
 | 5 | Crear App Shortcuts (Quick Actions en icono) | Mobile | ALTA | ⏳ |
-| 6 | Implementar "Daily Tip" widget | Mobile | ALTA | ✅ (API) |
-| 7 | Configurar background refresh tasks | Mobile | MEDIA | ✅ (DB+Service support) |
+| 6 | Implementar "Daily Tip" widget | Mobile | ALTA | ✅ |
+| 7 | Configurar background refresh tasks | Mobile | MEDIA | ✅ |
 | 8 | Diseñar Lock Screen widgets (iOS 16+) | Mobile | MEDIA | ⏳ |
 | 9 | Implementar Dynamic Island support (iOS) | Mobile | BAJA | ⏳ |
 | 10 | Crear "Quick Study" shortcut | Mobile | BAJA | ⏳ |
 | 11 | Implementar widget configuration changes | Mobile | BAJA | ⏳ |
 | 12 | Testear consumo de batería en background | Testing | BAJA | ⏳ |
-| 13 | Implementar widget refresh scheduling | Mobile | BAJA |
-| 14 | Escribir tests para widgets | Testing | BAJA |
+| 13 | Implementar widget refresh scheduling | Mobile | BAJA | ⏳ |
+| 14 | Escribir tests para widgets | Testing | BAJA | ⏳ |
 
 ---
 
@@ -171,8 +171,8 @@
 
 | # | Tarea | Tipo | Prioridad | Estado |
 |---|-------|------|-----------|--------|
-| 1 | Crear App Store listing optimizado | Marketing | CRÍTICA | ✅ (ASO Kit listo) |
-| 2 | Crear Google Play Store listing optimizado | Marketing | CRÍTICA | ✅ (ASO Kit listo) |
+| 1 | Crear App Store listing optimizado | Marketing | CRÍTICA | ✅ |
+| 2 | Crear Google Play Store listing optimizado | Marketing | CRÍTICA | ✅ |
 | 3 | Diseñar Screenshots que venden | Design | CRÍTICA | ⏳ |
 | 4 | Crear Video Preview de 30 segundos | Design | CRÍTICA | ⏳ |
 | 5 | Implementar Rating Prompt inteligente | Mobile | ALTA | ⏳ |
@@ -182,9 +182,9 @@
 | 9 | Crear Keywords research y optimización | Marketing | MEDIA | ✅ |
 | 10 | Implementar Review Management system | Backend | MEDIA | ⏳ |
 | 11 | Crear Response Templates para reviews | Marketing | MEDIA | ⏳ |
-| 12 | Diseñar iconos para diferentes tamaños | Design | BAJA | ✅ (app.json) |
-| 13 | Implementar Analytics de conversión | Marketing | BAJA |
-| 14 | Preparar submission para ambas stores | Marketing | BAJA |
+| 12 | Diseñar iconos para diferentes tamaños | Design | BAJA | ✅ |
+| 13 | Implementar Analytics de conversión | Marketing | BAJA | ⏳ |
+| 14 | Preparar submission para ambas stores | Marketing | BAJA | ⏳ |
 
 ---
 

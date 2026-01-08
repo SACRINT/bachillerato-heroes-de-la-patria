@@ -22,10 +22,17 @@
     <link rel="stylesheet" href="css/global-layout.css">
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+    <!-- PWA -->
+    <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
     <!-- DOMPurify for XSS protection (MUST load before main.js) -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <!-- Main JS for dynamic header/footer loading -->
     <script src="js/main.js" defer></script>
+    <style>
+        .bg-gradient-custom {
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+        }
+    </style>
 </head>
 
 <body>
@@ -52,8 +59,8 @@
             <!-- AI Assessment Banner (Hidden by default, shown if profile missing) -->
             <div class="row mb-4 d-none" id="ai-assessment-promo">
                 <div class="col-12">
-                    <div class="card bg-gradient-primary text-white border-0 shadow-lg overflow-hidden position-relative"
-                        style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                    <div
+                        class="card bg-gradient-primary text-white border-0 shadow-lg overflow-hidden position-relative bg-gradient-promo">
                         <div class="card-body p-4 position-relative z-index-1">
                             <div class="row align-items-center">
                                 <div class="col-md-8">
@@ -70,8 +77,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="position-absolute top-0 end-0 translate-middle rounded-circle bg-white opacity-10"
-                            style="width: 300px; height: 300px; margin-right: -100px; margin-top: -50px;"></div>
+                        <div
+                            class="position-absolute top-0 end-0 translate-middle rounded-circle bg-white opacity-10 position-circle-promo">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -89,7 +97,7 @@
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div id="iacoins-balance">
                         <div class="text-center py-4">
-                            <div class="spinner-border text-warning" role="status">
+                            <div class="spinner-border text-warning" role="status" title="Cargando balance">
                                 <span class="visually-hidden">Cargando...</span>
                             </div>
                         </div>
@@ -98,7 +106,7 @@
                 <div class="col-md-3">
                     <div id="iacoins-level">
                         <div class="text-center py-4">
-                            <div class="spinner-border text-primary" role="status">
+                            <div class="spinner-border text-primary" role="status" title="Cargando nivel">
                                 <span class="visually-hidden">Cargando...</span>
                             </div>
                         </div>
@@ -106,8 +114,7 @@
                 </div>
                 <!-- Avatar & Customization Quick Link -->
                 <div class="col-md-3">
-                    <div class="card h-100 bg-dark text-white border-0 shadow-sm"
-                        style="background: linear-gradient(135deg, #2c3e50, #4ca1af);">
+                    <div class="card h-100 bg-dark text-white border-0 shadow-sm bg-gradient-custom">
                         <div class="card-body d-flex align-items-center justify-content-between">
                             <div>
                                 <h6 class="mb-1 text-uppercase small opacity-75">Personalización</h6>
@@ -137,7 +144,7 @@
                         </div>
                         <div class="card-body" id="iacoins-challenges">
                             <div class="text-center py-4">
-                                <div class="spinner-border text-primary" role="status">
+                                <div class="spinner-border text-primary" role="status" title="Cargando retos">
                                     <span class="visually-hidden">Cargando...</span>
                                 </div>
                             </div>

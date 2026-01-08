@@ -1,4 +1,4 @@
-const { executeQuery } = require('../../config/database');
+const { executeQuery } = require('../config/database');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 

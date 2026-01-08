@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupos de Estudio | BGE Héroes de la Patria</title>
+
+    <!-- Preloads -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        as="style">
+
+    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/study-groups.css">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
+    <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
+    <meta name="theme-color" content="#4f46e5">
+
+    <style>
+        .hero-max-width {
+            max-width: 600px;
+        }
+
+        .search-max-width {
+            max-width: 800px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar Simplificado -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="iacoins-dashboard.html">
+                <i class="fas fa-chevron-left me-2"></i> Social Learning
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#"><i class="fas fa-users me-1"></i> Explorar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showMyGroups()"><i class="fas fa-bookmark me-1"></i> Mis
+                            Grupos</a>
+                    </li>
+                    <li class="nav-item ms-3">
+                        <button class="btn btn-primary btn-sm rounded-pill px-3" data-bs-toggle="modal"
+                            data-bs-target="#createGroupModal">
+                            <i class="fas fa-plus me-1"></i> Crear Grupo
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="groups-hero text-center">
+        <div class="container">
+            <span class="badge bg-white text-primary mb-3 bg-opacity-75 rounded-pill px-3 py-1">
+                <i class="fas fa-graduation-cap me-1"></i> Aprende en Comunidad
+            </span>
+            <h1 class="display-4 hero-title mb-3">Encuentra tu Squad de Estudio</h1>
+            <p class="lead opacity-90 mx-auto hero-max-width">
+                Conecta con compañeros que estudian lo mismo que tú. Comparte notas, resuelve dudas y sube de nivel
+                juntos.
+            </p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Search Bar -->
+        <div class="search-container mx-auto search-max-width">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i
+                                class="fas fa-search"></i></span>
+                        <input type="text" class="form-control border-start-0 ps-0" id="search-input"
+                            placeholder="Buscar por tema (ej. Cálculo, Historia...)" aria-label="Buscar grupos por tema"
+                            title="Buscar grupos por tema">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-select" id="subject-filter" aria-label="Filtrar por materia"
+                        title="Filtrar por materia">
+                        <option value="">Todas las Materias</option>
+                        <option value="Matemáticas">Matemáticas</option>
+                        <option value="Historia">Historia</option>
+                        <option value="Ciencias">Ciencias</option>
+                        <option value="Literatura">Literatura</option>
+                        <option value="Inglés">Inglés</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-primary-custom w-100" onclick="searchGroups()" aria-label="Botón buscar"
+                        title="Buscar">
+                        Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Groups Grid -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="h4 fw-bold mb-0" id="section-title">Grupos Destacados</h2>
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                    data-bs-toggle="dropdown">
+                    Ordenar por
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Más recientes</a></li>
+                    <li><a class="dropdown-item" href="#">Más populares</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="groups-grid">
+            <!-- Loader -->
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-3 text-muted">Buscando grupos activos...</p>
+            </div>
+
+            <!-- Items injected by JS -->
+        </div>
+
+        <!-- Empty State Template (Hidden) -->
+        <div id="empty-state" class="text-center py-5 d-none">
+            <div class="mb-3">
+                <i class="fas fa-users-slash fa-4x text-muted opacity-25"></i>
+            </div>
+            <h3 class="h5 text-muted">No se encontraron grupos</h3>
+            <p class="text-muted small">Intenta con otros términos o crea tu propio grupo.</p>
+            <button class="btn btn-outline-primary btn-sm mt-3" data-bs-toggle="modal"
+                data-bs-target="#createGroupModal">
+                Crear Nuevo Grupo
+            </button>
+        </div>
+    </div>
+
+    <!-- Create Group Modal -->
+    <div class="modal fade" id="createGroupModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-plus-circle text-primary me-2"></i> Crear Grupo
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="create-group-form">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Nombre del Grupo</label>
+                            <input type="text" class="form-control" id="group-name"
+                                placeholder="Ej. Club de Cálculo Diferencial" required maxlength="50">
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Materia</label>
+                                <select class="form-select" id="group-subject" required>
+                                    <option value="Matemáticas">Matemáticas</option>
+                                    <option value="Historia">Historia</option>
+                                    <option value="Ciencias">Ciencias</option>
+                                    <option value="Literatura">Literatura</option>
+                                    <option value="Programación">Programación</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Tema Específico</label>
+                                <input type="text" class="form-control" id="group-topic" placeholder="Ej. Derivadas">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Descripción</label>
+                            <textarea class="form-control" id="group-desc" rows="3"
+                                placeholder="¿Cuál es el objetivo del grupo?" maxlength="200"></textarea>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="group-private">
+                            <label class="form-check-label" for="group-private">Grupo Privado (Solo invitación)</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-link text-muted text-decoration-none"
+                        data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary px-4" onclick="createGroup()">Crear Grupo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/study-groups-viewer.js"></script>
+</body>
+
+</html>

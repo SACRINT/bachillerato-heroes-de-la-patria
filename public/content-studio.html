@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Content Studio | BGE Héroes de la Patria</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css"> <!-- Base styles -->
+    <link rel="stylesheet" href="css/content-studio.css">
+</head>
+
+<body class="studio-mode">
+
+    <div class="studio-container">
+        <!-- Header -->
+        <header class="studio-header">
+            <div class="studio-logo">
+                <i class="fas fa-magic"></i>
+                <span>Content Studio</span>
+            </div>
+
+            <div class="studio-title-area mx-auto">
+                <input type="text" id="content-title" class="form-control-plaintext text-center fw-bold fs-5"
+                    value="Título de mi lección interactiva" title="Título del contenido"
+                    aria-label="Título del contenido">
+            </div>
+
+            <div class="studio-actions d-flex gap-2">
+                <button class="btn btn-outline-secondary btn-sm" onclick="togglePreview()">
+                    <i class="fas fa-eye me-1"></i> Previsualizar
+                </button>
+                <button class="btn btn-outline-primary btn-sm" onclick="saveDraft()">
+                    <i class="fas fa-save me-1"></i> Guardar Borrador
+                </button>
+                <button class="btn btn-primary btn-sm px-4" onclick="publishContent()">
+                    <i class="fas fa-paper-plane me-1"></i> Publicar
+                </button>
+            </div>
+        </header>
+
+        <!-- Sidebar Left: Elements -->
+        <aside class="studio-sidebar">
+            <div class="sidebar-section">
+                <h3 class="sidebar-section-title">Contenido Base</h3>
+                <div class="element-grid">
+                    <div class="draggable-element" draggable="true" data-type="text">
+                        <i class="fas fa-font"></i>
+                        <span>Texto</span>
+                    </div>
+                    <div class="draggable-element" draggable="true" data-type="image">
+                        <i class="fas fa-image"></i>
+                        <span>Imagen</span>
+                    </div>
+                    <div class="draggable-element" draggable="true" data-type="video">
+                        <i class="fas fa-play-circle"></i>
+                        <span>Video</span>
+                    </div>
+                    <div class="draggable-element" draggable="true" data-type="divider">
+                        <i class="fas fa-minus"></i>
+                        <span>Divisor</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section mt-4">
+                <h3 class="sidebar-section-title">Interacciones</h3>
+                <div class="element-grid">
+                    <div class="draggable-element" draggable="true" data-type="quiz">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Quiz</span>
+                    </div>
+                    <div class="draggable-element" draggable="true" data-type="hotspot">
+                        <i class="fas fa-bullseye"></i>
+                        <span>Hotspot</span>
+                    </div>
+                    <div class="draggable-element" draggable="true" data-type="button">
+                        <i class="fas fa-mouse-pointer"></i>
+                        <span>Botón</span>
+                    </div>
+                    <div class="draggable-element" draggable="true" data-type="flashcard">
+                        <i class="fas fa-clone"></i>
+                        <span>Flashcard</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section mt-4">
+                <h3 class="sidebar-section-title">Plantillas Rápidas</h3>
+                <div id="templates-list" class="list-group list-group-flush small">
+                    <!-- Templates loaded via JS -->
+                    <div class="text-muted p-2">Cargando plantillas...</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Canvas -->
+        <main class="studio-canvas-area">
+            <div id="canvas" class="studio-canvas">
+                <div class="canvas-placeholder text-center text-muted mt-5" id="placeholder">
+                    <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                    <h4>Comienza tu creación</h4>
+                    <p>Arrastra elementos desde el panel izquierdo hacia aquí</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Sidebar Right: Properties -->
+        <aside class="studio-properties">
+            <div class="properties-header">
+                <h3 class="h6 mb-1 fw-bold">Propiedades</h3>
+                <p class="text-muted small mb-0" id="property-target">No hay elemento seleccionado</p>
+            </div>
+
+            <div id="properties-panel" class="properties-body">
+                <div class="text-center text-muted mt-5">
+                    <i class="fas fa-sliders-h fa-2x mb-3 opacity-25"></i>
+                    <p class="small">Selecciona un elemento en el lienzo para editar sus propiedades</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="previewModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Vista Previa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-light" id="preview-body">
+                    <!-- Preview content injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/content-studio.js"></script>
+</body>
+
+</html>

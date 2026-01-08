@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const offlineSyncService = require('../services/offline-sync.service');
-const { authenticateToken } = require('../middleware/auth');
+const offlineSyncService = require('../../services/offline-sync.service');
+const { authenticateToken } = require('../../middleware/auth');
 
 // POST /api/sync/up
 // Subir cambios realizados offline

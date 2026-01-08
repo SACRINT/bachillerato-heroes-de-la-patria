@@ -1,0 +1,132 @@
+/* Notification Widget Styles */
+.notif-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.notif-btn {
+    background: none;
+    border: none;
+    color: white;
+    /* Assuming dark navbar */
+    font-size: 1.25rem;
+    position: relative;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.notif-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: bold;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #111827;
+    /* Match navbar bg */
+}
+
+/* Dropdown */
+.notif-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 320px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 1050;
+    display: none;
+    overflow: hidden;
+}
+
+.notif-dropdown.show {
+    display: block;
+}
+
+.notif-header {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9fafb;
+}
+
+.notif-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #111827;
+    margin: 0;
+}
+
+.notif-actions {
+    font-size: 0.75rem;
+}
+
+.notif-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notif-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    gap: 0.75rem;
+    align-items: start;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.1s;
+}
+
+.notif-item:hover {
+    background: #f9fafb;
+}
+
+.notif-item.unread {
+    background: #eff6ff;
+}
+
+.notif-icon {
+    width: 32px;
+    height: 32px;
+    background: #e5e7eb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    color: #4b5563;
+    flex-shrink: 0;
+}
+
+.notif-content {
+    flex: 1;
+}
+
+.notif-text {
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+    line-height: 1.25;
+}
+
+.notif-time {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.empty-state {
+    padding: 2rem;
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.875rem;
+}

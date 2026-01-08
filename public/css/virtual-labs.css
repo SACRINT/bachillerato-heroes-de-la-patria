@@ -1,0 +1,147 @@
+/**
+ * 🧪 VISUAL LAB CSS
+ * Propósito: Estilos para la interfaz de laboratorios virtuales
+ */
+
+:root {
+    --lab-bg: #f3f4f6;
+    --lab-panel: #ffffff;
+    --lab-primary: #8b5cf6;
+    --lab-secondary: #a78bfa;
+    --lab-border: #e5e7eb;
+}
+
+body.lab-mode {
+    background-color: var(--lab-bg);
+    overflow: hidden;
+    height: 100vh;
+}
+
+.lab-container {
+    display: grid;
+    grid-template-columns: 320px 1fr 300px;
+    grid-template-rows: 60px 1fr;
+    height: 100vh;
+}
+
+/* Header */
+.lab-header {
+    grid-column: 1 / span 3;
+    background: var(--lab-panel);
+    border-bottom: 1px solid var(--lab-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 10;
+}
+
+.lab-title {
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+}
+
+/* Left Sidebar: Controls & Inventory */
+.lab-controls {
+    background: var(--lab-panel);
+    border-right: 1px solid var(--lab-border);
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.control-group {
+    margin-bottom: 24px;
+}
+
+.control-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin-bottom: 12px;
+}
+
+.lab-item {
+    background: #f9fafb;
+    border: 1px solid var(--lab-border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s;
+}
+
+.lab-item:hover {
+    border-color: var(--lab-primary);
+    background: #f5f3ff;
+}
+
+/* Main Canvas */
+.lab-workspace {
+    position: relative;
+    background: #e5e7eb;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lab-canvas {
+    width: 1000px;
+    height: 700px;
+    background: white;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Right Sidebar: Data & Logs */
+.lab-data {
+    background: var(--lab-panel);
+    border-left: 1px solid var(--lab-border);
+    display: flex;
+    flex-direction: column;
+}
+
+.data-log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+
+.log-entry {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--lab-border);
+}
+
+.log-time {
+    color: #6b7280;
+}
+
+.lab-notebook {
+    height: 300px;
+    border-top: 1px solid var(--lab-border);
+    padding: 20px;
+    background: #fffbeb;
+}
+
+/* Simulation Elements */
+.sim-object {
+    position: absolute;
+    cursor: grab;
+    transition: transform 0.1s;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.sim-object:active {
+    cursor: grabbing;
+}

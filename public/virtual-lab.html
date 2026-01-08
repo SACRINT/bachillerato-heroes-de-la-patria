@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio Virtual | BGE Héroes de la Patria</title>
+
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/virtual-labs.css">
+</head>
+
+<body class="lab-mode">
+
+    <div class="lab-container">
+        <!-- Header -->
+        <header class="lab-header">
+            <div class="d-flex align-items-center gap-3">
+                <a href="dashboard.html" class="text-secondary" title="Volver al dashboard"
+                    aria-label="Volver al dashboard"><i class="fas fa-arrow-left"></i></a>
+                <h1 class="lab-title h5" id="lab-title">Cargando Laboratorio...</h1>
+            </div>
+
+            <div class="lab-actions d-flex gap-2">
+                <button class="btn btn-outline-danger btn-sm" onclick="resetSimulation()" title="Reiniciar simulación"
+                    aria-label="Reiniciar simulación">
+                    <i class="fas fa-undo"></i> Reiniciar
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="submitLab()">
+                    <i class="fas fa-check-circle me-1"></i> Terminar
+                </button>
+            </div>
+        </header>
+
+        <!-- Left Controls -->
+        <aside class="lab-controls">
+            <div class="control-group">
+                <span class="control-label">Instrumentos</span>
+                <div id="tools-list">
+                    <!-- Dynamic Tools -->
+                    <div class="lab-item" draggable="true" ondragstart="dragStart(event, 'ruler')">
+                        <i class="fas fa-ruler text-primary"></i> Regla
+                    </div>
+                    <div class="lab-item" draggable="true" ondragstart="dragStart(event, 'stopwatch')">
+                        <i class="fas fa-stopwatch text-primary"></i> Cronómetro
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <span class="control-label">Materiales</span>
+                <div id="materials-list">
+                    <!-- Dynamic Materials -->
+                </div>
+            </div>
+
+            <div class="control-group">
+                <span class="control-label">Parámetros</span>
+                <label class="form-label small" for="gravity-range">Gravedad (m/s²)</label>
+                <input type="range" class="form-range" min="1" max="20" step="0.1" value="9.8" id="gravity-range"
+                    oninput="updateGravity(this.value)" title="Ajustar gravedad">
+                <div class="text-end small text-muted" id="gravity-val">9.8 m/s²</div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="lab-workspace" id="workspace" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div id="simulation-canvas" class="lab-canvas">
+                <!-- Objects Rendered Here -->
+            </div>
+        </main>
+
+        <!-- Right Data & Logs -->
+        <aside class="lab-data">
+            <div class="data-log">
+                <span class="control-label">Registro de Datos</span>
+                <div id="measurements-log">
+                    <div class="text-muted text-center mt-5 small">No hay mediciones registradas.</div>
+                </div>
+            </div>
+
+            <div class="lab-notebook">
+                <span class="control-label">Cuaderno de Laboratorio</span>
+                <div class="mb-2">
+                    <label class="visually-hidden" for="lab-hypothesis">Hipótesis</label>
+                    <input type="text" class="form-control form-control-sm mb-2" placeholder="Hipótesis..."
+                        id="lab-hypothesis" title="Escribe tu hipótesis">
+                </div>
+                <label class="visually-hidden" for="lab-notes">Observaciones y conclusiones</label>
+                <textarea class="form-control form-control-sm" rows="5" placeholder="Observaciones y conclusiones..."
+                    id="lab-notes" title="Escribe tus observaciones"></textarea>
+            </div>
+        </aside>
+    </div>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <!-- Physics Engine -->
+    <script src="js/virtual-labs.js"></script>
+</body>
+
+</html>

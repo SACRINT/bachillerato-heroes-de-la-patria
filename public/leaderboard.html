@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/leaderboard.css">
+    <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
+    <meta name="theme-color" content="#1a1a2e">
 </head>
 
 <body>
@@ -28,18 +30,22 @@
     <main class="leaderboard-container">
         <div class="leaderboard-card">
 
-            <div class="lb-tabs">
-                <button class="lb-tab active" data-type="global">Global (XP)</button>
-                <button class="lb-tab" data-type="streak">Rachas</button>
-                <button class="lb-tab" data-type="weekly"
+            <div class="lb-tabs" role="tablist">
+                <button class="lb-tab active" role="tab" aria-selected="true" data-type="global"
+                    title="Ranking Global">Global (XP)</button>
+                <button class="lb-tab" role="tab" aria-selected="false" data-type="streak"
+                    title="Ranking de Rachas">Rachas</button>
+                <button class="lb-tab" role="tab" aria-selected="false" data-type="weekly" title="Ranking Semanal"
                     onclick="alert('Próximamente: Torneos Semanales')">Semanal</button>
             </div>
 
             <ul class="lb-list" id="leaderboard-list">
                 <!-- Loaded via JS -->
-                <div class="text-center py-5">
-                    <div class="spinner-border text-primary" role="status"></div>
-                </div>
+                <li class="list-unstyled text-center py-5">
+                    <div class="spinner-border text-primary" role="status" title="Cargando ranking">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                </li>
             </ul>
 
         </div>

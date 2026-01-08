@@ -5624,3 +5624,12 @@ body.dark-mode .time-slot {
 body.dark-mode .time-slot:hover {
     background: rgba(25, 118, 210, 0.2);
 }
+/* ==========================================================================
+   8. UTILITY CLASSES
+   ========================================================================== */
+.chart-container-responsive {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+

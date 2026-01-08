@@ -61,14 +61,34 @@
             border-radius: 5px;
         }
 
+        .progress-sm {
+            height: 8px;
+        }
+
+        .option-letter-circle {
+            width: 30px;
+            height: 30px;
+            min-width: 30px;
+        }
+
         .result-icon {
             font-size: 4rem;
             margin-bottom: 1rem;
             background: -webkit-linear-gradient(45deg, var(--primary-color), var(--success-color));
+            background: linear-gradient(45deg, var(--primary-color), var(--success-color));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
+        .progress-init {
+            width: 0%;
+        }
     </style>
+    <!-- PWA -->
+    <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
+    <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
+    <meta name="theme-color" content="#4361ee">
 </head>
 
 <body>
@@ -117,8 +137,8 @@
                             <span class="badge bg-light text-dark" id="category-badge">Percepción</span>
                         </div>
                         <div class="progress">
-                            <div id="quiz-progress" class="progress-bar bg-primary" role="progressbar"
-                                style="width: 0%"></div>
+                            <div id="quiz-progress" class="progress-bar bg-primary progress-init" role="progressbar"
+                                aria-label="Progreso del quiz" title="Progreso del quiz"></div>
                         </div>
                     </div>
                     <div class="card-body p-4">
@@ -150,27 +170,30 @@
                             <div class="row g-2 align-items-center mb-2">
                                 <div class="col-3 text-end small fw-bold">Visual</div>
                                 <div class="col-9">
-                                    <div class="progress" style="height: 8px;">
-                                        <div id="bar-visual" class="progress-bar bg-primary" role="progressbar"
-                                            style="width: 0%"></div>
+                                    <div class="progress progress-sm">
+                                        <div id="bar-visual" class="progress-bar bg-primary progress-init"
+                                            role="progressbar" aria-label="Puntuación Visual" title="Puntuación Visual">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row g-2 align-items-center mb-2">
                                 <div class="col-3 text-end small fw-bold">Auditivo</div>
                                 <div class="col-9">
-                                    <div class="progress" style="height: 8px;">
-                                        <div id="bar-auditory" class="progress-bar bg-success" role="progressbar"
-                                            style="width: 0%"></div>
+                                    <div class="progress progress-sm">
+                                        <div id="bar-auditory" class="progress-bar bg-success progress-init"
+                                            role="progressbar" aria-label="Puntuación Auditiva"
+                                            title="Puntuación Auditiva"></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row g-2 align-items-center">
                                 <div class="col-3 text-end small fw-bold">Kinestésico</div>
                                 <div class="col-9">
-                                    <div class="progress" style="height: 8px;">
-                                        <div id="bar-kinesthetic" class="progress-bar bg-warning" role="progressbar"
-                                            style="width: 0%"></div>
+                                    <div class="progress progress-sm">
+                                        <div id="bar-kinesthetic" class="progress-bar bg-warning progress-init"
+                                            role="progressbar" aria-label="Puntuación Kinestésica"
+                                            title="Puntuación Kinestésica"></div>
                                     </div>
                                 </div>
                             </div>
@@ -304,7 +327,7 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn w-100';
                 btn.innerHTML = `<div class="d-flex align-items-center">
-                    <div class="rounded-circle bg-light me-3 d-flex align-items-center justify-content-center" style="width:30px;height:30px;min-width:30px">
+                    <div class="rounded-circle bg-light me-3 d-flex align-items-center justify-content-center option-letter-circle">
                         ${String.fromCharCode(65 + idx)}
                     </div>
                     <span>${opt.text}</span>

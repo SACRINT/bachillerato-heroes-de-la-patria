@@ -89,3 +89,12 @@
     opacity: 0;
     transition: opacity 0.3s ease;
 }
+/* Utility Classes */
+.progress-xs {
+    height: 6px;
+}
+
+.w-85 {
+    width: 85%;
+}
+

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil | BGE Héroes</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/social-profile.css">
+
+    <!-- PWA -->
+    <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
+    <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
+    <meta name="theme-color" content="#4f46e5">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="dashboard.html">
+                <i class="fas fa-arrow-left me-2"></i> Dashboard
+            </a>
+            <div class="ms-auto" id="nav-actions">
+                <!-- Loading -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Banner -->
+    <div class="container px-0 px-lg-3">
+        <div class="profile-banner">
+            <div class="profile-avatar-container">
+                <img src="images/default-avatar.png" id="profile-avatar" class="profile-avatar" alt="Avatar">
+            </div>
+
+            <div class="profile-actions" id="banner-actions">
+                <!-- Buttons injected by JS (Edit Profile / Add Friend) -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="profile-grid">
+
+            <!-- Left Column: About & Stats -->
+            <div class="sidebar-col">
+                <div class="mt-4 mt-lg-0 mb-3">
+                    <h2 class="h3 fw-bold mb-1" id="profile-name">Cargando...</h2>
+                    <p class="text-muted" id="profile-location"><i class="fas fa-map-marker-alt me-1"></i> ...</p>
+                </div>
+
+                <div class="d-flex gap-2 mb-4">
+                    <div class="stat-box">
+                        <div class="stat-val" id="stat-friends">0</div>
+                        <div class="stat-label">Conexiones</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val" id="stat-views">0</div>
+                        <div class="stat-label">Vistas</div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h5 class="card-title">Sobre Mí</h5>
+                    <p class="text-muted small mb-0" id="profile-bio">Sin biografía.</p>
+                </div>
+
+                <div class="info-card">
+                    <h5 class="card-title">Habilidades</h5>
+                    <div id="skills-container">
+                        <!-- Skills injected here -->
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h5 class="card-title">Intereses</h5>
+                    <div id="interests-container" class="d-flex flex-wrap gap-2">
+                        <!-- Interests injected here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Portfolio & Feed -->
+            <div class="main-col">
+
+                <!-- Portfolio Section -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="fw-bold mb-0">Portafolio</h3>
+                    <button class="btn btn-sm btn-outline-primary d-none" id="btn-add-portfolio" data-bs-toggle="modal"
+                        data-bs-target="#portfolioModal">
+                        <i class="fas fa-plus me-1"></i> Agregar Proyecto
+                    </button>
+                </div>
+
+                <div class="portfolio-grid mb-5" id="portfolio-grid">
+                    <div class="col-12 text-center py-5 bg-white rounded border">
+                        <p class="text-muted mb-0">No hay proyectos publicados aún.</p>
+                    </div>
+                </div>
+
+                <!-- Recent Activity (Placeholder for Phase 5) -->
+                <!-- <h3 class="fw-bold mb-3">Actividad Reciente</h3> ... -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Perfil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"
+                        title="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-profile-form">
+                        <div class="mb-3">
+                            <label class="form-label" for="edit-bio">Biografía</label>
+                            <textarea class="form-control" id="edit-bio" rows="3" title="Biografía"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="edit-location">Ubicación</label>
+                            <input type="text" class="form-control" id="edit-location" title="Ubicación">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="edit-skills">Habilidades (separadas por coma)</label>
+                            <input type="text" class="form-control" id="edit-skills"
+                                placeholder="Ej. Matemáticas, Python, Liderazgo">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="saveProfile()">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Portfolio Modal -->
+    <div class="modal fade" id="portfolioModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Proyecto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"
+                        title="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="portfolio-form">
+                        <div class="mb-3">
+                            <label class="form-label" for="port-title">Título</label>
+                            <input type="text" class="form-control" id="port-title" required
+                                title="Título del proyecto">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="port-desc">Descripción</label>
+                            <textarea class="form-control" id="port-desc" rows="3"
+                                title="Descripción del proyecto"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="port-img">URL de Imagen (Opcional)</label>
+                            <input type="url" class="form-control" id="port-img" title="URL de imagen del proyecto">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="saveProject()">Publicar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/social-profile-viewer.js"></script>
+</body>
+
+</html>

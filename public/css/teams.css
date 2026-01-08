@@ -1,0 +1,152 @@
+/* Team Competitions Styles */
+:root {
+    --team-primary: #6366f1;
+    --team-secondary: #818cf8;
+    --team-accent: #f59e0b;
+    --bg-light: #f8fafc;
+    --text-dark: #1e293b;
+}
+
+body {
+    background-color: var(--bg-light);
+}
+
+/* Hero Section */
+.teams-hero {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+    color: white;
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    border-radius: 0 0 1.5rem 1.5rem;
+}
+
+/* Team Cards */
+.team-card {
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid #e2e8f0;
+    height: 100%;
+}
+
+.team-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.team-header {
+    background: #f1f5f9;
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid #e2e8f0;
+    position: relative;
+}
+
+.team-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.5rem;
+}
+
+.team-rank-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--team-accent);
+    color: white;
+    font-weight: 800;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 0.9rem;
+}
+
+.team-body {
+    padding: 1.5rem;
+}
+
+.team-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.stat-value {
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--team-primary);
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+/* Competition Card */
+.comp-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    border-left: 5px solid var(--team-primary);
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.comp-date {
+    background: #eff6ff;
+    color: var(--team-primary);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    min-width: 80px;
+}
+
+.comp-day {
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.comp-month {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* Leaderboard Table */
+.leaderboard-table th {
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.rank-1 {
+    color: #fbbf24;
+}
+
+/* Gold */
+.rank-2 {
+    color: #94a3b8;
+}
+
+/* Silver */
+.rank-3 {
+    color: #b45309;
+}
+
+/* Bronze */

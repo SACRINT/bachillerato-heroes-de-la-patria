@@ -122,3 +122,8 @@ body {
 .modal-footer {
     border-top-color: rgba(255, 255, 255, 0.1);
 }
+/* Utilities */
+.container-narrow {
+    max-width: 900px;
+}
+

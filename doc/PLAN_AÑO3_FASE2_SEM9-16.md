@@ -8,8 +8,8 @@
 
 **Objetivo:** AI que identifica el perfil de aprendizaje
 
-| # | Tarea | Tipo | Prioridad | Estado |
-|---|-------|------|-----------|--------|
+| ID | Tarea | Tipo | Prioridad | Estado |
+|---|---|---|---|---|
 | 1 | Diseño de esquema BD: personality_profiles, learning_styles | SQL | CRÍTICA | ✅ |
 | 2 | Crear PersonalityProfilingService.js | Backend | CRÍTICA | ✅ |
 | 3 | Implementar assessment quiz de estilos de aprendizaje | Backend | CRÍTICA | ✅ |
@@ -190,8 +190,8 @@ Se han implementado todos los sistemas críticos de Hiperpersonalización.
 
 **Objetivo:** Planes de estudio generados por AI
 
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
+| # | Tarea | Tipo | Prioridad | Estado |
+|---|---|---|---|---|
 | 1 | Diseño de esquema BD: study_plans, plan_items, goals | SQL | CRÍTICA | ✅ |
 | 2 | Crear PersonalizedPlanService.js | Backend | CRÍTICA | ✅ |
 | 3 | Implementar Auto-Generated Plans por AI | Backend | CRÍTICA | ✅ |
@@ -202,10 +202,10 @@ Se han implementado todos los sistemas críticos de Hiperpersonalización.
 | 8 | Diseñar UI de plan de estudio semanal | Frontend | ALTA | ✅ |
 | 9 | Crear AI Coaching diario personalizado (Content Recs) | Backend | MEDIA | ✅ |
 | 10 | Implementar reminders inteligentes | Backend | MEDIA | ⏳ |
-| 11 | Crear endpoint PUT /api/plans/:id/adjust | Backend | MEDIA |
-| 12 | Diseñar vista de calendario de estudio | Frontend | BAJA |
-| 13 | Implementar sharing de planes entre amigos | Backend | BAJA |
-| 14 | Escribir tests para PersonalizedPlanService | Testing | BAJA |
+| 11 | Crear endpoint PUT /api/plans/:id/adjust | Backend | MEDIA | ⏳ |
+| 12 | Diseñar vista de calendario de estudio | Frontend | BAJA | ⏳ |
+| 13 | Implementar sharing de planes entre amigos | Backend | BAJA | ⏳ |
+| 14 | Escribir tests para PersonalizedPlanService | Testing | BAJA | ⏳ |
 
 ---
 
@@ -213,22 +213,22 @@ Se han implementado todos los sistemas críticos de Hiperpersonalización.
 
 **Objetivo:** Mapa visual del conocimiento personal
 
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
-| 1 | Diseño de esquema BD: knowledge_nodes, concept_links | SQL | CRÍTICA |
-| 2 | Crear KnowledgeGraphService.js | Backend | CRÍTICA |
-| 3 | Implementar Personal Knowledge Map con D3.js | Frontend | CRÍTICA |
-| 4 | Crear endpoint GET /api/knowledge/graph | Backend | CRÍTICA |
-| 5 | Implementar Concept Mastery por nodo | Backend | ALTA |
-| 6 | Crear Gap Identification visual | Backend | ALTA |
-| 7 | Implementar Connection Discovery automática | Backend | ALTA |
-| 8 | Diseñar UI de grafo interactivo | Frontend | ALTA |
-| 9 | Crear Exploration Mode para descubrir temas | Frontend | MEDIA |
-| 10 | Implementar zoom/pan en grafo | Frontend | MEDIA |
-| 11 | Crear endpoint GET /api/knowledge/gaps | Backend | MEDIA |
-| 12 | Diseñar animaciones de conexión de conceptos | Frontend | BAJA |
-| 13 | Implementar export del knowledge graph | Backend | BAJA |
-| 14 | Escribir tests para KnowledgeGraphService | Testing | BAJA |
+| # | Tarea | Tipo | Prioridad | Estado |
+|---|---|---|---|---|
+| 1 | Diseño de esquema BD: knowledge_nodes, concept_links | SQL | CRÍTICA | ✅ |
+| 2 | Crear KnowledgeGraphService.js | Backend | CRÍTICA | ✅ |
+| 3 | Implementar Personal Knowledge Map con D3.js | Frontend | CRÍTICA | ✅ |
+| 4 | Crear endpoint GET /api/knowledge/graph | Backend | CRÍTICA | ✅ |
+| 5 | Implementar Concept Mastery por nodo | Backend | ALTA | ✅ |
+| 6 | Crear Gap Identification visual | Backend | ALTA | ⏳ |
+| 7 | Implementar Connection Discovery automática | Backend | ALTA | ⏳ |
+| 8 | Diseñar UI de grafo interactivo | Frontend | ALTA | ✅ |
+| 9 | Crear Exploration Mode para descubrir temas | Frontend | MEDIA | ✅ |
+| 10 | Implementar zoom/pan en grafo | Frontend | MEDIA | ✅ |
+| 11 | Crear endpoint GET /api/knowledge/gaps | Backend | MEDIA | ⏳ |
+| 12 | Diseñar animaciones de conexión de conceptos | Frontend | BAJA | ⏳ |
+| 13 | Implementar export del knowledge graph | Backend | BAJA | ⏳ |
+| 14 | Escribir tests para KnowledgeGraphService | Testing | BAJA | ⏳ |
 
 ---
 

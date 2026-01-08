@@ -1,201 +1,75 @@
-# 🌍 FASE 6: SCALE & EXPANSION (Semanas 41-48)
+# PLAN DE DESARROLLO - AÑO 3: FASE 6 (Semanas 41-48)
 
-## Plan de Trabajo Año 3 - Plataforma Educativa de Clase Mundial
+## 🤖 Advanced Analytics & AI
 
----
-
-## SEMANA 41: MULTI-SCHOOL ARCHITECTURE
-
-**Objetivo:** Arquitectura para múltiples escuelas
-
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
-| 1 | Diseño de esquema BD: schools, school_configs, school_branding | SQL | CRÍTICA |
-| 2 | Crear MultiSchoolService.js | Backend | CRÍTICA |
-| 3 | Implementar School Onboarding wizard | Backend | CRÍTICA |
-| 4 | Crear endpoint POST /api/schools/onboard | Backend | CRÍTICA |
-| 5 | Implementar Data Isolation por escuela (RLS) | Backend | ALTA |
-| 6 | Crear Custom Branding per school | Backend | ALTA |
-| 7 | Implementar Feature Toggles por escuela | Backend | ALTA |
-| 8 | Diseñar UI de onboarding wizard | Frontend | ALTA |
-| 9 | Crear Analytics per School dashboard | Backend | MEDIA |
-| 10 | Implementar school-specific URL routing | Backend | MEDIA |
-| 11 | Crear endpoint GET /api/schools/:id/config | Backend | MEDIA |
-| 12 | Diseñar school admin portal | Frontend | BAJA |
-| 13 | Implementar school data export | Backend | BAJA |
-| 14 | Escribir tests para MultiSchoolService | Testing | BAJA |
+Esta fase se centra en la implementación de inteligencia artificial avanzada y análisis predictivo para mejorar la retención, personalizar el aprendizaje y optimizar la experiencia educativa.
 
 ---
 
-## SEMANA 42: ADMIN SUPER DASHBOARD
+### 🗓️ SEMANA 41: Predictive Analytics for Student Retention
 
-**Objetivo:** Dashboard para todas las escuelas
+**Objetivo:** Identificar estudiantes en riesgo de deserción mediante modelos predictivos.
 
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
-| 1 | Diseño de esquema BD: super_admin_logs, cross_school_metrics | SQL | CRÍTICA |
-| 2 | Crear SuperAdminDashboardService.js | Backend | CRÍTICA |
-| 3 | Implementar Multi-School Overview | Backend | CRÍTICA |
-| 4 | Crear endpoint GET /api/super-admin/overview | Backend | CRÍTICA |
-| 5 | Implementar Cross-School Analytics agregados | Backend | ALTA |
-| 6 | Crear School Management CRUD | Backend | ALTA |
-| 7 | Implementar Global User Management | Backend | ALTA |
-| 8 | Diseñar UI de super admin dashboard | Frontend | ALTA |
-| 9 | Crear Billing Management por escuela | Backend | MEDIA |
-| 10 | Implementar health monitoring all schools | Backend | MEDIA |
-| 11 | Crear endpoint GET /api/super-admin/schools | Backend | MEDIA |
-| 12 | Diseñar comparison charts entre escuelas | Frontend | BAJA |
-| 13 | Implementar super admin audit logs | Backend | BAJA |
-| 14 | Escribir tests para SuperAdminDashboardService | Testing | BAJA |
+- [ ] **Base de Datos:** Tablas para `retention_risk_scores`, `risk_factors` (asistencia, notas, login).
+- [ ] **Backend:** Servicio de cálculo de riesgo (Heurística ponderada inicial).
+- [ ] **Dashboard:** Vista para tutores "Alumnos en Riesgo" con alertas tempranas.
+- [ ] **Automación:** Job semanal para recalcular scores de riesgo.
 
----
+### 🗓️ SEMANA 42: AI-Powered Personal Tutor V2
 
-## SEMANA 43: API ECONOMY
+**Objetivo:** Evolución del chatbot a un tutor contextual consciente del progreso del alumno.
 
-**Objetivo:** API pública para integraciones
+- [ ] **Integración:** Vincular Chatbot con `user_progress` y `exam_results`.
+- [ ] **Features:** "Explícame mis errores del último examen", "Sugiéreme qué estudiar hoy".
+- [ ] **Backend:** Context Window Management para mantener historial de conversación relevante.
 
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
-| 1 | Diseño de esquema BD: api_keys, api_usage, rate_limits | SQL | CRÍTICA |
-| 2 | Crear PublicAPIService.js | Backend | CRÍTICA |
-| 3 | Implementar Public API v2 con OpenAPI spec | Backend | CRÍTICA |
-| 4 | Crear endpoint POST /api/developers/register | Backend | CRÍTICA |
-| 5 | Implementar Developer Portal frontend | Frontend | ALTA |
-| 6 | Crear API Key management | Backend | ALTA |
-| 7 | Implementar Rate Limiting por plan | Backend | ALTA |
-| 8 | Diseñar UI de developer portal | Frontend | ALTA |
-| 9 | Crear Webhook system configurable | Backend | MEDIA |
-| 10 | Implementar API analytics dashboard | Backend | MEDIA |
-| 11 | Crear endpoint GET /api/developers/usage | Backend | MEDIA |
-| 12 | Diseñar API documentation site | Frontend | BAJA |
-| 13 | Implementar sandbox environment | Backend | BAJA |
-| 14 | Escribir tests para PublicAPIService | Testing | BAJA |
+### 🗓️ SEMANA 43: Learning Path Optimization
 
----
+**Objetivo:** Algoritmo que ajusta dinámicamente el currículo basado en desempeño.
 
-## SEMANA 44: LOCALIZATION SYSTEM
+- [ ] **Lógica:** Si falla en álgebra, insertar módulos de refuerzo antes de cálculo.
+- [ ] **DB:** `dynamic_learning_paths`, `user_path_deviations`.
+- [ ] **Frontend:** Visualización de "Tu Ruta Personalizada" (Graph UI).
 
-**Objetivo:** Sistema de localización
+### 🗓️ SEMANA 44: Sentiment Analysis on Feedback
 
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
-| 1 | Diseño de esquema BD: translations, locales, content_translations | SQL | CRÍTICA |
-| 2 | Crear LocalizationService.js | Backend | CRÍTICA |
-| 3 | Implementar Multi-Language support (ES, EN, PT) | Backend | CRÍTICA |
-| 4 | Crear endpoint GET /api/i18n/:locale | Backend | CRÍTICA |
-| 5 | Implementar Content Translation workflow | Backend | ALTA |
-| 6 | Crear Cultural Adaptation rules | Backend | ALTA |
-| 7 | Implementar RTL Support (Arabic, Hebrew) | Frontend | ALTA |
-| 8 | Diseñar UI de language selector | Frontend | ALTA |
-| 9 | Crear Local Regulations compliance checker | Backend | MEDIA |
-| 10 | Implementar translation management admin | Backend | MEDIA |
-| 11 | Crear endpoint POST /api/i18n/translate | Backend | MEDIA |
-| 12 | Diseñar translation editor UI | Frontend | BAJA |
-| 13 | Implementar machine translation fallback | Backend | BAJA |
-| 14 | Escribir tests para LocalizationService | Testing | BAJA |
+**Objetivo:** Analizar el tono emocional en foros y comentarios para detectar frustración o bullying.
+
+- [ ] **NLP:** Integración de librería de análisis de sentimiento (o API externa simulada).
+- [ ] **Moderación:** Flagging automático de contenido tóxico con score de severidad.
+- [ ] **Reports:** "Termómetro Emocional del Grupo" para docentes.
+
+### 🗓️ SEMANA 45: Automated Essay Scoring
+
+**Objetivo:** Evaluación automática preliminar para preguntas abiertas (ensayos cortos).
+
+- [ ] **DB:** Rúbricas NLP (`keyword_density`, `semantic_similarity`).
+- [ ] **Backend:** Motor de comparación semántica contra respuestas modelo.
+- [ ] **UX:** Feedback inmediato "Tu respuesta parece cubrir 3/4 puntos clave".
+
+### 🗓️ SEMANA 46: Voice-Enabled Learning Assistants
+
+**Objetivo:** Permitir comandos de voz y dictado para accesibilidad y usabilidad.
+
+- [ ] **Frontend:** Web Speech API integration para dictado en exámenes y búsqueda.
+- [ ] **Backend:** Procesamiento de comandos de voz ("Abrir el laboratorio de física").
+
+### 🗓️ SEMANA 47: Real-time Engagement Analytics
+
+**Objetivo:** Dashboards en vivo para docentes durante clases sincrónicas/híbridas.
+
+- [ ] **WebSocket:** Tracking de "Estudiantes activos ahora", "Tiempo en tarea".
+- [ ] **UI:** Panel de control del profesor "Live Class Pulse".
+
+### 🗓️ SEMANA 48: Final System Polish & Security Audit
+
+**Objetivo:** Estabilización, optimización y auditoría de seguridad final.
+
+- [ ] **Security:** Pentesting simulado, revisión de permisos.
+- [ ] **Performance:** Query optimization, caching strategies (Redis).
+- [ ] **Docs:** Actualización de documentación técnica y de usuario.
 
 ---
+**Estado Actual:**
 
-## SEMANA 45: GLOBAL INFRASTRUCTURE
-
-**Objetivo:** Infraestructura global
-
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
-| 1 | Configurar CDN Global (Cloudflare/AWS CloudFront) | Infra | CRÍTICA |
-| 2 | Crear GlobalInfraService.js | Backend | CRÍTICA |
-| 3 | Implementar Database Replication multi-region | Infra | CRÍTICA |
-| 4 | Crear endpoint GET /api/infra/status | Backend | CRÍTICA |
-| 5 | Implementar Edge Functions (Cloudflare Workers) | Infra | ALTA |
-| 6 | Crear Global Load Balancing | Infra | ALTA |
-| 7 | Implementar Disaster Recovery plan | Infra | ALTA |
-| 8 | Diseñar status page pública | Frontend | ALTA |
-| 9 | Crear automated failover system | Infra | MEDIA |
-| 10 | Implementar geo-routing inteligente | Infra | MEDIA |
-| 11 | Crear endpoint GET /api/infra/latency | Backend | MEDIA |
-| 12 | Diseñar monitoring dashboard | Frontend | BAJA |
-| 13 | Implementar cost optimization alerts | Infra | BAJA |
-| 14 | Escribir tests para GlobalInfraService | Testing | BAJA |
-
----
-
-## SEMANA 46: ENTERPRISE FEATURES
-
-**Objetivo:** Features para grandes instituciones
-
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
-| 1 | Integrar SSO (SAML/OIDC) | Backend | CRÍTICA |
-| 2 | Crear EnterpriseService.js | Backend | CRÍTICA |
-| 3 | Implementar LDAP/Active Directory integration | Backend | CRÍTICA |
-| 4 | Crear endpoint POST /api/enterprise/sso/configure | Backend | CRÍTICA |
-| 5 | Implementar Audit Logs completos | Backend | ALTA |
-| 6 | Crear Custom Roles granulares | Backend | ALTA |
-| 7 | Implementar SLA Dashboard | Backend | ALTA |
-| 8 | Diseñar UI de enterprise config | Frontend | ALTA |
-| 9 | Crear data retention policies | Backend | MEDIA |
-| 10 | Implementar compliance reports | Backend | MEDIA |
-| 11 | Crear endpoint GET /api/enterprise/audit-logs | Backend | MEDIA |
-| 12 | Diseñar role management UI | Frontend | BAJA |
-| 13 | Implementar IP whitelist | Backend | BAJA |
-| 14 | Escribir tests para EnterpriseService | Testing | BAJA |
-
----
-
-## SEMANA 47: MARKETPLACE
-
-**Objetivo:** Marketplace de apps y contenido
-
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
-| 1 | Diseño de esquema BD: marketplace_apps, listings, purchases | SQL | CRÍTICA |
-| 2 | Crear MarketplaceService.js | Backend | CRÍTICA |
-| 3 | Implementar App Marketplace | Backend | CRÍTICA |
-| 4 | Crear endpoint GET /api/marketplace/apps | Backend | CRÍTICA |
-| 5 | Implementar Content Marketplace | Backend | ALTA |
-| 6 | Crear Partner Integrations framework | Backend | ALTA |
-| 7 | Implementar Review System para apps | Backend | ALTA |
-| 8 | Diseñar UI de marketplace | Frontend | ALTA |
-| 9 | Crear Revenue Sharing model | Backend | MEDIA |
-| 10 | Implementar app installation workflow | Backend | MEDIA |
-| 11 | Crear endpoint POST /api/marketplace/install | Backend | MEDIA |
-| 12 | Diseñar app detail page | Frontend | BAJA |
-| 13 | Implementar developer payout system | Backend | BAJA |
-| 14 | Escribir tests para MarketplaceService | Testing | BAJA |
-
----
-
-## SEMANA 48: SUBSCRIPTION & BILLING
-
-**Objetivo:** Sistema de suscripciones escalable
-
-| # | Tarea | Tipo | Prioridad |
-|---|-------|------|-----------|
-| 1 | Integrar Stripe/PayPal Subscriptions | Backend | CRÍTICA |
-| 2 | Crear SubscriptionBillingService.js | Backend | CRÍTICA |
-| 3 | Implementar Subscription Tiers (Free, Pro, Enterprise) | Backend | CRÍTICA |
-| 4 | Crear endpoint POST /api/billing/subscribe | Backend | CRÍTICA |
-| 5 | Implementar Per-User Billing | Backend | ALTA |
-| 6 | Crear School Invoicing system | Backend | ALTA |
-| 7 | Implementar Usage-Based Pricing | Backend | ALTA |
-| 8 | Diseñar UI de pricing page | Frontend | ALTA |
-| 9 | Crear Multi-Currency support | Backend | MEDIA |
-| 10 | Implementar dunning management | Backend | MEDIA |
-| 11 | Crear endpoint GET /api/billing/invoices | Backend | MEDIA |
-| 12 | Diseñar billing dashboard | Frontend | BAJA |
-| 13 | Implementar tax calculation | Backend | BAJA |
-| 14 | Escribir tests para SubscriptionBillingService | Testing | BAJA |
-
----
-
-## 📊 RESUMEN FASE 6
-
-| Métrica | Valor |
-|---------|-------|
-| Semanas | 8 |
-| Total Tareas | 112 |
-| Servicios Nuevos | 8 |
-| Migraciones SQL | 8 |
-| Integrations | 15+ |
-
-**Próximo archivo:** `PLAN_AÑO3_FASE7_SEM49-56.md`
+- [ ] Semana 41: Iniciando...

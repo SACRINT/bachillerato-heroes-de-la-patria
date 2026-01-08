@@ -137,6 +137,23 @@ const year2FinalRoutes = require('./ai/year2-final/routes'); // ✅ YEAR 2 FINAL
 const installPollsRoutes = loadRoute('./routes/install-polls');
 const teachersPortalRoutes = loadRoute('./routes/teachers-portal');
 const messagingRoutes = loadRoute('./routes/messaging');
+const digitalLibraryRoutes = loadRoute('./routes/digital-library');
+const studioRoutes = loadRoute('./routes/studio'); // ✅ CONTENT STUDIO - SEMANA 33 (FASE 5)
+const videoRoutes = loadRoute('./routes/video-learning'); // ✅ VIDEO LEARNING - SEMANA 34 (FASE 5)
+const problemsRoutes = loadRoute('./routes/practice-problems'); // ✅ PRACTICE PROBLEMS - SEMANA 35 (FASE 5)
+const labsRoutes = loadRoute('./routes/virtual-labs'); // ✅ VIRTUAL LABS - SEMANA 36 (FASE 5)
+const assessmentRoutes = loadRoute('./routes/assessment-engine'); // ✅ ASSESSMENT V2 - SEMANA 37 (FASE 5)
+const recRoutes = loadRoute('./routes/recommendations'); // ✅ RECOMMENDATIONS - SEMANA 38 (FASE 5)
+const multiFormatRoutes = loadRoute('./routes/multi-format'); // ✅ MULTI-FORMAT - SEMANA 39 (FASE 5)
+const qaRoutes = loadRoute('./routes/quality-assurance'); // ✅ QA SYSTEM - SEMANA 40 (FASE 5)
+const predictiveRoutes = loadRoute('./routes/predictive-analytics'); // ✅ PREDICTIVE ANALYTICS - SEMANA 41 (FASE 6)
+const tutorV2Routes = loadRoute('./routes/ai-tutor-v2'); // ✅ AI TUTOR V2 - SEMANA 42 (FASE 6)
+const pathRoutes = loadRoute('./routes/learning-path'); // ✅ LEARNING PATH - SEMANA 43 (FASE 6)
+const sentimentRoutes = loadRoute('./routes/sentiment-analysis'); // ✅ SENTIMENT ANALYSIS - SEMANA 44 (FASE 6)
+const gradingRoutes = loadRoute('./routes/grading-engine'); // ✅ GRADING ENGINE - SEMANA 45 (FASE 6)
+const realtimeRoutes = loadRoute('./routes/realtime-analytics'); // ✅ REAL-TIME ANALYTICS - SEMANA 47 (FASE 6)
+const notifCenterRoutes = loadRoute('./routes/notification-center'); // ✅ NOTIFICATION CENTER - SEMANA 51 (FASE 7)
+const helpdeskRoutes = loadRoute('./routes/helpdesk'); // ✅ HELPDESK - SEMANA 54 (FASE 7)
 const mobileAuthRoutes = require('./routes/mobile/auth'); // ✅ MOBILE AUTH - SEMANA 17
 const microlearningRoutes = require('./routes/microlearning'); // ✅ MICROLEARNING - SEMANA 18
 const voiceInterfaceRoutes = require('./routes/voice-interface'); // ✅ VOICE INTERFACE - SEMANA 19
@@ -147,15 +164,7 @@ const mobileSyncRoutes = require('./routes/mobile/sync'); // ✅ MOBILE SYNC - S
 
 // ... (otros requires)
 
-// API V1 Routes
-app.use('/api', apiLimiter);
-app.use('/api/mobile/auth', mobileAuthRoutes);
-app.use('/api/microlearning', microlearningRoutes);
-app.use('/api/voice', voiceInterfaceRoutes);
-app.use('/api/social', mobileSocialRoutes);
-app.use('/api/gamification', mobileGamificationRoutes);
-app.use('/api/widgets', mobileWidgetRoutes);
-app.use('/api/sync', mobileSyncRoutes);
+// API Routes setup moved to the correct section below (Line 250+)
 
 const supportTicketsRoutes = loadRoute('./routes/support-tickets');
 const installParentsRoutes = loadRoute('./routes/install-parents');
@@ -240,6 +249,8 @@ const NotificationSubscriber = require('./subscribers/notification-subscriber');
 const AnalyticsSubscriber = require('./subscribers/analytics-subscriber');
 
 const app = express();
+const { setupSecurity } = require('./config/security'); // ✅ WEEK 49 SECURITY
+setupSecurity(app);
 const PORT = process.env.PORT || 3000;
 
 // ============================================
@@ -484,8 +495,24 @@ app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/upload', uploadsRoutes);
 app.use('/api/health', healthRoutes);
 app.use('/health', healthRoutes); // ✅ ALIAS: Soporte para frontend legacy que llama a /health raíz
-// ⏸️ app.use('/api/attendance', attendanceRoutes); // ✅ ATTENDANCE ROUTES - COMENTADO: archivo no existe
 // ⏸️ app.use('/api/settings', settingsRoutes); // ✅ SETTINGS ROUTES - COMENTADO: archivo no existe
+
+// --- RUTAS MOBILE & SOCIAL LEARNING (SEMANAS 17-32) ---
+app.use('/api/mobile/auth', mobileAuthRoutes);
+app.use('/api/microlearning', microlearningRoutes);
+app.use('/api/voice', voiceInterfaceRoutes);
+app.use('/api/mobile-social', mobileSocialRoutes); // Renombrado para evitar conflicto con social-profiles
+app.use('/api/mobile-gamification', mobileGamificationRoutes);
+app.use('/api/widgets', mobileWidgetRoutes);
+app.use('/api/sync', mobileSyncRoutes);
+app.use('/api/groups', require('./routes/study-groups')); // ✅ SEMANA 25
+app.use('/api/tutors', require('./routes/peer-tutoring')); // ✅ SEMANA 26
+app.use('/api/collab', require('./routes/collaboration')); // ✅ SEMANA 27
+app.use('/api/community', require('./routes/community-forums')); // ✅ SEMANA 28
+app.use('/api/profiles', require('./routes/social-profiles')); // ✅ SEMANA 29
+app.use('/api/competitions', require('./routes/team-competitions')); // ✅ SEMANA 30
+app.use('/api/mentorship', require('./routes/mentorship')); // ✅ SEMANA 31
+app.use('/api/notifications', require('./routes/notifications')); // ✅ SEMANA 32
 
 // ✅ FASE 30.5 TAREA 5 - REDIS CACHE STATS ENDPOINTS
 // app.get('/api/health/cache/stats', redisCache.getStatsEndpoint);  // ⏸️ COMENTADO - Redis no disponible localmente (FASE 30.5)
@@ -515,6 +542,22 @@ app.use('/api/wallet', walletRoutes);  // ✅ WALLET ROUTES - Gestión de IACoin
 app.use('/api/iacoins', iacoinsRoutes);  // ✅ IACOINS ROUTES - IACoins Dashboard (14 DIC 2025)
 app.use('/api/challenges', challengesRoutes);  // ✅ CHALLENGES ROUTES - Sistema de retos (15 NOV 2025)
 app.use('/api/store', storeRoutes);  // ✅ STORE ROUTES - Tienda virtual (15 NOV 2025)
+app.use('/api/studio', studioRoutes);  // ✅ CONTENT STUDIO - SEMANA 33 (FASE 5)
+app.use('/api/videos', videoRoutes);  // ✅ VIDEO LEARNING - SEMANA 34 (FASE 5)
+app.use('/api/problems', problemsRoutes);  // ✅ PRACTICE PROBLEMS - SEMANA 35 (FASE 5)
+app.use('/api/labs', labsRoutes);  // ✅ VIRTUAL LABS - SEMANA 36 (FASE 5)
+app.use('/api/assessments', assessmentRoutes);  // ✅ ASSESSMENT V2 - SEMANA 37 (FASE 5)
+app.use('/api/recommendations', recRoutes);  // ✅ RECOMMENDATIONS - SEMANA 38 (FASE 5)
+app.use('/api/content', multiFormatRoutes);  // ✅ MULTI-FORMAT - SEMANA 39 (FASE 5)
+app.use('/api/qa', qaRoutes);  // ✅ QA SYSTEM - SEMANA 40 (FASE 5)
+app.use('/api/analytics/predictive', predictiveRoutes);  // ✅ PREDICTIVE ANALYTICS - SEMANA 41 (FASE 6)
+app.use('/api/tutor/v2', tutorV2Routes);  // ✅ AI TUTOR V2 - SEMANA 42 (FASE 6)
+app.use('/api/learning-path', pathRoutes);  // ✅ LEARNING PATH - SEMANA 43 (FASE 6)
+app.use('/api/analytics/sentiment', sentimentRoutes);  // ✅ SENTIMENT ANALYSIS - SEMANA 44 (FASE 6)
+app.use('/api/grading/essay', gradingRoutes);  // ✅ GRADING ENGINE - SEMANA 45 (FASE 6)
+app.use('/api/analytics/realtime', realtimeRoutes);  // ✅ REAL-TIME ANALYTICS - SEMANA 47 (FASE 6)
+app.use('/api/notifications/center', notifCenterRoutes);  // ✅ NOTIFICATION CENTER - SEMANA 51 (FASE 7)
+app.use('/api/support/tickets', helpdeskRoutes);  // ✅ HELPDESK - SEMANA 54 (FASE 7)
 app.use('/api/docs', apiDocsRoutes); // ✅ SWAGGER UI - SEMANA 29
 app.use('/api/tutor', aiTutorRoutes); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
 app.use('/api/ai/analytics', aiAnalyticsRoutes); // ✅ AI DESCRIPTIVE ANALYTICS - SEMANA 9 (19 DIC 2025)
