@@ -22,21 +22,20 @@ Antes de comenzar cualquier fase de limpieza:
 
 **Objetivo:** Eliminar código que con certeza no se usa.
 
-### Tarea 1.1: Eliminar carpeta _quarantine
+### ✅ Tarea 1.1: Eliminar carpeta _quarantine - COMPLETADA
 
 ```bash
 # Ubicación: public/js/_quarantine/
-# Archivos: 53 archivos
-# Riesgo: NINGUNO (ya están en cuarentena)
+# Archivos: 53 archivos ELIMINADOS
+# Riesgo: NINGUNO (ya estaban en cuarentena)
+# Fecha: 11-ENE-2026
+# Commit: f07493d
 ```
 
-**Acción:**
+**Resultado:**
 
-```powershell
-Remove-Item -Path "public/js/_quarantine" -Recurse -Force
-```
-
-**Verificación:** La aplicación debe funcionar igual después.
+- Frontend JS: 380 → 363 archivos (-17 archivos en este commit)
+- Total eliminados de quarantine: 53 archivos
 
 ---
 
@@ -310,15 +309,15 @@ export const resolveTenant = async (req, res, next) => {
 
 ## 📊 MÉTRICAS DE PROGRESO
 
-### Semana 1 (Fase 1)
+### Semana 1 (Fase 1) - EN PROGRESO
 
-- [ ] Archivos eliminados: 0 → 53 (_quarantine)
+- [x] ✅ Archivos eliminados: 53 (_quarantine) - COMPLETADO 11-ENE-2026
 - [ ] Archivos backup eliminados: 0 → ~20
 
 ### Semana 2 (Fase 2)
 
 - [ ] Duplicados consolidados: 0 → 5
-- [ ] Frontend JS: 380 → 375
+- [ ] Frontend JS: 363 → ~355 (objetivo)
 
 ### Semana 3-4 (Fase 3)
 
@@ -385,16 +384,22 @@ export const resolveTenant = async (req, res, next) => {
 
 ## 📌 PRÓXIMA ACCIÓN INMEDIATA
 
-**Ejecutar Fase 1, Tarea 1.1:**
+**Ejecutar Fase 1, Tarea 1.2: Eliminar archivos de backup**
 
 ```powershell
-# Eliminar carpeta _quarantine
-Remove-Item -Path "public/js/_quarantine" -Recurse -Force
+# Buscar y eliminar archivos backup
+Get-ChildItem -Path "public/js" -Recurse -Include *.backup,*.bak,*.old,*.tmp | Remove-Item -Force
 
 # Commit
 git add -A
-git commit -m "chore: Remove quarantined JS files (53 files) - Phase 1.1"
+git commit -m "chore: Remove backup/temp JS files - Phase 1.2"
 git push
 ```
 
-**¿Proceder con Fase 1.1?**
+---
+
+## 📜 HISTORIAL DE CAMBIOS
+
+| Fecha | Fase | Tarea | Archivos | Commit |
+|-------|------|-------|----------|--------|
+| 11-ENE-2026 | 1.1 | Eliminar _quarantine | -53 | f07493d |
