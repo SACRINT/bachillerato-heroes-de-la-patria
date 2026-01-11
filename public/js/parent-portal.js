@@ -1,8 +1,13 @@
 // Portal de Padres - window.getTenantConfigValue('school_name', 'BGE Héroes de la Patria')
+// Refactorizado: 11-ENE-2026 - Integración con API real
 class ParentPortal {
     constructor() {
+        this.apiEndpoint = '/api/parents';
+        this.token = localStorage.getItem('parent_token');
         this.currentSession = null;
         this.studentData = null;
+        this.students = []; // Lista de estudiantes del padre
+        this.currentStudentId = null; // Estudiante actualmente seleccionado
         this.isLoggedIn = false;
 
         this.initializePortal();
@@ -14,23 +19,50 @@ class ParentPortal {
     }
 
     checkExistingSession() {
-        const savedSession = localStorage.getItem('parent_session');
-        if (savedSession) {
-            try {
-                this.currentSession = JSON.parse(savedSession);
-                // Verificar si la sesión no ha expirado (24 horas)
-                const sessionTime = new Date(this.currentSession.loginTime);
-                const now = new Date();
-                const hoursDiff = (now - sessionTime) / (1000 * 60 * 60);
+        const savedToken = localStorage.getItem('parent_token');
+        const savedData = localStorage.getItem('parent_data');
 
-                if (hoursDiff < 24) {
-                    this.loginSuccess(this.currentSession.studentData);
-                } else {
-                    localStorage.removeItem('parent_session');
-                }
+        if (savedToken && savedData) {
+            try {
+                this.token = savedToken;
+                const parentData = JSON.parse(savedData);
+                // Verificar token con el servidor
+                this.verifyAndLoadDashboard(parentData);
             } catch (error) {
-                localStorage.removeItem('parent_session');
+                console.error('Error restoring session:', error);
+                this.clearSession();
             }
+        }
+    }
+
+    clearSession() {
+        localStorage.removeItem('parent_token');
+        localStorage.removeItem('parent_data');
+        this.token = null;
+        this.isLoggedIn = false;
+        this.students = [];
+    }
+
+    async verifyAndLoadDashboard(parentData) {
+        try {
+            const response = await fetch(`${this.apiEndpoint}/dashboard`, {
+                headers: {
+                    'Authorization': `Bearer ${this.token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                this.students = data.data.students || [];
+                this.currentStudentId = this.students[0]?.id || null;
+                this.isLoggedIn = true;
+                this.showDashboard(parentData);
+            } else {
+                this.clearSession();
+            }
+        } catch (error) {
+            console.error('Error verifying session:', error);
+            this.clearSession();
         }
     }
 
@@ -57,10 +89,9 @@ class ParentPortal {
 
 
     async processLogin() {
-        const email = document.getElementById('parentEmail').value;
-        const studentId = document.getElementById('studentId').value;
-        const password = document.getElementById('accessPassword').value;
-        const rememberMe = document.getElementById('rememberMe').checked;
+        const email = document.getElementById('parentEmail')?.value;
+        const password = document.getElementById('accessPassword')?.value;
+        const rememberMe = document.getElementById('rememberMe')?.checked;
 
         // Validación básica
         if (!email || !password) {
@@ -71,7 +102,7 @@ class ParentPortal {
         this.showAlert('Verificando credenciales...', 'info');
 
         try {
-            const response = await fetch('/api/parents/auth/login', {
+            const response = await fetch(`${this.apiEndpoint}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -82,11 +113,13 @@ class ParentPortal {
             const data = await response.json();
 
             if (data.success) {
-                // Si el studentId es requerido para validación adicional (opcional según lógica de negocio)
-                // aquí podríamos verificar si el studentId ingresado coincide con alguno de los estudiantes del padre
-                // pero por ahora confiaremos en la autenticación del padre.
+                // Guardar token y datos
+                this.token = data.data.token;
+                localStorage.setItem('parent_token', this.token);
+                localStorage.setItem('parent_data', JSON.stringify(data.data.parent));
 
-                this.loginSuccess(data.data, rememberMe);
+                // Cargar dashboard
+                await this.loadDashboard(data.data.parent, rememberMe);
             } else {
                 this.showAlert(data.error || 'Credenciales incorrectas.', 'error');
             }
@@ -94,6 +127,348 @@ class ParentPortal {
             console.error('Login error:', error);
             this.showAlert('Error de conexión. Intente nuevamente.', 'error');
         }
+    }
+
+    async loadDashboard(parentData, rememberMe = false) {
+        try {
+            const response = await fetch(`${this.apiEndpoint}/dashboard`, {
+                headers: {
+                    'Authorization': `Bearer ${this.token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al cargar dashboard');
+            }
+
+            const data = await response.json();
+            this.students = data.data.students || [];
+            this.currentStudentId = this.students[0]?.id || null;
+            this.isLoggedIn = true;
+
+            this.showDashboard(parentData);
+            this.showAlert('¡Bienvenido al Portal de Padres!', 'success');
+
+        } catch (error) {
+            console.error('Error loading dashboard:', error);
+            this.showAlert('Error al cargar el dashboard', 'error');
+        }
+    }
+
+    showDashboard(parentData) {
+        // Ocultar login, mostrar dashboard
+        const loginSection = document.getElementById('loginSection');
+        const dashboardSection = document.getElementById('parentDashboard');
+
+        if (loginSection) loginSection.classList.add('d-none');
+        if (dashboardSection) {
+            dashboardSection.classList.remove('d-none');
+            this.renderDashboardContent(parentData);
+        }
+    }
+
+    renderDashboardContent(parentData) {
+        const mainPanel = document.getElementById('mainPanel');
+        if (!mainPanel) return;
+
+        // Renderizar lista de estudiantes
+        let studentsHTML = '';
+        if (this.students.length > 0) {
+            studentsHTML = this.students.map(student => `
+                <div class="card mb-3 student-card" data-student-id="${student.id}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-1">${student.nombre_completo || 'Estudiante'}</h5>
+                                <small class="text-muted">
+                                    ${student.grado || ''}° ${student.grupo || ''} - ${student.turno || ''}
+                                </small>
+                            </div>
+                            <button class="btn btn-primary btn-sm" data-action="select-student" data-id="${student.id}">
+                                <i class="fas fa-eye me-1"></i>Ver Detalles
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            studentsHTML = `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No hay estudiantes vinculados a su cuenta.
+                </div>
+            `;
+        }
+
+        mainPanel.innerHTML = DOMPurify.sanitize(`
+            <div class="welcome-header mb-4">
+                <h3><i class="fas fa-user-circle text-primary me-2"></i>Bienvenido, ${parentData?.nombre || 'Padre de Familia'}</h3>
+                <p class="text-muted">Seleccione un estudiante para ver su información académica</p>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <h5 class="mb-3"><i class="fas fa-users me-2"></i>Mis Estudiantes</h5>
+                    ${studentsHTML}
+                </div>
+            </div>
+        `);
+
+        // Agregar event listeners para seleccionar estudiante
+        mainPanel.querySelectorAll('[data-action="select-student"]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const studentId = e.target.closest('[data-id]').dataset.id;
+                this.selectStudent(parseInt(studentId));
+            });
+        });
+    }
+
+    selectStudent(studentId) {
+        this.currentStudentId = studentId;
+        const student = this.students.find(s => s.id === studentId);
+        if (student) {
+            this.studentData = student;
+            this.renderStudentDashboard(student);
+        }
+    }
+
+    renderStudentDashboard(student) {
+        const mainPanel = document.getElementById('mainPanel');
+        if (!mainPanel) return;
+
+        mainPanel.innerHTML = DOMPurify.sanitize(`
+            <div class="student-info-header mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-1">${student.nombre_completo || 'Estudiante'}</h4>
+                        <p class="mb-0 text-muted">
+                            <i class="fas fa-graduation-cap me-1"></i>
+                            ${student.grado || ''}° ${student.grupo || ''} | ${student.turno || ''} | ${student.especialidad || ''}
+                        </p>
+                    </div>
+                    <button class="btn btn-outline-secondary" data-action="back-to-list">
+                        <i class="fas fa-arrow-left me-1"></i>Volver
+                    </button>
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <button class="btn btn-primary w-100 h-100 quick-action-btn" data-action="show-grades">
+                        <i class="fas fa-chart-line fa-2x mb-2"></i><br>
+                        <span>Calificaciones</span>
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-success w-100 h-100 quick-action-btn" data-action="show-attendance">
+                        <i class="fas fa-calendar-check fa-2x mb-2"></i><br>
+                        <span>Asistencia</span>
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-info w-100 h-100 quick-action-btn" data-action="show-schedule">
+                        <i class="fas fa-clock fa-2x mb-2"></i><br>
+                        <span>Horario</span>
+                    </button>
+                </div>
+            </div>
+            <div id="studentContentPanel" class="mt-4"></div>
+        `);
+
+        // Event listeners
+        mainPanel.querySelector('[data-action="back-to-list"]')?.addEventListener('click', () => {
+            const parentData = JSON.parse(localStorage.getItem('parent_data') || '{}');
+            this.renderDashboardContent(parentData);
+        });
+
+        mainPanel.querySelector('[data-action="show-grades"]')?.addEventListener('click', () => this.loadGradesFromAPI());
+        mainPanel.querySelector('[data-action="show-attendance"]')?.addEventListener('click', () => this.loadAttendanceFromAPI());
+        mainPanel.querySelector('[data-action="show-schedule"]')?.addEventListener('click', () => showSchedule());
+    }
+
+    async loadGradesFromAPI() {
+        if (!this.currentStudentId) {
+            this.showAlert('Seleccione un estudiante primero', 'warning');
+            return;
+        }
+
+        const contentPanel = document.getElementById('studentContentPanel');
+        if (!contentPanel) return;
+
+        contentPanel.innerHTML = '<div class="text-center py-4"><div class="spinner-border" role="status"></div><p class="mt-2">Cargando calificaciones...</p></div>';
+
+        try {
+            const response = await fetch(`${this.apiEndpoint}/students/${this.currentStudentId}/grades`, {
+                headers: {
+                    'Authorization': `Bearer ${this.token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al cargar calificaciones');
+            }
+
+            const data = await response.json();
+            this.renderGrades(data.data, contentPanel);
+
+        } catch (error) {
+            console.error('Error loading grades:', error);
+            contentPanel.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-circle me-2"></i>Error al cargar calificaciones</div>';
+        }
+    }
+
+    renderGrades(gradesData, container) {
+        const grades = gradesData.grades || [];
+        const summary = gradesData.summary || {};
+
+        let html = `
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Calificaciones</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-3">
+                        <strong>Promedio General:</strong> ${summary.promedio_general || 'N/A'}
+                        <span class="ms-3"><strong>Materias:</strong> ${summary.total_materias || grades.length}</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Materia</th>
+                                    <th>Profesor</th>
+                                    <th>Periodo</th>
+                                    <th>Calificación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+        `;
+
+        if (grades.length > 0) {
+            grades.forEach(grade => {
+                const gradeValue = grade.calificacion || grade.promedio || 0;
+                const badgeClass = gradeValue >= 8 ? 'bg-success' : gradeValue >= 6 ? 'bg-warning' : 'bg-danger';
+                html += `
+                    <tr>
+                        <td>${grade.materia || grade.nombre_materia || 'N/A'}</td>
+                        <td>${grade.profesor || 'N/A'}</td>
+                        <td>${grade.periodo || 'Actual'}</td>
+                        <td><span class="badge ${badgeClass}">${gradeValue}</span></td>
+                    </tr>
+                `;
+            });
+        } else {
+            html += '<tr><td colspan="4" class="text-center">No hay calificaciones registradas</td></tr>';
+        }
+
+        html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = DOMPurify.sanitize(html);
+    }
+
+    async loadAttendanceFromAPI() {
+        if (!this.currentStudentId) {
+            this.showAlert('Seleccione un estudiante primero', 'warning');
+            return;
+        }
+
+        const contentPanel = document.getElementById('studentContentPanel');
+        if (!contentPanel) return;
+
+        contentPanel.innerHTML = '<div class="text-center py-4"><div class="spinner-border" role="status"></div><p class="mt-2">Cargando asistencia...</p></div>';
+
+        try {
+            const response = await fetch(`${this.apiEndpoint}/students/${this.currentStudentId}/attendance`, {
+                headers: {
+                    'Authorization': `Bearer ${this.token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al cargar asistencia');
+            }
+
+            const data = await response.json();
+            this.renderAttendance(data.data, contentPanel);
+
+        } catch (error) {
+            console.error('Error loading attendance:', error);
+            contentPanel.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-circle me-2"></i>Error al cargar asistencia</div>';
+        }
+    }
+
+    renderAttendance(attendanceData, container) {
+        const attendance = attendanceData.attendance || [];
+        const stats = attendanceData.stats_monthly || {};
+
+        let html = `
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-calendar-check me-2"></i>Asistencia</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-3 text-center">
+                            <div class="h4 text-success">${stats.asistencias || 0}</div>
+                            <small>Asistencias</small>
+                        </div>
+                        <div class="col-3 text-center">
+                            <div class="h4 text-danger">${stats.faltas || 0}</div>
+                            <small>Faltas</small>
+                        </div>
+                        <div class="col-3 text-center">
+                            <div class="h4 text-warning">${stats.retardos || 0}</div>
+                            <small>Retardos</small>
+                        </div>
+                        <div class="col-3 text-center">
+                            <div class="h4 text-info">${stats.justificadas || 0}</div>
+                            <small>Justificadas</small>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th>Materia</th>
+                                    <th>Justificación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+        `;
+
+        if (attendance.length > 0) {
+            attendance.slice(0, 20).forEach(record => {
+                const statusClass = record.tipo === 'asistencia' ? 'text-success' :
+                    record.tipo === 'falta' ? 'text-danger' : 'text-warning';
+                const fecha = new Date(record.fecha).toLocaleDateString('es-MX');
+                html += `
+                    <tr>
+                        <td>${fecha}</td>
+                        <td class="${statusClass}"><strong>${record.tipo || 'N/A'}</strong></td>
+                        <td>${record.materia || 'General'}</td>
+                        <td>${record.justificada ? '<i class="fas fa-check text-success"></i>' : '-'}</td>
+                    </tr>
+                `;
+            });
+        } else {
+            html += '<tr><td colspan="4" class="text-center">No hay registros de asistencia</td></tr>';
+        }
+
+        html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = DOMPurify.sanitize(html);
     }
 
     getGradeColor(grade) {
@@ -153,18 +528,21 @@ class ParentPortal {
 
     parentLogout() {
         if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
-            this.isLoggedIn = false;
+            this.clearSession();
             this.studentData = null;
-            this.currentSession = null;
-
-            localStorage.removeItem('parent_session');
+            this.students = [];
+            this.currentStudentId = null;
 
             // Mostrar sección de login y ocultar dashboard
-            document.getElementById('loginSection').classList.remove('d-none');
-            document.getElementById('parentDashboard').classList.add('d-none');
+            const loginSection = document.getElementById('loginSection');
+            const dashboard = document.getElementById('parentDashboard');
+
+            if (loginSection) loginSection.classList.remove('d-none');
+            if (dashboard) dashboard.classList.add('d-none');
 
             // Limpiar formulario
-            document.getElementById('parentLoginForm').reset();
+            const loginForm = document.getElementById('parentLoginForm');
+            if (loginForm) loginForm.reset();
 
             this.showAlert('Sesión cerrada exitosamente', 'info');
         }
