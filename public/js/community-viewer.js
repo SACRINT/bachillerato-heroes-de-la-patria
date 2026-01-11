@@ -1,16 +1,20 @@
 // Community Forums Viewer
-let currentForums = [];
-let currentForumId = null;
-let currentThreadId = null;
+// Conectado con backend/routes/forums.js (community-forums.js)
+let currentCategories = [];
+let currentCategoryId = null;
+let currentTopicId = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadForums();
+    loadCategories();
 });
 
 // --- API Calls ---
 
 async function fetchAPI(endpoint, method = 'GET', body = null) {
-    const token = localStorage.getItem('token');
+    // Usar claves correctas del sistema de autenticación unificado
+    const token = localStorage.getItem('bge_auth_token') ||
+        sessionStorage.getItem('bge_auth_token') ||
+        localStorage.getItem('token'); // fallback legacy
     const headers = { 'Content-Type': 'application/json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -21,28 +25,30 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
             body: body ? JSON.stringify(body) : null
         });
         const json = await res.json();
-        if (!json.success) throw new Error(json.error);
-        return json.data || json; // Return data or full response if data key missing
+        if (!json.success) throw new Error(json.message || json.error);
+        return json.data || json;
     } catch (e) {
         console.error('API Error:', e);
         // Fallback for demo if API fails
-        if (endpoint === '/') return getMockForums();
-        if (endpoint.includes('/threads') && method === 'GET') return getMockThreads();
+        if (endpoint === '/categories') return getMockForums();
+        if (endpoint.includes('/topics') && method === 'GET') return getMockThreads();
         throw e;
     }
 }
 
 // --- Views Logic ---
 
-async function loadForums() {
+async function loadCategories() {
     showLoader('categories-loading');
-    const forums = await fetchAPI('/');
-    currentForums = forums;
-    renderForums(forums);
+    const categories = await fetchAPI('/categories');
+    currentCategories = categories;
+    renderForums(categories);
 
     // Populate modal select
     const select = document.getElementById('thread-category');
-    select.innerHTML = forums.map(f => `<option value="${f.id}">${f.title}</option>`).join('');
+    if (select) {
+        select.innerHTML = categories.map(f => `<option value="${f.id}">${f.name || f.title}</option>`).join('');
+    }
 }
 
 function renderForums(forums) {
@@ -64,17 +70,17 @@ function renderForums(forums) {
     `).join('');
 }
 
-async function openForum(forumId, title) {
-    currentForumId = forumId;
+async function openForum(categoryId, title) {
+    currentCategoryId = categoryId;
     document.getElementById('current-forum-title').textContent = title;
 
     // Switch View
     document.getElementById('forum-list-view').classList.add('d-none');
     document.getElementById('thread-list-view').classList.remove('d-none');
 
-    // Load Threads
-    const threads = await fetchAPI(`/forums/${forumId}/threads`);
-    renderThreads(threads);
+    // Load Topics from backend - /api/community/topics?categoryId=X
+    const topics = await fetchAPI(`/topics?categoryId=${categoryId}`);
+    renderThreads(topics);
 }
 
 function renderThreads(threads) {
@@ -105,15 +111,17 @@ function renderThreads(threads) {
     `).join('');
 }
 
-async function openThread(threadId) {
-    currentThreadId = threadId;
+async function openThread(topicId) {
+    currentTopicId = topicId;
 
     // Switch View
     document.getElementById('thread-list-view').classList.add('d-none');
     document.getElementById('thread-detail-view').classList.remove('d-none');
 
-    const data = await fetchAPI(`/threads/${threadId}`);
-    renderThreadDetail(data);
+    // Backend uses /topics/:id for topic detail and /topics/:id/posts for replies
+    const topic = await fetchAPI(`/topics/${topicId}`);
+    const posts = await fetchAPI(`/topics/${topicId}/posts`);
+    renderThreadDetail({ thread: topic, replies: posts });
 }
 
 function renderThreadDetail({ thread, replies }) {
@@ -163,13 +171,19 @@ function renderThreadDetail({ thread, replies }) {
 // --- Actions ---
 
 async function createThread() {
-    const forumId = document.getElementById('thread-category').value;
+    const categoryId = document.getElementById('thread-category').value;
     const title = document.getElementById('thread-title').value;
     const content = document.getElementById('thread-content').value;
 
     if (!title || !content) return alert('Completa todos los campos');
 
-    await fetchAPI('/threads', 'POST', { forumId, title, content });
+    // Backend uses /topics with categoryId in body
+    await fetchAPI('/topics', 'POST', {
+        categoryId: parseInt(categoryId),
+        title,
+        content,
+        topicType: 'discussion'
+    });
 
     // Close modal & reload current view
     const modal = bootstrap.Modal.getInstance(document.getElementById('newThreadModal'));
@@ -177,10 +191,10 @@ async function createThread() {
 
     document.getElementById('new-thread-form').reset();
 
-    if (currentForumId == forumId) {
-        openForum(forumId, document.getElementById('current-forum-title').textContent);
+    if (currentCategoryId == categoryId) {
+        openForum(categoryId, document.getElementById('current-forum-title').textContent);
     } else {
-        alert('Hilo creado exitosamente en la categoría seleccionada.');
+        alert('Tema creado exitosamente en la categoría seleccionada.');
     }
 }
 
@@ -188,18 +202,19 @@ async function submitReply() {
     const content = document.getElementById('reply-input').value;
     if (!content) return;
 
-    await fetchAPI(`/threads/${currentThreadId}/replies`, 'POST', { content });
+    // Backend uses /topics/:id/posts for creating replies
+    await fetchAPI(`/topics/${currentTopicId}/posts`, 'POST', { content });
 
     document.getElementById('reply-input').value = '';
-    // Reload thread
-    openThread(currentThreadId);
+    // Reload topic
+    openThread(currentTopicId);
 }
 
 async function vote(type, id, value) {
-    const res = await fetchAPI('/vote', 'POST', { type, id, value });
-    // Update score in UI blindly for now (simple toggle)
-    // Ideally we should reload or update specific element ID
-    // openThread(currentThreadId); if it's the main thread
+    // Backend uses /topics/:id/react or /posts/:id/react
+    const endpoint = type === 'thread' ? `/topics/${id}/react` : `/posts/${id}/react`;
+    const reactionType = value > 0 ? 'like' : 'dislike';
+    await fetchAPI(endpoint, 'POST', { reactionType });
 }
 
 // --- Navigation Helpers ---

@@ -16,21 +16,13 @@ const auth_1 = require("../middleware/auth");
 const store_dao_1 = __importDefault(require("../data/store.dao"));
 // @ts-ignore
 const database_1 = require("../config/database");
+
 const router = express_1.default.Router();
-// ============================================
-// INTERFACES
-// ============================================
-// ============================================
-// INTERFACES
-// ============================================
-/*
-// Interfaces inferidas del DAO o usadas como any por simplicidad en migración
-interface StoreItem { ... }
-interface UserItem { ... }
-*/
+
 // ============================================
 // ROUTES
 // ============================================
+
 /**
  * GET /api/store/items
  * Listar todos los items disponibles en la tienda
@@ -69,6 +61,7 @@ router.get('/items', auth_1.authenticateToken, async (req, res) => {
         });
     }
 });
+
 /**
  * GET /api/store/items/:id
  * Obtener detalles de un item específico
@@ -106,119 +99,54 @@ router.get('/items/:id', auth_1.authenticateToken, async (req, res) => {
         });
     }
 });
+
 /**
  * POST /api/store/purchase
  * Comprar un item con IACoins
  */
 router.post('/purchase', auth_1.authenticateToken, async (req, res) => {
-    const client = await database_1.pool.connect();
     try {
         const userId = req.user.id;
         const { item_id } = req.body;
+
         if (!item_id) {
-            res.status(400).json({ error: 'El item_id es requerido' });
-            return;
+            return res.status(400).json({ error: 'El item_id es requerido' });
         }
+
         debug_logger_1.debugLog.log('STORE', `[STORE] Usuario ${userId} comprando item ${item_id}`);
-        await client.query('BEGIN');
-        // Obtener información del item
-        const itemResult = await client.query(`SELECT * FROM store_items WHERE id = $1 FOR UPDATE`, [item_id]);
-        if (itemResult.rows.length === 0) {
-            await client.query('ROLLBACK');
-            res.status(404).json({ error: 'Item no encontrado' });
-            return;
-        }
-        const item = itemResult.rows[0];
-        // Validaciones del item
-        if (!item.is_available) {
-            await client.query('ROLLBACK');
-            res.status(400).json({ error: 'Este item no está disponible' });
-            return;
-        }
-        if (item.stock !== null && item.stock <= 0) {
-            await client.query('ROLLBACK');
-            res.status(400).json({ error: 'Item agotado' });
-            return;
-        }
-        // Verificar límite por usuario
-        if (item.max_per_user !== null) {
-            const purchaseCountResult = await client.query(`SELECT COUNT(*) as count FROM user_items
-                WHERE user_id = $1 AND item_id = $2`, [userId, item_id]);
-            const purchaseCount = parseInt(purchaseCountResult.rows[0].count);
-            if (purchaseCount >= item.max_per_user) {
-                await client.query('ROLLBACK');
-                res.status(400).json({
-                    error: `Has alcanzado el límite de compras para este item (${item.max_per_user})`,
-                    times_purchased: purchaseCount
-                });
-                return;
-            }
-        }
-        // Verificar saldo del wallet
-        const walletResult = await client.query(`SELECT balance FROM wallet WHERE user_id = $1`, [userId]);
-        if (walletResult.rows.length === 0 || walletResult.rows[0].balance < item.price_iacoins) {
-            await client.query('ROLLBACK');
-            const currentBalance = walletResult.rows[0]?.balance || 0;
-            res.status(400).json({
-                error: 'Saldo insuficiente',
-                current_balance: currentBalance,
-                required: item.price_iacoins,
-                missing: item.price_iacoins - currentBalance
-            });
-            return;
-        }
-        // Descontar IACoins del wallet
-        const updateWalletResult = await client.query(`UPDATE wallet
-            SET balance = balance - $1,
-                total_spent = total_spent + $1,
-                updated_at = NOW()
-            WHERE user_id = $2
-            RETURNING balance`, [item.price_iacoins, userId]);
-        const newBalance = updateWalletResult.rows[0].balance;
-        // Registrar compra en historial de wallet
-        await client.query(`INSERT INTO wallet_history
-            (user_id, transaction_type, amount, balance_after, description, metadata)
-            VALUES ($1, 'spend', $2, $3, $4, $5)`, [
-            userId,
-            item.price_iacoins,
-            newBalance,
-            `Compra en tienda: ${item.name}`,
-            JSON.stringify({ item_id, category: item.category })
-        ]);
-        // Agregar item al inventario del usuario
-        await client.query(`INSERT INTO user_items (user_id, item_id, purchased_at)
-            VALUES ($1, $2, NOW())`, [userId, item_id]);
-        // Actualizar stock si aplica
-        if (item.stock !== null) {
-            await client.query(`UPDATE store_items
-                SET stock = stock - 1,
-                    updated_at = NOW()
-                WHERE id = $1`, [item_id]);
-        }
-        await client.query('COMMIT');
+
+        // Delegar transacción al DAO
+        const result = await store_dao_1.default.processPurchase(userId, item_id);
+
         res.json({
             success: true,
             item: {
-                id: item.id,
-                name: item.name,
-                price: item.price_iacoins
+                id: result.item.id,
+                name: result.item.name,
+                price: result.item.price_iacoins
             },
-            new_balance: newBalance,
-            message: `¡Compra exitosa! Has adquirido ${item.name}`
+            new_balance: result.newBalance,
+            message: `¡Compra exitosa! Has adquirido ${result.item.name}`
         });
-    }
-    catch (error) {
-        await client.query('ROLLBACK');
-        debug_logger_1.debugLog.error('STORE', '[STORE] Error al comprar item:', error.message);
+
+    } catch (error) {
+        debug_logger_1.debugLog.error('STORE', '[STORE] Error al comprar item:', error.message || error);
+
+        // Manejo de errores controlados desde DAO
+        if (error.status) {
+            return res.status(error.status).json({
+                error: error.message,
+                details: error.details
+            });
+        }
+
         res.status(500).json({
             error: 'Error al procesar la compra',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
-    finally {
-        client.release();
-    }
 });
+
 /**
  * GET /api/store/my-items
  * Obtener items comprados por el usuario
@@ -254,6 +182,7 @@ router.get('/my-items', auth_1.authenticateToken, async (req, res) => {
         });
     }
 });
+
 /**
  * POST /api/store/items (ADMIN)
  * Crear un nuevo item en la tienda (solo administradores)
@@ -306,5 +235,5 @@ router.post('/items', auth_1.authenticateToken, async (req, res) => {
         });
     }
 });
+
 module.exports = router;
-//# sourceMappingURL=store.js.map

@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
 // @ts-ignore
-const AITutorService_1 = __importDefault(require("../services/AITutorService"));
+const AITutorService_1 = __importDefault(require("../services/ai-tutor.service"));
 // @ts-ignore
 const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
@@ -153,17 +153,37 @@ router.post('/sessions/:sessionId/messages', auth_1.authenticateToken, [
         const { sessionId } = req.params;
         const { content } = req.body;
         const userId = req.user.id;
+
         // Validar que el usuario es dueño de la sesión
+        // @ts-ignore
         const session = await AITutorService_1.default.getSessionById(sessionId);
         if (!session || session.user_id !== userId) {
             res.status(403).json({ success: false, message: 'Acceso no autorizado a esta sesión.' });
             return;
         }
-        const aiResponse = await AITutorService_1.default.processUserMessage(sessionId, content);
+
+        // ✅ REFACTOR (JAN 2026): Use AI Orchestrator
+        // @ts-ignore
+        const { aiService } = require('../services/ai/AIService');
+
+        const aiResponse = await aiService.processRequest('TUTOR_CHAT', {
+            message: content,
+            sessionId: parseInt(sessionId),
+            subject: session.subject || 'General'
+        }, {
+            userId: userId,
+            role: req.user.role,
+            username: req.user.username
+        });
+
         res.status(201).json({
             success: true,
             message: 'Respuesta generada',
-            data: aiResponse
+            data: {
+                ...aiResponse,
+                role: 'assistant', // Compatibility
+                content: aiResponse.text // Compatibility
+            }
         });
     }
     catch (error) {

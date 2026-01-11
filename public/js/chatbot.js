@@ -25,12 +25,12 @@ if (typeof window.BGE_CHATBOT_LOADED !== 'undefined') {
             return '/api';
         },
         endpoints: {
-            search: '/chatbot/search',
-            message: '/chatbot/message',
-            analytics: '/chatbot/analytics/daily',
-            aiChat: '/ai/chat' // Endpoint RAG Real
+            search: '/ai/chatbot/search', // Actualizado a nueva ruta
+            message: '/ai/chatbot/message', // Actualizado a nueva ruta
+            analytics: '/ai/chatbot/analytics/daily',
+            aiChat: '/ai-gateway/v1/process' // MIGRACIÓN: Ahora usa el Orquestador
         },
-        timeout: 15000 // Aumentar timeout para LLM (15s)
+        timeout: 20000 // Aumentar timeout para LLM (20s)
     };
 
     // 📱 Generador único de sesión
@@ -51,26 +51,26 @@ if (typeof window.BGE_CHATBOT_LOADED !== 'undefined') {
             'horarios': {
                 keywords: ['horario', 'hora', 'tiempo', 'cuando', 'abre', 'cierra', 'atencion', 'clases', 'entrada', 'salida', 'schedule'],
                 response: {
-                    title: '🕐 Horarios de Atención',
+                    title: '🕐 Horarios Institucionales',
                     content: [
                         {
-                            subtitle: '📚 Clases',
-                            text: 'Lunes a Viernes de 8:00 AM a 1:30 PM'
+                            subtitle: '🏫 Apertura de Escuela',
+                            text: 'La institución <strong>abre sus puertas a las 8:00 AM</strong> para estudiantes y público en general.'
+                        },
+                        {
+                            subtitle: '📚 Horario Escolar (Único)',
+                            text: 'Lunes a Viernes de 8:00 AM a 1:30 PM (Turno Matutino solamente).'
                         },
                         {
                             subtitle: '🏢 Atención Administrativa',
-                            text: 'Lunes a Viernes de 8:00 AM a 1:30 PM'
+                            text: 'Lunes a Viernes de 8:00 AM a 1:30 PM para trámites, constancias e inscripciones.'
                         },
                         {
-                            subtitle: '📅 Fines de Semana',
-                            text: 'Sábados y domingos: Cerrado'
-                        },
-                        {
-                            subtitle: '🆔 CCT',
-                            text: '2IEBH0200X'
+                            subtitle: '📅 Calendario',
+                            text: 'Sábados, domingos y días festivos oficiales: Cerrado.'
                         }
                     ],
-                    footer: 'Para consultas específicas, contáctanos durante nuestro horario de atención.'
+                    footer: 'CCT: 21EBH0200X | Horario de atención presencial: 08:00 - 13:30 hrs.'
                 }
             },
 
@@ -124,28 +124,28 @@ if (typeof window.BGE_CHATBOT_LOADED !== 'undefined') {
 
             // === ADMISIONES E INSCRIPCIONES ===
             'admisiones': {
-                keywords: ['admision', 'inscripcion', 'matricula', 'registro', 'ingreso', 'inscribir', 'cuando', 'proceso', 'nuevo ingreso'],
+                keywords: ['admision', 'inscripcion', 'matricula', 'registro', 'ingreso', 'inscribir', 'cuando', 'proceso', 'requisitos', 'papeles', 'costo', 'nuevo ingreso'],
                 response: {
-                    title: '📝 Proceso de Admisiones 2025-2026',
+                    title: '📝 Proceso Completo de Inscripción',
                     content: [
                         {
-                            subtitle: '📅 Período de Inscripciones',
-                            text: 'Agosto 2025 (fechas exactas por confirmar)'
+                            subtitle: '📅 Período Oficial',
+                            text: 'El período principal es en <strong>Agosto</strong>, pero puedes solicitar información durante todo el año escolar de 8:00 AM a 1:30 PM.'
                         },
                         {
-                            subtitle: '✅ Tipo de Proceso',
-                            text: 'Automático para estudiantes que cumplan los requisitos básicos'
+                            subtitle: '📋 Requisitos de Documentación (Original y 2 copias)',
+                            text: '• <strong>Certificado de Secundaria</strong> (Original y legalizado)<br>• <strong>Acta de Nacimiento</strong> (Reciente y legible)<br>• <strong>CURP</strong> (Formato actualizado con QR)<br>• <strong>NIA</strong> (Número de Identificación de Alumno)<br>• <strong>6 Fotografías</strong> (Infantil, B/N, papel mate, fondo blanco)<br>• <strong>Comprobante de Domicilio</strong> (Luz o teléfono)'
                         },
                         {
-                            subtitle: '📋 Documentos Principales',
-                            text: '• Certificado de secundaria<br>• CURP actualizada<br>• Acta de nacimiento original<br>• 6 fotos tamaño infantil<br>• Comprobante de domicilio reciente'
+                            subtitle: '💰 Costos y Beneficios',
+                            text: 'Somos una institución pública. Los costos de recuperación son mínimos y <strong>todos los estudiantes reciben la Beca Benito Juárez</strong> automáticamente al estar inscritos.'
                         },
                         {
-                            subtitle: '⚠️ Casos Especiales',
-                            text: 'Si vienes de otro subsistema necesitas certificado parcial y equivalencia de la SEP.'
+                            subtitle: '🎯 Sin Examen de Admisión',
+                            text: 'En el BGE "Héroes de la Patria" creemos en la oportunidad para todos. No aplicamos examen de selección; tu ingreso es directo con documentación completa.'
                         }
                     ],
-                    footer: '¡La educación pública es gratuita y de calidad!'
+                    footer: 'Visítanos en C. Manuel Ávila Camacho #7 para iniciar tu trámite.'
                 }
             },
 
@@ -328,7 +328,7 @@ if (typeof window.BGE_CHATBOT_LOADED !== 'undefined') {
 
             // === PERSONAL Y ORGANIZACIÓN ===
             'director': {
-                keywords: ['director', 'samuel', 'cruz', 'responsable', 'quien dirige', 'lider', 'autoridad'],
+                keywords: ['director', 'samuel', 'cruz', 'responsable', 'quien', 'quienes', 'quien dirige', 'lider', 'autoridad'],
                 response: {
                     title: '👨‍💼 Nuestro Director',
                     content: [
@@ -945,49 +945,70 @@ if (typeof window.BGE_CHATBOT_LOADED !== 'undefined') {
             // Registrar mensaje del usuario en el backend (opcional, fire & forget)
             logMessageToAPI(message, 'user').catch(console.warn);
 
-            // FASE 1: Intentar buscar en el backend API de IA (RAG)
-            console.log('🔍 Consultando Cerebro IA (RAG)...');
+            // FASE 1: Intentar buscar a través del Orquestador de IA (Estandarizado Ene 2026)
+            console.log('🔍 [Orquestador] Consultando Cerebro IA (GENERAL_CHAT)...');
             try {
-                const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.aiChat}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        message: message,
-                        history: [] // Implementar historial real si se desea
-                    }),
-                    signal: AbortSignal.timeout(API_CONFIG.timeout)
-                });
+                let data;
 
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.response) {
-                        console.log('✅ Respuesta IA Recibida');
+                // Intentar usar el APIClient global si está disponible
+                if (window.apiClient && typeof window.apiClient.processAIRequest === 'function') {
+                    data = await window.apiClient.processAIRequest('GENERAL_CHAT', {
+                        message: message,
+                        history: [] // Se puede implementar historial real si se desea
+                    });
+                } else {
+                    // Fallback manual si apiClient no está listo
+                    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.aiChat}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            intent: 'GENERAL_CHAT',
+                            payload: {
+                                message: message,
+                                history: []
+                            }
+                        }),
+                        signal: AbortSignal.timeout(API_CONFIG.timeout)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    data = await response.json();
+                }
+
+                if (data && data.success) {
+                    // Extraer respuesta según formato del Orquestador
+                    const aiContent = data.data ? data.data.response : (data.response || null);
+
+                    if (aiContent) {
+                        console.log('✅ Respuesta IA Recibida vía Orquestador');
 
                         // Formatear respuesta Markdown/Texto a HTML bonito
-                        let formattedContent = data.response
+                        let formattedContent = aiContent
                             .replace(/\n\n/g, '<br><br>') // Párrafos
                             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Negritas
                             .replace(/- /g, '• '); // Listas
 
-                        // Añadir fuentes si existen
-                        if (data.sources && data.sources.length > 0) {
-                            formattedContent += `<br><br><small><em>Fuentes: ${[...new Set(data.sources)].join(', ')}</em></small>`;
-                        }
+                        // Añadir fuentes o metadatos si existen
+                        const provider = data.data?.provider || 'IA';
 
-                        // Registrar la respuesta del bot para analíticos
-                        logMessageToAPI(formattedContent, 'bot', 'ai_rag_response').catch(console.warn);
+                        // Registrar la respuesta del bot para analíticos (opcional)
+                        logMessageToAPI(formattedContent, 'bot', 'ai_orchestrator_response').catch(console.warn);
 
                         return formatResponse({
-                            title: '🤖 Asistente Virtual BGE',
-                            content: [{ text: formattedContent }],
-                            footer: 'Respuesta generada por Inteligencia Artificial'
+                            title: data.data.title || '🤖 Asistente Virtual BGE',
+                            content: data.data.content || [{ text: formattedContent }],
+                            footer: data.data.metadata?.model ? `IA: ${data.data.metadata.model} | BGE Orquestador` : `IA: ${provider} | BGE Orquestador`
                         });
                     }
+                } else if (data && data.success === false) {
+                    console.warn('⚠️ Orchestrator respondió error:', data.error);
                 } else {
-                    console.warn('⚠️ IA API Error:', response.status);
+                    console.warn('⚠️ Orchestrator respondió sin éxito:', data?.message);
                 }
             } catch (error) {
-                console.warn('⚠️ Falló conexión con IA:', error);
+                console.warn('⚠️ Falló conexión con Orquestador IA:', error.message);
             }
 
             // FASE 2: Fallback a base de conocimiento local (Si falla la IA o no hay internet)
@@ -1081,7 +1102,7 @@ if (typeof window.BGE_CHATBOT_LOADED !== 'undefined') {
             }
 
             // Retornar mejor coincidencia si el puntaje es suficientemente alto
-            if (bestMatch && bestScore >= 3) {
+            if (bestMatch && bestScore >= 1) {
                 return formatResponse(bestMatch.response);
             }
 
@@ -1543,7 +1564,16 @@ if (typeof window.BGE_CHATBOT_LOADED !== 'undefined') {
                 //console.log('✅ Contenedor chatbot oculto inicialmente');
             }
 
-            //console.log('🤖 Chatbot de clase mundial inicializado correctamente');
+            // Event listeners para botones externos con data-action
+            document.addEventListener('click', function (e) {
+                const target = e.target.closest('[data-action="toggle-chatbot"]');
+                if (target) {
+                    e.preventDefault();
+                    toggleChatbot();
+                }
+            });
+
+            console.log('🤖 Chatbot de clase mundial inicializado correctamente');
         });
 
         // Agregar estilos CSS para las respuestas profesionales

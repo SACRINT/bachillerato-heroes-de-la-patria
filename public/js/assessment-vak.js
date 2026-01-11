@@ -112,13 +112,19 @@
                 return;
             }
 
-            const res = await fetch('/api/ai/personality/assess', {
+            const res = await fetch('/api/ai/v1/process', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ responses: userResponses })
+                body: JSON.stringify({
+                    intent: 'PERSONALITY',
+                    payload: {
+                        action: 'assess',
+                        responses: userResponses
+                    }
+                })
             });
 
             const json = await res.json();

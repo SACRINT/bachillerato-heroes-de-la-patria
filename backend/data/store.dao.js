@@ -68,6 +68,73 @@ class StoreDAO {
     static async getConnection() {
         return database_1.pool.connect();
     }
+
+    /**
+     * Procesa la compra de un item de forma transaccional
+     */
+    static async processPurchase(userId, itemId) {
+        const client = await database_1.pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            // 1. Obtener item y bloquear fila
+            const itemRes = await client.query('SELECT * FROM store_items WHERE id = $1 FOR UPDATE', [itemId]);
+            if (itemRes.rows.length === 0) throw { status: 404, message: 'Item no encontrado' };
+            const item = itemRes.rows[0];
+
+            // 2. Validaciones básicas
+            if (!item.is_available) throw { status: 400, message: 'Item no disponible' };
+            if (item.stock !== null && item.stock <= 0) throw { status: 400, message: 'Item agotado' };
+
+            // 3. Verificar límite por usuario
+            if (item.max_per_user !== null) {
+                const countRes = await client.query(
+                    'SELECT COUNT(*) as count FROM user_items WHERE user_id = $1 AND item_id = $2',
+                    [userId, itemId]
+                );
+                if (parseInt(countRes.rows[0].count) >= item.max_per_user) {
+                    throw { status: 400, message: `Límite alcanzado (${item.max_per_user})` };
+                }
+            }
+
+            // 4. Verificar Wallet y Saldo
+            const walletRes = await client.query('SELECT balance FROM wallet WHERE user_id = $1', [userId]);
+            const balance = walletRes.rows[0]?.balance || 0;
+            if (balance < item.price_iacoins) {
+                throw { status: 400, message: 'Saldo insuficiente', details: { required: item.price_iacoins, current: balance } };
+            }
+
+            // 5. Ejecutar Compra: Descontar Saldo
+            const updateWallet = await client.query(`
+                UPDATE wallet SET balance = balance - $1, total_spent = total_spent + $1, updated_at = NOW()
+                WHERE user_id = $2 RETURNING balance
+            `, [item.price_iacoins, userId]);
+            const newBalance = updateWallet.rows[0].balance;
+
+            // 6. Registrar Historial
+            await client.query(`
+                INSERT INTO wallet_history (user_id, transaction_type, amount, balance_after, description, metadata)
+                VALUES ($1, 'spend', $2, $3, $4, $5)
+            `, [userId, item.price_iacoins, newBalance, `Compra: ${item.name}`, JSON.stringify({ itemId, category: item.category })]);
+
+            // 7. Agregar al Inventario
+            await client.query('INSERT INTO user_items (user_id, item_id, purchased_at) VALUES ($1, $2, NOW())', [userId, itemId]);
+
+            // 8. Actualizar Stock
+            if (item.stock !== null) {
+                await client.query('UPDATE store_items SET stock = stock - 1, updated_at = NOW() WHERE id = $1', [itemId]);
+            }
+
+            await client.query('COMMIT');
+            return { success: true, item, newBalance };
+
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
 }
 exports.default = StoreDAO;
 module.exports = StoreDAO;

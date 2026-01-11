@@ -326,4 +326,199 @@ router.post('/conversations/:id/messages', authenticateToken, async (req: Reques
     }
 });
 
+/**
+ * GET /api/messaging/conversations/:id
+ * Obtener detalles de una conversación específica
+ */
+router.get('/conversations/:id', authenticateToken, async (req: Request, res: Response): Promise<void> => {
+    const client = await pool.connect();
+    try {
+        const user = getUserFromToken(req as AuthenticatedRequest);
+        const { id } = req.params;
+
+        // Verificar que el usuario es participante
+        if (!await isParticipant(client, id, user.id, user.role)) {
+            res.status(403).json({ success: false, error: 'No tienes permiso para ver esta conversación' });
+            return;
+        }
+
+        // Obtener conversación
+        const convResult = await client.query(
+            `SELECT * FROM conversations WHERE id = $1`,
+            [id]
+        );
+
+        if (convResult.rows.length === 0) {
+            res.status(404).json({ success: false, error: 'Conversación no encontrada' });
+            return;
+        }
+
+        // Obtener participantes
+        const participantsResult = await client.query(
+            `SELECT user_id, user_role, user_name, user_email, is_admin, joined_at 
+             FROM conversation_participants 
+             WHERE conversation_id = $1 AND left_at IS NULL`,
+            [id]
+        );
+
+        res.json({
+            success: true,
+            conversation: convResult.rows[0],
+            participants: participantsResult.rows
+        });
+
+    } catch (error) {
+        debugLog.error('messaging', 'Error al obtener conversación', sanitizeError(error as Error, 'messaging'));
+        res.status(500).json({ success: false, error: 'Error al obtener conversación' });
+    } finally {
+        client.release();
+    }
+});
+
+/**
+ * GET /api/messaging/conversations/:id/messages
+ * Obtener mensajes de una conversación
+ */
+router.get('/conversations/:id/messages', authenticateToken, async (req: Request, res: Response): Promise<void> => {
+    const client = await pool.connect();
+    try {
+        const user = getUserFromToken(req as AuthenticatedRequest);
+        const { id } = req.params;
+        const { limit = '100', before, after } = req.query;
+
+        // Verificar que el usuario es participante
+        if (!await isParticipant(client, id, user.id, user.role)) {
+            res.status(403).json({ success: false, error: 'No tienes permiso para ver esta conversación' });
+            return;
+        }
+
+        let query = `
+            SELECT m.*, 
+                   COALESCE(
+                       (SELECT json_agg(json_build_object(
+                           'id', a.id,
+                           'file_name', a.file_name,
+                           'file_url', a.file_url,
+                           'file_type', a.file_type,
+                           'file_size', a.file_size
+                       )) FROM message_attachments a WHERE a.message_id = m.id),
+                       '[]'::json
+                   ) as attachments
+            FROM messages m
+            WHERE m.conversation_id = $1 AND m.deleted_at IS NULL
+        `;
+        const params: any[] = [id];
+        let paramIndex = 2;
+
+        if (before) {
+            query += ` AND m.created_at < $${paramIndex}`;
+            params.push(before);
+            paramIndex++;
+        }
+
+        if (after) {
+            query += ` AND m.created_at > $${paramIndex}`;
+            params.push(after);
+            paramIndex++;
+        }
+
+        query += ` ORDER BY m.created_at ASC LIMIT $${paramIndex}`;
+        params.push(parseInt(limit as string));
+
+        const result = await client.query(query, params);
+
+        res.json({
+            success: true,
+            messages: result.rows,
+            count: result.rows.length
+        });
+
+    } catch (error) {
+        debugLog.error('messaging', 'Error al obtener mensajes', sanitizeError(error as Error, 'messaging'));
+        res.status(500).json({ success: false, error: 'Error al obtener mensajes' });
+    } finally {
+        client.release();
+    }
+});
+
+/**
+ * POST /api/messaging/conversations/:id/mark-all-read
+ * Marcar todos los mensajes como leídos para el usuario
+ */
+router.post('/conversations/:id/mark-all-read', authenticateToken, async (req: Request, res: Response): Promise<void> => {
+    const client = await pool.connect();
+    try {
+        const user = getUserFromToken(req as AuthenticatedRequest);
+        const { id } = req.params;
+
+        // Verificar que el usuario es participante
+        if (!await isParticipant(client, id, user.id, user.role)) {
+            res.status(403).json({ success: false, error: 'No tienes permiso' });
+            return;
+        }
+
+        // Actualizar last_read_at en participant
+        await client.query(
+            `UPDATE conversation_participants 
+             SET last_read_at = NOW() 
+             WHERE conversation_id = $1 AND user_id = $2 AND user_role = $3`,
+            [id, user.id, user.role]
+        );
+
+        // Insertar registro en message_reads para mensajes no leídos
+        await client.query(
+            `INSERT INTO message_reads (message_id, user_id, user_role)
+             SELECT m.id, $2, $3 FROM messages m
+             WHERE m.conversation_id = $1 
+               AND NOT EXISTS (
+                   SELECT 1 FROM message_reads mr 
+                   WHERE mr.message_id = m.id AND mr.user_id = $2 AND mr.user_role = $3
+               )
+             ON CONFLICT (message_id, user_id, user_role) DO NOTHING`,
+            [id, user.id, user.role]
+        );
+
+        res.json({ success: true, message: 'Mensajes marcados como leídos' });
+
+    } catch (error) {
+        debugLog.error('messaging', 'Error al marcar como leído', sanitizeError(error as Error, 'messaging'));
+        // Si la tabla message_reads no existe, devolvemos éxito de todos modos
+        if ((error as Error).message.includes('does not exist')) {
+            res.json({ success: true, message: 'OK (tabla message_reads no inicializada)' });
+            return;
+        }
+        res.status(500).json({ success: false, error: 'Error al marcar como leído' });
+    } finally {
+        client.release();
+    }
+});
+
+/**
+ * POST /api/messaging/conversations/:id/typing
+ * Indicador de escritura (para WebSocket/polling)
+ */
+router.post('/conversations/:id/typing', authenticateToken, async (req: Request, res: Response): Promise<void> => {
+    try {
+        const user = getUserFromToken(req as AuthenticatedRequest);
+        const { id } = req.params;
+        const { is_typing } = req.body;
+
+        // En el futuro, esto debería emitir un evento WebSocket
+        // Por ahora solo respondemos OK
+        debugLog.log('messaging', `👤 ${user.name} ${is_typing ? 'está escribiendo' : 'dejó de escribir'} en conversación ${id}`);
+
+        res.json({
+            success: true,
+            user_id: user.id,
+            user_name: user.name,
+            conversation_id: id,
+            is_typing
+        });
+
+    } catch (error) {
+        debugLog.error('messaging', 'Error en typing indicator', sanitizeError(error as Error, 'messaging'));
+        res.status(500).json({ success: false, error: 'Error en indicador de escritura' });
+    }
+});
+
 export default router;

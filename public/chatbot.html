@@ -165,6 +165,19 @@
                 opacity: 1;
             }
         }
+
+        /* Utility Classes for CSP Compliance */
+        .icon-lg {
+            font-size: 3rem !important;
+        }
+
+        .icon-md {
+            font-size: 2.5rem !important;
+        }
+
+        .purple-text {
+            color: #6f42c1 !important;
+        }
     </style>
     <script src="js/meta-updater.js" defer></script>
     <!-- ✅ FIX (18 Nov 2025): Header/Footer styles loaded globally -->
@@ -249,7 +262,7 @@
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body text-center">
                                 <div class="mb-3">
-                                    <i class="fas fa-play-circle text-primary" style="font-size: 3rem;"></i>
+                                    <i class="fas fa-play-circle text-primary icon-lg"></i>
                                 </div>
                                 <h5>1. Inicia la Conversación</h5>
                                 <p class="text-muted">Haz clic en el botón flotante del chatbot o en "Iniciar Chat" para
@@ -262,7 +275,7 @@
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body text-center">
                                 <div class="mb-3">
-                                    <i class="fas fa-keyboard text-success" style="font-size: 3rem;"></i>
+                                    <i class="fas fa-keyboard text-success icon-lg"></i>
                                 </div>
                                 <h5>2. Escribe tu Pregunta</h5>
                                 <p class="text-muted">Escribe tu consulta de forma natural. El bot entiende preguntas
@@ -275,7 +288,7 @@
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body text-center">
                                 <div class="mb-3">
-                                    <i class="fas fa-reply text-info" style="font-size: 3rem;"></i>
+                                    <i class="fas fa-reply text-info icon-lg"></i>
                                 </div>
                                 <h5>3. Obtén Respuestas</h5>
                                 <p class="text-muted">Recibe respuestas instantáneas y precisas. Si necesitas más
@@ -298,7 +311,7 @@
                 <div class="row g-4">
                     <div class="col-md-6 col-lg-3">
                         <div class="feature-card text-center p-4">
-                            <i class="fas fa-clock text-primary mb-3" style="font-size: 2.5rem;"></i>
+                            <i class="fas fa-clock text-primary mb-3 icon-md"></i>
                             <h5>Horarios</h5>
                             <p class="small text-muted">Información sobre horarios de atención y clases</p>
                         </div>
@@ -306,7 +319,7 @@
 
                     <div class="col-md-6 col-lg-3">
                         <div class="feature-card text-center p-4">
-                            <i class="fas fa-user-graduate text-success mb-3" style="font-size: 2.5rem;"></i>
+                            <i class="fas fa-user-graduate text-success mb-3 icon-md"></i>
                             <h5>Admisiones</h5>
                             <p class="small text-muted">Proceso de inscripción y fechas importantes</p>
                         </div>
@@ -314,7 +327,7 @@
 
                     <div class="col-md-6 col-lg-3">
                         <div class="feature-card text-center p-4">
-                            <i class="fas fa-map-marker-alt text-info mb-3" style="font-size: 2.5rem;"></i>
+                            <i class="fas fa-map-marker-alt text-info mb-3 icon-md"></i>
                             <h5>Ubicación</h5>
                             <p class="small text-muted">Dirección y cómo llegar al bachillerato</p>
                         </div>
@@ -322,7 +335,7 @@
 
                     <div class="col-md-6 col-lg-3">
                         <div class="feature-card text-center p-4">
-                            <i class="fas fa-graduation-cap text-warning mb-3" style="font-size: 2.5rem;"></i>
+                            <i class="fas fa-graduation-cap text-warning mb-3 icon-md"></i>
                             <h5>Carreras</h5>
                             <p class="small text-muted">Especialidades y programas académicos</p>
                         </div>
@@ -330,7 +343,7 @@
 
                     <div class="col-md-6 col-lg-3">
                         <div class="feature-card text-center p-4">
-                            <i class="fas fa-file-alt text-danger mb-3" style="font-size: 2.5rem;"></i>
+                            <i class="fas fa-file-alt text-danger mb-3 icon-md"></i>
                             <h5>Requisitos</h5>
                             <p class="small text-muted">Documentos necesarios para inscripción</p>
                         </div>
@@ -338,7 +351,7 @@
 
                     <div class="col-md-6 col-lg-3">
                         <div class="feature-card text-center p-4">
-                            <i class="fas fa-phone text-purple mb-3" style="font-size: 2.5rem;"></i>
+                            <i class="fas fa-phone text-purple mb-3 icon-md"></i>
                             <h5>Contacto</h5>
                             <p class="small text-muted">Teléfonos y medios de comunicación</p>
                         </div>
@@ -346,7 +359,7 @@
 
                     <div class="col-md-6 col-lg-3">
                         <div class="feature-card text-center p-4">
-                            <i class="fas fa-question-circle text-secondary mb-3" style="font-size: 2.5rem;"></i>
+                            <i class="fas fa-question-circle text-secondary mb-3 icon-md"></i>
                             <h5>Ayuda General</h5>
                             <p class="small text-muted">Respuestas a consultas diversas</p>
                         </div>
@@ -354,7 +367,7 @@
 
                     <div class="col-md-6 col-lg-3">
                         <div class="feature-card text-center p-4">
-                            <i class="fas fa-language text-primary mb-3" style="font-size: 2.5rem;"></i>
+                            <i class="fas fa-language text-primary mb-3 icon-md"></i>
                             <h5>Idioma Natural</h5>
                             <p class="small text-muted">Comprende preguntas en español natural</p>
                         </div>
@@ -445,10 +458,10 @@
     <!-- Footer -->
     <footer id="main-footer"></footer>
 
-    
+
 
     <!-- Chat Bot Container -->
-    
+
 
     <!-- ðŸš€ BGE FRAMEWORK MODULAR - PÁGINA CHATBOT -->
 
@@ -466,6 +479,7 @@
     <script src="js/script.js"></script>
 
     <!-- 🎯 BGE FRAMEWORK CORE -->
+    <script src="js/api-client.js"></script>
     <script src="js/bge-framework-core.js"></script>
 
     <!-- ðŸ“Š MÃ“DULOS BGE PARA CHATBOT --><!-- ðŸ”§ FUNCIONALIDADES ESPECÍFICAS DE CHATBOT -->
@@ -474,7 +488,8 @@
     <script src="js/tenant-config-loader.js" defer></script>
 
     <!-- Dark Mode Toggle Button -->
-    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Activar modo oscuro" title="Cambiar a modo oscuro" tabindex="108">
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Activar modo oscuro" title="Cambiar a modo oscuro"
+        tabindex="108">
         <i class="fas fa-moon"></i>
     </button>
 </body>

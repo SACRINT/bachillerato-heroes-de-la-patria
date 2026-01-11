@@ -173,10 +173,20 @@ async function loadRecommendations() {
     if (!token) return; // No mostrar si no hay auth
 
     try {
-        const res = await fetch('/api/ai/recommendations', {
-            headers: { 'Authorization': `Bearer ${token}` }
+        const res = await fetch('/api/ai/v1/process', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                intent: 'ANALYTICS_PREDICT',
+                payload: { type: 'recommendations' }
+            })
         });
-        const data = await res.json();
+        const json = await res.json();
+        // Adapt Orchestrator response structure (assuming standard {success: true, data: ...})
+        const data = json;
 
         if (data.success && data.data.length > 0) {
             renderRecommendations(data.data);

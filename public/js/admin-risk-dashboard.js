@@ -34,10 +34,16 @@ class RiskDashboard {
 
         try {
             for (const id of demoStudentIds) {
-                const response = await fetch(this.apiUrl, {
+                const response = await fetch('/api/ai/v1/process', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ studentId: id })
+                    body: JSON.stringify({
+                        intent: 'ANALYTICS_PREDICT',
+                        payload: {
+                            type: 'risk',
+                            studentId: id
+                        }
+                    })
                 });
 
                 if (response.ok) {

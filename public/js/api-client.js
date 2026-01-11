@@ -315,8 +315,24 @@ class APIClient {
         }
     }
 
-    // ============================================
-    // MÉTODOS ESPECÍFICOS PARA CHATBOT
+    /**
+     * Procesar solicitud de IA a través del Orquestador
+     */
+    async processAIRequest(intent, payload) {
+        try {
+            return await this.request('/api/ai-gateway/v1/process', {
+                method: 'POST',
+                body: {
+                    intent: intent,
+                    payload: payload
+                }
+            });
+        } catch (error) {
+            console.error(`AI Orchestrator Error (${intent}):`, error);
+            throw error;
+        }
+    }
+
     // ============================================
 
     /**

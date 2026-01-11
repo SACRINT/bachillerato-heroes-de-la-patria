@@ -1,409 +1,855 @@
-"use strict";
 /**
- * 🤖 AI TUTOR SERVICE - TypeScript Version
+ * 🤖 AI TUTOR SERVICE
  * Servicio de tutoría IA personalizada
  * FASE 3 - Semana 17-18
- * Refactorizado: 07 Diciembre 2025
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.AITutorService = void 0;
+
 const { executeQuery } = require('../data/database-access');
 const { getRealAIService } = require('./realAIService');
-const devLogger = require('../utils/devLogger');
-// ============================================
-// AI TUTOR SERVICE CLASS
-// ============================================
+
 class AITutorService {
     constructor() {
         this.aiService = getRealAIService();
+        // Niveles de XP del tutor
         this.tutorLevels = [
             { level: 1, xp: 0, title: 'Aprendiz' },
             { level: 2, xp: 100, title: 'Estudiante' },
-            { level: 3, xp: 300, title: 'Conocedor' },
-            { level: 4, xp: 600, title: 'Experto' },
-            { level: 5, xp: 1000, title: 'Maestro' },
-            { level: 6, xp: 1500, title: 'Sabio' },
-            { level: 7, xp: 2100, title: 'Gurú' },
-            { level: 8, xp: 2800, title: 'Iluminado' },
-            { level: 9, xp: 3600, title: 'Trascendente' },
-            { level: 10, xp: 4500, title: 'Legendario' }
+            { level: 3, xp: 300, title: 'Aplicado' },
+            { level: 4, xp: 600, title: 'Dedicado' },
+            { level: 5, xp: 1000, title: 'Avanzado' },
+            { level: 6, xp: 1500, title: 'Experto' },
+            { level: 7, xp: 2500, title: 'Maestro' },
+            { level: 8, xp: 4000, title: 'Sabio' },
+            { level: 9, xp: 6000, title: 'Iluminado' },
+            { level: 10, xp: 10000, title: 'Legendario' }
         ];
-        devLogger.log('[AI-TUTOR] Service initialized');
+
+        // Materias BGE
+        this.subjects = [
+            'Matemáticas', 'Física', 'Química', 'Biología',
+            'Historia', 'Geografía', 'Literatura', 'Filosofía',
+            'Inglés', 'Informática', 'Economía', 'Ética'
+        ];
     }
-    // =====================================================
-    // PROFILE MANAGEMENT
-    // =====================================================
+
+    // =====================================
+    // PERFILES DE APRENDIZAJE
+    // =====================================
+
+    /**
+     * Obtiene o crea perfil de aprendizaje
+     */
     async getOrCreateProfile(userId) {
-        const existing = await executeQuery('SELECT * FROM learner_profiles WHERE user_id = $1', [userId]);
-        if (existing.length > 0) {
-            return existing[0];
-        }
-        const result = await executeQuery(`
-            INSERT INTO learner_profiles (user_id, level, xp, learning_style, adaptive_difficulty)
-            VALUES ($1, 1, 0, 'balanced', 0.5)
+        const query = `
+            INSERT INTO tutor_learning_profiles (user_id)
+            VALUES ($1)
+            ON CONFLICT (user_id) DO UPDATE SET updated_at = NOW()
             RETURNING *
-        `, [userId]);
-        return result[0];
+        `;
+
+        const results = await executeQuery(query, [userId]);
+        return results[0];
     }
+
+    /**
+     * Obtiene perfil con estadísticas completas
+     */
     async getProfileWithStats(userId) {
         const profile = await this.getOrCreateProfile(userId);
-        const stats = await executeQuery(`
-            SELECT 
+
+        // Obtener estadísticas adicionales
+        const statsQuery = `
+            SELECT
                 COUNT(*) as total_sessions,
-                SUM(questions_answered) as total_questions,
-                SUM(correct_answers) as total_correct,
-                AVG(correct_answers::float / NULLIF(questions_answered, 0)) as avg_accuracy
-            FROM tutoring_sessions
-            WHERE user_id = $1
-        `, [userId]);
-        const levelInfo = this.calculateLevel(profile.xp);
+                COALESCE(AVG(quiz_score), 0) as avg_score,
+                COALESCE(SUM(actual_duration), 0) as total_minutes,
+                COALESCE(SUM(xp_earned), 0) as total_xp
+            FROM tutor_sessions
+            WHERE user_id = $1 AND status = 'completed'
+        `;
+
+        const stats = await executeQuery(statsQuery, [userId]);
+
+        // Obtener conceptos dominados
+        const masteryQuery = `
+            SELECT subject, COUNT(*) as concepts, AVG(mastery_level) as avg_mastery
+            FROM tutor_concept_mastery
+            WHERE user_id = $1 AND mastery_level >= 0.7
+            GROUP BY subject
+        `;
+
+        const mastery = await executeQuery(masteryQuery, [userId]);
+
         return {
             ...profile,
-            ...levelInfo,
-            stats: stats[0] || {}
+            stats: stats[0],
+            mastery_by_subject: mastery,
+            level_info: this.calculateLevel(profile.tutor_xp)
         };
     }
+
+    /**
+     * Actualiza perfil de aprendizaje
+     */
     async updateProfile(userId, profileData) {
-        const updates = [];
-        const values = [userId];
-        let paramIndex = 2;
-        const allowedFields = ['learning_style', 'preferred_session_duration', 'adaptive_difficulty'];
+        const allowedFields = [
+            'learning_style', 'preferred_difficulty', 'preferred_session_length',
+            'preferred_time_of_day', 'learning_goals', 'weekly_target_hours'
+        ];
+
+        const fields = [];
+        const values = [];
+        let paramIndex = 1;
+
         for (const [key, value] of Object.entries(profileData)) {
-            if (allowedFields.includes(key)) {
-                updates.push(`${key} = $${paramIndex++}`);
-                values.push(value);
+            const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+            if (allowedFields.includes(snakeKey)) {
+                fields.push(`${snakeKey} = $${paramIndex++}`);
+                values.push(typeof value === 'object' ? JSON.stringify(value) : value);
             }
         }
-        if (updates.length === 0) {
-            return await this.getOrCreateProfile(userId);
-        }
-        const result = await executeQuery(`
-            UPDATE learner_profiles SET ${updates.join(', ')}, updated_at = NOW()
-            WHERE user_id = $1 RETURNING *
-        `, values);
-        return result[0];
+
+        if (fields.length === 0) return null;
+
+        values.push(userId);
+        const query = `
+            UPDATE tutor_learning_profiles
+            SET ${fields.join(', ')}, updated_at = NOW()
+            WHERE user_id = $${paramIndex}
+            RETURNING *
+        `;
+
+        const results = await executeQuery(query, values);
+        return results[0];
     }
+
+    /**
+     * Actualiza proficiencia por materia
+     */
     async updateSubjectProficiency(userId, subject, score) {
-        await executeQuery(`
-            UPDATE learner_profiles
-            SET subjects_proficiency = COALESCE(subjects_proficiency, '{}'::jsonb) || $2::jsonb,
-                updated_at = NOW()
-            WHERE user_id = $1
-        `, [userId, JSON.stringify({ [subject]: score })]);
+        // Obtener proficiencia actual
+        const profileQuery = `SELECT subject_proficiency FROM tutor_learning_profiles WHERE user_id = $1`;
+        const profile = await executeQuery(profileQuery, [userId]);
+
+        if (profile.length === 0) return;
+
+        const proficiency = profile[0].subject_proficiency || {};
+        const currentScore = proficiency[subject] || 0.5;
+
+        // Weighted average con nuevo score
+        proficiency[subject] = Math.min(1, Math.max(0, currentScore * 0.7 + score * 0.3));
+
+        await executeQuery(
+            `UPDATE tutor_learning_profiles SET subject_proficiency = $1 WHERE user_id = $2`,
+            [JSON.stringify(proficiency), userId]
+        );
+
+        return proficiency[subject];
     }
+
+    /**
+     * Calcula nivel del tutor
+     */
     calculateLevel(xp) {
-        let currentLevel = this.tutorLevels[0];
-        let nextLevel = this.tutorLevels[1];
-        for (let i = 0; i < this.tutorLevels.length; i++) {
-            if (xp >= this.tutorLevels[i].xp) {
-                currentLevel = this.tutorLevels[i];
-                nextLevel = this.tutorLevels[i + 1] || currentLevel;
-            }
+        let level = this.tutorLevels[0];
+        for (const l of this.tutorLevels) {
+            if (xp >= l.xp) level = l;
         }
-        const xpInLevel = xp - currentLevel.xp;
-        const xpForLevel = nextLevel.xp - currentLevel.xp;
+
+        const nextLevel = this.tutorLevels.find(l => l.xp > xp);
+        const progress = nextLevel
+            ? ((xp - level.xp) / (nextLevel.xp - level.xp)) * 100
+            : 100;
+
         return {
-            level: currentLevel.level,
-            title: currentLevel.title,
-            xpToNext: nextLevel.xp - xp,
-            progress: xpForLevel > 0 ? xpInLevel / xpForLevel : 1
+            ...level,
+            xp,
+            progress: Math.round(progress),
+            nextLevel: nextLevel || null
         };
     }
-    // =====================================================
-    // SESSION MANAGEMENT
-    // =====================================================
+
+    // =====================================
+    // SESIONES DE TUTORÍA
+    // =====================================
+
+    /**
+     * Inicia una sesión de tutoría
+     */
     async startSession(userId, sessionData) {
-        const profile = await this.getOrCreateProfile(userId);
-        const difficulty = sessionData.difficulty ?? profile.adaptive_difficulty;
-        const result = await executeQuery(`
-            INSERT INTO tutoring_sessions (
-                user_id, subject, topic, difficulty, started_at
-            ) VALUES ($1, $2, $3, $4, NOW())
-            RETURNING id
-        `, [userId, sessionData.subject, sessionData.topic, difficulty]);
-        const sessionId = result[0].id;
-        return {
-            id: sessionId,
-            userId,
-            subject: sessionData.subject,
-            topic: sessionData.topic,
-            difficulty,
-            startedAt: new Date(),
-            xpEarned: 0,
-            questionsAnswered: 0,
-            correctAnswers: 0,
-            messages: []
-        };
+        const {
+            subject,
+            topic,
+            subtopic,
+            sessionType = 'lesson',
+            difficultyLevel,
+            targetDuration = 15
+        } = sessionData;
+
+        // Determinar dificultad adaptativa si no se especifica
+        let difficulty = difficultyLevel;
+        if (!difficulty || difficulty === 'adaptive') {
+            difficulty = await this.calculateAdaptiveDifficulty(userId, subject);
+        }
+
+        const query = `
+            INSERT INTO tutor_sessions (
+                user_id, subject, topic, subtopic, session_type,
+                difficulty_level, target_duration
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *
+        `;
+
+        const results = await executeQuery(query, [
+            userId, subject, topic, subtopic, sessionType, difficulty, targetDuration
+        ]);
+
+        return results[0];
     }
+
+    /**
+     * Agrega mensaje a la sesión
+     */
     async addMessage(sessionId, role, content) {
-        const result = await executeQuery(`
-            INSERT INTO session_messages (session_id, role, content, created_at)
-            VALUES ($1, $2, $3, NOW())
-            RETURNING id, created_at
-        `, [sessionId, role, content]);
-        return {
-            id: result[0].id,
-            sessionId,
+        const query = `
+            UPDATE tutor_sessions
+            SET messages = messages || $1::jsonb,
+                message_count = message_count + 1,
+                updated_at = NOW()
+            WHERE id = $2
+            RETURNING *
+        `;
+
+        const message = {
             role,
             content,
-            timestamp: result[0].created_at
+            timestamp: new Date().toISOString()
         };
+
+        const results = await executeQuery(query, [JSON.stringify([message]), sessionId]);
+        return results[0];
     }
+
+    /**
+     * Finaliza una sesión
+     */
     async endSession(sessionId, sessionResults = {}) {
-        const { questionsAnswered = 0, correctAnswers = 0 } = sessionResults;
-        // Calculate XP earned
-        const baseXP = 10;
-        const accuracyBonus = questionsAnswered > 0
-            ? Math.round((correctAnswers / questionsAnswered) * 20)
-            : 0;
-        const xpEarned = baseXP + accuracyBonus;
-        const result = await executeQuery(`
-            UPDATE tutoring_sessions
-            SET ended_at = NOW(),
-                questions_answered = $2,
-                correct_answers = $3,
-                xp_earned = $4
-            WHERE id = $1
+        const {
+            quizScore,
+            understandingLevel,
+            wasHelpful,
+            feedbackText,
+            aiProvider,
+            aiModel,
+            tokensUsed,
+            iacoinsSpent
+        } = sessionResults;
+
+        // Obtener sesión actual
+        const sessionQuery = `SELECT * FROM tutor_sessions WHERE id = $1`;
+        const sessionResult = await executeQuery(sessionQuery, [sessionId]);
+        if (sessionResult.length === 0) return null;
+
+        const session = sessionResult[0];
+
+        // Calcular duración y XP
+        const startTime = new Date(session.started_at);
+        const endTime = new Date();
+        const actualDuration = Math.round((endTime - startTime) / 60000);
+
+        // XP basado en duración y rendimiento
+        let xpEarned = Math.min(actualDuration, 60); // 1 XP por minuto, max 60
+        if (quizScore) {
+            xpEarned += Math.round(quizScore / 10); // Bonus por quiz
+        }
+
+        // Coins basado en completar sesión
+        const coinsEarned = actualDuration >= 10 ? 5 : 2;
+
+        const updateQuery = `
+            UPDATE tutor_sessions
+            SET status = 'completed',
+                actual_duration = $1,
+                quiz_score = $2,
+                understanding_level = $3,
+                was_helpful = $4,
+                feedback_text = $5,
+                ai_provider = $6,
+                ai_model = $7,
+                tokens_used = $8,
+                iacoins_spent = $9,
+                xp_earned = $10,
+                coins_earned = $11,
+                ended_at = NOW()
+            WHERE id = $12
             RETURNING *
-        `, [sessionId, questionsAnswered, correctAnswers, xpEarned]);
-        const session = result[0];
-        // Update user profile XP
-        await executeQuery(`
-            UPDATE learner_profiles
-            SET xp = xp + $2,
-                total_sessions = total_sessions + 1,
+        `;
+
+        const results = await executeQuery(updateQuery, [
+            actualDuration, quizScore, understandingLevel, wasHelpful, feedbackText,
+            aiProvider, aiModel, tokensUsed, iacoinsSpent, xpEarned, coinsEarned, sessionId
+        ]);
+
+        // Actualizar perfil del usuario
+        await this.updateProfileAfterSession(session.user_id, results[0]);
+
+        return results[0];
+    }
+
+    /**
+     * Actualiza perfil después de sesión
+     */
+    async updateProfileAfterSession(userId, session) {
+        const query = `
+            UPDATE tutor_learning_profiles
+            SET total_sessions = total_sessions + 1,
+                total_time_spent = total_time_spent + $1,
+                tutor_xp = tutor_xp + $2,
+                last_session_at = NOW(),
+                current_streak = CASE
+                    WHEN last_session_at::date = CURRENT_DATE - INTERVAL '1 day' THEN current_streak + 1
+                    WHEN last_session_at::date = CURRENT_DATE THEN current_streak
+                    ELSE 1
+                END,
+                longest_streak = GREATEST(longest_streak, CASE
+                    WHEN last_session_at::date = CURRENT_DATE - INTERVAL '1 day' THEN current_streak + 1
+                    ELSE 1
+                END),
                 updated_at = NOW()
-            WHERE user_id = $1
-        `, [session.user_id, xpEarned]);
-        return { ...session, xpEarned };
+            WHERE user_id = $3
+        `;
+
+        await executeQuery(query, [session.actual_duration, session.xp_earned, userId]);
+
+        // Actualizar proficiencia si hay quiz
+        if (session.quiz_score) {
+            await this.updateSubjectProficiency(userId, session.subject, session.quiz_score / 100);
+        }
     }
+
+    /**
+     * Obtiene historial de sesiones
+     */
     async getSessionHistory(userId, options = {}) {
-        const { limit = 20, offset = 0 } = options;
-        return await executeQuery(`
-            SELECT * FROM tutoring_sessions
+        const { limit = 20, offset = 0, subject, status } = options;
+
+        let query = `
+            SELECT * FROM tutor_sessions
             WHERE user_id = $1
-            ORDER BY started_at DESC
-            LIMIT $2 OFFSET $3
-        `, [userId, limit, offset]);
+        `;
+
+        const params = [userId];
+        let paramIndex = 2;
+
+        if (subject) {
+            query += ` AND subject = $${paramIndex++}`;
+            params.push(subject);
+        }
+
+        if (status) {
+            query += ` AND status = $${paramIndex++}`;
+            params.push(status);
+        }
+
+        query += ` ORDER BY started_at DESC LIMIT $${paramIndex++} OFFSET $${paramIndex}`;
+        params.push(limit, offset);
+
+        return executeQuery(query, params);
     }
+
     async getSessionById(sessionId) {
-        const result = await executeQuery('SELECT * FROM tutoring_sessions WHERE id = $1', [sessionId]);
-        return result[0] || null;
+        const query = `SELECT * FROM tutor_sessions WHERE id = $1`;
+        const results = await executeQuery(query, [sessionId]);
+        return results[0];
     }
-    // =====================================================
-    // ADAPTIVE LEARNING
-    // =====================================================
+    
+    /**
+     * Calcula dificultad adaptativa
+     */
     async calculateAdaptiveDifficulty(userId, subject) {
-        const recentSessions = await executeQuery(`
-            SELECT correct_answers, questions_answered
-            FROM tutoring_sessions
-            WHERE user_id = $1
-            ${subject ? 'AND subject = $2' : ''}
-            ORDER BY started_at DESC
-            LIMIT 5
-        `, subject ? [userId, subject] : [userId]);
-        if (recentSessions.length === 0) {
-            return 0.5;
+        const query = `
+            SELECT
+                AVG(quiz_score) as avg_score,
+                COUNT(*) as session_count
+            FROM tutor_sessions
+            WHERE user_id = $1 AND subject = $2 AND status = 'completed' AND quiz_score IS NOT NULL
+        `;
+
+        const results = await executeQuery(query, [userId, subject]);
+        const stats = results[0];
+
+        if (!stats.session_count || stats.session_count < 3) {
+            return 'medium';
         }
-        const totalCorrect = recentSessions.reduce((sum, s) => sum + s.correct_answers, 0);
-        const totalQuestions = recentSessions.reduce((sum, s) => sum + s.questions_answered, 0);
-        if (totalQuestions === 0)
-            return 0.5;
-        const accuracy = totalCorrect / totalQuestions;
-        // Adjust difficulty based on performance
-        if (accuracy > 0.8)
-            return Math.min(1, 0.5 + (accuracy - 0.8) * 2.5);
-        if (accuracy < 0.4)
-            return Math.max(0.1, 0.5 - (0.4 - accuracy) * 1.25);
-        return 0.5;
+
+        const avgScore = parseFloat(stats.avg_score);
+        if (avgScore >= 85) return 'hard';
+        if (avgScore >= 60) return 'medium';
+        return 'easy';
     }
-    // =====================================================
-    // LEARNING PATHS
-    // =====================================================
+
+    // =====================================
+    // RUTAS DE APRENDIZAJE
+    // =====================================
+
+    /**
+     * Obtiene rutas de aprendizaje disponibles
+     */
     async getLearningPaths(options = {}) {
-        let query = 'SELECT * FROM learning_paths WHERE active = true';
+        const { subject, difficulty, featured, limit = 20, offset = 0 } = options;
+
+        let query = `SELECT * FROM tutor_learning_paths WHERE is_active = true`;
         const params = [];
-        if (options.subject) {
-            params.push(options.subject);
-            query += ` AND subject = $${params.length}`;
+        let paramIndex = 1;
+
+        if (subject) {
+            query += ` AND subject = $${paramIndex++}`;
+            params.push(subject);
         }
-        return await executeQuery(query + ' ORDER BY difficulty, name', params);
+
+        if (difficulty) {
+            query += ` AND difficulty = $${paramIndex++}`;
+            params.push(difficulty);
+        }
+
+        if (featured) {
+            query += ` AND is_featured = true`;
+        }
+
+        query += ` ORDER BY is_featured DESC, created_at DESC`;
+        query += ` LIMIT $${paramIndex++} OFFSET $${paramIndex}`;
+        params.push(limit, offset);
+
+        return executeQuery(query, params);
     }
-    async getPathById(pathId, userId) {
-        const result = await executeQuery('SELECT * FROM learning_paths WHERE id = $1', [pathId]);
-        if (result.length === 0)
-            return null;
-        const path = result[0];
+
+    /**
+     * Obtiene ruta por ID con progreso del usuario
+     */
+    async getPathById(pathId, userId = null) {
+        const pathQuery = `SELECT * FROM tutor_learning_paths WHERE id = $1`;
+        const pathResults = await executeQuery(pathQuery, [pathId]);
+
+        if (pathResults.length === 0) return null;
+
+        const path = pathResults[0];
+
         if (userId) {
-            const progress = await executeQuery('SELECT * FROM user_learning_paths WHERE user_id = $1 AND path_id = $2', [userId, pathId]);
-            if (progress.length > 0) {
-                path.userProgress = progress[0];
-            }
+            const progressQuery = `
+                SELECT * FROM tutor_path_progress
+                WHERE user_id = $1 AND path_id = $2
+            `;
+            const progressResults = await executeQuery(progressQuery, [userId, pathId]);
+            path.user_progress = progressResults[0] || null;
         }
+
         return path;
     }
+
+    /**
+     * Inicia una ruta de aprendizaje
+     */
     async startLearningPath(userId, pathId) {
-        await executeQuery(`
-            INSERT INTO user_learning_paths (user_id, path_id, started_at, current_module)
-            VALUES ($1, $2, NOW(), 0)
-            ON CONFLICT (user_id, path_id) DO UPDATE SET started_at = NOW()
-        `, [userId, pathId]);
+        const query = `
+            INSERT INTO tutor_path_progress (user_id, path_id)
+            VALUES ($1, $2)
+            ON CONFLICT (user_id, path_id) DO UPDATE SET
+                status = 'in_progress',
+                last_activity_at = NOW()
+            RETURNING *
+        `;
+
+        const results = await executeQuery(query, [userId, pathId]);
+        return results[0];
     }
+
+    /**
+     * Actualiza progreso en ruta
+     */
     async updatePathProgress(userId, pathId, progressData) {
-        await executeQuery(`
-            UPDATE user_learning_paths
-            SET current_module = $3,
-                completed = COALESCE($4, completed),
-                updated_at = NOW()
+        const { moduleIndex, topicIndex, quizScore, timeSpent } = progressData;
+
+        // Obtener ruta para calcular porcentaje
+        const pathQuery = `SELECT total_topics FROM tutor_learning_paths WHERE id = $1`;
+        const pathResult = await executeQuery(pathQuery, [pathId]);
+        if (pathResult.length === 0) return null;
+
+        const totalTopics = pathResult[0].total_topics;
+
+        // Obtener progreso actual
+        const currentQuery = `
+            SELECT * FROM tutor_path_progress
             WHERE user_id = $1 AND path_id = $2
-        `, [userId, pathId, progressData.currentModule, progressData.completed]);
+        `;
+        const currentResult = await executeQuery(currentQuery, [userId, pathId]);
+        if (currentResult.length === 0) return null;
+
+        const current = currentResult[0];
+        let completedTopics = current.completed_topics || [];
+
+        // Agregar topic completado
+        const topicKey = `${moduleIndex}-${topicIndex}`;
+        if (!completedTopics.includes(topicKey)) {
+            completedTopics.push(topicKey);
+        }
+
+        // Calcular porcentaje
+        const progressPercent = Math.round((completedTopics.length / totalTopics) * 100);
+
+        // Determinar si completó
+        const isCompleted = progressPercent >= 100;
+
+        const updateQuery = `
+            UPDATE tutor_path_progress
+            SET current_module = $1,
+                current_topic = $2,
+                completed_topics = $3,
+                progress_percent = $4,
+                time_spent = time_spent + $5,
+                sessions_completed = sessions_completed + 1,
+                status = $6,
+                completed_at = $7,
+                last_activity_at = NOW()
+            WHERE user_id = $8 AND path_id = $9
+            RETURNING *
+        `;
+
+        const results = await executeQuery(updateQuery, [
+            moduleIndex,
+            topicIndex,
+            JSON.stringify(completedTopics),
+            progressPercent,
+            timeSpent || 0,
+            isCompleted ? 'completed' : 'in_progress',
+            isCompleted ? new Date() : null,
+            userId,
+            pathId
+        ]);
+
+        return results[0];
     }
+
+    /**
+     * Obtiene rutas en progreso del usuario
+     */
     async getUserPaths(userId) {
-        return await executeQuery(`
-            SELECT lp.*, ulp.started_at, ulp.current_module, ulp.completed
-            FROM learning_paths lp
-            JOIN user_learning_paths ulp ON lp.id = ulp.path_id
-            WHERE ulp.user_id = $1
-            ORDER BY ulp.updated_at DESC
-        `, [userId]);
+        const query = `
+            SELECT
+                p.*,
+                lp.title,
+                lp.subject,
+                lp.estimated_hours
+            FROM tutor_path_progress p
+            JOIN tutor_learning_paths lp ON p.path_id = lp.id
+            WHERE p.user_id = $1
+            ORDER BY p.last_activity_at DESC
+        `;
+
+        return executeQuery(query, [userId]);
     }
-    // =====================================================
-    // RECOMMENDATIONS
-    // =====================================================
+
+    // =====================================
+    // RECOMENDACIONES
+    // =====================================
+
+    /**
+     * Genera recomendaciones para el usuario
+     */
     async generateRecommendations(userId) {
         const profile = await this.getProfileWithStats(userId);
         const recommendations = [];
-        // Recommend based on weak subjects
-        if (profile.subjects_proficiency) {
-            for (const [subject, proficiency] of Object.entries(profile.subjects_proficiency)) {
-                if (proficiency < 0.6) {
-                    recommendations.push({
-                        id: `rec_${Date.now()}_${subject}`,
-                        userId,
-                        type: 'practice',
-                        title: `Practica ${subject}`,
-                        description: `Tu nivel en ${subject} puede mejorar. ¡Vamos a practicar!`,
-                        subject,
-                        priority: 1,
-                        status: 'active',
-                        createdAt: new Date()
-                    });
-                }
+
+        // 1. Recomendación basada en debilidades
+        const proficiency = profile.subject_proficiency || {};
+        for (const [subject, level] of Object.entries(proficiency)) {
+            if (level < 0.5) {
+                recommendations.push({
+                    type: 'topic',
+                    title: `Refuerzo en ${subject}`,
+                    description: `Tu nivel en ${subject} necesita práctica adicional`,
+                    reason: `Proficiencia actual: ${Math.round(level * 100)}%`,
+                    priority: 80,
+                    confidence: 0.9
+                });
             }
         }
-        // Recommend review of concepts
-        const conceptsToReview = await this.getConceptsToReview(userId, 3);
-        for (const concept of conceptsToReview) {
+
+        // 2. Recomendación de rutas no iniciadas
+        const pathsQuery = `
+            SELECT * FROM tutor_learning_paths
+            WHERE is_active = true
+            AND id NOT IN (SELECT path_id FROM tutor_path_progress WHERE user_id = $1)
+            ORDER BY is_featured DESC
+            LIMIT 3
+        `;
+        const paths = await executeQuery(pathsQuery, [userId]);
+
+        for (const path of paths) {
             recommendations.push({
-                id: `rec_review_${concept.concept}`,
-                userId,
-                type: 'review',
-                title: `Repasa: ${concept.concept}`,
-                description: `Es hora de repasar este concepto según el método de repetición espaciada.`,
-                subject: concept.subject,
-                priority: 2,
-                status: 'active',
-                createdAt: new Date()
+                type: 'path',
+                title: path.title,
+                description: path.description,
+                reason: 'Ruta de aprendizaje recomendada',
+                reference_type: 'learning_path',
+                reference_id: path.id,
+                priority: 60,
+                confidence: 0.7
             });
         }
+
+        // 3. Recomendación de repaso (spaced repetition)
+        const reviewQuery = `
+            SELECT subject, concept, mastery_level
+            FROM tutor_concept_mastery
+            WHERE user_id = $1 AND next_review_at <= NOW()
+            ORDER BY mastery_level ASC
+            LIMIT 5
+        `;
+        const toReview = await executeQuery(reviewQuery, [userId]);
+
+        for (const item of toReview) {
+            recommendations.push({
+                type: 'review',
+                title: `Repasar: ${item.concept}`,
+                description: `Es hora de repasar este concepto de ${item.subject}`,
+                reason: 'Repaso espaciado para retención a largo plazo',
+                priority: 70,
+                confidence: 0.85
+            });
+        }
+
+        // Guardar recomendaciones
+        for (const rec of recommendations) {
+            await this.saveRecommendation(userId, rec);
+        }
+
         return recommendations;
     }
+
+    /**
+     * Guarda una recomendación
+     */
+    async saveRecommendation(userId, recommendation) {
+        const query = `
+            INSERT INTO tutor_recommendations (
+                user_id, recommendation_type, title, description, reason,
+                reference_type, reference_id, priority, confidence_score,
+                expires_at
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW() + INTERVAL '7 days')
+            RETURNING *
+        `;
+
+        return executeQuery(query, [
+            userId,
+            recommendation.type,
+            recommendation.title,
+            recommendation.description,
+            recommendation.reason,
+            recommendation.reference_type,
+            recommendation.reference_id,
+            recommendation.priority,
+            recommendation.confidence
+        ]);
+    }
+
+    /**
+     * Obtiene recomendaciones activas
+     */
     async getActiveRecommendations(userId, limit = 10) {
-        return await executeQuery(`
-            SELECT * FROM recommendations
-            WHERE user_id = $1 AND status = 'active'
-            ORDER BY priority, created_at DESC
+        const query = `
+            SELECT * FROM tutor_recommendations
+            WHERE user_id = $1
+            AND is_dismissed = false
+            AND (expires_at IS NULL OR expires_at > NOW())
+            ORDER BY priority DESC, created_at DESC
             LIMIT $2
-        `, [userId, limit]);
+        `;
+
+        return executeQuery(query, [userId, limit]);
     }
+
+    /**
+     * Marca recomendación como vista/aceptada/descartada
+     */
     async updateRecommendationStatus(userId, recommendationId, status) {
-        await executeQuery(`
-            UPDATE recommendations SET status = $3, updated_at = NOW()
-            WHERE user_id = $1 AND id = $2
-        `, [userId, recommendationId, status]);
+        let updateField = '';
+        switch (status) {
+            case 'viewed':
+                updateField = 'is_viewed = true, viewed_at = NOW()';
+                break;
+            case 'accepted':
+                updateField = 'is_accepted = true, acted_at = NOW()';
+                break;
+            case 'dismissed':
+                updateField = 'is_dismissed = true';
+                break;
+            default:
+                return null;
+        }
+
+        const query = `
+            UPDATE tutor_recommendations
+            SET ${updateField}
+            WHERE id = $1 AND user_id = $2
+            RETURNING *
+        `;
+
+        const results = await executeQuery(query, [recommendationId, userId]);
+        return results[0];
     }
-    // =====================================================
-    // SPACED REPETITION
-    // =====================================================
+
+    // =====================================
+    // DOMINIO DE CONCEPTOS
+    // =====================================
+
+    /**
+     * Actualiza dominio de concepto
+     */
     async updateConceptMastery(userId, subject, concept, isCorrect) {
-        const existing = await executeQuery(`
-            SELECT * FROM concept_mastery
+        // Obtener o crear registro
+        const existingQuery = `
+            SELECT * FROM tutor_concept_mastery
             WHERE user_id = $1 AND subject = $2 AND concept = $3
-        `, [userId, subject, concept]);
-        if (existing.length === 0) {
-            await executeQuery(`
-                INSERT INTO concept_mastery (user_id, subject, concept, mastery, review_count, next_review_date)
-                VALUES ($1, $2, $3, $4, 1, $5)
-            `, [userId, subject, concept, isCorrect ? 0.6 : 0.3, new Date(Date.now() + 86400000)]);
-        }
-        else {
+        `;
+        const existing = await executeQuery(existingQuery, [userId, subject, concept]);
+
+        if (existing.length > 0) {
             const current = existing[0];
-            const newMastery = this.calculateNewMastery(current.mastery, isCorrect);
-            const nextReview = this.calculateReviewInterval(newMastery, current.review_interval || 1, isCorrect);
-            await executeQuery(`
-                UPDATE concept_mastery
-                SET mastery = $4, review_count = review_count + 1,
-                    next_review_date = $5, last_attempt_correct = $6
-                WHERE user_id = $1 AND subject = $2 AND concept = $3
-            `, [userId, subject, concept, newMastery, nextReview, isCorrect]);
+            const newMastery = this.calculateNewMastery(current.mastery_level, isCorrect);
+            const newInterval = this.calculateReviewInterval(newMastery, current.review_interval, isCorrect);
+
+            const updateQuery = `
+                UPDATE tutor_concept_mastery
+                SET mastery_level = $1,
+                    confidence = confidence * 0.9 + $2 * 0.1,
+                    times_practiced = times_practiced + 1,
+                    times_correct = times_correct + $3,
+                    last_practiced_at = NOW(),
+                    next_review_at = NOW() + INTERVAL '${newInterval} days',
+                    review_interval = $4,
+                    updated_at = NOW()
+                WHERE user_id = $5 AND subject = $6 AND concept = $7
+                RETURNING *
+            `;
+
+            return executeQuery(updateQuery, [
+                newMastery,
+                isCorrect ? 1 : 0,
+                isCorrect ? 1 : 0,
+                newInterval,
+                userId, subject, concept
+            ]);
+        } else {
+            // Crear nuevo registro
+            const insertQuery = `
+                INSERT INTO tutor_concept_mastery (
+                    user_id, subject, concept, mastery_level, confidence,
+                    times_practiced, times_correct, last_practiced_at,
+                    next_review_at, review_interval
+                ) VALUES (
+                    $1, $2, $3, $4, $5, 1, $6, NOW(),
+                    NOW() + INTERVAL '1 day', 1
+                )
+                RETURNING *
+            `;
+
+            return executeQuery(insertQuery, [
+                userId, subject, concept,
+                isCorrect ? 0.3 : 0.1,
+                isCorrect ? 0.5 : 0.3,
+                isCorrect ? 1 : 0
+            ]);
         }
     }
+
+    /**
+     * Calcula nuevo nivel de dominio
+     */
     calculateNewMastery(currentMastery, isCorrect) {
         if (isCorrect) {
-            return Math.min(1, currentMastery + 0.1 * (1 - currentMastery));
-        }
-        else {
-            return Math.max(0, currentMastery - 0.2);
+            return Math.min(1, currentMastery + (1 - currentMastery) * 0.2);
+        } else {
+            return Math.max(0, currentMastery - currentMastery * 0.3);
         }
     }
+
+    /**
+     * Calcula intervalo de repaso (spaced repetition)
+     */
     calculateReviewInterval(mastery, currentInterval, isCorrect) {
-        let multiplier = isCorrect ? 2.5 : 0.5;
-        if (mastery > 0.8)
-            multiplier = 3;
-        if (mastery < 0.4)
-            multiplier = 0.25;
-        const newInterval = Math.max(1, Math.round(currentInterval * multiplier));
-        return new Date(Date.now() + newInterval * 86400000);
+        if (isCorrect) {
+            if (mastery >= 0.9) return Math.min(30, currentInterval * 2.5);
+            if (mastery >= 0.7) return Math.min(21, currentInterval * 2);
+            return Math.min(14, currentInterval * 1.5);
+        } else {
+            return 1; // Reset a 1 día si falla
+        }
     }
+
+    /**
+     * Obtiene conceptos para repasar
+     */
     async getConceptsToReview(userId, limit = 10) {
-        return await executeQuery(`
-            SELECT * FROM concept_mastery
-            WHERE user_id = $1 AND next_review_date <= NOW()
-            ORDER BY mastery ASC, next_review_date ASC
+        const query = `
+            SELECT * FROM tutor_concept_mastery
+            WHERE user_id = $1 AND next_review_at <= NOW()
+            ORDER BY mastery_level ASC, next_review_at ASC
             LIMIT $2
-        `, [userId, limit]);
+        `;
+
+        return executeQuery(query, [userId, limit]);
     }
-    // =====================================================
-    // STATISTICS
-    // =====================================================
+
+    // =====================================
+    // ESTADÍSTICAS Y ANÁLISIS
+    // =====================================
+
+    /**
+     * Obtiene estadísticas detalladas del usuario
+     */
     async getDetailedStats(userId) {
-        const [sessions, concepts, paths] = await Promise.all([
-            executeQuery(`
-                SELECT subject, COUNT(*) as count, AVG(correct_answers::float / NULLIF(questions_answered, 0)) as avg_accuracy
-                FROM tutoring_sessions WHERE user_id = $1 GROUP BY subject
-            `, [userId]),
-            executeQuery(`
-                SELECT subject, AVG(mastery) as avg_mastery, COUNT(*) as concept_count
-                FROM concept_mastery WHERE user_id = $1 GROUP BY subject
-            `, [userId]),
-            executeQuery(`
-                SELECT COUNT(*) as total, SUM(CASE WHEN completed THEN 1 ELSE 0 END) as completed
-                FROM user_learning_paths WHERE user_id = $1
-            `, [userId])
-        ]);
+        const profile = await this.getProfileWithStats(userId);
+
+        // Sesiones por semana (últimas 4 semanas)
+        const weeklyQuery = `
+            SELECT
+                DATE_TRUNC('week', started_at) as week,
+                COUNT(*) as sessions,
+                SUM(actual_duration) as minutes,
+                AVG(quiz_score) as avg_score
+            FROM tutor_sessions
+            WHERE user_id = $1 AND started_at > NOW() - INTERVAL '4 weeks'
+            GROUP BY week
+            ORDER BY week DESC
+        `;
+        const weekly = await executeQuery(weeklyQuery, [userId]);
+
+        // Mejor materia
+        const bestSubjectQuery = `
+            SELECT subject, AVG(quiz_score) as avg_score, COUNT(*) as sessions
+            FROM tutor_sessions
+            WHERE user_id = $1 AND quiz_score IS NOT NULL
+            GROUP BY subject
+            ORDER BY avg_score DESC
+            LIMIT 1
+        `;
+        const bestSubject = await executeQuery(bestSubjectQuery, [userId]);
+
+        // Conceptos dominados
+        const masteredQuery = `
+            SELECT COUNT(*) as count
+            FROM tutor_concept_mastery
+            WHERE user_id = $1 AND mastery_level >= 0.8
+        `;
+        const mastered = await executeQuery(masteredQuery, [userId]);
+
         return {
-            sessionsBySubject: sessions,
-            conceptMasteryBySubject: concepts,
-            learningPaths: paths[0] || { total: 0, completed: 0 }
+            profile,
+            weekly_activity: weekly,
+            best_subject: bestSubject[0],
+            mastered_concepts: parseInt(mastered[0]?.count || 0)
         };
     }
 }
-exports.AITutorService = AITutorService;
-// ============================================
-// EXPORTS
-// ============================================
-const aiTutorService = new AITutorService();
-exports.default = aiTutorService;
-module.exports = aiTutorService;
-module.exports.AITutorService = AITutorService;
-//# sourceMappingURL=ai-tutor.service.js.map
+
+module.exports = new AITutorService();

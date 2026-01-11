@@ -1529,11 +1529,27 @@ class ManualLoginManager {
             });
 
             let data;
-            try {
-                data = await response.json();
-            } catch (parseError) {
-                console.error('[AUTH-LOGIN] ❌ Respuesta no es JSON:', parseError);
-                throw new Error('Respuesta del servidor no válida');
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                try {
+                    data = await response.json();
+                } catch (parseError) {
+                    console.error('[AUTH-LOGIN] ❌ Error parseando JSON:', parseError);
+                    throw new Error('Error en formato de respuesta del servidor');
+                }
+            } else {
+                // Si no es JSON, obtener como texto (posible error 429 u otro error del proxy/Vercel)
+                const text = await response.text();
+                console.warn('[AUTH-LOGIN] ⚠️ Respuesta no-JSON recibida:', text.substring(0, 100));
+
+                // Si es un error de rate limit conocido
+                if (response.status === 429) {
+                    throw new Error(text.includes('Too many') || text.includes('intentos') ?
+                        'Demasiados intentos. Por favor espera 15 minutos.' :
+                        'Límite de peticiones excedido');
+                }
+
+                throw new Error(`Error del servidor (${response.status})`);
             }
 
             // Debug masivo
@@ -1551,61 +1567,15 @@ class ManualLoginManager {
             console.log('[AUTH-DEBUG] Message length:', messageStr.length);
             console.log('[AUTH-DEBUG] Message char codes:', messageStr.split('').map(c => c.charCodeAt(0)).slice(0, 20));
 
-            // Robust Success Check:
-            const responseOk = response.ok;
-            const dataSuccess = data?.success;
+            // ✅ FIX (Jan 2026): SUCCESS LOGIC DEFINITIVA Y ROBUSTA
+            // No confiar en el cuerpo del mensaje, confiar en el status de la respuesta HTTP
+            // y la presencia de datos críticos (user + token)
+            const isSuccess = response.ok && !!(data?.user && (data.user.id || data.user.email)) && !!(data?.tokens?.accessToken || data?.token);
 
-            // 🔴 OPCIÓN ULTRA-DEFENSIVA: Detectar éxito por múltiples métodos
-            const hasExitWord = messageStr.includes('exit');
-            const hasSuccessWord = messageStr.includes('success');
-            const hasAuthWord = messageStr.includes('autenticaci') || messageStr.includes('autenticaci'); // Con y sin tilde
-            const hasBienvenidWord = messageStr.includes('bienvenid');
-            const hasCorrectWord = messageStr.includes('correct') && !messageStr.includes('incorrect');
-            const hasExitosaWord = messageStr.includes('exitosa');
-
-            // También buscar por palabras exactas completas
-            const hasExactMatch = messageStr.includes('autenticación exitosa') ||
-                messageStr.includes('autenticaci');
-
-            const messageHasSuccess = data?.message && (
-                hasExitWord ||
-                hasSuccessWord ||
-                hasAuthWord ||
-                hasBienvenidWord ||
-                hasCorrectWord ||
-                hasExitosaWord ||
-                hasExactMatch ||
-                // Fallback: si el mensaje tiene más de 5 caracteres y no es un error conocido
-                (messageStr.length > 5 && !messageStr.includes('error') && !messageStr.includes('inválid') && !messageStr.includes('incorrecto'))
-            );
-
-            console.log('[AUTH-LOGIN] Message Checks:', {
-                hasExitWord, hasSuccessWord, hasAuthWord, hasBienvenidWord,
-                hasCorrectWord, hasExitosaWord, messageHasSuccess
-            });
-
-            // 🚨 VERSIÓN ULTRA-SIMPLIFICADA: Si response.ok = true Y tenemos user, ES ÉXITO
-            // No confiar en data.success, data.error, o el mensaje
-            // Confiar únicamente en: HTTP 200 + usuario en respuesta
-            const hasUser = !!(data?.user && (data.user.id || data.user.email));
-
-            // Check for both token formats (tokens.accessToken or just token)
-            const hasToken = !!(data?.tokens?.accessToken || data?.token);
-
-            // ✅ FIX (15 Dic 2025): Condición de éxito ultra-permisiva para corregir falso negativo
-            // Prioridad: 1. data.success explícito 2. Detección de usuario+token 3. Análisis de mensaje
-            const explicitSuccess = data?.success === true || data?.success === 'true';
-
-            const isSuccess = explicitSuccess ||
-                (responseOk && hasUser && hasToken) ||
-                messageHasSuccess;
-
-            console.log('[AUTH-LOGIN] Success Logic FINAL (FIXED):', {
-                explicitSuccess,
-                responseOk,
-                hasUser,
-                hasToken,
-                messageHasSuccess,
+            console.log('[AUTH-LOGIN] Success Logic FINAL (CLEANED):', {
+                responseOk: response.ok,
+                hasUser: !!data?.user,
+                hasToken: !!(data?.tokens?.accessToken || data?.token),
                 FINAL: isSuccess
             });
 
@@ -1985,7 +1955,10 @@ class UIManager {
 
                         <!-- Contenido Principal -->
                         <div class="modal-body p-4">
-                            <!-- Alerta dinámica -->
+                            <!-- Contenedor de Alertas Dinámicas -->
+                            <div id="auth-alerts-container" class="mb-3"></div>
+                            
+                            <!-- Alerta estática (Legacy/Fallback) -->
                             <div id="auth-alert" class="alert d-none" role="alert"></div>
 
                             <!-- Formulario de Login Manual -->

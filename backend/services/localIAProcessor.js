@@ -36,11 +36,11 @@ class LocalIAProcessor {
     loadKnowledgeBase() {
         // Base de conocimiento educativo específico de BGE
         this.knowledgeBase.set('admision', {
-            keywords: ['admision', 'inscripcion', 'ingresar', 'inscribir', 'requisitos', 'registro'],
+            keywords: ['admision', 'inscripcion', 'ingresar', 'inscribir', 'requisitos', 'registro', 'tramite', 'papeles', 'costo'],
             responses: [
-                'Para inscribirte al Bachillerato General Estatal "Héroes de la Patria", necesitas presentar tu certificado de secundaria, acta de nacimiento, CURP, y fotografías tamaño infantil.',
-                'El proceso de admisión incluye una evaluación diagnóstica y entrega de documentos. Las inscripciones están abiertas durante febrero y marzo.',
-                'Los requisitos de admisión incluyen haber concluido la educación secundaria y aprobar el examen de ingreso.'
+                'Para inscribirte al Bachillerato General Estatal "Héroes de la Patria", los requisitos completos son: 1. Certificado original de Secundaria, 2. Acta de Nacimiento original legible, 3. CURP actualizada (con código QR), 4. NIA (Número de Identificación de Alumno), 5. Comprobante de domicilio reciente y 6. Seis fotografías tamaño infantil en blanco y negro.',
+                'El proceso de inscripción es directo en nuestras instalaciones de 8:00 AM a 1:30 PM. ¡Recuerda que no hay examen de admisión, tu lugar está asegurado si cuentas con tus documentos completos!',
+                'Para nuevo ingreso: Presentarse con los documentos originales y copias. El costo es accesible para toda la comunidad y todos los alumnos cuentan automáticamente con la Beca Benito Juárez al estar inscritos.'
             ],
             context: 'informacion_institucional'
         });
@@ -56,11 +56,11 @@ class LocalIAProcessor {
         });
 
         this.knowledgeBase.set('horarios', {
-            keywords: ['horarios', 'clases', 'turnos', 'horario', 'hora', 'tiempo'],
+            keywords: ['horarios', 'abre', 'cierra', 'atencion', 'clases', 'turno', 'hora', 'entrada', 'salida'],
             responses: [
-                'Tenemos turno matutino de 7:00 AM a 1:30 PM y turno vespertino de 2:00 PM a 8:30 PM.',
-                'Las clases son de lunes a viernes. Los horarios se publican al inicio de cada semestre.',
-                'Cada clase tiene duración de 50 minutos con 10 minutos de receso entre períodos.'
+                'Nuestra escuela <strong>abre sus puertas a las 8:00 AM</strong> y el horario de atención administrativa y clases es hasta la 1:30 PM, de lunes a viernes.',
+                'El horario escolar es estrictamente matutino: de 8:00 AM a 1:30 PM. No contamos con turno vespertino.',
+                'Nuestro horario administrativo coincide con el escolar, atendiendo de 8:00 AM a 1:30 PM para cualquier trámite o información.'
             ],
             context: 'logistica'
         });
@@ -76,13 +76,23 @@ class LocalIAProcessor {
         });
 
         this.knowledgeBase.set('contacto', {
-            keywords: ['contacto', 'telefono', 'direccion', 'ubicacion', 'email', 'correo'],
+            keywords: ['contacto', 'telefono', 'llamar', 'comunicar', 'email', 'correo', 'facebook', 'redes'],
             responses: [
-                'Nos ubicamos en Puebla, México. Puedes contactarnos a través de nuestra página web o visitarnos directamente.',
-                'Para más información, puedes comunicarte con nosotros o agendar una cita con el departamento de admisiones.',
-                'Estamos disponibles de lunes a viernes en horario de oficina para resolver tus dudas.'
+                'Puedes contactarnos al correo oficial: 21ebh0200x.sep@gmail.com o a través de nuestra página de Facebook oficial.',
+                'Para más información, puedes enviarnos un mensaje aquí mismo o visitarnos de 8:00 AM a 1:30 PM.',
+                'Estamos disponibles de lunes a viernes en horario de oficina (08:00 - 13:30) para resolver tus dudas.'
             ],
             context: 'contacto_institucional'
+        });
+
+        this.knowledgeBase.set('ubicacion', {
+            keywords: ['ubicacion', 'direccion', 'donde', 'lugar', 'ubicado', 'como llegar', 'domicilio', 'mapa', 'calle'],
+            responses: [
+                'Nos encontramos en: <strong>C. Manuel Ávila Camacho #7, Col. Centro, Coronel Tito Hernández (María Andrea), Venustiano Carranza, Puebla, C.P. 73030</strong>.',
+                'El Bachillerato se ubica en María Andrea (Venustiano Carranza, Puebla), específicamente en la calle Manuel Ávila Camacho número 7.',
+                'Nuestra ubicación exacta es C. Manuel Ávila Camacho #7, Col. Centro en la comunidad de María Andrea. ¡Te esperamos!'
+            ],
+            context: 'informacion_institucional'
         });
 
         // Temas académicos específicos
@@ -114,6 +124,25 @@ class LocalIAProcessor {
                 'Ofrecemos test vocacionales y asesoría personalizada para tu proyecto de vida universitario.'
             ],
             context: 'orientacion_estudiantil'
+        });
+
+        this.knowledgeBase.set('director', {
+            keywords: ['director', 'samuel', 'cruz', 'quien', 'quienes', 'dirige', 'responsable', 'autoridad', 'jefe'],
+            responses: [
+                'El Director General del Bachillerato "Héroes de la Patria" es el <strong>Ing. Samuel Cruz Interial</strong>, quien cuenta con más de 23 años de experiencia en el sector educativo.',
+                'Nuestra institución está liderada por el Ing. Samuel Cruz Interial, quien es el responsable de dirigirnos hacia la excelencia académica.',
+                'Puedes contactar a la dirección con el Ing. Samuel Cruz a través del correo: 21ebh0200x.sep@gmail.com'
+            ],
+            context: 'informacion_institucional'
+        });
+
+        this.knowledgeBase.set('becas', {
+            keywords: ['beca', 'apoyo', 'dinero', 'benito juarez', 'ayuda economica', 'estipendio'],
+            responses: [
+                'Todos nuestros alumnos cuentan con la <strong>Beca Benito Juárez</strong> de manera automática al estar inscritos.',
+                'Ofrecemos apoyo a través de la Beca Universal Benito Juárez. El proceso es gestionado automáticamente para alumnos registrados.'
+            ],
+            context: 'servicios'
         });
 
         devLogger.log(`📚 Base de conocimiento cargada: ${this.knowledgeBase.size} temas`);
@@ -339,7 +368,7 @@ class LocalIAProcessor {
             // Normalizar score por cantidad de keywords
             const normalizedScore = score / topicData.keywords.length;
 
-            if (normalizedScore > bestScore && normalizedScore > 0.3) {
+            if (normalizedScore > bestScore && normalizedScore > 0.05) {
                 bestScore = normalizedScore;
                 bestMatch = {
                     topic: topic,
@@ -366,8 +395,8 @@ class LocalIAProcessor {
             response = this.getRandomTemplate('despedida');
         } else if (intent.name === 'ayuda') {
             response = this.getRandomTemplate('ayuda_general');
-        } else if (knowledgeMatch && knowledgeMatch.score > 0.5) {
-            // Usar conocimiento específico encontrado
+        } else if (knowledgeMatch && knowledgeMatch.score > 0.05) {
+            // Usar conocimiento específico encontrado (umbral reducido para mayor sensibilidad)
             response = this.getRandomResponse(knowledgeMatch.data.responses);
 
             // Agregar contexto adicional si es relevante

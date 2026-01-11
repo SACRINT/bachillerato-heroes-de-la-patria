@@ -86,7 +86,12 @@ const chartsDataRoutes = loadRoute('./routes/charts-data');
 const searchRoutes = loadRoute('./routes/search');
 const emailsRoutes = loadRoute('./routes/emails');
 const apiDocsRoutes = loadRoute('./routes/api-docs'); // ✅ SWAGGER UI - SEMANA 29
+
+// ✅ AI ORCHESTRATOR GATEWAY (JAN 2026) - The new centralized entry point
+const aiGatewayRoutes = loadRoute('./routes/ai-gateway');
+
 const aiTutorRoutes = loadRoute('./routes/ai-tutor'); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
+/* 🛑 DEPRECATED: CONSOLIDATED INTO AI ORCHESTRATOR (JAN 2026)
 const aiAnalyticsRoutes = require('./ai/analytics/routes'); // ✅ AI ANALYTICS - SEMANA 9 (19 DIC 2025)
 const aiTutorAlphaRoutes = require('./ai/tutor/routes_alpha'); // ✅ AI TUTOR ALPHA - SEMANA 10 (19 DIC 2025)
 const mlopsRoutes = loadRoute('./routes/ai-mlops'); // ✅ MLOPS - SEMANA 11 (2025/12/05)
@@ -134,6 +139,7 @@ const year2OptimizationRoutes = require('./ai/year2-optimization/routes'); // �
 const year2SecurityRoutes = require('./ai/year2-security/routes'); // ✅ YEAR 2 SECURITY - SEMANA 46 - FASE 6 (4 ENE 2026)
 const year2IntegrationRoutes = require('./ai/year2-integration/routes'); // ✅ YEAR 2 INTEGRATION - SEMANA 47 - FASE 6 (4 ENE 2026)
 const year2FinalRoutes = require('./ai/year2-final/routes'); // ✅ YEAR 2 FINAL - SEMANA 48 - FASE 6 FINAL (4 ENE 2026)
+*/
 const installPollsRoutes = loadRoute('./routes/install-polls');
 const teachersPortalRoutes = loadRoute('./routes/teachers-portal');
 const messagingRoutes = loadRoute('./routes/messaging');
@@ -216,8 +222,12 @@ const multiTenantRoutes = loadRoute('./routes/multi-tenant');
 const subscriptionsServiceRoutes = loadRoute('./routes/subscriptions-service');
 
 // GRUPO 3: FEATURES SECUNDARIAS MEDIAS (7 rutas)
+const aiChatbotRoutes = loadRoute('./routes/ai-chatbot'); // ✅ AI CHATBOT V3
+
+/* 🛑 DEPRECATED
 const chatbotRoutes = loadRoute('./routes/chatbot');
 const chatbotIaRoutes = loadRoute('./routes/chatbot-ia');
+*/
 const cmsRoutes = loadRoute('./routes/cms');
 const newslettersPgRoutes = loadRoute('./routes/newsletters-pg');
 const citasImprovedRoutes = loadRoute('./routes/citas-improved');
@@ -247,6 +257,8 @@ const dataRetentionService = require('./services/dataRetentionService'); // Lóg
 const eventBusService = require('./services/eventBus.service');
 const NotificationSubscriber = require('./subscribers/notification-subscriber');
 const AnalyticsSubscriber = require('./subscribers/analytics-subscriber');
+
+
 
 const app = express();
 const { setupSecurity } = require('./config/security'); // ✅ WEEK 49 SECURITY
@@ -560,6 +572,7 @@ app.use('/api/notifications/center', notifCenterRoutes);  // ✅ NOTIFICATION CE
 app.use('/api/support/tickets', helpdeskRoutes);  // ✅ HELPDESK - SEMANA 54 (FASE 7)
 app.use('/api/docs', apiDocsRoutes); // ✅ SWAGGER UI - SEMANA 29
 app.use('/api/tutor', aiTutorRoutes); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
+/* 🛑 CONSOLIDATED INTO AI ORCHESTRATOR
 app.use('/api/ai/analytics', aiAnalyticsRoutes); // ✅ AI DESCRIPTIVE ANALYTICS - SEMANA 9 (19 DIC 2025)
 app.use('/api/ai/tutor-alpha', aiTutorAlphaRoutes); // ✅ AI TUTOR ALPHA - SEMANA 10 (19 DIC 2025)
 app.use('/api/ai/mlops', mlopsRoutes); // ✅ MLOPS - SEMANA 11 (19 DIC 2025)
@@ -604,6 +617,7 @@ app.use('/api/ai/year2-opt', year2OptimizationRoutes); // ✅ YEAR 2 OPTIMIZATIO
 app.use('/api/ai/year2-sec', year2SecurityRoutes); // ✅ YEAR 2 SECURITY - SEMANA 46 - FASE 6 (4 ENE 2026)
 app.use('/api/ai/year2-integ', year2IntegrationRoutes); // ✅ YEAR 2 INTEGRATION - SEMANA 47 - FASE 6 (4 ENE 2026)
 app.use('/api/ai/year2-final', year2FinalRoutes); // ✅ YEAR 2 FINAL - SEMANA 48 - FASE 6 FINAL (4 ENE 2026)
+*/
 app.use('/api/super-admin', superAdminDashboardRoutes); // ✅ SUPER ADMIN DASHBOARD - FASE 5 (7 DIC 2025)
 app.use('/api/stripe-webhooks', stripeWebhooksRoutes); // ✅ STRIPE WEBHOOKS - FASE 5.2 (7 DIC 2025)
 app.use('/api/ar', arExperiencesRoutes); // ✅ AR EXPERIENCES - FASE 5.3 (7 DIC 2025)
@@ -642,8 +656,12 @@ app.use('/api/multi-tenant', multiTenantRoutes);
 // app.use('/api/subscriptions-service', subscriptionsServiceRoutes); // ⚠️ Comentada: exporta Object en vez de Router
 
 // GRUPO 3: FEATURES SECUNDARIAS (7 rutas) - ✅ DESCOMENTADAS PARA FASE 3.2
+/* 🛑 CONSOLIDATED INTO AI ORCHESTRATOR / ai-chatbot
 app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/chatbot-ia', chatbotIaRoutes);
+*/
+app.use('/api/ai/chatbot', aiChatbotRoutes); // ✅ AI CHATBOT V3 - SEMANA 18 (8 DIC 2025)
+app.use('/api/ai-gateway', aiGatewayRoutes); // ✅ AI GATEWAY - MAIN ENTRY POINT
 app.use('/api/cms', cmsRoutes);
 app.use('/api/newsletters-pg', newslettersPgRoutes);
 app.use('/api/citas-improved', citasImprovedRoutes);
@@ -789,8 +807,8 @@ if (require.main === module) {
 
     server.on('error', (e) => {
         if (e.code === 'EADDRINUSE') {
-            devLogger.error(`❌ Puerto ${PORT} ocupado. Intentando cerrar proceso anterior...`);
-            process.exit(1); // Salir para que nodemon reinicie o el usuario cierre el proceso
+            devLogger.error(`❌ Puerto ${PORT} ocupado. Por favor, cierre el proceso que usa este puerto (ej: 'npx kill-port ${PORT}') o espere a que nodemon lo reinicie.`);
+            process.exit(1);
         }
     });
 }

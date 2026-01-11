@@ -48,7 +48,7 @@ const passwordGenerator = (0, passwordGenerator_1.getPasswordGenerator)();
 // Rate limiting para login
 const loginLimiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000, // 15 minutos
-    limit: 5, // 5 intentos por ventana
+    limit: 10, // Aumentado de 5 a 10 para mejor UX en despliegue
     message: {
         error: 'Demasiados intentos de login',
         message: 'Has superado el límite de intentos. Intenta de nuevo en 15 minutos.',

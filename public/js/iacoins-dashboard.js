@@ -432,10 +432,16 @@
             const token = sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token');
             if (!token) return;
 
-            const response = await fetch('/api/ai/hyper/personality/me', {
+            const response = await fetch('/api/ai/v1/process', {
+                method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    intent: 'PERSONALITY',
+                    payload: { action: 'get_profile' }
+                })
             });
 
             if (response.ok) {

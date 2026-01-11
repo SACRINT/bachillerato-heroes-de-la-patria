@@ -10,7 +10,8 @@
 
 class BGEChatbotIAAvanzado {
     constructor() {
-        this.apiEndpoint = '/api/chatbot-ia';
+        this.apiEndpoint = '/api/ai-gateway/v1/process';
+        this.serviceHealthEndpoint = '/api/ai/chatbot/health';
         this.isInitialized = false;
         this.conversationHistory = [];
         this.currentContext = {
@@ -81,7 +82,7 @@ class BGEChatbotIAAvanzado {
         try {
             const startTime = Date.now();
 
-            const response = await fetch(`${this.apiEndpoint}/health`, {
+            const response = await fetch(this.serviceHealthEndpoint, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -257,44 +258,51 @@ class BGEChatbotIAAvanzado {
     async processWithExternalIA(message) {
         try {
             const payload = {
-                message: message,
-                context: this.currentContext,
-                conversationHistory: this.getRecentHistory(),
-                systemPrompt: this.getSystemPrompt(),
-                config: {
-                    model: this.aiConfig.model,
-                    maxTokens: this.aiConfig.maxTokens,
-                    temperature: this.aiConfig.temperature
+                intent: 'GENERAL_CHAT',
+                payload: {
+                    message: message,
+                    context: this.currentContext,
+                    conversationHistory: this.getRecentHistory()
+                    // El prompt del sistema ahora se maneja dinámicamente en AIService
                 }
             };
 
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), this.aiConfig.responseTimeout);
 
-            const response = await fetch(`${this.apiEndpoint}/chat`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload),
-                signal: controller.signal
-            });
+            // Intentar usar APIClient global si está disponible
+            let data;
+            if (window.apiClient && typeof window.apiClient.processAIRequest === 'function') {
+                data = await window.apiClient.processAIRequest('GENERAL_CHAT', payload.payload);
+            } else {
+                const response = await fetch(this.apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload),
+                    signal: controller.signal
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status} - ${response.statusText}`);
+                }
+
+                data = await response.json();
+            }
 
             clearTimeout(timeoutId);
 
-            if (!response.ok) {
-                throw new Error(`API Error: ${response.status} - ${response.statusText}`);
-            }
 
-            const data = await response.json();
+            // Validar respuesta del Orquestador
+            const aiResponse = data.data ? data.data.response : (data.response || null);
 
-            // Validar respuesta
-            if (!data.response) {
-                throw new Error('Respuesta IA inválida');
+            if (!aiResponse) {
+                throw new Error('Respuesta IA inválida del Orquestador');
             }
 
             // Procesar respuesta para contexto educativo
-            return this.processEducationalResponse(data.response);
+            return this.processEducationalResponse(aiResponse);
 
         } catch (error) {
             console.warn('⚠️ Error con IA externa, usando fallback:', error.message);
@@ -1178,7 +1186,7 @@ CONTEXTO ACTUAL DEL USUARIO:
         localStorage.removeItem('bge-chatbot-history');
 
         if (this.chatContainer) {
-            this.chatContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
+            this.chatContainer.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(''));
         }
 
         this.sendWelcomeMessage();

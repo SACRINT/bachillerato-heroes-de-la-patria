@@ -280,8 +280,8 @@ class IntelligentLoginSystem {
                         <h4>🎯 Funcionalidades Desbloqueadas:</h4>
                         <ul class="features-list">
                             ${profile.unlockedPrompts.map(prompt =>
-                                `<li><i class="fas fa-check text-success"></i> ${this.getPromptDisplayName(prompt)}</li>`
-                            ).join('')}
+            `<li><i class="fas fa-check text-success"></i> ${this.getPromptDisplayName(prompt)}</li>`
+        ).join('')}
                         </ul>
                     </div>
 
@@ -493,14 +493,14 @@ class IntelligentLoginSystem {
     }
 
     darkenColor(color, percent) {
-        const num = parseInt(color.replace("#",""), 16);
+        const num = parseInt(color.replace("#", ""), 16);
         const amt = Math.round(2.55 * percent);
         const R = (num >> 16) + amt;
         const G = (num >> 8 & 0x00FF) + amt;
         const B = (num & 0x0000FF) + amt;
-        return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 +
-               (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255))
-               .toString(16).slice(1);
+        return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+            (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + (B < 255 ? B < 1 ? 0 : B : 255))
+            .toString(16).slice(1);
     }
 
     /**
@@ -557,14 +557,14 @@ class IntelligentLoginSystem {
                     <h4>🎯 Prompts Disponibles</h4>
                     <div class="available-prompts">
                         ${profile.unlockedPrompts.slice(0, 3).map(promptKey => {
-                            const prompt = this.aiPromptLibrary[promptKey];
-                            return `
+            const prompt = this.aiPromptLibrary[promptKey];
+            return `
                                 <div class="prompt-item" data-prompt="${promptKey}">
                                     <div class="prompt-name">${prompt?.name || promptKey}</div>
                                     <div class="prompt-xp">+${prompt?.xpReward || 10} XP</div>
                                 </div>
                             `;
-                        }).join('')}
+        }).join('')}
                     </div>
                     <button class="btn btn-sm btn-primary" onclick="window.intelligentLogin.showAllPrompts()">
                         Ver Todos (${profile.unlockedPrompts.length})
@@ -688,16 +688,19 @@ class IntelligentLoginSystem {
         const loadingModal = this.showAILoadingModal(prompt.name);
 
         try {
-            // Llamada a la API real
-            const response = await fetch('/api/ai/execute-prompt', {
+            // Llamada a la API real (AI Orchestrator)
+            const response = await fetch('/api/ai/v1/process', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    promptId: promptKey,
-                    userInput: userInput,
-                    userProfile: profile
+                    intent: 'CONTENT_GENERATION',
+                    payload: {
+                        promptId: promptKey,
+                        userInput: userInput,
+                        userProfile: profile
+                    }
                 })
             });
 
