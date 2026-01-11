@@ -55,15 +55,15 @@
 | **Verificación** | Frontend usa correctamente endpoints: `/api/polls`, `/vote`, `/results`, `/categories/list` |
 | **Estado** | ✅ **INTEGRACIÓN VERIFICADA** |
 
-### 1.5 Portal de Padres Completo (`parents.js` backend) - ⚠️ PARCIALMENTE CONECTADO
+### 1.5 Portal de Padres Completo (`parents.js` backend) - ✅ RESUELTO
 
 | Estado | Descripción |
 |--------|-------------|
 | **Backend** | ✅ 913 líneas de código - endpoints completos |
 | **Endpoints Backend** | `/auth/login`, `/auth/register`, `/dashboard`, `/students/:id/grades`, `/students/:id/attendance`, `/credentials/*` |
-| **Frontend** | ⚠️ `parent-portal.js` - **LOGIN CONECTADO, DASHBOARD CON DATOS ESTÁTICOS** |
-| **Problema** | Las funciones `showGrades()`, `showAttendance()`, `showCommunication()` usan datos MOCK en lugar de llamar a la API |
-| **Acción Requerida** | Actualizar frontend para usar endpoints reales de calificaciones y asistencia |
+| **Frontend** | ✅ `parent-portal.js` - **REFACTORIZADO 11-ENE-2026** |
+| **Resuelto** | Login, dashboard, calificaciones y asistencia ahora usan API real |
+| **Estado** | ✅ **INTEGRACIÓN COMPLETA** |
 
 ---
 
