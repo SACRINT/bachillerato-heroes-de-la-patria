@@ -39,13 +39,11 @@ Antes de comenzar cualquier fase de limpieza:
 
 ---
 
-### Tarea 1.2: Eliminar archivos de backup
+### - [x] **Phase 1.2:** Remove all backup and temporary files.
 
-```bash
-# Patrones a eliminar:
-# *.backup, *.bak, *.old, *.tmp
-# Riesgo: NINGUNO
-```
+- [x] Action: Delete `*.backup`, `*.old`, `*.tmp`, `*.bak`.
+- [x] Action: Delete `_legacy/` folders if verified as safe.
+- [x] Status: **COMPLETED** (Oct 25).
 
 **Archivos a eliminar:**
 
@@ -85,7 +83,11 @@ backend/**/*.bak
 
 **Objetivo:** Reducir archivos duplicados a versiones únicas.
 
-### Tarea 2.1: Consolidar admin-dashboard.js
+### - [x] **Phase 2.1:** Consolidate `admin-dashboard.js` duplicates.
+
+- [x] Action: Analyze `admin-dashboard.js` vs `_legacy/admin-dashboard.js`.
+- [x] Action: Remove `admin-dashboard-advanced.js` (unused).
+- [x] Status: **COMPLETED** (Oct 25).
 
 **Estado actual:**
 
@@ -133,7 +135,11 @@ public/js/parents-portal-manager.js (19KB) - USA API REAL ✅
 
 ---
 
-### Tarea 2.3: Consolidar context-manager.js
+### - [x] **Phase 2.3:** Consolidate `context-manager.js` and `api-client.js`.
+
+- [x] Action: Remove redundant Auth methods from `context-manager.js`.
+- [x] Action: Delete `auth-context-bridge.js` (obsolete).
+- [x] Status: **COMPLETED** (Oct 25).
 
 **Estado actual:**
 

@@ -7,6 +7,11 @@
 - I am the lead agent for the 'ProyectoHP' project.
 - I must orchestrate sub-agents using `doc/task/context.md` when necessary.
 - Changes to the API (`api/app.js`) must be done incrementally due to Vercel deployment sensitivity.
+- `429 Too Many Requests` on Dashboard Load: Architected a solution to prevent the frontend from bombarding the server. Created a new consolidated API endpoint (`/api/admin/dashboard-summary`) to bundle all necessary statistics into a single, efficient API call. Refactored `js/admin-dashboard-stats.js` to use this new endpoint, reducing initial load requests from 7+ to just 1.
+- Architectural Cleanup (Phase 1 & 2):
+  - Deleted `_legacy/` folder (removed 6 outdated files).
+  - Consolidated `admin-dashboard.js` (removed duplicates and unused `admin-dashboard-advanced.js`).
+  - Refactored `context-manager.js` to remove redundant auth logic; deleted `auth-context-bridge.js`.sensitivity.
 - `.md` files should not be pushed to the Git repository.
 
 ---
