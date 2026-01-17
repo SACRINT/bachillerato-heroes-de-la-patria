@@ -23,6 +23,21 @@ import { sanitizeError, maskEmail, maskToken } from '../utils/sanitized-errors';
 // @ts-ignore
 import AuditLoggingService from '../services/audit-logging-service';
 
+// DAOs para Dashboard Summary
+import NoticiasDAO from '../data/noticias.dao';
+// @ts-ignore
+import EventosDAO from '../data/eventos.dao';
+// @ts-ignore
+import AvisosDAO from '../data/avisos.dao';
+// @ts-ignore
+import ComunicadosDAO from '../data/comunicados.dao';
+// @ts-ignore
+import EgresadosDAO from '../data/egresados.dao';
+// @ts-ignore
+import BolsaTrabajoDAO from '../data/bolsa-trabajo.dao';
+// @ts-ignore
+import SuscriptoresDAO from '../data/suscriptores.dao';
+
 const router: Router = express.Router();
 
 // Instancias de servicios
@@ -264,6 +279,52 @@ router.put('/users/:id/role', authenticateToken, requireAdmin, [
     } catch (error) {
         debugLog.error('ADMIN', `Falla al actualizar rol para usuario ${userIdToUpdate}:`, error as Error);
         res.status(500).json({ success: false, message: 'Error interno del servidor al actualizar el rol.' });
+    }
+});
+
+/**
+ * GET /api/admin/dashboard-summary
+ * Obtiene resumen estadístico consolidado para el dashboard administrativo
+ * Reduce llamadas múltiples (Optimización para evitar 429/500)
+ */
+router.get('/dashboard-summary', authenticateToken, requireAdmin, async (req: Request, res: Response): Promise<void> => {
+    try {
+        const [
+            noticias,
+            eventos,
+            avisos,
+            comunicados,
+            egresados,
+            vacantes,
+            suscriptores
+        ] = await Promise.all([
+            NoticiasDAO.getStats(),
+            EventosDAO.getStats(),
+            AvisosDAO.getStats(),
+            ComunicadosDAO.getStats(),
+            EgresadosDAO.getStats(),
+            BolsaTrabajoDAO.getStats(),
+            SuscriptoresDAO.getStats()
+        ]);
+
+        res.json({
+            success: true,
+            data: {
+                cms: {
+                    noticias,
+                    eventos,
+                    avisos,
+                    comunicados
+                },
+                egresados,
+                bolsaTrabajo: vacantes,
+                suscriptores
+            }
+        });
+
+    } catch (error) {
+        debugLog.error('ADMIN', '❌ Error obteniendo dashboard summary', sanitizeError(error as Error, 'admin'));
+        res.status(500).json({ success: false, error: 'Error interno obteniendo resumen del dashboard' });
     }
 });
 

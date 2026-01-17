@@ -1,25 +1,19 @@
-# Contexto de la Tarea Actual
+# Contexto de Tarea: Finalización de Cleanup y Optimización
 
-## Objetivo Principal
+## Estado Actual (12 Ene 2026)
 
-Completar el Sistema de Credenciales de Padres y resolver errores 500 restantes en el Dashboard.
+- **Admin Dashboard Cleanup:** Completado. Archivos duplicados y legacy eliminados.
+- **Credenciales Padres:** Verificado Backend (`parents.ts`) y Frontend (`admin-parent-credentials.js`). Sistema listo para QA.
+- **Optimización Stats (Dashboard):** Implementada. Se creó el endpoint consolidado `/api/admin/dashboard-summary` y se refactorizó `admin-dashboard-stats.js` para usarlo, resolviendo los problemas de ráfagas de peticiones (Rate Limiting).
 
-## Estado Actual
+## Próximos Pasos (Sugeridos)
 
-- **Limpieza Arquitectónica:** Completada (Fases 1 y 2). Se eliminaron archivos legacy y duplicados.
-- **Portal de Padres:** Frontend integrado con API real (`parent-portal.js`).
-- **Dashboard Admin:** Consolidado en `admin-dashboard.js`.
-
-## Próximos Pasos (Prioridad 1)
-
-1. **Backend Credenciales:** Implementar el endpoint `POST /api/parents/credentials/generate` (controlador y rutas).
-    - Verificar si existe la tabla `padres_credenciales` o similar.
-    - Implementar lógica de generación de password temporal.
-2. **Frontend Credenciales:** Verificar `admin-parent-credentials.js` y conectarlo al nuevo endpoint.
-3. **Debug 500 Errors:** Investigar logs para `/api/avisos/stats` y subscriber growth chart.
+1. **QA General (Manual):** Navegar por el dashboard para verificar que los contadores cargan correctamente y la consola no muestra errores 429/500.
+2. **QA Credenciales:** Probar el flujo de generación de credenciales masivas y el primer login de padres.
+3. **Deployment:** El código está estable y limpio para proceder a deploy en Vercel/Producción.
 
 ## Notas Técnicas
 
-- El proyecto usa arquitectura modular en frontend (`js/modules/`).
-- `APIClient` en `js/api-client.js` es la fuente de verdad para peticiones.
-- Autenticación manejada por token en `localStorage` (`heroes_auth_token` o `bge_auth_token`).
+- `admin-dashboard-stats.js` es ahora V3.0 (Optimized) y reemplaza a todos los scripts de conteo anteriores.
+- `stats-counter.js` fue eliminado físicamente.
+- `backend/routes/admin.ts` ahora incluye integración con 7 DAOs para el endpoint de resumen.

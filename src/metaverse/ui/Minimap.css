@@ -1,0 +1,30 @@
+/* Minimap Radar Styles */
+
+.minimap-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.minimap-canvas {
+    border-radius: 50%;
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(0, 150, 200, 0.2),
+        inset 0 0 20px rgba(0, 100, 150, 0.3);
+}
+
+.minimap-label {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgba(0, 200, 255, 0.7);
+    text-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
+}

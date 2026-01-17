@@ -1,0 +1,177 @@
+/* Onboarding Tutorial Styles */
+
+.onboarding-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.onboarding-card {
+    width: 90%;
+    max-width: 480px;
+    background: linear-gradient(160deg, rgba(0, 30, 60, 0.98), rgba(0, 50, 90, 0.95));
+    border: 1px solid rgba(0, 200, 255, 0.4);
+    border-radius: 24px;
+    padding: 40px;
+    text-align: center;
+    box-shadow:
+        0 20px 80px rgba(0, 0, 0, 0.6),
+        0 0 100px rgba(0, 150, 255, 0.15);
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.onboarding-card.animating {
+    transform: scale(0.95);
+    opacity: 0.5;
+}
+
+/* Progress Dots */
+.onboarding-progress {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.progress-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s;
+}
+
+.progress-dot.active {
+    background: #00ddff;
+    transform: scale(1.3);
+    box-shadow: 0 0 15px rgba(0, 200, 255, 0.6);
+}
+
+.progress-dot.completed {
+    background: #00ff88;
+}
+
+/* Icon */
+.onboarding-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Title */
+.onboarding-title {
+    color: white;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    text-shadow: 0 0 20px rgba(0, 200, 255, 0.4);
+}
+
+/* Description */
+.onboarding-description {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0 0 24px 0;
+}
+
+/* Action Hint */
+.onboarding-action {
+    margin-bottom: 30px;
+}
+
+.action-hint {
+    display: inline-block;
+    background: rgba(0, 200, 255, 0.15);
+    border: 1px dashed rgba(0, 200, 255, 0.4);
+    border-radius: 8px;
+    padding: 10px 20px;
+    color: #00ddff;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Buttons */
+.onboarding-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.onboarding-btn {
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.onboarding-btn.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.onboarding-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.onboarding-btn.primary {
+    background: linear-gradient(135deg, #0088ff, #00ddff);
+    color: white;
+    box-shadow: 0 4px 20px rgba(0, 150, 255, 0.4);
+}
+
+.onboarding-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 150, 255, 0.5);
+}
+
+/* Skip Button */
+.onboarding-skip {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 13px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.onboarding-skip:hover {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: underline;
+}

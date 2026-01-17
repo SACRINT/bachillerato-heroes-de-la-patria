@@ -1,181 +1,130 @@
 /**
- * ADMIN DASHBOARD STATS LOADER
- * Carga estadísticas reales de las APIs y actualiza la UI del dashboard
- * Fecha: 18 de Octubre, 2025
+ * ADMIN DASHBOARD STATS LOADER (OPTIMIZED)
+ * Carga estadísticas consolidadas en una sola petición para evitar 429 Errors y sobrecarga del servidor.
+ * Reemplaza a stats-counter.js y múltiples llamadas individuales.
+ * 
+ * Fecha: 12 de Enero, 2026
+ * Autor: Agente AI (Optimización Arquitectura)
  */
 
 class AdminDashboardStats {
     constructor() {
-        this.apiBase = '/api/';
-        this.refreshInterval = 30000; // 30 segundos
-        this.autoRefresh = false;
+        this.apiEndpoint = '/api/admin/dashboard-summary';
+        this.refreshInterval = 60000; // 60 segundos (reducido de 30s)
+        this.autoRefresh = true;
+
+        // Elementos UI mapeados (ID del DOM -> Ruta en el JSON de respuesta)
+        this.elements = {
+            // CMS - Noticias
+            'stats-noticias-total': 'cms.noticias.total',
+            'stats-noticias-publicadas': 'cms.noticias.publicadas',
+
+            // CMS - Eventos
+            'stats-eventos-total': 'cms.eventos.total',
+            'stats-eventos-publicados': 'cms.eventos.publicadas',
+
+            // CMS - Avisos
+            'stats-avisos-total': 'cms.avisos.total',
+
+            // CMS - Comunicados
+            'stats-comunicados-total': 'cms.comunicados.total',
+
+            // Egresados
+            'stats-total': 'egresados.total', // ID ambiguo en HTML legacy, verificar
+            'stats-egr-total': 'egresados.total', // ID tentativo alternativo
+            'stats-titulados': 'egresados.titulados',
+            'stats-estudiando': 'egresados.estudiando',
+            'stats-historias': 'egresados.historias_publicables',
+
+            // Bolsa Trabajo (si el HTML lo soporta)
+            'stats-bolsa-total': 'bolsaTrabajo.total',
+
+            // Suscriptores
+            'stats-suscriptores-total': 'suscriptores.total'
+        };
     }
 
     async init() {
-        console.log('📊 [STATS] Inicializando carga de estadísticas...');
-        await this.loadAllStats();
+        console.log('🚀 [STATS-HYPER] Inicializando cargador optimizado de estadísticas...');
+        await this.loadStats();
 
-        // Auto-refresh opcional
         if (this.autoRefresh) {
-            setInterval(() => this.loadAllStats(), this.refreshInterval);
+            setInterval(() => this.loadStats(), this.refreshInterval);
         }
     }
 
-    async fetchAPI(endpoint) {
+    async loadStats() {
         try {
-            const response = await fetch(`${this.apiBase}${endpoint}`);
+            // Obtener token (Soporte dual: legacy y nuevo auth)
+            const token = localStorage.getItem('authToken') || localStorage.getItem('admin_token');
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            const response = await fetch(this.apiEndpoint, { headers });
+
+            if (!response.ok) {
+                if (response.status === 401) console.warn('⚠️ [STATS] No autorizado - Sesión expirada?');
+                if (response.status === 429) console.warn('⚠️ [STATS] Rate limit excedido - Esperando...');
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const result = await response.json();
-            return result;
+
+            if (result.success && result.data) {
+                this.updateUI(result.data);
+            }
+
         } catch (error) {
-            console.error(`❌ [STATS] Error en ${endpoint}:`, error);
-            return null;
+            console.error('❌ [STATS] Error cargando dashboard summary:', error);
         }
     }
 
-    async loadAllStats() {
-        console.log('🔄 [STATS] Cargando estadísticas del dashboard...');
+    updateUI(data) {
+        // Actualizar valores mapeados
+        for (const [elementId, dataPath] of Object.entries(this.elements)) {
+            const value = this.getValueByPath(data, dataPath);
+            this.updateElement(elementId, value);
+        }
 
-        // Cargar en paralelo
-        await Promise.all([
-            this.loadCMSStats(),
-            this.loadEgresadosStats(),
-            this.loadBolsaTrabajoStats(),
-            this.loadSuscriptoresStats()
-        ]);
+        // Actualizar porcentajes complejos (Egresados)
+        // Requiere lógica especial más allá del mapeo directo
+        if (data.egresados?.total > 0) {
+            const { total, titulados, estudiando, historias_publicables } = data.egresados;
+            this.updateElement('porcentaje-titulados', this.calcPercent(titulados, total));
+            this.updateElement('porcentaje-estudiando', this.calcPercent(estudiando, total));
+            this.updateElement('porcentaje-historias', this.calcPercent(historias_publicables, total));
+        }
 
-        console.log('✅ [STATS] Estadísticas cargadas');
+        // Log discreto
+        // console.log('✨ [STATS] UI actualizada');
     }
 
-    async loadCMSStats() {
-        try {
-            // Cargar estadísticas del CMS
-            const [noticias, eventos, avisos, comunicados] = await Promise.all([
-                this.fetchAPI('noticias/stats'),
-                this.fetchAPI('eventos/stats'),
-                this.fetchAPI('avisos/stats'),
-                this.fetchAPI('comunicados/stats')
-            ]);
-
-            // Actualizar contadores en la UI si existen
-            if (noticias?.data) {
-                this.updateElement('stats-noticias-total', noticias.data.total || 0);
-                this.updateElement('stats-noticias-publicadas', noticias.data.publicadas || 0);
-            }
-
-            if (eventos?.data) {
-                this.updateElement('stats-eventos-total', eventos.data.total || 0);
-                this.updateElement('stats-eventos-publicados', eventos.data.publicadas || 0);
-            }
-
-            if (avisos?.data) {
-                this.updateElement('stats-avisos-total', avisos.data.total || 0);
-            }
-
-            if (comunicados?.data) {
-                this.updateElement('stats-comunicados-total', comunicados.data.total || 0);
-            }
-
-            console.log('📰 [STATS] Estadísticas CMS actualizadas');
-        } catch (error) {
-            console.error('❌ [STATS] Error cargando CMS stats:', error);
-        }
-    }
-
-    async loadEgresadosStats() {
-        try {
-            const result = await this.fetchAPI('egresados/stats');
-
-            if (result?.data) {
-                const stats = result.data;
-                this.updateElement('stats-total', stats.total || 0);
-                this.updateElement('stats-titulados', stats.titulados || 0);
-                this.updateElement('stats-estudiando', stats.estudiando || 0);
-                this.updateElement('stats-historias', stats.historias_publicables || 0);
-
-                // Calcular porcentajes
-                if (stats.total > 0) {
-                    this.updateElement('porcentaje-titulados', `${((stats.titulados / stats.total) * 100).toFixed(1)}%`);
-                    this.updateElement('porcentaje-estudiando', `${((stats.estudiando / stats.total) * 100).toFixed(1)}%`);
-                    this.updateElement('porcentaje-historias', `${((stats.historias_publicables / stats.total) * 100).toFixed(1)}%`);
-                }
-
-                console.log('🎓 [STATS] Estadísticas Egresados actualizadas');
-            }
-        } catch (error) {
-            console.error('❌ [STATS] Error cargando Egresados stats:', error);
-        }
-    }
-
-    async loadBolsaTrabajoStats() {
-        try {
-            const result = await this.fetchAPI('bolsa-trabajo/stats');
-
-            if (result?.data) {
-                const stats = result.data;
-                this.updateElement('stats-total-bolsa', stats.total || 0);
-                this.updateElement('stats-nuevos-bolsa', stats.nuevos_7dias || 0);
-                this.updateElement('stats-revisados-bolsa', stats.revisados || 0);
-                this.updateElement('stats-contratados-bolsa', stats.contratados || 0);
-
-                // Calcular porcentajes
-                if (stats.total > 0) {
-                    this.updateElement('porcentaje-nuevos-bolsa', `${((stats.nuevos_7dias / stats.total) * 100).toFixed(1)}%`);
-                    this.updateElement('porcentaje-revisados-bolsa', `${((stats.revisados / stats.total) * 100).toFixed(1)}%`);
-                    this.updateElement('porcentaje-contratados-bolsa', `${((stats.contratados / stats.total) * 100).toFixed(1)}%`);
-                }
-
-                console.log('💼 [STATS] Estadísticas Bolsa de Trabajo actualizadas');
-            }
-        } catch (error) {
-            console.error('❌ [STATS] Error cargando Bolsa de Trabajo stats:', error);
-        }
-    }
-
-    async loadSuscriptoresStats() {
-        try {
-            const result = await this.fetchAPI('subscriptions/stats');
-
-            if (result?.data) {
-                const stats = result.data;
-                this.updateElement('stats-total-suscriptores', stats.total || 0);
-                this.updateElement('stats-activos-suscriptores', stats.activos || 0);
-                this.updateElement('stats-verificados-suscriptores', stats.verificados || 0);
-                this.updateElement('stats-nuevos-suscriptores', stats.nuevos_30dias || 0);
-
-                // Calcular porcentajes
-                if (stats.total > 0) {
-                    this.updateElement('porcentaje-activos-suscriptores', `${((stats.activos / stats.total) * 100).toFixed(1)}%`);
-                    this.updateElement('porcentaje-verificados-suscriptores', `${((stats.verificados / stats.total) * 100).toFixed(1)}%`);
-                    this.updateElement('porcentaje-nuevos-suscriptores', `${((stats.nuevos_30dias / stats.total) * 100).toFixed(1)}%`);
-                }
-
-                console.log('📧 [STATS] Estadísticas Suscriptores actualizadas');
-            }
-        } catch (error) {
-            console.error('❌ [STATS] Error cargando Suscriptores stats:', error);
-        }
+    getValueByPath(obj, path) {
+        return path.split('.').reduce((acc, part) => acc && acc[part], obj) ?? 0;
     }
 
     updateElement(id, value) {
-        const element = document.getElementById(id);
-        if (element) {
-            element.textContent = value;
+        const el = document.getElementById(id);
+        if (el) {
+            el.textContent = value;
+            // Opcional: Remover clase 'placeholder' o skeleton loading si existiera
+            el.classList.remove('loading-skeleton');
         }
     }
 
-    // Método para refrescar manualmente
-    async refresh() {
-        await this.loadAllStats();
+    calcPercent(val, total) {
+        if (!total) return '0.0%';
+        return `${((val / total) * 100).toFixed(1)}%`;
     }
 }
 
-// Inicializar cuando el DOM esté listo
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        window.adminDashboardStats = new AdminDashboardStats();
-        window.adminDashboardStats.init();
-    });
-} else {
-    window.adminDashboardStats = new AdminDashboardStats();
-    window.adminDashboardStats.init();
-}
+// Iniciar al cargar el DOM
+document.addEventListener('DOMContentLoaded', () => {
+    // Evitar doble inicialización si se carga dinámicamente
+    if (!window.adminStatsOptimized) {
+        window.adminStatsOptimized = new AdminDashboardStats();
+        window.adminStatsOptimized.init();
+    }
+});

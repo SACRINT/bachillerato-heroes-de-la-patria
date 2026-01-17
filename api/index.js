@@ -129,6 +129,41 @@ app.get('/health', (req, res) => {
 // RUTAS
 // ============================================
 
+// ----------------------------------------------------------------------
+// 🚀 PRODUCTION BACKEND INTEGRATION (Injected by AI Optimiser)
+// Intentar cargar rutas reales compiladas del backend.
+// Esto permite que el despliegue en Vercel use la lógica real de negocio.
+// ----------------------------------------------------------------------
+
+// 1. Admin Routes (Dashboard, Stats, Credentials)
+try {
+    const adminPath = '../backend/routes/admin';
+    // Verificar si existe el modulo antes de requerir para evitar crash fatal si falta el archivo
+    const adminRoutes = require(adminPath).default;
+    if (adminRoutes) {
+        app.use('/api/admin', adminRoutes);
+        console.log('✅ [VERCEL-ROUTER] Rutas de Admin montadas en /api/admin');
+    }
+} catch (e) {
+    console.warn('⚠️ [VERCEL-ROUTER] No se pudieron cargar rutas de Admin (Usando fallbacks):', e.message);
+}
+
+// 2. Parent Routes (Portal Padres)
+try {
+    const parentsPath = '../backend/routes/parents';
+    const parentRoutes = require(parentsPath).default;
+    if (parentRoutes) {
+        app.use('/api/parents', parentRoutes);
+        console.log('✅ [VERCEL-ROUTER] Rutas de Padres montadas en /api/parents');
+    }
+} catch (e) {
+    console.warn('⚠️ [VERCEL-ROUTER] No se pudieron cargar rutas de Padres:', e.message);
+}
+
+// ----------------------------------------------------------------------
+// END PROD INTEGRATION
+// ----------------------------------------------------------------------
+
 // ============================================
 // RUTAS API (LAZY LOADED ON DEMAND)
 // ============================================

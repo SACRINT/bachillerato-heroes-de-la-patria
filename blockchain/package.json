@@ -1,0 +1,29 @@
+{
+    "name": "bge-metaverse-blockchain",
+    "version": "1.0.0",
+    "description": "Smart Contracts for Bachillerato Heroes Metaverse",
+    "scripts": {
+        "test": "hardhat test",
+        "compile": "hardhat compile",
+        "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+        "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
+        "deploy:amoy": "hardhat run scripts/deploy.ts --network amoy",
+        "clean": "hardhat clean",
+        "coverage": "hardhat coverage"
+    },
+    "devDependencies": {
+        "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+        "hardhat": "^2.19.0",
+        "typescript": "^5.0.0",
+        "ts-node": "^10.9.0",
+        "@types/node": "^20.0.0",
+        "@types/mocha": "^10.0.0",
+        "dotenv": "^16.3.0",
+        "hardhat-gas-reporter": "^1.0.9",
+        "solidity-coverage": "^0.8.0"
+    },
+    "dependencies": {
+        "@openzeppelin/contracts": "^5.0.0",
+        "ethers": "^6.9.0"
+    }
+}

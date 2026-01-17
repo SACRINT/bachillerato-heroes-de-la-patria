@@ -3,6 +3,7 @@
  * 🔐 RUTAS DE ADMINISTRACIÓN - BGE HÉROES DE LA PATRIA
  * Endpoints para gestión administrativa de solicitudes de registro y usuarios.
  * Migrado: 08 Diciembre 2025
+ * Updated (Manual Transpilation): 12 Enero 2026 for Dashboard Optimization
  */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -25,6 +26,16 @@ const debug_logger_1 = require("../utils/debug-logger");
 const sanitized_errors_1 = require("../utils/sanitized-errors");
 // @ts-ignore
 const audit_logging_service_1 = __importDefault(require("../services/audit-logging-service"));
+
+// DAOs para Dashboard Stats Consolidation (Added manually)
+const noticias_dao_1 = __importDefault(require("../data/noticias.dao"));
+const eventos_dao_1 = __importDefault(require("../data/eventos.dao"));
+const avisos_dao_1 = __importDefault(require("../data/avisos.dao"));
+const comunicados_dao_1 = __importDefault(require("../data/comunicados.dao"));
+const egresados_dao_1 = __importDefault(require("../data/egresados.dao"));
+const bolsa_trabajo_dao_1 = __importDefault(require("../data/bolsa-trabajo.dao"));
+const suscriptores_dao_1 = __importDefault(require("../data/suscriptores.dao"));
+
 const router = express_1.default.Router();
 // Instancias de servicios
 const authService = (0, authService_1.getAuthService)();
@@ -55,8 +66,59 @@ const RegistrationHelpers = {
         return { request, data };
     }
 };
+
+/**
+ * GET /api/admin/dashboard-summary
+ * Endpoint consolidado para estadísticas del dashboard.
+ * Carga concurrentemente todos los conteos para evitar waterfalls.
+ */
+router.get('/dashboard-summary', auth_1.authenticateToken, auth_1.requireAdmin, async (req, res) => {
+    try {
+        debug_logger_1.debugLog.log('ADMIN', `📊 Cargando resumen de dashboard para ${req.user.email}`);
+
+        // Ejecutar todas las promesas en paralelo
+        const [
+            noticias,
+            eventos,
+            avisos,
+            comunicados,
+            egresados,
+            vacantes,
+            suscriptores
+        ] = await Promise.all([
+            noticias_dao_1.default.getStats ? noticias_dao_1.default.getStats() : { total: 0, publicadas: 0 },
+            eventos_dao_1.default.getStats ? eventos_dao_1.default.getStats() : { total: 0, publicadas: 0 },
+            avisos_dao_1.default.getStats ? avisos_dao_1.default.getStats() : { total: 0 },
+            comunicados_dao_1.default.getStats ? comunicados_dao_1.default.getStats() : { total: 0 },
+            egresados_dao_1.default.getStats ? egresados_dao_1.default.getStats() : { total: 0 },
+            bolsa_trabajo_dao_1.default.getStats ? bolsa_trabajo_dao_1.default.getStats() : { total: 0 },
+            suscriptores_dao_1.default.getStats ? suscriptores_dao_1.default.getStats() : { total: 0 }
+        ]);
+
+        res.json({
+            success: true,
+            data: {
+                cms: {
+                    noticias,
+                    eventos,
+                    avisos,
+                    comunicados
+                },
+                egresados,
+                bolsaTrabajo: vacantes,
+                suscriptores
+            }
+        });
+    } catch (error) {
+        debug_logger_1.debugLog.error('ADMIN', '❌ Error obteniendo dashboard summary', (0, sanitized_errors_1.sanitizeError)(error, 'admin'));
+        // No fallar completamente si un DAO falla, intentar devolver parcial? 
+        // Por ahora fail safe standard
+        res.status(500).json({ success: false, error: 'Error interno obteniendo resumen del dashboard' });
+    }
+});
+
 // ============================================
-// ENDPOINTS DE ADMINISTRACIÓN
+// ENDPOINTS DE ADMINISTRACIÓN (Legacy preserved)
 // ============================================
 router.get('/pending-registrations', auth_1.authenticateToken, auth_1.requireAdmin, async (req, res) => {
     try {
@@ -255,4 +317,3 @@ router.put('/users/:id/role', auth_1.authenticateToken, auth_1.requireAdmin, [
     }
 });
 exports.default = router;
-//# sourceMappingURL=admin.js.map

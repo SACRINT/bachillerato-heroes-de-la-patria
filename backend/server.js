@@ -623,6 +623,9 @@ app.use('/api/stripe-webhooks', stripeWebhooksRoutes); // ✅ STRIPE WEBHOOKS - 
 app.use('/api/ar', arExperiencesRoutes); // ✅ AR EXPERIENCES - FASE 5.3 (7 DIC 2025)
 app.use('/api/games/trivia', triviaGameRoutes); // ✅ EDUCATIONAL GAMES - Trivia (7 DIC 2025)
 app.use('/api/games/concepts', conceptBuilderRoutes); // ✅ EDUCATIONAL GAMES - Mapas conceptuales (7 DIC 2025)
+app.use('/api/web3', require('./routes/web3')); // ✅ WEB3 BLOCKCHAIN - SEMANA 17 (FASE 2)
+app.use('/api/faucet', require('./routes/faucet')); // ✅ FAUCET - SEMANA 19 (FASE 2)
+app.use('/api/diploma', require('./routes/diploma-generator')); // ✅ DIPLOMA GEN - SEMANA 14 (FASE 2)
 
 // ✅ SEMANA 2 - SERVICE LAYER ROUTES (20 NOV 2025)
 // Estas rutas usan el patrón Service Layer para separar lógica de negocio
