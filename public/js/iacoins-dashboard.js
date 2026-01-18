@@ -97,9 +97,15 @@
                 state.balance = result.data;
                 renderBalance();
                 renderLevel();
+            } else {
+                throw new Error('API returned success: false');
             }
         } catch (error) {
             console.error('[IACOINS] Error cargando balance:', error);
+            const container = document.getElementById('iacoins-balance');
+            if (container) {
+                container.innerHTML = '<p class="text-muted text-center small">No se pudo cargar el balance</p>';
+            }
         }
     }
 
@@ -109,9 +115,15 @@
             if (result.success) {
                 state.transactions = result.data;
                 renderTransactions();
+            } else {
+                throw new Error('API returned success: false');
             }
         } catch (error) {
             console.error('[IACOINS] Error cargando transacciones:', error);
+            const container = document.getElementById('iacoins-transactions');
+            if (container) {
+                container.innerHTML = '<p class="text-muted text-center">No hay transacciones</p>';
+            }
         }
     }
 
@@ -121,36 +133,215 @@
             if (result.success) {
                 state.challenges = result.data;
                 renderChallenges();
+            } else {
+                throw new Error('API returned success: false');
             }
         } catch (error) {
             console.error('[IACOINS] Error cargando retos:', error);
+            const container = document.getElementById('iacoins-challenges');
+            if (container) {
+                container.innerHTML = '<p class="text-muted text-center">No hay retos disponibles</p>';
+            }
         }
     }
 
     async function loadAchievements() {
         try {
             const token = sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token');
-            if (!token) return;
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            const userId = payload.id;
+            if (!token) {
+                const container = document.getElementById('iacoins-achievements');
+                if (container) container.innerHTML = '<p class="text-muted text-center">Inicia sesión para ver logros</p>';
+                return;
+            }
 
-            const result = await fetchWithAuth(`/achievements/user/${userId}`);
+            // El endpoint /achievements ya filtra por usuario autenticado (via JWT)
+            const result = await fetchWithAuth('/achievements');
 
-            if (result.success) {
-                // Combinar logros (ganados primero, luego bloqueados)
-                // Marcamos 'unlocked' manual para el renderizado
-                const earned = result.data.earned.map(a => ({ ...a, unlocked: true }));
-                const notEarned = result.data.notEarned.map(a => ({ ...a, unlocked: false }));
-
-                state.achievements = [...earned, ...notEarned];
+            if (result.success && result.data) {
+                // El backend retorna array con 'unlocked: true/false' ya incluido
+                state.achievements = result.data;
                 renderAchievements();
+            } else {
+                throw new Error('API returned success: false or no data');
             }
         } catch (error) {
             console.error('[IACOINS] Error cargando logros:', error);
+            const container = document.getElementById('iacoins-achievements');
+            if (container) {
+                container.innerHTML = '<p class="text-muted text-center">No hay logros disponibles</p>';
+            }
         }
     }
 
-    // ... (leaderboard and challenges functions remain same)
+    // =========================================
+    // FUNCIONES DE CARGA FALTANTES
+    // =========================================
+    async function loadLeaderboard() {
+        try {
+            const result = await fetchWithAuth('/leaderboard?limit=10');
+            if (result.success) {
+                state.leaderboard = result.data;
+                renderLeaderboard();
+            }
+        } catch (error) {
+            console.error('[IACOINS] Error cargando leaderboard:', error);
+            // Mostrar mensaje de error en lugar de spinner infinito
+            const container = document.getElementById('iacoins-leaderboard');
+            if (container) {
+                container.innerHTML = '<p class="text-muted text-center">No se pudo cargar el ranking</p>';
+            }
+        }
+    }
+
+    async function completeChallenge(challengeId) {
+        try {
+            const result = await fetchWithAuth(`/challenges/${challengeId}/complete`, {
+                method: 'POST'
+            });
+            if (result.success) {
+                showNotification('¡Reto completado! +' + result.data.reward + ' IACoins', 'success');
+                showCoinAnimation(result.data.reward, 'earn');
+                // Recargar datos
+                await Promise.all([loadBalance(), loadChallenges()]);
+            }
+        } catch (error) {
+            console.error('[IACOINS] Error completando reto:', error);
+            showNotification('Error al completar el reto', 'error');
+        }
+    }
+
+    // =========================================
+    // FUNCIONES DE RENDERIZADO FALTANTES
+    // =========================================
+    function renderBalance() {
+        const container = document.getElementById('iacoins-balance');
+        if (!container) return;
+
+        if (!state.balance) {
+            container.innerHTML = '<p class="text-muted text-center">Sin datos de balance</p>';
+            return;
+        }
+
+        const { balance, total_earned, total_spent } = state.balance;
+
+        container.innerHTML = `
+            <div class="balance-card">
+                <div class="balance-icon">
+                    <i class="fas fa-coins text-warning"></i>
+                </div>
+                <div class="balance-info">
+                    <h2 class="balance-amount">${balance || 0}</h2>
+                    <p class="balance-label">IACoins Disponibles</p>
+                </div>
+                <div class="balance-stats mt-2">
+                    <small class="text-success">
+                        <i class="fas fa-arrow-up"></i> ${total_earned || 0} ganados
+                    </small>
+                    <small class="text-danger ms-2">
+                        <i class="fas fa-arrow-down"></i> ${total_spent || 0} gastados
+                    </small>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderTransactions() {
+        const container = document.getElementById('iacoins-transactions');
+        if (!container) return;
+
+        if (!state.transactions || !state.transactions.length) {
+            container.innerHTML = '<p class="text-muted text-center">No hay transacciones recientes</p>';
+            return;
+        }
+
+        const html = state.transactions.map(tx => {
+            const isEarn = tx.type === 'earn' || tx.amount > 0;
+            const icon = isEarn ? 'fa-plus-circle text-success' : 'fa-minus-circle text-danger';
+            const sign = isEarn ? '+' : '';
+            const date = new Date(tx.created_at || tx.createdAt).toLocaleDateString('es-MX', {
+                day: 'numeric',
+                month: 'short',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            return `
+                <div class="transaction-item d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <div class="d-flex align-items-center">
+                        <i class="fas ${icon} me-2"></i>
+                        <div>
+                            <span class="transaction-description">${tx.description || tx.reason || 'Transacción'}</span>
+                            <small class="text-muted d-block">${date}</small>
+                        </div>
+                    </div>
+                    <span class="transaction-amount ${isEarn ? 'text-success' : 'text-danger'} fw-bold">
+                        ${sign}${Math.abs(tx.amount)} <i class="fas fa-coins text-warning small"></i>
+                    </span>
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = `<div class="transactions-list">${html}</div>`;
+    }
+
+    function renderChallenges() {
+        const container = document.getElementById('iacoins-challenges');
+        if (!container) return;
+
+        if (!state.challenges || !state.challenges.length) {
+            container.innerHTML = '<p class="text-muted text-center">No hay retos disponibles en este momento</p>';
+            return;
+        }
+
+        const html = state.challenges.map(challenge => {
+            const isCompleted = challenge.completed || challenge.status === 'completed';
+            const statusBadge = isCompleted
+                ? '<span class="badge bg-success">Completado</span>'
+                : '<span class="badge bg-primary">Disponible</span>';
+
+            const progressPercent = challenge.progress
+                ? Math.min((challenge.progress / challenge.target) * 100, 100)
+                : 0;
+
+            return `
+                <div class="challenge-card ${isCompleted ? 'completed' : ''} mb-3 p-3 border rounded">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-1">
+                                <i class="fas ${challenge.icon || 'fa-star'} text-warning me-2"></i>
+                                ${challenge.name || challenge.title}
+                            </h6>
+                            <p class="text-muted small mb-2">${challenge.description || ''}</p>
+                        </div>
+                        <div class="text-end">
+                            ${statusBadge}
+                            <div class="reward mt-1">
+                                <span class="fw-bold text-warning">+${challenge.reward || challenge.coins_reward || 0}</span>
+                                <i class="fas fa-coins text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                    ${challenge.target ? `
+                        <div class="progress mt-2" style="height: 8px;">
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                 style="width: ${progressPercent}%" 
+                                 aria-valuenow="${progressPercent}" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                        <small class="text-muted">${challenge.progress || 0} / ${challenge.target}</small>
+                    ` : ''}
+                    ${!isCompleted && challenge.actionable ? `
+                        <button class="btn btn-sm btn-outline-primary mt-2" 
+                                onclick="IACoinsManager.completeChallenge('${challenge.id}')">
+                            Completar Reto
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = html;
+    }
 
     function renderAchievements() {
         const container = document.getElementById('iacoins-achievements');
@@ -331,9 +522,14 @@
             if (result.success) {
                 state.xpProfile = result.data;
                 renderLevel();
+            } else {
+                // Si falla, renderizar con valores por defecto
+                renderLevel();
             }
         } catch (error) {
             console.error('[IACOINS] Error cargando perfil XP:', error);
+            // Renderizar nivel por defecto en lugar de spinner infinito
+            renderLevel();
         }
     }
 
@@ -384,7 +580,11 @@
         try {
             // Decodificar JWT para obtener userId (frontend simple)
             const token = sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token');
-            if (!token) return;
+            if (!token) {
+                const container = document.getElementById('streak-counter-container');
+                if (container) container.innerHTML = '<div class="streak-card"><div class="streak-days">0</div><div class="streak-label">Racha Diaria</div></div>';
+                return;
+            }
 
             // Decodificar payload (base64)
             const payload = JSON.parse(atob(token.split('.')[1]));
@@ -395,9 +595,24 @@
             if (result.success) {
                 state.streak = result.data;
                 renderStreak();
+            } else {
+                throw new Error('API returned success: false');
             }
         } catch (error) {
             console.error('[IACOINS] Error cargando racha:', error);
+            // Mostrar racha 0 en lugar de spinner infinito
+            const container = document.getElementById('streak-counter-container');
+            if (container) {
+                container.innerHTML = `
+                    <div class="streak-card">
+                        <div class="streak-fire-container text-center">
+                            <i class="streak-fire fas fa-fire text-muted"></i>
+                        </div>
+                        <div class="streak-days">0</div>
+                        <div class="streak-label">Racha Diaria</div>
+                    </div>
+                `;
+            }
         }
     }
 
