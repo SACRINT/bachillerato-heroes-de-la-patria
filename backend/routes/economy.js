@@ -3,7 +3,7 @@ const router = express.Router();
 const blockchainService = require('../services/blockchain-service');
 
 // Middleware para verificar autenticación
-const authMiddleware = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 
 /**
  * Semana 37: API de Economía DeFi
@@ -40,7 +40,7 @@ router.get('/staking/info/:address', async (req, res) => {
  * @route POST /api/economy/staking/update-grade
  * @desc Actualizar bonus de calificación (Oracle endpoint)
  */
-router.post('/staking/update-grade', authMiddleware, async (req, res) => {
+router.post('/staking/update-grade', authenticateToken, async (req, res) => {
     try {
         const { studentAddress, gradeAverage } = req.body;
 
