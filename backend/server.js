@@ -626,6 +626,9 @@ app.use('/api/games/concepts', conceptBuilderRoutes); // ✅ EDUCATIONAL GAMES -
 app.use('/api/web3', require('./routes/web3')); // ✅ WEB3 BLOCKCHAIN - SEMANA 17 (FASE 2)
 app.use('/api/faucet', require('./routes/faucet')); // ✅ FAUCET - SEMANA 19 (FASE 2)
 app.use('/api/diploma', require('./routes/diploma-generator')); // ✅ DIPLOMA GEN - SEMANA 14 (FASE 2)
+app.use('/api/economy', require('./routes/economy')); // ✅ ECONOMY DEFI - FASE 4 (SEMANAS 31-40)
+app.use('/api/governance', require('./routes/governance')); // ✅ DAO GOVERNANCE - FASE 5 (SEMANAS 41-50)
+app.use('/api/ai/teacher', require('./routes/ai-teacher')); // ✅ AI TEACHERS - FASE 6 (SEMANA 51)
 
 // ✅ SEMANA 2 - SERVICE LAYER ROUTES (20 NOV 2025)
 // Estas rutas usan el patrón Service Layer para separar lógica de negocio

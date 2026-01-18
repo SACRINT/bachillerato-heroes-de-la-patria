@@ -1,0 +1,98 @@
+.teleport-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.teleport-menu {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 1px solid #00fff5;
+    border-radius: 16px;
+    padding: 30px;
+    min-width: 400px;
+    box-shadow: 0 0 30px rgba(0, 255, 245, 0.3);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.teleport-menu h2 {
+    margin: 0 0 5px 0;
+    color: #00fff5;
+    text-align: center;
+    font-size: 1.8rem;
+    text-shadow: 0 0 10px rgba(0, 255, 245, 0.5);
+}
+
+.teleport-menu .subtitle {
+    color: #888;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.teleport-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.teleport-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: white;
+}
+
+.teleport-btn:hover,
+.teleport-btn.hovered {
+    background: rgba(0, 255, 245, 0.15);
+    border-color: #00fff5;
+    transform: translateY(-2px);
+}
+
+.teleport-btn .icon {
+    font-size: 2rem;
+}
+
+.teleport-btn .name {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.close-btn {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid #ff4444;
+    color: #ff4444;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.close-btn:hover {
+    background: rgba(255, 68, 68, 0.2);
+}
