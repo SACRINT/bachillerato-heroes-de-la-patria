@@ -79,19 +79,23 @@ export default function AvatarSelector({ isOpen, onClose, onSelect, currentAvata
                         <h3>🎨 Personalizar Colores</h3>
                         <div className="color-options">
                             <div className="color-option">
-                                <label>Color Principal</label>
+                                <label htmlFor="primary-color">Color Principal</label>
                                 <input
+                                    id="primary-color"
                                     type="color"
                                     value={primaryColor}
                                     onChange={(e) => setPrimaryColor(e.target.value)}
+                                    title="Seleccionar color principal"
                                 />
                             </div>
                             <div className="color-option">
-                                <label>Color Secundario</label>
+                                <label htmlFor="secondary-color">Color Secundario</label>
                                 <input
+                                    id="secondary-color"
                                     type="color"
                                     value={secondaryColor}
                                     onChange={(e) => setSecondaryColor(e.target.value)}
+                                    title="Seleccionar color secundario"
                                 />
                             </div>
                         </div>

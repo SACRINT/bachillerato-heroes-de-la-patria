@@ -16,6 +16,7 @@
     pointer-events: auto;
     /* Habilitar interacción en paneles específicos */
     background: linear-gradient(135deg, rgba(0, 20, 40, 0.85), rgba(0, 40, 80, 0.7));
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(0, 200, 255, 0.3);
     border-radius: 12px;

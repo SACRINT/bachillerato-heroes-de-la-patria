@@ -20,7 +20,7 @@ class TextureLoader {
         wrapS?: THREE.Wrapping
         wrapT?: THREE.Wrapping
         repeat?: [number, number]
-        encoding?: THREE.TextureEncoding
+        colorSpace?: THREE.ColorSpace
     } = {}): Promise<THREE.Texture> {
         // Verificar cache
         if (this.cache.has(url)) {
@@ -35,7 +35,7 @@ class TextureLoader {
                     if (options.wrapS) texture.wrapS = options.wrapS
                     if (options.wrapT) texture.wrapT = options.wrapT
                     if (options.repeat) texture.repeat.set(...options.repeat)
-                    if (options.encoding) texture.encoding = options.encoding
+                    if (options.colorSpace) texture.colorSpace = options.colorSpace
 
                     // Cachear
                     this.cache.set(url, texture)

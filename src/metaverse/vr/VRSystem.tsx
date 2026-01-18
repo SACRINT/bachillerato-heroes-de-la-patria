@@ -16,30 +16,24 @@ interface VRControllerProps {
 
 export function VRController({ hand, onGrab, onRelease }: VRControllerProps) {
     const { player } = useXR();
-    const rayRef = useRef<THREE.Line>(null);
     const [isGrabbing, setIsGrabbing] = useState(false);
 
     useFrame(() => {
         // Actualizar posición del rayo del controlador
-        if (rayRef.current && player) {
+        if (player) {
             // El rayo se actualiza automáticamente por XR
         }
     });
 
+    const rayColor = hand === 'left' ? '#00FF00' : '#FF0000';
+
     return (
         <group>
-            {/* Rayo de apuntado */}
-            <line ref={rayRef}>
-                <bufferGeometry>
-                    <bufferAttribute
-                        attach="attributes-position"
-                        count={2}
-                        array={new Float32Array([0, 0, 0, 0, 0, -5])}
-                        itemSize={3}
-                    />
-                </bufferGeometry>
-                <lineBasicMaterial color={hand === 'left' ? '#00FF00' : '#FF0000'} />
-            </line>
+            {/* Rayo de apuntado usando un cilindro delgado */}
+            <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -2.5]}>
+                <cylinderGeometry args={[0.005, 0.005, 5, 8]} />
+                <meshBasicMaterial color={rayColor} transparent opacity={0.6} />
+            </mesh>
         </group>
     );
 }

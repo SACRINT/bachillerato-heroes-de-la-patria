@@ -159,17 +159,21 @@ export default function InteractiveWhiteboard({
                                     style={{ background: color }}
                                     className={currentColor === color ? 'selected' : ''}
                                     onClick={() => setCurrentColor(color)}
+                                    title={`Seleccionar color ${color}`}
+                                    aria-label={`Seleccionar color ${color}`}
                                 />
                             ))}
                         </div>
                         <div className="size-slider">
-                            <label>Tamaño: {brushSize}</label>
+                            <label htmlFor="brush-size">Tamaño: {brushSize}</label>
                             <input
+                                id="brush-size"
                                 type="range"
                                 min="1"
                                 max="20"
                                 value={brushSize}
                                 onChange={(e) => setBrushSize(parseInt(e.target.value))}
+                                aria-label="Tamaño del pincel"
                             />
                         </div>
                         <div className="actions">
