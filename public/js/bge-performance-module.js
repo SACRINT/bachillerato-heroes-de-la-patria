@@ -51,7 +51,7 @@ class BGEPerformanceModule extends BGEModule {
                 'js/bge-framework-core.js'
             ]),
             deferredResources: new Set([
-                'js/stats-counter.js'
+                // stats-counter.js REMOVED - deprecated, replaced by admin-dashboard-stats.js
             ])
         };
 

@@ -1845,6 +1845,10 @@ class SessionManager {
             Object.values(this.STORAGE_KEYS).forEach(key => {
                 localStorage.removeItem(key);
             });
+            // También limpiar keys legacy
+            localStorage.removeItem('token');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('bge_auth_session');
             console.log('[SESSION-DEBUG] 🧹 Limpiado localStorage para evitar conflictos');
         }
 
@@ -1855,6 +1859,19 @@ class SessionManager {
             // Guardar tiempo de expiración (24 horas)
             const expiryTime = Date.now() + (24 * 60 * 60 * 1000);
             storage.setItem(this.STORAGE_KEYS.expiry, expiryTime.toString());
+
+            // ✅ FIX (18 Ene 2026): Guardar keys legacy para compatibilidad con admin-auth.js
+            storage.setItem('token', token);
+            storage.setItem('authToken', token);
+
+            // ✅ FIX (18 Ene 2026): Guardar bge_auth_session para UnifiedAuthManager
+            const sessionData = {
+                user: userData,
+                provider: 'email',
+                loginTime: new Date().toISOString(),
+                expiresAt: expiryTime
+            };
+            storage.setItem('bge_auth_session', JSON.stringify(sessionData));
 
             // VERIFICACIÓN INMEDIATA
             const tokenCheck = storage.getItem(this.STORAGE_KEYS.token);
@@ -1919,10 +1936,20 @@ class SessionManager {
             localStorage.removeItem(key);
         });
 
+        // ✅ FIX (18 Ene 2026): Limpiar keys legacy también
+        localStorage.removeItem('token');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('bge_auth_session');
+
         // Limpiar sessionStorage
         Object.values(this.STORAGE_KEYS).forEach(key => {
             sessionStorage.removeItem(key);
         });
+
+        // ✅ FIX (18 Ene 2026): Limpiar keys legacy en sessionStorage
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('authToken');
+        sessionStorage.removeItem('bge_auth_session');
 
         debugLog.log('APP', '✅ Sesión limpiada');
     }

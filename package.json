@@ -32,6 +32,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:report": "playwright show-report",
     "ci": "npm run lint && npm run test && npm run build"
   },
   "keywords": [
@@ -70,13 +74,15 @@
     "react-dom": "^19.2.3",
     "socket.io-client": "^4.8.3",
     "three": "^0.182.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",
     "@babel/plugin-transform-runtime": "^7.28.3",
     "@babel/preset-env": "^7.28.3",
     "@faker-js/faker": "^10.1.0",
+    "@playwright/test": "^1.57.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.5",
     "@types/jest": "^30.0.0",

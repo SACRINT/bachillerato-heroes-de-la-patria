@@ -22,7 +22,7 @@ class AdminAuth {
         this.maxAttempts = 5; // Máximo 5 intentos
         this.lockoutTime = 15 * 60 * 1000; // 15 minutos de bloqueo
         this.storagePrefix = 'adminAuth_';
-        
+
         this.init();
     }
 
@@ -42,14 +42,14 @@ class AdminAuth {
             try {
                 const sessionData = JSON.parse(session);
                 const now = Date.now();
-                
+
                 //debugLog.log('APP', '📊 Validando sesión...');
-                
+
                 if (now - sessionData.timestamp < this.sessionTimeout) {
                     this.isAdminLoggedIn = true;
                     this.adminSession = sessionData;
                     //debugLog.log('APP', '✅ Sesión admin restaurada - Estado:', this.isAdminLoggedIn);
-                    
+
                     // Forzar actualización de UI inmediatamente
                     setTimeout(() => {
                         //debugLog.log('APP', '🔄 Actualizando UI por sesión restaurada...');
@@ -154,20 +154,44 @@ class AdminAuth {
                     timestamp: Date.now(),
                     expiresAt: data.tokens.expiresAt
                 };
+
+                // Guardar en múltiples keys para compatibilidad
                 localStorage.setItem('secure_admin_session', JSON.stringify(session));
+                localStorage.setItem('bge_auth_session', JSON.stringify({
+                    user: data.user,
+                    provider: 'email',
+                    loginTime: new Date().toISOString(),
+                    expiresAt: data.tokens.accessTokenExpiry * 1000
+                }));
+                localStorage.setItem('bge_auth_token', data.tokens.accessToken);
+                localStorage.setItem('bge_refresh_token', data.tokens.refreshToken);
+                localStorage.setItem('token', data.tokens.accessToken); // Legacy support
+                localStorage.setItem('authToken', data.tokens.accessToken); // Legacy support
+
                 this.isAdminLoggedIn = true;
                 this.adminSession = session;
 
-                // ✅ BRIDGE: Disparar evento de autenticación
+                // ✅ BRIDGE: Disparar eventos de autenticación
                 if (window.auth && window.auth._triggerUserAuthenticated) {
                     window.auth._triggerUserAuthenticated(data.user);
                 }
+
+                // Sincronizar con UnifiedAuthManager si existe
+                if (window.unifiedAuth) {
+                    window.unifiedAuth.currentUser = data.user;
+                    window.unifiedAuth.scheduleTokenRefresh(data.tokens?.accessTokenExpiry);
+                }
+
+                // Disparar evento global para otras partes de la app
+                window.dispatchEvent(new CustomEvent('auth:login', {
+                    detail: { user: data.user, provider: 'email', role: data.user.role }
+                }));
 
                 this.closeAuthModal();
                 this.showSuccessMessage();
                 usernameInput.value = '';
                 passwordInput.value = '';
-                if(errorElement) errorElement.classList.add('d-none');
+                if (errorElement) errorElement.classList.add('d-none');
                 this.updateUI();
             } else {
                 this.recordFailedAttempt();
@@ -209,21 +233,21 @@ class AdminAuth {
 
         // Guardar sesión
         localStorage.setItem('admin_session', JSON.stringify(this.adminSession));
-        
+
         // Verificar que se guardó correctamente
         const saved = localStorage.getItem('admin_session');
         //debugLog.log('APP', '✅ Sesión guardada en localStorage:', !!saved);
-        
+
         // Actualizar UI inmediatamente y con múltiples intentos
         //debugLog.log('APP', '🔄 Iniciando actualización de UI post-login...');
         this.updateUI();
-        
+
         // Actualizar UI con delays incrementales para asegurar que el DOM esté listo
         setTimeout(() => {
             //debugLog.log('APP', '🔄 Segunda actualización de UI (100ms)...');
             this.updateUI();
         }, 100);
-        
+
         setTimeout(() => {
             //debugLog.log('APP', '🔄 Tercera actualización de UI (300ms)...');
             this.updateUI();
@@ -236,27 +260,46 @@ class AdminAuth {
         this.isAdminLoggedIn = false;
         this.adminSession = null;
 
+        // Limpiar todas las keys de autenticación
         localStorage.removeItem('admin_session');
+        localStorage.removeItem('secure_admin_session');
+        localStorage.removeItem('bge_auth_session');
+        localStorage.removeItem('bge_auth_token');
+        localStorage.removeItem('bge_refresh_token');
+        localStorage.removeItem('token');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('jwt');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('bge_auth_token');
 
         // ✅ BRIDGE: Disparar evento de logout
         if (window.auth && window.auth._triggerUserLoggedOut) {
             window.auth._triggerUserLoggedOut();
         }
-        
+
+        // Sincronizar con UnifiedAuthManager
+        if (window.unifiedAuth) {
+            window.unifiedAuth.currentUser = null;
+            window.unifiedAuth.cancelTokenRefresh();
+        }
+
+        // Disparar evento global
+        window.dispatchEvent(new CustomEvent('auth:logout'));
+
         // LIMPIAR ESTADO DEL MODAL COMPLETAMENTE Y REINCIAR TODO EL SISTEMA
         const modal = document.getElementById('adminPanelAuthModal');
         const passwordInput = document.getElementById('adminPanelPassword');
         const errorElement = document.getElementById('adminPanelAuthError');
         const errorText = document.getElementById('adminPanelAuthErrorText');
         const form = document.getElementById('adminPanelAuthForm');
-        
+
         if (modal) {
             // Cerrar el modal si está abierto
             const bootstrapModal = bootstrap.Modal.getInstance(modal);
             if (bootstrapModal) {
                 bootstrapModal.hide();
             }
-            
+
             // RESET COMPLETO del modal después de un delay
             setTimeout(() => {
                 // Destruir instancia actual del modal
@@ -264,57 +307,57 @@ class AdminAuth {
                 if (currentInstance) {
                     currentInstance.dispose();
                 }
-                
+
                 // Remover cualquier backdrop que quede
                 const backdrops = document.querySelectorAll('.modal-backdrop');
                 backdrops.forEach(backdrop => backdrop.remove());
-                
+
                 // Limpiar clases de body
                 document.body.classList.remove('modal-open');
                 document.body.style.overflow = '';
                 document.body.style.paddingRight = '';
-                
+
                 //debugLog.log('APP', '🔄 Modal completamente reiniciado');
             }, 500);
         }
-        
+
         if (passwordInput) {
             // Limpiar contraseña y habilitar input
             passwordInput.value = '';
             passwordInput.disabled = false;
             passwordInput.readOnly = false;
         }
-        
+
         if (errorElement) {
             // Ocultar errores
             errorElement.classList.add('d-none');
         }
-        
+
         if (errorText) {
             errorText.textContent = '';
         }
-        
+
         if (form) {
             // Resetear el formulario completamente
             form.reset();
         }
-        
+
         // LIMPIAR TODOS LOS EVENT LISTENERS Y RECREARLOS
         setTimeout(() => {
             this.setupEventListeners();
             //debugLog.log('APP', '🔄 Event listeners reiniciados');
         }, 600);
-        
+
         // Actualizar UI
         this.updateUI();
-        
+
         // FORZAR ACTUALIZACIÓN DEL SCRIPT NUCLEAR INMEDIATAMENTE
         if (typeof window.nuclearForceAdminElements === 'function') {
             //debugLog.log('APP', '🔄 Forzando actualización nuclear después de logout');
             setTimeout(() => window.nuclearForceAdminElements(), 100);
             setTimeout(() => window.nuclearForceAdminElements(), 300);
         }
-        
+
         this.showLogoutMessage();
         //debugLog.log('APP', '🚪 Admin deslogueado - modal limpiado');
     }
@@ -337,9 +380,9 @@ class AdminAuth {
                 localStorage.removeItem('admin_session');
             }
         }
-        
+
         //debugLog.log('APP', '🔄 Actualizando UI - Estado admin:', this.isAdminLoggedIn);
-        
+
         // Función para actualizar elementos con múltiples reintentos
         const updateElements = (attemptNum = 1, maxAttempts = 8) => {
             // Elementos solo para admin - incluir ambos elementos
@@ -361,7 +404,7 @@ class AdminAuth {
                 setTimeout(() => updateElements(attemptNum + 1, maxAttempts), attemptNum * 200);
                 return;
             }
-            
+
             // Si aún no tenemos elementos en el último intento, mostrar error
             if ((adminOnlyElements.length === 0 || !loginBtn) && attemptNum === maxAttempts) {
                 debugLog.error('ERROR', '❌ No se pudieron encontrar elementos críticos del DOM después de', maxAttempts, 'intentos');
@@ -375,7 +418,7 @@ class AdminAuth {
                 adminOnlyElements.forEach((el, index) => {
                     //debugLog.log('APP', `Elemento ${index + 1}:`, el.id, 'Oculto:', el.classList.contains('d-none'));
                 });
-                
+
                 // Mostrar elementos de admin
                 adminOnlyElements.forEach((el, index) => {
                     if (el) {
@@ -385,10 +428,10 @@ class AdminAuth {
                         //debugLog.log('APP', `✅ Elemento ${el.id} clases:`, el.className);
                     }
                 });
-                
+
                 // Actualizar botón de login
                 if (loginBtn) {
-                    loginBtn.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-shield-check me-2"></i>Admin <span class="badge bg-light text-success ms-1">✓</span>', 'simple'));
+                    loginBtn.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize('<i class="fas fa-shield-check me-2"></i>Admin <span class="badge bg-light text-success ms-1">✓</span>', 'simple'));
                     loginBtn.classList.remove('admin-login-compact');
                     loginBtn.classList.add('text-success');
                     loginBtn.onclick = () => this.openAdminPanel();
@@ -407,7 +450,7 @@ class AdminAuth {
 
             } else {
                 //debugLog.log('APP', '❌ Ocultando elementos de admin...');
-                
+
                 // Ocultar elementos de admin (SOLO si no están forzados a ser visibles)
                 adminOnlyElements.forEach((el, index) => {
                     if (el && !el.hasAttribute('data-force-visible')) {
@@ -417,10 +460,10 @@ class AdminAuth {
                         //debugLog.log('APP', `🔒 Elemento ${el.id} PROTEGIDO - no se oculta`);
                     }
                 });
-                
+
                 // Restaurar botón de login
                 if (loginBtn) {
-                    loginBtn.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-shield-halved me-2"></i>Admin', 'simple'));
+                    loginBtn.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize('<i class="fas fa-shield-halved me-2"></i>Admin', 'simple'));
                     loginBtn.classList.add('admin-login-compact');
                     loginBtn.classList.remove('text-success');
                     loginBtn.onclick = () => {
@@ -452,7 +495,7 @@ class AdminAuth {
 
             // Actualizar elementos específicos según contexto
             this.updateContextualElements();
-            
+
             //debugLog.log('APP', '✅ Actualización de UI completada');
         };
 
@@ -505,7 +548,7 @@ class AdminAuth {
     showSuccessMessage() {
         const toast = this.createToast('success', 'Sesión Iniciada', 'Bienvenido al panel de administración');
         document.body.appendChild(toast);
-        
+
         setTimeout(() => toast.remove(), 4000);
     }
 
@@ -513,7 +556,7 @@ class AdminAuth {
     showLogoutMessage() {
         const toast = this.createToast('info', 'Sesión Cerrada', 'Has cerrado la sesión de administrador');
         document.body.appendChild(toast);
-        
+
         setTimeout(() => toast.remove(), 3000);
     }
 
@@ -529,7 +572,7 @@ class AdminAuth {
         const toast = document.createElement('div');
         toast.className = `toast position-fixed top-0 end-0 m-3`;
         toast.style.zIndex = '9999';
-        
+
         toast.innerHTML = DOMPurify.sanitize(`
             <div class="toast-header ${colors[type]} text-white">
                 <i class="fas fa-shield-alt me-2"></i>
@@ -543,7 +586,7 @@ class AdminAuth {
 
         const bsToast = new bootstrap.Toast(toast);
         bsToast.show();
-        
+
         return toast;
     }
 
@@ -569,13 +612,13 @@ class AdminAuth {
             if (this.isAdminLoggedIn && this.adminSession) {
                 const now = Date.now();
                 const timeLeft = this.sessionTimeout - (now - this.adminSession.timestamp);
-                
+
                 // Advertencia a 5 minutos del vencimiento
                 if (timeLeft <= 5 * 60 * 1000 && timeLeft > 4.9 * 60 * 1000) {
                     const toast = this.createToast('warning', 'Sesión por expirar', 'Tu sesión de admin expirará en 5 minutos');
                     document.body.appendChild(toast);
                 }
-                
+
                 // Logout automático
                 if (timeLeft <= 0) {
                     this.logout();
@@ -600,42 +643,42 @@ class AdminAuth {
     }
 
     // === SISTEMA DE SEGURIDAD CONTRA ATAQUES DE FUERZA BRUTA ===
-    
+
     // Obtener número de intentos fallidos
     getFailedAttempts() {
         const attempts = localStorage.getItem(this.storagePrefix + 'failedAttempts');
         return attempts ? parseInt(attempts) : 0;
     }
-    
+
     // Registrar intento fallido
     recordFailedAttempt() {
         const attempts = this.getFailedAttempts() + 1;
         localStorage.setItem(this.storagePrefix + 'failedAttempts', attempts.toString());
         localStorage.setItem(this.storagePrefix + 'lastAttempt', Date.now().toString());
     }
-    
+
     // Limpiar intentos fallidos
     clearFailedAttempts() {
         localStorage.removeItem(this.storagePrefix + 'failedAttempts');
         localStorage.removeItem(this.storagePrefix + 'lastAttempt');
         localStorage.removeItem(this.storagePrefix + 'lockoutTime');
     }
-    
+
     // Bloquear cuenta
     lockout() {
         const lockoutUntil = Date.now() + this.lockoutTime;
         localStorage.setItem(this.storagePrefix + 'lockoutTime', lockoutUntil.toString());
         //debugLog.log('APP', '🔒 Cuenta bloqueada por seguridad');
     }
-    
+
     // Verificar si está bloqueado
     isLockedOut() {
         const lockoutTime = localStorage.getItem(this.storagePrefix + 'lockoutTime');
         if (!lockoutTime) return false;
-        
+
         const lockoutUntil = parseInt(lockoutTime);
         const now = Date.now();
-        
+
         if (now < lockoutUntil) {
             return true;
         } else {
@@ -644,19 +687,19 @@ class AdminAuth {
             return false;
         }
     }
-    
+
     // Mostrar mensaje de bloqueo
     showLockoutMessage() {
         const lockoutTime = localStorage.getItem(this.storagePrefix + 'lockoutTime');
         if (!lockoutTime) return;
-        
+
         const lockoutUntil = parseInt(lockoutTime);
         const now = Date.now();
         const remainingMs = lockoutUntil - now;
         const remainingMin = Math.ceil(remainingMs / (60 * 1000));
-        
+
         if (remainingMin > 0) {
-            const toast = this.createToast('danger', 'Cuenta Bloqueada', 
+            const toast = this.createToast('danger', 'Cuenta Bloqueada',
                 `Por seguridad, la cuenta está bloqueada por ${remainingMin} minuto(s) más.`);
             document.body.appendChild(toast);
         }
@@ -671,13 +714,13 @@ function initAdminAuthSystem() {
     if (!adminAuth) {
         //debugLog.log('APP', '🚀 Inicializando sistema de autenticación admin...');
         adminAuth = new AdminAuth();
-        
+
         // Hacer funciones disponibles globalmente
         window.adminAuth = adminAuth;
-        
+
         // handleAdminLogin ahora está implementado inline en el botón
-        
-        window.showAdminPanelAuth = function() {
+
+        window.showAdminPanelAuth = function () {
             //debugLog.log('APP', '🔐 Abriendo modal de autenticación...');
             const modal = document.getElementById('adminPanelAuthModal');
             if (modal) {
@@ -691,7 +734,7 @@ function initAdminAuthSystem() {
         };
 
         // ✅ NUEVA: Función para el botón "Admin" del header (reemplaza a bge-security-module.js)
-        window.handleAdminLogin = function() {
+        window.handleAdminLogin = function () {
             // GDPR: Datos sensibles enmascarados
             debugLog.log('AUTH', '🔐 handleAdminLogin llamado desde header (admin-auth.js)');
 
@@ -706,20 +749,20 @@ function initAdminAuthSystem() {
             window.showAdminPanelAuth();
         };
 
-        window.logoutAdminPanel = function() {
+        window.logoutAdminPanel = function () {
             //debugLog.log('APP', '🚪 Cerrando sesión admin...');
             if (adminAuth) {
                 adminAuth.logout();
             }
         };
-        
+
         // Función para verificar si está autenticado (para usar en otras scripts)
-        window.isAdminAuthenticated = function() {
+        window.isAdminAuthenticated = function () {
             return adminAuth ? adminAuth.isAuthenticated() : false;
         };
-        
+
         // Función de debug para monitorear el estado
-        window.debugAdminAuth = function() {
+        window.debugAdminAuth = function () {
             // GDPR: Datos sensibles enmascarados
             //debugLog.log('AUTH', '🔍 === DEBUG ADMIN AUTH ===');
             // GDPR: Datos sensibles enmascarados
@@ -737,9 +780,9 @@ function initAdminAuthSystem() {
             //debugLog.log('APP', 'Botón login:', loginBtn?.innerHTML);
             //debugLog.log('APP', '=========================');
         };
-        
+
         // Función para forzar login de prueba
-        window.forceAdminLogin = function() {
+        window.forceAdminLogin = function () {
             //debugLog.log('APP', '🚀 Forzando login de admin...');
             if (adminAuth) {
                 adminAuth.isAdminLoggedIn = true;
@@ -754,22 +797,22 @@ function initAdminAuthSystem() {
                 //    session: adminAuth.adminSession,
                 //    localStorage: !!localStorage.getItem('admin_session')
                 //});
-                
+
                 // Actualizar UI múltiples veces
                 adminAuth.updateUI();
                 setTimeout(() => adminAuth.updateUI(), 100);
                 setTimeout(() => adminAuth.updateUI(), 300);
                 setTimeout(() => adminAuth.updateUI(), 500);
-                
+
                 //debugLog.log('APP', '✅ Login forzado completado - UI actualizada múltiples veces');
             } else {
                 // GDPR: Datos sensibles enmascarados
                 debugLog.error('ERROR', '❌ adminAuth no disponible');
             }
         };
-        
+
         // Función para limpiar completamente y reiniciar
-        window.resetAdminAuth = function() {
+        window.resetAdminAuth = function () {
             // GDPR: Datos sensibles enmascarados
             //debugLog.log('AUTH', '🗑️ Limpiando sistema de auth...');
             localStorage.removeItem('admin_session');
@@ -780,11 +823,11 @@ function initAdminAuthSystem() {
             }
             //debugLog.log('APP', '✅ Sistema reseteado');
         };
-        
+
         // Función para mostrar elementos admin directamente
-        window.showAdminElements = function() {
+        window.showAdminElements = function () {
             //debugLog.log('APP', '👁️ FORZANDO VISIBILIDAD - MODO AGRESIVO...');
-            
+
             // FORZAR ESTADO INTERNO PRIMERO
             if (adminAuth) {
                 adminAuth.isAdminLoggedIn = true;
@@ -796,17 +839,17 @@ function initAdminAuthSystem() {
                 localStorage.setItem('admin_session', JSON.stringify(adminAuth.adminSession));
                 //debugLog.log('APP', '🔥 ESTADO INTERNO FORZADO A TRUE');
             }
-            
+
             const adminElements = document.querySelectorAll('#adminOnlySection, #adminOnlySection2');
             const loginBtn = document.getElementById('adminPanelMenuLink');
             const logoutBtn = document.getElementById('adminPanelLogoutOption');
-            
+
             //debugLog.log('APP', '🔍 Elementos encontrados:', {
             //    adminElements: adminElements.length,
             //    loginBtn: !!loginBtn,
             //    logoutBtn: !!logoutBtn
             //});
-            
+
             // FORZAR ELEMENTOS CON MÚLTIPLES MÉTODOS
             adminElements.forEach((el, i) => {
                 if (el) {
@@ -820,28 +863,28 @@ function initAdminAuthSystem() {
                     //debugLog.log('APP', `🔥 ELEMENTO ${i + 1} (${el.id}) FORZADO A SER VISIBLE`);
                 }
             });
-            
+
             if (loginBtn) {
-                loginBtn.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize('<i class="fas fa-user-shield me-1"></i>Panel Admin <span class="badge bg-success ms-1">✓</span>', 'simple'));
+                loginBtn.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize('<i class="fas fa-user-shield me-1"></i>Panel Admin <span class="badge bg-success ms-1">✓</span>', 'simple'));
                 loginBtn.classList.add('text-success');
                 loginBtn.setAttribute('data-admin-active', 'true');
                 //debugLog.log('APP', '🔥 BOTÓN LOGIN FORZADO');
             }
-            
+
             if (logoutBtn) {
                 logoutBtn.classList.remove('d-none', 'hidden');
                 logoutBtn.style.display = 'block !important';
                 logoutBtn.setAttribute('data-force-visible', 'true');
                 //debugLog.log('APP', '🔥 BOTÓN LOGOUT FORZADO');
             }
-            
+
             //debugLog.log('APP', '🔥 ELEMENTOS FORZADOS CON MODO AGRESIVO - DEBERÍAN SER VISIBLES AHORA');
         };
-        
+
         // Función para bloquear completamente el sistema de ocultamiento
-        window.lockAdminVisible = function() {
+        window.lockAdminVisible = function () {
             //debugLog.log('APP', '🔐 BLOQUEANDO SISTEMA DE OCULTAMIENTO...');
-            
+
             // Forzar estado interno
             if (adminAuth) {
                 adminAuth.isAdminLoggedIn = true;
@@ -852,13 +895,13 @@ function initAdminAuthSystem() {
                 };
                 localStorage.setItem('admin_session', JSON.stringify(adminAuth.adminSession));
             }
-            
+
             // Mostrar elementos
             showAdminElements();
-            
+
             // Crear un observer para evitar que se oculten los elementos
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
+            const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
                     if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                         const target = mutation.target;
                         if (target.id === 'adminOnlySection' || target.id === 'adminOnlySection2') {
@@ -871,7 +914,7 @@ function initAdminAuthSystem() {
                     }
                 });
             });
-            
+
             // Observar los elementos admin
             const adminElements = document.querySelectorAll('#adminOnlySection, #adminOnlySection2, #adminPanelLogoutOption');
             adminElements.forEach(el => {
@@ -879,21 +922,21 @@ function initAdminAuthSystem() {
                     observer.observe(el, { attributes: true, attributeFilter: ['class', 'style'] });
                 }
             });
-            
+
             //debugLog.log('APP', '🔐 SISTEMA DE PROTECCIÓN ACTIVADO - Los elementos NO SE PUEDEN OCULTAR');
         };
-        
+
         // Función para requerir autenticación
-        window.requireAdminAuth = function(callback) {
+        window.requireAdminAuth = function (callback) {
             if (adminAuth) {
                 adminAuth.requireAuth(callback);
             }
         };
-        
+
         // Función para abrir Panel de Administración como ventana popup
-        window.openAdminPanel = function() {
+        window.openAdminPanel = function () {
             //debugLog.log('APP', '🚀 Abriendo Panel de Administración...');
-            
+
             // Verificar autenticación
             if (!window.isAdminAuthenticated()) {
                 debugLog.warn('APP', '⚠️ Usuario no autenticado, mostrando modal de login');
@@ -901,7 +944,7 @@ function initAdminAuthSystem() {
                 showAdminPanelAuth();
                 return;
             }
-            
+
             // Configuración de la ventana popup
             const windowFeatures = [
                 'width=1200',
@@ -915,25 +958,25 @@ function initAdminAuthSystem() {
                 'toolbar=no',
                 'menubar=no'
             ].join(',');
-            
+
             try {
                 const adminWindow = window.open(
                     'admin/manual.html',
                     'AdminPanel',
                     windowFeatures
                 );
-                
+
                 if (adminWindow) {
                     // Enfocar la ventana
                     adminWindow.focus();
                     //debugLog.log('APP', '✅ Panel de Administración abierto como popup');
-                    
+
                     // Listener para cuando se cierre la ventana
                     const checkClosed = setInterval(() => {
                         if (adminWindow.closed) {
                             //debugLog.log('APP', '🚪 Panel de Administración cerrado');
                             clearInterval(checkClosed);
-                            
+
                             // Forzar actualización de UI cuando se cierre
                             if (adminAuth) {
                                 //debugLog.log('APP', '🔄 Actualizando UI después de cerrar panel...');
@@ -941,14 +984,14 @@ function initAdminAuthSystem() {
                             }
                         }
                     }, 1000);
-                    
+
                 } else {
                     debugLog.warn('APP', '⚠️ No se pudo abrir popup, posible bloqueador');
                     alert('No se pudo abrir la ventana. Verifica que no esté bloqueada por el navegador.');
                     // Fallback: abrir en nueva pestaña
                     window.open('admin/manual.html', '_blank');
                 }
-                
+
             } catch (error) {
                 debugLog.error('ERROR', '❌ Error abriendo panel:', error);
                 alert('Error abriendo el panel. Se abrirá en nueva pestaña.');
@@ -956,15 +999,15 @@ function initAdminAuthSystem() {
                 window.open('admin/manual.html', '_blank');
             }
         };
-        
+
         //debugLog.log('APP', '✅ Sistema de autenticación admin inicializado');
-        
+
         // Actualizar UI después de un breve delay para asegurar que el DOM esté listo
         setTimeout(() => {
             //debugLog.log('APP', '🔄 Forzando actualización de UI post-inicialización...');
             adminAuth.updateUI();
         }, 100);
-        
+
     } else {
         //debugLog.log('APP', 'ℹ️ Sistema de autenticación ya estaba inicializado - actualizando UI...');
         // Si ya está inicializado, solo actualizar la UI
@@ -975,7 +1018,7 @@ function initAdminAuthSystem() {
 }
 
 // Inicializar cuando el DOM esté listo - solo si no está ya inicializado
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // GDPR: Datos sensibles enmascarados
     //debugLog.log('AUTH', '📄 DOM cargado - verificando inicialización de admin auth...');
     if (!window.adminAuth) {
@@ -997,7 +1040,7 @@ window.initAdminAuthSystem = initAdminAuthSystem;
  * ✅ BRIDGE: Obtener token de autenticación (para auth-api-bridge.js)
  * Esta función será inyectada en api-client.js
  */
-window.getAuthToken = function() {
+window.getAuthToken = function () {
     // Prioridad 1: secure_admin_session (nuevo sistema)
     try {
         const secureSession = localStorage.getItem('secure_admin_session');

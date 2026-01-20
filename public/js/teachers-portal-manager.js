@@ -129,7 +129,7 @@ class TeachersPortalManager {
         this.showLoading(true);
 
         try {
-            const response = await fetch(`${this.apiBaseURL}/auth/login`, {
+            const response = await fetch(`${this.apiBaseURL}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -61,7 +61,7 @@ class ResourceOptimizer {
     async loadDeferredResources() {
         const deferredScripts = [
             'js/chatbot.js',
-            'js/stats-counter.js',
+            // 'js/stats-counter.js', // REMOVED - deprecated, replaced by admin-dashboard-stats.js
             'js/interactive-calendar.js'
         ];
 
@@ -183,7 +183,7 @@ class ResourceOptimizer {
         link.as = asType;
 
         if (asType === 'style') {
-            link.onload = function() {
+            link.onload = function () {
                 this.onload = null;
                 this.rel = 'stylesheet';
             };

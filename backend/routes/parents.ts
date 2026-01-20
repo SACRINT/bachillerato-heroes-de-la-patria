@@ -599,6 +599,61 @@ router.get('/dashboard', authenticateToken, async (req: Request, res: Response):
 });
 
 // ============================================
+// MIS ESTUDIANTES (HIJOS VINCULADOS)
+// ============================================
+
+/**
+ * GET /api/parents/my-students
+ * Obtiene los estudiantes vinculados al padre autenticado
+ */
+router.get('/my-students', authenticateToken, async (req: Request, res: Response): Promise<void> => {
+    const client = await pool.connect();
+
+    try {
+        const parentId = (req as any).user.id || (req as any).user.userId;
+
+        debugLog.log('parents', `👨‍👩‍👧 [PARENTS] Obteniendo estudiantes del padre ID: ${parentId}`);
+
+        const studentsQuery = `
+            SELECT
+                s.id,
+                s.matricula,
+                COALESCE(s.nombre_completo, u.nombre || ' ' || u.apellido_paterno) as nombre_completo,
+                s.grado,
+                s.grupo,
+                s.turno,
+                s.especialidad,
+                s.semestre,
+                ps.tipo_relacion
+            FROM students s
+            LEFT JOIN users u ON s.usuario_id = u.id
+            INNER JOIN parents_students ps ON s.id = ps.student_id
+            WHERE ps.parent_id = $1
+            AND ps.activo = TRUE
+            AND s.activo = TRUE
+            ORDER BY s.grado DESC, s.nombre_completo
+        `;
+
+        const result = await client.query(studentsQuery, [parentId]);
+
+        res.json({
+            success: true,
+            data: result.rows,
+            count: result.rows.length
+        });
+
+    } catch (error: any) {
+        debugLog.error('parents', 'Error al obtener estudiantes vinculados', sanitizeError(error, 'parents'));
+        res.status(500).json({
+            success: false,
+            error: 'Error al cargar estudiantes vinculados'
+        });
+    } finally {
+        client.release();
+    }
+});
+
+// ============================================
 // CALIFICACIONES
 // ============================================
 

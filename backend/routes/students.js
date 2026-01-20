@@ -450,5 +450,88 @@ router.get('/notifications', auth_1.authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: 'Error obteniendo notificaciones', error: process.env.NODE_ENV === 'development' ? error.message : undefined });
     }
 });
+/**
+ * PATCH /api/students/profile
+ * Actualizar perfil del estudiante (campos editables)
+ */
+router.patch('/profile', auth_1.authenticateToken, [
+    (0, express_validator_1.body)('telefono').optional().isLength({ min: 10, max: 15 }).withMessage('Teléfono inválido'),
+    (0, express_validator_1.body)('foto_url').optional().isURL().withMessage('URL de foto inválida')
+], async (req, res) => {
+    try {
+        const authReq = req;
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            res.status(400).json({ success: false, errors: errors.array() });
+            return;
+        }
+        const { telefono, foto_url } = req.body;
+        const allowedFields = ['telefono', 'foto_url'];
+        const updates = [];
+        const values = [];
+        let paramIndex = 1;
+        if (telefono !== undefined) {
+            updates.push(`telefono = $${paramIndex++}`);
+            values.push(telefono);
+        }
+        if (foto_url !== undefined) {
+            updates.push(`foto_url = $${paramIndex++}`);
+            values.push(foto_url);
+        }
+        if (updates.length === 0) {
+            res.status(400).json({ success: false, message: 'No hay campos para actualizar' });
+            return;
+        }
+        values.push(authReq.user.id);
+        const query = `
+            UPDATE usuarios 
+            SET ${updates.join(', ')}, updated_at = CURRENT_TIMESTAMP
+            WHERE id = $${paramIndex}
+            RETURNING id, telefono, foto_url
+        `;
+        const result = await (0, database_1.executeQuery)(query, values);
+        if (result && result.length > 0) {
+            debug_logger_1.debugLog.log('STUDENTS', 'Perfil actualizado', { userId: authReq.user.id, campos: updates.length });
+            res.json({
+                success: true,
+                message: 'Perfil actualizado exitosamente',
+                data: result[0]
+            });
+        }
+        else {
+            res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+        }
+    }
+    catch (error) {
+        debug_logger_1.debugLog.error('STUDENTS', 'Error actualizando perfil', (0, sanitized_errors_1.sanitizeError)(error, 'STUDENTS'));
+        res.status(500).json({ success: false, message: 'Error actualizando perfil', error: process.env.NODE_ENV === 'development' ? error.message : undefined });
+    }
+});
+/**
+ * POST /api/students/notifications/:id/mark-read
+ * Marcar notificación como leída
+ */
+router.post('/notifications/:id/mark-read', auth_1.authenticateToken, async (req, res) => {
+    try {
+        const authReq = req;
+        const { id } = req.params;
+        const query = `
+            UPDATE notificaciones_usuario 
+            SET leida = true, fecha_lectura = CURRENT_TIMESTAMP
+            WHERE id = $1 AND usuario_id = $2
+            RETURNING id
+        `;
+        const result = await (0, database_1.executeQuery)(query, [parseInt(id), authReq.user.id]);
+        if (result && result.length > 0) {
+            res.json({ success: true, message: 'Notificación marcada como leída' });
+        }
+        else {
+            res.status(404).json({ success: false, message: 'Notificación no encontrada' });
+        }
+    }
+    catch (error) {
+        debug_logger_1.debugLog.error('STUDENTS', 'Error marcando notificación', (0, sanitized_errors_1.sanitizeError)(error, 'STUDENTS'));
+        res.status(500).json({ success: false, message: 'Error marcando notificación' });
+    }
+});
 exports.default = router;
-//# sourceMappingURL=students.js.map

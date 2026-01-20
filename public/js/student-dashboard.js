@@ -20,32 +20,32 @@ if (typeof debugLog === 'undefined') {
 
 // Contexto 1: Tablas y Listados (Datos sensibles)
 const DOMPURIFY_CONFIG_TABLAS = {
-  ALLOWED_TAGS: ['div', 'p', 'span', 'table', 'tr', 'td', 'thead', 'tbody', 'th', 'strong', 'em', 'a', 'br', 'small', 'h6', 'h5', 'h2', 'h3', 'i', 'button'],
-  ALLOWED_ATTR: ['class', 'id', 'data-*', 'href', 'target', 'rel', 'style', 'role', 'aria-label', 'data-bs-dismiss', 'data-notification-id', 'data-section', 'tabindex', 'type'],
-  ALLOW_DATA_ATTR: true,
-  KEEP_CONTENT: true
+    ALLOWED_TAGS: ['div', 'p', 'span', 'table', 'tr', 'td', 'thead', 'tbody', 'th', 'strong', 'em', 'a', 'br', 'small', 'h6', 'h5', 'h2', 'h3', 'i', 'button'],
+    ALLOWED_ATTR: ['class', 'id', 'data-*', 'href', 'target', 'rel', 'style', 'role', 'aria-label', 'data-bs-dismiss', 'data-notification-id', 'data-section', 'tabindex', 'type'],
+    ALLOW_DATA_ATTR: true,
+    KEEP_CONTENT: true
 };
 
 // Contexto 2: Formularios (Validaciones, errores)
 const DOMPURIFY_CONFIG_FORMULARIOS = {
-  ALLOWED_TAGS: ['span', 'div', 'p', 'em', 'strong', 'small', 'a'],
-  ALLOWED_ATTR: ['class', 'id'],
-  KEEP_CONTENT: true
+    ALLOWED_TAGS: ['span', 'div', 'p', 'em', 'strong', 'small', 'a'],
+    ALLOWED_ATTR: ['class', 'id'],
+    KEEP_CONTENT: true
 };
 
 // Contexto 3: Contenido de Usuario (Comentarios, mensajes)
 const DOMPURIFY_CONFIG_UGC = {
-  ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'a', 'blockquote', 'code', 'pre', 'span', 'div', 'small'],
-  ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
-  KEEP_CONTENT: true,
-  RETURN_DOM: false
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'a', 'blockquote', 'code', 'pre', 'span', 'div', 'small'],
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+    KEEP_CONTENT: true,
+    RETURN_DOM: false
 };
 
 // Contexto 4: HTML Simple (Modales, alertas)
 const DOMPURIFY_CONFIG_SIMPLE = {
-  ALLOWED_TAGS: ['div', 'p', 'span', 'a', 'strong', 'em', 'i', 'button', 'br'],
-  ALLOWED_ATTR: ['class', 'id', 'type', 'data-bs-dismiss'],
-  KEEP_CONTENT: true
+    ALLOWED_TAGS: ['div', 'p', 'span', 'a', 'strong', 'em', 'i', 'button', 'br'],
+    ALLOWED_ATTR: ['class', 'id', 'type', 'data-bs-dismiss'],
+    KEEP_CONTENT: true
 };
 
 // ============================================
@@ -197,18 +197,63 @@ class StudentDashboard {
     async handleLogin(e) {
         e.preventDefault();
 
-        const matricula = document.getElementById('matricula').value;
+        const matriculaOrEmail = document.getElementById('matricula').value;
         const password = document.getElementById('password').value;
         const loginError = document.getElementById('loginError');
+        const submitBtn = e.target.querySelector('button[type="submit"]');
 
         try {
             loginError.classList.add('d-none');
 
-            // Verificar credenciales de demo
-            if (matricula === '2025-0001' && password === 'student123') {
-                // Simular datos de estudiante exitoso
-                const mockStudentData = {
-                    token: 'mock_token_' + Date.now(),
+            // Show loading state
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Ingresando...';
+            }
+
+            // Try real backend authentication first
+            let loginSuccess = false;
+            let studentData = null;
+
+            try {
+                const response = await fetch('/api/students-auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: matriculaOrEmail.includes('@') ? matriculaOrEmail : `${matriculaOrEmail}@estudiante.bge.edu.mx`,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    loginSuccess = true;
+                    studentData = {
+                        token: 'real_session_' + Date.now(),
+                        student: {
+                            id: data.student.id,
+                            matricula: matriculaOrEmail,
+                            nombre: data.student.name,
+                            grupo: data.student.group || 'N/A',
+                            especialidad: data.student.specialty || 'General',
+                            semestre: data.student.semester || 1,
+                            email: data.student.email
+                        }
+                    };
+                    debugLog.log('APP', '✅ Login real exitoso');
+                } else {
+                    debugLog.warn('APP', '⚠️ Backend login failed:', data.message);
+                }
+            } catch (apiError) {
+                debugLog.warn('APP', '⚠️ API not available, trying demo mode:', apiError.message);
+            }
+
+            // Fallback to demo credentials if real backend fails
+            if (!loginSuccess && matriculaOrEmail === '2025-0001' && password === 'student123') {
+                loginSuccess = true;
+                studentData = {
+                    token: 'demo_token_' + Date.now(),
                     student: {
                         id: 1,
                         matricula: '2025-0001',
@@ -219,15 +264,18 @@ class StudentDashboard {
                         email: 'juan.perez@estudiante.edu.mx'
                     }
                 };
+                debugLog.log('APP', 'ℹ️ Usando modo demo');
+            }
 
-                // Guardar datos de autenticación
-                localStorage.setItem('student_auth_token', mockStudentData.token);
-                localStorage.setItem('current_student', JSON.stringify(mockStudentData.student));
+            if (loginSuccess && studentData) {
+                // Store authentication data
+                localStorage.setItem('student_auth_token', studentData.token);
+                localStorage.setItem('current_student', JSON.stringify(studentData.student));
 
-                this.authToken = mockStudentData.token;
-                this.currentStudent = mockStudentData.student;
+                this.authToken = studentData.token;
+                this.currentStudent = studentData.student;
 
-                // Cerrar modal y cargar dashboard
+                // Close modal
                 try {
                     if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
                         const modal = bootstrap.Modal.getInstance(document.getElementById('studentLoginModal'));
@@ -236,11 +284,11 @@ class StudentDashboard {
                         document.getElementById('studentLoginModal').style.display = 'none';
                         document.getElementById('studentLoginModal').classList.remove('show');
                     }
-                } catch (error) {
-                    debugLog.warn('ERROR', '⚠️ Error cerrando modal:', error);
+                } catch (modalError) {
+                    debugLog.warn('ERROR', '⚠️ Error cerrando modal:', modalError);
                 }
 
-                // Ocultar el prompt de login
+                // Hide login prompt
                 if (typeof hideLoginPrompt === 'function') {
                     hideLoginPrompt();
                 }
@@ -248,13 +296,19 @@ class StudentDashboard {
                 this.showNotification('¡Bienvenido al dashboard estudiantil!', 'success');
                 this.loadDashboard();
             } else {
-                loginError.textContent = 'Credenciales incorrectas. Usa: Matrícula: 2025-0001, Contraseña: student123';
+                loginError.textContent = 'Credenciales incorrectas. Verifica tu matrícula/email y contraseña.';
                 loginError.classList.remove('d-none');
             }
         } catch (error) {
             debugLog.error('ERROR', '❌ Error en login:', error);
-            loginError.textContent = 'Error de conexión. Usando modo demo.';
+            loginError.textContent = 'Error de conexión. Intenta nuevamente.';
             loginError.classList.remove('d-none');
+        } finally {
+            // Restore button state
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Ingresar';
+            }
         }
     }
 
@@ -295,7 +349,7 @@ class StudentDashboard {
                 </div>
                 <!-- El dashboard se cargará dinámicamente aquí después del login -->
             `;
-            dashboardContainer.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(initialHTML, DOMPURIFY_CONFIG_SIMPLE));
+            dashboardContainer.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(initialHTML, DOMPURIFY_CONFIG_SIMPLE));
         }
 
         // Remover cualquier modal de login que pueda estar abierto
@@ -336,63 +390,240 @@ class StudentDashboard {
             // Mostrar loading
             this.showLoading();
 
-            // Usar datos simulados para demostración
-            const mockDashboardData = {
-                success: true,
-                data: {
-                    profile: this.currentStudent,
-                    statistics: {
-                        promedio_general: 8.7,
-                        tareas_pendientes: 3,
-                        notificaciones_nuevas: 2,
-                        materias_cursando: 8
-                    },
-                    recent_grades: [
-                        { materia: 'Matemáticas III', promedio: 9.2 },
-                        { materia: 'Física III', promedio: 8.5 },
-                        { materia: 'Química III', promedio: 8.9 },
-                        { materia: 'Programación', promedio: 9.5 }
-                    ],
-                    pending_assignments: [
-                        {
-                            titulo: 'Ejercicios de derivadas',
-                            materia: 'Matemáticas III',
-                            fecha_entrega: '2025-09-30',
-                            prioridad: 'alta'
-                        },
-                        {
-                            titulo: 'Práctica de laboratorio',
-                            materia: 'Química III',
-                            fecha_entrega: '2025-10-02',
-                            prioridad: 'media'
-                        }
-                    ],
-                    recent_notifications: [
-                        {
-                            id: 1,
-                            titulo: 'Nueva tarea asignada',
-                            mensaje: 'Se ha asignado una nueva tarea en Matemáticas III',
-                            fecha: '2025-09-28',
-                            tipo: 'assignment',
-                            leido: false
-                        },
-                        {
-                            id: 2,
-                            titulo: 'Calificación publicada',
-                            mensaje: 'Nueva calificación disponible en Física III',
-                            fecha: '2025-09-27',
-                            tipo: 'grade',
-                            leido: false
-                        }
-                    ]
-                }
-            };
+            // Intentar cargar datos reales del backend
+            let dashboardData;
+            const useRealBackend = this.authToken && !this.authToken.startsWith('mock_') && !this.authToken.startsWith('demo_');
 
-            this.renderDashboard(mockDashboardData.data);
+            if (useRealBackend && this.currentStudent?.id) {
+                try {
+                    // Fetch all data in parallel for better performance
+                    const [gradesResponse, profileResponse, scheduleResponse, assignmentsResponse, notificationsResponse] = await Promise.all([
+                        this.fetchStudentGrades(this.currentStudent.id),
+                        this.fetchStudentProfile(this.currentStudent.id),
+                        this.fetchStudentSchedule(),
+                        this.fetchStudentAssignments(),
+                        this.fetchStudentNotifications()
+                    ]);
+
+                    dashboardData = {
+                        profile: profileResponse || this.currentStudent,
+                        statistics: {
+                            promedio_general: this.calculateAverage(gradesResponse?.materias || []),
+                            tareas_pendientes: assignmentsResponse?.length || 0,
+                            notificaciones_nuevas: notificationsResponse?.length || 0,
+                            materias_cursando: gradesResponse?.materias?.length || 0
+                        },
+                        recent_grades: this.formatGradesForDashboard(gradesResponse?.materias || []),
+                        pending_assignments: assignmentsResponse?.slice(0, 5) || [],
+                        recent_notifications: notificationsResponse?.slice(0, 5) || [],
+                        schedule: scheduleResponse || [],
+                        schedule_today: this.getTodaySchedule(scheduleResponse || [])
+                    };
+
+                    debugLog.log('DASHBOARD', '✅ Datos reales cargados del backend');
+                } catch (apiError) {
+                    debugLog.warn('DASHBOARD', '⚠️ Error cargando datos reales, usando mock:', apiError);
+                    dashboardData = this.getMockDashboardData();
+                }
+            } else {
+                // Usar datos simulados para demostración
+                debugLog.log('DASHBOARD', 'ℹ️ Usando datos mock (modo demo)');
+                dashboardData = this.getMockDashboardData();
+            }
+
+            this.renderDashboard(dashboardData);
         } catch (error) {
             debugLog.error('DASHBOARD', '❌ Error cargando dashboard:', error);
             this.showNotification('Error cargando dashboard', 'error');
         }
+    }
+
+    /**
+     * Get today's schedule from full schedule
+     */
+    getTodaySchedule(schedule) {
+        const days = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+        const today = days[new Date().getDay()];
+        return schedule.filter(item => (item.dia || '').toLowerCase() === today);
+    }
+
+    /**
+     * Fetch grades from real backend API
+     */
+    async fetchStudentGrades(studentId) {
+        const cicloEscolar = '2025-2026';
+        const response = await fetch(`/api/grades/student/${studentId}?cicloEscolar=${cicloEscolar}`, {
+            headers: {
+                'Authorization': `Bearer ${this.authToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Grades API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.success ? data.data : null;
+    }
+
+    /**
+     * Fetch student profile from backend
+     */
+    async fetchStudentProfile(studentId) {
+        try {
+            const response = await fetch(`/api/students/${studentId}`, {
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) return null;
+            const data = await response.json();
+            return data.success ? data.data : null;
+        } catch (e) {
+            debugLog.warn('DASHBOARD', '⚠️ Profile endpoint not available');
+            return null;
+        }
+    }
+
+    /**
+     * Fetch student schedule from backend
+     */
+    async fetchStudentSchedule() {
+        try {
+            const response = await fetch('/api/students/schedule', {
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) return [];
+            const data = await response.json();
+            return data.success ? (data.data || []) : [];
+        } catch (e) {
+            debugLog.warn('DASHBOARD', '⚠️ Schedule endpoint not available');
+            return [];
+        }
+    }
+
+    /**
+     * Fetch student assignments from backend
+     */
+    async fetchStudentAssignments() {
+        try {
+            const response = await fetch('/api/students/assignments?status=pending', {
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) return [];
+            const data = await response.json();
+            return data.success ? (data.data || []) : [];
+        } catch (e) {
+            debugLog.warn('DASHBOARD', '⚠️ Assignments endpoint not available');
+            return [];
+        }
+    }
+
+    /**
+     * Fetch student notifications from backend
+     */
+    async fetchStudentNotifications() {
+        try {
+            const response = await fetch('/api/students/notifications?unread_only=true', {
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) return [];
+            const data = await response.json();
+            return data.success ? (data.data || []) : [];
+        } catch (e) {
+            debugLog.warn('DASHBOARD', '⚠️ Notifications endpoint not available');
+            return [];
+        }
+    }
+
+    /**
+     * Calculate average from grades array
+     */
+    calculateAverage(materias) {
+        if (!materias || materias.length === 0) return 0;
+        const validGrades = materias.filter(m => m.promedio_final && !isNaN(parseFloat(m.promedio_final)));
+        if (validGrades.length === 0) return 0;
+        const sum = validGrades.reduce((acc, m) => acc + parseFloat(m.promedio_final), 0);
+        return sum / validGrades.length;
+    }
+
+    /**
+     * Format grades for dashboard display
+     */
+    formatGradesForDashboard(materias) {
+        if (!materias) return [];
+        return materias.slice(0, 4).map(m => ({
+            materia: m.materia,
+            promedio: parseFloat(m.promedio_final) || 0
+        }));
+    }
+
+    /**
+     * Get mock dashboard data for demo mode
+     */
+    getMockDashboardData() {
+        return {
+            profile: this.currentStudent,
+            statistics: {
+                promedio_general: 8.7,
+                tareas_pendientes: 3,
+                notificaciones_nuevas: 2,
+                materias_cursando: 8
+            },
+            recent_grades: [
+                { materia: 'Matemáticas III', promedio: 9.2 },
+                { materia: 'Física III', promedio: 8.5 },
+                { materia: 'Química III', promedio: 8.9 },
+                { materia: 'Programación', promedio: 9.5 }
+            ],
+            pending_assignments: [
+                {
+                    titulo: 'Ejercicios de derivadas',
+                    materia: 'Matemáticas III',
+                    fecha_entrega: '2025-09-30',
+                    prioridad: 'alta'
+                },
+                {
+                    titulo: 'Práctica de laboratorio',
+                    materia: 'Química III',
+                    fecha_entrega: '2025-10-02',
+                    prioridad: 'media'
+                }
+            ],
+            recent_notifications: [
+                {
+                    id: 1,
+                    titulo: 'Nueva tarea asignada',
+                    mensaje: 'Se ha asignado una nueva tarea en Matemáticas III',
+                    fecha: '2025-09-28',
+                    tipo: 'assignment',
+                    leido: false
+                },
+                {
+                    id: 2,
+                    titulo: 'Calificación publicada',
+                    mensaje: 'Nueva calificación disponible en Física III',
+                    fecha: '2025-09-27',
+                    tipo: 'grade',
+                    leido: false
+                }
+            ]
+        };
     }
 
     showLoading() {
@@ -406,7 +637,7 @@ class StudentDashboard {
                     <p class="text-muted">Cargando tu dashboard...</p>
                 </div>
             `;
-            container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(loadingHTML, DOMPURIFY_CONFIG_SIMPLE));
+            container.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(loadingHTML, DOMPURIFY_CONFIG_SIMPLE));
         }
     }
 
@@ -561,7 +792,7 @@ class StudentDashboard {
             </div>
         `;
 
-        container.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(dashboardHtml, DOMPURIFY_CONFIG_TABLAS));
+        container.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(dashboardHtml, DOMPURIFY_CONFIG_TABLAS));
 
         // Re-setup event listeners
         this.setupEventListeners();
@@ -578,7 +809,7 @@ class StudentDashboard {
         }
 
         return grades.map(grade => {
-            const sanitizedMateria = DOMPurify.sanitize(grade.materia, {ALLOWED_TAGS: [], KEEP_CONTENT: true});
+            const sanitizedMateria = DOMPurify.sanitize(grade.materia, { ALLOWED_TAGS: [], KEEP_CONTENT: true });
             return `
             <div class="grade-item border-bottom pb-3 mb-3">
                 <div class="d-flex justify-content-between align-items-center">
@@ -608,9 +839,9 @@ class StudentDashboard {
         }
 
         return assignments.map(assignment => {
-            const sanitizedTitulo = DOMPurify.sanitize(assignment.titulo, {ALLOWED_TAGS: [], KEEP_CONTENT: true});
-            const sanitizedMateria = DOMPurify.sanitize(assignment.materia, {ALLOWED_TAGS: [], KEEP_CONTENT: true});
-            const sanitizedPrioridad = DOMPurify.sanitize(assignment.prioridad, {ALLOWED_TAGS: [], KEEP_CONTENT: true});
+            const sanitizedTitulo = DOMPurify.sanitize(assignment.titulo, { ALLOWED_TAGS: [], KEEP_CONTENT: true });
+            const sanitizedMateria = DOMPurify.sanitize(assignment.materia, { ALLOWED_TAGS: [], KEEP_CONTENT: true });
+            const sanitizedPrioridad = DOMPurify.sanitize(assignment.prioridad, { ALLOWED_TAGS: [], KEEP_CONTENT: true });
             return `
             <div class="assignment-item border-bottom pb-3 mb-3">
                 <div class="d-flex justify-content-between align-items-start">
@@ -642,8 +873,8 @@ class StudentDashboard {
         }
 
         return notifications.map(notification => {
-            const sanitizedTitulo = DOMPurify.sanitize(notification.titulo, {ALLOWED_TAGS: [], KEEP_CONTENT: true});
-            const sanitizedMensaje = DOMPurify.sanitize(notification.mensaje, {ALLOWED_TAGS: [], KEEP_CONTENT: true});
+            const sanitizedTitulo = DOMPurify.sanitize(notification.titulo, { ALLOWED_TAGS: [], KEEP_CONTENT: true });
+            const sanitizedMensaje = DOMPurify.sanitize(notification.mensaje, { ALLOWED_TAGS: [], KEEP_CONTENT: true });
             return `
             <div class="notification-item border-bottom pb-3 mb-3 ${!notification.leido ? 'bg-light' : ''}"
                  data-notification-id="${notification.id}" style="cursor: pointer;">
@@ -670,8 +901,16 @@ class StudentDashboard {
         if (!notificationId) return;
 
         try {
-            const response = await this.apiCall(`notifications/${notificationId}/read`, 'PUT');
-            if (response.success) {
+            const response = await fetch(`/api/students/notifications/${notificationId}/mark-read`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+            if (data.success) {
                 notificationElement.classList.remove('bg-light');
                 const badge = notificationElement.querySelector('.notification-badge');
                 if (badge) badge.remove();
@@ -679,6 +918,109 @@ class StudentDashboard {
         } catch (error) {
             debugLog.error('ERROR', '❌ Error marcando notificación:', error);
         }
+    }
+
+    /**
+     * Update student profile (editable fields)
+     */
+    async updateProfile(profileData) {
+        try {
+            const response = await fetch('/api/students/profile', {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(profileData)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.showNotification('Perfil actualizado exitosamente', 'success');
+                // Refresh to show updated data
+                this.loadDashboard();
+                return { success: true };
+            } else {
+                this.showNotification(data.message || 'Error actualizando perfil', 'danger');
+                return { success: false, message: data.message };
+            }
+        } catch (error) {
+            debugLog.error('ERROR', '❌ Error actualizando perfil:', error);
+            this.showNotification('Error de conexión', 'danger');
+            return { success: false, message: 'Error de conexión' };
+        }
+    }
+
+    /**
+     * Show profile edit modal
+     */
+    showProfileEditModal() {
+        const profile = this.currentStudent;
+        if (!profile) return;
+
+        const modalHtml = `
+            <div class="modal fade" id="profileEditModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title"><i class="fas fa-user-edit me-2"></i>Editar Perfil</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="profileEditForm">
+                                <div class="mb-3">
+                                    <label for="edit-telefono" class="form-label">Teléfono</label>
+                                    <input type="tel" class="form-control" id="edit-telefono" 
+                                           value="${profile.telefono || ''}" 
+                                           placeholder="Ej: 5512345678">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="edit-foto" class="form-label">URL de Foto de Perfil</label>
+                                    <input type="url" class="form-control" id="edit-foto" 
+                                           value="${profile.foto_url || ''}" 
+                                           placeholder="https://ejemplo.com/mi-foto.jpg">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="saveProfileBtn">
+                                <i class="fas fa-save me-2"></i>Guardar Cambios
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Remove existing modal if any
+        const existing = document.getElementById('profileEditModal');
+        if (existing) existing.remove();
+
+        document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(modalHtml));
+
+        const modal = new bootstrap.Modal(document.getElementById('profileEditModal'));
+        modal.show();
+
+        // Handle save
+        document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+            const telefono = document.getElementById('edit-telefono').value.trim();
+            const foto_url = document.getElementById('edit-foto').value.trim();
+
+            const updateData = {};
+            if (telefono) updateData.telefono = telefono;
+            if (foto_url) updateData.foto_url = foto_url;
+
+            if (Object.keys(updateData).length > 0) {
+                const result = await this.updateProfile(updateData);
+                if (result.success) {
+                    modal.hide();
+                }
+            } else {
+                modal.hide();
+            }
+        });
     }
 
     async handleRefresh(e) {
@@ -736,12 +1078,12 @@ class StudentDashboard {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1050; max-width: 400px;';
-        const sanitizedMessage = DOMPurify.sanitize(message, {ALLOWED_TAGS: [], KEEP_CONTENT: true});
+        const sanitizedMessage = DOMPurify.sanitize(message, { ALLOWED_TAGS: [], KEEP_CONTENT: true });
         const notificationHTML = `
             ${sanitizedMessage}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
-        alertDiv.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(notificationHTML, DOMPURIFY_CONFIG_SIMPLE));
+        alertDiv.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(notificationHTML, DOMPURIFY_CONFIG_SIMPLE));
 
         document.body.appendChild(alertDiv);
 
@@ -754,7 +1096,7 @@ class StudentDashboard {
 }
 
 // Inicializar cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Solo inicializar si estamos en la página de estudiantes
     if (document.getElementById('dashboardContainer') || document.body.classList.contains('student-portal')) {
         window.studentDashboard = new StudentDashboard();

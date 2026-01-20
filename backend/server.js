@@ -70,6 +70,7 @@ const eventosRoutes = loadRoute('./routes/eventos');
 const avisosRoutes = loadRoute('./routes/avisos');
 const tenantsRoutes = loadRoute('./routes/tenants');  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
 const comunicadosRoutes = loadRoute('./routes/comunicados');
+const pushNotificationsRoutes = loadRoute('./routes/push-notifications'); // ✅ PUSH NOTIFICATIONS - SEMANA 11
 
 const webhooksRoutes = loadRoute('./routes/webhooks');  // ✅ WEBHOOKS - SEMANA 8
 const superAdminDashboardRoutes = loadRoute('./routes/super-admin-dashboard');  // ✅ SUPER ADMIN - FASE 5 (7 DIC 2025)
@@ -142,6 +143,9 @@ const year2FinalRoutes = require('./ai/year2-final/routes'); // ✅ YEAR 2 FINAL
 */
 const installPollsRoutes = loadRoute('./routes/install-polls');
 const teachersPortalRoutes = loadRoute('./routes/teachers-portal');
+const teachersPortalExtendedRoutes = loadRoute('./routes/teachers-portal-extended'); // ✅ TEACHERS PORTAL EXTENDED - SEMANA 21-25 (AÑO 5)
+const gradesValidationRoutes = loadRoute('./routes/grades-validation'); // ✅ GRADES VALIDATION - SEMANA 16-20 (AÑO 5)
+const enrollmentRoutes = loadRoute('./routes/enrollment'); // ✅ ENROLLMENT SYSTEM - SEMANA 26-30 (AÑO 5)
 const messagingRoutes = loadRoute('./routes/messaging');
 const digitalLibraryRoutes = loadRoute('./routes/digital-library');
 const studioRoutes = loadRoute('./routes/studio'); // ✅ CONTENT STUDIO - SEMANA 33 (FASE 5)
@@ -504,6 +508,7 @@ app.use('/api/eventos', eventosRoutes);
 app.use('/api/avisos', avisosRoutes);
 app.use('/api/admin/tenants', tenantsRoutes);  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
 app.use('/api/comunicados', comunicadosRoutes);
+app.use('/api/push', pushNotificationsRoutes); // ✅ PUSH NOTIFICATIONS
 app.use('/api/upload', uploadsRoutes);
 app.use('/api/health', healthRoutes);
 app.use('/health', healthRoutes); // ✅ ALIAS: Soporte para frontend legacy que llama a /health raíz
@@ -544,6 +549,9 @@ app.use('/api/calendar', calendarRoutes);  // ✅ CALENDAR ROUTES - Eventos del 
 app.use('/api/pendientes-aprobacion', pendientesAprobacionRoutes);
 app.use('/api/diagnostico-aprobaciones', diagnosticoAprobacionesRoutes);
 app.use('/api/teachers-portal', teachersPortalRoutes);
+app.use('/api/teachers-portal-ext', teachersPortalExtendedRoutes); // ✅ TEACHERS PORTAL EXTENDED - SEMANA 21-25 (AÑO 5)
+app.use('/api/grades-validation', gradesValidationRoutes); // ✅ GRADES VALIDATION - SEMANA 16-20 (AÑO 5)
+app.use('/api/enrollment', enrollmentRoutes); // ✅ ENROLLMENT SYSTEM - SEMANA 26-30 (AÑO 5)
 app.use('/api/messaging', messagingRoutes);
 app.use('/api/digital-library', digitalLibraryRoutes);
 app.use('/api/support-tickets', supportTicketsRoutes);

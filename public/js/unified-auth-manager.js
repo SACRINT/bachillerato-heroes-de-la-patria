@@ -21,7 +21,7 @@
  * Parte de: SEMANA 3 - Refactorización Auth
  */
 
-(function(window) {
+(function (window) {
     'use strict';
 
     // ============================================
@@ -356,7 +356,11 @@
         constructor() {
             this.strategies = new Map();
             this.currentUser = null;
-            this.sessionKey = 'secure_admin_session';
+            this.sessionKey = 'bge_auth_session';
+            this.tokenKey = 'bge_auth_token';
+            this.refreshTokenKey = 'bge_refresh_token';
+            this.refreshTimer = null;
+            this.refreshThreshold = 5 * 60 * 1000; // Refrescar 5 min antes de expirar
 
             // Registrar strategies
             this.strategies.set('email', new EmailPasswordStrategy(this));
@@ -365,7 +369,10 @@
             this.strategies.set('microsoft', new MicrosoftOAuthStrategy(this));
             this.strategies.set('apple', new AppleOAuthStrategy(this));
 
-            console.log('[UNIFIED-AUTH] 🔐 Unified Auth Manager creado');
+            // Escuchar cambios de storage entre pestañas
+            this.setupStorageSync();
+
+            console.log('[UNIFIED-AUTH] 🔐 Unified Auth Manager v2.1.0 creado');
         }
 
         /**
@@ -402,31 +409,127 @@
             try {
                 const result = await strategy.authenticate(credentials);
 
-                // Guardar sesión
+                // Guardar tokens y sesión
+                this.saveTokens(result);
                 this.saveSession(result);
 
                 this.currentUser = result.user;
 
-                // Emit evento
-                eventBus.emit('auth.success', {
-                    provider: provider,
-                    user: result.user
-                });
+                // Iniciar renovación automática de tokens
+                this.scheduleTokenRefresh(result.tokens?.accessTokenExpiry);
 
-                console.log('[UNIFIED-AUTH] ✅ Login exitoso:', result.user.email || result.user.name);
+                // Emit evento
+                if (typeof eventBus !== 'undefined') {
+                    eventBus.emit('auth.success', {
+                        provider: provider,
+                        user: result.user
+                    });
+                }
+
+                // Disparar evento nativo para otras partes de la app
+                window.dispatchEvent(new CustomEvent('auth:login', {
+                    detail: { user: result.user, provider }
+                }));
+
+                console.log('[UNIFIED-AUTH] ✅ Login exitoso:', result.user.email || result.user.username);
 
                 return result;
 
             } catch (error) {
                 console.error(`[UNIFIED-AUTH] ❌ Error en login con ${provider}:`, error);
 
-                eventBus.emit('auth.error', {
-                    provider: provider,
-                    error: error.message
-                });
+                if (typeof eventBus !== 'undefined') {
+                    eventBus.emit('auth.error', {
+                        provider: provider,
+                        error: error.message
+                    });
+                }
 
                 throw error;
             }
+        }
+
+        /**
+         * Login específico para admin (compatible con sistema existente)
+         */
+        async adminLogin(credentials) {
+            const { username, password, rememberMe = false } = credentials;
+
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, rememberMe })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Credenciales inválidas');
+            }
+
+            const data = await response.json();
+
+            // Verificar 2FA requerido
+            if (data.requires2FA) {
+                return {
+                    requires2FA: true,
+                    userId: data.userId,
+                    user: data.user
+                };
+            }
+
+            const result = {
+                provider: 'email',
+                user: data.user,
+                tokens: data.tokens,
+                remember: rememberMe
+            };
+
+            this.saveTokens(result);
+            this.saveSession(result);
+            this.currentUser = data.user;
+            this.scheduleTokenRefresh(data.tokens?.accessTokenExpiry);
+
+            window.dispatchEvent(new CustomEvent('auth:login', {
+                detail: { user: data.user, provider: 'email' }
+            }));
+
+            return result;
+        }
+
+        /**
+         * Login con Google OAuth (compatible con endpoint existente)
+         */
+        async googleLogin(credential) {
+            const response = await fetch('/api/auth/google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ credential })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Error en autenticación Google');
+            }
+
+            const data = await response.json();
+
+            const result = {
+                provider: 'google',
+                user: data.user,
+                tokens: data.tokens,
+                remember: true
+            };
+
+            this.saveTokens(result);
+            this.saveSession(result);
+            this.currentUser = data.user;
+            this.scheduleTokenRefresh(data.tokens?.accessTokenExpiry);
+
+            window.dispatchEvent(new CustomEvent('auth:login', {
+                detail: { user: data.user, provider: 'google' }
+            }));
+
+            return result;
         }
 
         /**
@@ -435,21 +538,149 @@
         async logout() {
             console.log('[UNIFIED-AUTH] 🚪 Cerrando sesión...');
 
-            // Limpiar sesión
+            // Intentar invalidar token en el servidor
+            try {
+                const token = this.getToken();
+                if (token) {
+                    await fetch('/api/auth/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                }
+            } catch (e) {
+                console.warn('[UNIFIED-AUTH] No se pudo invalidar token en servidor:', e);
+            }
+
+            // Limpiar todo localmente
             this.clearSession();
             this.currentUser = null;
+            this.cancelTokenRefresh();
 
             // Emit evento
-            eventBus.emit('auth.logout');
+            if (typeof eventBus !== 'undefined') {
+                eventBus.emit('auth.logout');
+            }
+
+            window.dispatchEvent(new CustomEvent('auth:logout'));
 
             console.log('[UNIFIED-AUTH] ✅ Sesión cerrada');
+        }
+
+        /**
+         * Obtener token de acceso actual
+         */
+        getToken() {
+            return localStorage.getItem(this.tokenKey) ||
+                sessionStorage.getItem(this.tokenKey) ||
+                localStorage.getItem('token') || // Compatibilidad con sistema antiguo
+                localStorage.getItem('authToken');
+        }
+
+        /**
+         * Guardar tokens
+         */
+        saveTokens(result) {
+            const storage = result.remember ? localStorage : sessionStorage;
+
+            if (result.tokens) {
+                storage.setItem(this.tokenKey, result.tokens.accessToken);
+                if (result.tokens.refreshToken) {
+                    storage.setItem(this.refreshTokenKey, result.tokens.refreshToken);
+                }
+                // Compatibilidad con sistema antiguo
+                storage.setItem('token', result.tokens.accessToken);
+                storage.setItem('authToken', result.tokens.accessToken);
+            } else if (result.token) {
+                storage.setItem(this.tokenKey, result.token);
+                storage.setItem('token', result.token);
+            }
+        }
+
+        /**
+         * Refrescar token automáticamente
+         */
+        async refreshToken() {
+            const refreshToken = localStorage.getItem(this.refreshTokenKey) ||
+                sessionStorage.getItem(this.refreshTokenKey);
+
+            if (!refreshToken) {
+                console.log('[UNIFIED-AUTH] No hay refresh token disponible');
+                return false;
+            }
+
+            try {
+                const response = await fetch('/api/auth/refresh', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refreshToken })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Refresh token inválido');
+                }
+
+                const data = await response.json();
+
+                // Actualizar tokens
+                const storage = localStorage.getItem(this.tokenKey) ? localStorage : sessionStorage;
+                storage.setItem(this.tokenKey, data.tokens.accessToken);
+                storage.setItem('token', data.tokens.accessToken);
+
+                if (data.tokens.refreshToken) {
+                    storage.setItem(this.refreshTokenKey, data.tokens.refreshToken);
+                }
+
+                // Programar próximo refresh
+                this.scheduleTokenRefresh(data.tokens.accessTokenExpiry);
+
+                console.log('[UNIFIED-AUTH] 🔄 Token renovado exitosamente');
+                return true;
+
+            } catch (error) {
+                console.error('[UNIFIED-AUTH] ❌ Error renovando token:', error);
+                // Si falla el refresh, cerrar sesión
+                this.logout();
+                return false;
+            }
+        }
+
+        /**
+         * Programar renovación automática de token
+         */
+        scheduleTokenRefresh(expiresAt) {
+            this.cancelTokenRefresh();
+
+            if (!expiresAt) return;
+
+            // Calcular cuando renovar (5 min antes de expirar)
+            const expiresMs = expiresAt * 1000;
+            const refreshAt = expiresMs - this.refreshThreshold;
+            const delay = refreshAt - Date.now();
+
+            if (delay > 0) {
+                console.log(`[UNIFIED-AUTH] ⏰ Token se renovará en ${Math.round(delay / 1000 / 60)} minutos`);
+                this.refreshTimer = setTimeout(() => this.refreshToken(), delay);
+            }
+        }
+
+        /**
+         * Cancelar renovación programada
+         */
+        cancelTokenRefresh() {
+            if (this.refreshTimer) {
+                clearTimeout(this.refreshTimer);
+                this.refreshTimer = null;
+            }
         }
 
         /**
          * Verificar si está autenticado
          */
         isAuthenticated() {
-            return this.currentUser !== null || this.loadSession() !== null;
+            return this.getToken() !== null;
         }
 
         /**
@@ -465,14 +696,32 @@
         }
 
         /**
+         * Obtener rol del usuario
+         */
+        getUserRole() {
+            const user = this.getCurrentUser();
+            return user?.role || null;
+        }
+
+        /**
+         * Verificar si tiene permiso
+         */
+        hasPermission(permission) {
+            const user = this.getCurrentUser();
+            return user?.permissions?.includes(permission) || false;
+        }
+
+        /**
          * Guardar sesión
          */
         saveSession(authResult) {
             const session = {
-                token: authResult.token,
                 user: authResult.user,
                 provider: authResult.provider,
-                expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 días
+                loginTime: new Date().toISOString(),
+                expiresAt: authResult.tokens?.accessTokenExpiry
+                    ? authResult.tokens.accessTokenExpiry * 1000
+                    : Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 días default
             };
 
             const storage = authResult.remember ? localStorage : sessionStorage;
@@ -487,7 +736,7 @@
         loadSession() {
             try {
                 const sessionData = localStorage.getItem(this.sessionKey) ||
-                                  sessionStorage.getItem(this.sessionKey);
+                    sessionStorage.getItem(this.sessionKey);
 
                 if (!sessionData) return null;
 
@@ -496,7 +745,10 @@
                 // Verificar si expiró
                 if (session.expiresAt && Date.now() > session.expiresAt) {
                     this.clearSession();
-                    eventBus.emit('auth.sessionExpired');
+                    if (typeof eventBus !== 'undefined') {
+                        eventBus.emit('auth.sessionExpired');
+                    }
+                    window.dispatchEvent(new CustomEvent('auth:expired'));
                     return null;
                 }
 
@@ -512,35 +764,89 @@
          * Limpiar sesión
          */
         clearSession() {
+            // Limpiar nuevas keys
             localStorage.removeItem(this.sessionKey);
+            localStorage.removeItem(this.tokenKey);
+            localStorage.removeItem(this.refreshTokenKey);
             sessionStorage.removeItem(this.sessionKey);
+            sessionStorage.removeItem(this.tokenKey);
+            sessionStorage.removeItem(this.refreshTokenKey);
+
+            // Limpiar keys antiguas para compatibilidad
+            localStorage.removeItem('token');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('jwt');
+            localStorage.removeItem('secure_admin_session');
+            localStorage.removeItem('student_auth_token');
+            localStorage.removeItem('current_student');
+            sessionStorage.removeItem('token');
+        }
+
+        /**
+         * Sincronizar sesión entre pestañas
+         */
+        setupStorageSync() {
+            window.addEventListener('storage', (event) => {
+                if (event.key === this.tokenKey || event.key === 'token') {
+                    if (event.newValue === null) {
+                        // Token eliminado en otra pestaña = logout
+                        console.log('[UNIFIED-AUTH] 🔄 Logout detectado en otra pestaña');
+                        this.currentUser = null;
+                        window.dispatchEvent(new CustomEvent('auth:logout'));
+                    } else if (event.oldValue === null && event.newValue) {
+                        // Nuevo login en otra pestaña
+                        console.log('[UNIFIED-AUTH] 🔄 Login detectado en otra pestaña');
+                        this.getCurrentUser();
+                        window.dispatchEvent(new CustomEvent('auth:login'));
+                    }
+                }
+            });
         }
 
         /**
          * Validar token con backend
          */
         async validateToken() {
-            const session = this.loadSession();
+            const token = this.getToken();
 
-            if (!session || !session.token) {
+            if (!token) {
                 return false;
             }
 
             try {
-                const response = await fetch('/api/auth/validate', {
-                    method: 'POST',
+                const response = await fetch('/api/auth/verify', {
+                    method: 'GET',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${session.token}`
+                        'Authorization': `Bearer ${token}`
                     }
                 });
 
-                return response.ok;
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.user) {
+                        this.currentUser = data.user;
+                    }
+                    return true;
+                }
+
+                return false;
 
             } catch (error) {
                 console.error('[UNIFIED-AUTH] ❌ Error validando token:', error);
                 return false;
             }
+        }
+
+        /**
+         * Obtener headers de autenticación para fetch
+         */
+        getAuthHeaders() {
+            const token = this.getToken();
+            if (!token) return {};
+
+            return {
+                'Authorization': `Bearer ${token}`
+            };
         }
     }
 
