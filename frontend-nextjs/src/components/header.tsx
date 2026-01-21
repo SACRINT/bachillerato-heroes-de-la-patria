@@ -62,8 +62,8 @@ export function Header() {
                                     key={item.name}
                                     href={item.href}
                                     className={`flex items-center space-x-1 rounded-lg px-3 py-2 text-sm font-medium transition ${isActive
-                                            ? "bg-primary-50 text-primary-600"
-                                            : "text-gray-700 hover:bg-gray-100"
+                                        ? "bg-primary-50 text-primary-600"
+                                        : "text-gray-700 hover:bg-gray-100"
                                         }`}
                                 >
                                     <Icon className="h-4 w-4" />
@@ -74,49 +74,112 @@ export function Header() {
                     </div>
 
                     {/* Auth Section */}
-                    <div className="hidden items-center space-x-4 md:flex">
-                        {isAuthenticated && user ? (
-                            <>
-                                {/* Dashboard Link */}
-                                <Link
-                                    href={dashboardLinks[user.role] || "/dashboard"}
-                                    className="flex items-center space-x-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-700"
-                                >
-                                    <LayoutDashboard className="h-4 w-4" />
-                                    <span>Dashboard</span>
-                                </Link>
+                    <div className="hidden items-center gap-6 md:flex">
+                        <Link
+                            href="/"
+                            className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600"
+                        >
+                            Inicio
+                        </Link>
+                        <Link
+                            href="/oferta-educativa"
+                            className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600"
+                        >
+                            Oferta Educativa
+                        </Link>
+                        <Link
+                            href="/nosotros"
+                            className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600"
+                        >
+                            Nosotros
+                        </Link>
+                        <Link
+                            href="/contacto"
+                            className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600"
+                        >
+                            Contacto
+                        </Link>
+                        <Link
+                            href="/inscripciones"
+                            className="rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:scale-105 hover:shadow-lg"
+                        >
+                            Inscripciones
+                        </Link>
+                    </div>
 
-                                {/* User Menu */}
-                                <div className="flex items-center space-x-3">
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-600">
-                                        {user.nombre.charAt(0)}
+                    {/* Auth Buttons */}
+                    <div className="hidden items-center gap-4 md:flex">
+                        {isAuthenticated ? (
+                            <div className="relative">
+                                <button
+                                    onClick={() => setDashboardMenuOpen(!dashboardMenuOpen)}
+                                    className="flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 transition-colors hover:bg-blue-100"
+                                >
+                                    <span>Mi Portal</span>
+                                    <ChevronDown className="h-4 w-4" />
+                                </button>
+                                {dashboardMenuOpen && (
+                                    <div className="absolute right-0 mt-2 w-48 rounded-lg border bg-white shadow-lg">
+                                        <Link
+                                            href={getDashboardUrl()}
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                            onClick={() => setDashboardMenuOpen(false)}
+                                        >
+                                            Dashboard
+                                        </Link>
+                                        <Link
+                                            href="/dashboard/estudiantes"
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                            onClick={() => setDashboardMenuOpen(false)}
+                                        >
+                                            Portal Estudiantes
+                                        </Link>
+                                        <Link
+                                            href="/dashboard/docentes"
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                            onClick={() => setDashboardMenuOpen(false)}
+                                        >
+                                            Portal Docentes
+                                        </Link>
+                                        <Link
+                                            href="/dashboard/padres"
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                            onClick={() => setDashboardMenuOpen(false)}
+                                        >
+                                            Portal Padres
+                                        </Link>
+                                        <Link
+                                            href="/dashboard/admin"
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                            onClick={() => setDashboardMenuOpen(false)}
+                                        >
+                                            Portal Admin
+                                        </Link>
+                                        <div className="border-t">
+                                            <button
+                                                onClick={() => {
+                                                    logout();
+                                                    setDashboardMenuOpen(false);
+                                                }}
+                                                className="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                                            >
+                                                Cerrar Sesión
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-sm font-medium text-gray-900">
-                                            {user.nombre}
-                                        </span>
-                                        <span className="text-xs text-gray-500 capitalize">{user.role}</span>
-                                    </div>
-                                    <button
-                                        onClick={logout}
-                                        className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
-                                        title="Cerrar sesión"
-                                    >
-                                        <LogOut className="h-5 w-5" />
-                                    </button>
-                                </div>
-                            </>
+                                )}
+                            </div>
                         ) : (
                             <>
                                 <Link
                                     href="/login"
-                                    className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+                                    className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600"
                                 >
                                     Iniciar Sesión
                                 </Link>
                                 <Link
                                     href="/register"
-                                    className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-700"
+                                    className="rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:scale-105 hover:shadow-lg"
                                 >
                                     Registrarse
                                 </Link>
@@ -124,77 +187,86 @@ export function Header() {
                         )}
                     </div>
 
-                    {/* Mobile menu button */}
+                    {/* Mobile Menu Button */}
                     <button
-                        className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 md:hidden"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        className="md:hidden"
                     >
-                        {mobileMenuOpen ? (
-                            <X className="h-6 w-6" />
-                        ) : (
-                            <Menu className="h-6 w-6" />
-                        )}
+                        {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                     </button>
                 </div>
 
-                {/* Mobile Navigation */}
+                {/* Mobile Menu */}
                 {mobileMenuOpen && (
                     <div className="border-t py-4 md:hidden">
-                        <div className="space-y-1">
-                            {navigation.map((item) => {
-                                const Icon = item.icon;
-                                const isActive = pathname === item.href;
-                                return (
-                                    <Link
-                                        key={item.name}
-                                        href={item.href}
-                                        className={`flex items-center space-x-2 rounded-lg px-4 py-2 ${isActive
-                                                ? "bg-primary-50 text-primary-600"
-                                                : "text-gray-700 hover:bg-gray-100"
-                                            }`}
-                                        onClick={() => setMobileMenuOpen(false)}
-                                    >
-                                        <Icon className="h-5 w-5" />
-                                        <span>{item.name}</span>
-                                    </Link>
-                                );
-                            })}
-                        </div>
-
-                        <div className="mt-4 space-y-2 border-t pt-4">
-                            {isAuthenticated && user ? (
+                        <div className="flex flex-col gap-4">
+                            <Link
+                                href="/"
+                                className="text-sm font-medium text-gray-700"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                Inicio
+                            </Link>
+                            <Link
+                                href="/oferta-educativa"
+                                className="text-sm font-medium text-gray-700"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                Oferta Educativa
+                            </Link>
+                            <Link
+                                href="/nosotros"
+                                className="text-sm font-medium text-gray-700"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                Nosotros
+                            </Link>
+                            <Link
+                                href="/contacto"
+                                className="text-sm font-medium text-gray-700"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                Contacto
+                            </Link>
+                            <Link
+                                href="/inscripciones"
+                                className="font-semibold text-emerald-600"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                Inscripciones
+                            </Link>
+                            <div className="my-2 border-t"></div>
+                            {isAuthenticated ? (
                                 <>
                                     <Link
-                                        href={dashboardLinks[user.role] || "/dashboard"}
-                                        className="flex w-full items-center justify-center space-x-2 rounded-lg bg-primary-600 px-4 py-2 text-white"
+                                        href={getDashboardUrl()}
+                                        className="text-sm font-medium text-blue-600"
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
-                                        <LayoutDashboard className="h-5 w-5" />
-                                        <span>Dashboard</span>
+                                        Mi Dashboard
                                     </Link>
                                     <button
                                         onClick={() => {
                                             logout();
                                             setMobileMenuOpen(false);
                                         }}
-                                        className="flex w-full items-center justify-center space-x-2 rounded-lg border border-gray-300 px-4 py-2 text-gray-700"
+                                        className="text-left text-sm font-medium text-red-600"
                                     >
-                                        <LogOut className="h-5 w-5" />
-                                        <span>Cerrar Sesión</span>
+                                        Cerrar Sesión
                                     </button>
                                 </>
                             ) : (
                                 <>
                                     <Link
                                         href="/login"
-                                        className="flex w-full justify-center rounded-lg border border-gray-300 px-4 py-2 text-gray-700"
+                                        className="text-sm font-medium text-gray-700"
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
                                         Iniciar Sesión
                                     </Link>
                                     <Link
                                         href="/register"
-                                        className="flex w-full justify-center rounded-lg bg-primary-600 px-4 py-2 text-white"
+                                        className="text-sm font-semibold text-blue-600"
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
                                         Registrarse
