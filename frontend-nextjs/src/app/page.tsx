@@ -36,43 +36,43 @@ export default function HomePage() {
             icon: Brain,
             title: 'IA Adaptativa',
             description: 'Rutas de aprendizaje personalizadas que se adaptan a tu ritmo',
-            color: 'from-purple-500 to-pink-500',
-            bgColor: 'bg-purple-50',
+            color: 'from-blue-600 to-cyan-500',
+            bgColor: 'bg-blue-50',
         },
         {
             icon: Trophy,
             title: 'Gamificación Total',
             description: 'Gana XP, desbloquea logros y compite en torneos',
-            color: 'from-yellow-500 to-orange-500',
-            bgColor: 'bg-yellow-50',
+            color: 'from-emerald-600 to-teal-500',
+            bgColor: 'bg-emerald-50',
         },
         {
             icon: Sparkles,
             title: 'Tutor IA 24/7',
             description: 'Asistente inteligente siempre disponible',
-            color: 'from-cyan-500 to-blue-500',
+            color: 'from-cyan-600 to-blue-500',
             bgColor: 'bg-cyan-50',
         },
         {
             icon: Users,
             title: 'Colaboración',
             description: 'Trabaja en equipo con compañeros y docentes',
-            color: 'from-green-500 to-teal-500',
-            bgColor: 'bg-green-50',
+            color: 'from-teal-600 to-emerald-500',
+            bgColor: 'bg-teal-50',
         },
         {
             icon: BarChart3,
             title: 'Analytics Avanzado',
             description: 'Seguimiento detallado de tu progreso académico',
-            color: 'from-indigo-500 to-purple-500',
+            color: 'from-indigo-600 to-blue-500',
             bgColor: 'bg-indigo-50',
         },
         {
             icon: Rocket,
             title: 'Aprendizaje Rápido',
             description: 'Metodología comprobada para resultados 3x más rápidos',
-            color: 'from-red-500 to-pink-500',
-            bgColor: 'bg-red-50',
+            color: 'from-blue-700 to-cyan-600',
+            bgColor: 'bg-blue-50',
         },
     ];
 
@@ -86,7 +86,7 @@ export default function HomePage() {
     return (
         <div className="min-h-screen bg-white">
             {/* Hero Section Premium */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500">
+            <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-cyan-900">
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0 overflow-hidden">
                     <div className="absolute -top-40 -right-40 h-80 w-80 animate-pulse rounded-full bg-white/10 blur-3xl" />
@@ -107,7 +107,7 @@ export default function HomePage() {
 
                             <h1 className="mb-6 text-5xl font-bold leading-tight md:text-6xl lg:text-7xl">
                                 Aprende Más Rápido
-                                <span className="mt-2 block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+                                <span className="mt-2 block bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
                                     Con IA Avanzada
                                 </span>
                             </h1>
@@ -121,7 +121,7 @@ export default function HomePage() {
                             <div className="flex flex-col gap-4 sm:flex-row">
                                 <Link
                                     href="/register"
-                                    className="group inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-purple-600 shadow-2xl transition-all hover:scale-105 hover:shadow-purple-500/50"
+                                    className="group inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-blue-900 shadow-2xl transition-all hover:scale-105 hover:shadow-blue-500/50"
                                 >
                                     Comenzar gratis
                                     <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -152,7 +152,7 @@ export default function HomePage() {
                                 {/* Main floating card */}
                                 <div className="absolute left-1/2 top-1/2 w-80 -translate-x-1/2 -translate-y-1/2 animate-float rounded-2xl bg-white p-6 shadow-2xl">
                                     <div className="mb-4 flex items-center gap-3">
-                                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-pink-500">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500">
                                             <Brain className="h-6 w-6 text-white" />
                                         </div>
                                         <div>
@@ -163,19 +163,19 @@ export default function HomePage() {
                                         </div>
                                     </div>
                                     <div className="mb-2 h-2 overflow-hidden rounded-full bg-gray-100">
-                                        <div className="h-full w-3/4 animate-pulse rounded-full bg-gradient-to-r from-purple-500 to-pink-500" />
+                                        <div className="h-full w-3/4 animate-pulse rounded-full bg-gradient-to-r from-blue-600 to-cyan-500" />
                                     </div>
                                     <div className="grid grid-cols-2 gap-3 pt-4">
-                                        <div className="rounded-lg bg-purple-50 p-3">
-                                            <div className="text-2xl font-bold text-purple-600">
+                                        <div className="rounded-lg bg-blue-50 p-3">
+                                            <div className="text-2xl font-bold text-blue-700">
                                                 12
                                             </div>
                                             <div className="text-xs text-gray-600">
                                                 Lecciones completadas
                                             </div>
                                         </div>
-                                        <div className="rounded-lg bg-pink-50 p-3">
-                                            <div className="text-2xl font-bold text-pink-600">8.5</div>
+                                        <div className="rounded-lg bg-emerald-50 p-3">
+                                            <div className="text-2xl font-bold text-emerald-700">8.5</div>
                                             <div className="text-xs text-gray-600">
                                                 Promedio general
                                             </div>
@@ -184,12 +184,12 @@ export default function HomePage() {
                                 </div>
 
                                 {/* Floating achievement badge */}
-                                <div className="absolute right-0 top-10 animate-float-delayed rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 p-4 shadow-xl delay-300">
+                                <div className="absolute right-0 top-10 animate-float-delayed rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 p-4 shadow-xl delay-300">
                                     <Trophy className="h-10 w-10 text-white" />
                                 </div>
 
                                 {/* Floating XP badge */}
-                                <div className="absolute bottom-20 left-0 animate-float rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 p-4 shadow-xl delay-500">
+                                <div className="absolute bottom-20 left-0 animate-float rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 p-4 shadow-xl delay-500">
                                     <Zap className="h-8 w-8 text-white" />
                                     <div className="mt-1 text-xs font-bold text-white">+250 XP</div>
                                 </div>
@@ -218,12 +218,12 @@ export default function HomePage() {
             <section className="py-20">
                 <div className="container">
                     <div className="mb-16 text-center">
-                        <div className="mb-4 inline-block rounded-full bg-purple-100 px-4 py-2 text-sm font-semibold text-purple-600">
+                        <div className="mb-4 inline-block rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-700">
                             🚀 Características Principales
                         </div>
                         <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">
                             Todo lo que necesitas para
-                            <span className="block bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                            <span className="block bg-gradient-to-r from-blue-700 to-cyan-600 bg-clip-text text-transparent">
                                 triunfar académicamente
                             </span>
                         </h2>
@@ -240,8 +240,8 @@ export default function HomePage() {
                                 <div
                                     key={index}
                                     className={`group relative overflow-hidden rounded-2xl border-2 p-8 transition-all duration-500 ${isActive
-                                            ? 'scale-105 border-purple-300 shadow-2xl shadow-purple-200'
-                                            : 'border-gray-100 hover:border-purple-200 hover:shadow-xl'
+                                        ? 'scale-105 border-blue-300 shadow-2xl shadow-blue-200'
+                                        : 'border-gray-100 hover:border-blue-200 hover:shadow-xl'
                                         }`}
                                     onMouseEnter={() => setActiveFeature(index)}
                                 >
@@ -266,7 +266,7 @@ export default function HomePage() {
 
                                     {/* Hover arrow */}
                                     <div
-                                        className={`mt-4 flex items-center gap-2 text-purple-600 transition-all ${isActive ? 'translate-x-2' : 'group-hover:translate-x-2'}`}
+                                        className={`mt-4 flex items-center gap-2 text-blue-700 transition-all ${isActive ? 'translate-x-2' : 'group-hover:translate-x-2'}`}
                                     >
                                         <span className="text-sm font-semibold">Explorar</span>
                                         <ArrowRight className="h-4 w-4" />
@@ -279,7 +279,7 @@ export default function HomePage() {
             </section>
 
             {/* Stats Section with Visual Bars */}
-            <section className="bg-gradient-to-br from-gray-50 to-purple-50 py-20">
+            <section className="bg-gradient-to-br from-slate-50 to-blue-50 py-20">
                 <div className="container">
                     <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
                         {stats.map((stat, index) => {
@@ -289,8 +289,8 @@ export default function HomePage() {
                                     key={index}
                                     className="group relative overflow-hidden rounded-2xl bg-white p-8 shadow-lg transition-all hover:scale-105 hover:shadow-2xl"
                                 >
-                                    <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 -translate-y-8 rounded-full bg-purple-100 opacity-20 transition-transform group-hover:scale-150" />
-                                    <Icon className="mb-4 h-10 w-10 text-purple-600" />
+                                    <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 -translate-y-8 rounded-full bg-blue-100 opacity-20 transition-transform group-hover:scale-150" />
+                                    <Icon className="mb-4 h-10 w-10 text-blue-700" />
                                     <div className="mb-2 text-4xl font-bold text-gray-900">
                                         {stat.value}
                                     </div>
@@ -305,7 +305,7 @@ export default function HomePage() {
             {/* Testimonial Section */}
             <section className="py-20">
                 <div className="container">
-                    <div className="mx-auto max-w-4xl rounded-3xl bg-gradient-to-br from-purple-600 to-pink-600 p-12 text-white shadow-2xl">
+                    <div className="mx-auto max-w-4xl rounded-3xl bg-gradient-to-br from-blue-700 via-cyan-700 to-teal-600 p-12 text-white shadow-2xl">
                         <div className="mb-6 flex gap-1">
                             {[...Array(5)].map((_, i) => (
                                 <Star key={i} className="h-6 w-6 fill-yellow-300 text-yellow-300" />
@@ -322,7 +322,7 @@ export default function HomePage() {
                             </div>
                             <div>
                                 <div className="font-semibold">María Rodríguez</div>
-                                <div className="text-purple-200">Estudiante de 3er Semestre</div>
+                                <div className="text-cyan-200">Estudiante de 3er Semestre</div>
                             </div>
                         </div>
                     </div>
@@ -330,23 +330,23 @@ export default function HomePage() {
             </section>
 
             {/* CTA Final */}
-            <section className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 py-20 text-white">
+            <section className="bg-gradient-to-br from-slate-900 via-blue-900 to-cyan-900 py-20 text-white">
                 <div className="container text-center">
                     <Award className="mx-auto mb-6 h-16 w-16" />
                     <h2 className="mb-4 text-4xl font-bold md:text-5xl">
                         ¿Listo para el siguiente nivel?
                     </h2>
-                    <p className="mb-8 text-xl text-purple-100">
+                    <p className="mb-8 text-xl text-cyan-100">
                         Únete a 10,000+ estudiantes que ya están usando IA para aprender mejor
                     </p>
                     <Link
                         href="/register"
-                        className="inline-flex items-center gap-2 rounded-xl bg-white px-10 py-5 text-lg font-bold text-purple-600 shadow-2xl transition-all hover:scale-105 hover:shadow-purple-500/50"
+                        className="inline-flex items-center gap-2 rounded-xl bg-white px-10 py-5 text-lg font-bold text-blue-900 shadow-2xl transition-all hover:scale-105 hover:shadow-cyan-500/50"
                     >
                         Comenzar ahora gratis
                         <Rocket className="h-5 w-5" />
                     </Link>
-                    <p className="mt-4 text-sm text-purple-200">
+                    <p className="mt-4 text-sm text-cyan-200">
                         No requiere tarjeta de crédito • Cancela cuando quieras
                     </p>
                 </div>
