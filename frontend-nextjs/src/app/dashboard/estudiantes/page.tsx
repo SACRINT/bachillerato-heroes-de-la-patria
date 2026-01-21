@@ -1,237 +1,261 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/auth.store";
-import { Loader2 } from "lucide-react";
+import { Trophy, TrendingUp, BookOpen, Zap, Calendar, Award } from 'lucide-react';
+import DashboardLayout from '@/components/DashboardLayout';
+import StatsCard from '@/components/StatsCard';
 
-export default function DashboardEstudiantesPage() {
-    const router = useRouter();
-    const { user, isAuthenticated } = useAuthStore();
+export default function EstudiantesDashboard() {
+    // TODO: Replace with real data from React Query
+    const stats = [
+        {
+            title: 'Promedio General',
+            value: '8.7',
+            icon: TrendingUp,
+            trend: { value: 5.2, isPositive: true },
+            iconColor: 'text-blue-600',
+            iconBgColor: 'bg-blue-100',
+        },
+        {
+            title: 'Tareas Pendientes',
+            value: '3',
+            icon: Calendar,
+            iconColor: 'text-orange-600',
+            iconBgColor: 'bg-orange-100',
+        },
+        {
+            title: 'Racha de Estudio',
+            value: '12 días',
+            icon: Zap,
+            trend: { value: 8.3, isPositive: true },
+            iconColor: 'text-emerald-600',
+            iconBgColor: 'bg-emerald-100',
+        },
+        {
+            title: 'IA Coins',
+            value: '2,450',
+            icon: Trophy,
+            trend: { value: 15.0, isPositive: true },
+            iconColor: 'text-cyan-600',
+            iconBgColor: 'bg-cyan-100',
+        },
+    ];
 
-    useEffect(() => {
-        if (!isAuthenticated) {
-            router.push("/login");
-        } else if (user && user.role !== "student") {
-            // Redirect to appropriate dashboard
-            router.push(`/dashboard/${user.role === "teacher" ? "docentes" : user.role === "admin" ? "admin" : "padres"}`);
-        }
-    }, [isAuthenticated, user, router]);
+    const recentGrades = [
+        { materia: 'Matemáticas', calificacion: 9.5, fecha: '15 Ene 2026', tipo: 'Examen' },
+        { materia: 'Química', calificacion: 8.8, fecha: '14 Ene 2026', tipo: 'Tarea' },
+        { materia: 'Historia', calificacion: 9.0, fecha: '13 Ene 2026', tipo: 'Participación' },
+        { materia: 'Inglés', calificacion: 8.5, fecha: '12 Ene 2026', tipo: 'Examen' },
+    ];
 
-    if (!isAuthenticated || !user) {
-        return (
-            <div className="flex min-h-screen items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
-            </div>
-        );
-    }
+    const upcomingAssignments = [
+        {
+            materia: 'Física',
+            titulo: 'Laboratorio de Cinemática',
+            fecha: '22 Ene 2026',
+            prioridad: 'alta',
+        },
+        {
+            materia: 'Literatura',
+            titulo: 'Ensayo sobre el Modernismo',
+            fecha: '24 Ene 2026',
+            prioridad: 'media',
+        },
+        {
+            materia: 'Programación',
+            titulo: 'Proyecto Final - Sistema CRUD',
+            fecha: '28 Ene 2026',
+            prioridad: 'alta',
+        },
+    ];
+
+    const achievements = [
+        { titulo: 'Perfect Score', descripcion: 'Obtén un 10 en cualquier examen', icon: Award },
+        {
+            titulo: 'Racha de Fuego',
+            descripcion: '7 días consecutivos estudiando',
+            icon: Zap,
+            unlocked: true,
+        },
+        {
+            titulo: 'Bookworm',
+            descripcion: 'Completa 20 lecciones',
+            icon: BookOpen,
+            unlocked: true,
+        },
+    ];
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Hero Section */}
-            <div className="bg-gradient-to-r from-primary-600 to-primary-800 text-white">
-                <div className="container py-12">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="mb-2 text-3xl font-bold">
-                                ¡Hola, {user.nombre}! 👋
-                            </h1>
-                            <p className="text-primary-100">
-                                Bienvenido a tu portal de estudiante
-                            </p>
-                        </div>
-                        <div className="hidden md:block">
-                            <div className="rounded-lg bg-white/10 px-6 py-4 backdrop-blur-sm">
-                                <div className="text-sm text-primary-100">Nivel Actual</div>
-                                <div className="text-2xl font-bold">Nivel 5</div>
-                                <div className="mt-2 h-2 w-32 rounded-full bg-white/20">
-                                    <div className="h-full w-3/4 rounded-full bg-white"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="container py-8">
-                {/* Stats Cards */}
-                <div className="mb-8 grid gap-6 md:grid-cols-4">
-                    <div className="card">
-                        <div className="mb-2 text-sm font-medium text-gray-600">
-                            Promedio General
-                        </div>
-                        <div className="text-3xl font-bold text-primary-600">8.5</div>
-                        <div className="mt-1 text-xs text-green-600">↑ +0.3 este mes</div>
-                    </div>
-
-                    <div className="card">
-                        <div className="mb-2 text-sm font-medium text-gray-600">
-                            Tareas Pendientes
-                        </div>
-                        <div className="text-3xl font-bold text-orange-600">5</div>
-                        <div className="mt-1 text-xs text-gray-600">3 con fecha próxima</div>
-                    </div>
-
-                    <div className="card">
-                        <div className="mb-2 text-sm font-medium text-gray-600">
-                            Racha de Estudio
-                        </div>
-                        <div className="text-3xl font-bold text-purple-600">12 días</div>
-                        <div className="mt-1 text-xs text-purple-600">🔥 ¡Sigue así!</div>
-                    </div>
-
-                    <div className="card">
-                        <div className="mb-2 text-sm font-medium text-gray-600">
-                            IA Coins
-                        </div>
-                        <div className="text-3xl font-bold text-yellow-600">2,450</div>
-                        <div className="mt-1 text-xs text-gray-600">+150 esta semana</div>
-                    </div>
+        <DashboardLayout>
+            <div className="space-y-6">
+                {/* Welcome Header */}
+                <div className="rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 p-6 text-white md:p-8">
+                    <h1 className="text-3xl font-bold md:text-4xl">
+                        ¡Hola, <span className="text-cyan-200">Estudiante</span>!
+                    </h1>
+                    <p className="mt-2 text-blue-100">
+                        Aquí está tu progreso del día. ¡Sigue así! 🚀
+                    </p>
                 </div>
 
-                <div className="grid gap-6 lg:grid-cols-3">
-                    {/* Left Column */}
-                    <div className="space-y-6 lg:col-span-2">
-                        {/* Calificaciones */}
-                        <div className="card">
-                            <h2 className="mb-4 text-xl font-bold">Mis Calificaciones</h2>
-                            <div className="space-y-3">
-                                {[
-                                    { materia: "Matemáticas", cal: 9.0, color: "green" },
-                                    { materia: "Física", cal: 8.5, color: "blue" },
-                                    { materia: "Química", cal: 8.0, color: "blue" },
-                                    { materia: "Inglés", cal: 9.5, color: "green" },
-                                    { materia: "Historia", cal: 7.5, color: "yellow" },
-                                ].map((item) => (
-                                    <div
-                                        key={item.materia}
-                                        className="flex items-center justify-between rounded-lg border p-3"
-                                    >
-                                        <div>
-                                            <div className="font-medium">{item.materia}</div>
-                                            <div className="text-sm text-gray-500">Parcial 2</div>
+                {/* Stats Grid */}
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    {stats.map((stat, index) => (
+                        <StatsCard key={index} {...stat} />
+                    ))}
+                </div>
+
+                {/* Main Content Grid */}
+                <div className="grid gap-6 lg:grid-cols-2">
+                    {/* Recent Grades */}
+                    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                        <div className="mb-4 flex items-center justify-between">
+                            <h2 className="text-lg font-semibold text-gray-900">
+                                Calificaciones Recientes
+                            </h2>
+                            <a
+                                href="/dashboard/estudiantes/calificaciones"
+                                className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                            >
+                                Ver todas →
+                            </a>
+                        </div>
+                        <div className="space-y-3">
+                            {recentGrades.map((grade, index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-center justify-between rounded-lg border border-gray-100 p-3 transition-colors hover:bg-gray-50"
+                                >
+                                    <div className="flex-1">
+                                        <div className="font-medium text-gray-900">
+                                            {grade.materia}
                                         </div>
-                                        <div
-                                            className={`text-2xl font-bold ${item.color === "green"
-                                                    ? "text-green-600"
-                                                    : item.color === "blue"
-                                                        ? "text-blue-600"
-                                                        : "text-yellow-600"
-                                                }`}
-                                        >
-                                            {item.cal}
+                                        <div className="text-sm text-gray-500">
+                                            {grade.tipo} • {grade.fecha}
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Tareas Pendientes */}
-                        <div className="card">
-                            <h2 className="mb-4 text-xl font-bold">Tareas Pendientes</h2>
-                            <div className="space-y-3">
-                                {[
-                                    {
-                                        titulo: "Ensayo sobre la Revolución",
-                                        materia: "Historia",
-                                        fecha: "25 Ene",
-                                        urgente: true,
-                                    },
-                                    {
-                                        titulo: "Ejercicios de Derivadas",
-                                        materia: "Matemáticas",
-                                        fecha: "28 Ene",
-                                        urgente: false,
-                                    },
-                                    {
-                                        titulo: "Laboratorio de Química",
-                                        materia: "Química",
-                                        fecha: "30 Ene",
-                                        urgente: false,
-                                    },
-                                ].map((tarea, idx) => (
                                     <div
-                                        key={idx}
-                                        className="flex items-center justify-between rounded-lg border p-3"
+                                        className={`text-2xl font-bold ${grade.calificacion >= 9
+                                                ? 'text-emerald-600'
+                                                : grade.calificacion >= 8
+                                                    ? 'text-blue-600'
+                                                    : 'text-orange-600'
+                                            }`}
                                     >
-                                        <div className="flex items-center space-x-3">
-                                            <input
-                                                type="checkbox"
-                                                className="h-5 w-5 rounded border-gray-300 text-primary-600"
-                                            />
-                                            <div>
-                                                <div className="font-medium">{tarea.titulo}</div>
-                                                <div className="text-sm text-gray-500">{tarea.materia}</div>
+                                        {grade.calificacion}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Upcoming Assignments */}
+                    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                        <div className="mb-4 flex items-center justify-between">
+                            <h2 className="text-lg font-semibold text-gray-900">
+                                Tareas Pendientes
+                            </h2>
+                            <a
+                                href="/dashboard/estudiantes/tareas"
+                                className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                            >
+                                Ver todas →
+                            </a>
+                        </div>
+                        <div className="space-y-3">
+                            {upcomingAssignments.map((assignment, index) => (
+                                <div
+                                    key={index}
+                                    className="rounded-lg border border-gray-100 p-3 transition-colors hover:bg-gray-50"
+                                >
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex-1">
+                                            <div className="font-medium text-gray-900">
+                                                {assignment.titulo}
+                                            </div>
+                                            <div className="mt-1 text-sm text-gray-500">
+                                                {assignment.materia}
                                             </div>
                                         </div>
                                         <span
-                                            className={`rounded-full px-3 py-1 text-xs font-medium ${tarea.urgente
-                                                    ? "bg-red-100 text-red-700"
-                                                    : "bg-gray-100 text-gray-700"
+                                            className={`rounded-full px-2 py-1 text-xs font-medium ${assignment.prioridad === 'alta'
+                                                    ? 'bg-red-100 text-red-700'
+                                                    : 'bg-yellow-100 text-yellow-700'
                                                 }`}
                                         >
-                                            {tarea.fecha}
+                                            {assignment.prioridad === 'alta' ? 'Urgente' : 'Pronto'}
                                         </span>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right Column */}
-                    <div className="space-y-6">
-                        {/* Horario de Hoy */}
-                        <div className="card">
-                            <h2 className="mb-4 text-xl font-bold">Horario de Hoy</h2>
-                            <div className="space-y-3">
-                                {[
-                                    { hora: "08:00", materia: "Matemáticas", salon: "A-201" },
-                                    { hora: "09:00", materia: "Física", salon: "B-104" },
-                                    { hora: "10:00", materia: "Química", salon: "Lab-01" },
-                                    { hora: "11:00", materia: "Inglés", salon: "A-305" },
-                                ].map((clase, idx) => (
-                                    <div
-                                        key={idx}
-                                        className="flex items-center space-x-3 rounded-lg bg-gray-50 p-3"
-                                    >
-                                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-100 text-sm font-bold text-primary-600">
-                                            {clase.hora}
-                                        </div>
-                                        <div>
-                                            <div className="font-medium">{clase.materia}</div>
-                                            <div className="text-sm text-gray-500">{clase.salon}</div>
-                                        </div>
+                                    <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
+                                        <Calendar className="h-4 w-4" />
+                                        {assignment.fecha}
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Logros Recientes */}
-                        <div className="card">
-                            <h2 className="mb-4 text-xl font-bold">Logros Recientes</h2>
-                            <div className="space-y-3">
-                                {[
-                                    { icon: "🏆", nombre: "Racha de 10 días", puntos: "+100" },
-                                    { icon: "📚", nombre: "5 Tareas Completadas", puntos: "+50" },
-                                    { icon: "⭐", nombre: "Calificación Perfecta", puntos: "+200" },
-                                ].map((logro, idx) => (
-                                    <div
-                                        key={idx}
-                                        className="flex items-center justify-between rounded-lg bg-gradient-to-r from-yellow-50 to-orange-50 p-3"
-                                    >
-                                        <div className="flex items-center space-x-3">
-                                            <div className="text-2xl">{logro.icon}</div>
-                                            <div className="font-medium">{logro.nombre}</div>
-                                        </div>
-                                        <span className="font-bold text-yellow-600">{logro.puntos}</span>
-                                    </div>
-                                ))}
-                            </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
+
+                {/* Achievements */}
+                <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                    <div className="mb-4 flex items-center justify-between">
+                        <h2 className="text-lg font-semibold text-gray-900">Logros Recientes</h2>
+                        <a
+                            href="/dashboard/estudiantes/logros"
+                            className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                        >
+                            Ver todos →
+                        </a>
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {achievements.map((achievement, index) => {
+                            const Icon = achievement.icon;
+                            return (
+                                <div
+                                    key={index}
+                                    className={`rounded-lg border p-4 transition-all ${achievement.unlocked
+                                            ? 'border-emerald-200 bg-emerald-50'
+                                            : 'border-gray-200 bg-gray-50 opacity-60'
+                                        }`}
+                                >
+                                    <div className="flex items-start gap-3">
+                                        <div
+                                            className={`flex h-10 w-10 items-center justify-center rounded-lg ${achievement.unlocked
+                                                    ? 'bg-emerald-200'
+                                                    : 'bg-gray-200'
+                                                }`}
+                                        >
+                                            <Icon
+                                                className={`h-5 w-5 ${achievement.unlocked
+                                                        ? 'text-emerald-700'
+                                                        : 'text-gray-500'
+                                                    }`}
+                                            />
+                                        </div>
+                                        <div className="flex-1">
+                                            <div
+                                                className={`font-medium ${achievement.unlocked
+                                                        ? 'text-emerald-900'
+                                                        : 'text-gray-600'
+                                                    }`}
+                                            >
+                                                {achievement.titulo}
+                                            </div>
+                                            <div
+                                                className={`text-sm ${achievement.unlocked
+                                                        ? 'text-emerald-700'
+                                                        : 'text-gray-500'
+                                                    }`}
+                                            >
+                                                {achievement.descripcion}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
             </div>
-        </div>
+        </DashboardLayout>
     );
 }
