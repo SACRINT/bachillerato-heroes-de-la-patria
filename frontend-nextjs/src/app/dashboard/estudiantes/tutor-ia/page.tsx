@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Sparkles, AlertCircle } from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
+import { useSendChatMessage } from '@/hooks/use-api';
 
 interface Message {
     id: string;
@@ -22,8 +23,8 @@ export default function AITutorPage() {
         },
     ]);
     const [input, setInput] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const sendMessage = useSendChatMessage();
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -34,7 +35,7 @@ export default function AITutorPage() {
     }, [messages]);
 
     const handleSend = async () => {
-        if (!input.trim() || isLoading) return;
+        if (!input.trim() || sendMessage.isPending) return;
 
         const userMessage: Message = {
             id: Date.now().toString(),
@@ -44,20 +45,28 @@ export default function AITutorPage() {
         };
 
         setMessages((prev) => [...prev, userMessage]);
+        const currentInput = input;
         setInput('');
-        setIsLoading(true);
 
-        // TODO: Connect to /api/ai-chatbot
-        setTimeout(() => {
+        try {
+            const response = await sendMessage.mutateAsync(currentInput);
+
             const aiResponse: Message = {
                 id: (Date.now() + 1).toString(),
                 role: 'assistant',
-                content: `Entiendo que necesitas ayuda con "${input}". Aquí está mi explicación:\n\nEste es un sistema de respuesta simulada. En producción, me conectaré con el backend para darte respuestas personalizadas basadas en tu historial académico y estilo de aprendizaje.`,
+                content: response.message || response.response || 'Lo siento, no pude procesar tu solicitud.',
                 timestamp: new Date(),
             };
             setMessages((prev) => [...prev, aiResponse]);
-            setIsLoading(false);
-        }, 1500);
+        } catch (error) {
+            const errorMessage: Message = {
+                id: (Date.now() + 1).toString(),
+                role: 'assistant',
+                content: 'Lo siento, hubo un error al conectar con el servidor. Por favor intenta de nuevo.',
+                timestamp: new Date(),
+            };
+            setMessages((prev) => [...prev, errorMessage]);
+        }
     };
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -94,9 +103,8 @@ export default function AITutorPage() {
                 <div className="mb-4 flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4">
                     <AlertCircle className="h-5 w-5 text-blue-600" />
                     <div className="flex-1 text-sm text-blue-900">
-                        <strong>Modo de prueba:</strong> Este chatbot funciona con respuestas
-                        simuladas. En producción, se conectará con el backend (
-                        <code className="rounded bg-blue-100 px-1 py-0.5">/api/ai-chatbot</code>) para
+                        <strong>Sistema conectado al backend:</strong> Este chatbot ahora se conecta con{' '}
+                        <code className="rounded bg-blue-100 px-1 py-0.5">/api/ai-chatbot</code> para
                         darte respuestas personalizadas basadas en tu perfil académico.
                     </div>
                 </div>
@@ -141,7 +149,7 @@ export default function AITutorPage() {
                                 )}
                             </div>
                         ))}
-                        {isLoading && (
+                        {sendMessage.isPending && (
                             <div className="flex gap-3">
                                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
                                     <Bot className="h-6 w-6 text-white" />
@@ -189,11 +197,11 @@ export default function AITutorPage() {
                         onKeyPress={handleKeyPress}
                         placeholder="Escribe tu pregunta aquí... (Shift+Enter para nueva línea)"
                         className="flex-1 rounded-lg border border-gray-300 px-4 py-3 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
-                        disabled={isLoading}
+                        disabled={sendMessage.isPending}
                     />
                     <button
                         onClick={handleSend}
-                        disabled={!input.trim() || isLoading}
+                        disabled={!input.trim() || sendMessage.isPending}
                         className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 font-semibold text-white transition-all hover:scale-105 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         <Send className="h-5 w-5" />
