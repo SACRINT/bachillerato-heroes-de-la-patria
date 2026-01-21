@@ -53,6 +53,12 @@ export default function Header() {
                             Nosotros
                         </Link>
                         <Link
+                            href="/blog"
+                            className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600"
+                        >
+                            Blog
+                        </Link>
+                        <Link
                             href="/contacto"
                             className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600"
                         >
@@ -179,6 +185,13 @@ export default function Header() {
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Nosotros
+                            </Link>
+                            <Link
+                                href="/blog"
+                                className="text-sm font-medium text-gray-700"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                Blog
                             </Link>
                             <Link
                                 href="/contacto"

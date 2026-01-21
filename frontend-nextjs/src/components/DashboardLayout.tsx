@@ -4,19 +4,22 @@ import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-    Home,
-    BookOpen,
-    Trophy,
-    MessageSquare,
-    Calendar,
     Award,
-    Settings,
+    Bell,
+    BookOpen,
+    Bot,
+    Calendar,
+    ChevronDown,
+    CreditCard,
+    FileText,
+    Home,
     LogOut,
     Menu,
-    X,
-    Bell,
+    MessageSquare,
+    Settings,
+    Trophy,
     User,
-    ChevronDown,
+    X,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
 
@@ -31,11 +34,13 @@ interface NavItem {
 }
 
 const studentNavItems: NavItem[] = [
-    { label: 'Inicio', href: '/dashboard/estudiantes', icon: Home },
-    { label: 'Mis Calificaciones', href: '/dashboard/estudiantes/calificaciones', icon: BookOpen },
-    { label: 'Tareas', href: '/dashboard/estudiantes/tareas', icon: Calendar },
+    { label: 'Dashboard', href: '/dashboard/estudiantes', icon: Home },
+    { label: 'Calificaciones', href: '/dashboard/estudiantes/calificaciones', icon: BookOpen },
+    { label: 'Tareas', href: '/dashboard/estudiantes/tareas', icon: FileText },
+    { label: 'Horario', href: '/dashboard/estudiantes/horario', icon: Calendar },
     { label: 'IA Coins', href: '/dashboard/estudiantes/iacoins', icon: Trophy },
-    { label: 'Mensajes', href: '/dashboard/estudiantes/mensajes', icon: MessageSquare },
+    { label: 'Tutor IA', href: '/dashboard/estudiantes/tutor-ia', icon: Bot },
+    { label: 'Pagos', href: '/dashboard/estudiantes/pagos', icon: CreditCard },
     { label: 'Logros', href: '/dashboard/estudiantes/logros', icon: Award },
 ];
 
@@ -91,8 +96,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                 key={item.href}
                                 href={item.href}
                                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive
-                                        ? 'bg-white/10 text-white'
-                                        : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                                    ? 'bg-white/10 text-white'
+                                    : 'text-slate-300 hover:bg-white/5 hover:text-white'
                                     }`}
                             >
                                 <Icon className="h-5 w-5" />
