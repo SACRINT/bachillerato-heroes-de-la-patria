@@ -1,41 +1,21 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useAuthStore } from "@/store/auth.store";
-import {
-    Home,
-    BookOpen,
-    Trophy,
-    GraduationCap,
-    Users,
-    Mail,
-    Menu,
-    X,
-    LogOut,
-    User,
-    LayoutDashboard,
-} from "lucide-react";
-import { useState } from "react";
+import Link from 'next/link';
+import { useState } from 'react';
+import { Menu, X, ChevronDown } from 'lucide-react';
+import { useAuthStore } from '@/store/auth.store';
 
-export function Header() {
-    const pathname = usePathname();
-    const { user, isAuthenticated, logout } = useAuthStore();
+export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [dashboardMenuOpen, setDashboardMenuOpen] = useState(false);
+    const { isAuthenticated, user, logout } = useAuthStore();
 
-    const navigation = [
-        { name: "Inicio", href: "/", icon: Home },
-        { name: "Oferta Educativa", href: "/oferta-educativa", icon: BookOpen },
-        { name: "Servicios", href: "/servicios", icon: GraduationCap },
-        { name: "Comunidad", href: "/comunidad", icon: Users },
-        { name: "Contacto", href: "/contacto", icon: Mail },
-    ];
-
-    const dashboardLinks: Record<string, string> = {
-        student: "/dashboard/estudiantes",
-        teacher: "/dashboard/docentes",
-        parent: "/dashboard/padres",
-        admin: "/dashboard/admin",
+    const getDashboardUrl = () => {
+        const role = user?.role?.toLowerCase() || 'estudiante';
+        if (role.includes('admin')) return '/dashboard/admin';
+        if (role.includes('docente') || role.includes('profesor')) return '/dashboard/docentes';
+        if (role.includes('padre') || role.includes('tutor')) return '/dashboard/padres';
+        return '/dashboard/estudiantes';
     };
 
     return (
@@ -43,37 +23,16 @@ export function Header() {
             <nav className="container mx-auto px-4">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-2">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-600 text-white font-bold">
-                            BGE
+                    <Link href="/" className="flex items-center gap-2">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-cyan-600">
+                            <span className="text-xl font-bold text-white">BGE</span>
                         </div>
-                        <span className="hidden font-bold text-gray-900 md:block">
+                        <span className="hidden text-lg font-bold text-gray-900 sm:block">
                             Héroes de la Patria
                         </span>
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden items-center space-x-1 md:flex">
-                        {navigation.map((item) => {
-                            const Icon = item.icon;
-                            const isActive = pathname === item.href;
-                            return (
-                                <Link
-                                    key={item.name}
-                                    href={item.href}
-                                    className={`flex items-center space-x-1 rounded-lg px-3 py-2 text-sm font-medium transition ${isActive
-                                        ? "bg-primary-50 text-primary-600"
-                                        : "text-gray-700 hover:bg-gray-100"
-                                        }`}
-                                >
-                                    <Icon className="h-4 w-4" />
-                                    <span>{item.name}</span>
-                                </Link>
-                            );
-                        })}
-                    </div>
-
-                    {/* Auth Section */}
                     <div className="hidden items-center gap-6 md:flex">
                         <Link
                             href="/"
