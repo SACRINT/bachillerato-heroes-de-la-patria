@@ -107,7 +107,12 @@ const refreshLimiter = rateLimit({
 // ============================================
 
 const loginValidation = [
+    body('email')
+        .optional()
+        .isEmail()
+        .withMessage('Email debe ser válido'),
     body('username')
+        .optional()
         .isLength({ min: 3 })
         .trim()
         .withMessage('Nombre de usuario mínimo 3 caracteres'),
@@ -118,7 +123,14 @@ const loginValidation = [
         .optional()
         .isBoolean()
         .withMessage('RememberMe debe ser verdadero o falso')
-];
+].concat([
+    body().custom((value, { req }) => {
+        if (!req.body.email && !req.body.username) {
+            throw new Error('Debes proporcionar email o username');
+        }
+        return true;
+    })
+]);
 
 const registerValidation = [
     body('email')
@@ -182,17 +194,25 @@ router.post('/login', loginLimiter, loginValidation, async (req: Request, res: R
             res.status(400).json({ success: false, error: 'Datos de entrada inválidos', details: errors.array() }); return;
         }
 
-        const { username, password, rememberMe = false } = req.body;
-        debugLog.log('AUTH', `Intento de login para username=${username}`);
+        // Aceptar email O username
+        const { email, username, password, rememberMe = false } = req.body;
+        const loginIdentifier = email || username;
 
-        const user = await authService.authenticateUser(username, password);
+        if (!loginIdentifier) {
+            res.status(400).json({ success: false, error: 'Email o username requerido' });
+            return;
+        }
+
+        debugLog.log('AUTH', `Intento de login para identifier=${loginIdentifier}`);
+
+        const user = await authService.authenticateUser(loginIdentifier, password);
 
         // ✅ SEMANA 25: Check 2FA
         // const has2FA = await twoFactorService.isEnabled(user.id);
         const has2FA = false; // TEMPORARILY DISABLED
 
         if (has2FA) {
-            debugLog.log('AUTH', `Usuario ${username} tiene 2FA habilitado - requiere verificación`);
+            debugLog.log('AUTH', `Usuario ${user.username} tiene 2FA habilitado - requiere verificación`);
             res.json({
                 success: true,
                 requires2FA: true,
@@ -217,11 +237,12 @@ router.post('/login', loginLimiter, loginValidation, async (req: Request, res: R
 
         const tokenPair = jwtUtils.generateTokenPair(userPayload, rememberMe);
 
-        debugLog.log('AUTH', `Login exitoso para username=${username}, email=${maskEmail(user.email)}, role=${user.role}`);
+        debugLog.log('AUTH', `Login exitoso para username=${user.username}, email=${maskEmail(user.email)}, role=${user.role}`);
 
         res.json({
             success: true,
             message: 'Autenticación exitosa',
+            token: tokenPair.accessToken, // Para NextAuth
             user: {
                 id: user.id,
                 username: user.username,
@@ -229,7 +250,8 @@ router.post('/login', loginLimiter, loginValidation, async (req: Request, res: R
                 nombre: user.nombre,
                 apellido_paterno: user.apellido_paterno,
                 role: user.role,
-                permissions: userPayload.permissions
+                permissions: userPayload.permissions,
+                tipo_usuario: user.role // Alias para compatibilidad
             },
             tokens: tokenPair,
             sessionInfo: {
