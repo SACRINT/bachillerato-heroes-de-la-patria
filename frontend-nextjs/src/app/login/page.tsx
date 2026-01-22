@@ -203,21 +203,6 @@ export default function LoginPage() {
                                 Regístrate aquí
                             </Link>
                         </p>
-
-                        {/* Demo Credentials */}
-                        <div className="mt-6 rounded-lg bg-blue-50 p-4 text-sm">
-                            <p className="mb-2 font-semibold text-blue-900">
-                                Credenciales de prueba:
-                            </p>
-                            <div className="space-y-1 text-blue-800">
-                                <p>
-                                    Email: <code className="rounded bg-blue-100 px-1">estudiante@bge.edu.mx</code>
-                                </p>
-                                <p>
-                                    Pass: <code className="rounded bg-blue-100 px-1">password123</code>
-                                </p>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
