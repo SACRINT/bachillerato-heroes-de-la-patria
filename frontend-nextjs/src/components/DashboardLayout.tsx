@@ -81,6 +81,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     <button
                         onClick={() => setSidebarOpen(false)}
                         className="text-white lg:hidden"
+                        aria-label="Cerrar menú"
                     >
                         <X className="h-6 w-6" />
                     </button>
@@ -131,6 +132,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                         <button
                             onClick={() => setSidebarOpen(true)}
                             className="text-gray-600 lg:hidden"
+                            aria-label="Abrir menú"
                         >
                             <Menu className="h-6 w-6" />
                         </button>
@@ -139,7 +141,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
                     <div className="flex items-center gap-4">
                         {/* Notifications */}
-                        <button className="relative rounded-lg p-2 text-gray-600 hover:bg-gray-100">
+                        <button
+                            className="relative rounded-lg p-2 text-gray-600 hover:bg-gray-100"
+                            aria-label="Notificaciones"
+                        >
                             <Bell className="h-5 w-5" />
                             <span className="absolute right-1 top-1 flex h-2 w-2">
                                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />

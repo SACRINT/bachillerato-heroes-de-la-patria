@@ -104,10 +104,10 @@ export default function InscripcionesPage() {
                                 <div key={s} className="flex items-center gap-4">
                                     <div
                                         className={`flex h-10 w-10 items-center justify-center rounded-full font-semibold ${s === step
-                                                ? 'bg-blue-600 text-white'
-                                                : s < step
-                                                    ? 'bg-emerald-500 text-white'
-                                                    : 'bg-gray-200 text-gray-600'
+                                            ? 'bg-blue-600 text-white'
+                                            : s < step
+                                                ? 'bg-emerald-500 text-white'
+                                                : 'bg-gray-200 text-gray-600'
                                             }`}
                                     >
                                         {s < step ? '✓' : s}
@@ -133,80 +133,92 @@ export default function InscripcionesPage() {
                                     </h2>
                                     <div className="grid gap-6 md:grid-cols-2">
                                         <div>
-                                            <label className="mb-2 block text-sm font-medium">
+                                            <label htmlFor="nombre" className="mb-2 block text-sm font-medium">
                                                 Nombre(s)
                                             </label>
                                             <input
+                                                id="nombre"
                                                 type="text"
                                                 name="nombre"
                                                 value={formData.nombre}
                                                 onChange={handleChange}
                                                 required
+                                                autoComplete="given-name"
                                                 className="w-full rounded-lg border px-4 py-2 focus:border-blue-500 focus:outline-none"
                                             />
                                         </div>
                                         <div>
-                                            <label className="mb-2 block text-sm font-medium">
+                                            <label htmlFor="apellidoPaterno" className="mb-2 block text-sm font-medium">
                                                 Apellido Paterno
                                             </label>
                                             <input
+                                                id="apellidoPaterno"
                                                 type="text"
                                                 name="apellidoPaterno"
                                                 value={formData.apellidoPaterno}
                                                 onChange={handleChange}
                                                 required
+                                                autoComplete="family-name"
                                                 className="w-full rounded-lg border px-4 py-2 focus:border-blue-500 focus:outline-none"
                                             />
                                         </div>
                                         <div>
-                                            <label className="mb-2 block text-sm font-medium">
+                                            <label htmlFor="apellidoMaterno" className="mb-2 block text-sm font-medium">
                                                 Apellido Materno
                                             </label>
                                             <input
+                                                id="apellidoMaterno"
                                                 type="text"
                                                 name="apellidoMaterno"
                                                 value={formData.apellidoMaterno}
                                                 onChange={handleChange}
                                                 required
+                                                autoComplete="additional-name"
                                                 className="w-full rounded-lg border px-4 py-2 focus:border-blue-500 focus:outline-none"
                                             />
                                         </div>
                                         <div>
-                                            <label className="mb-2 block text-sm font-medium">
+                                            <label htmlFor="fechaNacimiento" className="mb-2 block text-sm font-medium">
                                                 Fecha de Nacimiento
                                             </label>
                                             <input
+                                                id="fechaNacimiento"
                                                 type="date"
                                                 name="fechaNacimiento"
                                                 value={formData.fechaNacimiento}
                                                 onChange={handleChange}
                                                 required
+                                                autoComplete="bday"
                                                 className="w-full rounded-lg border px-4 py-2 focus:border-blue-500 focus:outline-none"
                                             />
                                         </div>
                                         <div>
-                                            <label className="mb-2 block text-sm font-medium">
+                                            <label htmlFor="curp" className="mb-2 block text-sm font-medium">
                                                 CURP
                                             </label>
                                             <input
+                                                id="curp"
                                                 type="text"
                                                 name="curp"
                                                 value={formData.curp}
                                                 onChange={handleChange}
                                                 required
                                                 maxLength={18}
+                                                autoComplete="off"
                                                 className="w-full rounded-lg border px-4 py-2 focus:border-blue-500 focus:outline-none"
                                             />
                                         </div>
                                         <div>
-                                            <label className="mb-2 block text-sm font-medium">
+                                            <label htmlFor="genero" className="mb-2 block text-sm font-medium">
                                                 Género
                                             </label>
                                             <select
+                                                id="genero"
                                                 name="genero"
                                                 value={formData.genero}
                                                 onChange={handleChange}
                                                 required
+                                                aria-label="Género"
                                                 className="w-full rounded-lg border px-4 py-2 focus:border-blue-500 focus:outline-none"
                                             >
                                                 <option value="">Seleccionar</option>

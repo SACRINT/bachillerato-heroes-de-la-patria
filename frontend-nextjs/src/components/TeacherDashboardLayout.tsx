@@ -83,8 +83,8 @@ export default function TeacherDashboardLayout({ children }: TeacherDashboardLay
                                 key={item.href}
                                 href={item.href}
                                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive
-                                        ? 'bg-white/10 text-white'
-                                        : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                                    ? 'bg-white/10 text-white'
+                                    : 'text-slate-300 hover:bg-white/5 hover:text-white'
                                     }`}
                             >
                                 <Icon className="h-5 w-5" />
@@ -124,7 +124,7 @@ export default function TeacherDashboardLayout({ children }: TeacherDashboardLay
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <button className="relative rounded-lg p-2 text-gray-600 hover:bg-gray-100">
+                        <button className="relative rounded-lg p-2 text-gray-600 hover:bg-gray-100" aria-label="Notificaciones">
                             <Bell className="h-5 w-5" />
                             <span className="absolute right-1 top-1 flex h-2 w-2">
                                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />

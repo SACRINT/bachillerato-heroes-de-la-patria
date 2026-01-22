@@ -64,10 +64,7 @@ export default function ParentDashboardLayout({ children }: ParentDashboardLayou
                         </div>
                         <span className="text-lg font-semibold text-white">Padres</span>
                     </Link>
-                    <button
-                        onClick={() => setSidebarOpen(false)}
-                        className="text-white lg:hidden"
-                    >
+                    <button onClick={() => setSidebarOpen(false)} className="text-white lg:hidden" aria-label="Cerrar menú">
                         <X className="h-6 w-6" />
                     </button>
                 </div>
@@ -81,8 +78,8 @@ export default function ParentDashboardLayout({ children }: ParentDashboardLayou
                                 key={item.href}
                                 href={item.href}
                                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive
-                                        ? 'bg-white/10 text-white'
-                                        : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                                    ? 'bg-white/10 text-white'
+                                    : 'text-slate-300 hover:bg-white/5 hover:text-white'
                                     }`}
                             >
                                 <Icon className="h-5 w-5" />
@@ -110,17 +107,14 @@ export default function ParentDashboardLayout({ children }: ParentDashboardLayou
             <div className="flex flex-1 flex-col overflow-hidden">
                 <header className="flex h-16 items-center justify-between border-b bg-white px-4 lg:px-6">
                     <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => setSidebarOpen(true)}
-                            className="text-gray-600 lg:hidden"
-                        >
+                        <button onClick={() => setSidebarOpen(true)} className="text-gray-600 lg:hidden" aria-label="Abrir menú">
                             <Menu className="h-6 w-6" />
                         </button>
                         <h1 className="text-xl font-semibold text-gray-900">Portal de Padres</h1>
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <button className="relative rounded-lg p-2 text-gray-600 hover:bg-gray-100">
+                        <button className="relative rounded-lg p-2 text-gray-600 hover:bg-gray-100" aria-label="Notificaciones">
                             <Bell className="h-5 w-5" />
                         </button>
 
