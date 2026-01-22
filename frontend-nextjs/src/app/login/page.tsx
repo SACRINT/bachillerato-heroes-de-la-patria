@@ -151,6 +151,7 @@ export default function LoginPage() {
                                         onChange={(e) =>
                                             setFormData({ ...formData, password: e.target.value })
                                         }
+                                        autoComplete="current-password"
                                         className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-12 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
                                         placeholder="••••••••"
                                         required
