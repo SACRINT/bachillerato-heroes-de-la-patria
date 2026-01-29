@@ -18,6 +18,7 @@ import {
     User,
     ChevronDown,
     ClipboardList,
+    Edit3,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
 
@@ -29,6 +30,7 @@ const teacherNavItems = [
     { label: 'Inicio', href: '/dashboard/docentes', icon: Home },
     { label: 'Mis Clases', href: '/dashboard/docentes/clases', icon: Users },
     { label: 'Calificaciones', href: '/dashboard/docentes/calificaciones', icon: BookOpen },
+    { label: 'Captura de Calificaciones', href: '/dashboard/docentes/captura-calificaciones', icon: Edit3 },
     { label: 'Planeación', href: '/dashboard/docentes/planeacion', icon: ClipboardList },
     { label: 'Asistencia', href: '/dashboard/docentes/asistencia', icon: Calendar },
     { label: 'Mensajes', href: '/dashboard/docentes/mensajes', icon: MessageSquare },
@@ -150,7 +152,7 @@ export default function TeacherDashboardLayout({ children }: TeacherDashboardLay
                                             {user?.name || 'Docente'}
                                         </div>
                                         <div className="text-xs text-gray-500">
-                                            {user?.email || 'email@ejemplo.com'}
+                                            {user?.email || ''}
                                         </div>
                                     </div>
                                     <div className="p-1">

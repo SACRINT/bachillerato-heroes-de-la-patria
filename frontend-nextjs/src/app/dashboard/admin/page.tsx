@@ -12,12 +12,16 @@ import {
 } from 'lucide-react';
 import AdminDashboardLayout from '@/components/AdminDashboardLayout';
 import StatsCard from '@/components/StatsCard';
+import { useAdminDashboardStats } from '@/hooks/useAdmin';
 
 export default function AdminDashboard() {
-    const stats = [
+    const { data: statsData, isLoading } = useAdminDashboardStats();
+
+    // Usar datos del backend o fallback
+    const stats = statsData ? [
         {
             title: 'Total Estudiantes',
-            value: '1,248',
+            value: statsData.totalEstudiantes?.toString() || '0',
             icon: GraduationCap,
             trend: { value: 12.5, isPositive: true },
             iconColor: 'text-blue-600',
@@ -25,7 +29,7 @@ export default function AdminDashboard() {
         },
         {
             title: 'Total Docentes',
-            value: '87',
+            value: statsData.totalDocentes?.toString() || '0',
             icon: Users,
             trend: { value: 5.3, isPositive: true },
             iconColor: 'text-emerald-600',
@@ -33,22 +37,23 @@ export default function AdminDashboard() {
         },
         {
             title: 'Ingresos Mes',
-            value: '$485K',
+            value: `$${(statsData.ingresosMes || 0).toLocaleString()}`,
             icon: DollarSign,
             trend: { value: 8.1, isPositive: true },
             iconColor: 'text-cyan-600',
             iconBgColor: 'bg-cyan-100',
         },
         {
-            title: 'Asistencia hoy',
-            value: '94%',
+            title: 'Asistencia Hoy',
+            value: `${statsData.asistenciaHoy || 0}%`,
             icon: UserCheck,
             trend: { value: 2.3, isPositive: true },
             iconColor: 'text-indigo-600',
             iconBgColor: 'bg-indigo-100',
         },
-    ];
+    ] : [];
 
+    // Datos de demostración para actividad reciente
     const recentActivity = [
         {
             tipo: 'inscripcion',
@@ -111,6 +116,19 @@ export default function AdminDashboard() {
         { categoria: 'Servicios', monto: 35000, porcentaje: 7 },
     ];
 
+    if (isLoading) {
+        return (
+            <AdminDashboardLayout>
+                <div className="flex items-center justify-center py-20">
+                    <div className="text-center">
+                        <div className="mb-4 text-lg text-gray-600">Cargando panel de administración...</div>
+                        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent mx-auto"></div>
+                    </div>
+                </div>
+            </AdminDashboardLayout>
+        );
+    }
+
     return (
         <AdminDashboardLayout>
             <div className="space-y-6">
@@ -125,11 +143,17 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Stats Grid */}
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                    {stats.map((stat, index) => (
-                        <StatsCard key={index} {...stat} />
-                    ))}
-                </div>
+                {stats.length > 0 ? (
+                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                        {stats.map((stat, index) => (
+                            <StatsCard key={index} {...stat} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="rounded-xl border border-gray-200 bg-white p-12 text-center">
+                        <p className="text-gray-500">No hay estadísticas disponibles</p>
+                    </div>
+                )}
 
                 {/* Main Content Grid */}
                 <div className="grid gap-6 lg:grid-cols-3">
@@ -141,7 +165,7 @@ export default function AdminDashboard() {
                             </h2>
                             <a
                                 href="/dashboard/admin/actividad"
-                                className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                                className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
                             >
                                 Ver todo →
                             </a>
@@ -210,7 +234,7 @@ export default function AdminDashboard() {
                         </h2>
                         <a
                             href="/dashboard/admin/finanzas"
-                            className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                            className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
                         >
                             Ver detalles →
                         </a>
@@ -228,7 +252,7 @@ export default function AdminDashboard() {
                                 </div>
                                 <div className="h-2 overflow-hidden rounded-full bg-gray-100">
                                     <div
-                                        className="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"
+                                        className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
                                         style={{ width: `${item.porcentaje}%` }}
                                     />
                                 </div>
@@ -237,10 +261,52 @@ export default function AdminDashboard() {
                         <div className="mt-4 rounded-lg bg-gray-50 p-4">
                             <div className="flex items-center justify-between">
                                 <span className="font-semibold text-gray-900">Total</span>
-                                <span className="text-2xl font-bold text-blue-600">$485,000</span>
+                                <span className="text-2xl font-bold text-indigo-600">
+                                    ${(statsData?.ingresosMes || 485000).toLocaleString()}
+                                </span>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                {/* Quick Links */}
+                <div className="grid gap-4 md:grid-cols-3">
+                    <a
+                        href="/dashboard/admin/estudiantes"
+                        className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-indigo-500 hover:shadow-md"
+                    >
+                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
+                            <GraduationCap className="h-6 w-6 text-blue-600" />
+                        </div>
+                        <div>
+                            <div className="font-medium text-gray-900">Gestionar Estudiantes</div>
+                            <div className="text-sm text-gray-500">Ver y administrar estudiantes</div>
+                        </div>
+                    </a>
+                    <a
+                        href="/dashboard/admin/docentes"
+                        className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-indigo-500 hover:shadow-md"
+                    >
+                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-100">
+                            <Users className="h-6 w-6 text-emerald-600" />
+                        </div>
+                        <div>
+                            <div className="font-medium text-gray-900">Gestionar Docentes</div>
+                            <div className="text-sm text-gray-500">Ver y administrar docentes</div>
+                        </div>
+                    </a>
+                    <a
+                        href="/dashboard/admin/reportes"
+                        className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-indigo-500 hover:shadow-md"
+                    >
+                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100">
+                            <BookOpen className="h-6 w-6 text-purple-600" />
+                        </div>
+                        <div>
+                            <div className="font-medium text-gray-900">Generar Reportes</div>
+                            <div className="text-sm text-gray-500">Reportes y estadísticas</div>
+                        </div>
+                    </a>
                 </div>
             </div>
         </AdminDashboardLayout>

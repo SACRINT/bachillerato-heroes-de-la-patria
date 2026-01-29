@@ -436,19 +436,36 @@ export class AuthService {
             };
 
             // Intentar guardar en PostgreSQL
-            try {
-                const result = await executeQuery(
-                    `INSERT INTO usuarios (email, password_hash, username, nombre, apellido_paterno, apellido_materno, role, active, created_at)
+            const result = await executeQuery(
+                `INSERT INTO usuarios (email, password_hash, username, nombre, apellido_paterno, apellido_materno, role, active, created_at)
                      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
-                    [email, passwordHash, username, nombre, apellido_paterno, apellido_materno, role, true, newUser.created_at]
-                );
-                newUser.id = result[0].id;
-            } catch {
-                // Fallback a JSON
-                const jsonUsers = await this.loadUsersFromJson();
-                newUser.id = Math.max(0, ...jsonUsers.map(u => u.id)) + 1;
-                jsonUsers.push(newUser);
-                await this.saveUsersToJson(jsonUsers);
+                [email, passwordHash, username, nombre, apellido_paterno, apellido_materno, role, true, newUser.created_at]
+            );
+            newUser.id = result[0].id;
+
+            // ✅ FIX: Crear perfil asociado automáticamente según el rol
+            if (role === 'estudiante') {
+                try {
+                    const year = new Date().getFullYear();
+                    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                    const matricula = `${year}${random}`;
+                    const nia = Math.floor(Math.random() * 90000000 + 10000000).toString();
+
+                    // Intentar insertar en tabla estudiantes (si existe)
+                    // Schema real verificado: usuario_id, matricula, nombre, apellido_paterno, apellido_materno, fecha_ingreso, genero, semestre, especialidad, created_at
+                    const generoDefault = 'M'; // Fallback ya que no se pide en registro
+                    await executeQuery(
+                        `INSERT INTO estudiantes (
+                                usuario_id, matricula, nombre, apellido_paterno, apellido_materno, 
+                                fecha_ingreso, genero, semestre, especialidad, created_at, updated_at
+                            ) VALUES ($1, $2, $3, $4, $5, CURRENT_DATE, $6, 1, 'Tronco Común', NOW(), NOW())`,
+                        [newUser.id, matricula, nombre, apellido_paterno, apellido_materno, generoDefault]
+                    );
+                    devLogger.log(`✅ Perfil de estudiante creado para usuario ${newUser.id} (Matrícula: ${matricula})`);
+                } catch (profileError: any) {
+                    devLogger.warn(`⚠️ No se pudo crear perfil de estudiante (puede que la tabla no exista o falten columnas): ${profileError.message}`);
+                    // No lanzamos error para permitir que el usuario se cree al menos
+                }
             }
 
             devLogger.log(`✅ Usuario creado: ${email} (${role})`);

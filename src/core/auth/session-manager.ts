@@ -69,13 +69,29 @@ export class SessionManager {
             ...this.STORAGE_KEYS.TOKEN,
             ...this.STORAGE_KEYS.USER,
             this.STORAGE_KEYS.REMEMBER,
-            'google_user_session'
+            'google_user_session',
+            // Legacy Admin Keys
+            'auth_token',
+            'auth_user',
+            'auth_expires',
+            // Legacy Student Keys
+            'student_auth_token',
+            'current_student',
+            // Other potential residuals
+            'redirect_after_login'
         ];
 
         keysToRemove.forEach(key => {
             sessionStorage.removeItem(key);
             localStorage.removeItem(key);
         });
+
+        // Limpieza profunda de cookies para evitar conflictos
+        document.cookie.split(";").forEach((c) => {
+            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
+
+        console.log('🧹 SessionManager: Limpieza profunda completada (Modern + Legacy)');
     }
 
     /**

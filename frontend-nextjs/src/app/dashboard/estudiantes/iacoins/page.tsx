@@ -25,7 +25,7 @@ export default function IACoinsPage() {
     const stats = [
         {
             title: 'Total IA Coins',
-            value: balanceLoading ? '...' : balance?.total.toLocaleString() || '0',
+            value: balanceLoading ? '...' : (balance?.total || 0).toLocaleString(),
             icon: Trophy,
             trend: balance?.ganados
                 ? { value: 15.0, isPositive: true }
@@ -150,10 +150,10 @@ export default function IACoinsPage() {
                                             <div className="mb-3 flex items-center justify-between">
                                                 <span
                                                     className={`rounded-full px-2 py-1 text-xs font-medium ${item.rareza === 'legendario'
-                                                            ? 'bg-yellow-100 text-yellow-700'
-                                                            : item.rareza === 'epico'
-                                                                ? 'bg-purple-100 text-purple-700'
-                                                                : 'bg-blue-100 text-blue-700'
+                                                        ? 'bg-yellow-100 text-yellow-700'
+                                                        : item.rareza === 'epico'
+                                                            ? 'bg-purple-100 text-purple-700'
+                                                            : 'bg-blue-100 text-blue-700'
                                                         }`}
                                                 >
                                                     {item.rareza}
@@ -205,8 +205,8 @@ export default function IACoinsPage() {
                                             </div>
                                             <div
                                                 className={`font-semibold ${tx.tipo === 'ganancia'
-                                                        ? 'text-emerald-600'
-                                                        : 'text-red-600'
+                                                    ? 'text-emerald-600'
+                                                    : 'text-red-600'
                                                     }`}
                                             >
                                                 {tx.coins > 0 ? '+' : ''}
@@ -242,12 +242,12 @@ export default function IACoinsPage() {
                                         >
                                             <div
                                                 className={`flex h-8 w-8 items-center justify-center rounded-full font-bold ${entry.posicion === 1
-                                                        ? 'bg-yellow-500 text-white'
-                                                        : entry.posicion === 2
-                                                            ? 'bg-gray-400 text-white'
-                                                            : entry.posicion === 3
-                                                                ? 'bg-orange-600 text-white'
-                                                                : 'bg-gray-200 text-gray-700'
+                                                    ? 'bg-yellow-500 text-white'
+                                                    : entry.posicion === 2
+                                                        ? 'bg-gray-400 text-white'
+                                                        : entry.posicion === 3
+                                                            ? 'bg-orange-600 text-white'
+                                                            : 'bg-gray-200 text-gray-700'
                                                     }`}
                                             >
                                                 {entry.posicion <= 3 ? (

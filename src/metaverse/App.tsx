@@ -28,7 +28,7 @@ import './ui/LessonPanel.css'
 import './ui/Minimap.css'
 import './ui/OnboardingTutorial.css'
 
-const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+const SOCKET_URL = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:5000' : '')
 
 const keyboardMap = [
     { name: 'forward', keys: ['ArrowUp', 'w', 'W'] },

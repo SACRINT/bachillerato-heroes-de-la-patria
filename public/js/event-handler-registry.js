@@ -272,6 +272,23 @@
         targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     },
+    // ✅ FIX: Handler explícito para botón de login
+    'open-unified-login': function (event) {
+      event.preventDefault();
+      // Intentar abrir con el sistema unificado primero
+      if (window.unifiedAuth && typeof window.unifiedAuth.openModalSafe === 'function') {
+        window.unifiedAuth.openModalSafe();
+        return;
+      }
+      // Fallback a global
+      if (typeof showLoginModal === 'function') {
+        showLoginModal();
+      } else {
+        console.error('Login modal function not found');
+        // Último recurso: redirigir a login.html si existe o admin
+        window.location.href = 'login.html';
+      }
+    },
     'showLoginModal': function (event) {
       event.preventDefault();
       if (typeof showLoginModal === 'function') {

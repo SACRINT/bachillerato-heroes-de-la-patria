@@ -2603,7 +2603,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
                     const sessionData = JSON.parse(session);
                     // Verificar que no esté expirada
                     if (sessionData.expiresAt && Date.now() < sessionData.expiresAt) {
-                        return sessionData.isAuthenticated === true;
+                        return sessionData.isAuthenticated === true || !!(sessionData.token && sessionData.user);
                     } else {
                         // Limpiar sesión expirada
                         localStorage.removeItem('secure_admin_session');

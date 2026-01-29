@@ -22,6 +22,7 @@ import {
     X,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
+import { signOut } from 'next-auth/react';
 
 interface DashboardLayoutProps {
     children: ReactNode;
@@ -50,10 +51,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const pathname = usePathname();
     const { user, logout } = useAuthStore();
 
-    const handleLogout = () => {
-        logout();
-        window.location.href = '/login';
+    const handleLogout = async () => {
+        logout(); // Limpia estado de Zustand
+        await signOut({ callbackUrl: '/login' }); // Limpia cookie de NextAuth y redirige
     };
+
 
     return (
         <div className="flex h-screen bg-slate-50">
@@ -171,7 +173,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                             {user?.name || 'Usuario'}
                                         </div>
                                         <div className="text-xs text-gray-500">
-                                            {user?.email || 'email@ejemplo.com'}
+                                            {user?.email || ''}
                                         </div>
                                     </div>
                                     <div className="p-1">
@@ -205,7 +207,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
                 {/* Page Content */}
                 <main className="flex-1 overflow-y-auto p-4 lg:p-6">{children}</main>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

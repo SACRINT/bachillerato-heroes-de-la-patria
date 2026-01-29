@@ -17,7 +17,7 @@ window.AppConfig = {
     api: {
         baseURL: window.location.hostname.includes('vercel.app')
             ? `${window.location.protocol}//${window.location.host}` // Vercel usa URLs relativas
-            : '', // Desarrollo local
+            : 'http://localhost:5000', // Desarrollo local apuntando al backend real
         timeout: 10000,
         retries: 3
     },
@@ -108,7 +108,7 @@ window.AppConfig = {
                 window.AppConfig.google.enabled = true;
                 console.log('✅ Google OAuth configurado dinámicamente.');
             } else {
-                 console.warn('⚠️ No se recibió un Client ID de Google desde el backend.');
+                console.warn('⚠️ No se recibió un Client ID de Google desde el backend.');
             }
 
             // Configurar TinyMCE API Key
@@ -127,13 +127,13 @@ window.AppConfig = {
     }
 })();
 // --- FIN DE CARGA DINÁMICA ---
-window.AppConfig.isEnabled = function(service) {
+window.AppConfig.isEnabled = function (service) {
     switch (service) {
         case 'google':
             // Para Google OAuth, solo necesitamos el clientId
             return this.google.enabled &&
-                   this.google.clientId &&
-                   this.google.clientId.includes('.apps.googleusercontent.com');
+                this.google.clientId &&
+                this.google.clientId.includes('.apps.googleusercontent.com');
         case 'facebook':
             return this.facebook.enabled && this.facebook.pixelId;
         case 'stripe':
@@ -150,7 +150,7 @@ window.AppConfig.isEnabled = function(service) {
 };
 
 // Función para obtener el Client ID de Google
-window.AppConfig.getGoogleClientId = function() {
+window.AppConfig.getGoogleClientId = function () {
     if (!this.isEnabled('google')) {
         console.warn(`
 ⚠️ ============================================
@@ -176,7 +176,7 @@ window.AppConfig.getGoogleClientId = function() {
 };
 
 // Función para obtener la configuración de un servicio
-window.AppConfig.getServiceConfig = function(service) {
+window.AppConfig.getServiceConfig = function (service) {
     return this[service] || {};
 };
 

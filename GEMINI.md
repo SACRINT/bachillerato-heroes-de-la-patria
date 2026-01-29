@@ -318,6 +318,8 @@ Ver documento completo: `doc/PLAN_AÑO5_MONETIZACION_70SEM.md`
 
 ### Core Directives
 
+- **ACTIVE FRONTEND:** The project now works with **Next.js** in `c:\03_BachilleratoHeroesWeb\frontend-nextjs`.
+- **LEGACY FRONTEND:** The HTML files in `public/` are **DEPRECATED**. Do NOT edit them.
 - I am the lead agent for the 'ProyectoHP' project.
 - I must orchestrate sub-agents using `doc/task/context.md` when necessary.
 - Changes to the API (`api/app.js`) must be done incrementally due to Vercel deployment sensitivity.
@@ -331,7 +333,8 @@ Ver documento completo: `doc/PLAN_AÑO5_MONETIZACION_70SEM.md`
   - **Semana 8:** UI Diegética (HologramPanel, ChatBubble3D, Minimap Radar, Emojis, Onboarding)
   - **Semana 9:** Quality Settings (Low/Med/High/Ultra), FPS Monitor, Throttler
   - **Semana 10:** Photo Mode, Bug Report System
-- `429 Too Many Requests` on Dashboard Load: SOLVED. Architected and IMPLEMENTED a solution to prevent the frontend from bombarding the server. Created a new consolidated API endpoint (`/api/admin/dashboard-summary`) to bundle all necessary statistics into a single, efficient API call. Refactored `js/admin-dashboard-stats.js` to use this new endpoint, reducing initial load requests from 7+ to just 1.
+- **API-Call Consolidation (Oct 25):** Client-side parallel fetching can easily trigger server-side rate-limiters. The `dashboard-summary` endpoint is the new pattern to follow. **Lesson:** Design backend endpoints that match the data needs of a complete UI component, rather than forcing the UI to make many small requests.
+- **Next.js Auth Synchronization (Jan 26):** Implemented `AuthSync` component and `SessionProvider` to bridge the gap between NextAuth (server-side session) and Zustand (client-side store). Also updated `route.ts` to correctly map `nombre` + `apellido_paterno` to `name` so the dashboard displays full real names.
 - Architectural Cleanup (Phase 1 & 2):
   - Deleted `_legacy/` folder (removed 6 outdated files).
   - Consolidated `admin-dashboard.js` (removed duplicates and unused `admin-dashboard-advanced.js`).

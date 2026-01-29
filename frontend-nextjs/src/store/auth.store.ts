@@ -4,8 +4,7 @@ import { persist } from 'zustand/middleware';
 export interface User {
     id: string;
     email: string;
-    nombre: string;
-    apellido?: string;
+    name: string; // Mapped from nombre + apellido_paterno
     role: 'student' | 'teacher' | 'parent' | 'admin';
     avatar_url?: string;
 }
@@ -46,8 +45,17 @@ export const useAuthStore = create<AuthStore>()(
 
                     const data = await response.json();
 
+                    // Map backend user to frontend User interface
+                    const mappedUser: User = {
+                        id: data.user.id,
+                        email: data.user.email,
+                        name: `${data.user.nombre} ${data.user.apellido_paterno || ''}`.trim(),
+                        role: data.user.role,
+                        avatar_url: data.user.avatar_url
+                    };
+
                     set({
-                        user: data.user,
+                        user: mappedUser,
                         token: data.token,
                         isAuthenticated: true,
                     });
@@ -82,8 +90,16 @@ export const useAuthStore = create<AuthStore>()(
 
                     // Auto-login after registration
                     if (data.token) {
+                        const mappedUser: User = {
+                            id: data.user.id,
+                            email: data.user.email,
+                            name: `${data.user.nombre} ${data.user.apellido_paterno || ''}`.trim(),
+                            role: data.user.role,
+                            avatar_url: data.user.avatar_url
+                        };
+
                         set({
-                            user: data.user,
+                            user: mappedUser,
                             token: data.token,
                             isAuthenticated: true,
                         });

@@ -92,13 +92,15 @@ export default function ParentDashboardLayout({ children }: ParentDashboardLayou
                 <div className="border-t border-white/10 p-4">
                     <div className="flex items-center gap-3 rounded-lg bg-white/5 p-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 text-sm font-bold text-slate-900">
-                            P
+                            {user?.name?.charAt(0) || user?.email?.charAt(0) || 'P'}
                         </div>
                         <div className="flex-1 overflow-hidden">
                             <div className="truncate text-sm font-medium text-white">
                                 {user?.name || 'Padre/Madre'}
                             </div>
-                            <div className="truncate text-xs text-slate-400">Tutor</div>
+                            <div className="truncate text-xs text-slate-400">
+                                {user?.email || 'tutor@bge.edu.mx'}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -124,7 +126,7 @@ export default function ParentDashboardLayout({ children }: ParentDashboardLayou
                                 className="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-100"
                             >
                                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-sm font-bold text-white">
-                                    P
+                                    {user?.name?.charAt(0) || user?.email?.charAt(0) || 'P'}
                                 </div>
                                 <ChevronDown className="h-4 w-4 text-gray-600" />
                             </button>

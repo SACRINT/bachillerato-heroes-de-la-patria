@@ -4,7 +4,9 @@
  */
 
 class SimpleAuth {
-    static API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+    static API_BASE = (window.AppConfig && window.AppConfig.api && window.AppConfig.api.baseURL)
+        ? window.AppConfig.api.baseURL
+        : (window.location.hostname === 'localhost' ? 'http://localhost:5000' : '');
 
     /**
      * Iniciar sesión
@@ -69,12 +71,29 @@ class SimpleAuth {
     }
 
     /**
-     * Cerrar sesión
+     * Cerrar sesión (Limpieza TOTAL)
      */
     static logout() {
+        console.log('🧹 Ejecutando limpieza total de sesión...');
+
+        // 1. Limpiar Admin Auth
         localStorage.removeItem('auth_token');
         localStorage.removeItem('auth_user');
         localStorage.removeItem('auth_expires');
+
+        // 2. Limpiar Student Auth
+        localStorage.removeItem('student_auth_token');
+        localStorage.removeItem('current_student');
+
+        // 3. Limpiar Legacy/Unified Auth
+        localStorage.removeItem('bge_auth_token');
+        localStorage.removeItem('bge_user_data');
+
+        // 4. Limpiar Cookies
+        document.cookie.split(";").forEach(function (c) {
+            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
+
         window.location.href = '/login.html';
     }
 
@@ -96,14 +115,39 @@ class SimpleAuth {
     /**
      * Verificar si está autenticado
      */
+    /**
+     * Verificar si está autenticado
+     */
     static isAuthenticated() {
         const token = this.getToken();
         const expires = localStorage.getItem('auth_expires');
 
         if (!token) return false;
 
-        // Verificar si el token expiró
+        // Validación básica de formato JWT
+        if (token.split('.').length !== 3) {
+            console.warn('Token inválido detectado, cerrando sesión...');
+            this.logout();
+            return false;
+        }
+
+        // Verificar si el token expiró (si existe fecha de expiración guardada)
         if (expires && Date.now() > parseInt(expires)) {
+            console.warn('Sesión expirada, cerrando sesión...');
+            this.logout();
+            return false;
+        }
+
+        // Verificar expiración interna del token (payload)
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            if (payload.exp && Date.now() >= payload.exp * 1000) {
+                console.warn('Token JWT expirado internamente, cerrando sesión...');
+                this.logout();
+                return false;
+            }
+        } catch (e) {
+            console.error('Error decodificando token en check:', e);
             this.logout();
             return false;
         }

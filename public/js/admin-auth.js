@@ -147,6 +147,7 @@ class AdminAuth {
             if (response.ok && data.success) {
                 this.clearFailedAttempts();
                 const session = {
+                    isAuthenticated: true, // ✅ REQUIRED for bge-security-module
                     token: data.tokens.accessToken,
                     refreshToken: data.tokens.refreshToken,
                     user: data.user,
@@ -285,6 +286,14 @@ class AdminAuth {
 
         // Disparar evento global
         window.dispatchEvent(new CustomEvent('auth:logout'));
+
+        // ✅ CRÍTICO: Actualizar estado del header centralizado y REDIRIGIR
+        if (typeof window.updateAdminHeaderStatus === 'function') {
+            window.updateAdminHeaderStatus(false);
+        }
+
+        // Redirigir al inicio para asegurar que el usuario sienta el "cierre"
+        window.location.href = 'index.html';
 
         // LIMPIAR ESTADO DEL MODAL COMPLETAMENTE Y REINCIAR TODO EL SISTEMA
         const modal = document.getElementById('adminPanelAuthModal');

@@ -3,109 +3,58 @@
 import { Users, BookOpen, Calendar, TrendingUp, Clock, Award } from 'lucide-react';
 import TeacherDashboardLayout from '@/components/TeacherDashboardLayout';
 import StatsCard from '@/components/StatsCard';
+import { useTeacherDashboard, useTeacherClasses } from '@/hooks/useTeacher';
 
 export default function DocentesDashboard() {
-    const stats = [
+    const { data: dashboardData, isLoading: dashboardLoading } = useTeacherDashboard();
+    const { data: classes, isLoading: classesLoading } = useTeacherClasses();
+
+    const stats = dashboardData?.data?.stats || dashboardData?.stats;
+    const misClases = classes?.slice(0, 3) || [];
+
+    const statsCards = [
         {
             title: 'Total de Estudiantes',
-            value: '156',
+            value: stats?.totalStudents?.toString() || '0',
             icon: Users,
-            trend: { value: 3.1, isPositive: true },
             iconColor: 'text-blue-600',
             iconBgColor: 'bg-blue-100',
         },
         {
-            title: 'Clases Esta Semana',
-            value: '18',
-            icon: Calendar,
+            title: 'Clases Activas',
+            value: stats?.totalClasses?.toString() || '0',
+            icon: BookOpen,
             iconColor: 'text-emerald-600',
             iconBgColor: 'bg-emerald-100',
         },
         {
-            title: 'Promedio General',
-            value: '8.4',
-            icon: TrendingUp,
-            trend: { value: 2.5, isPositive: true },
-            iconColor: 'text-cyan-600',
-            iconBgColor: 'bg-cyan-100',
-        },
-        {
-            title: 'Tareas Pendientes',
-            value: '7',
+            title: 'Revisiones Pendientes',
+            value: stats?.pendingReviews?.toString() || '0',
             icon: Clock,
             iconColor: 'text-orange-600',
             iconBgColor: 'bg-orange-100',
         },
-    ];
-
-    const misClases = [
         {
-            nombre: 'Matemáticas III - Grupo A',
-            estudiantes: 32,
-            horario: 'Lun/Mier 8:00 - 9:30',
-            promedio: 8.7,
-        },
-        {
-            nombre: 'Álgebra Lineal - Grupo B',
-            estudiantes: 28,
-            horario: 'Mar/Jue 10:00 - 11:30',
-            promedio: 8.3,
-        },
-        {
-            nombre: 'Cálculo Diferencial - Grupo C',
-            estudiantes: 30,
-            horario: 'Vie 13:00 - 15:00',
-            promedio: 8.9,
+            title: 'Mensajes No Leídos',
+            value: stats?.unreadMessages?.toString() || '0',
+            icon: TrendingUp,
+            iconColor: 'text-cyan-600',
+            iconBgColor: 'bg-cyan-100',
         },
     ];
 
-    const proximasClases = [
-        {
-            materia: 'Matemáticas III',
-            grupo: 'Grupo A',
-            hora: '8:00 AM',
-            aula: '301',
-            dia: 'Lunes',
-        },
-        {
-            materia: 'Álgebra Lineal',
-            grupo: 'Grupo B',
-            hora: '10:00 AM',
-            aula: '205',
-            dia: 'Martes',
-        },
-        {
-            materia: 'Cálculo Diferencial',
-            grupo: 'Grupo C',
-            hora: '1:00 PM',
-            aula: '401',
-            dia: 'Viernes',
-        },
-    ];
+    const proximasClases = dashboardData?.data?.upcomingClasses || [];
+    const tareasRecientes = dashboardData?.data?.pendingTasks || [];
 
-    const tareasRecientes = [
-        {
-            materia: 'Matemáticas III',
-            titulo: 'Sistemas de Ecuaciones',
-            entregadas: 28,
-            total: 32,
-            fecha: '18 Ene 2026',
-        },
-        {
-            materia: 'Álgebra Lineal',
-            titulo: 'Matrices y Determinantes',
-            entregadas: 25,
-            total: 28,
-            fecha: '17 Ene 2026',
-        },
-        {
-            materia: 'Cálculo Diferencial',
-            titulo: 'Derivadas Parciales',
-            entregadas: 30,
-            total: 30,
-            fecha: '16 Ene 2026',
-        },
-    ];
+    if (dashboardLoading || classesLoading) {
+        return (
+            <TeacherDashboardLayout>
+                <div className="flex items-center justify-center h-64">
+                    <div className="text-gray-500">Cargando...</div>
+                </div>
+            </TeacherDashboardLayout>
+        );
+    }
 
     return (
         <TeacherDashboardLayout>
@@ -122,7 +71,7 @@ export default function DocentesDashboard() {
 
                 {/* Stats Grid */}
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                    {stats.map((stat, index) => (
+                    {statsCards.map((stat, index) => (
                         <StatsCard key={index} {...stat} />
                     ))}
                 </div>
@@ -141,7 +90,7 @@ export default function DocentesDashboard() {
                             </a>
                         </div>
                         <div className="space-y-3">
-                            {misClases.map((clase, index) => (
+                            {misClases.length > 0 ? misClases.map((clase: any, index: number) => (
                                 <div
                                     key={index}
                                     className="rounded-lg border border-gray-100 p-4 transition-colors hover:bg-gray-50"
@@ -149,32 +98,28 @@ export default function DocentesDashboard() {
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">
                                             <div className="font-medium text-gray-900">
-                                                {clase.nombre}
+                                                {clase.materia} {clase.grupo ? `- ${clase.grupo}` : ''}
                                             </div>
                                             <div className="mt-1 flex items-center gap-4 text-sm text-gray-500">
                                                 <span className="flex items-center gap-1">
                                                     <Users className="h-4 w-4" />
-                                                    {clase.estudiantes} estudiantes
+                                                    {clase.total_estudiantes || clase.estudiantes || 0} estudiantes
                                                 </span>
-                                                <span className="flex items-center gap-1">
-                                                    <Clock className="h-4 w-4" />
-                                                    {clase.horario}
-                                                </span>
+                                                {clase.salon && (
+                                                    <span className="flex items-center gap-1">
+                                                        <Clock className="h-4 w-4" />
+                                                        Aula {clase.salon}
+                                                    </span>
+                                                )}
                                             </div>
-                                        </div>
-                                        <div
-                                            className={`text-xl font-bold ${clase.promedio >= 9
-                                                    ? 'text-emerald-600'
-                                                    : clase.promedio >= 8
-                                                        ? 'text-blue-600'
-                                                        : 'text-orange-600'
-                                                }`}
-                                        >
-                                            {clase.promedio}
                                         </div>
                                     </div>
                                 </div>
-                            ))}
+                            )) : (
+                                <div className="text-center py-4 text-sm text-gray-500">
+                                    No hay clases asignadas
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -192,7 +137,7 @@ export default function DocentesDashboard() {
                             </a>
                         </div>
                         <div className="space-y-3">
-                            {proximasClases.map((clase, index) => (
+                            {proximasClases.length > 0 ? proximasClases.map((clase: any, index: number) => (
                                 <div
                                     key={index}
                                     className="rounded-lg border border-gray-100 p-3 transition-colors hover:bg-gray-50"
@@ -200,21 +145,25 @@ export default function DocentesDashboard() {
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">
                                             <div className="font-medium text-gray-900">
-                                                {clase.materia}
+                                                {clase.materia || clase.nombre}
                                             </div>
                                             <div className="mt-1 text-sm text-gray-500">
-                                                {clase.grupo} • Aula {clase.aula}
+                                                {clase.grupo} {clase.aula && `• Aula ${clase.aula}`}
                                             </div>
                                         </div>
                                         <div className="text-right">
                                             <div className="text-sm font-medium text-blue-600">
                                                 {clase.hora}
                                             </div>
-                                            <div className="text-xs text-gray-500">{clase.dia}</div>
+                                            {clase.dia && <div className="text-xs text-gray-500">{clase.dia}</div>}
                                         </div>
                                     </div>
                                 </div>
-                            ))}
+                            )) : (
+                                <div className="text-center py-4 text-sm text-gray-500">
+                                    No hay clases programadas
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -233,7 +182,7 @@ export default function DocentesDashboard() {
                         </a>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {tareasRecientes.map((tarea, index) => {
+                        {tareasRecientes.length > 0 ? tareasRecientes.map((tarea: any, index: number) => {
                             const porcentaje = Math.round(
                                 (tarea.entregadas / tarea.total) * 100
                             );
@@ -258,10 +207,10 @@ export default function DocentesDashboard() {
                                         <div className="h-2 overflow-hidden rounded-full bg-gray-100">
                                             <div
                                                 className={`h-full rounded-full ${porcentaje === 100
-                                                        ? 'bg-emerald-500'
-                                                        : porcentaje >= 75
-                                                            ? 'bg-blue-500'
-                                                            : 'bg-orange-500'
+                                                    ? 'bg-emerald-500'
+                                                    : porcentaje >= 75
+                                                        ? 'bg-blue-500'
+                                                        : 'bg-orange-500'
                                                     }`}
                                                 style={{ width: `${porcentaje}%` }}
                                             />
@@ -273,7 +222,11 @@ export default function DocentesDashboard() {
                                     </div>
                                 </div>
                             );
-                        })}
+                        }) : (
+                            <div className="col-span-full text-center py-8 text-sm text-gray-500">
+                                No hay tareas pendientes para revisar
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

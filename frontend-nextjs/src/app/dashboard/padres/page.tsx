@@ -1,113 +1,87 @@
 'use client';
 
-import { User, TrendingUp, Calendar, AlertTriangle, DollarSign, BookOpen } from 'lucide-react';
+import { useState } from 'react';
+import { User, TrendingUp, Calendar, AlertTriangle, DollarSign, BookOpen, Users } from 'lucide-react';
 import ParentDashboardLayout from '@/components/ParentDashboardLayout';
 import StatsCard from '@/components/StatsCard';
+import { useParentDashboard, useMyStudents } from '@/hooks/useParents';
 
 export default function PadresDashboard() {
-    // Mock data - represents selected student
-    const selectedStudent = {
-        id: 1,
-        nombre: 'Ana García López',
-        grado: '3er Semestre',
-        promedio: 8.8,
-        asistencia: 96,
-    };
+    const [selectedStudentId, setSelectedStudentId] = useState<number | null>(null);
 
-    const students = [
-        {
-            id: 1,
-            nombre: 'Ana García López',
-            grado: '3er Semestre',
-            promedio: 8.8,
-            avatar: 'A',
-        },
-        {
-            id: 2,
-            nombre: 'Carlos García López',
-            grado: '1er Semestre',
-            promedio: 9.2,
-            avatar: 'C',
-        },
-    ];
+    const { data: dashboardData, isLoading: loadingDashboard } = useParentDashboard();
+    const { data: studentsData, isLoading: loadingStudents } = useMyStudents();
 
+    const students = studentsData || [];
+    const dashboard = dashboardData;
+
+    // Seleccionar primer estudiante por defecto
+    const selectedStudent = selectedStudentId
+        ? students.find((s: any) => s.id === selectedStudentId)
+        : students[0];
+
+    // Estadísticas generales
     const stats = [
         {
-            title: 'Promedio General',
-            value: '8.8',
-            icon: TrendingUp,
-            trend: { value: 3.2, isPositive: true },
-            iconColor: 'text-emerald-600',
-            iconBgColor: 'bg-emerald-100',
+            title: 'Hijos Registrados',
+            value: dashboard?.summary.total_students.toString() || '0',
+            icon: Users,
+            iconColor: 'text-purple-600',
+            iconBgColor: 'bg-purple-100',
         },
         {
-            title: 'Asistencia',
-            value: '96%',
+            title: 'Notificaciones',
+            value: dashboard?.summary.unread_notifications.toString() || '0',
+            icon: AlertTriangle,
+            iconColor: 'text-orange-600',
+            iconBgColor: 'bg-orange-100',
+        },
+        {
+            title: 'Mensajes',
+            value: dashboard?.summary.unread_messages.toString() || '0',
             icon: Calendar,
-            trend: { value: 1.5, isPositive: true },
             iconColor: 'text-blue-600',
             iconBgColor: 'bg-blue-100',
         },
         {
-            title: 'Tareas Pendientes',
-            value: '2',
-            icon: BookOpen,
-            iconColor: 'text-cyan-600',
-            iconBgColor: 'bg-cyan-100',
-        },
-        {
-            title: 'Adeudo',
-            value: '$0',
+            title: 'Pagos Pendientes',
+            value: `$${dashboard?.summary.pending_payments.total.toFixed(2) || '0.00'}`,
             icon: DollarSign,
-            iconColor: 'text-teal-600',
-            iconBgColor: 'bg-teal-100',
+            iconColor: 'text-emerald-600',
+            iconBgColor: 'bg-emerald-100',
         },
     ];
 
-    const recentGrades = [
-        { materia: 'Matemáticas', calificacion: 9.2, fecha: '15 Ene', tipo: 'Examen' },
-        { materia: 'Química', calificacion: 8.7, fecha: '14 Ene', tipo: 'Tarea' },
-        { materia: 'Historia', calificacion: 8.5, fecha: '13 Ene', tipo: 'Participación' },
-    ];
+    if (loadingDashboard || loadingStudents) {
+        return (
+            <ParentDashboardLayout>
+                <div className="flex items-center justify-center py-20">
+                    <div className="text-center">
+                        <div className="mb-4 text-lg text-gray-600">Cargando información...</div>
+                        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent mx-auto"></div>
+                    </div>
+                </div>
+            </ParentDashboardLayout>
+        );
+    }
 
-    const proximasActividades = [
-        {
-            titulo: 'Examen de Física',
-            fecha: '22 Ene 2026',
-            tipo: 'Examen',
-            importancia: 'alta',
-        },
-        {
-            titulo: 'Entrega Proyecto Literatura',
-            fecha: '24 Ene 2026',
-            tipo: 'Tarea',
-            importancia: 'media',
-        },
-        {
-            titulo: 'Junta con Tutor',
-            fecha: '26 Ene 2026',
-            tipo: 'Reunión',
-            importancia: 'media',
-        },
-    ];
-
-    const notifications = [
-        {
-            tipo: 'alerta',
-            mensaje: 'Próximo vencimiento de pago de colegiatura',
-            fecha: 'Hoy',
-        },
-        {
-            tipo: 'info',
-            mensaje: 'Nueva calificación capturada en Matemáticas',
-            fecha: 'Ayer',
-        },
-        {
-            tipo: 'success',
-            mensaje: 'Excelente participación en clase de Historia',
-            fecha: 'Hace 2 días',
-        },
-    ];
+    if (!students || students.length === 0) {
+        return (
+            <ParentDashboardLayout>
+                <div className="flex items-center justify-center py-20">
+                    <div className="text-center">
+                        <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                            No hay estudiantes vinculados
+                        </h3>
+                        <p className="text-gray-500">
+                            Contacte al administrador para vincular estudiantes a su cuenta
+                        </p>
+                    </div>
+                </div>
+            </ParentDashboardLayout>
+        );
+    }
 
     return (
         <ParentDashboardLayout>
@@ -118,19 +92,24 @@ export default function PadresDashboard() {
                         <label className="mb-2 block text-sm font-medium text-emerald-100">
                             Seleccionar hijo(a)
                         </label>
-                        <select className="w-full max-w-md rounded-lg bg-white/10 px-4 py-2 text-white backdrop-blur-sm">
-                            {students.map((student) => (
+                        <select
+                            className="w-full max-w-md rounded-lg bg-white/10 px-4 py-2 text-white backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50"
+                            value={selectedStudent?.id || ''}
+                            onChange={(e) => setSelectedStudentId(Number(e.target.value))}
+                        >
+                            {students.map((student: any) => (
                                 <option key={student.id} value={student.id} className="text-gray-900">
-                                    {student.nombre} - {student.grado}
+                                    {student.nombre_completo} - {student.grado}° {student.grupo}
                                 </option>
                             ))}
                         </select>
                     </div>
                     <h1 className="text-3xl font-bold md:text-4xl">
-                        Monitoreo de <span className="text-emerald-200">{selectedStudent.nombre}</span>
+                        Monitoreo de <span className="text-emerald-200">{selectedStudent?.nombre_completo}</span>
                     </h1>
                     <p className="mt-2 text-emerald-100">
-                        {selectedStudent.grado} • Promedio: {selectedStudent.promedio}
+                        {selectedStudent?.grado}° {selectedStudent?.grupo} • {selectedStudent?.turno || 'Matutino'}
+                        {selectedStudent?.especialidad && ` • ${selectedStudent.especialidad}`}
                     </p>
                 </div>
 
@@ -143,135 +122,136 @@ export default function PadresDashboard() {
 
                 {/* Main Content Grid */}
                 <div className="grid gap-6 lg:grid-cols-2">
-                    {/* Calificaciones Recientes */}
+                    {/* Estudiantes Vinculados */}
                     <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
                         <div className="mb-4 flex items-center justify-between">
                             <h2 className="text-lg font-semibold text-gray-900">
-                                Calificaciones Recientes
+                                Mis Hijos
                             </h2>
-                            <a
-                                href="/dashboard/padres/calificaciones"
-                                className="text-sm font-medium text-emerald-600 hover:text-emerald-700"
-                            >
-                                Ver todas →
-                            </a>
+                            <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-medium text-emerald-700">
+                                {students.length} {students.length === 1 ? 'hijo' : 'hijos'}
+                            </span>
                         </div>
                         <div className="space-y-3">
-                            {recentGrades.map((grade, index) => (
+                            {students.map((student: any, index: number) => (
                                 <div
-                                    key={index}
-                                    className="flex items-center justify-between rounded-lg border border-gray-100 p-3"
+                                    key={student.id}
+                                    className={`rounded-lg border p-4 transition-all cursor-pointer hover:shadow-md ${selectedStudent?.id === student.id
+                                            ? 'border-emerald-500 bg-emerald-50'
+                                            : 'border-gray-100 hover:bg-gray-50'
+                                        }`}
+                                    onClick={() => setSelectedStudentId(student.id)}
                                 >
-                                    <div className="flex-1">
-                                        <div className="font-medium text-gray-900">
-                                            {grade.materia}
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-lg font-bold text-white">
+                                            {student.nombre_completo?.charAt(0) || 'E'}
                                         </div>
-                                        <div className="text-sm text-gray-500">
-                                            {grade.tipo} • {grade.fecha}
+                                        <div className="flex-1">
+                                            <div className="font-medium text-gray-900">
+                                                {student.nombre_completo}
+                                            </div>
+                                            <div className="text-sm text-gray-500">
+                                                {student.grado}° {student.grupo} • {student.matricula}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div
-                                        className={`text-2xl font-bold ${grade.calificacion >= 9
-                                                ? 'text-emerald-600'
-                                                : grade.calificacion >= 8
-                                                    ? 'text-blue-600'
-                                                    : 'text-orange-600'
-                                            }`}
-                                    >
-                                        {grade.calificacion}
+                                        {selectedStudent?.id === student.id && (
+                                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-600">
+                                                <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                </svg>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* Próximas Actividades */}
+                    {/* Accesos Rápidos */}
                     <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-                        <div className="mb-4 flex items-center justify-between">
+                        <div className="mb-4">
                             <h2 className="text-lg font-semibold text-gray-900">
-                                Próximas Actividades
+                                Accesos Rápidos
                             </h2>
-                            <a
-                                href="/dashboard/padres/calendario"
-                                className="text-sm font-medium text-emerald-600 hover:text-emerald-700"
-                            >
-                                Ver calendario →
-                            </a>
                         </div>
-                        <div className="space-y-3">
-                            {proximasActividades.map((actividad, index) => (
-                                <div
-                                    key={index}
-                                    className="rounded-lg border border-gray-100 p-3"
-                                >
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <div className="font-medium text-gray-900">
-                                                {actividad.titulo}
-                                            </div>
-                                            <div className="mt-1 text-sm text-gray-500">
-                                                {actividad.tipo}
-                                            </div>
-                                        </div>
-                                        <span
-                                            className={`rounded-full px-2 py-1 text-xs font-medium ${actividad.importancia === 'alta'
-                                                    ? 'bg-red-100 text-red-700'
-                                                    : 'bg-yellow-100 text-yellow-700'
-                                                }`}
-                                        >
-                                            {actividad.importancia === 'alta' ? 'Urgente' : 'Pronto'}
-                                        </span>
-                                    </div>
-                                    <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
-                                        <Calendar className="h-4 w-4" />
-                                        {actividad.fecha}
+                        <div className="grid gap-3">
+                            <a
+                                href={`/dashboard/padres/calificaciones?student=${selectedStudent?.id}`}
+                                className="flex items-center gap-4 rounded-lg border border-gray-200 p-4 transition-all hover:border-emerald-500 hover:bg-emerald-50"
+                            >
+                                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
+                                    <BookOpen className="h-6 w-6 text-blue-600" />
+                                </div>
+                                <div className="flex-1">
+                                    <div className="font-medium text-gray-900">Calificaciones</div>
+                                    <div className="text-sm text-gray-500">Ver boleta de calificaciones</div>
+                                </div>
+                            </a>
+
+                            <a
+                                href={`/dashboard/padres/asistencia?student=${selectedStudent?.id}`}
+                                className="flex items-center gap-4 rounded-lg border border-gray-200 p-4 transition-all hover:border-emerald-500 hover:bg-emerald-50"
+                            >
+                                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-100">
+                                    <Calendar className="h-6 w-6 text-emerald-600" />
+                                </div>
+                                <div className="flex-1">
+                                    <div className="font-medium text-gray-900">Asistencia</div>
+                                    <div className="text-sm text-gray-500">Consultar registro de asistencia</div>
+                                </div>
+                            </a>
+
+                            <a
+                                href="/dashboard/padres/pagos"
+                                className="flex items-center gap-4 rounded-lg border border-gray-200 p-4 transition-all hover:border-emerald-500 hover:bg-emerald-50"
+                            >
+                                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100">
+                                    <DollarSign className="h-6 w-6 text-purple-600" />
+                                </div>
+                                <div className="flex-1">
+                                    <div className="font-medium text-gray-900">Pagos</div>
+                                    <div className="text-sm text-gray-500">
+                                        {dashboard?.summary.pending_payments.count || 0} pagos pendientes
                                     </div>
                                 </div>
-                            ))}
+                            </a>
+
+                            <a
+                                href="/dashboard/padres/mensajes"
+                                className="flex items-center gap-4 rounded-lg border border-gray-200 p-4 transition-all hover:border-emerald-500 hover:bg-emerald-50"
+                            >
+                                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-orange-100">
+                                    <AlertTriangle className="h-6 w-6 text-orange-600" />
+                                </div>
+                                <div className="flex-1">
+                                    <div className="font-medium text-gray-900">Mensajes</div>
+                                    <div className="text-sm text-gray-500">
+                                        {dashboard?.summary.unread_messages || 0} mensajes sin leer
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
 
-                {/* Notificaciones */}
-                <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-                    <div className="mb-4 flex items-center justify-between">
-                        <h2 className="text-lg font-semibold text-gray-900">Notificaciones</h2>
-                        <a
-                            href="/dashboard/padres/notificaciones"
-                            className="text-sm font-medium text-emerald-600 hover:text-emerald-700"
-                        >
-                            Ver todas →
-                        </a>
-                    </div>
-                    <div className="space-y-3">
-                        {notifications.map((notif, index) => (
-                            <div
-                                key={index}
-                                className={`rounded-lg border p-3 ${notif.tipo === 'alerta'
-                                        ? 'border-orange-200 bg-orange-50'
-                                        : notif.tipo === 'success'
-                                            ? 'border-emerald-200 bg-emerald-50'
-                                            : 'border-blue-200 bg-blue-50'
-                                    }`}
-                            >
-                                <div className="flex items-start gap-3">
-                                    <AlertTriangle
-                                        className={`h-5 w-5 ${notif.tipo === 'alerta'
-                                                ? 'text-orange-600'
-                                                : notif.tipo === 'success'
-                                                    ? 'text-emerald-600'
-                                                    : 'text-blue-600'
-                                            }`}
-                                    />
-                                    <div className="flex-1">
-                                        <div className="text-sm font-medium text-gray-900">
-                                            {notif.mensaje}
-                                        </div>
-                                        <div className="text-xs text-gray-500">{notif.fecha}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                {/* Información Adicional */}
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-6">
+                    <div className="flex items-start gap-4">
+                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-emerald-600">
+                            <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="font-semibold text-emerald-900 mb-2">
+                                Bienvenido al Portal de Padres
+                            </h3>
+                            <p className="text-sm text-emerald-800">
+                                Desde aquí puede monitorear el desempeño académico de sus hijos, revisar calificaciones,
+                                consultar asistencia, realizar pagos y comunicarse con los docentes. Si tiene alguna duda,
+                                no dude en contactarnos.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

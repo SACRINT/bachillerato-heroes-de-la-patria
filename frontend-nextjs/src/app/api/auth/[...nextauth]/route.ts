@@ -53,7 +53,8 @@ export const authOptions: NextAuthOptions = {
                     return {
                         id: data.user.id.toString(),
                         email: data.user.email,
-                        name: data.user.nombre || data.user.name || data.user.username,
+                        // Construct full name from nombre + apellido_paterno
+                        name: `${data.user.nombre} ${data.user.apellido_paterno || ''}`.trim() || data.user.username,
                         role: data.user.role || data.user.tipo_usuario || 'estudiante',
                         accessToken: data.token || data.tokens?.accessToken,
                     };

@@ -16,6 +16,7 @@ const sanitized_errors_1 = require("../utils/sanitized-errors");
 const student_dao_1 = __importDefault(require("../data/student.dao"));
 const grades_dao_1 = __importDefault(require("../data/grades.dao"));
 const attendance_dao_1 = __importDefault(require("../data/attendance.dao"));
+const database_1 = require("../config/database");
 class StudentService {
     /**
      * Obtener lista de estudiantes con filtros opcionales
@@ -177,7 +178,7 @@ class StudentService {
         return emailRegex.test(email);
     }
     /**
-     * Validar datos de estudiante
+     * Valida datos de estudiante
      */
     _validateStudentData(data) {
         const requiredFields = ['nombre', 'email', 'role'];
@@ -188,6 +189,140 @@ class StudentService {
         if (!StudentService.isValidEmail(data.email)) {
             throw new Error('Email inválido');
         }
+    }
+
+    /**
+     * DASHBOARD: Obtener datos agregados para dashboard
+     */
+    async getDashboardData(userId) {
+        try {
+            // 1. Obtener perfil primero para tener studentId
+            const profile = await this.getStudentProfile(userId);
+
+            // Si no tiene perfil de estudiante (ej. usuario nuevo sin registro completo), devolver default
+            if (!profile) {
+                return this._getDefaultDashboardData();
+            }
+
+            const studentId = profile.id;
+
+            // 2. Obtener resto de datos en paralelo
+            // getStudentGrades usa studentId (DAO)
+            // getStudentSchedule/Assignments usan userId (SQL JOIN)
+            const [grades, schedule, assignments, notifications] = await Promise.all([
+                this.getStudentGrades(studentId).catch(() => []),
+                this.getStudentSchedule(userId),
+                this.getStudentAssignments(userId, { status: 'pending' }),
+                this.getStudentNotifications(userId, { unread_only: true })
+            ]);
+
+            // Calcular promedio
+            const numericGrades = (grades || []).map(g => parseFloat(g.calificacion)).filter(n => !isNaN(n));
+            const promedio = numericGrades.length > 0
+                ? (numericGrades.reduce((a, b) => a + b, 0) / numericGrades.length).toFixed(2)
+                : '0.00';
+
+            return {
+                student_id: profile.id,
+                matricula: profile.matricula,
+                nombre_completo: `${profile.nombre} ${profile.apellido_paterno}`,
+                profile: profile,
+                statistics: {
+                    promedio_general: promedio,
+                    tareas_pendientes: (assignments || []).length,
+                    notificaciones_nuevas: (notifications || []).length,
+                    materias_cursando: schedule ? new Set(schedule.map(s => s.materia)).size : 0
+                },
+                recent_grades: (grades || []).slice(0, 5),
+                pending_assignments: assignments || [],
+                recent_notifications: notifications || [],
+                schedule_today: schedule || []
+            };
+        } catch (error) {
+            devLogger_1.default.error('[StudentService] Dashboard error', (0, sanitized_errors_1.sanitizeError)(error, 'getDashboardData'));
+            return this._getDefaultDashboardData();
+        }
+    }
+
+    async getStudentProfile(userId) {
+        try {
+            // Schema real de estudiantes (sin grupo, turno, nia)
+            const query = `
+                SELECT e.id, e.matricula, e.especialidad, e.semestre, e.fecha_ingreso,
+                       u.nombre, u.apellido_paterno, u.apellido_materno, u.email, u.telefono, u.foto_url
+                FROM estudiantes e
+                JOIN usuarios u ON e.usuario_id = u.id
+                WHERE u.id = $1 AND u.status = 'activo'
+            `;
+            const result = await (0, database_1.executeQuery)(query, [userId]);
+            return result[0] || null;
+        } catch (e) {
+            devLogger_1.default.warn('[StudentService] Error fetching profile', e);
+            return null;
+        }
+    }
+
+    async getStudentSchedule(userId) {
+        try {
+            // Schema real de horarios (con grupo_id)
+            const query = `
+                SELECT h.dia, h.hora_inicio, h.hora_fin, h.aula,
+                       m.nombre as materia, 
+                       d.nombre || ' ' || d.apellido_paterno as docente
+                FROM horarios h
+                JOIN estudiantes e ON h.grupo_id = e.grupo_id
+                JOIN usuarios u ON e.usuario_id = u.id
+                LEFT JOIN materias m ON h.materia_id = m.id
+                LEFT JOIN docentes doc ON h.docente_id = doc.id
+                LEFT JOIN usuarios d ON doc.usuario_id = d.id
+                WHERE u.id = $1 AND h.activo = true
+                ORDER BY h.dia, h.hora_inicio
+            `;
+            const result = await (0, database_1.executeQuery)(query, [userId]);
+            return result || [];
+        } catch (e) {
+            devLogger_1.default.warn('[StudentService] Error fetching schedule', e);
+            return []; // Retornar vacío en vez de mock
+        }
+    }
+
+    async getStudentAssignments(userId, filters) {
+        try {
+            // Fix: t.status = 'publicada'
+            let query = `
+                SELECT t.id, t.titulo, t.descripcion, t.fecha_entrega, t.tipo,
+                       m.nombre as materia,
+                       CASE WHEN et.id IS NOT NULL THEN 'entregada' ELSE 'pendiente' END as estado
+                FROM tareas t
+                JOIN estudiantes e ON t.grupo_id = e.grupo_id
+                JOIN usuarios u ON e.usuario_id = u.id
+                LEFT JOIN materias m ON t.materia_id = m.id
+                LEFT JOIN entregas_tareas et ON et.tarea_id = t.id AND et.estudiante_id = e.id
+                WHERE u.id = $1 AND t.status = 'publicada'
+            `;
+            if (filters.status === 'pending') query += " AND et.id IS NULL";
+            query += " ORDER BY t.fecha_entrega ASC LIMIT 10";
+            const result = await (0, database_1.executeQuery)(query, [userId]);
+            return result || [];
+        } catch (e) {
+            devLogger_1.default.warn('[StudentService] Error fetching assignments', e);
+            return [];
+        }
+    }
+
+    async getStudentNotifications(userId, filters) {
+        try {
+            const query = `SELECT * FROM notificaciones_usuario WHERE usuario_id = $1 ORDER BY fecha_creacion DESC LIMIT 5`;
+            const result = await (0, database_1.executeQuery)(query, [userId]);
+            return result || [];
+        } catch (e) { return []; }
+    }
+
+    _getDefaultDashboardData() {
+        return {
+            statistics: { promedio_general: '0.00', tareas_pendientes: 0, notificaciones_nuevas: 0, materias_cursando: 0 },
+            recent_grades: [], pending_assignments: [], recent_notifications: [], schedule_today: []
+        };
     }
 }
 exports.default = new StudentService();

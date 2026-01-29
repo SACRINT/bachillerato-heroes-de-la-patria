@@ -84,51 +84,80 @@ export default function Header() {
                                     <ChevronDown className="h-4 w-4" />
                                 </button>
                                 {dashboardMenuOpen && (
-                                    <div className="absolute right-0 mt-2 w-48 rounded-lg border bg-white shadow-lg">
-                                        <Link
-                                            href={getDashboardUrl()}
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                            onClick={() => setDashboardMenuOpen(false)}
-                                        >
-                                            Dashboard
-                                        </Link>
-                                        <Link
-                                            href="/dashboard/estudiantes"
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                            onClick={() => setDashboardMenuOpen(false)}
-                                        >
-                                            Portal Estudiantes
-                                        </Link>
-                                        <Link
-                                            href="/dashboard/docentes"
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                            onClick={() => setDashboardMenuOpen(false)}
-                                        >
-                                            Portal Docentes
-                                        </Link>
-                                        <Link
-                                            href="/dashboard/padres"
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                            onClick={() => setDashboardMenuOpen(false)}
-                                        >
-                                            Portal Padres
-                                        </Link>
-                                        <Link
-                                            href="/dashboard/admin"
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                            onClick={() => setDashboardMenuOpen(false)}
-                                        >
-                                            Portal Admin
-                                        </Link>
+                                    <div className="absolute right-0 mt-2 w-64 rounded-lg border bg-white shadow-lg">
+                                        {/* User Info Section */}
+                                        <div className="border-b bg-gradient-to-r from-blue-50 to-cyan-50 px-4 py-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-cyan-600 text-sm font-bold text-white">
+                                                    {user?.name?.charAt(0) || user?.email?.charAt(0) || 'U'}
+                                                </div>
+                                                <div className="flex-1 overflow-hidden">
+                                                    <div className="truncate text-sm font-semibold text-gray-900">
+                                                        {user?.name || 'Usuario'}
+                                                    </div>
+                                                    <div className="truncate text-xs text-gray-500">
+                                                        {user?.email || ''}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Dashboard Links */}
+                                        <div className="py-1">
+                                            <Link
+                                                href={getDashboardUrl()}
+                                                className="block px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-50"
+                                                onClick={() => setDashboardMenuOpen(false)}
+                                            >
+                                                🏠 Mi Dashboard Principal
+                                            </Link>
+                                        </div>
+
+                                        {/* Other Portals - Only for dev/testing */}
+                                        <div className="border-t py-1">
+                                            <div className="px-4 py-2 text-xs font-semibold uppercase text-gray-400">
+                                                Otros Portales
+                                            </div>
+                                            <Link
+                                                href="/dashboard/estudiantes"
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                                onClick={() => setDashboardMenuOpen(false)}
+                                            >
+                                                📚 Portal Estudiantes
+                                            </Link>
+                                            <Link
+                                                href="/dashboard/docentes"
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                                onClick={() => setDashboardMenuOpen(false)}
+                                            >
+                                                👨‍🏫 Portal Docentes
+                                            </Link>
+                                            <Link
+                                                href="/dashboard/padres"
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                                onClick={() => setDashboardMenuOpen(false)}
+                                            >
+                                                👨‍👩‍👧‍👦 Portal Padres
+                                            </Link>
+                                            <Link
+                                                href="/dashboard/admin"
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                                onClick={() => setDashboardMenuOpen(false)}
+                                            >
+                                                ⚙️ Portal Admin
+                                            </Link>
+                                        </div>
+
+                                        {/* Logout */}
                                         <div className="border-t">
                                             <button
                                                 onClick={() => {
                                                     logout();
                                                     setDashboardMenuOpen(false);
                                                 }}
-                                                className="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                                                className="block w-full px-4 py-2.5 text-left text-sm font-medium text-red-600 hover:bg-red-50"
                                             >
-                                                Cerrar Sesión
+                                                🚪 Cerrar Sesión
                                             </button>
                                         </div>
                                     </div>
