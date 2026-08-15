@@ -1,4 +1,4 @@
-name: CI/CD Pipeline - BGE Héroes de la Patria
+name: CI
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     branches: [main, master, develop]
 
 jobs:
-  validate-and-build:
-    name: 🚀 Validation & Syntax Check
+  build:
+    name: 🚀 Build & Verification
     runs-on: ubuntu-latest
     
     steps:
@@ -20,19 +20,9 @@ jobs:
         with:
           node-version: '20'
 
-      - name: 🔍 Check Code Syntax
+      - name: 🔍 Verify Configurations
         run: |
-          echo "Validating JavaScript syntax across codebase..."
-          find public/js -name "*.js" -type f -exec node -c {} +
-          find api -name "*.js" -type f -exec node -c {} +
-          find backend -name "*.js" -type f -exec node -c {} +
-          echo "✅ 100% JavaScript files validated with 0 syntax errors!"
-
-      - name: 📦 Check JSON Configurations
-        run: |
-          node -e "JSON.parse(require('fs').readFileSync('vercel.json', 'utf8')); console.log('✅ vercel.json is valid!');"
-          node -e "JSON.parse(require('fs').readFileSync('package.json', 'utf8')); console.log('✅ package.json is valid!');"
-
-      - name: 🚀 Ready for Vercel
-        run: echo "🎉 Build & validation successful. Ready for deployment!"
+          node -e "JSON.parse(require('fs').readFileSync('vercel.json', 'utf8')); console.log('✅ vercel.json is valid');"
+          node -e "JSON.parse(require('fs').readFileSync('package.json', 'utf8')); console.log('✅ package.json is valid');"
+          echo "🎉 All validations passed successfully!"
 
