@@ -23,8 +23,5 @@ module.exports = {
         }
     },
     setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
-    testTimeout: 10000,
-    transform: {
-        '^.+\\.ts$': 'ts-jest'
-    }
+    testTimeout: 10000
 };
