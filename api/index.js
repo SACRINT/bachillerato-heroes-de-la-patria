@@ -350,7 +350,7 @@ app.post('/api/auth/login', async (req, res) => {
             const result = await client.query(query, [identifier]);
 
             if (result.rows.length === 0) {
-                console.warn('[AUTH] Usuario no encontrado:', email);
+                console.warn('[AUTH] Usuario no encontrado:', identifier);
                 return res.status(401).json({
                     success: false,
                     error: 'Credenciales inválidas',
@@ -364,7 +364,7 @@ app.post('/api/auth/login', async (req, res) => {
             const validPassword = await bcrypt.compare(password, user.password_hash);
 
             if (!validPassword) {
-                console.warn('[AUTH] Contraseña incorrecta para:', email);
+                console.warn('[AUTH] Contraseña incorrecta para:', identifier);
                 return res.status(401).json({
                     success: false,
                     error: 'Credenciales inválidas',
@@ -399,7 +399,7 @@ app.post('/api/auth/login', async (req, res) => {
             const accessTokenExpiry = Math.floor(Date.now() / 1000) + (24 * 60 * 60);
             const refreshTokenExpiry = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60);
 
-            console.log('[AUTH] Login exitoso para:', email, 'role:', user.role);
+            console.log('[AUTH] Login exitoso para:', identifier, 'role:', user.role);
 
             return res.json({
                 success: true,
