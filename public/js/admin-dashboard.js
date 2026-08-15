@@ -77,7 +77,6 @@ class AdminDashboard {
                 }
             }
         } catch (error) {
-        } catch (error) {
             debugLog.warn('ERROR', '⚠️ Error verificando sesión segura:', error);
         }
 

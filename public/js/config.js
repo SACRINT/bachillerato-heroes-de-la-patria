@@ -15,9 +15,9 @@ window.AppConfig = {
 
     // URLs del backend (auto-detecta entorno)
     api: {
-        baseURL: window.location.hostname.includes('vercel.app')
-            ? `${window.location.protocol}//${window.location.host}` // Vercel usa URLs relativas
-            : 'http://localhost:5000', // Desarrollo local apuntando al backend real
+        baseURL: (typeof window !== 'undefined' && window.location && window.location.origin)
+            ? window.location.origin
+            : '',
         timeout: 10000,
         retries: 3
     },

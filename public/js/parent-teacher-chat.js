@@ -9,7 +9,7 @@ class ParentTeacherChat {
         this.currentUser = null;
         this.conversations = new Map();
         this.currentConversation = null;
-        this.apiBase = 'http://localhost:8000/api/parent-teacher';
+        this.apiBase = '/api/parent-teacher';
 
         this.init();
     }

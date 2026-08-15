@@ -67,22 +67,25 @@ class StudentDashboard {
             }
 
             this.init();
+        } catch (error) {
+            debugLog.error('DASHBOARD', '❌ Error en constructor de StudentDashboard:', error);
+            this.fallbackInitialization();
         }
+    }
 
     fallbackInitialization() {
-            debugLog.log('DASHBOARD', '🔄 [DASHBOARD] Iniciando modo de respaldo...');
-            this.apiBase = '/api/students/';
-            this.authToken = null;
-            this.currentStudent = null;
-            // NO mostrar modal automáticamente en modo de respaldo
-            debugLog.log('APP', 'ℹ️ Modo de respaldo iniciado. Use el botón para login.');
-        }
+        debugLog.log('DASHBOARD', '🔄 [DASHBOARD] Iniciando modo de respaldo...');
+        this.apiBase = '/api/students/';
+        this.authToken = null;
+        this.currentStudent = null;
+        debugLog.log('APP', 'ℹ️ Modo de respaldo iniciado. Use el botón para login.');
+    }
 
-        init() {
-            this.setupEventListeners();
-            this.checkAuthentication();
-            debugLog.log('DASHBOARD', '✅ [DASHBOARD] Dashboard estudiantil inicializado');
-        }
+    init() {
+        this.setupEventListeners();
+        this.checkAuthentication();
+        debugLog.log('DASHBOARD', '✅ [DASHBOARD] Dashboard estudiantil inicializado');
+    }
 
         setupEventListeners() {
             // Login form
@@ -136,12 +139,10 @@ class StudentDashboard {
                     this.forceLogout();
                     return false;
                 }
-            }
             } catch (e) {
-            debugLog.warn('APP', '⚠️ Error validando token, posible token corrupto');
-            // No forzamos logout inmediato para permitir modo demo/mock si aplica, 
-            // pero idealmente deberíamos si no es demo.
-        }
+                debugLog.warn('APP', '⚠️ Error validando token, posible token corrupto');
+                // No forzamos logout inmediato para permitir modo demo/mock si aplica
+            }
 
         try {
             // Si hay token, cargar dashboard directamente

@@ -12,7 +12,7 @@
       "destination": "/api/index.js"
     },
     {
-      "source": "/((?!assets/|images/|css/|js/|favicon.ico|manifest.json|robots.txt|sitemap.xml).*)",
+      "source": "/((?!.*\\.(html|css|js|png|jpg|jpeg|webp|ico|svg|json|xml|txt|pdf)|assets/|images/|css/|js/|favicon.ico|manifest.json|robots.txt|sitemap.xml).*)",
       "destination": "/index.html"
     }
   ],
@@ -22,7 +22,7 @@
     "api/index.js": {
       "memory": 1024,
       "maxDuration": 60,
-      "includeFiles": "api/**,backend/middleware/**,backend/config/**,backend/utils/**,backend/data/**",
+      "includeFiles": "api/**,backend/**",
       "excludeFiles": "backend/node_modules/**"
     }
   },

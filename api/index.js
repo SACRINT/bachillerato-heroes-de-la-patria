@@ -130,35 +130,57 @@ app.get('/health', (req, res) => {
 // ============================================
 
 // ----------------------------------------------------------------------
-// 🚀 PRODUCTION BACKEND INTEGRATION (Injected by AI Optimiser)
-// Intentar cargar rutas reales compiladas del backend.
-// Esto permite que el despliegue en Vercel use la lógica real de negocio.
+// 🚀 PRODUCTION BACKEND INTEGRATION
+// Cargar rutas reales del backend para serverless Vercel
 // ----------------------------------------------------------------------
 
-// 1. Admin Routes (Dashboard, Stats, Credentials)
-try {
-    const adminPath = '../backend/routes/admin';
-    // Verificar si existe el modulo antes de requerir para evitar crash fatal si falta el archivo
-    const adminRoutes = require(adminPath).default;
-    if (adminRoutes) {
-        app.use('/api/admin', adminRoutes);
-        console.log('✅ [VERCEL-ROUTER] Rutas de Admin montadas en /api/admin');
+const loadRouteSafe = (routePath) => {
+    try {
+        const mod = require(routePath);
+        return mod && mod.default ? mod.default : mod;
+    } catch (err) {
+        console.warn(`[VERCEL-ROUTER] Nota al cargar ${routePath}:`, err.message);
+        return null;
     }
-} catch (e) {
-    console.warn('⚠️ [VERCEL-ROUTER] No se pudieron cargar rutas de Admin (Usando fallbacks):', e.message);
-}
+};
 
-// 2. Parent Routes (Portal Padres)
-try {
-    const parentsPath = '../backend/routes/parents';
-    const parentRoutes = require(parentsPath).default;
-    if (parentRoutes) {
-        app.use('/api/parents', parentRoutes);
-        console.log('✅ [VERCEL-ROUTER] Rutas de Padres montadas en /api/parents');
+const mountRouteSafe = (routePrefix, relativePath) => {
+    const handler = loadRouteSafe(relativePath);
+    if (handler && typeof handler === 'function') {
+        app.use(routePrefix, handler);
+        console.log(`✅ [VERCEL-ROUTER] Montado ${routePrefix} desde ${relativePath}`);
     }
-} catch (e) {
-    console.warn('⚠️ [VERCEL-ROUTER] No se pudieron cargar rutas de Padres:', e.message);
-}
+};
+
+// 1. Admin y Dashboard
+mountRouteSafe('/api/admin', '../backend/routes/admin');
+mountRouteSafe('/api/dashboard', '../backend/routes/dashboard');
+
+// 2. Portales de Usuarios
+mountRouteSafe('/api/parents', '../backend/routes/parents');
+mountRouteSafe('/api/students-auth', '../backend/routes/students-auth');
+mountRouteSafe('/api/teachers-portal', '../backend/routes/teachers-portal');
+mountRouteSafe('/api/teachers-portal-ext', '../backend/routes/teachers-portal-extended');
+
+// 3. Calificaciones y Asistencia
+mountRouteSafe('/api/grades', '../backend/routes/grades');
+mountRouteSafe('/api/grades-validation', '../backend/routes/grades-validation');
+mountRouteSafe('/api/attendance', '../backend/routes/attendance');
+
+// 4. Formularios Públicos e Institucionales
+mountRouteSafe('/api/bolsa-trabajo', '../backend/routes/bolsa-trabajo');
+mountRouteSafe('/api/egresados', '../backend/routes/egresados');
+mountRouteSafe('/api/contact', '../backend/routes/contact');
+mountRouteSafe('/api/citas', '../backend/routes/citas');
+mountRouteSafe('/api/citas-improved', '../backend/routes/citas-improved');
+mountRouteSafe('/api/inscriptions', '../backend/routes/inscriptions');
+mountRouteSafe('/api/enrollment', '../backend/routes/enrollment');
+
+// 5. Comunicación y Avisos
+mountRouteSafe('/api/avisos', '../backend/routes/avisos');
+mountRouteSafe('/api/noticias', '../backend/routes/noticias');
+mountRouteSafe('/api/eventos', '../backend/routes/eventos');
+mountRouteSafe('/api/comunicados', '../backend/routes/comunicados');
 
 // ----------------------------------------------------------------------
 // END PROD INTEGRATION
@@ -285,29 +307,18 @@ app.post('/api/auth/login', async (req, res) => {
         console.log('[AUTH-DETAILED] Request Headers:', JSON.stringify(req.headers));
         console.log('[AUTH-DETAILED] Request Content-Type:', req.headers['content-type']);
 
-        const { email, password, rememberMe = false } = req.body;
-
-        console.log('[AUTH-DETAILED] Extracted email:', email);
-        console.log('[AUTH-DETAILED] Extracted password (length):', password ? password.length : 'undefined');
-        console.log('[AUTH-DETAILED] Extracted rememberMe:', rememberMe);
+        const identifier = (req.body.email || req.body.username || req.body.matricula || '').trim();
+        const { password, rememberMe = false } = req.body;
 
         // Validación básica
-        if (!email || !password) {
-            console.log('[AUTH-DETAILED] ❌ Validation failed - missing email or password');
-            console.log('[AUTH-DETAILED] Email empty?', !email);
-            console.log('[AUTH-DETAILED] Password empty?', !password);
+        if (!identifier || !password) {
             return res.status(400).json({
                 success: false,
-                error: 'Email y contraseña requeridos',
-                debug: {
-                    hasEmail: !!email,
-                    hasPassword: !!password,
-                    bodyKeys: Object.keys(req.body)
-                }
+                error: 'Email/Usuario y contraseña requeridos'
             });
         }
 
-        console.log('[AUTH] Login attempt for email:', email);
+        console.log('[AUTH] Login attempt for identifier:', identifier);
 
         // ✅ CONEXIÓN REAL A POSTGRESQL (Neon)
         const bcrypt = require('bcryptjs');
@@ -327,16 +338,16 @@ app.post('/api/auth/login', async (req, res) => {
         try {
             client = await pool.connect();
 
-            // Buscar usuario por email en tabla 'usuarios'
+            // Buscar usuario por email o username en tabla 'usuarios'
             const query = `
                 SELECT id, uuid, email, username, password_hash, nombre, apellido_paterno,
                        apellido_materno, role, status, created_at
                 FROM usuarios
-                WHERE email = $1 AND status = 'activo'
+                WHERE (LOWER(email) = LOWER($1) OR username = $1) AND (status = 'activo' OR status IS NULL)
                 LIMIT 1
             `;
 
-            const result = await client.query(query, [email]);
+            const result = await client.query(query, [identifier]);
 
             if (result.rows.length === 0) {
                 console.warn('[AUTH] Usuario no encontrado:', email);

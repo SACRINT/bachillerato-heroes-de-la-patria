@@ -71,7 +71,7 @@ router.post('/cv', upload.single('additionalDocument'), [
     (0, express_validator_1.body)('phone').trim().notEmpty().withMessage('Teléfono es requerido'),
     (0, express_validator_1.body)('graduationYear').notEmpty().withMessage('Año de egreso es requerido'),
     (0, express_validator_1.body)('subject').trim().notEmpty().withMessage('Área de interés es requerida'),
-    (0, express_validator_1.body)('message').trim().isLength({ min: 20 }).withMessage('El resumen profesional debe tener al menos 20 caracteres')
+    (0, express_validator_1.body)('message').optional().trim()
 ], async (req, res) => {
     // Validar datos
     const errors = (0, express_validator_1.validationResult)(req);
@@ -82,7 +82,8 @@ router.post('/cv', upload.single('additionalDocument'), [
         res.status(400).json({ success: false, errors: errors.array() });
         return;
     }
-    const { name, email, phone, graduationYear, subject, message, skills } = req.body;
+    const { name, email, phone, graduationYear, subject, skills } = req.body;
+    const message = req.body.message && req.body.message.trim() ? req.body.message.trim() : `Perfil profesional de egresado en área de ${subject}`;
     const cvFile = req.file ? `/uploads/cvs/${req.file.filename}` : null;
     try {
         debug_logger_1.debugLog.log('BOLSA_TRABAJO', '[BOLSA-TRABAJO CV v2] Recibiendo CV');

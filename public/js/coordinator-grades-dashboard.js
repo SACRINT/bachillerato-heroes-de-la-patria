@@ -447,7 +447,10 @@ class CoordinatorGradesDashboard {
             const data = await response.json();
             const pending = data.total || 0;
 
-            document.getElementById('stat-pending')?.textContent = pending;
+            const statPendingEl = document.getElementById('stat-pending');
+            if (statPendingEl) {
+                statPendingEl.textContent = pending;
+            }
 
         } catch (error) {
             console.error('Error:', error);
@@ -461,7 +464,7 @@ class CoordinatorGradesDashboard {
         }
     }
 
-    showError(container Id, message) {
+    showError(containerId, message) {
         const container = document.getElementById(containerId);
         if (container) {
             container.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-circle"></i> ${message}</div>`;

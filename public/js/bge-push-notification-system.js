@@ -1195,4 +1195,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-export default BGEPushNotificationSystem;
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = BGEPushNotificationSystem;
+}
+if (typeof window !== 'undefined') {
+    window.BGEPushNotificationSystem = BGEPushNotificationSystem;
+}

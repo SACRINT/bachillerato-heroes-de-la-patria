@@ -150,6 +150,11 @@ class TeachersPortalManager {
             // Guardar token
             this.setToken(data.token);
             this.teacher = data.teacher;
+            localStorage.setItem('bge_auth_token', data.token);
+            localStorage.setItem('bge_auth_session', JSON.stringify({
+                user: data.teacher,
+                role: 'docente'
+            }));
 
             // Cargar dashboard
             await this.loadDashboard();
@@ -170,6 +175,8 @@ class TeachersPortalManager {
         this.teacher = null;
         localStorage.removeItem('teachers_auth_token');
         sessionStorage.removeItem('teachers_auth_token');
+        localStorage.removeItem('bge_auth_token');
+        localStorage.removeItem('bge_auth_session');
         this.showLogin();
     }
 

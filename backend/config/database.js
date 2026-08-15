@@ -11,10 +11,14 @@
 const path = require('path');
 // 🔴 CORRECCIÓN: Cargar variables de entorno con soporte para .env.local
 // Esto asegura que las credenciales locales no se pierdan si se requiere este archivo directamente
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config({ path: path.resolve(__dirname, '../../.env.local') });
+try {
+    if (process.env.NODE_ENV !== 'production') {
+        require('dotenv').config({ path: path.resolve(__dirname, '../../.env.local') });
+    }
+    require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+} catch (e) {
+    // dotenv is optional if env vars are already loaded in the environment
 }
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 const { Pool } = require('pg');
 // const jsonDb = require('./database-json'); // ⚠️ DESHABILITADO: No disponible en Vercel serverless
 const devLogger = require('../utils/devLogger');

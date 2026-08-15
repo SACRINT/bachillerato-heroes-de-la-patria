@@ -952,4 +952,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-export default BGEAdvancedPWA;
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = BGEAdvancedPWA;
+}
+if (typeof window !== 'undefined') {
+    window.BGEAdvancedPWA = BGEAdvancedPWA;
+}

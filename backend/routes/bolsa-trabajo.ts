@@ -124,7 +124,7 @@ router.post('/cv', upload.single('additionalDocument'), [
     body('phone').trim().notEmpty().withMessage('Teléfono es requerido'),
     body('graduationYear').notEmpty().withMessage('Año de egreso es requerido'),
     body('subject').trim().notEmpty().withMessage('Área de interés es requerida'),
-    body('message').trim().isLength({ min: 20 }).withMessage('El resumen profesional debe tener al menos 20 caracteres')
+    body('message').optional().trim()
 ], async (req: RequestWithFile, res: Response): Promise<void> => {
     // Validar datos
     const errors = validationResult(req);
@@ -134,7 +134,8 @@ router.post('/cv', upload.single('additionalDocument'), [
         return;
     }
 
-    const { name, email, phone, graduationYear, subject, message, skills } = req.body;
+    const { name, email, phone, graduationYear, subject, skills } = req.body;
+    const message = req.body.message && req.body.message.trim() ? req.body.message.trim() : `Perfil profesional de egresado en área de ${subject}`;
     const cvFile = req.file ? `/uploads/cvs/${req.file.filename}` : null;
 
     try {

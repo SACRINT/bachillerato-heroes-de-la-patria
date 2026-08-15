@@ -6,7 +6,7 @@
 class SimpleAuth {
     static API_BASE = (window.AppConfig && window.AppConfig.api && window.AppConfig.api.baseURL)
         ? window.AppConfig.api.baseURL
-        : (window.location.hostname === 'localhost' ? 'http://localhost:5000' : '');
+        : '';
 
     /**
      * Iniciar sesión
@@ -21,15 +21,33 @@ class SimpleAuth {
 
             if (!response.ok) {
                 const error = await response.json();
-                throw new Error(error.message || 'Error al iniciar sesión');
+                throw new Error(error.message || error.error || 'Error al iniciar sesión');
             }
 
             const data = await response.json();
+            const token = data.token || (data.tokens && data.tokens.accessToken) || data.accessToken;
 
-            // Guardar token y datos de usuario
-            localStorage.setItem('auth_token', data.token);
-            localStorage.setItem('auth_user', JSON.stringify(data.user));
-            localStorage.setItem('auth_expires', data.expiresAt || Date.now() + 86400000); // 24h
+            // Guardar token y datos de usuario de manera unificada
+            if (token) {
+                localStorage.setItem('auth_token', token);
+                localStorage.setItem('bge_auth_token', token);
+                if (data.user?.role === 'estudiante') {
+                    localStorage.setItem('student_auth_token', token);
+                    localStorage.setItem('current_student', JSON.stringify(data.user));
+                } else if (data.user?.role === 'docente') {
+                    localStorage.setItem('teachers_auth_token', token);
+                } else if (data.user?.role === 'padre_familia' || data.user?.role === 'padre') {
+                    localStorage.setItem('parent_auth_token', token);
+                    localStorage.setItem('current_parent', JSON.stringify(data.user));
+                }
+            }
+
+            if (data.user) {
+                localStorage.setItem('auth_user', JSON.stringify(data.user));
+                localStorage.setItem('bge_auth_session', JSON.stringify({ user: data.user, role: data.user.role }));
+            }
+
+            localStorage.setItem('auth_expires', data.expiresAt || Date.now() + 86400000);
 
             return data;
         } catch (error) {

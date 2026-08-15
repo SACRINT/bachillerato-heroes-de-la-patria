@@ -230,13 +230,22 @@
                 // Success!
                 showAlert('¡Inicio de sesión exitoso! Redirigiendo...', 'success');
 
-                // Redirect after 1 second
+                // Redirect according to user role
                 setTimeout(() => {
-                    // Check if there's a redirect URL
-                    const redirectTo = sessionStorage.getItem('redirect_after_login') || '/estudiantes.html';
+                    const role = result.user?.role;
+                    let defaultDestination = 'estudiantes.html';
+                    if (role === 'admin') {
+                        defaultDestination = 'admin-dashboard.html';
+                    } else if (role === 'docente') {
+                        defaultDestination = 'docentes.html';
+                    } else if (role === 'padre_familia' || role === 'padre') {
+                        defaultDestination = 'padres.html';
+                    }
+
+                    const redirectTo = sessionStorage.getItem('redirect_after_login') || defaultDestination;
                     sessionStorage.removeItem('redirect_after_login');
                     window.location.href = redirectTo;
-                }, 1000);
+                }, 800);
 
             } catch (error) {
                 // Show error
@@ -250,7 +259,16 @@
 
         // If already logged in, redirect
         if (SimpleAuth.isAuthenticated()) {
-            window.location.href = '/estudiantes.html';
+            const user = SimpleAuth.getCurrentUser();
+            if (user?.role === 'admin') {
+                window.location.href = 'admin-dashboard.html';
+            } else if (user?.role === 'docente') {
+                window.location.href = 'docentes.html';
+            } else if (user?.role === 'padre_familia' || user?.role === 'padre') {
+                window.location.href = 'padres.html';
+            } else {
+                window.location.href = 'estudiantes.html';
+            }
         }
     </script>
 </body>

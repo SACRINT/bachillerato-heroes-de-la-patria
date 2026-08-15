@@ -975,4 +975,9 @@ window.addEventListener('beforeunload', () => {
     }
 });
 
-export default BGEAdvancedAnalytics;
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = BGEAdvancedAnalytics;
+}
+if (typeof window !== 'undefined') {
+    window.BGEAdvancedAnalytics = BGEAdvancedAnalytics;
+}

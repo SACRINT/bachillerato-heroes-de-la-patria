@@ -80,9 +80,7 @@ router.post('/', authenticateToken, requireRole(['admin', 'docente']), validateC
 router.get('/student/:id', authenticateToken, async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
         const estudianteId = parseInt(req.params.id);
-        const { cicloEscolar } = req.query as { cicloEscolar?: string };
-
-        if (!cicloEscolar) { res.status(400).json({ success: false, message: 'Ciclo escolar requerido' }); return; }
+        const { cicloEscolar = '2024-2025' } = req.query as { cicloEscolar?: string };
 
         const reportCard = await GradesService.getStudentReportCard(estudianteId, cicloEscolar);
         res.json({ success: true, data: reportCard });
@@ -167,12 +165,7 @@ router.get('/batch', authenticateToken, requireRole(['docente', 'admin']), async
 router.get('/student/:id/pdf', authenticateToken, async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
         const estudianteId = parseInt(req.params.id);
-        const { cicloEscolar } = req.query as { cicloEscolar?: string };
-
-        if (!cicloEscolar) {
-            res.status(400).json({ success: false, message: 'Ciclo escolar requerido para generar la boleta.' });
-            return;
-        }
+        const { cicloEscolar = '2024-2025' } = req.query as { cicloEscolar?: string };
 
         // 1. Obtener datos de calificaciones
         const reportCard = await GradesService.getStudentReportCard(estudianteId, cicloEscolar);

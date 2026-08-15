@@ -81,12 +81,8 @@ const refreshLimiter = (0, express_rate_limit_1.default)({
 // VALIDACIONES
 // ============================================
 const loginValidation = [
-    (0, express_validator_1.body)('email')
-        .isEmail()
-        .normalizeEmail()
-        .withMessage('Email válido requerido'),
     (0, express_validator_1.body)('password')
-        .isLength({ min: 3 })
+        .isLength({ min: 1 })
         .withMessage('Contraseña requerida'),
     (0, express_validator_1.body)('rememberMe')
         .optional()
@@ -142,7 +138,7 @@ const validate = (req, res, next) => {
 // ============================================
 /**
  * POST /api/auth/login
- * Iniciar sesión con JWT
+ * Iniciar sesión con JWT (soporta email o matrícula/username)
  */
 router.post('/login', loginLimiter, loginValidation, async (req, res) => {
     try {
@@ -151,9 +147,14 @@ router.post('/login', loginLimiter, loginValidation, async (req, res) => {
             res.status(400).json({ success: false, error: 'Datos de entrada inválidos', details: errors.array() });
             return;
         }
-        const { email, password, rememberMe = false } = req.body;
-        debug_logger_1.debugLog.log('AUTH', `Intento de login para email=${(0, sanitized_errors_1.maskEmail)(email)}`);
-        const user = await authService.authenticateUser(email, password);
+        const identifier = (req.body.email || req.body.username || req.body.matricula || '').trim();
+        if (!identifier) {
+            res.status(400).json({ success: false, error: 'Identificador requerido', message: 'Por favor ingresa tu email o matrícula/usuario' });
+            return;
+        }
+        const { password, rememberMe = false } = req.body;
+        debug_logger_1.debugLog.log('AUTH', `Intento de login para usuario=${identifier}`);
+        const user = await authService.authenticateUser(identifier, password);
         // ✅ SEMANA 25: Check 2FA
         // const has2FA = await twoFactorService.isEnabled(user.id);
         const has2FA = false; // TEMPORARILY DISABLED

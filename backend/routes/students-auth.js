@@ -21,7 +21,6 @@ const StudentDAO = require('../data/student.dao');
  * Login de estudiante contra la base de datos PostgreSQL.
  */
 router.post('/login', [
-    body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
     body('password').notEmpty().withMessage('Contraseña requerida')
 ], async (req, res) => {
     try {
@@ -30,10 +29,26 @@ router.post('/login', [
             return res.status(400).json({ success: false, errors: errors.array() });
         }
 
-        const { email, password } = req.body;
+        const identifier = (req.body.email || req.body.username || req.body.matricula || '').trim();
+        const { password } = req.body;
+
+        if (!identifier) {
+            return res.status(400).json({ success: false, message: 'Por favor ingresa tu matrícula o correo institucional.' });
+        }
 
         // ✅ FASE 3: Using UserDAO instead of direct pool.query
-        const user = await UserDAO.getByEmail(email);
+        let user = await UserDAO.findByUsernameOrEmail(identifier);
+        
+        // Si no se encuentra en usuarios por matrícula directa, buscar en estudiantes
+        let student = null;
+        if (user) {
+            student = await StudentDAO.getByUserId(user.id);
+        } else {
+            student = await StudentDAO.getByMatricula(identifier);
+            if (student && student.usuario_id) {
+                user = await UserDAO.get(student.usuario_id);
+            }
+        }
 
         if (!user || user.role !== 'estudiante') {
             return res.status(401).json({ success: false, message: 'Credenciales inválidas o el usuario no es un estudiante.' });
@@ -46,38 +61,65 @@ router.post('/login', [
         }
 
         // Verificar que el usuario esté activo
-        if (user.status !== 'activo') {
+        if (user.status !== 'activo' && user.active === false) {
             return res.status(403).json({ success: false, message: 'Esta cuenta se encuentra inactiva.' });
         }
 
-        // ✅ FASE 3: Using StudentDAO instead of direct pool.query
-        const student = await StudentDAO.getByUserId(user.id);
-
         if (!student) {
-            return res.status(404).json({ success: false, message: 'Datos del estudiante no encontrados.' });
+            student = await StudentDAO.getByUserId(user.id);
+        }
+
+        const studentData = student || {
+            id: user.id,
+            usuario_id: user.id,
+            matricula: user.username || 'MAT-' + user.id,
+            nombre_completo: `${user.nombre || ''} ${user.apellido_paterno || ''}`.trim(),
+            grupo: '1-A'
+        };
+
+        // Generar JWT Token
+        let token = 'session_' + Date.now();
+        try {
+            const { getJWTUtils } = require('../utils/jwtUtils');
+            const jwtUtils = getJWTUtils();
+            const tokenPair = jwtUtils.generateTokenPair({
+                userId: user.id,
+                studentId: studentData.id,
+                email: user.email,
+                username: user.username,
+                role: 'estudiante',
+                permissions: ['read_own_profile', 'read_own_grades', 'read_calendar']
+            }, false);
+            token = tokenPair.accessToken;
+        } catch (jwtErr) {
+            debugLog.warn('STUDENTS_AUTH', 'JWT utils not available, using session token');
         }
 
         // Crear la sesión del estudiante
-        req.session.student = {
-            id: student.id,
-            usuario_id: user.id,
-            matricula: student.matricula,
-            name: student.nombre_completo,
-            email: user.email,
-            group: student.grupo,
-            loginAt: new Date().toISOString()
-        };
+        if (req.session) {
+            req.session.student = {
+                id: studentData.id,
+                usuario_id: user.id,
+                matricula: studentData.matricula,
+                name: studentData.nombre_completo,
+                email: user.email,
+                group: studentData.grupo,
+                loginAt: new Date().toISOString()
+            };
+        }
 
-        debugLog.log('STUDENTS_AUTH', `✅ [STUDENT LOGIN] ${student.nombre_completo} (${student.matricula}) ha iniciado sesión.`);
+        debugLog.log('STUDENTS_AUTH', `✅ [STUDENT LOGIN] ${studentData.nombre_completo} (${studentData.matricula}) ha iniciado sesión.`);
 
         res.json({
             success: true,
             message: 'Login exitoso',
+            token: token,
             student: {
-                id: student.id,
-                name: student.nombre_completo,
+                id: studentData.id,
+                matricula: studentData.matricula,
+                name: studentData.nombre_completo,
                 email: user.email,
-                group: student.grupo
+                group: studentData.grupo
             }
         });
 

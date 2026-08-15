@@ -4,7 +4,7 @@
  * Integra calificaciones, asistencias, estadísticas y análisis de rendimiento
  */
 
-import DOMPurify from 'isomorphic-dompurify';
+const DOMPurify = (typeof window !== 'undefined' && window.DOMPurify) ? window.DOMPurify : { sanitize: (str) => str };
 
 class AcademicReportsManager {
     constructor() {

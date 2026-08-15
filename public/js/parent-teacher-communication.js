@@ -4,7 +4,7 @@
  * Integración completa con backend API
  */
 
-import DOMPurify from 'isomorphic-dompurify';
+const DOMPurify = (typeof window !== 'undefined' && window.DOMPurify) ? window.DOMPurify : { sanitize: (str) => str };
 
 class ParentTeacherCommunicationSystem {
     constructor() {

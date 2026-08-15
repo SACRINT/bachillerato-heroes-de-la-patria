@@ -44,25 +44,26 @@
 
             // Mapear campos del formulario HTML a nombres de API
             // Estos datos se enviarán al flujo de aprobación en pendientes_aprobacion
+            const anioEgresoVal = formData.get('generacion') || formData.get('anio-egreso') || formData.get('anio_egreso');
             const mappedData = {
-                nombre_completo: formData.get('name'),
+                nombre_completo: formData.get('name') || formData.get('nombre_completo'),
                 email: formData.get('email'),
-                generacion: formData.get('generacion'),
+                generacion: formData.get('generacion') || anioEgresoVal,
                 telefono: formData.get('telefono') || null,
                 ciudad: formData.get('ciudad') || null,
-                carrera_tecnica: formData.get('carrera'),  // CAMPO OBLIGATORIO
-                anio_egreso: formData.get('anio-egreso') ? parseInt(formData.get('anio-egreso')) : null,  // CAMPO OBLIGATORIO
+                carrera_tecnica: formData.get('carrera') || formData.get('carrera_tecnica') || 'Bachillerato General',
+                anio_egreso: anioEgresoVal ? parseInt(anioEgresoVal) : new Date().getFullYear(),
                 experiencia_laboral: formData.get('trabajo') || null,
-                disponibilidad: 'inmediata',  // Valor por defecto
+                disponibilidad: 'inmediata',
                 linkedin_url: formData.get('linkedin') || null,
                 portafolio_url: formData.get('portafolio') || null,
                 estado: formData.get('estado') || null
             };
 
             // Validar campos obligatorios ANTES de enviar
-            if (!mappedData.nombre_completo || !mappedData.email || !mappedData.anio_egreso || !mappedData.carrera_tecnica) {
+            if (!mappedData.nombre_completo || !mappedData.email || !mappedData.anio_egreso) {
                 console.error('❌ Validación fallida - Campos faltantes:', mappedData);
-                showErrorMessage('Por favor completa: Nombre Completo, Email, Año de Egreso y Carrera Técnica.');
+                showErrorMessage('Por favor completa: Nombre Completo, Email y Año de Generación.');
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = DOMPurify.sanitize(originalText);
                 return;

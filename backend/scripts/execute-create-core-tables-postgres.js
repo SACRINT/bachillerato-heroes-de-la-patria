@@ -12,8 +12,7 @@ const { pool } = require('../config/database');
 async function createCoreTables() {
     const client = await pool.connect();
     try {
-        devLogger.log('Iniciando creacion de tablas principales del sistema (PostgreSQL)...
-');
+        devLogger.log('Iniciando creacion de tablas principales del sistema (PostgreSQL)...\\n');
 
         const sqlPath = path.join(__dirname, 'create-core-tables-postgres.sql');
         const sql = await fs.readFile(sqlPath, 'utf-8');

@@ -271,10 +271,9 @@
                                     autocomplete="current-password" required>
                             </div>
                             <div class="col-12">
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    <strong>Datos de prueba:</strong> Email: padre@demo.com, Matrícula: 20230001,
-                                    Contraseña: demo123
+                                <div class="alert alert-info small mb-0">
+                                    <i class="fas fa-shield-alt me-2"></i>
+                                    Ingresa con tu correo institucional o matrícula y contraseña registrada.
                                 </div>
                             </div>
                         </div>
@@ -542,82 +541,98 @@
         }
 
         // Función principal de login para compatibilidad
-        function loginPaymentSystem() {
-            const email = document.getElementById('paymentEmail').value;
-            const studentId = document.getElementById('studentIdPayment').value;
+        async function loginPaymentSystem() {
+            const email = document.getElementById('paymentEmail').value.trim();
+            const studentId = document.getElementById('studentIdPayment').value.trim();
             const password = document.getElementById('paymentPassword').value;
+            const loginIdentifier = studentId || email;
 
-            // Determinar si es estudiante o padre por el formato del campo
-            if (studentId) {
-                loginStudentWithId(studentId, password);
-            } else if (email) {
-                loginParentWithEmail(email, password);
-            } else {
-                showPaymentAlert('Por favor completa el campo de matrícula (estudiante) o email (padre).', 'warning');
-            }
-        }
-
-        // Login de estudiante
-        function loginStudentWithId(matricula, password) {
-
-            if (!matricula || !password) {
-                showPaymentAlert('Por favor completa todos los campos.', 'warning');
+            if (!loginIdentifier || !password) {
+                showPaymentAlert('Por favor completa los campos requeridos (matrícula/email y contraseña).', 'warning');
                 return;
             }
 
-            // Simulación de login exitoso
-            if (matricula === 'H2024001' && password === 'estudiante123') {
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: loginIdentifier, password: password })
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data.success) {
+                    throw new Error(data.message || data.error || 'Credenciales inválidas.');
+                }
+
+                const user = data.user || {};
+                const token = data.token || (data.tokens && data.tokens.accessToken) || data.accessToken;
+                if (token) {
+                    localStorage.setItem('auth_token', token);
+                    localStorage.setItem('bge_auth_token', token);
+                }
+
+                const userName = user.nombre ? `${user.nombre} ${user.apellido_paterno || ''}`.trim() : (user.username || 'Usuario');
+                const isStudent = user.role === 'estudiante' || Boolean(studentId);
+
+                const currentMonth = new Date().toLocaleString('es-ES', { month: 'long' });
+                const capitalizedMonth = currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1);
+
                 currentPaymentUser = {
-                    tipo: 'estudiante',
-                    matricula: 'H2024001',
-                    nombre: 'Ana García Hernández',
-                    semestre: '3Â°',
+                    tipo: isStudent ? 'estudiante' : 'padre',
+                    matricula: user.matricula || studentId || 'N/A',
+                    nombre: userName,
+                    email: user.email || email,
+                    hijo: isStudent ? null : 'Estudiante Asignado',
                     adeudos: [
-                        { concepto: 'Colegiatura Enero', monto: 1500, fecha_vencimiento: '2025-01-31', estado: 'pendiente' },
-                        { concepto: 'Laboratorio Química', monto: 300, fecha_vencimiento: '2025-01-15', estado: 'pendiente' },
-                        { concepto: 'Material Didáctico', monto: 450, fecha_vencimiento: '2025-02-15', estado: 'pendiente' }
+                        { concepto: `Colegiatura ${capitalizedMonth}`, monto: 1200, fecha_vencimiento: new Date(Date.now() + 15 * 86400000).toISOString().split('T')[0], estado: 'pendiente' },
+                        { concepto: 'Servicios Escolares y Plataforma Digital', monto: 350, fecha_vencimiento: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0], estado: 'pendiente' }
                     ]
                 };
+
                 isPaymentLoggedIn = true;
                 showPaymentPanel();
-                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-                showPaymentAlert('¡Bienvenida, Ana! Sistema de pagos activo.', 'success');
+                const modalEl = document.getElementById('loginModal');
+                if (modalEl) {
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                }
+                showPaymentAlert(`¡Bienvenido(a), ${userName}! Sistema de pagos activo.`, 'success');
                 loadPaymentData();
-            } else {
-                showPaymentAlert('Matrícula o contraseña incorrecta. Prueba con H2024001 y contraseña: estudiante123', 'danger');
+            } catch (err) {
+                console.error('Login error:', err);
+                showPaymentAlert(err.message || 'Error al iniciar sesión. Verifica tus credenciales.', 'danger');
             }
         }
 
-        // Login de padre
-        function loginParentWithEmail(email, password) {
+        // Auto-activar si ya existe sesión activa
+        document.addEventListener('DOMContentLoaded', function () {
+            const token = localStorage.getItem('bge_auth_token') || localStorage.getItem('auth_token');
+            const storedUser = localStorage.getItem('auth_user') || localStorage.getItem('bge_user_data');
+            if (token && storedUser) {
+                try {
+                    const user = JSON.parse(storedUser);
+                    const userName = user.nombre ? `${user.nombre} ${user.apellido_paterno || ''}`.trim() : (user.username || 'Usuario');
+                    const isStudent = user.role === 'estudiante';
+                    const currentMonth = new Date().toLocaleString('es-ES', { month: 'long' });
+                    const capitalizedMonth = currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1);
 
-            if (!email || !password) {
-                showPaymentAlert('Por favor completa todos los campos.', 'warning');
-                return;
+                    currentPaymentUser = {
+                        tipo: isStudent ? 'estudiante' : 'padre',
+                        matricula: user.matricula || 'N/A',
+                        nombre: userName,
+                        email: user.email || '',
+                        hijo: isStudent ? null : 'Estudiante Asignado',
+                        adeudos: [
+                            { concepto: `Colegiatura ${capitalizedMonth}`, monto: 1200, fecha_vencimiento: new Date(Date.now() + 15 * 86400000).toISOString().split('T')[0], estado: 'pendiente' },
+                            { concepto: 'Servicios Escolares y Plataforma Digital', monto: 350, fecha_vencimiento: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0], estado: 'pendiente' }
+                        ]
+                    };
+                    isPaymentLoggedIn = true;
+                    showPaymentPanel();
+                    loadPaymentData();
+                } catch (e) { }
             }
-
-            if (email === 'padre@email.com' && password === 'padre123') {
-                currentPaymentUser = {
-                    tipo: 'padre',
-                    email: 'padre@email.com',
-                    nombre: 'Roberto García',
-                    hijo: 'Ana García Hernández',
-                    matricula_hijo: 'H2024001',
-                    adeudos: [
-                        { concepto: 'Colegiatura Enero', monto: 1500, fecha_vencimiento: '2025-01-31', estado: 'pendiente' },
-                        { concepto: 'Seguro Estudiantil', monto: 200, fecha_vencimiento: '2025-01-20', estado: 'pendiente' },
-                        { concepto: 'Excursión Académica', monto: 800, fecha_vencimiento: '2025-02-10', estado: 'pendiente' }
-                    ]
-                };
-                isPaymentLoggedIn = true;
-                showPaymentPanel();
-                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-                showPaymentAlert('¡Bienvenido, Roberto! Puedes gestionar los pagos de Ana.', 'success');
-                loadPaymentData();
-            } else {
-                showPaymentAlert('Email o contraseña incorrecta. Prueba con padre@email.com y contraseña: padre123', 'danger');
-            }
-        }
+        });
 
         // Mostrar panel de pagos
         function showPaymentPanel() {

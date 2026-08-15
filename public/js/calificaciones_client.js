@@ -10,7 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let currentUser = null;
 let currentStudentId = null;
-let authToken = localStorage.getItem('authToken');
+let authToken = localStorage.getItem('bge_auth_token') || localStorage.getItem('auth_token') || localStorage.getItem('student_auth_token') || localStorage.getItem('parent_auth_token') || localStorage.getItem('authToken');
+
+function getCurrentSchoolCycle() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    return month >= 8 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+}
 
 function initializeGradesSystem() {
     setupEventListeners();
@@ -54,8 +61,8 @@ function setupEventListeners() {
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generando...';
 
-                // Usamos el ID del estudiante actual (contexto estudiante o padre)
-                const cycle = '2024-2025'; // TODO: Obtener dinámicamente
+                // Usamos el ciclo escolar dinámico
+                const cycle = getCurrentSchoolCycle();
                 const response = await fetch(`/api/grades/student/${currentStudentId}/pdf?cicloEscolar=${cycle}`, {
                     headers: { 'Authorization': `Bearer ${authToken}` }
                 });
@@ -135,7 +142,7 @@ function setupEventListeners() {
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generando...';
 
-            const cycle = '2024-2025';
+            const cycle = getCurrentSchoolCycle();
             const response = await fetch(`/api/grades/student/${currentStudentId}/pdf?cicloEscolar=${cycle}`, {
                 headers: { 'Authorization': `Bearer ${authToken}` }
             });
@@ -173,15 +180,18 @@ function setupEventListeners() {
 }
 
 async function checkActiveSession() {
-    const storedUser = localStorage.getItem('userData');
+    authToken = localStorage.getItem('bge_auth_token') || localStorage.getItem('auth_token') || localStorage.getItem('student_auth_token') || localStorage.getItem('parent_auth_token') || localStorage.getItem('authToken');
+    const storedUser = localStorage.getItem('auth_user') || localStorage.getItem('bge_user_data') || localStorage.getItem('userData');
     if (authToken && storedUser) {
-        currentUser = JSON.parse(storedUser);
-        if (currentUser.role === 'estudiante') {
-            currentStudentId = currentUser.id;
-            await loadGradesPanel();
-        } else if (currentUser.role === 'padre' || currentUser.role === 'parent') {
-            await loadParentDashboard();
-        }
+        try {
+            currentUser = JSON.parse(storedUser);
+            if (currentUser.role === 'estudiante' || currentUser.matricula) {
+                currentStudentId = currentUser.id || currentUser.matricula;
+                await loadGradesPanel();
+            } else if (currentUser.role === 'padre' || currentUser.role === 'padre_familia' || currentUser.role === 'parent') {
+                await loadParentDashboard();
+            }
+        } catch (e) { }
     }
 }
 
@@ -209,16 +219,20 @@ async function handleStudentLogin() {
 
         if (data.success) {
             currentUser = { ...data.user, role: 'estudiante' };
-            authToken = data.tokens.accessToken;
+            authToken = data.token || (data.tokens && data.tokens.accessToken) || data.accessToken;
             localStorage.setItem('authToken', authToken);
+            localStorage.setItem('auth_token', authToken);
+            localStorage.setItem('bge_auth_token', authToken);
+            localStorage.setItem('student_auth_token', authToken);
             localStorage.setItem('userData', JSON.stringify(currentUser));
-            currentStudentId = data.user.id;
+            localStorage.setItem('auth_user', JSON.stringify(currentUser));
+            currentStudentId = data.user.id || matricula;
 
             bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-            showAlert(`Bienvenido, ${currentUser.nombre}`, 'success');
+            showAlert(`Bienvenido(a), ${currentUser.nombre || currentUser.username}`, 'success');
             await loadGradesPanel();
         } else {
-            showAlert(data.message || 'Credenciales incorrectas', 'danger');
+            showAlert(data.message || data.error || 'Credenciales incorrectas', 'danger');
         }
     } catch (error) {
         console.error('Error login estudiante:', error);
@@ -316,9 +330,10 @@ async function loadGradesForStudent(studentId, isParentView) {
     document.getElementById('studentIdDisplay').textContent = studentId;
 
     try {
+        const cycle = getCurrentSchoolCycle();
         const endpoint = isParentView
             ? `/api/parents/students/${studentId}/grades`
-            : `/api/grades/student/${studentId}?cicloEscolar=2024-2025`;
+            : `/api/grades/student/${studentId}?cicloEscolar=${cycle}`;
 
         const response = await fetch(endpoint, {
             headers: { 'Authorization': `Bearer ${authToken}` }

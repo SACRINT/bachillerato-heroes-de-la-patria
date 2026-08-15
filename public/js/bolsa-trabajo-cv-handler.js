@@ -13,7 +13,7 @@
     // Configuración
     const CONFIG = {
         apiEndpoint: '/api/bolsa-trabajo/cv',
-        requiredFields: ['name', 'email', 'phone', 'graduationYear', 'subject', 'message'],
+        requiredFields: ['name', 'email', 'phone', 'graduationYear', 'subject'],
         emailRegex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         phoneRegex: /^[\d\s\-\+\(\)]{10,}$/
     };
@@ -138,20 +138,17 @@
             // 4. Mostrar estado de carga
             showLoadingState(submitButton, 'Enviando perfil...');
 
-            // 5. Preparar datos
+            // 5. Preparar datos y enviar mediante FormData para soportar adjunto PDF
             const formData = new FormData(form);
-            const dataToSend = prepareFormData(formData);
-
-            console.log('📤 [BOLSA TRABAJO CV] Enviando datos:', dataToSend);
+            console.log('📤 [BOLSA TRABAJO CV] Enviando datos de formulario...');
 
             // 6. Enviar al backend
             const response = await fetch(CONFIG.apiEndpoint, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: JSON.stringify(dataToSend)
+                body: formData
             });
 
             const result = await response.json();
@@ -164,7 +161,10 @@
                 closeUploadModal();
             } else {
                 // ❌ Error del servidor
-                showError(result.message || 'Error al enviar el perfil. Intenta nuevamente.');
+                const errorMsg = result.errors && result.errors.length > 0
+                    ? result.errors.map(e => e.msg || e.message).join(', ')
+                    : (result.message || 'Error al enviar el perfil. Intenta nuevamente.');
+                showError(errorMsg);
             }
 
         } catch (error) {

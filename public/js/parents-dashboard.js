@@ -186,12 +186,18 @@ class ParentDashboard {
 
             if (response.ok && data.success) {
                 // Store authentication data
-                const token = data.token || data.accessToken || 'session_' + Date.now();
+                const token = data.token || data.accessToken || data.data?.token || 'session_' + Date.now();
+                const parentObj = data.parent || data.user || data.data?.parent || { nombre: 'Padre de Familia', email };
                 localStorage.setItem('parent_auth_token', token);
-                localStorage.setItem('current_parent', JSON.stringify(data.parent || data.user));
+                localStorage.setItem('current_parent', JSON.stringify(parentObj));
+                localStorage.setItem('bge_auth_token', token);
+                localStorage.setItem('bge_auth_session', JSON.stringify({
+                    user: parentObj,
+                    role: 'padre_familia'
+                }));
 
                 this.authToken = token;
-                this.currentParent = data.parent || data.user;
+                this.currentParent = parentObj;
 
                 debugLog.log('PARENTS', '✅ Login exitoso para:', this.currentParent.nombre);
 
@@ -203,28 +209,7 @@ class ParentDashboard {
             }
         } catch (error) {
             debugLog.error('PARENTS', '❌ Error en login:', error);
-
-            // Demo fallback for testing
-            if (email === 'padre@demo.com' && password === 'demo123') {
-                const demoData = {
-                    id: 1,
-                    nombre: 'María García López',
-                    email: 'padre@demo.com',
-                    student_id: 1
-                };
-
-                localStorage.setItem('parent_auth_token', 'demo_token_' + Date.now());
-                localStorage.setItem('current_parent', JSON.stringify(demoData));
-
-                this.authToken = 'demo_token';
-                this.currentParent = demoData;
-
-                this.showNotification('¡Modo demo activado!', 'info');
-                this.showDashboardSection();
-                await this.loadDashboardData();
-            } else {
-                this.showError(errorContainer, 'Error de conexión. Intente nuevamente.');
-            }
+            this.showError(errorContainer, error.message || 'Error de conexión con el servidor escolar. Intente nuevamente.');
         } finally {
             if (submitBtn) {
                 submitBtn.disabled = false;
@@ -250,6 +235,8 @@ class ParentDashboard {
     clearAuth() {
         localStorage.removeItem('parent_auth_token');
         localStorage.removeItem('current_parent');
+        localStorage.removeItem('bge_auth_token');
+        localStorage.removeItem('bge_auth_session');
         this.authToken = null;
         this.currentParent = null;
         this.linkedStudents = [];

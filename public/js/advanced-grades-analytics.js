@@ -6,10 +6,10 @@
 class AdvancedGradesAnalytics {
     constructor() {
         console.log('📊 [GRADES ANALYTICS] Inicializando sistema avanzado...');
-        this.apiBase = 'http://localhost:3004/api/grades-analytics/';
-        this.studentApiBase = 'http://localhost:3004/api/students/';
-        this.authToken = localStorage.getItem('student_auth_token');
-        this.currentStudent = JSON.parse(localStorage.getItem('current_student') || 'null');
+        this.apiBase = '/api/grades-analytics/';
+        this.studentApiBase = '/api/students/';
+        this.authToken = localStorage.getItem('bge_auth_token') || localStorage.getItem('student_auth_token') || localStorage.getItem('auth_token');
+        this.currentStudent = JSON.parse(localStorage.getItem('current_student') || localStorage.getItem('auth_user') || 'null');
 
         this.charts = {};
         this.data = {};
