@@ -33,29 +33,22 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        // Verificar authentication moderna (bge_auth_*)
+        // Verificar authentication moderna y compatible
         if (!isAuthenticated) {
-            const token = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
-            const userData = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user');
-
-            console.log('🔍 [DASHBOARD SECURITY] Checking storage keys:');
-            console.log('   - bge_auth_token present:', !!token);
-            console.log('   - bge_auth_user present:', !!userData);
-            if (userData) console.log('   - bge_auth_user content:', userData.substring(0, 100) + '...');
+            const token = localStorage.getItem('bge_auth_token') || localStorage.getItem('auth_token') || localStorage.getItem('authToken') || sessionStorage.getItem('bge_auth_token') || sessionStorage.getItem('auth_token') || sessionStorage.getItem('authToken');
+            const userData = localStorage.getItem('bge_auth_user') || localStorage.getItem('auth_user') || localStorage.getItem('userData') || localStorage.getItem('currentUser') || sessionStorage.getItem('bge_auth_user') || sessionStorage.getItem('auth_user') || sessionStorage.getItem('userData') || sessionStorage.getItem('currentUser');
 
             if (token && userData) {
                 try {
                     const user = JSON.parse(userData);
-                    console.log('   - Parsed user role:', user.role);
+                    const role = user.role || (user.user && user.user.role);
 
-                    if (user && (user.role === 'admin' || user.role === 'administrativo')) {
+                    if (role === 'admin' || role === 'administrativo' || role === 'directivo') {
                         isAuthenticated = true;
-                        console.log('✅ [DASHBOARD SECURITY] Sesión moderna válida (bge_auth_*)');
-                    } else {
-                        console.warn('⚠️ [DASHBOARD SECURITY] User role not admin:', user.role);
+                        console.log('✅ [DASHBOARD SECURITY] Sesión válida - Rol:', role);
                     }
                 } catch (e) {
-                    console.warn('⚠️ [DASHBOARD SECURITY] Error parsing modern auth data:', e);
+                    console.warn('⚠️ [DASHBOARD SECURITY] Error parsing auth data:', e);
                 }
             }
         }

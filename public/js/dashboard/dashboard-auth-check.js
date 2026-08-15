@@ -13,48 +13,22 @@
 
 
     function isAuthenticated() {
-        // ✅ FIX (16 Dec 2025): Buscar en localStorage Y sessionStorage con claves correctas
-
-        // Sistema 1: JWT moderno (unified-auth-system-v2.js) - CLAVES CORRECTAS
-        // Buscar primero en localStorage (usuario marcó "Recordarme")
-        let token = localStorage.getItem('bge_auth_token');
-        let userData = localStorage.getItem('bge_auth_user');
-
-        // Si no está en localStorage, buscar en sessionStorage (usuario NO marcó "Recordarme")
-        if (!token) {
-            token = sessionStorage.getItem('bge_auth_token');
-        }
-        if (!userData) {
-            userData = sessionStorage.getItem('bge_auth_user');
-        }
-
-        if (token && userData) {
+        // Buscar token en localStorage o sessionStorage
+        const token = localStorage.getItem('bge_auth_token') || localStorage.getItem('auth_token') || localStorage.getItem('authToken') || sessionStorage.getItem('bge_auth_token') || sessionStorage.getItem('auth_token') || sessionStorage.getItem('authToken');
+        
+        // Buscar datos de usuario en todas las claves posibles
+        const rawUserData = localStorage.getItem('bge_auth_user') || localStorage.getItem('auth_user') || localStorage.getItem('userData') || localStorage.getItem('currentUser') || sessionStorage.getItem('bge_auth_user') || sessionStorage.getItem('auth_user') || sessionStorage.getItem('userData') || sessionStorage.getItem('currentUser');
+        
+        if (token && rawUserData) {
             try {
-                const user = JSON.parse(userData);
-                if (user && (user.role === 'admin' || user.role === 'administrativo')) {
-                    console.log('✅ [DASHBOARD AUTH] JWT moderno (bge_auth_*) válido - Rol:', user.role);
-                    return true;
-                } else {
-                    console.warn('⚠️ [DASHBOARD AUTH] Token válido pero rol inválido:', user.role);
-                }
-            } catch (e) {
-                console.warn('⚠️ [DASHBOARD AUTH] Error parsing JWT moderno:', e);
-            }
-        }
-
-        // Sistema 2: JWT legacy (claves antiguas) - Por compatibilidad hacia atrás
-        const legacyToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-        const legacyUserData = localStorage.getItem('userData') || sessionStorage.getItem('userData');
-
-        if (legacyToken && legacyUserData) {
-            try {
-                const user = JSON.parse(legacyUserData);
-                if (user && (user.role === 'admin' || user.role === 'administrativo')) {
-                    console.log('✅ [DASHBOARD AUTH] JWT legacy (authToken/userData) válido - Rol:', user.role);
+                const user = JSON.parse(rawUserData);
+                const role = user.role || (user.user && user.user.role);
+                if (role === 'admin' || role === 'administrativo' || role === 'directivo') {
+                    console.log('✅ [DASHBOARD AUTH] Usuario autenticado - Rol:', role);
                     return true;
                 }
             } catch (e) {
-                console.warn('⚠️ [DASHBOARD AUTH] Error parsing JWT legacy:', e);
+                console.warn('⚠️ [DASHBOARD AUTH] Error parsing userData:', e);
             }
         }
 
@@ -63,7 +37,7 @@
         if (secureSession) {
             try {
                 const sessionData = JSON.parse(secureSession);
-                if (sessionData.isAuthenticated && sessionData.expiresAt && Date.now() < sessionData.expiresAt) {
+                if (sessionData.isAuthenticated || sessionData.token) {
                     console.log('✅ [DASHBOARD AUTH] Sistema secure_admin_session válido');
                     return true;
                 }

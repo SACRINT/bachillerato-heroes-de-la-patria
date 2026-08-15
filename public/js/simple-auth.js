@@ -26,28 +26,64 @@ class SimpleAuth {
 
             const data = await response.json();
             const token = data.token || (data.tokens && data.tokens.accessToken) || data.accessToken;
+            const user = data.user;
 
-            // Guardar token y datos de usuario de manera unificada
+            // Guardar token y datos de usuario de manera unificada en todos los sistemas
             if (token) {
                 localStorage.setItem('auth_token', token);
                 localStorage.setItem('bge_auth_token', token);
-                if (data.user?.role === 'estudiante') {
+                localStorage.setItem('authToken', token);
+                sessionStorage.setItem('auth_token', token);
+                sessionStorage.setItem('bge_auth_token', token);
+                sessionStorage.setItem('authToken', token);
+
+                if (user?.role === 'estudiante') {
                     localStorage.setItem('student_auth_token', token);
-                    localStorage.setItem('current_student', JSON.stringify(data.user));
-                } else if (data.user?.role === 'docente') {
+                    sessionStorage.setItem('student_auth_token', token);
+                } else if (user?.role === 'docente') {
                     localStorage.setItem('teachers_auth_token', token);
-                } else if (data.user?.role === 'padre_familia' || data.user?.role === 'padre') {
+                    sessionStorage.setItem('teachers_auth_token', token);
+                } else if (user?.role === 'padre_familia' || user?.role === 'padre') {
                     localStorage.setItem('parent_auth_token', token);
-                    localStorage.setItem('current_parent', JSON.stringify(data.user));
+                    sessionStorage.setItem('parent_auth_token', token);
                 }
             }
 
-            if (data.user) {
-                localStorage.setItem('auth_user', JSON.stringify(data.user));
-                localStorage.setItem('bge_auth_session', JSON.stringify({ user: data.user, role: data.user.role }));
+            if (user) {
+                const userJson = JSON.stringify(user);
+                localStorage.setItem('auth_user', userJson);
+                localStorage.setItem('bge_auth_user', userJson);
+                localStorage.setItem('userData', userJson);
+                localStorage.setItem('currentUser', userJson);
+                localStorage.setItem('bge_auth_session', JSON.stringify({ user, role: user.role }));
+
+                sessionStorage.setItem('auth_user', userJson);
+                sessionStorage.setItem('bge_auth_user', userJson);
+                sessionStorage.setItem('userData', userJson);
+                sessionStorage.setItem('currentUser', userJson);
+                sessionStorage.setItem('bge_auth_session', JSON.stringify({ user, role: user.role }));
+
+                if (user.role === 'admin' || user.role === 'administrativo' || user.role === 'directivo') {
+                    const adminSession = JSON.stringify({
+                        isAuthenticated: true,
+                        token: token,
+                        user: user,
+                        role: user.role,
+                        expiresAt: Date.now() + 86400000
+                    });
+                    localStorage.setItem('secure_admin_session', adminSession);
+                    sessionStorage.setItem('secure_admin_session', adminSession);
+                } else if (user.role === 'estudiante') {
+                    localStorage.setItem('current_student', userJson);
+                    sessionStorage.setItem('current_student', userJson);
+                } else if (user.role === 'padre_familia' || user.role === 'padre') {
+                    localStorage.setItem('current_parent', userJson);
+                    sessionStorage.setItem('current_parent', userJson);
+                }
             }
 
-            localStorage.setItem('auth_expires', data.expiresAt || Date.now() + 86400000);
+            localStorage.setItem('auth_expires', data.expiresAt || (Date.now() + 86400000));
+            sessionStorage.setItem('auth_expires', data.expiresAt || (Date.now() + 86400000));
 
             return data;
         } catch (error) {
