@@ -17,7 +17,6 @@
     }
   ],
   "cleanUrls": false,
-  "public": true,
   "functions": {
     "api/index.js": {
       "memory": 1024,
