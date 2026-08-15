@@ -10,10 +10,6 @@
     {
       "source": "/health",
       "destination": "/api/index.js"
-    },
-    {
-      "source": "/((?!.*\\.(html|css|js|png|jpg|jpeg|webp|ico|svg|json|xml|txt|pdf)|assets/|images/|css/|js/|favicon.ico|manifest.json|robots.txt|sitemap.xml).*)",
-      "destination": "/index.html"
     }
   ],
   "cleanUrls": false,
