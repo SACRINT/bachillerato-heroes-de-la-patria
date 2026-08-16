@@ -148,7 +148,17 @@ window.resetSimulation = function () {
 
 window.submitLab = async function () {
     const notes = document.getElementById('lab-notes').value;
-    // API Call
-    alert('Laboratorio finalizado. Reporte guardado localmente (Simulado). \n\nNotas: ' + notes);
-    window.location.href = 'dashboard.html';
-}
+    const hypothesis = document.getElementById('lab-hypothesis').value;
+
+    let balance = parseFloat(localStorage.getItem('bge_iacoins_balance') || '250.00');
+    balance += 50;
+    localStorage.setItem('bge_iacoins_balance', balance);
+
+    alert(`🎉 ¡Laboratorio completado con éxito!\n\n` +
+          `• Recompensa: +50 IACoins acreditadas a tu billetera\n` +
+          `• Hipótesis: ${hypothesis || 'Registrada'}\n` +
+          `• Conclusiones: ${notes || 'Registradas'}\n\n` +
+          `Nuevo Saldo: ${balance.toFixed(2)} IACoins`);
+
+    window.location.href = 'gamification-center.html';
+};
