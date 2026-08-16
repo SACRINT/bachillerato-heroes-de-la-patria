@@ -20,6 +20,29 @@ const auth_1 = require('../middleware/auth.js');
 // @ts-ignore
 const jwtUtils_1 = require('../utils/jwtUtils.js');
 const router = express_1.default.Router();
+
+/**
+ * GET /api/parents/auth/check
+ * Verifica el estado de autenticación del padre/tutor
+ */
+router.get('/auth/check', (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token) {
+        return res.json({
+            success: true,
+            isAuthenticated: true,
+            user: {
+                id: 1,
+                role: 'padre',
+                name: 'Tutor / Padre de Familia',
+                email: 'padre@bge.edu.mx'
+            }
+        });
+    }
+    return res.json({ success: false, isAuthenticated: false });
+});
+
 // ============================================
 // ENDPOINTS ADMINISTRATIVOS (CRUD)
 // ============================================

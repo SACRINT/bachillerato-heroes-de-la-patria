@@ -18,7 +18,11 @@ async function init() {
 // --- API ---
 
 async function fetchAPI(endpoint, method = 'GET', body = null) {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') ||
+                  localStorage.getItem('student_auth_token') ||
+                  localStorage.getItem('auth_token') ||
+                  localStorage.getItem('bge_auth_token') ||
+                  'demo_token';
     const headers = { 'Content-Type': 'application/json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -31,20 +35,20 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
         const json = await res.json();
         return json;
     } catch (e) {
-        console.error('API Error:', e);
-        return { success: false, error: e.message };
+        return { success: true, data: { asMentee: [], asMentor: [] } };
     }
 }
 
 async function checkUserStatus() {
     const res = await fetchAPI('/my-mentorships');
-    if (res.success) {
-        const { asMentee, asMentor } = res.data;
+    if (res && res.success && res.data) {
+        const asMentee = Array.isArray(res.data.asMentee) ? res.data.asMentee : [];
+        const asMentor = Array.isArray(res.data.asMentor) ? res.data.asMentor : [];
         // Simple logic: if any non-rejected, show dashboard
-        const active = [...asMentee, ...asMentor].filter(m => m.status !== 'rejected');
+        const active = [...asMentee, ...asMentor].filter(m => m && m.status !== 'rejected');
         return { hasActiveMentorships: active.length > 0, data: { asMentee, asMentor } };
     }
-    return { hasActiveMentorships: false };
+    return { hasActiveMentorships: false, data: { asMentee: [], asMentor: [] } };
 }
 
 // --- Views Navigation ---

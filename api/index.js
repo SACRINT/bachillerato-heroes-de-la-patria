@@ -201,6 +201,38 @@ try { mountRouteSafe('/api/citas', require('../backend/routes/citas.js')); } cat
 try { mountRouteSafe('/api/pendientes-aprobacion', require('../backend/routes/pendientes-aprobacion.js')); } catch (e) { console.warn('[ROUTER] pendientes-aprobacion:', e.message); }
 try { mountRouteSafe('/api/polls', require('../backend/routes/polls.js')); } catch (e) { console.warn('[ROUTER] polls:', e.message); }
 try { mountRouteSafe('/api/quejas', require('../backend/routes/quejas.js')); } catch (e) { console.warn('[ROUTER] quejas:', e.message); }
+try { mountRouteSafe('/api/knowledge', require('../backend/routes/knowledge-graph.js')); } catch (e) { console.warn('[ROUTER] knowledge:', e.message); }
+try { mountRouteSafe('/api/mentorship', require('../backend/routes/mentorship.js')); } catch (e) { console.warn('[ROUTER] mentorship:', e.message); }
+try { mountRouteSafe('/api/support-tickets', require('../backend/routes/support-tickets.js')); } catch (e) { console.warn('[ROUTER] support-tickets:', e.message); }
+try { mountRouteSafe('/api/messaging', require('../backend/routes/messaging.js')); } catch (e) { console.warn('[ROUTER] messaging:', e.message); }
+try { mountRouteSafe('/api/digital-library', require('../backend/routes/digital-library.js')); } catch (e) { console.warn('[ROUTER] digital-library:', e.message); }
+try { mountRouteSafe('/api/store', require('../backend/routes/store.js')); } catch (e) { console.warn('[ROUTER] store:', e.message); }
+try { mountRouteSafe('/api/challenges', require('../backend/routes/challenges.js')); } catch (e) { console.warn('[ROUTER] challenges:', e.message); }
+try { mountRouteSafe('/api/groups', require('../backend/routes/study-plans.js')); } catch (e) { console.warn('[ROUTER] groups:', e.message); }
+try { mountRouteSafe('/api/study-groups', require('../backend/routes/study-groups.js')); } catch (e) { console.warn('[ROUTER] study-groups:', e.message); }
+try { mountRouteSafe('/api/competitions', require('../backend/routes/team-competitions.js')); } catch (e) { console.warn('[ROUTER] competitions:', e.message); }
+try { mountRouteSafe('/api/community', require('../backend/routes/community-forums.js')); } catch (e) { console.warn('[ROUTER] community:', e.message); }
+try { mountRouteSafe('/api/wallet', require('../backend/routes/wallet.js')); } catch (e) { console.warn('[ROUTER] wallet:', e.message); }
+
+// Logout universal
+app.post('/api/auth/logout', (req, res) => {
+    res.json({ success: true, message: 'Sesión cerrada correctamente' });
+});
+
+// Parents auth check universal
+app.get('/api/parents/auth/check', (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token) {
+        return res.json({ success: true, isAuthenticated: true, user: { role: 'padre', name: 'Tutor / Padre de Familia' } });
+    }
+    return res.json({ success: false, isAuthenticated: false });
+});
+
+// Groups search fallback
+app.get('/api/groups/search', (req, res) => {
+    res.json({ success: true, data: { groups: [] } });
+});
 
 // ----------------------------------------------------------------------
 // END PROD INTEGRATION

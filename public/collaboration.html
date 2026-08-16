@@ -40,10 +40,19 @@
         .color-green {
             background: #22c55e;
         }
-    </style>
+    body { padding-top: 70px; }
+.collab-layout { height: calc(100vh - 70px); }
+</style>
+    <!-- Global Header/Footer Styles -->
+    <link rel="stylesheet" href="css/global-layout.css">
+    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+    <script src="js/main.js" defer></script>
 </head>
 
 <body>
+    <!-- Main Universal Header -->
+    <header id="main-header"></header>
 
     <div class="collab-layout">
         <!-- Header -->
@@ -109,6 +118,7 @@
     <!-- Socket.IO (Mock for dev, real via CDN or local bundle) -->
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script src="js/collaboration-whiteboard.js"></script>
+    <script src="js/tenant-config-loader.js" defer></script>
 </body>
 
 </html>

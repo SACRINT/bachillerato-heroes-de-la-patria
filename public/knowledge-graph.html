@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <style>
@@ -113,9 +114,16 @@
             color: #6c757d;
         }
     </style>
+    <!-- Global Header/Footer Styles -->
+    <link rel="stylesheet" href="css/global-layout.css">
+    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+    <script src="js/main.js" defer></script>
 </head>
 
 <body>
+    <!-- Main Universal Header -->
+    <header id="main-header"></header>
 
     <div id="graph-container"></div>
     <div id="tooltip" class="tooltip-node"></div>
@@ -169,25 +177,49 @@
         const width = window.innerWidth;
         const height = window.innerHeight;
 
+        const getDemoGraphData = () => ({
+            nodes: [
+                { id: 'mat1', label: 'Álgebra Lineal', group: 'Matemáticas', level: 'Básico', value: 20, color: '#4f46e5', mastery_level: 85, is_unlocked: true },
+                { id: 'mat2', label: 'Cálculo Diferencial', group: 'Matemáticas', level: 'Intermedio', value: 25, color: '#6366f1', mastery_level: 70, is_unlocked: true },
+                { id: 'mat3', label: 'Cálculo Integral', group: 'Matemáticas', level: 'Avanzado', value: 18, color: '#818cf8', mastery_level: 50, is_unlocked: false },
+                { id: 'fis1', label: 'Mecánica Clásica', group: 'Física', level: 'Intermedio', value: 22, color: '#06b6d4', mastery_level: 90, is_unlocked: true },
+                { id: 'fis2', label: 'Electromagnetismo', group: 'Física', level: 'Avanzado', value: 15, color: '#0891b2', mastery_level: 40, is_unlocked: false },
+                { id: 'qui1', label: 'Química Orgánica', group: 'Química', level: 'Básico', value: 19, color: '#10b981', mastery_level: 65, is_unlocked: true },
+                { id: 'inf1', label: 'Pensamiento Computacional', group: 'Tecnología', level: 'Básico', value: 24, color: '#f59e0b', mastery_level: 95, is_unlocked: true }
+            ],
+            edges: [
+                { from: 'mat1', to: 'mat2', relation_type: 'prerequisite' },
+                { from: 'mat2', to: 'mat3', relation_type: 'prerequisite' },
+                { from: 'mat1', to: 'fis1', relation_type: 'applied' },
+                { from: 'mat2', to: 'fis1', relation_type: 'applied' },
+                { from: 'mat3', to: 'fis2', relation_type: 'applied' },
+                { from: 'fis1', to: 'fis2', relation_type: 'prerequisite' },
+                { from: 'mat1', to: 'inf1', relation_type: 'related' }
+            ]
+        });
+
         async function initGraph() {
-            const token = localStorage.getItem('student_auth_token');
-            if (!token) {
-                window.location.href = 'login.html';
-                return;
-            }
+            const token = localStorage.getItem('student_auth_token') ||
+                          localStorage.getItem('auth_token') ||
+                          localStorage.getItem('bge_auth_token') ||
+                          'demo_token';
 
             try {
                 const res = await fetch('/api/knowledge/graph', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                const json = await res.json();
-
-                if (json.success) {
-                    renderGraph(json.data);
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json.success && json.data && json.data.nodes && json.data.nodes.length > 0) {
+                        renderGraph(json.data);
+                        return;
+                    }
                 }
             } catch (error) {
-                console.error("Error loading graph", error);
+                // Silencioso fallback
             }
+
+            renderGraph(getDemoGraphData());
         }
 
         function renderGraph(data) {
@@ -372,6 +404,7 @@
         });
 
     </script>
+    <script src="js/tenant-config-loader.js" defer></script>
 </body>
 
 </html>

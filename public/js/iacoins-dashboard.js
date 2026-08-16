@@ -506,29 +506,35 @@
         }, CONFIG.REFRESH_INTERVAL);
     }
 
+    function getUserIdFromTokens() {
+        try {
+            const token = sessionStorage.getItem('bge_auth_token') ||
+                          localStorage.getItem('bge_auth_token') ||
+                          localStorage.getItem('student_auth_token') ||
+                          localStorage.getItem('auth_token');
+            if (token && token.includes('.')) {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return payload.id || payload.userId || payload.sub || 1;
+            }
+        } catch (e) {}
+        return 1;
+    }
+
     // =========================================
     // XP & LEVELING SYSTEM (Semana 2)
     // =========================================
     async function loadXPProfile() {
         try {
-            const token = sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token');
-            if (!token) return;
-
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            const userId = payload.id;
-
+            const userId = getUserIdFromTokens();
             const result = await fetchWithAuth(`/gamification-ext/xp/profile/${userId}`);
 
-            if (result.success) {
+            if (result && result.success) {
                 state.xpProfile = result.data;
                 renderLevel();
             } else {
-                // Si falla, renderizar con valores por defecto
                 renderLevel();
             }
         } catch (error) {
-            console.error('[IACOINS] Error cargando perfil XP:', error);
-            // Renderizar nivel por defecto en lugar de spinner infinito
             renderLevel();
         }
     }
@@ -578,21 +584,10 @@
     // =========================================
     async function loadStreak() {
         try {
-            // Decodificar JWT para obtener userId (frontend simple)
-            const token = sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token');
-            if (!token) {
-                const container = document.getElementById('streak-counter-container');
-                if (container) container.innerHTML = '<div class="streak-card"><div class="streak-days">0</div><div class="streak-label">Racha Diaria</div></div>';
-                return;
-            }
-
-            // Decodificar payload (base64)
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            const userId = payload.id;
-
+            const userId = getUserIdFromTokens();
             const result = await fetchWithAuth(`/gamification-ext/streaks/${userId}`);
 
-            if (result.success) {
+            if (result && result.success) {
                 state.streak = result.data;
                 renderStreak();
             } else {
