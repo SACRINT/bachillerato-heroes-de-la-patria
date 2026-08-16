@@ -11,11 +11,11 @@
         const form = document.getElementById('actualizarDatosForm');
 
         if (!form) {
-            console.log('ℹ️  Formulario de egresados no encontrado en esta página');
+            
             return;
         }
 
-        console.log('✅ Handler de formulario egresados inicializado');
+        
 
         // Marcar formulario como manejado por este handler específico
         form.setAttribute('data-handled-by', 'egresados-form-handler');
@@ -26,7 +26,7 @@
             e.stopPropagation();
             e.stopImmediatePropagation();  // IMPORTANTE: Prevenir que professional-forms.js también procese este evento
 
-            console.log('📝 Formulario egresados enviado');
+            
 
             // Obtener botón de envío PRIMERO
             const submitBtn = form.querySelector('button[type="submit"]');
@@ -35,7 +35,7 @@
             // Validación HTML5
             if (!form.checkValidity()) {
                 form.classList.add('was-validated');
-                console.warn('⚠️ Formulario inválido');
+                
                 return;
             }
 
@@ -69,7 +69,7 @@
                 return;
             }
 
-            console.log('📤 Datos mapeados:', mappedData);
+            
 
             // Deshabilitar botón de envío
             submitBtn.disabled = true;
@@ -88,7 +88,7 @@
                 const result = await response.json();
 
                 if (response.ok && result.success) {
-                    console.log('✅ Egresado registrado exitosamente:', result);
+                    
 
                     // Mostrar mensaje de éxito
                     showSuccessMessage(result.updated ? 'actualizado' : 'registrado');

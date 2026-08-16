@@ -35,7 +35,7 @@ export class TenantUpdater {
     };
 
     constructor() {
-        console.log('[TenantUpdater] Initialized');
+        
         // Exponer globalmente para compatibilidad
         (window as any).updateTenantUI = () => this.runAllUpdates();
     }
@@ -48,7 +48,7 @@ export class TenantUpdater {
 
         // Escuchar evento
         document.addEventListener('tenantConfigLoaded', () => {
-            console.log('[TenantUpdater] Event tenantConfigLoaded received');
+            
             this.runAllUpdates();
         });
     }
@@ -61,14 +61,14 @@ export class TenantUpdater {
     }
 
     private runAllUpdates(): void {
-        console.log('[TenantUpdater] Running updates...');
+        
         this.updateTenantFields();
         this.updateLegacyTenantElements();
         this.updatePageTitle();
         this.updateMetaDescription();
         this.updateSchemaOrg();
         this.updateCSSVariables();
-        console.log('[TenantUpdater] ✅ Updates completed');
+        
     }
 
     private updateTenantFields(): void {

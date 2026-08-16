@@ -18,14 +18,14 @@
     }
 
     function initializeEventHandlers() {
-        console.log('[PAGOS-EVENTS] Inicializando event handlers...');
+        
 
         registerPaymentServiceCards();
         registerActionButtons();
         registerChatbotHandlers();
         registerDynamicPaymentButtons();
 
-        console.log('[PAGOS-EVENTS] ✅ Event handlers inicializados correctamente');
+        
     }
 
     /**
@@ -201,7 +201,7 @@
      * 💳 Maneja el click en tarjetas de pago
      */
     function handlePaymentCardClick(functionName, parameter) {
-        console.log('[PAGOS-EVENTS] Card click:', functionName, parameter);
+        
 
         const functionMap = {
             'scrollToSection': () => {
@@ -223,7 +223,7 @@
      * 📜 Scrollea a una sección
      */
     function scrollToSection(sectionId) {
-        console.log('[PAGOS-EVENTS] Scrolling to section:', sectionId);
+        
         const section = document.getElementById(sectionId);
         if (section) {
             section.scrollIntoView({ behavior: 'smooth' });
@@ -234,7 +234,7 @@
      * 🔐 Abre el modal de login
      */
     function showLoginModal() {
-        console.log('[PAGOS-EVENTS] Mostrando modal de login...');
+        
         const modal = document.getElementById('loginModal');
         if (modal) {
             const bootstrapModal = new (window.bootstrap?.Modal || function() {
@@ -248,7 +248,7 @@
      * 📋 Abre el modal de consulta
      */
     function showConsultModal() {
-        console.log('[PAGOS-EVENTS] Mostrando modal de consulta...');
+        
         const modal = document.getElementById('consultModal');
         if (modal) {
             const bootstrapModal = new (window.bootstrap?.Modal || function() {
@@ -262,7 +262,7 @@
      * 🔑 Inicia sesión en el sistema de pagos
      */
     function loginPaymentSystem() {
-        console.log('[PAGOS-EVENTS] Iniciando sesión en sistema de pagos...');
+        
         alert('Iniciando sesión en el sistema de pagos...');
     }
 
@@ -270,7 +270,7 @@
      * 📊 Consulta el estado de pago
      */
     function consultPaymentStatus() {
-        console.log('[PAGOS-EVENTS] Consultando estado de pago...');
+        
         alert('Consultando estado de pago...');
     }
 
@@ -278,7 +278,7 @@
      * 🚪 Cierra sesión del sistema de pagos
      */
     function logoutPaymentSystem() {
-        console.log('[PAGOS-EVENTS] Cerrando sesión...');
+        
         if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
             alert('Sesión cerrada exitosamente');
         }
@@ -288,7 +288,7 @@
      * 💳 Procesa un pago
      */
     function processPayment() {
-        console.log('[PAGOS-EVENTS] Procesando pago...');
+        
         alert('Procesando pago - En desarrollo');
     }
 
@@ -296,7 +296,7 @@
      * 💰 Paga una deuda específica
      */
     function payDebt(index) {
-        console.log('[PAGOS-EVENTS] Pagando deuda en índice:', index);
+        
         alert(`Procesando pago de deuda #${index} - En desarrollo`);
     }
 

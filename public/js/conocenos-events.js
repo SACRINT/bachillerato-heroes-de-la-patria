@@ -19,13 +19,13 @@
     }
 
     function initializeEventHandlers() {
-        console.log('[CONOCENOS-EVENTS] Inicializando event handlers...');
+        
 
         registerVideoHandlers();
         registerOrganigramaHandlers();
         registerChatbotHandlers();
 
-        console.log('[CONOCENOS-EVENTS] ✅ Event handlers inicializados correctamente');
+        
     }
 
     /**
@@ -126,42 +126,42 @@
     // ============================================
 
     function agregarVideo() {
-        console.log('[CONOCENOS-EVENTS] Agregando video...');
+        
         if (window.agregarVideo) {
             window.agregarVideo();
         }
     }
 
     function mostrarFormularioVideo() {
-        console.log('[CONOCENOS-EVENTS] Mostrando formulario de video...');
+        
         if (window.mostrarFormularioVideo) {
             window.mostrarFormularioVideo();
         }
     }
 
     function cerrarModalVideo() {
-        console.log('[CONOCENOS-EVENTS] Cerrando modal de video...');
+        
         if (window.cerrarModalVideo) {
             window.cerrarModalVideo();
         }
     }
 
     function toggleOrganigramaView(param) {
-        console.log('[CONOCENOS-EVENTS] Alternando vista del organigrama:', param);
+        
         if (window.toggleOrganigramaView) {
             window.toggleOrganigramaView(param);
         }
     }
 
     function toggleChatbot() {
-        console.log('[CONOCENOS-EVENTS] Alternando chatbot...');
+        
         if (window.toggleChatbot) {
             window.toggleChatbot();
         }
     }
 
     function sendMessage() {
-        console.log('[CONOCENOS-EVENTS] Enviando mensaje...');
+        
         if (window.sendMessage) {
             window.sendMessage();
         }

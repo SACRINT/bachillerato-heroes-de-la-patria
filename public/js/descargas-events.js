@@ -18,7 +18,7 @@
     }
 
     function initializeEventHandlers() {
-        console.log('[DESCARGAS-EVENTS] Inicializando event handlers...');
+        
 
         registerDocumentDownloadButtons();
         registerCategoryFilterButtons();
@@ -26,7 +26,7 @@
         registerHelpAndSupportButtons();
         registerChatbotHandlers();
 
-        console.log('[DESCARGAS-EVENTS] ✅ Event handlers inicializados correctamente');
+        
     }
 
     /**
@@ -199,7 +199,7 @@
      * 📥 Descarga un documento por su ID
      */
     function downloadDocument(docId) {
-        console.log('[DESCARGAS-EVENTS] Descargando documento:', docId);
+        
 
         // Llamar a downloadCenter si está disponible
         if (window.downloadCenter && typeof window.downloadCenter.downloadDocument === 'function') {
@@ -214,7 +214,7 @@
      * 🎯 Filtra documentos por categoría
      */
     function filterCategory(category) {
-        console.log('[DESCARGAS-EVENTS] Filtrando por categoría:', category);
+        
 
         // Scroll a la sección de catálogo
         const catalogSection = document.getElementById('catalogo-documentos');
@@ -230,7 +230,7 @@
      * 🔍 Busca documentos
      */
     function searchDocuments() {
-        console.log('[DESCARGAS-EVENTS] Buscando documentos...');
+        
 
         const searchInput = document.getElementById('documentSearch');
         const searchTerm = searchInput ? searchInput.value.trim() : '';
@@ -240,7 +240,7 @@
             return;
         }
 
-        console.log('[DESCARGAS-EVENTS] Término de búsqueda:', searchTerm);
+        
         alert(`Buscando: "${searchTerm}"`);
     }
 
@@ -248,7 +248,7 @@
      * ❓ Muestra la modal de ayuda
      */
     function showHelp() {
-        console.log('[DESCARGAS-EVENTS] Mostrando ayuda...');
+        
 
         const helpModal = document.getElementById('helpModal');
         if (helpModal) {
@@ -263,7 +263,7 @@
      * 📝 Muestra la modal de solicitud de documento
      */
     function requestDocument() {
-        console.log('[DESCARGAS-EVENTS] Mostrando formulario de solicitud...');
+        
 
         const requestModal = document.getElementById('requestModal');
         if (requestModal) {

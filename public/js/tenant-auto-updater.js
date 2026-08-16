@@ -93,7 +93,7 @@
             }
         });
 
-        console.log(`[TENANT-UPDATER] Actualizados ${elements.length} elementos data-tenant-field`);
+        
     }
 
     /**
@@ -128,7 +128,7 @@
             }
         });
 
-        console.log(`[TENANT-UPDATER] Actualizados ${elements.length} elementos data-tenant (legacy)`);
+        
     }
 
     /**
@@ -222,7 +222,7 @@
      * Ejecuta todas las actualizaciones
      */
     function runAllUpdates() {
-        console.log('[TENANT-UPDATER] Ejecutando actualizaciones...');
+        
 
         updateTenantFields();
         updateLegacyTenantElements();
@@ -231,7 +231,7 @@
         updateSchemaOrg();
         updateCSSVariables();
 
-        console.log('[TENANT-UPDATER] ✅ Todas las actualizaciones completadas');
+        
     }
 
     // ========================================
@@ -250,7 +250,7 @@
 
     // También escuchar el evento por si config se carga después
     document.addEventListener('tenantConfigLoaded', function (event) {
-        console.log('[TENANT-UPDATER] Evento tenantConfigLoaded recibido');
+        
         runAllUpdates();
     });
 

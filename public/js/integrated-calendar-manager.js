@@ -38,7 +38,7 @@ class IntegratedCalendarManager {
             this.setupEventListeners();
             this.updateCurrentMonthDisplay();
             this.setupAutoRefresh();
-            console.log('✅ Calendario integrado inicializado correctamente');
+            
         } catch (error) {
             console.error('Error inicializando calendario:', error);
             this.showAlert('Error cargando calendario. Modo sin conexión.', 'warning');
@@ -101,7 +101,7 @@ class IntegratedCalendarManager {
             // Procesar eventos para normalizar formato
             this.events = this.events.map(event => this.normalizeEvent(event));
 
-            console.log(`✅ Cargados ${this.events.length} eventos del calendario`);
+            
             return this.events;
 
         } catch (error) {
@@ -823,13 +823,13 @@ class IntegratedCalendarManager {
                 this.renderCurrentView();
             } catch (error) {
                 // Silenciar errores de auto-refresh para no molestar al usuario
-                console.warn('Auto-refresh falló:', error.message);
+                
             }
         }, this.config.refreshInterval);
     }
 
     fallbackMode() {
-        console.log('⚠️ Calendario en modo fallback (sin conexión)');
+        
         this.loadFallbackEvents();
         this.renderCurrentView();
     }
@@ -1195,7 +1195,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('[data-calendar="integrated"]')) {
 
         window.calendar = new IntegratedCalendarManager();
-        console.log('✅ Calendario integrado inicializado automáticamente');
+        
     }
 });
 

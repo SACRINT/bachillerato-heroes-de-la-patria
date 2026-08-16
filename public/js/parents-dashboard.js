@@ -588,6 +588,6 @@ function initParentDashboard() {
     // Only init on parent pages
     if (window.location.pathname.includes('padres') || document.getElementById('parentDashboard') || document.getElementById('parentLoginForm')) {
         window.parentDashboard = new ParentDashboard();
-        console.log('[PARENTS] ✅ Dashboard de padres inicializado');
+        
     }
 }

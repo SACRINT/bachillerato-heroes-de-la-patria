@@ -19,12 +19,12 @@
     }
 
     function initializeEventHandlers() {
-        console.log('[CALIFICACIONES-EVENTS] Inicializando event handlers...');
+        
 
         registerReportButtons();
         registerDetailsHandlers();
 
-        console.log('[CALIFICACIONES-EVENTS] ✅ Event handlers inicializados correctamente');
+        
     }
 
     /**
@@ -83,28 +83,28 @@
     // ============================================
 
     function generateReport() {
-        console.log('[CALIFICACIONES-EVENTS] Generando reporte...');
+        
         if (window.generateReport) {
             window.generateReport();
         }
     }
 
     function showSubjectDetail(materia) {
-        console.log('[CALIFICACIONES-EVENTS] Mostrando detalle de materia:', materia);
+        
         if (window.showSubjectDetail) {
             window.showSubjectDetail(materia);
         }
     }
 
     function generateAttendanceReport() {
-        console.log('[CALIFICACIONES-EVENTS] Generando reporte de asistencia...');
+        
         if (window.generateAttendanceReport) {
             window.generateAttendanceReport();
         }
     }
 
     function printSchedule() {
-        console.log('[CALIFICACIONES-EVENTS] Imprimiendo horario...');
+        
         if (window.printSchedule) {
             window.printSchedule();
         }

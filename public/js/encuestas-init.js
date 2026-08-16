@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mode: 'public'
     });
 
-    console.log('✅ Sistema de Encuestas inicializado');
+    
 
     // Mobile Navigation Toggle
     document.querySelector('.nav-toggle')?.addEventListener('click', function () {

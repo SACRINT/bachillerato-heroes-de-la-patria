@@ -12,7 +12,7 @@
 (function () {
     // Prevent double loading
     if (typeof window.CSPUniversalFixer !== 'undefined') {
-        console.warn('⚠️ [CSP-UNIVERSAL-FIXER] Script already loaded. Skipping redeclaration.');
+        
         return;
     }
 
@@ -22,7 +22,7 @@
             this.fixesApplied = 0;
             this.errorsFixed = [];
 
-            console.log('🔧 [CSP-UNIVERSAL-FIXER] Iniciando correcciones automáticas...');
+            
 
             this.init();
         }
@@ -37,7 +37,7 @@
         }
 
         runAllFixes() {
-            console.log('🔧 [CSP-UNIVERSAL-FIXER] Ejecutando correcciones universales...');
+            
 
             try {
                 // Corregir problemas específicos por página
@@ -51,10 +51,10 @@
                 this.fixModalToggles();
                 this.fixNavigation();
 
-                console.log(`✅ [CSP-UNIVERSAL-FIXER] ${this.fixesApplied} correcciones aplicadas exitosamente`);
+                
 
                 if (this.errorsFixed.length > 0) {
-                    console.log('📋 [CSP-UNIVERSAL-FIXER] Errores corregidos:', this.errorsFixed);
+                    
                 }
 
             } catch (error) {
@@ -65,7 +65,7 @@
         fixByPageType() {
             const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-            console.log(`🎯 [CSP-UNIVERSAL-FIXER] Aplicando correcciones específicas para: ${currentPage}`);
+            
 
             // Correcciones específicas por página
             switch (currentPage) {
@@ -98,7 +98,7 @@
         }
 
         fixInlineEventHandlers() {
-            console.log('🔧 [CSP-UNIVERSAL-FIXER] Corrigiendo event handlers inline...');
+            
 
             // Buscar todos los elementos con onclick
             const elementsWithOnclick = document.querySelectorAll('[onclick]');
@@ -118,7 +118,7 @@
 
                         this.logFix(`Onclick handler fixed: ${onclickCode.substring(0, 50)}...`);
                     } catch (error) {
-                        console.warn(`🔧 [CSP-UNIVERSAL-FIXER] Error executing onclick: ${onclickCode}`, error);
+                        
                         this.handleFailedOnclick(element, onclickCode, e);
                     }
                 });
@@ -145,7 +145,7 @@
 
                             this.logFix(`${eventAttr} handler fixed`);
                         } catch (error) {
-                            console.warn(`🔧 [CSP-UNIVERSAL-FIXER] Error executing ${eventAttr}:`, error);
+                            
                         }
                     });
 
@@ -173,7 +173,7 @@
         }
 
         fixBrokenFunctions() {
-            console.log('🔧 [CSP-UNIVERSAL-FIXER] Reparando funciones rotas...');
+            
 
             // Lista de funciones comunes que pueden estar rotas
             const commonFunctions = [
@@ -199,7 +199,7 @@
 
         createFallbackFunction(funcName) {
             return function (...args) {
-                console.log(`🔧 [CSP-UNIVERSAL-FIXER] Executing fallback for: ${funcName}`, args);
+                
 
                 switch (funcName) {
                     case 'toggleChatbot':
@@ -213,13 +213,13 @@
                     case 'validateForm':
                         return this.fallbackValidateForm(args[0]);
                     default:
-                        console.warn(`🔧 [CSP-UNIVERSAL-FIXER] No fallback available for: ${funcName}`);
+                        
                 }
             }.bind(this);
         }
 
         fixWidgetButtons() {
-            console.log('🔧 [CSP-UNIVERSAL-FIXER] Corrigiendo botones de widgets...');
+            
 
             // Buscar botones comunes que pueden estar rotos
             const widgetSelectors = [
@@ -265,7 +265,7 @@
                         this.fallbackOpenModal(modalId);
                     } else {
                         // Acción genérica
-                        console.log('🔧 [CSP-UNIVERSAL-FIXER] Generic button click handled:', button);
+                        
                     }
                 });
             }
@@ -273,92 +273,92 @@
 
         // Correcciones específicas por página
         fixAdminDashboard() {
-            console.log('👨‍💼 [CSP-UNIVERSAL-FIXER] Corrigiendo Admin Dashboard...');
+            
 
             // Reparar funciones del dashboard
             if (typeof window.loadDashboardData === 'undefined') {
                 window.loadDashboardData = () => {
-                    console.log('📊 Loading dashboard data...');
+                    
                     // Implementación básica
                 };
             }
 
             if (typeof window.updateStats === 'undefined') {
                 window.updateStats = () => {
-                    console.log('📈 Updating stats...');
+                    
                     // Implementación básica
                 };
             }
         }
 
         fixEstudiantesPage() {
-            console.log('🎓 [CSP-UNIVERSAL-FIXER] Corrigiendo página de Estudiantes...');
+            
 
             // Funciones específicas para estudiantes
             if (typeof window.loadStudentData === 'undefined') {
                 window.loadStudentData = () => {
-                    console.log('👨‍🎓 Loading student data...');
+                    
                 };
             }
         }
 
         fixCalificacionesPage() {
-            console.log('📊 [CSP-UNIVERSAL-FIXER] Corrigiendo página de Calificaciones...');
+            
 
             if (typeof window.loadGrades === 'undefined') {
                 window.loadGrades = () => {
-                    console.log('📊 Loading grades...');
+                    
                 };
             }
         }
 
         fixCitasPage() {
-            console.log('📅 [CSP-UNIVERSAL-FIXER] Corrigiendo página de Citas...');
+            
 
             if (typeof window.bookAppointment === 'undefined') {
                 window.bookAppointment = () => {
-                    console.log('📅 Booking appointment...');
+                    
                 };
             }
         }
 
         fixContactoPage() {
-            console.log('📧 [CSP-UNIVERSAL-FIXER] Corrigiendo página de Contacto...');
+            
 
             if (typeof window.sendMessage === 'undefined') {
                 window.sendMessage = () => {
-                    console.log('📧 Sending message...');
+                    
                 };
             }
         }
 
         fixPadresPage() {
-            console.log('👨‍👩‍👧‍👦 [CSP-UNIVERSAL-FIXER] Corrigiendo página de Padres...');
+            
 
             if (typeof window.loadParentDashboard === 'undefined') {
                 window.loadParentDashboard = () => {
-                    console.log('👨‍👩‍👧‍👦 Loading parent dashboard...');
+                    
                 };
             }
         }
 
         fixBolsaTrabajoPage() {
-            console.log('💼 [CSP-UNIVERSAL-FIXER] Corrigiendo Bolsa de Trabajo...');
+            
 
             if (typeof window.searchJobs === 'undefined') {
                 window.searchJobs = () => {
-                    console.log('💼 Searching jobs...');
+                    
                 };
             }
         }
 
         fixIndexPage() {
-            console.log('🏠 [CSP-UNIVERSAL-FIXER] Corrigiendo página principal...');
+            
 
             // Funciones específicas del index
             if (typeof window.initCarousel === 'undefined') {
                 window.initCarousel = () => {
-                    console.log('🎠 Initializing carousel...');
+                    
                 };
             }
         }
@@ -433,7 +433,7 @@
         }
 
         fixFormValidations() {
-            console.log('📝 [CSP-UNIVERSAL-FIXER] Corrigiendo validaciones de formularios...');
+            
 
             const forms = document.querySelectorAll('form');
 
@@ -487,7 +487,7 @@
         }
 
         fixModalToggles() {
-            console.log('🪟 [CSP-UNIVERSAL-FIXER] Corrigiendo toggles de modales...');
+            
 
             const modalTriggers = document.querySelectorAll('[data-toggle="modal"], [data-bs-toggle="modal"]');
 
@@ -512,7 +512,7 @@
         }
 
         fixNavigation() {
-            console.log('🧭 [CSP-UNIVERSAL-FIXER] Corrigiendo navegación...');
+            
 
             // Corregir dropdowns
             const dropdownTogggles = document.querySelectorAll('[data-toggle="dropdown"], [data-bs-toggle="dropdown"]');
@@ -542,7 +542,7 @@
 
         // Método público para diagnóstico
         runDiagnostics() {
-            console.log('🔍 [CSP-UNIVERSAL-FIXER] Ejecutando diagnósticos...');
+            
 
             const issues = {
                 inlineHandlers: document.querySelectorAll('[onclick], [onsubmit], [onchange]').length,
@@ -550,7 +550,7 @@
                 brokenButtons: 0
             };
 
-            console.log('📊 [CSP-UNIVERSAL-FIXER] Issues found:', issues);
+            
             return issues;
         }
     }
@@ -575,6 +575,6 @@
         initCSPUniversalFixer();
     }
 
-    console.log('✅ [CSP-UNIVERSAL-FIXER] Sistema cargado correctamente');
+    
 
 })();

@@ -19,11 +19,11 @@
     }
 
     function initializeEventHandlers() {
-        console.log('[OFERTA-EDUCATIVA-EVENTS] Inicializando event handlers...');
+        
 
         registerChatbotHandlers();
 
-        console.log('[OFERTA-EDUCATIVA-EVENTS] ✅ Event handlers inicializados correctamente');
+        
     }
 
     /**
@@ -65,14 +65,14 @@
     // ============================================
 
     function toggleChatbot() {
-        console.log('[OFERTA-EDUCATIVA-EVENTS] Alternando chatbot...');
+        
         if (window.toggleChatbot) {
             window.toggleChatbot();
         }
     }
 
     function sendMessage() {
-        console.log('[OFERTA-EDUCATIVA-EVENTS] Enviando mensaje...');
+        
         if (window.sendMessage) {
             window.sendMessage();
         }

@@ -106,17 +106,17 @@ window.AppConfig = {
             if (config.keys.google_oauth_client_id) {
                 window.AppConfig.google.clientId = config.keys.google_oauth_client_id;
                 window.AppConfig.google.enabled = true;
-                console.log('✅ Google OAuth configurado dinámicamente.');
+                
             } else {
-                console.warn('⚠️ No se recibió un Client ID de Google desde el backend.');
+                
             }
 
             // Configurar TinyMCE API Key
             if (config.keys.tinymce) {
                 window.TINYMCE_API_KEY = config.keys.tinymce;
-                console.log('✅ TinyMCE API Key configurada dinámicamente.');
+                
             } else {
-                console.warn('⚠️ No se recibió una API Key de TinyMCE desde el backend.');
+                
                 window.TINYMCE_API_KEY = 'no-key-configured';
             }
         }
@@ -152,24 +152,7 @@ window.AppConfig.isEnabled = function (service) {
 // Función para obtener el Client ID de Google
 window.AppConfig.getGoogleClientId = function () {
     if (!this.isEnabled('google')) {
-        console.warn(`
-⚠️ ============================================
-   GOOGLE OAUTH NO CONFIGURADO
-   ============================================
-
-   Para habilitar Google Sign-In:
-
-   1. Ve a https://console.cloud.google.com/apis/credentials
-   2. Crea "ID de cliente de OAuth 2.0"
-   3. Configura los orígenes autorizados
-   4. Pega el Client ID en js/config.js:
-
-      window.AppConfig.google.clientId = 'TU_CLIENT_ID';
-      window.AppConfig.google.enabled = true;
-
-   Mientras tanto, el sistema usará modo DEMO.
-   ============================================
-        `);
+        
         return null;
     }
     return this.google.clientId;
@@ -182,17 +165,7 @@ window.AppConfig.getServiceConfig = function (service) {
 
 // Logging para debug
 if (window.AppConfig.debug) {
-    console.log('🔧 App Config loaded:', {
-        environment: window.AppConfig.environment,
-        enabledServices: {
-            google: window.AppConfig.isEnabled('google'),
-            facebook: window.AppConfig.isEnabled('facebook'),
-            stripe: window.AppConfig.isEnabled('stripe'),
-            paypal: window.AppConfig.isEnabled('paypal'),
-            notifications: window.AppConfig.isEnabled('notifications'),
-            analytics: window.AppConfig.isEnabled('analytics')
-        }
-    });
+    
 }
 
 /**

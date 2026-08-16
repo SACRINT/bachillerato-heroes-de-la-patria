@@ -1,4 +1,4 @@
-console.log('🚀 Phase 5: Frontend Migration Initialized');
+
 
 import { appConfig, loadRemoteConfig } from './core/config';
 import { apiClient } from './core/api-client';
@@ -26,7 +26,7 @@ import './styles/legacy-overrides.css';
 
 // Initial setup
 loadRemoteConfig().then(() => {
-    console.log('⚙️ Configuración cargada desde main.ts');
+    
 
     // 0. Instalar Polyfills
     installPolyfills();
@@ -78,4 +78,4 @@ if (socketClient) {
 }
 (window as any).SocketClient = SocketClient;
 
-console.log('✅ Frontend TypeScript modules initialized (15 modules)');
+

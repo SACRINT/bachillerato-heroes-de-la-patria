@@ -19,7 +19,7 @@ async function loadProfile(userId) {
 
         renderProfile(currentProfile);
     } catch (e) {
-        console.warn('API Error, loading mock:', e);
+        
         loadMockProfile();
     }
 }

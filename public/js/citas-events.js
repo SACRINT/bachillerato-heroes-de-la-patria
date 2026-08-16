@@ -18,13 +18,13 @@
     }
 
     function initializeEventHandlers() {
-        console.log('[CITAS-EVENTS] Inicializando event handlers...');
+        
 
         registerDepartmentSelectors();
         registerCitasButtons();
         registerChatbotHandlers();
 
-        console.log('[CITAS-EVENTS] ✅ Event handlers inicializados correctamente');
+        
     }
 
     /**
@@ -128,7 +128,7 @@
      * 🏢 Selecciona un departamento para agendar cita
      */
     function selectDepartment(department) {
-        console.log('[CITAS-EVENTS] Seleccionando departamento:', department);
+        
         const form = document.getElementById('appointmentForm');
         if (form) {
             const deptSelect = form.querySelector('[name="department"]');
@@ -144,7 +144,7 @@
      * 📋 Consulta una cita agendada
      */
     function consultarCita() {
-        console.log('[CITAS-EVENTS] Consultando cita...');
+        
         // Implementación según lógica del sistema de citas
         alert('Consultando tu cita...');
     }
@@ -153,7 +153,7 @@
      * ❌ Cancela una cita
      */
     function cancelarCita(appointmentId) {
-        console.log('[CITAS-EVENTS] Cancelando cita:', appointmentId);
+        
         if (confirm('¿Estás seguro de que deseas cancelar esta cita?')) {
             alert('Cita cancelada exitosamente');
         }

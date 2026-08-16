@@ -1532,9 +1532,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const hasCitasSection = document.getElementById('departamentos-servicios');
 
     if (hasDynamicContainer || hasStaticButtons || hasCitasSection) {
-        console.log('[APPOINTMENTS] Inicializando sistema de citas...');
+        
         window.appointmentSystem = new AppointmentSystem();
-        console.log('[APPOINTMENTS] ✅ Sistema inicializado correctamente');
+        
     }
 });
 
@@ -1557,7 +1557,7 @@ document.addEventListener('click', (e) => {
         if (action === 'selectDepartment') {
             const deptId = actionElement.getAttribute('data-department');
             if (window.appointmentSystem && deptId) {
-                console.log('[APPOINTMENTS] Selecting department:', deptId);
+                
                 window.appointmentSystem.selectedDepartment = deptId;
                 window.appointmentSystem.showCalendarModal();
             } else {

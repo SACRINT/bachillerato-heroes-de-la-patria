@@ -58,11 +58,7 @@ class DebugLogger implements IDebugLog {
     log(tag: string, message: string, data: any = null): void {
         if (!this.isEnabled()) return;
         const timestamp = new Date().toLocaleTimeString();
-        console.log(
-            `%c[${timestamp}] [${tag}] ${message}`,
-            'color: #0066cc; font-weight: bold;',
-            data ?? ''
-        );
+        
     }
 
     /**
@@ -71,11 +67,7 @@ class DebugLogger implements IDebugLog {
     info(tag: string, message: string, data: any = null): void {
         if (!this.isEnabled()) return;
         const timestamp = new Date().toLocaleTimeString();
-        console.info(
-            `%c[${timestamp}] [${tag}] ℹ️ ${message}`,
-            'color: #17a2b8; font-weight: bold;',
-            data ?? ''
-        );
+        
     }
 
     /**
@@ -100,11 +92,7 @@ class DebugLogger implements IDebugLog {
     warn(tag: string, message: string, data: any = null): void {
         if (!this.isEnabled()) return;
         const timestamp = new Date().toLocaleTimeString();
-        console.warn(
-            `%c[${timestamp}] [${tag}] ⚠️ ${message}`,
-            'color: #ff9900; font-weight: bold;',
-            data ?? ''
-        );
+        
     }
 
     /**

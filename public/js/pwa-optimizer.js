@@ -18,7 +18,7 @@ class PWAOptimizer {
     }
 
     async init() {
-        console.log('🚀 [PWA OPTIMIZER] Iniciando optimizaciones...');
+        
 
         try {
             await this.optimizePerformance();
@@ -30,7 +30,7 @@ class PWAOptimizer {
             this.monitorMetrics();
             this.setupServiceWorkerOptimizations();
 
-            console.log('✅ [PWA OPTIMIZER] Optimizaciones completadas');
+            
         } catch (error) {
             console.error('❌ [PWA OPTIMIZER] Error en optimizaciones:', error);
         }
@@ -41,7 +41,7 @@ class PWAOptimizer {
     // ============================================
 
     async optimizePerformance() {
-        console.log('⚡ [PERFORMANCE] Optimizando métricas de rendimiento...');
+        
 
         // 1. Lazy Loading de imágenes
         this.implementImageLazyLoading();
@@ -204,7 +204,7 @@ class PWAOptimizer {
     // ============================================
 
     async optimizeAccessibility() {
-        console.log('♿ [ACCESSIBILITY] Optimizando accesibilidad...');
+        
 
         // 1. Mejorar contraste de colores
         this.improveColorContrast();
@@ -340,7 +340,7 @@ class PWAOptimizer {
             });
         });
 
-        console.log(`⌨️  [ACCESSIBILITY] ${focusableElements.length} elementos con gestión de foco mejorada`);
+        
     }
 
     optimizeAltTexts() {
@@ -365,7 +365,7 @@ class PWAOptimizer {
             }
         });
 
-        console.log(`📷 [ACCESSIBILITY] ${images.length} imágenes optimizadas con alt text`);
+        
     }
 
     improveTabOrder() {
@@ -402,7 +402,7 @@ class PWAOptimizer {
     // ============================================
 
     async optimizeBestPractices() {
-        console.log('🛡️ [BEST PRACTICES] Optimizando mejores prácticas...');
+        
 
         // 1. HTTPS enforcement
         this.enforceHTTPS();
@@ -466,7 +466,7 @@ class PWAOptimizer {
     // ============================================
 
     async optimizePWA() {
-        console.log('📱 [PWA] Optimizando características PWA...');
+        
 
         // 1. Verificar y optimizar manifest
         await this.optimizeManifest();
@@ -498,7 +498,7 @@ class PWAOptimizer {
             const missingFields = requiredFields.filter(field => !manifest[field]);
 
             if (missingFields.length > 0) {
-                console.warn('🚨 Manifest missing fields:', missingFields);
+                
             }
 
             // Verificar iconos requeridos
@@ -507,7 +507,7 @@ class PWAOptimizer {
             const missingIcons = requiredIconSizes.filter(size => !availableIconSizes.includes(size));
 
             if (missingIcons.length > 0) {
-                console.warn('🚨 Manifest missing icon sizes:', missingIcons);
+                
             }
         } catch (error) {
             console.error('❌ Error checking manifest:', error);
@@ -524,7 +524,7 @@ class PWAOptimizer {
         });
 
         window.addEventListener('appinstalled', () => {
-            console.log('✅ PWA installed successfully');
+            
             this.hideInstallButton();
         });
     }
@@ -547,7 +547,7 @@ class PWAOptimizer {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                console.log(`Install prompt outcome: ${outcome}`);
+                
                 deferredPrompt = null;
                 installButton.remove();
             }
@@ -561,7 +561,7 @@ class PWAOptimizer {
     // ============================================
 
     async optimizeSEO() {
-        console.log('🔍 [SEO] Optimizando SEO...');
+        
 
         // 1. Optimizar meta tags
         this.optimizeMetaTags();
@@ -722,7 +722,7 @@ class PWAOptimizer {
             document.head.appendChild(script);
         });
 
-        console.log('📊 [SEO] Structured data añadido:', structuredDataArray.length, 'elementos');
+        
     }
 
     optimizeHeadingsHierarchy() {
@@ -745,9 +745,9 @@ class PWAOptimizer {
         });
 
         if (issues.length > 0) {
-            console.warn('⚠️ [SEO] Problemas de jerarquía de headings:', issues);
+            
         } else {
-            console.log('✅ [SEO] Jerarquía de headings correcta');
+            
         }
     }
 
@@ -778,7 +778,7 @@ class PWAOptimizer {
             }
         });
 
-        console.log(`🔗 [SEO] Enlaces optimizados: ${internalLinks} internos, ${externalLinks} externos`);
+        
     }
 
     // ============================================
@@ -802,11 +802,7 @@ class PWAOptimizer {
             const observer = new PerformanceObserver((list) => {
                 list.getEntries().forEach((entry) => {
                     if (entry.entryType === 'navigation') {
-                        console.log('Navigation timing:', {
-                            domContentLoaded: entry.domContentLoadedEventEnd - entry.domContentLoadedEventStart,
-                            loadComplete: entry.loadEventEnd - entry.loadEventStart,
-                            totalTime: entry.loadEventEnd - entry.fetchStart
-                        });
+                        
                     }
                 });
             });
@@ -843,7 +839,7 @@ class PWAOptimizer {
             nonCriticalScripts.forEach(script => observer.observe(script));
         }
 
-        console.log(`✅ [PWA] Optimizados ${thirdPartyScripts.length} scripts de terceros`);
+        
     }
 
     implementErrorBoundaries() {
@@ -885,7 +881,7 @@ class PWAOptimizer {
             // En producción, permitir que el error se reporte normalmente para monitoreo
         });
 
-        console.log('✅ [PWA] Error boundaries implementados');
+        
     }
 
     async optimizeServiceWorker() {
@@ -905,12 +901,12 @@ class PWAOptimizer {
                 // Configurar estrategias de cache
                 this.setupCacheStrategies(registration);
 
-                console.log('✅ [PWA] Service Worker optimizado');
+                
             } catch (error) {
-                console.log('⚠️ [PWA] Service Worker no disponible:', error.message);
+                
             }
         } else {
-            console.log('⚠️ [PWA] Service Workers no soportados en este navegador');
+            
         }
     }
 
@@ -1112,7 +1108,7 @@ class PWAOptimizer {
             // Registrar optimización
             this.metrics.pwa.optimizations.push('Splash screen implementado');
 
-            console.log('✅ PWA Splash Screen implementado correctamente');
+            
 
         } catch (error) {
             console.error('❌ Error implementando splash screen:', error);
@@ -1133,4 +1129,3 @@ document.addEventListener('DOMContentLoaded', () => {
     window.pwaOptimizer = new PWAOptimizer();
 });
 
-console.log('🚀 [PWA OPTIMIZER] Sistema cargado');

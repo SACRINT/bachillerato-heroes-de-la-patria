@@ -11,7 +11,7 @@
 
 class IntegratedThemeManager {
     constructor() {
-        console.log('🌙 [THEME] Inicializando Theme Manager Integrado...');
+        
 
         // Configuración integrada con sistema existente
         this.storageKey = 'heroesPatria_darkMode'; // Usar el key existente
@@ -58,7 +58,7 @@ class IntegratedThemeManager {
             // Aplicar mejoras CSS
             this.applyEnhancedCSS();
 
-            console.log('✅ [THEME] Theme Manager Integrado inicializado correctamente');
+            
 
             // Evento personalizado de inicialización
             this.dispatchEvent('themeManagerReady', {
@@ -78,7 +78,7 @@ class IntegratedThemeManager {
     detectAndApplyTheme() {
         // Si el usuario no ha establecido preferencia, usar la del sistema
         if (!this.hasUserPreference && this.isSystemDark) {
-            console.log('🌙 [THEME] Aplicando modo oscuro automático (sistema)');
+            
             this.body.classList.add(this.existingClass);
             localStorage.setItem(this.storageKey, 'true');
         }
@@ -87,7 +87,7 @@ class IntegratedThemeManager {
         const isDark = this.isDarkMode();
         this.html.setAttribute('data-theme', isDark ? 'dark' : 'light');
 
-        console.log(`🎨 [THEME] Tema aplicado: ${isDark ? 'oscuro' : 'claro'}`);
+        
     }
 
     /**
@@ -114,7 +114,7 @@ class IntegratedThemeManager {
                     this.enhanceToggleButton();
                 } else if (attempts >= maxAttempts) {
                     clearInterval(interval);
-                    console.warn('⚠️ [THEME] No se encontró el botón toggle después de 10s');
+                    
                 }
             }, 500);
         }
@@ -126,7 +126,7 @@ class IntegratedThemeManager {
     enhanceToggleButton() {
         if (!this.toggleButton) return;
 
-        console.log('🔘 [THEME] Mejorando botón toggle existente');
+        
 
         // Actualizar icono inicial
         this.updateToggleIcon();
@@ -150,7 +150,7 @@ class IntegratedThemeManager {
         const wasWasDark = this.isDarkMode();
         const newDarkState = !wasWasDark;
 
-        console.log(`🔄 [THEME] Cambiando tema: ${wasWasDark ? 'claro' : 'oscuro'} → ${newDarkState ? 'oscuro' : 'claro'}`);
+        
 
         // Aplicar transición suave
         this.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
@@ -205,7 +205,7 @@ class IntegratedThemeManager {
     setupSystemListener() {
         this.mediaQuery.addEventListener('change', (e) => {
             this.isSystemDark = e.matches;
-            console.log(`🔄 [THEME] Cambio en preferencia del sistema: ${e.matches ? 'oscuro' : 'claro'}`);
+            
 
             // Si el usuario no ha establecido preferencia, seguir al sistema
             if (!this.hasUserPreference) {
@@ -228,7 +228,7 @@ class IntegratedThemeManager {
     setupStorageSync() {
         window.addEventListener('storage', (e) => {
             if (e.key === this.storageKey && e.newValue !== e.oldValue) {
-                console.log('🔄 [THEME] Sincronización entre pestañas');
+                
                 const newDarkState = e.newValue === 'true';
                 this.body.classList.toggle(this.existingClass, newDarkState);
                 this.html.setAttribute('data-theme', newDarkState ? 'dark' : 'light');
@@ -247,7 +247,7 @@ class IntegratedThemeManager {
             themeLink.rel = 'stylesheet';
             themeLink.href = 'css/themes.css';
             document.head.appendChild(themeLink);
-            console.log('📄 [THEME] CSS de temas cargado dinámicamente');
+            
         }
     }
 
@@ -271,7 +271,7 @@ class IntegratedThemeManager {
         });
 
         window.dispatchEvent(event);
-        console.log(`📡 [THEME] Evento: ${eventName}`, detail);
+        
     }
 
     /**
@@ -291,10 +291,10 @@ class IntegratedThemeManager {
      */
     debug() {
         console.group('🐛 [THEME] Debug Info');
-        console.log('Is dark mode:', this.isDarkMode());
-        console.log('System prefers dark:', this.isSystemDark);
-        console.log('Has user preference:', this.hasUserPreference);
-        console.log('Toggle button:', this.toggleButton);
+        
+        
+        
+        
         console.groupEnd();
     }
 }
@@ -310,7 +310,7 @@ if (!window.integratedThemeManager) {
     // Método de conveniencia global
     window.toggleTheme = () => window.integratedThemeManager.toggleTheme();
 
-    console.log('🎨 [THEME] Theme Manager Integrado disponible globalmente');
+    
 }
 
 // Exportar para módulos
@@ -318,4 +318,3 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = IntegratedThemeManager;
 }
 
-console.log('📁 [THEME] theme-manager.js integrado cargado exitosamente');

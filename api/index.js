@@ -1888,7 +1888,23 @@ function getFallbackData(endpoint) {
         '/api/messaging/conversations': { success: true, conversations: [], total: 0, isDemoData: true }
     };
 
-    return fallbacks[cleanEndpoint] || null;
+    if (fallbacks[cleanEndpoint]) return fallbacks[cleanEndpoint];
+
+    // Fallbacks dinámicos por prefijo para módulos opcionales
+    if (cleanEndpoint.startsWith('/api/gamification') || cleanEndpoint.startsWith('/api/iacoins/gamification')) {
+        return { success: true, data: { level: 1, xp: 100, badges: [], streak: 1 }, isDemoData: true };
+    }
+    if (cleanEndpoint.startsWith('/api/competitions') || cleanEndpoint.startsWith('/api/community') || cleanEndpoint.startsWith('/api/mentorship') || cleanEndpoint.startsWith('/api/groups')) {
+        return { success: true, data: [], total: 0, isDemoData: true };
+    }
+    if (cleanEndpoint.startsWith('/api/calendar')) {
+        return { success: true, data: [], events: [], total: 0, isDemoData: true };
+    }
+    if (cleanEndpoint.startsWith('/api/profiles')) {
+        return { success: true, data: { username: 'Usuario', rol: 'Estudiante', stats: {} }, isDemoData: true };
+    }
+
+    return null;
 }
 
 // ============================================
@@ -2604,6 +2620,155 @@ app.get('/api/suscriptores', (req, res) => {
         suscriptores: [],
         isDemoData: true
     });
+});
+
+// GET /admin/dashboard-summary (compatibilidad)
+app.get('/admin/dashboard-summary', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            studentsCount: 1247,
+            teachersCount: 68,
+            subjectsCount: 42,
+            averageGrade: 8.5,
+            activeUsers: 105,
+            contentCount: 45
+        },
+        isDemoData: true
+    });
+});
+
+// Gamification Endpoints
+app.get(['/api/gamification/profile/:id', '/api/gamification/profile'], (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            user_id: req.params.id || 117,
+            username: 'Estudiante',
+            level: 5,
+            xp: 1250,
+            xp_next_level: 2000,
+            rank: 'Explorador',
+            streak_days: 7,
+            badges: [],
+            achievements: []
+        },
+        isDemoData: true
+    });
+});
+
+app.get('/api/gamification/daily-challenges', (req, res) => {
+    res.json({
+        success: true,
+        data: [
+            { id: 1, title: 'Revisa tus Calificaciones', xp: 50, coins: 10, completed: false },
+            { id: 2, title: 'Consulta el Calendario Escolar', xp: 30, coins: 5, completed: false },
+            { id: 3, title: 'Explora la Biblioteca Digital', xp: 40, coins: 10, completed: false }
+        ],
+        isDemoData: true
+    });
+});
+
+app.get(['/api/gamification-ext/profile/public/:user', '/api/gamification-ext/profile/:user', '/api/profiles/me'], (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            username: req.params.user || 'Samuel',
+            nombre: 'Samuel',
+            rol: 'Administrador',
+            xp: 2500,
+            level: 8,
+            badges: [],
+            projects: [],
+            stats: { completed_courses: 12, attendance_rate: 98 }
+        },
+        isDemoData: true
+    });
+});
+
+app.get(['/api/gamification-ext/streaks/:user', '/api/iacoins/gamification-ext/streaks/:user'], (req, res) => {
+    res.json({
+        success: true,
+        data: { current_streak: 5, longest_streak: 14, last_activity: new Date().toISOString() },
+        isDemoData: true
+    });
+});
+
+app.get(['/api/gamification-ext/xp/profile/:user', '/api/iacoins/gamification-ext/xp/profile/:user'], (req, res) => {
+    res.json({
+        success: true,
+        data: { xp: 2500, level: 8, next_level_xp: 3000 },
+        isDemoData: true
+    });
+});
+
+// Competitions & Teams
+app.get(['/api/competitions/competitions', '/api/competitions'], (req, res) => {
+    res.json({ success: true, data: [], competitions: [], total: 0, isDemoData: true });
+});
+
+app.get('/api/competitions/leaderboard', (req, res) => {
+    res.json({ success: true, data: [], leaderboard: [], total: 0, isDemoData: true });
+});
+
+app.get('/api/competitions/my-team', (req, res) => {
+    res.json({ success: true, data: null, team: null, isDemoData: true });
+});
+
+// Community & Mentorship & Groups
+app.get('/api/community/categories', (req, res) => {
+    res.json({
+        success: true,
+        data: [
+            { id: 1, name: 'Académico', description: 'Dudas y grupos de estudio', posts_count: 24 },
+            { id: 2, name: 'Eventos y Cultura', description: 'Actividades escolares', posts_count: 15 },
+            { id: 3, name: 'Orientación Vocacional', description: 'Consejos universitarios y laborales', posts_count: 18 }
+        ],
+        categories: [],
+        isDemoData: true
+    });
+});
+
+app.get('/api/mentorship/my-mentorships', (req, res) => {
+    res.json({ success: true, data: [], mentorships: [], total: 0, isDemoData: true });
+});
+
+app.get('/api/groups/search', (req, res) => {
+    res.json({ success: true, data: [], groups: [], total: 0, isDemoData: true });
+});
+
+// Calendar Events
+app.get('/api/calendar/events', (req, res) => {
+    res.json({
+        success: true,
+        data: [
+            { id: 1, title: 'Inicio de Semestre', start_date: '2026-08-20', category: 'Académica' },
+            { id: 2, title: 'Reunión de Padres', start_date: '2026-08-25', category: 'General' }
+        ],
+        events: [],
+        isDemoData: true
+    });
+});
+
+// AI Process Endpoint
+app.all('/api/ai/v1/process', (req, res) => {
+    res.json({
+        success: true,
+        data: { response: '¡Hola! ¿En qué puedo ayudarte hoy en el BGE Héroes de la Patria?', status: 'ok' },
+        isDemoData: true
+    });
+});
+
+// Socket.io client script fallback
+app.get(['/socket.io/socket.io.js', '/socket.io/'], (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript');
+    res.send('window.io = window.io || function() { return { on: function(){}, emit: function(){}, connect: function(){} }; };');
+});
+
+// Images fallbacks
+app.get(['/images/empty-team.svg', '/images/project-placeholder.jpg', '/images/project-placeholder.png'], (req, res) => {
+    res.setHeader('Content-Type', 'image/svg+xml');
+    res.send('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="#e2e8f0"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#64748b">BGE Imagen</text></svg>');
 });
 
 // ============================================

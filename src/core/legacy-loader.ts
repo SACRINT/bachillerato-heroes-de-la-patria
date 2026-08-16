@@ -27,7 +27,7 @@ export class LegacyLoader {
     constructor() { }
 
     public init(): void {
-        console.log('📦 [LegacyLoader] Initializing legacy scripts...');
+        
 
         // 1. Cargar Logger primero (aunque idealmente deberíamos tener uno en TS)
         this.loadLogger();
@@ -54,7 +54,7 @@ export class LegacyLoader {
             script.async = false;
             document.head.appendChild(script);
         });
-        console.log(`[LegacyLoader] ✅ Queued ${this.BRIDGES.length} bridge scripts`);
+        
     }
 
     private loadEventHandlersSequentially(index: number): void {
@@ -62,7 +62,7 @@ export class LegacyLoader {
             const script = document.createElement('script');
             script.src = this.EVENT_HANDLERS[index];
             script.onload = () => {
-                console.log(`[LegacyLoader] ✅ Loaded ${this.EVENT_HANDLERS[index]}`);
+                
                 this.loadEventHandlersSequentially(index + 1);
             };
             script.onerror = () => {
@@ -73,7 +73,7 @@ export class LegacyLoader {
             document.head.appendChild(script);
         } else {
             // All handlers loaded, now load registry
-            console.log('[LegacyLoader] ✅ All event handlers loaded, loading registry...');
+            
             const registryScript = document.createElement('script');
             registryScript.src = 'js/event-handler-registry.js';
             registryScript.async = false;

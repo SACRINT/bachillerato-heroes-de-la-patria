@@ -71,7 +71,7 @@ export class HeroesPatriaApp {
 
     public async init(): Promise<void> {
         try {
-            console.log('🚀 HeroesPatriaApp: Initializing...');
+            
 
             // 1. Cargar HTML partials primero
             await this.loadPartials();
@@ -88,7 +88,7 @@ export class HeroesPatriaApp {
             // 3. Establecer año actual
             this.setCurrentYear();
 
-            console.log('✅ HeroesPatriaApp: Initialized successfully');
+            
 
         } catch (error) {
             console.error('❌ Error initializing app:', error);
@@ -145,12 +145,12 @@ export class HeroesPatriaApp {
             if (typeof DOMPurify !== 'undefined') {
                 element.innerHTML = DOMPurify.sanitize(html);
             } else {
-                console.warn('DOMPurify not found, inserting HTML unsafe');
+                
                 element.innerHTML = html;
             }
 
         } catch (error) {
-            console.warn(`⚠️ Could not load ${path}:`, error);
+            
             // Fallback content para header
             if (selector === this.config.selectors.header) {
                 const fallback = '<nav class="navbar navbar-light bg-light"><div class="container"><a class="navbar-brand" href="index.html">BGE Héroes de la Patria</a></div></nav>';
@@ -479,7 +479,7 @@ export class HeroesPatriaApp {
                 const { outcome } = await this.deferredPrompt.userChoice;
 
                 if (outcome === 'accepted') {
-                    console.log('PWA installed successfully');
+                    
                 }
 
                 this.deferredPrompt = null;

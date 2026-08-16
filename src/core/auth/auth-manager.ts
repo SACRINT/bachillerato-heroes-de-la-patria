@@ -41,7 +41,7 @@ export class AuthManager {
     async init(): Promise<void> {
         if (this.state.isInitialized) return;
 
-        console.log('🔐 Initializing Auth Manager TS...');
+        
 
         // 1. Load Session
         const sessionData = this.session.loadSession();
@@ -115,7 +115,7 @@ export class AuthManager {
             if (this.state.isAuthenticated) {
                 const inactiveTime = Date.now() - this.state.lastActivityTime;
                 if (inactiveTime > this.config.sessionTimeout) {
-                    console.warn('Sesión expirada por inactividad');
+                    
                     this.logout();
                 }
             }

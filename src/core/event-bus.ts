@@ -6,7 +6,7 @@
  *
  * Uso:
  *   eventBus.emit('student.created', { id: 1, name: 'Juan' });
- *   eventBus.on('student.created', (event) => console.log(event));
+ *   eventBus.on('student.created', (event) => );
  *
  * Migrado a TypeScript: 13 Diciembre 2025
  * Versión: 2.0.0
@@ -67,7 +67,7 @@ export class EventBus {
         this.broadcastChannel = null;
         this.initBroadcastChannel();
 
-        console.log('[EVENT-BUS] ✅ Event Bus Frontend TS inicializado');
+        
     }
 
     /**
@@ -79,12 +79,12 @@ export class EventBus {
                 this.broadcastChannel = new BroadcastChannel('eventBus');
                 this.broadcastChannel.onmessage = (msg: MessageEvent<EventPayload>) => {
                     const event = msg.data;
-                    console.log(`[EVENT-BUS] 📥 Evento recibido de otro tab: ${event.type}`);
+                    
                     // Re-emit locally without broadcast to avoid loops
                     this.emit(event.type, event.data, { broadcast: false });
                 };
             } catch (error) {
-                console.warn('[EVENT-BUS] ⚠️ BroadcastChannel no disponible:', error);
+                
             }
         }
     }
@@ -114,7 +114,7 @@ export class EventBus {
         // Obtener listeners
         const listeners = this.listeners.get(eventType) || [];
 
-        console.log(`[EVENT-BUS] 📤 Emitiendo: ${eventType} (${listeners.length} listeners)`);
+        
 
         // Ejecutar listeners
         if (async) {
@@ -161,7 +161,7 @@ export class EventBus {
         // Ordenar por prioridad (mayor prioridad primero)
         listeners.sort((a, b) => b.priority - a.priority);
 
-        console.log(`[EVENT-BUS] 🔔 Nuevo listener para: ${eventType} (priority: ${priority})`);
+        
 
         // Retornar función para desuscribirse
         return () => this.off(eventType, listener.id);
@@ -195,11 +195,11 @@ export class EventBus {
             const index = listeners.findIndex(l => l.id === listenerId);
             if (index !== -1) {
                 listeners.splice(index, 1);
-                console.log(`[EVENT-BUS] 🔕 Listener removido de: ${eventType}`);
+                
             }
         } else {
             this.listeners.delete(eventType);
-            console.log(`[EVENT-BUS] 🔕 Todos los listeners removidos de: ${eventType}`);
+            
         }
 
         // Limpiar si no quedan listeners
@@ -246,7 +246,7 @@ export class EventBus {
      */
     clear(): void {
         this.listeners.clear();
-        console.log('[EVENT-BUS] 🧹 Todos los listeners limpiados');
+        
     }
 
     /**
@@ -254,7 +254,7 @@ export class EventBus {
      */
     clearHistory(): void {
         this.eventHistory = [];
-        console.log('[EVENT-BUS] 🧹 Historial de eventos limpiado');
+        
     }
 
     /**
@@ -267,7 +267,7 @@ export class EventBus {
             this.broadcastChannel.close();
             this.broadcastChannel = null;
         }
-        console.log('[EVENT-BUS] 🔌 Event Bus destruido');
+        
     }
 
     // ============================================
@@ -319,7 +319,7 @@ export class EventBus {
                 this.broadcastChannel.postMessage(event);
             }
         } catch (error) {
-            console.warn('[EVENT-BUS] ⚠️ No se pudo broadcast a otros tabs:', error);
+            
         }
     }
 

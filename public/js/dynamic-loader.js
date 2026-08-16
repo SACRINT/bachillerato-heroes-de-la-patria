@@ -5,7 +5,7 @@
 
 class DynamicContentLoader {
     constructor() {
-        console.log('🔄 [LOADER] Inicializando cargador de contenido dinámico...');
+        
         this.apiBase = 'data/';
         this.cache = new Map();
         this.init();
@@ -23,7 +23,7 @@ class DynamicContentLoader {
             await this.loadCalendarContent();
         }
 
-        console.log('✅ [LOADER] Contenido dinámico cargado');
+        
     }
 
     // ==========================================
@@ -122,7 +122,7 @@ class DynamicContentLoader {
     // ==========================================
 
     async loadHomepageContent() {
-        console.log('🏠 [LOADER] Cargando contenido de página principal...');
+        
 
         // Cargar noticias recientes (máximo 3)
         const noticias = await this.loadNoticias(3);
@@ -136,7 +136,7 @@ class DynamicContentLoader {
     renderRecentNews(noticias) {
         const container = document.getElementById('recent-news');
         if (!container) {
-            console.warn('⚠️ [LOADER] Contenedor recent-news no encontrado');
+            
             return;
         }
 
@@ -194,7 +194,7 @@ class DynamicContentLoader {
         });
 
         container.innerHTML = DOMPurify.sanitize(html);
-        console.log(`📰 [LOADER] ${noticias.length} noticias cargadas en homepage`);
+        
     }
 
     renderUpcomingEvents(eventos) {
@@ -288,7 +288,7 @@ class DynamicContentLoader {
         });
 
         container.innerHTML = DOMPurify.sanitize(html);
-        console.log(`📅 [LOADER] ${eventos.length} eventos cargados en homepage`);
+        
     }
 
     // ==========================================
@@ -390,7 +390,7 @@ async function showNoticiaModal(id) {
 }
 
 async function showEventoModal(id) {
-    console.log('📅 Mostrar detalles del evento:', id);
+    
 
     try {
         // Obtener datos del evento
@@ -605,4 +605,3 @@ document.addEventListener('DOMContentLoaded', function() {
     window.dynamicLoader = new DynamicContentLoader();
 });
 
-console.log('📝 [LOADER] dynamic-loader.js cargado exitosamente');

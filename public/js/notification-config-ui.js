@@ -17,7 +17,7 @@ class NotificationConfigUI {
         this.configData = null;
         this.currentConfig = null;
 
-        console.log('🎛️ Notification Config UI initializing...');
+        
 
         this.loadConfigData();
         this.init();
@@ -34,16 +34,16 @@ class NotificationConfigUI {
         this.createFloatingButton();
         this.setupEventListeners();
 
-        console.log('✅ Notification Config UI ready');
+        
     }
 
     async loadConfigData() {
         try {
             const response = await fetch('./data/notification-config.json');
             this.configData = await response.json();
-            console.log('📋 Notification config data loaded');
+            
         } catch (error) {
-            console.warn('⚠️ Failed to load config data:', error);
+            
             this.configData = this.getDefaultConfigData();
         }
     }
@@ -793,7 +793,7 @@ O ve a Configuración del navegador > Privacidad y seguridad > Configuración de
             // Mostrar confirmación
             this.showToast('💾 Configuración guardada correctamente', 'success');
 
-            console.log('✅ Configuration saved:', newConfig);
+            
 
         } catch (error) {
             console.error('❌ Failed to save configuration:', error);
@@ -851,7 +851,7 @@ O ve a Configuración del navegador > Privacidad y seguridad > Configuración de
                 stats = window.heroesNotifications.getStats();
             }
         } catch (error) {
-            console.warn('⚠️ [NOTIFICATION-UI] getStats() no disponible, usando fallback');
+            
         }
 
         const unreadCount = stats.unread || 0;
@@ -983,4 +983,3 @@ if (document.readyState === 'loading') {
     window.notificationConfigUI = new NotificationConfigUI();
 }
 
-console.log('🎛️ Notification Config UI loaded successfully');

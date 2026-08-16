@@ -35,7 +35,7 @@ export class LoaderSystem {
     }
 
     private initializeLoader(): void {
-        console.log('🔄 [LOADER] Sistema de carga inicializado');
+        
         this.createGlobalLoader();
     }
 
@@ -228,6 +228,6 @@ if (typeof window !== 'undefined') {
     (window as any).hideLoader = () => loaderSystem.hide();
 }
 
-console.log('✅ [LOADER] loader.ts cargado exitosamente');
+
 
 export default loaderSystem;

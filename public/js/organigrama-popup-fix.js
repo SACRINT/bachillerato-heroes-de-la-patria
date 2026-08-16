@@ -11,7 +11,7 @@ let activeOrgPopup = null;
 
 // Función principal para inicializar los popups del organigrama
 function initOrganigramPopups() {
-    console.log('🔧 [ORGANIGRAMA-FIX] Inicializando popups del organigrama...');
+    
 
     // Esperar a que el DOM esté completamente cargado
     if (document.readyState === 'loading') {
@@ -26,10 +26,10 @@ function setupOrganigramaPopups() {
     const orgCards = document.querySelectorAll('.org-card');
     const orgPopupOverlay = document.querySelector('.org-popup-overlay');
 
-    console.log(`🔧 [ORGANIGRAMA-FIX] Configurando ${orgCards.length} tarjetas del organigrama`);
+    
 
     if (orgCards.length === 0) {
-        console.warn('⚠️ [ORGANIGRAMA-FIX] No se encontraron tarjetas .org-card');
+        
         setTimeout(setupOrganigramaPopups, 1000); // Reintentar después de 1 segundo
         return;
     }
@@ -41,7 +41,7 @@ function setupOrganigramaPopups() {
             e.stopPropagation();
 
             const personId = card.getAttribute('data-person-id');
-            console.log(`🔧 [ORGANIGRAMA-FIX] Click en tarjeta ${personId}`);
+            
 
             if (!personId) {
                 console.error('❌ [ORGANIGRAMA-FIX] Tarjeta sin data-person-id');
@@ -63,7 +63,7 @@ function setupOrganigramaPopups() {
                     orgPopupOverlay.classList.add('active');
                 }
 
-                console.log(`✅ [ORGANIGRAMA-FIX] Popup ${personId} abierto correctamente`);
+                
             } else {
                 console.error(`❌ [ORGANIGRAMA-FIX] No se encontró popup info-${personId}`);
             }
@@ -102,7 +102,7 @@ function setupOrganigramaPopups() {
         }
     });
 
-    console.log(`✅ [ORGANIGRAMA-FIX] ${orgCards.length} tarjetas configuradas correctamente`);
+    
 }
 
 // Función para cerrar el popup activo
@@ -117,10 +117,9 @@ function closeActivePopup() {
         orgPopupOverlay.classList.remove('active');
     }
 
-    console.log('✅ [ORGANIGRAMA-FIX] Popup cerrado');
+    
 }
 
 // Inicializar automáticamente
 initOrganigramPopups();
 
-console.log('✅ [ORGANIGRAMA-FIX] Script cargado correctamente');

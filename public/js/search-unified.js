@@ -622,7 +622,7 @@
         const resultsContent = resultsContainer?.querySelector('.search-content');
 
         if (!resultsContainer || !resultsContent) {
-            console.warn('🔍 Contenedores de búsqueda no encontrados');
+            
             return;
         }
 
@@ -656,7 +656,7 @@
         try {
             localStorage.setItem('bge_search_history', JSON.stringify(searchHistory));
         } catch (e) {
-            console.warn('No se pudo guardar el historial de búsqueda');
+            
         }
     }
 
@@ -702,7 +702,7 @@
 
         if (isInitialized) return;
 
-        console.log('🔍 Inicializando sistema de búsqueda unificado BGE...');
+        
 
         // Event listener para input
         input.addEventListener('input', function(e) {
@@ -762,10 +762,10 @@
                 searchHistory = JSON.parse(savedHistory);
             }
         } catch (e) {
-            console.warn('No se pudo cargar el historial de búsqueda');
+            
         }
 
-        console.log('✅ Sistema de búsqueda unificado BGE iniciado correctamente');
+        
     }
 
     // ========== ESTILOS CSS MEJORADOS ==========
@@ -1024,6 +1024,6 @@
         }
     }, 2000);
 
-    console.log('🚀 Sistema de búsqueda unificado BGE cargado');
+    
 
 })();

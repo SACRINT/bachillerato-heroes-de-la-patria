@@ -3,7 +3,7 @@
  * Maneja inscripciones de estudiantes logueados y no logueados
  */
 
-console.log('📝 [INSCRIPTIONS HANDLER] Cargando gestor de inscripciones...');
+
 
 // Variable global para almacenar datos temporales
 window.currentActivityData = null;
@@ -14,7 +14,7 @@ window.currentActivityData = null;
  * @param {string} activityId - ID de la actividad (opcional)
  */
 function showActivityRegistration(activityName, activityId = null) {
-    console.log('📅 Mostrando modal de inscripción para:', activityName);
+    
 
     // Guardar datos de actividad
     window.currentActivityData = {
@@ -26,7 +26,7 @@ function showActivityRegistration(activityName, activityId = null) {
     const session = JSON.parse(localStorage.getItem('studentSession') || '{}');
     const isLoggedIn = session && session.student && session.student.id;
 
-    console.log('🔍 Estado de sesión:', isLoggedIn ? 'Logueado' : 'No logueado');
+    
 
     if (isLoggedIn) {
         // Usuario logueado → Modal de confirmación simple
@@ -177,7 +177,7 @@ function showRegistrationFormModal(activityName) {
  * Confirmar inscripción (usuarios logueados Y no logueados)
  */
 async function confirmActivityRegistration() {
-    console.log('📤 Confirmando inscripción...');
+    
 
     // Verificar si el usuario está logueado
     const session = JSON.parse(localStorage.getItem('studentSession') || '{}');
@@ -335,4 +335,4 @@ window.showActivityRegistration = showActivityRegistration;
 window.confirmActivityRegistration = confirmActivityRegistration;
 window.showNotification = showNotification;
 
-console.log('✅ [INSCRIPTIONS HANDLER] Gestor cargado correctamente');
+

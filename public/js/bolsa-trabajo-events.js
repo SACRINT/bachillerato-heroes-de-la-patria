@@ -18,14 +18,14 @@
     }
 
     function initializeEventHandlers() {
-        console.log('[BOLSA-TRABAJO-EVENTS] Inicializando event handlers...');
+        
 
         registerQuickActionButtons();
         registerFeaturedJobsButtons();
         registerJobListingsHandlers();
         registerChatbotHandlers();
 
-        console.log('[BOLSA-TRABAJO-EVENTS] ✅ Event handlers inicializados correctamente');
+        
     }
 
     /**
@@ -174,7 +174,7 @@
      * 📤 Muestra modal para subir CV y configura el envío
      */
     function showUploadCV() {
-        console.log('[BOLSA-TRABAJO-EVENTS] Mostrando formulario de CV...');
+        
         const modalElement = document.getElementById('uploadCVModal');
         if (modalElement) {
             const bootstrapModal = new (window.bootstrap?.Modal || function () {
@@ -240,7 +240,7 @@
      * ❤️ Muestra empleos guardados
      */
     function showSavedJobs() {
-        console.log('[BOLSA-TRABAJO-EVENTS] Mostrando empleos guardados...');
+        
         alert('Empleos guardados - En desarrollo');
     }
 
@@ -248,7 +248,7 @@
      * 📋 Muestra aplicaciones realizadas
      */
     function showApplications() {
-        console.log('[BOLSA-TRABAJO-EVENTS] Mostrando aplicaciones...');
+        
         alert('Mis aplicaciones - En desarrollo');
     }
 
@@ -256,7 +256,7 @@
      * 💡 Muestra tips de carrera
      */
     function showCareerTips() {
-        console.log('[BOLSA-TRABAJO-EVENTS] Mostrando tips de carrera...');
+        
         alert('Tips de carrera profesional - En desarrollo');
     }
 
@@ -264,7 +264,7 @@
      * 👀 Muestra todos los empleos disponibles
      */
     function showAllJobs() {
-        console.log('[BOLSA-TRABAJO-EVENTS] Mostrando todos los empleos...');
+        
         const section = document.getElementById('allJobsSection');
         if (section) {
             section.classList.remove('d-none');
@@ -276,7 +276,7 @@
      * 📝 Aplica a un empleo
      */
     function applyToJob(jobId) {
-        console.log('[BOLSA-TRABAJO-EVENTS] Aplicando a empleo:', jobId);
+        
         alert(`Aplicación a empleo ${jobId} - En desarrollo`);
     }
 
@@ -287,7 +287,7 @@
      * ❤️➡️ Remueve empleo de guardados
      */
     function removeFromSaved(jobId) {
-        console.log('[BOLSA-TRABAJO-EVENTS] Removiendo de guardados:', jobId);
+        
         if (confirm('¿Estás seguro de que deseas remover este empleo?')) {
             alert(`Empleo ${jobId} removido de guardados`);
         }
@@ -300,7 +300,7 @@
      * 💾 Guarda un empleo
      */
     function saveJob(jobId) {
-        console.log('[BOLSA-TRABAJO-EVENTS] Guardando empleo:', jobId);
+        
         alert(`Empleo ${jobId} guardado exitosamente`);
     }
 

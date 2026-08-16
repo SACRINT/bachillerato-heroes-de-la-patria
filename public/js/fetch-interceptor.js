@@ -20,7 +20,7 @@
             // Convert /auth/* to /api/auth/* if not already prefixed
             if (url.includes('/auth/') && !url.includes('/api/auth/')) {
                 const newUrl = url.replace(/\/auth\//g, '/api/auth/');
-                console.log('[AUTH-INTERCEPTOR] Fixed URL from:', url, 'to:', newUrl);
+                
                 args[0] = newUrl;
             }
         }
@@ -28,5 +28,5 @@
         return originalFetch.apply(this, args);
     };
 
-    console.log('[AUTH-INTERCEPTOR] ✅ Fetch interceptor installed successfully');
+    
 })();

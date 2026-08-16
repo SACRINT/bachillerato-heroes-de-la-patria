@@ -19,7 +19,7 @@ class DashboardPersonalizer {
         this.dragElement = null;
         this.touchStartPos = null;
 
-        console.log('🎨 Dashboard Personalizer initializing...');
+        
 
         this.init();
     }
@@ -31,7 +31,7 @@ class DashboardPersonalizer {
         this.createPersonalizationUI();
         this.restoreUserLayout();
 
-        console.log('✅ Dashboard Personalizer ready');
+        
     }
 
     // === GESTIÓN DE PREFERENCIAS ===
@@ -40,9 +40,9 @@ class DashboardPersonalizer {
             const saved = localStorage.getItem('heroesPatria_dashboardPreferences');
             this.userPreferences = saved ? JSON.parse(saved) : this.getDefaultPreferences();
 
-            console.log('📋 User preferences loaded:', this.userPreferences);
+            
         } catch (error) {
-            console.warn('⚠️ Failed to load preferences, using defaults:', error);
+            
             this.userPreferences = this.getDefaultPreferences();
         }
     }
@@ -76,7 +76,7 @@ class DashboardPersonalizer {
     saveUserPreferences() {
         try {
             localStorage.setItem('heroesPatria_dashboardPreferences', JSON.stringify(this.userPreferences));
-            console.log('💾 User preferences saved');
+            
         } catch (error) {
             console.error('❌ Failed to save preferences:', error);
         }
@@ -172,7 +172,7 @@ class DashboardPersonalizer {
             this.widgets.set(id, widget);
         }
 
-        console.log(`🧩 ${this.widgets.size} widgets loaded`);
+        
     }
 
     // === COMPONENTES DE WIDGETS ===
@@ -417,7 +417,7 @@ class DashboardPersonalizer {
     restoreUserLayout() {
         const dashboardContainer = document.querySelector('.dashboard-widgets-container');
         if (!dashboardContainer) {
-            console.log('🎨 Dashboard container not found, creating personalization UI only');
+            
             return; // Salir silenciosamente si no hay dashboard, pero el botón ya se creó
         }
 
@@ -437,7 +437,7 @@ class DashboardPersonalizer {
             this.createWidget(widgetId, config);
         });
 
-        console.log(`🎨 Layout restored: ${enabledWidgets.length} widgets`);
+        
     }
 
     createDashboardContainer() {
@@ -462,7 +462,7 @@ class DashboardPersonalizer {
     createWidget(widgetId, config) {
         const widgetDef = this.widgets.get(widgetId);
         if (!widgetDef) {
-            console.warn(`⚠️ Widget definition not found: ${widgetId}`);
+            
             return;
         }
 
@@ -676,7 +676,7 @@ class DashboardPersonalizer {
         }
 
         this.saveUserPreferences();
-        console.log('🔄 Widgets swapped:', widget1Id, '↔', widget2Id);
+        
     }
 
     // === ACCIONES DE WIDGETS ===
@@ -759,11 +759,11 @@ class DashboardPersonalizer {
     createPersonalizationUI() {
         // Only create if not exists
         if (document.getElementById('dashboardPersonalizerBtn')) {
-            console.log('🎨 Dashboard Personalizer button already exists, skipping creation');
+            
             return;
         }
 
-        console.log('🎨 Creating Dashboard Personalizer floating button...');
+        
 
         const button = document.createElement('button');
         button.id = 'dashboardPersonalizerBtn';
@@ -775,7 +775,7 @@ class DashboardPersonalizer {
 
         document.body.appendChild(button);
 
-        console.log('✅ Dashboard Personalizer button created and added to DOM');
+        
 
         // Add styles
         this.addPersonalizerStyles();
@@ -1623,7 +1623,7 @@ class DashboardPersonalizer {
             const data = await response.json();
             return data.noticias || [];
         } catch (error) {
-            console.warn('⚠️ Failed to fetch news:', error);
+            
             return this.getMockNews();
         }
     }
@@ -1634,7 +1634,7 @@ class DashboardPersonalizer {
             const data = await response.json();
             return data.eventos || [];
         } catch (error) {
-            console.warn('⚠️ Failed to fetch events:', error);
+            
             return this.getMockEvents();
         }
     }
@@ -1769,7 +1769,7 @@ class DashboardPersonalizer {
 
     editQuickAccess() {
         // Open quick access editor modal
-        console.log('🔗 Opening quick access editor...');
+        
     }
 
     showToast(message, type = 'info') {
@@ -1819,12 +1819,12 @@ window.DashboardPersonalizer = DashboardPersonalizer;
 
 // Inicialización condicional usando context manager
 function initDashboardPersonalizer() {
-    console.log('🎨 [INIT] Attempting to initialize Dashboard Personalizer...');
+    
     if (!window.dashboardPersonalizer) {
-        console.log('🎨 [INIT] Creating new Dashboard Personalizer instance...');
+        
         window.dashboardPersonalizer = new DashboardPersonalizer();
     } else {
-        console.log('🎨 [INIT] Dashboard Personalizer already exists');
+        
     }
 }
 
@@ -1835,4 +1835,3 @@ if (document.readyState === 'loading') {
     initDashboardPersonalizer();
 }
 
-console.log('🎨 Dashboard Personalizer loaded successfully');

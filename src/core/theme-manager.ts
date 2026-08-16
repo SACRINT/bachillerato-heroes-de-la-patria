@@ -41,7 +41,7 @@ export class ThemeManager {
     private initialized: boolean;
 
     constructor() {
-        console.log('🌙 [THEME] Inicializando Theme Manager Integrado...');
+        
 
         // Configuración integrada con sistema existente
         this.storageKey = 'heroesPatria_darkMode';
@@ -92,7 +92,7 @@ export class ThemeManager {
             this.applyEnhancedCSS();
 
             this.initialized = true;
-            console.log('✅ [THEME] Theme Manager Integrado inicializado correctamente');
+            
 
             // Evento personalizado de inicialización
             this.dispatchThemeEvent('themeManagerReady', {
@@ -111,7 +111,7 @@ export class ThemeManager {
     private detectAndApplyTheme(): void {
         // Si el usuario no ha establecido preferencia, usar la del sistema
         if (!this.hasUserPreference && this.isSystemDark) {
-            console.log('🌙 [THEME] Aplicando modo oscuro automático (sistema)');
+            
             this.body.classList.add(this.existingClass);
             localStorage.setItem(this.storageKey, 'true');
         }
@@ -120,7 +120,7 @@ export class ThemeManager {
         const isDark = this.isDarkMode();
         this.html.setAttribute('data-theme', isDark ? 'dark' : 'light');
 
-        console.log(`🎨 [THEME] Tema aplicado: ${isDark ? 'oscuro' : 'claro'}`);
+        
     }
 
     /**
@@ -146,7 +146,7 @@ export class ThemeManager {
                     this.enhanceToggleButton();
                 } else if (attempts >= maxAttempts) {
                     clearInterval(interval);
-                    console.warn('⚠️ [THEME] No se encontró el botón toggle después de 10s');
+                    
                 }
             }, 500);
         }
@@ -158,7 +158,7 @@ export class ThemeManager {
     private enhanceToggleButton(): void {
         if (!this.toggleButton) return;
 
-        console.log('🔘 [THEME] Mejorando botón toggle existente');
+        
 
         // Actualizar icono inicial
         this.updateToggleIcon();
@@ -184,7 +184,7 @@ export class ThemeManager {
         const wasDark = this.isDarkMode();
         const newDarkState = !wasDark;
 
-        console.log(`🔄 [THEME] Cambiando tema: ${wasDark ? 'claro' : 'oscuro'} → ${newDarkState ? 'oscuro' : 'claro'}`);
+        
 
         // Aplicar transición suave
         this.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
@@ -240,7 +240,7 @@ export class ThemeManager {
     private setupSystemListener(): void {
         this.mediaQuery.addEventListener('change', (e: MediaQueryListEvent) => {
             this.isSystemDark = e.matches;
-            console.log(`🔄 [THEME] Cambio en preferencia del sistema: ${e.matches ? 'oscuro' : 'claro'}`);
+            
 
             // Si el usuario no ha establecido preferencia, seguir al sistema
             if (!this.hasUserPreference) {
@@ -263,7 +263,7 @@ export class ThemeManager {
     private setupStorageSync(): void {
         window.addEventListener('storage', (e: StorageEvent) => {
             if (e.key === this.storageKey && e.newValue !== e.oldValue) {
-                console.log('🔄 [THEME] Sincronización entre pestañas');
+                
                 const newDarkState = e.newValue === 'true';
                 this.body.classList.toggle(this.existingClass, newDarkState);
                 this.html.setAttribute('data-theme', newDarkState ? 'dark' : 'light');
@@ -282,7 +282,7 @@ export class ThemeManager {
             themeLink.rel = 'stylesheet';
             themeLink.href = 'css/themes.css';
             document.head.appendChild(themeLink);
-            console.log('📄 [THEME] CSS de temas cargado dinámicamente');
+            
         }
     }
 
@@ -314,7 +314,7 @@ export class ThemeManager {
         this.html.setAttribute('data-theme', systemDark ? 'dark' : 'light');
         this.updateToggleIcon();
 
-        console.log('🔄 [THEME] Restablecido a preferencias del sistema');
+        
     }
 
     /**
@@ -330,7 +330,7 @@ export class ThemeManager {
         });
 
         window.dispatchEvent(event);
-        console.log(`📡 [THEME] Evento: ${eventName}`, detail);
+        
     }
 
     /**
@@ -350,11 +350,11 @@ export class ThemeManager {
      */
     debug(): void {
         console.group('🐛 [THEME] Debug Info');
-        console.log('Is dark mode:', this.isDarkMode());
-        console.log('System prefers dark:', this.isSystemDark);
-        console.log('Has user preference:', this.hasUserPreference);
-        console.log('Toggle button:', this.toggleButton);
-        console.log('Initialized:', this.initialized);
+        
+        
+        
+        
+        
         console.groupEnd();
     }
 }

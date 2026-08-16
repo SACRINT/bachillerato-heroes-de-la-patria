@@ -22,7 +22,7 @@
      * Inicializa todos los event handlers de la página padres.html
      */
     function initializeEventHandlers() {
-        console.log('[PADRES-EVENTS] Inicializando event handlers...');
+        
 
         registerPasswordToggle();
         registerPasswordRecoveryButton();
@@ -30,7 +30,7 @@
         registerDashboardActions();
         registerChatbotHandlers();
 
-        console.log('[PADRES-EVENTS] ✅ Event handlers inicializados correctamente');
+        
     }
 
     /**
@@ -205,7 +205,7 @@
      * 📊 Muestra la sección de calificaciones
      */
     function showGrades() {
-        console.log('[PADRES-EVENTS] Mostrando calificaciones...');
+        
         const dashboard = document.getElementById('parentDashboard');
         if (dashboard) {
             dashboard.classList.remove('d-none');
@@ -217,7 +217,7 @@
      * ✅ Muestra la sección de asistencias
      */
     function showAttendance() {
-        console.log('[PADRES-EVENTS] Mostrando asistencias...');
+        
         alert('Funcionalidad de asistencias - En desarrollo');
     }
 
@@ -225,7 +225,7 @@
      * 💬 Muestra la sección de comunicación
      */
     function showCommunication() {
-        console.log('[PADRES-EVENTS] Mostrando comunicación...');
+        
         alert('Centro de comunicación - En desarrollo');
     }
 
@@ -233,7 +233,7 @@
      * 🕐 Muestra la sección de horarios
      */
     function showSchedule() {
-        console.log('[PADRES-EVENTS] Mostrando horarios...');
+        
         alert('Horarios del estudiante - En desarrollo');
     }
 
@@ -241,7 +241,7 @@
      * 📥 Descarga reporte académico
      */
     function downloadReport() {
-        console.log('[PADRES-EVENTS] Descargando reporte...');
+        
         alert('Descargando reporte académico...');
     }
 
@@ -249,7 +249,7 @@
      * 📅 Agenda una cita con el docente
      */
     function scheduleAppointment() {
-        console.log('[PADRES-EVENTS] Agendando cita...');
+        
         // Redirigir a página de citas
         window.location.href = 'citas.html';
     }
@@ -258,7 +258,7 @@
      * ✉️ Contacta al tutor
      */
     function contactTeacher() {
-        console.log('[PADRES-EVENTS] Contactando tutor...');
+        
         alert('Enviando mensaje al tutor...');
     }
 
@@ -266,7 +266,7 @@
      * 🚪 Cierra la sesión del padre
      */
     function parentLogout() {
-        console.log('[PADRES-EVENTS] Cerrando sesión...');
+        
         if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
             // Limpiar datos de sesión
             sessionStorage.clear();

@@ -76,7 +76,7 @@ export class FloatingToolbar {
     private createToolbar(): void {
         if (document.getElementById('floating-toolbar')) return;
 
-        console.log('🎨 Creating floating toolbar...');
+        
 
         const toolbar = document.createElement('div');
         toolbar.id = 'floating-toolbar';
@@ -90,7 +90,7 @@ export class FloatingToolbar {
         this.addStyles();
         document.body.appendChild(toolbar);
 
-        console.log('✅ Floating toolbar created');
+        
     }
 
     private createButton(config: ToolbarButtonConfig, index: number): HTMLButtonElement {
@@ -206,32 +206,32 @@ export class FloatingToolbar {
     }
 
     private openDashboard(): void {
-        console.log('📊 Opening Dashboard Analytics...');
+        
         window.open('./admin-dashboard.html', '_blank');
     }
 
     private openVirtualLabs(): void {
-        console.log('🧪 Opening Virtual Labs...');
+        
         window.open('./ar-vr-lab.html', '_blank');
     }
 
     private openGamification(): void {
-        console.log('🎮 Opening Gamification System...');
+        
         alert('🎮 Sistema de Gamificación - Próximamente disponible');
     }
 
     private openSettings(): void {
-        console.log('⚙️ Opening Settings...');
+        
         alert('⚙️ Panel de Configuración - Próximamente disponible');
     }
 
     private openSecurity(): void {
-        console.log('🛡️ Opening Security Center...');
+        
         alert('🛡️ Centro de Seguridad - Próximamente disponible');
     }
 
     private openReports(): void {
-        console.log('📋 Opening Academic Reports...');
+        
         window.open('./calificaciones.html', '_blank');
     }
 }

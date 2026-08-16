@@ -33,7 +33,7 @@ class StudentAuth {
                 // Guardar en localStorage como respaldo
                 localStorage.setItem('student', JSON.stringify(data.student));
 
-                console.log('✅ Login exitoso:', this.student.name);
+                
                 return { success: true, student: this.student };
             } else {
                 console.error('❌ Login fallido:', data.message);
@@ -64,7 +64,7 @@ class StudentAuth {
             this.isAuthenticated = false;
             localStorage.removeItem('student');
 
-            console.log('👋 Logout exitoso');
+            
             return { success: true };
         } catch (error) {
             console.error('❌ Error en logout:', error);
@@ -172,16 +172,16 @@ const studentAuth = new StudentAuth();
 
 // Verificar sesión al cargar la página
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('🔍 Verificando sesión de estudiante...');
+    
     const result = await studentAuth.checkSession();
 
     if (result.success) {
-        console.log('✅ Sesión activa:', studentAuth.getStudent().name);
+        
 
         // Actualizar UI si existe elemento de bienvenida
         updateStudentUI();
     } else {
-        console.log('ℹ️ No hay sesión activa');
+        
     }
 });
 

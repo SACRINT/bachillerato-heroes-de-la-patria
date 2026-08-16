@@ -64,7 +64,7 @@
         window.handleAdminLogin();
       } else {
         // Fallback: Mostrar modal directamente si la función no está cargada
-        console.warn('[EVENT-HANDLER] handleAdminLogin no disponible, mostrando modal directamente');
+        
         const modalEl = document.getElementById('adminLoginModal');
         if (modalEl && typeof bootstrap !== 'undefined') {
           const modal = new bootstrap.Modal(modalEl);
@@ -105,7 +105,7 @@
       } else if (typeof sendChatMessage === 'function') {
         sendChatMessage();
       } else {
-        console.warn('[EVENT-HANDLER] sendChatMessage no disponible');
+        
       }
     },
     'sendMessage': function (event) {
@@ -409,7 +409,7 @@
             fn.apply(target, [event, ...params]);
           }
         } else {
-          console.warn(`[EVENT-HANDLER] Action '${action}' is not a function`);
+          
         }
       } catch (error) {
         console.error(`[EVENT-HANDLER] Error executing action '${action}':`, error);
@@ -417,5 +417,5 @@
     }
   });
 
-  console.log('[EVENT-HANDLER] Delegated event handler initialized (v2 - Pattern A & B)');
+  
 })();

@@ -15,7 +15,7 @@
 (function () {
     'use strict';
 
-    console.log('[AUTH-PATCH] 🔧 Iniciando parche de autenticación...');
+    
 
     // Esperar a que el objeto de autenticación global esté disponible
     const waitForAuthManager = (callback, maxAttempts = 50) => {
@@ -24,18 +24,18 @@
             // El código compilado crea: window.authManager o window.authInterface
             if (window.authManager || window.authInterface || window.UnifiedAuthSystem) {
                 clearInterval(interval);
-                console.log('[AUTH-PATCH] ✅ Auth Manager detectado');
+                
                 callback();
             } else if (attempts++ > maxAttempts) {
                 clearInterval(interval);
-                console.warn('[AUTH-PATCH] ⚠️ Auth Manager NO encontrado después de 50 intentos');
+                
             }
         }, 100);
     };
 
     // Una vez que el auth manager esté listo, aplicar el parche
     waitForAuthManager(() => {
-        console.log('[AUTH-PATCH] 📝 Aplicando correcciones...');
+        
 
         // Interceptar el método de login para corregir validación
         if (window.authManager) {
@@ -46,7 +46,7 @@
                 const originalHandleLogin = window.authManager.handleManualLogin.bind(window.authManager);
 
                 window.authManager.handleManualLogin = async function () {
-                    console.log('[AUTH-PATCH] 🔐 handleManualLogin interceptado');
+                    
 
                     const emailInput = document.getElementById('loginEmail');
                     const passwordInput = document.getElementById('loginPassword');
@@ -61,7 +61,7 @@
                     const email = emailInput.value;
                     const password = passwordInput.value;
 
-                    console.log('[AUTH-PATCH] 📤 Enviando login para:', email);
+                    
 
                     // Deshabilitar botón
                     if (loginBtn) loginBtn.disabled = true;
@@ -76,7 +76,7 @@
                             body: JSON.stringify({ email, password })
                         });
 
-                        console.log('[AUTH-PATCH] 📥 Response status:', response.status);
+                        
 
                         if (!response.ok) {
                             console.error('[AUTH-PATCH] ❌ HTTP Error:', response.status);
@@ -85,12 +85,7 @@
                         }
 
                         const data = await response.json();
-                        console.log('[AUTH-PATCH] 📊 Response data:', {
-                            success: data.success,
-                            hasUser: !!data.user,
-                            hasToken: !!data.tokens?.accessToken,
-                            message: data.message
-                        });
+                        
 
                         // VALIDACIÓN MEJORADA - El problema estaba aquí
                         const hasUser = !!(data.user && (data.user.id || data.user.email));
@@ -105,30 +100,24 @@
                         // LÓGICA CORRECTA DE ÉXITO
                         const isSuccess = (response.ok && hasUser && hasToken) || messageHasSuccess;
 
-                        console.log('[AUTH-PATCH] 🎯 Validación:', {
-                            responseOk: response.ok,
-                            hasUser,
-                            hasToken,
-                            messageHasSuccess,
-                            isSuccess
-                        });
+                        
 
                         if (isSuccess) {
-                            console.log('[AUTH-PATCH] ✅ Login EXITOSO');
+                            
 
                             // 1. Intentar usar el método nativo V2 (UnifiedAuthSystem)
                             if (this.processLogin) {
-                                console.log('[AUTH-PATCH] 🔄 Usando processLogin nativo...');
+                                
                                 await this.processLogin(data.user, data.tokens.accessToken, rememberMe?.checked || false);
                             }
                             // 2. Intentar usar método legacy
                             else if (this.loginSuccess) {
-                                console.log('[AUTH-PATCH] 🔄 Usando loginSuccess legacy...');
+                                
                                 await this.loginSuccess(data.user, data.tokens.accessToken, rememberMe?.checked || false);
                             }
                             // 3. Fallback manual (si no existen métodos)
                             else {
-                                console.log('[AUTH-PATCH] ⚠️ Usando fallback manual...');
+                                
                                 this.state.currentUser = data.user;
                                 this.state.token = data.tokens.accessToken;
                                 this.state.isAuthenticated = true;
@@ -140,7 +129,7 @@
 
                                 // ✅ REDIRECCIÓN ADMIN MANUAL (Critical Fix)
                                 if (data.user.role === 'admin' || data.user.role === 'administrativo') {
-                                    console.log('[AUTH-PATCH] 🚀 Admin detectado en fallback - Redirigiendo...');
+                                    
                                     setTimeout(() => {
                                         window.location.href = 'admin-dashboard.html';
                                     }, 1000);
@@ -159,10 +148,10 @@
                     }
                 };
 
-                console.log('[AUTH-PATCH] ✅ handleManualLogin reemplazado');
+                
             }
         }
 
-        console.log('[AUTH-PATCH] 🎉 Parche aplicado exitosamente');
+        
     });
 })();

@@ -91,7 +91,7 @@ export class AdminDashboard {
 
         if (!isAdminPage) {
             // On non-admin pages, just skip initialization
-            console.log('🔧 AdminDashboard: Skipping - not an admin page');
+            
             return;
         }
 
@@ -110,7 +110,7 @@ export class AdminDashboard {
     }
 
     private setupInterface(): void {
-        console.log('🔧 AdminDashboard: Interface setup');
+        
     }
 
     private async checkAuthentication(): Promise<void> {

@@ -6,22 +6,22 @@
 
 // Prevenir carga múltiple
 if (typeof window.BGE_STUDENT_PORTAL_LOADED !== 'undefined') {
-    console.log('📚 [STUDENT PORTAL] Ya está cargado, evitando duplicación');
+    
 } else {
     window.BGE_STUDENT_PORTAL_LOADED = true;
 
-console.log('📚 [STUDENT PORTAL] Inicializando portal de estudiantes...');
+
 
 // === GESTIÓN DE TAREAS ===
 function showTasksModal() {
-    console.log('📝 Mostrando modal de tareas');
+    
     try {
         const modalElement = document.getElementById('tasksModal') || createTasksModal();
         if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
             const modal = new bootstrap.Modal(modalElement);
             modal.show();
         } else {
-            console.warn('⚠️ Bootstrap no disponible, mostrando modal con fallback');
+            
             modalElement.style.display = 'block';
             modalElement.classList.add('show');
         }
@@ -118,7 +118,7 @@ function loadTasks() {
 
 // === FILTROS DE RECURSOS ===
 function filterResources(category) {
-    console.log('🔍 Filtrando recursos por:', category);
+    
 
     // Actualizar botones activos
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -146,7 +146,7 @@ function filterResources(category) {
 
 // === CALCULADORA DE PROMEDIO ===
 function calculateAverage() {
-    console.log('📊 Calculando promedio de calificaciones');
+    
 
     const grades = document.querySelectorAll('.grade-input');
     let total = 0;
@@ -184,7 +184,7 @@ function calculateAverage() {
 // ❌ DESHABILITADO: Ahora se maneja en inscriptions-handler.js
 /*
 function showActivityRegistration(activityName) {
-    console.log('📅 Registrando para actividad:', activityName);
+    
 
     try {
         const modalElement = document.getElementById('activityModal') || createActivityModal();
@@ -194,7 +194,7 @@ function showActivityRegistration(activityName) {
             const modal = new bootstrap.Modal(modalElement);
             modal.show();
         } else {
-            console.warn('⚠️ Bootstrap no disponible, mostrando modal con fallback');
+            
             modalElement.style.display = 'block';
             modalElement.classList.add('show');
         }
@@ -259,7 +259,7 @@ async function confirmActivityRegistration() {
             document.getElementById('activityModal').classList.remove('show');
         }
     } catch (error) {
-        console.warn('⚠️ Error cerrando modal:', error);
+        
     }
 
     // Mostrar loader
@@ -344,7 +344,7 @@ function showNotification(message, type = 'info') {
 
 // === INICIALIZACIÓN ===
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ [STUDENT PORTAL] Portal de estudiantes inicializado correctamente');
+    
 
     // Agregar estilos para transiciones
     const style = document.createElement('style');
