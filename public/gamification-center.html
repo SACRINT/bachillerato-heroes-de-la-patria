@@ -484,18 +484,6 @@
     <script>
         // Wait for auth to load
         document.addEventListener('DOMContentLoaded', async function () {
-            // Check authentication
-            const token = sessionStorage.getItem('bge_auth_token') ||
-                localStorage.getItem('bge_auth_token') ||
-                sessionStorage.getItem('authToken') ||
-                localStorage.getItem('authToken');
-
-            if (!token) {
-                // Redirect to home if not authenticated
-                window.location.href = 'index.html';
-                return;
-            }
-
             // Load wallet data
             await loadWalletData();
             // Load challenges
@@ -505,26 +493,39 @@
         });
 
         async function loadWalletData() {
-            try {
-                const token = sessionStorage.getItem('bge_auth_token') ||
-                    localStorage.getItem('bge_auth_token') ||
-                    sessionStorage.getItem('authToken') ||
-                    localStorage.getItem('authToken');
-                const response = await fetch('/api/wallet', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+            let balance = parseFloat(localStorage.getItem('bge_iacoins_balance') || '250.00');
+            let level = 4;
+            let xp = 420;
 
-                if (response.ok) {
-                    const data = await response.json();
-                    updateWalletUI(data);
-                } else {
-                    console.error('Error loading wallet:', response.statusText);
+            const token = sessionStorage.getItem('bge_auth_token') ||
+                localStorage.getItem('bge_auth_token') ||
+                sessionStorage.getItem('authToken') ||
+                localStorage.getItem('authToken');
+
+            if (token) {
+                try {
+                    const response = await fetch('/api/wallet', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        updateWalletUI(data);
+                        return;
+                    }
+                } catch (error) {
+                    console.warn('Backend wallet offline, using local storage wallet');
                 }
-            } catch (error) {
-                console.error('Error loading wallet:', error);
             }
+
+            updateWalletUI({
+                balance: balance,
+                level: level,
+                xp: xp,
+                total_earned: balance + 150
+            });
         }
 
         function updateWalletUI(walletData) {

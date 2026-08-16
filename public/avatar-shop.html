@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estudio de Avatares | Bachillerato General Héroes de la Patria</title>
+    <meta name="description" content="Personaliza tu avatar estudiantil con marcos, fondos y accesorios ganados con tus IACoins.">
 
     <!-- Fuentes y Estilos -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -28,9 +29,6 @@
     <!-- Main Universal Header -->
     <header id="main-header"></header>
 
-    <!-- Navbar simple de retorno -->
-    
-
     <div class="avatar-shop-container">
 
         <!-- Columna Izquierda: Previsualización -->
@@ -45,23 +43,29 @@
                 <div class="avatar-layer z-frame"></div>
             </div>
 
-            <div class="user-stats-mini">
+            <div class="user-stats-mini mt-3">
                 <div class="stat-item" title="Nivel de Estilo">
-                    <i class="fas fa-star"></i> Nv. Estilo
+                    <i class="fas fa-star text-warning"></i> Nv. Estilo 4
                 </div>
                 <div class="stat-item" title="Rareza Total">
-                    <i class="fas fa-gem"></i> Rareza
+                    <i class="fas fa-gem text-info"></i> Élite
                 </div>
             </div>
 
             <p class="text-muted small mt-3">
-                Tu avatar será visible en los foros, leaderboards y perfil público.
+                Tu avatar será visible en los foros, leaderboards, torneos y perfil público.
             </p>
+            <a href="gamification-center.html" class="btn btn-outline-light btn-sm w-100 mt-2">← Volver al Centro</a>
         </aside>
 
         <!-- Columna Derecha: Tienda -->
         <main class="shop-section">
-            <h2 class="mb-4"><i class="fas fa-store me-2 text-warning"></i> Tienda de Personalización</h2>
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                <h2 class="mb-0"><i class="fas fa-store me-2 text-warning"></i> Tienda de Personalización</h2>
+                <div class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill shadow-sm">
+                    <i class="fas fa-coins me-1"></i> Saldo: <span id="user-balance" class="fw-bold">250</span> IACoins
+                </div>
+            </div>
 
             <div class="shop-tabs" role="tablist">
                 <button class="shop-tab active" data-type="all" role="tab" aria-selected="true">Todo</button>

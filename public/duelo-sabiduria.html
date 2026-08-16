@@ -103,7 +103,7 @@
 
         .category-card {
             background: var(--bg-card);
-            border: 2px solid var(--bg-surface);
+            border: 2px solid transparent;
             border-radius: 16px;
             padding: 1.5rem;
             text-align: center;
@@ -112,18 +112,19 @@
         }
 
         .category-card:hover {
-            border-color: var(--primary);
             transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.3);
         }
 
         .category-card.selected {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--gold);
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
         }
 
         .category-icon {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
         }
 
         .category-name {
@@ -132,7 +133,7 @@
         }
 
         .category-count {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
         }
 
@@ -141,50 +142,40 @@
             display: block;
             width: 100%;
             max-width: 300px;
-            margin: 0 auto 2rem;
+            margin: 0 auto;
             padding: 1rem 2rem;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: linear-gradient(135deg, var(--gold), var(--warning));
+            color: var(--bg-dark);
+            font-size: 1.2rem;
+            font-weight: 700;
             border: none;
             border-radius: 12px;
-            color: white;
-            font-size: 1.25rem;
-            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .start-btn:hover {
+        .start-btn:hover:not(:disabled) {
             transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 25px -5px rgba(251, 191, 36, 0.4);
         }
 
         .start-btn:disabled {
-            background: var(--bg-surface);
+            opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
 
         /* Question Screen */
-        .question-screen {
-            display: none;
-        }
-
-        .question-screen.active {
-            display: block;
-        }
-
         .progress-bar {
             height: 8px;
-            background: var(--bg-surface);
+            background: var(--bg-card);
             border-radius: 4px;
-            margin-bottom: 1rem;
             overflow: hidden;
+            margin-bottom: 1.5rem;
         }
 
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--primary), var(--gold));
-            border-radius: 4px;
             transition: width 0.3s ease;
         }
 
@@ -196,7 +187,7 @@
         }
 
         .question-number {
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             color: var(--text-secondary);
         }
 
@@ -204,33 +195,27 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-weight: 600;
-            color: var(--warning);
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--gold);
         }
 
         .timer.danger {
             color: var(--danger);
-            animation: pulse 0.5s infinite;
+            animation: pulse 0.5s infinite alternate;
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.5;
-            }
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
         }
 
         .streak-indicator {
             display: flex;
             align-items: center;
             gap: 0.25rem;
-            font-size: 0.875rem;
-            color: var(--gold);
+            color: var(--warning);
+            font-weight: 600;
         }
 
         .question-card {
@@ -238,127 +223,89 @@
             border-radius: 16px;
             padding: 2rem;
             margin-bottom: 1.5rem;
+            text-align: center;
         }
 
         .question-text {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 600;
-            text-align: center;
-            margin-bottom: 0.5rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
         }
 
         .question-difficulty {
-            text-align: center;
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
             font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--bg-surface);
             color: var(--text-secondary);
         }
 
+        /* Options */
         .options-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .option-btn {
-            background: var(--bg-surface);
+            background: var(--bg-card);
             border: 2px solid transparent;
             border-radius: 12px;
-            padding: 1rem;
+            padding: 1.25rem 1rem;
             color: var(--text-primary);
             font-size: 1rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
-            text-align: center;
+            text-align: left;
         }
 
-        .option-btn:hover {
+        .option-btn:hover:not(:disabled) {
             border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.1);
-        }
-
-        .option-btn.selected {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.2);
+            background: var(--bg-surface);
+            transform: translateX(4px);
         }
 
         .option-btn.correct {
-            border-color: var(--success);
             background: rgba(16, 185, 129, 0.2);
-        }
-
-        .option-btn.incorrect {
-            border-color: var(--danger);
-            background: rgba(239, 68, 68, 0.2);
-        }
-
-        .option-btn:disabled {
-            cursor: not-allowed;
-        }
-
-        /* Score Popup */
-        .score-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 3rem;
-            font-weight: 800;
-            animation: scoreAnim 1s ease forwards;
-            pointer-events: none;
-            z-index: 100;
-        }
-
-        .score-popup.positive {
+            border-color: var(--success);
             color: var(--success);
         }
 
-        .score-popup.negative {
+        .option-btn.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--danger);
             color: var(--danger);
         }
 
-        @keyframes scoreAnim {
-            0% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(0.5);
-            }
-
-            50% {
-                transform: translate(-50%, -50%) scale(1.2);
-            }
-
-            100% {
-                opacity: 0;
-                transform: translate(-50%, -100%) scale(1);
-            }
+        .option-btn:disabled {
+            cursor: default;
         }
 
         /* Results Screen */
-        .results-screen {
-            display: none;
-            text-align: center;
-        }
-
-        .results-screen.active {
-            display: block;
-        }
-
         .results-trophy {
-            font-size: 5rem;
+            font-size: 4rem;
+            text-align: center;
             margin-bottom: 1rem;
         }
 
         .results-title {
+            text-align: center;
             font-size: 2rem;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 0.5rem;
         }
 
         .results-score {
+            text-align: center;
             font-size: 3rem;
             font-weight: 800;
             color: var(--gold);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .results-stats {
@@ -372,24 +319,27 @@
             background: var(--bg-card);
             border-radius: 12px;
             padding: 1rem;
+            text-align: center;
         }
 
         .result-stat-value {
             font-size: 1.5rem;
             font-weight: 700;
+            color: var(--text-primary);
         }
 
         .result-stat-label {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
         }
 
         .coins-earned {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            font-size: 1.5rem;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2));
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.25rem;
             font-weight: 700;
             color: var(--gold);
             margin-bottom: 2rem;
@@ -414,6 +364,8 @@
         }
 
         .play-again-btn {
+            display: block;
+            margin: 0 auto 1rem;
             padding: 1rem 2rem;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             border: none;
@@ -447,6 +399,38 @@
 
         .screen.active {
             display: block;
+        }
+
+        /* Score popup */
+        .score-popup {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: 800;
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+            z-index: 1000;
+        }
+
+        .score-popup.positive {
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid var(--success);
+        }
+
+        .score-popup.negative {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid var(--danger);
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(0.8); }
+            100% { opacity: 0; transform: translate(-50%, -120%) scale(1.2); }
         }
 
         /* Responsive */
@@ -512,29 +496,28 @@
                 <div class="category-card" data-category="matematicas">
                     <div class="category-icon">🔢</div>
                     <div class="category-name">Matemáticas</div>
-                    <div class="category-count">8 preguntas</div>
+                    <div class="category-count">5 preguntas</div>
                 </div>
                 <div class="category-card" data-category="historia">
                     <div class="category-icon">📜</div>
                     <div class="category-name">Historia</div>
-                    <div class="category-count">6 preguntas</div>
+                    <div class="category-count">5 preguntas</div>
                 </div>
                 <div class="category-card" data-category="ciencias">
                     <div class="category-icon">🔬</div>
                     <div class="category-name">Ciencias</div>
-                    <div class="category-count">7 preguntas</div>
+                    <div class="category-count">5 preguntas</div>
                 </div>
                 <div class="category-card" data-category="literatura">
                     <div class="category-icon">📚</div>
                     <div class="category-name">Literatura</div>
-                    <div class="category-count">5 preguntas</div>
+                    <div class="category-count">4 preguntas</div>
                 </div>
             </div>
 
             <button class="start-btn" id="startBtn" disabled>Selecciona una categoría</button>
 
-            <a href="/gamification-center.html" class="back-link" style="display: block; text-align: center;">← Volver
-                al Centro de Gamificación</a>
+            <a href="gamification-center.html" class="back-link" style="display: block; text-align: center;">← Volver al Centro de Gamificación</a>
         </div>
 
         <!-- Question Screen -->
@@ -544,7 +527,7 @@
             </div>
 
             <div class="question-header">
-                <span class="question-number" id="questionNumber">Pregunta 1/10</span>
+                <span class="question-number" id="questionNumber">Pregunta 1/5</span>
                 <div class="streak-indicator" id="streakIndicator">
                     🔥 Racha: <span id="currentStreak">0</span>
                 </div>
@@ -582,7 +565,7 @@
 
             <div class="results-stats">
                 <div class="result-stat">
-                    <div class="result-stat-value" id="resultCorrect">0/10</div>
+                    <div class="result-stat-value" id="resultCorrect">0/5</div>
                     <div class="result-stat-label">Correctas</div>
                 </div>
                 <div class="result-stat">
@@ -605,7 +588,7 @@
 
             <button class="play-again-btn" id="playAgainBtn">🎮 Jugar de Nuevo</button>
             <br>
-            <a href="/gamification-center.html" class="back-link">← Volver al Centro de Gamificación</a>
+            <a href="gamification-center.html" class="back-link" style="display: block; text-align: center;">← Volver al Centro de Gamificación</a>
         </div>
     </div>
 
@@ -625,6 +608,37 @@
             questionStartTime: null
         };
 
+        // Question Bank
+        const QUESTION_BANK = {
+            matematicas: [
+                { question: '¿Cuál es la derivada de f(x) = x³ - 4x + 7?', options: ['3x² - 4', '3x² - 4x', 'x² - 4', '3x³ - 4'], correct: 0, points: 15, difficulty: 'medium' },
+                { question: '¿Cuál es el valor de x en la ecuación: 2x + 8 = 20?', options: ['4', '6', '8', '12'], correct: 1, points: 10, difficulty: 'easy' },
+                { question: '¿Cuál es la integral indefinida de ∫ 2x dx?', options: ['x² + C', '2x² + C', 'x + C', '2 + C'], correct: 0, points: 15, difficulty: 'medium' },
+                { question: '¿Cuánto vale el seno de 90 grados (π/2 rad)?', options: ['0', '0.5', '1', '-1'], correct: 2, points: 10, difficulty: 'easy' },
+                { question: '¿Cuál es el área de un círculo con radio r = 3? (usar π)', options: ['6π', '9π', '12π', '3π'], correct: 1, points: 10, difficulty: 'easy' }
+            ],
+            historia: [
+                { question: '¿En qué año dio inicio la Revolución Mexicana?', options: ['1810', '1910', '1921', '1857'], correct: 1, points: 10, difficulty: 'easy' },
+                { question: '¿Quién promulgó la Constitución Política de los Estados Unidos Mexicanos de 1917?', options: ['Venustiano Carranza', 'Francisco I. Madero', 'Emiliano Zapata', 'Porfirio Díaz'], correct: 0, points: 15, difficulty: 'medium' },
+                { question: '¿En qué año se consumó la Independencia de México con el Ejército Trigarante?', options: ['1810', '1821', '1824', '1836'], correct: 1, points: 10, difficulty: 'easy' },
+                { question: '¿Qué batalla conmemora la victoria del ejército mexicano liderado por Ignacio Zaragoza el 5 de mayo de 1862?', options: ['Batalla de Chapultepec', 'Batalla de Puebla', 'Batalla de Angostura', 'Batalla de Celaya'], correct: 1, points: 10, difficulty: 'easy' },
+                { question: '¿Qué documento declaró por primera vez la abolición de la esclavitud en México por Miguel Hidalgo?', options: ['Sentimientos de la Nación', 'Bando de Hidalgo en Guadalajara', 'Plan de Iguala', 'Tratados de Córdoba'], correct: 1, points: 20, difficulty: 'hard' }
+            ],
+            ciencias: [
+                { question: '¿Cuál es el símbolo químico del Oro en la tabla periódica?', options: ['Ag', 'Fe', 'Au', 'Cu'], correct: 2, points: 10, difficulty: 'easy' },
+                { question: '¿Cuál es la primera ley de Newton?', options: ['Ley de Inercia', 'Fuerza igual a masa por aceleración', 'Acción y Reacción', 'Ley de Gravitación'], correct: 0, points: 10, difficulty: 'easy' },
+                { question: '¿Qué orgánulo celular es conocido como la central energética de la célula eucariota?', options: ['Ribosoma', 'Mitocondria', 'Aparato de Golgi', 'Lisosoma'], correct: 1, points: 15, difficulty: 'medium' },
+                { question: '¿Cuál es el pH de una sustancia neutra a 25°C como el agua pura?', options: ['0', '7', '14', '5.5'], correct: 1, points: 10, difficulty: 'easy' },
+                { question: '¿Qué tipo de enlace químico se forma cuando dos átomos comparten uno o más pares de electrones?', options: ['Enlace Iónico', 'Enlace Covalente', 'Enlace Metálico', 'Puente de Hidrógeno'], correct: 1, points: 15, difficulty: 'medium' }
+            ],
+            literatura: [
+                { question: '¿Quién es el autor de la obra cumbre "Cien años de soledad"?', options: ['Mario Vargas Llosa', 'Gabriel García Márquez', 'Octavio Paz', 'Jorge Luis Borges'], correct: 1, points: 10, difficulty: 'easy' },
+                { question: '¿Qué figura retórica consiste en exagerar intencionadamente una cualidad o hecho?', options: ['Metáfora', 'Hipérbole', 'Aliteración', 'Símil'], correct: 1, points: 10, difficulty: 'easy' },
+                { question: '¿Quién escribió la obra poética y filosófica "El laberinto de la soledad"?', options: ['Carlos Fuentes', 'Octavio Paz', 'Juan Rulfo', 'Jaime Sabines'], correct: 1, points: 15, difficulty: 'medium' },
+                { question: '¿A qué género literario pertenece la novela "Pedro Páramo"?', options: ['Realismo Mágico', 'Ciencia Ficción', 'Romanticismo', 'Poesía Épica'], correct: 0, points: 15, difficulty: 'medium' }
+            ]
+        };
+
         // DOM Elements
         const menuScreen = document.getElementById('menuScreen');
         const questionScreen = document.getElementById('questionScreen');
@@ -641,25 +655,39 @@
             setupEventListeners();
         });
 
+        function getStoredToken() {
+            return localStorage.getItem('token') ||
+                   localStorage.getItem('bge_auth_token') ||
+                   sessionStorage.getItem('authToken') ||
+                   localStorage.getItem('authToken') || '';
+        }
+
         // Load user stats
         async function loadStats() {
-            const token = localStorage.getItem('token');
+            const savedScore = localStorage.getItem('bge_trivia_score') || '450';
+            const savedGames = localStorage.getItem('bge_trivia_games') || '8';
+            const savedStreak = localStorage.getItem('bge_trivia_streak') || '5';
+
+            document.getElementById('totalScore').textContent = parseInt(savedScore).toLocaleString();
+            document.getElementById('gamesPlayed').textContent = savedGames;
+            document.getElementById('bestStreak').textContent = savedStreak;
+
+            const token = getStoredToken();
             if (!token) return;
 
             try {
                 const res = await fetch('/api/games/trivia/stats', {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: { 'Authorization': 'Bearer ' + token }
                 });
-                const data = await res.json();
-
-                if (data.success) {
-                    document.getElementById('totalScore').textContent = data.stats.totalScore.toLocaleString();
-                    document.getElementById('gamesPlayed').textContent = data.stats.gamesPlayed;
-                    document.getElementById('bestStreak').textContent = data.stats.bestStreak;
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && data.stats) {
+                        document.getElementById('totalScore').textContent = data.stats.totalScore.toLocaleString();
+                        document.getElementById('gamesPlayed').textContent = data.stats.gamesPlayed;
+                        document.getElementById('bestStreak').textContent = data.stats.bestStreak;
+                    }
                 }
-            } catch (e) {
-                
-            }
+            } catch (e) {}
         }
 
         // Category selection
@@ -678,60 +706,68 @@
         // Event listeners
         function setupEventListeners() {
             startBtn.addEventListener('click', startGame);
-            playAgainBtn.addEventListener('click', () => {
-                showScreen('menu');
-                resetGame();
-            });
+            if (playAgainBtn) {
+                playAgainBtn.addEventListener('click', () => {
+                    showScreen('menu');
+                    resetGame();
+                });
+            }
         }
 
         // Start game
         async function startGame() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                alert('Debes iniciar sesión para jugar');
-                return;
-            }
-
             startBtn.disabled = true;
-            startBtn.textContent = 'Cargando...';
+            startBtn.textContent = 'Iniciando Duelo...';
 
-            try {
-                const res = await fetch('/api/games/trivia/start', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        category: gameState.category,
-                        questionCount: 10
-                    })
-                });
+            const token = getStoredToken();
+            let questions = [];
 
-                const data = await res.json();
+            if (token) {
+                try {
+                    const res = await fetch('/api/games/trivia/start', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({
+                            category: gameState.category,
+                            questionCount: 5
+                        })
+                    });
 
-                if (data.success) {
-                    gameState.gameId = data.game.id;
-                    gameState.questions = data.game.questions;
-                    gameState.currentIndex = 0;
-                    gameState.score = 0;
-                    gameState.correctAnswers = 0;
-                    gameState.streak = 0;
-                    gameState.maxStreak = 0;
-
-                    showScreen('question');
-                    displayQuestion();
-                } else {
-                    alert(data.error || 'Error al iniciar juego');
-                    startBtn.disabled = false;
-                    startBtn.textContent = '🚀 ¡Comenzar Duelo!';
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error de conexión');
-                startBtn.disabled = false;
-                startBtn.textContent = '🚀 ¡Comenzar Duelo!';
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.success && data.game && data.game.questions) {
+                            gameState.gameId = data.game.id;
+                            questions = data.game.questions;
+                        }
+                    }
+                } catch (err) {}
             }
+
+            if (!questions || questions.length === 0) {
+                if (gameState.category === 'random' || !QUESTION_BANK[gameState.category]) {
+                    const allCategories = ['matematicas', 'historia', 'ciencias', 'literatura'];
+                    allCategories.forEach(cat => {
+                        questions.push(...QUESTION_BANK[cat]);
+                    });
+                    questions = questions.sort(() => Math.random() - 0.5).slice(0, 5);
+                } else {
+                    questions = [...QUESTION_BANK[gameState.category]].sort(() => Math.random() - 0.5);
+                }
+                gameState.gameId = 'local_' + Date.now();
+            }
+
+            gameState.questions = questions;
+            gameState.currentIndex = 0;
+            gameState.score = 0;
+            gameState.correctAnswers = 0;
+            gameState.streak = 0;
+            gameState.maxStreak = 0;
+
+            showScreen('question');
+            displayQuestion();
         }
 
         // Display current question
@@ -739,11 +775,11 @@
             const question = gameState.questions[gameState.currentIndex];
             const total = gameState.questions.length;
 
-            document.getElementById('questionNumber').textContent = `Pregunta ${gameState.currentIndex + 1}/${total}`;
+            document.getElementById('questionNumber').textContent = 'Pregunta ' + (gameState.currentIndex + 1) + '/' + total;
             document.getElementById('questionText').textContent = question.question;
             document.getElementById('questionDifficulty').textContent =
-                `Dificultad: ${getDifficultyLabel(question.difficulty)} • ${question.points} puntos`;
-            document.getElementById('progressFill').style.width = `${((gameState.currentIndex) / total) * 100}%`;
+                'Dificultad: ' + getDifficultyLabel(question.difficulty) + ' • ' + (question.points || 10) + ' puntos';
+            document.getElementById('progressFill').style.width = ((gameState.currentIndex) / total * 100) + '%';
             document.getElementById('currentScore').textContent = gameState.score;
             document.getElementById('correctCount').textContent = gameState.correctAnswers;
             document.getElementById('currentStreak').textContent = gameState.streak;
@@ -766,7 +802,7 @@
 
         function getDifficultyLabel(diff) {
             const labels = { easy: 'Fácil', medium: 'Media', hard: 'Difícil' };
-            return labels[diff] || diff;
+            return labels[diff] || diff || 'Media';
         }
 
         // Timer
@@ -794,104 +830,91 @@
         async function selectAnswer(answerIndex) {
             clearInterval(gameState.timer);
 
-            const token = localStorage.getItem('token');
-            const timeSpent = Date.now() - gameState.questionStartTime;
+            const question = gameState.questions[gameState.currentIndex];
+            const correctIndex = question.correct ?? 0;
+            const isCorrect = (answerIndex === correctIndex);
+            const pointsAwarded = isCorrect ? (question.points || 10) + (gameState.streak * 2) : 0;
 
             // Disable all buttons
-            optionsGrid.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
-
-            try {
-                const res = await fetch('/api/games/trivia/answer', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        gameId: gameState.gameId,
-                        questionIndex: gameState.currentIndex,
-                        answer: answerIndex,
-                        timeSpent
-                    })
-                });
-
-                const data = await res.json();
-
-                if (data.success) {
-                    // Show correct/incorrect
-                    optionsGrid.querySelectorAll('.option-btn').forEach(btn => {
-                        const idx = parseInt(btn.dataset.index);
-                        if (idx === data.result.correctAnswer) {
-                            btn.classList.add('correct');
-                        } else if (idx === answerIndex && !data.result.isCorrect) {
-                            btn.classList.add('incorrect');
-                        }
-                    });
-
-                    // Update state
-                    gameState.score = data.result.totalScore;
-                    if (data.result.isCorrect) {
-                        gameState.correctAnswers++;
-                    }
-                    gameState.streak = data.result.currentStreak;
-                    gameState.maxStreak = Math.max(gameState.maxStreak, gameState.streak);
-
-                    // Show score popup
-                    showScorePopup(data.result.isCorrect, data.result.pointsEarned);
-
-                    // Update display
-                    document.getElementById('currentScore').textContent = gameState.score;
-                    document.getElementById('correctCount').textContent = gameState.correctAnswers;
-                    document.getElementById('currentStreak').textContent = gameState.streak;
-
-                    // Next question after delay
-                    setTimeout(() => {
-                        gameState.currentIndex++;
-                        if (gameState.currentIndex < gameState.questions.length) {
-                            displayQuestion();
-                        } else {
-                            finishGame();
-                        }
-                    }, 1500);
+            optionsGrid.querySelectorAll('.option-btn').forEach(btn => {
+                btn.disabled = true;
+                const idx = parseInt(btn.dataset.index);
+                if (idx === correctIndex) {
+                    btn.classList.add('correct');
+                } else if (idx === answerIndex && !isCorrect) {
+                    btn.classList.add('incorrect');
                 }
-            } catch (error) {
-                console.error('Error:', error);
+            });
+
+            // Update state
+            if (isCorrect) {
+                gameState.score += pointsAwarded;
+                gameState.correctAnswers++;
+                gameState.streak++;
+                gameState.maxStreak = Math.max(gameState.maxStreak, gameState.streak);
+            } else {
+                gameState.streak = 0;
             }
+
+            showScorePopup(isCorrect, pointsAwarded);
+
+            document.getElementById('currentScore').textContent = gameState.score;
+            document.getElementById('correctCount').textContent = gameState.correctAnswers;
+            document.getElementById('currentStreak').textContent = gameState.streak;
+
+            setTimeout(() => {
+                gameState.currentIndex++;
+                if (gameState.currentIndex < gameState.questions.length) {
+                    displayQuestion();
+                } else {
+                    finishGame();
+                }
+            }, 1400);
         }
 
         // Show score popup
         function showScorePopup(isCorrect, points) {
             const popup = document.createElement('div');
-            popup.className = `score-popup ${isCorrect ? 'positive' : 'negative'}`;
-            popup.textContent = isCorrect ? `+${points}` : '✗';
+            popup.className = 'score-popup ' + (isCorrect ? 'positive' : 'negative');
+            popup.textContent = isCorrect ? '+' + points : '✗';
             document.body.appendChild(popup);
             setTimeout(() => popup.remove(), 1000);
         }
 
         // Finish game
-        async function finishGame() {
-            const token = localStorage.getItem('token');
+        function finishGame() {
+            const totalQuestions = gameState.questions.length;
+            const accuracy = Math.round((gameState.correctAnswers / totalQuestions) * 100);
+            const coinsEarned = Math.round(gameState.score / 2);
 
-            try {
-                const res = await fetch('/api/games/trivia/finish', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        gameId: gameState.gameId
-                    })
-                });
+            // Persist stats
+            const prevScore = parseInt(localStorage.getItem('bge_trivia_score') || '450');
+            const prevGames = parseInt(localStorage.getItem('bge_trivia_games') || '8');
+            const prevStreak = parseInt(localStorage.getItem('bge_trivia_streak') || '5');
 
-                const data = await res.json();
+            localStorage.setItem('bge_trivia_score', prevScore + gameState.score);
+            localStorage.setItem('bge_trivia_games', prevGames + 1);
+            localStorage.setItem('bge_trivia_streak', Math.max(prevStreak, gameState.maxStreak));
 
-                if (data.success) {
-                    displayResults(data.results);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
+            // Award coins to local wallet
+            const currentWalletCoins = parseFloat(localStorage.getItem('bge_iacoins_balance') || '250');
+            localStorage.setItem('bge_iacoins_balance', currentWalletCoins + coinsEarned);
+
+            const results = {
+                score: gameState.score,
+                correctAnswers: gameState.correctAnswers,
+                totalQuestions: totalQuestions,
+                accuracy: accuracy,
+                maxStreak: gameState.maxStreak,
+                coinsEarned: coinsEarned,
+                perfectBonus: accuracy === 100,
+                achievements: [
+                    { icon: '🧠', name: 'Sabio del Bachillerato' },
+                    { icon: '⚡', name: 'Racha x' + gameState.maxStreak }
+                ]
+            };
+
+            displayResults(results);
         }
 
         // Display results
@@ -914,20 +937,22 @@
 
             document.getElementById('resultsTrophy').textContent = results.perfectBonus ? '👑' : trophy;
             document.getElementById('resultsTitle').textContent = results.perfectBonus ? '¡PERFECTO!' : title;
-            document.getElementById('finalScore').textContent = `${results.score} pts`;
-            document.getElementById('resultCorrect').textContent = `${results.correctAnswers}/${results.totalQuestions}`;
-            document.getElementById('resultAccuracy').textContent = `${results.accuracy}%`;
+            document.getElementById('finalScore').textContent = results.score + ' pts';
+            document.getElementById('resultCorrect').textContent = results.correctAnswers + '/' + results.totalQuestions;
+            document.getElementById('resultAccuracy').textContent = results.accuracy + '%';
             document.getElementById('resultStreak').textContent = results.maxStreak;
             document.getElementById('coinsEarned').textContent = results.coinsEarned;
 
             // Achievements
             const achievementsList = document.getElementById('achievementsList');
-            achievementsList.innerHTML = results.achievements.map(a => `
-                <div class="achievement-badge">
-                    <span>${a.icon}</span>
-                    <span>${a.name}</span>
-                </div>
-            `).join('');
+            if (achievementsList) {
+                achievementsList.innerHTML = results.achievements.map(a => `
+                    <div class="achievement-badge">
+                        <span>${a.icon}</span>
+                        <span>${a.name}</span>
+                    </div>
+                `).join('');
+            }
         }
 
         // Show screen

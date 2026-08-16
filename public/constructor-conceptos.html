@@ -122,27 +122,32 @@
         .map-card {
             background: var(--bg-card);
             border-radius: 12px;
-            padding: 1rem;
+            padding: 1rem 1.5rem;
             margin-bottom: 0.75rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
             transition: all 0.2s;
+            border: 1px solid var(--bg-surface);
         }
 
         .map-card:hover {
             background: var(--bg-surface);
+            border-color: var(--primary);
+            transform: translateX(4px);
         }
 
         .map-info h3 {
-            font-size: 1rem;
+            font-size: 1.1rem;
             margin-bottom: 0.25rem;
+            color: var(--text-primary);
         }
 
         .map-info p {
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             color: var(--text-secondary);
+            margin: 0;
         }
 
         .map-meta {
@@ -179,14 +184,6 @@
         }
 
         /* Canvas Area */
-        .canvas-screen {
-            display: none;
-        }
-
-        .canvas-screen.active {
-            display: block;
-        }
-
         .canvas-header {
             display: flex;
             justify-content: space-between;
@@ -199,15 +196,27 @@
             align-items: center;
             gap: 0.5rem;
             color: var(--warning);
+            font-weight: 600;
         }
 
         .canvas-container {
             background: var(--bg-card);
             border-radius: 16px;
-            min-height: 400px;
+            min-height: 440px;
             position: relative;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             overflow: hidden;
+            border: 2px solid var(--bg-surface);
+        }
+
+        .svg-connections {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
 
         .concept-node {
@@ -215,56 +224,63 @@
             background: var(--bg-surface);
             border: 2px solid var(--primary);
             border-radius: 12px;
-            padding: 0.75rem 1rem;
+            padding: 0.75rem 1.25rem;
             font-weight: 600;
             text-align: center;
-            min-width: 100px;
+            min-width: 120px;
             transform: translate(-50%, -50%);
+            z-index: 2;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .concept-node.central {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             font-size: 1.1rem;
-        }
-
-        .connection-line {
-            position: absolute;
-            pointer-events: none;
+            border-color: var(--gold);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
         }
 
         .connection-label {
             position: absolute;
-            background: var(--bg-card);
+            background: var(--bg-dark);
             border: 2px dashed var(--text-secondary);
             border-radius: 8px;
-            padding: 0.5rem;
-            min-width: 80px;
+            padding: 0.4rem 0.8rem;
+            min-width: 90px;
             text-align: center;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
+            font-weight: 500;
             transform: translate(-50%, -50%);
             cursor: pointer;
             transition: all 0.2s;
+            z-index: 3;
+            color: var(--text-secondary);
         }
 
         .connection-label:hover {
-            border-color: var(--primary);
+            border-color: var(--gold);
+            color: var(--gold);
+            transform: translate(-50%, -50%) scale(1.05);
         }
 
         .connection-label.filled {
             border-style: solid;
-            border-color: var(--success);
-            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--primary);
+            color: var(--text-primary);
+            background: var(--bg-card);
         }
 
         .connection-label.correct {
             border-color: var(--success);
             background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
         }
 
         .connection-label.incorrect {
             border-color: var(--danger);
             background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
         }
 
         /* Labels Palette */
@@ -272,13 +288,15 @@
             background: var(--bg-card);
             border-radius: 12px;
             padding: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--bg-surface);
         }
 
         .labels-title {
             font-size: 0.875rem;
             color: var(--text-secondary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
         }
 
         .labels-container {
@@ -289,100 +307,76 @@
 
         .label-chip {
             background: var(--bg-surface);
-            border: 2px solid transparent;
-            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
             padding: 0.5rem 1rem;
+            font-size: 0.875rem;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 0.875rem;
         }
 
         .label-chip:hover {
-            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
         }
 
         .label-chip.selected {
-            border-color: var(--primary);
-            background: rgba(139, 92, 246, 0.2);
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
         }
 
         .label-chip.used {
-            opacity: 0.5;
+            opacity: 0.35;
             cursor: not-allowed;
+            pointer-events: none;
         }
 
-        /* Actions */
+        /* Action Buttons */
         .action-buttons {
             display: flex;
             justify-content: center;
             gap: 1rem;
+            margin-top: 1rem;
         }
 
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: scale(1.05);
-        }
-
-        .btn-secondary {
-            background: var(--bg-surface);
-            color: var(--text-primary);
-        }
-
-        /* Results */
-        .results-screen {
-            display: none;
-            text-align: center;
-        }
-
-        .results-screen.active {
-            display: block;
-        }
-
+        /* Results Screen */
         .results-icon {
-            font-size: 5rem;
+            font-size: 4rem;
+            text-align: center;
             margin-bottom: 1rem;
         }
 
         .results-title {
+            text-align: center;
             font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
         }
 
         .results-stats {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
             margin-bottom: 2rem;
         }
 
         .stat-box {
             background: var(--bg-card);
             border-radius: 12px;
-            padding: 1rem 1.5rem;
+            padding: 1.25rem;
+            text-align: center;
+            border: 1px solid var(--bg-surface);
         }
 
         .stat-value {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
             color: var(--gold);
         }
 
         .stat-label {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
         }
 
@@ -413,6 +407,14 @@
             .game-title {
                 font-size: 1.75rem;
             }
+
+            .canvas-container {
+                min-height: 520px;
+            }
+
+            .results-stats {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
     <!-- Global Header/Footer Styles -->
@@ -428,12 +430,12 @@
     <div class="game-container">
         <header class="game-header">
             <h1 class="game-title">🧩 Constructor de Conceptos</h1>
-            <p class="game-subtitle">Conecta ideas y construye mapas conceptuales</p>
+            <p class="game-subtitle">Conecta ideas y construye mapas conceptuales interactivos</p>
         </header>
 
         <!-- Menu Screen -->
         <div id="menuScreen" class="screen active">
-            <h2 style="text-align: center; margin-bottom: 1rem; color: var(--text-secondary);">Elige un Tema</h2>
+            <h2 style="text-align: center; margin-bottom: 1.5rem; color: var(--text-secondary);">Elige una Materia</h2>
 
             <div class="topic-grid" id="topicGrid">
                 <div class="topic-card" data-topic="biologia">
@@ -459,12 +461,11 @@
             </div>
 
             <div class="map-list" id="mapList">
-                <h3 style="margin-bottom: 1rem;">Mapas Disponibles</h3>
+                <h3 style="margin-bottom: 1rem; color: var(--gold);">Mapas Disponibles</h3>
                 <div id="mapsContainer"></div>
             </div>
 
-            <a href="/gamification-center.html" class="back-link" style="display: block; text-align: center;">← Volver
-                al Centro de Gamificación</a>
+            <a href="gamification-center.html" class="back-link" style="display: block; text-align: center;">← Volver al Centro de Gamificación</a>
         </div>
 
         <!-- Canvas Screen -->
@@ -472,7 +473,7 @@
             <div class="canvas-header">
                 <div>
                     <h2 id="mapTitle">Título del Mapa</h2>
-                    <p id="mapDescription" style="color: var(--text-secondary); font-size: 0.875rem;"></p>
+                    <p id="mapDescription" style="color: var(--text-secondary); font-size: 0.875rem; margin: 0;"></p>
                 </div>
                 <div class="hints-info">
                     💡 Pistas: <span id="hintsCount">3</span>
@@ -480,17 +481,19 @@
             </div>
 
             <div class="canvas-container" id="canvasContainer">
+                <svg class="svg-connections" id="svgConnections"></svg>
                 <!-- Nodes and connections will be rendered here -->
             </div>
 
             <div class="labels-palette">
-                <div class="labels-title">Etiquetas disponibles (haz clic para seleccionar)</div>
+                <div class="labels-title">🎯 Conectores disponibles (haz clic en un conector y luego en el signo '?' del mapa):</div>
                 <div class="labels-container" id="labelsContainer"></div>
             </div>
 
             <div class="action-buttons">
-                <button class="btn btn-secondary" id="hintBtn">💡 Pista</button>
-                <button class="btn btn-primary" id="submitBtn">✓ Verificar</button>
+                <button class="btn btn-outline-warning" id="hintBtn">💡 Usar Pista</button>
+                <button class="btn btn-primary px-4" id="submitBtn">✓ Verificar Solución</button>
+                <button class="btn btn-secondary" id="backToMapsBtn">← Cambiar Mapa</button>
             </div>
         </div>
 
@@ -502,7 +505,7 @@
             <div class="results-stats">
                 <div class="stat-box">
                     <div class="stat-value" id="resultCorrect">0/0</div>
-                    <div class="stat-label">Conexiones</div>
+                    <div class="stat-label">Conexiones Correctas</div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-value" id="resultAttempts">0</div>
@@ -510,17 +513,176 @@
                 </div>
                 <div class="stat-box">
                     <div class="stat-value" id="resultCoins">0</div>
-                    <div class="stat-label">IACoins</div>
+                    <div class="stat-label">IACoins Ganados</div>
                 </div>
             </div>
 
-            <button class="btn btn-primary" id="playAgainBtn">🎮 Otro Mapa</button>
-            <br>
-            <a href="/gamification-center.html" class="back-link">← Volver al Centro de Gamificación</a>
+            <div style="text-align: center;">
+                <button class="btn btn-primary px-4 py-2" id="playAgainBtn">🎮 Construir Otro Mapa</button>
+                <br>
+                <a href="gamification-center.html" class="back-link">← Volver al Centro de Gamificación</a>
+            </div>
         </div>
     </div>
 
     <script>
+        // Local Maps Database for offline and dynamic gameplay
+        const CONCEPT_MAPS_DB = {
+            biologia: [
+                {
+                    id: 'bio_fotosintesis',
+                    title: 'Fotosíntesis y Cloroplastos',
+                    description: 'Conecta los reactivos, procesos y productos del metabolismo vegetal',
+                    difficulty: 'easy',
+                    points: 50,
+                    hints: 3,
+                    nodes: [
+                        { id: 'n_central', label: '🌿 Fotosíntesis', type: 'central', x: 50, y: 50 },
+                        { id: 'n_luz', label: '☀️ Luz Solar', type: 'node', x: 20, y: 20 },
+                        { id: 'n_clorofila', label: '🔬 Clorofila', type: 'node', x: 20, y: 80 },
+                        { id: 'n_co2', label: '💨 CO₂ y Agua', type: 'node', x: 80, y: 20 },
+                        { id: 'n_glucosa', label: '🍎 Glucosa y O₂', type: 'node', x: 80, y: 80 }
+                    ],
+                    connections: [
+                        { from: 'n_luz', to: 'n_central', label: 'es absorbida por', hint: 'La energía radiante es captada en el proceso' },
+                        { from: 'n_central', to: 'n_clorofila', label: 'ocurre dentro de', hint: 'El pigmento verde se encuentra en los cloroplastos' },
+                        { from: 'n_co2', to: 'n_central', label: 'sirve como reactivo para', hint: 'El dióxido de carbono y el agua ingresan a la reacción' },
+                        { from: 'n_central', to: 'n_glucosa', label: 'produce y libera', hint: 'El azúcar energético y el oxígeno son el resultado' }
+                    ],
+                    availableLabels: [
+                        'es absorbida por',
+                        'ocurre dentro de',
+                        'sirve como reactivo para',
+                        'produce y libera',
+                        'destruye moléculas de',
+                        'reemplaza el ciclo de'
+                    ]
+                },
+                {
+                    id: 'bio_celula',
+                    title: 'Estructura de la Célula Eucariota',
+                    description: 'Identifica las funciones vitales de los orgánulos celulares',
+                    difficulty: 'medium',
+                    points: 60,
+                    hints: 3,
+                    nodes: [
+                        { id: 'n_central', label: '🧬 Célula Eucariota', type: 'central', x: 50, y: 50 },
+                        { id: 'n_nucleo', label: '🏛️ Núcleo', type: 'node', x: 22, y: 22 },
+                        { id: 'n_mito', label: '⚡ Mitocondria', type: 'node', x: 78, y: 22 },
+                        { id: 'n_ribo', label: '🧱 Ribosomas', type: 'node', x: 22, y: 78 },
+                        { id: 'n_membrana', label: '🛡️ Membrana Plasmática', type: 'node', x: 78, y: 78 }
+                    ],
+                    connections: [
+                        { from: 'n_nucleo', to: 'n_central', label: 'resguarda el ADN de', hint: 'El material genético reside en su interior' },
+                        { from: 'n_mito', to: 'n_central', label: 'genera energía ATP para', hint: 'Es la central energética celular' },
+                        { from: 'n_ribo', to: 'n_central', label: 'sintetiza proteínas en', hint: 'Fabrica las cadenas de aminoácidos' },
+                        { from: 'n_membrana', to: 'n_central', label: 'regula el transporte de', hint: 'Capa bilipídica que controla entradas y salidas' }
+                    ],
+                    availableLabels: [
+                        'resguarda el ADN de',
+                        'genera energía ATP para',
+                        'sintetiza proteínas en',
+                        'regula el transporte de',
+                        'bloquea la mitosis en',
+                        'desintegra el citoplasma de'
+                    ]
+                }
+            ],
+            historia: [
+                {
+                    id: 'hist_revolucion',
+                    title: 'Revolución Mexicana de 1910',
+                    description: 'Relaciona los principales líderes caudillos con sus proclamaciones y planes',
+                    difficulty: 'medium',
+                    points: 60,
+                    hints: 3,
+                    nodes: [
+                        { id: 'n_central', label: '⚔️ Revolución Mexicana', type: 'central', x: 50, y: 50 },
+                        { id: 'n_madero', label: '📜 Francisco I. Madero', type: 'node', x: 20, y: 20 },
+                        { id: 'n_plan_sl', label: '🏛️ Plan de San Luis', type: 'node', x: 20, y: 80 },
+                        { id: 'n_zapata', label: '🌾 Emiliano Zapata', type: 'node', x: 80, y: 20 },
+                        { id: 'n_plan_ayala', label: '🚜 Plan de Ayala', type: 'node', x: 80, y: 80 }
+                    ],
+                    connections: [
+                        { from: 'n_madero', to: 'n_central', label: 'inició el movimiento de', hint: 'Convocó al levantamiento contra Porfirio Díaz' },
+                        { from: 'n_madero', to: 'n_plan_sl', label: 'proclamó el', hint: 'Lema: Sufragio Efectivo, No Reelección' },
+                        { from: 'n_zapata', to: 'n_central', label: 'lideró el ala agraria en', hint: 'Caudillo del Sur en defensa de los campesinos' },
+                        { from: 'n_zapata', to: 'n_plan_ayala', label: 'promulgó el', hint: 'Lema: Tierra y Libertad' }
+                    ],
+                    availableLabels: [
+                        'inició el movimiento de',
+                        'proclamó el',
+                        'lideró el ala agraria en',
+                        'promulgó el',
+                        'firmó el Tratado de Versalles con',
+                        'declaró la monarquía en'
+                    ]
+                }
+            ],
+            matematicas: [
+                {
+                    id: 'mat_ecuaciones',
+                    title: 'Ecuaciones Cuadráticas: ax² + bx + c = 0',
+                    description: 'Comprende los métodos de resolución, propiedades del discriminante y parábola',
+                    difficulty: 'hard',
+                    points: 75,
+                    hints: 3,
+                    nodes: [
+                        { id: 'n_central', label: '📐 Ecuación Cuadrática', type: 'central', x: 50, y: 50 },
+                        { id: 'n_discr', label: '🔍 Discriminante (Δ = b²-4ac)', type: 'node', x: 22, y: 22 },
+                        { id: 'n_formula', label: '✏️ Fórmula General', type: 'node', x: 78, y: 22 },
+                        { id: 'n_parabola', label: '📈 Parábola y Vértice', type: 'node', x: 22, y: 78 },
+                        { id: 'n_raices', label: '🎯 Raíces o Soluciones', type: 'node', x: 78, y: 78 }
+                    ],
+                    connections: [
+                        { from: 'n_discr', to: 'n_central', label: 'clasifica el tipo de raíces de', hint: 'Si Δ > 0 dos reales, si Δ = 0 una, si Δ < 0 complejas' },
+                        { from: 'n_formula', to: 'n_central', label: 'permite resolver analíticamente', hint: 'x = (-b ± √Δ) / 2a' },
+                        { from: 'n_parabola', to: 'n_central', label: 'es la gráfica asociada a', hint: 'Curva simétrica con eje vertical' },
+                        { from: 'n_central', to: 'n_raices', label: 'cruza el eje X en las', hint: 'Intersecciones horizontales donde y = 0' }
+                    ],
+                    availableLabels: [
+                        'clasifica el tipo de raíces de',
+                        'permite resolver analíticamente',
+                        'es la gráfica asociada a',
+                        'cruza el eje X en las',
+                        'deriva infinitamente hacia',
+                        'calcula el cateto opuesto de'
+                    ]
+                }
+            ],
+            quimica: [
+                {
+                    id: 'quim_enlaces',
+                    title: 'Enlaces Químicos y Valencia',
+                    description: 'Descubre cómo interactúan los átomos para formar moléculas estables',
+                    difficulty: 'medium',
+                    points: 60,
+                    hints: 3,
+                    nodes: [
+                        { id: 'n_central', label: '⚗️ Enlace Químico', type: 'central', x: 50, y: 50 },
+                        { id: 'n_covalente', label: '🤝 Enlace Covalente', type: 'node', x: 20, y: 20 },
+                        { id: 'n_ionico', label: '⚡ Enlace Iónico', type: 'node', x: 80, y: 20 },
+                        { id: 'n_valencia', label: '⚛️ Electrones de Valencia', type: 'node', x: 20, y: 80 },
+                        { id: 'n_octeto', label: '🛡️ Regla del Octeto', type: 'node', x: 80, y: 80 }
+                    ],
+                    connections: [
+                        { from: 'n_covalente', to: 'n_central', label: 'es un tipo basado en compartir con', hint: 'Se comparten pares de electrones entre no metales' },
+                        { from: 'n_ionico', to: 'n_central', label: 'es un tipo basado en transferir a', hint: 'Atracción electrostática entre catión y anión' },
+                        { from: 'n_valencia', to: 'n_central', label: 'determinan la capacidad de', hint: 'Los electrones de la capa más externa forman enlaces' },
+                        { from: 'n_central', to: 'n_octeto', label: 'busca la estabilidad según la', hint: 'Los átomos buscan 8 electrones de valencia' }
+                    ],
+                    availableLabels: [
+                        'es un tipo basado en compartir con',
+                        'es un tipo basado en transferir a',
+                        'determinan la capacidad de',
+                        'busca la estabilidad según la',
+                        'fusiona el núcleo atómico de',
+                        'desintegra el neutrón de'
+                    ]
+                }
+            ]
+        };
+
         // State
         let state = {
             sessionId: null,
@@ -528,7 +690,9 @@
             map: null,
             selectedLabel: null,
             userConnections: {},
-            usedLabels: []
+            usedLabels: [],
+            attempts: 0,
+            hintsRemaining: 3
         };
 
         // Elements
@@ -539,6 +703,7 @@
         const mapList = document.getElementById('mapList');
         const mapsContainer = document.getElementById('mapsContainer');
         const canvasContainer = document.getElementById('canvasContainer');
+        const svgConnections = document.getElementById('svgConnections');
         const labelsContainer = document.getElementById('labelsContainer');
 
         // Init
@@ -546,6 +711,7 @@
             setupTopicSelection();
             document.getElementById('submitBtn').addEventListener('click', submitSolution);
             document.getElementById('hintBtn').addEventListener('click', getHint);
+            document.getElementById('backToMapsBtn').addEventListener('click', () => showScreen('menu'));
             document.getElementById('playAgainBtn').addEventListener('click', () => showScreen('menu'));
         });
 
@@ -553,6 +719,8 @@
         function setupTopicSelection() {
             topicGrid.querySelectorAll('.topic-card').forEach(card => {
                 card.addEventListener('click', () => {
+                    topicGrid.querySelectorAll('.topic-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
                     const topic = card.dataset.topic;
                     state.topic = topic;
                     loadMaps(topic);
@@ -562,33 +730,37 @@
 
         // Load maps
         async function loadMaps(topic) {
+            let maps = CONCEPT_MAPS_DB[topic] || [];
+
+            // Attempt backend fetch if available
             try {
-                const res = await fetch(`/api/games/concepts/maps/${topic}`);
-                const data = await res.json();
-
-                if (data.success) {
-                    mapsContainer.innerHTML = data.maps.map(m => `
-                        <div class="map-card" data-map-id="${m.id}">
-                            <div class="map-info">
-                                <h3>${m.title}</h3>
-                                <p>${m.description}</p>
-                            </div>
-                            <div class="map-meta">
-                                <span class="difficulty-badge ${m.difficulty}">${getDiffLabel(m.difficulty)}</span>
-                                <span class="points-badge">+${m.points} pts</span>
-                            </div>
-                        </div>
-                    `).join('');
-
-                    mapsContainer.querySelectorAll('.map-card').forEach(card => {
-                        card.addEventListener('click', () => startMap(card.dataset.mapId));
-                    });
-
-                    mapList.classList.add('active');
+                const res = await fetch('/api/games/concepts/maps/' + topic);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && data.maps && data.maps.length > 0) {
+                        maps = data.maps;
+                    }
                 }
-            } catch (e) {
-                console.error('Error:', e);
-            }
+            } catch (e) {}
+
+            mapsContainer.innerHTML = maps.map(m => `
+                <div class="map-card" data-map-id="${m.id}">
+                    <div class="map-info">
+                        <h3>${m.title}</h3>
+                        <p>${m.description}</p>
+                    </div>
+                    <div class="map-meta">
+                        <span class="difficulty-badge ${m.difficulty}">${getDiffLabel(m.difficulty)}</span>
+                        <span class="points-badge">+${m.points} pts</span>
+                    </div>
+                </div>
+            `).join('');
+
+            mapsContainer.querySelectorAll('.map-card').forEach(card => {
+                card.addEventListener('click', () => startMap(card.dataset.mapId));
+            });
+
+            mapList.classList.add('active');
         }
 
         function getDiffLabel(d) {
@@ -596,38 +768,22 @@
         }
 
         // Start map
-        async function startMap(mapId) {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                alert('Debes iniciar sesión');
-                return;
-            }
+        function startMap(mapId) {
+            const topicMaps = CONCEPT_MAPS_DB[state.topic] || [];
+            const selected = topicMaps.find(m => m.id === mapId) || topicMaps[0];
 
-            try {
-                const res = await fetch('/api/games/concepts/start', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ topic: state.topic, mapId })
-                });
+            if (!selected) return;
 
-                const data = await res.json();
+            state.sessionId = 'session_' + Date.now();
+            state.map = selected;
+            state.userConnections = {};
+            state.usedLabels = [];
+            state.attempts = 0;
+            state.hintsRemaining = selected.hints || 3;
 
-                if (data.success) {
-                    state.sessionId = data.sessionId;
-                    state.map = data.map;
-                    state.userConnections = {};
-                    state.usedLabels = [];
-
-                    document.getElementById('hintsCount').textContent = data.hints;
-                    renderMap(data.map);
-                    showScreen('canvas');
-                }
-            } catch (e) {
-                console.error('Error:', e);
-            }
+            document.getElementById('hintsCount').textContent = state.hintsRemaining;
+            renderMap(selected);
+            showScreen('canvas');
         }
 
         // Render map
@@ -635,15 +791,35 @@
             document.getElementById('mapTitle').textContent = map.title;
             document.getElementById('mapDescription').textContent = map.description;
 
-            // Clear
-            canvasContainer.innerHTML = '';
+            // Remove existing nodes and labels (keep SVG)
+            const existingNodes = canvasContainer.querySelectorAll('.concept-node, .connection-label');
+            existingNodes.forEach(el => el.remove());
+
+            // Render SVG lines
+            svgConnections.innerHTML = '';
+            map.connections.forEach(conn => {
+                const fromNode = map.nodes.find(n => n.id === conn.from);
+                const toNode = map.nodes.find(n => n.id === conn.to);
+                if (fromNode && toNode) {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', fromNode.x + '%');
+                    line.setAttribute('y1', fromNode.y + '%');
+                    line.setAttribute('x2', toNode.x + '%');
+                    line.setAttribute('y2', toNode.y + '%');
+                    line.setAttribute('stroke', '#6366f1');
+                    line.setAttribute('stroke-width', '2');
+                    line.setAttribute('stroke-dasharray', '5,5');
+                    line.setAttribute('opacity', '0.6');
+                    svgConnections.appendChild(line);
+                }
+            });
 
             // Render nodes
             map.nodes.forEach(node => {
                 const el = document.createElement('div');
-                el.className = `concept-node ${node.type === 'central' ? 'central' : ''}`;
-                el.style.left = `${node.x}%`;
-                el.style.top = `${node.y}%`;
+                el.className = 'concept-node ' + (node.type === 'central' ? 'central' : '');
+                el.style.left = node.x + '%';
+                el.style.top = node.y + '%';
                 el.textContent = node.label;
                 el.dataset.id = node.id;
                 canvasContainer.appendChild(el);
@@ -659,8 +835,8 @@
 
                 const label = document.createElement('div');
                 label.className = 'connection-label';
-                label.style.left = `${midX}%`;
-                label.style.top = `${midY}%`;
+                label.style.left = midX + '%';
+                label.style.top = midY + '%';
                 label.textContent = '?';
                 label.dataset.index = i;
                 label.dataset.from = conn.from;
@@ -692,116 +868,103 @@
         // Assign label to connection
         function assignLabel(connLabel) {
             if (!state.selectedLabel) {
-                alert('Primero selecciona una etiqueta');
+                alert('💡 Selecciona primero una de las etiquetas de abajo para asignarla a este conector.');
                 return;
             }
 
             const index = connLabel.dataset.index;
             const prevLabel = state.userConnections[index];
 
-            // Remove previous
+            // Remove previous label from used
             if (prevLabel) {
                 state.usedLabels = state.usedLabels.filter(l => l !== prevLabel);
-                labelsContainer.querySelector(`[data-label="${prevLabel}"]`)?.classList.remove('used');
+                const prevChip = labelsContainer.querySelector(`[data-label="${prevLabel}"]`);
+                if (prevChip) prevChip.classList.remove('used');
             }
 
             // Assign new
             state.userConnections[index] = state.selectedLabel;
             connLabel.textContent = state.selectedLabel;
             connLabel.classList.add('filled');
+            connLabel.classList.remove('correct', 'incorrect');
 
             // Mark as used
             state.usedLabels.push(state.selectedLabel);
-            labelsContainer.querySelector(`[data-label="${state.selectedLabel}"]`)?.classList.add('used');
+            const currentChip = labelsContainer.querySelector(`[data-label="${state.selectedLabel}"]`);
+            if (currentChip) {
+                currentChip.classList.add('used');
+                currentChip.classList.remove('selected');
+            }
 
             state.selectedLabel = null;
-            labelsContainer.querySelectorAll('.label-chip').forEach(c => c.classList.remove('selected'));
         }
 
         // Submit solution
-        async function submitSolution() {
-            const token = localStorage.getItem('token');
+        function submitSolution() {
+            state.attempts++;
+            const totalConnections = state.map.connections.length;
+            let correctCount = 0;
 
-            // Build user connections array
-            const userConnections = state.map.connections.map((conn, i) => ({
-                from: conn.from,
-                to: conn.to,
-                label: state.userConnections[i] || ''
-            }));
+            state.map.connections.forEach((conn, i) => {
+                const userAns = state.userConnections[i];
+                const isCorrect = (userAns === conn.label);
+                if (isCorrect) correctCount++;
 
-            try {
-                const res = await fetch('/api/games/concepts/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ sessionId: state.sessionId, userConnections })
-                });
-
-                const data = await res.json();
-
-                if (data.success) {
-                    // Show feedback on connections
-                    data.results.forEach((r, i) => {
-                        const label = canvasContainer.querySelector(`[data-index="${i}"]`);
-                        if (label) {
-                            label.classList.remove('filled');
-                            label.classList.add(r.isCorrect ? 'correct' : 'incorrect');
-                            if (!r.isCorrect) {
-                                label.textContent = r.correctLabel;
-                            }
-                        }
-                    });
-
-                    if (data.completed) {
-                        setTimeout(() => showResults(data), 1500);
-                    } else {
-                        setTimeout(() => {
-                            alert(`${data.correct}/${data.total} correctas. ¡Sigue intentando!`);
-                            // Reset for another try
-                            renderMap(state.map);
-                        }, 1500);
+                const labelEl = canvasContainer.querySelector(`[data-index="${i}"]`);
+                if (labelEl) {
+                    labelEl.classList.remove('filled');
+                    labelEl.classList.add(isCorrect ? 'correct' : 'incorrect');
+                    if (!isCorrect) {
+                        labelEl.textContent = conn.label;
                     }
                 }
-            } catch (e) {
-                console.error('Error:', e);
+            });
+
+            if (correctCount === totalConnections) {
+                const baseCoins = Math.round(state.map.points / 2);
+                const bonus = state.attempts === 1 ? 15 : 5;
+                const totalCoins = baseCoins + bonus;
+
+                // Award coins
+                const currentWalletCoins = parseFloat(localStorage.getItem('bge_iacoins_balance') || '250');
+                localStorage.setItem('bge_iacoins_balance', currentWalletCoins + totalCoins);
+
+                setTimeout(() => {
+                    showResults({
+                        firstTry: state.attempts === 1,
+                        correct: correctCount,
+                        total: totalConnections,
+                        attempts: state.attempts,
+                        coinsEarned: totalCoins
+                    });
+                }, 1200);
+            } else {
+                setTimeout(() => {
+                    alert(`Has acertado ${correctCount} de ${totalConnections} conexiones. Se han mostrado las soluciones en rojo. ¡Inténtalo de nuevo para dominarlo!`);
+                }, 1200);
             }
         }
 
         // Get hint
-        async function getHint() {
-            const token = localStorage.getItem('token');
-            const emptyLabels = canvasContainer.querySelectorAll('.connection-label:not(.filled)');
-
-            if (emptyLabels.length === 0) {
-                alert('Todas las conexiones están llenas');
+        function getHint() {
+            if (state.hintsRemaining <= 0) {
+                alert('Ya has utilizado todas tus pistas para este mapa.');
                 return;
             }
 
-            const index = parseInt(emptyLabels[0].dataset.index);
+            const unassigned = state.map.connections.map((c, i) => ({ ...c, index: i }))
+                .filter(c => state.userConnections[c.index] !== c.label);
 
-            try {
-                const res = await fetch('/api/games/concepts/hint', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ sessionId: state.sessionId, connectionIndex: index })
-                });
-
-                const data = await res.json();
-
-                if (data.success) {
-                    document.getElementById('hintsCount').textContent = data.hintsRemaining;
-                    alert(`Pista: ${data.hint}`);
-                } else {
-                    alert(data.error);
-                }
-            } catch (e) {
-                console.error('Error:', e);
+            if (unassigned.length === 0) {
+                alert('¡Todas las conexiones actuales ya están correctas!');
+                return;
             }
+
+            const targetConn = unassigned[0];
+            state.hintsRemaining--;
+            document.getElementById('hintsCount').textContent = state.hintsRemaining;
+
+            alert(`💡 PISTA: ${targetConn.hint || `Para conectar "${targetConn.from}" con "${targetConn.to}", la relación correcta es "${targetConn.label}"`}`);
         }
 
         // Show results
@@ -824,6 +987,7 @@
             if (screen === 'menu') {
                 menuScreen.classList.add('active');
                 mapList.classList.remove('active');
+                topicGrid.querySelectorAll('.topic-card').forEach(c => c.classList.remove('selected'));
             }
             if (screen === 'canvas') canvasScreen.classList.add('active');
             if (screen === 'results') resultsScreen.classList.add('active');
