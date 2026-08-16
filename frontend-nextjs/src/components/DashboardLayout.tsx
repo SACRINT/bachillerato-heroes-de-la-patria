@@ -120,7 +120,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             <div className="truncate text-sm font-medium text-white">
                                 {user?.name || 'Usuario'}
                             </div>
-                            <div className="truncate text-xs text-slate-400">Estudiante</div>
+                            <div className="truncate text-xs text-slate-400 capitalize">
+                                {user?.role === 'admin' ? 'Administrador' : (user?.role || 'Estudiante')}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -167,7 +169,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             </button>
 
                             {userMenuOpen && (
-                                <div className="absolute right-0 mt-2 w-56 rounded-lg border bg-white shadow-lg">
+                                <div className="absolute right-0 mt-2 w-56 rounded-lg border bg-white shadow-lg z-50">
                                     <div className="border-b px-4 py-3">
                                         <div className="text-sm font-medium text-gray-900">
                                             {user?.name || 'Usuario'}
@@ -177,6 +179,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                         </div>
                                     </div>
                                     <div className="p-1">
+                                        {user?.role === 'admin' && (
+                                            <Link
+                                                href="/dashboard/admin"
+                                                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 font-medium"
+                                            >
+                                                <Home className="h-4 w-4" />
+                                                Panel Administrador
+                                            </Link>
+                                        )}
                                         <Link
                                             href="/dashboard/estudiantes/perfil"
                                             className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"

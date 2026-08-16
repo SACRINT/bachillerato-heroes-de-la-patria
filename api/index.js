@@ -81,12 +81,12 @@ console.log('[VERCEL STARTUP]', {
 // Vercel ya proporciona headers de seguridad
 // app.use(helmet({...}));
 
-// CORS simple
+// CORS configurable y compatible con credenciales
 app.use(cors({
-    origin: '*',
+    origin: (origin, callback) => callback(null, origin || true),
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 }));
 
 // Parsers

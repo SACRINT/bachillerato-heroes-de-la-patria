@@ -43,9 +43,14 @@ export default function TeacherDashboardLayout({ children }: TeacherDashboardLay
     const pathname = usePathname();
     const { user, logout } = useAuthStore();
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         logout();
-        window.location.href = '/login';
+        try {
+            const { signOut } = await import('next-auth/react');
+            await signOut({ callbackUrl: '/login' });
+        } catch (e) {
+            window.location.href = '/login';
+        }
     };
 
     return (
@@ -156,6 +161,15 @@ export default function TeacherDashboardLayout({ children }: TeacherDashboardLay
                                         </div>
                                     </div>
                                     <div className="p-1">
+                                        {user?.role === 'admin' && (
+                                            <Link
+                                                href="/dashboard/admin"
+                                                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 font-medium"
+                                            >
+                                                <Home className="h-4 w-4" />
+                                                Panel Administrador
+                                            </Link>
+                                        )}
                                         <Link
                                             href="/dashboard/docentes/perfil"
                                             className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"

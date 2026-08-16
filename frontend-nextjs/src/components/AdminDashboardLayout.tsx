@@ -45,9 +45,14 @@ export default function AdminDashboardLayout({ children }: AdminDashboardLayoutP
     const pathname = usePathname();
     const { user, logout } = useAuthStore();
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         logout();
-        window.location.href = '/login';
+        try {
+            const { signOut } = await import('next-auth/react');
+            await signOut({ callbackUrl: '/login' });
+        } catch (e) {
+            window.location.href = '/login';
+        }
     };
 
     return (
@@ -102,11 +107,11 @@ export default function AdminDashboardLayout({ children }: AdminDashboardLayoutP
                 <div className="border-t border-white/10 p-4">
                     <div className="flex items-center gap-3 rounded-lg bg-white/5 p-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 text-sm font-bold text-white">
-                            A
+                            {user?.name?.charAt(0) || 'A'}
                         </div>
                         <div className="flex-1 overflow-hidden">
                             <div className="truncate text-sm font-medium text-white">
-                                Administrador
+                                {user?.name || 'Administrador'}
                             </div>
                             <div className="truncate text-xs text-slate-400">Admin</div>
                         </div>
@@ -138,13 +143,21 @@ export default function AdminDashboardLayout({ children }: AdminDashboardLayoutP
                                 className="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-100"
                             >
                                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-sm font-bold text-white">
-                                    A
+                                    {user?.name?.charAt(0) || 'A'}
                                 </div>
                                 <ChevronDown className="h-4 w-4 text-gray-600" />
                             </button>
 
                             {userMenuOpen && (
-                                <div className="absolute right-0 mt-2 w-56 rounded-lg border bg-white shadow-lg">
+                                <div className="absolute right-0 mt-2 w-56 rounded-lg border bg-white shadow-lg z-50">
+                                    <div className="border-b px-4 py-3">
+                                        <div className="text-sm font-medium text-gray-900">
+                                            {user?.name || 'Administrador'}
+                                        </div>
+                                        <div className="text-xs text-gray-500">
+                                            {user?.email || ''}
+                                        </div>
+                                    </div>
                                     <div className="p-1">
                                         <button
                                             onClick={handleLogout}

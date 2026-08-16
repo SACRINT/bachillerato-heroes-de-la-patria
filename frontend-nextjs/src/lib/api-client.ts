@@ -11,13 +11,17 @@ export const apiClient = axios.create({
     timeout: 15000, // Aumentado para mejor estabilidad
 });
 
-// Request interceptor - Add NextAuth token
+// Request interceptor - Add NextAuth token or localStorage token
 apiClient.interceptors.request.use(
     async (config) => {
         if (typeof window !== 'undefined') {
             const session = await getSession();
-            if (session?.user?.accessToken) {
-                config.headers.Authorization = `Bearer ${session.user.accessToken}`;
+            let token = session?.user?.accessToken;
+            if (!token) {
+                token = localStorage.getItem('auth_token') || localStorage.getItem('bge_auth_token');
+            }
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
             }
         }
         return config;

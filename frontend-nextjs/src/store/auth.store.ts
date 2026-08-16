@@ -60,12 +60,20 @@ export const useAuthStore = create<AuthStore>()(
                         isAuthenticated: true,
                     });
 
-                    // Save to localStorage for api-client
+                    // Save to localStorage across all namespaces for legacy and api clients
                     if (typeof window !== 'undefined') {
-                        localStorage.setItem('auth_token', data.token);
+                        const tokenKeys = ['auth_token', 'bge_auth_token', 'authToken', 'token'];
+                        tokenKeys.forEach(k => {
+                            localStorage.setItem(k, data.token);
+                            sessionStorage.setItem(k, data.token);
+                        });
+                        const uStr = JSON.stringify(data.user);
+                        ['auth_user', 'bge_auth_user', 'currentUser', 'userData'].forEach(k => {
+                            localStorage.setItem(k, uStr);
+                            sessionStorage.setItem(k, uStr);
+                        });
                     }
                 } catch (error) {
-                    console.error('Login error:', error);
                     throw error;
                 }
             },
@@ -105,11 +113,14 @@ export const useAuthStore = create<AuthStore>()(
                         });
 
                         if (typeof window !== 'undefined') {
-                            localStorage.setItem('auth_token', data.token);
+                            const tokenKeys = ['auth_token', 'bge_auth_token', 'authToken', 'token'];
+                            tokenKeys.forEach(k => {
+                                localStorage.setItem(k, data.token);
+                                sessionStorage.setItem(k, data.token);
+                            });
                         }
                     }
                 } catch (error) {
-                    console.error('Register error:', error);
                     throw error;
                 }
             },
@@ -122,7 +133,15 @@ export const useAuthStore = create<AuthStore>()(
                 });
 
                 if (typeof window !== 'undefined') {
-                    localStorage.removeItem('auth_token');
+                    const keys = [
+                        'auth_token', 'bge_auth_token', 'authToken', 'token',
+                        'auth_user', 'bge_auth_user', 'currentUser', 'userData',
+                        'bge_auth_session', 'secure_admin_session'
+                    ];
+                    keys.forEach(k => {
+                        localStorage.removeItem(k);
+                        sessionStorage.removeItem(k);
+                    });
                 }
             },
 
@@ -131,6 +150,7 @@ export const useAuthStore = create<AuthStore>()(
                 set({ token, isAuthenticated: true });
                 if (typeof window !== 'undefined') {
                     localStorage.setItem('auth_token', token);
+                    localStorage.setItem('bge_auth_token', token);
                 }
             },
         }),

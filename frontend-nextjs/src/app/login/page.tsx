@@ -31,7 +31,18 @@ export default function LoginPage() {
             if (result?.error) {
                 setError(result.error);
             } else if (result?.ok) {
-                router.push('/dashboard/estudiantes');
+                const { getSession } = await import('next-auth/react');
+                const session = await getSession();
+                const role = (session?.user as any)?.role;
+                if (role === 'admin' || role === 'administrator') {
+                    router.push('/dashboard/admin');
+                } else if (role === 'teacher' || role === 'docente') {
+                    router.push('/dashboard/docentes');
+                } else if (role === 'parent' || role === 'padre' || role === 'padre_familia') {
+                    router.push('/dashboard/padres');
+                } else {
+                    router.push('/dashboard/estudiantes');
+                }
                 router.refresh();
             }
         } catch (err: any) {

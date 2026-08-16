@@ -17,20 +17,25 @@ export async function middleware(request: NextRequest) {
         secret: process.env.NEXTAUTH_SECRET,
     });
 
-    console.log('[Middleware] Path:', pathname, 'HasToken:', !!token);
-
     // Si está en una ruta protegida sin token, redirigir a login
     if (PROTECTED_ROUTES.some((route) => pathname.startsWith(route))) {
         if (!token) {
-            console.log('[Middleware] No token, redirecting to login');
             return NextResponse.redirect(new URL('/login', request.url));
         }
     }
 
-    // Si está en login con token válido, redirigir al dashboard
+    // Si está en login con token válido, redirigir al dashboard según su rol
     if (pathname === '/login' && token) {
-        console.log('[Middleware] Token exists, redirecting to dashboard');
-        return NextResponse.redirect(new URL('/dashboard/estudiantes', request.url));
+        const role = (token.role as string) || '';
+        let target = '/dashboard/estudiantes';
+        if (role === 'admin' || role === 'administrator') {
+            target = '/dashboard/admin';
+        } else if (role === 'teacher' || role === 'docente') {
+            target = '/dashboard/docentes';
+        } else if (role === 'parent' || role === 'padre' || role === 'padre_familia') {
+            target = '/dashboard/padres';
+        }
+        return NextResponse.redirect(new URL(target, request.url));
     }
 
     return NextResponse.next();
