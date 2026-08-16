@@ -34,30 +34,28 @@
          * Inicializar conexión
          */
         async init() {
-            // Obtener token de autenticación
-            const token = this.getAuthToken();
-
-            if (!token) {
-                void 0;
+            // En Vercel serverless no hay servidor WebSocket de socket.io activo
+            if (window.location.hostname.includes('vercel.app')) {
                 return;
             }
+
+            // Obtener token de autenticación
+            const token = this.getAuthToken();
+            if (!token) return;
 
             // Configurar Socket.IO client
             const serverUrl = window.location.origin;
 
-            this.socket = io(serverUrl, {
-                auth: {
-                    token: token
-                },
-                reconnection: true,
-                reconnectionDelay: 1000,
-                reconnectionDelayMax: 5000,
-                reconnectionAttempts: this.maxReconnectAttempts,
-                timeout: 20000
-            });
-
-            this.setupEventListeners();
-            void 0;
+            try {
+                this.socket = io(serverUrl, {
+                    auth: { token: token },
+                    reconnection: false,
+                    timeout: 5000
+                });
+                this.setupEventListeners();
+            } catch (e) {
+                // Silently fallback to standard HTTP API
+            }
         }
 
         /**

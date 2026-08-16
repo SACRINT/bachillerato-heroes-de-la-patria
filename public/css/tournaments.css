@@ -17,7 +17,7 @@ body {
 }
 
 .tournament-hero {
-    background: url('../assets/ui/tournament-bg-pattern.png'), linear-gradient(180deg, rgba(30, 27, 75, 0.8), #020617);
+    background: radial-gradient(circle at 50% 20%, rgba(99, 102, 241, 0.35) 0%, rgba(30, 27, 75, 0.95) 70%, #020617 100%);
     background-size: cover;
     padding: 4rem 1rem;
     text-align: center;

@@ -78,9 +78,12 @@
                 `;
             }
 
+            const defaultBanner = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='300' viewBox='0 0 800 300'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%234f46e5'/><stop offset='100%25' stop-color='%231e1b4b'/></linearGradient></defs><rect width='800' height='300' fill='url(%23g)'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='40' font-weight='bold' fill='%23fbbf24'>🏆 TORNEO BGE</text></svg>";
+            const bannerSrc = t.image_banner_url || defaultBanner;
+
             div.innerHTML = `
                 <div class="t-banner">
-                    <img src="${t.image_banner_url || 'assets/ui/default-tournament.jpg'}" alt="Banner">
+                    <img src="${bannerSrc}" alt="Banner" onerror="this.src='${defaultBanner}'">
                     <span class="t-status-badge">${t.status === 'upcoming' ? 'Próximamente' : 'En Curso'}</span>
                 </div>
                 <div class="t-body">

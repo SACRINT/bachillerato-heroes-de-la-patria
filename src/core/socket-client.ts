@@ -87,9 +87,13 @@ export class SocketClient {
      * Inicializar conexión
      */
     async init(): Promise<void> {
+        // En Vercel serverless no hay servidor WebSocket de socket.io activo
+        if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+            return;
+        }
+
         // Verificar si socket.io está disponible
         if (typeof io === 'undefined') {
-            console.warn('[Socket Client] socket.io-client not loaded. Socket features disabled.');
             return;
         }
 
@@ -97,7 +101,6 @@ export class SocketClient {
         const token = this.getAuthToken();
 
         if (!token) {
-            console.warn('[Socket Client] No auth token found. Socket connection disabled.');
             return;
         }
 
@@ -107,17 +110,16 @@ export class SocketClient {
         // Configurar Socket.IO client
         const serverUrl = window.location.origin;
 
-        this.socket = io(serverUrl, {
-            auth: { token },
-            reconnection: true,
-            reconnectionDelay: 1000,
-            reconnectionDelayMax: 5000,
-            reconnectionAttempts: this.maxReconnectAttempts,
-            timeout: 20000
-        });
-
-        this.setupEventListeners();
-        console.log('[Socket Client] Initialized');
+        try {
+            this.socket = io(serverUrl, {
+                auth: { token },
+                reconnection: false,
+                timeout: 5000
+            });
+            this.setupEventListeners();
+        } catch (e) {
+            // Silently fallback to REST API
+        }
     }
 
     /**

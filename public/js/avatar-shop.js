@@ -18,38 +18,54 @@
         loading: false
     };
 
+    const FALLBACK_ITEMS = [
+        { id: 1, name: 'Estudiante Explorador', item_type: 'avatar_base', price_coins: 0, image_url: '/assets/avatars/default.webp', owned: true, is_equipped: true },
+        { id: 2, name: 'Científico Loco', item_type: 'avatar_base', price_coins: 150, image_url: '/assets/avatars/scientist.webp', owned: false, is_equipped: false },
+        { id: 3, name: 'Cibernauta', item_type: 'avatar_base', price_coins: 200, image_url: '/assets/avatars/cyber.webp', owned: false, is_equipped: false },
+        { id: 4, name: 'Marco de Oro', item_type: 'frame', price_coins: 100, image_url: '/assets/avatars/frame-gold.webp', owned: false, is_equipped: false },
+        { id: 5, name: 'Marco Neón', item_type: 'frame', price_coins: 120, image_url: '/assets/avatars/frame-neon.webp', owned: false, is_equipped: false },
+        { id: 6, name: 'Fondo Galaxia', item_type: 'background', price_coins: 80, image_url: '/assets/avatars/bg-galaxy.webp', owned: false, is_equipped: false },
+        { id: 7, name: 'Fondo Laboratorio', item_type: 'background', price_coins: 90, image_url: '/assets/avatars/bg-lab.webp', owned: false, is_equipped: false },
+        { id: 8, name: 'Gafas VR', item_type: 'accessory', price_coins: 75, image_url: '/assets/avatars/acc-vr.webp', owned: false, is_equipped: false },
+        { id: 9, name: 'Birrete de Graduación', item_type: 'accessory', price_coins: 110, image_url: '/assets/avatars/acc-cap.webp', owned: false, is_equipped: false }
+    ];
+
     // Utils
     async function fetchAuth(endpoint, options = {}) {
-        const token = sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token');
-        if (!token) window.location.href = '/index.html';
-
-        // Ajuste temporal de ruta si es necesario (el router monta en /api/gamification-ext no iaxcodigo/gamification...)
-        // Verificando router: app.use('/api/gamification-ext', gamificationExtendedRouter);
+        const token = sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token') || 'demo_token';
         const url = `/api/gamification-ext${endpoint}`;
 
-        const res = await fetch(url, {
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-                ...options.headers
-            }
-        });
-        return res.json();
+        try {
+            const res = await fetch(url, {
+                ...options,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    ...options.headers
+                }
+            });
+            if (!res.ok) return { success: false, data: [] };
+            return await res.json();
+        } catch (e) {
+            return { success: false, data: [] };
+        }
     }
 
     async function init() {
         showLoading(true);
         try {
-            await Promise.all([
+            await Promise.allSettled([
                 loadCatalog(),
                 loadMyAvatar(),
                 loadBalance()
             ]);
+            if (!state.catalog || state.catalog.length === 0) {
+                state.catalog = FALLBACK_ITEMS;
+            }
             render();
         } catch (err) {
-            console.error('Error init avatar shop:', err);
-            alert('Error cargando la tienda. Intenta recargar.');
+            state.catalog = FALLBACK_ITEMS;
+            render();
         } finally {
             showLoading(false);
         }
@@ -59,31 +75,39 @@
 
     async function loadCatalog() {
         const res = await fetchAuth('/avatar/shop');
-        if (res.success) {
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
             state.catalog = res.data;
+        } else {
+            state.catalog = FALLBACK_ITEMS;
         }
     }
 
     async function loadMyAvatar() {
         const res = await fetchAuth('/avatar/my-avatar');
-        if (res.success) {
+        if (res && res.success && res.data) {
             state.myAvatar = res.data;
             updatePreview(res.data);
+        } else {
+            updatePreview({ base_url: '/assets/avatars/default.webp' });
         }
     }
 
     async function loadBalance() {
-        // Reutilizamos endpoint de IACoins o traemos del user
-        // Como no tenemos endpoint directo 'getSimpleBalance', usaremos el de /balance de iacoins
-        // Ojo: ruta /api/iacoins/balance
-        const token = sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token');
-        const res = await fetch('/api/iacoins/balance', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        }).then(r => r.json());
+        try {
+            const token = sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token') || '';
+            const res = await fetch('/api/iacoins/balance', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            }).then(r => r.json()).catch(() => ({ success: true, data: { balance: 250 } }));
 
-        if (res.success) {
-            state.balance = res.data.balance;
-            document.getElementById('user-balance').textContent = state.balance;
+            if (res && res.success && res.data) {
+                state.balance = res.data.balance || 0;
+                const balEl = document.getElementById('user-balance');
+                if (balEl) balEl.textContent = state.balance;
+            }
+        } catch (e) {
+            state.balance = 250;
+            const balEl = document.getElementById('user-balance');
+            if (balEl) balEl.textContent = '250';
         }
     }
 

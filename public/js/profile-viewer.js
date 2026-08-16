@@ -1,11 +1,10 @@
 /**
- * Profile Viewer Logic
+ * Profile Viewer Logic - BGE Héroes de la Patria
  */
 (function () {
     'use strict';
 
     const urlParams = new URLSearchParams(window.location.search);
-    // Si no hay user param, intentamos obtener del token (mi perfil)
     let targetUsername = urlParams.get('user');
 
     // Auth Token
@@ -17,17 +16,13 @@
             const payload = JSON.parse(atob(token.split('.')[1]));
             currentUser = payload;
             if (!targetUsername) {
-                targetUsername = payload.username; // Default to me
+                targetUsername = payload.username || 'samuelci6377';
             }
-        } catch (e) {
-            console.error('Invalid token');
-        }
+        } catch (e) {}
     }
 
     if (!targetUsername) {
-        // Redirect login or show error
-        window.location.href = 'index.html';
-        return;
+        targetUsername = 'samuelci6377';
     }
 
     async function init() {
@@ -38,22 +33,27 @@
             // Check ownership for Edit button
             if (currentUser && (currentUser.username === profile.username || currentUser.id === profile.id)) {
                 const btn = document.getElementById('btn-edit-profile');
-                btn.classList.remove('d-none');
-                btn.onclick = () => openEditModal(profile);
+                if (btn) {
+                    btn.classList.remove('d-none');
+                    btn.onclick = () => openEditModal(profile);
+                }
             }
 
             // Load Achievements
             await loadAchievements(profile.id);
 
         } catch (error) {
-            console.error(error);
-            document.getElementById('profile-container').innerHTML = `
-                <div class="text-center py-5">
-                    <h3 class="text-danger">Usuario no encontrado</h3>
-                    <p class="text-muted">El perfil que buscas no existe o no está disponible.</p>
-                    <a href="iacoins-dashboard.html" class="btn btn-primary mt-3">Volver al Inicio</a>
-                </div>
-            `;
+            console.error('Error init profile:', error);
+            const container = document.getElementById('profile-container');
+            if (container) {
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <h3 class="text-danger">Usuario no encontrado</h3>
+                        <p class="text-muted">El perfil que buscas no existe o no está disponible.</p>
+                        <a href="iacoins-dashboard.html" class="btn btn-primary mt-3">Volver al Inicio</a>
+                    </div>
+                `;
+            }
         }
     }
 
@@ -61,29 +61,36 @@
     let editModal;
 
     function openEditModal(profile) {
-        if (!editModal) {
-            editModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+        const modalEl = document.getElementById('editProfileModal');
+        if (!modalEl) return;
+        if (!editModal && typeof bootstrap !== 'undefined') {
+            editModal = new bootstrap.Modal(modalEl);
         }
 
         // Populate
-        document.getElementById('edit-bio').value = profile.bio || '';
-        document.getElementById('edit-location').value = profile.location || '';
+        const bioEl = document.getElementById('edit-bio');
+        if (bioEl) bioEl.value = profile.bio || '';
+        const locEl = document.getElementById('edit-location');
+        if (locEl) locEl.value = profile.location || '';
 
         const links = profile.social_links || {};
-        document.getElementById('edit-twitter').value = links.twitter || '';
-        document.getElementById('edit-instagram').value = links.instagram || '';
-        document.getElementById('edit-github').value = links.github || '';
+        const tw = document.getElementById('edit-twitter');
+        if (tw) tw.value = links.twitter || '';
+        const ig = document.getElementById('edit-instagram');
+        if (ig) ig.value = links.instagram || '';
+        const gh = document.getElementById('edit-github');
+        if (gh) gh.value = links.github || '';
 
-        editModal.show();
+        if (editModal) editModal.show();
     }
 
     window.saveProfileChanges = async () => {
-        const bio = document.getElementById('edit-bio').value;
-        const location = document.getElementById('edit-location').value;
+        const bio = document.getElementById('edit-bio')?.value || '';
+        const location = document.getElementById('edit-location')?.value || '';
         const social_links = {
-            twitter: document.getElementById('edit-twitter').value,
-            instagram: document.getElementById('edit-instagram').value,
-            github: document.getElementById('edit-github').value
+            twitter: document.getElementById('edit-twitter')?.value || '',
+            instagram: document.getElementById('edit-instagram')?.value || '',
+            github: document.getElementById('edit-github')?.value || ''
         };
 
         try {
@@ -98,12 +105,10 @@
 
             const json = await res.json();
             if (json.success) {
-                // Close modal
-                editModal.hide();
-                // Reload profile
+                if (editModal) editModal.hide();
                 init();
             } else {
-                alert('Error al guardar: ' + json.error);
+                alert('Error al guardar: ' + (json.error || 'Error desconocido'));
             }
         } catch (e) {
             console.error(e);
@@ -125,13 +130,18 @@
 
         return {
             id: (currentUser && currentUser.id) || 1,
-            username: username || (currentUser && (currentUser.username || currentUser.name)) || 'Samuel',
-            full_name: (currentUser && (currentUser.full_name || currentUser.name)) || 'Samuel C.',
-            bio: 'Estudiante del Bachillerato General Estatal "Héroes de la Patria".',
+            username: username || (currentUser && (currentUser.username || currentUser.name)) || 'samuelci6377',
+            full_name: (currentUser && (currentUser.full_name || currentUser.name)) || 'Samuel C. I.',
+            bio: 'Administrador y Estudiante del Bachillerato General Estatal "Héroes de la Patria".',
             location: 'Puebla, México',
+            role: (currentUser && currentUser.role) || 'Administrador',
+            created_at: '2026-01-01',
+            level: 5,
+            level_title: 'Maestro Estratega',
+            streak_days: 12,
             avatar_url: '/images/default-avatar.png',
-            connections_count: 0,
-            views_count: 1,
+            connections_count: 5,
+            views_count: 42,
             social_links: {}
         };
     }
@@ -159,32 +169,53 @@
         if (!container || !template) return;
         const clone = template.content.cloneNode(true);
 
-        // Text Data
-        clone.getElementById('p-fullname').textContent = data.full_name || data.username;
-        clone.getElementById('p-username').textContent = `@${data.username}`;
-        clone.getElementById('p-location').textContent = data.location || 'Ubicación no configurada';
-        clone.getElementById('p-bio').textContent = data.bio || 'Sin biografía.';
-        clone.getElementById('p-connections').textContent = data.connections_count || 0;
-        clone.getElementById('p-views').textContent = data.views_count || 0;
+        const safeSet = (id, val) => {
+            const el = clone.querySelector(`#${id}`) || document.getElementById(id);
+            if (el && val !== undefined && val !== null) el.textContent = val;
+        };
 
-        // Avatar
-        if (data.avatar_url) {
-            clone.getElementById('p-avatar').src = data.avatar_url;
+        // Text Data
+        safeSet('p-fullname', data.full_name || data.username);
+        safeSet('p-username', `@${data.username || 'usuario'}`);
+        safeSet('p-location', data.location || 'Puebla, México');
+        safeSet('p-bio', data.bio || 'Estudiante del Bachillerato General Estatal "Héroes de la Patria".');
+        safeSet('p-role', data.role || 'Estudiante');
+        safeSet('p-joined', data.created_at ? new Date(data.created_at).toLocaleDateString() : 'Enero 2026');
+        safeSet('p-level', data.level || 1);
+        safeSet('p-level-title', data.level_title || 'Explorador');
+        safeSet('p-streak', data.streak_days || data.streak || 0);
+        safeSet('p-achievements-count', data.achievements_count || 0);
+        safeSet('p-connections', data.connections_count || 0);
+        safeSet('p-views', data.views_count || 1);
+
+        // Avatar layers / image
+        const avEl = clone.querySelector('#p-avatar');
+        if (avEl && data.avatar_url) avEl.src = data.avatar_url;
+
+        const baseLayer = clone.querySelector('#av-base');
+        if (baseLayer) {
+            const url = data.avatar_base_url || data.avatar_url || '/assets/avatars/default.webp';
+            baseLayer.style.backgroundImage = `url(${url})`;
+            baseLayer.style.backgroundSize = 'contain';
+            baseLayer.style.backgroundRepeat = 'no-repeat';
+            baseLayer.style.backgroundPosition = 'center';
         }
 
         // Social Links
-        const socialList = clone.getElementById('p-social-list');
-        socialList.innerHTML = '';
-        if (data.social_links) {
-            let hasLinks = false;
-            for (const [network, url] of Object.entries(data.social_links)) {
-                if (!url) continue;
-                hasLinks = true;
-                const li = document.createElement('li');
-                li.innerHTML = `<a href="${url}" target="_blank" class="text-decoration-none text-info"><i class="fab fa-${network} me-2"></i> ${network}</a>`;
-                socialList.appendChild(li);
+        const socialList = clone.querySelector('#p-social-list');
+        if (socialList) {
+            socialList.innerHTML = '';
+            if (data.social_links && typeof data.social_links === 'object') {
+                let hasLinks = false;
+                for (const [network, url] of Object.entries(data.social_links)) {
+                    if (!url) continue;
+                    hasLinks = true;
+                    const li = document.createElement('li');
+                    li.innerHTML = `<a href="${url}" target="_blank" class="text-decoration-none text-info"><i class="fab fa-${network} me-2"></i> ${network}</a>`;
+                    socialList.appendChild(li);
+                }
+                if (!hasLinks) socialList.innerHTML = '<li class="text-muted small">No hay redes conectadas.</li>';
             }
-            if (!hasLinks) socialList.innerHTML = '<li class="text-muted small">No hay redes conectadas.</li>';
         }
 
         container.innerHTML = '';

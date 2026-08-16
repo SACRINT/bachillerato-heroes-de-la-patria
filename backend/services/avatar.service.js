@@ -1,6 +1,18 @@
 const { pool } = require('../config/database.js');
 const devLogger = require('../utils/devLogger.js');
 
+const DEMO_CATALOG = [
+    { id: 1, name: 'Estudiante Explorador', item_type: 'avatar_base', price_coins: 0, image_url: '/assets/avatars/default.webp', is_active: true, owned: true, is_equipped: true },
+    { id: 2, name: 'Científico Loco', item_type: 'avatar_base', price_coins: 150, image_url: '/assets/avatars/scientist.webp', is_active: true, owned: false, is_equipped: false },
+    { id: 3, name: 'Cibernauta', item_type: 'avatar_base', price_coins: 200, image_url: '/assets/avatars/cyber.webp', is_active: true, owned: false, is_equipped: false },
+    { id: 4, name: 'Marco de Oro', item_type: 'frame', price_coins: 100, image_url: '/assets/avatars/frame-gold.webp', is_active: true, owned: false, is_equipped: false },
+    { id: 5, name: 'Marco Neón', item_type: 'frame', price_coins: 120, image_url: '/assets/avatars/frame-neon.webp', is_active: true, owned: false, is_equipped: false },
+    { id: 6, name: 'Fondo Galaxia', item_type: 'background', price_coins: 80, image_url: '/assets/avatars/bg-galaxy.webp', is_active: true, owned: false, is_equipped: false },
+    { id: 7, name: 'Fondo Laboratorio', item_type: 'background', price_coins: 90, image_url: '/assets/avatars/bg-lab.webp', is_active: true, owned: false, is_equipped: false },
+    { id: 8, name: 'Gafas VR', item_type: 'accessory', price_coins: 75, image_url: '/assets/avatars/acc-vr.webp', is_active: true, owned: false, is_equipped: false },
+    { id: 9, name: 'Birrete de Graduación', item_type: 'accessory', price_coins: 110, image_url: '/assets/avatars/acc-cap.webp', is_active: true, owned: false, is_equipped: false }
+];
+
 class AvatarService {
 
     /**
@@ -8,48 +20,62 @@ class AvatarService {
      * Marca cuáles ya tiene comprados.
      */
     async getCatalog(userId) {
-        const query = `
-            SELECT 
-                ai.*,
-                CASE WHEN uai.id IS NOT NULL THEN true ELSE false END as owned,
-                uai.is_equipped
-            FROM avatar_items ai
-            LEFT JOIN user_avatar_inventory uai ON ai.id = uai.item_id AND uai.user_id = $1
-            WHERE ai.is_active = true
-            ORDER BY ai.item_type, ai.price_coins ASC
-        `;
-        const res = await pool.query(query, [userId]);
-        return res.rows;
+        try {
+            const query = `
+                SELECT 
+                    ai.*,
+                    CASE WHEN uai.id IS NOT NULL THEN true ELSE false END as owned,
+                    uai.is_equipped
+                FROM avatar_items ai
+                LEFT JOIN user_avatar_inventory uai ON ai.id = uai.item_id AND uai.user_id = $1
+                WHERE ai.is_active = true
+                ORDER BY ai.item_type, ai.price_coins ASC
+            `;
+            const res = await pool.query(query, [userId]);
+            if (res.rows && res.rows.length > 0) return res.rows;
+            return DEMO_CATALOG;
+        } catch (e) {
+            devLogger.warn('[AVATAR-SERVICE] Tabla avatar_items no disponible, usando catálogo demo');
+            return DEMO_CATALOG;
+        }
     }
 
     /**
      * Obtiene la configuración actual del avatar del usuario.
      */
     async getUserAvatar(userId) {
-        // Intentar obtener de user_avatar_config
-        let query = `
-            SELECT 
-                uac.*,
-                base.image_url as base_url,
-                frame.image_url as frame_url,
-                bg.image_url as bg_url,
-                acc.image_url as acc_url
-            FROM user_avatar_config uac
-            LEFT JOIN avatar_items base ON uac.current_base_id = base.id
-            LEFT JOIN avatar_items frame ON uac.current_frame_id = frame.id
-            LEFT JOIN avatar_items bg ON uac.current_background_id = bg.id
-            LEFT JOIN avatar_items acc ON uac.current_accessory_id = acc.id
-            WHERE uac.user_id = $1
-         `;
-        let res = await pool.query(query, [userId]);
+        try {
+            let query = `
+                SELECT 
+                    uac.*,
+                    base.image_url as base_url,
+                    frame.image_url as frame_url,
+                    bg.image_url as bg_url,
+                    acc.image_url as acc_url
+                FROM user_avatar_config uac
+                LEFT JOIN avatar_items base ON uac.current_base_id = base.id
+                LEFT JOIN avatar_items frame ON uac.current_frame_id = frame.id
+                LEFT JOIN avatar_items bg ON uac.current_background_id = bg.id
+                LEFT JOIN avatar_items acc ON uac.current_accessory_id = acc.id
+                WHERE uac.user_id = $1
+            `;
+            let res = await pool.query(query, [userId]);
 
-        if (res.rows.length === 0) {
-            // Si no tiene config, buscar defaults (items precio 0)
-            // O simplemente devolver null y dejar que el frontend use placeholders
-            return await this.initializeDefaultAvatar(userId);
+            if (res.rows.length === 0) {
+                return await this.initializeDefaultAvatar(userId);
+            }
+
+            return res.rows[0];
+        } catch (e) {
+            devLogger.warn('[AVATAR-SERVICE] Tabla user_avatar_config no disponible, usando avatar demo');
+            return {
+                user_id: userId,
+                base_url: '/assets/avatars/default.webp',
+                frame_url: null,
+                bg_url: null,
+                acc_url: null
+            };
         }
-
-        return res.rows[0];
     }
 
     async initializeDefaultAvatar(userId) {
