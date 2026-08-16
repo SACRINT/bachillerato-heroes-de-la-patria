@@ -211,7 +211,6 @@ class CoreWebVitalsOptimizer {
      * Optimizar fuentes para mejorar CLS
      */
     async optimizeFonts() {
-        // Preload de fuentes críticas
         const criticalFonts = [
             'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
             'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
@@ -219,14 +218,15 @@ class CoreWebVitalsOptimizer {
 
         criticalFonts.forEach(fontUrl => {
             if (!document.querySelector(`link[href="${fontUrl}"]`)) {
-                this.preloadFont(fontUrl);
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = fontUrl;
+                document.head.appendChild(link);
             }
         });
 
         // Font-display: swap para todas las fuentes
         this.applyFontDisplay();
-
-        this.addOptimization('Optimización de fuentes aplicada');
     }
 
     /**

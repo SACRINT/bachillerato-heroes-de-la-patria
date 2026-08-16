@@ -36,8 +36,8 @@ function detectTenantId(req) {
         // Si hay subdomain (ejemplo: tenant1.bge.edu.mx)
         if (parts.length > 2) {
             const subdomain = parts[0];
-            // Excluir subdomains comunes que NO son tenants
-            if (!['www', 'api', 'admin', 'dev', 'staging'].includes(subdomain)) {
+            // Excluir subdomains comunes o dominios base de la app que NO son tenants
+            if (!['www', 'api', 'admin', 'dev', 'staging', 'bge-heroesdelapatria', 'bge-heroes-de-la-patria'].includes(subdomain) && !hostname.includes('vercel.app')) {
                 return subdomain;
             }
         }
@@ -85,9 +85,6 @@ async function getTenantConfig(tenantId) {
         );
 
         if (result.rows.length === 0) {
-            // Tenant no existe, devolver configuración default
-            console.warn(`[TENANT-CONTEXT] Tenant no encontrado: ${tenantId}, usando 'default'`);
-
             // Intentar obtener tenant 'default'
             const defaultResult = await pool.query(
                 `SELECT * FROM tenants WHERE id::text = 'default' OR subdomain = 'default' LIMIT 1`
@@ -95,7 +92,7 @@ async function getTenantConfig(tenantId) {
 
             if (defaultResult.rows.length === 0) {
                 // Si tampoco existe 'default', crear configuración básica
-                return {
+                const basicConfig = {
                     id: 'default',
                     nombre: 'BGE Héroes de la Patria',
                     dominio: 'localhost',
@@ -111,13 +108,20 @@ async function getTenantConfig(tenantId) {
                         }
                     }
                 };
+
+                tenantCache.set(tenantId, {
+                    data: basicConfig,
+                    timestamp: Date.now()
+                });
+
+                return basicConfig;
             }
 
             const tenant = defaultResult.rows[0];
             tenant.config_json = tenant.config_json || {};
 
-            // Cache tenant 'default'
-            tenantCache.set('default', {
+            // Cache tenant para este tenantId
+            tenantCache.set(tenantId, {
                 data: tenant,
                 timestamp: Date.now()
             });

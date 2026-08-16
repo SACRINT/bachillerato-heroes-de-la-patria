@@ -452,7 +452,6 @@ class BGEPerformanceModule extends BGEModule {
      * 🔤 Optimizar fuentes
      */
     optimizeFonts() {
-        // Precargar fuentes críticas
         const fontPreloads = [
             'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
         ];
@@ -460,10 +459,8 @@ class BGEPerformanceModule extends BGEModule {
         fontPreloads.forEach(font => {
             if (!document.querySelector(`link[href="${font}"]`)) {
                 const link = document.createElement('link');
-                link.rel = 'preload';
+                link.rel = 'stylesheet';
                 link.href = font;
-                link.as = 'style';
-                link.crossOrigin = 'anonymous';
                 document.head.appendChild(link);
             }
         });
