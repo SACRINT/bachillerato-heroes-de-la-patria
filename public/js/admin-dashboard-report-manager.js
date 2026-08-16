@@ -39,13 +39,9 @@
     }
 
     function initializeReportManager() {
-        console.log('[ADMIN-REPORT-MANAGER] Inicializando gestor de reportes...');
-
         registerReportGenerationHandlers();
         registerAcademicReportHandlers();
         registerExportHandlers();
-
-        console.log('[ADMIN-REPORT-MANAGER] ✅ Gestor de reportes inicializado correctamente');
     }
 
     /**

@@ -7,8 +7,6 @@
 // NOTA: DOMPurify se asume disponible globalmente desde script anterior
 // O usar: const DOMPurify = window.DOMPurify || { sanitize: (str) => str };
 
-console.log('📋 [APPROVALS MANAGER] Cargando sistema de aprobaciones...');
-
 // Variable global para almacenar las solicitudes
 let pendingApprovals = [];
 let filteredApprovals = [];
@@ -17,17 +15,10 @@ let filteredApprovals = [];
  * Cargar solicitudes pendientes desde /api/pendientes-aprobacion
  */
 async function loadPendingApprovals() {
-    console.log('📋 Cargando solicitudes pendientes...');
-
     try {
-        // 🔄 ACTUALIZADO (5 NOV): Sin filtro estado en frontend
-        // El backend ya filtra: WHERE estado IN ('pendiente_confirmacion', 'pendiente')
-        // Mostramos AMBOS: registros sin confirmar email + registros confirmados esperando aprobación
         const response = await fetch('/api/pendientes-aprobacion?limit=100');
 
-        // Verificar status HTTP
         if (!response.ok) {
-            console.error('❌ Error HTTP:', response.status, response.statusText);
             showApprovalsError(`Error del servidor: ${response.status}`);
             return;
         }
@@ -35,37 +26,21 @@ async function loadPendingApprovals() {
         const result = await response.json();
 
         if (result && result.success) {
-            console.log('DEBUG: API result:', result);
-            console.log(`DEBUG: Total en BD: ${result.total}, Registros recibidos: ${result.data ? result.data.length : 0}`);
-
             // Transformar datos de la nueva API al formato esperado
             pendingApprovals = Array.isArray(result.data) ? result.data.map(item => {
-                // Parsear datos_json si es string (viene de BD como JSON string)
                 let parsedData;
                 try {
-                    console.log(`🔍 [LOAD] Procesando registro ID ${item.id}:`);
-                    console.log(`   Tipo: ${item.tipo_solicitud}`);
-                    console.log(`   datos_json tipo: ${typeof item.datos_json}`);
-                    console.log(`   datos_json es null: ${item.datos_json === null}`);
-                    console.log(`   datos_json es undefined: ${item.datos_json === undefined}`);
-                    console.log(`   datos_json length: ${typeof item.datos_json === 'string' ? item.datos_json.length : 'N/A'}`);
-                    console.log(`   datos_json primeros 100 chars: ${typeof item.datos_json === 'string' ? item.datos_json.substring(0, 100) : String(item.datos_json).substring(0, 100)}`);
-
                     parsedData = typeof item.datos_json === 'string'
                         ? JSON.parse(item.datos_json)
                         : item.datos_json;
-
-                    console.log(`   ✅ Parseado exitosamente:`, parsedData);
                 } catch (e) {
-                    console.warn(`⚠️ Error parseando datos_json para ID ${item.id}:`, e);
-                    console.warn(`   Raw datos_json:`, item.datos_json);
                     parsedData = item.datos_json || {};
                 }
 
                 return {
-                    id: parseInt(item.id, 10),  // ✅ CONVERTIR A NÚMERO para sincronizar con elemento HTML
+                    id: parseInt(item.id, 10),
                     form_type: item.tipo_solicitud,
-                    data: parsedData,  // ✅ OBJETO PARSEADO, no string
+                    data: parsedData,
                     verification_email: item.email_usuario,
                     email_verified: item.email_confirmado !== undefined ? item.email_confirmado : true,
                     created_at: item.fecha_solicitud,
@@ -73,10 +48,7 @@ async function loadPendingApprovals() {
                 };
             }) : [];
 
-            console.log('DEBUG: pendingApprovals after assignment:', pendingApprovals);
             filteredApprovals = [...pendingApprovals];
-
-            console.log(`✅ Cargadas ${pendingApprovals.length} solicitudes pendientes (Total en BD: ${result.total})`);
 
             // Actualizar contador en el badge
             updateApprovalsBadge(pendingApprovals.length);
@@ -86,12 +58,10 @@ async function loadPendingApprovals() {
 
         } else {
             const errorMsg = result?.error || 'Error desconocido al cargar solicitudes';
-            console.error('❌ Error al cargar solicitudes:', errorMsg);
             showApprovalsError(errorMsg);
         }
 
     } catch (error) {
-        console.error('❌ Error de conexión:', error);
         showApprovalsError('Error de conexión con el servidor: ' + error.message);
     }
 }

@@ -591,7 +591,6 @@ function initFormValidation(configKey) {
         }
     });
 
-    // Activar validación en tiempo real si está configurado
     if (config.realTimeValidation) {
         Object.keys(config.rules).forEach(fieldId => {
             const field = document.getElementById(fieldId);
@@ -600,8 +599,6 @@ function initFormValidation(configKey) {
             }
         });
     }
-
-    console.log(`✅ [Form Validator] Validación inicializada para: ${config.formId}`);
 }
 
 /**

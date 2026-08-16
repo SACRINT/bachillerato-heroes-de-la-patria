@@ -5,10 +5,7 @@
  * Versión 2.0 - Integración con Backend API
  */
 
-// Prevenir carga múltiple del script
-if (typeof window.BGE_CHATBOT_LOADED !== 'undefined') {
-    console.log('🤖 [CHATBOT] Ya está cargado, evitando duplicación');
-} else {
+if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
     window.BGE_CHATBOT_LOADED = true;
 
     // 🔧 Configuración de API Backend
@@ -1483,15 +1480,10 @@ if (typeof window.BGE_CHATBOT_LOADED !== 'undefined') {
             }
         }
 
-        // 🚀 INICIALIZACIÓN DEL CHATBOT
-        // CHATBOT WIDGET INJECTION FUNCTION
         function injectChatbotWidget() {
             if (document.getElementById('chatbotToggle') && document.getElementById('chatbotContainer')) {
-                console.log('[CHATBOT] Widget ya existe en el DOM');
                 return;
             }
-
-            console.log('[CHATBOT] Inyectando widget del chatbot...');
 
             // Crear boton flotante
             const toggleBtn = document.createElement('button');
@@ -1523,8 +1515,6 @@ if (typeof window.BGE_CHATBOT_LOADED !== 'undefined') {
                 widgetStyles.textContent = '.chatbot-toggle{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1976D2 0%,#42A5F5 100%);color:white;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(25,118,210,0.4);z-index:10000;font-size:24px;display:flex;align-items:center;justify-content:center;transition:all 0.3s ease}.chatbot-toggle:hover{transform:scale(1.1);box-shadow:0 6px 25px rgba(25,118,210,0.5)}.chatbot-container{position:fixed;bottom:150px;right:50px;width:370px;height:520px;background:white;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,0.2);z-index:10001;display:flex;flex-direction:column;overflow:hidden}.chatbot-header{background:linear-gradient(135deg,#0D47A1 0%,#1976D2 100%);color:white;padding:16px;display:flex;justify-content:space-between;align-items:center}.chatbot-header-content{display:flex;align-items:center;gap:12px}.chatbot-avatar{font-size:28px}.chatbot-title-wrapper{display:flex;flex-direction:column}.chatbot-title{margin:0;font-size:16px;font-weight:600}.chatbot-status{font-size:12px;opacity:0.9}.chatbot-status.online::before{content:"";display:inline-block;width:8px;height:8px;background:#4CAF50;border-radius:50%;margin-right:6px}.chatbot-close{background:rgba(255,255,255,0.1);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}.chatbot-close:hover{background:rgba(255,255,255,0.2)}.chatbot-messages{flex:1;overflow-y:auto;padding:16px;background:#f8f9fa;display:flex;flex-direction:column;gap:12px}.chatbot-input-area{padding:12px 16px;background:white;border-top:1px solid #eee}.chatbot-input-wrapper{display:flex;gap:8px}#chatbotInput{flex:1;border:1px solid #ddd;border-radius:24px;padding:12px 20px;font-size:14px;outline:none}#chatbotInput:focus{border-color:#1976D2}.chatbot-send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1976D2 0%,#42A5F5 100%);color:white;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}.chatbot-footer{padding:8px 16px;background:#f5f5f5;text-align:center;color:#666;border-top:1px solid #eee}.typing-indicator{display:flex;gap:4px;padding:8px 0}.typing-indicator span{width:8px;height:8px;background:#1976D2;border-radius:50%;animation:bounce 1.4s infinite ease-in-out}.typing-indicator span:nth-child(1){animation-delay:-0.32s}.typing-indicator span:nth-child(2){animation-delay:-0.16s}@keyframes bounce{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}@media(max-width:480px){.chatbot-container{width:calc(100vw - 40px);height:calc(100vh - 120px);bottom:80px}}body.dark-mode .chatbot-container{background:#2d2d2d}body.dark-mode .chatbot-messages{background:#1a1a1a}body.dark-mode .chatbot-message.bot{background:#3d3d3d;color:#eee}body.dark-mode .chatbot-input-area{background:#2d2d2d;border-top-color:#444}body.dark-mode #chatbotInput{background:#3d3d3d;border-color:#555;color:#eee}body.dark-mode .chatbot-footer{background:#2d2d2d;border-top-color:#444;color:#aaa}';
                 document.head.appendChild(widgetStyles);
             }
-
-            console.log('[CHATBOT] Widget inyectado correctamente');
         }
 
         // INICIALIZACION DEL CHATBOT

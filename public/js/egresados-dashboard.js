@@ -40,8 +40,6 @@ class EgresadosDashboard {
 
         // API Base URL
         this.apiBase = '/api/egresados';
-
-        console.log('🎓 [EGRESADOS] Dashboard inicializado');
     }
 
     /**
@@ -60,9 +58,6 @@ class EgresadosDashboard {
      */
     async init() {
         try {
-            console.log('🎓 [EGRESADOS] Cargando dashboard...');
-
-            // Mostrar loading
             this.showLoading(true);
 
             // Cargar datos
@@ -79,15 +74,8 @@ class EgresadosDashboard {
             // Setup event listeners
             this.setupEventListeners();
 
-            // Ocultar loading
             this.showLoading(false);
-
-            console.log('✅ [EGRESADOS] Dashboard cargado exitosamente');
-            this.showToast('Dashboard de egresados cargado', 'success');
-
         } catch (error) {
-            console.error('❌ [EGRESADOS] Error al inicializar:', error);
-            this.showToast('Error al cargar el dashboard de egresados', 'error');
             this.showLoading(false);
         }
     }
@@ -97,25 +85,20 @@ class EgresadosDashboard {
      */
     async loadStats() {
         try {
-            // Usar apiClient para autenticación automática
-            if (!window.apiClient) {
-                throw new Error('API Client no disponible');
+            let response;
+            if (window.apiClient) {
+                response = await window.apiClient.request(`${this.apiBase}/stats/general`);
+            } else {
+                const res = await fetch(`${this.apiBase}/stats/general`);
+                response = await res.json();
             }
 
-            const response = await window.apiClient.request(`${this.apiBase}/stats/general`);
-
-            // Extraer datos correctamente de la estructura de respuesta
             if (response && response.success) {
                 this.stats = response.data || {};
             } else {
                 this.stats = response || {};
             }
-
-            console.log('📊 [EGRESADOS] Estadísticas cargadas:', this.stats);
-
         } catch (error) {
-            console.error('❌ [EGRESADOS] Error al cargar stats:', error);
-            // Stats por defecto
             this.stats = {
                 total: 0,
                 porGeneracion: {},
@@ -131,14 +114,14 @@ class EgresadosDashboard {
      */
     async loadEgresados() {
         try {
-            // Usar apiClient para autenticación automática
-            if (!window.apiClient) {
-                throw new Error('API Client no disponible');
+            let response;
+            if (window.apiClient) {
+                response = await window.apiClient.request(this.apiBase);
+            } else {
+                const res = await fetch(this.apiBase);
+                response = await res.json();
             }
 
-            const response = await window.apiClient.request(this.apiBase);
-
-            // Extraer datos correctamente de la estructura de respuesta
             if (response && response.success && response.data) {
                 this.egresados = Array.isArray(response.data) ? response.data : [];
             } else if (Array.isArray(response)) {
@@ -146,11 +129,7 @@ class EgresadosDashboard {
             } else {
                 this.egresados = [];
             }
-
-            console.log(`📋 [EGRESADOS] ${this.egresados.length} egresados cargados`);
-
         } catch (error) {
-            console.error('❌ [EGRESADOS] Error al cargar lista:', error);
             this.egresados = [];
         }
     }

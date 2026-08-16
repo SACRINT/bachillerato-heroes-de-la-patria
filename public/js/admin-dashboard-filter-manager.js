@@ -33,13 +33,9 @@
     }
 
     function initializeFilterManager() {
-        console.log('[ADMIN-FILTER-MANAGER] Inicializando gestor de filtros...');
-
         registerSearchHandlers();
         registerFilterHandlers();
         registerCalendarFilterHandlers();
-
-        console.log('[ADMIN-FILTER-MANAGER] ✅ Gestor de filtros inicializado correctamente');
     }
 
     /**

@@ -45,7 +45,6 @@ class AdminDashboardStats {
     }
 
     async init() {
-        console.log('🚀 [STATS-HYPER] Inicializando cargador optimizado de estadísticas...');
         await this.loadStats();
 
         if (this.autoRefresh) {

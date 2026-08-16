@@ -160,215 +160,130 @@
     // ================================================================
 
     // Esperar a que el BGE Framework esté listo
-    // Esperar a que el BGE Framework esté listo
     function waitForBGEFramework() {
         return new Promise((resolve) => {
-            // Check 1: Framework moderno ya inicializado
-            if (window.BGE && typeof window.BGE.initialized === 'function' && window.BGE.initialized()) {
-                console.log('✅ [INIT] BGE Framework ya estaba listo al iniciar dashboard');
+            if ((window.BGE && typeof window.BGE.initialized === 'function' && window.BGE.initialized()) ||
+                (window.bgeFramework && window.bgeFramework.initialized) ||
+                window.secureAdminAuth) {
                 resolve();
                 return;
             }
 
-            // Check 2: Instancia global directa (bgeFramework)
-            if (window.bgeFramework && window.bgeFramework.initialized) {
-                console.log('✅ [INIT] Objeto bgeFramework ya disponible');
-                resolve();
-                return;
-            }
-
-            // Check 3: Auth Legacy (Fallback)
-            if (window.secureAdminAuth) {
-                console.log('✅ [INIT] secureAdminAuth disponible (Legacy fallback)');
-                resolve();
-                return;
-            }
-
-            console.log('⏳ [INIT] Esperando evento bge:ready...');
-
-            // Listener para evento
-            const readyHandler = (event) => {
-                console.log('🎉 [INIT] Evento bge:ready recibido:', event.detail);
+            const readyHandler = () => {
                 window.removeEventListener('bge:ready', readyHandler);
                 resolve();
             };
 
             window.addEventListener('bge:ready', readyHandler);
 
-            // Timeout de seguridad (5 segundos)
             setTimeout(() => {
-                // Verificar una última vez antes de dar timeout
-                if ((window.BGE && window.BGE.initialized()) || (window.bgeFramework && window.bgeFramework.initialized)) {
-                    console.log('✅ [INIT] BGE Framework cargó justo antes del timeout');
-                    resolve();
-                    return;
-                }
-                console.warn('⚠️ [INIT] Timeout esperando bge:ready, continuando de todas formas...');
                 window.removeEventListener('bge:ready', readyHandler);
                 resolve();
-            }, 5000);
+            }, 1000);
         });
     }
 
     document.addEventListener('DOMContentLoaded', async function () {
-        console.log('🚀 [DASHBOARD] Inicializando AdminDashboard...');
-
-        // ESPERAR a que el BGE Framework termine de cargar
         await waitForBGEFramework();
-        console.log('✅ [INIT] BGE Framework listo, iniciando dashboard...');
 
-        // Función para inicializar el dashboard
         function initializeDashboard() {
-            console.log('🔧 [DASHBOARD] Inicializando AdminDashboard...');
-
-            // ✅ CHECK: Si ya existe una instancia (desde bundle TypeScript), usarla
             if (window.adminDashboard) {
-                console.log('✅ [DASHBOARD] Usando instancia existente de AdminDashboard (Bundle TS)');
                 return true;
             }
 
-            console.log('🔧 [DASHBOARD] Creando nueva instancia de AdminDashboard (Legacy)...');
-
             if (typeof AdminDashboard === 'undefined') {
-                console.error('❌ [DASHBOARD] AdminDashboard no está definido');
                 return false;
             }
 
             try {
                 window.adminDashboard = new AdminDashboard();
-                console.log('✅ [DASHBOARD] AdminDashboard inicializado correctamente');
                 return true;
             } catch (error) {
-                console.error('❌ [DASHBOARD] Error al inicializar AdminDashboard:', error);
                 return false;
             }
         }
 
-        // Función para inicializar los gráficos
         function initializeCharts() {
-            console.log('📊 [CHARTS] Verificando Chart.js...');
-
-            if (typeof Chart === 'undefined') {
-                console.error('❌ [CHARTS] Chart.js no está disponible');
-                return false;
-            }
-
-            console.log('📊 [CHARTS] Chart.js disponible, versión:', Chart.version);
-
-            if (!window.adminDashboard) {
-                console.error('❌ [CHARTS] AdminDashboard no está inicializado');
+            if (typeof Chart === 'undefined' || !window.adminDashboard) {
                 return false;
             }
 
             try {
                 const canvas = document.getElementById('academicChart');
-                if (!canvas) {
-                    console.error('❌ [CHARTS] Canvas academicChart no encontrado');
-                    return false;
-                }
-                console.log('✅ [CHARTS] Canvas encontrado:', canvas);
+                if (!canvas) return false;
 
                 window.adminDashboard.createAcademicChart();
-                console.log('✅ [CHARTS] Gráfico académico creado exitosamente');
                 return true;
             } catch (error) {
-                console.error('❌ [CHARTS] Error al crear gráfico:', error);
                 return false;
             }
         }
 
-        // Función para inicializar los event listeners de los tabs
         function initializeTabListeners() {
-            console.log('📑 [TABS] Inicializando event listeners de tabs...');
 
             // Event listener para tab Estudiantes
             const studentsTab = document.getElementById('students-tab');
             if (studentsTab) {
                 studentsTab.addEventListener('shown.bs.tab', function () {
-                    console.log('👨‍🎓 [TAB] Cargando tabla de estudiantes...');
                     if (window.adminDashboard && typeof window.adminDashboard.loadStudentsTable === 'function') {
                         window.adminDashboard.loadStudentsTable();
-                    } else {
-                        console.error('❌ [TAB] loadStudentsTable no disponible');
                     }
                 });
-                console.log('✅ [TABS] Listener de estudiantes agregado');
-            } else {
-                console.warn('⚠️ [TABS] Tab students-tab no encontrado');
             }
 
             // Event listener para tab Padres
             const parentsTab = document.getElementById('parents-tab');
             if (parentsTab) {
                 parentsTab.addEventListener('shown.bs.tab', async function () {
-                    console.log('👨‍👩‍👧‍👦 [TAB] Inicializando Gestión de Padres...');
                     if (!window.parentManager) {
                         window.parentManager = new ParentManager();
                         await window.parentManager.init();
                     } else {
-                        await window.parentManager.loadParents(); // Reload data if already initialized
+                        await window.parentManager.loadParents();
                     }
                 });
-                console.log('✅ [TABS] Listener de padres agregado');
-            } else {
-                console.warn('⚠️ [TABS] Tab parents-tab no encontrado');
             }
 
             // Event listener para tab Citas
             const citasTab = document.getElementById('citas-tab');
             if (citasTab) {
                 citasTab.addEventListener('shown.bs.tab', async function () {
-                    console.log('📅 [TAB] Inicializando Gestión de Citas...');
                     if (!window.citasManager) {
                         window.citasManager = new CitasManager();
                         await window.citasManager.init();
                     } else {
-                        await window.citasManager.loadCitas(); // Reload data if already initialized
+                        await window.citasManager.loadCitas();
                     }
                 });
-                console.log('✅ [TABS] Listener de citas agregado');
-            } else {
-                console.warn('⚠️ [TABS] Tab citas-tab no encontrado');
             }
 
             // Event listener para tab Solicitudes
             const registrationsTab = document.getElementById('registrations-tab');
             if (registrationsTab) {
                 registrationsTab.addEventListener('shown.bs.tab', async function () {
-                    console.log('📋 [TAB] Cargando solicitudes pendientes...');
                     if (!window.solicitudesManager) {
                         window.solicitudesManager = new SolicitudesManager();
                         await window.solicitudesManager.init();
                     } else {
-                        await window.solicitudesManager.loadSolicitudes(); // Reload data if already initialized
+                        await window.solicitudesManager.loadSolicitudes();
                     }
                 });
-                console.log('✅ [TABS] Listener de solicitudes agregado');
-            } else {
-                console.warn('⚠️ [TABS] Tab registrations-tab no encontrado');
             }
 
             // Event listener para tab Usuarios Activos
             const activeUsersTab = document.getElementById('activeusers-tab');
             if (activeUsersTab) {
                 activeUsersTab.addEventListener('shown.bs.tab', function () {
-                    console.log('👥 [TAB] Cargando usuarios activos...');
                     if (window.adminDashboard && typeof window.adminDashboard.loadActiveUsers === 'function') {
                         window.adminDashboard.loadActiveUsers();
-                    } else {
-                        console.error('❌ [TAB] loadActiveUsers no disponible');
                     }
                 });
-                console.log('✅ [TABS] Listener de usuarios activos agregado');
-            } else {
-                console.warn('⚠️ [TABS] Tab activeusers-tab no encontrado');
             }
 
             // Event listener para tab Egresados
             const egresadosTab = document.getElementById('egresados-tab');
             if (egresadosTab) {
                 egresadosTab.addEventListener('shown.bs.tab', async function () {
-                    console.log('🎓 [TAB] Inicializando Gestión de Egresados...');
                     if (!window.egresadosDashboard) {
                         window.egresadosDashboard = new EgresadosDashboard();
                         await window.egresadosDashboard.init();
@@ -376,16 +291,12 @@
                         await window.egresadosDashboard.loadEgresados();
                     }
                 });
-                console.log('✅ [TABS] Listener de egresados agregado');
-            } else {
-                console.warn('⚠️ [TABS] Tab egresados-tab no encontrado');
             }
 
             // Event listener para tab Bolsa de Trabajo
             const bolsaTab = document.getElementById('bolsa-trabajo-tab');
             if (bolsaTab) {
                 bolsaTab.addEventListener('shown.bs.tab', async function () {
-                    console.log('💼 [TAB] Inicializando Bolsa de Trabajo...');
                     if (!window.bolsaManager) {
                         window.bolsaManager = new BolsaTrabajoManager();
                         await window.bolsaManager.init();
@@ -393,16 +304,12 @@
                         await window.bolsaManager.cargarCandidatos();
                     }
                 });
-                console.log('✅ [TABS] Listener de bolsa de trabajo agregado');
-            } else {
-                console.warn('⚠️ [TABS] Tab bolsa-trabajo-tab no encontrado');
             }
 
             // Event listener para tab Suscriptores
             const suscriptoresTab = document.getElementById('suscriptores-tab');
             if (suscriptoresTab) {
                 suscriptoresTab.addEventListener('shown.bs.tab', async function () {
-                    console.log('📧 [TAB] Inicializando Gestión de Suscriptores...');
                     if (!window.suscriptoresManager) {
                         window.suscriptoresManager = new SuscriptoresManager();
                         await window.suscriptoresManager.init();
@@ -410,78 +317,43 @@
                         await window.suscriptoresManager.cargarSuscriptores();
                     }
                 });
-                console.log('✅ [TABS] Listener de suscriptores agregado');
-            } else {
-                console.warn('⚠️ [TABS] Tab suscriptores-tab no encontrado');
             }
 
             // Event listener para tab Finanzas
             const financesTab = document.getElementById('finances-tab');
             if (financesTab) {
                 financesTab.addEventListener('shown.bs.tab', async function () {
-                    console.log('💰 [TAB] Inicializando Gestión Financiera...');
                     if (!window.dynamicFinanceLoader) {
                         window.dynamicFinanceLoader = new DynamicFinanceLoader();
                         await window.dynamicFinanceLoader.init();
                     } else {
-                        await window.dynamicFinanceLoader.loadFinances(); // Reload data if already initialized
+                        await window.dynamicFinanceLoader.loadFinances();
                     }
                 });
-                console.log('✅ [TABS] Listener de finanzas agregado');
-            } else {
-                console.warn('⚠️ [TABS] Tab finances-tab no encontrado');
             }
-
-            console.log('✅ [TABS] Todos los listeners de tabs inicializados');
         }
-
-        // Secuencia de inicialización
-        console.log('🔄 [INIT] Iniciando secuencia de inicialización...');
 
         // Paso 1: Verificar que AdminDashboard esté definido
         if (typeof AdminDashboard === 'undefined') {
-            console.warn('⚠️ [INIT] AdminDashboard aún no está definido, esperando 1 segundo...');
             setTimeout(() => {
                 if (initializeDashboard()) {
                     initializeTabListeners();
-                    // Dar tiempo para que Chart.js cargue
-                    setTimeout(() => {
-                        initializeCharts();
-                    }, 500);
+                    setTimeout(initializeCharts, 500);
                 }
-            }, 1000);
+            }, 500);
             return;
         }
 
         // Paso 2: Inicializar AdminDashboard
         if (!initializeDashboard()) {
-            console.error('❌ [INIT] No se pudo inicializar el dashboard');
             return;
         }
 
         // Paso 3: Inicializar listeners de tabs
         initializeTabListeners();
 
-        // Paso 4: Inicializar gráficos (con delay para Chart.js)
-        if (typeof Chart !== 'undefined') {
-            console.log('✅ [INIT] Chart.js ya disponible, creando gráficos...');
-            setTimeout(() => {
-                initializeCharts();
-            }, 500);
-        } else {
-            console.warn('⚠️ [INIT] Chart.js no disponible, esperando 1.5 segundos...');
-            setTimeout(() => {
-                if (!initializeCharts()) {
-                    // Segundo intento después de 2 segundos más
-                    console.warn('⚠️ [INIT] Primer intento fallido, reintentando en 2 segundos...');
-                    setTimeout(() => {
-                        initializeCharts();
-                    }, 2000);
-                }
-            }, 1500);
-        }
-
-        console.log('✅ [INIT] Secuencia de inicialización completada');
+        // Paso 4: Inicializar gráficos
+        setTimeout(initializeCharts, 500);
     });
 
     // ================================================================
@@ -833,7 +705,4 @@
         // Cerrar modal
         bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
     }
-
-    console.log('✅ [DASHBOARD-INIT] Todas las funciones del dashboard cargadas correctamente');
-
 })();

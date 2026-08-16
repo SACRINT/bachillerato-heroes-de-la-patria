@@ -1184,5 +1184,3 @@ async function deleteComunicado(id) {
         }
     }
 }
-
-console.log('📝 [CMS] cms-manager.js cargado exitosamente');

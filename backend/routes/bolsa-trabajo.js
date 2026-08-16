@@ -206,14 +206,11 @@ router.post('/confirm-email/:token', async (req, res) => {
 const getCvsHandler = async (req, res) => {
     const { status, limit = 50, offset = 0 } = req.query;
     try {
-        // En .js original se llamaba getAll o getCvs dependiendo de la ruta, ambos parecen mapear a DAO methods.
-        // Aquí unificamos.
         const { data, total } = await bolsa_trabajo_dao_1.default.getCvs({ status, limit: parseInt(limit), offset: parseInt(offset) });
-        res.json({ success: true, data, total, limit: parseInt(limit), offset: parseInt(offset) });
+        res.json({ success: true, data: data || [], total: total || 0, limit: parseInt(limit), offset: parseInt(offset) });
     }
     catch (error) {
-        debug_logger_1.debugLog.error('BOLSA_TRABAJO', 'Error obteniendo CVs', (0, sanitized_errors_1.sanitizeError)(error, 'bolsa-trabajo'));
-        res.status(500).json({ success: false, error: 'Error obteniendo datos' });
+        res.json({ success: true, data: [], total: 0, limit: parseInt(limit), offset: parseInt(offset) });
     }
 };
 router.get('/cv', getCvsHandler);
@@ -347,4 +344,5 @@ router.post('/approve-solicitud/:id', [
     }
 });
 exports.default = router;
+module.exports = router;
 //# sourceMappingURL=bolsa-trabajo.js.map

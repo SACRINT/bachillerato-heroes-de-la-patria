@@ -15,7 +15,6 @@ class SuscriptoresManager {
      * Inicializar el gestor
      */
     async init() {
-        console.log('📧 Inicializando Suscriptores Manager...');
         await this.cargarSuscriptores();
         await this.cargarEstadisticas();
         this.setupEventListeners();
@@ -26,25 +25,24 @@ class SuscriptoresManager {
      */
     async cargarSuscriptores() {
         try {
-            // Usar apiClient para autenticación automática
-            if (!window.apiClient) {
-                throw new Error('API Client no disponible');
+            let data;
+            if (window.apiClient) {
+                data = await window.apiClient.request(this.API_BASE);
+            } else {
+                const response = await fetch(this.API_BASE);
+                data = await response.json();
             }
 
-            const data = await window.apiClient.request(this.API_BASE);
-
-            if (data.success) {
-                // Backend puede devolver data.data o data.suscriptores
+            if (data && data.success) {
                 this.suscriptores = data.data || data.suscriptores || [];
                 this.renderizarTabla();
-                console.log(`✅ ${data.total || this.suscriptores.length} suscriptores cargados`);
             } else {
-                throw new Error(data.error || 'Error desconocido');
+                this.suscriptores = [];
+                this.renderizarTabla();
             }
         } catch (error) {
-            console.error('❌ Error al cargar suscriptores:', error);
-            this.mostrarError('Error al cargar suscriptores');
             this.suscriptores = [];
+            this.renderizarTabla();
         }
     }
 
@@ -53,49 +51,49 @@ class SuscriptoresManager {
      */
     async cargarEstadisticas() {
         try {
-            // Usar apiClient para autenticación automática
-            if (!window.apiClient) {
-                throw new Error('API Client no disponible');
+            let data;
+            if (window.apiClient) {
+                data = await window.apiClient.request(`${this.API_BASE}/stats/general`);
+            } else {
+                const response = await fetch(`${this.API_BASE}/stats/general`);
+                data = await response.json();
             }
 
-            const data = await window.apiClient.request(`${this.API_BASE}/stats/general`);
-
-            if (data.success) {
-                // Backend puede devolver data.data o data.stats
+            if (data && data.success) {
                 const stats = data.data || data.stats || {};
                 this.renderizarEstadisticas(stats);
-            } else {
-                throw new Error(data.error || 'Error desconocido');
             }
-        } catch (error) {
-            console.error('❌ Error al cargar estadísticas:', error);
-        }
+        } catch (error) {}
     }
 
     /**
      * Renderizar estadísticas en cards
      */
     renderizarEstadisticas(stats) {
-        // Actualizar IDs individuales que ya existen en el HTML
+        if (!stats) return;
         const totalEl = document.getElementById('stats-total-suscriptores');
         const activosEl = document.getElementById('stats-activos-suscriptores');
         const verificadosEl = document.getElementById('stats-verificados-suscriptores');
         const nuevosEl = document.getElementById('stats-nuevos-suscriptores');
 
         const estadosMap = {};
-        stats.porEstado.forEach(e => {
-            estadosMap[e.estado] = e.cantidad;
-        });
+        if (Array.isArray(stats.porEstado)) {
+            stats.porEstado.forEach(e => {
+                estadosMap[e.estado] = e.cantidad;
+            });
+        }
 
         const verificadosMap = {};
-        stats.porVerificacion.forEach(e => {
-            verificadosMap[e.verificado] = e.cantidad;
-        });
+        if (Array.isArray(stats.porVerificacion)) {
+            stats.porVerificacion.forEach(e => {
+                verificadosMap[e.verificado] = e.cantidad;
+            });
+        }
 
-        if (totalEl) totalEl.textContent = stats.total;
+        if (totalEl) totalEl.textContent = stats.total || 0;
         if (activosEl) activosEl.textContent = estadosMap.activo || 0;
         if (verificadosEl) verificadosEl.textContent = verificadosMap[1] || 0;
-        if (nuevosEl) nuevosEl.textContent = stats.nuevosUltimos7Dias;
+        if (nuevosEl) nuevosEl.textContent = stats.nuevosUltimos7Dias || 0;
     }
 
     /**

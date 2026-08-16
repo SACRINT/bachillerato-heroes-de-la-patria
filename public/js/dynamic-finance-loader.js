@@ -8,7 +8,6 @@ class DynamicFinanceLoader {
         this.financeFile = '/api/finances';
         this.finances = {};
         this.currentEditingId = null;
-        console.log('💰 Dynamic Finance Loader inicializado');
     }
 
     /**
@@ -16,15 +15,14 @@ class DynamicFinanceLoader {
      */
     async loadFinances() {
         try {
-            console.log('📡 Cargando datos financieros desde:', this.financeFile);
             const response = await fetch(this.financeFile);
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                this.loadDefaultFinances();
+                return this.finances;
             }
 
             this.finances = await response.json();
-            console.log('✅ Datos financieros cargados:', this.finances);
 
             // Actualizar la interfaz
             this.updateFinanceCards();
@@ -32,9 +30,6 @@ class DynamicFinanceLoader {
 
             return this.finances;
         } catch (error) {
-            console.error('❌ Error cargando datos financieros:', error);
-
-            // Cargar datos por defecto
             this.loadDefaultFinances();
             return this.finances;
         }

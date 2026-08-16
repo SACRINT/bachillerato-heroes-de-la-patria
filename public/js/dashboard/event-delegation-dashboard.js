@@ -2,12 +2,10 @@
  * 🎯 EVENT DELEGATION - Sistema centralizado de manejo de eventos
  * Extraído de admin-dashboard.html para cumplir con CSP (No inline scripts)
  * Fecha extracción: 19 Nov 2025
- * Líneas originales: 6230-6375 (145 líneas)
  */
 
 (function() {
     'use strict';
-    console.log('🎯 [EVENT LISTENERS] Inicializando delegación de eventos...');
 
     // Mapeo de funciones disponibles globales
     const functionMap = {
@@ -98,22 +96,17 @@
         if (!target) return;
 
         const actionName = target.dataset.action;
-        console.log('🎯 [EVENT] Click detectado:', actionName);
 
         // Ejecutar función mapeada o evaluar directamente
         if (functionMap[actionName]) {
             try {
                 functionMap[actionName](target);
-            } catch (err) {
-                console.error('❌ [EVENT] Error ejecutando acción:', actionName, err);
-            }
+            } catch (err) {}
         } else {
             // Fallback: evaluar si existe en window
             try {
                 eval(actionName + '()');
-            } catch (err) {
-                console.warn('⚠️ [EVENT] Función no encontrada:', actionName);
-            }
+            } catch (err) {}
         }
     });
 
@@ -123,13 +116,10 @@
         if (!target.dataset.changeHandler) return;
 
         const handlerCode = target.dataset.changeHandler;
-        console.log('🎯 [EVENT] Change detectado:', handlerCode);
 
         try {
             eval(handlerCode);
-        } catch (err) {
-            console.error('❌ [EVENT] Error ejecutando handler:', handlerCode, err);
-        }
+        } catch (err) {}
     });
 
     // Manejo de onkeyup handlers
@@ -138,14 +128,9 @@
         if (!target.dataset.keyupHandler) return;
 
         const handlerCode = target.dataset.keyupHandler;
-        console.log('🎯 [EVENT] Keyup detectado:', handlerCode);
 
         try {
             eval(handlerCode);
-        } catch (err) {
-            console.error('❌ [EVENT] Error ejecutando handler:', handlerCode, err);
-        }
+        } catch (err) {}
     });
-
-    console.log('✅ [EVENT LISTENERS] Inicialización completada');
 })();

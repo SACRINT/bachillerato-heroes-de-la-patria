@@ -9,11 +9,11 @@ class ParentManager {
         this.filteredParents = [];
         this.students = []; // To associate parents with students
         this.apiBaseUrl = '/api';
-        console.log('✅ [ParentManager] Módulo inicializado');
+        this.students = []; // To associate parents with students
+        this.apiBaseUrl = '/api';
     }
 
     async init() {
-        console.log('🚀 [ParentManager] Iniciando módulo de padres...');
         await this.loadParents();
         await this.loadStudentsForAssociation();
         this.setupEventListeners();
@@ -27,23 +27,22 @@ class ParentManager {
             <p class="mt-2 text-muted">Cargando información de padres...</p></td></tr>`);
 
         try {
-            // Usar apiClient para autenticación automática
-            if (!window.apiClient) {
-                throw new Error('API Client no disponible');
-            }
-
-            const result = await window.apiClient.request('/api/parents');
-
-            if (result.success) {
+            if (window.apiClient) {
+                const result = await window.apiClient.request('/api/parents');
+                if (result.success) {
+                    this.parents = result.data || [];
+                    this.filteredParents = [...this.parents];
+                } else {
+                    this.parents = [];
+                    this.filteredParents = [];
+                }
+            } else {
+                const response = await fetch(`${this.apiBaseUrl}/parents`);
+                const result = await response.json();
                 this.parents = result.data || [];
                 this.filteredParents = [...this.parents];
-                console.log(`✅ [ParentManager] ${this.parents.length} padres cargados`);
-            } else {
-                throw new Error(result.error || 'Error desconocido');
             }
         } catch (error) {
-            console.error('❌ [ParentManager] Error al cargar padres:', error);
-            this.showAlert(`Error al cargar padres: ${error.message}`, 'danger');
             this.parents = [];
             this.filteredParents = [];
         }
@@ -53,19 +52,23 @@ class ParentManager {
 
     async loadStudentsForAssociation() {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/admin/students`); // Endpoint correcto para estudiantes
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const result = await response.json();
-            if (result.success) {
+            let result;
+            if (window.apiClient) {
+                result = await window.apiClient.request('/api/students');
+            } else {
+                const response = await fetch(`${this.apiBaseUrl}/students`);
+                if (response.ok) {
+                    result = await response.json();
+                }
+            }
+            if (result && result.success) {
                 // 🔧 FIX: El endpoint /admin/students devuelve en result.data (no result.students)
                 this.students = result.data || result.students || [];
-                console.log(`✅ [ParentManager] ${this.students.length} estudiantes cargados para asociación`);
                 this.populateStudentFilter();
             } else {
                 throw new Error(result.error || 'Error desconocido al cargar estudiantes');
             }
         } catch (error) {
-            console.error('❌ [ParentManager] Error al cargar estudiantes para asociación:', error);
             this.showAlert(`Error al cargar estudiantes para asociación: ${error.message}`, 'danger');
             this.students = [];
         }

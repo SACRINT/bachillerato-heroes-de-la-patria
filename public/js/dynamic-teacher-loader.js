@@ -11,8 +11,6 @@ class DynamicTeacherLoader {
 
         // Usar la instancia global de APIClient
         this.apiClient = window.apiClient || new APIClient();
-
-        console.log('👩‍🏫 Dynamic Teacher Loader inicializado');
     }
 
     /**
@@ -20,8 +18,6 @@ class DynamicTeacherLoader {
      */
     async loadTeachers() {
         try {
-            console.log('📡 Cargando docentes desde:', this.teachersFile);
-
             // Usar APIClient que incluye automáticamente el token JWT
             const response = await this.apiClient.get(this.teachersFile);
 
@@ -49,8 +45,6 @@ class DynamicTeacherLoader {
                     promedioSalario: 0
                 }
             };
-
-            console.log('✅ Docentes cargados:', this.teachers);
 
             // Actualizar la interfaz
             this.updateTeachersTable();

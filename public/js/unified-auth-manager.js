@@ -371,8 +371,6 @@
 
             // Escuchar cambios de storage entre pestañas
             this.setupStorageSync();
-
-            console.log('[UNIFIED-AUTH] 🔐 Unified Auth Manager v2.1.0 creado');
         }
 
         /**
@@ -390,8 +388,6 @@
             if (config.microsoft?.clientId) {
                 this.strategies.get('microsoft').clientId = config.microsoft.clientId;
             }
-
-            console.log('[UNIFIED-AUTH] ✅ OAuth providers inicializados');
         }
 
         /**
@@ -726,8 +722,6 @@
 
             const storage = authResult.remember ? localStorage : sessionStorage;
             storage.setItem(this.sessionKey, JSON.stringify(session));
-
-            console.log('[UNIFIED-AUTH] 💾 Sesión guardada');
         }
 
         /**

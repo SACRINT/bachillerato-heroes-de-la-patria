@@ -16,7 +16,6 @@ class BolsaTrabajoManager {
      * Inicializar el gestor
      */
     async init() {
-        console.log('💼 Inicializando Bolsa de Trabajo Manager...');
         await this.cargarCandidatos();
         await this.cargarEstadisticas();
         this.setupEventListeners();
@@ -27,25 +26,22 @@ class BolsaTrabajoManager {
      */
     async cargarCandidatos() {
         try {
-            // Usar apiClient para autenticación automática
-            if (!window.apiClient) {
-                throw new Error('API Client no disponible');
+            let data;
+            if (window.apiClient) {
+                data = await window.apiClient.request(this.API_BASE);
+            } else {
+                const response = await fetch(this.API_BASE);
+                data = await response.json();
             }
 
-            const data = await window.apiClient.request(this.API_BASE);
-
-            if (data.success) {
-                // Backend devuelve 'data.data', no 'data.candidatos'
+            if (data && data.success) {
                 this.candidatos = data.data || [];
                 this.renderizarTabla();
-                console.log(`✅ ${data.total || this.candidatos.length} candidatos cargados`);
             } else {
-                throw new Error(data.error || 'Error desconocido');
+                this.candidatos = [];
+                this.renderizarTabla();
             }
         } catch (error) {
-            console.error('❌ Error al cargar candidatos:', error);
-            this.mostrarError('Error al cargar candidatos');
-            // Asegurar que siempre sea un array para evitar errores de .map()
             this.candidatos = [];
             this.renderizarTabla();
         }
@@ -56,22 +52,18 @@ class BolsaTrabajoManager {
      */
     async cargarEstadisticas() {
         try {
-            // Usar apiClient para autenticación automática
-            if (!window.apiClient) {
-                throw new Error('API Client no disponible');
-            }
-
-            const data = await window.apiClient.request(`${this.API_BASE}/stats/general`);
-
-            if (data.success) {
-                // Backend devuelve 'data.data', no 'data.stats'
-                this.renderizarEstadisticas(data.data || {});
+            let data;
+            if (window.apiClient) {
+                data = await window.apiClient.request(`${this.API_BASE}/cv/stats`);
             } else {
-                throw new Error(data.error || 'Error desconocido');
+                const response = await fetch(`${this.API_BASE}/cv/stats`);
+                data = await response.json();
             }
-        } catch (error) {
-            console.error('❌ Error al cargar estadísticas:', error);
-        }
+            if (data && data.success && data.data) {
+                this.renderizarEstadisticas(data.data);
+            }
+        } catch (error) {}
+    }
     }
 
     /**

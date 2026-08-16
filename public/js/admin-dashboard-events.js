@@ -28,17 +28,12 @@
     // ============================================
 
     function initializeEventHandlers() {
-        console.log('[ADMIN-DASHBOARD-EVENTS] Inicializando event handlers...');
-
-        // Registrar todos los handlers
         registerNavigationHandlers();
         registerButtonHandlers();
         registerFormHandlers();
         registerSelectHandlers();
         registerCardHandlers();
         registerModalHandlers();
-
-        console.log('[ADMIN-DASHBOARD-EVENTS] ✅ Event handlers inicializados correctamente');
     }
 
     // ============================================

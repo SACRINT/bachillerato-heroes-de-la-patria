@@ -33,22 +33,13 @@
                     attempts++;
 
                     if (typeof window.updateAdminHeaderStatus === 'function' && typeof window.secureAdminAuth !== 'undefined') {
-                        // Módulos disponibles
                         const isAuth = window.secureAdminAuth.isUserAuthenticated();
                         if (isAuth) {
                             const user = window.secureAdminAuth.getCurrentUser();
-                            console.log('✅ [ADMIN DASHBOARD] Sesión activa detectada, actualizando header:', user);
                             window.updateAdminHeaderStatus(true, user);
-                        } else {
-                            console.log('ℹ️ [ADMIN DASHBOARD] No hay sesión activa');
                         }
                         resolve(true);
                     } else if (attempts >= maxAttempts) {
-                        // Timeout alcanzado
-                        console.warn('⚠️ [ADMIN DASHBOARD] No se pudo actualizar el estado del header (timeout)', {
-                            updateAdminHeaderStatus: typeof window.updateAdminHeaderStatus,
-                            secureAdminAuth: typeof window.secureAdminAuth
-                        });
                         resolve(false);
                     } else {
                         // Reintentar con delay progresivo (300ms, 600ms, 900ms, etc.)

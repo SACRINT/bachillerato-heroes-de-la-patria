@@ -23,12 +23,8 @@
     }
 
     function initializeModalManager() {
-        console.log('[ADMIN-MODAL-MANAGER] Inicializando gestor de modales...');
-
         registerModalHandlers();
         setupModalKeyboardShortcuts();
-
-        console.log('[ADMIN-MODAL-MANAGER] ✅ Gestor de modales inicializado correctamente');
     }
 
     /**

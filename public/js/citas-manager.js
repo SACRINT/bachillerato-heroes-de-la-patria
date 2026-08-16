@@ -19,11 +19,9 @@ class CitasManager {
             'Otro'
         ];
         this.tiposPersona = ['estudiante', 'padre', 'madre', 'tutor', 'docente', 'administrativo', 'externo'];
-        console.log('✅ [CitasManager] Módulo inicializado');
     }
 
     async init() {
-        console.log('🚀 [CitasManager] Iniciando módulo de citas...');
         await this.loadCitas();
         this.setupEventListeners();
         this.renderTable();
@@ -36,22 +34,22 @@ class CitasManager {
             <p class="mt-2 text-muted">Cargando solicitudes de citas...</p></td></tr>`);
 
         try {
-            if (!window.apiClient) {
-                throw new Error('API Client no disponible');
+            let result;
+            if (window.apiClient) {
+                result = await window.apiClient.request('/api/citas/list');
+            } else {
+                const response = await fetch(`${this.apiBaseUrl}/citas/list`);
+                result = await response.json();
             }
 
-            const result = await window.apiClient.request('/api/citas/list');
-
-            if (result.success) {
+            if (result && result.success) {
                 this.citas = result.data || [];
                 this.filteredCitas = [...this.citas];
-                console.log(`✅ [CitasManager] ${this.citas.length} citas cargadas`);
             } else {
-                throw new Error(result.error || 'Error desconocido');
+                this.citas = [];
+                this.filteredCitas = [];
             }
         } catch (error) {
-            console.error('❌ [CitasManager] Error al cargar citas:', error);
-            this.showAlert(`Error al cargar citas: ${error.message}`, 'danger');
             this.citas = [];
             this.filteredCitas = [];
         }

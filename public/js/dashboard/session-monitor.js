@@ -13,31 +13,14 @@
 
     // 🚨 VERIFICACIÓN INMEDIATA AL CARGAR LA PÁGINA
     function immediateSecurityCheck() {
-        console.log('🔍 [SECURITY] Verificación inmediata de seguridad...');
-        console.log('🔍 [SECURITY DEBUG] Storage State Check:');
-        console.log('   - LS bge_auth_token:', localStorage.getItem('bge_auth_token') ? 'PRESENT' : 'MISSING');
-        console.log('   - LS bge_auth_user:', localStorage.getItem('bge_auth_user') ? 'PRESENT' : 'MISSING');
-        console.log('   - SS bge_auth_token:', sessionStorage.getItem('bge_auth_token') ? 'PRESENT' : 'MISSING');
-        console.log('   - SS bge_auth_user:', sessionStorage.getItem('bge_auth_user') ? 'PRESENT' : 'MISSING');
-        console.log('   - LS authToken (legacy):', localStorage.getItem('authToken') ? 'PRESENT' : 'MISSING');
-        console.log('   - LS secure_admin_session:', localStorage.getItem('secure_admin_session') ? 'PRESENT' : 'MISSING');
-
-
-        // ✅ FIX (16 Dec 2025): Buscar credenciales en las claves correctas
-        // Sistema 1: JWT moderno (unified-auth-system-v2.js)
         let hasValidAuth = false;
 
-        // Buscar en localStorage (usuario marcó "Recordarme")
-        const bgeToken = localStorage.getItem('bge_auth_token');
-        const bgeUser = localStorage.getItem('bge_auth_user');
+        // Buscar en localStorage o sessionStorage
+        const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
+        const bgeUser = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user');
 
-        // Si no en localStorage, buscar en sessionStorage
-        const bgeTokenSession = sessionStorage.getItem('bge_auth_token');
-        const bgeUserSession = sessionStorage.getItem('bge_auth_user');
-
-        if ((bgeToken && bgeUser) || (bgeTokenSession && bgeUserSession)) {
+        if (bgeToken && bgeUser) {
             hasValidAuth = true;
-            console.log('✅ [SECURITY] Sistema JWT moderno detectado');
         }
 
         // Sistema 2: JWT legacy
@@ -46,7 +29,6 @@
             const legacyUser = localStorage.getItem('userData') || sessionStorage.getItem('userData');
             if (legacyToken && legacyUser) {
                 hasValidAuth = true;
-                console.log('✅ [SECURITY] Sistema JWT legacy detectado');
             }
         }
 
@@ -247,66 +229,14 @@
         let securityInterval = null;
         let isPageVisible = !document.hidden;
 
-        function startSecurityCheck() {
-            // Solo iniciar si no hay un intervalo activo y la página es visible
-            if (!securityInterval && isPageVisible && !isRedirecting) {
-                // Verificación cada 5 segundos en lugar de cada 1 segundo (500% más eficiente)
-                securityInterval = setInterval(checkSessionAndRedirect, 5000);
-                console.log('🛡️ [SECURITY] Verificación de seguridad iniciada (cada 5s)');
-            }
-        }
-
-        function stopSecurityCheck() {
-            if (securityInterval) {
-                clearInterval(securityInterval);
-                securityInterval = null;
-                console.log('⏸️ [SECURITY] Verificación de seguridad pausada');
-            }
-        }
-
-        // Manejar cambios de visibilidad de la página (Page Visibility API)
-        document.addEventListener('visibilitychange', function () {
-            isPageVisible = !document.hidden;
-
-            if (isPageVisible) {
-                console.log('👁️ [SECURITY] Página visible - Verificando sesión y reanudando checks');
-                checkSessionAndRedirect(); // Verificación inmediata al volver
-                startSecurityCheck();
-            } else {
-                console.log('🙈 [SECURITY] Página oculta - Pausando verificación periódica');
-                stopSecurityCheck();
-            }
-        });
-
-        // Iniciar verificación solo si la página es visible
-        if (isPageVisible) {
-            startSecurityCheck();
-        }
-
-        // Verificar también cuando se enfoca la ventana
-        window.addEventListener('focus', function () {
-            if (!isRedirecting) {
-                checkSessionAndRedirect();
-            }
-        });
-
         // Verificar cuando hay cambios en localStorage desde otras pestañas
         window.addEventListener('storage', function (e) {
-            if (e.key === 'secure_admin_session' && !e.newValue) {
-                console.log('🔒 [SECURITY] Logout detectado desde otra pestaña');
+            if ((e.key === 'bge_auth_token' || e.key === 'secure_admin_session') && !e.newValue) {
                 blockPageAndRedirect('Sesión cerrada en otra pestaña');
             }
         });
-
-        // Cleanup al salir de la página
-        window.addEventListener('beforeunload', function () {
-            stopSecurityCheck();
-        });
-
-        console.log('🛡️ [SECURITY SYSTEM] Sistema de seguridad optimizado activado');
     });
 
     // Ejecutar verificación inmediata incluso antes del DOMContentLoaded
     immediateSecurityCheck();
-
 })();

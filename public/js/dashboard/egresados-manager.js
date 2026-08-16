@@ -11,11 +11,9 @@ class EgresadosManager {
         this.egresados = [];
         this.filteredEgresados = [];
         this.apiBaseUrl = '/api';
-        console.log('✅ [EgresadosManager] Módulo inicializado');
     }
 
     async init() {
-        console.log('🚀 [EgresadosManager] Iniciando módulo de egresados...');
         await this.loadEgresados();
         this.setupEventListeners();
     }
@@ -36,11 +34,9 @@ class EgresadosManager {
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
             const result = await response.json();
-            console.log('📦 [EgresadosManager] Respuesta del servidor:', result);
             if (result.success) {
                 this.egresados = result.egresados || result.data || [];
                 this.filteredEgresados = [...this.egresados];
-                console.log(`✅ [EgresadosManager] ${this.egresados.length} egresados cargados`);
 
                 this.updateStatistics();
                 this.populateFilters();
@@ -90,8 +86,6 @@ class EgresadosManager {
             this.updateElement('porcentaje-estudiando', `${Math.round((estudiando / total) * 100)}%`);
             this.updateElement('porcentaje-historias', `${Math.round((conHistoria / total) * 100)}%`);
         }
-
-        console.log(`📊 [EgresadosManager] Estadísticas actualizadas: ${total} total, ${titulados} titulados, ${estudiando} estudiando`);
     }
 
     populateFilters() {
@@ -125,8 +119,6 @@ class EgresadosManager {
                 selectEstatus.appendChild(opt);
             });
         }
-
-        console.log(`🔍 [EgresadosManager] Filtros poblados: ${selectGen ? selectGen.options.length - 1 : 0} generaciones, ${estatusUnicos.length} estatus`);
     }
 
     renderTable() {
@@ -312,56 +304,23 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
-    // 💼 Event listener para tab Bolsa de Trabajo
-    const bolsaTrabajoTab = document.getElementById('bolsa-trabajo-tab');
-    if (bolsaTrabajoTab) {
-        bolsaTrabajoTab.addEventListener('shown.bs.tab', async function() {
-            console.log('💼 [TAB] Inicializando Bolsa de Trabajo...');
-            if (!window.bolsaManager) {
-                window.bolsaManager = new BolsaTrabajoManager();
-                await window.bolsaManager.init();
-            }
-        });
-    }
-
-    // 📧 Event listener para tab Suscriptores
-    const suscriptoresTab = document.getElementById('suscriptores-tab');
-    if (suscriptoresTab) {
-        suscriptoresTab.addEventListener('shown.bs.tab', async function() {
-            console.log('📧 [TAB] Inicializando Suscriptores...');
-            if (!window.suscriptoresManager) {
-                window.suscriptoresManager = new SuscriptoresManager();
-                await window.suscriptoresManager.init();
-            }
-        });
-    }
 });
 
 // Funciones globales para onclick handlers
 window.loadEgresados = async function() {
-    console.log('🔄 [loadEgresados] Recargando datos...');
     if (egresadosManager) {
         await egresadosManager.loadEgresados();
-    } else {
-        console.warn('⚠️ [loadEgresados] egresadosManager no está inicializado');
     }
-}
+};
 
 window.filterEgresados = function() {
-    console.log('🔍 [filterEgresados] Aplicando filtros...');
     if (egresadosManager) {
         egresadosManager.applyFilters();
-    } else {
-        console.warn('⚠️ [filterEgresados] egresadosManager no está inicializado');
     }
-}
+};
 
 window.exportEgresados = function() {
-    console.log('📥 [exportEgresados] Exportando a CSV...');
     if (egresadosManager) {
         egresadosManager.exportToCSV();
-    } else {
-        console.warn('⚠️ [exportEgresados] egresadosManager no está inicializado');
     }
-}
+};

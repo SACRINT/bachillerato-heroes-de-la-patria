@@ -197,7 +197,8 @@ try { mountRouteSafe('/api/settings', require('../backend/routes/settings.js'));
 try { mountRouteSafe('/api/reports', require('../backend/routes/reports.js')); } catch (e) { console.warn('[ROUTER] reports:', e.message); }
 try { mountRouteSafe('/api/analytics', require('../backend/routes/analytics.js')); } catch (e) { console.warn('[ROUTER] analytics:', e.message); }
 try { mountRouteSafe('/api/iacoins', require('../backend/routes/iacoins.js')); } catch (e) { console.warn('[ROUTER] iacoins:', e.message); }
-try { mountRouteSafe('/api/gamification', require('../backend/routes/gamification.js')); } catch (e) { console.warn('[ROUTER] gamification:', e.message); }
+try { mountRouteSafe('/api/citas', require('../backend/routes/citas.js')); } catch (e) { console.warn('[ROUTER] citas:', e.message); }
+try { mountRouteSafe('/api/pendientes-aprobacion', require('../backend/routes/pendientes-aprobacion.js')); } catch (e) { console.warn('[ROUTER] pendientes-aprobacion:', e.message); }
 try { mountRouteSafe('/api/polls', require('../backend/routes/polls.js')); } catch (e) { console.warn('[ROUTER] polls:', e.message); }
 try { mountRouteSafe('/api/quejas', require('../backend/routes/quejas.js')); } catch (e) { console.warn('[ROUTER] quejas:', e.message); }
 

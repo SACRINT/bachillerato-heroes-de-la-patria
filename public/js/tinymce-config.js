@@ -4,7 +4,6 @@
  * VERSIÓN MEJORADA: Combina arquitectura OOP + Fix readonly crítico
  * Fecha: 14 de Noviembre, 2025
  */
-console.log('🚀 [TINYMCE CONFIG] Script loaded and executing...');
 
 
 class TinyMCEManager {
@@ -327,55 +326,38 @@ const tinymceManager = new TinyMCEManager();
 // 🔐 AUTO-INICIALIZACIÓN MEJORADA con verificación de carga
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        console.log('🔧 [TINYMCE] Esperando carga de TinyMCE desde CDN...');
-
         let retries = 0;
-        const maxRetries = 60; // 60 intentos = 30 segundos
-        const retryInterval = 500; // 500ms
+        const maxRetries = 40;
+        const retryInterval = 500;
 
-        // Esperar a que TinyMCE se cargue
         const checkTinyMCE = setInterval(() => {
             retries++;
 
             if (typeof tinymce !== 'undefined') {
                 clearInterval(checkTinyMCE);
-                console.log('✅ [TINYMCE] TinyMCE cargado exitosamente desde CDN');
-
-                // Inicializar editores automáticamente
                 const autoInitSelectors = document.querySelectorAll('.tinymce-auto');
                 if (autoInitSelectors.length > 0) {
-                    console.log(`🎨 [TINYMCE] Auto-inicializando ${autoInitSelectors.length} editores...`);
                     autoInitSelectors.forEach(el => {
                         const selector = `#${el.id}`;
                         const type = el.dataset.tinymceType || 'noticia';
                         tinymceManager.init(selector, tinymceManager.getConfigFor(type));
                     });
-                } else {
-                    console.warn('⚠️ [TINYMCE] No se encontraron elementos con clase .tinymce-auto');
                 }
             } else if (retries >= maxRetries) {
                 clearInterval(checkTinyMCE);
-                console.error('❌ [TINYMCE] TinyMCE no se cargó después de 10 segundos. Verifica la API key y la conexión a CDN.');
-            } else {
-                console.log(`⏳ [TINYMCE] Esperando TinyMCE... (intento ${retries}/${maxRetries})`);
             }
         }, retryInterval);
     });
 } else {
-    // Si ya está cargado el DOM, ejecutar inmediatamente
-    console.log('🔧 [TINYMCE] DOM ya cargado, verificando TinyMCE...');
     if (typeof tinymce !== 'undefined') {
         const autoInitSelectors = document.querySelectorAll('.tinymce-auto');
         if (autoInitSelectors.length > 0) {
-            console.log(`🎨 [TINYMCE] Auto-inicializando ${autoInitSelectors.length} editores...`);
             autoInitSelectors.forEach(el => {
                 const selector = `#${el.id}`;
                 const type = el.dataset.tinymceType || 'noticia';
                 tinymceManager.init(selector, tinymceManager.getConfigFor(type));
             });
         }
-    } else {
-        console.warn('⚠️ [TINYMCE] TinyMCE aún no está disponible. Asegúrate de cargar el CDN antes de este script.');
     }
 }
 

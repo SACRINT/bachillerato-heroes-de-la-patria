@@ -41,41 +41,20 @@ class WebAuthnManager {
      * INICIALIZAR MANAGER
      */
     async init() {
-        console.log('[WEBAUTHN] Inicializando manager...');
-
-        // Check if WebAuthn is supported
         this.isAvailable = this.checkSupport();
-
         if (!this.isAvailable) {
-            console.warn('[WEBAUTHN] WebAuthn no soportado en este navegador');
             return;
         }
-
-        // Load @simplewebauthn/browser dynamically
         await this.loadSimpleWebAuthn();
-
-        console.log('[WEBAUTHN] Manager inicializado correctamente');
     }
 
     /**
      * VERIFICAR SOPORTE DE WEBAUTHN
      */
     checkSupport() {
-        // Check for PublicKeyCredential support
         if (!window.PublicKeyCredential) {
             return false;
         }
-
-        // Check for conditional mediation (platform authenticators)
-        if (window.PublicKeyCredential.isConditionalMediationAvailable) {
-            window.PublicKeyCredential.isConditionalMediationAvailable()
-                .then(available => {
-                    if (available) {
-                        console.log('[WEBAUTHN] ✅ Autenticadores de plataforma disponibles (Touch ID, Face ID, Windows Hello)');
-                    }
-                });
-        }
-
         return true;
     }
 
@@ -83,24 +62,19 @@ class WebAuthnManager {
      * CARGAR LIBRERÍA @simplewebauthn/browser
      */
     async loadSimpleWebAuthn() {
-        // If already loaded via CDN, skip
         if (window.SimpleWebAuthnBrowser) {
             this.SimpleWebAuthnBrowser = window.SimpleWebAuthnBrowser;
-            console.log('[WEBAUTHN] SimpleWebAuthnBrowser cargado desde CDN');
             return;
         }
 
-        // Otherwise, load from CDN dynamically
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
             script.src = 'https://unpkg.com/@simplewebauthn/browser@9.0.1/dist/bundle/index.umd.min.js';
             script.onload = () => {
                 this.SimpleWebAuthnBrowser = window.SimpleWebAuthnBrowser;
-                console.log('[WEBAUTHN] SimpleWebAuthnBrowser cargado dinámicamente');
                 resolve();
             };
             script.onerror = () => {
-                console.error('[WEBAUTHN] Error cargando SimpleWebAuthnBrowser');
                 reject(new Error('Failed to load SimpleWebAuthnBrowser'));
             };
             document.head.appendChild(script);

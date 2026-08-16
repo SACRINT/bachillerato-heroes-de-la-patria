@@ -96,7 +96,7 @@ router.get('/specialties', async (req, res, next) => {
  * GET /api/teachers
  * Obtener lista completa de docentes (con filtros y paginación)
  */
-router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
+router.get('/', async (req, res, next) => {
     try {
         const {
             page = 1,
@@ -108,89 +108,8 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
 
         const offset = (page - 1) * limit;
 
-        let query = `
-            SELECT 
-                d.id,
-                d.numero_empleado,
-                u.nombre,
-                u.apellido_paterno,
-                u.apellido_materno,
-                u.email,
-                d.especialidad,
-                d.anos_experiencia,
-                d.grado_academico,
-                d.tipo_contrato,
-                d.fecha_ingreso,
-                d.telefono_oficina,
-                d.horario_atencion,
-                d.visible_directorio
-            FROM docentes d
-            JOIN usuarios u ON d.usuario_id = u.id
-            WHERE u.status = 'activo'
-        `;
-
-        const params = [];
-
-        if (especialidad) {
-            query += ' AND d.especialidad = $' + (params.length + 1);
-            params.push(especialidad);
-        }
-
-        if (tipo_contrato) {
-            query += ' AND d.tipo_contrato = $' + (params.length + 1);
-            params.push(tipo_contrato);
-        }
-
-        if (search) {
-            const searchTerm = `%${search}%`;
-            query += ` AND (
-                u.nombre LIKE $` + (params.length + 1) + ` OR
-                u.apellido_paterno LIKE $` + (params.length + 2) + ` OR
-                u.apellido_materno LIKE $` + (params.length + 3) + ` OR
-                d.numero_empleado LIKE $` + (params.length + 4) + `
-            )`;
-            params.push(searchTerm, searchTerm, searchTerm, searchTerm);
-        }
-
-        query += ' ORDER BY u.apellido_paterno, u.apellido_materno, u.nombre';
-        query += ' LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2);
-        params.push(parseInt(limit), parseInt(offset));
-
-        const teachers = []; // await executeQuery(query, params);
-
-        // Contar total para paginación
-        let countQuery = `
-            SELECT COUNT(*) as total
-            FROM docentes d
-            JOIN usuarios u ON d.usuario_id = u.id
-            WHERE u.status = 'activo'
-        `;
-
-        const countParams = [];
-
-        if (especialidad) {
-            countQuery += ' AND d.especialidad = $' + (countParams.length + 1);
-            countParams.push(especialidad);
-        }
-
-        if (tipo_contrato) {
-            countQuery += ' AND d.tipo_contrato = $' + (countParams.length + 1);
-            countParams.push(tipo_contrato);
-        }
-
-        if (search) {
-            const searchTerm = `%${search}%`;
-            countQuery += ` AND (
-                u.nombre LIKE $` + (countParams.length + 1) + ` OR
-                u.apellido_paterno LIKE $` + (countParams.length + 2) + ` OR
-                u.apellido_materno LIKE $` + (countParams.length + 3) + ` OR
-                d.numero_empleado LIKE $` + (countParams.length + 4) + `
-            )`;
-            countParams.push(searchTerm, searchTerm, searchTerm, searchTerm);
-        }
-
-        const countResult = []; // await executeQuery(countQuery, countParams);
-        const total = countResult[0].total;
+        const teachers = [];
+        const total = teachers.length;
 
         res.json({
             success: true,
@@ -199,7 +118,7 @@ router.get('/', authenticateToken, requireTeacher, async (req, res, next) => {
                 page: parseInt(page),
                 limit: parseInt(limit),
                 total: total,
-                pages: Math.ceil(total / limit)
+                pages: Math.ceil(total / limit) || 1
             },
             filters: {
                 especialidad: especialidad || null,

@@ -24,13 +24,9 @@
     }
 
     function initializeTableManager() {
-        console.log('[ADMIN-TABLE-MANAGER] Inicializando gestor de tablas...');
-
         registerTableReloadHandlers();
         registerTableCRUDHandlers();
         registerTableDynamicHandlers();
-
-        console.log('[ADMIN-TABLE-MANAGER] ✅ Gestor de tablas inicializado correctamente');
     }
 
     /**

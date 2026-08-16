@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 🏢 Tenant Configuration Loader
  *
  * Carga la configuración específica del tenant desde el backend
@@ -63,8 +63,6 @@
 
     async function loadTenantConfig() {
         try {
-            console.log('[TENANT-CONFIG] Iniciando carga de configuración del tenant...');
-
             // Hacer petición al endpoint
             const response = await fetch('/api/config/tenant', {
                 method: 'GET',
@@ -75,30 +73,22 @@
                 credentials: 'include' // Incluir cookies de sesión
             });
 
-            // Si la respuesta no es exitosa, usar fallback
             if (!response.ok) {
-                console.warn(`[TENANT-CONFIG] No se pudo cargar configuración (HTTP ${response.status}), usando fallback`);
                 return DEFAULT_CONFIG;
             }
 
             const data = await response.json();
 
-            // Validar que la respuesta tenga la estructura esperada
             if (!data.success || !data.tenant) {
-                console.warn('[TENANT-CONFIG] Respuesta inválida del servidor, usando fallback');
                 return DEFAULT_CONFIG;
             }
 
-            console.log('[TENANT-CONFIG] Configuración cargada exitosamente:', data.tenant.school_name);
-
-            // Retornar la configuración del tenant (mergeada con defaults)
             const finalConfig = {
                 ...DEFAULT_CONFIG,
                 ...data.tenant,
-                config: data.config // Configuración adicional JSON
+                config: data.config
             };
 
-            // FIX: Forzar nombre visual correcto si la BD devuelve el default "BGE"
             if (finalConfig.school_short_name === 'BGE') {
                 finalConfig.school_short_name = '"Héroes de la Patria"';
             }
@@ -106,8 +96,6 @@
             return finalConfig;
 
         } catch (error) {
-            console.warn('[TENANT-CONFIG] Error cargando configuración:', error.message);
-            console.warn('[TENANT-CONFIG] Usando configuración por defecto...');
             return DEFAULT_CONFIG;
         }
     }
@@ -116,21 +104,11 @@
     // 3. INICIALIZAR CONFIGURACIÓN
     // ========================================
 
-    // Cargar configuración inmediatamente
     loadTenantConfig().then(config => {
-        // Exponer globalmente
         window.TENANT_CONFIG = config;
-
-        // Log de éxito
-        console.log('[TENANT-CONFIG] ✅ Configuración disponible en window.TENANT_CONFIG');
-        console.log('[TENANT-CONFIG] Institución:', config.school_name);
-
-        // Disparar evento personalizado para notificar que config está lista
         const event = new CustomEvent('tenantConfigLoaded', { detail: config });
         document.dispatchEvent(event);
-    }).catch(error => {
-        // Por si acaso el loadTenantConfig falla completamente
-        console.error('[TENANT-CONFIG] Error crítico:', error);
+    }).catch(() => {
         window.TENANT_CONFIG = DEFAULT_CONFIG;
     });
 

@@ -278,4 +278,5 @@ router.get('/history', async (req, res) => {
     }
 });
 exports.default = router;
+module.exports = router;
 //# sourceMappingURL=approvals.js.map
