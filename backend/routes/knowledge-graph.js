@@ -17,13 +17,13 @@ const DEMO_GRAPH = {
         { id: 'inf1', label: 'Pensamiento Computacional', group: 'Tecnología', level: 'Básico', value: 24, color: '#f59e0b', mastery_level: 95, is_unlocked: true }
     ],
     edges: [
-        { from: 'mat1', to: 'mat2', relation_type: 'prerequisite' },
-        { from: 'mat2', to: 'mat3', relation_type: 'prerequisite' },
-        { from: 'mat1', to: 'fis1', relation_type: 'applied' },
-        { from: 'mat2', to: 'fis1', relation_type: 'applied' },
-        { from: 'mat3', to: 'fis2', relation_type: 'applied' },
-        { from: 'fis1', to: 'fis2', relation_type: 'prerequisite' },
-        { from: 'mat1', to: 'inf1', relation_type: 'related' }
+        { source: 'mat1', target: 'mat2', from: 'mat1', to: 'mat2', relation_type: 'prerequisite' },
+        { source: 'mat2', target: 'mat3', from: 'mat2', to: 'mat3', relation_type: 'prerequisite' },
+        { source: 'mat1', target: 'fis1', from: 'mat1', to: 'fis1', relation_type: 'applied' },
+        { source: 'mat2', target: 'fis1', from: 'mat2', to: 'fis1', relation_type: 'applied' },
+        { source: 'mat3', target: 'fis2', from: 'mat3', to: 'fis2', relation_type: 'applied' },
+        { source: 'fis1', target: 'fis2', from: 'fis1', to: 'fis2', relation_type: 'prerequisite' },
+        { source: 'mat1', target: 'inf1', from: 'mat1', to: 'inf1', relation_type: 'related' }
     ]
 };
 

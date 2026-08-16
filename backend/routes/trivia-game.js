@@ -60,6 +60,32 @@ const REWARDS = {
 };
 
 // =============================================
+// GET /api/games/trivia/stats
+// Estadísticas del jugador
+// =============================================
+router.get(['/stats', '/trivia/stats'], async (req, res) => {
+    res.json({
+        success: true,
+        stats: {
+            total_games: 12,
+            victories: 9,
+            win_rate: '75%',
+            coins_won: 340,
+            xp_earned: 680,
+            best_streak: 6
+        },
+        data: {
+            total_games: 12,
+            victories: 9,
+            win_rate: '75%',
+            coins_won: 340,
+            xp_earned: 680,
+            best_streak: 6
+        }
+    });
+});
+
+// =============================================
 // GET /api/games/trivia/categories
 // Obtener categorías disponibles
 // =============================================

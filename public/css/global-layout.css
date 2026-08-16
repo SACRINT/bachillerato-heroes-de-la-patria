@@ -58,12 +58,17 @@
     background: white;
     box-shadow: var(--shadow-sm);
     position: relative;
-    z-index: 100;
+    z-index: 1050;
 }
 
 #main-header .navbar {
     padding: 0.5rem 0;
     background: white;
+    z-index: 1050;
+}
+
+#main-header .dropdown-menu {
+    z-index: 1060 !important;
 }
 
 #main-header .navbar-brand {

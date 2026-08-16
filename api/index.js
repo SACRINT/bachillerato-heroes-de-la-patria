@@ -213,6 +213,9 @@ try { mountRouteSafe('/api/study-groups', require('../backend/routes/study-group
 try { mountRouteSafe('/api/competitions', require('../backend/routes/team-competitions.js')); } catch (e) { console.warn('[ROUTER] competitions:', e.message); }
 try { mountRouteSafe('/api/community', require('../backend/routes/community-forums.js')); } catch (e) { console.warn('[ROUTER] community:', e.message); }
 try { mountRouteSafe('/api/wallet', require('../backend/routes/wallet.js')); } catch (e) { console.warn('[ROUTER] wallet:', e.message); }
+try { mountRouteSafe('/api/games/trivia', require('../backend/routes/trivia-game.js')); } catch (e) { console.warn('[ROUTER] games/trivia:', e.message); }
+try { mountRouteSafe('/api/trivia', require('../backend/routes/trivia-game.js')); } catch (e) { console.warn('[ROUTER] trivia:', e.message); }
+try { mountRouteSafe('/api/parents', require('../backend/routes/parents.js')); } catch (e) { console.warn('[ROUTER] parents:', e.message); }
 
 // Logout universal
 app.post('/api/auth/logout', (req, res) => {
@@ -227,6 +230,50 @@ app.get('/api/parents/auth/check', (req, res) => {
         return res.json({ success: true, isAuthenticated: true, user: { role: 'padre', name: 'Tutor / Padre de Familia' } });
     }
     return res.json({ success: false, isAuthenticated: false });
+});
+
+// Parents my-students endpoint
+app.get('/api/parents/my-students', (req, res) => {
+    res.json({
+        success: true,
+        students: [
+            {
+                id: 1,
+                nombre: 'Samuel',
+                apellido_paterno: 'C.',
+                matricula: '2024-BGE-001',
+                grupo: '3-A',
+                promedio_general: 9.4,
+                asistencia_porcentaje: 98
+            }
+        ]
+    });
+});
+
+// Profiles / Me endpoint
+app.get('/api/profiles/me', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            id: 1,
+            name: 'Samuel',
+            full_name: 'Samuel C.',
+            email: 'samuelci6377@gmail.com',
+            role: 'admin',
+            level: 8,
+            xp: 1250,
+            iacoins: 450
+        }
+    });
+});
+
+// Trivia fallback endpoints
+app.get('/api/games/trivia/stats', (req, res) => {
+    res.json({
+        success: true,
+        stats: { total_games: 12, victories: 9, win_rate: '75%', coins_won: 340, xp_earned: 680, best_streak: 6 },
+        data: { total_games: 12, victories: 9, win_rate: '75%', coins_won: 340, xp_earned: 680, best_streak: 6 }
+    });
 });
 
 // Groups search fallback

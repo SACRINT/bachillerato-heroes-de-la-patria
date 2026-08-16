@@ -10,22 +10,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
+    <!-- Global Header/Footer Styles -->
+    <link rel="stylesheet" href="css/global-layout.css">
+    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
+    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8f9fa;
             overflow: hidden;
-            /* Fullscreen map */
+            padding-top: 70px;
         }
 
         #graph-container {
             width: 100vw;
-            height: 100vh;
+            height: calc(100vh - 70px);
             position: absolute;
-            top: 0;
+            top: 70px;
             left: 0;
             background: linear-gradient(135deg, #f8f9fa 0%, #eef2ff 100%);
         }
@@ -34,16 +39,14 @@
             position: absolute;
             z-index: 10;
             pointer-events: none;
-            /* Let clicks pass specific areas */
         }
 
         .overlay-ui>* {
             pointer-events: auto;
-            /* Re-enable clicks on buttons */
         }
 
         .top-bar {
-            top: 20px;
+            top: 85px;
             left: 20px;
             right: 20px;
             display: flex;
@@ -54,8 +57,7 @@
         .info-panel {
             position: absolute;
             right: -400px;
-            /* Hidden */
-            top: 80px;
+            top: 90px;
             width: 350px;
             bottom: 20px;
             background: white;
@@ -64,60 +66,19 @@
             transition: right 0.3s ease;
             overflow-y: auto;
             padding: 20px;
+            z-index: 100;
         }
 
         .info-panel.active {
             right: 0;
         }
 
-        /* Tooltip */
-        .tooltip-node {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .mastery-badge {
-            font-size: 0.75rem;
-            padding: 0.25em 0.6em;
-            border-radius: 10rem;
-        }
-
-        .bg-low {
-            background-color: #ffb703;
-            color: #000;
-        }
-
-        .bg-med {
-            background-color: #f72585;
-            color: #fff;
-        }
-
-        .bg-high {
-            background-color: #4361ee;
-            color: #fff;
-        }
-
-        .bg-master {
-            background-color: #4cc9f0;
-            color: #000;
-        }
-
-        .bg-locked {
-            background-color: #e9ecef;
-            color: #6c757d;
-        }
+        .bg-low { background-color: #ffb703; color: #000; }
+        .bg-med { background-color: #f72585; color: #fff; }
+        .bg-high { background-color: #4361ee; color: #fff; }
+        .bg-master { background-color: #4cc9f0; color: #000; }
+        .bg-locked { background-color: #e9ecef; color: #6c757d; }
     </style>
-    <!-- Global Header/Footer Styles -->
-    <link rel="stylesheet" href="css/global-layout.css">
-    <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
-    <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
     <script src="js/main.js" defer></script>
 </head>
 
@@ -126,23 +87,18 @@
     <header id="main-header"></header>
 
     <div id="graph-container"></div>
-    <div id="tooltip" class="tooltip-node"></div>
 
     <!-- UI Overlay -->
     <div class="overlay-ui top-bar">
         <div class="card shadow-sm border-0">
             <div class="card-body py-2 px-3 d-flex align-items-center">
-                <a href="iacoins-dashboard.html" class="btn btn-sm btn-light me-3 rounded-circle"
-                    aria-label="Volver al Dashboard">
-                    <i class="fas fa-arrow-left"></i>
-                </a>
                 <h5 class="mb-0 fw-bold text-primary">
-                    <i class="fas fa-project-diagram me-2"></i>Knowledge Graph
+                    <i class="fas fa-project-diagram me-2"></i>Knowledge Graph Interactivo
                 </h5>
             </div>
         </div>
 
-        <div class="card shadow-sm border-0">
+        <div class="card shadow-sm border-0 d-none d-md-block">
             <div class="card-body py-2 px-3">
                 <span class="badge bg-master me-2">Dominado</span>
                 <span class="badge bg-high me-2">Avanzado</span>
@@ -163,7 +119,6 @@
         </div>
 
         <div id="panel-content">
-            <!-- Content Injected via JS -->
             <div class="text-center py-5 text-muted">
                 <i class="fas fa-mouse-pointer fa-2x mb-3"></i>
                 <p>Haz clic en un nodo para ver detalles.</p>
@@ -172,29 +127,28 @@
     </div>
 
     <script>
-        // D3 Graph Logic
         let simulation, svg, link, node, labels;
         const width = window.innerWidth;
-        const height = window.innerHeight;
+        const height = window.innerHeight - 70;
 
         const getDemoGraphData = () => ({
             nodes: [
-                { id: 'mat1', label: 'Álgebra Lineal', group: 'Matemáticas', level: 'Básico', value: 20, color: '#4f46e5', mastery_level: 85, is_unlocked: true },
-                { id: 'mat2', label: 'Cálculo Diferencial', group: 'Matemáticas', level: 'Intermedio', value: 25, color: '#6366f1', mastery_level: 70, is_unlocked: true },
-                { id: 'mat3', label: 'Cálculo Integral', group: 'Matemáticas', level: 'Avanzado', value: 18, color: '#818cf8', mastery_level: 50, is_unlocked: false },
-                { id: 'fis1', label: 'Mecánica Clásica', group: 'Física', level: 'Intermedio', value: 22, color: '#06b6d4', mastery_level: 90, is_unlocked: true },
-                { id: 'fis2', label: 'Electromagnetismo', group: 'Física', level: 'Avanzado', value: 15, color: '#0891b2', mastery_level: 40, is_unlocked: false },
-                { id: 'qui1', label: 'Química Orgánica', group: 'Química', level: 'Básico', value: 19, color: '#10b981', mastery_level: 65, is_unlocked: true },
-                { id: 'inf1', label: 'Pensamiento Computacional', group: 'Tecnología', level: 'Básico', value: 24, color: '#f59e0b', mastery_level: 95, is_unlocked: true }
+                { id: 'mat1', label: 'Álgebra Lineal', group: 'Matemáticas', level: 'Básico', value: 24, color: '#4f46e5', mastery_level: 85, is_unlocked: true },
+                { id: 'mat2', label: 'Cálculo Diferencial', group: 'Matemáticas', level: 'Intermedio', value: 28, color: '#6366f1', mastery_level: 70, is_unlocked: true },
+                { id: 'mat3', label: 'Cálculo Integral', group: 'Matemáticas', level: 'Avanzado', value: 20, color: '#818cf8', mastery_level: 50, is_unlocked: false },
+                { id: 'fis1', label: 'Mecánica Clásica', group: 'Física', level: 'Intermedio', value: 25, color: '#06b6d4', mastery_level: 90, is_unlocked: true },
+                { id: 'fis2', label: 'Electromagnetismo', group: 'Física', level: 'Avanzado', value: 18, color: '#0891b2', mastery_level: 40, is_unlocked: false },
+                { id: 'qui1', label: 'Química Orgánica', group: 'Química', level: 'Básico', value: 22, color: '#10b981', mastery_level: 65, is_unlocked: true },
+                { id: 'inf1', label: 'Pensamiento Computacional', group: 'Tecnología', level: 'Básico', value: 26, color: '#f59e0b', mastery_level: 95, is_unlocked: true }
             ],
             edges: [
-                { from: 'mat1', to: 'mat2', relation_type: 'prerequisite' },
-                { from: 'mat2', to: 'mat3', relation_type: 'prerequisite' },
-                { from: 'mat1', to: 'fis1', relation_type: 'applied' },
-                { from: 'mat2', to: 'fis1', relation_type: 'applied' },
-                { from: 'mat3', to: 'fis2', relation_type: 'applied' },
-                { from: 'fis1', to: 'fis2', relation_type: 'prerequisite' },
-                { from: 'mat1', to: 'inf1', relation_type: 'related' }
+                { source: 'mat1', target: 'mat2', relation_type: 'prerequisite' },
+                { source: 'mat2', target: 'mat3', relation_type: 'prerequisite' },
+                { source: 'mat1', target: 'fis1', relation_type: 'applied' },
+                { source: 'mat2', target: 'fis1', relation_type: 'applied' },
+                { source: 'mat3', target: 'fis2', relation_type: 'applied' },
+                { source: 'fis1', target: 'fis2', relation_type: 'prerequisite' },
+                { source: 'mat1', target: 'inf1', relation_type: 'related' }
             ]
         });
 
@@ -215,29 +169,32 @@
                         return;
                     }
                 }
-            } catch (error) {
-                // Silencioso fallback
-            }
+            } catch (error) {}
 
             renderGraph(getDemoGraphData());
         }
 
         function renderGraph(data) {
-            const { nodes, edges } = data;
+            const container = document.getElementById("graph-container");
+            if (!container) return;
+            container.innerHTML = '';
 
-            // Prepare links (source/target used to be IDs, D3 needs references or indices if not careful, 
-            // but D3 v6+ handles IDs if id accessor is set. However, safe bet is to map objects)
-            // My backend returns source/target as IDs. D3 force can map these if configured.
+            const nodes = data.nodes || [];
+            const edges = data.edges || [];
+            const nodeMap = new Map(nodes.map(n => [n.id, n]));
 
-            // Map edges to D3 format
-            const links = edges.map(d => Object.create(d));
-            const nodeList = nodes.map(d => Object.create(d));
+            const links = edges
+                .map(d => ({
+                    ...d,
+                    source: d.source || d.from,
+                    target: d.target || d.to
+                }))
+                .filter(l => nodeMap.has(l.source) && nodeMap.has(l.target));
 
-            simulation = d3.forceSimulation(nodeList)
-                .force("link", d3.forceLink(links).id(d => d.id).distance(150))
-                .force("charge", d3.forceManyBody().strength(-400))
-                .force("center", d3.forceCenter(width / 2, height / 2))
-                .force("collide", d3.forceCollide().radius(d => d.value * 2));
+            const nodeList = nodes.map(d => ({
+                ...d,
+                title: d.title || `Mastery: ${d.mastery_level || 50}%`
+            }));
 
             svg = d3.select("#graph-container").append("svg")
                 .attr("viewBox", [0, 0, width, height])
@@ -247,13 +204,12 @@
 
             const g = svg.append("g");
 
-            // Define arrow markers
             svg.append("defs").selectAll("marker")
                 .data(["end"])
                 .enter().append("marker")
                 .attr("id", "arrow")
                 .attr("viewBox", "0 -5 10 10")
-                .attr("refX", 25) // Offset to avoid overlapping node
+                .attr("refX", 28)
                 .attr("refY", 0)
                 .attr("markerWidth", 6)
                 .attr("markerHeight", 6)
@@ -262,14 +218,20 @@
                 .attr("d", "M0,-5L10,0L0,5")
                 .attr("fill", "#ced4da");
 
+            simulation = d3.forceSimulation(nodeList)
+                .force("link", d3.forceLink(links).id(d => d.id).distance(160))
+                .force("charge", d3.forceManyBody().strength(-450))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("collide", d3.forceCollide().radius(d => (d.value || 20) * 2));
+
             link = g.append("g")
                 .attr("stroke", "#999")
                 .attr("stroke-opacity", 0.6)
                 .selectAll("line")
                 .data(links)
                 .join("line")
-                .attr("stroke-width", d => Math.sqrt(d.value || 1))
-                .attr("stroke", d => d.color.color)
+                .attr("stroke-width", d => Math.sqrt(d.value || 2))
+                .attr("stroke", d => d.color || '#94a3b8')
                 .attr("marker-end", "url(#arrow)");
 
             node = g.append("g")
@@ -278,8 +240,8 @@
                 .selectAll("circle")
                 .data(nodeList)
                 .join("circle")
-                .attr("r", d => d.value)
-                .attr("fill", d => d.color)
+                .attr("r", d => d.value || 22)
+                .attr("fill", d => d.color || '#3b82f6')
                 .attr("cursor", "pointer")
                 .call(drag(simulation));
 
@@ -288,20 +250,21 @@
                 event.stopPropagation();
             });
 
-            svg.on("click", () => closePanel()); // Close on blank click
+            svg.on("click", () => closePanel());
 
             labels = g.append("g")
                 .attr("class", "labels")
                 .selectAll("text")
                 .data(nodeList)
                 .enter().append("text")
-                .attr("dy", d => d.value + 15)
+                .attr("dy", d => (d.value || 22) + 16)
                 .attr("text-anchor", "middle")
                 .text(d => d.label)
                 .attr("font-size", "12px")
-                .attr("fill", "#495057")
+                .attr("font-weight", "600")
+                .attr("fill", "#334155")
                 .style("pointer-events", "none")
-                .style("text-shadow", "1px 1px 2px white");
+                .style("text-shadow", "1px 1px 3px rgba(255,255,255,0.9)");
 
             simulation.on("tick", () => {
                 link
@@ -347,33 +310,23 @@
         function showPanel(nodeData) {
             const panel = document.getElementById('info-panel');
             const content = document.getElementById('panel-content');
-
-            // Extract numeric mastery from title string if needed or pass in data
-            // Note: nodeData is the D3 object which has properties from our API
-            // My API returned: mastery_level, is_unlocked, confidence inside the mapping?
-            // Wait, in service I mapped: value, title, color. 
-            // I should have passed full metadata. 
-            // Correcting service logic mentally: d3 datum has all original props if I extend it?
-            // Actually I created new objects. I lost raw data. 
-            // Let's assume title has "Mastery: X%".
-
-            const percentage = nodeData.title.split(': ')[1];
+            const percentage = nodeData.mastery_level || 75;
 
             content.innerHTML = `
                 <div class="text-center mb-4">
-                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
-                         style="width: 80px; height: 80px; background-color: ${nodeData.color}; color: white; font-size: 2rem;">
-                         ${Math.round(parseInt(percentage))}%
+                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" 
+                         style="width: 80px; height: 80px; background-color: ${nodeData.color || '#3b82f6'}; color: white; font-size: 1.8rem; font-weight: bold;">
+                         ${percentage}%
                     </div>
-                    <h4 class="fw-bold">${nodeData.label}</h4>
-                    <span class="badge bg-light text-dark border">${nodeData.group}</span>
+                    <h4 class="fw-bold text-dark">${nodeData.label}</h4>
+                    <span class="badge bg-light text-primary border">${nodeData.group}</span>
                 </div>
                 
                 <div class="card bg-light border-0 mb-3">
                     <div class="card-body">
-                        <h6 class="fw-bold">Estado Actual</h6>
+                        <h6 class="fw-bold mb-1">Nivel de Dominio</h6>
                         <p class="mb-0 text-muted small">
-                            ${parseInt(percentage) === 0 ? 'Aún no has explorado este tema.' : 'Has progresado significativamente en este tema.'}
+                            ${percentage >= 80 ? '¡Excelente! Has dominado los conceptos clave de este módulo.' : 'Módulo en progreso. Continúa practicando.'}
                         </p>
                     </div>
                 </div>
@@ -382,9 +335,6 @@
                     <a href="adaptive-lesson.html?nodeId=${nodeData.id}" class="btn btn-primary">
                         <i class="fas fa-play me-2"></i> Continuar Aprendiendo
                     </a>
-                    <button class="btn btn-outline-secondary">
-                        <i class="fas fa-book me-2"></i> Ver Apuntes
-                    </button>
                 </div>
             `;
 
@@ -392,17 +342,13 @@
         }
 
         function closePanel() {
-            document.getElementById('info-panel').classList.remove('active');
+            const panel = document.getElementById('info-panel');
+            if (panel) panel.classList.remove('active');
         }
 
-        // Init
-        initGraph();
-
-        // Window resize
-        window.addEventListener('resize', () => {
-            // Recalculate if needed, usually reload for simplicity in MVP
+        document.addEventListener('DOMContentLoaded', () => {
+            initGraph();
         });
-
     </script>
     <script src="js/tenant-config-loader.js" defer></script>
 </body>
