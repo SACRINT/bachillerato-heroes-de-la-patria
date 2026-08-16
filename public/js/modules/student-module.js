@@ -260,23 +260,22 @@ class StudentModule {
      * Obtener headers de autenticación
      */
     getAuthHeaders() {
-        const headers = {
-            'Content-Type': 'application/json'
-        };
-
-        // Obtener token de sesión
+        const headers = { 'Content-Type': 'application/json' };
+        const token = localStorage.getItem('bge_auth_token') || 
+                      sessionStorage.getItem('bge_auth_token') || 
+                      localStorage.getItem('authToken') || 
+                      sessionStorage.getItem('authToken');
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+            return headers;
+        }
         const secureSession = localStorage.getItem('secure_admin_session');
         if (secureSession) {
             try {
                 const sessionData = JSON.parse(secureSession);
-                if (sessionData.token) {
-                    headers['Authorization'] = `Bearer ${sessionData.token}`;
-                }
-            } catch (error) {
-                console.warn('[STUDENT-MODULE] ⚠️ Error obteniendo token:', error);
-            }
+                if (sessionData.token) headers['Authorization'] = `Bearer ${sessionData.token}`;
+            } catch (error) {}
         }
-
         return headers;
     }
 

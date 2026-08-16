@@ -974,17 +974,7 @@ class DynamicTeacherLoader {
             newTeacherBtn.addEventListener('click', () => this.showNewTeacherModal());
         }
 
-        // Recarga automática cada 30 segundos
-        setInterval(async () => {
-            console.log('🔄 Recarga automática de docentes...');
-            await this.loadTeachers();
-        }, 30000);
-
-        // Recargar cuando la ventana gana el foco
-        window.addEventListener('focus', async () => {
-            console.log('🔄 Página enfocada, recargando docentes...');
-            await this.loadTeachers();
-        });
+        // Eventos listos. Polling periódico desactivado para optimizar rendimiento.
     }
 }
 

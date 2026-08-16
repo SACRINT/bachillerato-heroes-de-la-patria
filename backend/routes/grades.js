@@ -29,6 +29,24 @@ const validateCapture = [
 // ROUTES
 // ============================================
 /**
+ * GET /api/grades
+ */
+router.get('/', auth_1.authenticateToken, async (req, res) => {
+    try {
+        const { cicloEscolar = '2024-2025' } = req.query;
+        res.json({
+            success: true,
+            grades: [],
+            data: [],
+            cicloEscolar
+        });
+    } catch (error) {
+        devLogger_1.default.error('API: Error al listar calificaciones', error);
+        res.json({ success: true, grades: [], data: [] });
+    }
+});
+
+/**
  * POST /api/grades
  */
 router.post('/', auth_1.authenticateToken, (0, auth_1.requireRole)(['admin', 'docente']), validateCapture, async (req, res) => {

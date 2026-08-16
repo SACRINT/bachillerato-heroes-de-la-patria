@@ -247,17 +247,7 @@ class DynamicStatsLoader {
      * Configurar manejador de recarga de página
      */
     setupPageReloadHandler() {
-        // Recargar estadísticas cada 30 segundos
-        setInterval(async () => {
-            console.log('🔄 Recarga automática de estadísticas...');
-            await this.loadStats();
-        }, 30000);
-
-        // También recargar cuando la ventana gana el foco
-        window.addEventListener('focus', async () => {
-            console.log('🔄 Página enfocada, recargando estadísticas...');
-            await this.loadStats();
-        });
+        // Polling recurrente desactivado para optimizar rendimiento
     }
 
     /**

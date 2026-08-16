@@ -2533,12 +2533,13 @@ if (typeof window.BGESecurityModule !== 'undefined') {
                 adminLink.classList.add('text-success');
 
                 // ✅ FALLBACK si DOMPurify no está disponible
-                const adminHTML = `<i class="fas fa-shield-check me-2"></i>Admin (${user.username.split('@')[0]})`;
+                const displayName = (user.username || user.email || user.nombre || user.name || 'Admin').split('@')[0];
+                const adminHTML = `<i class="fas fa-shield-check me-2"></i>Admin (${displayName})`;
                 if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
-                    adminLink.innerHTML = DOMPurify.sanitize(DOMPurify.sanitize(adminHTML));
+                    adminLink.innerHTML = DOMPurify.sanitize(adminHTML);
                 } else {
                     // Fallback: HTML sin sanitizar (seguro porque lo generamos nosotros)
-                    adminLink.innerHTML = DOMPurify.sanitize(adminHTML);
+                    adminLink.innerHTML = adminHTML;
                     if (typeof debugLog !== 'undefined') {
                         debugLog.warn('⚠️ DOMPurify no disponible en updateAdminHeaderStatus (loggedIn), usando fallback sin sanitización');
                     }

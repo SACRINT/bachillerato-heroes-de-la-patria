@@ -865,17 +865,7 @@ class DynamicFinanceLoader {
         // Configurar eventos de búsqueda y filtros
         this.setupSearchEvents();
 
-        // Recarga automática cada 60 segundos (finanzas se actualizan menos frecuentemente)
-        setInterval(async () => {
-            console.log('🔄 Recarga automática de datos financieros...');
-            await this.loadFinances();
-        }, 60000);
-
-        // Recargar cuando la ventana gana el foco
-        window.addEventListener('focus', async () => {
-            console.log('🔄 Página enfocada, recargando datos financieros...');
-            await this.loadFinances();
-        });
+        // Eventos listos. Polling periódico desactivado para optimizar rendimiento.
     }
 
     /**

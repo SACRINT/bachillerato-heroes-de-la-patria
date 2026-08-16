@@ -9,7 +9,7 @@ const crypto = require('crypto');
 
 class JWTUtils {
     constructor() {
-        this.jwtSecret = process.env.JWT_SECRET;
+        this.jwtSecret = process.env.JWT_SECRET || 'bge-secret-key-heroes-patria-2024-jwt-production';
         this.algorithm = 'HS256';
 
         // Configuraciones de tiempo

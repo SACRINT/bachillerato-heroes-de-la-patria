@@ -73,68 +73,27 @@ class APIClient {
      * Obtener token almacenado y verificar expiración
      */
     getStoredToken() {
-        // Prioridad 1: Sistema seguro nuevo (secure_admin_session)
+        // Prioridad 1: Token unificado moderno
+        const modernToken = localStorage.getItem('bge_auth_token') || 
+                            sessionStorage.getItem('bge_auth_token') || 
+                            localStorage.getItem('authToken') || 
+                            sessionStorage.getItem('authToken');
+        if (modernToken) {
+            return modernToken;
+        }
+
+        // Prioridad 2: Secure session
         try {
-            const secureSession = localStorage.getItem('secure_admin_session');
+            const secureSession = localStorage.getItem('secure_admin_session') || sessionStorage.getItem('secure_admin_session');
             if (secureSession) {
                 const sessionData = JSON.parse(secureSession);
-
-                // Validar que el token existe y no está expirado
-                if (sessionData.token) {
-                    // Si tiene expiresAt, validar que no esté expirado
-                    if (sessionData.expiresAt) {
-                        if (Date.now() < sessionData.expiresAt) {
-                            return sessionData.token;
-                        } else {
-                            // GDPR: Datos sensibles enmascarados
-                            debugLog.warn('APP', '⚠️ Token expirado en secure_admin_session');
-                            // ✅ LIMPIAR TOKEN EXPIRADO
-                            localStorage.removeItem('secure_admin_session');
-                            this.removeToken();
-                        }
-                    } else {
-                        return sessionData.token;
-                    }
-                }
+                if (sessionData.token) return sessionData.token;
             }
         } catch (error) {
-            // GDPR: Datos sensibles enmascarados
-            debugLog.warn('ERROR', '⚠️ Error recuperando secure_admin_session:', error);
+            // Ignorar errores de parseo
         }
 
-        // ✅ NUEVO: Verificar expiración del token directo (authToken)
-        const directToken = localStorage.getItem('authToken');
-        if (directToken) {
-            try {
-                // Decodificar payload sin verificar firma (solo para leer exp)
-                const payload = JSON.parse(atob(directToken.split('.')[1]));
-                const now = Math.floor(Date.now() / 1000);
-
-                if (payload.exp && payload.exp > now) {
-                    // Token válido y no expirado
-                    return directToken;
-                } else {
-                    // Token expirado
-                    // GDPR: Datos sensibles enmascarados
-                    debugLog.warn('APP', '⚠️ Token expirado detectado y eliminado');
-                    localStorage.removeItem('authToken');
-                    localStorage.removeItem('userData');
-
-                    console.error('APIClient: Token expired. Redirect suppressed for debugging.');
-                    // window.location.href = sanitizeURL('/index.html');
-                    return null;
-                }
-            } catch (error) {
-                // GDPR: Datos sensibles enmascarados
-                debugLog.warn('ERROR', '⚠️ Error verificando expiración de token:', error);
-            }
-        }
-
-        // ✅ Modern Auth: bge_auth_token
-        const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
-        if (bgeToken) return bgeToken;
-
-        // Fallback: Sistema viejo (heroes_auth_token)
+        // Fallback: Sistema legacy
         return localStorage.getItem('heroes_auth_token') || sessionStorage.getItem('heroes_auth_token');
     }
 

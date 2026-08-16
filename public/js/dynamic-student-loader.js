@@ -1102,17 +1102,7 @@ class DynamicStudentLoader {
             exportBtn.addEventListener('click', () => this.exportStudents());
         }
 
-        // Recarga automática cada 30 segundos
-        setInterval(async () => {
-            console.log('🔄 Recarga automática de estudiantes...');
-            await this.loadStudents();
-        }, 30000);
-
-        // Recargar cuando la ventana gana el foco
-        window.addEventListener('focus', async () => {
-            console.log('🔄 Página enfocada, recargando estudiantes...');
-            await this.loadStudents();
-        });
+        // Eventos manuales listos. Polling periódico desactivado para optimizar rendimiento y evitar saturación.
     }
 }
 

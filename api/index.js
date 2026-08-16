@@ -401,7 +401,7 @@ app.post('/api/auth/login', async (req, res) => {
                 permissions: getPermissionsForRole(user.role)
             };
 
-            const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+            const jwtSecret = process.env.JWT_SECRET || 'bge-secret-key-heroes-patria-2024-jwt-production';
 
             const accessToken = jwt.sign(
                 { ...userPayload, type: 'access' },

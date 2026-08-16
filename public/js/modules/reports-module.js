@@ -70,6 +70,14 @@ class ReportsModule {
 
     getAuthHeaders() {
         const headers = { 'Content-Type': 'application/json' };
+        const token = localStorage.getItem('bge_auth_token') || 
+                      sessionStorage.getItem('bge_auth_token') || 
+                      localStorage.getItem('authToken') || 
+                      sessionStorage.getItem('authToken');
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+            return headers;
+        }
         try {
             const session = JSON.parse(localStorage.getItem('secure_admin_session') || '{}');
             if (session.token) headers['Authorization'] = `Bearer ${session.token}`;
