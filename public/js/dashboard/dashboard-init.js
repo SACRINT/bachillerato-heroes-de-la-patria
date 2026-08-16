@@ -8,8 +8,6 @@
 (function () {
     'use strict';
 
-    console.log('✅ [DASHBOARD-INIT] Script de inicialización cargado');
-
     // ================================================================
     // 📊 FUNCIONES DE REPORTES Y GESTIÓN DE CONTENIDO
     // ================================================================

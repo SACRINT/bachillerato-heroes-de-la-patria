@@ -10,7 +10,6 @@
         if (!response.ok) throw new Error('Error al cargar footer');
         const footerHTML = await response.text();
         document.getElementById('main-footer').innerHTML = footerHTML;
-        console.log('✅ [ADMIN DASHBOARD] Footer cargado correctamente');
     } catch (error) {
         console.error('❌ [ADMIN DASHBOARD] Error cargando footer:', error);
     }

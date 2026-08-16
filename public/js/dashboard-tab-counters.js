@@ -7,8 +7,6 @@
 (function() {
     'use strict';
 
-    console.log('📊 [DASHBOARD] Iniciando sistema de conteos dinámicos...');
-
     /**
      * Actualizar conteos de tabs
      */

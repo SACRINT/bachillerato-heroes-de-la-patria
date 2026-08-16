@@ -10,8 +10,8 @@
 class AdminDashboardStats {
     constructor() {
         this.apiEndpoint = '/api/admin/dashboard-summary';
-        this.refreshInterval = 60000; // 60 segundos (reducido de 30s)
-        this.autoRefresh = true;
+        this.refreshInterval = 60000;
+        this.autoRefresh = false; // Desactivado para evitar tráfico continuo a Vercel
 
         // Elementos UI mapeados (ID del DOM -> Ruta en el JSON de respuesta)
         this.elements = {
@@ -55,19 +55,16 @@ class AdminDashboardStats {
 
     async loadStats() {
         try {
-            // Obtener token (Soporte dual: legacy y nuevo auth)
-            const token = localStorage.getItem('authToken') || localStorage.getItem('admin_token');
-            const headers = {
-                'Content-Type': 'application/json'
-            };
+            const token = localStorage.getItem('bge_auth_token') || 
+                          sessionStorage.getItem('bge_auth_token') || 
+                          localStorage.getItem('authToken');
+            const headers = { 'Content-Type': 'application/json' };
             if (token) headers['Authorization'] = `Bearer ${token}`;
 
             const response = await fetch(this.apiEndpoint, { headers });
 
             if (!response.ok) {
-                if (response.status === 401) console.warn('⚠️ [STATS] No autorizado - Sesión expirada?');
-                if (response.status === 429) console.warn('⚠️ [STATS] Rate limit excedido - Esperando...');
-                throw new Error(`HTTP error! status: ${response.status}`);
+                return;
             }
 
             const result = await response.json();

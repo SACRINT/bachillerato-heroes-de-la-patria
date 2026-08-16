@@ -1,12 +1,9 @@
 // Debug Logger - Logging condicional (GDPR compliant)
-// ✅ FIX (19 Nov 2025): Fallback usa console.log para que los mensajes sean visibles
-console.log('[AUTH-V2] 📦 Script cargando...');
 if (typeof debugLog === 'undefined') {
-    // Fallback si debug-logger.js no está cargado - usar console para debugging
     var debugLog = {
-        log: (category, ...args) => console.log(`[${category}]`, ...args),
-        warn: (category, ...args) => console.warn(`[${category}]`, ...args),
-        error: (category, ...args) => console.error(`[${category}]`, ...args)
+        log: () => {},
+        warn: () => {},
+        error: () => {}
     };
 }
 

@@ -5,7 +5,7 @@
 
 class DynamicTeacherLoader {
     constructor() {
-        this.teachersFile = '/api/admin/teachers';
+        this.teachersFile = '/api/teachers';
         this.teachers = {};
         this.currentEditingId = null;
 

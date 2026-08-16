@@ -6,11 +6,6 @@
 
 (function () {
     'use strict';
-    console.log('🔒 [DASHBOARD AUTH] Verificación unificada de autenticación...');
-    console.log('🔍 [DASHBOARD AUTH DEBUG] Initial Storage Check:');
-    console.log('   - LS bge_auth_token:', localStorage.getItem('bge_auth_token') ? 'PRESENT' : 'MISSING');
-    console.log('   - SS bge_auth_token:', sessionStorage.getItem('bge_auth_token') ? 'PRESENT' : 'MISSING');
-
 
     function isAuthenticated() {
         // Buscar token en localStorage o sessionStorage
@@ -24,11 +19,9 @@
                 const user = JSON.parse(rawUserData);
                 const role = user.role || (user.user && user.user.role);
                 if (role === 'admin' || role === 'administrativo' || role === 'directivo') {
-                    console.log('✅ [DASHBOARD AUTH] Usuario autenticado - Rol:', role);
                     return true;
                 }
             } catch (e) {
-                console.warn('⚠️ [DASHBOARD AUTH] Error parsing userData:', e);
             }
         }
 
@@ -81,5 +74,4 @@
         return;
     }
 
-    console.log('✅ [DASHBOARD AUTH] Autenticación confirmada - Cargando dashboard');
 })();

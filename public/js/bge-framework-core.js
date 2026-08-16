@@ -35,7 +35,6 @@ class BGEFramework {
             apis: 'bge-apis-module.js'
         };
 
-        console.log(`🎓 BGE Framework Core v${this.version} inicializando...`);
         this.init();
     }
 
@@ -56,7 +55,6 @@ class BGEFramework {
             this.exposeGlobalAPI();
 
             this.initialized = true;
-            console.log('✅ BGE Framework Core inicializado');
 
             // 5. Auto-cargar módulos críticos
             await this.loadCriticalModules();
@@ -65,7 +63,6 @@ class BGEFramework {
             window.dispatchEvent(new CustomEvent('bge:ready', {
                 detail: { framework: this, modules: Array.from(this.modules.keys()) }
             }));
-            console.log('🎉 BGE Framework listo - Evento bge:ready disparado');
 
         } catch (error) {
             console.error('❌ Error inicializando BGE Framework:', error);
@@ -250,8 +247,6 @@ class BGEFramework {
         const startTime = performance.now();
 
         try {
-            console.log(`📦 Cargando módulo BGE: ${moduleName}...`);
-
             // Cargar script dinámicamente
             await this.loadScript(`${this.config.modulePath}${filename}`);
 
@@ -275,8 +270,6 @@ class BGEFramework {
             this.performance.moduleLoadTimes.set(moduleName, loadTime);
             this.performance.metrics.modulesLoaded++;
             this.performance.metrics.totalLoadTime += loadTime;
-
-            console.log(`✅ Módulo BGE '${moduleName}' cargado en ${loadTime.toFixed(2)}ms`);
 
             // Emit module loaded event
             this.dispatchEvent('moduleLoaded', { moduleName, loadTime });

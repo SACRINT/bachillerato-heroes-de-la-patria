@@ -117,14 +117,7 @@
     // ============================================
 
     if (window.DOMPurify) {
-        // DOMPurify está disponible globalmente
-
-        // Agregar reglas personalizadas
         DOMPurify.setConfig(BGE_DOMPURIFY_CONFIG);
-
-        console.log('[DOMPURIFY-CONFIG] ✅ Configuración BGE aplicada a DOMPurify');
-    } else {
-        console.warn('[DOMPURIFY-CONFIG] ⚠️ DOMPurify no está disponible. Asegúrate de cargar isomorphic-dompurify antes.');
     }
 
     // ============================================
@@ -250,12 +243,4 @@
     // ============================================
 
     window.BGE_DOMPURIFY_CONFIG = BGE_DOMPURIFY_CONFIG;
-
-    console.log('[DOMPURIFY-CONFIG] ✅ Funciones helper de sanitización disponibles:');
-    console.log('  - window.sanitizeHTML(html)');
-    console.log('  - window.sanitizeText(text)');
-    console.log('  - window.escapeHTML(text)');
-    console.log('  - window.sanitizeURL(url)');
-    console.log('  - window.sanitizeObject(obj)');
-
 })();

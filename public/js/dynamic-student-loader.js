@@ -5,7 +5,7 @@
 
 class DynamicStudentLoader {
     constructor() {
-        this.studentsFile = '/api/admin/students';
+        this.studentsFile = '/api/students';
         this.students = {};
         this.currentEditingId = null;
 

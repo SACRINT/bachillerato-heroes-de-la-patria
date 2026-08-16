@@ -36,14 +36,7 @@
 
 <body>
     <!-- 🔒 PROTECCIÓN JWT - VERIFICA AUTENTICACIÓN ANTES DE CARGAR CONTENIDO -->
-    <script>
-        console.log("🔒 [DASHBOARD HTML] Iniciando carga...");
-        try {
-            console.log("🔒 [DASHBOARD HTML] Token bge:", localStorage.getItem('bge_auth_token') ? 'OK' : 'MISSING');
-            console.log("🔒 [DASHBOARD HTML] Secure Session:", localStorage.getItem('secure_admin_session') ? 'OK' : 'MISSING');
-        } catch (e) { console.error("Error reading storage", e); }
-    </script>
-    <script src="js/dashboard/dashboard-auth-check.js?v=DEBUG_FIX_Redir"></script>
+    <script src="js/dashboard/dashboard-auth-check.js?v=20260119"></script>
 
     <!-- 🧹 LIMPIEZA DE CACHÉ Y SERVICE WORKER -->
     <!-- <script src="js/dashboard/cache-cleanup.js"></script> -->
@@ -4078,20 +4071,8 @@
     <!-- Event Bus: Sistema central de eventos para desacoplamiento -->
     <script src="js/event-bus.js?v=20251121"></script>
 
-    <!-- Dashboard Core: Coordinador minimalista del dashboard -->
-    <script src="js/dashboard-core.js?v=20251121"></script>
-
-    <!-- Unified Auth: Sistema consolidado de autenticación (5 providers) -->
+    <!-- Unified Auth: Sistema consolidado de autenticación -->
     <script src="js/unified-auth-manager.js?v=20251121"></script>
-
-    <!-- Módulos Independientes: 0 dependencias directas, comunicación via Event Bus -->
-    <script src="js/modules/student-module.js?v=20251121"></script>
-    <script src="js/modules/grades-module.js?v=20251121"></script>
-    <script src="js/modules/attendance-module.js?v=20251121"></script>
-    <script src="js/modules/notifications-module.js?v=20251121"></script>
-    <script src="js/modules/reports-module.js?v=20251121"></script>
-    <script src="js/modules/settings-module.js?v=20251121"></script>
-    <!-- FIN NUEVA ARQUITECTURA -->
 
     <!-- 🚀 BGE Dashboard Managers (SIN defer para garantizar orden de carga) -->
     <script src="js/admin-dashboard.js?v=20251027" defer></script>

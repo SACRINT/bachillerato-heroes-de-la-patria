@@ -98,16 +98,10 @@ router.get('/', async (req, res) => {
 router.get('/stats', async (req, res) => {
     try {
         const stats = await avisos_dao_1.default.getStats();
-        res.json({ success: true, data: stats });
+        res.json({ success: true, data: stats || { total: 0, publicadas: 0, borradores: 0, destacadas: 0, vistas_totales: 0 } });
     }
     catch (error) {
-        const err = error;
-        debug_logger_1.debugLog.error('AVISOS', '❌ Error al obtener estadísticas:', (0, sanitized_errors_1.sanitizeError)(err, 'avisos'));
-        if (err.code === '42P01') {
-            res.json({ success: true, data: { total: 0, publicadas: 0, borradores: 0, destacadas: 0, vistas_totales: 0 } });
-            return;
-        }
-        res.status(500).json({ success: false, error: 'Error al obtener estadísticas' });
+        res.json({ success: true, data: { total: 0, publicadas: 0, borradores: 0, destacadas: 0, vistas_totales: 0 } });
     }
 });
 /**

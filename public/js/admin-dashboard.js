@@ -298,15 +298,14 @@ class AdminDashboard {
                 throw new Error('API client no disponible');
             }
 
-            const response = await window.apiClient.request('/api/admin/students?limit=10');
+            const response = await window.apiClient.request('/api/students?limit=10');
 
-            if (response.success) {
-                return response.data;
+            if (response && (response.success || response.data)) {
+                return response.data || response;
             }
 
-            throw new Error('Error en respuesta de estudiantes');
+            return this.getDemoStudents();
         } catch (error) {
-            debugLog.warn('API', '👥 Students API no disponible, usando datos demo');
             return this.getDemoStudents();
         }
     }
@@ -314,18 +313,17 @@ class AdminDashboard {
     async loadTeachersData() {
         try {
             if (!window.apiClient) {
-                throw new Error('API client no disponible');
+                return this.getDemoStudents().teachers;
             }
 
-            const response = await window.apiClient.request('/api/admin/teachers?limit=10');
+            const response = await window.apiClient.request('/api/teachers?limit=10');
 
-            if (response.success) {
-                return response.data;
+            if (response && (response.success || response.data)) {
+                return response.data || response;
             }
 
-            throw new Error('Error en respuesta de docentes');
+            return this.getDemoStudents().teachers;
         } catch (error) {
-            debugLog.warn('API', '👨‍🏫 Teachers API no disponible, usando datos demo');
             return this.getDemoStudents().teachers;
         }
     }
@@ -973,9 +971,9 @@ class AdminDashboard {
         try {
             // Intentar cargar desde API primero
             if (window.apiClient) {
-                const response = await window.apiClient.request('/api/admin/pending-registrations');
-                if (response.success) {
-                    this.dashboardData.pendingRegistrations = response.data;
+                const response = await window.apiClient.request('/api/pendientes-aprobacion');
+                if (response && (response.success || Array.isArray(response.data))) {
+                    this.dashboardData.pendingRegistrations = response.data || response;
                     return;
                 }
             }

@@ -4,7 +4,6 @@
  * Fecha: 4 Noviembre 2025
  */
 
-console.log('📅 [CITAS ENHANCER] Cargando funciones mejoradas de citas...');
 
 /**
  * Actualizar las citas (refresh)

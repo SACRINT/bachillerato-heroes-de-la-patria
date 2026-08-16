@@ -11,11 +11,10 @@ class SolicitudesManager {
         this.solicitudes = [];
         this.filteredSolicitudes = [];
         this.apiBaseUrl = '/api';
-        console.log('✅ [SolicitudesManager] Módulo inicializado');
+        this.apiBaseUrl = '/api';
     }
 
     async init() {
-        console.log('🚀 [SolicitudesManager] Iniciando módulo de solicitudes...');
         await this.loadSolicitudes();
         this.setupEventListeners();
         this.renderTable();
@@ -34,21 +33,22 @@ class SolicitudesManager {
 
         try {
             if (!window.apiClient) {
-                throw new Error('API Client no disponible');
+                this.solicitudes = [];
+                this.filteredSolicitudes = [];
+                this.renderTable();
+                return;
             }
 
-            const result = await window.apiClient.request('/api/solicitudes');
+            let result = await window.apiClient.request('/api/admin/pending-registrations');
 
-            if (result.success) {
-                this.solicitudes = result.data || [];
+            if (result && (result.success || Array.isArray(result.data))) {
+                this.solicitudes = result.data || result || [];
                 this.filteredSolicitudes = [...this.solicitudes];
-                console.log(`✅ [SolicitudesManager] ${this.solicitudes.length} solicitudes cargadas`);
             } else {
-                throw new Error(result.error || 'Error desconocido');
+                this.solicitudes = [];
+                this.filteredSolicitudes = [];
             }
         } catch (error) {
-            console.error('❌ [SolicitudesManager] Error al cargar solicitudes:', error);
-            this.showAlert(`Error al cargar solicitudes: ${error.message}`, 'danger');
             this.solicitudes = [];
             this.filteredSolicitudes = [];
         }

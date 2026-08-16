@@ -28,8 +28,6 @@
                 eventsByType: {},
                 errors: 0
             };
-
-            console.log('[EVENT-BUS] ✅ Event Bus Frontend inicializado');
         }
 
         /**
@@ -56,8 +54,6 @@
 
             // Obtener listeners
             const listeners = this.listeners.get(eventType) || [];
-
-            console.log(`[EVENT-BUS] 📤 Emitiendo: ${eventType} (${listeners.length} listeners)`);
 
             // Ejecutar listeners
             if (async) {
@@ -99,8 +95,6 @@
 
             // Ordenar por prioridad (mayor prioridad primero)
             listeners.sort((a, b) => b.priority - a.priority);
-
-            console.log(`[EVENT-BUS] 🔔 Nuevo listener para: ${eventType} (priority: ${priority})`);
 
             // Retornar función para desuscribirse
             return () => this.off(eventType, listener.id);

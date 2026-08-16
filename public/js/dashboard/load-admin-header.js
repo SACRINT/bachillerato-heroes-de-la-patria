@@ -21,7 +21,6 @@
 
         // ELIMINADO: El fix de preventDefault() rompía los enlaces de los submenús.
 
-        console.log('✅ [ADMIN DASHBOARD] Header cargado correctamente');
 
         // Esperar a que bge-security-module esté disponible y luego actualizar el estado
         // 🔧 OPTIMIZADO: Usar Promise con timeout en lugar de setInterval para evitar LAG
