@@ -3,7 +3,7 @@
  * Propósito: Gestión de reportes de errores y monitoreo de salud del sistema (Fase 5 - Semana 40)
  */
 
-const { executeQuery } = require('../config/database');
+const { executeQuery } = require('../config/database.js');
 
 class QualityAssuranceService {
 

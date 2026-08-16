@@ -7,7 +7,7 @@
  * @deprecated Use imports from ./collaboration/index instead
  */
 
-const { RealTimeCollaborationService, collaborationService, ServiceError } = require('./collaboration/index');
+const { RealTimeCollaborationService, collaborationService, ServiceError } = require('./collaboration/index.js');
 
 module.exports = {
     RealTimeCollaborationService,

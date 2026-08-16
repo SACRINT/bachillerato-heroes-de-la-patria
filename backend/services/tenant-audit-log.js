@@ -3,7 +3,7 @@
  * Refactorizado: 04 Diciembre 2025
  */
 
-const TenantAuditDAO = require('../data/tenant-audit.dao');
+const TenantAuditDAO = require('../data/tenant-audit.dao.js');
 
 const EventTypes = {
     TENANT_CREATED: 'tenant_created', TENANT_UPDATED: 'tenant_updated', TENANT_DELETED: 'tenant_deleted', TENANT_STATUS_CHANGED: 'tenant_status_changed',

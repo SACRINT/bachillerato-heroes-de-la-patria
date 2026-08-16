@@ -15,7 +15,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 const crypto = require('crypto');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 class FileStorageService {
   constructor(options = {}) {

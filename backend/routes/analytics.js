@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const predictiveService = require('../services/predictive-analytics.service');
+const { authenticateToken, requireRole } = require('../middleware/auth.js');
+const predictiveService = require('../services/predictive-analytics.service.js');
 
 // POST /api/analytics/predict/run - Run prediction cycle
 router.post('/predict/run', authenticateToken, requireRole(['admin']), async (req, res) => {

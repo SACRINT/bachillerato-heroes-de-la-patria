@@ -6,8 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DigitalLibraryService = void 0;
-const DigitalLibraryDAO = require('../data/digital-library.dao');
-const devLogger = require('../utils/devLogger');
+const DigitalLibraryDAO = require('../data/digital-library.dao.js');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // DIGITAL LIBRARY SERVICE CLASS
 // ============================================

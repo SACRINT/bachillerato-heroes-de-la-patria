@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const mlopsService = require('../services/mlops.service');
-const devLogger = require('../utils/devLogger');
+const { authenticateToken, requireRole } = require('../middleware/auth.js');
+const mlopsService = require('../services/mlops.service.js');
+const devLogger = require('../utils/devLogger.js');
 
 // ==========================================
 // MLOPS ROUTES (Semana 11)
@@ -72,7 +72,7 @@ router.post('/metrics', authenticateToken, requireRole(['admin']), async (req, r
 // Obtener experimentos activos
 router.get('/experiments', authenticateToken, requireRole(['admin']), async (req, res) => {
     try {
-        const { executeQuery } = require('../config/database');
+        const { executeQuery } = require('../config/database.js');
         const experiments = await executeQuery(`
             SELECT e.*, 
                    (SELECT COUNT(*) FROM ai_experiment_variants v WHERE v.experiment_id = e.id) as variants_count,
@@ -94,7 +94,7 @@ router.post('/inference/predict', authenticateToken, async (req, res) => {
         const { modelName, inputData } = req.body;
         const userId = req.user.id;
 
-        const experimentService = require('../services/experiment.service');
+        const experimentService = require('../services/experiment.service.js');
 
         // 1. Verificar Asignación Experimental
         const variant = await experimentService.getVariantForUser(modelName, userId);

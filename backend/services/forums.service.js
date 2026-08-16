@@ -6,8 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ForumsService = void 0;
-const ForumDAO = require('../data/forum.dao');
-const devLogger = require('../utils/devLogger');
+const ForumDAO = require('../data/forum.dao.js');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // FORUMS SERVICE CLASS
 // ============================================

@@ -5,11 +5,11 @@
 
 const express = require('express');
 // GDPR Logging - Debug condicional y sanitización
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
+const { debugLog } = require('../utils/debug-logger.js');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors.js');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
-const JSONToMySQLMigrator = require('../scripts/migrate-json-to-mysql');
+const { authenticateToken } = require('../middleware/auth.js');
+const JSONToMySQLMigrator = require('../scripts/migrate-json-to-mysql.js');
 
 /**
  * POST /api/migration/start
@@ -65,7 +65,7 @@ router.post('/start', authenticateToken, async (req, res) => {
  */
 router.get('/status', authenticateToken, async (req, res) => {
     try {
-        const db = require('../config/database');
+        const db = require('../config/database.js');
 
         // Verificar conectividad MySQL
         let mysqlStatus = 'desconectado';
@@ -226,7 +226,7 @@ router.post('/force-mysql', authenticateToken, async (req, res) => {
             });
         }
 
-        const db = require('../config/database');
+        const db = require('../config/database.js');
 
         // Verificar que MySQL esté disponible
         const isConnected = await db.testConnection();
@@ -278,7 +278,7 @@ router.post('/enable-fallback', authenticateToken, async (req, res) => {
             });
         }
 
-        const db = require('../config/database');
+        const db = require('../config/database.js');
 
         // Habilitar modo híbrido
         await db.enableFallback();
@@ -319,7 +319,7 @@ router.get('/tables-info', authenticateToken, async (req, res) => {
             });
         }
 
-        const db = require('../config/database');
+        const db = require('../config/database.js');
 
         const isConnected = await db.testConnection();
         if (!isConnected) {

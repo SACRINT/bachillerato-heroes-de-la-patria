@@ -14,13 +14,13 @@
 
 const express = require('express');
 const router = express.Router();
-const erasureService = require('../services/right-to-erasure-service');
-const { authenticateJWT, requireRole } = require('../middleware/auth');
+const erasureService = require('../services/right-to-erasure-service.js');
+const { authenticateJWT, requireRole } = require('../middleware/auth.js');
 const rateLimit = require('express-rate-limit');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 // ✅ FASE 3: Using DAO layer instead of direct pool access
-const ErasureDAO = require('../data/erasure.dao');
+const ErasureDAO = require('../data/erasure.dao.js');
 
 // =============================================================================
 // RATE LIMITING

@@ -34,7 +34,7 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParentCredentialsDAO = void 0;
-const database_1 = require("../config/database");
+const database_1 = require('../config/database.js');
 const bcrypt = __importStar(require("bcrypt"));
 const crypto = __importStar(require("crypto"));
 class ParentCredentialsDAO {

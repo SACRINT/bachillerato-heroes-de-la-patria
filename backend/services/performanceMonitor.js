@@ -16,7 +16,7 @@
  *
  * Uso:
  * ```javascript
- * const performanceMonitor = require('./services/performanceMonitor');
+ * const performanceMonitor = require('./services/performanceMonitor.js');
  *
  * // Track request
  * const metric = performanceMonitor.startRequest(req);
@@ -30,7 +30,7 @@
  * Fecha: 20 Noviembre 2025
  */
 
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 class PerformanceMonitor {
     constructor(config = {}) {

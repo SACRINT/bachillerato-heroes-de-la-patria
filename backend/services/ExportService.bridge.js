@@ -1,1 +1,1 @@
-module.exports = require('./export.service');
+module.exports = require('./export.service.js');

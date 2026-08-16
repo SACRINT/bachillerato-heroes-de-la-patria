@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const blockchainService = require('../services/blockchain-service');
+const blockchainService = require('../services/blockchain-service.js');
 
 /**
  * Semana 42-43: API de Gobernanza DAO

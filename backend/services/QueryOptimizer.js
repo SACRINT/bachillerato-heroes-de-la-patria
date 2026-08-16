@@ -6,7 +6,7 @@
  * Utilidades para optimización de consultas SQL
  */
 
-const pool = require('../data/database-access').pool;
+const pool = require('../data/database-access.js').pool;
 
 class QueryOptimizer {
     constructor() {
@@ -51,7 +51,7 @@ class QueryOptimizer {
      * Ejecutar consulta con caché
      */
     async cachedQuery(cacheKey, text, params = [], ttlSeconds = 300) {
-        const { cache } = require('./CacheService');
+        const { cache } = require('./CacheService.js');
 
         return await cache.getOrSet(cacheKey, async () => {
             const result = await this.query(text, params);

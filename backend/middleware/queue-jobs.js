@@ -24,7 +24,7 @@
 
 // ⏸️ COMENTADO - FASE 30.5 INTENTO-5: Redis no disponible en local
 // const Redis = require('ioredis');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 // =============================================================================
 // CONFIGURACIÓN DE REDIS
@@ -125,7 +125,7 @@ const jobHandlers = {
         await new Promise(resolve => setTimeout(resolve, 5000));
 
         // En producción, llamar a servicio de reportes
-        // const reportingService = require('../services/reporting-service');
+        // const reportingService = require('../services/reporting-service.js');
         // const report = await reportingService.generate(reportType, params);
 
         return { success: true, reportType, recordCount: 1000 };
@@ -159,7 +159,7 @@ const jobHandlers = {
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // En producción, usar servicio de notificaciones
-        // const socketService = require('../services/socket-service');
+        // const socketService = require('../services/socket-service.js');
         // for (const userId of userIds) {
         //     await socketService.sendToUser(userId, 'notification', notification);
         // }

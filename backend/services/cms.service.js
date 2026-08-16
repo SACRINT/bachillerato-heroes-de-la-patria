@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CMSService = void 0;
 const path_1 = __importDefault(require("path"));
 const promises_1 = __importDefault(require("fs/promises"));
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // CMS SERVICE CLASS
 // ============================================
@@ -25,7 +25,7 @@ class CMSService {
     }
     async initialize() {
         try {
-            this.db = require('../config/database');
+            this.db = require('../config/database.js');
             const isConnected = await this.db.testConnection();
             if (isConnected && typeof this.db.execute === 'function') {
                 this.dbAvailable = true;

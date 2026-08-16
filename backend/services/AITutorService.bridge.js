@@ -1,1 +1,1 @@
-module.exports = require('./ai-tutor.service');
+module.exports = require('./ai-tutor.service.js');

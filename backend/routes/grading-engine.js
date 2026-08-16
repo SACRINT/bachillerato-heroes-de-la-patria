@@ -5,8 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const gradingService = require('../services/grading-engine.service');
-const { authenticateToken } = require('../middleware/auth');
+const gradingService = require('../services/grading-engine.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

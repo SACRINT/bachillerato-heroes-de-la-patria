@@ -13,7 +13,7 @@ exports.UploadService = void 0;
 const promises_1 = __importDefault(require("fs/promises"));
 const path_1 = __importDefault(require("path"));
 const crypto_1 = __importDefault(require("crypto"));
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // UPLOAD SERVICE CLASS
 // ============================================

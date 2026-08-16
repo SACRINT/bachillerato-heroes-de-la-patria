@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const teamService = require('../services/team-competition.service');
-const { authenticateToken } = require('../middleware/auth');
+const teamService = require('../services/team-competition.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

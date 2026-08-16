@@ -7,8 +7,8 @@
  * - Sin SQL directo en el servicio
  */
 
-const EmailTemplateDAO = require('../data/email-template.dao');
-const devLogger = require('../utils/devLogger');
+const EmailTemplateDAO = require('../data/email-template.dao.js');
+const devLogger = require('../utils/devLogger.js');
 const nodemailer = require('nodemailer');
 
 class ServiceError extends Error {

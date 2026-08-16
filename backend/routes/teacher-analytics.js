@@ -7,8 +7,8 @@
 const express = require('express');
 const router = express.Router();
 const { query, param, validationResult } = require('express-validator');
-const { authenticateToken } = require('../middleware/auth');
-const TeacherAnalyticsService = require('../services/TeacherAnalyticsService');
+const { authenticateToken } = require('../middleware/auth.js');
+const TeacherAnalyticsService = require('../services/TeacherAnalyticsService.js');
 
 // Middleware de validación
 const validate = (req, res, next) => {

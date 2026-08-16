@@ -4,8 +4,8 @@
  * con Row-Level Security (RLS) en PostgreSQL
  */
 
-const pool = require('../config/database');
-const logger = require('../utils/winston-logger');
+const pool = require('../config/database.js');
+const logger = require('../utils/winston-logger.js');
 
 /**
  * Middleware principal de tenant context

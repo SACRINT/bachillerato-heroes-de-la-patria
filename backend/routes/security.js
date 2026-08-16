@@ -12,11 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
-const auth_1 = require("../middleware/auth");
-const SecurityService_1 = __importDefault(require("../services/SecurityService"));
-const RateLimiterService_1 = __importDefault(require("../services/RateLimiterService"));
-const SecurityAuditService_1 = __importDefault(require("../services/SecurityAuditService"));
-const security_dao_1 = __importDefault(require("../data/security.dao"));
+const auth_1 = require('../middleware/auth.js');
+const SecurityService_1 = __importDefault(require('../services/SecurityService.js'));
+const RateLimiterService_1 = __importDefault(require('../services/RateLimiterService.js'));
+const SecurityAuditService_1 = __importDefault(require('../services/SecurityAuditService.js'));
+const security_dao_1 = __importDefault(require('../data/security.dao.js'));
 const router = express_1.default.Router();
 // Middleware para verificar rol admin
 const requireAdmin = (req, res, next) => {

@@ -3,8 +3,8 @@
  * Captura y procesa errores de la aplicación
  */
 
-const { executeQuery } = require('../config/database');
-const devLogger = require('../utils/devLogger');
+const { executeQuery } = require('../config/database.js');
+const devLogger = require('../utils/devLogger.js');
 
 /**
  * Middleware principal de manejo de errores

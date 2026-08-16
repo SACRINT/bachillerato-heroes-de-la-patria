@@ -1,1 +1,1 @@
-module.exports = require('./forums.service');
+module.exports = require('./forums.service.js');

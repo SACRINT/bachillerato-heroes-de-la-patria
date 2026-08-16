@@ -13,11 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
-const auth_1 = require("../middleware/auth");
-const CacheService_1 = require("../services/CacheService");
-const QueryOptimizer_1 = __importDefault(require("../services/QueryOptimizer"));
+const auth_1 = require('../middleware/auth.js');
+const CacheService_1 = require('../services/CacheService.js');
+const QueryOptimizer_1 = __importDefault(require('../services/QueryOptimizer.js'));
 // pool is not used directly in endpoints, we skip import or rely on DAOs
-const analytics_dao_1 = __importDefault(require("../data/analytics.dao"));
+const analytics_dao_1 = __importDefault(require('../data/analytics.dao.js'));
 const router = express_1.default.Router();
 // Middleware para verificar rol admin
 const requireAdmin = (req, res, next) => {

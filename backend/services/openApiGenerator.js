@@ -22,7 +22,7 @@
  *
  * Uso:
  * ```javascript
- * const openApiGenerator = require('./services/openApiGenerator');
+ * const openApiGenerator = require('./services/openApiGenerator.js');
  *
  * // Generate spec
  * const spec = await openApiGenerator.generateSpec(app);
@@ -34,7 +34,7 @@
  * Fecha: 20 Noviembre 2025
  */
 
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 class OpenAPIGenerator {
     constructor(config = {}) {

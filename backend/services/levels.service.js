@@ -6,8 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LevelsService = void 0;
-const GamificationDAO = require('../data/gamification.dao');
-const devLogger = require('../utils/devLogger');
+const GamificationDAO = require('../data/gamification.dao.js');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // LEVELS SERVICE CLASS
 // ============================================

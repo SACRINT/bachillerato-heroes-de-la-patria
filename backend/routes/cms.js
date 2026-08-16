@@ -6,14 +6,14 @@
 
 const express = require('express');
 // GDPR Logging - Debug condicional y sanitización
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
+const { debugLog } = require('../utils/debug-logger.js');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors.js');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, requireRole } = require('../middleware/auth.js');
 
 // Importar servicios
-const cmsService = require('../services/cmsService');
-const uploadService = require('../services/uploadService');
+const cmsService = require('../services/cmsService.js');
+const uploadService = require('../services/uploadService.js');
 
 // ============================================
 // MIDDLEWARE DE CMS

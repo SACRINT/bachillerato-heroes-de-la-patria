@@ -10,8 +10,8 @@
  * 4. Query param (?tenant=tenant1)
  */
 
-const { pool } = require('../config/database');
-const { getTenantByDomain } = require('../data/database-access'); // ✅ Importar función fail-safe
+const { pool } = require('../config/database.js');
+const { getTenantByDomain } = require('../data/database-access.js'); // ✅ Importar función fail-safe
 
 /**
  * Cache de configuraciones de tenant (en memoria)

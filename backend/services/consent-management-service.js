@@ -3,7 +3,7 @@
  * GDPR Article 7 - Refactorizado: 04 Diciembre 2025
  */
 
-const GDPRDAO = require('../data/gdpr.dao');
+const GDPRDAO = require('../data/gdpr.dao.js');
 
 const CONSENT_TYPES = {
   TERMS_OF_SERVICE: { type: 'terms_of_service', required: true, description: 'Acceptance of Terms of Service', legalBasis: 'contract' },

@@ -3,8 +3,8 @@
  * Refactorizado: 04 Diciembre 2025
  */
 
-const ReportingDAO = require('../data/reporting.dao');
-const devLogger = require('../utils/devLogger');
+const ReportingDAO = require('../data/reporting.dao.js');
+const devLogger = require('../utils/devLogger.js');
 
 class ReportingService {
     async generateStudentsReport(filters = {}) {

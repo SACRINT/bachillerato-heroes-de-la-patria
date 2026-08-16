@@ -10,9 +10,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
-const auth_1 = require("../middleware/auth");
+const auth_1 = require('../middleware/auth.js');
 // @ts-ignore
-const ForumsService_1 = __importDefault(require("../services/ForumsService"));
+const ForumsService_1 = __importDefault(require('../services/ForumsService.js'));
 const router = express_1.default.Router();
 // Middleware de validación
 const validate = (req, res, next) => {

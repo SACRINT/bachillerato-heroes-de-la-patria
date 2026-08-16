@@ -40,8 +40,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
-const { pool } = require('../config/database');
+const { authenticateToken } = require('../middleware/auth.js');
+const { pool } = require('../config/database.js');
 
 // Configuración de experiencias AR
 const AR_EXPERIENCES = {

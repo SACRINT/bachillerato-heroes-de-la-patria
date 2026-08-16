@@ -3,8 +3,8 @@
  * Búsqueda full-text avanzada - Refactorizado: 04 Diciembre 2025
  */
 
-const SearchDAO = require('../data/search.dao');
-const devLogger = require('../utils/devLogger');
+const SearchDAO = require('../data/search.dao.js');
+const devLogger = require('../utils/devLogger.js');
 
 class SearchService {
   constructor() {

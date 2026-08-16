@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const studyGroupService = require('../services/study-group.service');
-const { authenticateToken } = require('../middleware/auth');
+const studyGroupService = require('../services/study-group.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 // Middleware para verificar token en todas las rutas de grupos
 router.use(authenticateToken);

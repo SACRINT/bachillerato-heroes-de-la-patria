@@ -5,8 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const multiService = require('../services/multi-format.service');
-const { authenticateToken } = require('../middleware/auth');
+const multiService = require('../services/multi-format.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

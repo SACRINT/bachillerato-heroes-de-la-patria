@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const notificationService = require('../services/notification.service');
-const { authenticateToken } = require('../middleware/auth');
+const notificationService = require('../services/notification.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

@@ -10,19 +10,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
-const auth_1 = require("../middleware/auth");
+const auth_1 = require('../middleware/auth.js');
 const crypto_1 = __importDefault(require("crypto"));
 // GDPR Logging
-const debug_logger_1 = require("../utils/debug-logger");
-const sanitized_errors_1 = require("../utils/sanitized-errors");
-const database_1 = require("../config/database");
+const debug_logger_1 = require('../utils/debug-logger.js');
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
+const database_1 = require('../config/database.js');
 const router = express_1.default.Router();
 // ============================================
 // HELPER FUNCTIONS
 // ============================================
 function getStudentService() {
     try {
-        const { getStudentService } = require('../services/studentService');
+        const { getStudentService } = require('../services/studentService.js');
         return getStudentService();
     }
     catch (error) {

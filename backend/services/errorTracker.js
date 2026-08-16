@@ -15,7 +15,7 @@
  *
  * Uso:
  * ```javascript
- * const errorTracker = require('./services/errorTracker');
+ * const errorTracker = require('./services/errorTracker.js');
  *
  * // Track error
  * errorTracker.trackError(error, {
@@ -32,7 +32,7 @@
  */
 
 const crypto = require('crypto');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 class ErrorTracker {
     constructor(config = {}) {

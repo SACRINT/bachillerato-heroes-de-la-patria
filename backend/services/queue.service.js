@@ -17,7 +17,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const events_1 = require("events");
-const devLogger_1 = __importDefault(require("../utils/devLogger"));
+const devLogger_1 = __importDefault(require('../utils/devLogger.js'));
 // =====================================================
 // QUEUE SERVICE CLASS
 // =====================================================

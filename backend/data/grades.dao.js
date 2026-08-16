@@ -6,7 +6,7 @@
  * Refactorizado: 06 Diciembre 2025 (Migración TypeScript)
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = require("../config/database");
+const database_1 = require('../config/database.js');
 // =====================================================
 // GRADES DAO CLASS
 // =====================================================

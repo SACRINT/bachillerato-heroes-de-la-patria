@@ -6,8 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuditService = void 0;
-const AuditDAO = require('../data/audit.dao');
-const devLogger = require('../utils/devLogger');
+const AuditDAO = require('../data/audit.dao.js');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // AUDIT SERVICE CLASS
 // ============================================

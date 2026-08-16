@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const collaborationService = require('../services/collaboration.service');
-const { authenticateToken } = require('../middleware/auth');
+const collaborationService = require('../services/collaboration.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

@@ -5,8 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const helpdeskService = require('../services/helpdesk.service');
-const { authenticateToken } = require('../middleware/auth');
+const helpdeskService = require('../services/helpdesk.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

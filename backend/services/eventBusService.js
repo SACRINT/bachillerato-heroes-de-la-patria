@@ -13,7 +13,7 @@
  */
 
 const EventEmitter = require('events');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 class EventBusService extends EventEmitter {
   constructor() {

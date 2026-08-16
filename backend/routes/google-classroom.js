@@ -7,11 +7,11 @@
 
 const express = require('express');
 // GDPR Logging - Debug condicional y sanitización
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
+const { debugLog } = require('../utils/debug-logger.js');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors.js');
 const { body, validationResult } = require('express-validator');
-const { getGoogleClassroomService } = require('../services/googleClassroomService');
-const { authenticateToken } = require('../middleware/auth');
+const { getGoogleClassroomService } = require('../services/googleClassroomService.js');
+const { authenticateToken } = require('../middleware/auth.js');
 const router = express.Router();
 
 // Obtener instancia del servicio

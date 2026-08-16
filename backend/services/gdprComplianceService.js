@@ -14,7 +14,7 @@
  *
  * Uso:
  * ```javascript
- * const gdprService = require('./services/gdprComplianceService');
+ * const gdprService = require('./services/gdprComplianceService.js');
  *
  * // Export user data
  * const exportData = await gdprService.exportUserData(userId, 'json');
@@ -30,8 +30,8 @@
  */
 
 const crypto = require('crypto');
-const devLogger = require('../utils/devLogger');
-const pool = require('../data/database');
+const devLogger = require('../utils/devLogger.js');
+const pool = require('../data/database.js');
 
 class GDPRComplianceService {
     constructor(config = {}) {

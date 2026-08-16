@@ -13,7 +13,7 @@ exports.getVerification = getVerification;
 exports.cleanupExpiredTokens = cleanupExpiredTokens;
 const crypto_1 = __importDefault(require("crypto"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // TRANSPORTER CONFIGURATION
 // ============================================

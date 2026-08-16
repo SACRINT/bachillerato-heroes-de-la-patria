@@ -9,10 +9,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
-const grades_validation_service_1 = __importDefault(require("../services/grades-validation.service"));
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const debug_logger_1 = require("../utils/debug-logger");
-const sanitized_errors_1 = require("../utils/sanitized-errors");
+const grades_validation_service_1 = __importDefault(require('../services/grades-validation.service.js'));
+const { authenticateToken, requireRole } = require('../middleware/auth.js');
+const debug_logger_1 = require('../utils/debug-logger.js');
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
 const router = (0, express_1.Router)();
 // ============================================
 // VALIDACIÓN DE CALIFICACIONES
@@ -229,7 +229,7 @@ router.post('/alerts/dismiss/:alert_id', authenticateToken, requireRole(['coordi
     try {
         const { alert_id } = req.params;
         const { motivo } = req.body;
-        const { executeQuery } = require('../config/database');
+        const { executeQuery } = require('../config/database.js');
         await executeQuery(`
             UPDATE alertas_estudiantes
             SET estado = 'cerrada', motivo_cierre = $1, fecha_cierre = CURRENT_TIMESTAMP

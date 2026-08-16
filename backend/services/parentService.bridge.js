@@ -1,5 +1,5 @@
 /**
  * Bridge file for parentTeacherCommunicationService.js -> parent.service.ts
  */
-const ParentService = require('./parent.service');
+const ParentService = require('./parent.service.js');
 module.exports = ParentService;

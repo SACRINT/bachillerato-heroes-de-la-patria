@@ -3,7 +3,7 @@
  * Propósito: Chatbot educativo con memoria y contexto del usuario (Fase 6 - Semana 42)
  */
 
-const { executeQuery } = require('../config/database');
+const { executeQuery } = require('../config/database.js');
 
 class AiTutorV2Service {
 

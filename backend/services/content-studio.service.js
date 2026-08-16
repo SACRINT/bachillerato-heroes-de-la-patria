@@ -3,8 +3,8 @@
  * Propósito: Gestionar la creación de contenido interactivo (Fase 5 - Semana 33)
  */
 
-const { executeQuery, executeTransaction } = require('../config/database');
-const devLogger = require('../utils/devLogger');
+const { executeQuery, executeTransaction } = require('../config/database.js');
+const devLogger = require('../utils/devLogger.js');
 
 class ContentStudioService {
 

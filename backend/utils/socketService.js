@@ -6,7 +6,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const socket_io_1 = require("socket.io");
-const debugLog = require('./debug-logger');
+const debugLog = require('./debug-logger.js');
 class SocketService {
     constructor() {
         this.io = null;
@@ -183,7 +183,7 @@ class SocketService {
      */
     async saveMessage(message) {
         try {
-            const { executeQuery } = require('../config/database');
+            const { executeQuery } = require('../config/database.js');
             await executeQuery(`
                 INSERT INTO messages (conversation_id, sender_id, sender_role, sender_name, content, message_type, created_at)
                 VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -205,7 +205,7 @@ class SocketService {
      * Mark notification as read
      */
     async markNotificationRead(userId, notificationId) {
-        const { executeQuery } = require('../config/database');
+        const { executeQuery } = require('../config/database.js');
         await executeQuery(`
             UPDATE notificaciones_usuario 
             SET leida = true, fecha_lectura = CURRENT_TIMESTAMP

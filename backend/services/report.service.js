@@ -10,9 +10,9 @@ exports.ReportService = void 0;
 const handlebars = require('handlebars');
 const fs = require('fs').promises;
 const path = require('path');
-const devLogger = require('../utils/devLogger');
-const GradesService = require('./grades.service');
-const StudentDAO = require('../data/student.dao');
+const devLogger = require('../utils/devLogger.js');
+const GradesService = require('./grades.service.js');
+const StudentDAO = require('../data/student.dao.js');
 // ============================================
 // REPORT SERVICE CLASS
 // ============================================

@@ -6,8 +6,8 @@
  * - Migrado a usar AuditDAO
  */
 
-const AuditDAO = require('../data/audit.dao');
-const devLogger = require('../utils/devLogger');
+const AuditDAO = require('../data/audit.dao.js');
+const devLogger = require('../utils/devLogger.js');
 
 class AuditService {
   constructor() {

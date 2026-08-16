@@ -6,15 +6,15 @@
 
 const express = require('express');
 // GDPR Logging - Debug condicional y sanitización
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
+const { debugLog } = require('../utils/debug-logger.js');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors.js');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 
 // ✅ FASE 3: Using DAO layer instead of direct pool access
-const UserDAO = require('../data/user.dao');
-const StudentDAO = require('../data/student.dao');
+const UserDAO = require('../data/user.dao.js');
+const StudentDAO = require('../data/student.dao.js');
 
 /**
  * 🔐 POST /api/students-auth/login
@@ -80,7 +80,7 @@ router.post('/login', [
         // Generar JWT Token
         let token = 'session_' + Date.now();
         try {
-            const { getJWTUtils } = require('../utils/jwtUtils');
+            const { getJWTUtils } = require('../utils/jwtUtils.js');
             const jwtUtils = getJWTUtils();
             const tokenPair = jwtUtils.generateTokenPair({
                 userId: user.id,

@@ -21,7 +21,7 @@ exports.getBackupService = getBackupService;
 const promises_1 = __importDefault(require("fs/promises"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = require("fs");
-const devLogger_1 = __importDefault(require("../utils/devLogger"));
+const devLogger_1 = __importDefault(require('../utils/devLogger.js'));
 // Dynamic imports for optional dependencies
 let archiver;
 let cron;

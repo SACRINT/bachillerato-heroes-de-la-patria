@@ -5,8 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const videoService = require('../services/video-learning.service');
-const { authenticateToken } = require('../middleware/auth');
+const videoService = require('../services/video-learning.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 // Todos los endpoints requieren autenticación (estudiantes/docentes)
 router.use(authenticateToken);

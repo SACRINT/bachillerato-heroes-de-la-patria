@@ -5,7 +5,7 @@
  */
 
 const rateLimit = require('express-rate-limit');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 const { body, param, query, validationResult } = require('express-validator');
 
 /**

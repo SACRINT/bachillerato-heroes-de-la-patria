@@ -10,11 +10,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
-const grades_service_1 = __importDefault(require("../services/grades.service"));
-const auth_1 = require("../middleware/auth");
-const devLogger_1 = __importDefault(require("../utils/devLogger"));
-const pdfGenerator_1 = require("../utils/pdfGenerator");
-const student_dao_1 = __importDefault(require("../data/student.dao"));
+const grades_service_1 = __importDefault(require('../services/grades.service.js'));
+const auth_1 = require('../middleware/auth.js');
+const devLogger_1 = __importDefault(require('../utils/devLogger.js'));
+const pdfGenerator_1 = require('../utils/pdfGenerator.js');
+const student_dao_1 = __importDefault(require('../data/student.dao.js'));
 const router = express_1.default.Router();
 // ============================================
 // VALIDATION MIDDLEWARE
@@ -79,7 +79,7 @@ router.get('/periods', auth_1.authenticateToken, async (req, res) => {
  */
 router.get('/teacher/subjects', auth_1.authenticateToken, (0, auth_1.requireRole)(['docente', 'admin']), async (req, res) => {
     try {
-        const TeacherDAO = require('../data/teacher.dao');
+        const TeacherDAO = require('../data/teacher.dao.js');
         const teacher = await TeacherDAO.getByEmail(req.user?.email);
         if (!teacher && req.user?.role !== 'admin') {
             res.status(404).json({ success: false, message: 'Perfil de docente no encontrado' });

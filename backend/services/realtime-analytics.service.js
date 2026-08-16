@@ -3,7 +3,7 @@
  * Propósito: Procesar heartbeats de usuarios y calcular métricas en vivo (Fase 6 - Semana 47)
  */
 
-const { executeQuery } = require('../config/database');
+const { executeQuery } = require('../config/database.js');
 
 class RealTimeAnalyticsService {
 

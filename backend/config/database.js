@@ -20,8 +20,8 @@ try {
     // dotenv is optional if env vars are already loaded in the environment
 }
 const { Pool } = require('pg');
-// const jsonDb = require('./database-json'); // ⚠️ DESHABILITADO: No disponible en Vercel serverless
-const devLogger = require('../utils/devLogger');
+// const jsonDb = require('./database-json.js'); // ⚠️ DESHABILITADO: No disponible en Vercel serverless
+const devLogger = require('../utils/devLogger.js');
 
 // Flag para determinar qué sistema usar (deshabilitado en Vercel)
 let useJsonFallback = false;

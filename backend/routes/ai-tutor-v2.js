@@ -5,8 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const tutorService = require('../services/ai-tutor-v2.service');
-const { authenticateToken } = require('../middleware/auth');
+const tutorService = require('../services/ai-tutor-v2.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

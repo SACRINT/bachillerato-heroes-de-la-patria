@@ -11,13 +11,13 @@ const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
 const crypto_1 = __importDefault(require("crypto"));
 // @ts-ignore
-const debug_logger_1 = require("../utils/debug-logger");
+const debug_logger_1 = require('../utils/debug-logger.js');
 // @ts-ignore
-const sanitized_errors_1 = require("../utils/sanitized-errors");
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
 // @ts-ignore
-const database_1 = __importDefault(require("../config/database"));
+const database_1 = __importDefault(require('../config/database.js'));
 // @ts-ignore
-const verificationService_1 = __importDefault(require("../services/verificationService"));
+const verificationService_1 = __importDefault(require('../services/verificationService.js'));
 const router = express_1.default.Router();
 // ============================================
 // RATE LIMITING

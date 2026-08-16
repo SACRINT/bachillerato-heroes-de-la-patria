@@ -15,11 +15,11 @@ const fs_1 = __importDefault(require("fs"));
 const crypto_1 = __importDefault(require("crypto"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const express_validator_1 = require("express-validator");
-const bolsa_trabajo_dao_1 = __importDefault(require("../data/bolsa-trabajo.dao"));
-const database_1 = require("../config/database");
+const bolsa_trabajo_dao_1 = __importDefault(require('../data/bolsa-trabajo.dao.js'));
+const database_1 = require('../config/database.js');
 // GDPR Logging
-const debug_logger_1 = require("../utils/debug-logger");
-const sanitized_errors_1 = require("../utils/sanitized-errors");
+const debug_logger_1 = require('../utils/debug-logger.js');
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
 const router = express_1.default.Router();
 // ============================================
 // CONFIGURACIÓN EMAIL

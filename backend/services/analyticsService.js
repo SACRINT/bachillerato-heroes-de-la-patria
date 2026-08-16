@@ -4,9 +4,9 @@
  * Maneja procesamiento de eventos, métricas, análisis predictivo y reportes
  */
 
-const { executeQuery } = require('../config/database');
+const { executeQuery } = require('../config/database.js');
 const EventEmitter = require('events');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 class AnalyticsService extends EventEmitter {
     constructor() {

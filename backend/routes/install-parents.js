@@ -8,9 +8,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
-const debug_logger_1 = require("../utils/debug-logger");
+const debug_logger_1 = require('../utils/debug-logger.js');
 // @ts-ignore
-const database_1 = require("../config/database");
+const database_1 = require('../config/database.js');
 const promises_1 = __importDefault(require("fs/promises"));
 const path_1 = __importDefault(require("path"));
 const router = express_1.default.Router();

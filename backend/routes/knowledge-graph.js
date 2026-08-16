@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
-const graphService = require('../services/knowledge-graph.service');
+const { authenticateToken } = require('../middleware/auth.js');
+const graphService = require('../services/knowledge-graph.service.js');
 
 // GET /api/knowledge/graph
 // Obtiene el grafo personal del usuario

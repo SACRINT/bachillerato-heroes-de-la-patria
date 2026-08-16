@@ -9,11 +9,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
-const debug_logger_1 = require("../utils/debug-logger");
+const debug_logger_1 = require('../utils/debug-logger.js');
 // @ts-ignore
-const sanitized_errors_1 = require("../utils/sanitized-errors");
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
 // @ts-ignore
-const suscriptores_dao_1 = __importDefault(require("../data/suscriptores.dao"));
+const suscriptores_dao_1 = __importDefault(require('../data/suscriptores.dao.js'));
 const router = express_1.default.Router();
 // ============================================
 // GET - Listar todos los suscriptores

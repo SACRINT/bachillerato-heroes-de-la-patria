@@ -6,8 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataRetentionService = void 0;
-const AuditDAO = require('../data/audit.dao');
-const devLogger = require('../utils/devLogger');
+const AuditDAO = require('../data/audit.dao.js');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // DATA RETENTION SERVICE CLASS
 // ============================================

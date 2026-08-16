@@ -16,8 +16,8 @@
 
 const express = require('express');
 const router = express.Router();
-const gdprService = require('../services/gdprComplianceService');
-const devLogger = require('../utils/devLogger');
+const gdprService = require('../services/gdprComplianceService.js');
+const devLogger = require('../utils/devLogger.js');
 
 /**
  * RIGHT TO ACCESS (Artículo 15 GDPR)

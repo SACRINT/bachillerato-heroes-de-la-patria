@@ -7,7 +7,7 @@
  */
 
 const os = require('os');
-const pool = require('../data/database-access').pool;
+const pool = require('../data/database-access.js').pool;
 
 class MonitoringService {
     constructor() {

@@ -6,8 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TournamentsService = void 0;
-const TournamentDAO = require('../data/tournament.dao');
-const devLogger = require('../utils/devLogger');
+const TournamentDAO = require('../data/tournament.dao.js');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // TOURNAMENTS SERVICE CLASS
 // ============================================

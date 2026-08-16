@@ -4,7 +4,7 @@
  * Generación automática de reportes para docentes
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = require("../config/database");
+const database_1 = require('../config/database.js');
 class AutomatedReportsService {
     /**
      * Generar reporte de calificaciones

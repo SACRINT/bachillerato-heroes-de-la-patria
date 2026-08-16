@@ -9,13 +9,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const debug_logger_1 = require("../utils/debug-logger");
-const sanitized_errors_1 = require("../utils/sanitized-errors");
-const auth_1 = require("../middleware/auth");
+const debug_logger_1 = require('../utils/debug-logger.js');
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
+const auth_1 = require('../middleware/auth.js');
 // Importar funciones del DAL (Data Access Layer)
 // Usamos require para compatibilidad con el módulo JS existente
 // @ts-ignore
-const databaseAccess = require('../data/database-access');
+const databaseAccess = require('../data/database-access.js');
 const { getAllCourses, getCourseById, createCourse, updateCourse, deleteCourse } = databaseAccess;
 const router = express_1.default.Router();
 // ============================================

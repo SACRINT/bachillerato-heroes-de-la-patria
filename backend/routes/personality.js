@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
-const personalityService = require('../services/personality-profiling.service');
+const { authenticateToken } = require('../middleware/auth.js');
+const personalityService = require('../services/personality-profiling.service.js');
 
 // GET /api/personality/profile
 // Obtiene el perfil de aprendizaje del usuario

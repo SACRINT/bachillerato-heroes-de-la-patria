@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const experimentService = require('../services/experiment.service');
-const { authenticateToken, requireAdmin } = require('../middleware/auth');
+const experimentService = require('../services/experiment.service.js');
+const { authenticateToken, requireAdmin } = require('../middleware/auth.js');
 
 // GET /api/ai/mlops/experiments/active
 // Ver experimentos activos (para dashboard admin)

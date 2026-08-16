@@ -21,8 +21,8 @@
  * Fecha: 20 Noviembre 2025
  */
 
-const performanceMonitor = require('../services/performanceMonitor');
-const devLogger = require('../utils/devLogger');
+const performanceMonitor = require('../services/performanceMonitor.js');
+const devLogger = require('../utils/devLogger.js');
 
 /**
  * PERFORMANCE TRACKING MIDDLEWARE

@@ -3,7 +3,7 @@
  * Propósito: Evaluar respuestas de texto libre usando heurística NLP simple (Fase 6 - Semana 45)
  */
 
-const { executeQuery } = require('../config/database');
+const { executeQuery } = require('../config/database.js');
 
 class GradingEngineService {
 

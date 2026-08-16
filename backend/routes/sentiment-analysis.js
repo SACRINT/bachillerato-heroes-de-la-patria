@@ -5,8 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const sentimentService = require('../services/sentiment-analysis.service');
-const { authenticateToken } = require('../middleware/auth');
+const sentimentService = require('../services/sentiment-analysis.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

@@ -9,11 +9,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const debug_logger_1 = require("../utils/debug-logger");
-const sanitized_errors_1 = require("../utils/sanitized-errors");
-const auth_1 = require("../middleware/auth");
+const debug_logger_1 = require('../utils/debug-logger.js');
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
+const auth_1 = require('../middleware/auth.js');
 // @ts-ignore
-const calendarService_1 = __importDefault(require("../services/calendarService"));
+const calendarService_1 = __importDefault(require('../services/calendarService.js'));
 const router = express_1.default.Router();
 const requireAdmin = (0, auth_1.requireRole)(['admin', 'director', 'coordinador', 'docente']);
 router.get('/events', async (req, res) => {

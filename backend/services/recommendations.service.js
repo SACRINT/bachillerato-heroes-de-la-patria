@@ -3,7 +3,7 @@
  * Propósito: Generar y servir recomendaciones de contenido personalizadas (Fase 5 - Semana 38)
  */
 
-const { executeQuery } = require('../config/database');
+const { executeQuery } = require('../config/database.js');
 
 class RecommendationsService {
 

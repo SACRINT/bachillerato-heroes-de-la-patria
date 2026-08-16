@@ -5,12 +5,12 @@
 
 const express = require('express');
 // GDPR Logging - Debug condicional y sanitización
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
+const { debugLog } = require('../utils/debug-logger.js');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors.js');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
-const db = require('../config/database');
-const verificationService = require('../services/verificationService');
+const db = require('../config/database.js');
+const verificationService = require('../services/verificationService.js');
 
 /**
  * 🆔 Generar ID para newsletter

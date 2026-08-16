@@ -3,7 +3,7 @@
  * Propósito: Detectar emociones y toxicidad en texto (Fase 6 - Semana 44)
  */
 
-const { executeQuery } = require('../config/database');
+const { executeQuery } = require('../config/database.js');
 
 class SentimentAnalysisService {
 

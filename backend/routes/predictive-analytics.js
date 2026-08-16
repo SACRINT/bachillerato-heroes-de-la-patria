@@ -5,8 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const predictiveService = require('../services/predictive-analytics.service');
-const { authenticateToken } = require('../middleware/auth');
+const predictiveService = require('../services/predictive-analytics.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

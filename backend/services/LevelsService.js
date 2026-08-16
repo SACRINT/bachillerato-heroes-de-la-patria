@@ -7,7 +7,7 @@
  * - Sin SQL directo en el servicio
  */
 
-const GamificationDAO = require('../data/gamification.dao');
+const GamificationDAO = require('../data/gamification.dao.js');
 
 class LevelsService {
     constructor() {

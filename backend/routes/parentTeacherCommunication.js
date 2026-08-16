@@ -5,17 +5,17 @@
 
 const express = require('express');
 // GDPR Logging - Debug condicional y sanitización
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
+const { debugLog } = require('../utils/debug-logger.js');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors.js');
 const { body, query, validationResult } = require('express-validator');
-const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
+const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth.js');
 
 const router = express.Router();
 
 // Obtener servicio de comunicación padres-docentes
 function getParentTeacherService() {
     try {
-        const { getParentTeacherCommunicationService } = require('../services/parentTeacherCommunicationService');
+        const { getParentTeacherCommunicationService } = require('../services/parentTeacherCommunicationService.js');
         return getParentTeacherCommunicationService();
     } catch (error) {
         debugLog.error('PARENTTEACHERCOMMUNICATION', '❌ Error obteniendo servicio de comunicación:', error.message);
@@ -278,7 +278,7 @@ router.post('/messages', authenticateToken, [
 
         // Enviar notificación en tiempo real si WebSocket está disponible
         try {
-            const { getWebSocketService } = require('../services/webSocketService');
+            const { getWebSocketService } = require('../services/webSocketService.js');
             const wsService = getWebSocketService();
 
             if (wsService) {

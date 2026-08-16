@@ -1,1 +1,1 @@
-module.exports = require('./performance.service');
+module.exports = require('./performance.service.js');

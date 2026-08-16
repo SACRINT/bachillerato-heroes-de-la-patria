@@ -7,7 +7,7 @@
  * - Sin SQL directo en el servicio
  */
 
-const TournamentDAO = require('../data/tournament.dao');
+const TournamentDAO = require('../data/tournament.dao.js');
 
 class TournamentsService {
     constructor() {

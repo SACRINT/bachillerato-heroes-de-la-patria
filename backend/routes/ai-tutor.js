@@ -13,9 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
 // @ts-ignore
-const AITutorService_1 = __importDefault(require("../services/ai-tutor.service"));
+const AITutorService_1 = __importDefault(require('../services/ai-tutor.service.js'));
 // @ts-ignore
-const auth_1 = require("../middleware/auth");
+const auth_1 = require('../middleware/auth.js');
 const router = express_1.default.Router();
 // Helper para manejar errores de validación
 const handleValidationErrors = (req, res, next) => {
@@ -164,7 +164,7 @@ router.post('/sessions/:sessionId/messages', auth_1.authenticateToken, [
 
         // ✅ REFACTOR (JAN 2026): Use AI Orchestrator
         // @ts-ignore
-        const { aiService } = require('../services/ai/AIService');
+        const { aiService } = require('../services/ai/AIService.js');
 
         const aiResponse = await aiService.processRequest('TUTOR_CHAT', {
             message: content,

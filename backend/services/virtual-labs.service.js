@@ -3,7 +3,7 @@
  * Propósito: Gestión de experimentos, simulación y reporte de datos (Fase 5 - Semana 36)
  */
 
-const { executeQuery } = require('../config/database');
+const { executeQuery } = require('../config/database.js');
 
 class VirtualLabsService {
 

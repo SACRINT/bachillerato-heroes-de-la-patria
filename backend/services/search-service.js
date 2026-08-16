@@ -10,8 +10,8 @@
  * - Support para múltiples tablas (estudiantes, documentos, noticias, etc)
  */
 
-const { pool } = require('../config/database');
-const devLogger = require('../utils/devLogger');
+const { pool } = require('../config/database.js');
+const devLogger = require('../utils/devLogger.js');
 
 /**
  * CONFIGURACIÓN DE TABLAS SEARCHABLES

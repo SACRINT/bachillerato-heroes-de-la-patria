@@ -7,7 +7,7 @@
  * - Sin SQL directo en el servicio
  */
 
-const ForumDAO = require('../data/forum.dao');
+const ForumDAO = require('../data/forum.dao.js');
 
 class ForumsService {
     constructor() {

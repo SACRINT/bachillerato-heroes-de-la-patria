@@ -3,8 +3,8 @@
  * Refactorizado: 04 Diciembre 2025
  */
 
-const GradesDAO = require('../data/grades.dao');
-const devLogger = require('../utils/devLogger');
+const GradesDAO = require('../data/grades.dao.js');
+const devLogger = require('../utils/devLogger.js');
 
 class ServiceError extends Error { constructor(message, statusCode = 500) { super(message); this.name = 'ServiceError'; this.statusCode = statusCode; } }
 

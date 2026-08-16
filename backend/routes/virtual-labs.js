@@ -5,8 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const labsService = require('../services/virtual-labs.service');
-const { authenticateToken } = require('../middleware/auth');
+const labsService = require('../services/virtual-labs.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

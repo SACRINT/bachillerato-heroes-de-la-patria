@@ -4,10 +4,10 @@
  * GDPR Compliant - Logging condicional
  */
 
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError } = require('../utils/sanitized-errors');
-const db = require('../data/database-access');
-const emailService = require('./emailService');
+const { debugLog } = require('../utils/debug-logger.js');
+const { sanitizeError } = require('../utils/sanitized-errors.js');
+const db = require('../data/database-access.js');
+const emailService = require('./emailService.js');
 
 class ApprovalService {
   /**

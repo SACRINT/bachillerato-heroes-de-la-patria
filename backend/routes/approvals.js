@@ -10,17 +10,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
-const debug_logger_1 = require("../utils/debug-logger");
+const debug_logger_1 = require('../utils/debug-logger.js');
 // @ts-ignore
-const sanitized_errors_1 = require("../utils/sanitized-errors");
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
 const router = express_1.default.Router();
 // ✅ FASE 3: Using DAO layer
 // @ts-ignore
-const approvals_dao_1 = __importDefault(require("../data/approvals.dao"));
+const approvals_dao_1 = __importDefault(require('../data/approvals.dao.js'));
 // @ts-ignore
-const verificationService_1 = __importDefault(require("../services/verificationService"));
+const verificationService_1 = __importDefault(require('../services/verificationService.js'));
 // @ts-ignore
-const ApprovalService_1 = __importDefault(require("../services/ApprovalService"));
+const ApprovalService_1 = __importDefault(require('../services/ApprovalService.js'));
 // =====================================================
 // GET /api/approvals/pending - Listar solicitudes pendientes
 // =====================================================

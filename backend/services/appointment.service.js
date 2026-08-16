@@ -6,10 +6,10 @@
  * Integra DAO, EventBus y Notificaciones
  */
 
-const AppointmentDAO = require('../data/appointment.dao');
-const EventBus = require('./eventBus.service').getInstance();
-const NotificationService = require('./notification.service');
-const devLogger = require('../utils/devLogger');
+const AppointmentDAO = require('../data/appointment.dao.js');
+const EventBus = require('./eventBus.service.js').getInstance();
+const NotificationService = require('./notification.service.js');
+const devLogger = require('../utils/devLogger.js');
 const crypto = require('crypto');
 
 class ServiceError extends Error {

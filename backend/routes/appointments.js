@@ -9,8 +9,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
-const auth_1 = require("../middleware/auth");
-const appointment_service_1 = __importDefault(require("../services/appointment.service"));
+const auth_1 = require('../middleware/auth.js');
+const appointment_service_1 = __importDefault(require('../services/appointment.service.js'));
 const router = express_1.default.Router();
 // ============================================
 // MIDDLEWARE

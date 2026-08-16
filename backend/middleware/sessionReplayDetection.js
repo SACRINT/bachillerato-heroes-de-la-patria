@@ -20,7 +20,7 @@
  */
 
 const crypto = require('crypto');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 class SessionReplayDetection {
     constructor() {

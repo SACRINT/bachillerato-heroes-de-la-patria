@@ -23,8 +23,8 @@
  * Fecha: 20 Noviembre 2025
  */
 
-const errorTracker = require('../services/errorTracker');
-const devLogger = require('../utils/devLogger');
+const errorTracker = require('../services/errorTracker.js');
+const devLogger = require('../utils/devLogger.js');
 
 /**
  * NOT FOUND HANDLER (404)

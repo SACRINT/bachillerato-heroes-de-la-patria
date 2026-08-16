@@ -13,26 +13,26 @@ const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 // @ts-ignore
 const express_validator_1 = require("express-validator");
 // @ts-ignore
-const authService_1 = require("../services/authService");
+const authService_1 = require('../services/authService.js');
 // @ts-ignore
-const jwtUtils_1 = require("../utils/jwtUtils");
-const auth_1 = require("../middleware/auth");
+const jwtUtils_1 = require('../utils/jwtUtils.js');
+const auth_1 = require('../middleware/auth.js');
 // GDPR Logging - Debug condicional y sanitización
-const debug_logger_1 = require("../utils/debug-logger");
-const sanitized_errors_1 = require("../utils/sanitized-errors");
+const debug_logger_1 = require('../utils/debug-logger.js');
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
 // ✅ SEMANA 25: 2FA Service integration
 // @ts-ignore
-const twoFactorService_1 = __importDefault(require("../services/twoFactorService"));
+const twoFactorService_1 = __importDefault(require('../services/twoFactorService.js'));
 // ✅ SEMANA 25: WebAuthn Service integration
 // @ts-ignore
-const webauthnService_1 = __importDefault(require("../services/webauthnService"));
+const webauthnService_1 = __importDefault(require('../services/webauthnService.js'));
 // ✅ FASE 3: DAO Layer for data access
 // @ts-ignore
-const user_dao_1 = __importDefault(require("../data/user.dao"));
+const user_dao_1 = __importDefault(require('../data/user.dao.js'));
 // @ts-ignore
-const passwordGenerator_1 = require("../utils/passwordGenerator");
+const passwordGenerator_1 = require('../utils/passwordGenerator.js');
 // @ts-ignore
-const emailService_1 = __importDefault(require("../services/emailService"));
+const emailService_1 = __importDefault(require('../services/emailService.js'));
 const promises_1 = __importDefault(require("fs/promises"));
 const path_1 = __importDefault(require("path"));
 const crypto_1 = __importDefault(require("crypto"));
@@ -184,7 +184,7 @@ router.post('/login', loginLimiter, loginValidation, async (req, res) => {
         debug_logger_1.debugLog.log('AUTH', `Login exitoso para email=${(0, sanitized_errors_1.maskEmail)(email)}, role=${user.role}`);
 
         // ✅ GAMIFICATION: Check Login Achievements (Async - Fire & Forget)
-        const achievementService = require('../services/achievement.service');
+        const achievementService = require('../services/achievement.service.js');
         achievementService.checkLoginAchievements(user.id).catch(err =>
             console.error('[AUTH] Achievement check failed:', err)
         );
@@ -779,7 +779,7 @@ router.post('/google', async (req, res) => {
         const { email: googleEmail, name: googleName, picture, sub } = payload;
         debug_logger_1.debugLog.log('AUTH', `[GOOGLE-AUTH] Token verificado para email=${(0, sanitized_errors_1.maskEmail)(googleEmail)}`);
         // @ts-ignore
-        const { getUserByEmail, createUserFromGoogle } = require('../data/database-access');
+        const { getUserByEmail, createUserFromGoogle } = require('../data/database-access.js');
         let user = await getUserByEmail(googleEmail);
         if (!user) {
             debug_logger_1.debugLog.log('AUTH', `[GOOGLE-AUTH] Creando nuevo usuario para email=${(0, sanitized_errors_1.maskEmail)(googleEmail)}`);

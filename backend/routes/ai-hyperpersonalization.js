@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
-const personalityService = require('../services/personality-profiling.service');
-const devLogger = require('../utils/devLogger');
+const { authenticateToken } = require('../middleware/auth.js');
+const personalityService = require('../services/personality-profiling.service.js');
+const devLogger = require('../utils/devLogger.js');
 
 // ==========================================
 // AI HYPERPERSONALIZATION ROUTES
@@ -53,7 +53,7 @@ router.post('/personality/assess', authenticateToken, async (req, res, next) => 
     }
 });
 
-const adaptiveContentService = require('../services/adaptive-content.service');
+const adaptiveContentService = require('../services/adaptive-content.service.js');
 
 // ==========================================
 // ADAPTIVE CONTENT (Semana 10)

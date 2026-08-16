@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCalendarService = getCalendarService;
 const path_1 = __importDefault(require("path"));
-const devLogger_1 = __importDefault(require("../utils/devLogger"));
+const devLogger_1 = __importDefault(require('../utils/devLogger.js'));
 const promises_1 = __importDefault(require("fs/promises"));
 // =====================================================
 // CALENDAR SERVICE CLASS
@@ -28,7 +28,7 @@ class CalendarService {
     async initialize() {
         try {
             // Intentar conexión con DB
-            this.db = require('../config/database');
+            this.db = require('../config/database.js');
             const isConnected = await this.db.testConnection?.();
             if (isConnected && typeof this.db.execute === 'function') {
                 this.dbAvailable = true;

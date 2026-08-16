@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
-const emotionalService = require('../services/emotional-analytics.service');
+const { authenticateToken } = require('../middleware/auth.js');
+const emotionalService = require('../services/emotional-analytics.service.js');
 
 // POST /api/emotions/track
 router.post('/track', authenticateToken, async (req, res) => {

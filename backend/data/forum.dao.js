@@ -7,7 +7,7 @@
  * Migración TypeScript: 07 Diciembre 2025
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = require("../config/database");
+const database_1 = require('../config/database.js');
 // =====================================================
 // FORUM DAO CLASS
 // =====================================================

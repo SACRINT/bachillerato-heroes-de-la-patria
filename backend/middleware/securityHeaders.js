@@ -19,7 +19,7 @@
  * Fecha: 20 Noviembre 2025
  */
 
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 class SecurityHeaders {
     constructor() {

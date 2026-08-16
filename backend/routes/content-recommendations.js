@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
-const recommendationService = require('../services/recommendations.service');
+const { authenticateToken } = require('../middleware/auth.js');
+const recommendationService = require('../services/recommendations.service.js');
 
 // GET /api/ai/recommendations
 // Obtiene recursos sugeridos para el estudiante

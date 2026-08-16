@@ -7,8 +7,8 @@
  * - Sin SQL directo en el servicio
  */
 
-const ReportGeneratorDAO = require('../data/report-generator.dao');
-const devLogger = require('../utils/devLogger');
+const ReportGeneratorDAO = require('../data/report-generator.dao.js');
+const devLogger = require('../utils/devLogger.js');
 
 class ServiceError extends Error {
   constructor(message, statusCode = 500) {

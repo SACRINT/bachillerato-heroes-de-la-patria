@@ -6,13 +6,13 @@
 
 const express = require('express');
 // GDPR Logging - Debug condicional y sanitización
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
+const { debugLog } = require('../utils/debug-logger.js');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors.js');
 const router = express.Router();
 // ✅ FASE 3: Using DAO layer instead of direct pool access
-const SolicitudesDAO = require('../data/solicitudes-documentos.dao');
+const SolicitudesDAO = require('../data/solicitudes-documentos.dao.js');
 const { body, validationResult } = require('express-validator');
-const { softDelete } = require('../data/soft-delete-helpers');
+const { softDelete } = require('../data/soft-delete-helpers.js');
 
 // =====================================================
 // POST /api/solicitudes - Crear nueva solicitud

@@ -4,11 +4,11 @@
  * Semana 15 - Real-Time Features Avanzado
  */
 
-const pool = require('../config/database');
-const logger = require('../utils/winston-logger');
+const pool = require('../config/database.js');
+const logger = require('../utils/winston-logger.js');
 
 // DAO Import - Capa de Acceso a Datos
-const collabEditingDAO = require('../data/collaborative-editing.dao');
+const collabEditingDAO = require('../data/collaborative-editing.dao.js');
 
 /**
  * Tipos de operación para Operational Transformation

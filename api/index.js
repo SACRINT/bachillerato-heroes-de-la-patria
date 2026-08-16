@@ -32,7 +32,7 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 
 // NO cargar database.js aqui - evita errores de pool initialization
-// const { pool } = require('../backend/config/database');
+// const { pool } = require('../backend/config/database.js');
 
 // Middleware con lazy loading para evitar crashes al requerir
 let errorHandler;
@@ -40,7 +40,7 @@ let securityMiddleware;
 let tenantContext;
 
 try {
-    errorHandler = require('../backend/middleware/errorHandler').errorHandler;
+    errorHandler = require('../backend/middleware/errorHandler.js').errorHandler;
 } catch (e) {
     console.warn('[VERCEL] Error loading errorHandler:', e.message);
     errorHandler = (err, req, res, next) => {
@@ -49,14 +49,14 @@ try {
 }
 
 try {
-    securityMiddleware = require('../backend/middleware/security').securityMiddleware;
+    securityMiddleware = require('../backend/middleware/security.js').securityMiddleware;
 } catch (e) {
     console.warn('[VERCEL] Error loading securityMiddleware:', e.message);
     securityMiddleware = (req, res, next) => next();
 }
 
 try {
-    tenantContext = require('../backend/middleware/tenant-context').tenantContext;
+    tenantContext = require('../backend/middleware/tenant-context.js').tenantContext;
 } catch (e) {
     console.warn('[VERCEL] Error loading tenantContext:', e.message);
     tenantContext = (req, res, next) => next();
@@ -297,7 +297,7 @@ app.get('/api/config/google-client-id', (req, res) => {
 // Descomentado para simplificar y evitar HTTP 500
 /*
 try {
-    const storeRoutes = require('../backend/routes/store');
+    const storeRoutes = require('../backend/routes/store.js');
     app.use('/api/store', storeRoutes);
     console.log('[VERCEL] ✅ Rutas de Store montadas');
 } catch (e) {
@@ -305,7 +305,7 @@ try {
 }
 
 try {
-    const walletRoutes = require('../backend/routes/wallet');
+    const walletRoutes = require('../backend/routes/wallet.js');
     app.use('/api/wallet', walletRoutes);
     console.log('[VERCEL] ✅ Rutas de Wallet montadas');
 } catch (e) {
@@ -2099,7 +2099,7 @@ app.post('/api/ai/chat', async (req, res) => {
         const { message, history } = req.body;
 
         // Lazy load para no afectar cold start de otras rutas
-        const { processChatMessage } = require('../backend/ai/rag/chat_service');
+        const { processChatMessage } = require('../backend/ai/rag/chat_service.js');
 
         if (!message) {
             return res.status(400).json({ error: 'Mensaje requerido' });
@@ -2125,7 +2125,7 @@ app.post('/api/ai/tutor', async (req, res) => {
         const { message, history, subject } = req.body;
 
         // Lazy load
-        const { processTutorInteraction } = require('../backend/ai/tutor/tutor_service');
+        const { processTutorInteraction } = require('../backend/ai/tutor/tutor_service.js');
 
         if (!message) {
             return res.status(400).json({ error: 'Mensaje requerido' });
@@ -2148,7 +2148,7 @@ app.post('/api/ai/predict/dropout', async (req, res) => {
         const { studentId } = req.body;
 
         // Lazy load
-        const { getStudentRiskPrediction } = require('../backend/ai/models/dropout_prediction/inference_service');
+        const { getStudentRiskPrediction } = require('../backend/ai/models/dropout_prediction/inference_service.js');
 
         if (!studentId) {
             return res.status(400).json({ error: 'ID de estudiante requerido' });

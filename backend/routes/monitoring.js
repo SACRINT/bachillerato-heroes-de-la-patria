@@ -19,9 +19,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
-const productionMonitor_1 = __importDefault(require("../services/productionMonitor"));
+const productionMonitor_1 = __importDefault(require('../services/productionMonitor.js'));
 // @ts-ignore
-const devLogger_1 = __importDefault(require("../utils/devLogger"));
+const devLogger_1 = __importDefault(require('../utils/devLogger.js'));
 const router = express_1.default.Router();
 /**
  * PROMETHEUS METRICS

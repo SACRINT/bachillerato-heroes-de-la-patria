@@ -18,7 +18,7 @@ exports.bulkGrantConsents = bulkGrantConsents;
 exports.createPrivacyPolicyVersion = createPrivacyPolicyVersion;
 exports.getCurrentPrivacyPolicyVersion = getCurrentPrivacyPolicyVersion;
 exports.generateConsentReport = generateConsentReport;
-const gdpr_dao_1 = __importDefault(require("../data/gdpr.dao"));
+const gdpr_dao_1 = __importDefault(require('../data/gdpr.dao.js'));
 // ==================== CONSENT TYPES ====================
 const CONSENT_TYPES = {
     TERMS_OF_SERVICE: { type: 'terms_of_service', required: true, description: 'Acceptance of Terms of Service', legalBasis: 'contract' },

@@ -5,7 +5,7 @@
  */
 
 const cloudinary = require('cloudinary').v2;
-const logger = require('../utils/winston-logger');
+const logger = require('../utils/winston-logger.js');
 const path = require('path');
 
 // Configurar Cloudinary

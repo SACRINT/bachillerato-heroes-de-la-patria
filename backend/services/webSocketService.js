@@ -4,9 +4,9 @@
  */
 
 const WebSocket = require('ws');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 const { v4: uuidv4 } = require('uuid');
-const { logger } = require('../middleware/logger');
+const { logger } = require('../middleware/logger.js');
 
 class WebSocketService {
     constructor() {

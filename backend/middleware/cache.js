@@ -4,7 +4,7 @@
  * Fecha: 18 de Octubre, 2025
  */
 
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 // Almacenamiento de caché en memoria
 const cache = new Map();

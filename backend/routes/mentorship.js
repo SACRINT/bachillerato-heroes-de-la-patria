@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const mentorshipService = require('../services/mentorship.service');
-const { authenticateToken } = require('../middleware/auth');
+const mentorshipService = require('../services/mentorship.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

@@ -6,14 +6,14 @@
 
 const express = require('express');
 // GDPR Logging - Debug condicional y sanitización
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
+const { debugLog } = require('../utils/debug-logger.js');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors.js');
 const router = express.Router();
 // ✅ FASE 3: Using DAO layer
-const PasswordRecoveryDAO = require('../data/password-recovery.dao');
+const PasswordRecoveryDAO = require('../data/password-recovery.dao.js');
 const { body, validationResult } = require('express-validator');
 const crypto = require('crypto');
-const verificationService = require('../services/verificationService');
+const verificationService = require('../services/verificationService.js');
 
 // =====================================================
 // POST /api/password-recovery - Crear solicitud de recuperación

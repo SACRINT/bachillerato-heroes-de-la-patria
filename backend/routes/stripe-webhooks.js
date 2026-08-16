@@ -9,12 +9,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
-const devLogger_1 = __importDefault(require("../utils/devLogger"));
+const devLogger_1 = __importDefault(require('../utils/devLogger.js'));
 const router = express_1.default.Router();
 let stripePaymentsService;
 try {
     // @ts-ignore
-    stripePaymentsService = require('../services/stripePaymentsService.bridge');
+    stripePaymentsService = require('../services/stripePaymentsService.bridge.js');
 }
 catch (error) {
     console.log('[STRIPE-WEBHOOKS] Servicio en modo simulado');

@@ -5,8 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const recService = require('../services/recommendations.service');
-const { authenticateToken } = require('../middleware/auth');
+const recService = require('../services/recommendations.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

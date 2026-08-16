@@ -4,7 +4,7 @@
  */
 
 const fs = require('fs').promises;
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 const path = require('path');
 const { createWriteStream } = require('fs');
 

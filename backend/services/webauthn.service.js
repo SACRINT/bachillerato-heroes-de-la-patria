@@ -7,8 +7,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebAuthnService = void 0;
 const { generateRegistrationOptions, verifyRegistrationResponse, generateAuthenticationOptions, verifyAuthenticationResponse } = require('@simplewebauthn/server');
-const WebAuthnDAO = require('../data/webauthn.dao');
-const devLogger = require('../utils/devLogger');
+const WebAuthnDAO = require('../data/webauthn.dao.js');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // WEBAUTHN SERVICE CLASS
 // ============================================

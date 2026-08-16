@@ -9,7 +9,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatbotService = void 0;
-const conversation_dao_1 = __importDefault(require("../data/conversation.dao"));
+const conversation_dao_1 = __importDefault(require('../data/conversation.dao.js'));
 // ==================== CHATBOT SERVICE ====================
 class ChatbotService {
     /**

@@ -16,8 +16,8 @@
 const express = require('express');
 const router = express.Router();
 const { body, param, query, validationResult } = require('express-validator');
-const { authenticateToken } = require('../middleware/auth');
-const { getPool } = require('../data/database-access');
+const { authenticateToken } = require('../middleware/auth.js');
+const { getPool } = require('../data/database-access.js');
 
 // =====================================================
 // Helper function to execute queries (since executeQuery is not exported)

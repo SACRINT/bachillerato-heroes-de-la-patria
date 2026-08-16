@@ -11,11 +11,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
 // GDPR Logging
-const debug_logger_1 = require("../utils/debug-logger");
-const sanitized_errors_1 = require("../utils/sanitized-errors");
+const debug_logger_1 = require('../utils/debug-logger.js');
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
 // ✅ FASE 3: DAO Layer
-const avisos_dao_1 = __importDefault(require("../data/avisos.dao"));
-const soft_delete_helpers_1 = require("../data/soft-delete-helpers");
+const avisos_dao_1 = __importDefault(require('../data/avisos.dao.js'));
+const soft_delete_helpers_1 = require('../data/soft-delete-helpers.js');
 const router = express_1.default.Router();
 // ============================================
 // HELPER FUNCTIONS

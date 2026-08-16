@@ -3,7 +3,7 @@
  * Propósito: Gestión de tickets de soporte (Fase 7 - Semana 54)
  */
 
-const { executeQuery } = require('../config/database');
+const { executeQuery } = require('../config/database.js');
 
 class HelpdeskService {
 

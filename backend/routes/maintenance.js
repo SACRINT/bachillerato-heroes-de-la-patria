@@ -9,11 +9,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
-const debug_logger_1 = require("../utils/debug-logger");
+const debug_logger_1 = require('../utils/debug-logger.js');
 // @ts-ignore
-const auth_1 = require("../middleware/auth");
+const auth_1 = require('../middleware/auth.js');
 // @ts-ignore
-const maintenanceTools_1 = require("../services/maintenanceTools");
+const maintenanceTools_1 = require('../services/maintenanceTools.js');
 const router = express_1.default.Router();
 // Aplicar autenticación de admin a todas las rutas de mantenimiento
 // Note: We cast requireAdmin to any because Express types might mismtach with middleware signature

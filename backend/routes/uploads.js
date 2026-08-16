@@ -13,12 +13,12 @@ const multer_1 = __importDefault(require("multer"));
 // const sharp_1 = __importDefault(require("sharp")); // ⚠️ Lazy loaded optimization
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
-const auth_1 = require("../middleware/auth");
+const auth_1 = require('../middleware/auth.js');
 // @ts-ignore
-const uploadService_1 = __importDefault(require("../services/uploadService"));
+const uploadService_1 = __importDefault(require('../services/uploadService.js'));
 // GDPR Logging
-const debug_logger_1 = require("../utils/debug-logger");
-const sanitized_errors_1 = require("../utils/sanitized-errors");
+const debug_logger_1 = require('../utils/debug-logger.js');
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
 const router = express_1.default.Router();
 // ============================================
 // CONFIGURACIÓN DE MULTER

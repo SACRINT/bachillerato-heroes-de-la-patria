@@ -6,8 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MarketplaceService = void 0;
-const MarketplaceDAO = require('../data/marketplace.dao');
-const devLogger = require('../utils/devLogger');
+const MarketplaceDAO = require('../data/marketplace.dao.js');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // MARKETPLACE SERVICE CLASS
 // ============================================

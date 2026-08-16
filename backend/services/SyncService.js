@@ -7,7 +7,7 @@
  * - Sin SQL directo en el servicio
  */
 
-const SyncDAO = require('../data/sync.dao');
+const SyncDAO = require('../data/sync.dao.js');
 const WebSocket = require('ws');
 
 class SyncService {

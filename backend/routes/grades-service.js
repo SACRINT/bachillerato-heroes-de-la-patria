@@ -10,9 +10,9 @@
 
 const express = require('express');
 const { body, query, param, validationResult } = require('express-validator');
-const { authenticateToken, requireTeacher, requireAdmin } = require('../middleware/auth');
-const devLogger = require('../utils/devLogger');
-const GradesService = require('../services/GradesService');
+const { authenticateToken, requireTeacher, requireAdmin } = require('../middleware/auth.js');
+const devLogger = require('../utils/devLogger.js');
+const GradesService = require('../services/GradesService.js');
 
 const router = express.Router();
 

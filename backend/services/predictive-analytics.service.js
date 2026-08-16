@@ -3,7 +3,7 @@
  * Propósito: Cálculo de riesgo de deserción basado en heurísticas (Fase 6 - Semana 41)
  */
 
-const { executeQuery } = require('../config/database');
+const { executeQuery } = require('../config/database.js');
 
 class PredictiveAnalyticsService {
 

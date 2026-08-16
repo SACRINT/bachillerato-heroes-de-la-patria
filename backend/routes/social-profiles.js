@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const socialProfileService = require('../services/social-profile.service');
-const { authenticateToken } = require('../middleware/auth');
+const socialProfileService = require('../services/social-profile.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

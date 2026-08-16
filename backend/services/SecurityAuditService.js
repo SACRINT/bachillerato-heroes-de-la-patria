@@ -7,7 +7,7 @@
  * - Sin SQL directo en el servicio
  */
 
-const SecurityAuditDAO = require('../data/security-audit.dao');
+const SecurityAuditDAO = require('../data/security-audit.dao.js');
 
 class SecurityAuditService {
     constructor() {

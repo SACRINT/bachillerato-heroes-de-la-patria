@@ -6,8 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AIGenerationService = void 0;
-const { executeQuery } = require('../data/database-access');
-const devLogger = require('../utils/devLogger');
+const { executeQuery } = require('../data/database-access.js');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // AI GENERATION SERVICE CLASS
 // ============================================

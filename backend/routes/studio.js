@@ -5,8 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const studioService = require('../services/content-studio.service');
-const { authenticateToken } = require('../middleware/auth');
+const studioService = require('../services/content-studio.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 // Todos los endpoints del studio requieren autenticación de docente/admin
 router.use(authenticateToken);

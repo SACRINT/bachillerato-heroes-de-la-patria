@@ -19,7 +19,7 @@
  * });
  */
 
-const { debugLog } = require('../utils/debug-logger');
+const { debugLog } = require('../utils/debug-logger.js');
 
 class CacheManager {
     constructor() {

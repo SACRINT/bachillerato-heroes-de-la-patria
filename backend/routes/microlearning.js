@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const microlearningService = require('../services/microlearning.service');
-const { authenticateToken } = require('../middleware/auth');
+const microlearningService = require('../services/microlearning.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 // GET /api/microlearning/feed
 // Obtiene un feed de lecciones para swipear

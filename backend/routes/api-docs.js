@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const YAML = require('yamljs'); // Importar YAML
-const { swaggerUi, swaggerDocument, swaggerOptions } = require('../config/swagger-config');
+const { swaggerUi, swaggerDocument, swaggerOptions } = require('../config/swagger-config.js');
 
 // Ruta para servir la documentación de Swagger UI
 router.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));

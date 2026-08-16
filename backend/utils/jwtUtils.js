@@ -4,7 +4,7 @@
  */
 
 const jwt = require('jsonwebtoken');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 const crypto = require('crypto');
 
 class JWTUtils {

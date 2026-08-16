@@ -7,8 +7,8 @@
 const express = require('express');
 const router = express.Router();
 const { body, param, query, validationResult } = require('express-validator');
-const { authenticateToken } = require('../middleware/auth');
-const LevelsService = require('../services/LevelsService');
+const { authenticateToken } = require('../middleware/auth.js');
+const LevelsService = require('../services/LevelsService.js');
 
 // Middleware de validación
 const validate = (req, res, next) => {

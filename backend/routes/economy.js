@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const blockchainService = require('../services/blockchain-service');
+const blockchainService = require('../services/blockchain-service.js');
 
 // Middleware para verificar autenticación
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth.js');
 
 /**
  * Semana 37: API de Economía DeFi

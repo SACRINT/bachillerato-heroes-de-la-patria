@@ -13,8 +13,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SecurityServiceError = exports.SessionManager = exports.SecurityAudit = exports.RateLimiter = exports.TwoFactorAuth = exports.AdvancedSecurityService = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const bcrypt = require('bcrypt');
-const securityDAO = require('../data/security-advanced.dao');
-const devLogger = require('../utils/devLogger');
+const securityDAO = require('../data/security-advanced.dao.js');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // CONFIGURATION
 // ============================================

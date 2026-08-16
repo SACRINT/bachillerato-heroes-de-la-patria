@@ -7,7 +7,7 @@
  * - Sin SQL directo en el servicio
  */
 
-const MarketplaceDAO = require('../data/marketplace.dao');
+const MarketplaceDAO = require('../data/marketplace.dao.js');
 
 class MarketplaceService {
     constructor() {

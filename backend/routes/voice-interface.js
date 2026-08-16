@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const voiceInterfaceService = require('../services/voice-interface.service');
-const { authenticateToken } = require('../middleware/auth');
+const voiceInterfaceService = require('../services/voice-interface.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 // POST /api/voice/command
 // Procesa un comando de texto (transcrito desde voz en el cliente mobile)

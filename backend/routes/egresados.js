@@ -12,10 +12,10 @@ const express_1 = __importDefault(require("express"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const crypto_1 = __importDefault(require("crypto"));
 // ✅ FASE 3: Using DAO layer
-const egresados_dao_1 = __importDefault(require("../data/egresados.dao"));
+const egresados_dao_1 = __importDefault(require('../data/egresados.dao.js'));
 // GDPR Logging
-const debug_logger_1 = require("../utils/debug-logger");
-const sanitized_errors_1 = require("../utils/sanitized-errors");
+const debug_logger_1 = require('../utils/debug-logger.js');
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
 const router = express_1.default.Router();
 // ============================================
 // EMAIL CONFIGURATION

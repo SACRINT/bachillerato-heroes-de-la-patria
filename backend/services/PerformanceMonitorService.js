@@ -7,8 +7,8 @@
  * - Sin SQL directo en el servicio
  */
 
-const PerformanceMonitorDAO = require('../data/performance-monitor.dao');
-const devLogger = require('../utils/devLogger');
+const PerformanceMonitorDAO = require('../data/performance-monitor.dao.js');
+const devLogger = require('../utils/devLogger.js');
 const os = require('os');
 
 class ServiceError extends Error { constructor(message, statusCode = 500) { super(message); this.name = 'ServiceError'; this.statusCode = statusCode; } }

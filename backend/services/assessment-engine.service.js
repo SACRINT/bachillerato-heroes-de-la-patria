@@ -3,8 +3,8 @@
  * Propósito: Generación aleatoria de exámenes y calificación (Fase 5 - Semana 37)
  */
 
-const { executeQuery } = require('../config/database');
-const problemsService = require('./practice-problems.service'); // Reuse generative improvements
+const { executeQuery } = require('../config/database.js');
+const problemsService = require('./practice-problems.service.js'); // Reuse generative improvements
 
 class AssessmentService {
 

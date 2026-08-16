@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const forumService = require('../services/community-forum.service');
-const { authenticateToken } = require('../middleware/auth');
+const forumService = require('../services/community-forum.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

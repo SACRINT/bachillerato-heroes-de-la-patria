@@ -4,7 +4,7 @@
  */
 
 const crypto = require('crypto');
-const TwoFactorDAO = require('../data/two-factor.dao');
+const TwoFactorDAO = require('../data/two-factor.dao.js');
 
 class TwoFactorService {
   constructor() { this.issuer = 'BGE Heroes de la Patria'; this.algorithm = 'SHA1'; this.digits = 6; this.period = 30; }

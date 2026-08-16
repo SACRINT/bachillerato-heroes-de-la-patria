@@ -1,6 +1,6 @@
-const { pool } = require('../config/database');
-const xpService = require('./xp.service');
-const devLogger = require('../utils/devLogger');
+const { pool } = require('../config/database.js');
+const xpService = require('./xp.service.js');
+const devLogger = require('../utils/devLogger.js');
 
 class StreakService {
 

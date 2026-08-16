@@ -17,11 +17,11 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
-const { authenticateToken } = require('../middleware/auth');
-const devLogger = require('../utils/devLogger');
+const { authenticateToken } = require('../middleware/auth.js');
+const devLogger = require('../utils/devLogger.js');
 
 // ✅ FASE 3: Using DAO layer
-const WebhookDAO = require('../data/webhook.dao');
+const WebhookDAO = require('../data/webhook.dao.js');
 
 // =============================================================================
 // CONFIGURACIÓN

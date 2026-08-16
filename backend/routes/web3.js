@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const blockchainService = require('../services/blockchain-service');
+const blockchainService = require('../services/blockchain-service.js');
 
 // Middleware para verificar que el servicio esté activo
 const ensureBlockchain = (req, res, next) => {

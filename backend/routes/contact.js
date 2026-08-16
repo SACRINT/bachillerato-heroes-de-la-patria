@@ -13,12 +13,12 @@ const express_1 = __importDefault(require("express"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const validator_1 = __importDefault(require("validator"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
-const contact_dao_1 = __importDefault(require("../data/contact.dao"));
+const contact_dao_1 = __importDefault(require('../data/contact.dao.js'));
 // @ts-ignore
-const verificationService_1 = __importDefault(require("../services/verificationService"));
+const verificationService_1 = __importDefault(require('../services/verificationService.js'));
 // GDPR Logging
-const debug_logger_1 = require("../utils/debug-logger");
-const sanitized_errors_1 = require("../utils/sanitized-errors");
+const debug_logger_1 = require('../utils/debug-logger.js');
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
 const router = express_1.default.Router();
 // ============================================
 // CONFIGURACIÓN DE NODEMAILER

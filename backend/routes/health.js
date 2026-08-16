@@ -14,9 +14,9 @@ const child_process_1 = require("child_process");
 const util_1 = require("util");
 const execAsync = (0, util_1.promisify)(child_process_1.exec);
 // ✅ FASE 3: Using DAO layer
-const health_dao_1 = __importDefault(require("../data/health.dao"));
+const health_dao_1 = __importDefault(require('../data/health.dao.js'));
 // Importar pool manager
-const pool_manager_1 = __importDefault(require("../middleware/pool-manager"));
+const pool_manager_1 = __importDefault(require('../middleware/pool-manager.js'));
 const router = express_1.default.Router();
 // ============================================
 // ROUTES

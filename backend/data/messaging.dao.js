@@ -1,5 +1,5 @@
-const { pool } = require('../config/database');
-const { debugLog } = require('../utils/debug-logger');
+const { pool } = require('../config/database.js');
+const { debugLog } = require('../utils/debug-logger.js');
 
 class MessagingDAO {
 

@@ -10,11 +10,11 @@
 const express = require('express');
 const router = express.Router();
 const { body, query, param, validationResult } = require('express-validator');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth.js');
 
 // Servicios refactorizados
-const notificationService = require('../services/notification.service');
-const RealtimeChannel = require('../services/channels/RealtimeChannel');
+const notificationService = require('../services/notification.service.js');
+const RealtimeChannel = require('../services/channels/RealtimeChannel.js');
 
 // Middleware de validación
 const validate = (req, res, next) => {

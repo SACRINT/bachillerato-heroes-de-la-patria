@@ -8,8 +8,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.superAdminService = exports.billingService = exports.usageTrackingService = exports.subscriptionPlansService = exports.tenantService = void 0;
-const database_1 = require("../config/database");
-const stripe_integration_service_1 = __importDefault(require("./stripe-integration.service"));
+const database_1 = require('../config/database.js');
+const stripe_integration_service_1 = __importDefault(require('./stripe-integration.service.js'));
 class TenantService {
     /**
      * Onboarding de nueva escuela

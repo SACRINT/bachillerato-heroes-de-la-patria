@@ -5,7 +5,7 @@
  */
 
 const path = require('path');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 const fs = require('fs').promises;
 
 class CMSService {
@@ -19,7 +19,7 @@ class CMSService {
     async initialize() {
         try {
             // Intentar conexión con MySQL
-            this.db = require('../config/database');
+            this.db = require('../config/database.js');
             const isConnected = await this.db.testConnection();
 
             if (isConnected && typeof this.db.execute === 'function') {

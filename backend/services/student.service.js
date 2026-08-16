@@ -11,12 +11,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const devLogger_1 = __importDefault(require("../utils/devLogger"));
-const sanitized_errors_1 = require("../utils/sanitized-errors");
-const student_dao_1 = __importDefault(require("../data/student.dao"));
-const grades_dao_1 = __importDefault(require("../data/grades.dao"));
-const attendance_dao_1 = __importDefault(require("../data/attendance.dao"));
-const database_1 = require("../config/database");
+const devLogger_1 = __importDefault(require('../utils/devLogger.js'));
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
+const student_dao_1 = __importDefault(require('../data/student.dao.js'));
+const grades_dao_1 = __importDefault(require('../data/grades.dao.js'));
+const attendance_dao_1 = __importDefault(require('../data/attendance.dao.js'));
+const database_1 = require('../config/database.js');
 class StudentService {
     /**
      * Obtener lista de estudiantes con filtros opcionales

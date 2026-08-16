@@ -12,7 +12,7 @@
  * GET /api/health/pool → Obtener estado actual del pool
  */
 
-const pool = require('../config/database');
+const pool = require('../config/database.js');
 
 class PoolManager {
   constructor() {

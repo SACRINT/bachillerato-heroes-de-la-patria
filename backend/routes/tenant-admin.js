@@ -6,9 +6,9 @@
 
 const express = require('express');
 const router = express.Router();
-const tenantConfigService = require('../services/tenant-config-service');
-const tenantOnboarding = require('../services/tenant-onboarding');
-const { authenticate, requireRole } = require('../middleware/auth');
+const tenantConfigService = require('../services/tenant-config-service.js');
+const tenantOnboarding = require('../services/tenant-onboarding.js');
+const { authenticate, requireRole } = require('../middleware/auth.js');
 
 // Todos los endpoints requieren autenticación de super-admin
 router.use(authenticate);

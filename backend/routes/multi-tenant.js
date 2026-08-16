@@ -17,8 +17,8 @@
 const express = require('express');
 
 // GDPR Logging - Debug condicional y sanitización
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError } = require('../utils/sanitized-errors');
+const { debugLog } = require('../utils/debug-logger.js');
+const { sanitizeError } = require('../utils/sanitized-errors.js');
 
 const router = express.Router();
 const fs = require('fs').promises;

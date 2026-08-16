@@ -7,9 +7,9 @@
 
 const express = require('express');
 const router = express.Router();
-const { optionalAuth } = require('../middleware/auth');
-const { aiService } = require('../services/ai/AIService');
-const devLogger = require('../utils/devLogger');
+const { optionalAuth } = require('../middleware/auth.js');
+const { aiService } = require('../services/ai/AIService.js');
+const devLogger = require('../utils/devLogger.js');
 
 // POST /api/ai/v1/process
 router.post('/v1/process', optionalAuth, async (req, res) => {

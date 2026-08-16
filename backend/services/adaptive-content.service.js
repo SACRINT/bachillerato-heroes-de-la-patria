@@ -1,6 +1,6 @@
-const { pool } = require('../config/database');
-const devLogger = require('../utils/devLogger');
-const personalityService = require('./personality-profiling.service');
+const { pool } = require('../config/database.js');
+const devLogger = require('../utils/devLogger.js');
+const personalityService = require('./personality-profiling.service.js');
 
 class AdaptiveContentService {
 

@@ -9,7 +9,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OperationType = exports.CollaborativeEditingService = void 0;
-const collaborative_editing_dao_1 = __importDefault(require("../data/collaborative-editing.dao"));
+const collaborative_editing_dao_1 = __importDefault(require('../data/collaborative-editing.dao.js'));
 // ==================== OPERATION TYPES ====================
 const OperationType = {
     INSERT: 'insert',

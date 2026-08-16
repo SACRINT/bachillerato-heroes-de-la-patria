@@ -4,8 +4,8 @@
  */
 
 const crypto = require('crypto');
-const WebhookDAO = require('../data/webhook.dao');
-const devLogger = require('../utils/devLogger');
+const WebhookDAO = require('../data/webhook.dao.js');
+const devLogger = require('../utils/devLogger.js');
 
 class WebhookService {
   constructor() {

@@ -8,7 +8,7 @@
 const express = require('express');
 const router = express.Router();
 // ✅ FASE 3: Using DAO layer
-const AnalyticsDashboardDAO = require('../data/analytics-dashboard.dao');
+const AnalyticsDashboardDAO = require('../data/analytics-dashboard.dao.js');
 
 // ============================================
 // GET /api/analytics/dashboard

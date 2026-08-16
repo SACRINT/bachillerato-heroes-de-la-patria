@@ -7,8 +7,8 @@
  * const calificaciones = await calificacionesLoader.load(estudiante_id);
  */
 
-const DataLoader = require('./dataloader');
-const { pool } = require('../config/database');
+const DataLoader = require('./dataloader.js');
+const { pool } = require('../config/database.js');
 
 // ============================================
 // CALIFICACIONES LOADER

@@ -9,7 +9,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SEVERITY_LEVELS = exports.EVENT_TYPES = exports.SecurityAuditService = void 0;
-const security_audit_dao_1 = __importDefault(require("../data/security-audit.dao"));
+const security_audit_dao_1 = __importDefault(require('../data/security-audit.dao.js'));
 // ==================== EVENT TYPES ====================
 const EVENT_TYPES = {
     LOGIN_SUCCESS: 'login_success', LOGIN_FAILURE: 'login_failure', LOGOUT: 'logout',

@@ -4,7 +4,7 @@
  * Servicio completo de integración con Stripe para pagos escolares
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = require("../config/database");
+const database_1 = require('../config/database.js');
 class StripeIntegrationService {
     constructor() {
         this.config = {
@@ -240,7 +240,7 @@ class StripeIntegrationService {
      * Procesar pago de inscripción
      */
     async processInscripcionPayment(metadata) {
-        const EnrollmentService = require('./enrollment.service').default;
+        const EnrollmentService = require('./enrollment.service.js').default;
         await EnrollmentService.registerPayment(metadata.solicitud_id, {
             monto: metadata.amount,
             referencia: metadata.payment_intent,

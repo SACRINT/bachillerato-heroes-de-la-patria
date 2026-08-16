@@ -12,10 +12,10 @@ exports.PushNotificationService = void 0;
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
 const webpush = require('web-push');
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const { executeQuery } = require('../config/database');
-const debugLog = require('../utils/debug-logger');
-const { sanitizeError } = require('../middleware/errorHandler');
+const { authenticateToken, requireRole } = require('../middleware/auth.js');
+const { executeQuery } = require('../config/database.js');
+const debugLog = require('../utils/debug-logger.js');
+const { sanitizeError } = require('../middleware/errorHandler.js');
 const router = express_1.default.Router();
 // VAPID Keys - These should be in environment variables
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY || 'BGE-demo-public-key-placeholder-for-development';

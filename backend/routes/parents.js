@@ -9,16 +9,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
-const debug_logger_1 = require("../utils/debug-logger");
+const debug_logger_1 = require('../utils/debug-logger.js');
 // @ts-ignore
-const sanitized_errors_1 = require("../utils/sanitized-errors");
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
 const bcrypt_1 = __importDefault(require("bcrypt"));
 // @ts-ignore
-const database_1 = require("../config/database");
+const database_1 = require('../config/database.js');
 // @ts-ignore
-const auth_1 = require("../middleware/auth");
+const auth_1 = require('../middleware/auth.js');
 // @ts-ignore
-const jwtUtils_1 = require("../utils/jwtUtils");
+const jwtUtils_1 = require('../utils/jwtUtils.js');
 const router = express_1.default.Router();
 // ============================================
 // ENDPOINTS ADMINISTRATIVOS (CRUD)
@@ -524,7 +524,7 @@ router.get('/students/:studentId/grades', auth_1.authenticateToken, async (req, 
         }
         // Use GradesService to get the standardized report card
         // This ensures consistency with the student portal
-        const GradesService = require('../services/grades.service').default;
+        const GradesService = require('../services/grades.service.js').default;
         const cicloEscolarStr = ciclo_escolar ? String(ciclo_escolar) : undefined;
         const reportCard = await GradesService.getStudentReportCard(studentId, cicloEscolarStr);
         res.json({
@@ -644,7 +644,7 @@ router.get('/students/:studentId/attendance', auth_1.authenticateToken, async (r
 // ============================================
 // SISTEMA DE CREDENCIALES (PRE-APROVISIONAMIENTO)
 // ============================================
-const parent_credentials_dao_1 = __importDefault(require("../data/parent-credentials.dao"));
+const parent_credentials_dao_1 = __importDefault(require('../data/parent-credentials.dao.js'));
 /**
  * GET /api/parents/credentials
  * Listar credenciales activas (para imprimir/exportar)

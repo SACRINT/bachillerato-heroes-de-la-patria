@@ -22,7 +22,7 @@
  *
  * Uso:
  * ```javascript
- * const soc2Service = require('./services/soc2ComplianceService');
+ * const soc2Service = require('./services/soc2ComplianceService.js');
  *
  * // Log critical action
  * await soc2Service.logAuditEvent({
@@ -40,8 +40,8 @@
  */
 
 const crypto = require('crypto');
-const devLogger = require('../utils/devLogger');
-const pool = require('../data/database');
+const devLogger = require('../utils/devLogger.js');
+const pool = require('../data/database.js');
 
 class SOC2ComplianceService {
     constructor(config = {}) {

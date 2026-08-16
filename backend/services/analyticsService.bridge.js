@@ -1,1 +1,1 @@
-module.exports = require('./analytics.service');
+module.exports = require('./analytics.service.js');

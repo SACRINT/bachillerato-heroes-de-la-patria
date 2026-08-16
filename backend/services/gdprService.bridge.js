@@ -1,1 +1,1 @@
-module.exports = require('./gdpr.service');
+module.exports = require('./gdpr.service.js');

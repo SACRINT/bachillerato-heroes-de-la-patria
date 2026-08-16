@@ -3,7 +3,7 @@
  * Propósito: Gestionar la plataforma de video interactivo (Fase 5 - Semana 34)
  */
 
-const { executeQuery } = require('../config/database');
+const { executeQuery } = require('../config/database.js');
 
 class VideoLearningService {
 

@@ -3,9 +3,9 @@
  * Refactorizado: 04 Diciembre 2025
  */
 
-const AuditDAO = require('../data/audit.dao');
-const { logAction } = require('../utils/logger');
-const devLogger = require('../utils/devLogger');
+const AuditDAO = require('../data/audit.dao.js');
+const { logAction } = require('../utils/logger.js');
+const devLogger = require('../utils/devLogger.js');
 
 async function cleanupTable(tableName) {
     try {

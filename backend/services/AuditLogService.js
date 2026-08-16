@@ -7,8 +7,8 @@
  * - Sin SQL directo en el servicio
  */
 
-const AuditLogDAO = require('../data/audit-log.dao');
-const devLogger = require('../utils/devLogger');
+const AuditLogDAO = require('../data/audit-log.dao.js');
+const devLogger = require('../utils/devLogger.js');
 const crypto = require('crypto');
 
 class ServiceError extends Error {

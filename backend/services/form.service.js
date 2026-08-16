@@ -7,8 +7,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FormService = void 0;
-const devLogger = require('../utils/devLogger');
-const db = require('../data/database-access');
+const devLogger = require('../utils/devLogger.js');
+const db = require('../data/database-access.js');
 // ============================================
 // FORM SERVICE CLASS
 // ============================================

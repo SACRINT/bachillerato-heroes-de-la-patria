@@ -3,8 +3,8 @@
  * Sistema de logs personalizado para la aplicación
  */
 
-const { executeQuery } = require('../config/database');
-const devLogger = require('../utils/devLogger');
+const { executeQuery } = require('../config/database.js');
+const devLogger = require('../utils/devLogger.js');
 
 /**
  * Middleware para registrar requests

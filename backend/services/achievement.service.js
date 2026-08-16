@@ -1,6 +1,6 @@
-const { pool } = require('../config/database');
-const devLogger = require('../utils/devLogger');
-const xpService = require('./xp.service');
+const { pool } = require('../config/database.js');
+const devLogger = require('../utils/devLogger.js');
+const xpService = require('./xp.service.js');
 
 class AchievementService {
 

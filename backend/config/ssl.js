@@ -4,7 +4,7 @@
  */
 
 const fs = require('fs');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 const path = require('path');
 const https = require('https');
 const { execSync } = require('child_process');

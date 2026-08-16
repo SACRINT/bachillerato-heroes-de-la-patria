@@ -9,8 +9,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const debug_logger_1 = require("../utils/debug-logger");
-const auth_1 = require("../middleware/auth");
+const debug_logger_1 = require('../utils/debug-logger.js');
+const auth_1 = require('../middleware/auth.js');
 const router = express_1.default.Router();
 // ============================================
 // SISTEMA DE PUNTUACIONES Y LOGROS

@@ -11,10 +11,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
 // ✅ TypeScript compatible imports
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const AttendanceService = require('../services/attendance.service');
-const debugLog = require('../utils/debug-logger');
-const { sanitizeError } = require('../middleware/errorHandler');
+const { authenticateToken, requireRole } = require('../middleware/auth.js');
+const AttendanceService = require('../services/attendance.service.js');
+const debugLog = require('../utils/debug-logger.js');
+const { sanitizeError } = require('../middleware/errorHandler.js');
 const router = express_1.default.Router();
 // ============================================
 // ENDPOINTS DE ASISTENCIA

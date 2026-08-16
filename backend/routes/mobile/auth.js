@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const mobileAuthService = require('../../services/mobile-auth.service');
-const { authenticateToken } = require('../../middleware/auth');
+const mobileAuthService = require('../../services/mobile-auth.service.js');
+const { authenticateToken } = require('../../middleware/auth.js');
 
 // POST /api/mobile/auth/device-register
 // Registra un dispositivo (Requiere estar autenticado primero con user/pass)

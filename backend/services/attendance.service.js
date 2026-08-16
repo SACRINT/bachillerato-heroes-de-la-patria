@@ -11,10 +11,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ServiceError = void 0;
-const attendance_dao_1 = __importDefault(require("../data/attendance.dao"));
-const devLogger_1 = __importDefault(require("../utils/devLogger"));
+const attendance_dao_1 = __importDefault(require('../data/attendance.dao.js'));
+const devLogger_1 = __importDefault(require('../utils/devLogger.js'));
 // EventBus import - using dynamic require for JS module compatibility
-const EventBus = require('./eventBus.service').getInstance();
+const EventBus = require('./eventBus.service.js').getInstance();
 // =====================================================
 // INTERFACES
 // =====================================================

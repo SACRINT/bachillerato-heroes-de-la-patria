@@ -1,1 +1,1 @@
-module.exports = require('./challenges.service');
+module.exports = require('./challenges.service.js');

@@ -23,7 +23,7 @@
  *
  * Uso:
  * ```javascript
- * const accessibilityAuditor = require('./services/accessibilityAuditor');
+ * const accessibilityAuditor = require('./services/accessibilityAuditor.js');
  *
  * // Audit HTML
  * const auditReport = await accessibilityAuditor.auditHTML(htmlContent);
@@ -36,7 +36,7 @@
  */
 
 const cheerio = require('cheerio'); // HTML parsing
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 class AccessibilityAuditor {
     constructor(config = {}) {

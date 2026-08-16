@@ -4,7 +4,7 @@
  * Sistema de comunicación masiva a padres y estudiantes
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = require("../config/database");
+const database_1 = require('../config/database.js');
 class MassCommunicationService {
     /**
      * Crear mensaje masivo

@@ -5,7 +5,7 @@
  */
 
 const { Client } = require('@elastic/elasticsearch');
-const logger = require('../utils/winston-logger');
+const logger = require('../utils/winston-logger.js');
 
 // Cliente de Elasticsearch
 const client = new Client({

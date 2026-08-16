@@ -5,16 +5,16 @@
 
 const express = require('express');
 // GDPR Logging - Debug condicional y sanitización
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
+const { debugLog } = require('../utils/debug-logger.js');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors.js');
 const { body, query, validationResult } = require('express-validator');
-const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth');
+const { authenticateToken, requireAdmin, requireTeacher } = require('../middleware/auth.js');
 const router = express.Router();
 
 // Obtener servicio de análisis de calificaciones
 function getGradesAnalyticsService() {
     try {
-        const { getGradesAnalyticsService } = require('../services/gradesAnalyticsService');
+        const { getGradesAnalyticsService } = require('../services/gradesAnalyticsService.js');
         return getGradesAnalyticsService();
     } catch (error) {
         debugLog.error('GRADESANALYTICS', '❌ Error obteniendo servicio de análisis:', error.message);

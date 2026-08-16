@@ -14,7 +14,7 @@
  * - Bypass para admins
  */
 
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 // Store en memoria (para desarrollo)
 // En producción usar Redis

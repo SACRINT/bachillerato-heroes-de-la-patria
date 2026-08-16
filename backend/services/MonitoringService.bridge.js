@@ -1,1 +1,1 @@
-module.exports = require('./monitoring.service');
+module.exports = require('./monitoring.service.js');

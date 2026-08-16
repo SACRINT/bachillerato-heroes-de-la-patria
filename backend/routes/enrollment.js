@@ -9,11 +9,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const debug_logger_1 = require("../utils/debug-logger");
-const sanitized_errors_1 = require("../utils/sanitized-errors");
-const enrollment_service_1 = __importDefault(require("../services/enrollment.service"));
-const payment_service_1 = __importDefault(require("../services/payment.service"));
+const { authenticateToken, requireRole } = require('../middleware/auth.js');
+const debug_logger_1 = require('../utils/debug-logger.js');
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
+const enrollment_service_1 = __importDefault(require('../services/enrollment.service.js'));
+const payment_service_1 = __importDefault(require('../services/payment.service.js'));
 const router = (0, express_1.Router)();
 // Crear solicitud (público)
 router.post('/apply', [

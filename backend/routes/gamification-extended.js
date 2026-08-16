@@ -8,15 +8,15 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const gamificationDAO = require('../data/gamification-extended.dao');
-const devLogger = require('../utils/devLogger');
+const { authenticateToken, requireRole } = require('../middleware/auth.js');
+const gamificationDAO = require('../data/gamification-extended.dao.js');
+const devLogger = require('../utils/devLogger.js');
 
 // ============================================
 // SISTEMA DE STREAKS (RACHAS)
 // ============================================
 
-const streakService = require('../services/streak.service');
+const streakService = require('../services/streak.service.js');
 
 /**
  * GET /api/gamification-ext/streaks/:userId
@@ -98,7 +98,7 @@ router.post('/streaks/update', authenticateToken, async (req, res, next) => {
 // SISTEMA DE XP & NIVELES
 // ============================================
 
-const xpService = require('../services/xp.service');
+const xpService = require('../services/xp.service.js');
 
 /**
  * GET /api/gamification-ext/xp/profile/:userId
@@ -147,7 +147,7 @@ router.get('/streaks/top', async (req, res, next) => {
     }
 });
 
-const achievementService = require('../services/achievement.service');
+const achievementService = require('../services/achievement.service.js');
 
 // ... (existing code)
 
@@ -571,7 +571,7 @@ router.get('/summary/:userId', authenticateToken, async (req, res, next) => {
     }
 });
 
-const avatarService = require('../services/avatar.service');
+const avatarService = require('../services/avatar.service.js');
 
 // ... (previous endpoints) ...
 
@@ -643,7 +643,7 @@ router.post('/avatar/equip', authenticateToken, async (req, res, next) => {
     }
 });
 
-const profileService = require('../services/profile.service');
+const profileService = require('../services/profile.service.js');
 
 // ============================================
 // PERFILES PÚBLICOS Y EDICIÓN
@@ -704,7 +704,7 @@ router.post('/profile/update', authenticateToken, async (req, res, next) => {
     }
 });
 
-const leaderboardService = require('../services/leaderboard.service');
+const leaderboardService = require('../services/leaderboard.service.js');
 
 // ============================================
 // LEADERBOARDS AVANZADOS
@@ -738,7 +738,7 @@ router.get('/leaderboard/streaks', async (req, res, next) => {
     }
 });
 
-const tournamentService = require('../services/tournament.service');
+const tournamentService = require('../services/tournament.service.js');
 
 // ============================================
 // TORNEOS Y EVENTOS
@@ -790,7 +790,7 @@ router.get('/tournaments/:id/leaderboard', async (req, res, next) => {
     }
 });
 
-const gamificationAnalyticsService = require('../services/gamification-analytics.service');
+const gamificationAnalyticsService = require('../services/gamification-analytics.service.js');
 
 // ============================================
 // ANALYTICS & REPORTING (Admin/Docente Only)

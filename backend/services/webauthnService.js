@@ -4,8 +4,8 @@
  */
 
 const { generateRegistrationOptions, verifyRegistrationResponse, generateAuthenticationOptions, verifyAuthenticationResponse } = require('@simplewebauthn/server');
-const WebAuthnDAO = require('../data/webauthn.dao');
-const devLogger = require('../utils/devLogger');
+const WebAuthnDAO = require('../data/webauthn.dao.js');
+const devLogger = require('../utils/devLogger.js');
 
 class WebAuthnService {
     constructor() {

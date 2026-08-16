@@ -8,9 +8,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.cleanupTable = cleanupTable;
 exports.runAllCleanups = runAllCleanups;
 exports.startCleanupService = startCleanupService;
-const AuditDAO = require('../data/audit.dao');
-const { logAction } = require('../utils/logger');
-const devLogger = require('../utils/devLogger');
+const AuditDAO = require('../data/audit.dao.js');
+const { logAction } = require('../utils/logger.js');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // SERVICE FUNCTIONS
 // ============================================

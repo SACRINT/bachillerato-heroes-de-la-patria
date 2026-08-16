@@ -23,76 +23,76 @@ const Logger = require('../utilities/logger');
  */
 const DAOs = {
   // Data Access Objects - Core
-  appointment: require('../data/appointment.dao'),
-  attendance: require('../data/attendance.dao'),
-  student: require('../data/student.dao'),
-  teacher: require('../data/teacher.dao'),
-  parent: require('../data/parent.dao'),
-  user: require('../data/user.dao'),
+  appointment: require('../data/appointment.dao.js'),
+  attendance: require('../data/attendance.dao.js'),
+  student: require('../data/student.dao.js'),
+  teacher: require('../data/teacher.dao.js'),
+  parent: require('../data/parent.dao.js'),
+  user: require('../data/user.dao.js'),
 
   // Data Access Objects - Grades & Learning
-  grade: require('../data/grade.dao'),
-  grades: require('../data/grades.dao'),
-  learningPath: require('../data/learning-path.dao'),
-  learningProfile: require('../data/learning-profile.dao'),
+  grade: require('../data/grade.dao.js'),
+  grades: require('../data/grades.dao.js'),
+  learningPath: require('../data/learning-path.dao.js'),
+  learningProfile: require('../data/learning-profile.dao.js'),
 
   // Data Access Objects - Academic Features
-  challenge: require('../data/challenge.dao'),
-  conversation: require('../data/conversation.dao'),
-  forum: require('../data/forum.dao'),
-  tournament: require('../data/tournament.dao'),
-  tumorSession: require('../data/tutor-session.dao'),
+  challenge: require('../data/challenge.dao.js'),
+  conversation: require('../data/conversation.dao.js'),
+  forum: require('../data/forum.dao.js'),
+  tournament: require('../data/tournament.dao.js'),
+  tumorSession: require('../data/tutor-session.dao.js'),
 
   // Data Access Objects - Gamification & Engagement
-  gamification: require('../data/gamification.dao'),
-  marketplace: require('../data/marketplace.dao'),
+  gamification: require('../data/gamification.dao.js'),
+  marketplace: require('../data/marketplace.dao.js'),
 
   // Data Access Objects - Library & Resources
-  digitalLibrary: require('../data/digital-library.dao'),
+  digitalLibrary: require('../data/digital-library.dao.js'),
 
   // Data Access Objects - Admin & Monitoring
-  audit: require('../data/audit.dao'),
-  auditLog: require('../data/audit-log.dao'),
-  securityAudit: require('../data/security-audit.dao'),
-  reporting: require('../data/reporting.dao'),
-  reportGenerator: require('../data/report-generator.dao'),
+  audit: require('../data/audit.dao.js'),
+  auditLog: require('../data/audit-log.dao.js'),
+  securityAudit: require('../data/security-audit.dao.js'),
+  reporting: require('../data/reporting.dao.js'),
+  reportGenerator: require('../data/report-generator.dao.js'),
 
   // Data Access Objects - Analytics
-  teacherAnalytics: require('../data/teacher-analytics.dao'),
-  performanceMonitor: require('../data/performance-monitor.dao'),
-  predictiveAnalytics: require('../data/predictive-analytics.dao'),
+  teacherAnalytics: require('../data/teacher-analytics.dao.js'),
+  performanceMonitor: require('../data/performance-monitor.dao.js'),
+  predictiveAnalytics: require('../data/predictive-analytics.dao.js'),
 
   // Data Access Objects - Notifications & Communication
-  notifications: require('../data/notifications.dao'),
-  smsNotification: require('../data/sms-notification.dao'),
+  notifications: require('../data/notifications.dao.js'),
+  smsNotification: require('../data/sms-notification.dao.js'),
 
   // Data Access Objects - Messaging
-  calendar: require('../data/calendar.dao'),
+  calendar: require('../data/calendar.dao.js'),
 
   // Data Access Objects - GDPR & Privacy
-  gdpr: require('../data/gdpr.dao'),
-  gdprDataExport: require('../data/gdpr-data-export.dao'),
-  dsar: require('../data/dsar.dao'),
-  erasure: require('../data/erasure.dao'),
-  emailConfirmation: require('../data/email-confirmation.dao'),
+  gdpr: require('../data/gdpr.dao.js'),
+  gdprDataExport: require('../data/gdpr-data-export.dao.js'),
+  dsar: require('../data/dsar.dao.js'),
+  erasure: require('../data/erasure.dao.js'),
+  emailConfirmation: require('../data/email-confirmation.dao.js'),
 
   // Data Access Objects - Security & Authentication
-  twoFactor: require('../data/two-factor.dao'),
-  webauthn: require('../data/webauthn.dao'),
+  twoFactor: require('../data/two-factor.dao.js'),
+  webauthn: require('../data/webauthn.dao.js'),
 
   // Data Access Objects - Email & Templates
-  emailTemplate: require('../data/email-template.dao'),
+  emailTemplate: require('../data/email-template.dao.js'),
 
   // Data Access Objects - Tenant & Configuration
-  tenant: require('../data/tenant.dao'),
-  tenantAudit: require('../data/tenant-audit.dao'),
-  tenantOnboarding: require('../data/tenant-onboarding.dao'),
+  tenant: require('../data/tenant.dao.js'),
+  tenantAudit: require('../data/tenant-audit.dao.js'),
+  tenantOnboarding: require('../data/tenant-onboarding.dao.js'),
 
   // Data Access Objects - Infrastructure & Integration
-  backup: require('../data/backup-automation.dao'),
-  search: require('../data/search.dao'),
-  sync: require('../data/sync.dao'),
-  webhook: require('../data/webhook.dao')
+  backup: require('../data/backup-automation.dao.js'),
+  search: require('../data/search.dao.js'),
+  sync: require('../data/sync.dao.js'),
+  webhook: require('../data/webhook.dao.js')
 };
 
 /**

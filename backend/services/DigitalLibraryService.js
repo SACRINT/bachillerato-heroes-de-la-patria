@@ -7,7 +7,7 @@
  * - Sin SQL directo en el servicio
  */
 
-const DigitalLibraryDAO = require('../data/digital-library.dao');
+const DigitalLibraryDAO = require('../data/digital-library.dao.js');
 
 class DigitalLibraryService {
     constructor() {

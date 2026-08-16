@@ -1,1 +1,1 @@
-module.exports = require('./advanced-security.service');
+module.exports = require('./advanced-security.service.js');

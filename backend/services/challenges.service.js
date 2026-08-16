@@ -6,8 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChallengesService = void 0;
-const ChallengeDAO = require('../data/challenge.dao');
-const devLogger = require('../utils/devLogger');
+const ChallengeDAO = require('../data/challenge.dao.js');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // CHALLENGES SERVICE CLASS
 // ============================================

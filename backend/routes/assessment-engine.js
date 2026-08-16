@@ -5,8 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const assessmentService = require('../services/assessment-engine.service');
-const { authenticateToken } = require('../middleware/auth');
+const assessmentService = require('../services/assessment-engine.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

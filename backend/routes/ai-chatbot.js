@@ -11,16 +11,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
-const auth_1 = require("../middleware/auth");
+const auth_1 = require('../middleware/auth.js');
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 // @ts-ignore
-const devLogger_1 = __importDefault(require("../utils/devLogger"));
+const devLogger_1 = __importDefault(require('../utils/devLogger.js'));
 // @ts-ignore
-const ai_chatbot_dao_1 = __importDefault(require("../data/ai-chatbot.dao"));
+const ai_chatbot_dao_1 = __importDefault(require('../data/ai-chatbot.dao.js'));
 // @ts-ignore
-const { aiService } = require("../services/ai/AIService");
+const { aiService } = require('../services/ai/AIService.js');
 // @ts-ignore
-const health_dao_1 = __importDefault(require("../data/health.dao"));
+const health_dao_1 = __importDefault(require('../data/health.dao.js'));
 
 const router = express_1.default.Router();
 

@@ -9,13 +9,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
-const debug_logger_1 = require("../utils/debug-logger");
+const debug_logger_1 = require('../utils/debug-logger.js');
 // @ts-ignore
-const auth_1 = require("../middleware/auth");
+const auth_1 = require('../middleware/auth.js');
 // @ts-ignore
-const store_dao_1 = __importDefault(require("../data/store.dao"));
+const store_dao_1 = __importDefault(require('../data/store.dao.js'));
 // @ts-ignore
-const database_1 = require("../config/database");
+const database_1 = require('../config/database.js');
 
 const router = express_1.default.Router();
 

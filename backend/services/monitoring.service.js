@@ -11,8 +11,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MonitoringService = void 0;
 const os_1 = __importDefault(require("os"));
-const pool = require('../data/database-access').pool;
-const devLogger = require('../utils/devLogger');
+const pool = require('../data/database-access.js').pool;
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // MONITORING SERVICE CLASS
 // ============================================

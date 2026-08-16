@@ -12,7 +12,7 @@
  */
 
 const Joi = require('joi');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 // Mensajes de error en español
 const spanishMessages = {

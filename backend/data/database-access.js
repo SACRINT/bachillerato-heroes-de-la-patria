@@ -12,11 +12,11 @@
  * Versión: 1.0.0
  */
 
-const { pool } = require('../config/database');
-const devLogger = require('../utils/devLogger');
+const { pool } = require('../config/database.js');
+const devLogger = require('../utils/devLogger.js');
 
 // GDPR Logging - Debug condicional y sanitización
-const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors.js');
 
 
 /**

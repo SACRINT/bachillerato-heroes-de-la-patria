@@ -7,8 +7,8 @@
  * - Sin SQL directo en el servicio
  */
 
-const BackupAutomationDAO = require('../data/backup-automation.dao');
-const devLogger = require('../utils/devLogger');
+const BackupAutomationDAO = require('../data/backup-automation.dao.js');
+const devLogger = require('../utils/devLogger.js');
 const fs = require('fs').promises;
 const path = require('path');
 const { exec } = require('child_process');

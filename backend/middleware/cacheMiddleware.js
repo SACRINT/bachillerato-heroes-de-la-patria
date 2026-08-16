@@ -28,8 +28,8 @@
  * Fecha: 20 Noviembre 2025
  */
 
-const cacheManager = require('../services/cacheManager');
-const devLogger = require('../utils/devLogger');
+const cacheManager = require('../services/cacheManager.js');
+const devLogger = require('../utils/devLogger.js');
 
 class CacheMiddleware {
     constructor() {

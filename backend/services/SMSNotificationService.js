@@ -7,8 +7,8 @@
  * - Sin SQL directo en el servicio
  */
 
-const devLogger = require('../utils/devLogger');
-const SMSNotificationDAO = require('../data/sms-notification.dao');
+const devLogger = require('../utils/devLogger.js');
+const SMSNotificationDAO = require('../data/sms-notification.dao.js');
 
 class ServiceError extends Error {
   constructor(message, statusCode = 500) { super(message); this.name = 'ServiceError'; this.statusCode = statusCode; }

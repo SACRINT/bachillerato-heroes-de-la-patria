@@ -4,7 +4,7 @@
  */
 
 const webpush = require('web-push');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 const path = require('path');
 const fs = require('fs').promises;
 const cron = require('node-cron');

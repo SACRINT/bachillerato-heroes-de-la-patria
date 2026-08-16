@@ -12,11 +12,11 @@ const express_validator_1 = require("express-validator");
 const promises_1 = __importDefault(require("fs/promises"));
 const path_1 = __importDefault(require("path"));
 // @ts-ignore
-const debug_logger_1 = require("../utils/debug-logger");
+const debug_logger_1 = require('../utils/debug-logger.js');
 // @ts-ignore
-const sanitized_errors_1 = require("../utils/sanitized-errors");
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
 // @ts-ignore
-const verificationService_1 = __importDefault(require("../services/verificationService"));
+const verificationService_1 = __importDefault(require('../services/verificationService.js'));
 const router = express_1.default.Router();
 const SUBSCRIBERS_FILE = path_1.default.join(__dirname, '../data/subscribers.json');
 const NEWSLETTERS_FILE = path_1.default.join(__dirname, '../data/newsletters.json');

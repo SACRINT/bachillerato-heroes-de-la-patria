@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const mobileSocialService = require('../../services/mobile-social.service');
-const { authenticateToken } = require('../../middleware/auth');
+const mobileSocialService = require('../../services/mobile-social.service.js');
+const { authenticateToken } = require('../../middleware/auth.js');
 
 // POST /api/social/stories
 // Crear historia

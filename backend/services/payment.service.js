@@ -4,7 +4,7 @@
  * Integración con Stripe y OXXO Pay para pagos de inscripción
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = require("../config/database");
+const database_1 = require('../config/database.js');
 class PaymentService {
     /**
      * Crear intención de pago con Stripe
@@ -121,7 +121,7 @@ class PaymentService {
             WHERE id = $1
         `, [paymentData.id]);
         // Actualizar solicitud de inscripción
-        const EnrollmentService = require('./enrollment.service').default;
+        const EnrollmentService = require('./enrollment.service.js').default;
         await EnrollmentService.registerPayment(paymentData.solicitud_id, {
             monto: paymentData.monto,
             referencia: paymentIntentId,

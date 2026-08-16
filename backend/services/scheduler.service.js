@@ -12,7 +12,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SchedulerService = void 0;
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // SCHEDULER SERVICE CLASS
 // ============================================

@@ -11,12 +11,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
 // ✅ TypeScript compatible imports
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const { executeQuery } = require('../config/database');
-const GradesService = require('../services/grades.service').default;
-const AttendanceService = require('../services/attendance.service');
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError } = require('../utils/sanitized-errors');
+const { authenticateToken, requireRole } = require('../middleware/auth.js');
+const { executeQuery } = require('../config/database.js');
+const GradesService = require('../services/grades.service.js').default;
+const AttendanceService = require('../services/attendance.service.js');
+const { debugLog } = require('../utils/debug-logger.js');
+const { sanitizeError } = require('../utils/sanitized-errors.js');
 const router = express_1.default.Router();
 // ============================================
 // AUTENTICACIÓN DE DOCENTES

@@ -5,8 +5,8 @@
 
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-const EmailConfirmationDAO = require('../data/email-confirmation.dao');
-const devLogger = require('../utils/devLogger');
+const EmailConfirmationDAO = require('../data/email-confirmation.dao.js');
+const devLogger = require('../utils/devLogger.js');
 
 const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } });
 

@@ -4,8 +4,8 @@
  * FASE 3 - Semana 17-18
  */
 
-const { executeQuery } = require('../data/database-access');
-const { getRealAIService } = require('./realAIService');
+const { executeQuery } = require('../data/database-access.js');
+const { getRealAIService } = require('./realAIService.js');
 
 class AITutorService {
     constructor() {

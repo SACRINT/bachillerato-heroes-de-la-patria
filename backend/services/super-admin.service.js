@@ -10,8 +10,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SuperAdminService = void 0;
-const subscriptions_dao_1 = __importDefault(require("../data/subscriptions.dao"));
-const database_1 = require("../config/database");
+const subscriptions_dao_1 = __importDefault(require('../data/subscriptions.dao.js'));
+const database_1 = require('../config/database.js');
 // =====================================================
 // SUPER ADMIN SERVICE CLASS
 // =====================================================

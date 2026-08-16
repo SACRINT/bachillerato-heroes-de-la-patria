@@ -4,7 +4,7 @@
  * Abstrae las consultas SQL y se adapta al esquema v2 (Periodos de Evaluación).
  */
 
-const { executeQuery, executeTransaction } = require('../config/database');
+const { executeQuery, executeTransaction } = require('../config/database.js');
 
 class GradeDAO {
 

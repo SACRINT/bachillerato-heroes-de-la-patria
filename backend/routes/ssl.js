@@ -5,10 +5,10 @@
 
 const express = require('express');
 // GDPR Logging - Debug condicional y sanitización
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError, maskEmail } = require('../utils/sanitized-errors');
-const { requireAdmin } = require('../middleware/auth');
-const { getSSLManager } = require('../config/ssl');
+const { debugLog } = require('../utils/debug-logger.js');
+const { sanitizeError, maskEmail } = require('../utils/sanitized-errors.js');
+const { requireAdmin } = require('../middleware/auth.js');
+const { getSSLManager } = require('../config/ssl.js');
 
 const router = express.Router();
 

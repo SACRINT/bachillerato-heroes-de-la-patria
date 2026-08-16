@@ -3,7 +3,7 @@
  * GDPR Article 15/20 - Refactorizado: 04 Diciembre 2025
  */
 
-const DsarDAO = require('../data/dsar.dao');
+const DsarDAO = require('../data/dsar.dao.js');
 const crypto = require('crypto');
 const fs = require('fs').promises;
 const path = require('path');

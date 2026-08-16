@@ -16,14 +16,14 @@
 
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { authenticateToken, requireSuperAdmin } = require('../middleware/auth');
+const { authenticateToken, requireSuperAdmin } = require('../middleware/auth.js');
 const {
     getTenantByDomain,
     getAllTenants,
     createTenant,
     updateTenant,
     deleteTenant
-} = require('../data/database-access');
+} = require('../data/database-access.js');
 
 const router = express.Router();
 

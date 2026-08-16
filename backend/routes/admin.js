@@ -12,29 +12,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
 const express_validator_1 = require("express-validator");
-const auth_1 = require("../middleware/auth");
+const auth_1 = require('../middleware/auth.js');
 // @ts-ignore
-const authService_1 = require("../services/authService");
+const authService_1 = require('../services/authService.js');
 // @ts-ignore
-const passwordGenerator_1 = require("../utils/passwordGenerator");
+const passwordGenerator_1 = require('../utils/passwordGenerator.js');
 // @ts-ignore
-const admin_dao_1 = __importDefault(require("../data/admin.dao"));
+const admin_dao_1 = __importDefault(require('../data/admin.dao.js'));
 const promises_1 = __importDefault(require("fs/promises"));
 const path_1 = __importDefault(require("path"));
 // GDPR Logging
-const debug_logger_1 = require("../utils/debug-logger");
-const sanitized_errors_1 = require("../utils/sanitized-errors");
+const debug_logger_1 = require('../utils/debug-logger.js');
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
 // @ts-ignore
-const audit_logging_service_1 = __importDefault(require("../services/audit-logging-service"));
+const audit_logging_service_1 = __importDefault(require('../services/audit-logging-service.js'));
 
 // DAOs para Dashboard Stats Consolidation (Added manually)
-const noticias_dao_1 = __importDefault(require("../data/noticias.dao"));
-const eventos_dao_1 = __importDefault(require("../data/eventos.dao"));
-const avisos_dao_1 = __importDefault(require("../data/avisos.dao"));
-const comunicados_dao_1 = __importDefault(require("../data/comunicados.dao"));
-const egresados_dao_1 = __importDefault(require("../data/egresados.dao"));
-const bolsa_trabajo_dao_1 = __importDefault(require("../data/bolsa-trabajo.dao"));
-const suscriptores_dao_1 = __importDefault(require("../data/suscriptores.dao"));
+const noticias_dao_1 = __importDefault(require('../data/noticias.dao.js'));
+const eventos_dao_1 = __importDefault(require('../data/eventos.dao.js'));
+const avisos_dao_1 = __importDefault(require('../data/avisos.dao.js'));
+const comunicados_dao_1 = __importDefault(require('../data/comunicados.dao.js'));
+const egresados_dao_1 = __importDefault(require('../data/egresados.dao.js'));
+const bolsa_trabajo_dao_1 = __importDefault(require('../data/bolsa-trabajo.dao.js'));
+const suscriptores_dao_1 = __importDefault(require('../data/suscriptores.dao.js'));
 
 const router = express_1.default.Router();
 // Instancias de servicios

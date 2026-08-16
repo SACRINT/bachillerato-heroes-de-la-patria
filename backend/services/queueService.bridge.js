@@ -1,5 +1,5 @@
 /**
  * Bridge file for queueService.js -> queue.service.ts
  */
-const QueueService = require('./queue.service');
+const QueueService = require('./queue.service.js');
 module.exports = QueueService;

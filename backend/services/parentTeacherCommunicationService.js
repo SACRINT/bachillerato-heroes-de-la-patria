@@ -5,7 +5,7 @@
 
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs').promises;
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 const path = require('path');
 
 class ParentTeacherCommunicationService {

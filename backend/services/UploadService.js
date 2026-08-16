@@ -4,8 +4,8 @@
  * GDPR Compliant - Logging condicional
  */
 
-const { debugLog } = require('../utils/debug-logger');
-const { sanitizeError } = require('../utils/sanitized-errors');
+const { debugLog } = require('../utils/debug-logger.js');
+const { sanitizeError } = require('../utils/sanitized-errors.js');
 const fs = require('fs').promises;
 const path = require('path');
 const crypto = require('crypto');

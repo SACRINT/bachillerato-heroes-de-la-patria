@@ -16,9 +16,9 @@
 
 const express = require('express');
 const router = express.Router();
-const consentService = require('../services/consent-management-service');
-const { authenticateJWT, requireRole } = require('../middleware/auth');
-const devLogger = require('../utils/devLogger');
+const consentService = require('../services/consent-management-service.js');
+const { authenticateJWT, requireRole } = require('../middleware/auth.js');
+const devLogger = require('../utils/devLogger.js');
 
 // =============================================================================
 // PUBLIC ROUTES

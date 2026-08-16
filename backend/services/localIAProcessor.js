@@ -7,7 +7,7 @@
  * Fecha: 26 Septiembre 2025
  */
 
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 class LocalIAProcessor {
     constructor() {

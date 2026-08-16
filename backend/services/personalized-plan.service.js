@@ -1,5 +1,5 @@
-const { executeQuery } = require('../config/database');
-const debugLog = require('../utils/debug-logger');
+const { executeQuery } = require('../config/database.js');
+const debugLog = require('../utils/debug-logger.js');
 
 class PersonalizedPlanService {
 

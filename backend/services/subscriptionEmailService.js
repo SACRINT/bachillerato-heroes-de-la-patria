@@ -4,7 +4,7 @@
  */
 
 const nodemailer = require('nodemailer');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 require('dotenv').config();
 
 class SubscriptionEmailService {

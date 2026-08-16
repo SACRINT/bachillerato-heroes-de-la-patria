@@ -1,1 +1,1 @@
-module.exports = require('./cms.service');
+module.exports = require('./cms.service.js');

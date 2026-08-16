@@ -4,7 +4,7 @@
  * Maneja el flujo de aprobación y validación de calificaciones
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = require("../config/database");
+const database_1 = require('../config/database.js');
 class GradesValidationService {
     /**
      * Calcular promedio general de un estudiante

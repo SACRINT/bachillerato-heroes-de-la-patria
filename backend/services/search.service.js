@@ -6,8 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SearchService = void 0;
-const SearchDAO = require('../data/search.dao');
-const devLogger = require('../utils/devLogger');
+const SearchDAO = require('../data/search.dao.js');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // SEARCH SERVICE CLASS
 // ============================================

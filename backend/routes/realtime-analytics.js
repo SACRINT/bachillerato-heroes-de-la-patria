@@ -5,8 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const realtimeService = require('../services/realtime-analytics.service');
-const { authenticateToken } = require('../middleware/auth');
+const realtimeService = require('../services/realtime-analytics.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 router.use(authenticateToken);
 

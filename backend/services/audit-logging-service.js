@@ -4,9 +4,9 @@
  * Semana 13 - Multi-Tenancy Enterprise
  */
 
-const pool = require('../config/database');
-const logger = require('../utils/winston-logger');
-const emailService = require('./emailService');
+const pool = require('../config/database.js');
+const logger = require('../utils/winston-logger.js');
+const emailService = require('./emailService.js');
 
 /**
  * Categorías de eventos auditables

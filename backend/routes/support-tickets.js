@@ -48,10 +48,10 @@ var express_1 = __importDefault(require("express"));
 var multer_1 = __importDefault(require("multer"));
 var path_1 = __importDefault(require("path"));
 var fs_1 = __importDefault(require("fs"));
-var debug_logger_1 = require("../utils/debug-logger");
-var sanitized_errors_1 = require("../utils/sanitized-errors");
-var database_1 = require("../config/database");
-var auth_1 = require("../middleware/auth");
+var debug_logger_1 = require('../utils/debug-logger.js');
+var sanitized_errors_1 = require('../utils/sanitized-errors.js');
+var database_1 = require('../config/database.js');
+var auth_1 = require('../middleware/auth.js');
 var router = express_1.default.Router();
 // ============================================
 // CONFIGURACIÓN DE MULTER

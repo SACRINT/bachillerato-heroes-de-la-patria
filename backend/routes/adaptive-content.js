@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
-const adaptiveService = require('../services/adaptive-content.service');
+const { authenticateToken } = require('../middleware/auth.js');
+const adaptiveService = require('../services/adaptive-content.service.js');
 
 // GET /api/adaptive-content/:nodeId
 // Obtiene el contenido optimizado para el usuario

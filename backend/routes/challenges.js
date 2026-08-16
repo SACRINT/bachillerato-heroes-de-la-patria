@@ -10,9 +10,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
-const auth_1 = require("../middleware/auth");
-const ChallengesService_1 = __importDefault(require("../services/ChallengesService"));
-const database_access_1 = require("../data/database-access");
+const auth_1 = require('../middleware/auth.js');
+const ChallengesService_1 = __importDefault(require('../services/ChallengesService.js'));
+const database_access_1 = require('../data/database-access.js');
 const router = express_1.default.Router();
 // ============================================
 // MIDDLEWARE

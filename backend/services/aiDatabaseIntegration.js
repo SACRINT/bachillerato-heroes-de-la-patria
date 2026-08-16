@@ -7,9 +7,9 @@
  * Fecha: 26 Septiembre 2025
  */
 
-const devLogger = require('../utils/devLogger');
-const { executeQuery } = require('../config/database');
-const { getLocalIAProcessor } = require('./localIAProcessor');
+const devLogger = require('../utils/devLogger.js');
+const { executeQuery } = require('../config/database.js');
+const { getLocalIAProcessor } = require('./localIAProcessor.js');
 
 class AIDatabaseIntegration {
     constructor() {

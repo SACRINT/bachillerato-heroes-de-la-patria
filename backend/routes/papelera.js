@@ -9,10 +9,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const debug_logger_1 = require("../utils/debug-logger");
-const sanitized_errors_1 = require("../utils/sanitized-errors");
-const auth_1 = require("../middleware/auth");
-const soft_delete_helpers_1 = require("../data/soft-delete-helpers");
+const debug_logger_1 = require('../utils/debug-logger.js');
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
+const auth_1 = require('../middleware/auth.js');
+const soft_delete_helpers_1 = require('../data/soft-delete-helpers.js');
 const router = express_1.default.Router();
 // ============================================
 // ALLOWED TABLES

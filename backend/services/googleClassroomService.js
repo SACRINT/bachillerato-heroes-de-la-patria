@@ -6,7 +6,7 @@
  * Puede ser extendido con funcionalidad real posteriormente.
  */
 
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 class GoogleClassroomService {
     constructor() {

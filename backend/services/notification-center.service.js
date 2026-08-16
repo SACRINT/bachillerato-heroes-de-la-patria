@@ -3,8 +3,8 @@
  * Propósito: Envío y gestión de notificaciones multicanal (Fase 7 - Semana 51)
  */
 
-const { executeQuery } = require('../config/database');
-const SocketService = require('../services/socket-service'); // Reusing Week 5 logic
+const { executeQuery } = require('../config/database.js');
+const SocketService = require('../services/socket-service.js'); // Reusing Week 5 logic
 
 class NotificationCenterService {
 

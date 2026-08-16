@@ -3,8 +3,8 @@
  * Refactorizado: 04 Diciembre 2025
  */
 
-const GDPRDAO = require('../data/gdpr.dao');
-const devLogger = require('../utils/devLogger');
+const GDPRDAO = require('../data/gdpr.dao.js');
+const devLogger = require('../utils/devLogger.js');
 
 class GDPRService {
   constructor() { this.consentTypes = ['essential', 'marketing', 'analytics', 'third_party']; }

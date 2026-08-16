@@ -7,7 +7,7 @@
  * - Sin SQL directo en el servicio
  */
 
-const TeacherAnalyticsDAO = require('../data/teacher-analytics.dao');
+const TeacherAnalyticsDAO = require('../data/teacher-analytics.dao.js');
 
 class TeacherAnalyticsService {
 

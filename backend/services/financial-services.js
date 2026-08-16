@@ -8,8 +8,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.financialDashboardService = exports.schoolServicesService = exports.iaCoinsService = void 0;
-const database_1 = require("../config/database");
-const stripe_integration_service_1 = __importDefault(require("./stripe-integration.service"));
+const database_1 = require('../config/database.js');
+const stripe_integration_service_1 = __importDefault(require('./stripe-integration.service.js'));
 class IACoinsService {
     constructor() {
         this.packages = [

@@ -4,7 +4,7 @@
  * Sistema de asignación de tareas y trabajos
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = require("../config/database");
+const database_1 = require('../config/database.js');
 class AssignmentService {
     /**
      * Crear nueva tarea

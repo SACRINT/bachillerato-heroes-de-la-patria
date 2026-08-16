@@ -1,1 +1,1 @@
-module.exports = require('./appointmentService');
+module.exports = require('./appointmentService.js');

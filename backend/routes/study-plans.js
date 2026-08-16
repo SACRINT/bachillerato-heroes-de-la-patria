@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
-const planService = require('../services/personalized-plan.service');
-const { debugLog } = require('../utils/debug-logger');
+const { authenticateToken } = require('../middleware/auth.js');
+const planService = require('../services/personalized-plan.service.js');
+const { debugLog } = require('../utils/debug-logger.js');
 
 // GET /api/study-plans/current
 // Obtiene el plan activo vigente (o el último generado)
@@ -12,7 +12,7 @@ router.get('/current', authenticateToken, async (req, res) => {
         // Buscar plan activo más reciente
         // Nota: En una implementación real buscaríamos por fecha actual.
         // Aquí simplificamos buscando el último plan generado.
-        const plans = await require('../config/database').executeQuery(
+        const plans = await require('../config/database.js').executeQuery(
             `SELECT id FROM study_plans WHERE student_id = $1 ORDER BY created_at DESC LIMIT 1`,
             [studentId]
         );

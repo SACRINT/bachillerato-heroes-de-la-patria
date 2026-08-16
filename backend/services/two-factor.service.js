@@ -10,7 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TwoFactorService = void 0;
 const crypto_1 = __importDefault(require("crypto"));
-const TwoFactorDAO = require('../data/two-factor.dao');
+const TwoFactorDAO = require('../data/two-factor.dao.js');
 // ============================================
 // TWO FACTOR SERVICE CLASS
 // ============================================

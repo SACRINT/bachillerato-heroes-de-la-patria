@@ -1,1 +1,1 @@
-module.exports = require('./marketplace.service');
+module.exports = require('./marketplace.service.js');

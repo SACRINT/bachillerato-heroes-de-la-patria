@@ -3,8 +3,8 @@
  * Refactorizado: 04 Diciembre 2025
  */
 
-const AuditDAO = require('../data/audit.dao');
-const devLogger = require('../utils/devLogger');
+const AuditDAO = require('../data/audit.dao.js');
+const devLogger = require('../utils/devLogger.js');
 
 class DataRetentionService {
     async cleanupSystemLogs() {

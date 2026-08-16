@@ -9,13 +9,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const debug_logger_1 = require("../utils/debug-logger");
-const sanitized_errors_1 = require("../utils/sanitized-errors");
-const lesson_planning_service_1 = __importDefault(require("../services/lesson-planning.service"));
-const assignment_service_1 = __importDefault(require("../services/assignment.service"));
-const mass_communication_service_1 = __importDefault(require("../services/mass-communication.service"));
-const automated_reports_service_1 = __importDefault(require("../services/automated-reports.service"));
+const { authenticateToken, requireRole } = require('../middleware/auth.js');
+const debug_logger_1 = require('../utils/debug-logger.js');
+const sanitized_errors_1 = require('../utils/sanitized-errors.js');
+const lesson_planning_service_1 = __importDefault(require('../services/lesson-planning.service.js'));
+const assignment_service_1 = __importDefault(require('../services/assignment.service.js'));
+const mass_communication_service_1 = __importDefault(require('../services/mass-communication.service.js'));
+const automated_reports_service_1 = __importDefault(require('../services/automated-reports.service.js'));
 const router = (0, express_1.Router)();
 // ============================================
 // PLANEACIÓN DE CLASES
@@ -41,7 +41,7 @@ router.post('/lessons/plan', authenticateToken, requireRole(['docente', 'admin']
             return;
         }
         // Resolve Docente ID
-        const { executeQuery } = require('../config/database');
+        const { executeQuery } = require('../config/database.js');
         const docenteRes = await executeQuery('SELECT id FROM docentes WHERE usuario_id = $1', [authReq.user.id]);
         const docenteId = ((_a = docenteRes[0]) === null || _a === void 0 ? void 0 : _a.id) || 0;
         const lessonPlan = await lesson_planning_service_1.default.createLessonPlan({
@@ -68,7 +68,7 @@ router.get('/lessons/plans', authenticateToken, requireRole(['docente', 'admin']
     try {
         const authReq = req;
         const { materia_id, fecha_inicio, fecha_fin, status } = req.query;
-        const { executeQuery } = require('../config/database');
+        const { executeQuery } = require('../config/database.js');
         const docenteRes = await executeQuery('SELECT id FROM docentes WHERE usuario_id = $1', [authReq.user.id]);
         const docenteId = ((_a = docenteRes[0]) === null || _a === void 0 ? void 0 : _a.id) || 0;
         const filters = {};
@@ -99,7 +99,7 @@ router.get('/lessons/weekly', authenticateToken, requireRole(['docente', 'admin'
     var _a;
     try {
         const authReq = req;
-        const { executeQuery } = require('../config/database');
+        const { executeQuery } = require('../config/database.js');
         const docenteRes = await executeQuery('SELECT id FROM docentes WHERE usuario_id = $1', [authReq.user.id]);
         const docenteId = ((_a = docenteRes[0]) === null || _a === void 0 ? void 0 : _a.id) || 0;
         const plans = await lesson_planning_service_1.default.getWeeklyPlans(docenteId);
@@ -177,7 +177,7 @@ router.post('/assignments', authenticateToken, requireRole(['docente', 'admin'])
             res.status(400).json({ success: false, errors: errors.array() });
             return;
         }
-        const { executeQuery } = require('../config/database');
+        const { executeQuery } = require('../config/database.js');
         const docenteRes = await executeQuery('SELECT id FROM docentes WHERE usuario_id = $1', [authReq.user.id]);
         const docenteId = ((_a = docenteRes[0]) === null || _a === void 0 ? void 0 : _a.id) || 0;
         const assignment = await assignment_service_1.default.createAssignment({
@@ -204,7 +204,7 @@ router.get('/assignments', authenticateToken, requireRole(['docente', 'admin']),
     try {
         const authReq = req;
         const { materia_id, tipo, status } = req.query;
-        const { executeQuery } = require('../config/database');
+        const { executeQuery } = require('../config/database.js');
         const docenteRes = await executeQuery('SELECT id FROM docentes WHERE usuario_id = $1', [authReq.user.id]);
         const docenteId = ((_a = docenteRes[0]) === null || _a === void 0 ? void 0 : _a.id) || 0;
         const filters = {};
@@ -325,7 +325,7 @@ router.post('/communication/mass-message', authenticateToken, requireRole(['doce
             res.status(400).json({ success: false, errors: errors.array() });
             return;
         }
-        const { executeQuery } = require('../config/database');
+        const { executeQuery } = require('../config/database.js');
         const docenteRes = await executeQuery('SELECT id FROM docentes WHERE usuario_id = $1', [authReq.user.id]);
         const docenteId = ((_a = docenteRes[0]) === null || _a === void 0 ? void 0 : _a.id) || 0;
         const message = await mass_communication_service_1.default.createMassMessage({
@@ -371,7 +371,7 @@ router.get('/communication/messages', authenticateToken, requireRole(['docente',
     try {
         const authReq = req;
         const { materia_id, status } = req.query;
-        const { executeQuery } = require('../config/database');
+        const { executeQuery } = require('../config/database.js');
         const docenteRes = await executeQuery('SELECT id FROM docentes WHERE usuario_id = $1', [authReq.user.id]);
         const docenteId = ((_a = docenteRes[0]) === null || _a === void 0 ? void 0 : _a.id) || 0;
         const filters = {};

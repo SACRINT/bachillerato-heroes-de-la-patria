@@ -12,7 +12,7 @@
  * Estado: ✅ COMPLETADO
  */
 
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 // =============================================================================
 // CONFIGURACIÓN DE VERSIONES

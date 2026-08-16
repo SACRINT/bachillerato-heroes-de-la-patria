@@ -7,7 +7,7 @@
  * - Sin SQL directo en el servicio
  */
 
-const ChallengeDAO = require('../data/challenge.dao');
+const ChallengeDAO = require('../data/challenge.dao.js');
 
 class ChallengesService {
     constructor() {

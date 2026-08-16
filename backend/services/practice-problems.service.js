@@ -3,7 +3,7 @@
  * Propósito: Generación infinita de problemas y evaluación (Fase 5 - Semana 35)
  */
 
-const { executeQuery } = require('../config/database');
+const { executeQuery } = require('../config/database.js');
 
 class PracticeProblemsService {
 

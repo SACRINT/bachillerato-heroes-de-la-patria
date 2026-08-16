@@ -13,7 +13,7 @@
  * - Mensajes de error claros
  */
 
-const devLogger = require('./devLogger');
+const devLogger = require('./devLogger.js');
 
 /**
  * Patrones de validación comunes

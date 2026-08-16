@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const mobileWidgetService = require('../../services/mobile-widget.service');
-const { authenticateToken } = require('../../middleware/auth');
+const mobileWidgetService = require('../../services/mobile-widget.service.js');
+const { authenticateToken } = require('../../middleware/auth.js');
 
 // GET /api/widgets/streak
 // Datos para el widget de racha (Autenticado)

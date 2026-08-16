@@ -7,8 +7,8 @@
  * - Sin SQL directo en el servicio
  */
 
-const GDPRDataExportDAO = require('../data/gdpr-data-export.dao');
-const devLogger = require('../utils/devLogger');
+const GDPRDataExportDAO = require('../data/gdpr-data-export.dao.js');
+const devLogger = require('../utils/devLogger.js');
 const crypto = require('crypto');
 const fs = require('fs').promises;
 const path = require('path');

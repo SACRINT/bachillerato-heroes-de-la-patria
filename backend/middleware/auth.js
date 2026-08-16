@@ -3,12 +3,12 @@
  * Sistema avanzado con manejo híbrido de base de datos y roles
  */
 
-const { getJWTUtils } = require('../utils/jwtUtils');
-const { getAuthService } = require('../services/authService');
-const devLogger = require('../utils/devLogger'); // 🔐 Logging seguro
+const { getJWTUtils } = require('../utils/jwtUtils.js');
+const { getAuthService } = require('../services/authService.js');
+const devLogger = require('../utils/devLogger.js'); // 🔐 Logging seguro
 
 // GDPR Logging - Debug condicional y sanitización
-const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors');
+const { sanitizeError, maskEmail, maskToken } = require('../utils/sanitized-errors.js');
 
 
 // Instancias de servicios

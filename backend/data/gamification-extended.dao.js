@@ -6,7 +6,7 @@
  * Plan Estratégico: Semana 3-4 Gamification Foundation
  */
 
-const { pool } = require('../config/database');
+const { pool } = require('../config/database.js');
 
 // ============================================
 // SISTEMA DE STREAKS (RACHAS)

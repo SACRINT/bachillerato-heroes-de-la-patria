@@ -14,7 +14,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PerformanceService = void 0;
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // PERFORMANCE SERVICE CLASS
 // ============================================

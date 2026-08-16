@@ -3,7 +3,7 @@
  * Propósito: Optimización dinámica del currículo del estudiante (Fase 6 - Semana 43)
  */
 
-const { executeQuery } = require('../config/database');
+const { executeQuery } = require('../config/database.js');
 
 class LearningPathService {
 

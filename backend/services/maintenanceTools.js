@@ -4,7 +4,7 @@
  */
 
 const fs = require('fs').promises;
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 const path = require('path');
 const { execSync } = require('child_process');
 const os = require('os');
@@ -130,7 +130,7 @@ class MaintenanceTools {
      */
     async getDatabaseInfo() {
         try {
-            const db = require('../config/database');
+            const db = require('../config/database.js');
             const isConnected = await db.testConnection();
 
             const info = {
@@ -174,7 +174,7 @@ class MaintenanceTools {
 
         // Verificar HTTPS
         try {
-            const { getSSLManager } = require('../config/ssl');
+            const { getSSLManager } = require('../config/ssl.js');
             const sslManager = getSSLManager();
             const sslOptions = sslManager.getSSLOptions();
 
@@ -191,7 +191,7 @@ class MaintenanceTools {
 
         // Verificar sistema de backup
         try {
-            const { getBackupService } = require('./backupService');
+            const { getBackupService } = require('./backupService.js');
             const backupService = getBackupService();
             info.backupSystem = true;
             info.backupHealth = await backupService.checkBackupHealth();
@@ -201,7 +201,7 @@ class MaintenanceTools {
 
         // Verificar sistema de logs
         try {
-            const { getAdvancedLogger } = require('./advancedLogger');
+            const { getAdvancedLogger } = require('./advancedLogger.js');
             getAdvancedLogger();
             info.logSystem = true;
         } catch (error) {
@@ -362,7 +362,7 @@ class MaintenanceTools {
 
         // Verificar base de datos
         try {
-            const db = require('../config/database');
+            const db = require('../config/database.js');
             const isConnected = await db.testConnection();
             services.database.status = isConnected ? 'connected' : 'fallback';
             services.database.type = isConnected ? 'MySQL' : 'JSON fallback';
@@ -373,7 +373,7 @@ class MaintenanceTools {
 
         // Verificar backup
         try {
-            const { getBackupService } = require('./backupService');
+            const { getBackupService } = require('./backupService.js');
             const backupService = getBackupService();
             services.backup.status = 'running';
             services.backup.enabled = true;
@@ -383,7 +383,7 @@ class MaintenanceTools {
 
         // Verificar SSL
         try {
-            const { getSSLManager } = require('../config/ssl');
+            const { getSSLManager } = require('../config/ssl.js');
             const sslManager = getSSLManager();
             const sslOptions = sslManager.getSSLOptions();
             services.ssl.status = sslOptions ? 'available' : 'not_configured';
@@ -462,7 +462,7 @@ class MaintenanceTools {
 
         // Limpiar logs antiguos
         try {
-            const { getAdvancedLogger } = require('./advancedLogger');
+            const { getAdvancedLogger } = require('./advancedLogger.js');
             const logger = getAdvancedLogger();
             await logger.cleanOldLogs();
             results.cleaned.push('Logs antiguos eliminados');
@@ -472,7 +472,7 @@ class MaintenanceTools {
 
         // Limpiar backups antiguos
         try {
-            const { getBackupService } = require('./backupService');
+            const { getBackupService } = require('./backupService.js');
             const backupService = getBackupService();
             await backupService.cleanOldBackups();
             results.cleaned.push('Backups antiguos eliminados');
@@ -523,7 +523,7 @@ class MaintenanceTools {
         };
 
         try {
-            const db = require('../config/database');
+            const db = require('../config/database.js');
             const isConnected = await db.testConnection();
 
             if (isConnected) {

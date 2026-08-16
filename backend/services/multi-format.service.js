@@ -3,7 +3,7 @@
  * Propósito: Gestión unificada de Documentos, Audio y Presentaciones (Fase 5 - Semana 39)
  */
 
-const { executeQuery } = require('../config/database');
+const { executeQuery } = require('../config/database.js');
 
 class MultiFormatService {
 

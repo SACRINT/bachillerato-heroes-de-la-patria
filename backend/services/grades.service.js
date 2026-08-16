@@ -9,10 +9,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const grades_dao_1 = __importDefault(require("../data/grades.dao"));
-const periodos_evaluacion_dao_1 = __importDefault(require("../data/periodos-evaluacion.dao"));
-const subject_dao_1 = __importDefault(require("../data/subject.dao"));
-const devLogger_1 = __importDefault(require("../utils/devLogger"));
+const grades_dao_1 = __importDefault(require('../data/grades.dao.js'));
+const periodos_evaluacion_dao_1 = __importDefault(require('../data/periodos-evaluacion.dao.js'));
+const subject_dao_1 = __importDefault(require('../data/subject.dao.js'));
+const devLogger_1 = __importDefault(require('../utils/devLogger.js'));
 // =====================================================
 // GRADES SERVICE CLASS
 // =====================================================

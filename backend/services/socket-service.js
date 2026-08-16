@@ -13,7 +13,7 @@
 
 const { Server } = require('socket.io');
 const jwt = require('jsonwebtoken');
-const { redis } = require('./cache-service');
+const { redis } = require('./cache-service.js');
 
 class SocketService {
     constructor(httpServer) {

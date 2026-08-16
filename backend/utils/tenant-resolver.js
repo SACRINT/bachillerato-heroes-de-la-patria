@@ -4,7 +4,7 @@
  * Semana 5 - Multi-tenancy Avanzado - Tarea 6
  */
 
-const tenantConfigService = require('../services/tenant-config-service');
+const tenantConfigService = require('../services/tenant-config-service.js');
 
 /**
  * Resuelve tenant desde request y valida que exista y esté activo

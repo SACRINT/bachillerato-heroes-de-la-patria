@@ -15,7 +15,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventBusService = void 0;
 const events_1 = require("events");
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // EVENT BUS SERVICE CLASS
 // ============================================

@@ -4,8 +4,8 @@
  * Semana 5 - Multi-tenancy Avanzado - Tarea 8
  */
 
-const tenantConfigService = require('./tenant-config-service');
-const { transactionWithTenant } = require('../config/multi-tenant-pool');
+const tenantConfigService = require('./tenant-config-service.js');
+const { transactionWithTenant } = require('../config/multi-tenant-pool.js');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
 

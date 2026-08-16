@@ -11,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CollaborationServiceError = exports.DocumentCollaborationManager = exports.ChatManager = exports.VideoConferenceManager = exports.RoomManager = exports.RealTimeCollaborationService = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const { Pool } = require('pg');
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // CONFIGURATION
 // ============================================

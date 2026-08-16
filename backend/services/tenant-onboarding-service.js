@@ -5,9 +5,9 @@
 
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const TenantOnboardingDAO = require('../data/tenant-onboarding.dao');
-const logger = require('../utils/winston-logger');
-const emailService = require('./emailService');
+const TenantOnboardingDAO = require('../data/tenant-onboarding.dao.js');
+const logger = require('../utils/winston-logger.js');
+const emailService = require('./emailService.js');
 
 class TenantOnboardingService {
   async createTenant(data) {

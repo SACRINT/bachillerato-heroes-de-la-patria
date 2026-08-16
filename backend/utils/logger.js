@@ -3,7 +3,7 @@
  * Proporciona funciones de logging condicionales
  */
 
-const devLogger = require('./devLogger');
+const devLogger = require('./devLogger.js');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const logAction = (action, details = '') => {

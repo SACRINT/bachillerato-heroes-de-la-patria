@@ -6,8 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GDPRService = void 0;
-const GDPRDAO = require('../data/gdpr.dao');
-const devLogger = require('../utils/devLogger');
+const GDPRDAO = require('../data/gdpr.dao.js');
+const devLogger = require('../utils/devLogger.js');
 // ============================================
 // GDPR SERVICE CLASS
 // ============================================

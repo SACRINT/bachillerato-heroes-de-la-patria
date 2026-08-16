@@ -14,15 +14,15 @@
 
 const express = require('express');
 const router = express.Router();
-const dsarService = require('../services/dsar-service');
-const { authenticateJWT } = require('../middleware/auth');
+const dsarService = require('../services/dsar-service.js');
+const { authenticateJWT } = require('../middleware/auth.js');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs').promises;
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 
 // ✅ FASE 3: Using DAO layer instead of direct pool access
-const DsarDAO = require('../data/dsar.dao');
+const DsarDAO = require('../data/dsar.dao.js');
 
 // =============================================================================
 // RATE LIMITING

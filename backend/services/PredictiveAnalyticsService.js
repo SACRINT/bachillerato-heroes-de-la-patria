@@ -7,8 +7,8 @@
  * - Sin SQL directo en el servicio
  */
 
-const PredictiveAnalyticsDAO = require('../data/predictive-analytics.dao');
-const devLogger = require('../utils/devLogger');
+const PredictiveAnalyticsDAO = require('../data/predictive-analytics.dao.js');
+const devLogger = require('../utils/devLogger.js');
 
 class ServiceError extends Error {
   constructor(message, statusCode = 500) {

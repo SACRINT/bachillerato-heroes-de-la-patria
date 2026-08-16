@@ -23,7 +23,7 @@
  *
  * Uso:
  * ```javascript
- * const productionMonitor = require('./services/productionMonitor');
+ * const productionMonitor = require('./services/productionMonitor.js');
  *
  * // Start monitoring
  * productionMonitor.start();
@@ -39,8 +39,8 @@
  */
 
 const os = require('os');
-const devLogger = require('../utils/devLogger');
-const pool = require('../data/database');
+const devLogger = require('../utils/devLogger.js');
+const pool = require('../data/database.js');
 
 class ProductionMonitor {
     constructor(config = {}) {
@@ -221,7 +221,7 @@ class ProductionMonitor {
         // Performance Monitor integration (si existe)
         let perfMetrics = {};
         try {
-            const performanceMonitor = require('./performanceMonitor');
+            const performanceMonitor = require('./performanceMonitor.js');
             const stats = performanceMonitor.getStats();
             perfMetrics = stats;
         } catch (error) {
@@ -231,7 +231,7 @@ class ProductionMonitor {
         // Cache Manager integration (si existe)
         let cacheMetrics = {};
         try {
-            const cacheManager = require('./cacheManager');
+            const cacheManager = require('./cacheManager.js');
             const stats = cacheManager.getStats();
             cacheMetrics = stats;
         } catch (error) {

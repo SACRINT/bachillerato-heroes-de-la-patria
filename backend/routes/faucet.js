@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const blockchainService = require('../services/blockchain-service');
+const blockchainService = require('../services/blockchain-service.js');
 const { ethers } = require('ethers');
 
 // Almacenamiento simple en memoria para rate limit (en prod usar Redis)

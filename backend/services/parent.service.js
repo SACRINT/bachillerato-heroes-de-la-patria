@@ -8,9 +8,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const parent_dao_1 = __importDefault(require("../data/parent.dao"));
-const grades_dao_1 = __importDefault(require("../data/grades.dao"));
-const attendance_dao_1 = __importDefault(require("../data/attendance.dao"));
+const parent_dao_1 = __importDefault(require('../data/parent.dao.js'));
+const grades_dao_1 = __importDefault(require('../data/grades.dao.js'));
+const attendance_dao_1 = __importDefault(require('../data/attendance.dao.js'));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 class ParentService {

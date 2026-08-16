@@ -9,11 +9,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const { executeQuery } = require('../config/database');
-const { generateReportCardPDF, generateAttendanceReportPDF, generateClassAttendancePDF } = require('../utils/pdfGenerator');
-const debugLog = require('../utils/debug-logger');
-const { sanitizeError } = require('../middleware/errorHandler');
+const { authenticateToken, requireRole } = require('../middleware/auth.js');
+const { executeQuery } = require('../config/database.js');
+const { generateReportCardPDF, generateAttendanceReportPDF, generateClassAttendancePDF } = require('../utils/pdfGenerator.js');
+const debugLog = require('../utils/debug-logger.js');
+const { sanitizeError } = require('../middleware/errorHandler.js');
 const router = express_1.default.Router();
 // ============================================
 // BOLETA (REPORT CARD)

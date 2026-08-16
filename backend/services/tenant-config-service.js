@@ -3,7 +3,7 @@
  * Refactorizado: 04 Diciembre 2025
  */
 
-const TenantDAO = require('../data/tenant.dao');
+const TenantDAO = require('../data/tenant.dao.js');
 
 const redis = { get: async () => null, set: async () => true, del: async () => true };
 const CACHE_PREFIX = 'tenant:config:';

@@ -6,7 +6,7 @@
  */
 
 // const sharp = require('sharp'); // ⚠️ Lazy loading to avoid bundling heavy binaries if unused
-const devLogger = require('../utils/devLogger');
+const devLogger = require('../utils/devLogger.js');
 const fs = require('fs').promises;
 const path = require('path');
 

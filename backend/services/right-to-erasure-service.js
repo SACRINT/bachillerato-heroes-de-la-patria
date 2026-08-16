@@ -3,7 +3,7 @@
  * GDPR Article 17 - Refactorizado: 04 Diciembre 2025
  */
 
-const ErasureDAO = require('../data/erasure.dao');
+const ErasureDAO = require('../data/erasure.dao.js');
 const crypto = require('crypto');
 
 async function validateErasureRequest(userId) {

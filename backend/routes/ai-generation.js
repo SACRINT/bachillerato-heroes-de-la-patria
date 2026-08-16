@@ -10,12 +10,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
-const devLogger_1 = __importDefault(require("../utils/devLogger"));
+const devLogger_1 = __importDefault(require('../utils/devLogger.js'));
 const express_validator_1 = require("express-validator");
 // @ts-ignore
-const auth_1 = require("../middleware/auth");
+const auth_1 = require('../middleware/auth.js');
 // @ts-ignore
-const AIGenerationService_1 = __importDefault(require("../services/ai-generation.service"));
+const AIGenerationService_1 = __importDefault(require('../services/ai-generation.service.js'));
 const router = express_1.default.Router();
 // =====================================================
 // POST /api/ai/generate - Generar contenido con IA

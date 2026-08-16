@@ -11,7 +11,7 @@ const router = express.Router();
 const { body, query, param, validationResult } = require('express-validator');
 
 // Middleware de autenticación
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth.js');
 
 // Helper para manejar errores de validación
 const handleValidationErrors = (req, res, next) => {
@@ -28,7 +28,7 @@ const handleValidationErrors = (req, res, next) => {
 // Intentar cargar el servicio
 let marketplaceService;
 try {
-    marketplaceService = require('../services/MarketplaceService');
+    marketplaceService = require('../services/MarketplaceService.js');
 } catch (error) {
     console.log('[MARKETPLACE] Servicio no disponible, usando mock');
     marketplaceService = null;

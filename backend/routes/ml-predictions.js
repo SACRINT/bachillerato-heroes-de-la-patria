@@ -21,15 +21,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
-const auth_1 = require("../middleware/auth");
+const auth_1 = require('../middleware/auth.js');
 const child_process_1 = require("child_process");
 const path_1 = __importDefault(require("path"));
 const promises_1 = __importDefault(require("fs/promises"));
 // ✅ FASE 3: Using DAO layer
 // @ts-ignore
-const analytics_dao_1 = __importDefault(require("../data/analytics.dao"));
+const analytics_dao_1 = __importDefault(require('../data/analytics.dao.js'));
 // @ts-ignore
-const devLogger_1 = require("../utils/devLogger");
+const devLogger_1 = require('../utils/devLogger.js');
 const router = express_1.default.Router();
 // =============================================================================
 // HELPER: EXECUTE PYTHON ML MODEL
