@@ -1,7 +1,7 @@
 /**
  * 📊 DASHBOARD TAB COUNTERS - Actualizar conteos dinámicos
  * Actualiza los números en los títulos de los tabs del dashboard
- * con datos reales de la base de datos
+ * con datos consolidados para evitar saturación de peticiones.
  */
 
 (function() {
@@ -12,51 +12,41 @@
      */
     async function updateTabCounters() {
         try {
-            const client = window.apiClient || {
-                get: async (url) => {
-                    const token = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
-                    const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-                    const res = await fetch(url, { headers });
-                    return await res.json();
+            const token = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
+            const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+
+            let summary = null;
+            try {
+                const res = await fetch('/api/admin/dashboard-summary', { headers });
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json && json.success && json.data) {
+                        summary = json.data;
+                    }
                 }
-            };
+            } catch (e) {}
 
             const updates = [];
 
             // 1. Egresados
-            try {
-                const egresadosData = await client.get('/api/egresados');
-                const egresadosCount = egresadosData?.total || egresadosData?.data?.length || 0;
-                updates.push({ id: 'egresados-count', value: egresadosCount, label: 'Egresados' });
-            } catch (e) {}
+            const egresadosCount = summary?.egresados?.total ?? 0;
+            updates.push({ id: 'egresados-count', value: egresadosCount, label: 'Egresados' });
 
             // 2. Bolsa de Trabajo
-            try {
-                const bolsaData = await client.get('/api/bolsa-trabajo/stats/general');
-                const bolsaCount = bolsaData?.data?.total || bolsaData?.total || 0;
-                updates.push({ id: 'bolsa-trabajo-count', value: bolsaCount, label: 'Bolsa de Trabajo' });
-            } catch (e) {}
+            const bolsaCount = summary?.bolsaTrabajo?.total ?? summary?.vacantes?.total ?? 0;
+            updates.push({ id: 'bolsa-trabajo-count', value: bolsaCount, label: 'Bolsa de Trabajo' });
 
             // 3. Suscriptores
-            try {
-                const suscData = await client.get('/api/suscriptores');
-                const suscCount = suscData?.total || suscData?.data?.length || 0;
-                updates.push({ id: 'suscriptores-count', value: suscCount, label: 'Suscriptores' });
-            } catch (e) {}
+            const suscCount = summary?.suscriptores?.total ?? 0;
+            updates.push({ id: 'suscriptores-count', value: suscCount, label: 'Suscriptores' });
 
             // 4. Citas
-            try {
-                const citasData = await client.get('/api/citas/list');
-                const citasCount = citasData?.total || citasData?.citas?.length || 0;
-                updates.push({ id: 'citas-count', value: citasCount, label: 'Citas' });
-            } catch (e) {}
+            const citasCount = summary?.citas?.total ?? 0;
+            updates.push({ id: 'citas-count', value: citasCount, label: 'Citas' });
 
             // 5. Aprobaciones
-            try {
-                const approvalsData = await client.get('/api/approvals/pending');
-                const approvalsCount = approvalsData?.total || approvalsData?.data?.length || 0;
-                updates.push({ id: 'approvals-count', value: approvalsCount, label: 'Aprobaciones' });
-            } catch (e) {}
+            const approvalsCount = summary?.aprobaciones?.total ?? summary?.pendientes?.total ?? 0;
+            updates.push({ id: 'approvals-count', value: approvalsCount, label: 'Aprobaciones' });
 
             // Aplicar actualizaciones al DOM
             updates.forEach(update => {

@@ -64,31 +64,22 @@ class BolsaTrabajoManager {
             }
         } catch (error) {}
     }
-    }
 
     /**
      * Renderizar estadísticas en cards
      */
     renderizarEstadisticas(stats) {
+        if (!stats) return;
         // Actualizar IDs individuales que ya existen en el HTML
         const totalEl = document.getElementById('stats-total-bolsa');
         const nuevosEl = document.getElementById('stats-nuevos-bolsa');
         const revisadosEl = document.getElementById('stats-revisados-bolsa');
         const contratadosEl = document.getElementById('stats-contratados-bolsa');
 
-        // Backend devuelve stats.nuevos, stats.revisados, stats.contactados directamente
-        // No existe stats.porEstado ni stats.nuevosUltimos7Dias
         if (totalEl) totalEl.textContent = stats.total || 0;
         if (nuevosEl) nuevosEl.textContent = stats.nuevos || 0;
         if (revisadosEl) revisadosEl.textContent = stats.revisados || 0;
         if (contratadosEl) contratadosEl.textContent = stats.contactados || 0;
-
-        console.log('📊 Estadísticas renderizadas:', {
-            total: stats.total,
-            nuevos: stats.nuevos,
-            revisados: stats.revisados,
-            contactados: stats.contactados
-        });
     }
 
     /**

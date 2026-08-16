@@ -81,7 +81,7 @@ class BGEFramework {
             hasWebWorkers: 'Worker' in window
         };
 
-        console.log('🔧 Entorno BGE detectado:', this.environment);
+        
     }
 
     setupErrorHandling() {
@@ -207,7 +207,7 @@ class BGEFramework {
             apis: null
         };
 
-        console.log('🌐 BGE API global expuesta');
+        
     }
 
     async loadCriticalModules() {
@@ -370,7 +370,7 @@ class BGEModule {
     }
 
     async initialize() {
-        console.log(`📦 Inicializando módulo BGE: ${this.name}`);
+        
         this.initialized = true;
     }
 

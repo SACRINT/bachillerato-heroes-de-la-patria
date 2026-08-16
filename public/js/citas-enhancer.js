@@ -261,4 +261,4 @@ function showNotification(message, type = 'info') {
     });
 }
 
-console.log('✅ [CITAS ENHANCER] Funciones de citas mejoradas cargadas');
+

@@ -83,11 +83,11 @@ class DynamicStudentLoader {
      */
     updateStudentsTable() {
         try {
-            console.log('🔄 Actualizando tabla de estudiantes...');
+            
 
                         const tableBody = document.getElementById('studentsTable');
             if (!tableBody) {
-                console.log('⚠️ Tabla de estudiantes no encontrada');
+                
                 return;
             }
 
@@ -100,7 +100,7 @@ class DynamicStudentLoader {
                 tableBody.appendChild(row);
             });
 
-            console.log('✅ Tabla de estudiantes actualizada');
+            
         } catch (error) {
             console.error('❌ Error actualizando tabla de estudiantes:', error);
         }
@@ -194,7 +194,7 @@ class DynamicStudentLoader {
      */
     updateStudentsStats() {
         try {
-            console.log('🔄 Actualizando estadísticas de estudiantes...');
+            
 
             // Actualizar contadores en la interfaz
             const totalElement = document.getElementById('totalStudentsCount');
@@ -220,7 +220,7 @@ class DynamicStudentLoader {
                 averageElement.textContent = this.students.estadisticas?.promedioGeneral || '0.0';
             }
 
-            console.log('✅ Estadísticas de estudiantes actualizadas');
+            
         } catch (error) {
             console.error('❌ Error actualizando estadísticas:', error);
         }
@@ -1029,7 +1029,7 @@ class DynamicStudentLoader {
      * Inicializar el sistema
      */
     async init() {
-        console.log('🚀 Inicializando Dynamic Student Loader...');
+        
 
         // Cargar estudiantes al inicio
         await this.loadStudents();
@@ -1040,7 +1040,7 @@ class DynamicStudentLoader {
         // Configurar filtros
         this.setupFilters();
 
-        console.log('✅ Dynamic Student Loader inicializado correctamente');
+        
     }
 
     /**
@@ -1065,7 +1065,7 @@ class DynamicStudentLoader {
 
 // Auto-inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('🚀 DOM cargado, inicializando Dynamic Student Loader...');
+    
 
     // Crear instancia global
     window.dynamicStudentLoader = new DynamicStudentLoader();
@@ -1083,4 +1083,4 @@ window.reloadStudents = async () => {
     }
 };
 
-console.log('🎓 dynamic-student-loader.js cargado correctamente');
+

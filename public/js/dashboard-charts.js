@@ -23,7 +23,7 @@ class DashboardCharts {
      */
     async init() {
         try {
-            console.log('📊 Inicializando gráficas del dashboard...');
+            
 
             // Verificar que Chart.js esté cargado
             if (typeof Chart === 'undefined') {
@@ -50,7 +50,7 @@ class DashboardCharts {
                 this.loadSuscriptoresCrecimiento()
             ]);
 
-            console.log('✅ Gráficas inicializadas correctamente');
+            
         } catch (error) {
             console.error('❌ Error al inicializar gráficas:', error);
         }
@@ -139,7 +139,7 @@ class DashboardCharts {
                 }
             });
 
-            console.log('✅ Gráfica de noticias por mes cargada');
+            
         } catch (error) {
             console.error('❌ Error al cargar noticias por mes:', error);
         }
@@ -221,7 +221,7 @@ class DashboardCharts {
                 }
             });
 
-            console.log('✅ Gráfica de eventos por categoría cargada');
+            
         } catch (error) {
             console.error('❌ Error al cargar eventos por categoría:', error);
         }
@@ -294,7 +294,7 @@ class DashboardCharts {
                 }
             });
 
-            console.log('✅ Gráfica de quejas por tipo cargada');
+            
         } catch (error) {
             console.error('❌ Error al cargar quejas por tipo:', error);
         }
@@ -384,7 +384,7 @@ class DashboardCharts {
                 }
             });
 
-            console.log('✅ Gráfica de crecimiento de suscriptores cargada');
+            
         } catch (error) {
             console.error('❌ Error al cargar crecimiento de suscriptores:', error);
         }

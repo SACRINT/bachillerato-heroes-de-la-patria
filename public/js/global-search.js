@@ -22,7 +22,6 @@ class GlobalSearch {
     init() {
         this.createSearchModal();
         this.bindKeyboardShortcut();
-        console.log('🔍 Global Search inicializado (Cmd/Ctrl+K)');
     }
 
     /**

@@ -20,7 +20,7 @@
 
 // ⚠️ IDEMPOTENT GUARD: Prevent duplicate class declaration if script is loaded multiple times
 if (typeof window.BGESecurityModule !== 'undefined') {
-    console.log('ℹ️ BGESecurityModule ya cargado, omitiendo redeclaración');
+    
 } else {
 
     class BGESecurityModule extends BGEModule {
@@ -2559,7 +2559,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
                 logoutOption.classList.remove('d-none');
             }
 
-            console.log('✅ Enlaces de administrador habilitados en el menú');
+            
         } else {
             // Resetear estado
             if (adminLink) {
@@ -2640,7 +2640,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
 
         // Función de inicialización para dashboard
         window.initSecureAuthSystem = function () {
-            console.log('🔧 [SECURE AUTH] Sistema inicializado');
+            
             return window.secureAdminAuth;
         };
 

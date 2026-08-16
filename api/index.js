@@ -1835,7 +1835,36 @@ app.get('/api/messaging/conversations', async (req, res) => {
 // ============================================
 
 function getFallbackData(endpoint) {
+    const cleanEndpoint = (endpoint || '').split('?')[0].replace(/\/$/, '');
     const fallbacks = {
+        '/api/admin/dashboard-summary': {
+            success: true,
+            data: {
+                cms: { noticias: { total: 12, publicadas: 10 }, eventos: { total: 8, publicadas: 7 }, avisos: { total: 5 }, comunicados: { total: 6 } },
+                egresados: { total: 250, titulados: 180, estudiando: 60, historias_publicables: 25 },
+                bolsaTrabajo: { total: 45, nuevos: 8, revisados: 25, contactados: 12 },
+                suscriptores: { total: 105, activos: 98, verificados: 92 },
+                citas: { total: 14, pendientes: 4, confirmadas: 8, canceladas: 2 },
+                aprobaciones: { total: 6, pendientes: 6 }
+            },
+            isDemoData: true
+        },
+        '/api/admin/pending-registrations': { success: true, data: [], total: 0, isDemoData: true },
+        '/api/citas/list': { success: true, data: [], total: 0, citas: [], isDemoData: true },
+        '/api/citas': { success: true, data: [], total: 0, citas: [], isDemoData: true },
+        '/api/citas/stats': { success: true, data: { total: 14, pendientes: 4, confirmadas: 8, canceladas: 2 }, isDemoData: true },
+        '/api/approvals/pending': { success: true, data: [], total: 0, isDemoData: true },
+        '/api/approvals': { success: true, data: [], total: 0, isDemoData: true },
+        '/api/parents': { success: true, data: [], count: 0, isDemoData: true },
+        '/api/egresados': { success: true, data: [], total: 0, egresados: [], isDemoData: true },
+        '/api/egresados/list': { success: true, data: [], total: 0, egresados: [], isDemoData: true },
+        '/api/egresados/stats/general': { success: true, data: { total: 250, titulados: 180, estudiando: 60, trabajando: 140, publicables: 25, ultimos30Dias: 12, porGeneracion: {}, porEstatus: {} }, isDemoData: true },
+        '/api/egresados/stats': { success: true, data: { total: 250, titulados: 180, estudiando: 60, trabajando: 140, publicables: 25, ultimos30Dias: 12, porGeneracion: {}, porEstatus: {} }, isDemoData: true },
+        '/api/bolsa-trabajo': { success: true, data: [], total: 0, candidatos: [], isDemoData: true },
+        '/api/bolsa-trabajo/stats/general': { success: true, data: { total: 45, total_cvs: 45, pending_review: 12, approved: 28, rejected: 5 }, isDemoData: true },
+        '/api/bolsa-trabajo/cv/stats': { success: true, data: { total: 45, nuevos: 8, revisados: 25, contactados: 12 }, isDemoData: true },
+        '/api/suscriptores': { success: true, data: [], total: 0, suscriptores: [], isDemoData: true },
+        '/api/suscriptores/stats/general': { success: true, data: { total: 105, nuevosUltimos7Dias: 6, porEstado: [{ estado: 'activo', cantidad: 98 }, { estado: 'inactivo', cantidad: 7 }], porVerificacion: [{ verificado: 1, cantidad: 92 }, { verificado: 0, cantidad: 13 }] }, isDemoData: true },
         '/api/iacoins/balance': { success: true, userId: 1, balance: 500, currency: 'IACoins', isDemoData: true },
         '/api/iacoins/achievements': { success: true, achievements: [], total: 0, isDemoData: true },
         '/api/iacoins/challenges': { success: true, challenges: [], total: 0, isDemoData: true },
@@ -1859,7 +1888,7 @@ function getFallbackData(endpoint) {
         '/api/messaging/conversations': { success: true, conversations: [], total: 0, isDemoData: true }
     };
 
-    return fallbacks[endpoint] || null;
+    return fallbacks[cleanEndpoint] || null;
 }
 
 // ============================================
@@ -2399,6 +2428,180 @@ app.get('/api/pendientes-aprobacion', (req, res) => {
             oldest_pending_days: 5,
             urgency: 'media'
         },
+        isDemoData: true
+    });
+});
+
+// ============================================
+// RESILIENT DASHBOARD CORE ENDPOINTS FOR VERCEL
+// ============================================
+
+// GET /api/admin/dashboard-summary
+app.get('/api/admin/dashboard-summary', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            cms: {
+                noticias: { total: 12, publicadas: 10 },
+                eventos: { total: 8, publicadas: 7 },
+                avisos: { total: 5 },
+                comunicados: { total: 6 }
+            },
+            egresados: {
+                total: 250,
+                titulados: 180,
+                estudiando: 60,
+                historias_publicables: 25
+            },
+            bolsaTrabajo: {
+                total: 45,
+                nuevos: 8,
+                revisados: 25,
+                contactados: 12
+            },
+            suscriptores: {
+                total: 105,
+                activos: 98,
+                verificados: 92
+            },
+            citas: {
+                total: 14,
+                pendientes: 4,
+                confirmadas: 8,
+                canceladas: 2
+            },
+            aprobaciones: {
+                total: 6,
+                pendientes: 6
+            }
+        },
+        isDemoData: true
+    });
+});
+
+// GET /api/admin/pending-registrations
+app.get('/api/admin/pending-registrations', (req, res) => {
+    res.json({
+        success: true,
+        data: [],
+        total: 0,
+        isDemoData: true
+    });
+});
+
+// GET /api/citas/list and GET /api/citas
+app.get(['/api/citas/list', '/api/citas'], (req, res) => {
+    res.json({
+        success: true,
+        data: [],
+        total: 0,
+        citas: [],
+        isDemoData: true
+    });
+});
+
+// GET /api/citas/stats
+app.get('/api/citas/stats', (req, res) => {
+    res.json({
+        success: true,
+        data: { total: 14, pendientes: 4, confirmadas: 8, canceladas: 2 },
+        isDemoData: true
+    });
+});
+
+// GET /api/approvals/pending and GET /api/approvals
+app.get(['/api/approvals/pending', '/api/approvals'], (req, res) => {
+    res.json({
+        success: true,
+        data: [],
+        total: 0,
+        isDemoData: true
+    });
+});
+
+// GET /api/parents
+app.get('/api/parents', (req, res) => {
+    res.json({
+        success: true,
+        data: [],
+        count: 0,
+        isDemoData: true
+    });
+});
+
+// GET /api/egresados/stats/general and /api/egresados/stats
+app.get(['/api/egresados/stats/general', '/api/egresados/stats'], (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            total: 250,
+            titulados: 180,
+            estudiando: 60,
+            trabajando: 140,
+            publicables: 25,
+            ultimos30Dias: 12,
+            porGeneracion: {},
+            porEstatus: {}
+        },
+        isDemoData: true
+    });
+});
+
+// GET /api/egresados and /api/egresados/list
+app.get(['/api/egresados', '/api/egresados/list'], (req, res) => {
+    res.json({
+        success: true,
+        data: [],
+        total: 0,
+        egresados: [],
+        isDemoData: true
+    });
+});
+
+// GET /api/bolsa-trabajo and /api/bolsa-trabajo/cv/stats
+app.get('/api/bolsa-trabajo/cv/stats', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            total: 45,
+            nuevos: 8,
+            revisados: 25,
+            contactados: 12
+        },
+        isDemoData: true
+    });
+});
+
+app.get('/api/bolsa-trabajo', (req, res) => {
+    res.json({
+        success: true,
+        data: [],
+        total: 0,
+        candidatos: [],
+        isDemoData: true
+    });
+});
+
+// GET /api/suscriptores and /api/suscriptores/stats/general
+app.get(['/api/suscriptores/stats/general', '/api/suscriptores/stats'], (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            total: 105,
+            nuevosUltimos7Dias: 6,
+            porEstado: [{ estado: 'activo', cantidad: 98 }, { estado: 'inactivo', cantidad: 7 }],
+            porVerificacion: [{ verificado: 1, cantidad: 92 }, { verificado: 0, cantidad: 13 }]
+        },
+        isDemoData: true
+    });
+});
+
+app.get('/api/suscriptores', (req, res) => {
+    res.json({
+        success: true,
+        data: [],
+        total: 0,
+        suscriptores: [],
         isDemoData: true
     });
 });

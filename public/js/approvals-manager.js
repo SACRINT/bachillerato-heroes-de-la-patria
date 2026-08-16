@@ -606,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const approvalsTab = document.getElementById('approvals-tab');
     if (approvalsTab) {
         approvalsTab.addEventListener('shown.bs.tab', () => {
-            console.log('📋 Pestaña de aprobaciones activada');
+            
             loadPendingApprovals();
         });
     }
@@ -615,4 +615,4 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPendingApprovals();
 });
 
-console.log('✅ [APPROVALS MANAGER] Sistema cargado correctamente');
+

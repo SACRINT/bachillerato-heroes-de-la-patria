@@ -1563,7 +1563,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                 }
             });
 
-            console.log('🤖 Chatbot de clase mundial inicializado correctamente');
+            
         });
 
         // Agregar estilos CSS para las respuestas profesionales

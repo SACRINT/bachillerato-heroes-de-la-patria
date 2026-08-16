@@ -636,6 +636,7 @@
                     </div>
                     <div class="modal-body">
                         <form id="changePasswordForm">
+                            <input type="text" name="username" autocomplete="username" class="d-none" aria-hidden="true" tabindex="-1">
                             <div class="mb-3">
                                 <label class="form-label">Contraseña Actual</label>
                                 <input type="password" class="form-control" id="currentPassword" placeholder="Ingresa tu contraseña actual" required>

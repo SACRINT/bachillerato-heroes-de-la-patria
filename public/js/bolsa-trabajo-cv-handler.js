@@ -8,7 +8,7 @@
 (function() {
     'use strict';
 
-    console.log('🎓 [BOLSA TRABAJO CV] Inicializando handler...');
+    
 
     // Configuración
     const CONFIG = {
@@ -33,11 +33,11 @@
         const form = document.querySelector('#cvUploadForm');
 
         if (!form) {
-            console.warn('⚠️ [BOLSA TRABAJO CV] Formulario #cvUploadForm no encontrado');
+            
             return;
         }
 
-        console.log('✅ [BOLSA TRABAJO CV] Formulario encontrado, configurando...');
+        
 
         // IMPORTANTE: Marcar este formulario como ya manejado para evitar que professional-forms.js lo procese
         form.setAttribute('data-handled-by', sanitizeText('bolsa-trabajo-cv-handler'));
@@ -54,7 +54,7 @@
         // Generar años de egreso dinámicamente
         populateGraduationYears();
 
-        console.log('✅ [BOLSA TRABAJO CV] Handler configurado correctamente');
+        
     }
 
     /**
@@ -460,6 +460,6 @@
         initializeForm();
     }
 
-    console.log('✅ [BOLSA TRABAJO CV] Script cargado');
+    
 
 })();

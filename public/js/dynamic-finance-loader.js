@@ -68,7 +68,7 @@ class DynamicFinanceLoader {
      */
     updateFinanceCards() {
         try {
-            console.log('🔄 Actualizando tarjetas financieras...');
+            
 
             // Buscar las tarjetas en la sección de finanzas
             const financeSection = document.getElementById('finances');
@@ -90,7 +90,7 @@ class DynamicFinanceLoader {
                 cards[2].textContent = `${this.finances.resumen?.tasaCobro || 0}%`;
             }
 
-            console.log('✅ Tarjetas financieras actualizadas');
+            
         } catch (error) {
             console.error('❌ Error actualizando tarjetas financieras:', error);
         }
@@ -101,7 +101,7 @@ class DynamicFinanceLoader {
      */
     updateFinanceTables() {
         try {
-            console.log('🔄 Actualizando tablas financieras...');
+            
 
             // Actualizar tabla de ingresos
             this.updateIncomeTable();
@@ -112,7 +112,7 @@ class DynamicFinanceLoader {
             // Actualizar tabla de pagos pendientes
             this.updatePendingPaymentsTable();
 
-            console.log('✅ Tablas financieras actualizadas');
+            
         } catch (error) {
             console.error('❌ Error actualizando tablas financieras:', error);
         }
@@ -836,7 +836,7 @@ class DynamicFinanceLoader {
      * Inicializar el sistema
      */
     async init() {
-        console.log('🚀 Inicializando Dynamic Finance Loader...');
+        
 
         // Cargar datos financieros al inicio
         await this.loadFinances();
@@ -844,7 +844,7 @@ class DynamicFinanceLoader {
         // Configurar eventos
         this.setupEvents();
 
-        console.log('✅ Dynamic Finance Loader inicializado correctamente');
+        
     }
 
     /**
@@ -1038,7 +1038,7 @@ class DynamicFinanceLoader {
 
 // Auto-inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('🚀 DOM cargado, inicializando Dynamic Finance Loader...');
+    
 
     // Crear instancia global
     window.dynamicFinanceLoader = new DynamicFinanceLoader();
@@ -1056,4 +1056,3 @@ window.reloadFinances = async () => {
     }
 };
 
-console.log('💰 dynamic-finance-loader.js cargado correctamente');

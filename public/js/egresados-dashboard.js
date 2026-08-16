@@ -324,7 +324,7 @@ class EgresadosDashboard {
         this.totalPages = Math.ceil(this.filteredEgresados.length / this.pageSize);
         this.currentPage = Math.min(this.currentPage, this.totalPages || 1);
 
-        console.log(`🔍 [EGRESADOS] Filtros aplicados: ${this.filteredEgresados.length} resultados`);
+        
     }
 
     /**
@@ -1405,4 +1405,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-console.log('✅ [EGRESADOS] Script cargado');
+

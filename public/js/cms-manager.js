@@ -5,7 +5,7 @@
 
 class CMSManager {
     constructor() {
-        console.log('🎛️ [CMS] Inicializando sistema de gestión de contenido...');
+        
         // Endpoints PostgreSQL unificados
         this.apiBase = '/api/';
 
@@ -25,7 +25,7 @@ class CMSManager {
 
     init() {
         this.initializeEventListeners();
-        console.log('✅ [CMS] Sistema CMS iniciado correctamente');
+        
     }
 
     // ==========================================

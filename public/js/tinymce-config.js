@@ -105,7 +105,7 @@ class TinyMCEManager {
             // 🔐 FIX CRÍTICO: Callback cuando el editor está listo
             setup: (editor) => {
                 editor.on('init', () => {
-                    console.log(`✅ [TINYMCE] Editor inicializado: #${editor.id}`);
+                    
 
                     // VERIFICAR Y FORZAR MODO EDITABLE
                     if (editor.mode && editor.mode.get() === 'readonly') {
@@ -125,7 +125,7 @@ class TinyMCEManager {
 
             // 🔐 FIX CRÍTICO: Callback de inicialización completa
             init_instance_callback: (editor) => {
-                console.log(`🎉 [TINYMCE] Editor #${editor.id} completamente inicializado`);
+                
 
                 // FORZAR MODO EDITABLE EXPLÍCITAMENTE
                 if (editor.mode) {
@@ -137,7 +137,7 @@ class TinyMCEManager {
 
                 // Verificar estado final
                 const mode = editor.mode ? editor.mode.get() : 'unknown';
-                console.log(`📝 [TINYMCE] Modo final del editor #${editor.id}: ${mode}`);
+                
 
                 if (mode === 'readonly') {
                     console.error(`❌ [TINYMCE] ADVERTENCIA: Editor #${editor.id} sigue en readonly a pesar de los intentos de cambio.`);
@@ -164,15 +164,15 @@ class TinyMCEManager {
             };
 
             // 🔍 DEBUG: Verificar base_url construido
-            console.log(`🔧 [TINYMCE] base_url configurado: ${config.base_url}`);
-            console.log(`🔧 [TINYMCE] suffix configurado: ${config.suffix}`);
+            
+            
 
             const editors = await tinymce.init(config);
 
             if (editors && editors.length > 0) {
                 const editor = editors[0];
                 this.editors[selector] = editor;
-                console.log(`✅ [TINYMCE] Editor inicializado: ${selector}`);
+                
                 return editor;
             }
 

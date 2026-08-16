@@ -92,11 +92,11 @@ class DynamicTeacherLoader {
      */
     updateTeachersTable() {
         try {
-            console.log('🔄 Actualizando tabla de docentes...');
+            
 
                         const tableBody = document.getElementById('teachersTable');
             if (!tableBody) {
-                console.log('⚠️ Tabla de docentes no encontrada');
+                
                 return;
             }
 
@@ -109,7 +109,7 @@ class DynamicTeacherLoader {
                 tableBody.appendChild(row);
             });
 
-            console.log('✅ Tabla de docentes actualizada');
+            
         } catch (error) {
             console.error('❌ Error actualizando tabla de docentes:', error);
         }
@@ -195,7 +195,7 @@ class DynamicTeacherLoader {
      */
     updateTeachersStats() {
         try {
-            console.log('🔄 Actualizando estadísticas de docentes...');
+            
 
             // Actualizar contadores
             const totalElement = document.getElementById('totalTeachersCount');
@@ -216,7 +216,7 @@ class DynamicTeacherLoader {
                 specialtiesElement.textContent = specialties.size;
             }
 
-            console.log('✅ Estadísticas de docentes actualizadas');
+            
         } catch (error) {
             console.error('❌ Error actualizando estadísticas:', error);
         }
@@ -947,7 +947,7 @@ class DynamicTeacherLoader {
      * Inicializar el sistema
      */
     async init() {
-        console.log('🚀 Inicializando Dynamic Teacher Loader...');
+        
 
         // Cargar docentes al inicio
         await this.loadTeachers();
@@ -955,7 +955,7 @@ class DynamicTeacherLoader {
         // Configurar eventos
         this.setupEvents();
 
-        console.log('✅ Dynamic Teacher Loader inicializado correctamente');
+        
     }
 
     /**
@@ -974,7 +974,7 @@ class DynamicTeacherLoader {
 
 // Auto-inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('🚀 DOM cargado, inicializando Dynamic Teacher Loader...');
+    
 
     // Crear instancia global
     window.dynamicTeacherLoader = new DynamicTeacherLoader();
