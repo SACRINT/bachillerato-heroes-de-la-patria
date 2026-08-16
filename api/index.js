@@ -150,23 +150,25 @@ const mountRouteSafe = (routePrefix, routeModule) => {
         if (handler && (typeof handler === 'function' || typeof handler.use === 'function')) {
             app.use(routePrefix, handler);
             console.log(`✅ [VERCEL-ROUTER] Montado ${routePrefix}`);
+        } else {
+            console.error(`[VERCEL-ROUTER] Handler no válido para ${routePrefix}`);
         }
     } catch (err) {
-        console.warn(`[VERCEL-ROUTER] Error montando ${routePrefix}:`, err.message);
+        console.error(`[VERCEL-ROUTER] Error montando ${routePrefix}:`, err);
     }
 };
 
 // 1. Admin y Dashboard
-try { mountRouteSafe('/api/admin', require('../backend/routes/admin.js')); } catch (e) { console.warn('[ROUTER] admin:', e.message); }
-try { mountRouteSafe('/api/dashboard', require('../backend/routes/dashboard.js')); } catch (e) { console.warn('[ROUTER] dashboard:', e.message); }
+try { mountRouteSafe('/api/admin', require('../backend/routes/admin.js')); } catch (e) { console.error('[ROUTER] admin:', e); }
+try { mountRouteSafe('/api/dashboard', require('../backend/routes/dashboard.js')); } catch (e) { console.error('[ROUTER] dashboard:', e); }
 
 // 2. Portales y Usuarios
-try { mountRouteSafe('/api/students', require('../backend/routes/students.js')); } catch (e) { console.warn('[ROUTER] students:', e.message); }
-try { mountRouteSafe('/api/teachers', require('../backend/routes/teachers.js')); } catch (e) { console.warn('[ROUTER] teachers:', e.message); }
-try { mountRouteSafe('/api/parents', require('../backend/routes/parents.js')); } catch (e) { console.warn('[ROUTER] parents:', e.message); }
-try { mountRouteSafe('/api/students-auth', require('../backend/routes/students-auth.js')); } catch (e) { console.warn('[ROUTER] students-auth:', e.message); }
-try { mountRouteSafe('/api/teachers-portal', require('../backend/routes/teachers-portal.js')); } catch (e) { console.warn('[ROUTER] teachers-portal:', e.message); }
-try { mountRouteSafe('/api/teachers-portal-ext', require('../backend/routes/teachers-portal-extended.js')); } catch (e) { console.warn('[ROUTER] teachers-portal-ext:', e.message); }
+try { mountRouteSafe('/api/students', require('../backend/routes/students.js')); } catch (e) { console.error('[ROUTER] students:', e); }
+try { mountRouteSafe('/api/teachers', require('../backend/routes/teachers.js')); } catch (e) { console.error('[ROUTER] teachers:', e); }
+try { mountRouteSafe('/api/parents', require('../backend/routes/parents.js')); } catch (e) { console.error('[ROUTER] parents:', e); }
+try { mountRouteSafe('/api/students-auth', require('../backend/routes/students-auth.js')); } catch (e) { console.error('[ROUTER] students-auth:', e); }
+try { mountRouteSafe('/api/teachers-portal', require('../backend/routes/teachers-portal.js')); } catch (e) { console.error('[ROUTER] teachers-portal:', e.message); }
+try { mountRouteSafe('/api/teachers-portal-ext', require('../backend/routes/teachers-portal-extended.js')); } catch (e) { console.error('[ROUTER] teachers-portal-ext:', e.message); }
 
 // 3. Calificaciones, Asistencia y Cursos
 try { mountRouteSafe('/api/grades', require('../backend/routes/grades.js')); } catch (e) { console.warn('[ROUTER] grades:', e.message); }
@@ -225,6 +227,40 @@ try { mountRouteSafe('/api/labs', require('../backend/routes/virtual-labs.js'));
 // Logout universal
 app.post('/api/auth/logout', (req, res) => {
     res.json({ success: true, message: 'Sesión cerrada correctamente' });
+});
+
+// Parents auth check endpoint
+app.get('/api/parents/auth/check', (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ success: false, isAuthenticated: false, message: 'Token no proporcionado' });
+    }
+
+    try {
+        const { getJWTUtils } = require('../backend/utils/jwtUtils.js');
+        const jwtUtils = getJWTUtils();
+        const decoded = jwtUtils.verifyToken(token);
+        if (!decoded || (!decoded.id && !decoded.userId)) {
+            return res.status(401).json({ success: false, isAuthenticated: false, message: 'Token inválido' });
+        }
+        return res.json({
+            success: true,
+            isAuthenticated: true,
+            user: {
+                id: decoded.id || decoded.userId,
+                role: decoded.role || 'padre',
+                name: decoded.nombre || decoded.name || 'Tutor / Padre de Familia',
+                email: decoded.email || 'padre@bge.edu.mx'
+            }
+        });
+    } catch (err) {
+        return res.status(401).json({
+            success: false,
+            isAuthenticated: false,
+            message: 'Token inválido o expirado'
+        });
+    }
 });
 
 // Parents my-students endpoint

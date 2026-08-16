@@ -181,7 +181,7 @@ router.post('/login', loginLimiter, loginValidation, async (req, res) => {
             permissions: authService.permissions[user.role] || []
         };
         const tokenPair = jwtUtils.generateTokenPair(userPayload, rememberMe);
-        debug_logger_1.debugLog.log('AUTH', `Login exitoso para email=${(0, sanitized_errors_1.maskEmail)(email)}, role=${user.role}`);
+        debug_logger_1.debugLog.log('AUTH', `Login exitoso para email=${(0, sanitized_errors_1.maskEmail)(user.email)}, role=${user.role}`);
 
         // ✅ GAMIFICATION: Check Login Achievements (Async - Fire & Forget)
         const achievementService = require('../services/achievement.service.js');

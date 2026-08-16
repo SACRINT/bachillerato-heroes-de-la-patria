@@ -19,6 +19,7 @@ const database_1 = require('../config/database.js');
 const auth_1 = require('../middleware/auth.js');
 // @ts-ignore
 const jwtUtils_1 = require('../utils/jwtUtils.js');
+const parent_credentials_dao_1 = __importDefault(require('../data/parent-credentials.dao.js'));
 const router = express_1.default.Router();
 
 /**
@@ -856,7 +857,6 @@ router.get('/students/:studentId/attendance', auth_1.authenticateToken, async (r
 // ============================================
 // SISTEMA DE CREDENCIALES (PRE-APROVISIONAMIENTO)
 // ============================================
-const parent_credentials_dao_1 = __importDefault(require('../data/parent-credentials.dao.js'));
 /**
  * GET /api/parents/credentials
  * Listar credenciales activas (para imprimir/exportar)

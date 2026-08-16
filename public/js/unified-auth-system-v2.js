@@ -2024,7 +2024,10 @@ class UIManager {
             </div>
         `;
 
-        container.insertAdjacentHTML('beforeend', DOMPurify.sanitize(sanitizeHTML(alertHTML)));
+        const safeAlertHTML = typeof DOMPurify !== 'undefined' 
+            ? DOMPurify.sanitize(typeof sanitizeHTML === 'function' ? sanitizeHTML(alertHTML) : alertHTML)
+            : (typeof sanitizeHTML === 'function' ? sanitizeHTML(alertHTML) : alertHTML);
+        container.insertAdjacentHTML('beforeend', safeAlertHTML);
 
         // Auto-remove después de 5 segundos (excepto errores)
         if (type !== 'danger') {
