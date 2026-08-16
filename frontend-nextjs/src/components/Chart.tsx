@@ -98,7 +98,7 @@ export default function Chart({
                 );
 
             default:
-                return null;
+                return <div />;
         }
     };
 

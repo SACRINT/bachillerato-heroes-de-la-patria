@@ -16,7 +16,7 @@ apiClient.interceptors.request.use(
     async (config) => {
         if (typeof window !== 'undefined') {
             const session = await getSession();
-            let token = session?.user?.accessToken;
+            let token = (session?.user as any)?.accessToken;
             if (!token) {
                 token = localStorage.getItem('auth_token') || localStorage.getItem('bge_auth_token');
             }

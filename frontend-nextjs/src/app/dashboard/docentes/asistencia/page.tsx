@@ -31,7 +31,7 @@ export default function AsistenciaPage() {
     );
     const markBulkAttendance = useMarkBulkAttendance();
 
-    const clases = clasesData?.clases || [];
+    const clases = Array.isArray(clasesData) ? clasesData : ((clasesData as any)?.clases || []);
 
     // Inicializar con la primera clase disponible
     useEffect(() => {
@@ -43,13 +43,13 @@ export default function AsistenciaPage() {
     // Actualizar estudiantes cuando se carga la asistencia
     useEffect(() => {
         if (attendanceData?.data) {
-            const estudiantesConAsistencia = attendanceData.data.estudiantes.map((est: any) => ({
+            const estudiantesConAsistencia: StudentAttendance[] = (attendanceData.data.estudiantes || []).map((est: any) => ({
                 id: est.id,
                 nombre: est.nombre,
                 apellido: est.apellido || '',
                 matricula: est.matricula || `EST-${est.id}`,
-                asistencia: est.presente === true ? 'presente' :
-                    est.presente === false ? 'ausente' : null
+                asistencia: (est.presente === true ? 'presente' :
+                    est.presente === false ? 'ausente' : null) as AttendanceStatus
             }));
             setEstudiantes(estudiantesConAsistencia);
         }

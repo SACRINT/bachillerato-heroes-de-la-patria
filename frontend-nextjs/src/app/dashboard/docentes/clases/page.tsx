@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export default function MisClasesPage() {
     const { data: clasesData, isLoading } = useTeacherClasses();
-    const clases = clasesData?.clases || [];
+    const clases = Array.isArray(clasesData) ? clasesData : ((clasesData as any)?.clases || []);
 
     // Asignar colores dinámicamente basado en el índice
     const assignColor = (index: number) => {

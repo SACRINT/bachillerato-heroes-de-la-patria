@@ -68,16 +68,16 @@ export const parentsApiClient = {
      * Obtener datos del dashboard
      */
     async getDashboard(): Promise<ParentDashboard> {
-        const response = await apiClient.get<{ data: ParentDashboard }>('/api/parents/dashboard');
-        return response.data;
+        const response = await apiClient.get<any>('/api/parents/dashboard');
+        return response.data?.data || response.data;
     },
 
     /**
      * Obtener lista de estudiantes (hijos) vinculados
      */
     async getMyStudents(): Promise<ParentStudent[]> {
-        const response = await apiClient.get<{ data: ParentStudent[] }>('/api/parents/my-students');
-        return response.data;
+        const response = await apiClient.get<any>('/api/parents/my-students');
+        return response.data?.data || response.data;
     },
 
     /**

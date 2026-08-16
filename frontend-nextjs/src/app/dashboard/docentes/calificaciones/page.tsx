@@ -11,7 +11,8 @@ export default function CalificacionesPage() {
     const { data: clasesData, isLoading } = useTeacherClasses();
 
     // Transformar datos del backend para mostrar en la tabla
-    const grupos = (clasesData?.clases || []).map((clase: any) => ({
+    const clasesList = Array.isArray(clasesData) ? clasesData : ((clasesData as any)?.clases || []);
+    const grupos = clasesList.map((clase: any) => ({
         id: clase.id,
         materia: clase.materia || clase.nombre,
         grupo: clase.grupo || 'Sin grupo',

@@ -31,7 +31,7 @@ export default function CapturaCalificacionesPage() {
     );
     const saveBulkGrades = useSaveBulkGrades();
 
-    const clases = clasesData?.clases || [];
+    const clases = Array.isArray(clasesData) ? clasesData : ((clasesData as any)?.clases || []);
 
     // Periodos académicos
     const periodos = ['Parcial 1', 'Parcial 2', 'Parcial 3', 'Final'];
@@ -45,9 +45,10 @@ export default function CapturaCalificacionesPage() {
 
     // Cargar calificaciones cuando cambia la clase o periodo
     useEffect(() => {
-        if (gradesData?.data) {
+        const gradesList = Array.isArray(gradesData) ? gradesData : ((gradesData as any)?.data || []);
+        if (gradesList.length > 0) {
             setGrades(
-                gradesData.data.map((g: any) => ({
+                gradesList.map((g: any) => ({
                     estudiante_id: g.estudiante_id,
                     nombre: g.nombre,
                     apellido_paterno: g.apellido_paterno,

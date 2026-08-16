@@ -1,2 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tantml:parameter>
-<parameter name="Complexity" > 7
+/**
+ * Student API Hooks (Re-export from use-api)
+ */
+export * from './use-api';
